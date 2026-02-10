@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// ENUMS - Research Study Types
+// ============================================
+
+enum TestType {
+  HEXACO
+  HEXACO_MODIFIED
+  BIG_FIVE
+  MBTI
+}
+
+enum RelationshipType {
+  FRIEND
+  COLLEAGUE
+  FAMILY
+  PARTNER
+  OTHER
+}
+
+enum InvitationStatus {
+  PENDING
+  COMPLETED
+  EXPIRED
+  CANCELED
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  clerkId   String?  @unique
+  email     String?
+  name      String?
+  deleted   Boolean  @default(false)
+  locale    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Demographic data (onboarding)
+  birthYear   Int?
+  gender      String?
+  education   String?
+  occupation  String?
+  country     String?
+  onboardedAt DateTime?
+
+  // Research study fields
+  testType           TestType?
+  testTypeAssignedAt DateTime?
+  consentedAt        DateTime?
+
+  assessmentResults    AssessmentResult[]
+  sentInvitations      ObserverInvitation[] @relation("InviterInvitations")
+  receivedInvitations  ObserverInvitation[] @relation("ObserverInvitations")
+  satisfactionFeedback SatisfactionFeedback?
+}
+
+model AssessmentResult {
+  id            String   @id @default(cuid())
+  userProfileId String?
+  scores        Json
+  createdAt     DateTime @default(now())
+
+  // Research study fields
+  testType         TestType?
+  isSelfAssessment Boolean   @default(true)
+
+  userProfile UserProfile? @relation(fields: [userProfileId], references: [id])
+
+  @@index([userProfileId])
+}
+
+// Observer invitation for peer assessment
+model ObserverInvitation {
+  id            String           @id @default(cuid())
+  token         String           @unique @default(cuid())
+  inviterId     String
+  observerProfileId String?
+  observerEmail String?
+  observerName  String?
+  testType      TestType
+  status        InvitationStatus @default(PENDING)
+  expiresAt     DateTime
+  createdAt     DateTime         @default(now())
+  completedAt   DateTime?
+
+  inviter    UserProfile         @relation("InviterInvitations", fields: [inviterId], references: [id])
+  observer   UserProfile?        @relation("ObserverInvitations", fields: [observerProfileId], references: [id])
+  assessment ObserverAssessment?
+
+  @@index([inviterId])
+  @@index([observerProfileId])
+  @@index([token])
+}
+
+// Observer's assessment of the inviter
+model ObserverAssessment {
+  id               String           @id @default(cuid())
+  invitationId     String           @unique
+  relationshipType RelationshipType
+  knownDuration    String // "LT_1", "1_3", "3_5", "5P"
+  scores           Json
+  confidence       Int? // 1-5: observer's self-rated certainty (research quality filter)
+  createdAt        DateTime         @default(now())
+
+  invitation ObserverInvitation @relation(fields: [invitationId], references: [id])
+}
+
+// Satisfaction feedback for research comparison
+model SatisfactionFeedback {
+  id                         String   @id @default(cuid())
+  userProfileId              String   @unique
+  selfAssessmentAccuracy     Int // 1-5
+  observerAssessmentAccuracy Int // 1-5
+  overallSatisfaction        Int // 1-5
+  freeformFeedback           String?
+  createdAt                  DateTime @default(now())
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+}
