@@ -17,6 +17,7 @@ import { RetakeButton } from "@/components/dashboard/RetakeButton";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
+import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -257,6 +258,8 @@ export default async function DashboardPage() {
   );
   const hasInvites = sentInvitations.length > 0;
   const hasObserverFeedback = completedObservers.length > 0;
+  const feedbackInProgress = pendingInvites.length > 0 && !hasObserverFeedback;
+  const feedbackPartial = pendingInvites.length > 0 && hasObserverFeedback;
   const stepsCompleted = 1 + (hasInvites ? 1 : 0) + (hasObserverFeedback ? 1 : 0);
   const progressPct = Math.round((stepsCompleted / 3) * 100);
   const avgConfidence =
@@ -314,6 +317,10 @@ export default async function DashboardPage() {
         };
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
+      <DashboardAutoRefresh
+        pendingInvites={pendingInvites.length}
+        completedObserver={completedObservers.length}
+      />
       {/* ── Continue draft banner ── */}
       {draft && draftTotalQuestions > 0 && (
         <FadeIn>
@@ -374,17 +381,111 @@ export default async function DashboardPage() {
             <div className="h-2 w-full overflow-hidden rounded-full bg-indigo-100">
               <div
                 className="h-full rounded-full bg-indigo-500 transition-all"
-                style={{ width: `${progressPct}%` }}
+                style={{
+                  width: `${progressPct}%`,
+                  background: feedbackPartial
+                    ? "linear-gradient(90deg, #6366f1 0%, #6366f1 66.66%, #f59e0b 66.66%, #f59e0b 100%)"
+                    : undefined,
+                }}
               />
             </div>
-            <div className="mt-3 flex flex-wrap gap-3 text-xs font-semibold text-gray-500">
+            <div className="mt-3 grid grid-cols-3 text-center">
+              <span className={stepsCompleted >= 1 ? "text-indigo-600" : "text-gray-300"}>
+                {stepsCompleted >= 1 ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="mx-auto h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M8.5 12.5l2.5 2.5 4.5-5" />
+                  </svg>
+                ) : null}
+              </span>
+              <span className={stepsCompleted >= 2 ? "text-indigo-600" : "text-gray-300"}>
+                {stepsCompleted >= 2 ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="mx-auto h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M8.5 12.5l2.5 2.5 4.5-5" />
+                  </svg>
+                ) : null}
+              </span>
+              <span
+                className={
+                  stepsCompleted >= 3
+                    ? feedbackPartial
+                      ? "text-amber-500"
+                      : "text-indigo-600"
+                    : feedbackInProgress
+                      ? "text-amber-500"
+                      : "text-gray-300"
+                }
+              >
+                {stepsCompleted >= 3 ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="mx-auto h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M8.5 12.5l2.5 2.5 4.5-5" />
+                  </svg>
+                ) : feedbackInProgress ? (
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="mx-auto h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <path d="M6 2h12M6 22h12" />
+                    <path d="M8 2v6a4 4 0 0 0 8 0V2" />
+                    <path d="M8 22v-6a4 4 0 0 1 8 0v6" />
+                    <path d="M10 12h4" />
+                  </svg>
+                ) : null}
+              </span>
+            </div>
+            <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
               <span className={stepsCompleted >= 1 ? "text-indigo-600" : ""}>
                 {t("dashboard.journeyStepSelf", locale)}
               </span>
               <span className={stepsCompleted >= 2 ? "text-indigo-600" : ""}>
                 {t("dashboard.journeyStepInvite", locale)}
               </span>
-              <span className={stepsCompleted >= 3 ? "text-indigo-600" : ""}>
+              <span
+                className={
+                  stepsCompleted >= 3
+                    ? feedbackPartial
+                      ? "text-amber-500"
+                      : "text-indigo-600"
+                    : feedbackInProgress
+                      ? "text-amber-500"
+                      : ""
+                }
+              >
                 {t("dashboard.journeyStepFeedback", locale)}
               </span>
             </div>

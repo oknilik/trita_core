@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/Toast";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
@@ -21,6 +22,7 @@ interface InviteSectionProps {
 export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const { showToast } = useToast();
   const { locale } = useLocale();
+  const router = useRouter();
   const [invitations, setInvitations] = useState(initialInvitations);
   const [isCreating, setIsCreating] = useState(false);
   const [email, setEmail] = useState("");
@@ -62,6 +64,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
         showToast(t("invite.createEmailSuccess", locale), "success");
       }
       if (mode === "email") setEmail("");
+      router.refresh();
     } catch (error) {
       console.error(error);
       showToast(t("invite.createFailed", locale), "error");
@@ -94,6 +97,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
         )
       );
       showToast(t("invite.deleteSuccess", locale), "success");
+      router.refresh();
     } catch {
       showToast(t("invite.deleteFailed", locale), "error");
     }
