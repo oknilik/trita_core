@@ -287,6 +287,16 @@ const translations = {
       en: "Could not save result.",
       de: "Ergebnis konnte nicht gespeichert werden.",
     },
+    loadQuestionsError: {
+      hu: "Nem sikerült betölteni a kérdéseket.",
+      en: "Could not load questions.",
+      de: "Fragen konnten nicht geladen werden.",
+    },
+    loadingQuestions: {
+      hu: "Kérdések betöltése...",
+      en: "Loading questions...",
+      de: "Fragen werden geladen...",
+    },
     emptyValue: { hu: "Válassz egy értéket", en: "Select a value", de: "Wähle einen Wert" },
     scale1: { hu: "Egyáltalán nem értek egyet", en: "Strongly disagree", de: "Stimme gar nicht zu" },
     scale2: { hu: "Nem értek egyet", en: "Disagree", de: "Stimme nicht zu" },

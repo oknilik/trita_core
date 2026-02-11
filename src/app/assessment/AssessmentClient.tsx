@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { ProgressBar } from '@/components/assessment/ProgressBar'
@@ -11,22 +11,21 @@ import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t } from '@/lib/i18n'
 import type { TestType } from '@prisma/client'
-import type { Question } from '@/lib/questions'
-import { isLikertQuestion } from '@/lib/questions'
+type AssessmentQuestion = { id: number; text: string }
 
 const QUESTIONS_PER_PAGE = 5
 
 interface AssessmentClientProps {
   testType: TestType
   testName: string
-  questions: Question[]
+  totalQuestions: number
   initialDraft?: { answers: Record<string, number>; currentPage: number }
 }
 
 export function AssessmentClient({
   testType,
   testName,
-  questions,
+  totalQuestions,
   initialDraft,
 }: AssessmentClientProps) {
   const router = useRouter()
@@ -36,7 +35,7 @@ export function AssessmentClient({
 
   const [currentPage, setCurrentPage] = useState(initialDraft?.currentPage ?? 0)
   const [answers, setAnswers] = useState<Record<number, number>>(() => {
-    // Server draft takes priority, then localStorage fallback
+    // Server draft takes priority; localStorage is loaded after hydration
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
       const parsed: Record<number, number> = {}
       for (const [k, v] of Object.entries(initialDraft.answers)) {
@@ -44,28 +43,40 @@ export function AssessmentClient({
       }
       return parsed
     }
-    if (typeof window === 'undefined') return {}
-    try {
-      const saved = localStorage.getItem(draftKey)
-      return saved ? JSON.parse(saved) : {}
-    } catch {
-      return {}
-    }
+    return {}
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [evaluationProgress, setEvaluationProgress] = useState(0)
+  const [pageQuestions, setPageQuestions] = useState<AssessmentQuestion[]>([])
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(true)
+  const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
 
-  const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE)
-  const pageQuestions = questions.slice(
-    currentPage * QUESTIONS_PER_PAGE,
-    (currentPage + 1) * QUESTIONS_PER_PAGE,
-  )
+  const totalPages = Math.ceil(totalQuestions / QUESTIONS_PER_PAGE)
   const isLastPage = currentPage === totalPages - 1
   const answeredCount = Object.keys(answers).length
 
   // All questions on current page must be answered to proceed
   const canGoNext = pageQuestions.every((q) => answers[q.id] !== undefined)
+
+  const questionElementIds = useMemo(
+    () => new Map(pageQuestions.map((q) => [q.id, `question-${q.id}`])),
+    [pageQuestions],
+  )
+
+  // Load localStorage draft after hydration (only if no server draft)
+  useEffect(() => {
+    if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) return
+    try {
+      const saved = localStorage.getItem(draftKey)
+      if (saved) {
+        const parsed = JSON.parse(saved) as Record<number, number>
+        setAnswers(parsed)
+      }
+    } catch {
+      // ignore
+    }
+  }, [draftKey, initialDraft?.answers])
 
   // Save draft to localStorage on every answer change
   useEffect(() => {
@@ -88,6 +99,39 @@ export function AssessmentClient({
     window.addEventListener('beforeunload', handleBeforeUnload)
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [handleBeforeUnload])
+
+  useEffect(() => {
+    let isMounted = true
+    const loadQuestions = async () => {
+      setIsLoadingQuestions(true)
+      try {
+        const res = await fetch(
+          `/api/assessment/questions?page=${currentPage}&perPage=${QUESTIONS_PER_PAGE}`,
+        )
+        if (!res.ok) {
+          throw new Error('Failed to load questions')
+        }
+        const data = await res.json()
+        if (isMounted) {
+          setPageQuestions(data.questions ?? [])
+        }
+      } catch (error) {
+        console.error(error)
+        showToast(t('assessment.loadQuestionsError', locale), 'error')
+        if (isMounted) {
+          setPageQuestions([])
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingQuestions(false)
+        }
+      }
+    }
+    loadQuestions()
+    return () => {
+      isMounted = false
+    }
+  }, [currentPage, showToast, locale])
 
   const handleAnswer = (questionId: number, value: number) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }))
@@ -112,7 +156,22 @@ export function AssessmentClient({
   }
 
   const handleNextPage = async () => {
-    if (!canGoNext || isLastPage) return
+    if (!canGoNext) {
+      const missing = pageQuestions.find((q) => answers[q.id] === undefined)
+      if (missing) {
+        const elementId = questionElementIds.get(missing.id)
+        if (elementId) {
+          const el = document.getElementById(elementId)
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        setHighlightQuestionId(missing.id)
+        window.setTimeout(() => {
+          setHighlightQuestionId((current) => (current === missing.id ? null : current))
+        }, 1200)
+      }
+      return
+    }
+    if (isLastPage) return
     const nextPage = currentPage + 1
     await saveDraftToServer(nextPage)
     setCurrentPage(nextPage)
@@ -127,6 +186,21 @@ export function AssessmentClient({
   }
 
   const handleFinish = async () => {
+    if (!canGoNext) {
+      const missing = pageQuestions.find((q) => answers[q.id] === undefined)
+      if (missing) {
+        const elementId = questionElementIds.get(missing.id)
+        if (elementId) {
+          const el = document.getElementById(elementId)
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+        setHighlightQuestionId(missing.id)
+        window.setTimeout(() => {
+          setHighlightQuestionId((current) => (current === missing.id ? null : current))
+        }, 1200)
+      }
+      return
+    }
     if (isSubmitting) return
     setIsSubmitting(true)
     setEvaluationProgress(0)
@@ -192,7 +266,7 @@ export function AssessmentClient({
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         {/* Progress */}
         <div className="mb-8">
-          <ProgressBar current={answeredCount} total={questions.length} />
+          <ProgressBar current={answeredCount} total={totalQuestions} />
           <p className="mt-2 text-center text-xs text-gray-400">
             {t('assessment.pageProgress', locale)
               .replace('{current}', String(currentPage + 1))
@@ -216,18 +290,23 @@ export function AssessmentClient({
             transition={{ duration: 0.25 }}
             className="flex flex-col gap-6"
           >
-            {pageQuestions.map((question) =>
-              isLikertQuestion(question) ? (
-                <QuestionCard
-                  key={question.id}
-                  testName={testName}
-                  dimension={question.dimension}
-                  format="likert"
-                  question={question.text}
-                  value={(answers[question.id] as number) ?? null}
-                  onChange={(v) => handleAnswer(question.id, v)}
-                />
-              ) : null,
+            {isLoadingQuestions ? (
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
+                {t('assessment.loadingQuestions', locale)}
+              </div>
+            ) : (
+              pageQuestions.map((question) => (
+                <div key={question.id} id={`question-${question.id}`}>
+                  <QuestionCard
+                    testName={testName}
+                    format="likert"
+                    question={question.text}
+                    value={(answers[question.id] as number) ?? null}
+                    onChange={(v) => handleAnswer(question.id, v)}
+                    highlight={highlightQuestionId === question.id}
+                  />
+                </div>
+              ))
             )}
           </motion.div>
         </AnimatePresence>
@@ -255,7 +334,7 @@ export function AssessmentClient({
           {!isLastPage ? (
             <motion.button
               onClick={handleNextPage}
-              disabled={!canGoNext || isSavingDraft}
+              aria-disabled={!canGoNext || isSavingDraft}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canGoNext && !isSavingDraft
                   ? 'bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg'
@@ -269,7 +348,7 @@ export function AssessmentClient({
           ) : (
             <motion.button
               onClick={handleFinish}
-              disabled={!canGoNext || isSubmitting}
+              aria-disabled={!canGoNext || isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canGoNext && !isSubmitting
                   ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'

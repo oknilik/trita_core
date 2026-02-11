@@ -81,7 +81,7 @@ export default async function AssessmentPage({
     <AssessmentClient
       testType={testType}
       testName={config.name}
-      questions={config.questions}
+      totalQuestions={config.questions.length}
       initialDraft={initialDraft}
     />
   );

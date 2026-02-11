@@ -9,21 +9,23 @@ import { ABSelector } from './ABSelector'
 interface LikertCardProps {
   question: string
   testName: string
-  dimension: string
+  dimension?: string
   format: 'likert'
   value: number | null
   onChange: (value: number) => void
+  highlight?: boolean
 }
 
 interface BinaryCardProps {
   question?: undefined
   testName: string
-  dimension: string
+  dimension?: string
   format: 'binary'
   optionA: string
   optionB: string
   value: string | null
   onChange: (value: string) => void
+  highlight?: boolean
 }
 
 type QuestionCardProps = LikertCardProps | BinaryCardProps
@@ -41,7 +43,7 @@ const dimensionColors: Record<string, string> = {
 }
 
 export function QuestionCard(props: QuestionCardProps) {
-  const { testName, dimension, format } = props
+  const { testName, dimension, format, highlight } = props
   const { locale } = useLocale()
 
   return (
@@ -52,15 +54,12 @@ export function QuestionCard(props: QuestionCardProps) {
       transition={{ duration: 0.3 }}
       className="w-full"
     >
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xl md:p-8">
-        {/* Dimension badge */}
-        <div className="mb-4 flex items-center gap-2">
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${dimensionColors[dimension] || 'bg-gray-100 text-gray-700'}`}
-          >
-            {testName} — {dimension}
-          </span>
-        </div>
+      <div
+        className={`rounded-2xl border bg-white p-6 shadow-xl transition-colors md:p-8 ${
+          highlight ? 'border-rose-400' : 'border-gray-200'
+        }`}
+      >
+        {/* Badge removed */}
 
         {format === 'likert' ? (
           <>
