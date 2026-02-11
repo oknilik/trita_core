@@ -37,6 +37,11 @@ const translations = {
       en: "Personal details | Trita",
       de: "Persönliche Daten | Trita",
     },
+    researchTitle: {
+      hu: "Kutatás módszertana | Trita",
+      en: "Research methodology | Trita",
+      de: "Forschungsmethodik | Trita",
+    },
   },
   nav: {
     home: { hu: "Főoldal", en: "Home", de: "Startseite" },
@@ -219,6 +224,79 @@ const translations = {
     ctaSignUp: { hu: "Regisztrálok", en: "Create account", de: "Registrieren" },
     footer: { hu: "Egyetemi kutatási projekt.", en: "University research project.", de: "Universitäres Forschungsprojekt." },
     privacyLink: { hu: "Adatvédelem", en: "Privacy", de: "Datenschutz" },
+    researchLink: { hu: "Módszertan", en: "Methodology", de: "Methodik" },
+  },
+  research: {
+    title: {
+      hu: "Kutatás módszertana",
+      en: "Research methodology",
+      de: "Forschungsmethodik",
+    },
+    subtitle: {
+      hu: "Áttekintés a kutatás menetéről, eszközeiről és az adatkezelés alapelveiről.",
+      en: "Overview of the study flow, instruments, and core data handling principles.",
+      de: "Überblick über Ablauf, Instrumente und die Grundsätze der Datenverarbeitung.",
+    },
+    introTitle: {
+      hu: "Miért készül a kutatás?",
+      en: "Why this study?",
+      de: "Warum diese Studie?",
+    },
+    introBody: {
+      hu: "A Trita célja, hogy összehasonlíthatóvá tegye a személyiségteszteket önértékelés és külső visszajelzés alapján. A kutatás a HEXACO és a Big Five (BFAS) modellek eredményeinek összevetésére fókuszál.",
+      en: "Trita aims to compare personality assessments using self-ratings and observer feedback. The study focuses on contrasting HEXACO and Big Five (BFAS) results.",
+      de: "Trita vergleicht Persönlichkeitstests anhand von Selbst- und Fremdeinschätzungen. Der Fokus liegt auf dem Vergleich von HEXACO und Big Five (BFAS).",
+    },
+    designTitle: {
+      hu: "Kutatási design",
+      en: "Study design",
+      de: "Studiendesign",
+    },
+    designBody: {
+      hu: "Online, kérdőíves kutatás. Egy felhasználó saját kitöltést végez, majd opcionálisan ismerősöket hívhat meg, akik observer (külső) értékelést adnak.",
+      en: "Online, questionnaire-based study. Each participant completes a self-assessment and can optionally invite observers for external ratings.",
+      de: "Online-Fragebogenstudie. Teilnehmende füllen eine Selbsteinschätzung aus und können optional Beobachter für Fremdeinschätzungen einladen.",
+    },
+    flowTitle: {
+      hu: "A kutatás menete",
+      en: "Study flow",
+      de: "Ablauf",
+    },
+    flowItems: {
+      hu: "Regisztráció és nyelvválasztás.|Önértékelő kérdőív(ek) kitöltése.|Megfigyelők meghívása (opcionális).|Eredmények megjelenítése a dashboardon.",
+      en: "Sign up and choose a language.|Complete self-assessment questionnaire(s).|Invite observers (optional).|View results on the dashboard.",
+      de: "Registrierung und Sprachauswahl.|Selbsteinschätzung ausfüllen.|Beobachter einladen (optional).|Ergebnisse im Dashboard ansehen.",
+    },
+    instrumentsTitle: {
+      hu: "Mérőeszközök",
+      en: "Instruments",
+      de: "Instrumente",
+    },
+    instrumentsItems: {
+      hu: "HEXACO-PI-R kérdésbank (önértékelés).|Big Five Aspect Scales (BFAS) kérdésbank.|Observer változatok (külső értékelés).",
+      en: "HEXACO-PI-R item set (self-report).|Big Five Aspect Scales (BFAS) item set.|Observer versions (external ratings).",
+      de: "HEXACO-PI-R Fragenkatalog (Selbstbericht).|Big Five Aspect Scales (BFAS) Fragenkatalog.|Beobachter-Versionen (Fremdeinschätzung).",
+    },
+    dataTitle: {
+      hu: "Adatkezelés röviden",
+      en: "Data handling (summary)",
+      de: "Datenverarbeitung (Kurzfassung)",
+    },
+    dataItems: {
+      hu: "A válaszok és a kitöltés státusza kerül rögzítésre.|A meghívók e-mail címe csak a meghíváshoz szükséges.|A részvétel önkéntes, bármikor megszakítható.",
+      en: "We store responses and completion status.|Invitee emails are used only for invitations.|Participation is voluntary and can be stopped anytime.",
+      de: "Gespeichert werden Antworten und Abschlussstatus.|E-Mails der Eingeladenen dienen nur dem Versand der Einladungen.|Teilnahme ist freiwillig und jederzeit abbrechbar.",
+    },
+    contactTitle: {
+      hu: "Kapcsolat",
+      en: "Contact",
+      de: "Kontakt",
+    },
+    contactBody: {
+      hu: "Kérdés esetén írj az info@trita.io címre.",
+      en: "For questions, contact info@trita.io.",
+      de: "Bei Fragen: info@trita.io.",
+    },
   },
   auth: {
     signInTitle: { hu: "Bejelentkezés", en: "Sign in", de: "Anmelden" },
@@ -776,9 +854,9 @@ const translations = {
       de: "Kontakt",
     },
     contactBody: {
-      hu: "Adatvédelmi kérdésekkel kapcsolatban írj a trita@proton.me címre.",
-      en: "For privacy-related questions, contact us at trita@proton.me.",
-      de: "Bei Fragen zum Datenschutz kontaktiere uns unter trita@proton.me.",
+      hu: "Adatvédelmi kérdésekkel kapcsolatban írj az info@trita.io címre.",
+      en: "For privacy-related questions, contact us at info@trita.io.",
+      de: "Bei Fragen zum Datenschutz kontaktiere uns unter info@trita.io.",
     },
   },
   comparison: {

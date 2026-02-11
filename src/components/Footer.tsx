@@ -20,6 +20,9 @@ export function Footer() {
           <Link href="/privacy" className="underline hover:text-gray-600">
             {t("landing.privacyLink", locale)}
           </Link>
+          <Link href="/research" className="underline hover:text-gray-600">
+            {t("landing.researchLink", locale)}
+          </Link>
         </div>
         {/* Mobile locale switcher for signed-out visitors */}
         <SignedOut>

@@ -1,44 +1,28 @@
 import type { Metadata } from "next";
-import { getServerLocale } from "@/lib/i18n-server";
-import { t } from "@/lib/i18n";
-import { TritaLogo } from "@/components/TritaLogo";
 import Link from "next/link";
+import { TritaLogo } from "@/components/TritaLogo";
+import { t } from "@/lib/i18n";
+import { getServerLocale } from "@/lib/i18n-server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  return { title: `${t("privacy.title", locale)} | Trita` };
+  return { title: t("meta.researchTitle", locale) };
 }
 
-export default async function PrivacyPage() {
+export default async function ResearchPage() {
   const locale = await getServerLocale();
 
   const sections = [
-    { title: "privacy.introTitle", body: "privacy.introBody" },
-    {
-      title: "privacy.dataCollectedTitle",
-      items: [
-        "privacy.dataAuth",
-        "privacy.dataDemographic",
-        "privacy.dataAssessment",
-        "privacy.dataTechnical",
-      ],
-    },
-    {
-      title: "privacy.purposeTitle",
-      items: ["privacy.purposeResearch", "privacy.purposeService"],
-    },
-    { title: "privacy.cookiesTitle", body: "privacy.cookiesBody" },
-    { title: "privacy.storageTitle", body: "privacy.storageBody" },
-    {
-      title: "privacy.rightsTitle",
-      items: [
-        "privacy.rightsAccess",
-        "privacy.rightsDeletion",
-        "privacy.rightsWithdraw",
-      ],
-    },
-    { title: "privacy.contactTitle", body: "privacy.contactBody" },
+    { title: "research.introTitle", body: "research.introBody" },
+    { title: "research.designTitle", body: "research.designBody" },
+    { title: "research.flowTitle", items: "research.flowItems" },
+    { title: "research.instrumentsTitle", items: "research.instrumentsItems" },
+    { title: "research.dataTitle", items: "research.dataItems" },
+    { title: "research.contactTitle", body: "research.contactBody" },
   ] as const;
+
+  const splitItems = (key: string) =>
+    t(key, locale).split("|").map((item) => item.trim()).filter(Boolean);
 
   return (
     <div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
@@ -48,10 +32,10 @@ export default async function PrivacyPage() {
             <TritaLogo size={56} showText={false} />
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">
-            {t("privacy.title", locale)}
+            {t("research.title", locale)}
           </h1>
           <p className="text-sm text-gray-500">
-            {t("privacy.lastUpdated", locale)}
+            {t("research.subtitle", locale)}
           </p>
         </div>
 
@@ -69,8 +53,8 @@ export default async function PrivacyPage() {
                 )}
                 {"items" in section && section.items && (
                   <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-gray-600">
-                    {section.items.map((item) => (
-                      <li key={item}>{t(item, locale)}</li>
+                    {splitItems(section.items).map((item) => (
+                      <li key={item}>{item}</li>
                     ))}
                   </ul>
                 )}
