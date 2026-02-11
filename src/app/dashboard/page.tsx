@@ -360,7 +360,7 @@ export default async function DashboardPage() {
 
       {/* ── Guided journey ── */}
       <FadeIn delay={0.05}>
-        <section className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white p-6 md:p-8">
+        <section className="relative rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white p-6 md:p-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
@@ -373,14 +373,20 @@ export default async function DashboardPage() {
                 {t("dashboard.guidedPraise", locale)}
               </p>
             </div>
-            <div className="rounded-xl bg-white px-4 py-3 shadow-sm">
-              <p className="text-xs text-gray-500">{t("dashboard.journeyProgress", locale)}</p>
-              <p className="text-lg font-semibold text-gray-900">{stepsCompleted}/3</p>
-            </div>
           </div>
 
           <div className="mt-5">
-            <div className="h-2 w-full overflow-hidden rounded-full bg-indigo-100">
+            <div className="mt-6 flex justify-center md:hidden">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-xl font-bold text-indigo-600 shadow-sm">
+                {stepsCompleted}/3
+              </div>
+            </div>
+            <div className="absolute right-4 top-4 hidden md:flex">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-xl font-bold text-indigo-600 shadow-sm">
+                {stepsCompleted}/3
+              </div>
+            </div>
+            <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-indigo-100">
               <div
                 className="h-full rounded-full bg-indigo-500 transition-all"
                 style={{
