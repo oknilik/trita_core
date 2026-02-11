@@ -14,14 +14,11 @@ export function UserMenu() {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const initials =
-    user?.firstName?.[0] ??
-    user?.lastName?.[0] ??
     user?.username?.[0] ??
     user?.primaryEmailAddress?.emailAddress?.[0] ??
     "U";
 
-  const label =
-    user?.firstName || user?.username || user?.primaryEmailAddress?.emailAddress;
+  const label = user?.username || user?.primaryEmailAddress?.emailAddress;
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {

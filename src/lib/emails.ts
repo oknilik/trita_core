@@ -100,6 +100,44 @@ const translations = {
       team: "Das Trita-Team",
     },
   },
+  verificationCode: {
+    hu: {
+      subject: "A regisztrációs kódod – Trita",
+      heading: "Regisztrációs kód",
+      body: "Írd be ezt a kódot a regisztráció befejezéséhez.",
+      codeLabel: "A kódod:",
+      ttl: (minutes?: number) =>
+        minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
+      footer:
+        "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+      thanks: "Üdvözlettel,",
+      team: "A Trita csapat",
+    },
+    en: {
+      subject: "Your verification code – Trita",
+      heading: "Verification code",
+      body: "Enter this code to complete your sign-up.",
+      codeLabel: "Your code:",
+      ttl: (minutes?: number) =>
+        minutes ? `This code is valid for ${minutes} minutes.` : "This code is valid for a short time.",
+      footer:
+        "If you didn't request this code, you can safely ignore this email.",
+      thanks: "Best regards,",
+      team: "The Trita team",
+    },
+    de: {
+      subject: "Dein Bestätigungscode – Trita",
+      heading: "Bestätigungscode",
+      body: "Gib diesen Code ein, um deine Registrierung abzuschließen.",
+      codeLabel: "Dein Code:",
+      ttl: (minutes?: number) =>
+        minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
+      footer:
+        "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
+      thanks: "Viele Grüße,",
+      team: "Das Trita-Team",
+    },
+  },
 } as const;
 
 function getLocale(email: string): Locale {
@@ -107,7 +145,7 @@ function getLocale(email: string): Locale {
   if (lower.endsWith(".hu")) return "hu";
   if (lower.endsWith(".de") || lower.endsWith(".at") || lower.endsWith(".ch"))
     return "de";
-  return "hu"; // Default to Hungarian
+  return "en";
 }
 
 function buildOrderConfirmationHtml(
@@ -210,7 +248,8 @@ function buildObserverInviteHtml(params: {
   recipientName: string;
 }): string {
   const t = translations.observerInvite[params.locale];
-  const link = `${params.appUrl}/observe/${params.token}`;
+  const appUrl = params.appUrl ?? "https://trita.hu";
+  const link = `${appUrl}/observe/${params.token}`;
 
   return `
 <!DOCTYPE html>
@@ -259,10 +298,12 @@ export async function sendObserverInviteEmail(params: {
   inviterName: string;
   token: string;
   recipientName?: string;
+  locale?: Locale;
 }) {
-  const locale = getLocale(params.to);
+  const locale = params.locale ?? getLocale(params.to);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
-  const recipientName = params.recipientName ?? "Barátom";
+  const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend", de: "Freund/in" };
+  const recipientName = params.recipientName ?? fallbackNames[locale];
 
   const html = buildObserverInviteHtml({
     locale,
@@ -282,5 +323,86 @@ export async function sendObserverInviteEmail(params: {
     console.error("[Email] Failed to send observer invite:", error);
   } else {
     console.log("[Email] Observer invite sent to:", params.to);
+  }
+}
+
+function buildVerificationCodeHtml(params: {
+  locale: Locale;
+  code: string;
+  ttlMinutes?: number;
+}): string {
+  const t = translations.verificationCode[params.locale];
+
+  return `
+<!DOCTYPE html>
+<html lang="${params.locale}">
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
+  <div style="max-width:560px;margin:0 auto;padding:40px 20px">
+    <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
+      <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 12px">
+        ${t.heading}
+      </h1>
+      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+        ${t.body}
+      </p>
+
+      <div style="background:#f3f4f6;border-radius:10px;padding:16px;text-align:center">
+        <p style="font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 6px">
+          ${t.codeLabel}
+        </p>
+        <div style="font-size:28px;font-weight:700;letter-spacing:.2em;color:#111827">
+          ${params.code}
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:16px 0 0">
+        ${t.ttl(params.ttlMinutes)}
+      </p>
+
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0 0 4px">
+        ${t.footer}
+      </p>
+      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0">
+        ${t.thanks}<br>${t.team}
+      </p>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:#d1d5db;margin-top:16px">
+      &copy; Trita 2026
+    </p>
+  </div>
+</body>
+</html>`.trim();
+}
+
+export async function sendVerificationCodeEmail(params: {
+  to: string;
+  code: string;
+  locale?: Locale;
+  ttlSeconds?: number | null;
+}) {
+  const locale = params.locale ?? getLocale(params.to);
+  const ttlMinutes =
+    params.ttlSeconds != null ? Math.max(1, Math.round(params.ttlSeconds / 60)) : undefined;
+  const html = buildVerificationCodeHtml({
+    locale,
+    code: params.code,
+    ttlMinutes,
+  });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: translations.verificationCode[locale].subject,
+    html,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send verification code:", error);
+  } else {
+    console.log("[Email] Verification code sent to:", params.to);
   }
 }

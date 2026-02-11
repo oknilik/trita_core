@@ -1,9 +1,12 @@
-import type { Locale } from "@/lib/i18n";
-import { t, tf } from "@/lib/i18n";
+"use client";
+
+import { t, tf, type Locale } from "@/lib/i18n";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ComparisonDimension {
   code: string;
   label: string;
+  labelByLocale?: Partial<Record<Locale, string>>;
   color: string;
   selfScore: number;
   observerScore: number;
@@ -13,15 +16,15 @@ interface ObserverComparisonProps {
   dimensions: ComparisonDimension[];
   observerCount: number;
   avgConfidence: number | null;
-  locale: Locale;
 }
 
 export function ObserverComparison({
   dimensions,
   observerCount,
   avgConfidence,
-  locale,
 }: ObserverComparisonProps) {
+  const { locale } = useLocale();
+
   return (
     <section className="rounded-xl border border-gray-100 bg-white p-6 md:p-8">
       <h2 className="text-2xl font-semibold text-gray-900">
@@ -38,6 +41,7 @@ export function ObserverComparison({
 
       <div className="mt-6 flex flex-col gap-4">
         {dimensions.map((dim) => {
+          const resolvedLabel = dim.labelByLocale?.[locale] ?? dim.label;
           const diff = dim.observerScore - dim.selfScore;
           const diffLabel =
             Math.abs(diff) < 5
@@ -61,7 +65,7 @@ export function ObserverComparison({
                     {dim.code}
                   </span>
                   <p className="text-sm font-semibold text-gray-900">
-                    {dim.label}
+                    {resolvedLabel}
                   </p>
                 </div>
               </div>

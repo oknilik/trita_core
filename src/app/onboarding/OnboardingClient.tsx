@@ -25,30 +25,21 @@ const EDUCATION_OPTIONS = [
   { value: "other", labelKey: "onboarding.educationOther" },
 ] as const;
 
-function buildYearOptions() {
-  const options: { value: string; label: string }[] = [];
-  for (let y = 2010; y >= 1940; y--) {
-    options.push({ value: String(y), label: String(y) });
-  }
-  return options;
-}
-
 export function OnboardingClient() {
   const router = useRouter();
   const { locale } = useLocale();
   const { showToast } = useToast();
 
+  const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [education, setEducation] = useState("");
-  const [occupation, setOccupation] = useState("");
   const [country, setCountry] = useState("");
+  const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [yearPickerOpen, setYearPickerOpen] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
 
-  const yearOptions = useMemo(() => buildYearOptions(), []);
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
 
   const countryLabel = useMemo(
@@ -56,12 +47,20 @@ export function OnboardingClient() {
     [country, countryOptions],
   );
 
-  const canSubmit =
+  const birthYearNum = Number(birthYear);
+  const birthYearValid =
     birthYear !== "" &&
+    Number.isInteger(birthYearNum) &&
+    birthYearNum >= 1940 &&
+    birthYearNum <= 2010;
+
+  const canSubmit =
+    username.trim() !== "" &&
+    birthYearValid &&
     gender !== "" &&
     education !== "" &&
-    occupation.trim() !== "" &&
-    country !== "";
+    country !== "" &&
+    consent;
 
   const handleSubmit = async () => {
     if (!canSubmit || isSubmitting) return;
@@ -72,11 +71,12 @@ export function OnboardingClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          birthYear: Number(birthYear),
+          username: username.trim(),
+          birthYear: birthYearNum,
           gender,
           education,
-          occupation: occupation.trim(),
           country,
+          consentedAt: new Date().toISOString(),
         }),
       });
 
@@ -114,13 +114,33 @@ export function OnboardingClient() {
 
         <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
           <div className="flex flex-col gap-5">
-            {/* Birth year — picker */}
-            <PickerTrigger
-              label={t("onboarding.birthYearLabel", locale)}
-              value={birthYear}
-              placeholder={t("onboarding.birthYearPlaceholder", locale)}
-              onClick={() => setYearPickerOpen(true)}
-            />
+            {/* Preferred name */}
+            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              {t("onboarding.usernameLabel", locale)}
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={t("onboarding.usernamePlaceholder", locale)}
+                maxLength={80}
+                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+              />
+            </label>
+
+            {/* Birth year — numeric input */}
+            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              {t("onboarding.birthYearLabel", locale)}
+              <input
+                type="number"
+                inputMode="numeric"
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+                placeholder={t("onboarding.birthYearPlaceholder", locale)}
+                min={1940}
+                max={2010}
+                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+            </label>
 
             {/* Gender — toggle buttons */}
             <div className="flex flex-col gap-2">
@@ -160,19 +180,6 @@ export function OnboardingClient() {
               </div>
             </div>
 
-            {/* Occupation — text input */}
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-              {t("onboarding.occupationLabel", locale)}
-              <input
-                type="text"
-                value={occupation}
-                onChange={(e) => setOccupation(e.target.value)}
-                placeholder={t("onboarding.occupationPlaceholder", locale)}
-                maxLength={200}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
-              />
-            </label>
-
             {/* Country — searchable picker */}
             <PickerTrigger
               label={t("onboarding.countryLabel", locale)}
@@ -181,6 +188,37 @@ export function OnboardingClient() {
               onClick={() => setCountryPickerOpen(true)}
             />
           </div>
+
+          {/* Consent */}
+          <label className="mt-4 flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 h-5 w-5 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <span className="text-sm text-gray-600">
+              {t("onboarding.consentLabel", locale)
+                .split("{link}")
+                .map((part, i, arr) =>
+                  i < arr.length - 1 ? (
+                    <span key={i}>
+                      {part}
+                      <a
+                        href="/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-indigo-600 underline hover:text-indigo-700"
+                      >
+                        {t("onboarding.consentLinkText", locale)}
+                      </a>
+                    </span>
+                  ) : (
+                    <span key={i}>{part}</span>
+                  ),
+                )}
+            </span>
+          </label>
 
           {/* Submit */}
           <button
@@ -208,16 +246,6 @@ export function OnboardingClient() {
           loading="lazy"
         />
       </div>
-
-      {/* Year picker */}
-      <Picker
-        isOpen={yearPickerOpen}
-        onClose={() => setYearPickerOpen(false)}
-        onSelect={setBirthYear}
-        options={yearOptions}
-        selectedValue={birthYear}
-        title={t("onboarding.birthYearLabel", locale)}
-      />
 
       {/* Country picker */}
       <Picker

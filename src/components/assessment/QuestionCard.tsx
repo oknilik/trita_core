@@ -38,11 +38,6 @@ const dimensionColors: Record<string, string> = {
   O: 'bg-pink-100 text-pink-700',
   // Big Five extra
   N: 'bg-rose-100 text-rose-700',
-  // MBTI dichotomies
-  EI: 'bg-amber-100 text-amber-700',
-  SN: 'bg-emerald-100 text-emerald-700',
-  TF: 'bg-indigo-100 text-indigo-700',
-  JP: 'bg-rose-100 text-rose-700',
 }
 
 export function QuestionCard(props: QuestionCardProps) {

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendObserverInviteEmail } from "@/lib/emails";
+import { normalizeLocale } from "@/lib/i18n";
 
 const inviteSchema = z
   .object({
@@ -68,13 +69,16 @@ export async function POST(req: Request) {
     try {
       const existingUser = await prisma.userProfile.findFirst({
         where: { email: { equals: parsed.data.email, mode: "insensitive" } },
-        select: { name: true },
+        select: { username: true },
       });
+      // Always use the inviter's preferred locale
+      const emailLocale = normalizeLocale(profile.locale);
       await sendObserverInviteEmail({
         to: parsed.data.email,
-        inviterName: profile.name ?? "Valaki",
-        recipientName: existingUser?.name ?? parsed.data.name,
+        inviterName: profile.username ?? profile.email ?? "Trita",
+        recipientName: existingUser?.username ?? parsed.data.name,
         token: invitation.token,
+        locale: emailLocale,
       });
       emailSent = true;
     } catch (err) {

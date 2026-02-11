@@ -33,6 +33,7 @@ export default function SignUpPage() {
       await signUp.create({
         emailAddress: email,
         password,
+        unsafeMetadata: { locale },
       });
 
       await signUp.prepareEmailAddressVerification({
@@ -111,7 +112,7 @@ export default function SignUpPage() {
       <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
         <div className="w-full max-w-md">
           <div className="mb-8 flex flex-col items-center gap-3">
-            <TritaLogo size={48} />
+            <TritaLogo size={72} showText={false} />
             <h1 className="text-2xl font-bold text-gray-900">
               {t("auth.verifyTitle", locale)}
             </h1>
@@ -175,7 +176,7 @@ export default function SignUpPage() {
     <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <TritaLogo size={48} />
+          <TritaLogo size={72} showText={false} />
           <h1 className="text-2xl font-bold text-gray-900">
             {t("auth.signUpTitle", locale)}
           </h1>

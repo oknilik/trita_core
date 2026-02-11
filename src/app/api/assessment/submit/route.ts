@@ -9,15 +9,13 @@ import { calculateScores } from "@/lib/scoring";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
-  value: z.union([z.number().int().min(1).max(5), z.string()]),
+  value: z.number().int().min(1).max(5),
 });
 
 const submissionSchema = z.object({
-  testType: z.enum(["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE", "MBTI"]),
+  testType: z.enum(["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"]),
   answers: z.array(answerSchema),
 });
-
-const MBTI_VALUES = new Set(["A", "B"]);
 
 export async function POST(req: Request) {
   const { userId } = await auth();
@@ -80,44 +78,38 @@ export async function POST(req: Request) {
     }
   }
 
-  if (testType === "MBTI") {
-    for (const answer of answers) {
-      if (typeof answer.value !== "string" || !MBTI_VALUES.has(answer.value)) {
-        return NextResponse.json(
-          { error: "Érvénytelen MBTI válasz." },
-          { status: 400 }
-        );
-      }
-    }
-  } else {
-    for (const answer of answers) {
-      if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
-        return NextResponse.json(
-          { error: "Érvénytelen Likert válasz." },
-          { status: 400 }
-        );
-      }
+  for (const answer of answers) {
+    if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
+      return NextResponse.json(
+        { error: "Érvénytelen Likert válasz." },
+        { status: 400 }
+      );
     }
   }
 
-  const typedAnswers =
-    testType === "MBTI"
-      ? answers.map((a) => ({ questionId: a.questionId, value: String(a.value) }))
-      : answers.map((a) => ({ questionId: a.questionId, value: Number(a.value) }));
+  const typedAnswers = answers.map((a) => ({
+    questionId: a.questionId,
+    value: Number(a.value),
+  }));
 
   const scores = calculateScores(testType as TestType, typedAnswers);
 
-  const result = await prisma.assessmentResult.create({
-    data: {
-      userProfileId: profile.id,
-      testType: testType as TestType,
-      scores: {
-        ...scores,
-        answers,
-        questionCount: answers.length,
+  const [result] = await prisma.$transaction([
+    prisma.assessmentResult.create({
+      data: {
+        userProfileId: profile.id,
+        testType: testType as TestType,
+        scores: {
+          ...scores,
+          answers,
+          questionCount: answers.length,
+        },
       },
-    },
-  });
+    }),
+    prisma.assessmentDraft.deleteMany({
+      where: { userProfileId: profile.id },
+    }),
+  ]);
 
   return NextResponse.json({ id: result.id });
 }

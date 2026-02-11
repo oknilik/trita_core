@@ -13,67 +13,187 @@ export const hexacoConfig: TestConfig = {
     {
       code: "H",
       label: "Őszinteség-Alázat",
+      labelByLocale: {
+        en: "Honesty–Humility",
+        de: "Ehrlichkeit–Bescheidenheit",
+      },
       color: "#818CF8",
       description: "Ez a dimenzió azt méri, mennyire vagy őszinte, szerény és igazságos másokkal szemben. A magas érték megbízhatóságot és etikus viselkedést jelöl, míg az alacsonyabb érték pragmatikusabb, versengőbb hozzáállást tükröz.",
+      descriptionByLocale: {
+        en: "Measures how honest, modest, and fair you are toward others. High scores indicate trustworthiness and ethical behavior, while lower scores reflect a more pragmatic, competitive approach.",
+        de: "Misst, wie ehrlich, bescheiden und fair du anderen gegenüber bist. Hohe Werte stehen für Vertrauenswürdigkeit und ethisches Verhalten, niedrigere Werte für eine pragmatischere, wettbewerbsorientierte Haltung.",
+      },
       insights: {
         low: "Pragmatikus megközelítés, hajlamos a saját érdekeid előtérbe helyezésére.",
         mid: "Kiegyensúlyozott hozzáállás az őszinteség és a gyakorlatiasság között.",
         high: "Megbízható, szerény hozzáállás, magas etikai érzékenységgel.",
       },
+      insightsByLocale: {
+        en: {
+          low: "Pragmatic approach, often prioritizing your own interests.",
+          mid: "Balanced between honesty and practicality.",
+          high: "Reliable and modest, with strong ethical sensitivity.",
+        },
+        de: {
+          low: "Pragmatischer Ansatz, häufig mit Fokus auf eigene Interessen.",
+          mid: "Ausgewogen zwischen Ehrlichkeit und Praktikabilität.",
+          high: "Zuverlässig und bescheiden, mit hoher ethischer Sensibilität.",
+        },
+      },
     },
     {
       code: "E",
       label: "Érzelmi stabilitás",
+      labelByLocale: {
+        en: "Emotionality",
+        de: "Emotionalität",
+      },
       color: "#FB7185",
       description: "Az érzelmi reakciók intenzitását és az érzelmi sebezhetőséget méri. Magasabb értéknél erősebb az empátia és az érzelmi kötődés, míg alacsonyabb értéknél inkább a higgadtság és az érzelmi távolságtartás jellemző.",
+      descriptionByLocale: {
+        en: "Measures intensity of emotional reactions and vulnerability. Higher scores reflect stronger empathy and emotional bonding, while lower scores indicate calmness and emotional distance.",
+        de: "Misst die Intensität emotionaler Reaktionen und Verletzlichkeit. Höhere Werte stehen für stärkere Empathie und Bindung, niedrigere Werte für mehr Ruhe und emotionale Distanz.",
+      },
       insights: {
         low: "Érzelmileg stabil, ritkán aggódsz vagy idegeskedsz.",
         mid: "Önkontrollált, de stresszhelyzetben előfordulhat fokozott óvatosság.",
         high: "Mély érzelmi átélés, erős empátia és érzékenység jellemez.",
       },
+      insightsByLocale: {
+        en: {
+          low: "Emotionally stable; you rarely worry or feel anxious.",
+          mid: "Self-controlled, but may become more cautious under stress.",
+          high: "Deep emotional experience with strong empathy and sensitivity.",
+        },
+        de: {
+          low: "Emotional stabil; du sorgst dich selten oder bist selten nervös.",
+          mid: "Selbstkontrolliert, aber in Stresssituationen vorsichtiger.",
+          high: "Tiefes emotionales Erleben mit starker Empathie und Sensibilität.",
+        },
+      },
     },
     {
       code: "X",
       label: "Extraverzió",
+      labelByLocale: {
+        en: "Extraversion",
+        de: "Extraversion",
+      },
       color: "#F59E0B",
       description: "A társas energia szintjét és a szociális magabiztosságot méri. Magas értéknél élénk, társaságkedvelő személyiség rajzolódik ki, míg alacsonyabb értéknél az egyéni tevékenységek és a visszahúzódás a jellemzőbb.",
+      descriptionByLocale: {
+        en: "Measures social energy and confidence. High scores indicate a lively, sociable personality, while lower scores favor solitary activities and reservedness.",
+        de: "Misst soziale Energie und Selbstsicherheit. Hohe Werte deuten auf eine lebhafte, gesellige Persönlichkeit hin, niedrigere Werte auf eher zurückgezogene, individuelle Aktivitäten.",
+      },
       insights: {
         low: "Inkább introvertált, a nyugodt, egyéni tevékenységeket preferálod.",
         mid: "Kiegyensúlyozott társas energia: tudsz vezetni, de szeretsz fókuszálni is.",
         high: "Energikus, társaságkedvelő, magabiztos közösségi helyzetekben.",
       },
+      insightsByLocale: {
+        en: {
+          low: "More introverted; you prefer calm, individual activities.",
+          mid: "Balanced social energy: you can lead and also focus independently.",
+          high: "Energetic, outgoing, confident in social situations.",
+        },
+        de: {
+          low: "Eher introvertiert; du bevorzugst ruhige, individuelle Aktivitäten.",
+          mid: "Ausgewogene soziale Energie: du kannst führen und dich zugleich gut fokussieren.",
+          high: "Energisch, gesellig, selbstbewusst in sozialen Situationen.",
+        },
+      },
     },
     {
       code: "A",
       label: "Barátságosság",
+      labelByLocale: {
+        en: "Agreeableness",
+        de: "Verträglichkeit",
+      },
       color: "#34D399",
       description: "Az együttműködési hajlandóságot és a mások iránti türelmet méri. Magas értéknél megbocsátó, kompromisszumkész természet jellemző, míg alacsonyabb értéknél kritikusabb, konfrontatívabb stílus.",
+      descriptionByLocale: {
+        en: "Measures cooperation and tolerance toward others. High scores indicate a forgiving, compromise-oriented nature, while lower scores reflect a more critical, confrontational style.",
+        de: "Misst Kooperationsbereitschaft und Geduld gegenüber anderen. Hohe Werte stehen für eine verzeihende, kompromissbereite Art, niedrigere für einen kritischeren, konfrontativeren Stil.",
+      },
       insights: {
         low: "Határozott, kritikus gondolkodás, nem félsz a konfrontációtól.",
         mid: "Rugalmas együttműködés, de meg tudod védeni az álláspontodat.",
         high: "Erős együttműködési készség, konfliktushelyzetben is empatikus.",
       },
+      insightsByLocale: {
+        en: {
+          low: "Decisive and critical; you are not afraid of confrontation.",
+          mid: "Flexible cooperation, while still defending your position.",
+          high: "Strong cooperative spirit; empathetic even in conflict.",
+        },
+        de: {
+          low: "Entschlossen und kritisch; du scheust keine Konfrontation.",
+          mid: "Flexibel kooperativ, kannst aber deinen Standpunkt verteidigen.",
+          high: "Hohe Kooperationsbereitschaft; empathisch auch in Konflikten.",
+        },
+      },
     },
     {
       code: "C",
       label: "Lelkiismeretesség",
+      labelByLocale: {
+        en: "Conscientiousness",
+        de: "Gewissenhaftigkeit",
+      },
       color: "#A78BFA",
       description: "A szervezettséget, kitartást és fegyelmet méri. Magas értéknél gondos, tervszerű munkavégzés jellemző, míg alacsonyabb értéknél rugalmasabb, spontánabb hozzáállás.",
+      descriptionByLocale: {
+        en: "Measures organization, persistence, and discipline. High scores reflect careful, structured work; lower scores indicate a more flexible, spontaneous approach.",
+        de: "Misst Organisation, Ausdauer und Disziplin. Hohe Werte stehen für sorgfältiges, planvolles Arbeiten, niedrigere für einen flexibleren, spontanen Ansatz.",
+      },
       insights: {
         low: "Spontán, rugalmas megközelítés, kevésbé kötött tervekhez.",
         mid: "Megbízható végrehajtás, de tudsz alkalmazkodni a változásokhoz.",
         high: "Rendszerezett, következetes munkastílus, magas felelősségtudat.",
       },
+      insightsByLocale: {
+        en: {
+          low: "Spontaneous and flexible; you prefer fewer fixed plans.",
+          mid: "Reliable execution, with the ability to adapt to change.",
+          high: "Structured, consistent work style with strong responsibility.",
+        },
+        de: {
+          low: "Spontan und flexibel; du bevorzugst weniger feste Pläne.",
+          mid: "Zuverlässige Umsetzung, mit Anpassungsfähigkeit an Veränderungen.",
+          high: "Strukturiert und konsequent mit hohem Verantwortungsbewusstsein.",
+        },
+      },
     },
     {
       code: "O",
       label: "Nyitottság",
+      labelByLocale: {
+        en: "Openness",
+        de: "Offenheit",
+      },
       color: "#38BDF8",
       description: "A szellemi kíváncsiságot, kreativitást és az új élmények iránti nyitottságot méri. Magas értéknél vonzódás az absztrakt gondolkodáshoz, míg alacsonyabb értéknél a gyakorlatias, hagyományos megoldások preferálása.",
+      descriptionByLocale: {
+        en: "Measures intellectual curiosity, creativity, and openness to new experiences. High scores indicate attraction to abstract thinking, while lower scores prefer practical, traditional approaches.",
+        de: "Misst intellektuelle Neugier, Kreativität und Offenheit für neue Erfahrungen. Hohe Werte zeigen eine Neigung zu abstraktem Denken, niedrigere bevorzugen praktische, traditionelle Lösungen.",
+      },
       insights: {
         low: "Gyakorlatias, hagyományos megközelítés, bevált módszereket preferálsz.",
         mid: "Nyitott az új ötletekre, de a realitás talaján maradsz.",
         high: "Kíváncsi, kreatív gondolkodás, vonzzák az újító megoldások.",
+      },
+      insightsByLocale: {
+        en: {
+          low: "Practical and traditional; you prefer proven methods.",
+          mid: "Open to new ideas while staying grounded in reality.",
+          high: "Curious and creative; drawn to innovative solutions.",
+        },
+        de: {
+          low: "Praktisch und traditionell; du bevorzugst bewährte Methoden.",
+          mid: "Offen für neue Ideen, bleibst aber realitätsnah.",
+          high: "Neugierig und kreativ; angezogen von innovativen Lösungen.",
+        },
       },
     },
   ],

@@ -32,7 +32,6 @@ export default async function AssessmentPage({
       data: {
         clerkId: user.id,
         email: user.primaryEmailAddress?.emailAddress,
-        name: user.fullName,
       },
       include: { assessmentResults: { select: { id: true }, take: 1 } },
     });
@@ -43,9 +42,18 @@ export default async function AssessmentPage({
     redirect("/onboarding");
   }
 
-  // If user already has results and hasn't confirmed retake, redirect to dashboard
+  // Load existing draft (if any)
+  const draft = await prisma.assessmentDraft.findUnique({
+    where: { userProfileId: profile.id },
+  });
+
+  // If user already has results, no draft in progress, and hasn't confirmed retake → redirect
   const params = await searchParams;
-  if (profile.assessmentResults.length > 0 && params.confirmed !== "true") {
+  if (
+    profile.assessmentResults.length > 0 &&
+    !draft &&
+    params.confirmed !== "true"
+  ) {
     redirect("/dashboard?retake=true");
   }
 
@@ -54,16 +62,27 @@ export default async function AssessmentPage({
   if (!testType) {
     testType = await assignTestType(profile.id);
   }
+  if (testType === "MBTI") {
+    testType = await assignTestType(profile.id);
+  }
 
   const locale = await getServerLocale();
   const config = getTestConfig(testType, locale);
+
+  const initialDraft =
+    draft && draft.testType === testType
+      ? {
+          answers: draft.answers as Record<string, number>,
+          currentPage: draft.currentPage,
+        }
+      : undefined;
 
   return (
     <AssessmentClient
       testType={testType}
       testName={config.name}
-      format={config.format}
       questions={config.questions}
+      initialDraft={initialDraft}
     />
   );
 }

@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     });
     await prisma.userProfile.update({
       where: { id: profile.id },
-      data: { clerkId: null, email: null, name: null, deleted: true },
+      data: { clerkId: null, email: null, deleted: true },
     });
   }
 

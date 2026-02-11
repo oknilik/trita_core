@@ -4,18 +4,18 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
+import { AssessmentDoodle } from "@/components/illustrations/AssessmentDoodle";
 import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Question } from "@/lib/questions";
-import { isMBTIQuestion, isLikertQuestion } from "@/lib/questions";
+import { isLikertQuestion } from "@/lib/questions";
 
 interface ObserverClientProps {
   token: string;
   inviterName: string;
   testName: string;
-  format: "likert" | "binary";
   questions: Question[];
 }
 
@@ -34,11 +34,12 @@ const DURATION_OPTIONS = [
   { value: "5P", labelKey: "observer.duration5p" },
 ] as const;
 
+const QUESTIONS_PER_PAGE = 5;
+
 export function ObserverClient({
   token,
   inviterName,
   testName,
-  format,
   questions,
 }: ObserverClientProps) {
   const { isSignedIn } = useUser();
@@ -52,27 +53,34 @@ export function ObserverClient({
   const [relationshipType, setRelationshipType] = useState("");
   const [knownDuration, setKnownDuration] = useState("");
   const [confidence, setConfidence] = useState<number | null>(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number | string>>({});
+  const [currentPage, setCurrentPage] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const question = questions[currentQuestion];
   const totalQuestions = questions.length;
-  const isLastQuestion = currentQuestion === totalQuestions - 1;
+  const totalPages = Math.ceil(totalQuestions / QUESTIONS_PER_PAGE);
+  const pageQuestions = questions.slice(
+    currentPage * QUESTIONS_PER_PAGE,
+    (currentPage + 1) * QUESTIONS_PER_PAGE,
+  );
+  const isLastPage = currentPage === totalPages - 1;
+  const answeredCount = Object.keys(answers).length;
 
-  const handleAnswer = (value: number | string) => {
-    setAnswers((prev) => ({ ...prev, [question.id]: value }));
+  const handleAnswer = (questionId: number, value: number) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
-  const handleNext = () => {
-    if (currentQuestion < totalQuestions - 1) {
-      setCurrentQuestion((prev) => prev + 1);
+  const handleNextPage = () => {
+    if (!isLastPage) {
+      setCurrentPage((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
-  const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1);
+  const handlePreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prev) => prev - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -121,12 +129,9 @@ export function ObserverClient({
     }
   };
 
-  const canGoNext = answers[question?.id] !== undefined;
+  const canGoNext = pageQuestions.every((q) => answers[q.id] !== undefined);
 
-  const helpText =
-    format === "likert"
-      ? tf("observer.helpLikertAbout", locale, { inviter: inviterName })
-      : tf("observer.helpBinaryAbout", locale, { inviter: inviterName });
+  const helpText = tf("observer.helpLikertAbout", locale, { inviter: inviterName });
 
   // ===== INTRO PHASE =====
   if (phase === "intro") {
@@ -331,93 +336,104 @@ export function ObserverClient({
 
   // ===== ASSESSMENT PHASE =====
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <ProgressBar current={currentQuestion + 1} total={totalQuestions} />
-        </div>
-
-        <div className="mb-4 rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2 text-center text-sm text-indigo-700">
-          {tf("observer.thinkOf", locale, { inviter: inviterName })}
-        </div>
-
-        {/* Question card */}
-        <div className="mb-8">
-          <AnimatePresence mode="wait">
-            {isLikertQuestion(question) ? (
-              <QuestionCard
-                key={question.id}
-                testName={testName}
-                dimension={question.dimension}
-                format="likert"
-                question={question.textObserver ?? question.text}
-                value={(answers[question.id] as number) ?? null}
-                onChange={(v) => handleAnswer(v)}
-              />
-            ) : isMBTIQuestion(question) ? (
-              <QuestionCard
-                key={question.id}
-                testName={testName}
-                dimension={question.dichotomy}
-                format="binary"
-                optionA={question.optionAObserver ?? question.optionA.text}
-                optionB={question.optionBObserver ?? question.optionB.text}
-                value={(answers[question.id] as string) ?? null}
-                onChange={(v) => handleAnswer(v)}
-              />
-            ) : null}
-          </AnimatePresence>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between gap-4">
-          <motion.button
-            onClick={handlePrevious}
-            disabled={currentQuestion === 0}
-            className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-              currentQuestion === 0
-                ? "cursor-not-allowed bg-gray-200 text-gray-400"
-                : "bg-white text-gray-700 shadow-md hover:shadow-lg"
-            }`}
-            whileHover={currentQuestion > 0 ? { scale: 1.02 } : {}}
-            whileTap={currentQuestion > 0 ? { scale: 0.98 } : {}}
-          >
-            {t("observer.prev", locale)}
-          </motion.button>
-
-          <div className="text-sm text-gray-600 md:hidden">
-            {currentQuestion + 1} / {totalQuestions}
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+          {/* Header */}
+          <div className="mb-8">
+            <ProgressBar current={answeredCount} total={totalQuestions} />
+            <p className="mt-2 text-center text-xs text-gray-400">
+              {t("assessment.pageProgress", locale)
+                .replace("{current}", String(currentPage + 1))
+                .replace("{total}", String(totalPages))}
+            </p>
           </div>
 
-          {!isLastQuestion ? (
+          <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-4">
+            <div className="h-36 w-full">
+              <AssessmentDoodle />
+            </div>
+          </div>
+
+          <div className="mb-4 rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2 text-center text-sm text-indigo-700">
+            {tf("observer.thinkOf", locale, { inviter: inviterName })}
+          </div>
+
+          {/* Question card */}
+          <div className="mb-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPage}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col gap-6"
+              >
+                {pageQuestions.map((question) =>
+                  isLikertQuestion(question) ? (
+                    <QuestionCard
+                      key={question.id}
+                      testName={testName}
+                      dimension={question.dimension}
+                      format="likert"
+                      question={question.textObserver ?? question.text}
+                      value={(answers[question.id] as number) ?? null}
+                      onChange={(v) => handleAnswer(question.id, v)}
+                    />
+                  ) : null,
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation */}
+          <div className="flex items-center justify-between gap-4">
             <motion.button
-              onClick={handleNext}
-              disabled={!canGoNext || isSubmitting}
+              onClick={handlePreviousPage}
+              disabled={currentPage === 0}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                canGoNext && !isSubmitting
-                  ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg"
-                  : "cursor-not-allowed bg-gray-200 text-gray-400"
+                currentPage === 0
+                  ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                  : "bg-white text-gray-700 shadow-md hover:shadow-lg"
               }`}
-              whileHover={canGoNext && !isSubmitting ? { scale: 1.02 } : {}}
-              whileTap={canGoNext && !isSubmitting ? { scale: 0.98 } : {}}
+              whileHover={currentPage > 0 ? { scale: 1.02 } : {}}
+              whileTap={currentPage > 0 ? { scale: 0.98 } : {}}
             >
-              {t("observer.next", locale)}
+              {t("observer.prev", locale)}
             </motion.button>
-          ) : (
-            <motion.button
-              onClick={handleGoToConfidence}
-              disabled={!canGoNext}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                canGoNext
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
+
+            <div className="text-sm text-gray-600 md:hidden">
+              {currentPage + 1} / {totalPages}
+            </div>
+
+            {!isLastPage ? (
+              <motion.button
+                onClick={handleNextPage}
+                disabled={!canGoNext || isSubmitting}
+                className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+                  canGoNext && !isSubmitting
+                    ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg"
                   : "cursor-not-allowed bg-gray-200 text-gray-400"
-              }`}
-              whileHover={canGoNext ? { scale: 1.02 } : {}}
-              whileTap={canGoNext ? { scale: 0.98 } : {}}
-            >
-              {t("observer.next", locale)}
-            </motion.button>
+                }`}
+                whileHover={canGoNext && !isSubmitting ? { scale: 1.02 } : {}}
+                whileTap={canGoNext && !isSubmitting ? { scale: 0.98 } : {}}
+              >
+                {t("observer.next", locale)}
+              </motion.button>
+            ) : (
+              <motion.button
+                onClick={handleGoToConfidence}
+                disabled={!canGoNext}
+                className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+                  canGoNext
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
+                  : "cursor-not-allowed bg-gray-200 text-gray-400"
+                }`}
+                whileHover={canGoNext ? { scale: 1.02 } : {}}
+                whileTap={canGoNext ? { scale: 0.98 } : {}}
+              >
+                {t("observer.next", locale)}
+              </motion.button>
           )}
         </div>
 

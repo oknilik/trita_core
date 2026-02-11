@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
 const onboardingSchema = z.object({
+  username: z.string().min(1).max(80),
   birthYear: z.number().int().min(1940).max(2010),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
   education: z.enum([
@@ -14,8 +15,8 @@ const onboardingSchema = z.object({
     "doctorate",
     "other",
   ]),
-  occupation: z.string().min(1).max(200),
   country: z.string().min(1).max(100),
+  consentedAt: z.string().datetime().optional(),
 });
 
 export async function GET() {
@@ -27,10 +28,10 @@ export async function GET() {
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: {
+      username: true,
       birthYear: true,
       gender: true,
       education: true,
-      occupation: true,
       country: true,
     },
   });
@@ -56,12 +57,15 @@ export async function POST(req: Request) {
   await prisma.userProfile.updateMany({
     where: { clerkId: userId },
     data: {
+      username: parsed.data.username,
       birthYear: parsed.data.birthYear,
       gender: parsed.data.gender,
       education: parsed.data.education,
-      occupation: parsed.data.occupation,
       country: parsed.data.country,
-      onboardedAt: new Date(),
+      ...(parsed.data.consentedAt && {
+        consentedAt: new Date(parsed.data.consentedAt),
+        onboardedAt: new Date(),
+      }),
     },
   });
 

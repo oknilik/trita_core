@@ -81,8 +81,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   strokeLinecap="round"
                   className="h-6 w-6"
                 >
-                  <path d="M5 5 C7 6, 9 8, 10 10 C11 8, 13 6, 15 5" />
-                  <path d="M5 15 C7 14, 9 12, 10 10 C11 12, 13 14, 15 15" />
+                  <path d="M5 5 L15 15" />
+                  <path d="M15 5 L5 15" />
                 </svg>
               </button>
             </div>

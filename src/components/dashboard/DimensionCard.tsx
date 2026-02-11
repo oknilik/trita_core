@@ -4,16 +4,21 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedBar } from "@/components/dashboard/AnimatedBar";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
+
+type InsightLevels = { low: string; mid: string; high: string };
 
 interface DimensionCardProps {
   code: string;
   label: string;
+  labelByLocale?: Partial<Record<Locale, string>>;
   color: string;
   score: number;
   insight: string;
   description: string;
-  insights: { low: string; mid: string; high: string };
+  descriptionByLocale?: Partial<Record<Locale, string>>;
+  insights: InsightLevels;
+  insightsByLocale?: Partial<Record<Locale, InsightLevels>>;
   delay?: number;
 }
 
@@ -24,16 +29,24 @@ function getLevel(score: number): "low" | "mid" | "high" {
 export function DimensionCard({
   code,
   label,
+  labelByLocale,
   color,
   score,
   insight,
   description,
+  descriptionByLocale,
   insights,
+  insightsByLocale,
   delay = 0,
 }: DimensionCardProps) {
   const { locale } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
   const level = getLevel(score);
+
+  const resolvedLabel = labelByLocale?.[locale] ?? label;
+  const resolvedDescription = descriptionByLocale?.[locale] ?? description;
+  const resolvedInsights = insightsByLocale?.[locale] ?? insights;
+  const resolvedInsight = resolvedInsights[level];
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -78,7 +91,7 @@ export function DimensionCard({
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
               <p className="truncate text-sm font-semibold text-gray-900">
-                {label}
+                {resolvedLabel}
               </p>
               <p
                 className="shrink-0 text-lg font-bold"
@@ -92,7 +105,7 @@ export function DimensionCard({
             </div>
           </div>
         </div>
-        <p className="mt-3 text-sm text-gray-600">{insight}</p>
+        <p className="mt-3 text-sm text-gray-600">{resolvedInsight}</p>
         <p className="mt-2 text-xs text-gray-400 transition group-hover:text-gray-500">
           {t("dashboard.dimensionHint", locale)}
         </p>
@@ -152,7 +165,7 @@ export function DimensionCard({
                   </span>
                   <div>
                     <h2 className="text-lg font-bold text-gray-900">
-                      {label}
+                      {resolvedLabel}
                     </h2>
                     <p className="text-2xl font-bold" style={{ color }}>
                       {score}%
@@ -170,7 +183,7 @@ export function DimensionCard({
                     {t("dashboard.dimensionWhat", locale)}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                    {description}
+                    {resolvedDescription}
                   </p>
                 </div>
 
@@ -212,7 +225,7 @@ export function DimensionCard({
                               : "text-gray-500"
                           }`}
                         >
-                          {insights[l.key]}
+                          {resolvedInsights[l.key]}
                         </p>
                       </div>
                     );

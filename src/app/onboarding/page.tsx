@@ -27,7 +27,6 @@ export default async function OnboardingPage() {
       data: {
         clerkId: user.id,
         email: user.primaryEmailAddress?.emailAddress ?? undefined,
-        name: user.fullName,
       },
     });
   }

@@ -28,47 +28,28 @@ const EDUCATION_OPTIONS = [
   { value: "other", labelKey: "onboarding.educationOther" },
 ] as const;
 
-function buildYearOptions() {
-  const options: { value: string; label: string }[] = [];
-  for (let y = 2010; y >= 1940; y--) {
-    options.push({ value: String(y), label: String(y) });
-  }
-  return options;
-}
-
 export default function ProfilePage() {
   const router = useRouter();
   const { isLoaded, isSignedIn, user } = useUser();
   const { locale, setLocale } = useLocale();
   const { showToast } = useToast();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Demographics
+  const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [education, setEducation] = useState("");
-  const [occupation, setOccupation] = useState("");
   const [country, setCountry] = useState("");
   const [isSavingDemo, setIsSavingDemo] = useState(false);
-  const [yearPickerOpen, setYearPickerOpen] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
 
-  const yearOptions = useMemo(() => buildYearOptions(), []);
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
   const countryLabel = useMemo(
     () => countryOptions.find((c) => c.value === country)?.label,
     [country, countryOptions],
   );
-
-  useEffect(() => {
-    if (!user) return;
-    setFirstName(user.firstName ?? "");
-    setLastName(user.lastName ?? "");
-  }, [user]);
 
   // Load demographics
   const loadDemographics = useCallback(async () => {
@@ -76,10 +57,10 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile/onboarding");
       if (!res.ok) return;
       const data = await res.json();
+      if (data.username) setUsername(data.username);
       if (data.birthYear) setBirthYear(String(data.birthYear));
       if (data.gender) setGender(data.gender);
       if (data.education) setEducation(data.education);
-      if (data.occupation) setOccupation(data.occupation);
       if (data.country) setCountry(data.country);
     } catch {
       // silent — non-critical
@@ -100,28 +81,9 @@ export default function ProfilePage() {
   }
 
   const initials =
-    [firstName, lastName]
-      .filter(Boolean)
-      .map((s) => s[0]?.toUpperCase())
-      .join("") || "?";
-
-  const handleSave = async () => {
-    if (!user || isSaving) return;
-    setIsSaving(true);
-    try {
-      await user.update({
-        firstName: firstName.trim() || null,
-        lastName: lastName.trim() || null,
-      });
-      await user.reload();
-      showToast(t("profile.saveSuccess", locale), "success");
-    } catch (error) {
-      console.error(error);
-      showToast(t("profile.saveError", locale), "error");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+    (username.trim() || user?.username || user?.primaryEmailAddress?.emailAddress || "?")
+      .slice(0, 1)
+      .toUpperCase();
 
   const handleSaveDemographics = async () => {
     if (isSavingDemo) return;
@@ -131,10 +93,10 @@ export default function ProfilePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          username: username.trim(),
           birthYear: Number(birthYear),
           gender,
           education,
-          occupation: occupation.trim(),
           country,
         }),
       });
@@ -147,11 +109,18 @@ export default function ProfilePage() {
     }
   };
 
-  const canSaveDemo =
+  const birthYearNum = Number(birthYear);
+  const birthYearValid =
     birthYear !== "" &&
+    Number.isInteger(birthYearNum) &&
+    birthYearNum >= 1940 &&
+    birthYearNum <= 2010;
+
+  const canSaveDemo =
+    username.trim() !== "" &&
+    birthYearValid &&
     gender !== "" &&
     education !== "" &&
-    occupation.trim() !== "" &&
     country !== "";
 
   const handleDeleteConfirm = async () => {
@@ -214,51 +183,8 @@ export default function ProfilePage() {
         </header>
       </FadeIn>
 
-      {/* ── Basics ── */}
-      <FadeIn delay={0.1}>
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">{t("profile.basicsTitle", locale)}</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t("profile.basicsBody", locale)}
-          </p>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-              {t("profile.lastName", locale)}
-              <input
-                value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
-                placeholder={t("profile.lastName", locale)}
-              />
-            </label>
-
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-              {t("profile.firstName", locale)}
-              <input
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
-                placeholder={t("profile.firstName", locale)}
-              />
-            </label>
-          </div>
-
-          <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving}
-              className="min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
-            >
-              {isSaving ? t("actions.save", locale) : t("actions.saveShort", locale)}
-            </button>
-          </div>
-        </section>
-      </FadeIn>
-
       {/* ── Demographics ── */}
-      <FadeIn delay={0.15}>
+      <FadeIn delay={0.1}>
         <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -275,13 +201,33 @@ export default function ProfilePage() {
           </p>
 
           <div className="mt-6 flex flex-col gap-5">
+            {/* Preferred name */}
+            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              {t("onboarding.usernameLabel", locale)}
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={t("onboarding.usernamePlaceholder", locale)}
+                maxLength={80}
+                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+              />
+            </label>
+
             {/* Birth year */}
-            <PickerTrigger
-              label={t("onboarding.birthYearLabel", locale)}
-              value={birthYear}
-              placeholder={t("onboarding.birthYearPlaceholder", locale)}
-              onClick={() => setYearPickerOpen(true)}
-            />
+            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              {t("onboarding.birthYearLabel", locale)}
+              <input
+                type="number"
+                inputMode="numeric"
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+                placeholder={t("onboarding.birthYearPlaceholder", locale)}
+                min={1940}
+                max={2010}
+                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+            </label>
 
             {/* Gender */}
             <div className="flex flex-col gap-2">
@@ -320,19 +266,6 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
-
-            {/* Occupation */}
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-              {t("onboarding.occupationLabel", locale)}
-              <input
-                type="text"
-                value={occupation}
-                onChange={(e) => setOccupation(e.target.value)}
-                placeholder={t("onboarding.occupationPlaceholder", locale)}
-                maxLength={200}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
-              />
-            </label>
 
             {/* Country */}
             <PickerTrigger
@@ -413,16 +346,6 @@ export default function ProfilePage() {
         loadingText={t("actions.deleting", locale)}
         variant="danger"
         isLoading={isDeleting}
-      />
-
-      {/* Year picker */}
-      <Picker
-        isOpen={yearPickerOpen}
-        onClose={() => setYearPickerOpen(false)}
-        onSelect={setBirthYear}
-        options={yearOptions}
-        selectedValue={birthYear}
-        title={t("onboarding.birthYearLabel", locale)}
       />
 
       {/* Country picker */}

@@ -15,24 +15,7 @@ export interface LikertQuestion {
   reversed?: boolean;
 }
 
-export interface MBTIQuestion {
-  id: number;
-  dichotomy: "EI" | "SN" | "TF" | "JP";
-  optionA: { text: string; pole: string };
-  optionB: { text: string; pole: string };
-  optionAByLocale?: Partial<Record<Locale, string>>;
-  optionBByLocale?: Partial<Record<Locale, string>>;
-  optionAObserver?: string;
-  optionBObserver?: string;
-  optionAObserverByLocale?: Partial<Record<Locale, string>>;
-  optionBObserverByLocale?: Partial<Record<Locale, string>>;
-}
-
-export type Question = LikertQuestion | MBTIQuestion;
-
-export function isMBTIQuestion(q: Question): q is MBTIQuestion {
-  return "dichotomy" in q;
-}
+export type Question = LikertQuestion;
 
 export function isLikertQuestion(q: Question): q is LikertQuestion {
   return "dimension" in q;
@@ -45,9 +28,12 @@ export function isLikertQuestion(q: Question): q is LikertQuestion {
 export interface DimensionConfig {
   code: string;
   label: string;
+  labelByLocale?: Partial<Record<Locale, string>>;
   color: string;
   description: string;
+  descriptionByLocale?: Partial<Record<Locale, string>>;
   insights: { low: string; mid: string; high: string };
+  insightsByLocale?: Partial<Record<Locale, { low: string; mid: string; high: string }>>;
 }
 
 // ============================================
@@ -58,7 +44,7 @@ export interface TestConfig {
   type: TestType;
   name: string;
   description: string;
-  format: "likert" | "binary";
+  format: "likert";
   dimensions: DimensionConfig[];
   questions: Question[];
 }

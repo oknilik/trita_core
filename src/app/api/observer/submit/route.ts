@@ -7,7 +7,7 @@ import { calculateScores } from "@/lib/scoring";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
-  value: z.union([z.number().int().min(1).max(5), z.string()]),
+  value: z.number().int().min(1).max(5),
 });
 
 const submitSchema = z.object({
@@ -17,8 +17,6 @@ const submitSchema = z.object({
   answers: z.array(answerSchema),
   confidence: z.number().int().min(1).max(5).optional(),
 });
-
-const MBTI_VALUES = new Set(["A", "B"]);
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -52,6 +50,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "INVITE_EXPIRED" }, { status: 400 });
   }
 
+  if (invitation.testType === "MBTI") {
+    return NextResponse.json({ error: "INVALID_TEST_TYPE" }, { status: 400 });
+  }
+
   // Validate all questions answered
   const config = getTestConfig(invitation.testType as TestType);
   const expectedIds = new Set(config.questions.map((q) => q.id));
@@ -69,25 +71,17 @@ export async function POST(req: Request) {
     }
   }
 
-  if (invitation.testType === "MBTI") {
-    for (const answer of answers) {
-      if (typeof answer.value !== "string" || !MBTI_VALUES.has(answer.value)) {
-        return NextResponse.json({ error: "INVALID_MBTI_ANSWER" }, { status: 400 });
-      }
-    }
-  } else {
-    for (const answer of answers) {
-      if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
-        return NextResponse.json({ error: "INVALID_LIKERT_ANSWER" }, { status: 400 });
-      }
+  for (const answer of answers) {
+    if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
+      return NextResponse.json({ error: "INVALID_LIKERT_ANSWER" }, { status: 400 });
     }
   }
 
   // Score
-  const typedAnswers =
-    invitation.testType === "MBTI"
-      ? answers.map((a) => ({ questionId: a.questionId, value: String(a.value) }))
-      : answers.map((a) => ({ questionId: a.questionId, value: Number(a.value) }));
+  const typedAnswers = answers.map((a) => ({
+    questionId: a.questionId,
+    value: Number(a.value),
+  }));
 
   const scores = calculateScores(invitation.testType as TestType, typedAnswers);
 

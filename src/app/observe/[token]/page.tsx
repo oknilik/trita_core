@@ -24,7 +24,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     where: { token },
     include: {
       inviter: {
-        select: { name: true },
+        select: { username: true },
       },
     },
   });
@@ -72,15 +72,27 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
+  if (invitation.testType === "MBTI") {
+    return (
+      <main className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col items-center justify-center gap-4 px-4 py-10 text-center">
+        <h1 className="text-2xl font-bold text-gray-900">
+          {t("observer.inactiveTitle", locale)}
+        </h1>
+        <p className="text-sm text-gray-600">
+          {t("error.INVALID_TEST_TYPE", locale)}
+        </p>
+      </main>
+    );
+  }
+
   const config = getTestConfig(invitation.testType as TestType, locale);
-  const inviterName = invitation.inviter.name ?? t("common.someone", locale);
+  const inviterName = invitation.inviter.username ?? t("common.someone", locale);
 
   return (
     <ObserverClient
       token={token}
       inviterName={inviterName}
       testName={config.name}
-      format={config.format}
       questions={config.questions}
     />
   );
