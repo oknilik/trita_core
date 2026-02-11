@@ -19,6 +19,8 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return { title: t("meta.dashboardTitle", locale) };
