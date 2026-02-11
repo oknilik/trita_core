@@ -37,7 +37,12 @@ function getInsight(
 
 export default async function DashboardPage() {
   const locale = await getServerLocale();
-  const user = await currentUser();
+  let user;
+  try {
+    user = await currentUser();
+  } catch {
+    redirect("/sign-in");
+  }
   if (!user) redirect("/sign-in");
 
   const email = user.primaryEmailAddress?.emailAddress;
@@ -240,6 +245,16 @@ export default async function DashboardPage() {
         color: dim.color,
         score: scores.dimensions[dim.code] ?? 0,
         insight: getInsight(dim.code, scores.dimensions[dim.code] ?? 0, dim.insights),
+        facets: dim.facets?.map((f) => ({
+          code: f.code,
+          label: f.label,
+          score: scores.facets?.[dim.code]?.[f.code] ?? 0,
+        })),
+        aspects: dim.aspects?.map((a) => ({
+          code: a.code,
+          label: a.label,
+          score: scores.aspects?.[dim.code]?.[a.code] ?? 0,
+        })),
       }))
     : null;
 
@@ -591,6 +606,8 @@ export default async function DashboardPage() {
                     descriptionByLocale={dimConfig?.descriptionByLocale}
                     insights={dimConfig?.insights ?? { low: "", mid: "", high: "" }}
                     insightsByLocale={dimConfig?.insightsByLocale}
+                    facets={item.facets}
+                    aspects={item.aspects}
                     delay={idx * 0.08}
                   />
                 );

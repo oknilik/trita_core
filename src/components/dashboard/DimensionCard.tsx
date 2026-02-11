@@ -19,6 +19,8 @@ interface DimensionCardProps {
   descriptionByLocale?: Partial<Record<Locale, string>>;
   insights: InsightLevels;
   insightsByLocale?: Partial<Record<Locale, InsightLevels>>;
+  facets?: Array<{ code: string; label: string; score: number }>;
+  aspects?: Array<{ code: string; label: string; score: number }>;
   delay?: number;
 }
 
@@ -114,25 +116,26 @@ export function DimensionCard({
       {/* Detail overlay */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-end justify-center md:items-center md:p-4"
+          >
             {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+            <div
               onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/40"
             />
 
             {/* Content */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, rotateY: 90 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              exit={{ opacity: 0, scale: 0.95, rotateY: 90 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              style={{ perspective: 1000 }}
-              className="relative h-full w-full overflow-y-auto bg-white md:h-auto md:max-h-[85vh] md:w-full md:max-w-lg md:rounded-xl md:border md:border-gray-100 md:shadow-xl"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
+              className="relative max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl bg-white md:max-h-[85vh] md:max-w-lg md:rounded-xl md:border md:border-gray-100 md:shadow-xl"
             >
               {/* Close button */}
               <button
@@ -141,16 +144,15 @@ export function DimensionCard({
                 className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
               >
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
+                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="h-5 w-5"
                 >
-                  <path d="M5 5 C7 6, 9 8, 10 10 C11 8, 13 6, 15 5" />
-                  <path d="M5 15 C7 14, 9 12, 10 10 C11 12, 13 14, 15 15" />
+                  <path d="M18 6 6 18M6 6l12 12" />
                 </svg>
               </button>
 
@@ -233,7 +235,7 @@ export function DimensionCard({
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

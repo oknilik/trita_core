@@ -32,11 +32,18 @@ const testLabels: Partial<Record<TestType, Record<Locale, { name: string; descri
 function localizeQuestion(q: Question, locale: Locale): Question {
   if ("dimension" in q) {
     const likert = q as LikertQuestion;
+    const localizedText = likert.textByLocale?.[locale];
+    const localizedObserverText = likert.textObserverByLocale?.[locale];
     return {
       ...likert,
-      text: likert.textByLocale?.[locale] ?? likert.text,
+      text:
+        localizedText && localizedText.trim().length > 0
+          ? localizedText
+          : likert.text,
       textObserver:
-        likert.textObserverByLocale?.[locale] ?? likert.textObserver,
+        localizedObserverText && localizedObserverText.trim().length > 0
+          ? localizedObserverText
+          : likert.textObserver,
     };
   }
   return q;
@@ -51,6 +58,14 @@ function localizeDimension(
     label: dimension.labelByLocale?.[locale] ?? dimension.label,
     description: dimension.descriptionByLocale?.[locale] ?? dimension.description,
     insights: dimension.insightsByLocale?.[locale] ?? dimension.insights,
+    facets: dimension.facets?.map((f) => ({
+      ...f,
+      label: f.labelByLocale?.[locale] ?? f.label,
+    })),
+    aspects: dimension.aspects?.map((a) => ({
+      ...a,
+      label: a.labelByLocale?.[locale] ?? a.label,
+    })),
   };
 }
 
@@ -82,4 +97,4 @@ export function getAllTestTypes(): TestType[] {
   return Object.keys(testConfigs) as TestType[];
 }
 
-export { type TestConfig, type LikertQuestion, type Question, type DimensionConfig, isLikertQuestion } from "./types";
+export { type TestConfig, type LikertQuestion, type Question, type DimensionConfig, type FacetConfig, type AspectConfig, isLikertQuestion } from "./types";

@@ -8,6 +8,8 @@ import type { Locale } from "@/lib/i18n";
 export interface LikertQuestion {
   id: number;
   dimension: string;
+  facet?: string;
+  aspect?: string;
   text: string;
   textByLocale?: Partial<Record<Locale, string>>;
   textObserver?: string;
@@ -19,6 +21,22 @@ export type Question = LikertQuestion;
 
 export function isLikertQuestion(q: Question): q is LikertQuestion {
   return "dimension" in q;
+}
+
+// ============================================
+// Facet/Aspect configuration (sub-dimensions)
+// ============================================
+
+export interface FacetConfig {
+  code: string;
+  label: string;
+  labelByLocale?: Partial<Record<Locale, string>>;
+}
+
+export interface AspectConfig {
+  code: string;
+  label: string;
+  labelByLocale?: Partial<Record<Locale, string>>;
 }
 
 // ============================================
@@ -34,6 +52,8 @@ export interface DimensionConfig {
   descriptionByLocale?: Partial<Record<Locale, string>>;
   insights: { low: string; mid: string; high: string };
   insightsByLocale?: Partial<Record<Locale, { low: string; mid: string; high: string }>>;
+  facets?: FacetConfig[];
+  aspects?: AspectConfig[];
 }
 
 // ============================================

@@ -633,16 +633,6 @@ const translations = {
       en: "Other",
       de: "Andere",
     },
-    occupationLabel: {
-      hu: "Foglalkozás",
-      en: "Occupation",
-      de: "Beruf",
-    },
-    occupationPlaceholder: {
-      hu: "pl. tanár, mérnök, diák",
-      en: "e.g. teacher, engineer, student",
-      de: "z.B. Lehrer, Ingenieur, Student",
-    },
     countryLabel: {
       hu: "Ország",
       en: "Country",
@@ -711,9 +701,9 @@ const translations = {
       de: "Kontodaten: E-Mail-Adresse, Authentifizierungsdaten (über Clerk), Google-Kontoidentifikation (bei Google-Anmeldung).",
     },
     dataDemographic: {
-      hu: "Demográfiai adatok: felhasználónév, születési év, nem, végzettség, foglalkozás, ország.",
-      en: "Demographic data: username, birth year, gender, education level, occupation, country.",
-      de: "Demografische Daten: Nutzername, Geburtsjahr, Geschlecht, Bildungsniveau, Beruf, Land.",
+      hu: "Demográfiai adatok: felhasználónév, születési év, nem, végzettség, ország.",
+      en: "Demographic data: username, birth year, gender, education level, country.",
+      de: "Demografische Daten: Nutzername, Geburtsjahr, Geschlecht, Bildungsniveau, Land.",
     },
     dataAssessment: {
       hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések.",
