@@ -91,13 +91,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             <nav className="mt-2 flex flex-col gap-1">
               <SignedIn>
                 <Link
-                  href="/dashboard"
-                  className={linkClass("/dashboard")}
-                  onClick={onClose}
-                >
-                  {t("nav.dashboard", locale)}
-                </Link>
-                <Link
                   href="/profile"
                   className={linkClass("/profile")}
                   onClick={onClose}

@@ -77,26 +77,28 @@ export default function ProfilePage() {
 
   if (!isLoaded) {
     return (
-      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
-        <div className="animate-pulse rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 p-6 pb-14 md:p-8 md:pb-16">
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-white/20" />
-            <div>
-              <div className="h-7 w-40 rounded bg-white/20" />
-              <div className="mt-2 h-4 w-52 rounded bg-white/10" />
+      <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
+        <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
+          <div className="animate-pulse rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 p-6 pb-14 md:p-8 md:pb-16">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-full bg-white/20" />
+              <div>
+                <div className="h-7 w-40 rounded bg-white/20" />
+                <div className="mt-2 h-4 w-52 rounded bg-white/10" />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="animate-pulse rounded-2xl border border-gray-100 bg-white p-6">
-          <div className="h-5 w-48 rounded bg-gray-200" />
-          <div className="mt-4 h-4 w-72 rounded bg-gray-100" />
-          <div className="mt-6 flex flex-col gap-4">
-            <div className="h-11 rounded-lg bg-gray-100" />
-            <div className="h-11 rounded-lg bg-gray-100" />
-            <div className="h-20 rounded-lg bg-gray-100" />
+          <div className="animate-pulse rounded-2xl border border-gray-100 bg-white p-6">
+            <div className="h-5 w-48 rounded bg-gray-200" />
+            <div className="mt-4 h-4 w-72 rounded bg-gray-100" />
+            <div className="mt-6 flex flex-col gap-4">
+              <div className="h-11 rounded-lg bg-gray-100" />
+              <div className="h-11 rounded-lg bg-gray-100" />
+              <div className="h-20 rounded-lg bg-gray-100" />
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     );
   }
 
@@ -190,17 +192,11 @@ export default function ProfilePage() {
     }`;
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
+    <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
+      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
       {/* ── Header ── */}
       <FadeIn>
         <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-6 pb-14 md:p-8 md:pb-16">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/doodles/chilling.svg"
-            alt=""
-            className="pointer-events-none absolute -bottom-6 -right-6 h-40 w-40 object-contain opacity-10 brightness-0 invert md:h-48 md:w-48"
-            loading="lazy"
-          />
           <div className="relative flex items-center gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/20 text-xl font-bold text-white backdrop-blur-sm">
               {initials}
@@ -223,13 +219,6 @@ export default function ProfilePage() {
       {/* ── Demographics ── */}
       <FadeIn delay={0.1}>
         <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/doodles/meditating.svg"
-            alt=""
-            className="pointer-events-none absolute -right-4 -top-4 h-28 w-28 object-contain opacity-15 md:h-36 md:w-36"
-            loading="lazy"
-          />
           <h2 className="text-lg font-semibold text-gray-900">
             {t("profile.demographicsTitle", locale)}
           </h2>
@@ -431,6 +420,7 @@ export default function ProfilePage() {
         searchable
         searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
       />
-    </main>
+      </main>
+    </div>
   );
 }

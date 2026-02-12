@@ -372,7 +372,8 @@ export default async function DashboardPage({
           href: observerComparison ? "#comparison" : "#results",
         };
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
+    <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
+      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <DashboardAutoRefresh
         pendingInvites={pendingInvites.length}
         completedObserver={completedObservers.length}
@@ -780,6 +781,7 @@ export default async function DashboardPage({
           />
         </section>
       </FadeIn>
-    </main>
+      </main>
+    </div>
   );
 }
