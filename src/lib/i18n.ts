@@ -42,6 +42,11 @@ const translations = {
       en: "Research methodology | Trita",
       de: "Forschungsmethodik | Trita",
     },
+    adminTitle: {
+      hu: "Admin | Trita",
+      en: "Admin | Trita",
+      de: "Admin | Trita",
+    },
   },
   nav: {
     home: { hu: "Főoldal", en: "Home", de: "Startseite" },
@@ -970,6 +975,26 @@ const translations = {
       en: "For privacy-related questions, contact us at info@trita.io.",
       de: "Bei Fragen zum Datenschutz kontaktiere uns unter info@trita.io.",
     },
+  },
+  admin: {
+    title: { hu: "Admin Dashboard", en: "Admin Dashboard", de: "Admin Dashboard" },
+    subtitle: {
+      hu: "Rendszerstatisztikák és elemzések",
+      en: "System statistics and analytics",
+      de: "Systemstatistiken und Analysen",
+    },
+    totalUsers: { hu: "Összes felhasználó", en: "Total users", de: "Gesamte Benutzer" },
+    totalAssessments: { hu: "Összes teszt", en: "Total assessments", de: "Gesamte Tests" },
+    totalInvitations: { hu: "Összes meghívó", en: "Total invitations", de: "Gesamte Einladungen" },
+    totalFeedback: { hu: "Visszajelzések", en: "Feedback submissions", de: "Feedback-Einreichungen" },
+    usersTitle: { hu: "Felhasználók", en: "Users", de: "Benutzer" },
+    assessmentsTitle: { hu: "Tesztkitöltések", en: "Test completions", de: "Testabschlüsse" },
+    invitationsTitle: { hu: "Meghívók", en: "Invitations", de: "Einladungen" },
+    feedbackTitle: { hu: "Visszajelzések", en: "Feedback", de: "Feedback" },
+    new7days: { hu: "Új (7 nap)", en: "New (7 days)", de: "Neu (7 Tage)" },
+    new30days: { hu: "Új (30 nap)", en: "New (30 days)", de: "Neu (30 Tage)" },
+    byTestType: { hu: "Teszttípusonként", en: "By test type", de: "Nach Testtyp" },
+    conversionRate: { hu: "Konverzió", en: "Conversion rate", de: "Konversionsrate" },
   },
   comparison: {
     title: { hu: "Mások rólad", en: "Others about you", de: "Andere über dich" },
