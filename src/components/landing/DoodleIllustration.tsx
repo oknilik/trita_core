@@ -36,7 +36,7 @@ export function DoodleIllustration() {
       </svg>
 
       <Image
-        src="/doodles/float.svg"
+        src="/doodles/meditating.svg"
         alt=""
         aria-hidden
         fill

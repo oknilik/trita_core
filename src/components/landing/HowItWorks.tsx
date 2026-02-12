@@ -7,9 +7,9 @@ interface HowItWorksProps {
 }
 
 const STEP_DOODLES = [
-  "/doodles/coffee.svg",
+  "/doodles/sleek.svg",
   "/doodles/sitting-reading.svg",
-  "/doodles/loving.svg",
+  "/doodles/unboxing.svg",
 ];
 
 export function HowItWorks({ locale }: HowItWorksProps) {
@@ -40,14 +40,12 @@ export function HowItWorks({ locale }: HowItWorksProps) {
           <div className="grid gap-10 md:grid-cols-3 md:gap-8">
             {steps.map((step, i) => (
               <FadeIn key={i} delay={i * 0.15}>
-                <div className="flex flex-col items-center text-center">
-                  {/* Step number */}
-                  <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-lg font-bold text-white shadow-lg shadow-indigo-200">
+                <div className="flex h-full flex-col items-center rounded-xl border border-indigo-100 bg-indigo-50/50 p-3 text-center md:border-0 md:bg-transparent md:p-0">
+                  <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-base font-bold text-white shadow-lg shadow-indigo-200 md:h-12 md:w-12 md:text-lg">
                     {i + 1}
                   </div>
 
-                  {/* Doodle */}
-                  <div className="mt-5 h-28 w-full overflow-hidden rounded-xl bg-indigo-50/50">
+                  <div className="mt-4 h-36 w-full overflow-hidden rounded-xl bg-transparent py-2 md:bg-indigo-50/50">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={STEP_DOODLES[i]}
@@ -57,7 +55,7 @@ export function HowItWorks({ locale }: HowItWorksProps) {
                     />
                   </div>
 
-                  <h3 className="mt-4 text-lg font-semibold text-gray-900">
+                  <h3 className="mt-4 text-base font-semibold text-gray-900 md:text-lg">
                     {step.title}
                   </h3>
                   <p className="mt-2 text-sm text-gray-600">{step.body}</p>

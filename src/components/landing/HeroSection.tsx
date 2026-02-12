@@ -37,29 +37,29 @@ export function HeroSection() {
             </p>
 
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-              <Link
-                href="/sign-up"
-                className="flex min-h-[48px] items-center justify-center rounded-xl bg-indigo-600 px-8 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200"
-              >
-                {t("landing.joinResearch", locale)}
-              </Link>
-
               <SignedIn>
                 <Link
                   href="/dashboard"
-                  className="flex min-h-[48px] items-center justify-center rounded-xl border border-gray-200 bg-white px-8 text-base font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                  className="flex min-h-[48px] items-center justify-center rounded-xl bg-indigo-600 px-8 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200"
                 >
                   {t("landing.openDashboard", locale)}
                 </Link>
               </SignedIn>
               <SignedOut>
                 <Link
-                  href="/sign-in"
-                  className="flex min-h-[48px] items-center justify-center rounded-xl border border-gray-200 bg-white px-8 text-base font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                  href="/sign-up"
+                  className="flex min-h-[48px] items-center justify-center rounded-xl bg-indigo-600 px-8 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200"
                 >
-                  {t("landing.signIn", locale)}
+                  {t("landing.joinResearch", locale)}
                 </Link>
               </SignedOut>
+
+              <Link
+                href="/research"
+                className="flex min-h-[48px] items-center justify-center rounded-xl border border-gray-200 bg-white px-8 text-base font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+              >
+                {t("landing.notifyMe", locale)}
+              </Link>
             </div>
 
             <p className="text-xs text-gray-400">
@@ -72,10 +72,10 @@ export function HeroSection() {
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="mx-auto w-full max-w-sm"
+            className="mx-auto w-full max-w-sm md:max-w-lg"
           >
             <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white p-3 shadow-xl shadow-indigo-100/40">
-              <div className="h-56 w-full md:h-64">
+              <div className="h-56 w-full md:h-80">
                 <DoodleIllustration />
               </div>
             </div>

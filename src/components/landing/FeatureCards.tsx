@@ -11,9 +11,9 @@ interface FeatureCardProps {
 
 function FeatureCard({ title, description, doodle, large }: FeatureCardProps) {
   return (
-    <div className="flex h-full flex-col items-start gap-3 rounded-2xl border border-gray-100 bg-white p-6 transition-all hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80">
+    <div className="flex h-full flex-col items-start gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-6 transition-all hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/80 md:border-gray-100 md:bg-white">
       <div
-        className={`w-full overflow-hidden rounded-xl bg-indigo-50/50 ${large ? "h-32" : "h-20"}`}
+        className={`h-28 w-full overflow-hidden rounded-xl bg-transparent md:bg-indigo-50/50 ${large ? "md:h-32" : "md:h-20"}`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -58,7 +58,7 @@ export function FeatureCards({ locale }: FeatureCardsProps) {
     {
       title: t("landing.feature5Title", locale),
       description: t("landing.feature5Desc", locale),
-      doodle: "/doodles/roller-skating.svg",
+      doodle: "/doodles/laying.svg",
     },
   ];
 

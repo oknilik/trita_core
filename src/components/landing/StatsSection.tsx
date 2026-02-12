@@ -33,7 +33,7 @@ export function StatsSection({ locale }: StatsSectionProps) {
               </p>
             </div>
             <div className="flex flex-col items-center justify-center px-4 py-6">
-              <p className="text-3xl font-bold text-indigo-600 md:text-4xl">
+              <p className="text-center text-3xl font-bold text-indigo-600 md:text-4xl">
                 {t("landing.completionTimeValue", locale)}
               </p>
               <p className="mt-1 text-center text-xs text-gray-500 md:text-sm">
