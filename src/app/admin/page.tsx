@@ -24,6 +24,8 @@ export default async function AdminPage() {
     await Promise.all([
       // User metrics
       (async () => {
+        const currentYear = new Date().getFullYear();
+
         const total = await prisma.userProfile.count({
           where: { deleted: false },
         });
@@ -39,7 +41,51 @@ export default async function AdminPage() {
             createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
           },
         });
-        return { total, new7d, new30d };
+
+        // Age statistics
+        const ageStats = await prisma.userProfile.aggregate({
+          where: {
+            deleted: false,
+            birthYear: { not: null },
+          },
+          _avg: { birthYear: true },
+          _min: { birthYear: true },
+          _max: { birthYear: true },
+        });
+
+        const avgAge = ageStats._avg.birthYear
+          ? Math.round(currentYear - ageStats._avg.birthYear)
+          : null;
+        const minAge = ageStats._max.birthYear
+          ? currentYear - ageStats._max.birthYear
+          : null; // max year = youngest
+        const maxAge = ageStats._min.birthYear
+          ? currentYear - ageStats._min.birthYear
+          : null; // min year = oldest
+
+        // Calculate median age
+        const birthYears = await prisma.userProfile.findMany({
+          where: {
+            deleted: false,
+            birthYear: { not: null },
+          },
+          select: { birthYear: true },
+        });
+
+        let medianAge = null;
+        if (birthYears.length > 0) {
+          const sortedBirthYears = birthYears
+            .map((u) => u.birthYear!)
+            .sort((a, b) => a - b);
+          const mid = Math.floor(sortedBirthYears.length / 2);
+          const medianBirthYear =
+            sortedBirthYears.length % 2 === 0
+              ? (sortedBirthYears[mid - 1] + sortedBirthYears[mid]) / 2
+              : sortedBirthYears[mid];
+          medianAge = Math.round(currentYear - medianBirthYear);
+        }
+
+        return { total, new7d, new30d, avgAge, medianAge, minAge, maxAge };
       })(),
 
       // Assessment metrics
@@ -78,13 +124,40 @@ export default async function AdminPage() {
           },
         });
         const dimensionCount = await prisma.dimensionFeedback.count();
-        const dimensionAvg = await prisma.dimensionFeedback.groupBy({
-          by: ["dimensionCode"],
-          _avg: { accuracyRating: true },
-          _count: { id: true },
-          orderBy: { _avg: { accuracyRating: "desc" } },
-        });
-        return { satisfactionCount, avgScores, dimensionCount, dimensionAvg };
+
+        // Dimension feedback by test type
+        const [dimensionAvgBigFive, dimensionAvgHexaco, dimensionAvgHexacoMod] = await Promise.all([
+          prisma.dimensionFeedback.groupBy({
+            by: ["dimensionCode"],
+            _avg: { accuracyRating: true },
+            _count: { id: true },
+            where: { assessmentResult: { testType: "BIG_FIVE" } },
+            orderBy: { _avg: { accuracyRating: "desc" } },
+          }),
+          prisma.dimensionFeedback.groupBy({
+            by: ["dimensionCode"],
+            _avg: { accuracyRating: true },
+            _count: { id: true },
+            where: { assessmentResult: { testType: "HEXACO" } },
+            orderBy: { _avg: { accuracyRating: "desc" } },
+          }),
+          prisma.dimensionFeedback.groupBy({
+            by: ["dimensionCode"],
+            _avg: { accuracyRating: true },
+            _count: { id: true },
+            where: { assessmentResult: { testType: "HEXACO_MODIFIED" } },
+            orderBy: { _avg: { accuracyRating: "desc" } },
+          }),
+        ]);
+
+        return {
+          satisfactionCount,
+          avgScores,
+          dimensionCount,
+          dimensionAvgBigFive,
+          dimensionAvgHexaco,
+          dimensionAvgHexacoMod,
+        };
       })(),
     ]);
 
@@ -142,7 +215,11 @@ export default async function AdminPage() {
             <AdminStatCard
               title={t("admin.totalUsers", locale)}
               value={userStats.total}
-              subtitle={`${t("admin.new7days", locale)}: ${userStats.new7d} | ${t("admin.new30days", locale)}: ${userStats.new30d}`}
+              subtitle={
+                userStats.avgAge !== null
+                  ? `${t("admin.avgAge", locale)}: ${userStats.avgAge} | ${t("admin.medianAge", locale)}: ${userStats.medianAge} | ${t("admin.ageRange", locale)}: ${userStats.minAge}-${userStats.maxAge}`
+                  : `${t("admin.new7days", locale)}: ${userStats.new7d} | ${t("admin.new30days", locale)}: ${userStats.new30d}`
+              }
               color="#6366F1"
               icon="👥"
               trend={{ value: growthRate, period: "30d" }}
@@ -237,28 +314,97 @@ export default async function AdminPage() {
               </div>
             </div>
 
-            {/* Top Dimensions */}
+            {/* Dimension Accuracy by Test Type */}
             <div className="mt-6">
-              <h3 className="text-sm font-semibold text-gray-900">
-                Top Dimension Accuracy
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                Dimension Accuracy by Test Type
               </h3>
-              <div className="mt-4 space-y-2">
-                {feedbackStats.dimensionAvg.slice(0, 6).map((dim) => (
-                  <div
-                    key={dim.dimensionCode}
-                    className="flex items-center justify-between text-sm"
-                  >
-                    <span className="font-medium text-gray-700">
-                      {dim.dimensionCode}
-                    </span>
-                    <span className="text-gray-900">
-                      {dim._avg.accuracyRating
-                        ? Math.round(dim._avg.accuracyRating * 10) / 10
-                        : 0}
-                      /5 ({dim._count.id} ratings)
-                    </span>
-                  </div>
-                ))}
+
+              {/* Big Five */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold text-indigo-600 mb-2">
+                  Big Five
+                </h4>
+                <div className="space-y-2">
+                  {feedbackStats.dimensionAvgBigFive.length > 0 ? (
+                    feedbackStats.dimensionAvgBigFive.map((dim) => (
+                      <div
+                        key={dim.dimensionCode}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="font-medium text-gray-700">
+                          {dim.dimensionCode}
+                        </span>
+                        <span className="text-gray-900">
+                          {dim._avg.accuracyRating
+                            ? Math.round(dim._avg.accuracyRating * 10) / 10
+                            : 0}
+                          /5 ({dim._count.id} ratings)
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-500">No feedback yet</p>
+                  )}
+                </div>
+              </div>
+
+              {/* HEXACO */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold text-purple-600 mb-2">
+                  HEXACO
+                </h4>
+                <div className="space-y-2">
+                  {feedbackStats.dimensionAvgHexaco.length > 0 ? (
+                    feedbackStats.dimensionAvgHexaco.map((dim) => (
+                      <div
+                        key={dim.dimensionCode}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="font-medium text-gray-700">
+                          {dim.dimensionCode}
+                        </span>
+                        <span className="text-gray-900">
+                          {dim._avg.accuracyRating
+                            ? Math.round(dim._avg.accuracyRating * 10) / 10
+                            : 0}
+                          /5 ({dim._count.id} ratings)
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-500">No feedback yet</p>
+                  )}
+                </div>
+              </div>
+
+              {/* HEXACO Modified */}
+              <div>
+                <h4 className="text-xs font-semibold text-emerald-600 mb-2">
+                  HEXACO Modified
+                </h4>
+                <div className="space-y-2">
+                  {feedbackStats.dimensionAvgHexacoMod.length > 0 ? (
+                    feedbackStats.dimensionAvgHexacoMod.map((dim) => (
+                      <div
+                        key={dim.dimensionCode}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="font-medium text-gray-700">
+                          {dim.dimensionCode}
+                        </span>
+                        <span className="text-gray-900">
+                          {dim._avg.accuracyRating
+                            ? Math.round(dim._avg.accuracyRating * 10) / 10
+                            : 0}
+                          /5 ({dim._count.id} ratings)
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-500">No feedback yet</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>

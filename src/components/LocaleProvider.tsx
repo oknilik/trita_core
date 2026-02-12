@@ -12,10 +12,12 @@ import {
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n";
 import { DEFAULT_LOCALE, normalizeLocale } from "@/lib/i18n";
+import { SkeletonLoader } from "@/components/SkeletonLoader";
 
 interface LocaleContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
+  isChanging: boolean;
 }
 
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
@@ -35,6 +37,7 @@ export function LocaleProvider({
   const [locale, setLocaleState] = useState<Locale>(() =>
     normalizeLocale(initialLocale ?? DEFAULT_LOCALE)
   );
+  const [isChanging, setIsChanging] = useState(false);
 
   const applyLocale = useCallback((next: Locale) => {
     setLocaleState((prev) => (prev === next ? prev : next));
@@ -98,6 +101,10 @@ export function LocaleProvider({
   const setLocale = (next: Locale) => {
     const normalized = normalizeLocale(next);
     if (normalized === locale) return;
+
+    // Show loading state
+    setIsChanging(true);
+
     manualUpdateAtRef.current = Date.now();
     applyLocale(normalized);
     fetch("/api/profile/locale", {
@@ -106,11 +113,17 @@ export function LocaleProvider({
       body: JSON.stringify({ locale: normalized }),
     }).catch(() => null);
     refreshServer();
+
+    // Hide loading state after transition
+    setTimeout(() => setIsChanging(false), 500);
   };
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale }}>
-      {children}
+    <LocaleContext.Provider value={{ locale, setLocale, isChanging }}>
+      {isChanging && <SkeletonLoader />}
+      <div className={`md:transition-opacity md:duration-300 ${isChanging ? "md:opacity-0" : "md:opacity-100"}`}>
+        {children}
+      </div>
     </LocaleContext.Provider>
   );
 }

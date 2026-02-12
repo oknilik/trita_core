@@ -45,6 +45,10 @@ export default function ProfilePage() {
   const [isSavingDemo, setIsSavingDemo] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
 
+  // Touch state for blur validation
+  const [usernameTouched, setUsernameTouched] = useState(false);
+  const [birthYearTouched, setBirthYearTouched] = useState(false);
+
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
   const countryLabel = useMemo(
     () => countryOptions.find((c) => c.value === country)?.label,
@@ -106,6 +110,29 @@ export default function ProfilePage() {
       .slice(0, 1)
       .toUpperCase();
 
+  // Dynamic validation based on current year
+  const currentYear = new Date().getFullYear();
+  const minBirthYear = currentYear - 100;
+  const maxBirthYear = currentYear - 16;
+
+  const usernameValid =
+    username.trim().length >= 2 && username.trim().length <= 12;
+
+  const birthYearNum = Number(birthYear);
+  const birthYearValid =
+    birthYear !== "" &&
+    birthYear.length === 4 &&
+    Number.isInteger(birthYearNum) &&
+    birthYearNum >= minBirthYear &&
+    birthYearNum <= maxBirthYear;
+
+  const canSaveDemo =
+    usernameValid &&
+    birthYearValid &&
+    gender !== "" &&
+    education !== "" &&
+    country !== "";
+
   const handleSaveDemographics = async () => {
     if (isSavingDemo) return;
     setIsSavingDemo(true);
@@ -123,26 +150,15 @@ export default function ProfilePage() {
       });
       if (!res.ok) throw new Error("Save failed");
       showToast(t("profile.demographicsSaveSuccess", locale), "success");
+
+      // Notify UserMenu to refresh profile name
+      window.dispatchEvent(new CustomEvent("profile-updated"));
     } catch {
       showToast(t("profile.saveError", locale), "error");
     } finally {
       setIsSavingDemo(false);
     }
   };
-
-  const birthYearNum = Number(birthYear);
-  const birthYearValid =
-    birthYear !== "" &&
-    Number.isInteger(birthYearNum) &&
-    birthYearNum >= 1940 &&
-    birthYearNum <= 2010;
-
-  const canSaveDemo =
-    username.trim() !== "" &&
-    birthYearValid &&
-    gender !== "" &&
-    education !== "" &&
-    country !== "";
 
   const handleDeleteConfirm = async () => {
     if (isDeleting) return;
@@ -229,10 +245,25 @@ export default function ProfilePage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                onBlur={() => setUsernameTouched(true)}
                 placeholder={t("onboarding.usernamePlaceholder", locale)}
-                maxLength={80}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+                minLength={2}
+                maxLength={12}
+                className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none ${
+                  usernameTouched && username.trim() !== "" && !usernameValid
+                    ? "border-orange-400 bg-orange-100"
+                    : "border-gray-200 bg-gray-50 focus:border-indigo-300"
+                }`}
               />
+              {usernameTouched && username.trim() !== "" && !usernameValid ? (
+                <span className="pl-1 text-xs font-medium text-orange-700">
+                  {t("onboarding.usernameError", locale)}
+                </span>
+              ) : (
+                <span className="pl-1 text-xs italic text-gray-500">
+                  {t("onboarding.usernameHint", locale)}
+                </span>
+              )}
             </label>
 
             {/* Birth year */}
@@ -242,12 +273,32 @@ export default function ProfilePage() {
                 type="number"
                 inputMode="numeric"
                 value={birthYear}
-                onChange={(e) => setBirthYear(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 4) {
+                    setBirthYear(value);
+                  }
+                }}
+                onBlur={() => setBirthYearTouched(true)}
                 placeholder={t("onboarding.birthYearPlaceholder", locale)}
-                min={1940}
-                max={2010}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                min={minBirthYear}
+                max={maxBirthYear}
+                maxLength={4}
+                className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                  birthYearTouched && birthYear !== "" && !birthYearValid
+                    ? "border-orange-400 bg-orange-100"
+                    : "border-gray-200 bg-gray-50 focus:border-indigo-300"
+                }`}
               />
+              {birthYearTouched && birthYear !== "" && !birthYearValid ? (
+                <span className="pl-1 text-xs font-medium text-orange-700">
+                  {t("onboarding.birthYearError", locale)}
+                </span>
+              ) : (
+                <span className="pl-1 text-xs italic text-gray-500">
+                  {minBirthYear} - {maxBirthYear}
+                </span>
+              )}
             </label>
 
             {/* Gender */}

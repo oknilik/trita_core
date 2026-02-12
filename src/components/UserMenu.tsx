@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,14 +11,56 @@ export function UserMenu() {
   const { user } = useUser();
   const { locale } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
+  const [profileName, setProfileName] = useState<string | null>(() => {
+    // Initialize from localStorage to avoid visual jump
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("trita_username");
+    }
+    return null;
+  });
   const menuRef = useRef<HTMLDivElement | null>(null);
 
+  // Fetch user profile name from database
+  const fetchProfile = useCallback(async () => {
+    try {
+      const res = await fetch("/api/profile/onboarding");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.username) {
+          setProfileName(data.username);
+          // Cache in localStorage for instant access on next load
+          window.localStorage.setItem("trita_username", data.username);
+        }
+      }
+    } catch {
+      // Silently fail, fallback to Clerk data
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  // Listen for profile updates
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      fetchProfile();
+    };
+
+    window.addEventListener("profile-updated", handleProfileUpdate);
+    return () => window.removeEventListener("profile-updated", handleProfileUpdate);
+  }, [fetchProfile]);
+
+  // Use profile name from database if available, otherwise fallback to Clerk data
+  const displayName = profileName || user?.username || user?.primaryEmailAddress?.emailAddress;
+
   const initials =
+    profileName?.[0] ??
     user?.username?.[0] ??
     user?.primaryEmailAddress?.emailAddress?.[0] ??
     "U";
 
-  const label = user?.username || user?.primaryEmailAddress?.emailAddress;
+  const label = displayName;
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {

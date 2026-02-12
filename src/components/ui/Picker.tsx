@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface PickerOption {
@@ -30,9 +31,14 @@ export function Picker({
   searchPlaceholder = "",
 }: PickerProps) {
   const [search, setSearch] = useState("");
+  const [mounted, setMounted] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const filtered = searchable && search.trim()
     ? options.filter((o) =>
@@ -89,7 +95,9 @@ export function Picker({
     handleClose();
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
@@ -100,7 +108,7 @@ export function Picker({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={handleClose}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md"
           />
 
           {/* Panel */}
@@ -109,7 +117,7 @@ export function Picker({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative w-full max-w-lg overflow-hidden rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)] md:mb-0 md:rounded-2xl"
+            className="relative z-50 w-full max-w-lg overflow-hidden rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)] md:mb-0 md:rounded-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
@@ -191,7 +199,8 @@ export function Picker({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
+// Dynamic validation based on current year
+const currentYear = new Date().getFullYear();
+
 const onboardingSchema = z.object({
-  username: z.string().min(1).max(80),
-  birthYear: z.number().int().min(1940).max(2010),
+  username: z.string().min(2).max(12),
+  birthYear: z.number().int().min(currentYear - 100).max(currentYear - 16),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
   education: z.enum([
     "primary",

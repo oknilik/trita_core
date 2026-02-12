@@ -848,6 +848,31 @@ const translations = {
       en: "Saving...",
       de: "Speichern...",
     },
+    usernameError: {
+      hu: "A név 2-12 karakter hosszú kell legyen",
+      en: "Name must be 2-12 characters long",
+      de: "Der Name muss 2-12 Zeichen lang sein",
+    },
+    birthYearError: {
+      hu: "16-100 év közötti életkor szükséges",
+      en: "Age must be between 16-100 years",
+      de: "Alter muss zwischen 16-100 Jahren liegen",
+    },
+    validationError: {
+      hu: "Kérlek javítsd a következő hibákat:",
+      en: "Please correct the following errors:",
+      de: "Bitte korrigiere die folgenden Fehler:",
+    },
+    usernameHint: {
+      hu: "2-12 karakter",
+      en: "2-12 characters",
+      de: "2-12 Zeichen",
+    },
+    birthYearHint: {
+      hu: "16-100 év között",
+      en: "Age 16-100",
+      de: "Alter 16-100",
+    },
     errorGeneric: {
       hu: "Hiba történt. Próbáld újra!",
       en: "Something went wrong. Please try again.",
@@ -995,6 +1020,9 @@ const translations = {
     new30days: { hu: "Új (30 nap)", en: "New (30 days)", de: "Neu (30 Tage)" },
     byTestType: { hu: "Teszttípusonként", en: "By test type", de: "Nach Testtyp" },
     conversionRate: { hu: "Konverzió", en: "Conversion rate", de: "Konversionsrate" },
+    avgAge: { hu: "Átlag életkor", en: "Avg age", de: "Durchschnittsalter" },
+    medianAge: { hu: "Medián életkor", en: "Median age", de: "Medianalter" },
+    ageRange: { hu: "Kor tartomány", en: "Age range", de: "Altersspanne" },
   },
   comparison: {
     title: { hu: "Mások rólad", en: "Others about you", de: "Andere über dich" },
