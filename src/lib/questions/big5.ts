@@ -233,7 +233,7 @@ export const big5Config: TestConfig = {
       text: "Ritkán vagyok szomorú.",
       textByLocale: { hu: "Ritkán vagyok szomorú.", en: "Seldom feel blue.", de: "Ich bin selten deprimiert." },
       reversed: true,
-    },
+    }/*,
     {
       id: 7,
       dimension: "A",
@@ -933,5 +933,6 @@ export const big5Config: TestConfig = {
       textByLocale: { hu: "Kihasználok másokat.", en: "Take advantage of others.", de: "Ich nutze andere aus." },
       reversed: true,
     },
+    */
   ],
 };

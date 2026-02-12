@@ -278,7 +278,7 @@ export const hexacoConfig: TestConfig = {
         en: "I feel reasonably satisfied with myself overall.",
         de: "Im Allgemeinen bin ich mit mir ziemlich zufrieden.",
       },
-    },
+    }/*,
     {
       id: 5,
       dimension: "E", 
@@ -1383,6 +1383,6 @@ export const hexacoConfig: TestConfig = {
         de: "Man hält mich für einen hartherzigen Menschen.",
       },
       reversed: true,
-    },
+    },*/
   ],
 };

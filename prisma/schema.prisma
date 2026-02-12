@@ -90,7 +90,8 @@ model AssessmentResult {
   testType         TestType?
   isSelfAssessment Boolean   @default(true)
 
-  userProfile UserProfile? @relation(fields: [userProfileId], references: [id])
+  userProfile       UserProfile?        @relation(fields: [userProfileId], references: [id])
+  dimensionFeedback DimensionFeedback[]
 
   @@index([userProfileId])
 }
@@ -135,11 +136,28 @@ model ObserverAssessment {
 model SatisfactionFeedback {
   id                         String   @id @default(cuid())
   userProfileId              String   @unique
-  selfAssessmentAccuracy     Int // 1-5
-  observerAssessmentAccuracy Int // 1-5
-  overallSatisfaction        Int // 1-5
+  agreementScore             Int // 1-5 (😕😐🙂😊🤩) - "Mennyire ismertél magadra?"
+  observerFeedbackUsefulness Int? // 1-5 (😕😐🙂😊🤩) - Optional: usefulness of observer feedback
+  siteUsefulness             Int? // 1-5 (😕😐🙂😊🤩) - Optional: overall site usefulness
   freeformFeedback           String?
+  interestedInUpdates        Boolean @default(false)
   createdAt                  DateTime @default(now())
 
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+}
+
+// Dimension-level feedback for accuracy assessment
+model DimensionFeedback {
+  id                String   @id @default(cuid())
+  assessmentResultId String
+  dimensionCode     String   // "H", "E", "X", "A", "C", "O" (HEXACO) or "O", "C", "E", "A", "N" (BIG_FIVE)
+  accuracyRating    Int      // 1-5 (😕😐🙂😊🤩)
+  comment           String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  assessmentResult AssessmentResult @relation(fields: [assessmentResultId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentResultId, dimensionCode])
+  @@index([assessmentResultId])
 }

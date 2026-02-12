@@ -18,6 +18,7 @@ import { FadeIn } from "@/components/landing/FadeIn";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
+import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,11 @@ function getInsight(
   return insights[level];
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const locale = await getServerLocale();
   let user;
   try {
@@ -79,7 +84,14 @@ export default async function DashboardPage() {
     ? Object.keys(draft.answers as Record<string, number>).length
     : 0;
 
-  const [latestResult, sentInvitations, receivedInvitations, completedObserverAssessments, confidenceStats] =
+  const [
+    latestResult,
+    sentInvitations,
+    receivedInvitations,
+    completedObserverAssessments,
+    confidenceStats,
+    satisfactionFeedback,
+  ] =
     profile
       ? await Promise.all([
           prisma.assessmentResult.findFirst({
@@ -133,8 +145,30 @@ export default async function DashboardPage() {
             },
             _avg: { confidence: true },
           }),
+          prisma.satisfactionFeedback.findUnique({
+            where: { userProfileId: profile.id },
+            select: { id: true },
+          }),
         ])
-      : [null, [], [], [], { _avg: { confidence: null } }];
+      : [null, [], [], [], { _avg: { confidence: null } }, null];
+
+  // Fetch dimension feedback separately (needs latestResult.id)
+  const dimensionFeedback =
+    profile && latestResult
+      ? await prisma.dimensionFeedback.findMany({
+          where: { assessmentResultId: latestResult.id },
+          select: {
+            dimensionCode: true,
+            accuracyRating: true,
+            comment: true,
+          },
+        })
+      : [];
+
+  // Create feedback lookup map
+  const feedbackMap = new Map(
+    dimensionFeedback.map((f) => [f.dimensionCode, f])
+  );
 
   const scores = latestResult?.scores as ScoreResult | undefined;
   let testType = profile?.testType as TestType | null;
@@ -275,10 +309,15 @@ export default async function DashboardPage() {
   );
   const hasInvites = sentInvitations.length > 0;
   const hasObserverFeedback = completedObservers.length > 0;
+  const feedbackSubmitted = Boolean(satisfactionFeedback);
   const feedbackInProgress = pendingInvites.length > 0 && !hasObserverFeedback;
   const feedbackPartial = pendingInvites.length > 0 && hasObserverFeedback;
-  const stepsCompleted = 1 + (hasInvites ? 1 : 0) + (hasObserverFeedback ? 1 : 0);
-  const progressPct = Math.round((stepsCompleted / 3) * 100);
+  const totalSteps = 3;
+  const stepsCompleted =
+    1 +
+    (hasInvites ? 1 : 0) +
+    (hasObserverFeedback ? 1 : 0);
+  const progressPct = Math.round((stepsCompleted / totalSteps) * 100);
   const avgConfidence =
     confidenceStats._avg.confidence != null
       ? Math.round(confidenceStats._avg.confidence * 10) / 10
@@ -327,9 +366,9 @@ export default async function DashboardPage() {
           href: "#invite",
         }
       : {
-          title: t("dashboard.nextStepCompareTitle", locale),
-          body: t("dashboard.nextStepCompareBody", locale),
-          cta: t("dashboard.nextStepCompareCta", locale),
+          title: t("dashboard.nextStepDoneTitle", locale),
+          body: t("dashboard.nextStepDoneBody", locale),
+          cta: t("dashboard.nextStepDoneCta", locale),
           href: observerComparison ? "#comparison" : "#results",
         };
   return (
@@ -393,12 +432,12 @@ export default async function DashboardPage() {
           <div className="mt-5">
             <div className="mt-6 flex justify-center md:hidden">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-xl font-bold text-indigo-600 shadow-sm">
-                {stepsCompleted}/3
+                {stepsCompleted}/{totalSteps}
               </div>
             </div>
             <div className="absolute right-4 top-4 hidden md:flex">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-xl font-bold text-indigo-600 shadow-sm">
-                {stepsCompleted}/3
+                {stepsCompleted}/{totalSteps}
               </div>
             </div>
             <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-indigo-100">
@@ -407,13 +446,13 @@ export default async function DashboardPage() {
                 style={{
                   width: `${progressPct}%`,
                   background: feedbackPartial
-                    ? "linear-gradient(90deg, #6366f1 0%, #6366f1 66.66%, #f59e0b 66.66%, #f59e0b 100%)"
+                    ? "linear-gradient(90deg, #6366f1 0%, #6366f1 50%, #f59e0b 50%, #f59e0b 75%, #6366f1 75%, #6366f1 100%)"
                     : undefined,
                 }}
               />
             </div>
             <div className="mt-3 grid grid-cols-3 text-center">
-              <span className={stepsCompleted >= 1 ? "text-indigo-600" : "text-gray-300"}>
+              <span className={stepsCompleted >= 1 ? "text-emerald-600" : "text-gray-300"}>
                 {stepsCompleted >= 1 ? (
                   <svg
                     viewBox="0 0 24 24"
@@ -430,7 +469,7 @@ export default async function DashboardPage() {
                   </svg>
                 ) : null}
               </span>
-              <span className={stepsCompleted >= 2 ? "text-indigo-600" : "text-gray-300"}>
+              <span className={stepsCompleted >= 2 ? "text-emerald-600" : "text-gray-300"}>
                 {stepsCompleted >= 2 ? (
                   <svg
                     viewBox="0 0 24 24"
@@ -452,7 +491,7 @@ export default async function DashboardPage() {
                   stepsCompleted >= 3
                     ? feedbackPartial
                       ? "text-amber-500"
-                      : "text-indigo-600"
+                      : "text-emerald-600"
                     : feedbackInProgress
                       ? "text-amber-500"
                       : "text-gray-300"
@@ -483,10 +522,8 @@ export default async function DashboardPage() {
                     strokeLinejoin="round"
                     aria-hidden
                   >
-                    <path d="M6 2h12M6 22h12" />
-                    <path d="M8 2v6a4 4 0 0 0 8 0V2" />
-                    <path d="M8 22v-6a4 4 0 0 1 8 0v6" />
-                    <path d="M10 12h4" />
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 6v6l4 2" />
                   </svg>
                 ) : null}
               </span>
@@ -509,7 +546,7 @@ export default async function DashboardPage() {
                       : ""
                 }
               >
-                {t("dashboard.journeyStepFeedback", locale)}
+                {t("dashboard.journeyStepObserver", locale)}
               </span>
             </div>
           </div>
@@ -609,6 +646,8 @@ export default async function DashboardPage() {
                     facets={item.facets}
                     aspects={item.aspects}
                     delay={idx * 0.08}
+                    assessmentResultId={latestResult.id}
+                    existingFeedback={feedbackMap.get(item.code)}
                   />
                 );
               })}
@@ -713,6 +752,15 @@ export default async function DashboardPage() {
               })}
             </div>
           </section>
+        </FadeIn>
+      )}
+
+      {/* ── Overall feedback ── */}
+      {completedObserverAssessments.length > 0 && (
+        <FadeIn delay={0.1}>
+          <div className="mt-8">
+            <FeedbackForm initialSubmitted={feedbackSubmitted} />
+          </div>
         </FadeIn>
       )}
 
