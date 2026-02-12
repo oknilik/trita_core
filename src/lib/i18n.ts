@@ -668,6 +668,11 @@ const translations = {
   userMenu: {
     profileFallback: { hu: "Profil", en: "Profile", de: "Profil" },
     profile: { hu: "Profilom", en: "My profile", de: "Mein Profil" },
+    greetingPrefix: { hu: "Szia, ", en: "Hi, ", de: "Hallo, " },
+    participant: { hu: "Kutatási résztvevő", en: "Research participant", de: "Forschungsteilnehmer/in" },
+    research: { hu: "Kutatási státusz", en: "Research status", de: "Forschungsstatus" },
+    settings: { hu: "Beállítások", en: "Settings", de: "Einstellungen" },
+    closePanel: { hu: "Panel bezárása", en: "Close panel", de: "Panel schließen" },
   },
   profile: {
     title: { hu: "Profilom", en: "My profile", de: "Mein Profil" },

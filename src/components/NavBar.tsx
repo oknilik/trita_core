@@ -29,8 +29,8 @@ export function NavBar() {
         </Link>
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-4 text-sm font-semibold text-gray-600">
-          <LocaleSwitcher />
           <SignedOut>
+            <LocaleSwitcher />
             <Link href="/sign-in" className={linkClass("/sign-in")}>
               {t("actions.signInCta", locale)}
             </Link>
