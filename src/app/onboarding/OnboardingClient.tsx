@@ -116,7 +116,7 @@ export function OnboardingClient() {
     <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
       <div className="w-full max-w-lg">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <TritaLogo size={48} />
+          <TritaLogo size={48} showText={false} />
           <h1 className="text-2xl font-bold text-gray-900">
             {t("onboarding.title", locale)}
           </h1>
@@ -145,7 +145,7 @@ export function OnboardingClient() {
                 }`}
               />
               {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                <span className="pl-1 text-xs font-medium text-orange-700">
+                <span className="pl-1 text-xs italic text-orange-700">
                   {t("onboarding.usernameError", locale)}
                 </span>
               ) : (
@@ -180,12 +180,12 @@ export function OnboardingClient() {
                 }`}
               />
               {birthYearTouched && birthYear !== "" && !birthYearValid ? (
-                <span className="pl-1 text-xs font-medium text-orange-700">
-                  {t("onboarding.birthYearError", locale)}
+                <span className="pl-1 text-xs italic text-orange-700">
+                  {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
                 </span>
               ) : (
                 <span className="pl-1 text-xs italic text-gray-500">
-                  {minBirthYear} - {maxBirthYear}
+                  {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
                 </span>
               )}
             </label>

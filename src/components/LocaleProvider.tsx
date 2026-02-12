@@ -72,6 +72,20 @@ export function LocaleProvider({
   }, [applyLocale, locale, refreshServer]);
 
   useEffect(() => {
+    const hasLocalLocale = window.localStorage.getItem("trita_locale");
+    if (hasLocalLocale) return;
+    const browserLocale = normalizeLocale(
+      navigator.languages?.[0] ?? navigator.language
+    );
+    const next = browserLocale ?? locale;
+    const timer = setTimeout(() => {
+      applyLocale(next);
+      if (next !== locale) refreshServer();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [applyLocale, locale, refreshServer]);
+
+  useEffect(() => {
     const startedAt = Date.now();
     let canceled = false;
     fetch("/api/profile/locale")

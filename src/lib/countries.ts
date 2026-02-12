@@ -68,5 +68,9 @@ export function getCountryOptions(locale: Locale): { value: string; label: strin
   return COUNTRIES.map((c) => ({
     value: c.code,
     label: c[locale],
-  })).sort((a, b) => a.label.localeCompare(b.label, locale));
+  })).sort((a, b) => {
+    if (a.value === "HU") return -1;
+    if (b.value === "HU") return 1;
+    return a.label.localeCompare(b.label, locale);
+  });
 }

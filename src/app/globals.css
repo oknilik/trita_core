@@ -18,3 +18,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   color-scheme: light;
 }
+
+/* Prevent iOS Safari auto-zoom on focused form controls. */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
