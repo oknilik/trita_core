@@ -253,7 +253,7 @@ export default async function AdminPage() {
           <AdminTableSection
             title={t("admin.assessmentsTitle", locale)}
             description={t("admin.byTestType", locale)}
-            rows={assessmentStats.byTestType.map((item) => ({
+            rows={assessmentStats.byTestType.map((item: { testType: string | null; _count: { id: number } }) => ({
               label: item.testType ?? "Unknown",
               value: item._count.id,
               color: "#8B5CF6",
@@ -265,7 +265,7 @@ export default async function AdminPage() {
         <FadeIn delay={0.3}>
           <AdminTableSection
             title={t("admin.invitationsTitle", locale)}
-            rows={invitationStats.byStatus.map((item) => {
+            rows={invitationStats.byStatus.map((item: { status: string; _count: { id: number } }) => {
               const statusColors: Record<string, string> = {
                 COMPLETED: "#10B981",
                 PENDING: "#F59E0B",
@@ -327,7 +327,7 @@ export default async function AdminPage() {
                 </h4>
                 <div className="space-y-2">
                   {feedbackStats.dimensionAvgBigFive.length > 0 ? (
-                    feedbackStats.dimensionAvgBigFive.map((dim) => (
+                    feedbackStats.dimensionAvgBigFive.map((dim: { dimensionCode: string; _avg: { accuracyRating: number | null }; _count: { id: number } }) => (
                       <div
                         key={dim.dimensionCode}
                         className="flex items-center justify-between text-sm"
@@ -356,7 +356,7 @@ export default async function AdminPage() {
                 </h4>
                 <div className="space-y-2">
                   {feedbackStats.dimensionAvgHexaco.length > 0 ? (
-                    feedbackStats.dimensionAvgHexaco.map((dim) => (
+                    feedbackStats.dimensionAvgHexaco.map((dim: { dimensionCode: string; _avg: { accuracyRating: number | null }; _count: { id: number } }) => (
                       <div
                         key={dim.dimensionCode}
                         className="flex items-center justify-between text-sm"
@@ -385,7 +385,7 @@ export default async function AdminPage() {
                 </h4>
                 <div className="space-y-2">
                   {feedbackStats.dimensionAvgHexacoMod.length > 0 ? (
-                    feedbackStats.dimensionAvgHexacoMod.map((dim) => (
+                    feedbackStats.dimensionAvgHexacoMod.map((dim: { dimensionCode: string; _avg: { accuracyRating: number | null }; _count: { id: number } }) => (
                       <div
                         key={dim.dimensionCode}
                         className="flex items-center justify-between text-sm"
