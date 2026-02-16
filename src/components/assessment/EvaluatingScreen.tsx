@@ -140,12 +140,12 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
   }, [animate]);
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
+    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex flex-col items-center"
+        className="flex w-full max-w-md flex-col items-center"
       >
         {/* Animated doodle hexagon */}
         <div className="h-48 w-48 md:h-56 md:w-56">
