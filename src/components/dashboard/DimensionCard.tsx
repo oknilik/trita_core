@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, memo } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedBar } from "@/components/dashboard/AnimatedBar";
 import { useLocale } from "@/components/LocaleProvider";
@@ -52,6 +53,7 @@ export const DimensionCard = memo(function DimensionCard({
 }: DimensionCardProps) {
   const { locale } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const level = getLevel(score);
 
   // Feedback state
@@ -80,6 +82,10 @@ export const DimensionCard = memo(function DimensionCard({
     },
     []
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -177,21 +183,22 @@ export const DimensionCard = memo(function DimensionCard({
         </p>
       </button>
 
-      {/* Detail overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-end justify-center md:items-center md:p-4"
-          >
-            {/* Backdrop */}
-            <div
-              onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-black/40"
-            />
+      {/* Detail overlay - Portal to body for proper full-screen backdrop */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 flex items-end justify-center md:items-center md:p-4"
+            >
+              {/* Backdrop */}
+              <div
+                onClick={() => setIsOpen(false)}
+                className="absolute inset-0 bg-black/40"
+              />
 
             {/* Content */}
             <motion.div
@@ -409,7 +416,9 @@ export const DimensionCard = memo(function DimensionCard({
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
     </>
   );
 });
