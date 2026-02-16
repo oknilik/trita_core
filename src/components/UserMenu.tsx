@@ -104,7 +104,7 @@ export function UserMenu() {
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600">
           {initials}
         </span>
-        <span className="hidden max-w-[120px] truncate text-sm text-gray-600 md:block">
+        <span className="hidden max-w-[120px] truncate text-sm text-gray-600 lg:block">
           {label ?? t("userMenu.profileFallback", locale)}
         </span>
       </button>

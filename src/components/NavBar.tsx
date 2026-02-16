@@ -28,7 +28,7 @@ export function NavBar() {
           <img src="/trita-logo.svg" alt="trita" className="h-[90px] w-auto" />
         </Link>
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-4 text-sm font-semibold text-gray-600">
+        <nav className="hidden lg:flex items-center gap-4 text-sm font-semibold text-gray-600">
           <SignedOut>
             <LocaleSwitcher />
             <Link href="/sign-in" className={linkClass("/sign-in")}>
@@ -48,7 +48,7 @@ export function NavBar() {
 
         {/* Mobile: signed out → auth buttons only (no hamburger, no locale switcher) */}
         <SignedOut>
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
             <Link
               href="/sign-in"
               className="min-h-[44px] flex items-center text-sm font-semibold text-gray-600 hover:text-indigo-600"
@@ -66,7 +66,7 @@ export function NavBar() {
 
         {/* Mobile: signed in → hamburger menu */}
         <SignedIn>
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}

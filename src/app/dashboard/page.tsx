@@ -1,7 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
@@ -190,14 +189,6 @@ export default async function DashboardPage({
     return (
       <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
         <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-6 pb-14 md:p-8 md:pb-16">
-          <Image
-            src="/doodles/unboxing.svg"
-            alt=""
-            aria-hidden
-            width={192}
-            height={192}
-            className="pointer-events-none absolute -bottom-6 -right-6 h-40 w-40 object-contain opacity-10 brightness-0 invert md:h-48 md:w-48"
-          />
           <div className="relative">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-200">
               {t("dashboard.personalTag", locale)}
@@ -242,14 +233,6 @@ export default async function DashboardPage({
           </section>
         ) : (
           <section className="flex flex-col items-center rounded-2xl border border-gray-100 bg-gradient-to-br from-gray-50 via-white to-indigo-50/30 p-10 text-center">
-            <Image
-              src="/doodles/plant.svg"
-              alt=""
-              aria-hidden
-              width={144}
-              height={112}
-              className="h-28 w-36 object-contain"
-            />
             <h2 className="mt-4 text-xl font-semibold text-gray-900">
               {t("dashboard.noResultTitle", locale)}
             </h2>
@@ -673,14 +656,6 @@ export default async function DashboardPage({
       {/* ── Invite section ── */}
       <FadeIn delay={0.1}>
         <div id="invite" className="relative overflow-hidden rounded-2xl">
-          <Image
-            src="/doodles/swinging.svg"
-            alt=""
-            aria-hidden
-            width={144}
-            height={144}
-            className="pointer-events-none absolute -right-4 -top-4 h-28 w-28 object-contain opacity-15 md:h-36 md:w-36"
-          />
           <InviteSection
             initialInvitations={sentInvitations.map((inv) => ({
               id: inv.id,
@@ -771,14 +746,6 @@ export default async function DashboardPage({
           <div className="flex flex-col items-center gap-2 text-center">
             <RetakeButton />
           </div>
-          <Image
-            src="/doodles/running.svg"
-            alt=""
-            aria-hidden
-            width={160}
-            height={160}
-            className="pointer-events-none absolute -bottom-6 -right-2 h-32 w-32 object-contain opacity-20 md:h-40 md:w-40"
-          />
         </section>
       </FadeIn>
       </main>

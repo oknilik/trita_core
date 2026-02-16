@@ -264,7 +264,7 @@ const translations = {
       en: "Track your results and feedback anytime on your dashboard.",
       de: "Verfolge deine Ergebnisse und Rückmeldungen jederzeit im Dashboard.",
     },
-    footer: { hu: "Resarch", en: "Resarch", de: "Resarch" },
+    footer: { hu: "Research", en: "Research", de: "Research" },
     privacyLink: { hu: "Adatvédelem", en: "Privacy", de: "Datenschutz" },
     researchLink: { hu: "Módszertan", en: "Methodology", de: "Methodik" },
   },
