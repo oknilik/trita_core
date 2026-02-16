@@ -72,18 +72,9 @@ export default async function DashboardPage({
     email ||
     t("common.userFallback", locale);
 
-  // Check for in-progress assessment draft
-  const draft = profile
-    ? await prisma.assessmentDraft.findUnique({
-        where: { userProfileId: profile.id },
-        select: { answers: true, testType: true },
-      })
-    : null;
-  const draftAnsweredCount = draft
-    ? Object.keys(draft.answers as Record<string, number>).length
-    : 0;
-
+  // Parallel database queries for better performance
   const [
+    draft,
     latestResult,
     sentInvitations,
     receivedInvitations,
@@ -93,9 +84,21 @@ export default async function DashboardPage({
   ] =
     profile
       ? await Promise.all([
+          // Check for in-progress assessment draft
+          prisma.assessmentDraft.findUnique({
+            where: { userProfileId: profile.id },
+            select: { answers: true, testType: true },
+          }),
           prisma.assessmentResult.findFirst({
             where: { userProfileId: profile.id },
             orderBy: { createdAt: "desc" },
+            select: {
+              id: true,
+              scores: true,
+              testType: true,
+              isSelfAssessment: true,
+              createdAt: true,
+            },
           }),
           prisma.observerInvitation.findMany({
             where: { inviterId: profile.id },
@@ -149,7 +152,11 @@ export default async function DashboardPage({
             select: { id: true },
           }),
         ])
-      : [null, [], [], [], { _avg: { confidence: null } }, null];
+      : [null, null, [], [], [], { _avg: { confidence: null } }, null];
+
+  const draftAnsweredCount = draft
+    ? Object.keys(draft.answers as Record<string, number>).length
+    : 0;
 
   // Fetch dimension feedback separately (needs latestResult.id)
   const dimensionFeedback =
