@@ -5,8 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
-import { getServerLocale } from "@/lib/i18n-server";
-import { t } from "@/lib/i18n";
+import { DEFAULT_LOCALE, t } from "@/lib/i18n";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
@@ -26,7 +25,7 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
+  const locale = DEFAULT_LOCALE;
   return {
     title: t("meta.title", locale),
     description: t("meta.description", locale),
@@ -47,10 +46,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getServerLocale();
-
   return (
-    <html lang={locale}>
+    <html lang={DEFAULT_LOCALE}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -58,7 +55,7 @@ export default async function RootLayout({
           signInFallbackRedirectUrl="/dashboard"
           signUpFallbackRedirectUrl="/onboarding"
         >
-          <LocaleProvider initialLocale={locale}>
+          <LocaleProvider>
             <ToastProvider>
               <NavBar />
               {children}

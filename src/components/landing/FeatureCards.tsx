@@ -1,6 +1,8 @@
+"use client";
+
 import { FadeIn } from "@/components/landing/FadeIn";
-import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface FeatureCardProps {
   title: string;
@@ -29,11 +31,8 @@ function FeatureCard({ title, description, doodle, large }: FeatureCardProps) {
   );
 }
 
-interface FeatureCardsProps {
-  locale: Locale;
-}
-
-export function FeatureCards({ locale }: FeatureCardsProps) {
+export function FeatureCards() {
+  const { locale } = useLocale();
   const features = [
     {
       title: t("landing.feature1Title", locale),

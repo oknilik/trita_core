@@ -1,12 +1,11 @@
+"use client";
+
 import { FadeIn } from "@/components/landing/FadeIn";
-import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import { useLocale } from "@/components/LocaleProvider";
 
-interface StatsSectionProps {
-  locale: Locale;
-}
-
-export function StatsSection({ locale }: StatsSectionProps) {
+export function StatsSection() {
+  const { locale } = useLocale();
   return (
     <section className="border-y border-gray-100 bg-gray-50">
       <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">

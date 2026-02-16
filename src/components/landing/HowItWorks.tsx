@@ -1,10 +1,8 @@
-import { FadeIn } from "@/components/landing/FadeIn";
-import type { Locale } from "@/lib/i18n";
-import { t } from "@/lib/i18n";
+"use client";
 
-interface HowItWorksProps {
-  locale: Locale;
-}
+import { FadeIn } from "@/components/landing/FadeIn";
+import { t } from "@/lib/i18n";
+import { useLocale } from "@/components/LocaleProvider";
 
 const STEP_DOODLES = [
   "/doodles/sleek.svg",
@@ -12,7 +10,8 @@ const STEP_DOODLES = [
   "/doodles/unboxing.svg",
 ];
 
-export function HowItWorks({ locale }: HowItWorksProps) {
+export function HowItWorks() {
+  const { locale } = useLocale();
   const steps = [
     { title: t("landing.step1Title", locale), body: t("landing.step1Body", locale) },
     { title: t("landing.step2Title", locale), body: t("landing.step2Body", locale) },
