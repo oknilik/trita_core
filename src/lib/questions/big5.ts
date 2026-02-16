@@ -933,6 +933,6 @@ export const big5Config: TestConfig = {
       textByLocale: { hu: "Kihasználok másokat.", en: "Take advantage of others.", de: "Ich nutze andere aus." },
       reversed: true,
     },
-    **/
+    */
   ],
 };
