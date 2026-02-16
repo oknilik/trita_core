@@ -14,11 +14,15 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap", // Show fallback font immediately
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap", // Show fallback font immediately
+  preload: true,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -47,6 +51,12 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        {/* Performance: Preconnect to external domains for faster loading */}
+        <link rel="preconnect" href="https://clerk.com" />
+        <link rel="preconnect" href="https://img.clerk.com" />
+        <link rel="dns-prefetch" href="https://clerk.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
