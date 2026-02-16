@@ -862,6 +862,36 @@ const translations = {
       en: "This data is used exclusively for research purposes and handled confidentially.",
       de: "Diese Daten werden ausschließlich für Forschungszwecke verwendet und vertraulich behandelt.",
     },
+    blockBasicsTitle: {
+      hu: "Alapadatok",
+      en: "Basic details",
+      de: "Basisdaten",
+    },
+    blockBasicsHint: {
+      hu: "Rövid személyes alapinformációk",
+      en: "Short personal background details",
+      de: "Kurze persönliche Grundinformationen",
+    },
+    blockEducationTitle: {
+      hu: "Tanulmányok",
+      en: "Education",
+      de: "Bildung",
+    },
+    blockEducationHint: {
+      hu: "Legmagasabb végzettség",
+      en: "Highest completed level",
+      de: "Höchster abgeschlossener Bildungsgrad",
+    },
+    blockStatusTitle: {
+      hu: "Jelenlegi státusz",
+      en: "Current status",
+      de: "Aktueller Status",
+    },
+    blockStatusHint: {
+      hu: "Munka és/vagy tanulás jelenlegi helyzete",
+      en: "Your current work and/or study situation",
+      de: "Deine aktuelle Arbeits- und/oder Studiensituation",
+    },
     usernameLabel: {
       hu: "Hogy szólíthatunk?",
       en: "What should we call you?",
@@ -941,6 +971,156 @@ const translations = {
       hu: "Egyéb",
       en: "Other",
       de: "Andere",
+    },
+    occupationStatusLabel: {
+      hu: "Jelenlegi státusz",
+      en: "Current status",
+      de: "Aktueller Status",
+    },
+    occupationStatusWorking: {
+      hu: "Dolgozom",
+      en: "Working",
+      de: "Ich arbeite",
+    },
+    occupationStatusStudying: {
+      hu: "Tanulok",
+      en: "Studying",
+      de: "Ich studiere",
+    },
+    occupationStatusWorkingAndStudying: {
+      hu: "Dolgozom és tanulok",
+      en: "Working and studying",
+      de: "Ich arbeite und studiere",
+    },
+    occupationStatusNeither: {
+      hu: "Jelenleg egyik sem",
+      en: "Currently neither",
+      de: "Aktuell keines von beidem",
+    },
+    occupationStatusUnemployed: {
+      hu: "Munkanélküli / álláskereső",
+      en: "Unemployed / job seeking",
+      de: "Arbeitslos / arbeitssuchend",
+    },
+    occupationStatusPreferNotToSay: {
+      hu: "Nem szeretném megadni",
+      en: "Prefer not to say",
+      de: "Möchte ich nicht angeben",
+    },
+    workScheduleLabel: {
+      hu: "Milyen munkarendben dolgozol?",
+      en: "What is your work arrangement?",
+      de: "Wie ist deine Arbeitsform?",
+    },
+    workScheduleFullTime: {
+      hu: "Teljes munkaidő",
+      en: "Full-time",
+      de: "Vollzeit",
+    },
+    workSchedulePartTime: {
+      hu: "Részmunkaidő",
+      en: "Part-time",
+      de: "Teilzeit",
+    },
+    workScheduleContractor: {
+      hu: "Vállalkozó",
+      en: "Contractor / self-employed",
+      de: "Selbstständig / freiberuflich",
+    },
+    workScheduleOther: {
+      hu: "Egyéb",
+      en: "Other",
+      de: "Andere",
+    },
+    companySizeLabel: {
+      hu: "Mekkora cégnél dolgozol?",
+      en: "What is your company size?",
+      de: "Wie groß ist dein Unternehmen?",
+    },
+    companySizeMicro: {
+      hu: "1-9 fő",
+      en: "1-9 employees",
+      de: "1-9 Mitarbeitende",
+    },
+    companySizeSmall: {
+      hu: "10-49 fő",
+      en: "10-49 employees",
+      de: "10-49 Mitarbeitende",
+    },
+    companySizeMedium: {
+      hu: "50-249 fő",
+      en: "50-249 employees",
+      de: "50-249 Mitarbeitende",
+    },
+    companySizeLarge: {
+      hu: "250-999 fő",
+      en: "250-999 employees",
+      de: "250-999 Mitarbeitende",
+    },
+    companySizeEnterprise: {
+      hu: "1000+ fő",
+      en: "1000+ employees",
+      de: "1000+ Mitarbeitende",
+    },
+    companySizeNotSure: {
+      hu: "Nem tudom",
+      en: "Not sure",
+      de: "Nicht sicher",
+    },
+    studyLevelLabel: {
+      hu: "Képzési szint",
+      en: "Study level",
+      de: "Ausbildungsniveau",
+    },
+    studyLevelSecondarySchool: {
+      hu: "Középiskola",
+      en: "Secondary school",
+      de: "Sekundarstufe",
+    },
+    studyLevelBachelor: {
+      hu: "Alapképzés",
+      en: "Bachelor",
+      de: "Bachelor",
+    },
+    studyLevelMaster: {
+      hu: "Mesterképzés",
+      en: "Master",
+      de: "Master",
+    },
+    studyLevelDoctoral: {
+      hu: "Doktori",
+      en: "Doctoral",
+      de: "Promotion",
+    },
+    studyLevelOther: {
+      hu: "Egyéb",
+      en: "Other",
+      de: "Andere",
+    },
+    unemploymentDurationLabel: {
+      hu: "Mióta vagy álláskereső?",
+      en: "How long have you been job seeking?",
+      de: "Wie lange bist du arbeitssuchend?",
+    },
+    unemploymentDuration0To3: {
+      hu: "0-3 hónap",
+      en: "0-3 months",
+      de: "0-3 Monate",
+    },
+    unemploymentDuration3To12: {
+      hu: "3-12 hónap",
+      en: "3-12 months",
+      de: "3-12 Monate",
+    },
+    unemploymentDuration1Plus: {
+      hu: "1+ év",
+      en: "1+ year",
+      de: "1+ Jahr",
+    },
+    unemploymentDurationOptionalHint: {
+      hu: "Opcionális",
+      en: "Optional",
+      de: "Optional",
     },
     countryLabel: {
       hu: "Ország",
@@ -1040,9 +1220,9 @@ const translations = {
       de: "Kontodaten: E-Mail-Adresse, Authentifizierungsdaten (über Clerk), Google-Kontoidentifikation (bei Google-Anmeldung).",
     },
     dataDemographic: {
-      hu: "Demográfiai adatok: felhasználónév, születési év, nem, végzettség, ország.",
-      en: "Demographic data: username, birth year, gender, education level, country.",
-      de: "Demografische Daten: Nutzername, Geburtsjahr, Geschlecht, Bildungsniveau, Land.",
+      hu: "Demográfiai adatok: felhasználónév, születési év, nem, végzettség, ország, jelenlegi státusz (munka/tanulás), munkarend, cégméret, képzési szint, munkanélküliség időtartama.",
+      en: "Demographic data: username, birth year, gender, education level, country, current status (work/study), work arrangement, company size, study level, unemployment duration.",
+      de: "Demografische Daten: Nutzername, Geburtsjahr, Geschlecht, Bildungsniveau, Land, aktueller Status (Arbeit/Studium), Arbeitsform, Unternehmensgröße, Ausbildungsniveau, Dauer der Arbeitslosigkeit.",
     },
     dataAssessment: {
       hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések.",

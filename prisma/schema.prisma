@@ -53,6 +53,11 @@ model UserProfile {
   gender      String?
   education   String?
   occupation  String?
+  occupationStatus String?
+  workSchedule String?
+  companySize String?
+  studyLevel String?
+  unemploymentDuration String?
   country     String?
   onboardedAt DateTime?
 

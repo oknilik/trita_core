@@ -2,6 +2,15 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import {
+  COMPANY_SIZE_VALUES,
+  OCCUPATION_STATUS_VALUES,
+  STUDY_LEVEL_VALUES,
+  UNEMPLOYMENT_DURATION_VALUES,
+  WORK_SCHEDULE_VALUES,
+  requiresStudyLevel,
+  requiresWorkFields,
+} from "@/lib/onboarding-options";
 
 // Dynamic validation based on current year
 const currentYear = new Date().getFullYear();
@@ -18,8 +27,39 @@ const onboardingSchema = z.object({
     "doctorate",
     "other",
   ]),
+  occupationStatus: z.enum(OCCUPATION_STATUS_VALUES),
+  workSchedule: z.enum(WORK_SCHEDULE_VALUES).optional(),
+  companySize: z.enum(COMPANY_SIZE_VALUES).optional(),
+  studyLevel: z.enum(STUDY_LEVEL_VALUES).optional(),
+  unemploymentDuration: z.enum(UNEMPLOYMENT_DURATION_VALUES).optional(),
   country: z.string().min(1).max(100),
   consentedAt: z.string().datetime().optional(),
+}).superRefine((data, ctx) => {
+  if (requiresWorkFields(data.occupationStatus)) {
+    if (!data.workSchedule) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["workSchedule"],
+        message: "Required when user is working",
+      });
+    }
+    if (!data.companySize) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["companySize"],
+        message: "Required when user is working",
+      });
+    }
+  }
+
+  if (requiresStudyLevel(data.occupationStatus) && !data.studyLevel) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["studyLevel"],
+      message: "Required when user is studying",
+    });
+  }
+
 });
 
 export async function GET() {
@@ -35,6 +75,11 @@ export async function GET() {
       birthYear: true,
       gender: true,
       education: true,
+      occupationStatus: true,
+      workSchedule: true,
+      companySize: true,
+      studyLevel: true,
+      unemploymentDuration: true,
       country: true,
     },
   });
@@ -64,6 +109,19 @@ export async function POST(req: Request) {
       birthYear: parsed.data.birthYear,
       gender: parsed.data.gender,
       education: parsed.data.education,
+      occupationStatus: parsed.data.occupationStatus,
+      workSchedule: requiresWorkFields(parsed.data.occupationStatus)
+        ? parsed.data.workSchedule
+        : null,
+      companySize: requiresWorkFields(parsed.data.occupationStatus)
+        ? parsed.data.companySize
+        : null,
+      studyLevel: requiresStudyLevel(parsed.data.occupationStatus)
+        ? parsed.data.studyLevel
+        : null,
+      unemploymentDuration: parsed.data.occupationStatus === "unemployed"
+        ? parsed.data.unemploymentDuration
+        : null,
       country: parsed.data.country,
       ...(parsed.data.consentedAt && {
         consentedAt: new Date(parsed.data.consentedAt),

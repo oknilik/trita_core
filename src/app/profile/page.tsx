@@ -12,22 +12,18 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, type Locale } from "@/lib/i18n";
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
-
-const GENDER_OPTIONS = [
-  { value: "male", labelKey: "onboarding.genderMale" },
-  { value: "female", labelKey: "onboarding.genderFemale" },
-  { value: "other", labelKey: "onboarding.genderOther" },
-  { value: "prefer_not_to_say", labelKey: "onboarding.genderPreferNot" },
-] as const;
-
-const EDUCATION_OPTIONS = [
-  { value: "primary", labelKey: "onboarding.educationPrimary" },
-  { value: "secondary", labelKey: "onboarding.educationSecondary" },
-  { value: "bachelor", labelKey: "onboarding.educationBachelor" },
-  { value: "master", labelKey: "onboarding.educationMaster" },
-  { value: "doctorate", labelKey: "onboarding.educationDoctorate" },
-  { value: "other", labelKey: "onboarding.educationOther" },
-] as const;
+import {
+  COMPANY_SIZE_OPTIONS,
+  EDUCATION_OPTIONS,
+  GENDER_OPTIONS,
+  OCCUPATION_STATUS_OPTIONS,
+  STUDY_LEVEL_OPTIONS,
+  UNEMPLOYMENT_DURATION_OPTIONS,
+  WORK_SCHEDULE_OPTIONS,
+  type OccupationStatus,
+  requiresStudyLevel,
+  requiresWorkFields,
+} from "@/lib/onboarding-options";
 
 const LOCALE_META: Record<Locale, { flag: string; label: string }> = {
   hu: { flag: "🇭🇺", label: "HU" },
@@ -40,6 +36,11 @@ type FormSnapshot = {
   birthYear: string;
   gender: string;
   education: string;
+  occupationStatus: string;
+  workSchedule: string;
+  companySize: string;
+  studyLevel: string;
+  unemploymentDuration: string;
   country: string;
 };
 
@@ -53,7 +54,16 @@ type ProfileStatus = {
 };
 
 type SaveState = "idle" | "saving" | "saved" | "error";
-type InvalidField = "username" | "birthYear" | "gender" | "education" | "country";
+type InvalidField =
+  | "username"
+  | "birthYear"
+  | "gender"
+  | "education"
+  | "occupationStatus"
+  | "workSchedule"
+  | "companySize"
+  | "studyLevel"
+  | "country";
 const DELETE_GOODBYE_MS = 1300;
 
 export default function ProfilePage() {
@@ -69,6 +79,11 @@ export default function ProfilePage() {
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [education, setEducation] = useState("");
+  const [occupationStatus, setOccupationStatus] = useState("");
+  const [workSchedule, setWorkSchedule] = useState("");
+  const [companySize, setCompanySize] = useState("");
+  const [studyLevel, setStudyLevel] = useState("");
+  const [unemploymentDuration, setUnemploymentDuration] = useState("");
   const [country, setCountry] = useState("");
   const [isSavingDemo, setIsSavingDemo] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
@@ -84,6 +99,10 @@ export default function ProfilePage() {
   const birthYearInputRef = useRef<HTMLInputElement>(null);
   const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
   const educationFirstButtonRef = useRef<HTMLButtonElement>(null);
+  const occupationStatusFirstButtonRef = useRef<HTMLButtonElement>(null);
+  const workScheduleFirstButtonRef = useRef<HTMLButtonElement>(null);
+  const companySizeFirstButtonRef = useRef<HTMLButtonElement>(null);
+  const studyLevelFirstButtonRef = useRef<HTMLButtonElement>(null);
   const countryFieldRef = useRef<HTMLDivElement>(null);
 
   // Touch state for blur validation
@@ -107,12 +126,22 @@ export default function ProfilePage() {
         birthYear: data.birthYear ? String(data.birthYear) : "",
         gender: data.gender ?? "",
         education: data.education ?? "",
+        occupationStatus: data.occupationStatus ?? "",
+        workSchedule: data.workSchedule ?? "",
+        companySize: data.companySize ?? "",
+        studyLevel: data.studyLevel ?? "",
+        unemploymentDuration: data.unemploymentDuration ?? "",
         country: data.country ?? "",
       };
       setUsername(snapshot.username);
       setBirthYear(snapshot.birthYear);
       setGender(snapshot.gender);
       setEducation(snapshot.education);
+      setOccupationStatus(snapshot.occupationStatus);
+      setWorkSchedule(snapshot.workSchedule);
+      setCompanySize(snapshot.companySize);
+      setStudyLevel(snapshot.studyLevel);
+      setUnemploymentDuration(snapshot.unemploymentDuration);
       setCountry(snapshot.country);
       setInitialSnapshot(snapshot);
     } catch {
@@ -216,11 +245,22 @@ export default function ProfilePage() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
+  const needsWorkFields =
+    occupationStatus !== "" && requiresWorkFields(occupationStatus as OccupationStatus);
+  const needsStudyLevel =
+    occupationStatus !== "" && requiresStudyLevel(occupationStatus as OccupationStatus);
+
+  const occupationDetailsValid =
+    occupationStatus !== "" &&
+    (!needsWorkFields || (workSchedule !== "" && companySize !== "")) &&
+    (!needsStudyLevel || studyLevel !== "");
+
   const canSaveDemo =
     usernameValid &&
     birthYearValid &&
     gender !== "" &&
     education !== "" &&
+    occupationDetailsValid &&
     country !== "";
   const isDemographicsDirty =
     initialSnapshot != null &&
@@ -228,6 +268,11 @@ export default function ProfilePage() {
       birthYear !== initialSnapshot.birthYear ||
       gender !== initialSnapshot.gender ||
       education !== initialSnapshot.education ||
+      occupationStatus !== initialSnapshot.occupationStatus ||
+      workSchedule !== initialSnapshot.workSchedule ||
+      companySize !== initialSnapshot.companySize ||
+      studyLevel !== initialSnapshot.studyLevel ||
+      unemploymentDuration !== initialSnapshot.unemploymentDuration ||
       country !== initialSnapshot.country);
   const isLocaleDirty = selectedLocale !== savedLocale;
   const isDirty = isDemographicsDirty || isLocaleDirty;
@@ -252,10 +297,28 @@ export default function ProfilePage() {
       if (field === "birthYear") birthYearInputRef.current?.focus();
       if (field === "gender") genderFirstButtonRef.current?.focus();
       if (field === "education") educationFirstButtonRef.current?.focus();
+      if (field === "occupationStatus") occupationStatusFirstButtonRef.current?.focus();
+      if (field === "workSchedule") workScheduleFirstButtonRef.current?.focus();
+      if (field === "companySize") companySizeFirstButtonRef.current?.focus();
+      if (field === "studyLevel") studyLevelFirstButtonRef.current?.focus();
       if (field === "country") {
         countryFieldRef.current?.querySelector("button")?.focus();
       }
     }, 20);
+  };
+
+  const handleOccupationStatusChange = (value: OccupationStatus) => {
+    setOccupationStatus(value);
+    if (!requiresWorkFields(value)) {
+      setWorkSchedule("");
+      setCompanySize("");
+    }
+    if (!requiresStudyLevel(value)) {
+      setStudyLevel("");
+    }
+    if (value !== "unemployed") {
+      setUnemploymentDuration("");
+    }
   };
 
   const focusFirstInvalidField = () => {
@@ -273,6 +336,22 @@ export default function ProfilePage() {
     }
     if (education === "") {
       focusAndFlashInvalidField("education");
+      return;
+    }
+    if (occupationStatus === "") {
+      focusAndFlashInvalidField("occupationStatus");
+      return;
+    }
+    if (needsWorkFields && workSchedule === "") {
+      focusAndFlashInvalidField("workSchedule");
+      return;
+    }
+    if (needsWorkFields && companySize === "") {
+      focusAndFlashInvalidField("companySize");
+      return;
+    }
+    if (needsStudyLevel && studyLevel === "") {
+      focusAndFlashInvalidField("studyLevel");
       return;
     }
     if (country === "") {
@@ -300,6 +379,11 @@ export default function ProfilePage() {
             birthYear: Number(birthYear),
             gender,
             education,
+            occupationStatus,
+            workSchedule: workSchedule || undefined,
+            companySize: companySize || undefined,
+            studyLevel: studyLevel || undefined,
+            unemploymentDuration: unemploymentDuration || undefined,
             country,
           }),
         });
@@ -309,6 +393,11 @@ export default function ProfilePage() {
           birthYear,
           gender,
           education,
+          occupationStatus,
+          workSchedule,
+          companySize,
+          studyLevel,
+          unemploymentDuration,
           country,
         });
       }
@@ -482,124 +571,260 @@ export default function ProfilePage() {
             {t("profile.demographicsBody", locale)}
           </p>
 
-          <div className="mt-6 flex flex-col gap-5">
-            {/* Preferred name */}
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-              {t("onboarding.usernameLabel", locale)}
-              <input
-                ref={usernameInputRef}
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onBlur={() => setUsernameTouched(true)}
-                placeholder={t("onboarding.usernamePlaceholder", locale)}
-                minLength={2}
-                maxLength={12}
-                className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none ${
-                  usernameTouched && username.trim() !== "" && !usernameValid
-                    ? "border-orange-400 bg-orange-100"
-                    : "border-gray-200 bg-gray-50 focus:border-indigo-300"
-                } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
-              />
-              {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                <span className="pl-1 text-xs italic text-orange-700">
-                  {t("onboarding.usernameError", locale)}
-                </span>
-              ) : (
-                <span className="pl-1 text-xs italic text-gray-500">
-                  {t("onboarding.usernameHint", locale)}
-                </span>
-              )}
-            </label>
-
-            {/* Birth year */}
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-              {t("onboarding.birthYearLabel", locale)}
-              <input
-                ref={birthYearInputRef}
-                type="number"
-                inputMode="numeric"
-                value={birthYear}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.length <= 4) {
-                    setBirthYear(value);
-                  }
-                }}
-                onBlur={() => setBirthYearTouched(true)}
-                placeholder={t("onboarding.birthYearPlaceholder", locale)}
-                min={minBirthYear}
-                max={maxBirthYear}
-                maxLength={4}
-                className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
-                  birthYearTouched && birthYear !== "" && !birthYearValid
-                    ? "border-orange-400 bg-orange-100"
-                    : "border-gray-200 bg-gray-50 focus:border-indigo-300"
-                } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
-              />
-              {birthYearTouched && birthYear !== "" && !birthYearValid ? (
-                <span className="pl-1 text-xs italic text-orange-700">
-                  {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                </span>
-              ) : (
-                <span className="pl-1 text-xs italic text-gray-500">
-                  {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                </span>
-              )}
-            </label>
-
-            {/* Gender */}
-            <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-              <span className="text-sm font-semibold text-gray-700">
-                {t("onboarding.genderLabel", locale)}
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {GENDER_OPTIONS.map((opt, idx) => (
-                  <button
-                    key={opt.value}
-                    ref={idx === 0 ? genderFirstButtonRef : undefined}
-                    type="button"
-                    onClick={() => setGender(opt.value)}
-                    className={toggleClass(gender === opt.value)}
-                  >
-                    {t(opt.labelKey, locale)}
-                  </button>
-                ))}
+          <div className="mt-6 flex flex-col gap-4">
+            <section className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
+              <div className="mb-4">
+                <p className="text-base font-semibold text-gray-900">
+                  👤 {t("onboarding.blockBasicsTitle", locale)}
+                </p>
+                <p className="text-xs text-gray-600">{t("onboarding.blockBasicsHint", locale)}</p>
               </div>
-            </div>
+              <div className="flex flex-col gap-5">
+                <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+                  {t("onboarding.usernameLabel", locale)}
+                  <input
+                    ref={usernameInputRef}
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onBlur={() => setUsernameTouched(true)}
+                    placeholder={t("onboarding.usernamePlaceholder", locale)}
+                    minLength={2}
+                    maxLength={12}
+                    className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none ${
+                      usernameTouched && username.trim() !== "" && !usernameValid
+                        ? "border-orange-400 bg-orange-100"
+                        : "border-gray-200 bg-gray-50 focus:border-indigo-300"
+                    } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
+                  />
+                  {usernameTouched && username.trim() !== "" && !usernameValid ? (
+                    <span className="pl-1 text-xs italic text-orange-700">
+                      {t("onboarding.usernameError", locale)}
+                    </span>
+                  ) : (
+                    <span className="pl-1 text-xs italic text-gray-500">
+                      {t("onboarding.usernameHint", locale)}
+                    </span>
+                  )}
+                </label>
 
-            {/* Education */}
-            <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "education" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-              <span className="text-sm font-semibold text-gray-700">
-                {t("onboarding.educationLabel", locale)}
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {EDUCATION_OPTIONS.map((opt, idx) => (
-                  <button
-                    key={opt.value}
-                    ref={idx === 0 ? educationFirstButtonRef : undefined}
-                    type="button"
-                    onClick={() => setEducation(opt.value)}
-                    className={toggleClass(education === opt.value)}
-                  >
-                    {t(opt.labelKey, locale)}
-                  </button>
-                ))}
+                <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+                  {t("onboarding.birthYearLabel", locale)}
+                  <input
+                    ref={birthYearInputRef}
+                    type="number"
+                    inputMode="numeric"
+                    value={birthYear}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value.length <= 4) {
+                        setBirthYear(value);
+                      }
+                    }}
+                    onBlur={() => setBirthYearTouched(true)}
+                    placeholder={t("onboarding.birthYearPlaceholder", locale)}
+                    min={minBirthYear}
+                    max={maxBirthYear}
+                    maxLength={4}
+                    className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                      birthYearTouched && birthYear !== "" && !birthYearValid
+                        ? "border-orange-400 bg-orange-100"
+                        : "border-gray-200 bg-gray-50 focus:border-indigo-300"
+                    } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
+                  />
+                  {birthYearTouched && birthYear !== "" && !birthYearValid ? (
+                    <span className="pl-1 text-xs italic text-orange-700">
+                      {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
+                    </span>
+                  ) : (
+                    <span className="pl-1 text-xs italic text-gray-500">
+                      {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
+                    </span>
+                  )}
+                </label>
+
+                <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                  <span className="text-sm font-semibold text-gray-700">
+                    {t("onboarding.genderLabel", locale)}
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {GENDER_OPTIONS.map((opt, idx) => (
+                      <button
+                        key={opt.value}
+                        ref={idx === 0 ? genderFirstButtonRef : undefined}
+                        type="button"
+                        onClick={() => setGender(opt.value)}
+                        className={toggleClass(gender === opt.value)}
+                      >
+                        {t(opt.labelKey, locale)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  ref={countryFieldRef}
+                  className={`rounded-lg transition ${invalidFieldFlash === "country" ? "ring-2 ring-orange-300 bg-orange-50/60 p-1" : ""}`}
+                >
+                  <PickerTrigger
+                    label={t("onboarding.countryLabel", locale)}
+                    value={countryLabel}
+                    placeholder={t("onboarding.countryPlaceholder", locale)}
+                    onClick={() => setCountryPickerOpen(true)}
+                  />
+                </div>
               </div>
-            </div>
+            </section>
 
-            {/* Country */}
-            <div
-              ref={countryFieldRef}
-              className={`rounded-lg transition ${invalidFieldFlash === "country" ? "ring-2 ring-orange-300 bg-orange-50/60 p-1" : ""}`}
-            >
-              <PickerTrigger
-                label={t("onboarding.countryLabel", locale)}
-                value={countryLabel}
-                placeholder={t("onboarding.countryPlaceholder", locale)}
-                onClick={() => setCountryPickerOpen(true)}
-              />
-            </div>
+            <section className="rounded-xl border border-purple-100 bg-purple-50/40 p-4">
+              <div className="mb-4">
+                <p className="text-base font-semibold text-gray-900">
+                  🎓 {t("onboarding.blockEducationTitle", locale)}
+                </p>
+                <p className="text-xs text-gray-600">{t("onboarding.blockEducationHint", locale)}</p>
+              </div>
+              <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "education" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                <span className="text-sm font-semibold text-gray-700">
+                  {t("onboarding.educationLabel", locale)}
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  {EDUCATION_OPTIONS.map((opt, idx) => (
+                    <button
+                      key={opt.value}
+                      ref={idx === 0 ? educationFirstButtonRef : undefined}
+                      type="button"
+                      onClick={() => setEducation(opt.value)}
+                      className={toggleClass(education === opt.value)}
+                    >
+                      {t(opt.labelKey, locale)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4">
+              <div className="mb-4">
+                <p className="text-base font-semibold text-gray-900">
+                  💼 {t("onboarding.blockStatusTitle", locale)}
+                </p>
+                <p className="text-xs text-gray-600">{t("onboarding.blockStatusHint", locale)}</p>
+              </div>
+              <div className="flex flex-col gap-5">
+                <div
+                  className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "occupationStatus" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+                >
+                  <span className="text-sm font-semibold text-gray-700">
+                    {t("onboarding.occupationStatusLabel", locale)}
+                  </span>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {OCCUPATION_STATUS_OPTIONS.map((opt, idx) => (
+                      <button
+                        key={opt.value}
+                        ref={idx === 0 ? occupationStatusFirstButtonRef : undefined}
+                        type="button"
+                        onClick={() => handleOccupationStatusChange(opt.value)}
+                        className={toggleClass(occupationStatus === opt.value)}
+                      >
+                        {t(opt.labelKey, locale)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {needsWorkFields && (
+                  <>
+                    <div
+                      className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "workSchedule" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+                    >
+                      <span className="text-sm font-semibold text-gray-700">
+                        {t("onboarding.workScheduleLabel", locale)}
+                      </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        {WORK_SCHEDULE_OPTIONS.map((opt, idx) => (
+                          <button
+                            key={opt.value}
+                            ref={idx === 0 ? workScheduleFirstButtonRef : undefined}
+                            type="button"
+                            onClick={() => setWorkSchedule(opt.value)}
+                            className={toggleClass(workSchedule === opt.value)}
+                          >
+                            {t(opt.labelKey, locale)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div
+                      className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "companySize" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+                    >
+                      <span className="text-sm font-semibold text-gray-700">
+                        {t("onboarding.companySizeLabel", locale)}
+                      </span>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {COMPANY_SIZE_OPTIONS.map((opt, idx) => (
+                          <button
+                            key={opt.value}
+                            ref={idx === 0 ? companySizeFirstButtonRef : undefined}
+                            type="button"
+                            onClick={() => setCompanySize(opt.value)}
+                            className={toggleClass(companySize === opt.value)}
+                          >
+                            {t(opt.labelKey, locale)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {needsStudyLevel && (
+                  <div
+                    className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "studyLevel" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+                  >
+                    <span className="text-sm font-semibold text-gray-700">
+                      {t("onboarding.studyLevelLabel", locale)}
+                    </span>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {STUDY_LEVEL_OPTIONS.map((opt, idx) => (
+                        <button
+                          key={opt.value}
+                          ref={idx === 0 ? studyLevelFirstButtonRef : undefined}
+                          type="button"
+                          onClick={() => setStudyLevel(opt.value)}
+                          className={toggleClass(studyLevel === opt.value)}
+                        >
+                          {t(opt.labelKey, locale)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {occupationStatus === "unemployed" && (
+                  <div className="flex flex-col gap-2 rounded-lg p-1 transition">
+                    <span className="text-sm font-semibold text-gray-700">
+                      {t("onboarding.unemploymentDurationLabel", locale)}
+                    </span>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                      {UNEMPLOYMENT_DURATION_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setUnemploymentDuration(opt.value)}
+                          className={toggleClass(unemploymentDuration === opt.value)}
+                        >
+                          {t(opt.labelKey, locale)}
+                        </button>
+                      ))}
+                    </div>
+                    <span className="pl-1 text-xs italic text-gray-500">
+                      {t("onboarding.unemploymentDurationOptionalHint", locale)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
 
         </section>
