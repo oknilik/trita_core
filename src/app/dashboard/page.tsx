@@ -111,6 +111,11 @@ export default async function DashboardPage({
               expiresAt: true,
               completedAt: true,
               observerEmail: true,
+              assessment: {
+                select: {
+                  relationshipType: true,
+                },
+              },
             },
           }),
           prisma.observerInvitation.findMany({
@@ -440,7 +445,7 @@ export default async function DashboardPage({
                 style={{
                   width: `${progressPct}%`,
                   background: feedbackPartial
-                    ? "linear-gradient(90deg, #6366f1 0%, #6366f1 50%, #f59e0b 50%, #f59e0b 75%, #6366f1 75%, #6366f1 100%)"
+                    ? "linear-gradient(90deg, #6366f1 0%, #6366f1 50%, #f59e0b 50%, #f59e0b 100%)"
                     : undefined,
                 }}
               />
@@ -587,7 +592,7 @@ export default async function DashboardPage({
           {displayScores && (
             <div className="mt-6 grid items-start gap-6 md:grid-cols-[1fr_13rem]">
               <div className="flex items-center justify-center">
-                <div className="h-64 w-64 md:h-72 md:w-72">
+                <div className="h-[21rem] w-[21rem] md:h-[24rem] md:w-[24rem]">
                   <RadarChart
                     dimensions={displayScores.map((d) => ({
                       code: d.code,
@@ -686,6 +691,7 @@ export default async function DashboardPage({
               createdAt: inv.createdAt.toISOString(),
               completedAt: inv.completedAt?.toISOString() ?? null,
               observerEmail: inv.observerEmail ?? null,
+              relationship: inv.assessment?.relationshipType ?? null,
             }))}
           />
         </div>
