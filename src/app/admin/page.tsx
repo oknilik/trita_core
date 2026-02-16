@@ -76,7 +76,7 @@ export default async function AdminPage() {
         if (birthYears.length > 0) {
           const sortedBirthYears = birthYears
             .map((u: { birthYear: number | null }) => u.birthYear!)
-            .sort((a, b) => a - b);
+            .sort((a: number, b: number) => a - b);
           const mid = Math.floor(sortedBirthYears.length / 2);
           const medianBirthYear =
             sortedBirthYears.length % 2 === 0
