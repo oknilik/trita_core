@@ -1,9 +1,8 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-// Temporarily disabled for FCP optimization testing
-// import { Analytics } from "@vercel/analytics/next";
-// import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -67,9 +66,8 @@ export default async function RootLayout({
             </ToastProvider>
           </LocaleProvider>
         </ClerkProvider>
-        {/* Temporarily disabled for FCP optimization */}
-        {/* <Analytics /> */}
-        {/* <SpeedInsights /> */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
