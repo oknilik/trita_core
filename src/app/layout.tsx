@@ -1,8 +1,9 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+// Temporarily disabled for FCP optimization testing
+// import { Analytics } from "@vercel/analytics/next";
+// import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -51,12 +52,6 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <head>
-        {/* Performance: Preconnect to external domains for faster loading */}
-        <link rel="preconnect" href="https://clerk.com" />
-        <link rel="preconnect" href="https://img.clerk.com" />
-        <link rel="dns-prefetch" href="https://clerk.com" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -72,8 +67,9 @@ export default async function RootLayout({
             </ToastProvider>
           </LocaleProvider>
         </ClerkProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* Temporarily disabled for FCP optimization */}
+        {/* <Analytics /> */}
+        {/* <SpeedInsights /> */}
       </body>
     </html>
   );
