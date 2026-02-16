@@ -30,20 +30,8 @@ interface BinaryCardProps {
 
 type QuestionCardProps = LikertCardProps | BinaryCardProps
 
-const dimensionColors: Record<string, string> = {
-  // HEXACO
-  H: 'bg-indigo-100 text-indigo-700',
-  E: 'bg-purple-100 text-purple-700',
-  X: 'bg-blue-100 text-blue-700',
-  A: 'bg-green-100 text-green-700',
-  C: 'bg-orange-100 text-orange-700',
-  O: 'bg-pink-100 text-pink-700',
-  // Big Five extra
-  N: 'bg-rose-100 text-rose-700',
-}
-
 export function QuestionCard(props: QuestionCardProps) {
-  const { testName, dimension, format, highlight } = props
+  const { format, highlight } = props
   const { locale } = useLocale()
 
   return (

@@ -8,6 +8,7 @@ const CY = 150;
 const MAX_R = 100;
 const LABEL_R = 114;
 const RINGS = [0.25, 0.5, 0.75, 1.0];
+const SELF_POINT_COLOR = "#8B5CF6";
 const OBSERVER_POINT_COLOR = "#10B981";
 
 interface RadarDimension {

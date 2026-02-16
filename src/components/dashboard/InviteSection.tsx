@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/Toast";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, tf } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
 
 interface Invitation {
   id: string;
@@ -30,7 +29,7 @@ function getRelationshipColor(relationship?: string | null): string {
   return "bg-gray-50 text-gray-600 border-gray-200"; // OTHER
 }
 
-function getRelationshipLabel(relationship: string, locale: string): string {
+function getRelationshipLabel(relationship: string, locale: Locale): string {
   const rel = relationship.toUpperCase();
   if (rel === "FRIEND") return t("observer.relationFriend", locale);
   if (rel === "COLLEAGUE") return t("observer.relationColleague", locale);
@@ -40,15 +39,59 @@ function getRelationshipLabel(relationship: string, locale: string): string {
   return relationship;
 }
 
+async function copyTextWithFallback(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // fallback below
+  }
+
+  try {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.top = "-9999px";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textArea);
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const { showToast } = useToast();
   const { locale } = useLocale();
-  const router = useRouter();
   const [invitations, setInvitations] = useState(initialInvitations);
   const [isCreating, setIsCreating] = useState(false);
   const [email, setEmail] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+  const emitInviteProgressUpdate = (nextInvitations: Invitation[]) => {
+    const active = nextInvitations.filter((i) => i.status !== "CANCELED");
+    const pendingCount = active.filter((i) => i.status === "PENDING").length;
+    window.dispatchEvent(
+      new CustomEvent("dashboard:invites-updated", {
+        detail: {
+          hasInvites: active.length > 0,
+          pendingInvites: pendingCount,
+        },
+      })
+    );
+  };
+
+  useEffect(() => {
+    emitInviteProgressUpdate(invitations);
+  }, [invitations]);
 
   const handleCreate = async () => {
     if (isCreating) return;
@@ -95,7 +138,11 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
 
   const handleCopy = async (token: string) => {
     const link = `${window.location.origin}/observe/${token}`;
-    await navigator.clipboard.writeText(link);
+    const copied = await copyTextWithFallback(link);
+    if (!copied) {
+      showToast(t("invite.copyFailed", locale), "error");
+      return;
+    }
     setCopiedToken(token);
     setTimeout(() => setCopiedToken(null), 2000);
   };
