@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -60,6 +61,7 @@ export default async function RootLayout({
             </ToastProvider>
           </LocaleProvider>
         </ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );
