@@ -42,6 +42,7 @@ export function DoodleIllustration() {
         fill
         sizes="(min-width: 768px) 384px, 100vw"
         className="relative h-full w-full object-contain"
+        priority
       />
     </div>
   );
