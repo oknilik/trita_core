@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export function DoodleIllustration() {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-[#F8FAFC]">
@@ -35,14 +33,16 @@ export function DoodleIllustration() {
         <circle cx="650" cy="80" r="14" fill="#D1FAE5" />
       </svg>
 
-      <Image
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src="/doodles/meditating.svg"
         alt=""
-        aria-hidden
-        fill
-        sizes="(min-width: 768px) 384px, 100vw"
+        aria-hidden="true"
+        fetchPriority="high"
+        loading="eager"
+        decoding="async"
         className="relative h-full w-full object-contain"
-        priority
+        style={{ position: 'absolute', height: '100%', width: '100%', inset: 0 }}
       />
     </div>
   );
