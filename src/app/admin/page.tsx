@@ -168,7 +168,7 @@ export default async function AdminPage() {
       : 0;
 
   const completedInvites =
-    invitationStats.byStatus.find((s) => s.status === "COMPLETED")?._count
+    invitationStats.byStatus.find((s: { status: string; _count: { id: number } }) => s.status === "COMPLETED")?._count
       .id ?? 0;
   const conversionRate =
     invitationStats.total > 0
@@ -176,10 +176,10 @@ export default async function AdminPage() {
       : 0;
 
   const selfCount =
-    assessmentStats.selfVsObserver.find((s) => s.isSelfAssessment)?._count
+    assessmentStats.selfVsObserver.find((s: { isSelfAssessment: boolean; _count: { id: number } }) => s.isSelfAssessment)?._count
       .id ?? 0;
   const observerCount =
-    assessmentStats.selfVsObserver.find((s) => !s.isSelfAssessment)?._count
+    assessmentStats.selfVsObserver.find((s: { isSelfAssessment: boolean; _count: { id: number } }) => !s.isSelfAssessment)?._count
       .id ?? 0;
 
   // Format average scores
