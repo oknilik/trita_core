@@ -194,8 +194,8 @@ export default async function DashboardPage({
   if (!profile || !latestResult || !scores || !config) {
     const emptyTestName = config?.name ?? "test";
     return (
-      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
-        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-6 pb-14 md:p-8 md:pb-16">
+      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
+        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animate-gradient p-8 pb-16 md:p-12 md:pb-20">
           <div className="relative">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-200">
               {t("dashboard.personalTag", locale)}
@@ -233,7 +233,7 @@ export default async function DashboardPage({
             </div>
             <Link
               href="/assessment"
-              className="mt-5 inline-flex min-h-[48px] items-center rounded-xl bg-indigo-600 px-8 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl"
+              className="group mt-6 inline-flex min-h-[52px] md:min-h-[48px] items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
               {t("actions.continueTest", locale)}
             </Link>
@@ -248,7 +248,7 @@ export default async function DashboardPage({
             </p>
             <Link
               href="/assessment"
-              className="mt-6 inline-flex min-h-[48px] items-center rounded-xl bg-indigo-600 px-8 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl"
+              className="group mt-8 inline-flex min-h-[52px] md:min-h-[48px] items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
               {t("actions.startTest", locale)}
             </Link>
@@ -363,7 +363,7 @@ export default async function DashboardPage({
         };
   return (
     <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
-      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
+      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
       <DashboardAutoRefresh
         pendingInvites={pendingInvites.length}
         completedObserver={completedObservers.length}
@@ -371,7 +371,7 @@ export default async function DashboardPage({
       {/* ── Continue draft banner ── */}
       {draft && draftTotalQuestions > 0 && (
         <FadeIn>
-          <section className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-white p-6 md:p-8">
+          <section className="rounded-2xl border border-amber-200/50 bg-gradient-to-br from-amber-50/80 via-white to-white glass-effect p-8 md:p-12">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">
@@ -394,7 +394,7 @@ export default async function DashboardPage({
               </div>
               <Link
                 href="/assessment"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-amber-500 px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600"
+                className="group inline-flex min-h-[52px] md:min-h-[48px] items-center justify-center rounded-xl bg-amber-500 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-600 hover:scale-105"
               >
                 {t("actions.continueTest", locale)}
               </Link>
@@ -405,35 +405,38 @@ export default async function DashboardPage({
 
       {/* ── Guided journey ── */}
       <FadeIn delay={0.05}>
-        <section className="relative rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white p-6 md:p-8">
+        <section className="relative rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-indigo-50/80 via-white to-white glass-effect p-8 md:p-12">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
                 {t("dashboard.guidedTag", locale)}
               </p>
-              <h2 className="mt-2 text-2xl font-semibold text-gray-900">
-                {t("dashboard.nextStepTitle", locale)}
-              </h2>
-              <p className="mt-2 text-sm text-gray-600">
+              <div className="mt-3 flex items-center gap-3">
+                <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                  {t("dashboard.nextStepTitle", locale)}
+                </h2>
+              </div>
+              <p className="mt-3 text-sm text-gray-600">
                 {t("dashboard.guidedPraise", locale)}
               </p>
             </div>
           </div>
 
-          <div className="mt-5">
+          <div className="mt-6">
             <div className="mt-6 flex justify-center md:hidden">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-xl font-bold text-indigo-600 shadow-sm">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-xl font-bold text-white shadow-lg">
                 {stepsCompleted}/{totalSteps}
               </div>
             </div>
-            <div className="absolute right-4 top-4 hidden md:flex">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-xl font-bold text-indigo-600 shadow-sm">
+            <div className="absolute right-6 top-6 hidden md:flex">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-xl font-bold text-white shadow-lg">
                 {stepsCompleted}/{totalSteps}
               </div>
             </div>
-            <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-indigo-100">
+            <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-gray-100 shadow-inner">
               <div
-                className="h-full rounded-full bg-indigo-500 transition-all"
+                className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg transition-all duration-700 ease-out"
                 style={{
                   width: `${progressPct}%`,
                   background: feedbackPartial
@@ -442,47 +445,51 @@ export default async function DashboardPage({
                 }}
               />
             </div>
-            <div className="mt-3 grid grid-cols-3 text-center">
-              <span className={stepsCompleted >= 1 ? "text-emerald-600" : "text-gray-300"}>
+            <div className="mt-5 grid grid-cols-3 gap-2 text-center">
+              <span className={stepsCompleted >= 1 ? "text-emerald-500" : "text-gray-300"}>
                 {stepsCompleted >= 1 ? (
                   <svg
                     viewBox="0 0 24 24"
-                    className="mx-auto h-5 w-5"
+                    className="mx-auto h-8 w-8 drop-shadow-md transition-transform hover:scale-110"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden
                   >
-                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
                     <path d="M8.5 12.5l2.5 2.5 4.5-5" />
                   </svg>
-                ) : null}
+                ) : (
+                  <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
+                )}
               </span>
-              <span className={stepsCompleted >= 2 ? "text-emerald-600" : "text-gray-300"}>
+              <span className={stepsCompleted >= 2 ? "text-emerald-500" : "text-gray-300"}>
                 {stepsCompleted >= 2 ? (
                   <svg
                     viewBox="0 0 24 24"
-                    className="mx-auto h-5 w-5"
+                    className="mx-auto h-8 w-8 drop-shadow-md transition-transform hover:scale-110"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden
                   >
-                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
                     <path d="M8.5 12.5l2.5 2.5 4.5-5" />
                   </svg>
-                ) : null}
+                ) : (
+                  <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
+                )}
               </span>
               <span
                 className={
                   stepsCompleted >= 3
                     ? feedbackPartial
                       ? "text-amber-500"
-                      : "text-emerald-600"
+                      : "text-emerald-500"
                     : feedbackInProgress
                       ? "text-amber-500"
                       : "text-gray-300"
@@ -491,32 +498,34 @@ export default async function DashboardPage({
                 {stepsCompleted >= 3 ? (
                   <svg
                     viewBox="0 0 24 24"
-                    className="mx-auto h-5 w-5"
+                    className="mx-auto h-8 w-8 drop-shadow-md transition-transform hover:scale-110"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden
                   >
-                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
                     <path d="M8.5 12.5l2.5 2.5 4.5-5" />
                   </svg>
                 ) : feedbackInProgress ? (
                   <svg
                     viewBox="0 0 24 24"
-                    className="mx-auto h-5 w-5"
+                    className="mx-auto h-8 w-8 drop-shadow-md transition-transform hover:scale-110"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden
                   >
-                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
                     <path d="M12 6v6l4 2" />
                   </svg>
-                ) : null}
+                ) : (
+                  <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
+                )}
               </span>
             </div>
             <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
@@ -542,7 +551,7 @@ export default async function DashboardPage({
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-indigo-100 bg-white p-4 md:p-5">
+          <div className="mt-6 rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-white to-indigo-50/20 p-6 md:p-8 shadow-md">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
@@ -550,7 +559,7 @@ export default async function DashboardPage({
               </div>
               <Link
                 href={nextStep.href}
-                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-indigo-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                className="group inline-flex min-h-[52px] md:min-h-[48px] items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 {nextStep.cta}
               </Link>
@@ -561,10 +570,13 @@ export default async function DashboardPage({
 
       {/* ── Chart overview + highlights ── */}
       <FadeIn delay={0.1}>
-        <section id="results" className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            {tf("dashboard.profileOverview", locale, { testName: config.name })}
-          </h2>
+        <section id="results" className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              {tf("dashboard.profileOverview", locale, { testName: config.name })}
+            </h2>
+          </div>
           <p className="mt-2 text-sm text-gray-600">
             {isLikert
               ? tf("dashboard.overviewLikert", locale, { count: config.dimensions.length })
@@ -610,10 +622,13 @@ export default async function DashboardPage({
       {/* ── Detailed dimension cards (Likert) ── */}
       {displayScores && (
         <FadeIn delay={0.15}>
-          <section className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-            <h2 className="text-2xl font-semibold text-gray-900">
-              {t("dashboard.detailedTitle", locale)}
-            </h2>
+          <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                {t("dashboard.detailedTitle", locale)}
+              </h2>
+            </div>
             <p className="mt-2 text-sm text-gray-600">
               {t("dashboard.detailedBody", locale)}
             </p>

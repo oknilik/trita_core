@@ -150,7 +150,7 @@ export const DimensionCard = memo(function DimensionCard({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="group w-full cursor-pointer rounded-xl border border-gray-100 bg-white p-4 text-left transition hover:shadow-md"
+        className="ambient-glow group w-full cursor-pointer rounded-2xl border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 p-6 text-left shadow-sm transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1"
         style={{ borderLeftWidth: "4px", borderLeftColor: color }}
       >
         <div className="flex items-center gap-3">
@@ -185,34 +185,39 @@ export const DimensionCard = memo(function DimensionCard({
 
       {/* Detail overlay - Portal to body for proper full-screen backdrop */}
       {mounted && createPortal(
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {isOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
               className="fixed inset-0 z-50 flex items-end justify-center md:items-center md:p-4"
             >
               {/* Backdrop */}
               <div
                 onClick={() => setIsOpen(false)}
-                className="absolute inset-0 bg-black/40"
+                className="absolute inset-0 bg-black/40 glass-effect"
               />
 
             {/* Content */}
             <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 400, damping: 35 }}
-              className="relative max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl bg-white md:max-h-[85vh] md:max-w-lg md:rounded-xl md:border md:border-gray-100 md:shadow-xl"
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "100%", opacity: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 40,
+                mass: 0.8
+              }}
+              className="relative max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl bg-white/95 glass-effect md:max-h-[85vh] md:max-w-lg md:rounded-2xl md:border md:border-gray-100/50 md:shadow-2xl"
             >
               {/* Close button */}
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-all duration-300 hover:bg-gray-100 hover:text-gray-600 hover:scale-110 hover:rotate-90"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -403,7 +408,7 @@ export const DimensionCard = memo(function DimensionCard({
                       type="button"
                       onClick={handleSubmitFeedback}
                       disabled={feedbackRating === null || isSubmittingFeedback}
-                      className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-lg bg-indigo-600 px-5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+                      className="mt-4 inline-flex min-h-[52px] md:min-h-[48px] w-full items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
                     >
                       {isSubmittingFeedback
                         ? t("dashboard.dimension.feedbackSubmitting", locale)

@@ -72,13 +72,25 @@ export const RadarChart = memo(function RadarChart({ dimensions }: RadarChartPro
     >
       <defs>
         <linearGradient id="radarFill" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.08" />
+          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.25" />
+          <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#D946EF" stopOpacity="0.1" />
         </linearGradient>
         <linearGradient id="radarStroke" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#6366F1" />
-          <stop offset="100%" stopColor="#8B5CF6" />
+          <stop offset="50%" stopColor="#8B5CF6" />
+          <stop offset="100%" stopColor="#D946EF" />
         </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.15"/>
+        </filter>
       </defs>
 
       {/* Grid rings */}
@@ -121,25 +133,28 @@ export const RadarChart = memo(function RadarChart({ dimensions }: RadarChartPro
           points={dataPolygon}
           fill="url(#radarFill)"
           stroke="url(#radarStroke)"
-          strokeWidth="2.5"
+          strokeWidth="3"
           strokeLinejoin="round"
+          filter="url(#shadow)"
         />
       </motion.g>
 
       {/* Data point dots — staggered fade-in */}
       {dataPoints.map((p, i) => (
-        <motion.circle
-          key={p.code}
-          cx={p.x}
-          cy={p.y}
-          r="5"
-          fill={p.color}
-          stroke="white"
-          strokeWidth="2"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.6 + i * 0.06, duration: 0.3, ease: "easeOut" }}
-        />
+        <motion.g key={p.code}>
+          <motion.circle
+            cx={p.x}
+            cy={p.y}
+            r="5"
+            fill={p.color}
+            stroke="white"
+            strokeWidth="2.5"
+            filter="url(#glow)"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.6 + i * 0.06, duration: 0.3, ease: "easeOut" }}
+          />
+        </motion.g>
       ))}
 
       {/* Dimension labels */}
