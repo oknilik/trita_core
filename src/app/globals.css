@@ -44,3 +44,17 @@ body {
   animation: fade-in 0.5s ease-out;
   will-change: opacity, transform;
 }
+
+/* Performance-optimized floating animation (CSS instead of Framer Motion) */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}

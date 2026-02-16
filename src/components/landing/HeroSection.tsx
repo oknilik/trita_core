@@ -2,7 +2,6 @@
 
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { TritaLogo } from "@/components/TritaLogo";
 import { DoodleIllustration } from "@/components/landing/DoodleIllustration";
 import { FadeIn } from "@/components/landing/FadeIn";
@@ -69,17 +68,13 @@ export function HeroSection() {
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="mx-auto w-full max-w-sm md:max-w-lg"
-          >
+          <div className="animate-float mx-auto w-full max-w-sm md:max-w-lg">
             <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white p-3 shadow-xl shadow-indigo-100/40">
               <div className="h-56 w-full md:h-80">
                 <DoodleIllustration />
               </div>
             </div>
-          </motion.div>
+          </div>
         </FadeIn>
       </div>
     </section>
