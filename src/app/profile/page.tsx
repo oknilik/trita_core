@@ -429,26 +429,45 @@ export default function ProfilePage() {
             <p className="mt-1 text-sm text-gray-600">
               {t("profile.participationBody", locale)}
             </p>
-            <div className="mt-4 space-y-2">
-              <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                <span className="text-sm font-medium text-gray-700">{t("profile.statusProfile", locale)}</span>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(profileStatusValue)}`}>
-                  {profileStatusValue}
-                </span>
+
+            {/* Loading skeleton while fetching profile status */}
+            {profileStatus === null ? (
+              <div className="mt-4 space-y-2 animate-pulse">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <div className="h-4 w-24 rounded bg-gray-200" />
+                  <div className="h-6 w-20 rounded-full bg-gray-200" />
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <div className="h-4 w-20 rounded bg-gray-200" />
+                  <div className="h-6 w-24 rounded-full bg-gray-200" />
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <div className="h-4 w-28 rounded bg-gray-200" />
+                  <div className="h-6 w-20 rounded-full bg-gray-200" />
+                </div>
               </div>
-              <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                <span className="text-sm font-medium text-gray-700">{t("profile.statusTest", locale)}</span>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(testStatusValue)}`}>
-                  {testStatusValue}
-                </span>
+            ) : (
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span className="text-sm font-medium text-gray-700">{t("profile.statusProfile", locale)}</span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(profileStatusValue)}`}>
+                    {profileStatusValue}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span className="text-sm font-medium text-gray-700">{t("profile.statusTest", locale)}</span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(testStatusValue)}`}>
+                    {testStatusValue}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span className="text-sm font-medium text-gray-700">{t("profile.statusFeedback", locale)}</span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(feedbackStatusValue)}`}>
+                    {feedbackStatusValue}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                <span className="text-sm font-medium text-gray-700">{t("profile.statusFeedback", locale)}</span>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(feedbackStatusValue)}`}>
-                  {feedbackStatusValue}
-                </span>
-              </div>
-            </div>
+            )}
           </section>
         </div>
       </FadeIn>
