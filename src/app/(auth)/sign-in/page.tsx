@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -8,7 +8,7 @@ import { t } from "@/lib/i18n";
 import Link from "next/link";
 import { TritaLogo } from "@/components/TritaLogo";
 
-export default function SignInPage() {
+function SignInContent() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -347,5 +347,13 @@ export default function SignInPage() {
         <div id="clerk-captcha" />
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" />}>
+      <SignInContent />
+    </Suspense>
   );
 }
