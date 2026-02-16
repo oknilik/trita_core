@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedBar } from "@/components/dashboard/AnimatedBar";
 import { useLocale } from "@/components/LocaleProvider";
@@ -33,7 +33,7 @@ function getLevel(score: number): "low" | "mid" | "high" {
   return score < 40 ? "low" : score < 70 ? "mid" : "high";
 }
 
-export function DimensionCard({
+export const DimensionCard = memo(function DimensionCard({
   code,
   label,
   labelByLocale,
@@ -412,4 +412,4 @@ export function DimensionCard({
       </AnimatePresence>
     </>
   );
-}
+});

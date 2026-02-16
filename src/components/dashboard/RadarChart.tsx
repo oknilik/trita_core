@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 
 const CX = 150;
@@ -50,7 +51,7 @@ function getLabelOffset(index: number, total: number): { dx: number; dy: number 
   };
 }
 
-export function RadarChart({ dimensions }: RadarChartProps) {
+export const RadarChart = memo(function RadarChart({ dimensions }: RadarChartProps) {
   const n = dimensions.length;
 
   const dataPoints = dimensions.map((dim, i) => ({
@@ -180,4 +181,4 @@ export function RadarChart({ dimensions }: RadarChartProps) {
       ))}
     </svg>
   );
-}
+});
