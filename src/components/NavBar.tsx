@@ -36,7 +36,7 @@ export function NavBar() {
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-xl bg-indigo-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
             >
               {t("actions.signUpCta", locale)}
             </Link>

@@ -65,7 +65,7 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
             className={`relative w-full max-w-md overflow-hidden rounded-2xl border bg-white shadow-2xl ${
-              variant === "danger" ? "border-rose-200/70" : "border-gray-200"
+              variant === "danger" ? "border-rose-200/70" : "border-gray-100"
             }`}
           >
             <div
@@ -211,7 +211,7 @@ export function ConfirmModal({
           type="button"
           onClick={onClose}
           disabled={isLoading}
-          className="min-h-[44px] rounded-lg border border-gray-200 bg-white px-5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-[44px] rounded-lg border border-gray-100 bg-white px-5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {cancelText}
         </button>
@@ -219,10 +219,10 @@ export function ConfirmModal({
           type="button"
           onClick={onConfirm}
           disabled={isLoading}
-          className={`min-h-[44px] rounded-lg px-5 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`min-h-[48px] rounded-lg px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 ${
             variant === "danger"
               ? "bg-rose-600 hover:bg-rose-700"
-              : "bg-indigo-600 hover:bg-indigo-700"
+              : "bg-gradient-to-r from-indigo-600 to-purple-600"
           }`}
         >
           {isLoading && loadingText ? loadingText : confirmText}

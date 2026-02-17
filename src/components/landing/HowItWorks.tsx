@@ -39,12 +39,12 @@ export function HowItWorks() {
           <div className="grid gap-10 md:grid-cols-3 md:gap-8">
             {steps.map((step, i) => (
               <FadeIn key={i} delay={i * 0.15}>
-                <div className="flex h-full flex-col items-center rounded-xl border border-indigo-100 bg-indigo-50/50 p-3 text-center md:border-0 md:bg-transparent md:p-0">
+                <div className="flex h-full flex-col items-center rounded-xl border border-gray-100 bg-white p-6 text-center shadow-lg md:border-indigo-100 md:bg-gradient-to-br md:from-indigo-50/80 md:via-white md:to-white md:p-8 md:shadow-lg">
                   <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-base font-bold text-white shadow-lg shadow-indigo-200 md:h-12 md:w-12 md:text-lg">
                     {i + 1}
                   </div>
 
-                  <div className="mt-4 h-36 w-full overflow-hidden rounded-xl bg-transparent py-2 md:bg-indigo-50/50">
+                  <div className="mt-4 h-36 w-full overflow-hidden rounded-xl bg-indigo-50/50 py-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={STEP_DOODLES[i]}

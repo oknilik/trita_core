@@ -426,7 +426,7 @@ export function ObserverClient({
                 </p>
                 <a
                   href="/dashboard"
-                  className="mt-4 inline-block min-h-[44px] rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
                   {t("observer.goDashboard", locale)}
                 </a>

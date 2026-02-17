@@ -217,7 +217,7 @@ export const DimensionCard = memo(function DimensionCard({
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-all duration-300 hover:bg-gray-100 hover:text-gray-600 hover:scale-110 hover:rotate-90"
+                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-all duration-300 hover:bg-gray-100 hover:text-gray-600 hover:scale-110 hover:rotate-90"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -408,7 +408,7 @@ export const DimensionCard = memo(function DimensionCard({
                       type="button"
                       onClick={handleSubmitFeedback}
                       disabled={feedbackRating === null || isSubmittingFeedback}
-                      className="mt-4 inline-flex min-h-[52px] md:min-h-[48px] w-full items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+                      className="mt-4 inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
                     >
                       {isSubmittingFeedback
                         ? t("dashboard.dimension.feedbackSubmitting", locale)

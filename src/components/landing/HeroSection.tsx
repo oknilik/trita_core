@@ -39,7 +39,7 @@ export function HeroSection() {
               <SignedIn>
                 <Link
                   href="/dashboard"
-                  className="flex min-h-[48px] items-center justify-center rounded-xl bg-indigo-600 px-8 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200"
+                  className="flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
                   {t("landing.openDashboard", locale)}
                 </Link>
@@ -47,7 +47,7 @@ export function HeroSection() {
               <SignedOut>
                 <Link
                   href="/sign-up"
-                  className="flex min-h-[48px] items-center justify-center rounded-xl bg-indigo-600 px-8 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200"
+                  className="flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
                   {t("landing.joinResearch", locale)}
                 </Link>
@@ -55,7 +55,7 @@ export function HeroSection() {
 
               <Link
                 href="/research"
-                className="flex min-h-[48px] items-center justify-center rounded-xl border border-gray-200 bg-white px-8 text-base font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+                className="flex min-h-[48px] items-center justify-center rounded-lg border border-gray-100 bg-white px-8 text-base font-semibold text-gray-700 transition-all duration-300 hover:border-gray-200 hover:bg-gray-50"
               >
                 {t("landing.notifyMe", locale)}
               </Link>

@@ -15,11 +15,11 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
       <motion.button
         onClick={() => onChange('A')}
         className={`
-          min-h-[44px] rounded-xl border-2 p-5 text-left text-sm font-medium transition-all
+          min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'A'
               ? 'border-indigo-500 bg-indigo-50 text-gray-900 shadow-md'
-              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -51,11 +51,11 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
       <motion.button
         onClick={() => onChange('B')}
         className={`
-          min-h-[44px] rounded-xl border-2 p-5 text-left text-sm font-medium transition-all
+          min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'B'
               ? 'border-purple-500 bg-purple-50 text-gray-900 shadow-md'
-              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
           }
         `}
         whileHover={{ scale: 1.01 }}

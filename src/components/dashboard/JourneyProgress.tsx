@@ -200,7 +200,7 @@ export function JourneyProgress({
           </div>
           <Link
             href={nextStep.href}
-            className="group inline-flex min-h-[52px] md:min-h-[48px] items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             {nextStep.cta}
           </Link>

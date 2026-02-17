@@ -73,7 +73,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     "U";
 
   const itemClass = (active: boolean) =>
-    `flex min-h-[46px] items-center gap-3 rounded-xl px-3.5 text-sm font-semibold transition ${
+    `flex min-h-[46px] items-center gap-3 rounded-lg px-3.5 text-sm font-semibold transition ${
       active
         ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200"
         : "text-gray-700 hover:bg-gray-50 hover:text-indigo-700"
@@ -191,7 +191,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                         className={`min-h-[38px] rounded-lg border text-xs font-semibold transition ${
                           locale === loc
                             ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                            : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                            : "border-gray-100 bg-white text-gray-600 hover:border-gray-300"
                         }`}
                       >
                         {t(`locale.${loc}` as const, loc)}

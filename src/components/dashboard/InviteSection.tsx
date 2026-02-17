@@ -227,13 +227,13 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder={t("invite.emailPlaceholder", locale) || "Email cím (opcionális)"}
-            className="min-h-[52px] md:min-h-[48px] flex-1 rounded-xl border border-indigo-100 bg-white px-4 text-sm text-gray-900 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
+            className="min-h-[48px] flex-1 rounded-lg border border-indigo-100 bg-white px-4 text-sm text-gray-900 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
           />
           <button
             type="button"
             onClick={handleCreate}
             disabled={isCreating || !canCreate || showSuccess}
-            className="group min-h-[52px] md:min-h-[48px] rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+            className="group min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
             {showSuccess ? (
               <span className="inline-flex items-center gap-2">
@@ -266,7 +266,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
           {activeInvitations.map((inv) => (
             <div
               key={inv.id}
-              className="group rounded-xl border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md"
+              className="group rounded-lg border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">

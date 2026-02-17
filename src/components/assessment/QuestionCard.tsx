@@ -44,7 +44,7 @@ export function QuestionCard(props: QuestionCardProps) {
     >
       <div
         className={`rounded-2xl border bg-white p-6 shadow-xl transition-colors md:p-8 ${
-          highlight ? 'border-rose-400' : 'border-gray-200'
+          highlight ? 'border-rose-400' : 'border-gray-100'
         }`}
       >
         {/* Badge removed */}

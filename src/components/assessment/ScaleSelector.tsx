@@ -28,12 +28,12 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
             key={scale}
             onClick={() => onChange(scale)}
             className={`
-              relative min-h-[56px] flex-1 rounded-xl border-2 px-4 py-3 text-center
+              relative min-h-[48px] flex-1 rounded-lg border-2 px-4 py-3 text-center
               font-semibold transition-all
               ${
                 value === scale
                   ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg'
-                  : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50'
+                  : 'border-gray-100 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50'
               }
             `}
             whileHover={{ scale: 1.02 }}
@@ -51,7 +51,7 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
             {value === scale && (
               <motion.div
                 layoutId="selected"
-                className="absolute inset-0 rounded-xl border-2 border-indigo-600"
+                className="absolute inset-0 rounded-lg border-2 border-indigo-600"
                 initial={false}
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />

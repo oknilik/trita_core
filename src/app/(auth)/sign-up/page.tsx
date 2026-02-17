@@ -147,7 +147,7 @@ function SignUpContent() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-2 min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+                className="mt-2 min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
               >
                 {isSubmitting ? t("actions.verifying", locale) : t("actions.verify", locale)}
               </button>
@@ -222,7 +222,7 @@ function SignUpContent() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-2 min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+              className="mt-2 min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
             >
               {isSubmitting ? t("auth.submitSignUpLoading", locale) : t("auth.submitSignUp", locale)}
             </button>
@@ -237,7 +237,7 @@ function SignUpContent() {
           <button
             type="button"
             onClick={handleGoogleSignUp}
-            className="flex min-h-[44px] w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            className="flex min-h-[44px] w-full items-center justify-center gap-3 rounded-lg border border-gray-100 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
               <path
