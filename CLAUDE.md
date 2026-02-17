@@ -5,8 +5,7 @@
 and observer agreement of modern trait-based personality assessment models.
 
 The primary focus is on **HEXACO-PI-R**, a **theory-consistent modified HEXACO** (reduced,
-context-adapted item set), and **Big Five Aspect Scales (BFAS)**. An additional typological
-tool (Jung-based dichotomies, `MBTI` enum) is included for **exploratory comparison only**.
+context-adapted item set), and **Big Five Aspect Scales (BFAS)**.
 
 The app randomly assigns one test type per user (priority-balanced distribution favoring core
 instruments), collects self-assessments and observer (peer) assessments, and provides comparative
@@ -68,7 +67,6 @@ codebase/
 │   │   ├── assessment/               # ProgressBar, QuestionCard, SliderSelector, ABSelector
 │   │   ├── dashboard/
 │   │   │   ├── RadarChart.tsx         # Generic radar chart (5-6 dimensions)
-│   │   │   ├── MBTIChart.tsx          # MBTI bar visualization (4 dichotomies + type code)
 │   │   │   ├── InviteSection.tsx      # Observer invite management (create/copy/delete)
 │   │   │   ├── ObserverComparison.tsx # Self vs observer comparison (with confidence avg)
 │   │   │   └── RetakeButton.tsx       # Retake CTA with ConfirmModal
@@ -90,8 +88,7 @@ codebase/
 │   │       ├── hexaco.ts             # Official HEXACO-PI-R questions (60)
 │   │       ├── hexacoModified.ts     # Modified HEXACO questions (same 6 dims)
 │   │       ├── big5.ts               # Big Five Aspect Scales (BFAS) questions
-│   │       ├── mbti.ts              # MBTI binary questions (exploratory)
-│   │       └── index.ts              # Question loader factory + CORE/EXPLORATORY constants
+│   │       └── index.ts              # Question loader factory
 │   └── middleware.ts                 # Clerk route protection (/observe/* is public)
 ├── prisma/
 │   ├── schema.prisma
@@ -123,16 +120,6 @@ achieve comparable observer agreement to the official HEXACO-PI-R?
 | `HEXACO_MODIFIED` | HEXACO (modified, context-adapted) | Likert 1-5 | H, E, X, A, C, O (6) | TBD | Research innovation |
 | `BIG_FIVE` | Big Five Aspect Scales (BFAS) | Likert 1-5 | O, C, E, A, N (5) | ~50 | Cross-model comparison |
 
-**Exploratory instrument** (secondary, smaller sample):
-
-| Code | Name | Format | Dimensions | Questions | Role |
-|------|------|--------|------------|-----------|------|
-| `MBTI` | Typological dichotomies (Jung-based) | Binary A/B | E/I, S/N, T/F, J/P (4) | ~20 | Exploratory |
-
-Note: The MBTI module is a non-official, research-only adaptation of Jung-based dichotomous
-assessment. It is NOT branded as "MBTI" in the thesis — referred to as "typological dichotomies"
-or "Jung-based preference assessment". It is not on equal footing with the core trait instruments.
-
 Aspect-level Big Five measurement (BFAS) was chosen due to its higher predictive power for
 work-related behavior compared to domain-level Big Five.
 
@@ -143,7 +130,7 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 2. Signs up / signs in (Clerk)
 3. Gets randomly assigned ONE test type (priority-balanced)
 4. Completes the assigned assessment
-5. Sees results on adaptive dashboard (radar chart for HEXACO/Big5, bar chart for MBTI)
+5. Sees results on adaptive dashboard (radar chart)
 6. Can invite 1+ observers (friends/colleagues) via unique link
 7. Observer fills out the SAME test type about the inviter (public, no auth required)
 8. Observer provides: relationship type + known duration + confidence rating
@@ -151,17 +138,11 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 10. User sees anonymized observer comparison on dashboard
 
 ### Random Assignment
-- **Priority-balanced**: core types (HEXACO, HEXACO_MODIFIED, BIG_FIVE) are filled first
-- Exploratory type (MBTI) is only assigned when all core types have reached their quota (~50)
-- Logic: if any core type has < 50 completions → assign from core pool (balanced). Otherwise → full pool including MBTI.
-- Within each pool: pick the type with the fewest participants; ties broken randomly
+- **Balanced distribution**: all three core types (HEXACO, HEXACO_MODIFIED, BIG_FIVE) are filled evenly
+- Logic: pick the type with the fewest participants; ties broken randomly
 - Stored in `UserProfile.testType` + `testTypeAssignedAt`
 - Once assigned, never changes
-- This protects the research: if participant count is limited, core data is prioritized
-- Implementation: `assignTestType.ts` uses constants from `questions/index.ts`:
-  - `CORE_TEST_TYPES`: `["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"]`
-  - `EXPLORATORY_TEST_TYPES`: `["MBTI"]`
-  - `CORE_QUOTA`: `50`
+- Implementation: `assignTestType.ts` uses `TEST_TYPES` from `questions/index.ts`
 
 ### Observer Flow
 - Public link: `/observe/{token}` (no auth required)
@@ -193,7 +174,7 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 - Client localizes via `t(\`error.${code}\`, locale)` with fallback to generic error message
 - Error codes in `i18n.ts`: `NO_TEST_TYPE`, `INVITE_LIMIT_REACHED`, `SELF_INVITE`, `INVALID_TOKEN`,
   `ALREADY_USED`, `INVITE_CANCELED`, `INVITE_EXPIRED`, `ANSWER_COUNT_MISMATCH`, `DUPLICATE_ANSWER`,
-  `MISSING_ANSWER`, `INVALID_MBTI_ANSWER`, `INVALID_LIKERT_ANSWER`, `EMAIL_SEND_FAILED`
+  `MISSING_ANSWER`, `INVALID_LIKERT_ANSWER`, `EMAIL_SEND_FAILED`
 
 ### Assessment UX
 - **localStorage draft**: answers saved to `trita_draft_{testType}` on every change; restored on mount; cleared on successful submit
@@ -224,7 +205,6 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 ### Scoring
 - **HEXACO / HEXACO_MODIFIED:** 6 dims, average per dimension → 0-100%, reverse scoring support
 - **Big Five (BFAS):** 5 dims (O,C,E,A,N), same Likert logic
-- **MBTI (exploratory):** 4 dichotomies, % toward each pole + type code (e.g., "INTJ")
 
 ---
 
@@ -248,17 +228,6 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 | E | Extraverzió | Extraversion | `#F59E0B` |
 | A | Barátságosság | Agreeableness | `#10B981` |
 | N | Neuroticizmus | Neuroticism | `#F43F5E` |
-
-### Typological Dichotomies (MBTI enum — exploratory)
-| Dichotomy | Poles | Hungarian |
-|-----------|-------|-----------|
-| E/I | Extraversion / Introversion | Extraverzió / Introverzió |
-| S/N | Sensing / iNtuition | Érzékelés / Intuíció |
-| T/F | Thinking / Feeling | Gondolkodás / Érzés |
-| J/P | Judging / Perceiving | Megítélés / Észlelés |
-
-Note: In the thesis this is referred to as "Jung-based typological dichotomies", not "MBTI".
-The Prisma enum value remains `MBTI` for technical simplicity.
 
 ---
 

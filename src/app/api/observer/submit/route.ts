@@ -50,10 +50,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "INVITE_EXPIRED" }, { status: 400 });
   }
 
-  if (invitation.testType === "MBTI") {
-    return NextResponse.json({ error: "INVALID_TEST_TYPE" }, { status: 400 });
-  }
-
   // Validate all questions answered
   const config = getTestConfig(invitation.testType as TestType);
   const expectedIds = new Set(config.questions.map((q) => q.id));

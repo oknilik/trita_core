@@ -62,10 +62,6 @@ export default async function AssessmentPage({
   if (!testType) {
     testType = await assignTestType(profile.id);
   }
-  if (testType === "MBTI") {
-    testType = await assignTestType(profile.id);
-  }
-
   const locale = await getServerLocale();
   const config = getTestConfig(testType, locale);
 
@@ -77,12 +73,16 @@ export default async function AssessmentPage({
         }
       : undefined;
 
+  // Fresh retake: confirmed=true but no server draft → clear stale localStorage
+  const clearDraft = params.confirmed === "true" && !draft;
+
   return (
     <AssessmentClient
       testType={testType}
       testName={config.name}
       totalQuestions={config.questions.length}
       initialDraft={initialDraft}
+      clearDraft={clearDraft}
     />
   );
 }

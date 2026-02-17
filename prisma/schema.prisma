@@ -16,7 +16,6 @@ enum TestType {
   HEXACO
   HEXACO_MODIFIED
   BIG_FIVE
-  MBTI
 }
 
 enum RelationshipType {
@@ -118,10 +117,26 @@ model ObserverInvitation {
   inviter    UserProfile         @relation("InviterInvitations", fields: [inviterId], references: [id])
   observer   UserProfile?        @relation("ObserverInvitations", fields: [observerProfileId], references: [id])
   assessment ObserverAssessment?
+  draft      ObserverDraft?
 
   @@index([inviterId])
   @@index([observerProfileId])
   @@index([token])
+}
+
+// Draft state for in-progress observer assessments
+model ObserverDraft {
+  id               String   @id @default(cuid())
+  invitationId     String   @unique
+  phase            String   @default("assessment")
+  relationshipType String
+  knownDuration    String
+  answers          Json
+  currentPage      Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  invitation ObserverInvitation @relation(fields: [invitationId], references: [id])
 }
 
 // Observer's assessment of the inviter

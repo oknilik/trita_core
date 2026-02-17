@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedBar } from "@/components/dashboard/AnimatedBar";
 import { useLocale } from "@/components/LocaleProvider";
+import { useToast } from "@/components/ui/Toast";
 import { t, type Locale } from "@/lib/i18n";
 
 type InsightLevels = { low: string; mid: string; high: string };
@@ -52,6 +53,7 @@ export const DimensionCard = memo(function DimensionCard({
   existingFeedback,
 }: DimensionCardProps) {
   const { locale } = useLocale();
+  const { showToast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const level = getLevel(score);
@@ -138,7 +140,7 @@ export const DimensionCard = memo(function DimensionCard({
       setFeedbackSubmitted(true);
     } catch (error) {
       console.error("Feedback submission failed:", error);
-      alert(t("dashboard.dimension.feedbackError", locale));
+      showToast(t("dashboard.dimension.feedbackError", locale), "error");
     } finally {
       setIsSubmittingFeedback(false);
     }

@@ -11,42 +11,17 @@ import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
 import type { TestType } from '@prisma/client'
+import { pickRandomDoodle } from '@/lib/doodles'
 type AssessmentQuestion = { id: number; text: string }
 
 const QUESTIONS_PER_PAGE = 5
-const DOODLE_SOURCES = [
-  '/doodles/chilling.svg',
-  '/doodles/coffee.svg',
-  '/doodles/float.svg',
-  '/doodles/groovy.svg',
-  '/doodles/jumping.svg',
-  '/doodles/laying.svg',
-  '/doodles/loving.svg',
-  '/doodles/meditating.svg',
-  '/doodles/plant.svg',
-  '/doodles/reading-side.svg',
-  '/doodles/roller-skating.svg',
-  '/doodles/running.svg',
-  '/doodles/selfie.svg',
-  '/doodles/sitting-reading.svg',
-  '/doodles/sleek.svg',
-  '/doodles/strolling.svg',
-  '/doodles/swinging.svg',
-  '/doodles/unboxing.svg',
-] as const
-
-function pickRandomDoodle(current?: string) {
-  const pool = current
-    ? DOODLE_SOURCES.filter((src) => src !== current)
-    : DOODLE_SOURCES
-  return pool[Math.floor(Math.random() * pool.length)] ?? DOODLE_SOURCES[0]
-}
 
 interface AssessmentClientProps {
   testType: TestType
   testName: string
   totalQuestions: number
   initialDraft?: { answers: Record<string, number>; currentPage: number }
+  clearDraft?: boolean
 }
 
 export function AssessmentClient({
@@ -54,6 +29,7 @@ export function AssessmentClient({
   testName,
   totalQuestions,
   initialDraft,
+  clearDraft = false,
 }: AssessmentClientProps) {
   const router = useRouter()
   const { showToast } = useToast()
@@ -114,26 +90,74 @@ export function AssessmentClient({
     [pageQuestions],
   )
 
-  // Load localStorage draft after hydration (only if no server draft)
+  // Refs to always have the latest values in async callbacks
+  const latestAnswersRef = useRef(answers)
+  const latestPageRef = useRef(currentPage)
+  useEffect(() => { latestAnswersRef.current = answers }, [answers])
+  useEffect(() => { latestPageRef.current = currentPage }, [currentPage])
+
+  // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
   useEffect(() => {
-    if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) return
+    if (clearDraft) {
+      localStorage.removeItem(draftKey)
+      return
+    }
+    if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
+      // Server draft loaded – remove stale localStorage so they don't diverge
+      localStorage.removeItem(draftKey)
+      return
+    }
     try {
       const saved = localStorage.getItem(draftKey)
       if (saved) {
-        const parsed = JSON.parse(saved) as Record<number, number>
-        setAnswers(parsed)
+        const parsed = JSON.parse(saved) as { answers?: Record<number, number>; currentPage?: number } | Record<number, number>
+        if ('answers' in parsed && parsed.answers) {
+          // New format: { answers, currentPage }
+          setAnswers(parsed.answers)
+          if (typeof parsed.currentPage === 'number') {
+            setCurrentPage(parsed.currentPage)
+          }
+        } else {
+          // Legacy format: plain answers object
+          setAnswers(parsed as Record<number, number>)
+        }
       }
     } catch {
       // ignore
     }
-  }, [draftKey, initialDraft?.answers])
+  }, [draftKey, initialDraft?.answers, clearDraft])
 
-  // Save draft to localStorage on every answer change
+  // Save draft to localStorage on every answer/page change (instant offline backup)
   useEffect(() => {
     if (Object.keys(answers).length > 0) {
-      localStorage.setItem(draftKey, JSON.stringify(answers))
+      localStorage.setItem(draftKey, JSON.stringify({ answers, currentPage }))
     }
-  }, [answers, draftKey])
+  }, [answers, currentPage, draftKey])
+
+  // Debounced server save on every answer change (2 s) – ensures DB draft exists
+  // even if the user never presses "Next"
+  const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (Object.keys(answers).length === 0) return
+    if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
+    serverSaveDebounce.current = setTimeout(async () => {
+      try {
+        await fetch('/api/assessment/draft', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            answers: latestAnswersRef.current,
+            currentPage: latestPageRef.current,
+          }),
+        })
+      } catch {
+        // Silent fail – localStorage is the fallback
+      }
+    }, 2000)
+    return () => {
+      if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
+    }
+  }, [answers])
 
   // Warn before leaving if there are answers
   const handleBeforeUnload = useCallback(
@@ -188,9 +212,12 @@ export function AssessmentClient({
       initializedFocusPage.current = null
       return
     }
+    // Wait until questions are loaded – pageQuestions.length - 1 would be -1 on empty array
+    if (pageQuestions.length === 0) return
     if (initializedFocusPage.current === currentPage) return
     const firstUnanswered = pageQuestions.findIndex((q) => answers[q.id] === undefined)
-    setActiveQuestionIndex(firstUnanswered === -1 ? 0 : firstUnanswered)
+    // If all answered (resume): go to last question so one "Next" advances to next page
+    setActiveQuestionIndex(firstUnanswered === -1 ? pageQuestions.length - 1 : firstUnanswered)
     initializedFocusPage.current = currentPage
   }, [focusMode, currentPage, pageQuestions, answers])
 
@@ -372,7 +399,20 @@ export function AssessmentClient({
       return
     }
     if (focusMode && canGoForwardWithinPage) {
-      setActiveQuestionIndex((idx) => idx + 1)
+      // Skip already-answered questions – jump to next unanswered on this page
+      const nextUnanswered = pageQuestions.findIndex(
+        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined
+      )
+      if (nextUnanswered !== -1) {
+        setActiveQuestionIndex(nextUnanswered)
+      } else {
+        // All remaining on this page are answered → advance to next page
+        if (isLastPage) {
+          await handleFinish()
+        } else {
+          await handleNextPage()
+        }
+      }
       return
     }
     if (isLastPage) {
@@ -384,9 +424,11 @@ export function AssessmentClient({
     checkpointActive,
     focusMode,
     activeQuestion,
+    activeQuestionIndex,
     answers,
     highlightMissing,
     canGoForwardWithinPage,
+    pageQuestions,
     isLastPage,
     handleFinish,
     handleNextPage,
@@ -493,14 +535,27 @@ export function AssessmentClient({
               </div>
             ) : checkpointActive ? (
               <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center md:min-h-[19rem] md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
+                <div className="text-5xl leading-none">
+                  {checkpoint === 25 ? '🌱' : checkpoint === 50 ? '💡' : '🏁'}
+                </div>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
                   {t('assessment.journeyMilestone', locale)}
                 </p>
-                <p className="mt-3 text-xl font-bold text-emerald-800 md:text-2xl">
-                  {tf('assessment.checkpointReached', locale, { percent: checkpoint ?? 0 })}
+                <p className="mt-2 text-xl font-bold text-emerald-800 md:text-2xl">
+                  {t(
+                    checkpoint === 25 ? 'assessment.journeyMilestone25'
+                    : checkpoint === 50 ? 'assessment.journeyMilestone50'
+                    : 'assessment.journeyMilestone75',
+                    locale
+                  )}
                 </p>
-                <p className="mt-3 text-sm text-emerald-700">
-                  {t('assessment.journeyMilestoneHint', locale)}
+                <p className="mt-3 text-sm leading-relaxed text-emerald-700">
+                  {t(
+                    checkpoint === 25 ? 'assessment.journeyMilestone25Hint'
+                    : checkpoint === 50 ? 'assessment.journeyMilestone50Hint'
+                    : 'assessment.journeyMilestone75Hint',
+                    locale
+                  )}
                 </p>
               </div>
             ) : focusMode ? (

@@ -11,12 +11,22 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Question } from "@/lib/questions";
 import { isLikertQuestion } from "@/lib/questions";
+import { pickRandomDoodle } from "@/lib/doodles";
+
+interface ObserverDraftData {
+  phase: "assessment" | "confidence";
+  relationshipType: string;
+  knownDuration: string;
+  answers: Record<number, number>;
+  currentPage: number;
+}
 
 interface ObserverClientProps {
   token: string;
   inviterName: string;
   testName: string;
   questions: Question[];
+  initialDraft?: ObserverDraftData;
 }
 
 const RELATIONSHIP_OPTIONS = [
@@ -35,39 +45,13 @@ const DURATION_OPTIONS = [
 ] as const;
 
 const QUESTIONS_PER_PAGE = 5;
-const DOODLE_SOURCES = [
-  "/doodles/chilling.svg",
-  "/doodles/coffee.svg",
-  "/doodles/float.svg",
-  "/doodles/groovy.svg",
-  "/doodles/jumping.svg",
-  "/doodles/laying.svg",
-  "/doodles/loving.svg",
-  "/doodles/meditating.svg",
-  "/doodles/plant.svg",
-  "/doodles/reading-side.svg",
-  "/doodles/roller-skating.svg",
-  "/doodles/running.svg",
-  "/doodles/selfie.svg",
-  "/doodles/sitting-reading.svg",
-  "/doodles/sleek.svg",
-  "/doodles/strolling.svg",
-  "/doodles/swinging.svg",
-  "/doodles/unboxing.svg",
-] as const;
-
-function pickRandomDoodle(current?: string) {
-  const pool = current
-    ? DOODLE_SOURCES.filter((src) => src !== current)
-    : DOODLE_SOURCES;
-  return pool[Math.floor(Math.random() * pool.length)] ?? DOODLE_SOURCES[0];
-}
 
 export function ObserverClient({
   token,
   inviterName,
   testName,
   questions,
+  initialDraft,
 }: ObserverClientProps) {
   const { isSignedIn } = useUser();
   const { locale } = useLocale();
@@ -75,12 +59,12 @@ export function ObserverClient({
 
   const [phase, setPhase] = useState<
     "intro" | "assessment" | "confidence" | "done" | "inactive"
-  >("intro");
-  const [relationshipType, setRelationshipType] = useState("");
-  const [knownDuration, setKnownDuration] = useState("");
+  >(initialDraft?.phase ?? "intro");
+  const [relationshipType, setRelationshipType] = useState(initialDraft?.relationshipType ?? "");
+  const [knownDuration, setKnownDuration] = useState(initialDraft?.knownDuration ?? "");
   const [confidence, setConfidence] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [currentPage, setCurrentPage] = useState(initialDraft?.currentPage ?? 0);
+  const [answers, setAnswers] = useState<Record<number, number>>(initialDraft?.answers ?? {});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusMode, setFocusMode] = useState(true);
   const [autoAdvance, setAutoAdvance] = useState(true);
@@ -88,8 +72,84 @@ export function ObserverClient({
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null);
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
   const [doodleSrc, setDoodleSrc] = useState<string>(() => pickRandomDoodle());
-  const reachedCheckpoints = useRef<Set<number>>(new Set());
+  const reachedCheckpoints = useRef<Set<number>>(new Set(
+    initialDraft
+      ? ([25, 50, 75] as const).filter(
+          (m) => (Object.keys(initialDraft.answers).length / questions.length) * 100 >= m,
+        )
+      : [],
+  ));
   const initializedFocusPage = useRef<number | null>(null);
+  const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestDraftRef = useRef({ phase, relationshipType, knownDuration, answers, currentPage });
+
+  const DRAFT_KEY = `trita_observer_draft_${token}`;
+
+  // Keep latestDraftRef in sync for use inside async callbacks
+  useEffect(() => {
+    latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
+  }, [phase, relationshipType, knownDuration, answers, currentPage]);
+
+  // On mount: if no server draft was loaded, try localStorage as fallback
+  useEffect(() => {
+    if (initialDraft) {
+      // Server draft takes precedence; clear any stale localStorage
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
+      return;
+    }
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.relationshipType) setRelationshipType(data.relationshipType);
+      if (data.knownDuration) setKnownDuration(data.knownDuration);
+      if (data.answers && typeof data.answers === "object") {
+        setAnswers(data.answers);
+        // Pre-mark passed milestones so they don't re-trigger
+        const pct = (Object.keys(data.answers).length / questions.length) * 100;
+        for (const m of [25, 50, 75] as const) {
+          if (pct >= m) reachedCheckpoints.current.add(m);
+        }
+      }
+      if (typeof data.currentPage === "number") setCurrentPage(data.currentPage);
+      if (data.phase === "assessment" || data.phase === "confidence") setPhase(data.phase);
+    } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save draft to localStorage + debounced server save on every state change
+  useEffect(() => {
+    if (phase === "done" || phase === "inactive") return;
+    // localStorage (immediate)
+    try {
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({ phase, relationshipType, knownDuration, answers, currentPage }),
+      );
+    } catch {}
+    // Server save (debounced 2s) – only when assessment has started
+    if (phase === "intro" || Object.keys(answers).length === 0) return;
+    if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current);
+    serverSaveDebounce.current = setTimeout(async () => {
+      const d = latestDraftRef.current;
+      if (d.phase === "done" || d.phase === "inactive") return;
+      try {
+        await fetch("/api/observer/draft", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token,
+            phase: d.phase,
+            relationshipType: d.relationshipType,
+            knownDuration: d.knownDuration,
+            answers: d.answers,
+            currentPage: d.currentPage,
+          }),
+        });
+      } catch {}
+    }, 2000);
+    return () => { if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current); };
+  }, [DRAFT_KEY, token, phase, relationshipType, knownDuration, answers, currentPage]);
 
   const totalQuestions = questions.length;
   const totalPages = Math.ceil(totalQuestions / QUESTIONS_PER_PAGE);
@@ -123,7 +183,7 @@ export function ObserverClient({
     }
     if (initializedFocusPage.current === currentPage) return;
     const firstUnanswered = pageQuestions.findIndex((q) => answers[q.id] === undefined);
-    setActiveQuestionIndex(firstUnanswered === -1 ? 0 : firstUnanswered);
+    setActiveQuestionIndex(firstUnanswered === -1 ? pageQuestions.length - 1 : firstUnanswered);
     initializedFocusPage.current = currentPage;
   }, [focusMode, currentPage, pageQuestions, answers]);
 
@@ -225,7 +285,18 @@ export function ObserverClient({
       return;
     }
     if (focusMode && canGoForwardWithinPage) {
-      setActiveQuestionIndex((idx) => idx + 1);
+      const nextUnanswered = pageQuestions.findIndex(
+        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+      );
+      if (nextUnanswered !== -1) {
+        setActiveQuestionIndex(nextUnanswered);
+      } else {
+        if (isLastPage) {
+          handleGoToConfidence();
+        } else {
+          handleNextPage();
+        }
+      }
       return;
     }
     if (isLastPage) {
@@ -237,6 +308,8 @@ export function ObserverClient({
     checkpointActive,
     focusMode,
     activeQuestion,
+    activeQuestionIndex,
+    pageQuestions,
     answers,
     highlightMissing,
     canGoForwardWithinPage,
@@ -297,6 +370,13 @@ export function ObserverClient({
           message !== `error.${code}` ? message : t("observer.genericError", locale),
         );
       }
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
+      // Delete server draft (fire-and-forget)
+      fetch("/api/observer/draft", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      }).catch(() => {});
       setPhase("done");
     } catch (error) {
       console.error(error);
@@ -373,13 +453,18 @@ export function ObserverClient({
               </label>
             </div>
 
+            {!canStart && (
+              <p className="mt-4 text-center text-xs text-amber-600">
+                {t("observer.selectBothFields", locale)}
+              </p>
+            )}
             <button
               type="button"
               onClick={() => setPhase("assessment")}
               disabled={!canStart}
-              className={`mt-8 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition ${
+              className={`mt-4 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition-all duration-300 ${
                 canStart
-                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-105"
                   : "cursor-not-allowed bg-gray-200 text-gray-400"
               }`}
             >
@@ -579,14 +664,27 @@ export function ObserverClient({
           >
             {checkpointActive ? (
               <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center md:min-h-[19rem] md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
+                <div className="text-5xl leading-none">
+                  {checkpoint === 25 ? '🌱' : checkpoint === 50 ? '💡' : '🏁'}
+                </div>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
                   {t("assessment.journeyMilestone", locale)}
                 </p>
-                <p className="mt-3 text-xl font-bold text-emerald-800 md:text-2xl">
-                  {tf("assessment.checkpointReached", locale, { percent: checkpoint ?? 0 })}
+                <p className="mt-2 text-xl font-bold text-emerald-800 md:text-2xl">
+                  {t(
+                    checkpoint === 25 ? "assessment.journeyMilestone25"
+                    : checkpoint === 50 ? "assessment.journeyMilestone50"
+                    : "assessment.journeyMilestone75",
+                    locale
+                  )}
                 </p>
-                <p className="mt-3 text-sm text-emerald-700">
-                  {t("assessment.journeyMilestoneHint", locale)}
+                <p className="mt-3 text-sm leading-relaxed text-emerald-700">
+                  {t(
+                    checkpoint === 25 ? "assessment.journeyMilestone25Hint"
+                    : checkpoint === 50 ? "assessment.journeyMilestone50Hint"
+                    : "assessment.journeyMilestone75Hint",
+                    locale
+                  )}
                 </p>
               </div>
             ) : focusMode ? (

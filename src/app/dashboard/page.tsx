@@ -183,10 +183,7 @@ export default async function DashboardPage({
   );
 
   const scores = latestResult?.scores as ScoreResult | undefined;
-  let testType = profile?.testType as TestType | null;
-  if (testType === "MBTI" && profile) {
-    testType = await assignTestType(profile.id);
-  }
+  const testType = profile?.testType as TestType | null;
   const config = testType ? getTestConfig(testType, locale) : null;
 
   // Total question count for draft progress display
@@ -420,9 +417,7 @@ export default async function DashboardPage({
             </h2>
           </div>
           <p className="mt-2 text-sm text-gray-600">
-            {isLikert
-              ? tf("dashboard.overviewLikert", locale, { count: config.dimensions.length })
-              : t("dashboard.overviewMbti", locale)}
+            {tf("dashboard.overviewLikert", locale, { count: config.dimensions.length })}
           </p>
 
           {/* Likert: radar chart + strongest/weakest sidebar */}
@@ -605,11 +600,20 @@ export default async function DashboardPage({
         </FadeIn>
       )}
 
-      {/* ── Retake CTA ── */}
+      {/* ── Retake / Continue CTA ── */}
       <FadeIn delay={0.1}>
         <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
           <div className="flex flex-col items-center gap-2 text-center">
-            <RetakeButton />
+            {draft ? (
+              <Link
+                href="/assessment"
+                className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+              >
+                {t("actions.continueDraft", locale)}
+              </Link>
+            ) : (
+              <RetakeButton />
+            )}
           </div>
         </section>
       </FadeIn>

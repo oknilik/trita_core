@@ -106,6 +106,7 @@ const translations = {
       de: "Zurück zur Registrierung",
     },
     continueTest: { hu: "Folytatás", en: "Continue", de: "Fortsetzen" },
+    continueDraft: { hu: "Teszt folytatása", en: "Continue test", de: "Test fortsetzen" },
   },
   landing: {
     heroTag: { hu: "Kutatási verzió", en: "Research preview", de: "Forschungs-Version" },
@@ -446,6 +447,12 @@ const translations = {
     checkpointReached: { hu: "{percent}% kész - szuper tempó!", en: "{percent}% done - great pace!", de: "{percent}% geschafft - starkes Tempo!" },
     journeyMilestone: { hu: "Mérföldkő", en: "Milestone", de: "Meilenstein" },
     journeyMilestoneHint: { hu: "Szép munka! Nyomj tovább a folytatáshoz.", en: "Nice work! Press next to continue.", de: "Gute Arbeit! Drücke Weiter, um fortzufahren." },
+    journeyMilestone25: { hu: "Az első negyed megvan – szuper start, haladj csak így tovább!", en: "First quarter done – great start, keep going!", de: "Das erste Viertel ist geschafft – super Start, weiter so!" },
+    journeyMilestone25Hint: { hu: "Nyomj a következőre, és irány a folytatás!", en: "Hit next and keep the momentum going!", de: "Drücke Weiter und bleib am Ball!" },
+    journeyMilestone50: { hu: "Pontosan félúton jársz – ez igazán szép teljesítmény!", en: "You're exactly halfway – that's a real achievement!", de: "Du bist genau auf halbem Weg – das ist wirklich toll!" },
+    journeyMilestone50Hint: { hu: "Tudtad? A válaszaid folyamatosan mentődnek, így bármikor félbehagyhatod és onnan folytathatod, ahol abbahagytad.", en: "Did you know? Your answers are saved automatically, so you can leave anytime and pick up right where you left off.", de: "Wusstest du? Deine Antworten werden laufend gespeichert – du kannst jederzeit pausieren und genau dort weitermachen, wo du aufgehört hast." },
+    journeyMilestone75: { hu: "Már a célegyenesen vagy – ilyen tempóval hamar kész leszel!", en: "You're on the home stretch – at this pace you'll be done in no time!", de: "Du bist auf der Zielgeraden – in diesem Tempo bist du gleich fertig!" },
+    journeyMilestone75Hint: { hu: "Csak még egy kis kitartás – a végeredmény megér minden kérdést!", en: "Just a little more perseverance – the result is worth every question!", de: "Noch ein bisschen Ausdauer – das Ergebnis ist jeden Schritt wert!" },
   },
   dashboard: {
     metadataTitle: { hu: "Dashboard | Trita", en: "Dashboard | Trita", de: "Dashboard | Trita" },
@@ -480,7 +487,6 @@ const translations = {
     nextStepDoneCta: { hu: "Vissza az eredményekhez", en: "Back to results", de: "Zurück zu den Ergebnissen" },
     profileOverview: { hu: "{testName} profil áttekintés", en: "{testName} profile overview", de: "{testName}-Profilübersicht" },
     overviewLikert: { hu: "Gyors vizuális összkép {count} dimenzióról.", en: "A quick visual snapshot across {count} dimensions.", de: "Ein schneller visueller Überblick über {count} Dimensionen." },
-    overviewMbti: { hu: "Gyors vizuális összkép a négy dichotómiáról.", en: "A quick visual snapshot across the four dichotomies.", de: "Ein schneller visueller Überblick über die vier Dichotomien." },
     radarLegendSelf: { hu: "Saját", en: "Self", de: "Eigenes" },
     radarLegendObservers: { hu: "Meghívottak", en: "Invited", de: "Eingeladene" },
     strongest: { hu: "Legerősebb dimenzió", en: "Strongest dimension", de: "Stärkste Dimension" },
@@ -697,6 +703,7 @@ const translations = {
     doneSignedOutHint: { hu: "Ha már van fiókod, jelentkezz be a meghívóid megtekintéséhez.", en: "If you already have an account, sign in to view your invites.", de: "Wenn du bereits ein Konto hast, melde dich an, um Einladungen zu sehen." },
     signInCta: { hu: "Bejelentkezés", en: "Sign in", de: "Anmelden" },
     goDashboard: { hu: "Ugrás a dashboardra", en: "Go to dashboard", de: "Zum Dashboard" },
+    selectBothFields: { hu: "Kérjük, válassz kapcsolatot és időtartamot a folytatáshoz.", en: "Please select a relationship and duration to continue.", de: "Bitte wähle Beziehung und Dauer, um fortzufahren." },
   },
   userMenu: {
     profileFallback: { hu: "Profil", en: "Profile", de: "Profil" },
@@ -1334,6 +1341,10 @@ const translations = {
     othersCount: { hu: "Mások ({count})", en: "Others ({count})", de: "Andere ({count})" },
     avgConfidence: { hu: "átl. magabiztosság: {value}/5", en: "avg. confidence: {value}/5", de: "Durchschn. Sicherheit: {value}/5" },
     typeLabel: { hu: "Tipusod", en: "Your type", de: "Dein Typ" },
+    confidenceLabel: { hu: "Átl. bizonyosság", en: "Avg. confidence", de: "Durchschn. Sicherheit" },
+    observersLabel: { hu: "Értékelők", en: "Raters", de: "Bewerter" },
+    insightHigher: { hu: "Mások magasabbra értékelnek ebben a dimenzióban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself.", de: "Andere bewerten dich in dieser Dimension höher als du dich selbst." },
+    insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak.", en: "You rate yourself higher in this dimension than others rate you.", de: "Du bewertest dich in dieser Dimension höher, als andere dich sehen." },
   },
 } as const;
 

@@ -87,11 +87,7 @@ export function getTestConfig(testType: TestType, locale: Locale = "hu"): TestCo
   };
 }
 
-/** Core trait-based instruments (primary analysis, priority in random assignment) */
 export const CORE_TEST_TYPES: TestType[] = ["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"];
-
-/** Exploratory instruments (secondary, smaller sample) */
-export const EXPLORATORY_TEST_TYPES: TestType[] = [];
 
 export function getAllTestTypes(): TestType[] {
   return Object.keys(testConfigs) as TestType[];
