@@ -2,9 +2,9 @@ import type { TestConfig } from "./types";
 import { hexacoConfig } from "./hexaco";
 
 /**
- * Modified HEXACO — same 6 dimensions, independently phrased questions
- * Same facet structure as the official HEXACO-PI-R (10 facets × 6 dims, 16 items each)
- * 96 items total, all Likert 1–5
+ * Modified HEXACO — same 6 dimensions + interstitial Altruism scale, independently phrased questions
+ * Same facet structure as the official HEXACO-PI-R (4 facets × 6 dims × 4 items + 4 Altruism items)
+ * 100 items total, all Likert 1–5
  */
 export const hexacoModifiedConfig: TestConfig = {
   type: "HEXACO_MODIFIED",
@@ -1123,6 +1123,54 @@ export const hexacoModifiedConfig: TestConfig = {
         hu: "Az elvont gondolati kísérletezés és a filozofikus vita nem igazán köt le.",
         en: "Abstract philosophical speculation and debate don't really engage me.",
         de: "Abstrakte philosophische Spekulation und Debatte fesseln mich nicht wirklich.",
+      },
+      reversed: true,
+    },
+
+    // ── ALTRUISM (interstitiális skála) ───────────────────────────────────
+    {
+      id: 97,
+      dimension: "ALTRUISM",
+      facet: "altruism",
+      text: "Együttérzéssel tölt el, ha látom, hogy másoknak nehezebb dolguk van az életben.",
+      textByLocale: {
+        hu: "Együttérzéssel tölt el, ha látom, hogy másoknak nehezebb dolguk van az életben.",
+        en: "I feel genuine compassion when I see that others have a harder time in life.",
+        de: "Ich empfinde echtes Mitgefühl, wenn ich sehe, dass andere es im Leben schwerer haben.",
+      },
+    },
+    {
+      id: 98,
+      dimension: "ALTRUISM",
+      facet: "altruism",
+      text: "Igyekszem segíteni a rászorulókon, még akkor is, ha ez nekem áldozattal jár.",
+      textByLocale: {
+        hu: "Igyekszem segíteni a rászorulókon, még akkor is, ha ez nekem áldozattal jár.",
+        en: "I try to help those in need, even if it costs me something.",
+        de: "Ich versuche, Bedürftigen zu helfen, auch wenn es mich etwas kostet.",
+      },
+    },
+    {
+      id: 99,
+      dimension: "ALTRUISM",
+      facet: "altruism",
+      text: "Nem különösebben zavar, ha valaki, akit nem kedvelek, rosszul jár.",
+      textByLocale: {
+        hu: "Nem különösebben zavar, ha valaki, akit nem kedvelek, rosszul jár.",
+        en: "It doesn't bother me much if someone I dislike ends up worse off.",
+        de: "Es stört mich nicht besonders, wenn jemand, den ich nicht mag, schlechter dasteht.",
+      },
+      reversed: true,
+    },
+    {
+      id: 100,
+      dimension: "ALTRUISM",
+      facet: "altruism",
+      text: "Mások keményszívűnek tartanak engem.",
+      textByLocale: {
+        hu: "Mások keményszívűnek tartanak engem.",
+        en: "Others consider me to be a hard-hearted person.",
+        de: "Andere halten mich für einen hartherzigen Menschen.",
       },
       reversed: true,
     },

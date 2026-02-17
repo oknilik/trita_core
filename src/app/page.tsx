@@ -13,7 +13,7 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   const locale = DEFAULT_LOCALE;
-  const title = t("meta.title", locale);
+  const title = "trita";
   const description = t("meta.description", locale);
 
   return {

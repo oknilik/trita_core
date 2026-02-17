@@ -252,15 +252,6 @@ export function AssessmentClient({
     [focusMode, pageQuestions, questionElementIds],
   )
 
-  const handleAnswer = useCallback((questionId: number, value: number) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }))
-    if (focusMode && autoAdvance && activeQuestion && activeQuestion.id === questionId && canGoForwardWithinPage) {
-      window.setTimeout(() => {
-        setActiveQuestionIndex((idx) => Math.min(idx + 1, pageQuestions.length - 1))
-      }, 130)
-    }
-  }, [focusMode, autoAdvance, activeQuestion, canGoForwardWithinPage, pageQuestions.length])
-
   const saveDraftToServer = useCallback(async (page: number) => {
     setIsSavingDraft(true)
     try {
@@ -375,6 +366,78 @@ export function AssessmentClient({
     router,
     showToast,
   ])
+
+  const handleAnswer = useCallback((questionId: number, value: number) => {
+    const updatedAnswers = { ...answers, [questionId]: value }
+    const wasUnanswered = answers[questionId] === undefined
+    setAnswers(updatedAnswers)
+
+    if (!focusMode || !autoAdvance || !activeQuestion || activeQuestion.id !== questionId) {
+      return
+    }
+
+    const nextAnsweredCount = wasUnanswered ? answeredCount + 1 : answeredCount
+    const nextProgress = (nextAnsweredCount / totalQuestions) * 100
+    const willTriggerCheckpoint = [25, 50, 75].some(
+      (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
+    )
+
+    window.setTimeout(() => {
+      // Milestones should pause flow (requested behavior)
+      if (willTriggerCheckpoint) return
+
+      if (canGoForwardWithinPage) {
+        const nextUnanswered = pageQuestions.findIndex(
+          (q, i) => i > activeQuestionIndex && updatedAnswers[q.id] === undefined,
+        )
+        if (nextUnanswered !== -1) {
+          setActiveQuestionIndex(nextUnanswered)
+        } else {
+          setActiveQuestionIndex((idx) => Math.min(idx + 1, pageQuestions.length - 1))
+        }
+        return
+      }
+
+      // Last question on page: always continue automatically in autoAdvance mode.
+      if (isLastPage) {
+        void handleFinish()
+        return
+      }
+
+      const nextPage = currentPage + 1
+      setIsSavingDraft(true)
+      fetch('/api/assessment/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          answers: updatedAnswers,
+          currentPage: nextPage,
+        }),
+      })
+        .catch(() => {
+          // Silent fail — localStorage is fallback
+        })
+        .finally(() => {
+          setIsSavingDraft(false)
+        })
+      setCurrentPage(nextPage)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 130)
+  }, [
+    answers,
+    focusMode,
+    autoAdvance,
+    activeQuestion,
+    answeredCount,
+    totalQuestions,
+    canGoForwardWithinPage,
+    pageQuestions,
+    activeQuestionIndex,
+    isLastPage,
+    currentPage,
+    handleFinish,
+  ])
+
 
   const handlePrevStep = useCallback(() => {
     if (checkpointActive) {

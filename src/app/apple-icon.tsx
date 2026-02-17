@@ -14,23 +14,39 @@ export default function AppleIcon() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <linearGradient id="warmGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6366F1" />
-            <stop offset="100%" stopColor="#8B5CF6" />
+          <linearGradient id="baseGradient" x1="12%" y1="8%" x2="88%" y2="92%">
+            <stop offset="0%" stopColor="#4F46E5" />
+            <stop offset="52%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#A78BFA" />
+          </linearGradient>
+          <linearGradient id="shineGradient" x1="22%" y1="18%" x2="78%" y2="82%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.34" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
           </linearGradient>
         </defs>
 
         <polygon
           points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25"
-          fill="url(#warmGradient)"
-          opacity="0.95"
+          fill="url(#baseGradient)"
+        />
+        <polygon
+          points="50,6 88,28 88,72 50,94 12,72 12,28"
+          fill="url(#shineGradient)"
         />
 
-        <line x1="50" y1="10" x2="50" y2="90" stroke="white" strokeWidth="1.6" opacity="0.45" />
-        <line x1="15" y1="30" x2="85" y2="70" stroke="white" strokeWidth="1.6" opacity="0.45" />
-        <line x1="15" y1="70" x2="85" y2="30" stroke="white" strokeWidth="1.6" opacity="0.45" />
+        <polygon
+          points="50,18 77.7,34 77.7,66 50,82 22.3,66 22.3,34"
+          fill="none"
+          stroke="white"
+          strokeWidth="2.8"
+          strokeOpacity="0.58"
+        />
 
-        <circle cx="50" cy="50" r="9" fill="white" />
+        <circle cx="50" cy="50" r="9.2" fill="white" />
+        <circle cx="50" cy="50" r="4.6" fill="#7C3AED" />
+        <circle cx="50" cy="16" r="2.1" fill="white" fillOpacity="0.82" />
+        <circle cx="81" cy="34.5" r="1.8" fill="white" fillOpacity="0.68" />
+        <circle cx="19" cy="34.5" r="1.8" fill="white" fillOpacity="0.68" />
       </svg>
     ),
     {

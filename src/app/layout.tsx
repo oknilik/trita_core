@@ -27,7 +27,7 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = DEFAULT_LOCALE;
-  const title = t("meta.title", locale);
+  const title = "trita";
   const description = t("meta.description", locale);
   return {
     metadataBase: getMetadataBase(),
@@ -58,9 +58,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     icons: {
       icon: [
-        { url: "/favicon.ico", type: "image/x-icon" },
+        { url: "/icon", type: "image/png" },
         { url: "/favicon.svg", type: "image/svg+xml" },
       ],
+      shortcut: ["/favicon.svg"],
       apple: [
         { url: "/apple-icon" },
       ],
