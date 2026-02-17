@@ -11,7 +11,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Question } from "@/lib/questions";
 import { isLikertQuestion } from "@/lib/questions";
-import { pickRandomDoodle } from "@/lib/doodles";
+import { DOODLE_SOURCES, pickRandomDoodle } from "@/lib/doodles";
 
 interface ObserverDraftData {
   phase: "assessment" | "confidence";
@@ -71,7 +71,7 @@ export function ObserverClient({
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null);
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
-  const [doodleSrc, setDoodleSrc] = useState<string>(() => pickRandomDoodle());
+  const [doodleSrc, setDoodleSrc] = useState<string>(DOODLE_SOURCES[0]);
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft
       ? ([25, 50, 75] as const).filter(
@@ -89,6 +89,11 @@ export function ObserverClient({
   useEffect(() => {
     latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
   }, [phase, relationshipType, knownDuration, answers, currentPage]);
+
+  // Randomize doodle only on the client after hydration to avoid SSR mismatch
+  useEffect(() => {
+    setDoodleSrc(pickRandomDoodle());
+  }, []);
 
   // On mount: if no server draft was loaded, try localStorage as fallback
   useEffect(() => {
@@ -164,12 +169,15 @@ export function ObserverClient({
   const activeQuestion = pageQuestions[activeQuestionIndex] ?? null;
   const canGoForwardWithinPage = activeQuestionIndex < pageQuestions.length - 1;
   const canGoBackWithinPage = activeQuestionIndex > 0;
-  const canGoPrev = focusMode ? canGoBackWithinPage || currentPage > 0 : currentPage > 0;
+  const canGoPrev =
+    phase === "confidence" ||
+    (focusMode ? canGoBackWithinPage || currentPage > 0 : currentPage > 0);
   const canGoNext = pageQuestions.every((q) => answers[q.id] !== undefined);
   const currentQuestionAnswered =
     !focusMode || !activeQuestion ? true : answers[activeQuestion.id] !== undefined;
   const checkpointActive = checkpoint !== null;
-  const canProceed = checkpointActive || (focusMode ? currentQuestionAnswered : canGoNext);
+  const canProceed =
+    phase === "confidence" || checkpointActive || (focusMode ? currentQuestionAnswered : canGoNext);
 
   const questionElementIds = useMemo(
     () => new Map(pageQuestions.map((q) => [q.id, `observer-question-${q.id}`])),
@@ -219,21 +227,6 @@ export function ObserverClient({
     [focusMode, pageQuestions, questionElementIds],
   );
 
-  const handleAnswer = useCallback((questionId: number, value: number) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
-    if (
-      focusMode &&
-      autoAdvance &&
-      activeQuestion &&
-      activeQuestion.id === questionId &&
-      canGoForwardWithinPage
-    ) {
-      window.setTimeout(() => {
-        setActiveQuestionIndex((idx) => Math.min(idx + 1, pageQuestions.length - 1));
-      }, 130);
-    }
-  }, [focusMode, autoAdvance, activeQuestion, canGoForwardWithinPage, pageQuestions.length]);
-
   const handleNextPage = useCallback(() => {
     if (!canGoNext) {
       const missing = pageQuestions.find((q) => answers[q.id] === undefined);
@@ -253,16 +246,75 @@ export function ObserverClient({
     }
   }, [currentPage]);
 
+  // Must be defined before handleAnswer so it can be referenced in handleAnswer's dependency array
   const handleGoToConfidence = useCallback(() => {
-    if (!canGoNext) {
-      const missing = pageQuestions.find((q) => answers[q.id] === undefined);
+    // Use the ref so this is safe even when called from a stale closure (e.g. auto-advance timeout)
+    const currentAnswers = latestDraftRef.current.answers;
+    const canGoNextNow = pageQuestions.every((q) => currentAnswers[q.id] !== undefined);
+    if (!canGoNextNow) {
+      const missing = pageQuestions.find((q) => currentAnswers[q.id] === undefined);
       if (missing) highlightMissing(missing.id);
       return;
     }
     setPhase("confidence");
-  }, [canGoNext, pageQuestions, answers, highlightMissing]);
+  }, [pageQuestions, highlightMissing]);
+
+  const handleAnswer = useCallback((questionId: number, value: number) => {
+    const wasUnanswered = latestDraftRef.current.answers[questionId] === undefined;
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+
+    if (!focusMode || !autoAdvance || !activeQuestion || activeQuestion.id !== questionId) {
+      return;
+    }
+
+    const currentAnsweredCount = Object.keys(latestDraftRef.current.answers).length;
+    const nextAnsweredCount = wasUnanswered ? currentAnsweredCount + 1 : currentAnsweredCount;
+    const nextProgress = (nextAnsweredCount / totalQuestions) * 100;
+    const willTriggerCheckpoint = [25, 50, 75].some(
+      (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
+    );
+
+    window.setTimeout(() => {
+      if (willTriggerCheckpoint) return;
+
+      if (canGoForwardWithinPage) {
+        const updatedAnswers = { ...latestDraftRef.current.answers, [questionId]: value };
+        const nextUnanswered = pageQuestions.findIndex(
+          (q, i) => i > activeQuestionIndex && updatedAnswers[q.id] === undefined,
+        );
+        if (nextUnanswered !== -1) {
+          setActiveQuestionIndex(nextUnanswered);
+        } else {
+          setActiveQuestionIndex((idx) => Math.min(idx + 1, pageQuestions.length - 1));
+        }
+        return;
+      }
+
+      // Last question on page: advance to next page or confidence phase
+      if (isLastPage) {
+        handleGoToConfidence();
+        return;
+      }
+      setCurrentPage((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 130);
+  }, [
+    focusMode,
+    autoAdvance,
+    activeQuestion,
+    activeQuestionIndex,
+    totalQuestions,
+    canGoForwardWithinPage,
+    pageQuestions,
+    isLastPage,
+    handleGoToConfidence,
+  ]);
 
   const handlePrevStep = useCallback(() => {
+    if (phase === "confidence") {
+      setPhase("assessment");
+      return;
+    }
     if (checkpointActive) {
       setCheckpoint(null);
       return;
@@ -272,7 +324,7 @@ export function ObserverClient({
       return;
     }
     handlePreviousPage();
-  }, [checkpointActive, focusMode, canGoBackWithinPage, handlePreviousPage]);
+  }, [phase, checkpointActive, focusMode, canGoBackWithinPage, handlePreviousPage]);
 
   const handleNextStep = useCallback(() => {
     if (checkpointActive) {
@@ -479,12 +531,13 @@ export function ObserverClient({
   if (phase === "inactive") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="mx-auto flex max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="rounded-2xl border border-gray-100 bg-white p-8">
-            <h1 className="text-2xl font-bold text-gray-900">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+            <div className="text-5xl leading-none">😕</div>
+            <h1 className="mt-4 text-2xl font-bold text-gray-900">
               {t("observer.inactiveTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">
               {t("observer.inactiveBody", locale)}
             </p>
           </div>
@@ -496,29 +549,30 @@ export function ObserverClient({
   if (phase === "done") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="mx-auto flex max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="rounded-2xl border border-gray-100 bg-white p-8">
-            <h1 className="text-2xl font-bold text-gray-900">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
+            <div className="text-5xl leading-none">🙏</div>
+            <h1 className="mt-4 text-2xl font-bold text-gray-900">
               {t("observer.doneTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">
               {t("observer.doneBody", locale)}
             </p>
             {isSignedIn ? (
               <>
-                <p className="mt-4 text-sm text-gray-500">
+                <p className="mt-4 text-sm leading-relaxed text-gray-500">
                   {t("observer.doneSignedInHint", locale)}
                 </p>
                 <a
                   href="/dashboard"
-                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 >
                   {t("observer.goDashboard", locale)}
                 </a>
               </>
             ) : (
               <>
-                <p className="mt-4 text-sm text-gray-500">
+                <p className="mt-4 text-sm leading-relaxed text-gray-500">
                   {t("observer.doneSignedOutHint", locale)}
                 </p>
                 <a
@@ -535,76 +589,20 @@ export function ObserverClient({
     );
   }
 
-  if (phase === "confidence") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="mx-auto max-w-2xl px-4 py-8 md:py-12">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-            <h2 className="text-xl font-bold text-gray-900">
-              {t("observer.confidenceLabel", locale)}
-            </h2>
-            <p className="mt-2 text-sm text-gray-500">
-              {t("observer.confidenceHint", locale)}
-            </p>
-
-            <div className="mt-6 flex justify-center gap-3">
-              {[1, 2, 3, 4, 5].map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setConfidence(v)}
-                  className={`flex h-12 w-12 items-center justify-center rounded-lg border text-lg font-semibold transition ${
-                    confidence === v
-                      ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  {v}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-8 flex items-center justify-between gap-4">
-              <button
-                type="button"
-                onClick={() => setPhase("assessment")}
-                className="min-h-[48px] rounded-lg bg-white px-6 font-semibold text-gray-700 shadow-md transition-all hover:shadow-lg"
-              >
-                {t("assessment.prevCta", locale)}
-              </button>
-
-              <motion.button
-                onClick={handleFinish}
-                disabled={isSubmitting}
-                className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                  !isSubmitting
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
-                    : "cursor-not-allowed bg-gray-200 text-gray-400"
-                }`}
-                whileHover={!isSubmitting ? { scale: 1.02 } : {}}
-                whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-              >
-                {isSubmitting ? t("observer.submitLoading", locale) : t("observer.submit", locale)}
-              </motion.button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
-          <div className="mt-2 overflow-x-auto">
-            <div className="flex min-w-max items-center gap-2 text-xs text-gray-600">
-              <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
-                {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
+          {phase === "assessment" && (
+            <div className="mt-2 overflow-x-auto">
+              <div className="flex min-w-max items-center gap-2 text-xs text-gray-600">
+                <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
+                  {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="mb-6 hidden rounded-2xl border border-gray-100 bg-white p-4 sm:block">
@@ -617,39 +615,42 @@ export function ObserverClient({
           {tf("observer.thinkOf", locale, { inviter: inviterName })}
         </div>
 
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setFocusMode((prev) => !prev)}
-            className={`rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
-              focusMode
-                ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            {focusMode ? t("assessment.showAllQuestions", locale) : t("assessment.focusMode", locale)}
-          </button>
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
-            <input
-              type="checkbox"
-              checked={autoAdvance}
-              onChange={(event) => setAutoAdvance(event.target.checked)}
-              disabled={!focusMode}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600 disabled:opacity-40"
-            />
-            {t("assessment.autoAdvance", locale)}
-          </label>
-          <span className="text-xs text-gray-500">{t("assessment.keyboardHint", locale)}</span>
-        </div>
+        {phase === "assessment" && (
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setFocusMode((prev) => !prev)}
+              className={`rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+                focusMode
+                  ? "border-indigo-300 bg-indigo-50 text-indigo-700"
+                  : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {focusMode ? t("assessment.showAllQuestions", locale) : t("assessment.focusMode", locale)}
+            </button>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
+              <input
+                type="checkbox"
+                checked={autoAdvance}
+                onChange={(event) => setAutoAdvance(event.target.checked)}
+                disabled={!focusMode}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 disabled:opacity-40"
+              />
+              {t("assessment.autoAdvance", locale)}
+            </label>
+          </div>
+        )}
 
         <AnimatePresence mode="wait">
           <motion.div
             key={
-              checkpointActive
-                ? `observer-checkpoint-${checkpoint}`
-                : focusMode
-                  ? `observer-${currentPage}-${activeQuestion?.id ?? "none"}`
-                  : `observer-${currentPage}`
+              phase === "confidence"
+                ? "observer-confidence"
+                : checkpointActive
+                  ? `observer-checkpoint-${checkpoint}`
+                  : focusMode
+                    ? `observer-${currentPage}-${activeQuestion?.id ?? "none"}`
+                    : `observer-${currentPage}`
             }
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -657,7 +658,20 @@ export function ObserverClient({
             transition={{ duration: 0.25 }}
             className="flex flex-col gap-6"
           >
-            {checkpointActive ? (
+            {phase === "confidence" ? (
+              <>
+                <QuestionCard
+                  testName={testName}
+                  format="likert"
+                  question={t("observer.confidenceLabel", locale)}
+                  value={confidence}
+                  onChange={(v) => setConfidence(v)}
+                />
+                <p className="text-center text-sm text-gray-400">
+                  {t("observer.confidenceHint", locale)}
+                </p>
+              </>
+            ) : checkpointActive ? (
               <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center md:min-h-[19rem] md:p-8">
                 <div className="text-5xl leading-none">
                   {checkpoint === 25 ? '🌱' : checkpoint === 50 ? '💡' : '🏁'}
@@ -685,12 +699,6 @@ export function ObserverClient({
             ) : focusMode ? (
               activeQuestion && isLikertQuestion(activeQuestion) ? (
                 <>
-                  <p className="text-center text-xs font-medium text-gray-500">
-                    {tf("assessment.pageQuestionCounter", locale, {
-                      current: activeQuestionIndex + 1,
-                      total: pageQuestions.length,
-                    })}
-                  </p>
                   <div key={activeQuestion.id} id={`observer-question-${activeQuestion.id}`}>
                     <QuestionCard
                       testName={testName}
@@ -743,19 +751,35 @@ export function ObserverClient({
             {t("assessment.prevCta", locale)}
           </motion.button>
 
-          <motion.button
-            onClick={handleNextStep}
-            disabled={!canProceed || isSubmitting}
-            className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-              canProceed && !isSubmitting
-                ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg"
-                : "cursor-not-allowed bg-gray-200 text-gray-400"
-            }`}
-            whileHover={canProceed && !isSubmitting ? { scale: 1.02 } : {}}
-            whileTap={canProceed && !isSubmitting ? { scale: 0.98 } : {}}
-          >
-            {t("assessment.nextCta", locale)}
-          </motion.button>
+          {phase === "confidence" ? (
+            <motion.button
+              onClick={handleFinish}
+              disabled={isSubmitting}
+              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+                !isSubmitting
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
+                  : "cursor-not-allowed bg-gray-200 text-gray-400"
+              }`}
+              whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+              whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+            >
+              {isSubmitting ? t("observer.submitLoading", locale) : t("observer.submit", locale)}
+            </motion.button>
+          ) : (
+            <motion.button
+              onClick={handleNextStep}
+              disabled={!canProceed || isSubmitting}
+              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+                canProceed && !isSubmitting
+                  ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg"
+                  : "cursor-not-allowed bg-gray-200 text-gray-400"
+              }`}
+              whileHover={canProceed && !isSubmitting ? { scale: 1.02 } : {}}
+              whileTap={canProceed && !isSubmitting ? { scale: 0.98 } : {}}
+            >
+              {t("assessment.nextCta", locale)}
+            </motion.button>
+          )}
         </div>
 
         <motion.p

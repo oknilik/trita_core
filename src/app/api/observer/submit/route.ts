@@ -53,12 +53,16 @@ export async function POST(req: Request) {
   // Validate all questions answered
   const config = getTestConfig(invitation.testType as TestType);
   const expectedIds = new Set(config.questions.map((q) => q.id));
-  if (answers.length !== expectedIds.size) {
+
+  // Filter to only the expected question IDs (drops stale answers from old test versions)
+  const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
+
+  if (relevantAnswers.length !== expectedIds.size) {
     return NextResponse.json({ error: "ANSWER_COUNT_MISMATCH" }, { status: 400 });
   }
 
-  const answeredIds = new Set(answers.map((a) => a.questionId));
-  if (answeredIds.size !== answers.length) {
+  const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));
+  if (answeredIds.size !== relevantAnswers.length) {
     return NextResponse.json({ error: "DUPLICATE_ANSWER" }, { status: 400 });
   }
   for (const id of expectedIds) {
@@ -67,14 +71,14 @@ export async function POST(req: Request) {
     }
   }
 
-  for (const answer of answers) {
+  for (const answer of relevantAnswers) {
     if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
       return NextResponse.json({ error: "INVALID_LIKERT_ANSWER" }, { status: 400 });
     }
   }
 
   // Score
-  const typedAnswers = answers.map((a) => ({
+  const typedAnswers = relevantAnswers.map((a) => ({
     questionId: a.questionId,
     value: Number(a.value),
   }));
@@ -91,8 +95,8 @@ export async function POST(req: Request) {
         confidence: confidence ?? null,
         scores: {
           ...scores,
-          answers,
-          questionCount: answers.length,
+          answers: relevantAnswers,
+          questionCount: relevantAnswers.length,
         },
       },
     }),

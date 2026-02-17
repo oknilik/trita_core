@@ -26,6 +26,7 @@ export async function POST(req: Request) {
   const body = await req.json();
   const parsed = submissionSchema.safeParse(body);
   if (!parsed.success) {
+    console.error('[submit] Zod validation failed', JSON.stringify(parsed.error.flatten()));
     return NextResponse.json(
       { error: "Invalid payload", details: parsed.error.flatten() },
       { status: 400 }
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
   }
 
   const { testType: clientTestType, answers } = parsed.data;
+  console.log('[submit] received', { clientTestType, answerCount: answers.length, userId });
 
   const profile = await prisma.userProfile.upsert({
     where: { clerkId: userId },
@@ -45,7 +47,10 @@ export async function POST(req: Request) {
     testType = await assignTestType(profile.id);
   }
 
+  console.log('[submit] testTypes', { clientTestType, profileTestType: testType });
+
   if (clientTestType !== testType) {
+    console.error('[submit] testType mismatch', { clientTestType, profileTestType: testType });
     return NextResponse.json(
       { error: "A teszttípus nem egyezik a hozzárendelt teszttel." },
       { status: 400 }
@@ -55,15 +60,22 @@ export async function POST(req: Request) {
   // Validate that all questions are answered and unique
   const config = getTestConfig(testType as TestType);
   const expectedIds = new Set(config.questions.map((q) => q.id));
-  if (answers.length !== expectedIds.size) {
+
+  // Filter to only the expected question IDs (drops stale answers from old test versions)
+  const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
+
+  console.log('[submit] counts', { relevantAnswers: relevantAnswers.length, expectedIds: expectedIds.size });
+
+  if (relevantAnswers.length !== expectedIds.size) {
+    console.error('[submit] count mismatch', { relevantAnswers: relevantAnswers.length, expectedIds: expectedIds.size });
     return NextResponse.json(
       { error: "A válaszok száma nem egyezik a kérdések számával." },
       { status: 400 }
     );
   }
 
-  const answeredIds = new Set(answers.map((a) => a.questionId));
-  if (answeredIds.size !== answers.length) {
+  const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));
+  if (answeredIds.size !== relevantAnswers.length) {
     return NextResponse.json(
       { error: "Duplikált válasz érkezett ugyanarra a kérdésre." },
       { status: 400 }
@@ -78,7 +90,7 @@ export async function POST(req: Request) {
     }
   }
 
-  for (const answer of answers) {
+  for (const answer of relevantAnswers) {
     if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
       return NextResponse.json(
         { error: "Érvénytelen Likert válasz." },
@@ -87,7 +99,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const typedAnswers = answers.map((a) => ({
+  const typedAnswers = relevantAnswers.map((a) => ({
     questionId: a.questionId,
     value: Number(a.value),
   }));
@@ -101,8 +113,8 @@ export async function POST(req: Request) {
         testType: testType as TestType,
         scores: {
           ...scores,
-          answers,
-          questionCount: answers.length,
+          answers: relevantAnswers,
+          questionCount: relevantAnswers.length,
         },
       },
     }),

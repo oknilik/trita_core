@@ -11,7 +11,7 @@ import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
 import type { TestType } from '@prisma/client'
-import { pickRandomDoodle } from '@/lib/doodles'
+import { DOODLE_SOURCES, pickRandomDoodle } from '@/lib/doodles'
 type AssessmentQuestion = { id: number; text: string }
 
 const QUESTIONS_PER_PAGE = 5
@@ -58,8 +58,14 @@ export function AssessmentClient({
   const [autoAdvance, setAutoAdvance] = useState(true)
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const [checkpoint, setCheckpoint] = useState<number | null>(null)
-  const [doodleSrc, setDoodleSrc] = useState<string>(() => pickRandomDoodle())
-  const reachedCheckpoints = useRef<Set<number>>(new Set())
+  const [doodleSrc, setDoodleSrc] = useState<string>(DOODLE_SOURCES[0])
+  const reachedCheckpoints = useRef<Set<number>>(new Set(
+    initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
+      ? ([25, 50, 75] as const).filter(
+          (m) => (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >= m,
+        )
+      : [],
+  ))
   const initializedFocusPage = useRef<number | null>(null)
 
   const totalPages = Math.ceil(totalQuestions / QUESTIONS_PER_PAGE)
@@ -96,6 +102,9 @@ export function AssessmentClient({
   useEffect(() => { latestAnswersRef.current = answers }, [answers])
   useEffect(() => { latestPageRef.current = currentPage }, [currentPage])
 
+  // Randomize doodle only on the client after hydration to avoid SSR mismatch
+  useEffect(() => { setDoodleSrc(pickRandomDoodle()) }, [])
+
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
   useEffect(() => {
     if (clearDraft) {
@@ -117,9 +126,19 @@ export function AssessmentClient({
           if (typeof parsed.currentPage === 'number') {
             setCurrentPage(parsed.currentPage)
           }
+          // Pre-mark milestones already passed so they don't re-trigger
+          const pct = (Object.keys(parsed.answers).length / totalQuestions) * 100
+          for (const m of [25, 50, 75] as const) {
+            if (pct >= m) reachedCheckpoints.current.add(m)
+          }
         } else {
           // Legacy format: plain answers object
-          setAnswers(parsed as Record<number, number>)
+          const legacyAnswers = parsed as Record<number, number>
+          setAnswers(legacyAnswers)
+          const pct = (Object.keys(legacyAnswers).length / totalQuestions) * 100
+          for (const m of [25, 50, 75] as const) {
+            if (pct >= m) reachedCheckpoints.current.add(m)
+          }
         }
       }
     } catch {
@@ -293,11 +312,21 @@ export function AssessmentClient({
   }, [currentPage])
 
   const handleFinish = useCallback(async () => {
-    if (!canGoNext) {
-      const missing = pageQuestions.find((q) => answers[q.id] === undefined)
+    // Use the ref so this is safe even when called from a stale closure (e.g. auto-advance timeout)
+    const currentAnswers = latestAnswersRef.current
+    const canGoNextNow = pageQuestions.every((q) => currentAnswers[q.id] !== undefined)
+    if (!canGoNextNow) {
+      const missing = pageQuestions.find((q) => currentAnswers[q.id] === undefined)
       if (missing) {
         highlightMissing(missing.id)
       }
+      return
+    }
+    // Guard: if fewer answers than expected, earlier pages still have unanswered questions.
+    // This can happen when a stale draft inflates the count via removed question IDs.
+    if (Object.keys(currentAnswers).length < totalQuestions) {
+      setCurrentPage(0)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
     if (isSubmitting) return
@@ -314,7 +343,7 @@ export function AssessmentClient({
     try {
       const payload = {
         testType,
-        answers: Object.entries(answers).map(([questionId, value]) => ({
+        answers: Object.entries(currentAnswers).map(([questionId, value]) => ({
           questionId: Number(questionId),
           value,
         })),
@@ -325,6 +354,16 @@ export function AssessmentClient({
         body: JSON.stringify(payload),
       })
       if (!response.ok) {
+        const errBody = await response.json().catch(() => null)
+        console.error(
+          '[submit] API error',
+          response.status,
+          JSON.stringify(errBody),
+          'sentAnswerCount:',
+          payload.answers.length,
+          'sentTestType:',
+          payload.testType,
+        )
         throw new Error(t('assessment.saveResultError', locale))
       }
 
@@ -355,11 +394,10 @@ export function AssessmentClient({
       showToast(t('assessment.saveError', locale), 'error')
     }
   }, [
-    canGoNext,
     pageQuestions,
-    answers,
     highlightMissing,
     isSubmitting,
+    totalQuestions,
     testType,
     locale,
     draftKey,
@@ -568,7 +606,6 @@ export function AssessmentClient({
             />
             {t('assessment.autoAdvance', locale)}
           </label>
-          <span className="text-xs text-gray-500">{t('assessment.keyboardHint', locale)}</span>
         </div>
 
         {/* Questions for current page */}
@@ -619,12 +656,6 @@ export function AssessmentClient({
             ) : focusMode ? (
               activeQuestion ? (
                 <>
-                  <p className="text-center text-xs font-medium text-gray-500">
-                    {tf('assessment.pageQuestionCounter', locale, {
-                      current: activeQuestionIndex + 1,
-                      total: pageQuestions.length,
-                    })}
-                  </p>
                   <div key={activeQuestion.id} id={`question-${activeQuestion.id}`}>
                     <QuestionCard
                       testName={testName}
