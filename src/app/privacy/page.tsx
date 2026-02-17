@@ -3,10 +3,32 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { TritaLogo } from "@/components/TritaLogo";
 import Link from "next/link";
+import { getLanguageAlternates } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  return { title: `${t("privacy.title", locale)} | Trita` };
+  const title = `${t("privacy.title", locale)} | Trita`;
+  const description = t("privacy.introBody", locale);
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/privacy",
+      languages: getLanguageAlternates("/privacy"),
+    },
+    openGraph: {
+      title,
+      description,
+      url: "/privacy",
+      type: "article",
+      siteName: "Trita",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
 }
 
 export default async function PrivacyPage() {

@@ -24,7 +24,19 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  return { title: t("meta.dashboardTitle", locale) };
+  return {
+    title: t("meta.dashboardTitle", locale),
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+      },
+    },
+  };
 }
 
 function getInsight(

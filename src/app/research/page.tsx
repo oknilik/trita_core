@@ -3,14 +3,53 @@ import Link from "next/link";
 import { TritaLogo } from "@/components/TritaLogo";
 import { t } from "@/lib/i18n";
 import { getServerLocale } from "@/lib/i18n-server";
+import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  return { title: t("meta.researchTitle", locale) };
+  const title = t("meta.researchTitle", locale);
+  const description = t("research.subtitle", locale);
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/research",
+      languages: getLanguageAlternates("/research"),
+    },
+    openGraph: {
+      title,
+      description,
+      url: "/research",
+      type: "article",
+      siteName: "Trita",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
 export default async function ResearchPage() {
   const locale = await getServerLocale();
+  const siteUrl = getSiteUrl();
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: t("research.title", locale),
+    description: t("research.subtitle", locale),
+    inLanguage: locale,
+    url: `${siteUrl}/research`,
+    author: {
+      "@type": "Organization",
+      name: "Trita",
+    },
+  };
 
   const sections = [
     { title: "research.introTitle", body: "research.introBody" },
@@ -26,6 +65,10 @@ export default async function ResearchPage() {
 
   return (
     <div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 flex flex-col items-center gap-3">
           <Link href="/">

@@ -9,7 +9,19 @@ import { ObserverClient } from "./ObserverClient";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  return { title: t("meta.observeTitle", locale) };
+  return {
+    title: t("meta.observeTitle", locale),
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+      },
+    },
+  };
 }
 
 interface ObservePageProps {

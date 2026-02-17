@@ -12,7 +12,19 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  return { title: t("meta.adminTitle", locale) };
+  return {
+    title: t("meta.adminTitle", locale),
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+      },
+    },
+  };
 }
 
 export default async function AdminPage() {

@@ -8,6 +8,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
+import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,9 +27,35 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = DEFAULT_LOCALE;
+  const title = t("meta.title", locale);
+  const description = t("meta.description", locale);
   return {
-    title: t("meta.title", locale),
-    description: t("meta.description", locale),
+    metadataBase: getMetadataBase(),
+    title: {
+      default: title,
+      template: "%s",
+    },
+    description,
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      type: "website",
+      siteName: "Trita",
+      title,
+      description,
+      url: "/",
+      locale: "hu_HU",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
     icons: {
       icon: [
         { url: "/favicon.ico", type: "image/x-icon" },
