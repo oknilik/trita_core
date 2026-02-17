@@ -600,11 +600,6 @@ export function ObserverClient({
           <ProgressBar current={answeredCount} total={totalQuestions} />
           <div className="mt-2 overflow-x-auto">
             <div className="flex min-w-max items-center gap-2 text-xs text-gray-600">
-              <p className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
-                {t("assessment.pageProgress", locale)
-                  .replace("{current}", String(currentPage + 1))
-                  .replace("{total}", String(totalPages))}
-              </p>
               <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
                 {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
               </div>
