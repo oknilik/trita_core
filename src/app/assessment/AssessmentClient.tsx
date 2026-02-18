@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { ProgressBar } from '@/components/assessment/ProgressBar'
@@ -38,7 +38,6 @@ export function AssessmentClient({
 
   const [currentPage, setCurrentPage] = useState(initialDraft?.currentPage ?? 0)
   const [answers, setAnswers] = useState<Record<number, number>>(() => {
-    // Server draft takes priority; localStorage is loaded after hydration
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
       const parsed: Record<number, number> = {}
       for (const [k, v] of Object.entries(initialDraft.answers)) {
@@ -53,8 +52,11 @@ export function AssessmentClient({
   const [evaluationProgress, setEvaluationProgress] = useState(0)
   const [pageQuestions, setPageQuestions] = useState<AssessmentQuestion[]>([])
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(true)
+  // Tracks which page the currently loaded questions belong to.
+  // Prevents stale-closure init: when currentPage changes the fetch is async,
+  // so pageQuestions still holds the previous page's data for a moment.
+  const [questionsPage, setQuestionsPage] = useState(-1)
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
-  const [focusMode, setFocusMode] = useState(true)
   const [autoAdvance, setAutoAdvance] = useState(true)
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const [checkpoint, setCheckpoint] = useState<number | null>(null)
@@ -77,24 +79,12 @@ export function AssessmentClient({
   const activeQuestion = pageQuestions[activeQuestionIndex] ?? null
   const canGoForwardWithinPage = activeQuestionIndex < pageQuestions.length - 1
   const canGoBackWithinPage = activeQuestionIndex > 0
-  const canGoPrev = focusMode ? canGoBackWithinPage || currentPage > 0 : currentPage > 0
-  const currentQuestionAnswered =
-    !focusMode || !activeQuestion ? true : answers[activeQuestion.id] !== undefined
-
-  // All questions on current page must be answered to proceed
+  const canGoPrev = canGoBackWithinPage || currentPage > 0
+  const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined
   const canGoNext = pageQuestions.every((q) => answers[q.id] !== undefined)
   const checkpointActive = checkpoint !== null
-  const canProceed = checkpointActive || (focusMode ? currentQuestionAnswered : canGoNext)
-  const showEvaluateButton = checkpointActive
-    ? false
-    : focusMode
-      ? isFullyCompleted
-      : isLastPage
-
-  const questionElementIds = useMemo(
-    () => new Map(pageQuestions.map((q) => [q.id, `question-${q.id}`])),
-    [pageQuestions],
-  )
+  const canProceed = checkpointActive || currentQuestionAnswered
+  const showEvaluateButton = !checkpointActive && isFullyCompleted
 
   // Refs to always have the latest values in async callbacks
   const latestAnswersRef = useRef(answers)
@@ -102,7 +92,6 @@ export function AssessmentClient({
   useEffect(() => { latestAnswersRef.current = answers }, [answers])
   useEffect(() => { latestPageRef.current = currentPage }, [currentPage])
 
-  // Randomize doodle only on the client after hydration to avoid SSR mismatch
   useEffect(() => { setDoodleSrc(pickRandomDoodle()) }, [])
 
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
@@ -112,7 +101,6 @@ export function AssessmentClient({
       return
     }
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
-      // Server draft loaded – remove stale localStorage so they don't diverge
       localStorage.removeItem(draftKey)
       return
     }
@@ -121,18 +109,15 @@ export function AssessmentClient({
       if (saved) {
         const parsed = JSON.parse(saved) as { answers?: Record<number, number>; currentPage?: number } | Record<number, number>
         if ('answers' in parsed && parsed.answers) {
-          // New format: { answers, currentPage }
           setAnswers(parsed.answers)
           if (typeof parsed.currentPage === 'number') {
             setCurrentPage(parsed.currentPage)
           }
-          // Pre-mark milestones already passed so they don't re-trigger
           const pct = (Object.keys(parsed.answers).length / totalQuestions) * 100
           for (const m of [25, 50, 75] as const) {
             if (pct >= m) reachedCheckpoints.current.add(m)
           }
         } else {
-          // Legacy format: plain answers object
           const legacyAnswers = parsed as Record<number, number>
           setAnswers(legacyAnswers)
           const pct = (Object.keys(legacyAnswers).length / totalQuestions) * 100
@@ -146,15 +131,14 @@ export function AssessmentClient({
     }
   }, [draftKey, initialDraft?.answers, clearDraft])
 
-  // Save draft to localStorage on every answer/page change (instant offline backup)
+  // Save draft to localStorage on every answer/page change
   useEffect(() => {
     if (Object.keys(answers).length > 0) {
       localStorage.setItem(draftKey, JSON.stringify({ answers, currentPage }))
     }
   }, [answers, currentPage, draftKey])
 
-  // Debounced server save on every answer change (2 s) – ensures DB draft exists
-  // even if the user never presses "Next"
+  // Debounced server save (2 s)
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     if (Object.keys(answers).length === 0) return
@@ -170,7 +154,7 @@ export function AssessmentClient({
           }),
         })
       } catch {
-        // Silent fail – localStorage is the fallback
+        // Silent fail
       }
     }, 2000)
     return () => {
@@ -178,7 +162,6 @@ export function AssessmentClient({
     }
   }, [answers])
 
-  // Warn before leaving if there are answers
   const handleBeforeUnload = useCallback(
     (e: BeforeUnloadEvent) => {
       if (Object.keys(answers).length > 0 && !isSubmitting) {
@@ -201,44 +184,42 @@ export function AssessmentClient({
         const res = await fetch(
           `/api/assessment/questions?page=${currentPage}&perPage=${QUESTIONS_PER_PAGE}`,
         )
-        if (!res.ok) {
-          throw new Error('Failed to load questions')
-        }
+        if (!res.ok) throw new Error('Failed to load questions')
         const data = await res.json()
         if (isMounted) {
           setPageQuestions(data.questions ?? [])
+          setQuestionsPage(currentPage)
         }
       } catch (error) {
         console.error(error)
         showToast(t('assessment.loadQuestionsError', locale), 'error')
-        if (isMounted) {
-          setPageQuestions([])
-        }
+        if (isMounted) setPageQuestions([])
       } finally {
-        if (isMounted) {
-          setIsLoadingQuestions(false)
-        }
+        if (isMounted) setIsLoadingQuestions(false)
       }
     }
     loadQuestions()
-    return () => {
-      isMounted = false
-    }
+    return () => { isMounted = false }
   }, [currentPage, showToast, locale])
 
+  // Initialize active question index once the correct questions have loaded.
+  // questionsPage guard ensures we never run with a stale (previous page's) pageQuestions.
   useEffect(() => {
-    if (!focusMode) {
-      initializedFocusPage.current = null
-      return
-    }
-    // Wait until questions are loaded – pageQuestions.length - 1 would be -1 on empty array
+    if (questionsPage !== currentPage) return  // questions not yet fetched for this page
     if (pageQuestions.length === 0) return
     if (initializedFocusPage.current === currentPage) return
+
     const firstUnanswered = pageQuestions.findIndex((q) => answers[q.id] === undefined)
-    // If all answered (resume): go to last question so one "Next" advances to next page
+
+    if (firstUnanswered === -1 && currentPage < totalPages - 1) {
+      // Every question on this page is already answered (draft resume) — skip it.
+      setCurrentPage((prev) => prev + 1)
+      return  // initializedFocusPage stays unset for this page so the next page re-inits
+    }
+
     setActiveQuestionIndex(firstUnanswered === -1 ? pageQuestions.length - 1 : firstUnanswered)
     initializedFocusPage.current = currentPage
-  }, [focusMode, currentPage, pageQuestions, answers])
+  }, [currentPage, questionsPage, pageQuestions, answers, totalPages])
 
   useEffect(() => {
     const marks = [25, 50, 75]
@@ -253,22 +234,14 @@ export function AssessmentClient({
 
   const highlightMissing = useCallback(
     (missingId: number) => {
-      if (focusMode) {
-        const missingIdx = pageQuestions.findIndex((q) => q.id === missingId)
-        if (missingIdx >= 0) setActiveQuestionIndex(missingIdx)
-      } else {
-        const elementId = questionElementIds.get(missingId)
-        if (elementId) {
-          const el = document.getElementById(elementId)
-          el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        }
-      }
+      const missingIdx = pageQuestions.findIndex((q) => q.id === missingId)
+      if (missingIdx >= 0) setActiveQuestionIndex(missingIdx)
       setHighlightQuestionId(missingId)
       window.setTimeout(() => {
         setHighlightQuestionId((current) => (current === missingId ? null : current))
       }, 1200)
     },
-    [focusMode, pageQuestions, questionElementIds],
+    [pageQuestions],
   )
 
   const saveDraftToServer = useCallback(async (page: number) => {
@@ -277,13 +250,10 @@ export function AssessmentClient({
       await fetch('/api/assessment/draft', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          answers,
-          currentPage: page,
-        }),
+        body: JSON.stringify({ answers, currentPage: page }),
       })
     } catch {
-      // Silent fail — localStorage is the fallback
+      // Silent fail
     } finally {
       setIsSavingDraft(false)
     }
@@ -292,9 +262,7 @@ export function AssessmentClient({
   const handleNextPage = useCallback(async () => {
     if (!canGoNext) {
       const missing = pageQuestions.find((q) => answers[q.id] === undefined)
-      if (missing) {
-        highlightMissing(missing.id)
-      }
+      if (missing) highlightMissing(missing.id)
       return
     }
     if (isLastPage) return
@@ -312,18 +280,19 @@ export function AssessmentClient({
   }, [currentPage])
 
   const handleFinish = useCallback(async () => {
-    // Use the ref so this is safe even when called from a stale closure (e.g. auto-advance timeout)
+    // Cancel any pending debounced draft save so it doesn't re-create the draft after submit deletes it
+    if (serverSaveDebounce.current) {
+      clearTimeout(serverSaveDebounce.current)
+      serverSaveDebounce.current = null
+    }
+
     const currentAnswers = latestAnswersRef.current
     const canGoNextNow = pageQuestions.every((q) => currentAnswers[q.id] !== undefined)
     if (!canGoNextNow) {
       const missing = pageQuestions.find((q) => currentAnswers[q.id] === undefined)
-      if (missing) {
-        highlightMissing(missing.id)
-      }
+      if (missing) highlightMissing(missing.id)
       return
     }
-    // Guard: if fewer answers than expected, earlier pages still have unanswered questions.
-    // This can happen when a stale draft inflates the count via removed question IDs.
     if (Object.keys(currentAnswers).length < totalQuestions) {
       setCurrentPage(0)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -355,15 +324,7 @@ export function AssessmentClient({
       })
       if (!response.ok) {
         const errBody = await response.json().catch(() => null)
-        console.error(
-          '[submit] API error',
-          response.status,
-          JSON.stringify(errBody),
-          'sentAnswerCount:',
-          payload.answers.length,
-          'sentTestType:',
-          payload.testType,
-        )
+        console.error('[submit] API error', response.status, JSON.stringify(errBody))
         throw new Error(t('assessment.saveResultError', locale))
       }
 
@@ -372,10 +333,7 @@ export function AssessmentClient({
 
       const rampInterval = setInterval(() => {
         setEvaluationProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(rampInterval)
-            return 100
-          }
+          if (prev >= 100) { clearInterval(rampInterval); return 100 }
           return prev + Math.random() * 3 + 1
         })
       }, 200)
@@ -383,7 +341,6 @@ export function AssessmentClient({
       await new Promise((resolve) => setTimeout(resolve, 4000))
       clearInterval(rampInterval)
       setEvaluationProgress(100)
-
       await new Promise((resolve) => setTimeout(resolve, 600))
       router.push('/dashboard')
     } catch (error) {
@@ -393,26 +350,14 @@ export function AssessmentClient({
       console.error(error)
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [
-    pageQuestions,
-    highlightMissing,
-    isSubmitting,
-    totalQuestions,
-    testType,
-    locale,
-    draftKey,
-    router,
-    showToast,
-  ])
+  }, [pageQuestions, highlightMissing, isSubmitting, totalQuestions, testType, locale, draftKey, router, showToast])
 
   const handleAnswer = useCallback((questionId: number, value: number) => {
     const updatedAnswers = { ...answers, [questionId]: value }
     const wasUnanswered = answers[questionId] === undefined
     setAnswers(updatedAnswers)
 
-    if (!focusMode || !autoAdvance || !activeQuestion || activeQuestion.id !== questionId) {
-      return
-    }
+    if (!autoAdvance || !activeQuestion || activeQuestion.id !== questionId) return
 
     const nextAnsweredCount = wasUnanswered ? answeredCount + 1 : answeredCount
     const nextProgress = (nextAnsweredCount / totalQuestions) * 100
@@ -421,7 +366,6 @@ export function AssessmentClient({
     )
 
     window.setTimeout(() => {
-      // Milestones should pause flow (requested behavior)
       if (willTriggerCheckpoint) return
 
       if (canGoForwardWithinPage) {
@@ -430,40 +374,42 @@ export function AssessmentClient({
         )
         if (nextUnanswered !== -1) {
           setActiveQuestionIndex(nextUnanswered)
+          return
+        }
+        const allPageAnswered = pageQuestions.every((q) => updatedAnswers[q.id] !== undefined)
+        if (!allPageAnswered) return
+        if (isLastPage) {
+          void handleFinish()
         } else {
-          setActiveQuestionIndex((idx) => Math.min(idx + 1, pageQuestions.length - 1))
+          const nextPage = currentPage + 1
+          setIsSavingDraft(true)
+          fetch('/api/assessment/draft', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
+          }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
+          setCurrentPage(nextPage)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
         }
         return
       }
 
-      // Last question on page: always continue automatically in autoAdvance mode.
       if (isLastPage) {
         void handleFinish()
         return
       }
-
       const nextPage = currentPage + 1
       setIsSavingDraft(true)
       fetch('/api/assessment/draft', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          answers: updatedAnswers,
-          currentPage: nextPage,
-        }),
-      })
-        .catch(() => {
-          // Silent fail — localStorage is fallback
-        })
-        .finally(() => {
-          setIsSavingDraft(false)
-        })
+        body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
+      }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
       setCurrentPage(nextPage)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }, 130)
   }, [
     answers,
-    focusMode,
     autoAdvance,
     activeQuestion,
     answeredCount,
@@ -476,38 +422,44 @@ export function AssessmentClient({
     handleFinish,
   ])
 
-
   const handlePrevStep = useCallback(() => {
     if (checkpointActive) {
       setCheckpoint(null)
       return
     }
-    if (focusMode && canGoBackWithinPage) {
+    if (canGoBackWithinPage) {
       setActiveQuestionIndex((idx) => idx - 1)
       return
     }
     handlePrevPage()
-  }, [checkpointActive, focusMode, canGoBackWithinPage, handlePrevPage])
+  }, [checkpointActive, canGoBackWithinPage, handlePrevPage])
 
   const handleNextStep = useCallback(async () => {
     if (checkpointActive) {
       setDoodleSrc((prev) => pickRandomDoodle(prev))
       setCheckpoint(null)
+      const nextUnanswered = pageQuestions.findIndex(
+        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+      )
+      if (nextUnanswered !== -1) {
+        setActiveQuestionIndex(nextUnanswered)
+      } else if (!isLastPage) {
+        await handleNextPage()
+      }
+      // If isLastPage and nothing unanswered: showEvaluateButton becomes true
       return
     }
-    if (focusMode && activeQuestion && answers[activeQuestion.id] === undefined) {
+    if (activeQuestion && answers[activeQuestion.id] === undefined) {
       highlightMissing(activeQuestion.id)
       return
     }
-    if (focusMode && canGoForwardWithinPage) {
-      // Skip already-answered questions – jump to next unanswered on this page
+    if (canGoForwardWithinPage) {
       const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined
+        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
       )
       if (nextUnanswered !== -1) {
         setActiveQuestionIndex(nextUnanswered)
       } else {
-        // All remaining on this page are answered → advance to next page
         if (isLastPage) {
           await handleFinish()
         } else {
@@ -523,7 +475,6 @@ export function AssessmentClient({
     await handleNextPage()
   }, [
     checkpointActive,
-    focusMode,
     activeQuestion,
     activeQuestionIndex,
     answers,
@@ -547,7 +498,6 @@ export function AssessmentClient({
         handleAnswer(activeQuestion.id, Number(event.key))
         return
       }
-
       if (event.key === 'Enter') {
         event.preventDefault()
         void handleNextStep()
@@ -585,38 +535,23 @@ export function AssessmentClient({
         </div>
 
         <div className="mb-4 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setFocusMode((prev) => !prev)}
-            className={`rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
-              focusMode
-                ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
-                : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            {focusMode ? t('assessment.showAllQuestions', locale) : t('assessment.focusMode', locale)}
-          </button>
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
             <input
               type="checkbox"
               checked={autoAdvance}
               onChange={(event) => setAutoAdvance(event.target.checked)}
-              disabled={!focusMode}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600 disabled:opacity-40"
+              className="h-4 w-4 rounded border-gray-300 text-indigo-600"
             />
             {t('assessment.autoAdvance', locale)}
           </label>
         </div>
 
-        {/* Questions for current page */}
         <AnimatePresence mode="wait">
           <motion.div
             key={
               checkpointActive
                 ? `checkpoint-${checkpoint}`
-                : focusMode
-                  ? `${currentPage}-${activeQuestion?.id ?? 'none'}`
-                  : String(currentPage)
+                : `${currentPage}-${activeQuestion?.id ?? 'none'}`
             }
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -653,38 +588,21 @@ export function AssessmentClient({
                   )}
                 </p>
               </div>
-            ) : focusMode ? (
-              activeQuestion ? (
-                <>
-                  <div key={activeQuestion.id} id={`question-${activeQuestion.id}`}>
-                    <QuestionCard
-                      testName={testName}
-                      format="likert"
-                      question={activeQuestion.text}
-                      value={(answers[activeQuestion.id] as number) ?? null}
-                      onChange={(v) => handleAnswer(activeQuestion.id, v)}
-                      highlight={highlightQuestionId === activeQuestion.id}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
-                  {t('assessment.loadingQuestions', locale)}
-                </div>
-              )
+            ) : activeQuestion ? (
+              <div key={activeQuestion.id} id={`question-${activeQuestion.id}`}>
+                <QuestionCard
+                  testName={testName}
+                  format="likert"
+                  question={activeQuestion.text}
+                  value={(answers[activeQuestion.id] as number) ?? null}
+                  onChange={(v) => handleAnswer(activeQuestion.id, v)}
+                  highlight={highlightQuestionId === activeQuestion.id}
+                />
+              </div>
             ) : (
-              pageQuestions.map((question) => (
-                <div key={question.id} id={`question-${question.id}`}>
-                  <QuestionCard
-                    testName={testName}
-                    format="likert"
-                    question={question.text}
-                    value={(answers[question.id] as number) ?? null}
-                    onChange={(v) => handleAnswer(question.id, v)}
-                    highlight={highlightQuestionId === question.id}
-                  />
-                </div>
-              ))
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
+                {t('assessment.loadingQuestions', locale)}
+              </div>
             )}
           </motion.div>
         </AnimatePresence>
@@ -717,32 +635,25 @@ export function AssessmentClient({
               whileHover={canProceed && !isSavingDraft ? { scale: 1.02 } : {}}
               whileTap={canProceed && !isSavingDraft ? { scale: 0.98 } : {}}
             >
-              {checkpointActive
-                ? t('assessment.nextCta', locale)
-                : focusMode && canGoForwardWithinPage
-                ? t('assessment.nextCta', locale)
-                : isSavingDraft
-                  ? t('actions.save', locale)
-                  : t('assessment.nextCta', locale)}
+              {isSavingDraft ? t('actions.save', locale) : t('assessment.nextCta', locale)}
             </motion.button>
           ) : (
             <motion.button
-              onClick={() => void handleNextStep()}
-              aria-disabled={(!canGoNext && !checkpointActive) || isSubmitting}
+              onClick={() => void handleFinish()}
+              disabled={isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                (canGoNext || checkpointActive) && !isSubmitting
+                !isSubmitting
                   ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'
                   : 'cursor-not-allowed bg-gray-200 text-gray-400'
               }`}
-              whileHover={(canGoNext || checkpointActive) && !isSubmitting ? { scale: 1.02 } : {}}
-              whileTap={(canGoNext || checkpointActive) && !isSubmitting ? { scale: 0.98 } : {}}
+              whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+              whileTap={!isSubmitting ? { scale: 0.98 } : {}}
             >
               {t('assessment.evaluateCta', locale)}
             </motion.button>
           )}
         </div>
 
-        {/* Help text */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

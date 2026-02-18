@@ -78,7 +78,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
       </div>
 
       {/* End labels */}
-      <div className="flex items-center justify-between px-1 text-xs text-gray-400">
+      <div className="flex items-center justify-between px-1 text-xs text-gray-500">
         <span className="max-w-[45%] text-left">{t('assessment.endLeft', locale)}</span>
         <span className="max-w-[45%] text-right">{t('assessment.endRight', locale)}</span>
       </div>

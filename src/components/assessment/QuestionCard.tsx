@@ -42,16 +42,18 @@ export function QuestionCard(props: QuestionCardProps) {
       transition={{ duration: 0.3 }}
       className="w-full"
     >
-      <div
-        className={`rounded-2xl border bg-white p-6 shadow-xl transition-colors md:p-8 ${
-          highlight ? 'border-rose-400' : 'border-gray-100'
+      <motion.div
+        animate={highlight ? { x: [0, -9, 9, -6, 6, -3, 3, 0] } : { x: 0 }}
+        transition={{ duration: 0.4 }}
+        className={`rounded-2xl border bg-white p-6 shadow-md md:p-8 ${
+          highlight ? 'border-orange-400 ring-2 ring-orange-200' : 'border-gray-100'
         }`}
       >
         {/* Badge removed */}
 
         {format === 'likert' ? (
           <>
-            <h2 className="mb-8 text-xl font-semibold leading-relaxed text-gray-900 md:text-2xl">
+            <h2 className="mb-6 flex min-h-[7rem] items-start text-lg font-semibold leading-relaxed text-gray-700 md:mb-8 md:text-xl">
               {props.question}
             </h2>
             <SliderSelector value={props.value} onChange={props.onChange} />
@@ -69,7 +71,7 @@ export function QuestionCard(props: QuestionCardProps) {
             />
           </>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   )
 }

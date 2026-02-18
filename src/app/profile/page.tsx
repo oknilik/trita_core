@@ -431,6 +431,12 @@ export default function ProfilePage() {
         throw new Error("Delete failed");
       }
       deleted = true;
+      // Clear all trita-related localStorage data so old drafts don't survive re-registration
+      try {
+        for (const key of Object.keys(localStorage)) {
+          if (key.startsWith("trita_")) localStorage.removeItem(key);
+        }
+      } catch {}
       await new Promise((resolve) => window.setTimeout(resolve, DELETE_GOODBYE_MS));
       setShowDeleteModal(false);
       window.location.href = "/";

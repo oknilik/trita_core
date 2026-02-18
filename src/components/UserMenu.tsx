@@ -32,6 +32,10 @@ export function UserMenu() {
           setProfileName(data.username);
           // Cache in localStorage for instant access on next load
           window.localStorage.setItem("trita_username", data.username);
+        } else {
+          // Profile has no username yet (deleted or in onboarding) — clear stale cache
+          setProfileName(null);
+          window.localStorage.removeItem("trita_username");
         }
       }
     } catch {
@@ -56,14 +60,20 @@ export function UserMenu() {
     return () => window.removeEventListener("profile-updated", handleProfileUpdate);
   }, [fetchProfile]);
 
-  // Use profile name from database if available, otherwise fallback to Clerk data
-  const displayName = profileName || user?.username || user?.primaryEmailAddress?.emailAddress;
+  const isOnboarding = pathname.startsWith("/onboarding");
+  const email = user?.primaryEmailAddress?.emailAddress;
 
-  const initials =
-    profileName?.[0] ??
-    user?.username?.[0] ??
-    user?.primaryEmailAddress?.emailAddress?.[0] ??
-    "U";
+  // During onboarding show email as fallback (no stale cached name)
+  const displayName = isOnboarding
+    ? email ?? null
+    : profileName || user?.username || email;
+
+  const initials = isOnboarding
+    ? email?.[0]?.toUpperCase() ?? "?"
+    : profileName?.[0]?.toUpperCase() ??
+      user?.username?.[0]?.toUpperCase() ??
+      email?.[0]?.toUpperCase() ??
+      "U";
 
   const label = displayName;
   const itemClass = (active: boolean) =>

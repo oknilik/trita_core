@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
@@ -66,10 +66,10 @@ export function ObserverClient({
   const [currentPage, setCurrentPage] = useState(initialDraft?.currentPage ?? 0);
   const [answers, setAnswers] = useState<Record<number, number>>(initialDraft?.answers ?? {});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [focusMode, setFocusMode] = useState(true);
   const [autoAdvance, setAutoAdvance] = useState(true);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null);
+  const [highlightConfidence, setHighlightConfidence] = useState(false);
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
   const [doodleSrc, setDoodleSrc] = useState<string>(DOODLE_SOURCES[0]);
   const reachedCheckpoints = useRef<Set<number>>(new Set(
@@ -85,20 +85,14 @@ export function ObserverClient({
 
   const DRAFT_KEY = `trita_observer_draft_${token}`;
 
-  // Keep latestDraftRef in sync for use inside async callbacks
   useEffect(() => {
     latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
   }, [phase, relationshipType, knownDuration, answers, currentPage]);
 
-  // Randomize doodle only on the client after hydration to avoid SSR mismatch
-  useEffect(() => {
-    setDoodleSrc(pickRandomDoodle());
-  }, []);
+  useEffect(() => { setDoodleSrc(pickRandomDoodle()); }, []);
 
-  // On mount: if no server draft was loaded, try localStorage as fallback
   useEffect(() => {
     if (initialDraft) {
-      // Server draft takes precedence; clear any stale localStorage
       try { localStorage.removeItem(DRAFT_KEY); } catch {}
       return;
     }
@@ -110,7 +104,6 @@ export function ObserverClient({
       if (data.knownDuration) setKnownDuration(data.knownDuration);
       if (data.answers && typeof data.answers === "object") {
         setAnswers(data.answers);
-        // Pre-mark passed milestones so they don't re-trigger
         const pct = (Object.keys(data.answers).length / questions.length) * 100;
         for (const m of [25, 50, 75] as const) {
           if (pct >= m) reachedCheckpoints.current.add(m);
@@ -122,17 +115,14 @@ export function ObserverClient({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Save draft to localStorage + debounced server save on every state change
   useEffect(() => {
     if (phase === "done" || phase === "inactive") return;
-    // localStorage (immediate)
     try {
       localStorage.setItem(
         DRAFT_KEY,
         JSON.stringify({ phase, relationshipType, knownDuration, answers, currentPage }),
       );
     } catch {}
-    // Server save (debounced 2s) – only when assessment has started
     if (phase === "intro" || Object.keys(answers).length === 0) return;
     if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current);
     serverSaveDebounce.current = setTimeout(async () => {
@@ -169,31 +159,29 @@ export function ObserverClient({
   const activeQuestion = pageQuestions[activeQuestionIndex] ?? null;
   const canGoForwardWithinPage = activeQuestionIndex < pageQuestions.length - 1;
   const canGoBackWithinPage = activeQuestionIndex > 0;
-  const canGoPrev =
-    phase === "confidence" ||
-    (focusMode ? canGoBackWithinPage || currentPage > 0 : currentPage > 0);
+  const canGoPrev = phase === "confidence" || canGoBackWithinPage || currentPage > 0;
   const canGoNext = pageQuestions.every((q) => answers[q.id] !== undefined);
-  const currentQuestionAnswered =
-    !focusMode || !activeQuestion ? true : answers[activeQuestion.id] !== undefined;
+  const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined;
   const checkpointActive = checkpoint !== null;
-  const canProceed =
-    phase === "confidence" || checkpointActive || (focusMode ? currentQuestionAnswered : canGoNext);
+  const canProceed = phase === "confidence" || checkpointActive || currentQuestionAnswered;
 
-  const questionElementIds = useMemo(
-    () => new Map(pageQuestions.map((q) => [q.id, `observer-question-${q.id}`])),
-    [pageQuestions],
-  );
-
+  // Initialize active question index when page loads.
+  // If all questions on this page are already answered (draft resume), auto-advance to next page.
   useEffect(() => {
-    if (!focusMode) {
-      initializedFocusPage.current = null;
-      return;
-    }
     if (initializedFocusPage.current === currentPage) return;
+    if (pageQuestions.length === 0) return;
+
     const firstUnanswered = pageQuestions.findIndex((q) => answers[q.id] === undefined);
+
+    if (firstUnanswered === -1 && currentPage < totalPages - 1) {
+      // Every question on this page is already answered — skip it.
+      setCurrentPage((prev) => prev + 1);
+      return; // initializedFocusPage stays unset so the next page re-inits
+    }
+
     setActiveQuestionIndex(firstUnanswered === -1 ? pageQuestions.length - 1 : firstUnanswered);
     initializedFocusPage.current = currentPage;
-  }, [focusMode, currentPage, pageQuestions, answers]);
+  }, [currentPage, pageQuestions, answers, totalPages]);
 
   useEffect(() => {
     if (phase !== "assessment") return;
@@ -209,22 +197,14 @@ export function ObserverClient({
 
   const highlightMissing = useCallback(
     (missingId: number) => {
-      if (focusMode) {
-        const missingIdx = pageQuestions.findIndex((q) => q.id === missingId);
-        if (missingIdx >= 0) setActiveQuestionIndex(missingIdx);
-      } else {
-        const elementId = questionElementIds.get(missingId);
-        if (elementId) {
-          const el = document.getElementById(elementId);
-          el?.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }
+      const missingIdx = pageQuestions.findIndex((q) => q.id === missingId);
+      if (missingIdx >= 0) setActiveQuestionIndex(missingIdx);
       setHighlightQuestionId(missingId);
       window.setTimeout(() => {
         setHighlightQuestionId((current) => (current === missingId ? null : current));
       }, 1200);
     },
-    [focusMode, pageQuestions, questionElementIds],
+    [pageQuestions],
   );
 
   const handleNextPage = useCallback(() => {
@@ -246,9 +226,7 @@ export function ObserverClient({
     }
   }, [currentPage]);
 
-  // Must be defined before handleAnswer so it can be referenced in handleAnswer's dependency array
   const handleGoToConfidence = useCallback(() => {
-    // Use the ref so this is safe even when called from a stale closure (e.g. auto-advance timeout)
     const currentAnswers = latestDraftRef.current.answers;
     const canGoNextNow = pageQuestions.every((q) => currentAnswers[q.id] !== undefined);
     if (!canGoNextNow) {
@@ -263,9 +241,7 @@ export function ObserverClient({
     const wasUnanswered = latestDraftRef.current.answers[questionId] === undefined;
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
 
-    if (!focusMode || !autoAdvance || !activeQuestion || activeQuestion.id !== questionId) {
-      return;
-    }
+    if (!autoAdvance || !activeQuestion || activeQuestion.id !== questionId) return;
 
     const currentAnsweredCount = Object.keys(latestDraftRef.current.answers).length;
     const nextAnsweredCount = wasUnanswered ? currentAnsweredCount + 1 : currentAnsweredCount;
@@ -284,13 +260,19 @@ export function ObserverClient({
         );
         if (nextUnanswered !== -1) {
           setActiveQuestionIndex(nextUnanswered);
+          return;
+        }
+        const allPageAnswered = pageQuestions.every((q) => updatedAnswers[q.id] !== undefined);
+        if (!allPageAnswered) return;
+        if (isLastPage) {
+          handleGoToConfidence();
         } else {
-          setActiveQuestionIndex((idx) => Math.min(idx + 1, pageQuestions.length - 1));
+          setCurrentPage((prev) => prev + 1);
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }
         return;
       }
 
-      // Last question on page: advance to next page or confidence phase
       if (isLastPage) {
         handleGoToConfidence();
         return;
@@ -299,7 +281,6 @@ export function ObserverClient({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 130);
   }, [
-    focusMode,
     autoAdvance,
     activeQuestion,
     activeQuestionIndex,
@@ -319,24 +300,34 @@ export function ObserverClient({
       setCheckpoint(null);
       return;
     }
-    if (focusMode && canGoBackWithinPage) {
+    if (canGoBackWithinPage) {
       setActiveQuestionIndex((idx) => idx - 1);
       return;
     }
     handlePreviousPage();
-  }, [phase, checkpointActive, focusMode, canGoBackWithinPage, handlePreviousPage]);
+  }, [phase, checkpointActive, canGoBackWithinPage, handlePreviousPage]);
 
   const handleNextStep = useCallback(() => {
     if (checkpointActive) {
       setDoodleSrc((prev) => pickRandomDoodle(prev));
       setCheckpoint(null);
+      const nextUnanswered = pageQuestions.findIndex(
+        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+      );
+      if (nextUnanswered !== -1) {
+        setActiveQuestionIndex(nextUnanswered);
+      } else if (isLastPage) {
+        handleGoToConfidence();
+      } else {
+        handleNextPage();
+      }
       return;
     }
-    if (focusMode && activeQuestion && answers[activeQuestion.id] === undefined) {
+    if (activeQuestion && answers[activeQuestion.id] === undefined) {
       highlightMissing(activeQuestion.id);
       return;
     }
-    if (focusMode && canGoForwardWithinPage) {
+    if (canGoForwardWithinPage) {
       const nextUnanswered = pageQuestions.findIndex(
         (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
       );
@@ -358,7 +349,6 @@ export function ObserverClient({
     handleNextPage();
   }, [
     checkpointActive,
-    focusMode,
     activeQuestion,
     activeQuestionIndex,
     pageQuestions,
@@ -392,6 +382,11 @@ export function ObserverClient({
   }, [phase, checkpointActive, activeQuestion, handleAnswer, handleNextStep]);
 
   const handleFinish = async () => {
+    if (confidence === null) {
+      setHighlightConfidence(true);
+      window.setTimeout(() => setHighlightConfidence(false), 1200);
+      return;
+    }
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
@@ -423,7 +418,6 @@ export function ObserverClient({
         );
       }
       try { localStorage.removeItem(DRAFT_KEY); } catch {}
-      // Delete server draft (fire-and-forget)
       fetch("/api/observer/draft", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -454,10 +448,7 @@ export function ObserverClient({
               {t("observer.introTitle", locale)}
             </h1>
             <p className="mt-3 text-sm text-gray-600">
-              {tf("observer.introBody", locale, {
-                inviter: inviterName,
-                testName,
-              })}
+              {tf("observer.introBody", locale, { inviter: inviterName, testName })}
             </p>
             <p className="mt-2 text-sm text-gray-500">
               {t("observer.introBody2", locale)}
@@ -617,24 +608,12 @@ export function ObserverClient({
 
         {phase === "assessment" && (
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setFocusMode((prev) => !prev)}
-              className={`rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
-                focusMode
-                  ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                  : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              {focusMode ? t("assessment.showAllQuestions", locale) : t("assessment.focusMode", locale)}
-            </button>
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
               <input
                 type="checkbox"
                 checked={autoAdvance}
                 onChange={(event) => setAutoAdvance(event.target.checked)}
-                disabled={!focusMode}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 disabled:opacity-40"
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600"
               />
               {t("assessment.autoAdvance", locale)}
             </label>
@@ -648,9 +627,7 @@ export function ObserverClient({
                 ? "observer-confidence"
                 : checkpointActive
                   ? `observer-checkpoint-${checkpoint}`
-                  : focusMode
-                    ? `observer-${currentPage}-${activeQuestion?.id ?? "none"}`
-                    : `observer-${currentPage}`
+                  : `observer-${currentPage}-${activeQuestion?.id ?? "none"}`
             }
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -666,6 +643,7 @@ export function ObserverClient({
                   question={t("observer.confidenceLabel", locale)}
                   value={confidence}
                   onChange={(v) => setConfidence(v)}
+                  highlight={highlightConfidence}
                 />
                 <p className="text-center text-sm text-gray-400">
                   {t("observer.confidenceHint", locale)}
@@ -696,42 +674,22 @@ export function ObserverClient({
                   )}
                 </p>
               </div>
-            ) : focusMode ? (
-              activeQuestion && isLikertQuestion(activeQuestion) ? (
-                <>
-                  <div key={activeQuestion.id} id={`observer-question-${activeQuestion.id}`}>
-                    <QuestionCard
-                      testName={testName}
-                      dimension={activeQuestion.dimension}
-                      format="likert"
-                      question={activeQuestion.textObserver ?? activeQuestion.text}
-                      value={(answers[activeQuestion.id] as number) ?? null}
-                      onChange={(v) => handleAnswer(activeQuestion.id, v)}
-                      highlight={highlightQuestionId === activeQuestion.id}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
-                  {t("assessment.loadingQuestions", locale)}
-                </div>
-              )
+            ) : activeQuestion && isLikertQuestion(activeQuestion) ? (
+              <div key={activeQuestion.id} id={`observer-question-${activeQuestion.id}`}>
+                <QuestionCard
+                  testName={testName}
+                  dimension={activeQuestion.dimension}
+                  format="likert"
+                  question={activeQuestion.textObserver ?? activeQuestion.text}
+                  value={(answers[activeQuestion.id] as number) ?? null}
+                  onChange={(v) => handleAnswer(activeQuestion.id, v)}
+                  highlight={highlightQuestionId === activeQuestion.id}
+                />
+              </div>
             ) : (
-              pageQuestions.map((question) =>
-                isLikertQuestion(question) ? (
-                  <div key={question.id} id={`observer-question-${question.id}`}>
-                    <QuestionCard
-                      testName={testName}
-                      dimension={question.dimension}
-                      format="likert"
-                      question={question.textObserver ?? question.text}
-                      value={(answers[question.id] as number) ?? null}
-                      onChange={(v) => handleAnswer(question.id, v)}
-                      highlight={highlightQuestionId === question.id}
-                    />
-                  </div>
-                ) : null,
-              )
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
+                {t("assessment.loadingQuestions", locale)}
+              </div>
             )}
           </motion.div>
         </AnimatePresence>
@@ -756,11 +714,11 @@ export function ObserverClient({
               onClick={handleFinish}
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                !isSubmitting
+                !isSubmitting && confidence !== null
                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
-                  : "cursor-not-allowed bg-gray-200 text-gray-400"
+                  : "bg-gray-200 text-gray-400"
               }`}
-              whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+              whileHover={!isSubmitting && confidence !== null ? { scale: 1.02 } : {}}
               whileTap={!isSubmitting ? { scale: 0.98 } : {}}
             >
               {isSubmitting ? t("observer.submitLoading", locale) : t("observer.submit", locale)}
@@ -768,7 +726,8 @@ export function ObserverClient({
           ) : (
             <motion.button
               onClick={handleNextStep}
-              disabled={!canProceed || isSubmitting}
+              disabled={isSubmitting}
+              aria-disabled={!canProceed || isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canProceed && !isSubmitting
                   ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg"

@@ -275,6 +275,8 @@ export function OnboardingClient() {
         throw new Error("Save failed");
       }
 
+      // Update the navbar immediately — UserMenu listens for this event
+      window.dispatchEvent(new CustomEvent("profile-updated"));
       router.push("/assessment");
     } catch {
       showToast(t("onboarding.errorGeneric", locale), "error");

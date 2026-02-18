@@ -224,7 +224,7 @@ export function PickerTrigger({
       <button
         type="button"
         onClick={onClick}
-        className="flex min-h-[44px] items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-3 text-left text-sm transition focus:border-indigo-300 focus:outline-none"
+        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-gray-200 bg-gray-50 px-3 text-left text-sm transition hover:border-gray-300 focus:border-indigo-300 focus:outline-none"
       >
         <span className={value ? "text-gray-900" : "text-gray-400"}>
           {value || placeholder}
