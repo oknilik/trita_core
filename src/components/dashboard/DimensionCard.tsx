@@ -32,7 +32,7 @@ interface DimensionCardProps {
 }
 
 function getLevel(score: number): "low" | "mid" | "high" {
-  return score < 40 ? "low" : score < 70 ? "mid" : "high";
+  return score < 33 ? "low" : score < 67 ? "mid" : "high";
 }
 
 export const DimensionCard = memo(function DimensionCard({

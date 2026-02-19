@@ -71,14 +71,14 @@ function scoreLikert(
   const dimensions: Record<string, number> = {};
   for (const dim of config.dimensions) {
     const { sum, count } = totals[dim.code];
-    dimensions[dim.code] = count === 0 ? 0 : Math.round((sum / count / 5) * 100);
+    dimensions[dim.code] = count === 0 ? 0 : Math.round(((sum / count - 1) / 4) * 100);
   }
 
   const facets: Record<string, Record<string, number>> = {};
   for (const [dimCode, facetMap] of Object.entries(facetTotals)) {
     facets[dimCode] = {};
     for (const [facetCode, { sum, count }] of Object.entries(facetMap)) {
-      facets[dimCode][facetCode] = count === 0 ? 0 : Math.round((sum / count / 5) * 100);
+      facets[dimCode][facetCode] = count === 0 ? 0 : Math.round(((sum / count - 1) / 4) * 100);
     }
   }
 
@@ -86,7 +86,7 @@ function scoreLikert(
   for (const [dimCode, aspectMap] of Object.entries(aspectTotals)) {
     aspects[dimCode] = {};
     for (const [aspectCode, { sum, count }] of Object.entries(aspectMap)) {
-      aspects[dimCode][aspectCode] = count === 0 ? 0 : Math.round((sum / count / 5) * 100);
+      aspects[dimCode][aspectCode] = count === 0 ? 0 : Math.round(((sum / count - 1) / 4) * 100);
     }
   }
 
