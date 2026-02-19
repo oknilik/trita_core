@@ -46,6 +46,39 @@ const DURATION_OPTIONS = [
 
 const QUESTIONS_PER_PAGE = 5;
 
+function sanitizeAnswersForQuestions(
+  rawAnswers: Record<number, number> | Record<string, unknown> | undefined,
+  questions: Question[],
+): Record<number, number> {
+  if (!rawAnswers || typeof rawAnswers !== "object") return {};
+
+  const validIds = new Set(questions.map((q) => q.id));
+  const sanitized: Record<number, number> = {};
+
+  for (const [key, value] of Object.entries(rawAnswers)) {
+    const questionId = Number(key);
+    if (!Number.isInteger(questionId) || !validIds.has(questionId)) continue;
+    if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 5) continue;
+    sanitized[questionId] = value;
+  }
+
+  return sanitized;
+}
+
+function getResumePage(
+  questions: Question[],
+  answers: Record<number, number>,
+  fallbackPage: number,
+): number {
+  const totalPages = Math.max(1, Math.ceil(questions.length / QUESTIONS_PER_PAGE));
+  const firstUnansweredIdx = questions.findIndex((q) => answers[q.id] === undefined);
+  if (firstUnansweredIdx === -1) return totalPages - 1;
+
+  const byMissing = Math.floor(firstUnansweredIdx / QUESTIONS_PER_PAGE);
+  const safeFallback = Number.isInteger(fallbackPage) ? fallbackPage : 0;
+  return Math.max(0, Math.min(Math.min(byMissing, safeFallback), totalPages - 1));
+}
+
 export function ObserverClient({
   token,
   inviterName,
@@ -57,14 +90,27 @@ export function ObserverClient({
   const { locale } = useLocale();
   const { showToast } = useToast();
 
+  const sanitizedInitialAnswers = sanitizeAnswersForQuestions(initialDraft?.answers, questions);
+  const initialAllAnswered =
+    questions.length > 0 &&
+    questions.every((q) => sanitizedInitialAnswers[q.id] !== undefined);
+  const initialPhase = initialDraft
+    ? initialDraft.phase === "confidence" && !initialAllAnswered
+      ? "assessment"
+      : initialDraft.phase
+    : "intro";
+  const initialPage = initialDraft
+    ? getResumePage(questions, sanitizedInitialAnswers, initialDraft.currentPage)
+    : 0;
+
   const [phase, setPhase] = useState<
     "intro" | "assessment" | "confidence" | "done" | "inactive"
-  >(initialDraft?.phase ?? "intro");
+  >(initialPhase);
   const [relationshipType, setRelationshipType] = useState(initialDraft?.relationshipType ?? "");
   const [knownDuration, setKnownDuration] = useState(initialDraft?.knownDuration ?? "");
   const [confidence, setConfidence] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(initialDraft?.currentPage ?? 0);
-  const [answers, setAnswers] = useState<Record<number, number>>(initialDraft?.answers ?? {});
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [answers, setAnswers] = useState<Record<number, number>>(sanitizedInitialAnswers);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [autoAdvance, setAutoAdvance] = useState(true);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
@@ -75,7 +121,7 @@ export function ObserverClient({
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft
       ? ([25, 50, 75] as const).filter(
-          (m) => (Object.keys(initialDraft.answers).length / questions.length) * 100 >= m,
+          (m) => (Object.keys(sanitizedInitialAnswers).length / questions.length) * 100 >= m,
         )
       : [],
   ));
@@ -103,14 +149,25 @@ export function ObserverClient({
       if (data.relationshipType) setRelationshipType(data.relationshipType);
       if (data.knownDuration) setKnownDuration(data.knownDuration);
       if (data.answers && typeof data.answers === "object") {
-        setAnswers(data.answers);
-        const pct = (Object.keys(data.answers).length / questions.length) * 100;
+        const sanitized = sanitizeAnswersForQuestions(
+          data.answers as Record<string, unknown>,
+          questions,
+        );
+        setAnswers(sanitized);
+        const pct = (Object.keys(sanitized).length / questions.length) * 100;
         for (const m of [25, 50, 75] as const) {
           if (pct >= m) reachedCheckpoints.current.add(m);
         }
+        setCurrentPage(getResumePage(questions, sanitized, data.currentPage ?? 0));
       }
-      if (typeof data.currentPage === "number") setCurrentPage(data.currentPage);
-      if (data.phase === "assessment" || data.phase === "confidence") setPhase(data.phase);
+      if (data.phase === "assessment" || data.phase === "confidence") {
+        const sanitized = sanitizeAnswersForQuestions(
+          (data.answers ?? {}) as Record<string, unknown>,
+          questions,
+        );
+        const allAnswered = questions.every((q) => sanitized[q.id] !== undefined);
+        setPhase(data.phase === "confidence" && !allAnswered ? "assessment" : data.phase);
+      }
     } catch {}
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -382,6 +439,25 @@ export function ObserverClient({
   }, [phase, checkpointActive, activeQuestion, handleAnswer, handleNextStep]);
 
   const handleFinish = async () => {
+    const missingIndex = questions.findIndex((q) => answers[q.id] === undefined);
+    if (missingIndex !== -1) {
+      const missingQuestionId = questions[missingIndex]?.id;
+      const targetPage = Math.floor(missingIndex / QUESTIONS_PER_PAGE);
+      setPhase("assessment");
+      setCurrentPage(targetPage);
+      initializedFocusPage.current = null;
+      if (typeof missingQuestionId === "number") {
+        setHighlightQuestionId(missingQuestionId);
+        window.setTimeout(() => {
+          setHighlightQuestionId((current) =>
+            current === missingQuestionId ? null : current,
+          );
+        }, 1200);
+      }
+      showToast(t("error.MISSING_ANSWER", locale), "error");
+      return;
+    }
+
     if (confidence === null) {
       setHighlightConfidence(true);
       window.setTimeout(() => setHighlightConfidence(false), 1200);

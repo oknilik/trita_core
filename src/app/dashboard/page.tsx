@@ -19,6 +19,7 @@ import { t, tf } from "@/lib/i18n";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
+import { HashScroll } from "@/components/dashboard/HashScroll";
 
 export const dynamic = "force-dynamic";
 
@@ -197,6 +198,8 @@ export default async function DashboardPage({
   const scores = latestResult?.scores as ScoreResult | undefined;
   const testType = profile?.testType as TestType | null;
   const config = testType ? getTestConfig(testType, locale) : null;
+  const profileOverviewTestName =
+    testType === "HEXACO_MODIFIED" ? "HEXACO" : (config?.name ?? "test");
 
   // Total question count for draft progress display
   const draftTotalQuestions = config
@@ -351,6 +354,7 @@ export default async function DashboardPage({
   return (
     <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
       <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
+      <HashScroll />
       <DashboardAutoRefresh
         pendingInvites={pendingInvites.length}
         completedObserver={completedObservers.length}
@@ -423,10 +427,10 @@ export default async function DashboardPage({
       <FadeIn delay={0.1}>
         <section id="results" className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
           <div className="flex items-center gap-3 mb-6">
-            <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              {tf("dashboard.profileOverview", locale, { testName: config.name })}
-            </h2>
+              <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              {tf("dashboard.profileOverview", locale, { testName: profileOverviewTestName })}
+              </h2>
           </div>
           <p className="mt-2 text-sm text-gray-600">
             {tf("dashboard.overviewLikert", locale, { count: config.dimensions.length })}
@@ -526,7 +530,7 @@ export default async function DashboardPage({
 
       {/* ── Invite section ── */}
       <FadeIn delay={0.1}>
-        <div id="invite" className="relative overflow-hidden rounded-2xl">
+        <div id="invite" className="relative overflow-hidden rounded-2xl scroll-mt-24">
           <InviteSection
             initialInvitations={sentInvitations.map((inv) => ({
               id: inv.id,
