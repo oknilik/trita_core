@@ -512,6 +512,8 @@ export function ObserverClient({
   };
 
   const helpText = tf("observer.helpLikertAbout", locale, { inviter: inviterName });
+  const thinkOfText = tf("observer.thinkOf", locale, { inviter: inviterName });
+  const thinkOfParts = thinkOfText.split(inviterName);
 
   if (phase === "intro") {
     const canStart = relationshipType !== "" && knownDuration !== "";
@@ -678,8 +680,17 @@ export function ObserverClient({
           </div>
         </div>
 
-        <div className="mb-4 rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2 text-center text-sm text-indigo-700">
-          {tf("observer.thinkOf", locale, { inviter: inviterName })}
+        <div className="mb-4 rounded-xl border border-indigo-300/70 bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+          {thinkOfParts.length > 1 ? (
+            thinkOfParts.map((part, index) => (
+              <span key={`thinkof-${index}`}>
+                {part}
+                {index < thinkOfParts.length - 1 ? <strong className="font-bold italic">{inviterName}</strong> : null}
+              </span>
+            ))
+          ) : (
+            thinkOfText
+          )}
         </div>
 
         {phase === "assessment" && (
@@ -806,7 +817,7 @@ export function ObserverClient({
               aria-disabled={!canProceed || isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canProceed && !isSubmitting
-                  ? "bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
                   : "cursor-not-allowed bg-gray-200 text-gray-400"
               }`}
               whileHover={canProceed && !isSubmitting ? { scale: 1.02 } : {}}

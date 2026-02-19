@@ -629,7 +629,7 @@ export function AssessmentClient({
               aria-disabled={!canProceed || isSavingDraft}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canProceed && !isSavingDraft
-                  ? 'bg-indigo-600 text-white shadow-md hover:bg-indigo-700 hover:shadow-lg'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'
                   : 'cursor-not-allowed bg-gray-200 text-gray-400'
               }`}
               whileHover={canProceed && !isSavingDraft ? { scale: 1.02 } : {}}

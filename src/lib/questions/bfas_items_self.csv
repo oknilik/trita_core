@@ -1,0 +1,101 @@
+item_id;domain;aspect;reverse;english;german;hungarian
+1;Agreeableness;Compassion;1;Am not interested in other people's problems.;Ich interessiere mich nicht für die Probleme anderer.;Nem érdekelnek mások problémái.
+2;Agreeableness;Compassion;0;Feel others' emotions.;Ich habe ein Gespür für die Gefühle anderer.;Megérzem mások érzelmeit.
+3;Agreeableness;Compassion;0;Inquire about others' well-being.;Ich erkundige mich nach dem Wohlbefinden anderer.;Érdeklődöm mások jólléte iránt.
+4;Agreeableness;Compassion;1;Can't be bothered with other's needs.;Die Belange anderer Menschen interessieren mich nicht.;Nem foglalkozom mások szükségleteivel.
+5;Agreeableness;Compassion;0;Sympathize with others' feelings.;Ich kann die Gefühle anderer nachempfinden.;Együtt érzek másokkal.
+6;Agreeableness;Compassion;1;Am indifferent to the feelings of others.;Ich stehe den Gefühlen anderer gleichgültig gegenüber.;Közömbös vagyok mások érzéseivel szemben.
+7;Agreeableness;Compassion;1;Take no time for others.;Ich nehme mir keine Zeit für andere.;Nem szánok időt másokra.
+8;Agreeableness;Compassion;0;Take an interest in other people's lives.;Ich interessiere mich für das Leben anderer.;Érdeklődöm mások élete iránt.
+9;Agreeableness;Compassion;1;Don't have a soft side.;Mir fehlt eine weiche Seite.;Nincs gyengéd oldalam.
+10;Agreeableness;Compassion;0;Like to do things for others.;Es bereitet mir Freude;etwas für andere zu tun.,Szívesen teszek másokért dolgokat.
+11;Agreeableness;Politeness;0;Respect authority.;Ich respektiere Autoritäten.;Tisztelem a tekintélyt.
+12;Agreeableness;Politeness;1;Believe that I am better than others.;Ich fühle mich anderen überlegen.;Azt hiszem, jobb vagyok másoknál.
+13;Agreeableness;Politeness;0;Hate to seem pushy.;Es ist mir unangenehm, aufdringlich zu erscheinen.;Utálok tolakodónak tűnni.
+14;Agreeableness;Politeness;1;Take advantage of others.;Ich nutze andere aus.;Kihasználom másokat.
+15;Agreeableness;Politeness;0;Avoid imposing my will on others.;Ich vermeide es, anderen meinen Willen aufzuzwingen.;Kerülöm, hogy másokra erőltessem az akaratomat.
+16;Agreeableness;Politeness;0;Rarely put people under pressure.;Ich setze andere nur selten unter Druck.;Ritkán nyomás alá helyezek másokat.
+17;Agreeableness;Politeness;1;Insult people.;Manchmal beleidige ich andere Leute.;Sértegetem az embereket.
+18;Agreeableness;Politeness;1;Seek conflict.;Ich suche Streit.;Konfliktust keresek.
+19;Agreeableness;Politeness;1;Love a good fight.;Ich mag Diskussionen und Auseinandersetzungen.;Szeretem az összetűzéseket.
+20;Agreeableness;Politeness;1;Am out for my own personal gain.;Ich schaue auf meinen persönlichen Vorteil.;A saját hasznomra törekszem.
+21;Conscientiousness;Industriousness;0;Carry out my plans.;Ich führe meine Vorhaben durch.;Végrehajtom a terveimet.
+22;Conscientiousness;Industriousness;1;Waste my time.;Ich verschwende meine Zeit.;Pazarlom az időmet.
+23;Conscientiousness;Industriousness;1;Find it difficult to get down to work.;Es fällt mir schwer, mich an die Arbeit zu machen.;Nehezen állok neki a munkának.
+24;Conscientiousness;Industriousness;1;Mess things up.;Manche Dinge vermassele ich einfach.;Összekuszálom a dolgokat.
+25;Conscientiousness;Industriousness;0;Finish what I start.;Was ich beginne, bringe ich auch zu Ende.;Befejezem, amit elkezdtem.
+26;Conscientiousness;Industriousness;1;Don't put my mind on the task at hand.;Manchmal bin ich mit meinen Gedanken nicht bei der Sache.;Nem tudok koncentrálni az éppen végzett feladatra.
+27;Conscientiousness;Industriousness;0;Get things done quickly.;Ich erledige meine Aufgaben rasch.;Gyorsan elvégzem a feladataimat.
+28;Conscientiousness;Industriousness;0;Always know what I am doing.;Ich weiß immer, was ich tue.;Mindig tudom, mit csinálok.
+29;Conscientiousness;Industriousness;1;Postpone decisions.;Ich schiebe Entscheidungen auf.;Halogatom a döntéseket.
+30;Conscientiousness;Industriousness;1;Am easily distracted.;Ich lasse mich leicht ablenken.;Könnyen elterelhető a figyelmem.
+31;Conscientiousness;Orderliness;1;Leave my belongings around.;Ich lasse meine Sachen herumliegen.;Szanaszét hagyom a holmijaimat.
+32;Conscientiousness;Orderliness;0;Like order.;Ich mag Ordnung.;Szeretem a rendet.
+33;Conscientiousness;Orderliness;0;Keep things tidy.;Ich räume meine Sachen stets auf.;Rendben tartom a dolgaimat.
+34;Conscientiousness;Orderliness;0;Follow a schedule.;Ich halte mich an Zeitpläne.;Követem a beosztásomat.
+35;Conscientiousness;Orderliness;1;Am not bothered by messy people.;Es stört mich nicht, wenn andere Menschen unordentlich sind.;Nem zavar, ha mások rendetlenek.
+36;Conscientiousness;Orderliness;0;"Want everything to be ""just right."",Ich wünsche mir, dass alles perfekt ist.";Azt akarom;"hogy minden „éppen megfelelő"" legyen."
+37;Conscientiousness;Orderliness;1;Am not bothered by disorder.;Unordnung stört mich nicht.;Nem zavar a rendetlenség.
+38;Conscientiousness;Orderliness;1;Dislike routine.;Routine mag ich nicht.;Nem szeretem a rutint.
+39;Conscientiousness;Orderliness;0;See that rules are observed.;Ich achte darauf, dass Regeln eingehalten werden.;Ügyelek arra, hogy a szabályokat betartsák.
+40;Conscientiousness;Orderliness;0;Want every detail taken care of.;Ich lege großen Wert auf Details.;Azt akarom, hogy minden részlet rendben legyen.
+41;Extraversion;Assertiveness;0;Take charge.;Ich übernehme Verantwortung.;Átveszem az irányítást.
+42;Extraversion;Assertiveness;0;Have a strong personality.;Ich habe eine starke Persönlichkeit.;Erős személyiségem van.
+43;Extraversion;Assertiveness;1;Lack the talent for influencing people.;Ich bin nicht gut darin, andere zu beeinflussen.;Hiányzik belőlem a tehetség, hogy befolyásoljam az embereket.
+44;Extraversion;Assertiveness;0;Know how to captivate people.;Ich kann andere faszinieren.;Tudom, hogyan ragadjam meg az emberek figyelmét.
+45;Extraversion;Assertiveness;1;Wait for others to lead the way.;Ich überlasse es anderen, den Weg zu weisen.;Várom, hogy mások mutassák az utat.
+46;Extraversion;Assertiveness;0;See myself as a good leader.;Ich bin gut darin;Führung zu übernehmen.,Jó vezetőnek tartom magam.
+47;Extraversion;Assertiveness;0;Can talk others into doing things.;Ich kann andere dazu bringen, Dinge zu tun, die ich will.;Meg tudom győzni másokat, hogy tegyenek meg dolgokat.
+48;Extraversion;Assertiveness;1;Hold back my opinions.;Ich halte mich mit meiner Meinung eher zurück.;Visszatartom a véleményemet.
+49;Extraversion;Assertiveness;0;Am the first to act.;Ich übernehme häufig die Initiative.;Én cselekszem elsőként.
+50;Extraversion;Assertiveness;1;Do not have an assertive personality.;Ich bin nicht durchsetzungsfähig.;Nem vagyok határozott személyiség.
+51;Extraversion;Enthusiasm;0;Make friends easily.;Es fällt mir leicht, neue Freundschaften zu schließen.;Könnyen kötök barátságokat.
+52;Extraversion;Enthusiasm;1;Am hard to get to know.;Mich näher kennenzulernen fällt schwer.;Nehéz megismerni engem.
+53;Extraversion;Enthusiasm;1;Keep others at a distance.;Ich halte andere auf Distanz.;Távolságot tartok másoktól.
+54;Extraversion;Enthusiasm;1;Reveal little about myself.;Ich gebe wenig über mich preis.;Keveset árulok el magamról.
+55;Extraversion;Enthusiasm;0;Warm up quickly to others.;Ich lerne schnell neue Leute kennen.;Hamar megbarátkozom másokkal.
+56;Extraversion;Enthusiasm;1;Rarely get caught up in the excitement.;Ich lasse mich nicht durch den Trubel der Ereignisse mitreißen.;Ritkán ragad magával a lelkesedés.
+57;Extraversion;Enthusiasm;1;Am not a very enthusiastic person.;Ich bin keine besonders enthusiastische Person.;Nem vagyok különösebben lelkes személyiség.
+58;Extraversion;Enthusiasm;0;Show my feelings when I'm happy.;Wenn ich glücklich bin, dann zeige ich das auch.;Megmutatom az érzéseimet, amikor boldog vagyok.
+59;Extraversion;Enthusiasm;0;Have a lot of fun.;Ich habe viel Spaß.;Sokat szórakozom.
+60;Extraversion;Enthusiasm;0;Laugh a lot.;Ich lache viel.;Sokat nevetek.
+61;Neuroticism;Volatility;0;Get angry easily.;Ich werde schnell ärgerlich.;Könnyen dühbe gurulok.
+62;Neuroticism;Volatility;1;Rarely get irritated.;Ich bin selten irritiert.;Ritkán bosszankodom.
+63;Neuroticism;Volatility;0;Get upset easily.;Ich gerate leicht aus der Fassung.;Könnyen felzaklatok.
+64;Neuroticism;Volatility;1;Keep my emotions under control.;Ich kann meine Gefühle gut kontrollieren.;Kézben tartom az érzelmeimet.
+65;Neuroticism;Volatility;0;Change my mood a lot.;Meine Stimmung ändert sich häufig.;Sokat változik a hangulatom.
+66;Neuroticism;Volatility;1;Rarely lose my composure.;Es kommt selten vor, dass ich die Fassung verliere.;Ritkán veszítem el a nyugalmamat.
+67;Neuroticism;Volatility;0;Am a person whose moods go up and down easily.;Meine Stimmung verändert sich leicht.;Olyan ember vagyok, akinek a hangulata könnyen ingadozik.
+68;Neuroticism;Volatility;1;Am not easily annoyed.;Ich bin nicht schnell verärgert.;Nem bosszantodom fel könnyen.
+69;Neuroticism;Volatility;0;Get easily agitated.;Ich bin schnell aufgewühlt.;Könnyen izgatott leszek.
+70;Neuroticism;Volatility;0;Can be stirred up easily.;Ich bin schnell gerührt.;Könnyen felkavar engem valami.
+71;Neuroticism;Withdrawal;1;Seldom feel blue.;Ich bin selten deprimiert.;Ritkán érzem magam rosszkedvűnek.
+72;Neuroticism;Withdrawal;0;Am filled with doubts about things.;Ich bin häufig beunruhigt.;Tele vagyok kétségekkel a dolgokat illetően.
+73;Neuroticism;Withdrawal;1;Feel comfortable with myself.;Ich bin mit mir zufrieden.;Jól érzem magam a bőrömben.
+74;Neuroticism;Withdrawal;0;Feel threatened easily.;Ich fühle mich schnell bedroht.;Könnyen érzem magam fenyegetve.
+75;Neuroticism;Withdrawal;1;Rarely feel depressed.;Es kommt selten vor;dass ich mich niedergeschlagen fühle.,Ritkán érzem magam depressziósnak.
+76;Neuroticism;Withdrawal;0;Worry about things.;Ich mache mir häufig Sorgen.;Aggódom a dolgok miatt.
+77;Neuroticism;Withdrawal;0;Am easily discouraged.;Ich lasse mich schnell entmutigen.;Könnyen elveszítem a bátorságomat.
+78;Neuroticism;Withdrawal;1;Am not embarrassed easily.;Mir ist selten etwas peinlich.;Nem esek könnyen zavarba.
+79;Neuroticism;Withdrawal;0;Become overwhelmed by events.;Manchmal ist mir alles zu viel.;Elárasztanak az események.
+80;Neuroticism;Withdrawal;0;Am afraid of many things.;Ich sorge mich über viele Dinge.;Sok mindentől félek.
+81;Openness;Intellect;0;Am quick to understand things.;Ich habe eine gute Auffassungsgabe.;Gyorsan megértem a dolgokat.
+82;Openness;Intellect;1;Have difficulty understanding abstract ideas.;Ich habe Schwierigkeiten, abstrakte Ideen zu verstehen.;Nehezen értem meg az elvont gondolatokat.
+83;Openness;Intellect;0;Can handle a lot of information.;Ich kann mit einer großen Menge an Informationen umgehen.;Képes vagyok sok információt kezelni.
+84;Openness;Intellect;0;Like to solve complex problems.;Es bereitet mir Freude;komplexe Probleme zu lösen.,Szeretek összetett problémákat megoldani.
+85;Openness;Intellect;1;Avoid philosophical discussions.;Ich vermeide philosophische Diskussionen.;Kerülöm a filozofikus vitákat.
+86;Openness;Intellect;1;Avoid difficult reading material.;Ich vermeide schwierigen Lesestoff.;Kerülöm a nehéz olvasnivalókat.
+87;Openness;Intellect;0;Have a rich vocabulary.;Ich habe einen reichen Wortschatz.;Gazdag szókincsem van.
+88;Openness;Intellect;0;Think quickly.;Ich habe eine schnelle Auffassungsgabe.;Gyorsan gondolkodom.
+89;Openness;Intellect;1;Learn things slowly.;Ich brauche manchmal länger, um etwas Neues zu lernen.;Lassan tanulok meg új dolgokat.
+90;Openness;Intellect;0;Formulate ideas clearly.;Ich kann meine Gedanken klar formulieren.;Világosan fogalmazom meg a gondolataimat.
+91;Openness;Openness;0;Enjoy the beauty of nature.;Es bereitet mir Freude;die Schönheit der Natur zu genießen.,Élvezem a természet szépségét.
+92;Openness;Openness;0;Believe in the importance of art.;Kunst ist sehr wichtig für mich.;Hiszek a művészet fontosságában.
+93;Openness;Openness;0;Love to reflect on things.;Es bereitet mir Freude;über die Dinge nachzudenken.,Szeretek elmélyedni a dolgokban.
+94;Openness;Openness;0;Get deeply immersed in music.;Ich gehe manchmal völlig in einer Musik auf;die ich höre.,Mélyen elmerülök a zenében.
+95;Openness;Openness;1;Do not like poetry.;Poesie beeindruckt mich wenig oder gar nicht.;Nem szeretem a költészetet.
+96;Openness;Openness;1;Seldom notice the emotional aspects of paintings and pictures.;Gemälde oder Fotografien berühren mich nicht.;Ritkán veszem észre a festmények és képek érzelmi aspektusait.
+97;Openness;Openness;0;Need a creative outlet.;Ich muss mich kreativ betätigen.;Szükségem van egy kreatív levezetési lehetőségre.
+98;Openness;Openness;1;Seldom get lost in thought.;Es passiert selten, dass ich meinen Gedanken nachhänge.;Ritkán merülök el a gondolataimban.
+99;Openness;Openness;1;Seldom daydream.;Es kommt selten vor, dass ich Tagträumen nachgehe.;Ritkán álmodozom.
+100;Openness;Openness;0;See beauty in things that others might not notice.;In manchen Dingen sehe ich etwas Schönes, das anderen verborgen bleibt.;Szépséget látok olyan dolgokban, amelyeket mások talán észre sem vesznek.

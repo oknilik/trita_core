@@ -301,8 +301,12 @@ export default async function DashboardPage({
     : null;
 
 
-  const sorted = displayScores
-    ? [...displayScores].sort((a, b) => b.score - a.score)
+  // Interstitial dimensions (e.g., Altruism "I") are excluded from main factor scoring
+  const mainScores = displayScores?.filter((d) => d.code !== "I") ?? null;
+  const altruismScore = displayScores?.find((d) => d.code === "I") ?? null;
+
+  const sorted = mainScores
+    ? [...mainScores].sort((a, b) => b.score - a.score)
     : null;
   const strongest = sorted?.[0];
   const weakest = sorted?.[sorted.length - 1];
@@ -326,8 +330,9 @@ export default async function DashboardPage({
   const observerComparison =
     completedObservers.length > 0 && isLikert && displayScores
       ? (() => {
+          const mainDims = config.dimensions.filter((d) => d.code !== "I");
           const avgScores: Record<string, number> = {};
-          for (const dim of config.dimensions) {
+          for (const dim of mainDims) {
             let sum = 0;
             let count = 0;
             for (const obs of completedObservers) {
@@ -340,7 +345,7 @@ export default async function DashboardPage({
           }
           return {
             count: completedObservers.length,
-            dimensions: config.dimensions.map((dim) => ({
+            dimensions: mainDims.map((dim) => ({
               code: dim.code,
               label: dim.label,
               labelByLocale: dim.labelByLocale,
@@ -433,7 +438,7 @@ export default async function DashboardPage({
               </h2>
           </div>
           <p className="mt-2 text-sm text-gray-600">
-            {tf("dashboard.overviewLikert", locale, { count: config.dimensions.length })}
+            {tf("dashboard.overviewLikert", locale, { count: mainScores?.length ?? config.dimensions.filter(d => d.code !== "I").length })}
           </p>
 
           {/* Likert: radar chart + strongest/weakest sidebar */}
@@ -442,7 +447,7 @@ export default async function DashboardPage({
               <div className="flex items-center justify-center">
                 <div className="h-[21rem] w-[21rem] md:h-[24rem] md:w-[24rem]">
                   <RadarChart
-                    dimensions={displayScores.map((d) => ({
+                    dimensions={(mainScores ?? displayScores).map((d) => ({
                       code: d.code,
                       color: d.color,
                       score: d.score,
@@ -487,7 +492,7 @@ export default async function DashboardPage({
             </p>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {displayScores.map((item, idx) => {
+              {(mainScores ?? []).map((item, idx) => {
                 const dimConfig = config.dimensions.find((d) => d.code === item.code);
                 return (
                   <DimensionCard
@@ -511,6 +516,42 @@ export default async function DashboardPage({
                 );
               })}
             </div>
+
+            {/* Altruism interstitial scale — shown only when present */}
+            {altruismScore && (() => {
+              const dimConfig = config.dimensions.find((d) => d.code === "I");
+              return (
+                <div className="mt-8 border-t border-gray-100 pt-8">
+                  <div className="mb-4 flex items-start gap-3 rounded-lg border border-emerald-100 bg-emerald-50/50 px-4 py-3">
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-semibold text-emerald-800">{t("dashboard.altruismTitle", locale)}</p>
+                      <p className="mt-0.5 text-xs text-emerald-700">{t("dashboard.altruismBody", locale)}</p>
+                    </div>
+                  </div>
+                  <div className="max-w-sm">
+                    <DimensionCard
+                      code={altruismScore.code}
+                      label={altruismScore.label}
+                      labelByLocale={dimConfig?.labelByLocale}
+                      color={altruismScore.color}
+                      score={altruismScore.score}
+                      insight={altruismScore.insight}
+                      description={dimConfig?.description ?? ""}
+                      descriptionByLocale={dimConfig?.descriptionByLocale}
+                      insights={dimConfig?.insights ?? { low: "", mid: "", high: "" }}
+                      insightsByLocale={dimConfig?.insightsByLocale}
+                      facets={altruismScore.facets}
+                      delay={0}
+                      assessmentResultId={latestResult.id}
+                      existingFeedback={feedbackMap.get("I")}
+                    />
+                  </div>
+                </div>
+              );
+            })()}
           </section>
         </FadeIn>
       )}
