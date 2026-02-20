@@ -9,6 +9,7 @@ interface JourneyProgressProps {
   initialHasInvites: boolean;
   initialPendingInvites: number;
   hasObserverFeedback: boolean;
+  onTabChange?: (tab: "invites" | "comparison") => void;
 }
 
 interface InviteProgressEventDetail {
@@ -21,6 +22,7 @@ export function JourneyProgress({
   initialHasInvites,
   initialPendingInvites,
   hasObserverFeedback,
+  onTabChange,
 }: JourneyProgressProps) {
   const [hasInvites, setHasInvites] = useState(initialHasInvites);
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
@@ -198,12 +200,22 @@ export function JourneyProgress({
             <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
             <p className="mt-1 text-sm text-gray-600">{nextStep.body}</p>
           </div>
-          <Link
-            href={nextStep.href}
-            className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            {nextStep.cta}
-          </Link>
+          {onTabChange ? (
+            <button
+              type="button"
+              onClick={() => onTabChange(nextStep.href === "#comparison" ? "comparison" : "invites")}
+              className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              {nextStep.cta}
+            </button>
+          ) : (
+            <Link
+              href={nextStep.href}
+              className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              {nextStep.cta}
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -86,7 +86,7 @@ export default async function RootLayout({
           <LocaleProvider>
             <ToastProvider>
               <NavBar />
-              {children}
+              <div className="pb-20">{children}</div>
               <Footer />
             </ToastProvider>
           </LocaleProvider>

@@ -25,19 +25,19 @@ export function DimensionHighlights({
 
   return (
     <div className="flex flex-row gap-3 md:flex-col">
-      <div className="flex-1 rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600">
-          {t("dashboard.strongest", locale)}
+      <div className="flex-1 rounded-xl border border-violet-200 bg-gradient-to-br from-violet-100 to-white p-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-violet-600">
+          {t("dashboard.spectrumHigh", locale)}
         </p>
         <p className="mt-2 text-sm font-bold text-gray-900">{strongLabel}</p>
-        <p className="text-3xl font-bold text-emerald-600">{strongest.score}%</p>
+        <p className="text-3xl font-bold text-violet-700">{strongest.score}%</p>
       </div>
-      <div className="flex-1 rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-amber-600">
-          {t("dashboard.weakest", locale)}
+      <div className="flex-1 rounded-xl border border-sky-200 bg-gradient-to-br from-sky-100 to-white p-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-sky-600">
+          {t("dashboard.spectrumLow", locale)}
         </p>
         <p className="mt-2 text-sm font-bold text-gray-900">{weakLabel}</p>
-        <p className="text-3xl font-bold text-amber-600">{weakest.score}%</p>
+        <p className="text-3xl font-bold text-sky-600">{weakest.score}%</p>
       </div>
     </div>
   );

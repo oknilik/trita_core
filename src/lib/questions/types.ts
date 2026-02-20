@@ -54,6 +54,8 @@ export interface DimensionConfig {
   insightsByLocale?: Partial<Record<Locale, { low: string; mid: string; high: string }>>;
   facets?: FacetConfig[];
   aspects?: AspectConfig[];
+  /** If true, lower scores indicate a stronger/better outcome (e.g. Neuroticism) */
+  inverted?: boolean;
 }
 
 // ============================================

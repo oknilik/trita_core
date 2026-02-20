@@ -158,6 +158,7 @@ export const big5Config: TestConfig = {
         de: "Neurotizismus",
       },
       color: "#FB7185",
+      inverted: true,
       description: "A neuroticizmus a negatív érzelmi reaktivitás és a stresszérzékenység alapdimenziója. Azt mutatja, mennyire erősen reagál valaki a fenyegetésekre, bizonytalanságra és kihívásokra. Két aspektusa a Visszahúzódás (szorongás, szomorúság, öntudat, sebezhetőség) és a Változékonyság (ingerlékenység, düh, érzelmi reaktivitás). Minél alacsonyabb az érték, annál nagyobb az érzelmi stabilitás és ellenállóképesség.",
       descriptionByLocale: {
         en: "Neuroticism is the core dimension of negative emotional reactivity and sensitivity to stress. It reflects how strongly a person responds to perceived threats, uncertainty, and challenges. Its two aspects are Withdrawal (anxiety, sadness, self-consciousness, vulnerability) and Volatility (irritability, anger, emotional reactivity). Lower scores indicate greater emotional stability and resilience.",
