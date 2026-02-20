@@ -513,9 +513,9 @@ const translations = {
         de: "Wie genau ist diese Dimension?",
       },
       feedbackPrompt: {
-        hu: "Segíts javítani a teszt pontosságát a visszajelzéseddel.",
-        en: "Help improve the test accuracy with your feedback.",
-        de: "Hilf mit deinem Feedback, die Testgenauigkeit zu verbessern.",
+        hu: "Kérlek, segíts javítani a teszt pontosságát a visszajelzéseddel.",
+        en: "Please help us improve the test accuracy with your feedback.",
+        de: "Bitte hilf uns, die Testgenauigkeit mit deinem Feedback zu verbessern.",
       },
       feedbackVeryInaccurate: {
         hu: "Nagyon pontatlan",
@@ -576,6 +576,16 @@ const translations = {
         hu: "Nem sikerült elküldeni a visszajelzést. Próbáld újra!",
         en: "Could not submit feedback. Please try again.",
         de: "Feedback konnte nicht gesendet werden. Bitte erneut versuchen.",
+      },
+      feedbackTagsLabel: {
+        hu: "Melyeket érzed igaznak a dimenzió kapcsán?",
+        en: "Which feel true about this dimension?",
+        de: "Was trifft auf diese Dimension zu?",
+      },
+      feedbackRatingLabel: {
+        hu: "Hogyan értékelnéd összességében ezt a dimenziót?",
+        en: "How would you rate this dimension overall?",
+        de: "Wie würdest du diese Dimension insgesamt bewerten?",
       },
     },
     feedbackTitle: { hu: "Visszajelzés az eredményről", en: "Feedback on your results", de: "Feedback zu deinen Ergebnissen" },
