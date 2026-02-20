@@ -10,9 +10,17 @@ export function Footer() {
   const { locale } = useLocale();
 
   return (
-    <footer className="relative w-full bg-gradient-to-br from-slate-800 to-indigo-900 pt-8 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pt-10 md:pb-14">
-      <svg className="absolute inset-x-0 top-0 h-12 w-full text-white" viewBox="0 0 1200 50" preserveAspectRatio="none" fill="currentColor">
-        <path d="M0,10 C150,42 350,0 600,22 C850,44 1050,0 1200,10 L1200,0 L0,0 Z" />
+    <footer
+      className="relative -mt-16 w-full bg-gradient-to-br from-slate-800 to-indigo-900 pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
+      style={{ clipPath: "url(#footer-wave)" }}
+    >
+      {/* Clip-path definition — objectBoundingBox so the wave adapts to any footer height */}
+      <svg width="0" height="0" className="absolute" aria-hidden="true">
+        <defs>
+          <clipPath id="footer-wave" clipPathUnits="objectBoundingBox">
+            <path d="M0,0.22 C0.18,0.06 0.36,0.3 0.62,0.15 C0.82,0.04 0.95,0.26 1,0.18 L1,1 L0,1 Z" />
+          </clipPath>
+        </defs>
       </svg>
 
       <div className="mx-auto w-full max-w-5xl px-4">

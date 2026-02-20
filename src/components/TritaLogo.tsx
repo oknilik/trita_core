@@ -22,8 +22,8 @@ export function TritaLogo({
         <defs>
           {/* Warm gradient (indigo to purple) */}
           <linearGradient id="warmGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6366f1"/>
-            <stop offset="100%" stopColor="#8b5cf6"/>
+            <stop offset="0%" stopColor="#4F46E5"/>
+            <stop offset="100%" stopColor="#9333EA"/>
           </linearGradient>
         </defs>
 
