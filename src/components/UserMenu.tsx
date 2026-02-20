@@ -140,8 +140,10 @@ export function UserMenu() {
               transition={{ duration: 0.22, ease: "easeOut" }}
               className="fixed right-0 top-0 z-50 flex h-dvh w-full max-w-sm flex-col border-l border-indigo-100 bg-white shadow-2xl"
             >
-              <div className="relative flex h-24 items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-200 via-indigo-100 to-violet-100 px-5 pt-4">
-                <div className="pointer-events-none absolute -right-10 -top-8 h-24 w-24 rounded-full bg-white/30 blur-2xl" />
+              <div className="relative z-10 flex h-28 items-center justify-center bg-gradient-to-br from-indigo-200 via-indigo-100 to-violet-100 px-5 pb-4 pt-4">
+                <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                  <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-white/30 blur-2xl" />
+                </div>
                 <TritaLogo size={40} showText={false} />
                 <button
                   type="button"
@@ -153,6 +155,9 @@ export function UserMenu() {
                     <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
                   </svg>
                 </button>
+                <svg className="absolute inset-x-0 -bottom-5 h-7 w-full text-white" viewBox="0 0 1200 50" preserveAspectRatio="none" fill="currentColor" aria-hidden="true">
+                  <path d="M0,50 L0,40 C150,8 350,50 600,28 C850,6 1050,50 1200,40 L1200,50 Z" />
+                </svg>
               </div>
 
               <div className="border-b border-gray-100 px-5 py-5">
@@ -239,7 +244,7 @@ export function UserMenu() {
                 <SignOutButton>
                   <button
                     type="button"
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-semibold text-gray-500 transition hover:bg-gray-50 hover:text-gray-700"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-semibold text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
                   >
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12.5 4h2.2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2.2M8 6.5 4.5 10 8 13.5M4.5 10H13" />
