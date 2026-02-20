@@ -29,7 +29,23 @@ export default async function OnboardingPage() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: user.id },
+    select: { id: true, onboardedAt: true, deleted: true },
   });
+
+  // Race condition: deleted profile still has clerkId set — detach it and create fresh
+  if (profile?.deleted) {
+    await prisma.userProfile.update({
+      where: { id: profile.id },
+      data: { clerkId: null },
+    });
+    await prisma.userProfile.create({
+      data: {
+        clerkId: user.id,
+        email: user.primaryEmailAddress?.emailAddress ?? undefined,
+      },
+    });
+    return <OnboardingClient />;
+  }
 
   if (profile?.onboardedAt) redirect("/dashboard");
 

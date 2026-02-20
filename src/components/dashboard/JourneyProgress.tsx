@@ -10,6 +10,14 @@ interface JourneyProgressProps {
   initialPendingInvites: number;
   hasObserverFeedback: boolean;
   onTabChange?: (tab: "invites" | "comparison") => void;
+  /** If false, the self-assessment step is not yet completed (empty state). Defaults to true. */
+  selfCompleted?: boolean;
+  /** Whether the user has an in-progress draft (only relevant when selfCompleted=false). */
+  hasDraft?: boolean;
+  /** Number of questions already answered in the draft. */
+  draftAnsweredCount?: number;
+  /** Total number of questions in the draft's test. */
+  draftTotalQuestions?: number;
 }
 
 interface InviteProgressEventDetail {
@@ -23,6 +31,10 @@ export function JourneyProgress({
   initialPendingInvites,
   hasObserverFeedback,
   onTabChange,
+  selfCompleted = true,
+  hasDraft = false,
+  draftAnsweredCount = 0,
+  draftTotalQuestions = 0,
 }: JourneyProgressProps) {
   const [hasInvites, setHasInvites] = useState(initialHasInvites);
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
@@ -42,29 +54,49 @@ export function JourneyProgress({
   const feedbackInProgress = pendingInvites > 0 && !hasObserverFeedback;
   const feedbackPartial = pendingInvites > 0 && hasObserverFeedback;
   const totalSteps = 3;
-  const stepsCompleted = 1 + (hasInvites ? 1 : 0) + (hasObserverFeedback ? 1 : 0);
+  const stepsCompleted =
+    (selfCompleted ? 1 : 0) +
+    (selfCompleted && hasInvites ? 1 : 0) +
+    (selfCompleted && hasObserverFeedback ? 1 : 0);
   const progressPct = Math.round((stepsCompleted / totalSteps) * 100);
 
-  const nextStep = !hasInvites
-    ? {
-        title: t("dashboard.nextStepInviteTitle", locale),
-        body: t("dashboard.nextStepInviteBody", locale),
-        cta: t("dashboard.nextStepInviteCta", locale),
-        href: "#invite",
-      }
-    : !hasObserverFeedback
+  const nextStep = !selfCompleted
+    ? hasDraft
       ? {
-          title: t("dashboard.nextStepWaitTitle", locale),
-          body: tf("dashboard.nextStepWaitBody", locale, { count: pendingInvites }),
-          cta: t("dashboard.nextStepManageInvitesCta", locale),
-          href: "#invite",
+          title: t("dashboard.nextStepDraftTitle", locale),
+          body: t("dashboard.nextStepDraftBody", locale),
+          cta: t("actions.continueTest", locale),
+          href: "/assessment",
         }
       : {
-          title: t("dashboard.nextStepDoneTitle", locale),
-          body: t("dashboard.nextStepDoneBody", locale),
-          cta: t("dashboard.nextStepDoneCta", locale),
-          href: hasObserverFeedback ? "#comparison" : "#results",
-        };
+          title: t("dashboard.nextStepTestTitle", locale),
+          body: t("dashboard.nextStepTestBody", locale),
+          cta: t("actions.startTest", locale),
+          href: "/assessment",
+        }
+    : !hasInvites
+      ? {
+          title: t("dashboard.nextStepInviteTitle", locale),
+          body: t("dashboard.nextStepInviteBody", locale),
+          cta: t("dashboard.nextStepInviteCta", locale),
+          href: "#invite",
+        }
+      : !hasObserverFeedback
+        ? {
+            title: t("dashboard.nextStepWaitTitle", locale),
+            body: tf("dashboard.nextStepWaitBody", locale, { count: pendingInvites }),
+            cta: t("dashboard.nextStepManageInvitesCta", locale),
+            href: "#invite",
+          }
+        : {
+            title: t("dashboard.nextStepDoneTitle", locale),
+            body: t("dashboard.nextStepDoneBody", locale),
+            cta: t("dashboard.nextStepDoneCta", locale),
+            href: hasObserverFeedback ? "#comparison" : "#results",
+          };
+
+  // Whether the CTA should use a Link (href navigation) vs button (tab change)
+  const useLink = !selfCompleted || !onTabChange;
 
   return (
     <div className="mt-6">
@@ -90,8 +122,17 @@ export function JourneyProgress({
         />
       </div>
       <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-        <span className={stepsCompleted >= 1 ? "text-emerald-500" : "text-gray-300"}>
-          {stepsCompleted >= 1 ? (
+        {/* Step 1: Self assessment */}
+        <span
+          className={
+            selfCompleted
+              ? "text-emerald-500"
+              : hasDraft
+                ? "text-amber-500"
+                : "text-gray-300"
+          }
+        >
+          {selfCompleted ? (
             <svg
               viewBox="0 0 24 24"
               className="mx-auto h-8 w-8 drop-shadow-md transition-transform hover:scale-110"
@@ -105,10 +146,25 @@ export function JourneyProgress({
               <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
               <path d="M8.5 12.5l2.5 2.5 4.5-5" />
             </svg>
+          ) : hasDraft ? (
+            <svg
+              viewBox="0 0 24 24"
+              className="mx-auto h-8 w-8 drop-shadow-md transition-transform hover:scale-110"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <circle cx="12" cy="12" r="10" fill="currentColor" fillOpacity="0.1" />
+              <path d="M12 6v6l4 2" />
+            </svg>
           ) : (
             <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
           )}
         </span>
+        {/* Step 2: Invites */}
         <span className={stepsCompleted >= 2 ? "text-emerald-500" : "text-gray-300"}>
           {stepsCompleted >= 2 ? (
             <svg
@@ -128,6 +184,7 @@ export function JourneyProgress({
             <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
           )}
         </span>
+        {/* Step 3: Observer feedback */}
         <span
           className={
             stepsCompleted >= 3
@@ -173,7 +230,15 @@ export function JourneyProgress({
         </span>
       </div>
       <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
-        <span className={stepsCompleted >= 1 ? "text-indigo-600" : ""}>
+        <span
+          className={
+            selfCompleted
+              ? "text-indigo-600"
+              : hasDraft
+                ? "text-amber-500"
+                : ""
+          }
+        >
           {t("dashboard.journeyStepSelf", locale)}
         </span>
         <span className={stepsCompleted >= 2 ? "text-indigo-600" : ""}>
@@ -194,30 +259,63 @@ export function JourneyProgress({
         </span>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-white to-indigo-50/20 p-6 md:p-8 shadow-md">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
-            <p className="mt-1 text-sm text-gray-600">{nextStep.body}</p>
-          </div>
-          {onTabChange ? (
-            <button
-              type="button"
-              onClick={() => onTabChange(nextStep.href === "#comparison" ? "comparison" : "invites")}
-              className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              {nextStep.cta}
-            </button>
-          ) : (
+      {/* Next step card — amber when draft in progress, indigo otherwise */}
+      {hasDraft && !selfCompleted ? (
+        <div className="mt-6 rounded-2xl border border-amber-200/50 bg-gradient-to-br from-amber-50/80 via-white to-white p-6 md:p-8 shadow-md">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
+              <p className="mt-1 text-sm text-gray-600">{nextStep.body}</p>
+              {draftTotalQuestions > 0 && (
+                <div className="mt-3">
+                  <p className="text-xs text-amber-700 font-medium mb-1">
+                    {draftAnsweredCount} / {draftTotalQuestions}
+                  </p>
+                  <div className="h-2 w-full max-w-xs overflow-hidden rounded-full bg-amber-100">
+                    <div
+                      className="h-full rounded-full bg-amber-500 transition-all"
+                      style={{
+                        width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
             <Link
               href={nextStep.href}
-              className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-amber-500 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-600 hover:scale-105"
             >
               {nextStep.cta}
             </Link>
-          )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="mt-6 rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-white to-indigo-50/20 p-6 md:p-8 shadow-md">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
+              <p className="mt-1 text-sm text-gray-600">{nextStep.body}</p>
+            </div>
+            {useLink ? (
+              <Link
+                href={nextStep.href}
+                className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                {nextStep.cta}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onTabChange!(nextStep.href === "#comparison" ? "comparison" : "invites")}
+                className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                {nextStep.cta}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

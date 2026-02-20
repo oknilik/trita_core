@@ -13,6 +13,7 @@ import { t, tf } from "@/lib/i18n";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { HashScroll } from "@/components/dashboard/HashScroll";
 import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
+import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
 
 export const dynamic = "force-dynamic";
 
@@ -65,8 +66,13 @@ export default async function DashboardPage({
       username: true,
       email: true,
       onboardedAt: true,
+      deleted: true,
     },
   });
+
+  // Safety: if profile is marked deleted but clerkId wasn't cleared (race condition),
+  // treat it as no profile so the user goes through onboarding fresh.
+  if (profile?.deleted) redirect("/onboarding");
 
   if (profile && !profile.onboardedAt) {
     redirect("/onboarding");
@@ -203,68 +209,36 @@ export default async function DashboardPage({
 
   /* ───── Empty state ───── */
   if (!profile || !latestResult || !scores || !config) {
-    const emptyTestName = config?.name ?? "test";
     return (
       <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
-        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animate-gradient p-8 pb-16 md:p-12 md:pb-20">
-          <div className="relative">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-200">
-              {t("dashboard.personalTag", locale)}
-            </p>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
-              {displayName}
-            </h1>
-            <p className="mt-2 text-sm text-indigo-100">
-              {email ?? t("common.emailMissing", locale)}
-            </p>
-          </div>
-          <svg className="absolute inset-x-0 bottom-0 h-8 w-full text-white md:h-10" viewBox="0 0 1200 60" preserveAspectRatio="none" fill="currentColor">
-            <path d="M0,28 C150,48 350,8 600,28 C850,48 1050,8 1200,28 L1200,60 L0,60 Z" />
-          </svg>
-        </header>
-
-        {draft && draftTotalQuestions > 0 ? (
-          <section className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white p-6 md:p-8">
-            <h2 className="text-xl font-semibold text-gray-900">
-              {t("dashboard.continueDraftTitle", locale)}
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              {tf("dashboard.continueDraftBody", locale, {
-                answered: draftAnsweredCount,
-                total: draftTotalQuestions,
-              })}
-            </p>
-            <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-indigo-100">
-              <div
-                className="h-full rounded-full bg-indigo-500 transition-all"
-                style={{
-                  width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%`,
-                }}
-              />
+        <FadeIn>
+          <section className="relative rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-indigo-50/80 via-white to-white p-8 md:p-12">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
+                {t("dashboard.guidedTag", locale)}
+              </p>
+              <div className="mt-3 flex items-center gap-3">
+                <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                  {t("dashboard.nextStepTitle", locale)}
+                </h2>
+              </div>
+              <p className="mt-3 text-sm text-gray-600">
+                {t("dashboard.guidedPraise", locale)}
+              </p>
             </div>
-            <Link
-              href="/assessment"
-              className="group mt-6 inline-flex min-h-[52px] md:min-h-[48px] items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:shadow-xl hover:scale-105"
-            >
-              {t("actions.continueTest", locale)}
-            </Link>
+            <JourneyProgress
+              locale={locale}
+              initialHasInvites={false}
+              initialPendingInvites={0}
+              hasObserverFeedback={false}
+              selfCompleted={false}
+              hasDraft={Boolean(draft)}
+              draftAnsweredCount={draftAnsweredCount}
+              draftTotalQuestions={draftTotalQuestions}
+            />
           </section>
-        ) : (
-          <section className="flex flex-col items-center rounded-2xl border border-gray-100 bg-gradient-to-br from-gray-50 via-white to-indigo-50/30 p-10 text-center">
-            <h2 className="mt-4 text-xl font-semibold text-gray-900">
-              {t("dashboard.noResultTitle", locale)}
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              {tf("dashboard.noResultBody", locale, { testName: emptyTestName })}
-            </p>
-            <Link
-              href="/assessment"
-              className="group mt-8 inline-flex min-h-[52px] md:min-h-[48px] items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition-all duration-300 hover:shadow-xl hover:scale-105"
-            >
-              {t("actions.startTest", locale)}
-            </Link>
-          </section>
-        )}
+        </FadeIn>
       </main>
     );
   }

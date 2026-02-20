@@ -25,14 +25,19 @@ export async function POST(req: Request) {
   });
 
   if (profile) {
-    await prisma.assessmentResult.updateMany({
-      where: { userProfileId: profile.id },
-      data: { userProfileId: null },
-    });
-    await prisma.userProfile.update({
-      where: { id: profile.id },
-      data: { clerkId: null, email: null, deleted: true },
-    });
+    await prisma.$transaction([
+      prisma.assessmentResult.updateMany({
+        where: { userProfileId: profile.id },
+        data: { userProfileId: null },
+      }),
+      prisma.assessmentDraft.deleteMany({
+        where: { userProfileId: profile.id },
+      }),
+      prisma.userProfile.update({
+        where: { id: profile.id },
+        data: { clerkId: null, email: null, deleted: true },
+      }),
+    ]);
   }
 
   const client = await clerkClient();

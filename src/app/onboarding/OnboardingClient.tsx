@@ -618,9 +618,9 @@ export function OnboardingClient() {
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`mt-8 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition ${
+            className={`mt-8 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition-all duration-300 ${
               canSubmit && !isSubmitting
-                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200 hover:shadow-xl hover:scale-[1.02]"
                 : "cursor-not-allowed bg-gray-200 text-gray-400"
             }`}
           >
