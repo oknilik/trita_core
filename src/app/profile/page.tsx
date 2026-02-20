@@ -490,7 +490,7 @@ export default function ProfilePage() {
 
   return (
     <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
-      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
+      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 pt-10 pb-20">
       {/* ── Context ── */}
       <FadeIn delay={0.05}>
         <div className="grid gap-4 md:grid-cols-2">
