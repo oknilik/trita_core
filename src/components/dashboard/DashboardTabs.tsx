@@ -12,7 +12,6 @@ import { DimensionHighlights } from "@/components/dashboard/DimensionHighlights"
 import { ObserverComparison } from "@/components/dashboard/ObserverComparison";
 import { InviteSection } from "@/components/dashboard/InviteSection";
 import { RetakeButton } from "@/components/dashboard/RetakeButton";
-import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
 
 type TabId = "results" | "comparison" | "invites";
@@ -93,7 +92,6 @@ export interface DashboardTabsProps {
   observerComparison: SerializedObserverComparison | null;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
-  feedbackSubmitted: boolean;
 
   // Invites tab
   sentInvitations: SerializedInvitation[];
@@ -230,7 +228,6 @@ export function DashboardTabs(props: DashboardTabsProps) {
             observerComparison={props.observerComparison}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
-            feedbackSubmitted={props.feedbackSubmitted}
             onTabChange={handleTabChange}
             locale={locale}
           />
@@ -435,7 +432,6 @@ interface ComparisonTabPanelProps {
   observerComparison: SerializedObserverComparison | null;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
-  feedbackSubmitted: boolean;
   onTabChange: (tab: TabId) => void;
   locale: Locale;
 }
@@ -444,7 +440,6 @@ function ComparisonTabPanel({
   observerComparison,
   avgConfidence,
   hasObserverFeedback,
-  feedbackSubmitted,
   onTabChange,
   locale,
 }: ComparisonTabPanelProps) {
@@ -483,13 +478,6 @@ function ComparisonTabPanel({
         />
       </FadeIn>
 
-      {hasObserverFeedback && !feedbackSubmitted && (
-        <FadeIn delay={0.1}>
-          <div>
-            <FeedbackForm initialSubmitted={feedbackSubmitted} />
-          </div>
-        </FadeIn>
-      )}
     </>
   );
 }

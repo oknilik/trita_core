@@ -70,6 +70,7 @@ model UserProfile {
   sentInvitations      ObserverInvitation[] @relation("InviterInvitations")
   receivedInvitations  ObserverInvitation[] @relation("ObserverInvitations")
   satisfactionFeedback SatisfactionFeedback?
+  researchSurvey       ResearchSurvey?
 }
 
 model AssessmentDraft {
@@ -150,6 +151,27 @@ model ObserverAssessment {
   createdAt        DateTime         @default(now())
 
   invitation ObserverInvitation @relation(fields: [invitationId], references: [id])
+}
+
+// Merged post-results research survey (replaces SatisfactionFeedback in UI)
+model ResearchSurvey {
+  id                 String   @id @default(cuid())
+  userProfileId      String   @unique
+  createdAt          DateTime @default(now())
+
+  selfAccuracy          Int      // 1-5: how well they recognized themselves
+  priorTest             String   // "mbti" | "bigfive" | "other" | "none"
+  positionLevel         String?  // "junior" | "middle" | "senior" | "independent" — employed only
+  studyField            String?  // "business" | "stem" | "humanities" | "health" | "other" — student only
+  industry              String?  // sector — employed/student
+  motivation            String   // comma-separated: selfknowledge, career, study, recommended, curiosity
+  sharingIntent         String   // comma-separated: manager, hr, colleagues, friends, nobody
+  feedbackSources       String?  // comma-separated: manager, peers, reports, clients, none — employed only
+  has360Process         String?  // "yes" | "no" | "unknown" — employed only
+  personalityImportance Int?     // 1-5: how important is personality at work
+  observerUsefulness    Int?     // 1-5, only if observer feedback exists
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
 }
 
 // Satisfaction feedback for research comparison

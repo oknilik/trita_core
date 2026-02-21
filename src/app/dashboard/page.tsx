@@ -14,6 +14,7 @@ import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefres
 import { HashScroll } from "@/components/dashboard/HashScroll";
 import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
+import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
 
 export const dynamic = "force-dynamic";
 
@@ -94,6 +95,7 @@ export default async function DashboardPage({
     completedObserverAssessments,
     confidenceStats,
     satisfactionFeedback,
+    researchSurvey,
   ] =
     profile
       ? await Promise.all([
@@ -169,8 +171,12 @@ export default async function DashboardPage({
             where: { userProfileId: profile.id },
             select: { id: true },
           }),
+          prisma.researchSurvey.findUnique({
+            where: { userProfileId: profile.id },
+            select: { id: true },
+          }),
         ])
-      : [null, null, [], [], [], { _avg: { confidence: null } }, null];
+      : [null, null, [], [], [], { _avg: { confidence: null } }, null, null];
 
   const draftAnsweredCount = draft
     ? Object.keys(draft.answers as Record<string, number>).length
@@ -284,6 +290,7 @@ export default async function DashboardPage({
   const hasInvites = sentInvitations.length > 0;
   const hasObserverFeedback = completedObservers.length > 0;
   const feedbackSubmitted = Boolean(satisfactionFeedback);
+  const surveySubmitted = Boolean(researchSurvey);
   const avgConfidence =
     confidenceStats._avg.confidence != null
       ? Math.round(confidenceStats._avg.confidence * 10) / 10
@@ -398,7 +405,6 @@ export default async function DashboardPage({
         observerComparison={observerComparison}
         avgConfidence={avgConfidence}
         hasObserverFeedback={hasObserverFeedback}
-        feedbackSubmitted={feedbackSubmitted}
         sentInvitations={sentInvitations.map((inv) => ({
           id: inv.id,
           token: inv.token,
@@ -420,6 +426,17 @@ export default async function DashboardPage({
         hasInvites={hasInvites}
         pendingInvitesCount={pendingInvites.length}
       />
+
+      {/* ── Research survey — shown below tabs until submitted ── */}
+      {!surveySubmitted && (
+        <FadeIn>
+          <ResearchSurvey
+            locale={locale}
+            hasObserverFeedback={hasObserverFeedback}
+            occupationStatus={profile.occupationStatus ?? null}
+          />
+        </FadeIn>
+      )}
       </main>
     </div>
   );

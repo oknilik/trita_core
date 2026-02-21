@@ -377,21 +377,23 @@ export const DimensionCard = memo(function DimensionCard({
                       transition={{ duration: 0.2 }}
                       className="p-6 pb-10 md:p-8 md:pb-12"
                     >
-                      {/* Header */}
-                      <div className="mb-6 flex items-center gap-3">
-                        <span
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
-                          style={{ backgroundColor: color }}
-                        >
-                          {code}
-                        </span>
-                        <div>
-                          <p className="text-xs text-gray-400">{resolvedLabel}</p>
-                          <h2 className="text-base font-bold text-gray-900">
-                            {t("dashboard.dimension.feedbackTitle", locale)}
-                          </h2>
+                      {/* Header — hidden in thank-you state */}
+                      {!feedbackSubmitted && (
+                        <div className="mb-6 flex items-center gap-3">
+                          <span
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+                            style={{ backgroundColor: color }}
+                          >
+                            {code}
+                          </span>
+                          <div>
+                            <p className="text-xs text-gray-400">{resolvedLabel}</p>
+                            <h2 className="text-base font-bold text-gray-900">
+                              {t("dashboard.dimension.feedbackTitle", locale)}
+                            </h2>
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {feedbackSubmitted ? (
                         // Thank-you state (visible for ~700 ms before close)
