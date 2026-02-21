@@ -32,7 +32,7 @@ export default async function AdminPage() {
   const locale = await getServerLocale();
 
   // Parallel data fetching
-  const [userStats, assessmentStats, invitationStats, feedbackStats] =
+  const [userStats, assessmentStats, invitationStats, feedbackStats, surveyStats] =
     await Promise.all([
       // User metrics
       (async () => {
@@ -112,7 +112,13 @@ export default async function AdminPage() {
           by: ["isSelfAssessment"],
           _count: { id: true },
         });
-        return { total, byTestType, selfVsObserver };
+        const byUserTestType = await prisma.userProfile.groupBy({
+          by: ["testType"],
+          _count: { id: true },
+          where: { deleted: false, testType: { not: null } },
+          orderBy: { _count: { id: "desc" } },
+        });
+        return { total, byTestType, selfVsObserver, byUserTestType };
       })(),
 
       // Invitation metrics
@@ -171,6 +177,28 @@ export default async function AdminPage() {
           dimensionAvgHexacoMod,
         };
       })(),
+
+      // Research survey metrics
+      (async () => {
+        const count = await prisma.researchSurvey.count();
+        const byPriorTest = await prisma.researchSurvey.groupBy({
+          by: ["priorTest"],
+          _count: { id: true },
+          orderBy: { _count: { id: "desc" } },
+        });
+        const byHas360 = await prisma.researchSurvey.groupBy({
+          by: ["has360Process"],
+          _count: { id: true },
+        });
+        const avgs = await prisma.researchSurvey.aggregate({
+          _avg: {
+            selfAccuracy: true,
+            personalityImportance: true,
+            observerUsefulness: true,
+          },
+        });
+        return { count, byPriorTest, byHas360, avgs };
+      })(),
     ]);
 
   // Calculate metrics
@@ -193,6 +221,17 @@ export default async function AdminPage() {
   const observerCount =
     assessmentStats.selfVsObserver.find((s: { isSelfAssessment: boolean; _count: { id: number } }) => !s.isSelfAssessment)?._count
       .id ?? 0;
+
+  // Format survey averages
+  const avgSelfAccuracy = surveyStats.avgs._avg.selfAccuracy
+    ? Math.round(surveyStats.avgs._avg.selfAccuracy * 10) / 10
+    : null;
+  const avgPersonalityImportance = surveyStats.avgs._avg.personalityImportance
+    ? Math.round(surveyStats.avgs._avg.personalityImportance * 10) / 10
+    : null;
+  const avgSurveyObserverUsefulness = surveyStats.avgs._avg.observerUsefulness
+    ? Math.round(surveyStats.avgs._avg.observerUsefulness * 10) / 10
+    : null;
 
   // Format average scores
   const avgAgreement = feedbackStats.avgScores._avg.agreementScore
@@ -262,15 +301,26 @@ export default async function AdminPage() {
 
         {/* Test Type Breakdown */}
         <FadeIn delay={0.2}>
-          <AdminTableSection
-            title={t("admin.assessmentsTitle", locale)}
-            description={t("admin.byTestType", locale)}
-            rows={assessmentStats.byTestType.map((item: { testType: string | null; _count: { id: number } }) => ({
-              label: item.testType ?? "Unknown",
-              value: item._count.id,
-              color: "#8B5CF6",
-            }))}
-          />
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <AdminTableSection
+              title={t("admin.assessmentsTitle", locale)}
+              description="Assessment results by test type"
+              rows={assessmentStats.byTestType.map((item: { testType: string | null; _count: { id: number } }) => ({
+                label: item.testType ?? "Unknown",
+                value: item._count.id,
+                color: "#8B5CF6",
+              }))}
+            />
+            <AdminTableSection
+              title="Assigned Test Types"
+              description="Users assigned per test type"
+              rows={assessmentStats.byUserTestType.map((item: { testType: string | null; _count: { id: number } }) => ({
+                label: item.testType ?? "Unknown",
+                value: item._count.id,
+                color: "#6366F1",
+              }))}
+            />
+          </div>
         </FadeIn>
 
         {/* Invitation Status Breakdown */}
@@ -293,8 +343,83 @@ export default async function AdminPage() {
           />
         </FadeIn>
 
-        {/* Feedback Insights */}
+        {/* Research Survey Stats */}
         <FadeIn delay={0.4}>
+          <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Research Survey</h2>
+              <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
+                {surveyStats.count} responses
+              </span>
+            </div>
+
+            {/* Averages */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-6">
+              <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-4">
+                <p className="text-sm font-semibold text-gray-600">Self-accuracy (Avg)</p>
+                <p className="mt-2 text-2xl font-bold text-gray-900">
+                  {avgSelfAccuracy !== null ? `${avgSelfAccuracy}/5` : "–"}
+                </p>
+              </div>
+              <div className="rounded-lg border border-purple-100 bg-purple-50 p-4">
+                <p className="text-sm font-semibold text-gray-600">Personality importance (Avg)</p>
+                <p className="mt-2 text-2xl font-bold text-gray-900">
+                  {avgPersonalityImportance !== null ? `${avgPersonalityImportance}/5` : "–"}
+                </p>
+              </div>
+              <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4">
+                <p className="text-sm font-semibold text-gray-600">Observer usefulness (Avg)</p>
+                <p className="mt-2 text-2xl font-bold text-gray-900">
+                  {avgSurveyObserverUsefulness !== null ? `${avgSurveyObserverUsefulness}/5` : "–"}
+                </p>
+              </div>
+            </div>
+
+            {/* Prior test & 360 distributions */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Prior personality test</h3>
+                <div className="space-y-2">
+                  {surveyStats.byPriorTest.length > 0 ? (
+                    surveyStats.byPriorTest.map((item: { priorTest: string; _count: { id: number } }) => (
+                      <div key={item.priorTest} className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-gray-700 uppercase">{item.priorTest}</span>
+                        <span className="text-gray-900">
+                          {item._count.id}
+                          <span className="ml-1 text-gray-400">
+                            ({surveyStats.count > 0 ? Math.round((item._count.id / surveyStats.count) * 100) : 0}%)
+                          </span>
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-500">No data yet</p>
+                  )}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Has 360 process</h3>
+                <div className="space-y-2">
+                  {surveyStats.byHas360.filter((item: { has360Process: string | null }) => item.has360Process !== null).length > 0 ? (
+                    surveyStats.byHas360
+                      .filter((item: { has360Process: string | null; _count: { id: number } }) => item.has360Process !== null)
+                      .map((item: { has360Process: string | null; _count: { id: number } }) => (
+                        <div key={item.has360Process} className="flex items-center justify-between text-sm">
+                          <span className="font-medium text-gray-700 uppercase">{item.has360Process}</span>
+                          <span className="text-gray-900">{item._count.id}</span>
+                        </div>
+                      ))
+                  ) : (
+                    <p className="text-xs text-gray-500">No data yet</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Feedback Insights */}
+        <FadeIn delay={0.5}>
           <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
             <h2 className="text-xl font-semibold text-gray-900">
               {t("admin.feedbackTitle", locale)}

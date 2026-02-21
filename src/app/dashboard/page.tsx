@@ -68,6 +68,7 @@ export default async function DashboardPage({
       email: true,
       onboardedAt: true,
       deleted: true,
+      occupationStatus: true,
     },
   });
 
