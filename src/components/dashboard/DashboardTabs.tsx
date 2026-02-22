@@ -106,6 +106,7 @@ export interface DashboardTabsProps {
   // Comparison tab
   observerComparison: SerializedObserverComparison | null;
   facetDivergences: SerializedFacetDivergence[];
+  completedObserversCount: number;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
 
@@ -189,6 +190,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             initialHasInvites={props.hasInvites}
             initialPendingInvites={props.pendingInvitesCount}
             hasObserverFeedback={props.hasObserverFeedback}
+            completedObserversCount={props.completedObserversCount}
             onTabChange={handleTabChange}
           />
         </section>
@@ -245,6 +247,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
           <ComparisonTabPanel
             observerComparison={props.observerComparison}
             facetDivergences={props.facetDivergences}
+            completedObserversCount={props.completedObserversCount}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
             onTabChange={handleTabChange}
@@ -461,6 +464,7 @@ function ResultsTabPanel({
 interface ComparisonTabPanelProps {
   observerComparison: SerializedObserverComparison | null;
   facetDivergences: SerializedFacetDivergence[];
+  completedObserversCount: number;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
   onTabChange: (tab: TabId) => void;
@@ -470,35 +474,47 @@ interface ComparisonTabPanelProps {
 function ComparisonTabPanel({
   observerComparison,
   facetDivergences,
+  completedObserversCount,
   avgConfidence,
   hasObserverFeedback,
   onTabChange,
   locale,
 }: ComparisonTabPanelProps) {
-  if (!observerComparison) {
+  // Anonymity gate: fewer than 2 responses
+  if (completedObserversCount < 2) {
     return (
       <FadeIn>
         <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg text-center">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50">
+            <svg className="h-7 w-7 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
             {t("comparison.title", locale)}
           </p>
           <h2 className="mt-3 text-2xl font-semibold text-gray-900">
-            {t("dashboard.tabComparisonEmptyTitle", locale)}
+            {t("comparison.anonGateTitle", locale)}
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t("dashboard.tabComparisonEmptyBody", locale)}
+          <p className="mt-3 text-sm text-gray-600 max-w-sm mx-auto">
+            {t("comparison.anonGateBody", locale)}
+          </p>
+          <p className="mt-3 text-sm font-semibold text-indigo-600">
+            {tf("comparison.anonGateProgress", locale, { count: completedObserversCount })}
           </p>
           <button
             type="button"
             onClick={() => onTabChange("invites")}
-            className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+            className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
-            {t("dashboard.tabComparisonEmptyCta", locale)}
+            {t("comparison.anonGateCta", locale)}
           </button>
         </section>
       </FadeIn>
     );
   }
+
+  if (!observerComparison) return null;
 
   return (
     <>

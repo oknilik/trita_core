@@ -3,6 +3,14 @@ import type { ProfileCategory } from "./profile-engine";
 export type Locale = "hu" | "en" | "de";
 type LocalizedText = Record<Locale, string>;
 
+// ─── Section title ────────────────────────────────────────────────────────────
+
+export const SECTION_TITLE: LocalizedText = {
+  hu: "Hogyan dolgozol?",
+  en: "How do you work?",
+  de: "Wie arbeitest du?",
+};
+
 // ─── Block 1 – Bevezető framing ───────────────────────────────────────────────
 
 export const BLOCK1: LocalizedText = {

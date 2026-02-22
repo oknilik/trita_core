@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { runProfileEngine, type ProfileCategory } from "@/lib/profile-engine";
 import {
+  SECTION_TITLE,
   BLOCK1,
   BLOCK3_TITLE,
   BLOCK4_TITLE,
@@ -81,6 +82,14 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
 
   return (
     <div className="space-y-6 mt-6">
+      {/* ── Section title ── */}
+      <div className="flex items-center gap-3">
+        <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+          {SECTION_TITLE[l]}
+        </h2>
+      </div>
+
       {/* ── Block 1: Bevezető framing ── */}
       <section className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 p-6 shadow-md shadow-indigo-200/50">
         <p className="text-sm text-white/90 leading-relaxed italic">{BLOCK1[l]}</p>

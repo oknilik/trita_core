@@ -22,4 +22,4 @@ export const resend = new Proxy({} as Resend, {
 });
 
 export const EMAIL_FROM =
-  process.env.RESEND_FROM_EMAIL ?? "Trita <noreply@trita.hu>";
+  process.env.RESEND_FROM_EMAIL ?? "trita <noreply@trita.hu>";
