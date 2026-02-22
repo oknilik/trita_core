@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { MobileDrawer } from "@/components/MobileDrawer";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
@@ -13,7 +13,12 @@ import { useLocale } from "@/components/LocaleProvider";
 export function NavBar() {
   const { locale } = useLocale();
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isSignedIn) setDrawerOpen(false);
+  }, [isSignedIn]);
 
   const linkClass = (href: string) =>
     `min-h-[44px] flex items-center hover:text-indigo-600 ${

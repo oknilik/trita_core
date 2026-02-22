@@ -27,6 +27,7 @@ const clerkEmailSchema = z.object({
     email_address: z.string().email().optional(),
     recipient_email_address: z.string().email().optional(),
     user_id: z.string().optional().nullable(),
+    sign_up_id: z.string().optional().nullable(),
     otp_code: z.string().optional(),
     magic_link_url: z.string().optional(),
     data: z
@@ -157,12 +158,26 @@ export async function POST(req: Request) {
           } catch (err) {
             console.warn("[Email] Failed to read Clerk user locale:", err);
           }
+        } else if (data.sign_up_id) {
+          try {
+            const client = await clerkClient();
+            const signUp = await client.signUps.get(data.sign_up_id);
+            const metaLocale = signUp.unsafeMetadata?.locale as string | undefined;
+            if (metaLocale === "hu" || metaLocale === "en" || metaLocale === "de") {
+              locale = metaLocale;
+            }
+          } catch (err) {
+            console.warn("[Email] Failed to read Clerk sign-up locale:", err);
+          }
         }
 
+        const resolvedLocale: "hu" | "en" | "de" = locale ?? "en";
+
         if (magicLink) {
-          await sendMagicLinkEmail({ to, magicLinkUrl: magicLink, locale });
+          await sendMagicLinkEmail({ to, magicLinkUrl: magicLink, locale: resolvedLocale });
         } else if (code) {
-          await sendVerificationCodeEmail({ to, code, locale, ttlSeconds });
+          const context = data.sign_up_id ? "signUp" : "signIn";
+          await sendVerificationCodeEmail({ to, code, locale: resolvedLocale, ttlSeconds, context });
         }
       }
     }

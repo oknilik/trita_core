@@ -21,7 +21,7 @@ const translations = {
       footer:
         "Ha kérdésed van, válaszolj erre az emailre. Szívesen segítünk!",
       thanks: "Üdvözlettel,",
-      team: "A Trita csapat",
+      team: "a trita csapat",
     },
     en: {
       subject: "Thank you for your purchase! – Trita",
@@ -40,7 +40,7 @@ const translations = {
       footer:
         "If you have any questions, reply to this email. We're happy to help!",
       thanks: "Best regards,",
-      team: "The Trita Team",
+      team: "the trita team",
     },
     de: {
       subject: "Vielen Dank für Ihren Kauf! – Trita",
@@ -59,7 +59,7 @@ const translations = {
       footer:
         "Bei Fragen antworten Sie einfach auf diese E-Mail. Wir helfen Ihnen gerne!",
       thanks: "Mit freundlichen Grüßen,",
-      team: "Das Trita-Team",
+      team: "das trita-Team",
     },
   },
   observerInvite: {
@@ -73,7 +73,7 @@ const translations = {
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "A Trita csapat",
+      team: "a trita csapat",
     },
     en: {
       subject: "Invitation to a personality assessment – Trita",
@@ -85,7 +85,7 @@ const translations = {
       footer:
         "If you don't recognize this invitation, you can ignore this email.",
       thanks: "Best regards,",
-      team: "The Trita team",
+      team: "the trita team",
     },
     de: {
       subject: "Einladung zum Persönlichkeitstest – Trita",
@@ -97,7 +97,7 @@ const translations = {
       footer:
         "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
       thanks: "Viele Grüße,",
-      team: "Das Trita-Team",
+      team: "das trita-Team",
     },
   },
   verificationCode: {
@@ -111,7 +111,7 @@ const translations = {
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "A Trita csapat",
+      team: "a trita csapat",
     },
     en: {
       subject: "Your verification code – Trita",
@@ -123,7 +123,7 @@ const translations = {
       footer:
         "If you didn't request this code, you can safely ignore this email.",
       thanks: "Best regards,",
-      team: "The Trita team",
+      team: "the trita team",
     },
     de: {
       subject: "Dein Bestätigungscode – Trita",
@@ -135,7 +135,45 @@ const translations = {
       footer:
         "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
       thanks: "Viele Grüße,",
-      team: "Das Trita-Team",
+      team: "das trita-Team",
+    },
+  },
+  signInCode: {
+    hu: {
+      subject: "A bejelentkezési kódod – Trita",
+      heading: "Bejelentkezési kód",
+      body: "Írd be ezt a kódot a bejelentkezéshez.",
+      codeLabel: "A kódod:",
+      ttl: (minutes?: number) =>
+        minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
+      footer:
+        "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapat",
+    },
+    en: {
+      subject: "Your sign-in code – Trita",
+      heading: "Sign-in code",
+      body: "Enter this code to sign in to your account.",
+      codeLabel: "Your code:",
+      ttl: (minutes?: number) =>
+        minutes ? `This code is valid for ${minutes} minutes.` : "This code is valid for a short time.",
+      footer:
+        "If you didn't request this code, you can safely ignore this email.",
+      thanks: "Best regards,",
+      team: "the trita team",
+    },
+    de: {
+      subject: "Dein Anmeldecode – Trita",
+      heading: "Anmeldecode",
+      body: "Gib diesen Code ein, um dich in deinem Konto anzumelden.",
+      codeLabel: "Dein Code:",
+      ttl: (minutes?: number) =>
+        minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
+      footer:
+        "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
+      thanks: "Viele Grüße,",
+      team: "das trita-Team",
     },
   },
   magicLink: {
@@ -147,7 +185,7 @@ const translations = {
       footer:
         "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "A Trita csapat",
+      team: "a trita csapat",
     },
     en: {
       subject: "Your sign-in link – Trita",
@@ -157,7 +195,7 @@ const translations = {
       footer:
         "If you didn't request this link, you can safely ignore this email.",
       thanks: "Best regards,",
-      team: "The Trita team",
+      team: "the trita team",
     },
     de: {
       subject: "Dein Anmelde-Link – Trita",
@@ -167,7 +205,7 @@ const translations = {
       footer:
         "Wenn du diesen Link nicht angefordert hast, kannst du diese E-Mail ignorieren.",
       thanks: "Viele Grüße,",
-      team: "Das Trita-Team",
+      team: "das trita-Team",
     },
   },
 } as const;
@@ -178,6 +216,14 @@ function getLocale(email: string): Locale {
   if (lower.endsWith(".de") || lower.endsWith(".at") || lower.endsWith(".ch"))
     return "de";
   return "en";
+}
+
+function logoBlock(appUrl: string): string {
+  return `
+      <div style="text-align:center;margin-bottom:24px">
+        <img src="${appUrl}/icon" alt="trita" width="48" height="48"
+             style="display:inline-block;border-radius:12px">
+      </div>`;
 }
 
 function buildOrderConfirmationHtml(
@@ -197,6 +243,7 @@ function buildOrderConfirmationHtml(
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px">
     <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
+      ${logoBlock(appUrl)}
 
       <div style="text-align:center;margin-bottom:24px">
         <div style="display:inline-block;background:#ecfdf5;border-radius:50%;width:56px;height:56px;line-height:56px;text-align:center">
@@ -290,6 +337,8 @@ function buildObserverInviteHtml(params: {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px">
     <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
+      ${logoBlock(appUrl)}
+
       <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 12px">
         ${t.heading}
       </h1>
@@ -362,8 +411,12 @@ function buildVerificationCodeHtml(params: {
   locale: Locale;
   code: string;
   ttlMinutes?: number;
+  appUrl: string;
+  context?: "signUp" | "signIn";
 }): string {
-  const t = translations.verificationCode[params.locale];
+  const t = params.context === "signIn"
+    ? translations.signInCode[params.locale]
+    : translations.verificationCode[params.locale];
 
   return `
 <!DOCTYPE html>
@@ -372,6 +425,8 @@ function buildVerificationCodeHtml(params: {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px">
     <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
+      ${logoBlock(params.appUrl)}
+
       <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 12px">
         ${t.heading}
       </h1>
@@ -415,20 +470,29 @@ export async function sendVerificationCodeEmail(params: {
   code: string;
   locale?: Locale;
   ttlSeconds?: number | null;
+  context?: "signUp" | "signIn";
 }) {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = params.locale ?? "en";
+  const context = params.context ?? "signUp";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
   const ttlMinutes =
     params.ttlSeconds != null ? Math.max(1, Math.round(params.ttlSeconds / 60)) : undefined;
   const html = buildVerificationCodeHtml({
     locale,
     code: params.code,
     ttlMinutes,
+    appUrl,
+    context,
   });
+
+  const translationBlock = context === "signIn"
+    ? translations.signInCode[locale]
+    : translations.verificationCode[locale];
 
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: params.to,
-    subject: translations.verificationCode[locale].subject,
+    subject: translationBlock.subject,
     html,
   });
 
@@ -442,6 +506,7 @@ export async function sendVerificationCodeEmail(params: {
 function buildMagicLinkHtml(params: {
   locale: Locale;
   magicLinkUrl: string;
+  appUrl: string;
 }): string {
   const t = translations.magicLink[params.locale];
 
@@ -452,6 +517,8 @@ function buildMagicLinkHtml(params: {
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px">
     <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
+      ${logoBlock(params.appUrl)}
+
       <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 16px">
         ${t.heading}
       </h1>
@@ -489,9 +556,10 @@ export async function sendMagicLinkEmail(params: {
   magicLinkUrl: string;
   locale?: Locale;
 }) {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = params.locale ?? "en";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
   const t = translations.magicLink[locale];
-  const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl });
+  const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl, appUrl });
 
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
