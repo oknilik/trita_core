@@ -234,7 +234,7 @@ function buildEmailLayout(params: {
              style="display:inline-block;border-radius:24px;margin-bottom:10px">
         ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
            style="display:block;width:100%;height:28px">
         <path d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
       </svg>
@@ -247,7 +247,7 @@ function buildEmailLayout(params: {
 
     <!-- Footer with wave top and light gradient -->
     <div style="background:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
            style="display:block;width:100%;height:28px">
         <path d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
       </svg>
