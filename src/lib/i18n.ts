@@ -501,8 +501,8 @@ const translations = {
     nextStepTestBody: { hu: "Az első lépés a saját személyiségértékelésed elvégzése.", en: "The first step is completing your own personality assessment.", de: "Der erste Schritt ist das Abschließen deiner eigenen Persönlichkeitsbewertung." },
     nextStepDraftTitle: { hu: "Folytasd a tesztet", en: "Continue the test", de: "Test fortsetzen" },
     nextStepDraftBody: { hu: "Már elindítottad a kitöltést — folytasd ott, ahol abbahagytad.", en: "You've already started the test — continue where you left off.", de: "Du hast den Test bereits begonnen — mach da weiter, wo du aufgehört hast." },
-    profileOverview: { hu: "{testName} profil áttekintés", en: "{testName} profile overview", de: "{testName}-Profilübersicht" },
-    overviewLikert: { hu: "Gyors vizuális összkép {count} dimenzióról.", en: "A quick visual snapshot across {count} dimensions.", de: "Ein schneller visueller Überblick über {count} Dimensionen." },
+    profileOverview: { hu: "Személyiségprofil áttekintés", en: "Personality profile overview", de: "Persönlichkeitsprofil im Überblick" },
+    overviewLikert: { hu: "Gyors vizuális összkép a fő személyiségdimenzióidról.", en: "A quick visual snapshot of your main personality dimensions.", de: "Ein schneller visueller Überblick über deine wichtigsten Persönlichkeitsdimensionen." },
     radarLegendSelf: { hu: "Saját", en: "Self", de: "Eigenes" },
     radarLegendObservers: { hu: "Meghívottak", en: "Invited", de: "Eingeladene" },
     spectrumHigh: { hu: "Magas", en: "High", de: "Hoch" },
@@ -1490,6 +1490,11 @@ const translations = {
     observersLabel: { hu: "Értékelők", en: "Raters", de: "Bewerter" },
     insightHigher: { hu: "Mások magasabbra értékelnek ebben a dimenzióban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself.", de: "Andere bewerten dich in dieser Dimension höher als du dich selbst." },
     insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak.", en: "You rate yourself higher in this dimension than others rate you.", de: "Du bewertest dich in dieser Dimension höher, als andere dich sehen." },
+    facetMapTitle: { hu: "Alskálák összehasonlítása", en: "Sub-scale comparison", de: "Detailvergleich je Subskala" },
+    facetMapSubtitle: { hu: "Minden facet és aspektus eltérése a megfigyelők átlagától. A szín a különbség irányát jelzi.", en: "Deviation of each facet and aspect from the observer average. Color indicates the direction of the difference.", de: "Abweichung jeder Facette und jedes Aspekts vom Beobachterdurchschnitt. Farbe zeigt die Richtung der Differenz an." },
+    heatmapMatch: { hu: "Összhang", en: "Match", de: "Übereinstimmung" },
+    heatmapObsHigher: { hu: "Mások magasabbra", en: "Others rate higher", de: "Andere bewerten höher" },
+    heatmapSelfHigher: { hu: "Te látod magasabbra", en: "You rate higher", de: "Du bewertest höher" },
   },
 } as const;
 

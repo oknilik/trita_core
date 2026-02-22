@@ -13,6 +13,7 @@ import { ObserverComparison } from "@/components/dashboard/ObserverComparison";
 import { InviteSection } from "@/components/dashboard/InviteSection";
 import { RetakeButton } from "@/components/dashboard/RetakeButton";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
+import { ProfileInsights } from "@/components/dashboard/ProfileInsights";
 
 type TabId = "results" | "comparison" | "invites";
 
@@ -75,6 +76,18 @@ export interface SerializedFeedback {
   comment: string | null;
 }
 
+export interface SerializedFacetDivergence {
+  dimCode: string;
+  dimLabel: string;
+  dimColor: string;
+  subCode: string;
+  subLabel: string;
+  subType: "facet" | "aspect";
+  selfScore: number;
+  observerScore: number;
+  delta: number;
+}
+
 export interface DashboardTabsProps {
   activeTab: TabId;
 
@@ -87,9 +100,12 @@ export interface DashboardTabsProps {
   profileOverviewTestName: string;
   isLikert: boolean;
   hasDraft: boolean;
+  rawDimensions: Record<string, number>;
+  testType: string;
 
   // Comparison tab
   observerComparison: SerializedObserverComparison | null;
+  facetDivergences: SerializedFacetDivergence[];
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
 
@@ -220,12 +236,15 @@ export function DashboardTabs(props: DashboardTabsProps) {
             profileOverviewTestName={props.profileOverviewTestName}
             isLikert={props.isLikert}
             hasDraft={props.hasDraft}
+            rawDimensions={props.rawDimensions}
+            testType={props.testType}
             locale={locale}
           />
         )}
         {activeTab === "comparison" && (
           <ComparisonTabPanel
             observerComparison={props.observerComparison}
+            facetDivergences={props.facetDivergences}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
             onTabChange={handleTabChange}
@@ -255,6 +274,8 @@ interface ResultsTabPanelProps {
   profileOverviewTestName: string;
   isLikert: boolean;
   hasDraft: boolean;
+  rawDimensions: Record<string, number>;
+  testType: string;
   locale: Locale;
 }
 
@@ -267,6 +288,8 @@ function ResultsTabPanel({
   profileOverviewTestName,
   isLikert,
   hasDraft,
+  rawDimensions,
+  testType,
   locale,
 }: ResultsTabPanelProps) {
   // For inverted dimensions (e.g. Neuroticism), lower raw score = better outcome.
@@ -405,6 +428,13 @@ function ResultsTabPanel({
         </FadeIn>
       )}
 
+      {/* Profile insights */}
+      {isLikert && (
+        <FadeIn delay={0.12}>
+          <ProfileInsights dimensions={rawDimensions} testType={testType} />
+        </FadeIn>
+      )}
+
       {/* Retake CTA */}
       <FadeIn delay={0.15}>
         <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
@@ -430,6 +460,7 @@ function ResultsTabPanel({
 
 interface ComparisonTabPanelProps {
   observerComparison: SerializedObserverComparison | null;
+  facetDivergences: SerializedFacetDivergence[];
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
   onTabChange: (tab: TabId) => void;
@@ -438,6 +469,7 @@ interface ComparisonTabPanelProps {
 
 function ComparisonTabPanel({
   observerComparison,
+  facetDivergences,
   avgConfidence,
   hasObserverFeedback,
   onTabChange,
@@ -472,9 +504,9 @@ function ComparisonTabPanel({
     <>
       <FadeIn delay={0.05}>
         <ObserverComparison
-          dimensions={observerComparison.dimensions}
           observerCount={observerComparison.count}
           avgConfidence={avgConfidence}
+          facetDivergences={facetDivergences}
         />
       </FadeIn>
 

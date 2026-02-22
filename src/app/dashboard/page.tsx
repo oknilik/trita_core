@@ -327,6 +327,52 @@ export default async function DashboardPage({
         })()
       : null;
 
+  // Facet-level divergences between self and observer assessments (for heatmap)
+  const facetDivergences =
+    completedObservers.length > 0 && isLikert
+      ? (() => {
+          type FacetDiv = {
+            dimCode: string; dimLabel: string; dimColor: string;
+            subCode: string; subLabel: string; subType: "facet" | "aspect";
+            selfScore: number; observerScore: number; delta: number;
+          };
+          const entries: FacetDiv[] = [];
+          const mainDims = config.dimensions.filter((d) => d.code !== "I");
+
+          for (const dim of mainDims) {
+            const dimLabel = dim.labelByLocale?.[locale] ?? dim.label;
+            for (const subType of ["facets", "aspects"] as const) {
+              const subs = dim[subType];
+              if (!subs) continue;
+              for (const sub of subs) {
+                const selfScore = scores[subType]?.[dim.code]?.[sub.code] ?? null;
+                if (selfScore == null) continue;
+                let sum = 0;
+                let count = 0;
+                for (const obs of completedObservers) {
+                  const v = obs.type === "likert" ? obs[subType]?.[dim.code]?.[sub.code] : undefined;
+                  if (v != null) { sum += v; count++; }
+                }
+                if (count === 0) continue;
+                const observerScore = Math.round(sum / count);
+                entries.push({
+                  dimCode: dim.code,
+                  dimLabel,
+                  dimColor: dim.color,
+                  subCode: sub.code,
+                  subLabel: sub.label,
+                  subType: subType === "facets" ? "facet" : "aspect",
+                  selfScore: Math.round(selfScore),
+                  observerScore,
+                  delta: observerScore - Math.round(selfScore),
+                });
+              }
+            }
+          }
+          return entries;
+        })()
+      : [];
+
   // Resolve active tab from URL search params
   type TabId = "results" | "comparison" | "invites";
   const rawTab = typeof searchParams?.tab === "string" ? searchParams.tab : "results";
@@ -403,7 +449,10 @@ export default async function DashboardPage({
         profileOverviewTestName={profileOverviewTestName}
         isLikert={isLikert}
         hasDraft={Boolean(draft)}
+        rawDimensions={isLikert ? scores.dimensions : {}}
+        testType={latestResult.testType ?? ""}
         observerComparison={observerComparison}
+        facetDivergences={facetDivergences}
         avgConfidence={avgConfidence}
         hasObserverFeedback={hasObserverFeedback}
         sentInvitations={sentInvitations.map((inv) => ({
