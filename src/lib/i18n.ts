@@ -344,9 +344,9 @@ const translations = {
   },
   auth: {
     signInTitle: { hu: "Bejelentkezés", en: "Sign in", de: "Anmelden" },
-    signInSubtitle: { hu: "Jelentkezz be a Trita fiókodba", en: "Sign in to your Trita account", de: "Melde dich bei deinem Trita-Konto an" },
+    signInSubtitle: { hu: "Küldünk egy egyszeri kódot az emailedre", en: "We'll send a one-time code to your email", de: "Wir senden dir einen Einmalcode per E-Mail" },
     signUpTitle: { hu: "Fiók létrehozása", en: "Create account", de: "Konto erstellen" },
-    signUpSubtitle: { hu: "Regisztrálj, és ismerd meg magad a teszttel", en: "Sign up and discover your profile", de: "Registriere dich und entdecke dein Profil" },
+    signUpSubtitle: { hu: "Küldünk egy megerősítő kódot az emailedre", en: "We'll send a verification code to your email", de: "Wir senden dir einen Bestätigungscode per E-Mail" },
     emailLabel: { hu: "Email cím", en: "Email", de: "E-Mail" },
     passwordLabel: { hu: "Jelszó", en: "Password", de: "Passwort" },
     passwordPlaceholder: { hu: "Jelszó", en: "Password", de: "Passwort" },
@@ -387,6 +387,17 @@ const translations = {
     resetVerifyError: { hu: "Nem sikerült frissíteni a jelszót.", en: "Could not reset the password.", de: "Passwort konnte nicht zurückgesetzt werden." },
     backToSignIn: { hu: "Vissza a bejelentkezéshez", en: "Back to sign in", de: "Zurück zur Anmeldung" },
     errorSecondFactorRequired: { hu: "Második faktor szükséges. Jelentkezz be a megfelelő módon.", en: "Second factor required. Please complete 2FA.", de: "Zweiter Faktor erforderlich. Bitte 2FA abschließen." },
+    submitSendLink: { hu: "Link küldése", en: "Send link", de: "Link senden" },
+    submitSendLinkLoading: { hu: "Küldés...", en: "Sending...", de: "Wird gesendet..." },
+    submitSendCode: { hu: "Kód küldése", en: "Send code", de: "Code senden" },
+    submitSendCodeLoading: { hu: "Küldés...", en: "Sending...", de: "Wird gesendet..." },
+    magicLinkSentTitle: { hu: "Ellenőrizd az emailedet!", en: "Check your email!", de: "Überprüfe deine E-Mails!" },
+    magicLinkSentBody: {
+      hu: "Küldtünk egy bejelentkezési linket a(z) {email} címre. Kattints a levélben lévő gombra a belépéshez.",
+      en: "We sent a sign-in link to {email}. Click the button in the email to continue.",
+      de: "Wir haben einen Anmelde-Link an {email} gesendet. Klicke auf den Button in der E-Mail.",
+    },
+    magicLinkBack: { hu: "Más email cím megadása", en: "Use a different email", de: "Andere E-Mail verwenden" },
   },
   assessment: {
     helpLikert: {
@@ -1331,14 +1342,14 @@ const translations = {
       de: "Demografische Daten: Nutzername, Geburtsjahr, Geschlecht, Bildungsniveau, Land, aktueller Status (Arbeit/Studium), Arbeitsform, Unternehmensgröße, Ausbildungsniveau, Dauer der Arbeitslosigkeit.",
     },
     dataAssessment: {
-      hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések.",
-      en: "Assessment data: personality test answers, calculated scores, observer ratings.",
-      de: "Testdaten: Persönlichkeitstest-Antworten, berechnete Punktzahlen, Beobachterbewertungen.",
+      hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések, valamint az eredmények utáni kutatási kérdőív (korábbi teszttapasztalat, munkakörülmények, motiváció stb.).",
+      en: "Assessment data: personality test answers, calculated scores, observer ratings, and the post-results research survey (prior test experience, work context, motivation, etc.).",
+      de: "Testdaten: Persönlichkeitstest-Antworten, berechnete Punktzahlen, Beobachterbewertungen sowie der Nachbefragungsfragebogen (frühere Testerfahrung, Arbeitskontext, Motivation usw.).",
     },
     dataTechnical: {
-      hu: "Technikai adatok: nyelvi beállítás (cookie), munkamenet-azonosítók.",
-      en: "Technical data: language preference (cookie), session identifiers.",
-      de: "Technische Daten: Spracheinstellung (Cookie), Sitzungskennungen.",
+      hu: "Technikai adatok: nyelvi beállítás (cookie), munkamenet-azonosítók, anonimizált látogatottsági statisztikák (Vercel Analytics, sütimentes).",
+      en: "Technical data: language preference (cookie), session identifiers, anonymized usage statistics (Vercel Analytics, cookieless).",
+      de: "Technische Daten: Spracheinstellung (Cookie), Sitzungskennungen, anonymisierte Nutzungsstatistiken (Vercel Analytics, ohne Cookies).",
     },
     purposeTitle: {
       hu: "Mire használjuk az adatokat?",
@@ -1361,9 +1372,9 @@ const translations = {
       de: "Cookies",
     },
     cookiesBody: {
-      hu: "Kizárólag a működéshez szükséges cookie-kat használunk: munkamenet-kezeléshez (Clerk hitelesítés) és nyelvi beállításhoz. Nem használunk marketing vagy nyomkövető cookie-kat.",
-      en: "We only use strictly necessary cookies: for session management (Clerk authentication) and language preference. We do not use marketing or tracking cookies.",
-      de: "Wir verwenden ausschließlich technisch notwendige Cookies: für die Sitzungsverwaltung (Clerk-Authentifizierung) und die Spracheinstellung. Wir verwenden keine Marketing- oder Tracking-Cookies.",
+      hu: "Kizárólag technikailag szükséges cookie-kat használunk: munkamenet-kezeléshez (Clerk hitelesítés) és nyelvi beállításhoz. Nem használunk marketing vagy nyomkövető sütiket. A Vercel Analytics sütiket nem alkalmaz.",
+      en: "We only use technically necessary cookies: for session management (Clerk authentication) and language preference. We do not use marketing or tracking cookies. Vercel Analytics operates without cookies.",
+      de: "Wir verwenden ausschließlich technisch notwendige Cookies: für die Sitzungsverwaltung (Clerk-Authentifizierung) und die Spracheinstellung. Wir verwenden keine Marketing- oder Tracking-Cookies. Vercel Analytics arbeitet ohne Cookies.",
     },
     storageTitle: {
       hu: "Adattárolás",
@@ -1374,6 +1385,41 @@ const translations = {
       hu: "Az adatokat biztonságos, titkosított PostgreSQL adatbázisban tároljuk (Neon). A hitelesítési adatokat a Clerk kezeli, amely az iparági sztenderdeknek megfelelő biztonsági intézkedéseket alkalmaz.",
       en: "Data is stored in a secure, encrypted PostgreSQL database (Neon). Authentication data is managed by Clerk, which applies industry-standard security measures.",
       de: "Daten werden in einer sicheren, verschlüsselten PostgreSQL-Datenbank (Neon) gespeichert. Authentifizierungsdaten werden von Clerk verwaltet, das branchenübliche Sicherheitsmaßnahmen anwendet.",
+    },
+    analyticsTitle: {
+      hu: "Látogatottság mérése",
+      en: "Usage analytics",
+      de: "Nutzungsanalyse",
+    },
+    analyticsBody: {
+      hu: "A Trita a Vercel Analytics és a Vercel Speed Insights szolgáltatásokat használja a látogatottság és a betöltési teljesítmény méréséhez. Ezek a szolgáltatások sütiket nem alkalmaznak. Az IP-cím rövid idejű, anonimizált hash formájában kerül feldolgozásra az egyedi látogatók megkülönböztetéséhez, és személyes adatként nem kerül hosszú távon tárolásra. A mért adatok kizárólag aggregált forgalmi statisztikákra és Core Web Vitals mutatókra korlátozódnak.",
+      en: "Trita uses Vercel Analytics and Vercel Speed Insights to measure site traffic and loading performance. These services do not use cookies. IP addresses are processed briefly in anonymized, hashed form to distinguish unique visitors and are not stored as personal data long-term. The collected data is limited to aggregated traffic statistics and Core Web Vitals metrics.",
+      de: "Trita verwendet Vercel Analytics und Vercel Speed Insights zur Messung von Webseitenbesuchen und Ladeleistung. Diese Dienste verwenden keine Cookies. IP-Adressen werden kurzzeitig in anonymisierter, gehashter Form verarbeitet, um eindeutige Besucher zu unterscheiden, und werden nicht dauerhaft als personenbezogene Daten gespeichert. Die erhobenen Daten beschränken sich auf aggregierte Verkehrsstatistiken und Core Web Vitals.",
+    },
+    processorsTitle: {
+      hu: "Adatfeldolgozók",
+      en: "Data processors",
+      de: "Datenverarbeiter",
+    },
+    processorsClerk: {
+      hu: "Clerk (clerk.com) – hitelesítés és munkamenet-kezelés. Az EU/US adatvédelmi keretrendszerek (EU–U.S. Data Privacy Framework) szerint működik.",
+      en: "Clerk (clerk.com) – authentication and session management. Operates under EU/US data protection frameworks (EU–U.S. Data Privacy Framework).",
+      de: "Clerk (clerk.com) – Authentifizierung und Sitzungsverwaltung. Betrieb gemäß EU/US-Datenschutzrahmen (EU–U.S. Data Privacy Framework).",
+    },
+    processorsNeon: {
+      hu: "Neon (neon.tech) – PostgreSQL adatbázis-tárhely, amelyen a felhasználói és kutatási adatok tárolódnak. Adatközpontok az EU-ban.",
+      en: "Neon (neon.tech) – PostgreSQL database hosting where user and research data is stored. Data centres within the EU.",
+      de: "Neon (neon.tech) – PostgreSQL-Datenbankhosting, auf dem Nutzer- und Forschungsdaten gespeichert werden. Rechenzentren innerhalb der EU.",
+    },
+    processorsVercel: {
+      hu: "Vercel (vercel.com) – alkalmazás-tárhely és anonimizált forgalomstatisztikák (Vercel Analytics). A Vercel DPA (adatfeldolgozói megállapodás) elfogadva.",
+      en: "Vercel (vercel.com) – application hosting and anonymized traffic statistics (Vercel Analytics). Vercel DPA (data processing agreement) accepted.",
+      de: "Vercel (vercel.com) – Anwendungshosting und anonymisierte Verkehrsstatistiken (Vercel Analytics). Vercel-DPA (Datenverarbeitungsvertrag) akzeptiert.",
+    },
+    processorsResend: {
+      hu: "Resend (resend.com) – tranzakciós e-mailek küldése (pl. ismerősi meghívók). Az e-mail-cím kizárólag az üzenet kézbesítéséhez kerül továbbításra.",
+      en: "Resend (resend.com) – transactional email delivery (e.g. observer invitations). Email addresses are shared solely for message delivery.",
+      de: "Resend (resend.com) – Transaktionaler E-Mail-Versand (z. B. Beobachtereinladungen). E-Mail-Adressen werden ausschließlich zur Nachrichtenübermittlung weitergegeben.",
     },
     rightsTitle: {
       hu: "A jogaid",

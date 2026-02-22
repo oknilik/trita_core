@@ -64,12 +64,13 @@ export default async function ResearchPage() {
     t(key, locale).split("|").map((item) => item.trim()).filter(Boolean);
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
+    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <div className="mx-auto max-w-2xl">
+      <div className="relative z-10 mx-auto max-w-2xl">
         <div className="mb-8 flex flex-col items-center gap-3">
           <Link href="/">
             <TritaLogo size={56} showText={false} />

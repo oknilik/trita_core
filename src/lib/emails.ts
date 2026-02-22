@@ -138,6 +138,38 @@ const translations = {
       team: "Das Trita-Team",
     },
   },
+  magicLink: {
+    hu: {
+      subject: "Bejelentkezési link – Trita",
+      heading: "Bejelentkezési link",
+      body: "Kattints az alábbi gombra a bejelentkezéshez. A link 10 percig érvényes.",
+      cta: "Bejelentkezés",
+      footer:
+        "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+      thanks: "Üdvözlettel,",
+      team: "A Trita csapat",
+    },
+    en: {
+      subject: "Your sign-in link – Trita",
+      heading: "Sign in to Trita",
+      body: "Click the button below to sign in to your account. This link expires in 10 minutes.",
+      cta: "Sign in",
+      footer:
+        "If you didn't request this link, you can safely ignore this email.",
+      thanks: "Best regards,",
+      team: "The Trita team",
+    },
+    de: {
+      subject: "Dein Anmelde-Link – Trita",
+      heading: "Bei Trita anmelden",
+      body: "Klicke auf den Button unten, um dich bei deinem Konto anzumelden. Dieser Link läuft in 10 Minuten ab.",
+      cta: "Anmelden",
+      footer:
+        "Wenn du diesen Link nicht angefordert hast, kannst du diese E-Mail ignorieren.",
+      thanks: "Viele Grüße,",
+      team: "Das Trita-Team",
+    },
+  },
 } as const;
 
 function getLocale(email: string): Locale {
@@ -404,5 +436,73 @@ export async function sendVerificationCodeEmail(params: {
     console.error("[Email] Failed to send verification code:", error);
   } else {
     console.log("[Email] Verification code sent to:", params.to);
+  }
+}
+
+function buildMagicLinkHtml(params: {
+  locale: Locale;
+  magicLinkUrl: string;
+}): string {
+  const t = translations.magicLink[params.locale];
+
+  return `
+<!DOCTYPE html>
+<html lang="${params.locale}">
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
+  <div style="max-width:560px;margin:0 auto;padding:40px 20px">
+    <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
+      <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 16px">
+        ${t.heading}
+      </h1>
+      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 24px">
+        ${t.body}
+      </p>
+
+      <div style="text-align:center;margin:24px 0">
+        <a href="${params.magicLinkUrl}"
+           style="display:inline-block;background:#4f46e5;color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none">
+          ${t.cta}
+        </a>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0 0 4px">
+        ${t.footer}
+      </p>
+      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0">
+        ${t.thanks}<br>${t.team}
+      </p>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:#d1d5db;margin-top:16px">
+      &copy; Trita 2026
+    </p>
+  </div>
+</body>
+</html>`.trim();
+}
+
+export async function sendMagicLinkEmail(params: {
+  to: string;
+  magicLinkUrl: string;
+  locale?: Locale;
+}) {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.magicLink[locale];
+  const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send magic link:", error);
+  } else {
+    console.log("[Email] Magic link sent to:", params.to);
   }
 }

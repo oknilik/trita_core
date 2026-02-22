@@ -51,6 +51,16 @@ export default async function PrivacyPage() {
     },
     { title: "privacy.cookiesTitle", body: "privacy.cookiesBody" },
     { title: "privacy.storageTitle", body: "privacy.storageBody" },
+    { title: "privacy.analyticsTitle", body: "privacy.analyticsBody" },
+    {
+      title: "privacy.processorsTitle",
+      items: [
+        "privacy.processorsClerk",
+        "privacy.processorsNeon",
+        "privacy.processorsVercel",
+        "privacy.processorsResend",
+      ],
+    },
     {
       title: "privacy.rightsTitle",
       items: [
@@ -63,8 +73,9 @@ export default async function PrivacyPage() {
   ] as const;
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
-      <div className="mx-auto max-w-2xl">
+    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative z-10 mx-auto max-w-2xl">
         <div className="mb-8 flex flex-col items-center gap-3">
           <Link href="/">
             <TritaLogo size={56} showText={false} />

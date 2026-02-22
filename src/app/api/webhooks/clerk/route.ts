@@ -3,7 +3,7 @@ import type { WebhookEvent } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendVerificationCodeEmail } from "@/lib/emails";
+import { sendVerificationCodeEmail, sendMagicLinkEmail } from "@/lib/emails";
 import { clerkClient } from "@clerk/nextjs/server";
 
 const clerkUserSchema = z.object({
@@ -28,12 +28,15 @@ const clerkEmailSchema = z.object({
     recipient_email_address: z.string().email().optional(),
     user_id: z.string().optional().nullable(),
     otp_code: z.string().optional(),
+    magic_link_url: z.string().optional(),
     data: z
       .object({
         otp_code: z.string().optional(),
         code: z.string().optional(),
         verification_code: z.string().optional(),
         token: z.string().optional(),
+        magic_link_url: z.string().optional(),
+        url: z.string().optional(),
         ttl_seconds: z.number().optional(),
         ttl: z.number().optional(),
       })
@@ -115,7 +118,11 @@ export async function POST(req: Request) {
   }
 
   if (event.type === "email.created") {
+    console.log("[Webhook] email.created raw payload:", JSON.stringify(event.data, null, 2));
     const parsed = clerkEmailSchema.safeParse(event);
+    if (!parsed.success) {
+      console.warn("[Webhook] email.created schema parse failed:", parsed.error);
+    }
     if (parsed.success) {
       const data = parsed.data.data;
       const to =
@@ -128,7 +135,14 @@ export async function POST(req: Request) {
         data.data?.token;
       const ttlSeconds = data.data?.ttl_seconds ?? data.data?.ttl ?? null;
 
-      if (to && code) {
+      const magicLink =
+        data.magic_link_url ||
+        data.data?.magic_link_url ||
+        data.data?.url;
+
+      console.log("[Webhook] email.created extracted:", { to, code: code ? "****" : undefined, magicLink: magicLink ? "yes" : undefined });
+
+      if (to && (magicLink || code)) {
         let locale: "hu" | "en" | "de" | undefined;
         if (data.user_id) {
           try {
@@ -145,12 +159,11 @@ export async function POST(req: Request) {
           }
         }
 
-        await sendVerificationCodeEmail({
-          to,
-          code,
-          locale,
-          ttlSeconds,
-        });
+        if (magicLink) {
+          await sendMagicLinkEmail({ to, magicLinkUrl: magicLink, locale });
+        } else if (code) {
+          await sendVerificationCodeEmail({ to, code, locale, ttlSeconds });
+        }
       }
     }
   }
