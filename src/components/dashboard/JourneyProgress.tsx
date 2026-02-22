@@ -9,6 +9,7 @@ interface JourneyProgressProps {
   initialHasInvites: boolean;
   initialPendingInvites: number;
   hasObserverFeedback: boolean;
+  completedObserversCount?: number;
   onTabChange?: (tab: "invites" | "comparison") => void;
   /** If false, the self-assessment step is not yet completed (empty state). Defaults to true. */
   selfCompleted?: boolean;
@@ -30,6 +31,7 @@ export function JourneyProgress({
   initialHasInvites,
   initialPendingInvites,
   hasObserverFeedback,
+  completedObserversCount = 0,
   onTabChange,
   selfCompleted = true,
   hasDraft = false,
@@ -51,7 +53,7 @@ export function JourneyProgress({
     return () => window.removeEventListener("dashboard:invites-updated", onInvitesUpdated);
   }, []);
 
-  const feedbackInProgress = pendingInvites > 0 && !hasObserverFeedback;
+  const feedbackInProgress = (pendingInvites > 0 || (completedObserversCount > 0 && !hasObserverFeedback)) && !hasObserverFeedback;
   const feedbackPartial = pendingInvites > 0 && hasObserverFeedback;
   const totalSteps = 3;
   const stepsCompleted =
@@ -84,7 +86,7 @@ export function JourneyProgress({
       : !hasObserverFeedback
         ? {
             title: t("dashboard.nextStepWaitTitle", locale),
-            body: tf("dashboard.nextStepWaitBody", locale, { count: pendingInvites }),
+            body: tf("dashboard.nextStepWaitBody", locale, { received: completedObserversCount, pending: pendingInvites }),
             cta: t("dashboard.nextStepManageInvitesCta", locale),
             href: "#invite",
           }

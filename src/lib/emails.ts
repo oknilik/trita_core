@@ -102,9 +102,7 @@ const translations = {
   },
   verificationCode: {
     hu: {
-      subject: "A regisztrációs kódod – Trita",
-      heading: "Regisztrációs kód",
-      body: "Írd be ezt a kódot a regisztráció befejezéséhez.",
+      subject: "A regisztrációs kódod – trita",
       codeLabel: "A kódod:",
       ttl: (minutes?: number) =>
         minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
@@ -114,9 +112,7 @@ const translations = {
       team: "a trita csapat",
     },
     en: {
-      subject: "Your verification code – Trita",
-      heading: "Verification code",
-      body: "Enter this code to complete your sign-up.",
+      subject: "Your verification code – trita",
       codeLabel: "Your code:",
       ttl: (minutes?: number) =>
         minutes ? `This code is valid for ${minutes} minutes.` : "This code is valid for a short time.",
@@ -126,9 +122,7 @@ const translations = {
       team: "the trita team",
     },
     de: {
-      subject: "Dein Bestätigungscode – Trita",
-      heading: "Bestätigungscode",
-      body: "Gib diesen Code ein, um deine Registrierung abzuschließen.",
+      subject: "Dein Bestätigungscode – trita",
       codeLabel: "Dein Code:",
       ttl: (minutes?: number) =>
         minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
@@ -140,9 +134,7 @@ const translations = {
   },
   signInCode: {
     hu: {
-      subject: "A bejelentkezési kódod – Trita",
-      heading: "Bejelentkezési kód",
-      body: "Írd be ezt a kódot a bejelentkezéshez.",
+      subject: "A bejelentkezési kódod – trita",
       codeLabel: "A kódod:",
       ttl: (minutes?: number) =>
         minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
@@ -152,9 +144,7 @@ const translations = {
       team: "a trita csapat",
     },
     en: {
-      subject: "Your sign-in code – Trita",
-      heading: "Sign-in code",
-      body: "Enter this code to sign in to your account.",
+      subject: "Your sign-in code – trita",
       codeLabel: "Your code:",
       ttl: (minutes?: number) =>
         minutes ? `This code is valid for ${minutes} minutes.` : "This code is valid for a short time.",
@@ -164,9 +154,7 @@ const translations = {
       team: "the trita team",
     },
     de: {
-      subject: "Dein Anmeldecode – Trita",
-      heading: "Anmeldecode",
-      body: "Gib diesen Code ein, um dich in deinem Konto anzumelden.",
+      subject: "Dein Anmeldecode – trita",
       codeLabel: "Dein Code:",
       ttl: (minutes?: number) =>
         minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
@@ -225,12 +213,14 @@ const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
 function buildEmailLayout(params: {
   locale: Locale;
   appUrl: string;
-  heading: string;
+  heading?: string;
+  logoSize?: number;
   bodyContent: string;
-  footerDisclaimer: string;
+  footerDisclaimer?: string;
   thanks: string;
   team: string;
 }): string {
+  const logoSize = params.logoSize ?? 100;
   return `<!DOCTYPE html>
 <html lang="${params.locale}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -240,11 +230,9 @@ function buildEmailLayout(params: {
     <!-- Gradient header with logo and wave bottom -->
     <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
       <div style="padding:24px 32px 10px;text-align:center">
-        <img src="${params.appUrl}/icon.svg" alt="trita" width="100" height="100"
+        <img src="${params.appUrl}/icon.svg" alt="trita" width="${logoSize}" height="${logoSize}"
              style="display:inline-block;border-radius:24px;margin-bottom:10px">
-        <h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">
-          ${params.heading}
-        </h1>
+        ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28"
            style="display:block;width:100%;height:28px">
@@ -264,9 +252,7 @@ function buildEmailLayout(params: {
         <path d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
       </svg>
       <div style="padding:4px 32px 24px;text-align:center">
-        <p style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">
-          ${params.footerDisclaimer}
-        </p>
+        ${params.footerDisclaimer ? `<p style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
         <p style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
           ${params.thanks}<br>${params.team}
         </p>
@@ -427,9 +413,6 @@ function buildVerificationCodeHtml(params: {
     : translations.verificationCode[params.locale];
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
-      ${t.body}
-    </p>
     <div style="background:#f3f4f6;border-radius:12px;padding:20px;text-align:center;margin:0 0 16px">
       <p style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 8px">
         ${t.codeLabel}
@@ -438,16 +421,18 @@ function buildVerificationCodeHtml(params: {
         ${params.code}
       </div>
     </div>
-    <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:0">
+    <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:0 0 16px">
       ${t.ttl(params.ttlMinutes)}
+    </p>
+    <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:0">
+      ${t.footer}
     </p>`;
 
   return buildEmailLayout({
     locale: params.locale,
     appUrl: params.appUrl,
-    heading: t.heading,
+    logoSize: 140,
     bodyContent,
-    footerDisclaimer: t.footer,
     thanks: t.thanks,
     team: t.team,
   });
