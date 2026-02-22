@@ -239,9 +239,9 @@ function buildEmailLayout(params: {
 
     <!-- Gradient header with logo and wave bottom -->
     <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
-      <div style="padding:36px 32px 12px;text-align:center">
-        <img src="${params.appUrl}/icon.svg" alt="trita" width="80" height="80"
-             style="display:inline-block;border-radius:20px;margin-bottom:16px">
+      <div style="padding:24px 32px 10px;text-align:center">
+        <img src="${params.appUrl}/icon.svg" alt="trita" width="100" height="100"
+             style="display:inline-block;border-radius:24px;margin-bottom:10px">
         <h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">
           ${params.heading}
         </h1>
