@@ -218,12 +218,67 @@ function getLocale(email: string): Locale {
   return "en";
 }
 
-function logoBlock(appUrl: string): string {
-  return `
-      <div style="text-align:center;margin-bottom:24px">
-        <img src="${appUrl}/icon" alt="trita" width="48" height="48"
-             style="display:inline-block;border-radius:12px">
-      </div>`;
+const HEADER_GRADIENT = "linear-gradient(135deg,#c7d2fe 0%,#ddd6fe 50%,#fbcfe8 100%)";
+const FOOTER_GRADIENT = "linear-gradient(135deg,#eef2ff 0%,#f5f3ff 60%,#fdf4ff 100%)";
+const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
+
+function buildEmailLayout(params: {
+  locale: Locale;
+  appUrl: string;
+  heading: string;
+  bodyContent: string;
+  footerDisclaimer: string;
+  thanks: string;
+  team: string;
+}): string {
+  return `<!DOCTYPE html>
+<html lang="${params.locale}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6">
+  <div style="max-width:600px;margin:0 auto;padding:32px 16px 24px">
+
+    <!-- Gradient header with logo and wave bottom -->
+    <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
+      <div style="padding:36px 32px 12px;text-align:center">
+        <img src="${params.appUrl}/icon.svg" alt="trita" width="54" height="54"
+             style="display:inline-block;border-radius:13px;margin-bottom:16px">
+        <h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">
+          ${params.heading}
+        </h1>
+      </div>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28"
+           style="display:block;width:100%;height:28px">
+        <path d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
+      </svg>
+    </div>
+
+    <!-- White content area -->
+    <div style="background:#ffffff;padding:16px 32px 32px">
+      ${params.bodyContent}
+    </div>
+
+    <!-- Footer with wave top and light gradient -->
+    <div style="background:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28"
+           style="display:block;width:100%;height:28px">
+        <path d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
+      </svg>
+      <div style="padding:4px 32px 24px;text-align:center">
+        <p style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">
+          ${params.footerDisclaimer}
+        </p>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
+          ${params.thanks}<br>${params.team}
+        </p>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:#d1d5db;margin:16px 0 0">
+      &copy; trita 2026
+    </p>
+  </div>
+</body>
+</html>`.trim();
 }
 
 function buildOrderConfirmationHtml(
@@ -233,65 +288,38 @@ function buildOrderConfirmationHtml(
 ): string {
   const t = translations.orderConfirmation[locale];
   const features = t.featureList
-    .map((f) => `<li style="padding:4px 0">${f}</li>`)
+    .map((f) => `<li style="padding:4px 0;color:#374151">${f}</li>`)
     .join("");
 
-  return `
-<!DOCTYPE html>
-<html lang="${locale}">
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px">
-    <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
-      ${logoBlock(appUrl)}
-
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="display:inline-block;background:#ecfdf5;border-radius:50%;width:56px;height:56px;line-height:56px;text-align:center">
-          <span style="font-size:28px">&#10003;</span>
-        </div>
-      </div>
-
-      <h1 style="font-size:22px;font-weight:700;color:#111827;text-align:center;margin:0 0 20px">
-        ${t.heading}
-      </h1>
-
-      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 8px">
-        ${t.greeting(name)}
-      </p>
-      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
-        ${t.body}
-      </p>
-
-      <p style="font-size:13px;font-weight:600;color:#111827;margin:0 0 8px">
-        ${t.features}
-      </p>
-      <ul style="font-size:13px;color:#4b5563;line-height:1.6;margin:0 0 24px;padding-left:20px">
-        ${features}
-      </ul>
-
-      <div style="text-align:center;margin:24px 0">
-        <a href="${appUrl}/dashboard"
-           style="display:inline-block;background:#4f46e5;color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none">
-          ${t.cta}
-        </a>
-      </div>
-
-      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
-
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0 0 4px">
-        ${t.footer}
-      </p>
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0">
-        ${t.thanks}<br>${t.team}
-      </p>
-    </div>
-
-    <p style="text-align:center;font-size:11px;color:#d1d5db;margin-top:16px">
-      &copy; Trita 2026
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
+      ${t.greeting(name)}
     </p>
-  </div>
-</body>
-</html>`.trim();
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+      ${t.body}
+    </p>
+    <p style="font-size:13px;font-weight:600;color:#111827;margin:0 0 8px">
+      ${t.features}
+    </p>
+    <ul style="font-size:13px;line-height:1.7;margin:0 0 28px;padding-left:20px">
+      ${features}
+    </ul>
+    <div style="text-align:center">
+      <a href="${appUrl}/dashboard"
+         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+        ${t.cta}
+      </a>
+    </div>`;
+
+  return buildEmailLayout({
+    locale,
+    appUrl,
+    heading: t.heading,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
 }
 
 export async function sendOrderConfirmationEmail(params: {
@@ -327,51 +355,31 @@ function buildObserverInviteHtml(params: {
   recipientName: string;
 }): string {
   const t = translations.observerInvite[params.locale];
-  const appUrl = params.appUrl ?? "https://trita.hu";
-  const link = `${appUrl}/observe/${params.token}`;
+  const link = `${params.appUrl}/observe/${params.token}`;
 
-  return `
-<!DOCTYPE html>
-<html lang="${params.locale}">
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px">
-    <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
-      ${logoBlock(appUrl)}
-
-      <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 12px">
-        ${t.heading}
-      </h1>
-      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 8px">
-        ${t.greeting(params.recipientName)}
-      </p>
-      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
-        ${t.body(params.inviterName)}
-      </p>
-
-      <div style="text-align:center;margin:24px 0">
-        <a href="${link}"
-           style="display:inline-block;background:#4f46e5;color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none">
-          ${t.cta}
-        </a>
-      </div>
-
-      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
-
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0 0 4px">
-        ${t.footer}
-      </p>
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0">
-        ${t.thanks}<br>${t.team}
-      </p>
-    </div>
-
-    <p style="text-align:center;font-size:11px;color:#d1d5db;margin-top:16px">
-      &copy; Trita 2026
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
+      ${t.greeting(params.recipientName)}
     </p>
-  </div>
-</body>
-</html>`.trim();
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+      ${t.body(params.inviterName)}
+    </p>
+    <div style="text-align:center">
+      <a href="${link}"
+         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+        ${t.cta}
+      </a>
+    </div>`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    appUrl: params.appUrl,
+    heading: t.heading,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
 }
 
 export async function sendObserverInviteEmail(params: {
@@ -418,51 +426,31 @@ function buildVerificationCodeHtml(params: {
     ? translations.signInCode[params.locale]
     : translations.verificationCode[params.locale];
 
-  return `
-<!DOCTYPE html>
-<html lang="${params.locale}">
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px">
-    <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
-      ${logoBlock(params.appUrl)}
-
-      <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 12px">
-        ${t.heading}
-      </h1>
-      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
-        ${t.body}
-      </p>
-
-      <div style="background:#f3f4f6;border-radius:10px;padding:16px;text-align:center">
-        <p style="font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 6px">
-          ${t.codeLabel}
-        </p>
-        <div style="font-size:28px;font-weight:700;letter-spacing:.2em;color:#111827">
-          ${params.code}
-        </div>
-      </div>
-
-      <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:16px 0 0">
-        ${t.ttl(params.ttlMinutes)}
-      </p>
-
-      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
-
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0 0 4px">
-        ${t.footer}
-      </p>
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0">
-        ${t.thanks}<br>${t.team}
-      </p>
-    </div>
-
-    <p style="text-align:center;font-size:11px;color:#d1d5db;margin-top:16px">
-      &copy; Trita 2026
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+      ${t.body}
     </p>
-  </div>
-</body>
-</html>`.trim();
+    <div style="background:#f3f4f6;border-radius:12px;padding:20px;text-align:center;margin:0 0 16px">
+      <p style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 8px">
+        ${t.codeLabel}
+      </p>
+      <div style="font-size:32px;font-weight:700;letter-spacing:.25em;color:#1e1b4b">
+        ${params.code}
+      </div>
+    </div>
+    <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:0">
+      ${t.ttl(params.ttlMinutes)}
+    </p>`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    appUrl: params.appUrl,
+    heading: t.heading,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
 }
 
 export async function sendVerificationCodeEmail(params: {
@@ -510,45 +498,26 @@ function buildMagicLinkHtml(params: {
 }): string {
   const t = translations.magicLink[params.locale];
 
-  return `
-<!DOCTYPE html>
-<html lang="${params.locale}">
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px">
-    <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:32px">
-      ${logoBlock(params.appUrl)}
-
-      <h1 style="font-size:20px;font-weight:700;color:#111827;margin:0 0 16px">
-        ${t.heading}
-      </h1>
-      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 24px">
-        ${t.body}
-      </p>
-
-      <div style="text-align:center;margin:24px 0">
-        <a href="${params.magicLinkUrl}"
-           style="display:inline-block;background:#4f46e5;color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none">
-          ${t.cta}
-        </a>
-      </div>
-
-      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
-
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0 0 4px">
-        ${t.footer}
-      </p>
-      <p style="font-size:12px;color:#9ca3af;line-height:1.5;margin:0">
-        ${t.thanks}<br>${t.team}
-      </p>
-    </div>
-
-    <p style="text-align:center;font-size:11px;color:#d1d5db;margin-top:16px">
-      &copy; Trita 2026
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+      ${t.body}
     </p>
-  </div>
-</body>
-</html>`.trim();
+    <div style="text-align:center">
+      <a href="${params.magicLinkUrl}"
+         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+        ${t.cta}
+      </a>
+    </div>`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    appUrl: params.appUrl,
+    heading: t.heading,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
 }
 
 export async function sendMagicLinkEmail(params: {
