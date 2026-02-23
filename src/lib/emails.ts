@@ -2,6 +2,10 @@ import { resend, EMAIL_FROM } from "./resend";
 
 type Locale = "hu" | "en" | "de";
 
+// Resolved once at module init — safe for server-side (API routes) use.
+// Using || so an empty-string env var also falls back to the default.
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://trita.hu";
+
 const translations = {
   orderConfirmation: {
     hu: {
@@ -238,7 +242,6 @@ const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
 
 function buildEmailLayout(params: {
   locale: Locale;
-  appUrl: string;
   heading?: string;
   logoSize?: number;
   bodyContent: string;
@@ -256,7 +259,7 @@ function buildEmailLayout(params: {
     <!-- Gradient header with logo and wave bottom -->
     <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
       <div style="padding:24px 32px 10px;text-align:center">
-        <img src="${params.appUrl}/icon.svg" alt="trita" width="${logoSize}" height="${logoSize}"
+        <img src="${APP_URL}/icon.svg" alt="trita" width="${logoSize}" height="${logoSize}"
              style="display:inline-block;border-radius:24px;margin-bottom:10px">
         ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
@@ -296,7 +299,6 @@ function buildEmailLayout(params: {
 function buildOrderConfirmationHtml(
   locale: Locale,
   name: string,
-  appUrl: string
 ): string {
   const t = translations.orderConfirmation[locale];
   const features = t.featureList
@@ -317,7 +319,7 @@ function buildOrderConfirmationHtml(
       ${features}
     </ul>
     <div style="text-align:center">
-      <a href="${appUrl}/dashboard"
+      <a href="${APP_URL}/dashboard"
          style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
         ${t.cta}
       </a>
@@ -325,7 +327,6 @@ function buildOrderConfirmationHtml(
 
   return buildEmailLayout({
     locale,
-    appUrl,
     heading: t.heading,
     bodyContent,
     footerDisclaimer: t.footer,
@@ -341,9 +342,8 @@ export async function sendOrderConfirmationEmail(params: {
 }) {
   const locale = params.locale ?? getLocale(params.to);
   const t = translations.orderConfirmation[locale];
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
 
-  const html = buildOrderConfirmationHtml(locale, params.name, appUrl);
+  const html = buildOrderConfirmationHtml(locale, params.name);
 
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
@@ -362,12 +362,11 @@ export async function sendOrderConfirmationEmail(params: {
 function buildObserverInviteHtml(params: {
   locale: Locale;
   inviterName: string;
-  appUrl: string;
   token: string;
   recipientName: string;
 }): string {
   const t = translations.observerInvite[params.locale];
-  const link = `${params.appUrl}/observe/${params.token}`;
+  const link = `${APP_URL}/observe/${params.token}`;
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
@@ -385,7 +384,6 @@ function buildObserverInviteHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    appUrl: params.appUrl,
     heading: t.heading,
     bodyContent,
     footerDisclaimer: t.footer,
@@ -402,14 +400,12 @@ export async function sendObserverInviteEmail(params: {
   locale?: Locale;
 }) {
   const locale = params.locale ?? getLocale(params.to);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
   const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend", de: "Freund/in" };
   const recipientName = params.recipientName ?? fallbackNames[locale];
 
   const html = buildObserverInviteHtml({
     locale,
     inviterName: params.inviterName,
-    appUrl,
     token: params.token,
     recipientName,
   });
@@ -431,7 +427,6 @@ function buildVerificationCodeHtml(params: {
   locale: Locale;
   code: string;
   ttlMinutes?: number;
-  appUrl: string;
   context?: "signUp" | "signIn";
 }): string {
   const t = params.context === "signIn"
@@ -456,7 +451,6 @@ function buildVerificationCodeHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    appUrl: params.appUrl,
     logoSize: 140,
     bodyContent,
     thanks: t.thanks,
@@ -473,14 +467,12 @@ export async function sendVerificationCodeEmail(params: {
 }) {
   const locale = params.locale ?? "en";
   const context = params.context ?? "signUp";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
   const ttlMinutes =
     params.ttlSeconds != null ? Math.max(1, Math.round(params.ttlSeconds / 60)) : undefined;
   const html = buildVerificationCodeHtml({
     locale,
     code: params.code,
     ttlMinutes,
-    appUrl,
     context,
   });
 
@@ -505,7 +497,6 @@ export async function sendVerificationCodeEmail(params: {
 function buildMagicLinkHtml(params: {
   locale: Locale;
   magicLinkUrl: string;
-  appUrl: string;
 }): string {
   const t = translations.magicLink[params.locale];
 
@@ -522,7 +513,6 @@ function buildMagicLinkHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    appUrl: params.appUrl,
     heading: t.heading,
     bodyContent,
     footerDisclaimer: t.footer,
@@ -537,9 +527,8 @@ export async function sendMagicLinkEmail(params: {
   locale?: Locale;
 }) {
   const locale = params.locale ?? "en";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.hu";
   const t = translations.magicLink[locale];
-  const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl, appUrl });
+  const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl });
 
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
@@ -558,10 +547,8 @@ export async function sendMagicLinkEmail(params: {
 function buildObserverCompletionHtml(params: {
   locale: Locale;
   inviterName: string;
-  appUrl: string;
 }): string {
   const t = translations.observerCompletion[params.locale];
-  const dashboardUrl = `${params.appUrl}/dashboard`;
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
@@ -571,7 +558,7 @@ function buildObserverCompletionHtml(params: {
       ${t.body}
     </p>
     <div style="text-align:center">
-      <a href="${dashboardUrl}"
+      <a href="${APP_URL}/dashboard"
          style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
         ${t.cta}
       </a>
@@ -579,7 +566,6 @@ function buildObserverCompletionHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    appUrl: params.appUrl,
     bodyContent,
     thanks: t.thanks,
     team: t.team,
@@ -592,13 +578,11 @@ export async function sendObserverCompletionEmail(params: {
   locale?: Locale;
 }): Promise<void> {
   const locale = params.locale ?? getLocale(params.to);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
   const t = translations.observerCompletion[locale];
 
   const html = buildObserverCompletionHtml({
     locale,
     inviterName: params.inviterName,
-    appUrl,
   });
 
   const { error } = await resend.emails.send({
