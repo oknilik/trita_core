@@ -341,11 +341,28 @@ export async function sendOrderConfirmationEmail(params: {
   const t = translations.orderConfirmation[locale];
   const html = buildOrderConfirmationHtml(locale, params.name);
 
+  const text = [
+    t.greeting(params.name),
+    "",
+    t.body,
+    "",
+    t.features,
+    t.featureList.map((f) => `- ${f}`).join("\n"),
+    "",
+    `${t.cta}: ${APP_URL}/dashboard`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: params.to,
     subject: t.subject,
     html,
+    text,
   });
 
   if (error) {
@@ -404,12 +421,27 @@ export async function sendObserverInviteEmail(params: {
     token: params.token,
     recipientName,
   });
+  const link = `${APP_URL}/observe/${params.token}`;
+  const t = translations.observerInvite[locale];
+  const text = [
+    t.greeting(recipientName),
+    "",
+    t.body(params.inviterName),
+    "",
+    `${t.cta}: ${link}`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
-    replyTo: process.env.RESEND_REPLY_TO ?? "info@trita.io",
     to: params.to,
-    subject: translations.observerInvite[locale].subject,
+    subject: t.subject,
     html,
+    text,
   });
 
   if (error) {
@@ -460,11 +492,23 @@ export async function sendObserverCompletionEmail(params: {
     inviterName: params.inviterName,
   });
 
+  const text = [
+    t.greeting(params.inviterName),
+    "",
+    t.body,
+    "",
+    `${t.cta}: ${APP_URL}/dashboard`,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: params.to,
     subject: t.subject,
     html,
+    text,
   });
 
   if (error) {
@@ -530,11 +574,23 @@ export async function sendVerificationCodeEmail(params: {
     ? translations.signInCode[locale]
     : translations.verificationCode[locale];
 
+  const text = [
+    `${translationBlock.codeLabel} ${params.code}`,
+    "",
+    translationBlock.ttl(ttlMinutes),
+    "",
+    translationBlock.footer,
+    "",
+    translationBlock.thanks,
+    translationBlock.team,
+  ].join("\n");
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: params.to,
     subject: translationBlock.subject,
     html,
+    text,
   });
 
   if (error) {
@@ -580,11 +636,23 @@ export async function sendMagicLinkEmail(params: {
   const t = translations.magicLink[locale];
   const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl });
 
+  const text = [
+    t.body,
+    "",
+    `${t.cta}: ${params.magicLinkUrl}`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: params.to,
     subject: t.subject,
     html,
+    text,
   });
 
   if (error) {
