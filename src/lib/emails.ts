@@ -69,7 +69,6 @@ const translations = {
   observerInvite: {
     hu: {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
-      heading: "Meghívó személyiségteszt kitöltésére",
       greeting: (name: string) => `Kedves ${name},`,
       body: (inviter: string) =>
         `${inviter} arra kér, hogy tölts ki egy rövid személyiségtesztet róla. A válaszaid anonimak maradnak, és kizárólag kutatási célokra kerülnek felhasználásra.`,
@@ -81,7 +80,6 @@ const translations = {
     },
     en: {
       subject: "Invitation to a personality assessment – Trita",
-      heading: "Invitation to a personality assessment",
       greeting: (name: string) => `Hello ${name},`,
       body: (inviter: string) =>
         `${inviter} invited you to complete a short personality assessment about them. Your answers remain anonymous and are used for research only.`,
@@ -93,7 +91,6 @@ const translations = {
     },
     de: {
       subject: "Einladung zum Persönlichkeitstest – Trita",
-      heading: "Einladung zum Persönlichkeitstest",
       greeting: (name: string) => `Hallo ${name},`,
       body: (inviter: string) =>
         `${inviter} hat dich eingeladen, einen kurzen Persönlichkeitstest über sie/ihn auszufüllen. Deine Antworten bleiben anonym und werden nur zu Forschungszwecken verwendet.`,
@@ -259,7 +256,7 @@ function buildEmailLayout(params: {
     <!-- Gradient header with logo and wave bottom -->
     <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
       <div style="padding:24px 32px 10px;text-align:center">
-        <img src="${APP_URL}/icon.svg" alt="trita" width="${logoSize}" height="${logoSize}"
+        <img src="${APP_URL}/icon" alt="trita" width="${logoSize}" height="${logoSize}"
              style="display:inline-block;border-radius:24px;margin-bottom:10px">
         ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
@@ -384,7 +381,6 @@ function buildObserverInviteHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    heading: t.heading,
     bodyContent,
     footerDisclaimer: t.footer,
     thanks: t.thanks,
