@@ -7,12 +7,18 @@ export type ActivePair = {
   contentKey: string;
 };
 
+export type SoloDim = {
+  dim: string;
+  level: ProfileCategory;
+};
+
 export type ProfileEngineOutput = {
   categories: Record<string, ProfileCategory>;
   block6Pairs: ActivePair[];
   block7Pairs: ActivePair[];
   showBlock6: boolean;
   showBlock7: boolean;
+  topSoloDims: SoloDim[];
 };
 
 const HIGH = 65;
@@ -45,6 +51,14 @@ const TENSION_PAIRS: TensionPairDef[] = [
   { dimA: "A", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "facilitatedInnovation" },
   { dimA: "A", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "structuredCompetitor" },
   { dimA: "C", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "structuredInnovator" },
+  // New pairs – congruent combinations
+  { dimA: "E", levelA: "low",  dimB: "X", levelB: "high", risk: false, contentKey: "resilientLeader" },
+  { dimA: "E", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "calmExecution" },
+  { dimA: "E", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "exploratoryAnalyst" },
+  { dimA: "X", levelA: "high", dimB: "C", levelB: "high", risk: false, contentKey: "organizedLeader" },
+  { dimA: "X", levelA: "high", dimB: "A", levelB: "high", risk: false, contentKey: "harmoniousConnector" },
+  { dimA: "H", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "performanceDriver" },
+  { dimA: "A", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "disruptiveInnovator" },
 ];
 
 /**
@@ -72,6 +86,23 @@ function normalizeToCodes(
   }
   // HEXACO and HEXACO_MODIFIED use codes directly
   return dimensions;
+}
+
+function getTopSoloDims(
+  normalized: Record<string, number>,
+  categories: Record<string, ProfileCategory>,
+  count = 2
+): SoloDim[] {
+  return Object.entries(categories)
+    .filter(([, level]) => level === "high" || level === "low")
+    .map(([dim, level]) => ({
+      dim,
+      level,
+      deviation: Math.abs((normalized[dim] ?? 50) - 50),
+    }))
+    .sort((a, b) => b.deviation - a.deviation)
+    .slice(0, count)
+    .map(({ dim, level }) => ({ dim, level }));
 }
 
 export function runProfileEngine(
@@ -106,11 +137,14 @@ export function runProfileEngine(
   const block6Pairs = activeTensionPairs.filter((p) => !p.risk);
   const block7Pairs = activeTensionPairs.filter((p) => p.risk);
 
+  const topSoloDims = getTopSoloDims(normalized, categories);
+
   return {
     categories,
     block6Pairs,
     block7Pairs,
     showBlock6: block6Pairs.length > 0,
     showBlock7: block7Pairs.length > 0,
+    topSoloDims,
   };
 }

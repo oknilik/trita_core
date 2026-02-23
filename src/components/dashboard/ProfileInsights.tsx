@@ -23,6 +23,8 @@ import {
   RESOLUTION_NARRATIVES,
   RISK_TEXTS,
   ROLE_TEXTS,
+  SOLO_DIM_NARRATIVES,
+  SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
   type Locale,
 } from "@/lib/profile-content";
@@ -53,28 +55,42 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
     [dimensions, testType]
   );
 
-  const { categories, block6Pairs, block7Pairs, showBlock6, showBlock7 } = engine;
+  const { categories, block6Pairs, block7Pairs, showBlock6, showBlock7, topSoloDims } = engine;
 
   const envRows = useMemo(() => getEnvRows(categories), [categories]);
 
   // Block 3 narratíva: rövid összkép az aktív párok alapján (külön map, nem a 6/7 ismétlése)
+  // Ha nincs pár, solo dim narratívák adnak tartalmat
   const block3Text = useMemo(() => {
     const allPairs = [...block7Pairs, ...block6Pairs];
-    if (allPairs.length === 0) return DEFAULT_NARRATIVE[l];
-    return allPairs
-      .map((p) => BLOCK3_SUMMARIES[p.contentKey]?.[l] ?? "")
-      .filter(Boolean)
-      .join(" ");
-  }, [block6Pairs, block7Pairs, l]);
+    if (allPairs.length > 0) {
+      return allPairs
+        .map((p) => BLOCK3_SUMMARIES[p.contentKey]?.[l] ?? "")
+        .filter(Boolean)
+        .join(" ");
+    }
+    if (topSoloDims.length > 0) {
+      return topSoloDims
+        .map((s) => SOLO_DIM_NARRATIVES[`${s.dim}_${s.level}`]?.[l] ?? "")
+        .filter(Boolean)
+        .join(" ");
+    }
+    return DEFAULT_NARRATIVE[l];
+  }, [block6Pairs, block7Pairs, topSoloDims, l]);
 
-  // Block 5: az összes aktív pár szerepkör-ajánlásait egyesítjük
+  // Block 5: pár-alapú szerepkör-ajánlás, ha nincs pár → solo dim ajánlás
   const roleData = useMemo(() => {
     const allPairs = [...block7Pairs, ...block6Pairs];
-    if (allPairs.length === 0) return null;
-    // Ha több pár is van, az első dominál
-    const primary = allPairs[0];
-    return ROLE_TEXTS[primary.contentKey]?.[l] ?? null;
-  }, [block6Pairs, block7Pairs, l]);
+    if (allPairs.length > 0) {
+      const primary = allPairs[0];
+      return ROLE_TEXTS[primary.contentKey]?.[l] ?? null;
+    }
+    if (topSoloDims.length > 0) {
+      const primary = topSoloDims[0];
+      return SOLO_DIM_ROLE_TEXTS[`${primary.dim}_${primary.level}`]?.[l] ?? null;
+    }
+    return null;
+  }, [block6Pairs, block7Pairs, topSoloDims, l]);
 
   // Dimenziók megjelenítési sorrendje
   const dimOrder = ["H", "E", "X", "A", "C", "O"];

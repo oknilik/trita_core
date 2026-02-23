@@ -102,6 +102,41 @@ export const RESOLUTION_NARRATIVES: Record<string, LocalizedText> = {
     en: "You are drawn to novel problems, but you do your best work within structured frameworks. This is not a contradiction — it is the natural profile of framed innovation.",
     de: "Du wirst von neuartigen Problemen angezogen, aber du leistest deine beste Arbeit innerhalb strukturierter Rahmenbedingungen. Dies ist kein Widerspruch — es ist das natürliche Profil gerahmter Innovation.",
   },
+  resilientLeader: {
+    hu: "Érzelmi stabilitásod és társas energiád ritka kombináció: magas nyomású, emberekkel teli helyzetekben akkor is tartod az irányt, amikor mások elbizonytalanodnak. A stressz nem rombolja a kapcsolataidat – éppen ellenkezőleg.",
+    en: "Your emotional stability combined with social energy is a rare combination: in high-pressure, people-intensive situations, you hold direction when others waver. Stress doesn't damage your relationships — quite the contrary.",
+    de: "Deine emotionale Stabilität kombiniert mit sozialer Energie ist eine seltene Kombination: In druckintensiven, menschenreichen Situationen behältst du die Richtung, wenn andere schwanken. Stress beschädigt deine Beziehungen nicht — ganz im Gegenteil.",
+  },
+  calmExecution: {
+    hu: "Megbízhatóan, egyenletesen teljesítesz – a lelkiismeretességed és az érzelmi stabilitásod egymást erősíti. Ahol mások stresszben félresiklanának, te kiszámíthatóan hozod az eredményt.",
+    en: "You deliver reliably and consistently — your conscientiousness and emotional stability reinforce each other. Where others might derail under stress, you produce results predictably.",
+    de: "Du lieferst zuverlässig und gleichmäßig — deine Gewissenhaftigkeit und emotionale Stabilität verstärken sich gegenseitig. Wo andere unter Stress entgleisen, lieferst du vorhersehbar Ergebnisse.",
+  },
+  exploratoryAnalyst: {
+    hu: "Nyitottságod és érzelmi stabilitásod különleges kombinációt ad: mélyen vizsgálod az ismeretlen területeket, miközben a bizonytalanság nem rendít meg. A kutatás, az elemzés és a feltárás természetes közeged.",
+    en: "Your openness and emotional stability form a distinctive combination: you explore unknown territory deeply while uncertainty doesn't unsettle you. Research, analysis, and discovery are your natural domains.",
+    de: "Deine Offenheit und emotionale Stabilität bilden eine unverwechselbare Kombination: Du erforschst unbekanntes Terrain tiefgründig, während Unsicherheit dich nicht erschüttert. Forschung, Analyse und Entdeckung sind deine natürlichen Bereiche.",
+  },
+  organizedLeader: {
+    hu: "Társas aktivitásod és lelkiismeretességed egymást erősítik: hatékonyan szervezel, kommunikálsz és teljesítesz. Egyszerre tudod mozgósítani az embereket és végrehajtani a terveket.",
+    en: "Your social activity and conscientiousness reinforce each other: you organize, communicate, and execute effectively. You can both mobilize people and follow through on plans simultaneously.",
+    de: "Deine soziale Aktivität und Gewissenhaftigkeit verstärken sich gegenseitig: Du organisierst, kommunizierst und führst effektiv aus. Du kannst sowohl Menschen mobilisieren als auch Pläne gleichzeitig umsetzen.",
+  },
+  harmoniousConnector: {
+    hu: "Extraverziód és magas együttműködési készséged kivételes csapatdinamikát teremt. Ritka, hogy valaki egyszerre energikus és befogadó – nálad ez természetes, és a csapat ragasztóanyagává tesz.",
+    en: "Your extraversion and high agreeableness create exceptional team dynamics. It's rare for someone to be both energizing and receptive — for you this is natural, and it makes you the glue that holds teams together.",
+    de: "Deine Extraversion und hohe Verträglichkeit schaffen außergewöhnliche Teamdynamiken. Es ist selten, dass jemand zugleich energetisierend und aufnahmebereit ist — bei dir ist das natürlich, und es macht dich zum Bindemittel, das Teams zusammenhält.",
+  },
+  performanceDriver: {
+    hu: "Ambiciózus és szervezett – kemény munkával, következetes végrehajtással érsz el célokat. A versenyszellem és a precizitás nálad nem zárja ki egymást, hanem összefogja az eredményorientált profilodat.",
+    en: "Ambitious and organized — you achieve goals through hard work and consistent execution. Competitive drive and precision don't exclude each other in your profile; they combine into a results-focused identity.",
+    de: "Ehrgeizig und organisiert — du erreichst Ziele durch harte Arbeit und konsequente Umsetzung. Wettbewerbsgeist und Präzision schließen sich in deinem Profil nicht aus; sie verbinden sich zu einer ergebnisorientierten Identität.",
+  },
+  disruptiveInnovator: {
+    hu: "Alacsony együttműködési hajlandóságod és magas nyitottságod kombinációja megkérdőjelező, önálló gondolkodót rajzol ki. Nem mész bele kompromisszumba pusztán a béke kedvéért – és ha megfelelő közegbe kerülsz, ez innovatív erővé válik.",
+    en: "Your combination of low agreeableness and high openness creates a challenging, independent thinker. You don't compromise for the sake of peace alone — and in the right environment, this becomes a force for innovation.",
+    de: "Deine Kombination aus geringer Verträglichkeit und hoher Offenheit zeichnet einen hinterfragenden, eigenständigen Denker. Du gehst keine Kompromisse allein um des Friedens willen ein — und im richtigen Umfeld wird das zu einer Kraft für Innovation.",
+  },
 };
 
 // ─── Block 3 – Rövid működési összkép (ne ismételje a 6/7 blokkokat) ─────────
@@ -161,6 +196,41 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     hu: "Az új megoldásokat rendszerben gondolod végig, nem ad hoc módon. Akkor tudsz nagyot alkotni, ha a kreativitás és a struktúra egyszerre van jelen.",
     en: "You think through new solutions in systems, not ad hoc. You do your best work when creativity and structure are both present.",
     de: "Neue Lösungen denkst du systemisch statt ad hoc. Deine beste Arbeit entsteht, wenn Kreativität und Struktur gleichzeitig vorhanden sind.",
+  },
+  resilientLeader: {
+    hu: "Stressz alatt is kiegyensúlyozottan maradsz, és az energiádat a kapcsolatokból merítve fenntartod azt. Olyan helyzetekben vagy erős, ahol egyszerre kell emberi jelenlét és stabilitás.",
+    en: "You stay balanced even under stress, drawing energy from relationships to sustain it. You are strongest in situations that call for both human presence and stability.",
+    de: "Du bleibst auch unter Stress ausgeglichen und schöpfst daraus Energie aus Beziehungen. Am stärksten bist du in Situationen, in denen sowohl menschliche Präsenz als auch Stabilität gefragt sind.",
+  },
+  calmExecution: {
+    hu: "Megbízhatóan és nyugodtan végzed el, amit vállalsz. Nem rendít meg a nyomás, és a feladatot következetesen zárod le.",
+    en: "You complete what you take on reliably and calmly. Pressure doesn't unsettle you, and you close tasks consistently.",
+    de: "Du erledigst, was du übernimmst, zuverlässig und ruhig. Druck bringt dich nicht aus der Ruhe, und du schließt Aufgaben konsequent ab.",
+  },
+  exploratoryAnalyst: {
+    hu: "Az ismeretlent kíváncsian és nyugodtan közelíted meg. Mások szoronganának az újdonságtól – te energiát nyersz belőle, miközben megőrzöd az elemzői fókuszt.",
+    en: "You approach the unknown with curiosity and calm. Others might feel anxious about novelty — you draw energy from it while maintaining analytical focus.",
+    de: "Du gehst dem Unbekannten mit Neugier und Ruhe entgegen. Andere könnten sich von Neuem beunruhigt fühlen — du schöpfst Energie daraus und behältst dabei den analytischen Fokus.",
+  },
+  organizedLeader: {
+    hu: "Emberekkel dolgozol és le is zársz. A csapatot mozgásban tartod, de mindig van kéznél terv és határidő.",
+    en: "You work with people and you close things out. You keep the team moving while always having a plan and a deadline at hand.",
+    de: "Du arbeitest mit Menschen und bringst Dinge zum Abschluss. Du hältst das Team in Bewegung, während du immer einen Plan und eine Frist parat hast.",
+  },
+  harmoniousConnector: {
+    hu: "Kapcsolatokat építesz, összetartod a csapatot, és az együttműködés természetes közeged. A harmónia fenntartása aktív erőfeszítés nélkül is sikerül.",
+    en: "You build relationships, hold the team together, and collaboration is your natural medium. Maintaining harmony comes naturally, without requiring active effort.",
+    de: "Du baust Beziehungen auf, hältst das Team zusammen, und Zusammenarbeit ist dein natürliches Medium. Harmonie zu erhalten gelingt dir natürlich, ohne aktiven Aufwand.",
+  },
+  performanceDriver: {
+    hu: "Ambiciózus és szervezett – kemény munkával, következetes végrehajtással érsz el célokat. A versenyszellem és a precizitás egyszerre jellemez.",
+    en: "Ambitious and organized — you achieve goals through hard work and consistent execution. Competitive drive and precision characterize you simultaneously.",
+    de: "Ehrgeizig und organisiert — du erreichst Ziele durch harte Arbeit und konsequente Umsetzung. Wettbewerbsgeist und Präzision kennzeichnen dich gleichzeitig.",
+  },
+  disruptiveInnovator: {
+    hu: "Nem félsz kikezdeni a status quót, és új irányokat keresel. A konfrontáció eszköz, nem akadály – az újdonság és az egyenességed egyszerre jelenik meg.",
+    en: "You are not afraid to challenge the status quo and seek new directions. Confrontation is a tool, not an obstacle — novelty and directness show up together in your profile.",
+    de: "Du scheust dich nicht, den Status quo in Frage zu stellen und neue Richtungen zu suchen. Konfrontation ist ein Werkzeug, kein Hindernis — Neuheit und Direktheit treten in deinem Profil gemeinsam auf.",
   },
 };
 
@@ -412,6 +482,125 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
       watchOut: "Schwierig wird es, wenn zu viele Richtungen offen bleiben und die Umsetzung den Fokus verliert. Arbeitet mit fixem Scope pro Iteration, priorisiertem Backlog und klaren Abschlusskriterien.",
     },
   },
+  resilientLeader: {
+    hu: {
+      strong: "Emberekkel intenzíven foglalkozó, változékony, magas elvárású szerepek – vezető, értékesítési vezető, kríziskoordinátor, változásmenedzsment.",
+      medium: "Projektvezetés, ügyfélkapcsolati szerepkörök, ahol a társas energia és a stressztűrés egyszerre számít.",
+      watchOut: "Nehéz lehet, ha a társas aktivitás nem jár valódi mélységgel, vagy ha az érzelmi stabilitásodat mások érzéketlenségként értelmezik. Érdemes tudatosan kommunikálni az empátiát is.",
+    },
+    en: {
+      strong: "Roles with intensive people work in volatile, high-expectation contexts — leadership, sales leadership, crisis coordination, change management.",
+      medium: "Project leadership, client-facing roles where social energy and stress tolerance both matter.",
+      watchOut: "It can be difficult if social activity lacks real depth, or if others interpret your emotional stability as insensitivity. Make a conscious effort to also communicate empathy.",
+    },
+    de: {
+      strong: "Rollen mit intensiver Menschenarbeit in volatilen, anspruchsvollen Kontexten — Führung, Vertriebsleitung, Krisenkoordination, Change Management.",
+      medium: "Projektleitung, kundenseitige Rollen, in denen soziale Energie und Stresstoleranz gleichermaßen zählen.",
+      watchOut: "Schwierig kann es sein, wenn sozialer Aktivität echte Tiefe fehlt oder andere deine emotionale Stabilität als Unempfindlichkeit deuten. Kommuniziere Empathie auch bewusst.",
+    },
+  },
+  calmExecution: {
+    hu: {
+      strong: "Magas komplexitású, hosszú futamidejű projektek, ahol egyszerre szükséges kitartás és érzelmi állóképesség – műveletek, programvezetés, minőségbiztosítás.",
+      medium: "Szabályozói, compliance vagy szakértői szerepek, ahol a megbízható, egyenletes teljesítmény tőke.",
+      watchOut: "Előfordulhat, hogy a precizitás és a nyugalom másokban azt a benyomást kelti, hogy nem érzékeled az érzelmi jeleket. Érdemes aktívan visszajelzést kérni a csapattól.",
+    },
+    en: {
+      strong: "High-complexity, long-cycle projects requiring both endurance and emotional resilience — operations, program management, quality assurance.",
+      medium: "Regulatory, compliance, or expert roles where reliable, steady performance is a competitive advantage.",
+      watchOut: "Your calm precision may sometimes give the impression you're not picking up on emotional signals. Actively seek feedback from your team to counter this.",
+    },
+    de: {
+      strong: "Hochkomplexe, langfristige Projekte, die sowohl Ausdauer als auch emotionale Belastbarkeit erfordern — Operations, Programmleitung, Qualitätssicherung.",
+      medium: "Regulierungs-, Compliance- oder Expertenrollen, in denen zuverlässige, gleichmäßige Leistung einen Wettbewerbsvorteil darstellt.",
+      watchOut: "Deine ruhige Präzision kann manchmal den Eindruck erwecken, du nimmst emotionale Signale nicht wahr. Hol dir aktiv Feedback vom Team, um dem entgegenzuwirken.",
+    },
+  },
+  exploratoryAnalyst: {
+    hu: {
+      strong: "Kutató, stratégiai elemző, innovátor szerepek, ahol az ismeretlen felfedezése mély, kitartó fókuszt igényel.",
+      medium: "Feltáró jellegű tanácsadói vagy termékstratégiai munkák is jól illeszkednek, ha van tér a mély gondolkodásra.",
+      watchOut: "Megterhelő lehet, ha az eredményre nyomás nehezedik mielőtt az elemzés valóban méllyé válhat. Érdemes ciklus elején rögzíteni az elvárt mélységet és határidőt.",
+    },
+    en: {
+      strong: "Research, strategic analysis, or innovation roles where discovering the unknown calls for deep, sustained focus.",
+      medium: "Exploratory consulting or product strategy work also fits well if there is room for deep thinking.",
+      watchOut: "It can be challenging when results are demanded before the analysis can truly deepen. Agree up front on the expected depth and timeline at the start of each cycle.",
+    },
+    de: {
+      strong: "Forschungs-, strategische Analyse- oder Innovatorrollen, in denen das Entdecken des Unbekannten tiefen, nachhaltigen Fokus erfordert.",
+      medium: "Explorative Beratungs- oder Produktstrategiearbeit passt ebenfalls gut, wenn Raum für tiefes Denken vorhanden ist.",
+      watchOut: "Es kann schwierig sein, wenn Ergebnisdruck entsteht, bevor die Analyse wirklich vertieft ist. Kläre zu Zyklusbeginn die erwartete Tiefe und den Zeitrahmen.",
+    },
+  },
+  organizedLeader: {
+    hu: {
+      strong: "Projektvezetés, csapatvezetés, operatív irányítás – ahol a strukturált végrehajtás és az emberi mozgósítás egyszerre elvárás.",
+      medium: "Értékesítési vagy ügyfélközpontú szerepkörökben is jól működsz, ha van kiszámítható folyamat mögötte.",
+      watchOut: "Nehéz lehet, ha a csapat kevésbé strukturáltan dolgozik, vagy a célok és határidők folyamatosan változnak. Érdemes minimális folyamat-keretet kialakítani, amibe a csapat bekapcsolódhat.",
+    },
+    en: {
+      strong: "Project management, team leadership, operational direction — where structured execution and human mobilization are expected together.",
+      medium: "Sales or customer-centric roles also work well if there is a predictable process underneath.",
+      watchOut: "It can be hard if the team works less structurally, or if goals and deadlines keep shifting. Build a minimal process frame the team can plug into.",
+    },
+    de: {
+      strong: "Projektmanagement, Teamleitung, operative Steuerung — wo strukturierte Ausführung und menschliche Mobilisierung gleichzeitig erwartet werden.",
+      medium: "Vertriebliche oder kundenzentrierte Rollen funktionieren ebenfalls gut, wenn ein vorhersehbarer Prozess dahintersteht.",
+      watchOut: "Schwierig kann es sein, wenn das Team weniger strukturiert arbeitet oder Ziele und Fristen sich laufend ändern. Bau einen minimalen Prozessrahmen auf, in den das Team eintauchen kann.",
+    },
+  },
+  harmoniousConnector: {
+    hu: {
+      strong: "Csapatépítés, facilitáció, ügyfélkapcsolat, coaching – ahol az összetartás, a bizalom és az energizálás a fő érték.",
+      medium: "Értékesítési, tárgyalási, partnerségi szerepek is erős közeg, ha van elegendő visszajelzés és valódi kapcsolat.",
+      watchOut: "Nehéz lehet, ha a konfliktusokat inkább harmonizálod, ahelyett hogy megoldanád – ez hosszú távon gyűlhet. Érdemes az asszertív kommunikációt tudatosan fejleszteni.",
+    },
+    en: {
+      strong: "Team building, facilitation, client relations, coaching — where cohesion, trust, and energizing others are the primary value.",
+      medium: "Sales, negotiation, and partnership roles are also strong contexts if there is enough genuine connection and feedback.",
+      watchOut: "It can be difficult if you tend to harmonize conflicts rather than resolve them — this can accumulate over time. Consciously develop assertive communication skills.",
+    },
+    de: {
+      strong: "Teamaufbau, Moderation, Kundenbeziehungen, Coaching — wo Zusammenhalt, Vertrauen und Energiespenden der Hauptwert sind.",
+      medium: "Vertrieb, Verhandlung und Partnerschaftsrollen sind ebenfalls starke Kontexte, wenn genügend echte Verbindung und Rückmeldung vorhanden sind.",
+      watchOut: "Schwierig kann es werden, wenn du Konflikte eher harmonisierst als löst — das kann sich mit der Zeit ansammeln. Entwickle bewusst assertive Kommunikationsfähigkeiten.",
+    },
+  },
+  performanceDriver: {
+    hu: {
+      strong: "Eredményalapú, versengő közegek – értékesítés, üzletfejlesztés, growth, teljesítményorientált vezető szerep.",
+      medium: "Tárgyalási, stratégiai, vállalkozói szerepek is jól illeszkednek, ha a célok mérhetőek és a siker egyértelmű.",
+      watchOut: "Az eredményfókusz időnként háttérbe szoríthatja a csapatdinamikát. Érdemes tudatosan fenntartani a kapcsolatokat, és rendszeres visszajelzési kultúrát kialakítani.",
+    },
+    en: {
+      strong: "Results-driven, competitive environments — sales, business development, growth, performance-oriented leadership.",
+      medium: "Negotiation, strategic, and entrepreneurial roles also fit well when goals are measurable and success is clearly defined.",
+      watchOut: "Results focus can sometimes overshadow team dynamics. Consciously invest in maintaining relationships and building a regular feedback culture.",
+    },
+    de: {
+      strong: "Ergebnisorientierte, wettbewerbsorientierte Umgebungen — Vertrieb, Geschäftsentwicklung, Wachstum, leistungsorientierte Führung.",
+      medium: "Verhandlungs-, strategische und unternehmerische Rollen passen ebenfalls gut, wenn Ziele messbar und Erfolg klar definiert sind.",
+      watchOut: "Ergebnisfokus kann manchmal die Teamdynamik in den Hintergrund drängen. Investiere bewusst in die Pflege von Beziehungen und baue eine regelmäßige Feedbackkultur auf.",
+    },
+  },
+  disruptiveInnovator: {
+    hu: {
+      strong: "Disruption-orientált szerepek – innovációs vezető, vállalkozó, stratégiai tanácsadó, ahol a konvenció megkérdőjelezése értéket jelent.",
+      medium: "Szakértői tanácsadói, kutatói pozíciók is erős közeg, ha van elegendő autonómiád és a kritikus gondolkodás elvárás.",
+      watchOut: "Nehéz lehet, ha a csapat erős harmónia-elvárással dolgozik, vagy ha a konfrontáció csapatkohéziót rombol. Érdemes a visszajelzést konstruktívan csatornázni, ne ellenük, hanem az ötletért.",
+    },
+    en: {
+      strong: "Disruption-oriented roles — innovation leader, entrepreneur, strategic advisor, where challenging convention creates value.",
+      medium: "Expert consulting and research positions are also a strong fit if you have sufficient autonomy and critical thinking is the norm.",
+      watchOut: "It can be difficult if the team operates under strong harmony expectations, or if confrontation damages team cohesion. Channel feedback constructively — against ideas, not people.",
+    },
+    de: {
+      strong: "Disruptions-orientierte Rollen — Innovationsleiter, Unternehmer, strategischer Berater, wo das Hinterfragen von Konventionen Wert schafft.",
+      medium: "Expertiseberatung und Forschungspositionen sind ebenfalls ein starkes Match, wenn du genug Autonomie hast und kritisches Denken die Norm ist.",
+      watchOut: "Schwierig kann es sein, wenn das Team unter starken Harmonieerwartungen arbeitet oder Konfrontation den Zusammenhalt beschädigt. Kanalisiere Feedback konstruktiv — gegen Ideen, nicht gegen Menschen.",
+    },
+  },
 };
 
 // ─── Block 4 – Környezeti preferencia táblázat ────────────────────────────────
@@ -567,4 +756,278 @@ export const BLOCK4_EMPTY: LocalizedText = {
   hu: "A pontozás alapján nem rajzolódik ki egyértelmű irány – a dimenziók többsége közepes sávban van.",
   en: "Based on your scores, no clear direction emerges — most dimensions fall in the medium range.",
   de: "Basierend auf deinen Werten zeichnet sich keine klare Richtung ab — die meisten Dimensionen liegen im mittleren Bereich.",
+};
+
+// ─── Solo dim narratives (Block 3 ha nincs tension pár) ──────────────────────
+
+export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
+  H_high: {
+    hu: "Az etikai integritás és az őszinteség az egyik legdominánsabb jellemződ. Igazra törekszik és hiteles akarsz lenni – ez a munkahelyi kapcsolataidban is erős, bizalomépítő alapot ad.",
+    en: "Ethical integrity and honesty are among your most dominant traits. You seek truthfulness and strive to be authentic — this provides a strong, trust-building foundation in your professional relationships.",
+    de: "Ethische Integrität und Ehrlichkeit gehören zu deinen dominantesten Merkmalen. Du strebst nach Wahrhaftigkeit und möchtest authentisch sein — das gibt dir eine starke, vertrauensbildende Grundlage in deinen beruflichen Beziehungen.",
+  },
+  H_low: {
+    hu: "Ambiciózus és stratégiai gondolkodású, aki nem riad vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő – a versengés és az önérvényesítés természetes közeg számodra.",
+    en: "Ambitious and strategic, you don't shy away from challenges or competition. Achieving goals is what drives you — competition and self-assertion are your natural environment.",
+    de: "Ehrgeizig und strategisch schreckt du nicht vor Herausforderungen oder Wettbewerb zurück. Ziele zu erreichen ist dein Antrieb — Konkurrenz und Selbstbehauptung sind dein natürliches Umfeld.",
+  },
+  E_high: {
+    hu: "Az érzelmi érzékenység az egyik meghatározó jellemződ. Empátiás és könnyen reagálsz a körülötted zajló eseményekre – ez értéket ad kapcsolataidnak, de igényli a megfelelő, támogató keretet.",
+    en: "Emotional sensitivity is one of your defining traits. You are empathetic and respond readily to events around you — this adds value to your relationships but calls for a supportive, well-structured environment.",
+    de: "Emotionale Sensibilität ist eines deiner prägenden Merkmale. Du bist einfühlsam und reagierst leicht auf Ereignisse um dich herum — das bereichert deine Beziehungen, erfordert aber einen unterstützenden, gut strukturierten Rahmen.",
+  },
+  E_low: {
+    hu: "Kiemelkedő érzelmi stabilitás jellemez. Nyomás és bizonytalanság alatt is megőrzöd az egyensúlyodat – ez ritka és nagy értékű képesség változékony közegekben.",
+    en: "You are characterized by outstanding emotional stability. You maintain your balance even under pressure and uncertainty — a rare and highly valuable ability in volatile environments.",
+    de: "Du zeichnest dich durch herausragende emotionale Stabilität aus. Auch unter Druck und Unsicherheit bewahrst du dein Gleichgewicht — eine seltene und wertvolle Fähigkeit in volatilen Umgebungen.",
+  },
+  X_high: {
+    hu: "Erősen extravertált vagy – a kapcsolatokból és interakciókból nyersz energiát. Természetes elem a társas tér, és aktívan alakítod a közeg dinamikáját.",
+    en: "You are strongly extraverted — you draw energy from relationships and interactions. Social space is your natural element, and you actively shape the dynamics around you.",
+    de: "Du bist stark extrovertiert — du schöpfst Energie aus Beziehungen und Interaktionen. Der soziale Raum ist dein natürliches Element, und du gestaltest die Dynamiken um dich herum aktiv.",
+  },
+  X_low: {
+    hu: "Introvertált beállítottság jellemez – önálló vagy kiscsoportos munkában töltöd fel az energiáidat. A mély fókusz és az autonómia az erősséged tere.",
+    en: "You have an introverted disposition — you recharge through independent or small-group work. Deep focus and autonomy are where your strengths unfold.",
+    de: "Du bist introvertiert — du tankst Energie durch eigenständige oder kleingruppenbasierte Arbeit. Tiefer Fokus und Autonomie sind der Raum, in dem deine Stärken sich entfalten.",
+  },
+  A_high: {
+    hu: "Együttműködő, alkalmazkodó és kapcsolatorientált. A csapatkohézió és a harmónia természetes értéked – aktívan dolgozol a jó kapcsolatok fenntartásán.",
+    en: "Cooperative, adaptable, and relationship-oriented. Team cohesion and harmony are values that come naturally to you — you actively work at maintaining good relationships.",
+    de: "Kooperativ, anpassungsfähig und beziehungsorientiert. Teamkohäsion und Harmonie sind Werte, die dir natürlich liegen — du arbeitest aktiv daran, gute Beziehungen zu pflegen.",
+  },
+  A_low: {
+    hu: "Egyenes, elvhű és önálló. A döntéseket nem a béke, hanem az igazság alapján hozod – ez erős véleményvezér és tárgyalópartner-profilt ad.",
+    en: "Direct, principled, and independent. You make decisions based on truth, not comfort — this creates a strong opinion-leader and negotiating-partner profile.",
+    de: "Direkt, prinzipientreu und eigenständig. Du triffst Entscheidungen nach Wahrheit, nicht nach Bequemlichkeit — das schafft ein starkes Meinungsführer- und Verhandlungspartner-Profil.",
+  },
+  C_high: {
+    hu: "Szervezett, megbízható és következetes – a lelkiismeretesség erős bázist ad a teljesítményhez. A vállalt feladatokat gondosan kivitelezed, és értékeled a tiszta struktúrát.",
+    en: "Organized, reliable, and consistent — conscientiousness provides a strong foundation for performance. You execute your commitments carefully and value clear structure.",
+    de: "Organisiert, zuverlässig und konsequent — Gewissenhaftigkeit bildet eine starke Grundlage für Leistung. Du führst deine Verpflichtungen sorgfältig aus und schätzt klare Struktur.",
+  },
+  C_low: {
+    hu: "Rugalmas és adaptív, inkább intuitív irányítású. A spontán megközelítés és az improvizáció az erősségeid – a folyamatos struktúra kevésbé motivál.",
+    en: "Flexible and adaptive, you tend to operate more intuitively. Spontaneous approaches and improvisation are your strengths — rigid ongoing structure motivates you less.",
+    de: "Flexibel und anpassungsfähig, du neigst eher zu intuitivem Vorgehen. Spontane Ansätze und Improvisation sind deine Stärken — starre, fortlaufende Struktur motiviert dich weniger.",
+  },
+  O_high: {
+    hu: "Az újdonságra és a komplex gondolkodásra nyitott, kíváncsi személyiség. Az ismeretlen nem riaszt, hanem vonz – az innováció, a kreativitás és a feltárás természetes közeged.",
+    en: "Curious and open to novelty and complex thinking. The unknown doesn't discourage you — it draws you in. Innovation, creativity, and discovery are your natural domains.",
+    de: "Neugierig und offen für Neues und komplexes Denken. Das Unbekannte schreckt dich nicht — es zieht dich an. Innovation, Kreativität und Entdeckung sind deine natürlichen Bereiche.",
+  },
+  O_low: {
+    hu: "Kiszámítható, konkrét és pragmatikus beállítottságú. A bevált megoldásokat részesíted előnyben – a stabilitás, a megbízhatóság és az ismert módszerek az erősséged.",
+    en: "Predictable, concrete, and pragmatic. You prefer proven solutions — stability, reliability, and familiar methods are your strengths.",
+    de: "Vorhersehbar, konkret und pragmatisch. Du bevorzugst bewährte Lösungen — Stabilität, Zuverlässigkeit und vertraute Methoden sind deine Stärken.",
+  },
+};
+
+// ─── Solo dim role texts (Block 5 ha nincs tension pár) ──────────────────────
+
+export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
+  H_high: {
+    hu: {
+      strong: "Etikai követelményszintű, magas bizalomigényű pozíciók – compliance, etikai tanácsadás, nonprofit, közszolgálat, szabályozói funkciók.",
+      medium: "Bármely vezető vagy szakértői szerep, ahol az integritás és az átláthatóság nem csak kommunikáció, hanem tényleges elvárás.",
+      watchOut: "Megterhelő lehet, ha a szervezeti kultúra más értékeket követ a valóságban. Érdemes már az elején etikai alapelveket rögzíteni közösen.",
+    },
+    en: {
+      strong: "Positions requiring ethical standards and high trust — compliance, ethics consulting, nonprofit, public service, regulatory functions.",
+      medium: "Any leadership or expert role where integrity and transparency are genuine expectations, not just communication.",
+      watchOut: "It can be draining if the organizational culture follows different values in practice. Define shared ethical principles at the start.",
+    },
+    de: {
+      strong: "Positionen mit ethischen Anforderungen und hohem Vertrauensbedarf — Compliance, Ethikberatung, Nonprofit, öffentlicher Dienst, Regulierungsfunktionen.",
+      medium: "Jede Führungs- oder Expertenrolle, in der Integrität und Transparenz echte Erwartungen sind und nicht nur Kommunikation.",
+      watchOut: "Belastend kann es sein, wenn die Organisationskultur in der Praxis andere Werte lebt. Legt gemeinsam ethische Grundprinzipien von Anfang an fest.",
+    },
+  },
+  H_low: {
+    hu: {
+      strong: "Eredményfókuszú, versengő közegek – üzletfejlesztés, értékesítés, growth, vállalkozói szerepek, tárgyalásintenzív pozíciók.",
+      medium: "Projektvezető, stratégiai tanácsadó, vezető szerep – ahol az önbizalom és az ambíció erőforrás, nem korlát.",
+      watchOut: "Hosszú távon megterhelő lehet, ha az ambíció csapatdinamikát rombol. Érdemes a versengést inkább belső célokra irányítani.",
+    },
+    en: {
+      strong: "Results-driven, competitive settings — business development, sales, growth, entrepreneurial roles, negotiation-heavy positions.",
+      medium: "Project manager, strategic advisor, leadership role — where self-confidence and ambition are assets, not limitations.",
+      watchOut: "Over time it can become draining if ambition damages team dynamics. Direct competitive energy toward internal goals rather than against people.",
+    },
+    de: {
+      strong: "Ergebnisorientierte, wettbewerbsorientierte Umfelder — Geschäftsentwicklung, Vertrieb, Wachstum, unternehmerische Rollen, verhandlungsintensive Positionen.",
+      medium: "Projektleiter, strategischer Berater, Führungsrolle — wo Selbstvertrauen und Ehrgeiz Ressourcen sind, keine Hindernisse.",
+      watchOut: "Langfristig kann es zermürbend werden, wenn Ehrgeiz die Teamdynamik belastet. Richte Wettbewerbsenergie lieber auf interne Ziele aus, nicht gegen Personen.",
+    },
+  },
+  E_high: {
+    hu: {
+      strong: "Támogató, emberközeli szerepek – HR, coaching, mentoring, egészségügyi vagy szociális szféra, ügyfélélmény-fókuszú pozíciók.",
+      medium: "Vevőkapcsolat, tárgyalás, oktatás – ahol az empatikus jelenlét és az érzelmi hangolódás értéket teremt.",
+      watchOut: "Magas nyomású, kiszámíthatatlan környezet tartósan megterhelő lehet. Tervezz be rendszeres regenerációs időt és alakíts ki stresszkezelési rutinokat.",
+    },
+    en: {
+      strong: "Supportive, people-centered roles — HR, coaching, mentoring, healthcare or social sector, customer-experience-focused positions.",
+      medium: "Customer relations, negotiation, teaching — where empathic presence and emotional attunement create value.",
+      watchOut: "High-pressure, unpredictable environments can be chronically draining. Schedule regular recovery time and establish stress management routines.",
+    },
+    de: {
+      strong: "Unterstützende, menschenzentrierte Rollen — HR, Coaching, Mentoring, Gesundheits- oder Sozialbereich, kundenerlebnisfokussierte Positionen.",
+      medium: "Kundenbeziehungen, Verhandlung, Unterrichten — wo empathische Präsenz und emotionale Abstimmung Wert schaffen.",
+      watchOut: "Hochdruckvolle, unvorhersehbare Umgebungen können dauerhaft zermürbend sein. Plane regelmäßige Erholungszeiten ein und entwickle Stressbewältigungsroutinen.",
+    },
+  },
+  E_low: {
+    hu: {
+      strong: "Kríziskezelés, versenyhelyzetek, nagy nyomású döntési szerepek – ahol az érzelmi stabilitás az egyik legalapvetőbb tőke.",
+      medium: "Változásvezetői, transzformációs szerepek, startupkörnyezet – ahol a bizonytalanság nem akadály, hanem munkaanyag.",
+      watchOut: "Előfordulhat, hogy a stabilitásodat a csapat érzéketlenségként értelmezi. Érdemes tudatosan kommunikálni az empátiát, nemcsak a semlegességet.",
+    },
+    en: {
+      strong: "Crisis management, competitive contexts, high-pressure decision-making roles — where emotional stability is one of the most fundamental assets.",
+      medium: "Change leadership, transformation roles, startup environments — where uncertainty is not an obstacle but the working material.",
+      watchOut: "Others may sometimes read your stability as insensitivity. Consciously communicate empathy, not just neutrality.",
+    },
+    de: {
+      strong: "Krisenmanagement, wettbewerbsintensive Kontexte, Entscheidungsrollen unter hohem Druck — wo emotionale Stabilität eines der grundlegendsten Kapital ist.",
+      medium: "Change-Leadership, Transformationsrollen, Startup-Umgebungen — wo Unsicherheit kein Hindernis ist, sondern das Arbeitsmaterial.",
+      watchOut: "Andere könnten deine Stabilität manchmal als Unempfindlichkeit deuten. Kommuniziere Empathie bewusst, nicht nur Neutralität.",
+    },
+  },
+  X_high: {
+    hu: {
+      strong: "Emberközeli, látható, kapcsolati fókuszú szerepek – vezető, értékesítés, közvetlen ügyfélmunka, facilitáció, közösségépítés.",
+      medium: "Projektvezető, változáskezelő – ahol az aktiválás, motiválás és mozgósítás a fő feladat.",
+      watchOut: "Tartós izolált munka vagy minimális emberi interakció demotiváló és kimerítő lehet. Gondoskodj rendszeres emberi kontaktról a munkarendedben.",
+    },
+    en: {
+      strong: "People-facing, visible, relationship-focused roles — leadership, sales, direct client work, facilitation, community building.",
+      medium: "Project management, change management — where activating, motivating, and mobilizing people is the primary task.",
+      watchOut: "Sustained isolated work or minimal human interaction can be demotivating and draining. Build regular human contact into your work routine.",
+    },
+    de: {
+      strong: "Menschennahe, sichtbare, beziehungsorientierte Rollen — Führung, Vertrieb, direkte Kundenkontakt, Moderation, Gemeinschaftsaufbau.",
+      medium: "Projektmanagement, Change Management — wo Aktivieren, Motivieren und Mobilisieren von Menschen die Hauptaufgabe ist.",
+      watchOut: "Anhaltende isolierte Arbeit oder minimaler menschlicher Kontakt kann demotivierend und erschöpfend sein. Baue regelmäßigen menschlichen Kontakt in deinen Arbeitsalltag ein.",
+    },
+  },
+  X_low: {
+    hu: {
+      strong: "Mély fókuszt igénylő, autonóm munkakörök – elemzés, fejlesztés, kutatás, stratégia, technikai szakértői pozíciók.",
+      medium: "Kiscsapatos együttműködések, mentoring, aszinkron projektek is erős közeg, ha van elegendő önálló tér.",
+      watchOut: "Reprezentatív, láthatóság-igényes szerepek tartósan kimerítők lehetnek. Érdemes határokat húzni a nyilvános szereplések köré, és tudatosan regenerálódni.",
+    },
+    en: {
+      strong: "Deep-focus, autonomous roles — analysis, development, research, strategy, technical expert positions.",
+      medium: "Small-team collaboration, mentoring, asynchronous projects are also a strong fit if enough independent space is preserved.",
+      watchOut: "Representative, high-visibility roles can be chronically draining. Set clear boundaries around public appearances and recharge deliberately.",
+    },
+    de: {
+      strong: "Tiefenfokus-, autonome Rollen — Analyse, Entwicklung, Forschung, Strategie, technische Expertenpositionen.",
+      medium: "Kleingruppenarbeit, Mentoring, asynchrone Projekte sind ebenfalls ein starkes Match, wenn genug eigenständiger Raum erhalten bleibt.",
+      watchOut: "Repräsentative, sichtbarkeitsintensive Rollen können chronisch erschöpfend sein. Setze klare Grenzen um öffentliche Auftritte und erhol dich bewusst.",
+    },
+  },
+  A_high: {
+    hu: {
+      strong: "Együttműködési és harmonizációs szerepek – facilitátor, csapatépítő, HR, tanácsadó, mediátor, ügyfélmenedzsment.",
+      medium: "Long-term partnerségi pozíciók, vevőkapcsolat – ahol a bizalom és a stabilitás döntő tényező az eredményben.",
+      watchOut: "Ahol direktebb konfrontációra lenne szükség, hajlamos lehetsz elkerülni azt – ez konfliktusok felhalmozódásához vezethet. Érdemes az asszertív kommunikációt tudatosan fejleszteni.",
+    },
+    en: {
+      strong: "Collaborative and harmonizing roles — facilitator, team builder, HR, advisor, mediator, client management.",
+      medium: "Long-term partnership positions, customer relationship management — where trust and stability are decisive factors in outcomes.",
+      watchOut: "Where more direct confrontation is needed, you may tend to avoid it — this can lead to conflict accumulation. Consciously develop assertive communication.",
+    },
+    de: {
+      strong: "Kooperative und harmonisierende Rollen — Moderator, Teamaufbau, HR, Berater, Mediator, Kundenmanagement.",
+      medium: "Langfristige Partnerschaftspositionen, Kundenbeziehungsmanagement — wo Vertrauen und Stabilität entscheidende Faktoren für Ergebnisse sind.",
+      watchOut: "Wo direktere Konfrontation nötig wäre, neigst du möglicherweise dazu, sie zu vermeiden — das kann zur Ansammlung von Konflikten führen. Entwickle assertive Kommunikation bewusst.",
+    },
+  },
+  A_low: {
+    hu: {
+      strong: "Tárgyalások, vitás helyzetek, versenykörnyezetek – kritikus visszajelzést igénylő szakértői, jogi, stratégiai vagy audit szerepek.",
+      medium: "Egyéni szakértői, vezető, stratégiai tanácsadói pozíciók, ahol az igazság kimondása több értéket teremt, mint a harmónia fenntartása.",
+      watchOut: "A konfrontatív stílus csapatdinamikát feszíthet. Érdemes a visszajelzést strukturáltan és konstruktívan adni – ötletek és helyzetek ellen, ne személyek ellen.",
+    },
+    en: {
+      strong: "Negotiations, disputes, competitive environments — expert, legal, strategic, or audit roles requiring critical feedback.",
+      medium: "Individual expert, leadership, or strategic advisor positions where speaking truth creates more value than maintaining harmony.",
+      watchOut: "A confrontational style can put strain on team dynamics. Structure and deliver feedback constructively — against ideas and situations, not against people.",
+    },
+    de: {
+      strong: "Verhandlungen, Streitigkeiten, wettbewerbsorientierte Umgebungen — Experten-, Rechts-, Strategie- oder Auditrollen, die kritisches Feedback erfordern.",
+      medium: "Einzelne Experten-, Führungs- oder strategische Beraterposition, wo die Wahrheit zu sagen mehr Wert schafft als Harmonie zu wahren.",
+      watchOut: "Ein konfrontativer Stil kann Teamdynamiken belasten. Strukturiere und liefere Feedback konstruktiv — gegen Ideen und Situationen, nicht gegen Personen.",
+    },
+  },
+  C_high: {
+    hu: {
+      strong: "Komplex, hosszabb futamidejű projektek – műveletek, programvezetés, minőségbiztosítás, szabályzati és compliance funkciók.",
+      medium: "Bármely strukturált szakértői szerep, ahol a precizitás, az elmélyülés és a következetes kivitelezés elvárás.",
+      watchOut: "Megterhelő lehet, ha a feladatok rendre nyitva maradnak, vagy ha a döntések tartósan bizonytalanok. Érdemes expliciten definiálni, mi számít lezártnak és mikorra.",
+    },
+    en: {
+      strong: "Complex, longer-cycle projects — operations, program management, quality assurance, policy and compliance functions.",
+      medium: "Any structured expert role where precision, depth, and consistent execution are expected.",
+      watchOut: "It can be draining if tasks consistently remain open or decisions stay chronically uncertain. Explicitly define what counts as closed and by when.",
+    },
+    de: {
+      strong: "Komplexe, längerfristige Projekte — Operations, Programmmanagement, Qualitätssicherung, Richtlinien- und Compliance-Funktionen.",
+      medium: "Jede strukturierte Expertenrolle, in der Präzision, Tiefe und konsequente Ausführung erwartet werden.",
+      watchOut: "Es kann zermürbend sein, wenn Aufgaben konsequent offen bleiben oder Entscheidungen dauerhaft ungewiss sind. Definiere explizit, was als abgeschlossen gilt und bis wann.",
+    },
+  },
+  C_low: {
+    hu: {
+      strong: "Dinamikus, kísérletezős, kreatív közegek – startup, kreatív ipar, agilis csapatok, ahol a rugalmasság és az adaptivitás értékes.",
+      medium: "Üzletfejlesztési, explorációs, ötletgeneráló szerepek, ahol a rugalmas iteráció és a gyors váltás a cél.",
+      watchOut: "Hosszabb határidős, részletes kivitelezést igénylő feladatok megterhelők lehetnek. Érdemes párosítani magad valakivel, aki a strukturált végrehajtást viszi.",
+    },
+    en: {
+      strong: "Dynamic, experimental, creative environments — startups, creative industries, agile teams where flexibility and adaptability create value.",
+      medium: "Business development, exploratory, or idea-generation roles where flexible iteration and quick pivots are the goal.",
+      watchOut: "Long-deadline, detail-intensive execution can be draining. Pair yourself with someone who carries the structured execution side.",
+    },
+    de: {
+      strong: "Dynamische, experimentelle, kreative Umgebungen — Startups, Kreativwirtschaft, agile Teams, wo Flexibilität und Anpassungsfähigkeit Wert schaffen.",
+      medium: "Geschäftsentwicklung, explorative oder Ideengenerierungsrollen, wo flexible Iteration und schnelle Schwenks das Ziel sind.",
+      watchOut: "Aufgaben mit langen Fristen und detailintensiver Ausführung können zermürbend sein. Paare dich mit jemandem, der die strukturierte Ausführungsseite übernimmt.",
+    },
+  },
+  O_high: {
+    hu: {
+      strong: "Kreatív és innovatív szerepkörök – stratéga, kutató, designer, vállalkozó, ahol az új gondolatok és a komplex kérdések értékesek.",
+      medium: "Oktatás, tanácsadás, coaching – ahol a komplex gondolkodás, a kíváncsiság és a perspektívaváltás értéket teremt.",
+      watchOut: "A befejezés és a fókuszált kivitelezés időnként nehezebb lehet, mint a felfedezés. Érdemes időhatáros, iteratív munkamódszert alkalmazni és a lezárási pontokat előre rögzíteni.",
+    },
+    en: {
+      strong: "Creative and innovative roles — strategist, researcher, designer, entrepreneur, where new ideas and complex questions are valued.",
+      medium: "Teaching, consulting, coaching — where complex thinking, curiosity, and perspective-shifting create value.",
+      watchOut: "Finishing and focused execution can sometimes be harder than exploring. Use time-boxed, iterative work methods and define closure points in advance.",
+    },
+    de: {
+      strong: "Kreative und innovative Rollen — Stratege, Forscher, Designer, Unternehmer, wo neue Ideen und komplexe Fragen geschätzt werden.",
+      medium: "Unterrichten, Beratung, Coaching — wo komplexes Denken, Neugier und Perspektivenwechsel Wert schaffen.",
+      watchOut: "Abschließen und fokussierte Ausführung können manchmal schwieriger sein als Erkunden. Nutze zeitlich begrenzte, iterative Arbeitsmethoden und definiere Abschlussmarker im Voraus.",
+    },
+  },
+  O_low: {
+    hu: {
+      strong: "Végrehajtó, operatív, implementációs szerepek – ahol a bevált módszerek, a megbízható kivitelezés és a stabilitás a fő értékek.",
+      medium: "Rendszerszintű problémamegoldás, optimalizálás, üzemeltetési fejlesztések – ahol a tapasztalat és a stabilitás az eredmény alapja.",
+      watchOut: "Radikálisan új ötletekre és kísérleti irányokra nyomás esetén feszültség keletkezhet. Érdemes fokozatos, kontrollált közelítést alkalmazni az ismeretlen területekhez.",
+    },
+    en: {
+      strong: "Execution, operational, and implementation roles — where proven methods, reliable delivery, and stability are the primary values.",
+      medium: "System-level problem solving, optimization, operational improvements — where experience and stability are the foundation of results.",
+      watchOut: "Pressure toward radically new ideas or experimental directions can create friction. Approach unfamiliar territory with a gradual, controlled method.",
+    },
+    de: {
+      strong: "Ausführungs-, operative und Implementierungsrollen — wo bewährte Methoden, zuverlässige Lieferung und Stabilität die Hauptwerte sind.",
+      medium: "Systemseitige Problemlösung, Optimierung, operative Verbesserungen — wo Erfahrung und Stabilität die Grundlage der Ergebnisse sind.",
+      watchOut: "Druck in Richtung radikal neuer Ideen oder experimenteller Richtungen kann Spannungen erzeugen. Nähere dich unbekanntem Terrain mit einem schrittweisen, kontrollierten Ansatz.",
+    },
+  },
 };
