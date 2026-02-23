@@ -53,6 +53,7 @@ export default async function ResearchPage() {
 
   const sections = [
     { title: "research.introTitle", body: "research.introBody" },
+    { title: "research.goalsTitle", items: "research.goalsItems" },
     { title: "research.designTitle", body: "research.designBody" },
     { title: "research.flowTitle", items: "research.flowItems" },
     { title: "research.instrumentsTitle", items: "research.instrumentsItems" },

@@ -277,9 +277,9 @@ const translations = {
       de: "Forschungsmethodik",
     },
     subtitle: {
-      hu: "Áttekintés a kutatás menetéről, eszközeiről és az adatkezelés alapelveiről.",
-      en: "Overview of the study flow, instruments, and core data handling principles.",
-      de: "Überblick über Ablauf, Instrumente und die Grundsätze der Datenverarbeitung.",
+      hu: "Áttekintés a kutatás céljairól, menetéről, eszközeiről és az adatkezelés alapelveiről.",
+      en: "Overview of the research goals, study flow, instruments, and core data handling principles.",
+      de: "Überblick über Forschungsziele, Ablauf, Instrumente und die Grundsätze der Datenverarbeitung.",
     },
     introTitle: {
       hu: "Miért készül a kutatás?",
@@ -287,9 +287,19 @@ const translations = {
       de: "Warum diese Studie?",
     },
     introBody: {
-      hu: "A Trita célja, hogy összehasonlíthatóvá tegye a személyiségteszteket önértékelés és külső visszajelzés alapján. A kutatás a HEXACO és a Big Five (BFAS) modellek eredményeinek összevetésére fókuszál.",
-      en: "Trita aims to compare personality assessments using self-ratings and observer feedback. The study focuses on contrasting HEXACO and Big Five (BFAS) results.",
-      de: "Trita vergleicht Persönlichkeitstests anhand von Selbst- und Fremdeinschätzungen. Der Fokus liegt auf dem Vergleich von HEXACO und Big Five (BFAS).",
+      hu: "A Trita egy kutatási fázisban lévő platform, amelyet személyiséglélektani adatgyűjtésre fejlesztettem.",
+      en: "Trita is a platform in its research phase, developed for collecting personality psychology data.",
+      de: "Trita ist eine Plattform in der Forschungsphase, die für die Erhebung persönlichkeitspsychologischer Daten entwickelt wurde.",
+    },
+    goalsTitle: {
+      hu: "Kutatási célok",
+      en: "Research goals",
+      de: "Forschungsziele",
+    },
+    goalsItems: {
+      hu: "Megvizsgálni, mennyire egyezik az önértékelés és a külső (observer) visszajelzés dimenziónként.|Összehasonlítani a HEXACO és a Big Five modell eredményeit ugyanazon kitöltők körében.|Feltárni, mennyire tartják a résztvevők relevánsnak a kapott személyiségprofilt – különösen a munka világára vonatkozó következtetéseket.|Megvizsgálni, hogy a kapcsolat típusa és időtartama befolyásolja-e az observer értékelés pontosságát.|Feltárni, hogy munkahelyi kapcsolatokban (kolléga párok) szisztematikusan eltér-e az önkép és a mások által látott kép – mint előzetes adat a csapatdinamikai kutatás következő fázisához.",
+      en: "Examine the degree of agreement between self-assessment and observer ratings across personality dimensions.|Compare HEXACO and Big Five model results within the same participant group.|Explore how relevant participants find their personality profile – especially conclusions applied to the workplace.|Investigate whether relationship type and duration moderate observer rating accuracy.|Explore colleague pairs as preliminary data for the team dynamics research phase.",
+      de: "Untersuchen, inwieweit Selbst- und Fremdeinschätzung auf Dimensionsebene übereinstimmen.|HEXACO- und Big-Five-Ergebnisse innerhalb derselben Stichprobe vergleichen.|Erfassen, wie relevant die Teilnehmenden ihr Persönlichkeitsprofil einschätzen – insbesondere im Arbeitskontext.|Untersuchen, ob Beziehungstyp und -dauer die Genauigkeit der Fremdeinschätzung moderieren.|Kollegenpaare als explorative Vorläuferdaten für die nächste Phase der Teamdynamikforschung untersuchen.",
     },
     designTitle: {
       hu: "Kutatási design",
@@ -297,9 +307,9 @@ const translations = {
       de: "Studiendesign",
     },
     designBody: {
-      hu: "Online, kérdőíves kutatás. Egy felhasználó saját kitöltést végez, majd opcionálisan ismerősöket hívhat meg, akik observer (külső) értékelést adnak.",
-      en: "Online, questionnaire-based study. Each participant completes a self-assessment and can optionally invite observers for external ratings.",
-      de: "Online-Fragebogenstudie. Teilnehmende füllen eine Selbsteinschätzung aus und können optional Beobachter für Fremdeinschätzungen einladen.",
+      hu: "Online, kérdőíves pilot kutatás. Minden résztvevő egyet tölt ki véletlenszerűen kiosztott önértékelő tesztből (HEXACO vagy Big Five), majd opcionálisan ismerősöket hívhat meg külső (observer) értékelésre.",
+      en: "Online, questionnaire-based pilot study. Each participant completes one randomly assigned self-assessment (either HEXACO or Big Five), and can optionally invite acquaintances for external (observer) ratings.",
+      de: "Online-Fragebogenstudie in der Pilotphase. Jede teilnehmende Person füllt einen zufällig zugewiesenen Selbsteinschätzungsfragebogen aus (HEXACO oder Big Five) und kann optional Bekannte als Beobachtungspersonen einladen.",
     },
     flowTitle: {
       hu: "A kutatás menete",
@@ -307,9 +317,9 @@ const translations = {
       de: "Ablauf",
     },
     flowItems: {
-      hu: "Regisztráció és nyelvválasztás.|Önértékelő kérdőív(ek) kitöltése.|Megfigyelők meghívása (opcionális).|Eredmények megjelenítése a dashboardon.",
-      en: "Sign up and choose a language.|Complete self-assessment questionnaire(s).|Invite observers (optional).|View results on the dashboard.",
-      de: "Registrierung und Sprachauswahl.|Selbsteinschätzung ausfüllen.|Beobachter einladen (optional).|Ergebnisse im Dashboard ansehen.",
+      hu: "Regisztráció és önkéntes hozzájárulás megadása.|Demográfiai adatok rögzítése (onboarding).|Önértékelő kérdőív kitöltése (HEXACO vagy Big Five – véletlenszerűen kiosztva).|Személyiségprofil megtekintése a dashboardon.|Rövid kutatási visszajelzés kitöltése.|Megfigyelők meghívása (opcionális) – értesítést küldünk, ha elkészülnek.",
+      en: "Registration and informed consent.|Demographic onboarding (age, gender, education, occupation).|Self-assessment questionnaire (HEXACO or Big Five – randomly assigned).|View personality profile on the dashboard.|Complete a short research feedback survey.|Invite observers (optional) – you'll receive an email notification when they finish.",
+      de: "Registrierung und informierte Einwilligung.|Demografisches Onboarding (Alter, Geschlecht, Bildung, Berufsstatus).|Selbsteinschätzungsfragebogen (HEXACO oder Big Five – zufällig zugeteilt).|Persönlichkeitsprofil im Dashboard ansehen.|Kurze Forschungs-Feedback-Befragung ausfüllen.|Beobachtungspersonen einladen (optional) – du erhältst eine E-Mail, wenn sie fertig sind.",
     },
     instrumentsTitle: {
       hu: "Mérőeszközök",
@@ -317,9 +327,9 @@ const translations = {
       de: "Instrumente",
     },
     instrumentsItems: {
-      hu: "HEXACO-PI-R kérdésbank (önértékelés).|Big Five Aspect Scales (BFAS) kérdésbank.|Observer változatok (külső értékelés).",
-      en: "HEXACO-PI-R item set (self-report).|Big Five Aspect Scales (BFAS) item set.|Observer versions (external ratings).",
-      de: "HEXACO-PI-R Fragenkatalog (Selbstbericht).|Big Five Aspect Scales (BFAS) Fragenkatalog.|Beobachter-Versionen (Fremdeinschätzung).",
+      hu: "HEXACO-PI-R kérdésbank (önértékelő és observer változat).|Big Five Aspect Scales (BFAS) kérdésbank (önértékelő és observer változat).|Minden résztvevő véletlenszerűen kap egyet a kettő közül.",
+      en: "HEXACO-PI-R item set (self-report and observer versions).|Big Five Aspect Scales (BFAS) item set (self-report and observer versions).|Each participant is randomly assigned to one of the two instruments.",
+      de: "HEXACO-PI-R Fragenkatalog (Selbst- und Fremdeinschätzung).|Big Five Aspect Scales (BFAS) Fragenkatalog (Selbst- und Fremdeinschätzung).|Jede Person erhält zufällig eines der beiden Instrumente.",
     },
     dataTitle: {
       hu: "Adatkezelés röviden",
@@ -327,9 +337,9 @@ const translations = {
       de: "Datenverarbeitung (Kurzfassung)",
     },
     dataItems: {
-      hu: "A válaszok és a kitöltés státusza kerül rögzítésre.|A meghívók e-mail címe csak a meghíváshoz szükséges.|A részvétel önkéntes, bármikor megszakítható.",
-      en: "We store responses and completion status.|Invitee emails are used only for invitations.|Participation is voluntary and can be stopped anytime.",
-      de: "Gespeichert werden Antworten und Abschlussstatus.|E-Mails der Eingeladenen dienen nur dem Versand der Einladungen.|Teilnahme ist freiwillig und jederzeit abbrechbar.",
+      hu: "Demográfiai adatok (életkor, nem, végzettség, foglalkozási státusz, ország).|Kérdőíves válaszok és összesített pontszámok.|Kutatási visszajelzés (önismeret-pontosság, motiváció, megosztási szándék).|Hozzájárulás időpontja és az érvényes adatkezelési verzió.|Az observer meghívók e-mail cím csak az értesítéshez szükséges; az observer kiléte az eredményekben anonim marad.|A részvétel önkéntes, bármikor megszakítható.",
+      en: "Demographic data (age, gender, education, occupation status, country).|Questionnaire responses and aggregated scores.|Research feedback (self-recognition accuracy, motivation, sharing intent).|Consent timestamp and applicable privacy policy version.|Observer invitee email addresses are used only for invitations; observer identity is not disclosed in results.|Participation is voluntary and can be stopped at any time.",
+      de: "Demografische Angaben (Alter, Geschlecht, Bildung, Berufsstatus, Land).|Fragebogenantworten und aggregierte Punktwerte.|Forschungs-Feedback (Selbsterkennungsgenauigkeit, Motivation, Weitergabeabsicht).|Einwilligungszeitpunkt und gültige Datenschutzversion.|E-Mails eingeladener Beobachtungspersonen werden nur für den Versand der Einladungen verwendet; die Identität bleibt in den Ergebnissen anonym.|Teilnahme ist freiwillig und jederzeit abbrechbar.",
     },
     contactTitle: {
       hu: "Kapcsolat",
