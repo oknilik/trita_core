@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { runProfileEngine, type ProfileCategory } from "@/lib/profile-engine";
 import {
@@ -80,6 +80,108 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
   const dimOrder = ["H", "E", "X", "A", "C", "O"];
   const displayDims = dimOrder.filter((d) => categories[d] !== undefined);
 
+  const steps: { num: string; node: React.ReactNode }[] = [
+    {
+      num: "01",
+      node: (
+        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
+            Dimenzió&shy;profil
+          </h3>
+          <div className="space-y-3">
+            {displayDims.map((code) => {
+              const cat = categories[code];
+              const score = (() => {
+                if (testType === "BIG_FIVE") {
+                  if (code === "E") return dimensions.N ?? dimensions.E ?? 0;
+                  if (code === "X") return dimensions.E ?? 0;
+                }
+                return dimensions[code] ?? 0;
+              })();
+              return (
+                <div key={code} className="flex items-center gap-3">
+                  <span className="w-[130px] shrink-0 text-xs font-medium text-gray-700 truncate">
+                    {DIM_LABELS[code]?.[l] ?? code}
+                  </span>
+                  <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${categoryColor(cat)}`}
+                      style={{ width: `${score}%` }}
+                    />
+                  </div>
+                  <span className={`shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full ${categoryTextColor(cat)}`}>
+                    {CATEGORY_LABELS[cat][l]}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ),
+    },
+    {
+      num: "02",
+      node: (
+        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-3">
+            {BLOCK3_TITLE[l]}
+          </h3>
+          <p className="text-sm text-gray-700 leading-relaxed">{block3Text}</p>
+        </section>
+      ),
+    },
+    {
+      num: "03",
+      node: envRows.length > 0 ? (
+        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
+            {BLOCK4_TITLE[l]}
+          </h3>
+          <div className="divide-y divide-gray-50">
+            {envRows.map((row, i) => (
+              <div key={i} className="flex gap-4 py-2.5 first:pt-0 last:pb-0">
+                <span className="w-36 shrink-0 text-xs font-semibold text-gray-500">{row.label[l]}</span>
+                <span className="text-xs text-gray-700">{row.value[l]}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+          <p className="text-sm text-gray-500 italic">{BLOCK4_EMPTY[l]}</p>
+        </section>
+      ),
+    },
+    ...(roleData
+      ? [
+          {
+            num: "04",
+            node: (
+              <section className="rounded-2xl border border-gray-100 bg-white p-6">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
+                  {BLOCK5_TITLE[l]}
+                </h3>
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "#10b981" }}>
+                    <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1.5">{BLOCK5_STRONG[l]}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{roleData.strong}</p>
+                  </div>
+                  <div className="rounded-xl border border-amber-100 bg-amber-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "#f59e0b" }}>
+                    <p className="text-[11px] font-semibold text-amber-600 uppercase tracking-wide mb-1.5">{BLOCK5_MEDIUM[l]}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{roleData.medium}</p>
+                  </div>
+                  <div className="rounded-xl border border-rose-100 bg-rose-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "#f43f5e" }}>
+                    <p className="text-[11px] font-semibold text-rose-500 uppercase tracking-wide mb-1.5">{BLOCK5_WATCH[l]}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{roleData.watchOut}</p>
+                  </div>
+                </div>
+              </section>
+            ),
+          },
+        ]
+      : []),
+  ];
+
   return (
     <div className="space-y-6 mt-6">
       {/* ── Section title ── */}
@@ -95,105 +197,26 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
         <p className="text-sm text-white/90 leading-relaxed italic">{BLOCK1[l]}</p>
       </section>
 
-      {/* ── Block 2: Dimenzióprofil ── */}
-      <section className="rounded-2xl border border-gray-100 bg-white p-6">
-        <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
-          Dimenzió&shy;profil
-        </h3>
-        <div className="space-y-3">
-          {displayDims.map((code) => {
-            const cat = categories[code];
-            const score = (() => {
-              // Re-derive display score from original dimensions
-              if (testType === "BIG_FIVE") {
-                if (code === "E") return dimensions.N ?? dimensions.E ?? 0;
-                if (code === "X") return dimensions.E ?? 0;
-              }
-              return dimensions[code] ?? 0;
-            })();
-            return (
-              <div key={code} className="flex items-center gap-3">
-                <span className="w-[130px] shrink-0 text-xs font-medium text-gray-700 truncate">
-                  {DIM_LABELS[code]?.[l] ?? code}
-                </span>
-                <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${categoryColor(cat)}`}
-                    style={{ width: `${score}%` }}
-                  />
-                </div>
-                <span
-                  className={`shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full ${categoryTextColor(cat)}`}
-                >
-                  {CATEGORY_LABELS[cat][l]}
-                </span>
+      {/* ── Timeline: Blocks 2–5 ── */}
+      <div className="relative">
+        {/* Connecting line */}
+        <div className="absolute left-[19px] top-5 bottom-5 w-0.5 bg-gradient-to-b from-indigo-200 via-purple-100 to-violet-200 rounded-full" />
+
+        <div className="space-y-5">
+          {steps.map(({ num, node }) => (
+            <div key={num} className="flex gap-4">
+              {/* Step badge */}
+              <div className="relative z-10 shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-200/60 mt-4">
+                <span className="text-[11px] font-bold text-white">{num}</span>
               </div>
-            );
-          })}
+              {/* Card */}
+              <div className="flex-1 min-w-0">{node}</div>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* ── Block 3: Működési mintázatok ── */}
-      <section className="rounded-2xl border border-gray-100 bg-white p-6">
-        <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-3">
-          {BLOCK3_TITLE[l]}
-        </h3>
-        <p className="text-sm text-gray-700 leading-relaxed">{block3Text}</p>
-      </section>
-
-      {/* ── Block 4: Kedvező környezeti jellemzők ── */}
-      {envRows.length > 0 ? (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
-            {BLOCK4_TITLE[l]}
-          </h3>
-          <div className="divide-y divide-gray-50">
-            {envRows.map((row, i) => (
-              <div key={i} className="flex gap-4 py-2.5 first:pt-0 last:pb-0">
-                <span className="w-36 shrink-0 text-xs font-semibold text-gray-500">
-                  {row.label[l]}
-                </span>
-                <span className="text-xs text-gray-700">{row.value[l]}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <p className="text-sm text-gray-500 italic">{BLOCK4_EMPTY[l]}</p>
-        </section>
-      )}
-
-      {/* ── Block 5: Szerepkör-família ajánlás ── */}
-      {roleData && (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
-            {BLOCK5_TITLE[l]}
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">
-                {BLOCK5_STRONG[l]}
-              </p>
-              <p className="text-sm text-gray-700">{roleData.strong}</p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold text-amber-500 uppercase tracking-wide mb-1">
-                {BLOCK5_MEDIUM[l]}
-              </p>
-              <p className="text-sm text-gray-700">{roleData.medium}</p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold text-rose-500 uppercase tracking-wide mb-1">
-                {BLOCK5_WATCH[l]}
-              </p>
-              <p className="text-sm text-gray-700">{roleData.watchOut}</p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Block 6: Kombináció-insight (csak feszültségteli, nem kockázatos pároknál) ── */}
+      {/* ── Block 6: Kombináció-insight ── */}
       {showBlock6 && (
         <section className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-6">
           <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-600 mb-3">
@@ -209,25 +232,15 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
         </section>
       )}
 
-      {/* ── Block 7: Kockázati jelzők (csak kockázatos pároknál) ── */}
+      {/* ── Block 7: Kockázati jelzők ── */}
       {showBlock7 && (
         <section className="rounded-2xl border border-amber-200 bg-amber-50/60 p-6">
           <div className="flex items-start gap-3">
-            <svg
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="h-5 w-5 shrink-0 text-amber-500 mt-0.5"
-            >
-              <path
-                fillRule="evenodd"
-                d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-                clipRule="evenodd"
-              />
+            <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 shrink-0 text-amber-500 mt-0.5">
+              <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
             </svg>
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-700">
-                {BLOCK7_TITLE[l]}
-              </h3>
+              <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-700">{BLOCK7_TITLE[l]}</h3>
               {block7Pairs.map((pair) => (
                 <p key={pair.contentKey} className="text-sm text-amber-900 leading-relaxed">
                   {RISK_TEXTS[pair.contentKey]?.[l]}
