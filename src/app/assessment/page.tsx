@@ -88,11 +88,14 @@ export default async function AssessmentPage({
   // Fresh retake: confirmed=true but no server draft → clear stale localStorage
   const clearDraft = params.confirmed === "true" && !draft;
 
+  const questions = config.questions.map((q) => ({ id: q.id, text: q.text }));
+
   return (
     <AssessmentClient
       testType={testType}
       testName={config.name}
       totalQuestions={config.questions.length}
+      questions={questions}
       initialDraft={initialDraft}
       clearDraft={clearDraft}
     />

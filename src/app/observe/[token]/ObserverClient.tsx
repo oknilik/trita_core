@@ -776,11 +776,7 @@ export function ObserverClient({
                   highlight={highlightQuestionId === activeQuestion.id}
                 />
               </div>
-            ) : (
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
-                {t("assessment.loadingQuestions", locale)}
-              </div>
-            )}
+            ) : null}
           </motion.div>
         </AnimatePresence>
 

@@ -11,7 +11,7 @@ import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
 import type { TestType } from '@prisma/client'
-import { DOODLE_SOURCES, pickRandomDoodle } from '@/lib/doodles'
+import { pickRandomDoodle } from '@/lib/doodles'
 type AssessmentQuestion = { id: number; text: string }
 
 const QUESTIONS_PER_PAGE = 5
@@ -20,6 +20,7 @@ interface AssessmentClientProps {
   testType: TestType
   testName: string
   totalQuestions: number
+  questions: AssessmentQuestion[]
   initialDraft?: { answers: Record<string, number>; currentPage: number }
   clearDraft?: boolean
 }
@@ -28,6 +29,7 @@ export function AssessmentClient({
   testType,
   testName,
   totalQuestions,
+  questions,
   initialDraft,
   clearDraft = false,
 }: AssessmentClientProps) {
@@ -50,12 +52,7 @@ export function AssessmentClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [evaluationProgress, setEvaluationProgress] = useState(0)
-  const [pageQuestions, setPageQuestions] = useState<AssessmentQuestion[]>([])
-  const [isLoadingQuestions, setIsLoadingQuestions] = useState(true)
-  // Tracks which page the currently loaded questions belong to.
-  // Prevents stale-closure init: when currentPage changes the fetch is async,
-  // so pageQuestions still holds the previous page's data for a moment.
-  const [questionsPage, setQuestionsPage] = useState(-1)
+  const pageQuestions = questions.slice(currentPage * QUESTIONS_PER_PAGE, (currentPage + 1) * QUESTIONS_PER_PAGE)
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
   const [autoAdvance, setAutoAdvance] = useState(true)
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
@@ -180,36 +177,8 @@ export function AssessmentClient({
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [handleBeforeUnload])
 
+  // Initialize active question index once the correct page is set.
   useEffect(() => {
-    let isMounted = true
-    const loadQuestions = async () => {
-      setIsLoadingQuestions(true)
-      try {
-        const res = await fetch(
-          `/api/assessment/questions?page=${currentPage}&perPage=${QUESTIONS_PER_PAGE}`,
-        )
-        if (!res.ok) throw new Error('Failed to load questions')
-        const data = await res.json()
-        if (isMounted) {
-          setPageQuestions(data.questions ?? [])
-          setQuestionsPage(currentPage)
-        }
-      } catch (error) {
-        console.error(error)
-        showToast(t('assessment.loadQuestionsError', locale), 'error')
-        if (isMounted) setPageQuestions([])
-      } finally {
-        if (isMounted) setIsLoadingQuestions(false)
-      }
-    }
-    loadQuestions()
-    return () => { isMounted = false }
-  }, [currentPage, showToast, locale])
-
-  // Initialize active question index once the correct questions have loaded.
-  // questionsPage guard ensures we never run with a stale (previous page's) pageQuestions.
-  useEffect(() => {
-    if (questionsPage !== currentPage) return  // questions not yet fetched for this page
     if (pageQuestions.length === 0) return
     if (initializedFocusPage.current === currentPage) return
 
@@ -223,7 +192,7 @@ export function AssessmentClient({
 
     setActiveQuestionIndex(firstUnanswered === -1 ? pageQuestions.length - 1 : firstUnanswered)
     initializedFocusPage.current = currentPage
-  }, [currentPage, questionsPage, pageQuestions, answers, totalPages])
+  }, [currentPage, pageQuestions, answers, totalPages])
 
   useEffect(() => {
     const marks = [25, 50, 75]
@@ -492,7 +461,7 @@ export function AssessmentClient({
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (isSubmitting || isLoadingQuestions) return
+      if (isSubmitting) return
       const target = event.target as HTMLElement | null
       const tag = target?.tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA' || target?.isContentEditable) return
@@ -509,7 +478,7 @@ export function AssessmentClient({
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [checkpointActive, activeQuestion, isSubmitting, isLoadingQuestions, handleNextStep, handleAnswer])
+  }, [checkpointActive, activeQuestion, isSubmitting, handleNextStep, handleAnswer])
 
   if (isSubmitting) {
     return <EvaluatingScreen progress={evaluationProgress} />
@@ -592,11 +561,7 @@ export function AssessmentClient({
             transition={{ duration: 0.25 }}
             className="flex flex-col gap-6"
           >
-            {isLoadingQuestions ? (
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
-                {t('assessment.loadingQuestions', locale)}
-              </div>
-            ) : checkpointActive ? (
+            {checkpointActive ? (
               <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center md:min-h-[19rem] md:p-8">
                 <div className="text-5xl leading-none">
                   {checkpoint === 25 ? '🌱' : checkpoint === 50 ? '💡' : '🏁'}
@@ -632,11 +597,7 @@ export function AssessmentClient({
                   highlight={highlightQuestionId === activeQuestion.id}
                 />
               </div>
-            ) : (
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-500">
-                {t('assessment.loadingQuestions', locale)}
-              </div>
-            )}
+            ) : null}
           </motion.div>
         </AnimatePresence>
 
