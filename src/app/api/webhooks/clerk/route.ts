@@ -145,20 +145,21 @@ export async function POST(req: Request) {
 
       if (to && (magicLink || code)) {
         let locale: "hu" | "en" | "de" | undefined;
-        if (data.user_id) {
-          try {
-            const client = await clerkClient();
-            const user = await client.users.getUser(data.user_id);
-            const metaLocale =
-              (user.unsafeMetadata?.locale as string | undefined) ||
-              (user.publicMetadata?.locale as string | undefined);
-            if (metaLocale === "hu" || metaLocale === "en" || metaLocale === "de") {
-              locale = metaLocale;
-            }
-          } catch (err) {
-            console.warn("[Email] Failed to read Clerk user locale:", err);
+        // For existing users (sign-in): locale is stored in the DB, not in Clerk metadata
+        try {
+          const profile = await prisma.userProfile.findFirst({
+            where: { email: { equals: to, mode: "insensitive" } },
+            select: { locale: true },
+          });
+          const dbLocale = profile?.locale;
+          if (dbLocale === "hu" || dbLocale === "en" || dbLocale === "de") {
+            locale = dbLocale;
           }
-        } else if (data.sign_up_id) {
+        } catch (err) {
+          console.warn("[Email] Failed to read DB locale:", err);
+        }
+        // For new sign-ups (user not yet in DB): use sign-up metadata
+        if (!locale && data.sign_up_id) {
           try {
             const client = await clerkClient();
             const signUp = await client.signUps.get(data.sign_up_id);

@@ -252,7 +252,19 @@ function buildEmailLayout(params: {
   const logoSize = params.logoSize ?? DEFAULT_LOGO_SIZE;
   return `<!DOCTYPE html>
 <html lang="${params.locale}">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <style>
+    :root { color-scheme: light; }
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #f3f4f6 !important; }
+      body * { color-scheme: light; }
+    }
+  </style>
+</head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6">
   <div style="max-width:600px;margin:0 auto;padding:32px 16px 24px">
 
