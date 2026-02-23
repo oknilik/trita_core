@@ -2,8 +2,8 @@ import { resend, EMAIL_FROM } from "./resend";
 
 type Locale = "hu" | "en" | "de";
 
-// Resolved once at module init — safe for server-side (API routes) use.
-// Using || so an empty-string env var also falls back to the default.
+// Single module-level constant — avoids the Turbopack inlining bug where
+// local `const appUrl` declarations inside functions are dropped.
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://trita.hu";
 
 const translations = {
@@ -98,6 +98,32 @@ const translations = {
       footer:
         "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
       thanks: "Viele Grüße,",
+      team: "das trita-Team",
+    },
+  },
+  observerCompletion: {
+    hu: {
+      subject: "Egy megfigyelőd elvégezte a tesztet – trita",
+      greeting: (name: string) => `Szia, ${name}!`,
+      body: "Jó hír: az egyik meghívott megfigyelőd elvégezte a személyiségtesztet. Nézd meg, hogyan látnak téged mások!",
+      cta: "Megnézem az eredményeket",
+      thanks: "Köszönjük, hogy részt veszel a kutatásban!",
+      team: "a trita csapat",
+    },
+    en: {
+      subject: "One of your observers completed the test – trita",
+      greeting: (name: string) => `Hi ${name}!`,
+      body: "Great news: one of the observers you invited has completed the personality test. See how others perceive you!",
+      cta: "View my results",
+      thanks: "Thank you for participating in the research!",
+      team: "the trita team",
+    },
+    de: {
+      subject: "Eine deiner Beobachtungspersonen hat den Test abgeschlossen – trita",
+      greeting: (name: string) => `Hallo, ${name}!`,
+      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Beobachtungspersonen hat den Persönlichkeitstest abgeschlossen. Schau, wie andere dich wahrnehmen!",
+      cta: "Ergebnisse ansehen",
+      thanks: "Danke, dass du an der Forschung teilnimmst!",
       team: "das trita-Team",
     },
   },
@@ -197,32 +223,6 @@ const translations = {
       team: "das trita-Team",
     },
   },
-  observerCompletion: {
-    hu: {
-      subject: "Egy megfigyelőd elvégezte a tesztet – trita",
-      greeting: (name: string) => `Szia, ${name}!`,
-      body: "Jó hír: az egyik meghívott megfigyelőd elvégezte a személyiségtesztet. Nézd meg, hogyan látnak téged mások!",
-      cta: "Megnézem az eredményeket",
-      thanks: "Köszönjük, hogy részt veszel a kutatásban!",
-      team: "a trita csapat",
-    },
-    en: {
-      subject: "One of your observers completed the test – trita",
-      greeting: (name: string) => `Hi ${name}!`,
-      body: "Great news: one of the observers you invited has completed the personality test. See how others perceive you!",
-      cta: "View my results",
-      thanks: "Thank you for participating in the research!",
-      team: "the trita team",
-    },
-    de: {
-      subject: "Eine deiner Beobachtungspersonen hat den Test abgeschlossen – trita",
-      greeting: (name: string) => `Hallo, ${name}!`,
-      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Beobachtungspersonen hat den Persönlichkeitstest abgeschlossen. Schau, wie andere dich wahrnehmen!",
-      cta: "Ergebnisse ansehen",
-      thanks: "Danke, dass du an der Forschung teilnimmst!",
-      team: "das trita-Team",
-    },
-  },
 } as const;
 
 function getLocale(email: string): Locale {
@@ -237,6 +237,9 @@ const HEADER_GRADIENT = "linear-gradient(135deg,#c7d2fe 0%,#ddd6fe 50%,#fbcfe8 1
 const FOOTER_GRADIENT = "linear-gradient(135deg,#eef2ff 0%,#f5f3ff 60%,#fdf4ff 100%)";
 const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
 
+// Default logo size matches the sign-in code email (140px).
+const DEFAULT_LOGO_SIZE = 140;
+
 function buildEmailLayout(params: {
   locale: Locale;
   heading?: string;
@@ -246,7 +249,7 @@ function buildEmailLayout(params: {
   thanks: string;
   team: string;
 }): string {
-  const logoSize = params.logoSize ?? 100;
+  const logoSize = params.logoSize ?? DEFAULT_LOGO_SIZE;
   return `<!DOCTYPE html>
 <html lang="${params.locale}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -256,7 +259,7 @@ function buildEmailLayout(params: {
     <!-- Gradient header with logo and wave bottom -->
     <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
       <div style="padding:24px 32px 10px;text-align:center">
-        <img src="${APP_URL}/icon" alt="trita" width="${logoSize}" height="${logoSize}"
+        <img src="${APP_URL}/icon.svg" alt="trita" width="${logoSize}" height="${logoSize}"
              style="display:inline-block;border-radius:24px;margin-bottom:10px">
         ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
@@ -293,10 +296,7 @@ function buildEmailLayout(params: {
 </html>`.trim();
 }
 
-function buildOrderConfirmationHtml(
-  locale: Locale,
-  name: string,
-): string {
+function buildOrderConfirmationHtml(locale: Locale, name: string): string {
   const t = translations.orderConfirmation[locale];
   const features = t.featureList
     .map((f) => `<li style="padding:4px 0;color:#374151">${f}</li>`)
@@ -339,7 +339,6 @@ export async function sendOrderConfirmationEmail(params: {
 }) {
   const locale = params.locale ?? getLocale(params.to);
   const t = translations.orderConfirmation[locale];
-
   const html = buildOrderConfirmationHtml(locale, params.name);
 
   const { error } = await resend.emails.send({
@@ -419,6 +418,61 @@ export async function sendObserverInviteEmail(params: {
   }
 }
 
+function buildObserverCompletionHtml(params: {
+  locale: Locale;
+  inviterName: string;
+}): string {
+  const t = translations.observerCompletion[params.locale];
+
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+      ${t.greeting(params.inviterName)}
+    </p>
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+      ${t.body}
+    </p>
+    <div style="text-align:center">
+      <a href="${APP_URL}/dashboard"
+         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+        ${t.cta}
+      </a>
+    </div>`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    bodyContent,
+    thanks: t.thanks,
+    team: t.team,
+  });
+}
+
+export async function sendObserverCompletionEmail(params: {
+  to: string;
+  inviterName: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.observerCompletion[locale];
+
+  const html = buildObserverCompletionHtml({
+    locale,
+    inviterName: params.inviterName,
+  });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+  });
+
+  if (error) {
+    console.error("[Email] Observer completion email failed:", error);
+  } else {
+    console.log("[Email] Observer completion email sent to:", params.to);
+  }
+}
+
 function buildVerificationCodeHtml(params: {
   locale: Locale;
   code: string;
@@ -447,7 +501,6 @@ function buildVerificationCodeHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    logoSize: 140,
     bodyContent,
     thanks: t.thanks,
     team: t.team,
@@ -537,60 +590,5 @@ export async function sendMagicLinkEmail(params: {
     console.error("[Email] Failed to send magic link:", error);
   } else {
     console.log("[Email] Magic link sent to:", params.to);
-  }
-}
-
-function buildObserverCompletionHtml(params: {
-  locale: Locale;
-  inviterName: string;
-}): string {
-  const t = translations.observerCompletion[params.locale];
-
-  const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
-      ${t.greeting(params.inviterName)}
-    </p>
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
-      ${t.body}
-    </p>
-    <div style="text-align:center">
-      <a href="${APP_URL}/dashboard"
-         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
-        ${t.cta}
-      </a>
-    </div>`;
-
-  return buildEmailLayout({
-    locale: params.locale,
-    bodyContent,
-    thanks: t.thanks,
-    team: t.team,
-  });
-}
-
-export async function sendObserverCompletionEmail(params: {
-  to: string;
-  inviterName: string;
-  locale?: Locale;
-}): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
-  const t = translations.observerCompletion[locale];
-
-  const html = buildObserverCompletionHtml({
-    locale,
-    inviterName: params.inviterName,
-  });
-
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
-    to: params.to,
-    subject: t.subject,
-    html,
-  });
-
-  if (error) {
-    console.error("[Email] Observer completion email failed:", error);
-  } else {
-    console.log("[Email] Observer completion email sent to:", params.to);
   }
 }
