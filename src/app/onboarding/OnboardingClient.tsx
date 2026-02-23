@@ -293,8 +293,9 @@ export function OnboardingClient() {
     }`;
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
-      <div className="w-full max-w-lg">
+    <div className="relative flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative z-10 w-full max-w-lg">
         <div className="mb-8 flex flex-col items-center gap-3">
           <TritaLogo size={48} showText={false} />
           <h1 className="text-2xl font-bold text-gray-900">
