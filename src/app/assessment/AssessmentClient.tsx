@@ -60,7 +60,11 @@ export function AssessmentClient({
   const [autoAdvance, setAutoAdvance] = useState(true)
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const [checkpoint, setCheckpoint] = useState<number | null>(null)
-  const [doodleSrc, setDoodleSrc] = useState<string>(DOODLE_SOURCES[0])
+  const [doodleSrc, setDoodleSrc] = useState<string>(() => pickRandomDoodle())
+  const [showIntro, setShowIntro] = useState(() => {
+    const hasDraft = initialDraft && Object.keys(initialDraft.answers ?? {}).length > 0
+    return !hasDraft
+  })
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
       ? ([25, 50, 75] as const).filter(
@@ -511,9 +515,38 @@ export function AssessmentClient({
     return <EvaluatingScreen progress={evaluationProgress} />
   }
 
+  if (showIntro) {
+    return (
+      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+        <div className="relative z-10 mx-auto max-w-2xl px-4 py-12">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-10 shadow-sm">
+            <h1 className="text-2xl font-bold text-gray-900">
+              👋 {t('assessment.introWelcome', locale)}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+              {t('assessment.introBody', locale)}
+            </p>
+            <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
+              {t('assessment.introCount', locale)}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowIntro(false)}
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              {t('assessment.introStart', locale)}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
         <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
           <div className="mt-2 overflow-x-auto">

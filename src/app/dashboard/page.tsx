@@ -15,6 +15,7 @@ import { HashScroll } from "@/components/dashboard/HashScroll";
 import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
 import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
+import { UpcomingFeaturesCTA } from "@/components/dashboard/UpcomingFeaturesCTA";
 
 export const dynamic = "force-dynamic";
 
@@ -292,6 +293,7 @@ export default async function DashboardPage({
   const hasObserverFeedback = completedObservers.length >= 2;
   const feedbackSubmitted = Boolean(satisfactionFeedback);
   const surveySubmitted = Boolean(researchSurvey);
+  const journeyComplete = Boolean(latestResult) && hasInvites && hasObserverFeedback;
   const avgConfidence =
     confidenceStats._avg.confidence != null
       ? Math.round(confidenceStats._avg.confidence * 10) / 10
@@ -479,14 +481,21 @@ export default async function DashboardPage({
         pendingInvitesCount={pendingInvites.length}
       />
 
-      {/* ── Research survey — shown below tabs until submitted ── */}
-      {!surveySubmitted && (
+      {/* ── Research survey — shown after full journey, until submitted ── */}
+      {journeyComplete && !surveySubmitted && (
         <FadeIn>
           <ResearchSurvey
             locale={locale}
             hasObserverFeedback={hasObserverFeedback}
             occupationStatus={profile.occupationStatus ?? null}
           />
+        </FadeIn>
+      )}
+
+      {/* ── Upcoming features validation — fake door test ── */}
+      {journeyComplete && (
+        <FadeIn>
+          <UpcomingFeaturesCTA locale={locale} />
         </FadeIn>
       )}
       </main>

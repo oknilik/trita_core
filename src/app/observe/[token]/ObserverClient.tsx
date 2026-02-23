@@ -519,18 +519,22 @@ export function ObserverClient({
     const canStart = relationshipType !== "" && knownDuration !== "";
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="mx-auto max-w-2xl px-4 py-8 md:py-12">
+      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+        <div className="relative z-10 mx-auto max-w-2xl px-4 py-8 md:py-12">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
             <h1 className="text-2xl font-bold text-gray-900">
-              {t("observer.introTitle", locale)}
+              👋 {t("observer.introWelcome", locale)}
             </h1>
-            <p className="mt-3 text-sm text-gray-600">
-              {tf("observer.introBody", locale, { inviter: inviterName, testName })}
+            <div className="mt-4 rounded-xl border border-indigo-300/70 bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+              {tf("observer.introInvitedBy", locale, { inviter: inviterName })}
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-gray-600">
+              {t("observer.introBodyShort", locale)}
             </p>
-            <p className="mt-2 text-sm text-gray-500">
-              {t("observer.introBody2", locale)}
-            </p>
+            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
+              {t("observer.introPauseNote", locale)}
+            </div>
 
             <div className="mt-6 flex flex-col gap-4">
               <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
@@ -583,13 +587,9 @@ export function ObserverClient({
               type="button"
               onClick={() => setPhase("assessment")}
               disabled={!canStart}
-              className={`mt-4 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition-all duration-300 ${
-                canStart
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-105"
-                  : "cursor-not-allowed bg-gray-200 text-gray-400"
-              }`}
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:shadow-none"
             >
-              {tf("observer.start", locale, { count: totalQuestions })}
+              {t("assessment.introStart", locale)}
             </button>
           </div>
         </div>
@@ -599,8 +599,9 @@ export function ObserverClient({
 
   if (phase === "inactive") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+        <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">😕</div>
             <h1 className="mt-4 text-2xl font-bold text-gray-900">
@@ -617,8 +618,9 @@ export function ObserverClient({
 
   if (phase === "done") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+        <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
             <h1 className="mt-4 text-2xl font-bold text-gray-900">
@@ -659,8 +661,9 @@ export function ObserverClient({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
         <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
           {phase === "assessment" && (

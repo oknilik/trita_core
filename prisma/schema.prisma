@@ -71,6 +71,7 @@ model UserProfile {
   receivedInvitations  ObserverInvitation[] @relation("ObserverInvitations")
   satisfactionFeedback SatisfactionFeedback?
   researchSurvey       ResearchSurvey?
+  featureInterests     FeatureInterest[]
 }
 
 model AssessmentDraft {
@@ -202,4 +203,17 @@ model DimensionFeedback {
 
   @@unique([assessmentResultId, dimensionCode])
   @@index([assessmentResultId])
+}
+
+// Upcoming feature interest — fake door validation
+model FeatureInterest {
+  id            String   @id @default(cuid())
+  userProfileId String
+  featureKey    String   // "team" | "comm" | "360"
+  createdAt     DateTime @default(now())
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+
+  @@unique([userProfileId, featureKey])
+  @@index([featureKey])
 }

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getTestConfig } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
+import { sendObserverCompletionEmail } from "@/lib/emails";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -108,6 +109,28 @@ export async function POST(req: Request) {
       },
     }),
   ]);
+
+  // Notify inviter — only from the 2nd completed observer onward (fire-and-forget)
+  prisma.observerAssessment.count({
+    where: {
+      invitation: { inviterId: invitation.inviterId },
+    },
+  }).then(async (completedCount) => {
+    if (completedCount < 2) return;
+    const inviter = await prisma.userProfile.findUnique({
+      where: { id: invitation.inviterId },
+      select: { email: true, locale: true, username: true },
+    });
+    if (!inviter?.email) return;
+    const locale = (["hu", "en", "de"].includes(inviter.locale ?? "")
+      ? inviter.locale
+      : undefined) as "hu" | "en" | "de" | undefined;
+    sendObserverCompletionEmail({
+      to: inviter.email,
+      inviterName: inviter.username ?? inviter.email,
+      locale,
+    }).catch((err) => console.error("[Email] Observer completion send error:", err));
+  }).catch((err) => console.error("[Email] Inviter lookup error:", err));
 
   return NextResponse.json({ success: true });
 }

@@ -400,6 +400,10 @@ const translations = {
     magicLinkBack: { hu: "Más email cím megadása", en: "Use a different email", de: "Andere E-Mail verwenden" },
   },
   assessment: {
+    introWelcome: { hu: "Köszönjük, hogy részt veszel a kutatásban!", en: "Thank you for taking part in the research!", de: "Danke, dass du an der Studie teilnimmst!" },
+    introBody: { hu: "A következő kérdőívet kérjük figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat.", en: "Please fill in the questionnaire carefully — go with your first impression on each question, don't overthink it.", de: "Bitte fülle den Fragebogen sorgfältig aus — vertrau bei jeder Frage auf deinen ersten Eindruck." },
+    introCount: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — az előrehaladásod automatikusan mentődik, és onnan folytathatod ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
+    introStart: { hu: "Kezdjük el →", en: "Let's start →", de: "Los geht's →" },
     helpLikert: {
       hu: "Válaszd ki, mennyire értesz egyet az állítással (1 = egyáltalán nem, 5 = teljesen)",
       en: "Choose how much you agree (1 = not at all, 5 = completely)",
@@ -764,6 +768,10 @@ const translations = {
     introTitle: { hu: "Megfigyelői értékelés", en: "Observer assessment", de: "Beobachterbewertung" },
     introBody: { hu: "{inviter} arra kér, hogy töltsd ki ezt a(z) {testName} tesztet róla.", en: "{inviter} invited you to complete this {testName} assessment about them.", de: "{inviter} hat dich gebeten, diesen {testName}-Test über ihn/sie auszufüllen." },
     introBody2: { hu: "A válaszaid anonimak maradnak, csak összesített átlag látható.", en: "Your answers remain anonymous; only aggregated averages are visible.", de: "Deine Antworten bleiben anonym; sichtbar sind nur aggregierte Durchschnitte." },
+    introWelcome: { hu: "Örülünk, hogy itt vagy!", en: "We're glad you're here!", de: "Schön, dass du da bist!" },
+    introInvitedBy: { hu: "{inviter} kért meg, hogy töltsd ki a személyiségtesztjét.", en: "{inviter} asked you to fill in their personality test.", de: "{inviter} hat dich gebeten, seinen/ihren Persönlichkeitstest auszufüllen." },
+    introBodyShort: { hu: "Kérjük, figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat. A válaszaid anonimak maradnak.", en: "Please fill in carefully — go with your first impression on each question, don't overthink it. Your answers remain anonymous.", de: "Bitte sorgfältig ausfüllen — vertrau bei jeder Frage auf deinen ersten Eindruck. Deine Antworten bleiben anonym." },
+    introPauseNote: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — az előrehaladásod automatikusan mentődik, és onnan folytathatod ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
     relationshipLabel: { hu: "Milyen a kapcsolatotok?", en: "What is your relationship?", de: "Wie ist eure Beziehung?" },
     durationLabel: { hu: "Mióta ismered?", en: "How long have you known them?", de: "Wie lange kennst du die Person?" },
     start: { hu: "Kezdjük ({count} kérdés)", en: "Start ({count} questions)", de: "Starten ({count} Fragen)" },

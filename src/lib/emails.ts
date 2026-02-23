@@ -196,6 +196,32 @@ const translations = {
       team: "das trita-Team",
     },
   },
+  observerCompletion: {
+    hu: {
+      subject: "Egy megfigyelőd elvégezte a tesztet – trita",
+      greeting: (name: string) => `Szia, ${name}!`,
+      body: "Jó hír: az egyik meghívott megfigyelőd elvégezte a személyiségtesztet. Nézd meg, hogyan látnak téged mások!",
+      cta: "Megnézem az eredményeket",
+      thanks: "Köszönjük, hogy részt veszel a kutatásban!",
+      team: "a trita csapat",
+    },
+    en: {
+      subject: "One of your observers completed the test – trita",
+      greeting: (name: string) => `Hi ${name}!`,
+      body: "Great news: one of the observers you invited has completed the personality test. See how others perceive you!",
+      cta: "View my results",
+      thanks: "Thank you for participating in the research!",
+      team: "the trita team",
+    },
+    de: {
+      subject: "Eine deiner Beobachtungspersonen hat den Test abgeschlossen – trita",
+      greeting: (name: string) => `Hallo, ${name}!`,
+      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Beobachtungspersonen hat den Persönlichkeitstest abgeschlossen. Schau, wie andere dich wahrnehmen!",
+      cta: "Ergebnisse ansehen",
+      thanks: "Danke, dass du an der Forschung teilnimmst!",
+      team: "das trita-Team",
+    },
+  },
 } as const;
 
 function getLocale(email: string): Locale {
@@ -526,5 +552,65 @@ export async function sendMagicLinkEmail(params: {
     console.error("[Email] Failed to send magic link:", error);
   } else {
     console.log("[Email] Magic link sent to:", params.to);
+  }
+}
+
+function buildObserverCompletionHtml(params: {
+  locale: Locale;
+  inviterName: string;
+  appUrl: string;
+}): string {
+  const t = translations.observerCompletion[params.locale];
+  const dashboardUrl = `${params.appUrl}/dashboard`;
+
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+      ${t.greeting(params.inviterName)}
+    </p>
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+      ${t.body}
+    </p>
+    <div style="text-align:center">
+      <a href="${dashboardUrl}"
+         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+        ${t.cta}
+      </a>
+    </div>`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    appUrl: params.appUrl,
+    bodyContent,
+    thanks: t.thanks,
+    team: t.team,
+  });
+}
+
+export async function sendObserverCompletionEmail(params: {
+  to: string;
+  inviterName: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
+  const t = translations.observerCompletion[locale];
+
+  const html = buildObserverCompletionHtml({
+    locale,
+    inviterName: params.inviterName,
+    appUrl,
+  });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+  });
+
+  if (error) {
+    console.error("[Email] Observer completion email failed:", error);
+  } else {
+    console.log("[Email] Observer completion email sent to:", params.to);
   }
 }
