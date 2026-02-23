@@ -263,7 +263,7 @@ export function AssessmentClient({
     }
   }, [answers])
 
-  const handleNextPage = useCallback(async () => {
+  const handleNextPage = useCallback(() => {
     if (!canGoNext) {
       const missing = pageQuestions.find((q) => answers[q.id] === undefined)
       if (missing) highlightMissing(missing.id)
@@ -271,9 +271,9 @@ export function AssessmentClient({
     }
     if (isLastPage) return
     const nextPage = currentPage + 1
-    await saveDraftToServer(nextPage)
     setCurrentPage(nextPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    saveDraftToServer(nextPage) // fire-and-forget — UI nem vár rá
   }, [canGoNext, pageQuestions, answers, highlightMissing, isLastPage, currentPage, saveDraftToServer])
 
   const handlePrevPage = useCallback(() => {
