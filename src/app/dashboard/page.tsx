@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -50,18 +50,14 @@ export default async function DashboardPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const locale = await getServerLocale();
-  let user;
-  try {
-    user = await currentUser();
-  } catch {
-    redirect("/sign-in");
-  }
-  if (!user) redirect("/sign-in");
+  const [locale, { userId }] = await Promise.all([
+    getServerLocale(),
+    auth(),
+  ]);
+  if (!userId) redirect("/sign-in");
 
-  const email = user.primaryEmailAddress?.emailAddress;
   const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: user.id },
+    where: { clerkId: userId },
     select: {
       id: true,
       testType: true,
@@ -83,9 +79,7 @@ export default async function DashboardPage({
 
   const displayName =
     profile?.username ||
-    user.username ||
     profile?.email ||
-    email ||
     t("common.userFallback", locale);
 
   // Parallel database queries for better performance
@@ -115,6 +109,13 @@ export default async function DashboardPage({
               testType: true,
               isSelfAssessment: true,
               createdAt: true,
+              dimensionFeedback: {
+                select: {
+                  dimensionCode: true,
+                  accuracyRating: true,
+                  comment: true,
+                },
+              },
             },
           }),
           prisma.observerInvitation.findMany({
@@ -184,23 +185,7 @@ export default async function DashboardPage({
     ? Object.keys(draft.answers as Record<string, number>).length
     : 0;
 
-  // Fetch dimension feedback separately (needs latestResult.id)
-  const dimensionFeedback =
-    profile && latestResult
-      ? await prisma.dimensionFeedback.findMany({
-          where: { assessmentResultId: latestResult.id },
-          select: {
-            dimensionCode: true,
-            accuracyRating: true,
-            comment: true,
-          },
-        })
-      : [];
-
-  // Create feedback lookup map
-  const feedbackMap = new Map(
-    dimensionFeedback.map((f) => [f.dimensionCode, f])
-  );
+  const dimensionFeedback = latestResult?.dimensionFeedback ?? [];
 
   const scores = latestResult?.scores as ScoreResult | undefined;
   const testType = profile?.testType as TestType | null;
