@@ -406,7 +406,7 @@ export async function sendObserverInviteEmail(params: {
   });
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
-    replyTo: process.env.RESEND_REPLY_TO ?? "info@trita.hu",
+    replyTo: process.env.RESEND_REPLY_TO ?? "info@trita.io",
     to: params.to,
     subject: translations.observerInvite[locale].subject,
     html,
