@@ -178,8 +178,9 @@ export const DimensionCard = memo(function DimensionCard({
       <button
         type="button"
         onClick={() => { setShowFeedback(false); setIsOpen(true); }}
-        className="ambient-glow group w-full cursor-pointer rounded-2xl border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 p-6 text-left shadow-sm transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1"
+        className="ambient-glow group w-full cursor-pointer rounded-2xl border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 p-6 text-left shadow-sm transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/40 focus-visible:ring-offset-2"
         style={{ borderLeftWidth: "4px", borderLeftColor: color }}
+        aria-label={`${t("dashboard.openDetails", locale)}: ${resolvedLabel}`}
       >
         <div className="flex items-center gap-3">
           <span
@@ -193,9 +194,23 @@ export const DimensionCard = memo(function DimensionCard({
               <p className="truncate text-sm font-semibold text-gray-900">
                 {resolvedLabel}
               </p>
-              <p className="shrink-0 text-lg font-bold" style={{ color }}>
-                {score}%
-              </p>
+              <div className="flex shrink-0 items-center gap-2">
+                <p className="text-lg font-bold" style={{ color }}>
+                  {score}%
+                </p>
+                <svg
+                  viewBox="0 0 16 16"
+                  className="h-4 w-4 text-gray-300 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-indigo-500"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 3l5 5-5 5" />
+                </svg>
+              </div>
             </div>
             <div className="mt-2">
               <AnimatedBar value={score} color={color} delay={delay} />
@@ -203,9 +218,23 @@ export const DimensionCard = memo(function DimensionCard({
           </div>
         </div>
         <p className="mt-3 text-sm text-gray-600">{resolvedInsight}</p>
-        <p className="mt-2 text-xs text-gray-400 transition group-hover:text-gray-500">
-          {t("dashboard.dimensionHint", locale)}
-        </p>
+        <div className="mt-3 flex items-center justify-end">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 transition group-hover:bg-indigo-50 group-hover:text-indigo-700">
+            {t("dashboard.openDetails", locale)}
+            <svg
+              viewBox="0 0 16 16"
+              className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M6 3l5 5-5 5" />
+            </svg>
+          </span>
+        </div>
       </button>
 
       {/* Detail overlay - Portal to body for proper full-screen backdrop */}

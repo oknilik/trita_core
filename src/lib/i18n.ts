@@ -558,6 +558,7 @@ const translations = {
     altruismTitle: { hu: "Altruizmus (kiegészítő skála)", en: "Altruism (additional scale)", de: "Altruismus (zusätzliche Skala)" },
     altruismBody: { hu: "Az altruizmus több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "Altruism relates to multiple core dimensions, so it isn’t included in the 6-factor average. It’s best interpreted as a separate score.", de: "Altruismus hängt mit mehreren Kerndimensionen zusammen und ist daher nicht im 6-Faktoren-Durchschnitt enthalten. Am besten als eigener Wert interpretieren." },
     dimensionHint: { hu: "Kattints a részletekért", en: "Tap for details", de: "Tippe für Details" },
+    openDetails: { hu: "Részletek", en: "Details", de: "Details" },
     dimensionWhat: { hu: "Mit mér ez a dimenzió?", en: "What does this dimension measure?", de: "Was misst diese Dimension?" },
     dimensionInterpretation: { hu: "Az eredményed értelmezései:", en: "Your result interpretation:", de: "Deine Ergebnisinterpretation:" },
     dimensionLow: { hu: "Alacsony (< 40%)", en: "Low (< 40%)", de: "Niedrig (< 40%)" },

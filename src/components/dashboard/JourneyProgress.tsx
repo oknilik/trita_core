@@ -254,20 +254,37 @@ export function JourneyProgress({
 
       {/* Optional: research survey (kept separate from the 3-step progress) */}
       {selfCompleted && hasObserverFeedback && !surveyDone && onOpenSurvey && (
-        <div className="mt-6 rounded-xl border border-indigo-100 bg-white/60 p-4">
-          <p className="text-sm font-semibold text-gray-900">
-            {t("dashboard.nextStepSurveyTitle", locale)}
-          </p>
-          <p className="mt-1 text-sm text-gray-600">
-            {t("dashboard.nextStepSurveyBody", locale)}
-          </p>
-          <button
-            type="button"
-            onClick={onOpenSurvey}
-            className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-xl border border-indigo-200 bg-white px-5 text-sm font-semibold text-indigo-700 shadow-sm transition-all duration-300 hover:bg-indigo-50 hover:shadow-md"
-          >
-            {t("dashboard.nextStepSurveyCta", locale)}
-          </button>
+        <div className="mt-6 rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/90 via-yellow-50/70 to-white p-5 shadow-md shadow-amber-100/60">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500 text-white shadow-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden="true">
+                <path d="M12 3v2" />
+                <path d="M12 19v2" />
+                <path d="M4.22 7.22l1.42 1.42" />
+                <path d="M18.36 18.36l1.42 1.42" />
+                <path d="M3 12h2" />
+                <path d="M19 12h2" />
+                <path d="M18.36 5.64l1.42-1.42" />
+                <path d="M4.22 16.78l1.42-1.42" />
+                <path d="M12 7a5 5 0 0 1 5 5" />
+              </svg>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-gray-900">
+                {t("dashboard.nextStepSurveyTitle", locale)}
+              </p>
+              <p className="mt-1 text-sm text-gray-700">
+                {t("dashboard.nextStepSurveyBody", locale)}
+              </p>
+              <button
+                type="button"
+                onClick={onOpenSurvey}
+                className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 px-5 text-sm font-semibold text-white shadow-lg ring-2 ring-amber-300/40 ring-offset-2 ring-offset-amber-50/60 transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+              >
+                {t("dashboard.nextStepSurveyCta", locale)}
+              </button>
+            </div>
+          </div>
         </div>
       )}
       <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">

@@ -211,38 +211,44 @@ export function DashboardTabs(props: DashboardTabsProps) {
     <div className="flex flex-col gap-8 md:gap-12">
       {/* Journey progress — visible on all tabs */}
       <FadeIn>
-        <section className="relative rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-indigo-50/80 via-white to-white glass-effect p-8 md:p-12">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
-              {t("dashboard.guidedTag", locale)}
-            </p>
-            <div className="mt-3 flex items-center gap-3">
-              <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                {t("dashboard.nextStepTitle", locale)}
-              </h2>
+        <section className="relative overflow-hidden rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-100/80 via-purple-50/60 to-pink-50/40 glass-effect p-8 shadow-md shadow-indigo-200/40 md:p-12">
+          {/* Background glow */}
+          <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-500/25 via-purple-500/15 to-pink-500/15 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-gradient-to-tr from-purple-500/20 via-indigo-500/10 to-pink-500/10 blur-3xl" aria-hidden="true" />
+
+          <div className="relative z-10">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
+                {t("dashboard.guidedTag", locale)}
+              </p>
+              <div className="mt-3 flex items-center gap-3">
+                <div className="h-1 w-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                  {t("dashboard.nextStepTitle", locale)}
+                </h2>
+              </div>
+              <p className="mt-3 text-sm text-gray-700">
+                {t("dashboard.guidedPraise", locale)}
+              </p>
             </div>
-            <p className="mt-3 text-sm text-gray-600">
-              {t("dashboard.guidedPraise", locale)}
-            </p>
+            <JourneyProgress
+              locale={locale}
+              initialHasInvites={props.hasInvites}
+              initialPendingInvites={props.pendingInvitesCount}
+              hasObserverFeedback={props.hasObserverFeedback}
+              completedObserversCount={props.completedObserversCount}
+              onTabChange={handleTabChange}
+              surveySubmitted={props.surveySubmitted}
+              onOpenSurvey={() => setSurveyModalOpen(true)}
+            />
+            <ResearchSurvey
+              locale={locale}
+              hasObserverFeedback={props.hasObserverFeedback}
+              occupationStatus={props.occupationStatus}
+              isOpen={surveyModalOpen}
+              onClose={() => setSurveyModalOpen(false)}
+            />
           </div>
-          <JourneyProgress
-            locale={locale}
-            initialHasInvites={props.hasInvites}
-            initialPendingInvites={props.pendingInvitesCount}
-            hasObserverFeedback={props.hasObserverFeedback}
-            completedObserversCount={props.completedObserversCount}
-            onTabChange={handleTabChange}
-            surveySubmitted={props.surveySubmitted}
-            onOpenSurvey={() => setSurveyModalOpen(true)}
-          />
-          <ResearchSurvey
-            locale={locale}
-            hasObserverFeedback={props.hasObserverFeedback}
-            occupationStatus={props.occupationStatus}
-            isOpen={surveyModalOpen}
-            onClose={() => setSurveyModalOpen(false)}
-          />
         </section>
       </FadeIn>
 
