@@ -77,7 +77,7 @@ const translations = {
   observerInvite: {
     hu: {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
-      greeting: (name: string) => `Kedves ${name},`,
+      greeting: (_name: string) => "Szia,",
       body: (inviter: string) =>
         `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet. A válaszaid név nélkül jelennek meg, és csak kutatási célra használjuk.`,
       cta: "Visszajelzés kitöltése",
@@ -88,7 +88,7 @@ const translations = {
     },
     en: {
       subject: "Invitation to a personality assessment – Trita",
-      greeting: (name: string) => `Hello ${name},`,
+      greeting: (_name: string) => "Hi,",
       body: (inviter: string) =>
         `${inviter} invited you to complete a short personality assessment about them. Your answers remain anonymous and are used for research only.`,
       cta: "Open the feedback form",
@@ -99,7 +99,7 @@ const translations = {
     },
     de: {
       subject: "Einladung zum Persönlichkeitstest – Trita",
-      greeting: (name: string) => `Hallo ${name},`,
+      greeting: (_name: string) => "Hallo,",
       body: (inviter: string) =>
         `${inviter} hat dich eingeladen, eine kurze Einschätzung abzugeben. Deine Antworten bleiben anonym und werden nur zu Forschungszwecken verwendet.`,
       cta: "Fremdeinschätzung öffnen",

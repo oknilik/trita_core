@@ -76,6 +76,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const emitInviteProgressUpdate = (nextInvitations: Invitation[]) => {
     const active = nextInvitations.filter((i) => i.status !== "CANCELED");
@@ -159,6 +160,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const canCreate = activeCount < 5;
 
   const handleDelete = async (id: string) => {
+    setDeletingId(id);
     try {
       const response = await fetch(`/api/observer/invite/${id}`, {
         method: "DELETE",
@@ -167,6 +169,8 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
       setInvitations((prev) => prev.filter((inv) => inv.id !== id));
     } catch {
       showToast(t("invite.deleteFailed", locale), "error");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -363,11 +367,19 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
                       <button
                         type="button"
                         onClick={() => handleDelete(inv.id)}
-                        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 transition-all"
+                        disabled={deletingId === inv.id}
+                        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 transition-all disabled:cursor-not-allowed"
                       >
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                        {deletingId === inv.id ? (
+                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={2} />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                        ) : (
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        )}
                         <span className="hidden md:inline">{t("actions.delete", locale)}</span>
                       </button>
                     </>

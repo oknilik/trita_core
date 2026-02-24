@@ -36,10 +36,10 @@ const handler = clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
   if (isProtectedRoute(req)) {
-    const signInUrl = new URL("/sign-in", req.url).toString();
+    const homeUrl = new URL("/", req.url).toString();
     await auth.protect({
-      unauthenticatedUrl: signInUrl,
-      unauthorizedUrl: signInUrl,
+      unauthenticatedUrl: homeUrl,
+      unauthorizedUrl: homeUrl,
     });
   }
 

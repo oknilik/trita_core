@@ -23,6 +23,14 @@ function SignInContent() {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendNote, setResendNote] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setResendCooldown((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
+
   if (!isLoaded) return null;
 
   const canResend = resendCooldown <= 0 && !isSubmitting && Boolean(emailAddressId);
@@ -42,14 +50,6 @@ function SignInContent() {
       setResendCooldown(0);
     }
   };
-
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const timer = window.setInterval(() => {
-      setResendCooldown((s) => (s > 0 ? s - 1 : 0));
-    }, 1000);
-    return () => window.clearInterval(timer);
-  }, [resendCooldown]);
 
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
