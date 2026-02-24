@@ -14,8 +14,8 @@ import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefres
 import { HashScroll } from "@/components/dashboard/HashScroll";
 import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
-import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
 import { UpcomingFeaturesCTA } from "@/components/dashboard/UpcomingFeaturesCTA";
+import { DiscardDraftButton } from "@/components/dashboard/DiscardDraftButton";
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +92,7 @@ export default async function DashboardPage({
     confidenceStats,
     satisfactionFeedback,
     researchSurvey,
+    featureInterestCount,
   ] =
     profile
       ? await Promise.all([
@@ -178,8 +179,11 @@ export default async function DashboardPage({
             where: { userProfileId: profile.id },
             select: { id: true },
           }),
+          prisma.featureInterest.count({
+            where: { userProfileId: profile.id },
+          }),
         ])
-      : [null, null, [], [], [], { _avg: { confidence: null } }, null, null];
+      : [null, null, [], [], [], { _avg: { confidence: null } }, null, null, 0];
 
   const draftAnsweredCount = draft
     ? Object.keys(draft.answers as Record<string, number>).length
@@ -402,12 +406,15 @@ export default async function DashboardPage({
                   />
                 </div>
               </div>
-              <Link
-                href="/assessment"
-                className="group inline-flex min-h-[52px] md:min-h-[48px] items-center justify-center rounded-xl bg-amber-500 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-600 hover:scale-105"
-              >
-                {t("actions.continueTest", locale)}
-              </Link>
+              <div className="flex flex-col items-center gap-2">
+                <Link
+                  href="/assessment"
+                  className="group inline-flex min-h-[52px] md:min-h-[48px] items-center justify-center rounded-xl bg-amber-500 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-600 hover:scale-105"
+                >
+                  {t("actions.continueTest", locale)}
+                </Link>
+                <DiscardDraftButton />
+              </div>
             </div>
           </section>
         </FadeIn>
@@ -464,21 +471,12 @@ export default async function DashboardPage({
         }))}
         hasInvites={hasInvites}
         pendingInvitesCount={pendingInvites.length}
+        surveySubmitted={surveySubmitted}
+        occupationStatus={profile.occupationStatus ?? null}
       />
 
-      {/* ── Research survey — shown after full journey, until submitted ── */}
-      {journeyComplete && !surveySubmitted && (
-        <FadeIn>
-          <ResearchSurvey
-            locale={locale}
-            hasObserverFeedback={hasObserverFeedback}
-            occupationStatus={profile.occupationStatus ?? null}
-          />
-        </FadeIn>
-      )}
-
-      {/* ── Upcoming features validation — fake door test ── */}
-      {journeyComplete && (
+      {/* ── Upcoming features validation — hidden once user has answered ── */}
+      {journeyComplete && featureInterestCount === 0 && (
         <FadeIn>
           <UpcomingFeaturesCTA locale={locale} />
         </FadeIn>

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useId } from "react";
+import { memo } from "react";
 import { motion } from "framer-motion";
 
 const CX = 150;
@@ -23,6 +23,7 @@ interface RadarChartProps {
   showObserver?: boolean;
   selfLabel?: string;
   observerLabel?: string;
+  uid?: string;
 }
 
 function getPoint(index: number, total: number, radius: number) {
@@ -62,8 +63,8 @@ export const RadarChart = memo(function RadarChart({
   showObserver = false,
   selfLabel = "Saját",
   observerLabel = "Meghívottak",
+  uid = "rc",
 }: RadarChartProps) {
-  const uid = useId();
   const n = dimensions.length;
   const radarFillId = `radar-fill-${uid}`;
   const radarStrokeId = `radar-stroke-${uid}`;

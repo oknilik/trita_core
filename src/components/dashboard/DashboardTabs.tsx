@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { t, tf, type Locale } from "@/lib/i18n";
@@ -14,6 +14,7 @@ import { InviteSection } from "@/components/dashboard/InviteSection";
 import { RetakeButton } from "@/components/dashboard/RetakeButton";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
 import { ProfileInsights } from "@/components/dashboard/ProfileInsights";
+import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
 
 type TabId = "results" | "comparison" | "invites";
 
@@ -115,12 +116,16 @@ export interface DashboardTabsProps {
   receivedInvitations: SerializedReceivedInvitation[];
   hasInvites: boolean;
   pendingInvitesCount: number;
+  surveySubmitted: boolean;
+  occupationStatus: string | null;
 }
 
 export function DashboardTabs(props: DashboardTabsProps) {
   const { locale } = useLocale();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>(props.activeTab);
+  const [surveyModalOpen, setSurveyModalOpen] = useState(false);
+  const tabBarRef = useRef<HTMLDivElement>(null);
 
   const handleTabChange = useCallback(
     (tab: TabId) => {
@@ -128,6 +133,9 @@ export function DashboardTabs(props: DashboardTabsProps) {
       const url = new URL(window.location.href);
       url.searchParams.set("tab", tab);
       router.push(url.pathname + url.search, { scroll: false });
+      setTimeout(() => {
+        tabBarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
     },
     [router],
   );
@@ -192,12 +200,21 @@ export function DashboardTabs(props: DashboardTabsProps) {
             hasObserverFeedback={props.hasObserverFeedback}
             completedObserversCount={props.completedObserversCount}
             onTabChange={handleTabChange}
+            surveySubmitted={props.surveySubmitted}
+            onOpenSurvey={() => setSurveyModalOpen(true)}
+          />
+          <ResearchSurvey
+            locale={locale}
+            hasObserverFeedback={props.hasObserverFeedback}
+            occupationStatus={props.occupationStatus}
+            isOpen={surveyModalOpen}
+            onClose={() => setSurveyModalOpen(false)}
           />
         </section>
       </FadeIn>
 
       {/* Tab bar */}
-      <div className="rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
+      <div ref={tabBarRef} className="scroll-mt-24 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
         <div
           className="grid grid-cols-3 gap-1.5"
           role="tablist"

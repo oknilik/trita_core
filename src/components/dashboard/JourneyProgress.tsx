@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { t, tf, type Locale } from "@/lib/i18n";
 
@@ -19,6 +19,10 @@ interface JourneyProgressProps {
   draftAnsweredCount?: number;
   /** Total number of questions in the draft's test. */
   draftTotalQuestions?: number;
+  /** Whether the research survey has already been submitted. */
+  surveySubmitted?: boolean;
+  /** Opens the research survey modal. */
+  onOpenSurvey?: () => void;
 }
 
 interface InviteProgressEventDetail {
@@ -37,9 +41,12 @@ export function JourneyProgress({
   hasDraft = false,
   draftAnsweredCount = 0,
   draftTotalQuestions = 0,
+  surveySubmitted = true,
+  onOpenSurvey,
 }: JourneyProgressProps) {
   const [hasInvites, setHasInvites] = useState(initialHasInvites);
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
+  const [surveyDone, setSurveyDone] = useState(surveySubmitted);
 
   useEffect(() => {
     const onInvitesUpdated = (event: Event) => {
@@ -48,9 +55,14 @@ export function JourneyProgress({
       setHasInvites(detail.hasInvites);
       setPendingInvites(detail.pendingInvites);
     };
+    const onSurveySubmitted = () => setSurveyDone(true);
 
     window.addEventListener("dashboard:invites-updated", onInvitesUpdated);
-    return () => window.removeEventListener("dashboard:invites-updated", onInvitesUpdated);
+    window.addEventListener("dashboard:survey-submitted", onSurveySubmitted);
+    return () => {
+      window.removeEventListener("dashboard:invites-updated", onInvitesUpdated);
+      window.removeEventListener("dashboard:survey-submitted", onSurveySubmitted);
+    };
   }, []);
 
   const feedbackInProgress = (pendingInvites > 0 || (completedObserversCount > 0 && !hasObserverFeedback)) && !hasObserverFeedback;
@@ -62,7 +74,15 @@ export function JourneyProgress({
     (selfCompleted && hasObserverFeedback ? 1 : 0);
   const progressPct = Math.round((stepsCompleted / totalSteps) * 100);
 
-  const nextStep = !selfCompleted
+  const inviteBody: ReactNode = (
+    <span>
+      {t("dashboard.nextStepInviteBodyPre", locale)}
+      <strong className="font-bold italic">{t("dashboard.nextStepInviteBodyHighlight", locale)}</strong>
+      {t("dashboard.nextStepInviteBodyPost", locale)}
+    </span>
+  );
+
+  const nextStep: { title: string; body: ReactNode; cta: string; href: string; useLink?: boolean; onAction?: () => void } = !selfCompleted
     ? hasDraft
       ? {
           title: t("dashboard.nextStepDraftTitle", locale),
@@ -79,7 +99,7 @@ export function JourneyProgress({
     : !hasInvites
       ? {
           title: t("dashboard.nextStepInviteTitle", locale),
-          body: t("dashboard.nextStepInviteBody", locale),
+          body: inviteBody,
           cta: t("dashboard.nextStepInviteCta", locale),
           href: "#invite",
         }
@@ -90,12 +110,20 @@ export function JourneyProgress({
             cta: t("dashboard.nextStepManageInvitesCta", locale),
             href: "#invite",
           }
-        : {
-            title: t("dashboard.nextStepDoneTitle", locale),
-            body: t("dashboard.nextStepDoneBody", locale),
-            cta: t("dashboard.nextStepDoneCta", locale),
-            href: hasObserverFeedback ? "#comparison" : "#results",
-          };
+        : !surveyDone
+          ? {
+              title: t("dashboard.nextStepSurveyTitle", locale),
+              body: t("dashboard.nextStepSurveyBody", locale),
+              cta: t("dashboard.nextStepSurveyCta", locale),
+              href: "#",
+              onAction: onOpenSurvey,
+            }
+          : {
+              title: t("dashboard.nextStepDoneTitle", locale),
+              body: t("dashboard.nextStepDoneBody", locale),
+              cta: t("dashboard.nextStepDoneCta", locale),
+              href: hasObserverFeedback ? "#comparison" : "#results",
+            };
 
   // Whether the CTA should use a Link (href navigation) vs button (tab change)
   const useLink = !selfCompleted || !onTabChange;
@@ -293,26 +321,43 @@ export function JourneyProgress({
           </div>
         </div>
       ) : (
-        <div className="mt-6 rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-white to-indigo-50/20 p-6 md:p-8 shadow-md">
+        <div className="mt-6 rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50/90 via-purple-50/60 to-pink-50/40 p-6 md:p-8 shadow-md">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
-              <p className="mt-1 text-sm text-gray-600">{nextStep.body}</p>
+              <p className="text-sm font-semibold text-indigo-900">{nextStep.title}</p>
+              <p className="mt-1 text-sm text-indigo-700/70">{nextStep.body}</p>
             </div>
-            {useLink ? (
-              <Link
-                href={nextStep.href}
-                className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            {nextStep.onAction ? (
+              <button
+                type="button"
+                onClick={nextStep.onAction}
+                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-indigo-400/25 ring-offset-2 ring-offset-indigo-50/60 hover:shadow-xl hover:ring-indigo-400/40 transition-all duration-300 hover:scale-105"
               >
                 {nextStep.cta}
+                <svg viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </button>
+            ) : useLink ? (
+              <Link
+                href={nextStep.href}
+                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-indigo-400/25 ring-offset-2 ring-offset-indigo-50/60 hover:shadow-xl hover:ring-indigo-400/40 transition-all duration-300 hover:scale-105"
+              >
+                {nextStep.cta}
+                <svg viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
               </Link>
             ) : (
               <button
                 type="button"
                 onClick={() => onTabChange!(nextStep.href === "#comparison" ? "comparison" : "invites")}
-                className="group inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-indigo-400/25 ring-offset-2 ring-offset-indigo-50/60 hover:shadow-xl hover:ring-indigo-400/40 transition-all duration-300 hover:scale-105"
               >
                 {nextStep.cta}
+                <svg viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
               </button>
             )}
           </div>

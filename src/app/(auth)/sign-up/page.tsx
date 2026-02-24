@@ -165,7 +165,7 @@ function SignUpContent() {
             </button>
           </div>
 
-          <div id="clerk-captcha" />
+          <div className="mt-4 flex justify-center"><div id="clerk-captcha" /></div>
         </div>
       </div>
     );

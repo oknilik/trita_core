@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 const surveySchema = z.object({
   selfAccuracy: z.number().int().min(1).max(5),
-  priorTest: z.enum(["mbti", "bigfive", "other", "none"]),
+  priorTest: z.string().min(1),
   positionLevel: z.enum(["junior", "middle", "senior", "independent"]).optional(),
   studyField: z.enum(["business", "stem", "humanities", "health", "other"]).optional(),
   industry: z.string().optional(),
