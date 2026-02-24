@@ -261,56 +261,71 @@ function buildEmailLayout(params: {
   const logoSize = params.logoSize ?? DEFAULT_LOGO_SIZE;
   const logoWidth = Math.round(logoSize * LOGO_ASPECT_RATIO);
   return `<!DOCTYPE html>
-<html lang="${params.locale}">
+<html lang="${params.locale}" style="color-scheme:light only">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light only">
   <meta name="supported-color-schemes" content="light">
   <style>
-    :root { color-scheme: light; }
+    :root { color-scheme: light only; }
+    html, body { color-scheme: light only !important; }
     @media (prefers-color-scheme: dark) {
-      body { background-color: #f3f4f6 !important; }
-      body * { color-scheme: light; }
+      html, body    { background-color: #f3f4f6 !important; }
+      .em-wrap      { background-color: #f3f4f6 !important; }
+      .em-head      { background: ${HEADER_GRADIENT} !important; background-image: ${HEADER_GRADIENT} !important; }
+      .em-wave-top  { fill: #ffffff !important; }
+      .em-wave-bot  { fill: #ffffff !important; }
+      .em-body      { background-color: #ffffff !important; }
+      .em-body p,
+      .em-body li   { color: #374151 !important; }
+      .em-body h1,
+      .em-heading   { color: #1e1b4b !important; }
+      .em-muted     { color: #6b7280 !important; }
+      .em-foot      { background: ${FOOTER_GRADIENT} !important; background-image: ${FOOTER_GRADIENT} !important; }
+      .em-code-box  { background-color: #f3f4f6 !important; }
+      .em-code-lbl  { color: #6b7280 !important; }
+      .em-code-val  { color: #1e1b4b !important; }
+      .em-cta       { background: ${CTA_GRADIENT} !important; background-image: ${CTA_GRADIENT} !important; color: #ffffff !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6">
-  <div style="max-width:600px;margin:0 auto;padding:32px 16px 24px">
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6;color-scheme:light only">
+  <div class="em-wrap" style="max-width:600px;margin:0 auto;padding:32px 16px 24px">
 
     <!-- Gradient header with logo and wave bottom -->
-    <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
+    <div class="em-head" style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
       <div style="padding:24px 32px 10px;text-align:center">
         <img src="${APP_URL}/trita-logo.svg" alt="trita" width="${logoWidth}" height="${logoSize}"
              style="display:inline-block;margin-bottom:10px;max-width:100%;height:auto">
-        ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
+        ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
            style="display:block;width:100%;height:28px">
-        <path d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
+        <path class="em-wave-top" d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
       </svg>
     </div>
 
     <!-- White content area -->
-    <div style="background:#ffffff;padding:16px 32px 32px">
+    <div class="em-body" style="background:#ffffff;padding:16px 32px 32px">
       ${params.bodyContent}
     </div>
 
     <!-- Footer with wave top and light gradient -->
-    <div style="background:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
+    <div class="em-foot" style="background:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
            style="display:block;width:100%;height:28px">
-        <path d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
+        <path class="em-wave-bot" d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
       </svg>
       <div style="padding:4px 32px 24px;text-align:center">
-        ${params.footerDisclaimer ? `<p style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
-        <p style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
+        ${params.footerDisclaimer ? `<p class="em-muted" style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
+        <p class="em-muted" style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
           ${params.thanks}<br>${params.team}
         </p>
       </div>
     </div>
 
-    <p style="text-align:center;font-size:11px;color:#d1d5db;margin:16px 0 0">
+    <p class="em-muted" style="text-align:center;font-size:11px;color:#d1d5db;margin:16px 0 0">
       &copy; trita 2026
     </p>
   </div>
@@ -339,7 +354,7 @@ function buildOrderConfirmationHtml(locale: Locale, name: string): string {
     </ul>
     <div style="text-align:center">
       <a href="${APP_URL}/dashboard"
-         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
         ${t.cta}
       </a>
     </div>`;
@@ -412,7 +427,7 @@ function buildObserverInviteHtml(params: {
     </p>
     <div style="text-align:center">
       <a href="${link}"
-         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
         ${t.cta}
       </a>
     </div>`;
@@ -488,7 +503,7 @@ function buildObserverCompletionHtml(params: {
     </p>
     <div style="text-align:center">
       <a href="${APP_URL}/dashboard"
-         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
         ${t.cta}
       </a>
     </div>`;
@@ -551,11 +566,11 @@ function buildVerificationCodeHtml(params: {
     : translations.verificationCode[params.locale];
 
   const bodyContent = `
-    <div style="background:#f3f4f6;border-radius:12px;padding:20px;text-align:center;margin:0 0 16px">
-      <p style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 8px">
+    <div class="em-code-box" style="background:#f3f4f6;border-radius:12px;padding:20px;text-align:center;margin:0 0 16px">
+      <p class="em-code-lbl" style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 8px">
         ${t.codeLabel}
       </p>
-      <div style="font-size:32px;font-weight:700;letter-spacing:.25em;color:#1e1b4b">
+      <div class="em-code-val" style="font-size:32px;font-weight:700;letter-spacing:.25em;color:#1e1b4b">
         ${params.code}
       </div>
     </div>
@@ -634,7 +649,7 @@ function buildMagicLinkHtml(params: {
     </p>
     <div style="text-align:center">
       <a href="${params.magicLinkUrl}"
-         style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
+         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
         ${t.cta}
       </a>
     </div>`;

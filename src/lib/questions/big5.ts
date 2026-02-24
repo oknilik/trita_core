@@ -533,9 +533,9 @@ export const big5Config: TestConfig = {
       dimension: "A",
       aspect: "politeness",
       text: "Take advantage of others.",
-      textByLocale: { hu: "Kihasználom másokat.", en: "Take advantage of others.", de: "Ich nutze andere aus." },
+      textByLocale: { hu: "Néha kihasználok másokat.", en: "Take advantage of others.", de: "Ich nutze andere aus." },
       textObserver: "He/She takes advantage of others.",
-      textObserverByLocale: { hu: "Kihasználja másokat.", en: "He/She takes advantage of others.", de: "Er/Sie nutzt andere aus." },
+      textObserverByLocale: { hu: "Néha kihasznál másokat.", en: "He/She takes advantage of others.", de: "Er/Sie nutzt andere aus." },
       reversed: true,
     },
     {

@@ -126,6 +126,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>(props.activeTab);
   const [surveyModalOpen, setSurveyModalOpen] = useState(false);
+  const [surveySubmitted, setSurveySubmitted] = useState(props.surveySubmitted);
   const tabBarRef = useRef<HTMLDivElement>(null);
 
   const handleTabChange = useCallback(
@@ -171,6 +172,16 @@ export function DashboardTabs(props: DashboardTabsProps) {
     const onOpenSurvey = () => setSurveyModalOpen(true);
     window.addEventListener("dashboard:open-survey", onOpenSurvey);
     return () => window.removeEventListener("dashboard:open-survey", onOpenSurvey);
+  }, []);
+
+  // Hide survey CTAs immediately after submission without requiring a page refresh.
+  useEffect(() => {
+    const onSurveySubmitted = () => {
+      setSurveySubmitted(true);
+      setSurveyModalOpen(false);
+    };
+    window.addEventListener("dashboard:survey-submitted", onSurveySubmitted);
+    return () => window.removeEventListener("dashboard:survey-submitted", onSurveySubmitted);
   }, []);
 
   const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
@@ -238,7 +249,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
               hasObserverFeedback={props.hasObserverFeedback}
               completedObserversCount={props.completedObserversCount}
               onTabChange={handleTabChange}
-              surveySubmitted={props.surveySubmitted}
+              surveySubmitted={surveySubmitted}
               onOpenSurvey={() => setSurveyModalOpen(true)}
             />
             <ResearchSurvey
@@ -309,7 +320,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             completedObserversCount={props.completedObserversCount}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
-            surveySubmitted={props.surveySubmitted}
+            surveySubmitted={surveySubmitted}
             onTabChange={handleTabChange}
             locale={locale}
           />

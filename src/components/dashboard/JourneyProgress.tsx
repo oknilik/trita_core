@@ -252,6 +252,36 @@ export function JourneyProgress({
         </span>
       </div>
 
+      <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
+        <span
+          className={
+            selfCompleted
+              ? "text-indigo-600"
+              : hasDraft
+                ? "text-amber-500"
+                : ""
+          }
+        >
+          {t("dashboard.journeyStepSelf", locale)}
+        </span>
+        <span className={stepsCompleted >= 2 ? "text-indigo-600" : ""}>
+          {t("dashboard.journeyStepInvite", locale)}
+        </span>
+        <span
+          className={
+            stepsCompleted >= 3
+              ? feedbackPartial
+                ? "text-amber-500"
+                : "text-indigo-600"
+              : feedbackInProgress
+                ? "text-amber-500"
+                : ""
+          }
+        >
+          {t("dashboard.journeyStepObserver", locale)}
+        </span>
+      </div>
+
       {/* Optional: research survey (kept separate from the 3-step progress) */}
       {selfCompleted && hasObserverFeedback && !surveyDone && onOpenSurvey && (
         <div className="mt-6 rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/90 via-yellow-50/70 to-white p-5 shadow-md shadow-amber-100/60">
@@ -287,35 +317,6 @@ export function JourneyProgress({
           </div>
         </div>
       )}
-      <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
-        <span
-          className={
-            selfCompleted
-              ? "text-indigo-600"
-              : hasDraft
-                ? "text-amber-500"
-                : ""
-          }
-        >
-          {t("dashboard.journeyStepSelf", locale)}
-        </span>
-        <span className={stepsCompleted >= 2 ? "text-indigo-600" : ""}>
-          {t("dashboard.journeyStepInvite", locale)}
-        </span>
-        <span
-          className={
-            stepsCompleted >= 3
-              ? feedbackPartial
-                ? "text-amber-500"
-                : "text-indigo-600"
-              : feedbackInProgress
-                ? "text-amber-500"
-                : ""
-          }
-        >
-          {t("dashboard.journeyStepObserver", locale)}
-        </span>
-      </div>
 
       {/* Next step card — amber when draft in progress, indigo otherwise */}
       {hasDraft && !selfCompleted ? (
