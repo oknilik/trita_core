@@ -30,7 +30,7 @@ const translations = {
     observeTitle: {
       hu: "Megfigyelői értékelés | Trita",
       en: "Observer assessment | Trita",
-      de: "Beobachterbewertung | Trita",
+      de: "Fremdeinschätzung | Trita",
     },
     onboardingTitle: {
       hu: "Személyes adatok | Trita",
@@ -152,12 +152,12 @@ const translations = {
       de: "Testtypen: HEXACO, modifiziertes HEXACO, Big Five",
     },
     researchItem2: {
-      hu: "Véletlenszerű kiosztás - mindenki 1 tesztet kap",
-      en: "Balanced random assignment - each user gets 1 test",
-      de: "Ausgewogene Zufallszuweisung - jede Person erhält 1 Test",
+      hu: "Véletlenszerű kiosztás: mindenki egy tesztet kap",
+      en: "Random assignment: everyone gets one test",
+      de: "Zufällige Zuweisung: Jede Person erhält einen Test",
     },
     researchItem3: {
-      hu: "Ismerősi visszajelzés összehasonlítás",
+      hu: "Ismerősi visszajelzések összehasonlítása",
       en: "Observer comparison",
       de: "Vergleich mit Fremdeinschätzungen",
     },
@@ -168,7 +168,7 @@ const translations = {
       en: "The platform is currently in a research phase and operates with randomized model assignment. This supports methodology validation and continuous refinement.",
       de: "Die Plattform befindet sich derzeit in einer Forschungsphase und arbeitet mit einer randomisierten Modellzuweisung. Das unterstützt die Validierung und kontinuierliche Feinabstimmung der Methodik.",
     },
-    testTypes: { hu: "modell típus", en: "model types", de: "Modelltypen" },
+    testTypes: { hu: "modellek", en: "models", de: "Modelle" },
     completionTime: { hu: "kitöltési idő", en: "completion time", de: "Ausfüllzeit" },
     completionTimeValue: { hu: "~15 perc", en: "~15 min", de: "~15 Min." },
     howTag: { hu: "Hogyan működik", en: "How it works", de: "So funktioniert es" },
@@ -181,11 +181,11 @@ const translations = {
     },
     step2Title: { hu: "Töltsd ki a tesztet", en: "Complete the test", de: "Füll den Test aus" },
     step2Body: {
-      hu: "Válaszolj őszintén a kérdésekre, az eredményed azonnal megjelenik a dashboardon.",
+      hu: "Válaszolj őszintén a kérdésekre, és az eredményed azonnal megjelenik a dashboardon.",
       en: "Answer honestly and see your result on the dashboard right away.",
       de: "Antworte ehrlich und sieh dein Ergebnis sofort im Dashboard.",
     },
-    step3Title: { hu: "Hívj meg ismerősöket", en: "Invite observers", de: "Lade Beobachter ein" },
+    step3Title: { hu: "Hívj meg ismerősöket", en: "Invite observers", de: "Lade Beobachtende ein" },
     step3Body: {
       hu: "Kérd meg kollégáidat, barátaidat, családtagjaidat egy rövid értékelésre.",
       en: "Ask your colleagues, friends, and family members to complete a short assessment.",
@@ -197,7 +197,7 @@ const translations = {
     feature1Desc: {
       hu: "Empirikusan megalapozott személyiségmérési keretrendszereket vetünk össze. Az adatokat anonim módon, a visszajelzéseitek alapján a felhasználói élménnyel együtt elemezzük.",
       en: "We compare empirically grounded personality measurement frameworks. We analyze anonymized data together with user experience, based on your feedback.",
-      de: "Wir vergleichen empirisch fundierte Rahmenwerke zur Persönlichkeitsmessung. Dabei analysieren wir anonymisierte Daten gemeinsam mit der Nutzererfahrung auf Grundlage eures Feedbacks.",
+      de: "Wir vergleichen empirisch fundierte Rahmenwerke zur Persönlichkeitsmessung. Dabei analysieren wir anonymisierte Daten gemeinsam mit der Nutzererfahrung auf Grundlage deines Feedbacks.",
     },
     feature2Title: { hu: "Azonnali eredmény", en: "Immediate result", de: "Sofortiges Ergebnis" },
     feature2Desc: {
@@ -234,7 +234,7 @@ const translations = {
     ctaCompleteProfile: { hu: "Profil befejezése", en: "Complete profile", de: "Profil vervollständigen" },
     ctaRequestFeedback: { hu: "Visszajelzések kérése", en: "Request feedback", de: "Feedback anfragen" },
     ctaViewResults: { hu: "Eredmények megtekintése", en: "View results", de: "Ergebnisse ansehen" },
-    ctaTagInProgress: { hu: "Már úton vagy", en: "You are on your way", de: "Du bist auf dem Weg" },
+    ctaTagInProgress: { hu: "Jó úton jársz", en: "You are on your way", de: "Du bist auf dem Weg" },
     ctaTitleCompleteProfile: { hu: "Fejezd be a profilod", en: "Complete your profile", de: "Vervollständige dein Profil" },
     ctaBodyCompleteProfile: {
       hu: "Már csak egy rövid lépés, és indulhat a kitöltés.",
@@ -412,7 +412,7 @@ const translations = {
   assessment: {
     introWelcome: { hu: "Köszönjük, hogy részt veszel a kutatásban!", en: "Thank you for taking part in the research!", de: "Danke, dass du an der Studie teilnimmst!" },
     introBody: { hu: "A következő kérdőívet kérjük figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat.", en: "Please fill in the questionnaire carefully — go with your first impression on each question, don't overthink it.", de: "Bitte fülle den Fragebogen sorgfältig aus — vertrau bei jeder Frage auf deinen ersten Eindruck." },
-    introCount: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — az előrehaladásod automatikusan mentődik, és onnan folytathatod ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
+    introCount: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
     introStart: { hu: "Kezdjük el →", en: "Let's start →", de: "Los geht's →" },
     helpLikert: {
       hu: "Válaszd ki, mennyire értesz egyet az állítással (1 = egyáltalán nem, 5 = teljesen)",
@@ -497,7 +497,7 @@ const translations = {
     journeyStepObserver: { hu: "Megfigyelői visszajelzés", en: "Observer feedback", de: "Fremdfeedback" },
     journeyStepFeedback: { hu: "Visszajelzésed", en: "Your feedback", de: "Dein Feedback" },
     nextStepInviteTitle: { hu: "Nézd meg, hogy látnak téged mások", en: "See how others see you", de: "Sieh, wie andere dich sehen" },
-    nextStepInviteBodyPre:       { hu: "Hívd meg kollégáidat, barátaidat — legalább ", en: "Invite your colleagues and friends — at least ", de: "Lade Kollegen und Freunde ein — mindestens " },
+    nextStepInviteBodyPre:       { hu: "Hívd meg kollégáidat, barátaidat — legalább ", en: "Invite your colleagues and friends — at least ", de: "Lade Kolleg:innen, Freund:innen oder Familie ein — mindestens " },
     nextStepInviteBodyHighlight: { hu: "2 visszajelzés", en: "2 responses", de: "2 Antworten" },
     nextStepInviteBodyPost:      { hu: " kell az összehasonlításhoz.", en: " are needed for the comparison.", de: " sind für den Vergleich nötig." },
     nextStepInviteCta: { hu: "Meghívó küldése", en: "Send invite", de: "Einladung senden" },
@@ -613,7 +613,7 @@ const translations = {
       },
       feedbackTagsLabel: {
         hu: "Melyeket érzed igaznak a dimenzió kapcsán?",
-        en: "Which feel true about this dimension?",
+        en: "Which of these feel true for this dimension?",
         de: "Was trifft auf diese Dimension zu?",
       },
       feedbackRatingLabel: {
@@ -623,11 +623,11 @@ const translations = {
       },
     },
     feedbackTitle: { hu: "Visszajelzés az eredményről", en: "Feedback on your results", de: "Feedback zu deinen Ergebnissen" },
-    feedbackBody: { hu: "Mondd el, mennyire érzed találónak a kiértékelést.", en: "Tell us how well the results match you.", de: "Sag uns, wie gut die Ergebnisse zu dir passen." },
+    feedbackBody: { hu: "Mondd el, mennyire érzed találónak a kiértékelést.", en: "Tell us how accurate the results feel.", de: "Sag uns, wie gut die Ergebnisse zu dir passen." },
     feedbackOpenCta: { hu: "Visszajelzés megadása", en: "Give feedback", de: "Feedback geben" },
     feedbackThanks: { hu: "Köszönjük!", en: "Thank you!", de: "Danke!" },
     feedbackAgreementLabel: { hu: "Mennyire ismertél magadra az eredményekben?", en: "How well did you recognize yourself in the results?", de: "Wie gut hast du dich in den Ergebnissen wiedererkannt?" },
-    feedbackObserverUsefulnessLabel: { hu: "Mennyire voltak hasznosak számodra a visszajelzések a meghívottaktól?", en: "How useful were the feedbacks from observers?", de: "Wie nützlich waren die Rückmeldungen der Beobachter?" },
+    feedbackObserverUsefulnessLabel: { hu: "Mennyire voltak hasznosak számodra a visszajelzések a meghívottaktól?", en: "How useful was the feedback from the people you invited?", de: "Wie nützlich waren die Rückmeldungen von Beobachtenden?" },
     feedbackSiteUsefulnessLabel: { hu: "Hasznosnak találtad-e az oldalt?", en: "Did you find the site useful?", de: "Fandest du die Seite nützlich?" },
     feedbackScaleVeryLow: { hu: "Egyáltalán nem", en: "Not at all", de: "Überhaupt nicht" },
     feedbackScaleLow: { hu: "Inkább nem", en: "Rather not", de: "Eher nicht" },
@@ -646,8 +646,8 @@ const translations = {
     feedbackError: { hu: "Nem sikerült beküldeni. Próbáld újra!", en: "Could not submit. Please try again.", de: "Senden fehlgeschlagen. Bitte erneut versuchen." },
     // ── Research survey ──────────────────────────────────────────────────────
     surveyTitle: { hu: "Kutatási kérdőív", en: "Research survey", de: "Forschungsumfrage" },
-    surveySubtitle: { hu: "5–6 kérdés, ~1 perc · segíts a kutatásunkban", en: "5–6 questions, ~1 min · help our research", de: "5–6 Fragen, ~1 Min · hilf uns bei der Forschung" },
-    surveyMultiHint: { hu: "Több is választható", en: "Multiple choices allowed", de: "Mehrfachauswahl möglich" },
+    surveySubtitle: { hu: "5–6 kérdés, ~1 perc · segíts a kutatásunkban", en: "5–6 questions, ~1 min · help with our research", de: "5–6 Fragen, ~1 Min · hilf uns bei der Forschung" },
+    surveyMultiHint: { hu: "Több is választható", en: "Multiple selections allowed", de: "Mehrfachauswahl möglich" },
     surveyNext: { hu: "Tovább", en: "Next", de: "Weiter" },
     surveySubmit: { hu: "Beküldés", en: "Submit", de: "Absenden" },
     surveySkip: { hu: "Kihagyom", en: "Skip", de: "Überspringen" },
@@ -666,7 +666,7 @@ const translations = {
     surveyQ2None: { hu: "Még nem", en: "Not yet", de: "Noch nicht" },
     // Q3a — employed
     surveyQ3aLabel: { hu: "Milyen szintű pozícióban dolgozol?", en: "What level is your current position?", de: "Auf welcher Ebene ist deine Position?" },
-    surveyQ3aJunior: { hu: "Beosztott", en: "Individual contributor", de: "Mitarbeiter" },
+    surveyQ3aJunior: { hu: "Beosztott", en: "Individual contributor", de: "Ohne Führungsverantwortung" },
     surveyQ3aMiddle: { hu: "Középvezető", en: "Middle manager", de: "Mittleres Management" },
     surveyQ3aSenior: { hu: "Felsővezető", en: "Senior executive", de: "Führungskraft" },
     surveyQ3aIndependent: { hu: "Önálló vállalkozó", en: "Independent / Freelance", de: "Selbstständig" },
@@ -698,16 +698,16 @@ const translations = {
     surveyQ5Curiosity: { hu: "Csak kipróbáltam 🎲", en: "Just curious 🎲", de: "Einfach ausprobiert 🎲" },
     // Q6 sharing — universal multi-select
     surveyQ6Label: { hu: "Szívesen megosztanád az eredményeidet valakivel?", en: "Would you be happy to share your results with someone?", de: "Würdest du deine Ergebnisse gerne mit jemandem teilen?" },
-    surveyQ6Manager: { hu: "Főnökömmel / vezetőmmel", en: "My manager / boss", de: "Meinem Vorgesetzten" },
+    surveyQ6Manager: { hu: "Főnökömmel / vezetőmmel", en: "My manager / boss", de: "Meiner Führungskraft" },
     surveyQ6Hr: { hu: "HR-rel", en: "HR", de: "HR" },
-    surveyQ6Colleagues: { hu: "Munkatársakkal", en: "Colleagues", de: "Kollegen" },
+    surveyQ6Colleagues: { hu: "Munkatársakkal", en: "Colleagues", de: "Kolleg:innen" },
     surveyQ6Friends: { hu: "Barátokkal / ismerősökkel", en: "Friends / acquaintances", de: "Freunden / Bekannten" },
     surveyQ6Nobody: { hu: "Nem osztanám meg senkivel", en: "I wouldn't share it with anyone", de: "Ich würde es nicht teilen" },
     // Q7 feedback sources — employed only, multi-select
     surveyQ7Label: { hu: "Ki szokott általában visszajelzést adni neked?", en: "Who typically gives you feedback?", de: "Wer gibt dir üblicherweise Feedback?" },
-    surveyQ7Manager: { hu: "Közvetlen vezető", en: "Direct manager", de: "Direkter Vorgesetzter" },
-    surveyQ7Peers: { hu: "Kollégák / csapattársak", en: "Colleagues / teammates", de: "Kollegen / Teammitglieder" },
-    surveyQ7Reports: { hu: "Beosztottak", en: "Direct reports", de: "Untergebene" },
+    surveyQ7Manager: { hu: "Közvetlen vezető", en: "Direct manager", de: "Direkte Führungskraft" },
+    surveyQ7Peers: { hu: "Kollégák / csapattársak", en: "Colleagues / teammates", de: "Kolleg:innen / Teammitglieder" },
+    surveyQ7Reports: { hu: "Beosztottak", en: "Direct reports", de: "Direkt Unterstellte" },
     surveyQ7Clients: { hu: "Ügyfelek / partnerek", en: "Clients / partners", de: "Kunden / Partner" },
     surveyQ7None: { hu: "Nincs rendszeres visszajelzőm", en: "No regular feedback source", de: "Keine regelmäßige Quelle" },
     // Q8 360 process — employed only
@@ -718,7 +718,7 @@ const translations = {
     // Q9 personality importance — everyone
     surveyQ9Label: { hu: "Mennyire tartod fontosnak a személyiség szerepét a munkahelyi / tanulmányi teljesítményben?", en: "How important do you think personality is for workplace or academic performance?", de: "Wie wichtig ist deiner Meinung nach die Persönlichkeit für die berufliche oder akademische Leistung?" },
     // Q10 observer usefulness
-    surveyQ10Label: { hu: "Mennyire voltak hasznosak a megfigyelői visszajelzések?", en: "How useful were the observer feedback responses?", de: "Wie nützlich waren die Beobachter-Rückmeldungen?" },
+    surveyQ10Label: { hu: "Mennyire voltak hasznosak a megfigyelői visszajelzések?", en: "How useful was the feedback from observers?", de: "Wie nützlich waren die Rückmeldungen von Beobachtenden?" },
     // Custom scale labels for Q9 / Q10
     surveyScaleImportanceHigh: { hu: "Fontos", en: "Important", de: "Wichtig" },
     surveyScaleImportanceVeryHigh: { hu: "Nagyon fontos", en: "Very important", de: "Sehr wichtig" },
@@ -751,11 +751,11 @@ const translations = {
     tabComparison: { hu: "Összehasonlítás", en: "Comparison", de: "Vergleich" },
     tabInvites: { hu: "Meghívók", en: "Invites", de: "Einladungen" },
     tabComparisonEmptyTitle: { hu: "Még nincs összehasonlítás", en: "No comparison yet", de: "Noch kein Vergleich" },
-    tabComparisonEmptyBody: { hu: "Hívj meg ismerősöket, hogy lássad, hogyan látnak mások.", en: "Invite people you know to see how others see you.", de: "Lade Bekannte ein, um zu sehen, wie andere dich sehen." },
+    tabComparisonEmptyBody: { hu: "Hívj meg ismerősöket, hogy lásd, hogyan látnak mások.", en: "Invite people you know to see how others see you.", de: "Lade Bekannte ein, um zu sehen, wie andere dich sehen." },
     tabComparisonEmptyCta: { hu: "Meghívók kezelése", en: "Manage invites", de: "Einladungen verwalten" },
   },
   invite: {
-    title: { hu: "Ismerős meghívása", en: "Invite observer", de: "Beobachter einladen" },
+    title: { hu: "Ismerős meghívása", en: "Invite an observer", de: "Beobachtende einladen" },
     body: {
       hu: "Hívj meg ismerősöket, hogy értékeljenek ugyanazzal a teszttel. Az eredmények anonimak maradnak.",
       en: "Invite people to rate you with the same test. Results remain anonymous.",
@@ -770,7 +770,7 @@ const translations = {
     pending: { hu: "Függőben", en: "Pending", de: "Ausstehend" },
     limit: { hu: "Limit", en: "Limit", de: "Limit" },
     helpText: {
-      hu: "Egy link = egy kitöltő. Email nélkül te osztod meg, emailcímmel mi küldjük ki.",
+      hu: "Egy link = egy kitöltő. Email nélkül te osztod meg, email címmel mi küldjük ki.",
       en: "One link, one person. No email: share it yourself. With email: we send it.",
       de: "Ein Link, eine Person. Ohne E-Mail selbst teilen – mit E-Mail versenden wir ihn.",
     },
@@ -788,28 +788,28 @@ const translations = {
     activeLimit: { hu: "Maximum 5 aktív meghívó lehet egyszerre.", en: "Maximum 5 active invites at a time.", de: "Maximal 5 aktive Einladungen gleichzeitig." },
     stats: { hu: "{completed} kitöltve, {pending} függőben, {canceled} törölve", en: "{completed} completed, {pending} pending, {canceled} canceled", de: "{completed} abgeschlossen, {pending} ausstehend, {canceled} storniert" },
   },
-  observer: {
-    metadataTitle: { hu: "Megfigyelői értékelés | Trita", en: "Observer assessment | Trita", de: "Beobachterbewertung | Trita" },
+    observer: {
+    metadataTitle: { hu: "Megfigyelői értékelés | Trita", en: "Observer assessment | Trita", de: "Fremdeinschätzung | Trita" },
     completeTitle: { hu: "Már kitöltötted ezt az értékelést", en: "This assessment is already completed", de: "Diese Bewertung wurde bereits ausgefüllt" },
     completeBody: { hu: "Ez a meghívó már fel lett használva. Köszönjük a részvételt!", en: "This invite link has already been used. Thank you for participating!", de: "Dieser Einladungslink wurde bereits verwendet. Danke für die Teilnahme!" },
     inactiveTitle: { hu: "A meghívó már nem aktív", en: "Invite is no longer active", de: "Einladung ist nicht mehr aktiv" },
     inactiveBody: { hu: "Ez a meghívó vissza lett vonva. Kérj új linket az ismerősödtől.", en: "This invite was canceled. Ask for a new link.", de: "Diese Einladung wurde zurückgezogen. Bitte um einen neuen Link." },
     expiredTitle: { hu: "A meghívó lejárt", en: "Invite expired", de: "Einladung abgelaufen" },
     expiredBody: { hu: "Ez a meghívó már nem érvényes. Kérj új linket.", en: "This invite is no longer valid. Ask for a new link.", de: "Diese Einladung ist nicht mehr gültig. Bitte um einen neuen Link." },
-    introTitle: { hu: "Megfigyelői értékelés", en: "Observer assessment", de: "Beobachterbewertung" },
-    introBody: { hu: "{inviter} arra kér, hogy töltsd ki ezt a(z) {testName} tesztet róla.", en: "{inviter} invited you to complete this {testName} assessment about them.", de: "{inviter} hat dich gebeten, diesen {testName}-Test über ihn/sie auszufüllen." },
-    introBody2: { hu: "A válaszaid anonimak maradnak, csak összesített átlag látható.", en: "Your answers remain anonymous; only aggregated averages are visible.", de: "Deine Antworten bleiben anonym; sichtbar sind nur aggregierte Durchschnitte." },
+    introTitle: { hu: "Megfigyelői értékelés", en: "Observer assessment", de: "Fremdeinschätzung" },
+    introBody: { hu: "{inviter} arra kér, hogy töltsd ki ezt a(z) {testName} tesztet róla.", en: "{inviter} asked you to complete this {testName} assessment about them.", de: "{inviter} hat dich gebeten, diesen {testName}-Test über {inviter} auszufüllen." },
+    introBody2: { hu: "A válaszaid anonimak maradnak, csak összesített átlagok láthatók.", en: "Your answers remain anonymous; only aggregated averages are visible.", de: "Deine Antworten bleiben anonym; sichtbar sind nur aggregierte Durchschnitte." },
     introWelcome: { hu: "Örülünk, hogy itt vagy!", en: "We're glad you're here!", de: "Schön, dass du da bist!" },
-    introInvitedBy: { hu: "{inviter} kért meg, hogy töltsd ki a személyiségtesztjét.", en: "{inviter} asked you to fill in their personality test.", de: "{inviter} hat dich gebeten, seinen/ihren Persönlichkeitstest auszufüllen." },
+    introInvitedBy: { hu: "{inviter} kért meg, hogy töltsd ki a személyiségtesztjét.", en: "{inviter} asked you to fill in their personality test.", de: "{inviter} hat dich gebeten, den Persönlichkeitstest für {inviter} auszufüllen." },
     introBodyShort: { hu: "Kérjük, figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat. A válaszaid anonimak maradnak.", en: "Please fill in carefully — go with your first impression on each question, don't overthink it. Your answers remain anonymous.", de: "Bitte sorgfältig ausfüllen — vertrau bei jeder Frage auf deinen ersten Eindruck. Deine Antworten bleiben anonym." },
-    introPauseNote: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — az előrehaladásod automatikusan mentődik, és onnan folytathatod ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
+    introPauseNote: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
     relationshipLabel: { hu: "Milyen a kapcsolatotok?", en: "What is your relationship?", de: "Wie ist eure Beziehung?" },
     durationLabel: { hu: "Mióta ismered?", en: "How long have you known them?", de: "Wie lange kennst du die Person?" },
     start: { hu: "Kezdjük ({count} kérdés)", en: "Start ({count} questions)", de: "Starten ({count} Fragen)" },
     thinkOf: {
-      hu: "Ne feledd! {inviter} kért meg az értékelésre, gondolj rá amikor válaszolsz a kérdésekre. ✨",
-      en: "Don't forget! {inviter} asked you for this assessment, keep them in mind while answering the questions. ✨",
-      de: "Nicht vergessen! {inviter} hat dich um diese Einschätzung gebeten, denk an die Person, wenn du die Fragen beantwortest. ✨",
+      hu: "Ne feledd! {inviter} kért meg az értékelésre, gondolj rá, amikor válaszolsz a kérdésekre. ✨",
+      en: "Don't forget: {inviter} asked you for this assessment. Keep them in mind as you answer the questions. ✨",
+      de: "Nicht vergessen: {inviter} hat dich um diese Einschätzung gebeten. Denk an {inviter}, wenn du die Fragen beantwortest. ✨",
     },
     next: { hu: "Következő ->", en: "Next ->", de: "Weiter ->" },
     prev: { hu: "<- Előző", en: "<- Previous", de: "<- Zurück" },
@@ -817,10 +817,10 @@ const translations = {
     submit: { hu: "Küldés", en: "Submit", de: "Senden" },
     genericError: { hu: "Hiba történt.", en: "Something went wrong.", de: "Ein Fehler ist aufgetreten." },
     saveError: { hu: "Hiba történt mentés közben.", en: "Failed to save.", de: "Speichern fehlgeschlagen." },
-    relationFriend: { hu: "Barát", en: "Friend", de: "Freund/in" },
-    relationColleague: { hu: "Kolléga", en: "Colleague", de: "Kollege/in" },
+    relationFriend: { hu: "Barát", en: "Friend", de: "Freund:in" },
+    relationColleague: { hu: "Kolléga", en: "Colleague", de: "Kolleg:in" },
     relationFamily: { hu: "Családtag", en: "Family", de: "Familie" },
-    relationPartner: { hu: "Partner", en: "Partner", de: "Partner/in" },
+    relationPartner: { hu: "Partner", en: "Partner", de: "Partner:in" },
     relationOther: { hu: "Egyéb", en: "Other", de: "Sonstiges" },
     durationLt1: { hu: "Kevesebb mint 1 éve", en: "Less than 1 year", de: "Weniger als 1 Jahr" },
     duration1to3: { hu: "1-3 éve", en: "1-3 years", de: "1-3 Jahre" },
@@ -998,7 +998,7 @@ const translations = {
     },
     EMAIL_SEND_FAILED: {
       hu: "A meghívó létrejött, de az email küldése nem sikerült. Másold ki a linket.",
-      en: "Invite created, but the email could not be sent. Copy the link instead.",
+      en: "Invitation created, but we couldn't send the email. Copy the link instead.",
       de: "Einladung erstellt, aber E-Mail konnte nicht gesendet werden. Kopiere den Link.",
     },
     INVALID_DIMENSION_CODE: {
@@ -1284,7 +1284,7 @@ const translations = {
       de: "Land",
     },
     countryPlaceholder: {
-      hu: "Kereses...",
+      hu: "Keresés...",
       en: "Search...",
       de: "Suchen...",
     },
@@ -1299,12 +1299,12 @@ const translations = {
       de: "Speichern...",
     },
     usernameError: {
-      hu: "A név 2-12 karakter hosszú kell legyen",
+      hu: "A névnek 2-12 karakter hosszúnak kell lennie",
       en: "Name must be 2-12 characters long",
       de: "Der Name muss 2-12 Zeichen lang sein",
     },
     birthYearError: {
-      hu: "16-100 év közötti életkor szükséges",
+      hu: "Az életkornak 16-100 év közé kell esnie",
       en: "Age must be between 16-100 years",
       de: "Alter muss zwischen 16-100 Jahren liegen",
     },
@@ -1334,7 +1334,7 @@ const translations = {
       de: "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
     },
     consentLabel: {
-      hu: "Elolvastam és elfogadom az {link}t",
+      hu: "Elolvastam és elfogadom: {link}",
       en: "I have read and accept the {link}",
       de: "Ich habe die {link} gelesen und akzeptiere sie",
     },
@@ -1383,11 +1383,11 @@ const translations = {
     dataAssessment: {
       hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések, valamint az eredmények utáni kutatási kérdőív (korábbi teszttapasztalat, munkakörülmények, motiváció stb.).",
       en: "Assessment data: personality test answers, calculated scores, observer ratings, and the post-results research survey (prior test experience, work context, motivation, etc.).",
-      de: "Testdaten: Persönlichkeitstest-Antworten, berechnete Punktzahlen, Beobachterbewertungen sowie der Nachbefragungsfragebogen (frühere Testerfahrung, Arbeitskontext, Motivation usw.).",
+      de: "Testdaten: Persönlichkeitstest-Antworten, berechnete Punktzahlen, Bewertungen von Beobachtenden sowie der Nachbefragungsfragebogen (frühere Testerfahrung, Arbeitskontext, Motivation usw.).",
     },
     dataTechnical: {
-      hu: "Technikai adatok: nyelvi beállítás (cookie), munkamenet-azonosítók, anonimizált látogatottsági statisztikák (Vercel Analytics, sütimentes).",
-      en: "Technical data: language preference (cookie), session identifiers, anonymized usage statistics (Vercel Analytics, cookieless).",
+      hu: "Technikai adatok: nyelvi beállítás (cookie), munkamenet-azonosítók, anonimizált látogatottsági statisztikák (Vercel Analytics, süti nélküli).",
+      en: "Technical data: language preference (cookie), session identifiers, anonymized usage statistics (Vercel Analytics, without cookies).",
       de: "Technische Daten: Spracheinstellung (Cookie), Sitzungskennungen, anonymisierte Nutzungsstatistiken (Vercel Analytics, ohne Cookies).",
     },
     purposeTitle: {
@@ -1403,7 +1403,7 @@ const translations = {
     purposeService: {
       hu: "Szolgáltatás működtetése: a teszt kitöltése, eredmények megjelenítése, ismerősi meghívók kezelése.",
       en: "Service operation: delivering the assessment, displaying results, managing observer invitations.",
-      de: "Dienstbetrieb: Durchführung des Tests, Anzeige der Ergebnisse, Verwaltung von Beobachtereinladungen.",
+      de: "Dienstbetrieb: Durchführung des Tests, Anzeige der Ergebnisse, Verwaltung von Einladungen an Beobachtende.",
     },
     cookiesTitle: {
       hu: "Cookie-k",
@@ -1458,7 +1458,7 @@ const translations = {
     processorsResend: {
       hu: "Resend (resend.com) – tranzakciós e-mailek küldése (pl. ismerősi meghívók). Az e-mail-cím kizárólag az üzenet kézbesítéséhez kerül továbbításra.",
       en: "Resend (resend.com) – transactional email delivery (e.g. observer invitations). Email addresses are shared solely for message delivery.",
-      de: "Resend (resend.com) – Transaktionaler E-Mail-Versand (z. B. Beobachtereinladungen). E-Mail-Adressen werden ausschließlich zur Nachrichtenübermittlung weitergegeben.",
+      de: "Resend (resend.com) – Transaktionaler E-Mail-Versand (z. B. Einladungen an Beobachtende). E-Mail-Adressen werden ausschließlich zur Nachrichtenübermittlung weitergegeben.",
     },
     rightsTitle: {
       hu: "A jogaid",
@@ -1503,7 +1503,7 @@ const translations = {
     totalInvitations: { hu: "Összes meghívó", en: "Total invitations", de: "Gesamte Einladungen" },
     totalFeedback: { hu: "Visszajelzések", en: "Feedback submissions", de: "Feedback-Einreichungen" },
     usersTitle: { hu: "Felhasználók", en: "Users", de: "Benutzer" },
-    assessmentsTitle: { hu: "Tesztkitöltések", en: "Test completions", de: "Testabschlüsse" },
+    assessmentsTitle: { hu: "Tesztkitöltések", en: "Test completions", de: "Testteilnahmen" },
     invitationsTitle: { hu: "Meghívók", en: "Invitations", de: "Einladungen" },
     feedbackTitle: { hu: "Visszajelzések", en: "Feedback", de: "Feedback" },
     new7days: { hu: "Új (7 nap)", en: "New (7 days)", de: "Neu (7 Tage)" },
@@ -1516,7 +1516,7 @@ const translations = {
   },
   comparison: {
     title: { hu: "Mások rólad", en: "Others about you", de: "Andere über dich" },
-    body: { hu: "Önértékelésed és a megfigyelők ({count} fő) átlagának összehasonlítása.", en: "Comparison of your self-rating and observer average ({count} people).", de: "Vergleich deiner Selbsteinschätzung mit dem Beobachterdurchschnitt ({count} Personen)." },
+    body: { hu: "Önértékelésed és a megfigyelők ({count} fő) átlagának összehasonlítása.", en: "Comparison of your self-rating and observer average ({count} people).", de: "Vergleich deiner Selbsteinschätzung mit dem Durchschnitt der Beobachtenden ({count} Personen)." },
     similar: { hu: "hasonló", en: "similar", de: "ähnlich" },
     diffHigher: { hu: "+{diff}% (mások magasabbra értékelnek)", en: "+{diff}% (others rate you higher)", de: "+{diff}% (andere bewerten dich höher)" },
     diffLower: { hu: "{diff}% (mások alacsonyabbra értékelnek)", en: "{diff}% (others rate you lower)", de: "{diff}% (andere bewerten dich niedriger)" },
@@ -1524,9 +1524,9 @@ const translations = {
     others: { hu: "Mások", en: "Others", de: "Andere" },
     othersCount: { hu: "Mások ({count})", en: "Others ({count})", de: "Andere ({count})" },
     avgConfidence: { hu: "átl. magabiztosság: {value}/5", en: "avg. confidence: {value}/5", de: "Durchschn. Sicherheit: {value}/5" },
-    typeLabel: { hu: "Tipusod", en: "Your type", de: "Dein Typ" },
-    confidenceLabel: { hu: "Átl. bizonyosság", en: "Avg. confidence", de: "Durchschn. Sicherheit" },
-    observersLabel: { hu: "Értékelők", en: "Raters", de: "Bewerter" },
+    typeLabel: { hu: "Típusod", en: "Your type", de: "Dein Typ" },
+    confidenceLabel: { hu: "Átl. magabiztosság", en: "Avg. confidence", de: "Durchschn. Sicherheit" },
+    observersLabel: { hu: "Értékelők", en: "Raters", de: "Bewertende" },
     insightHigher: { hu: "Mások magasabbra értékelnek ebben a dimenzióban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself.", de: "Andere bewerten dich in dieser Dimension höher als du dich selbst." },
     insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak.", en: "You rate yourself higher in this dimension than others rate you.", de: "Du bewertest dich in dieser Dimension höher, als andere dich sehen." },
     facetMapTitle: { hu: "Alskálák összehasonlítása", en: "Sub-scale comparison", de: "Detailvergleich je Subskala" },
@@ -1540,7 +1540,7 @@ const translations = {
     showAll: { hu: "Összes megjelenítése", en: "Show all", de: "Alle anzeigen" },
     showLess: { hu: "Csak a legnagyobb eltérések", en: "Show only largest gaps", de: "Nur größte Abweichungen" },
     anonGateTitle: { hu: "Az összehasonlítás hamarosan elérhető", en: "Comparison almost ready", de: "Vergleich fast bereit" },
-    anonGateBody: { hu: "A névtelenség védelme érdekében legalább 2 megfigyelői visszajelzés szükséges az eredmények megjelenítéséhez.", en: "To protect observer anonymity, at least 2 observer responses are required before results are shown.", de: "Zum Schutz der Anonymität werden mindestens 2 Beobachterrückmeldungen benötigt, bevor die Ergebnisse angezeigt werden." },
+    anonGateBody: { hu: "A névtelenség védelme érdekében legalább 2 megfigyelői visszajelzés szükséges az eredmények megjelenítéséhez.", en: "To protect observer anonymity, at least 2 observer responses are required before results are shown.", de: "Zum Schutz der Anonymität werden mindestens 2 Rückmeldungen von Beobachtenden benötigt, bevor die Ergebnisse angezeigt werden." },
     anonGateProgress: { hu: "{count} / 2 visszajelzés megérkezett.", en: "{count} / 2 responses received.", de: "{count} / 2 Rückmeldungen erhalten." },
     anonGateCta: { hu: "Meghívók kezelése", en: "Manage invitations", de: "Einladungen verwalten" },
   },

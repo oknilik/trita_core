@@ -6,6 +6,7 @@ import { runProfileEngine, type ProfileCategory } from "@/lib/profile-engine";
 import {
   SECTION_TITLE,
   BLOCK1,
+  BLOCK2_TITLE,
   BLOCK3_TITLE,
   BLOCK4_TITLE,
   BLOCK4_EMPTY,
@@ -102,7 +103,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
           <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
-            Dimenzió&shy;profil
+            {BLOCK2_TITLE[l]}
           </h3>
           <div className="space-y-3">
             {displayDims.map((code) => {
@@ -222,8 +223,11 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
           {steps.map(({ num, node }) => (
             <div key={num} className="flex gap-4">
               {/* Step badge */}
-              <div className="relative z-10 shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-200/60 mt-4">
-                <span className="text-[11px] font-bold text-white">{num}</span>
+              <div
+                className="relative z-10 shrink-0 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md shadow-indigo-200/60"
+                aria-hidden="true"
+              >
+                <span className="h-2.5 w-2.5 rounded-full bg-white shadow-sm md:h-3 md:w-3" />
               </div>
               {/* Card */}
               <div className="flex-1 min-w-0">{node}</div>
