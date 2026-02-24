@@ -481,7 +481,7 @@ export default async function AdminPage() {
                       </div>
                     ))
                   ) : (
-                    <p className="text-xs text-gray-500">No feedback yet</p>
+                    <p className="text-xs text-gray-500">No feedback yet.</p>
                   )}
                 </div>
               </div>
@@ -510,7 +510,7 @@ export default async function AdminPage() {
                       </div>
                     ))
                   ) : (
-                    <p className="text-xs text-gray-500">No feedback yet</p>
+                    <p className="text-xs text-gray-500">No feedback yet.</p>
                   )}
                 </div>
               </div>
@@ -539,7 +539,7 @@ export default async function AdminPage() {
                       </div>
                     ))
                   ) : (
-                    <p className="text-xs text-gray-500">No feedback yet</p>
+                    <p className="text-xs text-gray-500">No feedback yet.</p>
                   )}
                 </div>
               </div>

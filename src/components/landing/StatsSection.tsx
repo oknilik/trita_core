@@ -26,7 +26,7 @@ export function StatsSection() {
         <FadeIn delay={0.15}>
           <div className="grid grid-cols-3 divide-x divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-lg">
             <div className="flex flex-col items-center justify-center px-4 py-6">
-              <p className="text-3xl font-bold text-indigo-600 md:text-4xl">3</p>
+              <p className="text-3xl font-bold text-indigo-600 md:text-4xl">2</p>
               <p className="mt-1 text-center text-xs text-gray-500 md:text-sm">
                 {t("landing.testTypes", locale)}
               </p>

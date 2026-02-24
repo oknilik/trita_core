@@ -58,13 +58,14 @@ export async function POST(req: Request) {
   // Filter to only the expected question IDs (drops stale answers from old test versions)
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
 
-  if (relevantAnswers.length !== expectedIds.size) {
-    return NextResponse.json({ error: "ANSWER_COUNT_MISMATCH" }, { status: 400 });
-  }
-
   const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));
-  if (answeredIds.size !== relevantAnswers.length) {
+  const hasDuplicates = answeredIds.size !== relevantAnswers.length;
+  if (hasDuplicates) {
     return NextResponse.json({ error: "DUPLICATE_ANSWER" }, { status: 400 });
+  }
+  // If answers are missing after filtering (common after question-bank updates), return a clear error.
+  if (answeredIds.size !== expectedIds.size) {
+    return NextResponse.json({ error: "MISSING_ANSWER" }, { status: 400 });
   }
   for (const id of expectedIds) {
     if (!answeredIds.has(id)) {

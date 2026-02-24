@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/Toast";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, type Locale } from "@/lib/i18n";
+import { t, tf, type Locale } from "@/lib/i18n";
 
 interface Invitation {
   id: string;
@@ -74,6 +74,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [email, setEmail] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const emitInviteProgressUpdate = (nextInvitations: Invitation[]) => {
@@ -96,6 +97,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const handleCreate = async () => {
     if (isCreating) return;
     setIsCreating(true);
+    setCreateError(null);
     const hasEmail = email.trim().length > 0;
 
     try {
@@ -108,7 +110,8 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
       if (!response.ok) {
         const code = data.error ?? "";
         const localized = t(`error.${code}`, locale);
-        throw new Error(localized !== `error.${code}` ? localized : t("invite.createFailed", locale));
+        setCreateError(localized !== `error.${code}` ? localized : t("invite.createFailed", locale));
+        return;
       }
 
       const newInvitation: Invitation = {
@@ -129,8 +132,8 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
       }
       setEmail("");
     } catch (error) {
-      console.error(error);
-      showToast(t("invite.createFailed", locale), "error");
+      console.error("[InviteSection] Unexpected error:", error);
+      setCreateError(t("invite.createFailed", locale));
     } finally {
       setIsCreating(false);
     }
@@ -151,6 +154,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
   const activeInvitations = invitations.filter((i) => i.status !== "CANCELED");
   const pending = activeInvitations.filter((i) => i.status === "PENDING");
   const completed = activeInvitations.filter((i) => i.status === "COMPLETED");
+  const canceledCount = invitations.filter((i) => i.status === "CANCELED").length;
   const activeCount = activeInvitations.length;
   const canCreate = activeCount < 5;
 
@@ -225,9 +229,9 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
           <input
             type="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => { setEmail(event.target.value); setCreateError(null); }}
             placeholder={t("invite.emailPlaceholder", locale) || "Email cím (opcionális)"}
-            className="min-h-[48px] flex-1 rounded-lg border border-indigo-100 bg-white px-4 text-sm text-gray-900 focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
+            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-gray-900 focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-indigo-100 focus:border-indigo-300 focus:ring-indigo-100"}`}
           />
           <button
             type="button"
@@ -250,14 +254,33 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
           </button>
         </div>
 
+        {createError && (
+          <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5">
+            <svg className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+            <p className="text-xs font-medium text-amber-800 leading-relaxed">{createError}</p>
+          </div>
+        )}
+
         <div className="mt-3 flex items-start gap-2">
           <svg className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xs text-gray-600 leading-relaxed">
-            {t("invite.helpText", locale) || "Email nélkül: Anonim meghívó link · Emailcímmel: Email meghívó küldése"}
+            {t("invite.helpText", locale)}
           </p>
         </div>
+
+        <p className="mt-2 text-xs text-gray-600">
+          {t("invite.privacyNote", locale)}
+        </p>
+
+        {completed.length < 2 && (
+          <p className="mt-2 text-xs font-medium text-indigo-700">
+            {tf("invite.compareHint", locale, { count: completed.length })}
+          </p>
+        )}
       </div>
 
       {/* Invitations list or empty state */}
@@ -326,7 +349,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span className="font-semibold">Másolva</span>
+                            <span className="font-semibold">{t("actions.copied", locale)}</span>
                           </>
                         ) : (
                           <>
@@ -354,7 +377,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
             </div>
           ))}
           <p className="mt-4 text-xs text-gray-400 text-center">
-            {completed.length} befejezett · {pending.length} függőben · {activeCount}/5 aktív
+            {tf("invite.stats", locale, { completed: completed.length, pending: pending.length, canceled: canceledCount })}
           </p>
         </div>
       ) : (

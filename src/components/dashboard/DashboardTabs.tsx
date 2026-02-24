@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect } from "react";
 import { t, tf, type Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { FadeIn } from "@/components/landing/FadeIn";
@@ -132,13 +133,45 @@ export function DashboardTabs(props: DashboardTabsProps) {
       setActiveTab(tab);
       const url = new URL(window.location.href);
       url.searchParams.set("tab", tab);
-      router.push(url.pathname + url.search, { scroll: false });
+      // Preserve hash so /dashboard?tab=invites#invite keeps working.
+      router.push(url.pathname + url.search + url.hash, { scroll: false });
       setTimeout(() => {
         tabBarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 50);
     },
     [router],
   );
+
+  // Support direct hash navigation (e.g. /dashboard#invite from landing).
+  // Hash targets live inside tab panels, so we must activate the matching tab first.
+  useEffect(() => {
+    const hash = window.location.hash;
+    const wantedTab: TabId | null =
+      hash === "#invite" ? "invites" :
+      hash === "#comparison" ? "comparison" :
+      hash === "#results" ? "results" :
+      null;
+    if (!wantedTab) return;
+    if (activeTab !== wantedTab) {
+      setActiveTab(wantedTab);
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", wantedTab);
+      router.replace(url.pathname + url.search + url.hash, { scroll: false });
+    }
+    // After the tab panel renders, scroll to the anchor target.
+    window.setTimeout(() => {
+      const target = document.getElementById(hash.slice(1));
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Allow nested components to open the research survey modal.
+  useEffect(() => {
+    const onOpenSurvey = () => setSurveyModalOpen(true);
+    window.addEventListener("dashboard:open-survey", onOpenSurvey);
+    return () => window.removeEventListener("dashboard:open-survey", onOpenSurvey);
+  }, []);
 
   const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
     {
@@ -246,7 +279,8 @@ export function DashboardTabs(props: DashboardTabsProps) {
         style={{ animation: "fadeIn 0.3s ease-out" }}
       >
         {activeTab === "results" && (
-          <ResultsTabPanel
+          <div id="results" className="scroll-mt-24">
+            <ResultsTabPanel
             mainScores={props.mainScores}
             altruismScore={props.altruismScore}
             dimConfigs={props.dimConfigs}
@@ -259,24 +293,30 @@ export function DashboardTabs(props: DashboardTabsProps) {
             testType={props.testType}
             locale={locale}
           />
+          </div>
         )}
         {activeTab === "comparison" && (
-          <ComparisonTabPanel
+          <div id="comparison" className="scroll-mt-24">
+            <ComparisonTabPanel
             observerComparison={props.observerComparison}
             facetDivergences={props.facetDivergences}
             completedObserversCount={props.completedObserversCount}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
+            surveySubmitted={props.surveySubmitted}
             onTabChange={handleTabChange}
             locale={locale}
           />
+          </div>
         )}
         {activeTab === "invites" && (
-          <InvitesTabPanel
+          <div id="invite" className="scroll-mt-24">
+            <InvitesTabPanel
             sentInvitations={props.sentInvitations}
             receivedInvitations={props.receivedInvitations}
             locale={locale}
           />
+          </div>
         )}
       </div>
     </div>
@@ -484,6 +524,7 @@ interface ComparisonTabPanelProps {
   completedObserversCount: number;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
+  surveySubmitted: boolean;
   onTabChange: (tab: TabId) => void;
   locale: Locale;
 }
@@ -494,6 +535,7 @@ function ComparisonTabPanel({
   completedObserversCount,
   avgConfidence,
   hasObserverFeedback,
+  surveySubmitted,
   onTabChange,
   locale,
 }: ComparisonTabPanelProps) {
@@ -540,6 +582,7 @@ function ComparisonTabPanel({
           observerCount={observerComparison.count}
           avgConfidence={avgConfidence}
           facetDivergences={facetDivergences}
+          surveySubmitted={surveySubmitted}
         />
       </FadeIn>
 

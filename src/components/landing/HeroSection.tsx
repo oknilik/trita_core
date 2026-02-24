@@ -53,13 +53,24 @@ export function HeroSection() {
                 </Link>
               </SignedOut>
 
+              <SignedOut>
+                <Link
+                  href="/research"
+                  className="flex min-h-[48px] items-center justify-center rounded-lg border border-gray-100 bg-white px-8 text-base font-semibold text-gray-700 transition-all duration-300 hover:border-gray-200 hover:bg-gray-50"
+                >
+                  {t("landing.notifyMe", locale)}
+                </Link>
+              </SignedOut>
+            </div>
+
+            <SignedIn>
               <Link
                 href="/research"
-                className="flex min-h-[48px] items-center justify-center rounded-lg border border-gray-100 bg-white px-8 text-base font-semibold text-gray-700 transition-all duration-300 hover:border-gray-200 hover:bg-gray-50"
+                className="w-fit text-sm font-medium text-gray-600 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-gray-900"
               >
                 {t("landing.notifyMe", locale)}
               </Link>
-            </div>
+            </SignedIn>
 
             <p className="text-xs text-gray-400">
               {t("landing.estimatedTime", locale)}

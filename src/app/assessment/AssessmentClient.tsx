@@ -496,6 +496,9 @@ export function AssessmentClient({
             <p className="mt-3 text-sm leading-relaxed text-gray-600">
               {t('assessment.introBody', locale)}
             </p>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+              {t("assessment.introAutoAdvanceHint", locale)}
+            </p>
             <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
               {t('assessment.introCount', locale)}
             </div>

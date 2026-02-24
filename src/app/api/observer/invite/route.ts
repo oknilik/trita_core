@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { after } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -44,6 +45,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "SELF_INVITE" }, { status: 400 });
   }
 
+  // Prevent duplicate active invite for the same email
+  if (parsed.data.email) {
+    const existingActiveInvite = await prisma.observerInvitation.findFirst({
+      where: {
+        inviterId: profile.id,
+        observerEmail: { equals: parsed.data.email, mode: "insensitive" },
+        status: { in: ["PENDING", "COMPLETED"] },
+      },
+      select: { id: true },
+    });
+    if (existingActiveInvite) {
+      return NextResponse.json({ error: "DUPLICATE_INVITE_EMAIL" }, { status: 400 });
+    }
+  }
+
   const activeCount = await prisma.observerInvitation.count({
     where: {
       inviterId: profile.id,
@@ -64,33 +80,37 @@ export async function POST(req: Request) {
     },
   });
 
-  let emailSent = false;
   if (parsed.data.email) {
-    try {
-      const existingUser = await prisma.userProfile.findFirst({
-        where: { email: { equals: parsed.data.email, mode: "insensitive" } },
-        select: { username: true },
-      });
-      // Always use the inviter's preferred locale
-      const emailLocale = normalizeLocale(profile.locale);
-      await sendObserverInviteEmail({
-        to: parsed.data.email,
-        inviterName: profile.username ?? profile.email ?? "Trita",
-        recipientName: existingUser?.username ?? parsed.data.name,
-        token: invitation.token,
-        locale: emailLocale,
-      });
-      emailSent = true;
-    } catch (err) {
-      console.error("Failed to send observer invite email:", err);
-    }
+    const emailTo = parsed.data.email;
+    const inviterName = profile.username ?? profile.email ?? "Trita";
+    const recipientName = parsed.data.name;
+    const emailLocale = normalizeLocale(profile.locale);
+    const token = invitation.token;
+
+    after(async () => {
+      try {
+        const existingUser = await prisma.userProfile.findFirst({
+          where: { email: { equals: emailTo, mode: "insensitive" } },
+          select: { username: true },
+        });
+        await sendObserverInviteEmail({
+          to: emailTo,
+          inviterName,
+          recipientName: existingUser?.username ?? recipientName,
+          token,
+          locale: emailLocale,
+        });
+      } catch (err) {
+        console.error("Failed to send observer invite email:", err);
+      }
+    });
   }
 
   return NextResponse.json({
     id: invitation.id,
     token: invitation.token,
     expiresAt: invitation.expiresAt,
-    emailSent,
+    emailSent: Boolean(parsed.data.email),
   });
 }
 

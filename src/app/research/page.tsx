@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { TritaLogo } from "@/components/TritaLogo";
 import { t } from "@/lib/i18n";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
@@ -73,9 +71,6 @@ export default async function ResearchPage() {
       />
       <div className="relative z-10 mx-auto max-w-2xl">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <Link href="/">
-            <TritaLogo size={56} showText={false} />
-          </Link>
           <h1 className="text-2xl font-bold text-gray-900">
             {t("research.title", locale)}
           </h1>
@@ -86,6 +81,17 @@ export default async function ResearchPage() {
 
         <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
           <div className="flex flex-col gap-6">
+            <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 via-white to-white p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
+                {t("research.tldrTitle", locale)}
+              </p>
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-relaxed text-gray-700">
+                {splitItems("research.tldrItems").map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
             {sections.map((section) => (
               <div key={section.title}>
                 <h2 className="mb-2 text-lg font-semibold text-gray-900">

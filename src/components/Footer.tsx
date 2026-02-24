@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 
 export function Footer() {
   const { locale } = useLocale();
+  const contactSubject = encodeURIComponent(t("landing.contactSubject", locale));
 
   return (
     <footer
@@ -43,7 +44,7 @@ export function Footer() {
               {t("landing.researchLink", locale)}
             </Link>
             <a
-              href="mailto:info@trita.io?subject=Trita%20kapcsolat"
+              href={`mailto:info@trita.io?subject=${contactSubject}`}
               className="text-indigo-200 underline-offset-4 transition-colors hover:text-white hover:underline"
             >
               {t("landing.contactLink", locale)}

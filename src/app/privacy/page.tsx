@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
-import { TritaLogo } from "@/components/TritaLogo";
-import Link from "next/link";
 import { getLanguageAlternates } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -77,9 +75,6 @@ export default async function PrivacyPage() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
       <div className="relative z-10 mx-auto max-w-2xl">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <Link href="/">
-            <TritaLogo size={56} showText={false} />
-          </Link>
           <h1 className="text-2xl font-bold text-gray-900">
             {t("privacy.title", locale)}
           </h1>

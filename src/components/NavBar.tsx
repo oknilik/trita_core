@@ -54,6 +54,7 @@ export function NavBar() {
         {/* Mobile: signed out → auth buttons only (no hamburger, no locale switcher) */}
         <SignedOut>
           <div className="flex items-center gap-3 lg:hidden">
+            <LocaleSwitcher variant="icon" />
             <Link
               href="/sign-in"
               className="min-h-[44px] flex items-center text-sm font-semibold text-gray-600 hover:text-indigo-600"

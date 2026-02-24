@@ -110,20 +110,12 @@ export function JourneyProgress({
             cta: t("dashboard.nextStepManageInvitesCta", locale),
             href: "#invite",
           }
-        : !surveyDone
-          ? {
-              title: t("dashboard.nextStepSurveyTitle", locale),
-              body: t("dashboard.nextStepSurveyBody", locale),
-              cta: t("dashboard.nextStepSurveyCta", locale),
-              href: "#",
-              onAction: onOpenSurvey,
-            }
-          : {
-              title: t("dashboard.nextStepDoneTitle", locale),
-              body: t("dashboard.nextStepDoneBody", locale),
-              cta: t("dashboard.nextStepDoneCta", locale),
-              href: hasObserverFeedback ? "#comparison" : "#results",
-            };
+        : {
+            title: t("dashboard.nextStepDoneTitle", locale),
+            body: t("dashboard.nextStepDoneBody", locale),
+            cta: t("dashboard.nextStepDoneCta", locale),
+            href: hasObserverFeedback ? "#comparison" : "#results",
+          };
 
   // Whether the CTA should use a Link (href navigation) vs button (tab change)
   const useLink = !selfCompleted || !onTabChange;
@@ -259,6 +251,25 @@ export function JourneyProgress({
           )}
         </span>
       </div>
+
+      {/* Optional: research survey (kept separate from the 3-step progress) */}
+      {selfCompleted && hasObserverFeedback && !surveyDone && onOpenSurvey && (
+        <div className="mt-6 rounded-xl border border-indigo-100 bg-white/60 p-4">
+          <p className="text-sm font-semibold text-gray-900">
+            {t("dashboard.nextStepSurveyTitle", locale)}
+          </p>
+          <p className="mt-1 text-sm text-gray-600">
+            {t("dashboard.nextStepSurveyBody", locale)}
+          </p>
+          <button
+            type="button"
+            onClick={onOpenSurvey}
+            className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-xl border border-indigo-200 bg-white px-5 text-sm font-semibold text-indigo-700 shadow-sm transition-all duration-300 hover:bg-indigo-50 hover:shadow-md"
+          >
+            {t("dashboard.nextStepSurveyCta", locale)}
+          </button>
+        </div>
+      )}
       <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
         <span
           className={
@@ -326,6 +337,11 @@ export function JourneyProgress({
             <div>
               <p className="text-sm font-semibold text-indigo-900">{nextStep.title}</p>
               <p className="mt-1 text-sm text-indigo-700/70">{nextStep.body}</p>
+              {selfCompleted && nextStep.href === "#invite" ? (
+                <p className="mt-2 text-xs text-indigo-700/70">
+                  {t("dashboard.nextStepInviteNote", locale)}
+                </p>
+              ) : null}
             </div>
             {nextStep.onAction ? (
               <button

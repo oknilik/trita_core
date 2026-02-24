@@ -589,7 +589,7 @@ export function ObserverClient({
               disabled={!canStart}
               className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:shadow-none"
             >
-              {t("assessment.introStart", locale)}
+              {tf("observer.start", locale, { count: questions.length })}
             </button>
           </div>
         </div>
@@ -646,12 +646,20 @@ export function ObserverClient({
                 <p className="mt-4 text-sm leading-relaxed text-gray-500">
                   {t("observer.doneSignedOutHint", locale)}
                 </p>
-                <a
-                  href={`/sign-in?observeToken=${token}`}
-                  className="mt-4 inline-block min-h-[44px] rounded-lg border border-indigo-600 bg-transparent px-6 py-3 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
-                >
-                  {t("observer.signInCta", locale)}
-                </a>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
+                  <a
+                    href={`/sign-up?observeToken=${token}`}
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  >
+                    {t("observer.signUpCta", locale)}
+                  </a>
+                  <a
+                    href={`/sign-in?observeToken=${token}`}
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-indigo-600 bg-transparent px-6 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                  >
+                    {t("observer.signInCta", locale)}
+                  </a>
+                </div>
               </>
             )}
           </div>

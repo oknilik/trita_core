@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
 import {
@@ -126,6 +126,36 @@ export function OnboardingClient() {
     occupationDetailsValid &&
     country !== "" &&
     consent;
+
+  const progressTotals = useMemo(() => {
+    const required: boolean[] = [
+      usernameValid,
+      birthYearValid,
+      gender !== "",
+      education !== "",
+      occupationStatus !== "",
+    ];
+    if (needsWorkFields) required.push(workSchedule !== "", companySize !== "");
+    if (needsStudyLevel) required.push(studyLevel !== "");
+    required.push(country !== "", consent);
+
+    const total = required.length;
+    const completed = required.filter(Boolean).length;
+    return { total, completed, pct: Math.round((completed / Math.max(1, total)) * 100) };
+  }, [
+    usernameValid,
+    birthYearValid,
+    gender,
+    education,
+    occupationStatus,
+    needsWorkFields,
+    workSchedule,
+    companySize,
+    needsStudyLevel,
+    studyLevel,
+    country,
+    consent,
+  ]);
 
   const handleOccupationStatusChange = (value: OccupationStatus) => {
     setOccupationStatus(value);
@@ -304,6 +334,17 @@ export function OnboardingClient() {
           <p className="max-w-sm text-center text-sm text-gray-600">
             {t("onboarding.subtitle", locale)}
           </p>
+          <div className="w-full max-w-sm">
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/70 shadow-inner">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+                style={{ width: `${progressTotals.pct}%` }}
+              />
+            </div>
+            <p className="mt-2 text-center text-xs font-medium text-gray-500">
+              {tf("onboarding.progress", locale, { completed: progressTotals.completed, total: progressTotals.total })}
+            </p>
+          </div>
         </div>
 
         <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">

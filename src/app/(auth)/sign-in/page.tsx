@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -19,8 +19,37 @@ function SignInContent() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [emailAddressId, setEmailAddressId] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendNote, setResendNote] = useState<string | null>(null);
 
   if (!isLoaded) return null;
+
+  const canResend = resendCooldown <= 0 && !isSubmitting && Boolean(emailAddressId);
+
+  const handleResendCode = async () => {
+    if (!signIn || !canResend || !emailAddressId) return;
+    setResendNote(null);
+    setResendCooldown(30);
+    try {
+      await signIn.prepareFirstFactor({
+        strategy: "email_code",
+        emailAddressId,
+      });
+      setResendNote(t("auth.resendCodeSent", locale));
+    } catch {
+      setResendNote(t("auth.errorSignInGeneric", locale));
+      setResendCooldown(0);
+    }
+  };
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setResendCooldown((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
 
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +68,10 @@ function SignInContent() {
           strategy: "email_code",
           emailAddressId: emailFactor.emailAddressId,
         });
+        setEmailAddressId(emailFactor.emailAddressId);
         setIsVerifying(true);
+        setResendCooldown(30);
+        setResendNote(null);
       } else {
         setError(t("auth.errorSignInGeneric", locale));
       }
@@ -157,12 +189,31 @@ function SignInContent() {
               </button>
             </form>
 
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={!canResend}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 disabled:cursor-not-allowed disabled:text-gray-400"
+              >
+                {resendCooldown > 0
+                  ? tf("auth.resendCodeWait", locale, { seconds: resendCooldown })
+                  : t("auth.resendCode", locale)}
+              </button>
+              {resendNote ? (
+                <p className="mt-2 text-xs text-gray-500">{resendNote}</p>
+              ) : null}
+            </div>
+
             <button
               type="button"
               onClick={() => {
                 setIsVerifying(false);
                 setCode("");
                 setError(null);
+                setEmailAddressId(null);
+                setResendCooldown(0);
+                setResendNote(null);
               }}
               className="mt-4 w-full text-center text-sm text-gray-500 hover:text-gray-700"
             >
@@ -188,6 +239,11 @@ function SignInContent() {
           <p className="text-sm text-gray-600">
             {t("auth.signInSubtitle", locale)}
           </p>
+          {observeToken ? (
+            <p className="text-xs text-gray-500">
+              {t("auth.observeTokenHint", locale)}
+            </p>
+          ) : null}
         </div>
 
         <div className="rounded-xl border border-gray-100 bg-white p-6">

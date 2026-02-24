@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 
-const MAX_RETRIES = 10;
-const RETRY_DELAY_MS = 80;
+// Hash targets can be inside tab panels and may render after client-side tab activation.
+const MAX_RETRIES = 30;
+const RETRY_DELAY_MS = 100;
 
 function scrollToHashTarget() {
   const hash = window.location.hash;

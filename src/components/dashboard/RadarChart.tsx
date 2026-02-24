@@ -2,6 +2,8 @@
 
 import { memo } from "react";
 import { motion } from "framer-motion";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 const CX = 150;
 const CY = 150;
@@ -61,10 +63,13 @@ function getLabelOffset(index: number, total: number): { dx: number; dy: number 
 export const RadarChart = memo(function RadarChart({
   dimensions,
   showObserver = false,
-  selfLabel = "Saját",
-  observerLabel = "Meghívottak",
+  selfLabel,
+  observerLabel,
   uid = "rc",
 }: RadarChartProps) {
+  const { locale } = useLocale();
+  const resolvedSelfLabel = selfLabel ?? t("comparison.self", locale);
+  const resolvedObserverLabel = observerLabel ?? t("comparison.others", locale);
   const n = dimensions.length;
   const radarFillId = `radar-fill-${uid}`;
   const radarStrokeId = `radar-stroke-${uid}`;
@@ -410,11 +415,11 @@ export const RadarChart = memo(function RadarChart({
 
           {/* Self indicator */}
           <circle cx="-49" cy="0" r="5" fill={SELF_POINT_COLOR} filter={`url(#${pointGlowId})`} />
-          <text x="-40" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{selfLabel}</text>
+          <text x="-40" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{resolvedSelfLabel}</text>
 
           {/* Observer indicator */}
           <circle cx="28" cy="0" r="5" fill={OBSERVER_POINT_COLOR} filter={`url(#${pointGlowId})`} />
-          <text x="37" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{observerLabel}</text>
+          <text x="37" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{resolvedObserverLabel}</text>
         </motion.g>
       )}
     </svg>

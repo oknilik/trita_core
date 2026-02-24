@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -19,8 +19,33 @@ function SignUpContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [code, setCode] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendNote, setResendNote] = useState<string | null>(null);
 
   if (!isLoaded) return null;
+
+  const canResend = resendCooldown <= 0 && !isSubmitting;
+
+  const handleResendCode = async () => {
+    if (!signUp || !canResend) return;
+    setResendNote(null);
+    setResendCooldown(30);
+    try {
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      setResendNote(t("auth.resendCodeSent", locale));
+    } catch {
+      setResendNote(t("auth.errorSignUpGeneric", locale));
+      setResendCooldown(0);
+    }
+  };
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = window.setInterval(() => {
+      setResendCooldown((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [resendCooldown]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +64,8 @@ function SignUpContent() {
       });
 
       setIsVerifying(true);
+      setResendCooldown(30);
+      setResendNote(null);
     } catch (err: unknown) {
       console.error("[SignUp] Error:", err);
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
@@ -152,12 +179,30 @@ function SignUpContent() {
               </button>
             </form>
 
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={!canResend}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 disabled:cursor-not-allowed disabled:text-gray-400"
+              >
+                {resendCooldown > 0
+                  ? tf("auth.resendCodeWait", locale, { seconds: resendCooldown })
+                  : t("auth.resendCode", locale)}
+              </button>
+              {resendNote ? (
+                <p className="mt-2 text-xs text-gray-500">{resendNote}</p>
+              ) : null}
+            </div>
+
             <button
               type="button"
               onClick={() => {
                 setIsVerifying(false);
                 setCode("");
                 setError(null);
+                setResendCooldown(0);
+                setResendNote(null);
               }}
               className="mt-4 w-full text-center text-sm text-gray-500 hover:text-gray-700"
             >
@@ -183,6 +228,11 @@ function SignUpContent() {
           <p className="text-sm text-gray-600">
             {t("auth.signUpSubtitle", locale)}
           </p>
+          {observeToken ? (
+            <p className="text-xs text-gray-500">
+              {t("auth.observeTokenHint", locale)}
+            </p>
+          ) : null}
         </div>
 
         <div className="rounded-xl border border-gray-100 bg-white p-6">

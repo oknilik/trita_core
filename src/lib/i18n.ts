@@ -28,7 +28,7 @@ const translations = {
       de: "Dashboard | Trita",
     },
     observeTitle: {
-      hu: "Megfigyelői értékelés | Trita",
+      hu: "Visszajelzés kitöltése | Trita",
       en: "Observer assessment | Trita",
       de: "Fremdeinschätzung | Trita",
     },
@@ -86,6 +86,7 @@ const translations = {
     viewResults: { hu: "Eredmények megtekintése", en: "View results", de: "Ergebnisse ansehen" },
     submit: { hu: "Küldés", en: "Submit", de: "Senden" },
     copyLink: { hu: "Link másolása", en: "Copy link", de: "Link kopieren" },
+    copied: { hu: "Másolva", en: "Copied", de: "Kopiert" },
     delete: { hu: "Törlés", en: "Delete", de: "Löschen" },
     openFill: { hu: "Kitöltés megnyitása", en: "Open assessment", de: "Ausfüllen öffnen" },
     generate: { hu: "Generálás...", en: "Generating...", de: "Wird erstellt..." },
@@ -109,7 +110,7 @@ const translations = {
     continueDraft: { hu: "Teszt folytatása", en: "Continue test", de: "Test fortsetzen" },
   },
   landing: {
-    heroTag: { hu: "Kutatási verzió", en: "Research preview", de: "Forschungs-Version" },
+    heroTag: { hu: "Kutatási fázis", en: "Research phase", de: "Forschungsphase" },
     heroTitle: {
       hu: "A világ bizonytalan, a kiindulópont legyen biztos",
       en: "The world is uncertain, let your starting point be solid.",
@@ -122,14 +123,14 @@ const translations = {
     },
     heroTitleLine2: {
       hu: "a kiindulópont legyen biztos",
-      en: "let your starting point be solid.",
-      de: "der Ausgangspunkt sollte sicher sein.",
+      en: "let your starting point be solid",
+      de: "der Ausgangspunkt sollte sicher sein",
     },
     statsLanguages: { hu: "nyelv", en: "languages", de: "Sprachen" },
     heroBody: {
-      hu: "Fedezd fel a személyiséged mintázatait, fejlődj tudatosan a kapcsolataidban. Lásd tisztán, hogyan hat rád a világ - és te rá.",
-      en: "Discover the patterns of your personality and grow consciously in your relationships. See clearly how the world affects you - and how you affect it.",
-      de: "Entdecke die Muster deiner Persönlichkeit und entwickle dich bewusst in deinen Beziehungen. Sieh klar, wie die Welt auf dich wirkt - und wie du auf sie.",
+      hu: "Fedezd fel a személyiséged mintázatait, és lásd tisztábban, hogyan működsz a munkahelyeden és a kapcsolataidban. Értsd meg, hogyan hat rád a világ és te hogyan hatsz rá.",
+      en: "Discover your personality patterns and see more clearly how you operate at work and in your relationships. Understand how the world affects you, and how you affect it.",
+      de: "Entdecke deine Persönlichkeitsmuster und erkenne klarer, wie du im Job und in deinen Beziehungen agierst. Verstehe, wie die Welt auf dich wirkt und wie du auf sie wirkst.",
     },
     joinResearch: { hu: "Vágjunk bele", en: "Let's dive in", de: "Legen wir los" },
     notifyMe: { hu: "A kutatásról", en: "About the research", de: "Über die Studie" },
@@ -143,13 +144,13 @@ const translations = {
     researchAboutTitle: { hu: "Miről szól a kutatás?", en: "What is this research about?", de: "Worum geht es in der Studie?" },
     researchAboutBody: {
       hu: "Többféle személyiségteszt hatékonyságát hasonlítjuk össze önértékeléssel és ismerősi visszajelzéssel.",
-      en: "We compare multiple personality models using self-assessment and observer feedback.",
+      en: "We compare multiple personality models using self-assessment and feedback from others.",
       de: "Wir vergleichen mehrere Persönlichkeitsmodelle anhand von Selbst- und Fremdeinschätzungen.",
     },
     researchItem1: {
-      hu: "Teszt-típusok: HEXACO, módosított HEXACO, Big Five",
-      en: "Test types: HEXACO, modified HEXACO, Big Five",
-      de: "Testtypen: HEXACO, modifiziertes HEXACO, Big Five",
+      hu: "Teszt-típusok: HEXACO, Big Five",
+      en: "Test types: HEXACO, Big Five",
+      de: "Testtypen: HEXACO, Big Five",
     },
     researchItem2: {
       hu: "Véletlenszerű kiosztás: mindenki egy tesztet kap",
@@ -158,7 +159,7 @@ const translations = {
     },
     researchItem3: {
       hu: "Ismerősi visszajelzések összehasonlítása",
-      en: "Observer comparison",
+      en: "Compare with feedback from others",
       de: "Vergleich mit Fremdeinschätzungen",
     },
     aboutTag: { hu: "Háttér", en: "Research foundation", de: "Forschungsgrundlage" },
@@ -185,17 +186,17 @@ const translations = {
       en: "Answer honestly and see your result on the dashboard right away.",
       de: "Antworte ehrlich und sieh dein Ergebnis sofort im Dashboard.",
     },
-    step3Title: { hu: "Hívj meg ismerősöket", en: "Invite observers", de: "Lade Beobachtende ein" },
+    step3Title: { hu: "Hívj meg ismerősöket", en: "Invite people", de: "Lade Personen ein" },
     step3Body: {
       hu: "Kérd meg kollégáidat, barátaidat, családtagjaidat egy rövid értékelésre.",
-      en: "Ask your colleagues, friends, and family members to complete a short assessment.",
-      de: "Bitte deine Kolleg:innen, Freund:innen und Familienmitglieder um eine kurze Bewertung.",
+      en: "Ask colleagues, friends, or family for a quick rating.",
+      de: "Bitte Kolleg:innen, Freund:innen oder Familie um eine kurze Einschätzung.",
     },
     featuresTag: { hu: "Miért érdemes részt venni", en: "Why participate", de: "Warum teilnehmen" },
     featuresTitle: { hu: "A kutatás előnyei számodra", en: "Benefits for you", de: "Dein Nutzen" },
     feature1Title: { hu: "Tudományos háttér", en: "Scientific basis", de: "Wissenschaftliche Basis" },
     feature1Desc: {
-      hu: "Empirikusan megalapozott személyiségmérési keretrendszereket vetünk össze. Az adatokat anonim módon, a visszajelzéseitek alapján a felhasználói élménnyel együtt elemezzük.",
+      hu: "Empirikusan megalapozott személyiségmérési keretrendszereket vetünk össze. Az adatokat anonimizáltan, a visszajelzéseitek alapján a felhasználói élménnyel együtt elemezzük.",
       en: "We compare empirically grounded personality measurement frameworks. We analyze anonymized data together with user experience, based on your feedback.",
       de: "Wir vergleichen empirisch fundierte Rahmenwerke zur Persönlichkeitsmessung. Dabei analysieren wir anonymisierte Daten gemeinsam mit der Nutzererfahrung auf Grundlage deines Feedbacks.",
     },
@@ -213,9 +214,9 @@ const translations = {
     },
     feature4Title: { hu: "Anonimitás", en: "Anonymity", de: "Anonymität" },
     feature4Desc: {
-      hu: "Az adatok anonimizáltan kerülnek felhasználásra. A profilod adatait csak te látod és bármikor törölheted.",
-      en: "Data is used in anonymized form. Only you can see your profile data, and you can delete it at any time.",
-      de: "Die Daten werden anonymisiert verwendet. Nur du kannst deine Profildaten sehen und sie jederzeit löschen.",
+      hu: "Az adatok anonimizáltan kerülnek felhasználásra. A profil bármikor törölhető.",
+      en: "Data is used in anonymized form. Your profile can be deleted at any time.",
+      de: "Die Daten werden anonymisiert verwendet. Dein Profil kann jederzeit gelöscht werden.",
     },
     feature5Title: { hu: "Saját tempóban", en: "At your own pace", de: "In deinem eigenen Tempo" },
     feature5Desc: {
@@ -269,6 +270,7 @@ const translations = {
     privacyLink: { hu: "Adatvédelem", en: "Privacy", de: "Datenschutz" },
     researchLink: { hu: "Módszertan", en: "Methodology", de: "Methodik" },
     contactLink: { hu: "Kapcsolat", en: "Contact", de: "Kontakt" },
+    contactSubject: { hu: "Kapcsolat", en: "Contact", de: "Kontakt" },
   },
   research: {
     title: {
@@ -280,6 +282,12 @@ const translations = {
       hu: "Áttekintés a kutatás céljairól, menetéről, eszközeiről és az adatkezelés alapelveiről.",
       en: "Overview of the research goals, study flow, instruments, and core data handling principles.",
       de: "Überblick über Forschungsziele, Ablauf, Instrumente und die Grundsätze der Datenverarbeitung.",
+    },
+    tldrTitle: { hu: "Röviden", en: "TL;DR", de: "Kurzfassung" },
+    tldrItems: {
+      hu: "Kitöltesz egy rövid személyiségtesztet.|Azonnal kapsz egy átlátható profilt a munkahelyi működésedről.|Opcionálisan kérhetsz külső visszajelzést ismerősöktől, és összevetheted a nézőpontokat.",
+      en: "You complete a short personality test.|You immediately get a clear profile focused on work-related behavior.|Optionally, you can request external feedback and compare perspectives.",
+      de: "Du füllst einen kurzen Persönlichkeitstest aus.|Du erhältst sofort ein klares Profil mit Fokus auf Arbeitsverhalten.|Optional kannst du Fremdfeedback einholen und Perspektiven vergleichen.",
     },
     introTitle: {
       hu: "Miért készül a kutatás?",
@@ -297,9 +305,9 @@ const translations = {
       de: "Forschungsziele",
     },
     goalsItems: {
-      hu: "Megvizsgálni, mennyire egyezik az önértékelés és a külső (observer) visszajelzés dimenziónként.|Összehasonlítani a HEXACO és a Big Five modell eredményeit ugyanazon kitöltők körében.|Feltárni, mennyire tartják a résztvevők relevánsnak a kapott személyiségprofilt – különösen a munka világára vonatkozó következtetéseket.|Megvizsgálni, hogy a kapcsolat típusa és időtartama befolyásolja-e az observer értékelés pontosságát.|Feltárni, hogy munkahelyi kapcsolatokban (kolléga párok) szisztematikusan eltér-e az önkép és a mások által látott kép – mint előzetes adat a csapatdinamikai kutatás következő fázisához.",
-      en: "Examine the degree of agreement between self-assessment and observer ratings across personality dimensions.|Compare HEXACO and Big Five model results within the same participant group.|Explore how relevant participants find their personality profile – especially conclusions applied to the workplace.|Investigate whether relationship type and duration moderate observer rating accuracy.|Explore colleague pairs as preliminary data for the team dynamics research phase.",
-      de: "Untersuchen, inwieweit Selbst- und Fremdeinschätzung auf Dimensionsebene übereinstimmen.|HEXACO- und Big-Five-Ergebnisse innerhalb derselben Stichprobe vergleichen.|Erfassen, wie relevant die Teilnehmenden ihr Persönlichkeitsprofil einschätzen – insbesondere im Arbeitskontext.|Untersuchen, ob Beziehungstyp und -dauer die Genauigkeit der Fremdeinschätzung moderieren.|Kollegenpaare als explorative Vorläuferdaten für die nächste Phase der Teamdynamikforschung untersuchen.",
+      hu: "Megvizsgálni, mennyire egyezik az önértékelés és a külső visszajelzés dimenziónként.|Összehasonlítani a HEXACO és a Big Five modellek kérdésbankjait és eredményeit.|Feltárni, mennyire tartják a résztvevők relevánsnak a kapott személyiségprofilt és a munka világára vonatkozó következtetéseket.|Megvizsgálni, hogy a kapcsolat típusa és időtartama befolyásolja-e a külső visszajelzések pontosságát.|Feltárni, hogy munkahelyi kapcsolatokban (kolléga párok) szisztematikusan eltér-e az önkép és a mások által látott kép – előzetes adatként a csapatdinamikai kutatás következő fázisához.",
+      en: "Examine agreement between self-assessment and ratings from others across dimensions.|Compare the HEXACO and Big Five question banks and results.|Explore how relevant participants find their profile, especially conclusions applied to work.|Investigate whether relationship type and duration moderate rating accuracy.|Explore colleague pairs as preliminary data for the next phase of team dynamics research.",
+      de: "Untersuchen, inwieweit Selbst- und Fremdeinschätzung auf Dimensionsebene übereinstimmen.|HEXACO- und Big-Five-Fragenkataloge und Ergebnisse vergleichen.|Erfassen, wie relevant Teilnehmende ihr Profil finden, insbesondere im Arbeitskontext.|Untersuchen, ob Beziehungstyp und -dauer die Genauigkeit der Fremdeinschätzung beeinflussen.|Kollegenpaare als Vorläuferdaten für die nächste Phase der Teamdynamikforschung untersuchen.",
     },
     designTitle: {
       hu: "Kutatási design",
@@ -307,9 +315,9 @@ const translations = {
       de: "Studiendesign",
     },
     designBody: {
-      hu: "Online, kérdőíves pilot kutatás. Minden résztvevő egyet tölt ki véletlenszerűen kiosztott önértékelő tesztből (HEXACO vagy Big Five), majd opcionálisan ismerősöket hívhat meg külső (observer) értékelésre.",
-      en: "Online, questionnaire-based pilot study. Each participant completes one randomly assigned self-assessment (either HEXACO or Big Five), and can optionally invite acquaintances for external (observer) ratings.",
-      de: "Online-Fragebogenstudie in der Pilotphase. Jede teilnehmende Person füllt einen zufällig zugewiesenen Selbsteinschätzungsfragebogen aus (HEXACO oder Big Five) und kann optional Bekannte als Beobachtungspersonen einladen.",
+      hu: "Online, kérdőíves pilot kutatás. Minden résztvevő véletlenszerűen kap egy önértékelő tesztet (HEXACO vagy Big Five), majd opcionálisan ismerősöket hívhat meg külső visszajelzésre.",
+      en: "Online, questionnaire-based pilot study. Each participant completes one randomly assigned self-assessment (HEXACO or Big Five), and can optionally invite people for external feedback.",
+      de: "Online-Fragebogenstudie in der Pilotphase. Jede teilnehmende Person füllt einen zufällig zugewiesenen Selbsteinschätzungsfragebogen aus (HEXACO oder Big Five) und kann optional Personen für eine Fremdeinschätzung einladen.",
     },
     flowTitle: {
       hu: "A kutatás menete",
@@ -317,9 +325,9 @@ const translations = {
       de: "Ablauf",
     },
     flowItems: {
-      hu: "Regisztráció és önkéntes hozzájárulás megadása.|Demográfiai adatok rögzítése (onboarding).|Önértékelő kérdőív kitöltése (HEXACO vagy Big Five – véletlenszerűen kiosztva).|Személyiségprofil megtekintése a dashboardon.|Rövid kutatási visszajelzés kitöltése.|Megfigyelők meghívása (opcionális) – értesítést küldünk, ha elkészülnek.",
-      en: "Registration and informed consent.|Demographic onboarding (age, gender, education, occupation).|Self-assessment questionnaire (HEXACO or Big Five – randomly assigned).|View personality profile on the dashboard.|Complete a short research feedback survey.|Invite observers (optional) – you'll receive an email notification when they finish.",
-      de: "Registrierung und informierte Einwilligung.|Demografisches Onboarding (Alter, Geschlecht, Bildung, Berufsstatus).|Selbsteinschätzungsfragebogen (HEXACO oder Big Five – zufällig zugeteilt).|Persönlichkeitsprofil im Dashboard ansehen.|Kurze Forschungs-Feedback-Befragung ausfüllen.|Beobachtungspersonen einladen (optional) – du erhältst eine E-Mail, wenn sie fertig sind.",
+      hu: "Regisztráció és önkéntes hozzájárulás megadása.|Demográfiai adatok rögzítése (onboarding).|Önértékelő kérdőív kitöltése (HEXACO vagy Big Five – véletlenszerűen kiosztva).|Személyiségprofil megtekintése a dashboardon.|Rövid kutatási visszajelzés kitöltése.|Értékelők meghívása (opcionális) – értesítést küldünk, ha elkészülnek.",
+      en: "Registration and informed consent.|Demographic onboarding (age, gender, education, occupation).|Self-assessment questionnaire (HEXACO or Big Five – randomly assigned).|View your personality profile on the dashboard.|Complete a short research feedback survey.|Invite people for external feedback (optional) – you'll get an email when they finish.",
+      de: "Registrierung und informierte Einwilligung.|Demografisches Onboarding (Alter, Geschlecht, Bildung, Berufsstatus).|Selbsteinschätzungsfragebogen (HEXACO oder Big Five – zufällig zugeteilt).|Persönlichkeitsprofil im Dashboard ansehen.|Kurze Forschungs-Feedback-Befragung ausfüllen.|Personen zur Fremdeinschätzung einladen (optional) – du erhältst eine E-Mail, wenn sie fertig sind.",
     },
     instrumentsTitle: {
       hu: "Mérőeszközök",
@@ -327,8 +335,8 @@ const translations = {
       de: "Instrumente",
     },
     instrumentsItems: {
-      hu: "HEXACO-PI-R kérdésbank (önértékelő és observer változat).|Big Five Aspect Scales (BFAS) kérdésbank (önértékelő és observer változat).|Minden résztvevő véletlenszerűen kap egyet a kettő közül.",
-      en: "HEXACO-PI-R item set (self-report and observer versions).|Big Five Aspect Scales (BFAS) item set (self-report and observer versions).|Each participant is randomly assigned to one of the two instruments.",
+      hu: "HEXACO-PI-R kérdésbank (önértékelő és külső értékelő változat).|Big Five Aspect Scales (BFAS) kérdésbank (önértékelő és külső értékelő változat).|Minden résztvevő véletlenszerűen kap egyet a kettő közül.",
+      en: "HEXACO-PI-R item set (self-report and external rating versions).|Big Five Aspect Scales (BFAS) item set (self-report and external rating versions).|Each participant is randomly assigned to one of the two instruments.",
       de: "HEXACO-PI-R Fragenkatalog (Selbst- und Fremdeinschätzung).|Big Five Aspect Scales (BFAS) Fragenkatalog (Selbst- und Fremdeinschätzung).|Jede Person erhält zufällig eines der beiden Instrumente.",
     },
     dataTitle: {
@@ -337,9 +345,9 @@ const translations = {
       de: "Datenverarbeitung (Kurzfassung)",
     },
     dataItems: {
-      hu: "Demográfiai adatok (életkor, nem, végzettség, foglalkozási státusz, ország).|Kérdőíves válaszok és összesített pontszámok.|Kutatási visszajelzés (önismeret-pontosság, motiváció, megosztási szándék).|Hozzájárulás időpontja és az érvényes adatkezelési verzió.|Az observer meghívók e-mail cím csak az értesítéshez szükséges; az observer kiléte az eredményekben anonim marad.|A részvétel önkéntes, bármikor megszakítható.",
-      en: "Demographic data (age, gender, education, occupation status, country).|Questionnaire responses and aggregated scores.|Research feedback (self-recognition accuracy, motivation, sharing intent).|Consent timestamp and applicable privacy policy version.|Observer invitee email addresses are used only for invitations; observer identity is not disclosed in results.|Participation is voluntary and can be stopped at any time.",
-      de: "Demografische Angaben (Alter, Geschlecht, Bildung, Berufsstatus, Land).|Fragebogenantworten und aggregierte Punktwerte.|Forschungs-Feedback (Selbsterkennungsgenauigkeit, Motivation, Weitergabeabsicht).|Einwilligungszeitpunkt und gültige Datenschutzversion.|E-Mails eingeladener Beobachtungspersonen werden nur für den Versand der Einladungen verwendet; die Identität bleibt in den Ergebnissen anonym.|Teilnahme ist freiwillig und jederzeit abbrechbar.",
+      hu: "Demográfiai adatok (életkor, nem, végzettség, foglalkozási státusz, ország).|Kérdőíves válaszok és összesített pontszámok.|Kutatási visszajelzés (önismeret-pontosság, motiváció, megosztási szándék).|Hozzájárulás időpontja és az érvényes adatkezelési verzió.|Az értékelői meghívók e-mail címe csak értesítéshez kell; az értékelők kiléte az eredményekben név nélkül jelenik meg.|A részvétel önkéntes, bármikor megszakítható.",
+      en: "Demographic data (age, gender, education, occupation status, country).|Questionnaire responses and aggregated scores.|Research feedback (self-recognition accuracy, motivation, sharing intent).|Consent timestamp and applicable privacy policy version.|Invitee email addresses are used only for sending invitations; individual identities are not shown in results.|Participation is voluntary and can be stopped at any time.",
+      de: "Demografische Angaben (Alter, Geschlecht, Bildung, Berufsstatus, Land).|Fragebogenantworten und aggregierte Punktwerte.|Forschungs-Feedback (Selbsterkennungsgenauigkeit, Motivation, Weitergabeabsicht).|Einwilligungszeitpunkt und gültige Datenschutzversion.|E-Mails eingeladener Personen werden nur für den Versand der Einladungen verwendet; ihre Identität wird in den Ergebnissen nicht offengelegt.|Teilnahme ist freiwillig und jederzeit abbrechbar.",
     },
     contactTitle: {
       hu: "Kapcsolat",
@@ -357,6 +365,15 @@ const translations = {
     signInSubtitle: { hu: "Küldünk egy egyszeri kódot az emailedre", en: "We'll send a one-time code to your email", de: "Wir senden dir einen Einmalcode per E-Mail" },
     signUpTitle: { hu: "Fiók létrehozása", en: "Create account", de: "Konto erstellen" },
     signUpSubtitle: { hu: "Küldünk egy megerősítő kódot az emailedre", en: "We'll send a verification code to your email", de: "Wir senden dir einen Bestätigungscode per E-Mail" },
+    observeTokenHint: {
+      hu: "A kitöltött visszajelzésed automatikusan a fiókodhoz kapcsolódik.",
+      en: "Your completed assessment will be automatically linked to your account.",
+      de: "Deine ausgefüllte Bewertung wird automatisch mit deinem Konto verknüpft.",
+    },
+    resendCode: { hu: "Kód újraküldése", en: "Resend code", de: "Code erneut senden" },
+    resendCodeLoading: { hu: "Küldés...", en: "Sending...", de: "Wird gesendet..." },
+    resendCodeSent: { hu: "Kód elküldve.", en: "Code sent.", de: "Code gesendet." },
+    resendCodeWait: { hu: "Próbáld újra {seconds} mp múlva.", en: "Try again in {seconds}s.", de: "Bitte in {seconds}s erneut versuchen." },
     emailLabel: { hu: "Email cím", en: "Email", de: "E-Mail" },
     passwordLabel: { hu: "Jelszó", en: "Password", de: "Passwort" },
     passwordPlaceholder: { hu: "Jelszó", en: "Password", de: "Passwort" },
@@ -412,6 +429,11 @@ const translations = {
   assessment: {
     introWelcome: { hu: "Köszönjük, hogy részt veszel a kutatásban!", en: "Thank you for taking part in the research!", de: "Danke, dass du an der Studie teilnimmst!" },
     introBody: { hu: "A következő kérdőívet kérjük figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat.", en: "Please fill in the questionnaire carefully — go with your first impression on each question, don't overthink it.", de: "Bitte fülle den Fragebogen sorgfältig aus — vertrau bei jeder Frage auf deinen ersten Eindruck." },
+    introAutoAdvanceHint: {
+      hu: "Alapból automatikusan továbblépünk, miután válaszolsz. Ha lassabban mennél, bármikor kikapcsolhatod.",
+      en: "By default, we move forward automatically after you answer. You can turn this off anytime.",
+      de: "Standardmäßig gehen wir nach deiner Antwort automatisch weiter. Du kannst das jederzeit ausschalten.",
+    },
     introCount: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
     introStart: { hu: "Kezdjük el →", en: "Let's start →", de: "Los geht's →" },
     helpLikert: {
@@ -494,12 +516,17 @@ const translations = {
     journeyProgress: { hu: "Haladás", en: "Progress", de: "Fortschritt" },
     journeyStepSelf: { hu: "Saját eredmény", en: "Self result", de: "Eigenes Ergebnis" },
     journeyStepInvite: { hu: "Meghívások", en: "Invitations", de: "Einladungen" },
-    journeyStepObserver: { hu: "Megfigyelői visszajelzés", en: "Observer feedback", de: "Fremdfeedback" },
+    journeyStepObserver: { hu: "Visszajelzés másoktól", en: "Observer feedback", de: "Fremdfeedback" },
     journeyStepFeedback: { hu: "Visszajelzésed", en: "Your feedback", de: "Dein Feedback" },
     nextStepInviteTitle: { hu: "Nézd meg, hogy látnak téged mások", en: "See how others see you", de: "Sieh, wie andere dich sehen" },
     nextStepInviteBodyPre:       { hu: "Hívd meg kollégáidat, barátaidat — legalább ", en: "Invite your colleagues and friends — at least ", de: "Lade Kolleg:innen, Freund:innen oder Familie ein — mindestens " },
     nextStepInviteBodyHighlight: { hu: "2 visszajelzés", en: "2 responses", de: "2 Antworten" },
     nextStepInviteBodyPost:      { hu: " kell az összehasonlításhoz.", en: " are needed for the comparison.", de: " sind für den Vergleich nötig." },
+    nextStepInviteNote: {
+      hu: "Ennyi kell, hogy értelmezhető összehasonlítást láss (átlag alapján).",
+      en: "That’s the minimum needed for a meaningful comparison (based on an average).",
+      de: "Das ist das Minimum für einen sinnvollen Vergleich (auf Basis eines Durchschnitts).",
+    },
     nextStepInviteCta: { hu: "Meghívó küldése", en: "Send invite", de: "Einladung senden" },
     nextStepWaitTitle: { hu: "Várjuk a visszajelzéseket", en: "Waiting for feedback", de: "Rückmeldungen abwarten" },
     nextStepWaitBody: { hu: "{received}/2 visszajelzés érkezett · {pending} függőben", en: "{received}/2 responses received · {pending} pending", de: "{received}/2 Rückmeldungen erhalten · {pending} ausstehend" },
@@ -523,7 +550,7 @@ const translations = {
     profileOverview: { hu: "Személyiségprofil áttekintés", en: "Personality profile overview", de: "Persönlichkeitsprofil im Überblick" },
     overviewLikert: { hu: "Gyors vizuális összkép a fő személyiségdimenzióidról.", en: "A quick visual snapshot of your main personality dimensions.", de: "Ein schneller visueller Überblick über deine wichtigsten Persönlichkeitsdimensionen." },
     radarLegendSelf: { hu: "Saját", en: "Self", de: "Eigenes" },
-    radarLegendObservers: { hu: "Meghívottak", en: "Invited", de: "Eingeladene" },
+    radarLegendObservers: { hu: "Mások", en: "Others", de: "Andere" },
     spectrumHigh: { hu: "Magas", en: "High", de: "Hoch" },
     spectrumLow: { hu: "Alacsony", en: "Low", de: "Niedrig" },
     detailedTitle: { hu: "Részletes kiértékelés", en: "Detailed results", de: "Detaillierte Auswertung" },
@@ -627,7 +654,7 @@ const translations = {
     feedbackOpenCta: { hu: "Visszajelzés megadása", en: "Give feedback", de: "Feedback geben" },
     feedbackThanks: { hu: "Köszönjük!", en: "Thank you!", de: "Danke!" },
     feedbackAgreementLabel: { hu: "Mennyire ismertél magadra az eredményekben?", en: "How well did you recognize yourself in the results?", de: "Wie gut hast du dich in den Ergebnissen wiedererkannt?" },
-    feedbackObserverUsefulnessLabel: { hu: "Mennyire voltak hasznosak számodra a visszajelzések a meghívottaktól?", en: "How useful was the feedback from the people you invited?", de: "Wie nützlich waren die Rückmeldungen von Beobachtenden?" },
+    feedbackObserverUsefulnessLabel: { hu: "Mennyire voltak hasznosak számodra a visszajelzések a meghívottaktól?", en: "How useful was the feedback from the people you invited?", de: "Wie nützlich waren die Rückmeldungen der Personen, die du eingeladen hast?" },
     feedbackSiteUsefulnessLabel: { hu: "Hasznosnak találtad-e az oldalt?", en: "Did you find the site useful?", de: "Fandest du die Seite nützlich?" },
     feedbackScaleVeryLow: { hu: "Egyáltalán nem", en: "Not at all", de: "Überhaupt nicht" },
     feedbackScaleLow: { hu: "Inkább nem", en: "Rather not", de: "Eher nicht" },
@@ -718,7 +745,7 @@ const translations = {
     // Q9 personality importance — everyone
     surveyQ9Label: { hu: "Mennyire tartod fontosnak a személyiség szerepét a munkahelyi / tanulmányi teljesítményben?", en: "How important do you think personality is for workplace or academic performance?", de: "Wie wichtig ist deiner Meinung nach die Persönlichkeit für die berufliche oder akademische Leistung?" },
     // Q10 observer usefulness
-    surveyQ10Label: { hu: "Mennyire voltak hasznosak a megfigyelői visszajelzések?", en: "How useful was the feedback from observers?", de: "Wie nützlich waren die Rückmeldungen von Beobachtenden?" },
+    surveyQ10Label: { hu: "Mennyire voltak hasznosak a másoktól kapott visszajelzések?", en: "How useful was the feedback from the people you invited?", de: "Wie nützlich waren die Rückmeldungen der Personen, die du eingeladen hast?" },
     // Custom scale labels for Q9 / Q10
     surveyScaleImportanceHigh: { hu: "Fontos", en: "Important", de: "Wichtig" },
     surveyScaleImportanceVeryHigh: { hu: "Nagyon fontos", en: "Very important", de: "Sehr wichtig" },
@@ -755,11 +782,11 @@ const translations = {
     tabComparisonEmptyCta: { hu: "Meghívók kezelése", en: "Manage invites", de: "Einladungen verwalten" },
   },
   invite: {
-    title: { hu: "Ismerős meghívása", en: "Invite an observer", de: "Beobachtende einladen" },
+    title: { hu: "Ismerős meghívása", en: "Invite someone", de: "Beobachtende einladen" },
     body: {
-      hu: "Hívj meg ismerősöket, hogy értékeljenek ugyanazzal a teszttel. Az eredmények anonimak maradnak.",
-      en: "Invite people to rate you with the same test. Results remain anonymous.",
-      de: "Lade Personen ein, dich mit demselben Test zu bewerten. Ergebnisse bleiben anonym.",
+      hu: "Kérd meg kollégáidat, barátaidat vagy családtagjaidat egy rövid értékelésre.",
+      en: "Ask colleagues, friends, or family for a quick rating.",
+      de: "Bitte Kolleg:innen, Freund:innen oder Familie um eine kurze Einschätzung.",
     },
     createNew: { hu: "Új meghívó létrehozása", en: "Create new invitation", de: "Neue Einladung erstellen" },
     emailPlaceholder: { hu: "Email cím (opcionális)", en: "Email address (optional)", de: "E-Mail-Adresse (optional)" },
@@ -773,6 +800,16 @@ const translations = {
       hu: "Egy link = egy kitöltő. Email nélkül te osztod meg, email címmel mi küldjük ki.",
       en: "One link, one person. No email: share it yourself. With email: we send it.",
       de: "Ein Link, eine Person. Ohne E-Mail selbst teilen – mit E-Mail versenden wir ihn.",
+    },
+    privacyNote: {
+      hu: "A visszajelzések név nélkül jelennek meg, és csak összesített átlagokat mutatunk.",
+      en: "Feedback is anonymous, and we show only aggregated averages.",
+      de: "Rückmeldungen sind anonym, und wir zeigen nur aggregierte Durchschnitte.",
+    },
+    compareHint: {
+      hu: "Az összehasonlításhoz legalább 2 visszajelzés kell. ({count}/2 megérkezett.)",
+      en: "For the comparison, you’ll need at least 2 responses. ({count}/2 received.)",
+      de: "Für den Vergleich brauchst du mindestens 2 Rückmeldungen. ({count}/2 eingegangen.)",
     },
     noInvitations: { hu: "Még nincs meghívásod", en: "No invitations yet", de: "Noch keine Einladungen" },
     createPrompt: { hu: "Hozz létre egyet a fenti űrlappal", en: "Create one with the form above", de: "Erstelle eine mit dem obigen Formular" },
@@ -788,20 +825,20 @@ const translations = {
     activeLimit: { hu: "Maximum 5 aktív meghívó lehet egyszerre.", en: "Maximum 5 active invites at a time.", de: "Maximal 5 aktive Einladungen gleichzeitig." },
     stats: { hu: "{completed} kitöltve, {pending} függőben, {canceled} törölve", en: "{completed} completed, {pending} pending, {canceled} canceled", de: "{completed} abgeschlossen, {pending} ausstehend, {canceled} storniert" },
   },
-    observer: {
-    metadataTitle: { hu: "Megfigyelői értékelés | Trita", en: "Observer assessment | Trita", de: "Fremdeinschätzung | Trita" },
+  observer: {
+    metadataTitle: { hu: "Visszajelzés kitöltése | Trita", en: "Observer assessment | Trita", de: "Fremdeinschätzung | Trita" },
     completeTitle: { hu: "Már kitöltötted ezt az értékelést", en: "This assessment is already completed", de: "Diese Bewertung wurde bereits ausgefüllt" },
     completeBody: { hu: "Ez a meghívó már fel lett használva. Köszönjük a részvételt!", en: "This invite link has already been used. Thank you for participating!", de: "Dieser Einladungslink wurde bereits verwendet. Danke für die Teilnahme!" },
     inactiveTitle: { hu: "A meghívó már nem aktív", en: "Invite is no longer active", de: "Einladung ist nicht mehr aktiv" },
     inactiveBody: { hu: "Ez a meghívó vissza lett vonva. Kérj új linket az ismerősödtől.", en: "This invite was canceled. Ask for a new link.", de: "Diese Einladung wurde zurückgezogen. Bitte um einen neuen Link." },
     expiredTitle: { hu: "A meghívó lejárt", en: "Invite expired", de: "Einladung abgelaufen" },
     expiredBody: { hu: "Ez a meghívó már nem érvényes. Kérj új linket.", en: "This invite is no longer valid. Ask for a new link.", de: "Diese Einladung ist nicht mehr gültig. Bitte um einen neuen Link." },
-    introTitle: { hu: "Megfigyelői értékelés", en: "Observer assessment", de: "Fremdeinschätzung" },
-    introBody: { hu: "{inviter} arra kér, hogy töltsd ki ezt a(z) {testName} tesztet róla.", en: "{inviter} asked you to complete this {testName} assessment about them.", de: "{inviter} hat dich gebeten, diesen {testName}-Test über {inviter} auszufüllen." },
-    introBody2: { hu: "A válaszaid anonimak maradnak, csak összesített átlagok láthatók.", en: "Your answers remain anonymous; only aggregated averages are visible.", de: "Deine Antworten bleiben anonym; sichtbar sind nur aggregierte Durchschnitte." },
+    introTitle: { hu: "Visszajelzés", en: "Observer assessment", de: "Fremdeinschätzung" },
+    introBody: { hu: "{inviter} arra kér, hogy töltsd ki ezt a(z) {testName} tesztet róla.", en: "{inviter} asked you to complete this {testName} assessment about them.", de: "{inviter} hat dich gebeten, diesen {testName}-Test auszufüllen." },
+    introBody2: { hu: "A válaszaid név nélkül jelennek meg, és csak összesített átlagok láthatók.", en: "Your answers remain anonymous; only aggregated averages are visible.", de: "Deine Antworten bleiben anonym; sichtbar sind nur aggregierte Durchschnitte." },
     introWelcome: { hu: "Örülünk, hogy itt vagy!", en: "We're glad you're here!", de: "Schön, dass du da bist!" },
-    introInvitedBy: { hu: "{inviter} kért meg, hogy töltsd ki a személyiségtesztjét.", en: "{inviter} asked you to fill in their personality test.", de: "{inviter} hat dich gebeten, den Persönlichkeitstest für {inviter} auszufüllen." },
-    introBodyShort: { hu: "Kérjük, figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat. A válaszaid anonimak maradnak.", en: "Please fill in carefully — go with your first impression on each question, don't overthink it. Your answers remain anonymous.", de: "Bitte sorgfältig ausfüllen — vertrau bei jeder Frage auf deinen ersten Eindruck. Deine Antworten bleiben anonym." },
+    introInvitedBy: { hu: "{inviter} kért meg, hogy töltsd ki a személyiségtesztjét.", en: "{inviter} asked you to fill in their personality test.", de: "{inviter} hat dich gebeten, diesen Persönlichkeitstest auszufüllen." },
+    introBodyShort: { hu: "Kérjük, figyelmesen töltsd ki: minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat. A válaszaid név nélkül jelennek meg.", en: "Please fill in carefully — go with your first impression on each question, don't overthink it. Your answers remain anonymous.", de: "Bitte sorgfältig ausfüllen — vertrau bei jeder Frage auf deinen ersten Eindruck. Deine Antworten bleiben anonym." },
     introPauseNote: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
     relationshipLabel: { hu: "Milyen a kapcsolatotok?", en: "What is your relationship?", de: "Wie ist eure Beziehung?" },
     durationLabel: { hu: "Mióta ismered?", en: "How long have you known them?", de: "Wie lange kennst du die Person?" },
@@ -849,8 +886,9 @@ const translations = {
     doneTitle: { hu: "Köszönjük a részvételt!", en: "Thank you for participating!", de: "Vielen Dank für deine Teilnahme!" },
     doneBody: { hu: "A válaszaid sikeresen elmentésre kerültek.", en: "Your answers were saved successfully.", de: "Deine Antworten wurden erfolgreich gespeichert." },
     doneSignedInHint: { hu: "A meghívóid és eredményeid a dashboardon elérhetőek.", en: "Your invites and results are available on your dashboard.", de: "Deine Einladungen und Ergebnisse findest du im Dashboard." },
-    doneSignedOutHint: { hu: "Ha már van fiókod, jelentkezz be a meghívóid megtekintéséhez.", en: "If you already have an account, sign in to view your invites.", de: "Wenn du bereits ein Konto hast, melde dich an, um Einladungen zu sehen." },
+    doneSignedOutHint: { hu: "Szeretnél te is részt venni a kutatásban? Regisztrálj, vagy jelentkezz be, ha már van fiókod.", en: "Want to take the test yourself? Sign up, or sign in if you already have an account.", de: "Möchtest du den Test selbst machen? Registriere dich oder melde dich an, falls du bereits ein Konto hast." },
     signInCta: { hu: "Bejelentkezés", en: "Sign in", de: "Anmelden" },
+    signUpCta: { hu: "Regisztráció", en: "Sign up", de: "Registrieren" },
     goDashboard: { hu: "Ugrás a dashboardra", en: "Go to dashboard", de: "Zum Dashboard" },
     selectBothFields: { hu: "Kérjük, válassz kapcsolatot és időtartamot a folytatáshoz.", en: "Please select a relationship and duration to continue.", de: "Bitte wähle Beziehung und Dauer, um fortzufahren." },
   },
@@ -917,7 +955,7 @@ const translations = {
     },
     deleteTitle: { hu: "Fiók törlése", en: "Delete account", de: "Konto löschen" },
     deleteBody: { hu: "A fiókod véglegesen törlődik, és nem állítható vissza.", en: "Your account will be permanently deleted and cannot be restored.", de: "Dein Konto wird dauerhaft gelöscht und kann nicht wiederhergestellt werden." },
-    deleteLoadingNote: { hu: "Várunk vissza!", en: "We'd love to see you again!", de: "Wir freuen uns, dich wiederzusehen!" },
+    deleteLoadingNote: { hu: "Ez eltarthat egy pillanatig...", en: "This may take a moment...", de: "Einen Moment bitte..." },
     deleteError: { hu: "Nem sikerült törölni a profilt.", en: "Could not delete profile.", de: "Profil konnte nicht gelöscht werden." },
     confirmTitle: { hu: "Fiók törlése", en: "Delete account", de: "Konto löschen" },
     confirmBody: { hu: "Biztosan törlöd a profilodat? Ez nem visszavonható.", en: "Are you sure you want to delete your profile? This cannot be undone.", de: "Profil wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden." },
@@ -1001,6 +1039,11 @@ const translations = {
       en: "Invitation created, but we couldn't send the email. Copy the link instead.",
       de: "Einladung erstellt, aber E-Mail konnte nicht gesendet werden. Kopiere den Link.",
     },
+    DUPLICATE_INVITE_EMAIL: {
+      hu: "Erre az email címre már van aktív meghívód. Előbb töröld a meglévőt, ha újat szeretnél küldeni.",
+      en: "You already have an active invite for this email address. Delete the existing one first if you want to send a new one.",
+      de: "Für diese E-Mail-Adresse hast du bereits eine aktive Einladung. Lösche die bestehende, bevor du eine neue sendest.",
+    },
     INVALID_DIMENSION_CODE: {
       hu: "Érvénytelen dimenzió kód.",
       en: "Invalid dimension code.",
@@ -1008,6 +1051,11 @@ const translations = {
     },
   },
   onboarding: {
+    progress: {
+      hu: "Kitöltve: {completed}/{total}",
+      en: "Completed: {completed}/{total}",
+      de: "Ausgefüllt: {completed}/{total}",
+    },
     title: {
       hu: "Személyes adatok",
       en: "Personal details",
@@ -1129,9 +1177,9 @@ const translations = {
       de: "Andere",
     },
     occupationStatusLabel: {
-      hu: "Jelenlegi státusz",
-      en: "Current status",
-      de: "Aktueller Status",
+      hu: "Foglalkozási helyzet",
+      en: "Employment situation",
+      de: "Beschäftigungssituation",
     },
     occupationStatusWorking: {
       hu: "Dolgozom",
@@ -1362,7 +1410,7 @@ const translations = {
     },
     introBody: {
       hu: "A Trita egy egyetemi kutatási projekt, amely személyiségtesztek (HEXACO, Big Five) összehasonlítását végzi önértékelés és ismerősi visszajelzés alapján. Ez a tájékoztató ismerteti, hogyan gyűjtjük, kezeljük és védjük az adataidat.",
-      en: "Trita is a university research project that compares personality assessments (HEXACO, Big Five) using self-ratings and observer feedback. This policy describes how we collect, process, and protect your data.",
+      en: "Trita is a university research project that compares personality assessments (HEXACO, Big Five) using self-ratings and feedback from others. This policy describes how we collect, process, and protect your data.",
       de: "Trita ist ein universitäres Forschungsprojekt, das Persönlichkeitstests (HEXACO, Big Five) anhand von Selbst- und Fremdeinschätzungen vergleicht. Diese Erklärung beschreibt, wie wir deine Daten erheben, verarbeiten und schützen.",
     },
     dataCollectedTitle: {
@@ -1382,7 +1430,7 @@ const translations = {
     },
     dataAssessment: {
       hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések, valamint az eredmények utáni kutatási kérdőív (korábbi teszttapasztalat, munkakörülmények, motiváció stb.).",
-      en: "Assessment data: personality test answers, calculated scores, observer ratings, and the post-results research survey (prior test experience, work context, motivation, etc.).",
+      en: "Assessment data: personality test answers, calculated scores, ratings from others, and the post-results research survey (prior test experience, work context, motivation, etc.).",
       de: "Testdaten: Persönlichkeitstest-Antworten, berechnete Punktzahlen, Bewertungen von Beobachtenden sowie der Nachbefragungsfragebogen (frühere Testerfahrung, Arbeitskontext, Motivation usw.).",
     },
     dataTechnical: {
@@ -1402,7 +1450,7 @@ const translations = {
     },
     purposeService: {
       hu: "Szolgáltatás működtetése: a teszt kitöltése, eredmények megjelenítése, ismerősi meghívók kezelése.",
-      en: "Service operation: delivering the assessment, displaying results, managing observer invitations.",
+      en: "Service operation: delivering the assessment, displaying results, managing invitations.",
       de: "Dienstbetrieb: Durchführung des Tests, Anzeige der Ergebnisse, Verwaltung von Einladungen an Beobachtende.",
     },
     cookiesTitle: {
@@ -1457,7 +1505,7 @@ const translations = {
     },
     processorsResend: {
       hu: "Resend (resend.com) – tranzakciós e-mailek küldése (pl. ismerősi meghívók). Az e-mail-cím kizárólag az üzenet kézbesítéséhez kerül továbbításra.",
-      en: "Resend (resend.com) – transactional email delivery (e.g. observer invitations). Email addresses are shared solely for message delivery.",
+      en: "Resend (resend.com) – transactional email delivery (e.g. invitations). Email addresses are shared solely for message delivery.",
       de: "Resend (resend.com) – Transaktionaler E-Mail-Versand (z. B. Einladungen an Beobachtende). E-Mail-Adressen werden ausschließlich zur Nachrichtenübermittlung weitergegeben.",
     },
     rightsTitle: {
@@ -1516,10 +1564,11 @@ const translations = {
   },
   comparison: {
     title: { hu: "Mások rólad", en: "Others about you", de: "Andere über dich" },
-    body: { hu: "Önértékelésed és a megfigyelők ({count} fő) átlagának összehasonlítása.", en: "Comparison of your self-rating and observer average ({count} people).", de: "Vergleich deiner Selbsteinschätzung mit dem Durchschnitt der Beobachtenden ({count} Personen)." },
+    body: { hu: "Önértékelésed és az értékelők ({count} fő) átlagának összehasonlítása.", en: "Comparison of your self-rating and the average from the people you invited ({count} people).", de: "Vergleich deiner Selbsteinschätzung mit dem Durchschnitt der Personen, die du eingeladen hast ({count} Personen)." },
     similar: { hu: "hasonló", en: "similar", de: "ähnlich" },
-    diffHigher: { hu: "+{diff}% (mások magasabbra értékelnek)", en: "+{diff}% (others rate you higher)", de: "+{diff}% (andere bewerten dich höher)" },
-    diffLower: { hu: "{diff}% (mások alacsonyabbra értékelnek)", en: "{diff}% (others rate you lower)", de: "{diff}% (andere bewerten dich niedriger)" },
+    diffHigher: { hu: "+{diff} pont (mások magasabbra értékelnek)", en: "+{diff} pts (others rate you higher)", de: "+{diff} Pkt. (andere bewerten dich höher)" },
+    diffLower: { hu: "{diff} pont (mások alacsonyabbra értékelnek)", en: "{diff} pts (others rate you lower)", de: "{diff} Pkt. (andere bewerten dich niedriger)" },
+    pointsUnitShort: { hu: "pont", en: "pts", de: "Pkt." },
     self: { hu: "Te", en: "You", de: "Du" },
     others: { hu: "Mások", en: "Others", de: "Andere" },
     othersCount: { hu: "Mások ({count})", en: "Others ({count})", de: "Andere ({count})" },
@@ -1530,19 +1579,24 @@ const translations = {
     insightHigher: { hu: "Mások magasabbra értékelnek ebben a dimenzióban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself.", de: "Andere bewerten dich in dieser Dimension höher als du dich selbst." },
     insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak.", en: "You rate yourself higher in this dimension than others rate you.", de: "Du bewertest dich in dieser Dimension höher, als andere dich sehen." },
     facetMapTitle: { hu: "Alskálák összehasonlítása", en: "Sub-scale comparison", de: "Detailvergleich je Subskala" },
-    facetMapSubtitle: { hu: "Facetek és aspektusok, abszolút eltérés szerint rendezve.", en: "Facets and aspects sorted by absolute divergence.", de: "Facetten und Aspekte nach absoluter Abweichung sortiert." },
+    facetMapSubtitle: { hu: "Facetek és aspektusok, az eltérés mértéke szerint rendezve. A különbség: (mások átlaga) − (te).", en: "Facets and aspects sorted by absolute divergence. Difference is (others' average) − (you).", de: "Facetten und Aspekte nach absoluter Abweichung sortiert. Differenz = (Durchschnitt andere) − (du)." },
     heatmapMatch: { hu: "Közel azonos", en: "Close match", de: "Nahezu gleich" },
     heatmapObsHigher: { hu: "Mások magasabbra értékelnek", en: "Others rate higher", de: "Andere bewerten höher" },
     heatmapSelfHigher: { hu: "Te értékeled magasabbra", en: "You rate higher", de: "Du bewertest höher" },
     deltaDirectionMatch: { hu: "Közel azonos értékelés", en: "Ratings are close", de: "Bewertungen sind ähnlich" },
     deltaDirectionHigher: { hu: "Mások itt magasabbra értékelnek, mint te.", en: "Others rate this higher than you do.", de: "Andere bewerten dies höher als du." },
-    deltaDirectionLower: { hu: "Te itt magasabbra értékeled magad, mint a megfigyelők.", en: "You rate yourself higher here than observers do.", de: "Hier bewertest du dich höher als die Beobachtenden." },
+    deltaDirectionLower: { hu: "Te itt magasabbra értékeled magad, mint az értékelők.", en: "You rate yourself higher here than others do.", de: "Hier bewertest du dich höher, als andere dich einschätzen." },
     showAll: { hu: "Összes megjelenítése", en: "Show all", de: "Alle anzeigen" },
     showLess: { hu: "Csak a legnagyobb eltérések", en: "Show only largest gaps", de: "Nur größte Abweichungen" },
     anonGateTitle: { hu: "Az összehasonlítás hamarosan elérhető", en: "Comparison almost ready", de: "Vergleich fast bereit" },
-    anonGateBody: { hu: "A névtelenség védelme érdekében legalább 2 megfigyelői visszajelzés szükséges az eredmények megjelenítéséhez.", en: "To protect observer anonymity, at least 2 observer responses are required before results are shown.", de: "Zum Schutz der Anonymität werden mindestens 2 Rückmeldungen von Beobachtenden benötigt, bevor die Ergebnisse angezeigt werden." },
+    anonGateBody: { hu: "A névtelenség védelme érdekében legalább 2 visszajelzés szükséges az eredmények megjelenítéséhez.", en: "To protect privacy, comparisons are shown only after at least 2 responses.", de: "Zum Schutz der Privatsphäre wird der Vergleich erst nach mindestens 2 Rückmeldungen angezeigt." },
     anonGateProgress: { hu: "{count} / 2 visszajelzés megérkezett.", en: "{count} / 2 responses received.", de: "{count} / 2 Rückmeldungen erhalten." },
     anonGateCta: { hu: "Meghívók kezelése", en: "Manage invitations", de: "Einladungen verwalten" },
+    nextActionTitle: { hu: "Mi legyen a következő lépés?", en: "What next?", de: "Wie geht es weiter?" },
+    nextActionBody: { hu: "Ha szeretnéd, kérhetsz még visszajelzést, vagy kitöltheted a rövid kutatási kérdőívet.", en: "If you’d like, you can request more feedback or fill out the short research survey.", de: "Wenn du möchtest, kannst du weiteres Feedback einholen oder die kurze Forschungsumfrage ausfüllen." },
+    nextActionBodyNoSurvey: { hu: "Ha szeretnéd, kérhetsz még visszajelzést.", en: "If you’d like, you can request more feedback.", de: "Wenn du möchtest, kannst du weiteres Feedback einholen." },
+    nextActionInvite: { hu: "Kérek még visszajelzést", en: "Request more feedback", de: "Mehr Feedback einholen" },
+    nextActionSurvey: { hu: "Kitöltöm a kérdőívet", en: "Fill out the survey", de: "Umfrage ausfüllen" },
   },
 } as const;
 

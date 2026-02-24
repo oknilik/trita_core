@@ -4,7 +4,15 @@ type Locale = "hu" | "en" | "de";
 
 // Single module-level constant — avoids the Turbopack inlining bug where
 // local `const appUrl` declarations inside functions are dropped.
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://trita.hu";
+function normalizeBaseUrl(url: string): string {
+  return url.replace(/\/+$/, "");
+}
+
+const APP_URL = normalizeBaseUrl(
+  process.env.NEXT_PUBLIC_APP_URL
+    ?? process.env.APP_URL
+    ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://trita.io"),
+);
 
 const translations = {
   orderConfirmation: {
@@ -47,12 +55,12 @@ const translations = {
       team: "the trita team",
     },
     de: {
-      subject: "Vielen Dank für Ihren Kauf! – Trita",
-      heading: "Vielen Dank für Ihren Kauf!",
+      subject: "Danke für deinen Kauf! – trita",
+      heading: "Danke für deinen Kauf!",
       greeting: (name: string) =>
-        `Liebe/r ${name},`,
-      body: "Ihre Zahlung wurde erfolgreich verarbeitet. Ihre Pro-Funktionen sind ab sofort verfügbar.",
-      features: "Was Sie jetzt nutzen können:",
+        `Hallo ${name},`,
+      body: "Deine Zahlung wurde erfolgreich verarbeitet. Deine Pro-Funktionen sind ab sofort verfügbar.",
+      features: "Das kannst du jetzt nutzen:",
       featureList: [
         "Detaillierte, personalisierte Auswertung",
         "Bestimmung des Persönlichkeitstyps",
@@ -61,8 +69,8 @@ const translations = {
       ],
       cta: "Zum Dashboard",
       footer:
-        "Bei Fragen antworten Sie einfach auf diese E-Mail. Wir helfen Ihnen gerne!",
-      thanks: "Mit freundlichen Grüßen,",
+        "Bei Fragen antworte einfach auf diese E-Mail. Wir helfen dir gern!",
+      thanks: "Viele Grüße,",
       team: "das trita-Team",
     },
   },
@@ -71,8 +79,8 @@ const translations = {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
       greeting: (name: string) => `Kedves ${name},`,
       body: (inviter: string) =>
-        `${inviter} arra kér, hogy tölts ki egy rövid személyiségtesztet róla. A válaszaid anonimak maradnak, és kizárólag kutatási célokra kerülnek felhasználásra.`,
-      cta: "Megfigyelői teszt megnyitása",
+        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet. A válaszaid név nélkül jelennek meg, és csak kutatási célra használjuk.`,
+      cta: "Visszajelzés kitöltése",
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
@@ -83,7 +91,7 @@ const translations = {
       greeting: (name: string) => `Hello ${name},`,
       body: (inviter: string) =>
         `${inviter} invited you to complete a short personality assessment about them. Your answers remain anonymous and are used for research only.`,
-      cta: "Open observer assessment",
+      cta: "Open the feedback form",
       footer:
         "If you don't recognize this invitation, you can ignore this email.",
       thanks: "Best regards,",
@@ -93,8 +101,8 @@ const translations = {
       subject: "Einladung zum Persönlichkeitstest – Trita",
       greeting: (name: string) => `Hallo ${name},`,
       body: (inviter: string) =>
-        `${inviter} hat dich eingeladen, einen kurzen Persönlichkeitstest über sie/ihn auszufüllen. Deine Antworten bleiben anonym und werden nur zu Forschungszwecken verwendet.`,
-      cta: "Beobachter-Test öffnen",
+        `${inviter} hat dich eingeladen, eine kurze Einschätzung abzugeben. Deine Antworten bleiben anonym und werden nur zu Forschungszwecken verwendet.`,
+      cta: "Fremdeinschätzung öffnen",
       footer:
         "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
       thanks: "Viele Grüße,",
@@ -103,25 +111,25 @@ const translations = {
   },
   observerCompletion: {
     hu: {
-      subject: "Egy megfigyelőd elvégezte a tesztet – trita",
+      subject: "Megérkezett egy visszajelzés – trita",
       greeting: (name: string) => `Szia, ${name}!`,
-      body: "Jó hír: az egyik meghívott megfigyelőd elvégezte a személyiségtesztet. Nézd meg, hogyan látnak téged mások!",
+      body: "Jó hír: az egyik meghívottad kitöltötte a kérdőívet. Nézd meg, hogyan látnak téged mások!",
       cta: "Megnézem az eredményeket",
       thanks: "Köszönjük, hogy részt veszel a kutatásban!",
       team: "a trita csapat",
     },
     en: {
-      subject: "One of your observers completed the test – trita",
+      subject: "New feedback received – trita",
       greeting: (name: string) => `Hi ${name}!`,
-      body: "Great news: one of the observers you invited has completed the personality test. See how others perceive you!",
+      body: "Great news: one of the people you invited completed the questionnaire. See how others perceive you!",
       cta: "View my results",
       thanks: "Thank you for participating in the research!",
       team: "the trita team",
     },
     de: {
-      subject: "Eine deiner Beobachtungspersonen hat den Test abgeschlossen – trita",
+      subject: "Eine Rückmeldung ist eingegangen – trita",
       greeting: (name: string) => `Hallo, ${name}!`,
-      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Beobachtungspersonen hat den Persönlichkeitstest abgeschlossen. Schau, wie andere dich wahrnehmen!",
+      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Personen hat den Fragebogen ausgefüllt. Schau, wie andere dich wahrnehmen!",
       cta: "Ergebnisse ansehen",
       thanks: "Danke, dass du an der Forschung teilnimmst!",
       team: "das trita-Team",
@@ -239,6 +247,7 @@ const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
 
 // Default logo size matches the sign-in code email (140px).
 const DEFAULT_LOGO_SIZE = 140;
+const LOGO_ASPECT_RATIO = 1536 / 1024;
 
 function buildEmailLayout(params: {
   locale: Locale;
@@ -250,6 +259,7 @@ function buildEmailLayout(params: {
   team: string;
 }): string {
   const logoSize = params.logoSize ?? DEFAULT_LOGO_SIZE;
+  const logoWidth = Math.round(logoSize * LOGO_ASPECT_RATIO);
   return `<!DOCTYPE html>
 <html lang="${params.locale}">
 <head>
@@ -271,8 +281,8 @@ function buildEmailLayout(params: {
     <!-- Gradient header with logo and wave bottom -->
     <div style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
       <div style="padding:24px 32px 10px;text-align:center">
-        <img src="${APP_URL}/icon.svg" alt="trita" width="${logoSize}" height="${logoSize}"
-             style="display:inline-block;border-radius:24px;margin-bottom:10px">
+        <img src="${APP_URL}/trita-logo.svg" alt="trita" width="${logoWidth}" height="${logoSize}"
+             style="display:inline-block;margin-bottom:10px;max-width:100%;height:auto">
         ${params.heading ? `<h1 style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"

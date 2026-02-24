@@ -18,9 +18,10 @@ const testLabels: Partial<Record<TestType, Record<Locale, { name: string; descri
     de: { name: "HEXACO-PI-R", description: "Offizieller HEXACO‑Test mit 60 Fragen." },
   },
   HEXACO_MODIFIED: {
-    hu: { name: "HEXACO (módosított)", description: "Kontextus-adaptált HEXACO kérdésbank, amely a hivatalos HEXACO-PI-R-rel összehasonlítható observer-megegyezés elérését vizsgálja." },
-    en: { name: "HEXACO (modified)", description: "Context-adapted HEXACO item set testing whether a reduced bank achieves comparable observer agreement." },
-    de: { name: "HEXACO (modifiziert)", description: "Kontextadaptierter HEXACO‑Fragenkatalog zur Prüfung vergleichbarer Beobachterübereinstimmung." },
+    // Intentionally user-facing neutral naming (research variant is internal only).
+    hu: { name: "HEXACO", description: "HEXACO-alapú személyiségteszt kérdőív." },
+    en: { name: "HEXACO", description: "HEXACO-based personality questionnaire." },
+    de: { name: "HEXACO", description: "HEXACO-basierter Persönlichkeitsfragebogen." },
   },
   BIG_FIVE: {
     hu: { name: "Big Five (BFAS)", description: "Big Five Aspect Scales — aspektus-szintű mérés, amely a munkahelyi viselkedés jobb előrejelzőképességéért lett választva." },

@@ -16,6 +16,16 @@ type CtaStatus = {
   completedObserver: number;
 };
 
+type SignedInCtaContent = {
+  tagKey: string;
+  titleKey: string;
+  bodyKey: string;
+  primaryHref: string;
+  primaryLabelKey: string;
+  secondaryHref?: string;
+  secondaryLabelKey?: string;
+};
+
 export function BottomCTA() {
   const { locale } = useLocale();
   const [status, setStatus] = useState<CtaStatus | null>(null);
@@ -48,7 +58,7 @@ export function BottomCTA() {
     };
   }, []);
 
-  const signedInContent = useMemo(() => {
+  const signedInContent: SignedInCtaContent = useMemo(() => {
     if (!status) {
       return {
         tagKey: "landing.ctaTagInProgress",
@@ -56,9 +66,9 @@ export function BottomCTA() {
         bodyKey: "landing.ctaBodyContinue",
         primaryHref: "/dashboard",
         primaryLabelKey: "landing.openDashboard",
-        secondaryHref: "/research",
-        secondaryLabelKey: "landing.notifyMe",
-      } as const;
+        secondaryHref: undefined,
+        secondaryLabelKey: undefined,
+      };
     }
 
     if (!status.onboarded) {
@@ -68,7 +78,9 @@ export function BottomCTA() {
         bodyKey: "landing.ctaBodyCompleteProfile",
         primaryHref: "/onboarding",
         primaryLabelKey: "landing.ctaCompleteProfile",
-      } as const;
+        secondaryHref: undefined,
+        secondaryLabelKey: undefined,
+      };
     }
 
     if (status.hasDraft) {
@@ -78,7 +90,9 @@ export function BottomCTA() {
         bodyKey: "landing.ctaBodyContinue",
         primaryHref: "/assessment",
         primaryLabelKey: "landing.ctaTitleContinue",
-      } as const;
+        secondaryHref: undefined,
+        secondaryLabelKey: undefined,
+      };
     }
 
     if (!status.hasResult) {
@@ -88,7 +102,9 @@ export function BottomCTA() {
         bodyKey: "landing.ctaBodyStartAssessment",
         primaryHref: "/assessment",
         primaryLabelKey: "landing.ctaTitleStartAssessment",
-      } as const;
+        secondaryHref: undefined,
+        secondaryLabelKey: undefined,
+      };
     }
 
     if (status.sentInvites === 0 || status.pendingInvites > 0) {
@@ -96,9 +112,12 @@ export function BottomCTA() {
         tagKey: "landing.ctaTagInProgress",
         titleKey: "landing.ctaTitleRequestFeedback",
         bodyKey: "landing.ctaBodyRequestFeedback",
-        primaryHref: "/dashboard#invite",
+        // Deep link to invites tab + section.
+        primaryHref: "/dashboard?tab=invites#invite",
         primaryLabelKey: "landing.ctaRequestFeedback",
-      } as const;
+        secondaryHref: undefined,
+        secondaryLabelKey: undefined,
+      };
     }
 
     if (status.completedObserver > 0) {
@@ -108,7 +127,9 @@ export function BottomCTA() {
         bodyKey: "landing.ctaBodyResults",
         primaryHref: "/dashboard",
         primaryLabelKey: "landing.openDashboard",
-      } as const;
+        secondaryHref: undefined,
+        secondaryLabelKey: undefined,
+      };
     }
 
     return {
@@ -117,9 +138,9 @@ export function BottomCTA() {
       bodyKey: "landing.ctaBodyContinue",
       primaryHref: "/dashboard",
       primaryLabelKey: "landing.openDashboard",
-      secondaryHref: "/research",
-      secondaryLabelKey: "landing.notifyMe",
-    } as const;
+      secondaryHref: undefined,
+      secondaryLabelKey: undefined,
+    };
   }, [status]);
 
   return (

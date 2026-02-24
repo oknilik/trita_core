@@ -9,6 +9,7 @@ interface ObserverComparisonProps {
   observerCount: number;
   avgConfidence: number | null;
   facetDivergences: SerializedFacetDivergence[];
+  surveySubmitted?: boolean;
 }
 
 function getChipStyle(delta: number): string {
@@ -21,9 +22,12 @@ export function ObserverComparison({
   observerCount,
   avgConfidence,
   facetDivergences,
+  surveySubmitted,
 }: ObserverComparisonProps) {
   const { locale } = useLocale();
   const [showAll, setShowAll] = useState(false);
+  const showSurveyCta = !surveySubmitted;
+  const pointsUnit = t("comparison.pointsUnitShort", locale);
 
   const sortedEntries = useMemo(
     () => [...facetDivergences].sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)),
@@ -101,7 +105,7 @@ export function ObserverComparison({
           <div className="flex flex-col gap-3">
             {entriesToShow.map((item) => {
               const absDelta = Math.abs(item.delta);
-              const signedDelta = item.delta > 0 ? `+${item.delta}%` : item.delta < 0 ? `${item.delta}%` : "±0%";
+              const signedDelta = item.delta > 0 ? `+${item.delta} ${pointsUnit}` : item.delta < 0 ? `${item.delta} ${pointsUnit}` : `±0 ${pointsUnit}`;
               const directionText =
                 absDelta <= 5
                   ? t("comparison.deltaDirectionMatch", locale)
@@ -138,7 +142,7 @@ export function ObserverComparison({
                           style={{ width: `${item.selfScore}%`, backgroundColor: item.dimColor, opacity: 0.55 }}
                         />
                       </div>
-                      <span className="w-10 text-right text-xs font-semibold text-gray-600">{item.selfScore}%</span>
+                      <span className="w-10 text-right text-xs font-semibold text-gray-600">{item.selfScore}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-12 text-xs text-gray-700">{t("comparison.others", locale)}</span>
@@ -148,7 +152,7 @@ export function ObserverComparison({
                           style={{ width: `${item.observerScore}%`, backgroundColor: item.dimColor }}
                         />
                       </div>
-                      <span className="w-10 text-right text-xs font-semibold text-gray-700">{item.observerScore}%</span>
+                      <span className="w-10 text-right text-xs font-semibold text-gray-700">{item.observerScore}</span>
                     </div>
                   </div>
 
@@ -169,6 +173,32 @@ export function ObserverComparison({
               </button>
             </div>
           )}
+
+          <div className="mt-8 rounded-2xl border border-gray-100 bg-gray-50/60 p-5">
+            <p className="text-sm font-semibold text-gray-900">{t("comparison.nextActionTitle", locale)}</p>
+            <p className="mt-1 text-sm text-gray-600">
+              {showSurveyCta
+                ? t("comparison.nextActionBody", locale)
+                : t("comparison.nextActionBodyNoSurvey", locale)}
+            </p>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <a
+                href="/dashboard?tab=invites#invite"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+              >
+                {t("comparison.nextActionInvite", locale)}
+              </a>
+              {showSurveyCta && (
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("dashboard:open-survey"))}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-indigo-200 bg-white px-5 text-sm font-semibold text-indigo-700 shadow-sm transition-all duration-300 hover:bg-indigo-50 hover:shadow-md"
+                >
+                  {t("comparison.nextActionSurvey", locale)}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </section>

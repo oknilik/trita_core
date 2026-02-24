@@ -5,8 +5,9 @@ import type { TestConfig } from "./types";
  */
 export const hexacoModifiedConfig: TestConfig = {
   type: "HEXACO_MODIFIED",
-  name: "HEXACO (modified)",
-  description: "Kontextus-adaptált HEXACO kérdésbank 100 kérdéssel.",
+  // User-facing naming is resolved in `src/lib/questions/index.ts` (kept neutral there).
+  name: "HEXACO",
+  description: "HEXACO személyiségteszt kérdőív.",
   format: "likert",
   dimensions: [
     {
