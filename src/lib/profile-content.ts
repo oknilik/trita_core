@@ -198,7 +198,7 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     de: "Neue Lösungen denkst du systemisch statt ad hoc. Deine beste Arbeit entsteht, wenn Kreativität und Struktur gleichzeitig vorhanden sind.",
   },
   resilientLeader: {
-    hu: "Stressz alatt is kiegyensúlyozottan maradsz, és az energiádat a kapcsolatokból merítve fenntartod azt. Olyan helyzetekben vagy erős, ahol egyszerre kell emberi jelenlét és stabilitás.",
+    hu: "Stressz alatt is kiegyensúlyozott maradsz, és az energiádat a kapcsolatokból merítve fenntartod azt. Olyan helyzetekben vagy erős, ahol egyszerre kell emberi jelenlét és stabilitás.",
     en: "You stay balanced even under stress, drawing energy from relationships to sustain it. You are strongest in situations that call for both human presence and stability.",
     de: "Du bleibst auch unter Stress ausgeglichen und schöpfst daraus Energie aus Beziehungen. Am stärksten bist du in Situationen, in denen sowohl menschliche Präsenz als auch Stabilität gefragt sind.",
   },
