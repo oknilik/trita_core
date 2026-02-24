@@ -38,11 +38,13 @@ export default async function OnboardingPage() {
       where: { id: profile.id },
       data: { clerkId: null },
     });
-    await prisma.userProfile.create({
-      data: {
+    await prisma.userProfile.upsert({
+      where: { clerkId: user.id },
+      create: {
         clerkId: user.id,
         email: user.primaryEmailAddress?.emailAddress ?? undefined,
       },
+      update: {},
     });
     return <OnboardingClient />;
   }
@@ -51,11 +53,13 @@ export default async function OnboardingPage() {
 
   // Profile may not exist yet (webhook race) — create it
   if (!profile) {
-    await prisma.userProfile.create({
-      data: {
+    await prisma.userProfile.upsert({
+      where: { clerkId: user.id },
+      create: {
         clerkId: user.id,
         email: user.primaryEmailAddress?.emailAddress ?? undefined,
       },
+      update: {},
     });
   }
 

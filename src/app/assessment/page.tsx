@@ -40,11 +40,13 @@ export default async function AssessmentPage({
   });
 
   if (!profile) {
-    profile = await prisma.userProfile.create({
-      data: {
+    profile = await prisma.userProfile.upsert({
+      where: { clerkId: user.id },
+      create: {
         clerkId: user.id,
         email: user.primaryEmailAddress?.emailAddress,
       },
+      update: {},
       include: { assessmentResults: { select: { id: true }, take: 1 } },
     });
   }
