@@ -231,8 +231,13 @@ export const DimensionCard = memo(function DimensionCard({
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: "100%", opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.8 }}
-                className="relative max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl bg-white/95 glass-effect md:max-h-[85vh] md:max-w-lg md:rounded-2xl md:border md:border-gray-100/50 md:shadow-2xl"
+                className="relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-white/95 glass-effect md:max-h-[85vh] md:max-w-lg md:rounded-2xl md:border md:border-gray-100/50 md:shadow-2xl"
               >
+                {/* Drag handle (mobile only) */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center pt-3 md:hidden">
+                  <div className="h-1 w-10 rounded-full bg-gray-300" />
+                </div>
+                <div className="min-h-0 flex-1 overflow-y-auto">
                 <AnimatePresence mode="wait">
                   {!showFeedback ? (
                     // ── Details view ──
@@ -247,7 +252,7 @@ export const DimensionCard = memo(function DimensionCard({
                       <button
                         type="button"
                         onClick={handleClose}
-                        className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-all duration-300 hover:bg-gray-100 hover:text-gray-600 hover:scale-110 hover:rotate-90"
+                        className="absolute right-4 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-all duration-300 hover:bg-gray-100 hover:text-gray-600 hover:scale-110 hover:rotate-90"
                       >
                         <svg
                           viewBox="0 0 24 24"
@@ -262,7 +267,7 @@ export const DimensionCard = memo(function DimensionCard({
                         </svg>
                       </button>
 
-                      <div className="p-6 pb-12 md:p-8 md:pb-16">
+                      <div className="px-6 pb-12 pt-8 md:px-8 md:pb-16 md:pt-8">
                         {/* Header */}
                         <div className="flex items-center gap-3">
                           <span
@@ -502,6 +507,7 @@ export const DimensionCard = memo(function DimensionCard({
                     </motion.div>
                   )}
                 </AnimatePresence>
+                </div>
               </motion.div>
             </motion.div>
           )}

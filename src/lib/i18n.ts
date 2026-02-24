@@ -13,9 +13,9 @@ const translations = {
       de: "Trita - Persönlichkeitstest-Forschung",
     },
     description: {
-      hu: "Töltsd ki a személyiségtesztet és hasonlítsd össze önértékelésed mások visszajelzéseivel. Tudományos kutatás keretében.",
-      en: "Complete a personality test and compare your self-assessment with peer feedback. Part of an academic research study.",
-      de: "Fülle einen Persönlichkeitstest aus und vergleiche deine Selbsteinschätzung mit Feedback anderer. Teil einer wissenschaftlichen Studie.",
+      hu: "Töltsd ki a személyiségtesztet, majd vesd össze az önértékelésed a környezeted visszajelzésével. Kutatási fázisban.",
+      en: "Take a personality test and compare your self-assessment with feedback from people who know you. Currently in the research phase.",
+      de: "Mach einen Persönlichkeitstest und vergleiche deine Selbsteinschätzung mit dem Feedback von Menschen, die dich kennen. Aktuell in der Forschungsphase.",
     },
     assessmentTitle: {
       hu: "Teszt kitöltése | Trita",

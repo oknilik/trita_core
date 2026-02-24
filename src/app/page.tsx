@@ -4,16 +4,18 @@ import { StatsSection } from "@/components/landing/StatsSection";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { FeatureCards } from "@/components/landing/FeatureCards";
 import { BottomCTA } from "@/components/landing/BottomCTA";
-import { DEFAULT_LOCALE, t } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
+import { getServerLocale } from "@/lib/i18n-server";
 import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
 
 // ISR: Revalidate every 1 hour (3600 seconds)
 // This makes the landing page load instantly for most visitors
 export const revalidate = 3600;
 
-export function generateMetadata(): Metadata {
-  const locale = DEFAULT_LOCALE;
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
   const title = "trita";
+  const ogTitle = t("landing.heroTitle", locale);
   const description = t("meta.description", locale);
 
   return {
@@ -25,14 +27,14 @@ export function generateMetadata(): Metadata {
     },
     openGraph: {
       type: "website",
-      title,
+      title: ogTitle,
       description,
       url: "/",
-      siteName: "Trita",
+      siteName: "trita",
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: ogTitle,
       description,
     },
   };

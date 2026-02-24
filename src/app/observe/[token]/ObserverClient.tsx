@@ -128,12 +128,19 @@ export function ObserverClient({
   const initializedFocusPage = useRef<number | null>(null);
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestDraftRef = useRef({ phase, relationshipType, knownDuration, answers, currentPage });
+  const questionAreaRef = useRef<HTMLDivElement>(null);
+  const scrollMounted = useRef(false);
 
   const DRAFT_KEY = `trita_observer_draft_${token}`;
 
   useEffect(() => {
     latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
   }, [phase, relationshipType, knownDuration, answers, currentPage]);
+
+  useEffect(() => {
+    if (!scrollMounted.current) { scrollMounted.current = true; return; }
+    questionAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [currentPage]);
 
   useEffect(() => { setDoodleSrc(pickRandomDoodle()); }, []);
 
@@ -272,14 +279,12 @@ export function ObserverClient({
     }
     if (!isLastPage) {
       setCurrentPage((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [canGoNext, pageQuestions, answers, highlightMissing, isLastPage]);
 
   const handlePreviousPage = useCallback(() => {
     if (currentPage > 0) {
       setCurrentPage((prev) => prev - 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [currentPage]);
 
@@ -325,7 +330,6 @@ export function ObserverClient({
           handleGoToConfidence();
         } else {
           setCurrentPage((prev) => prev + 1);
-          window.scrollTo({ top: 0, behavior: "smooth" });
         }
         return;
       }
@@ -335,7 +339,6 @@ export function ObserverClient({
         return;
       }
       setCurrentPage((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 130);
   }, [
     autoAdvance,
@@ -718,6 +721,7 @@ export function ObserverClient({
           </div>
         )}
 
+        <div ref={questionAreaRef}>
         <AnimatePresence mode="wait">
           <motion.div
             key={
@@ -787,6 +791,7 @@ export function ObserverClient({
             ) : null}
           </motion.div>
         </AnimatePresence>
+        </div>
 
         <div className="mt-8 flex items-center justify-between gap-4">
           <motion.button

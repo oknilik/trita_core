@@ -93,6 +93,14 @@ export function AssessmentClient({
   useEffect(() => { latestAnswersRef.current = answers }, [answers])
   useEffect(() => { latestPageRef.current = currentPage }, [currentPage])
 
+  // Scroll question area into center on page change
+  const questionAreaRef = useRef<HTMLDivElement>(null)
+  const scrollMounted = useRef(false)
+  useEffect(() => {
+    if (!scrollMounted.current) { scrollMounted.current = true; return }
+    questionAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [currentPage])
+
   useEffect(() => { setDoodleSrc(pickRandomDoodle()) }, [])
 
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
@@ -241,14 +249,12 @@ export function AssessmentClient({
     if (isLastPage) return
     const nextPage = currentPage + 1
     setCurrentPage(nextPage)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
     saveDraftToServer(nextPage) // fire-and-forget — UI nem vár rá
   }, [canGoNext, pageQuestions, answers, highlightMissing, isLastPage, currentPage, saveDraftToServer])
 
   const handlePrevPage = useCallback(() => {
     if (currentPage > 0) {
       setCurrentPage((prev) => prev - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [currentPage])
 
@@ -268,7 +274,6 @@ export function AssessmentClient({
     }
     if (Object.keys(currentAnswers).length < totalQuestions) {
       setCurrentPage(0)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
     if (isSubmitting) return
@@ -362,7 +367,6 @@ export function AssessmentClient({
             body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
           }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
           setCurrentPage(nextPage)
-          window.scrollTo({ top: 0, behavior: 'smooth' })
         }
         return
       }
@@ -551,6 +555,7 @@ export function AssessmentClient({
           </label>
         </div>
 
+        <div ref={questionAreaRef}>
         <AnimatePresence mode="wait">
           <motion.div
             key={
@@ -603,6 +608,7 @@ export function AssessmentClient({
             ) : null}
           </motion.div>
         </AnimatePresence>
+        </div>
 
         {/* Navigation */}
         <div className="mt-8 flex items-center justify-between gap-4">

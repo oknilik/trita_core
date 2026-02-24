@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
+import { getServerLocale } from "@/lib/i18n-server";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { getMetadataBase } from "@/lib/seo";
@@ -26,9 +27,10 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = DEFAULT_LOCALE;
+  const locale = await getServerLocale();
   const title = "trita";
   const description = t("meta.description", locale);
+  const ogTitle = t("landing.heroTitle", locale);
   return {
     metadataBase: getMetadataBase(),
     title: {
@@ -41,15 +43,15 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: "website",
-      siteName: "Trita",
-      title,
+      siteName: "trita",
+      title: ogTitle,
       description,
       url: "/",
       locale: "hu_HU",
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: ogTitle,
       description,
     },
     robots: {
