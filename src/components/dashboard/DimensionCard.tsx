@@ -414,24 +414,19 @@ export const DimensionCard = memo(function DimensionCard({
                       {/* Header — hidden in thank-you state */}
                       {!feedbackSubmitted && (
                         <>
-                          <div className="mb-4 flex justify-start">
+                          <div className="mb-4">
                             <button
                               type="button"
                               onClick={() => setShowFeedback(false)}
-                              className="group inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 text-sm font-semibold text-white shadow-lg ring-2 ring-indigo-400/25 ring-offset-2 ring-offset-white/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:ring-indigo-400/40 focus-visible:outline-none focus-visible:ring-indigo-400/40"
+                              className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 hover:brightness-95 active:brightness-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                              style={
+                                {
+                                  backgroundColor: color,
+                                  // Tailwind ring uses --tw-ring-color; set it dynamically to match the dimension.
+                                  "--tw-ring-color": `${color}66`,
+                                } as React.CSSProperties & Record<string, string>
+                              }
                             >
-                              <svg
-                                viewBox="0 0 16 16"
-                                className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                              >
-                                <path d="M10 3L5 8l5 5" />
-                              </svg>
                               {t("dashboard.dimension.feedbackBackToDetails", locale)}
                             </button>
                           </div>

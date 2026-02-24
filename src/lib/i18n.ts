@@ -575,9 +575,9 @@ const translations = {
         de: "Wie genau ist diese Dimension?",
       },
       feedbackBackToDetails: {
-        hu: "Vissza a részletekhez",
-        en: "Back to details",
-        de: "Zurück zu den Details",
+        hu: "Megnézem még egyszer",
+        en: "Review again",
+        de: "Nochmal ansehen",
       },
       feedbackPrompt: {
         hu: "Kérlek, segíts javítani a teszt pontosságát a visszajelzéseddel.",
