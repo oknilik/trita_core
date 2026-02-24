@@ -413,8 +413,30 @@ export const DimensionCard = memo(function DimensionCard({
                     >
                       {/* Header — hidden in thank-you state */}
                       {!feedbackSubmitted && (
-                        <div className="mb-6 flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-3">
+                        <>
+                          <div className="mb-4 flex justify-start">
+                            <button
+                              type="button"
+                              onClick={() => setShowFeedback(false)}
+                              className="group inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 text-sm font-semibold text-white shadow-lg ring-2 ring-indigo-400/25 ring-offset-2 ring-offset-white/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:ring-indigo-400/40 focus-visible:outline-none focus-visible:ring-indigo-400/40"
+                            >
+                              <svg
+                                viewBox="0 0 16 16"
+                                className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                              >
+                                <path d="M10 3L5 8l5 5" />
+                              </svg>
+                              {t("dashboard.dimension.feedbackBackToDetails", locale)}
+                            </button>
+                          </div>
+
+                          <div className="mb-6 flex items-center gap-3">
                             <span
                               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
                               style={{ backgroundColor: color }}
@@ -428,26 +450,7 @@ export const DimensionCard = memo(function DimensionCard({
                               </h2>
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => setShowFeedback(false)}
-                            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50 hover:text-indigo-700"
-                          >
-                            <svg
-                              viewBox="0 0 16 16"
-                              className="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              aria-hidden="true"
-                            >
-                              <path d="M10 3L5 8l5 5" />
-                            </svg>
-                            {t("dashboard.dimension.feedbackBackToDetails", locale)}
-                          </button>
-                        </div>
+                        </>
                       )}
 
                       {feedbackSubmitted ? (
