@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { t, tf, type Locale } from "@/lib/i18n";
 
@@ -47,6 +48,9 @@ export function JourneyProgress({
   const [hasInvites, setHasInvites] = useState(initialHasInvites);
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
   const [surveyDone, setSurveyDone] = useState(surveySubmitted);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [journeyVisible, setJourneyVisible] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const onInvitesUpdated = (event: Event) => {
@@ -63,6 +67,19 @@ export function JourneyProgress({
       window.removeEventListener("dashboard:invites-updated", onInvitesUpdated);
       window.removeEventListener("dashboard:survey-submitted", onSurveySubmitted);
     };
+  }, []);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setJourneyVisible(entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const feedbackInProgress = (pendingInvites > 0 || (completedObserversCount > 0 && !hasObserverFeedback)) && !hasObserverFeedback;
@@ -120,8 +137,13 @@ export function JourneyProgress({
   // Whether the CTA should use a Link (href navigation) vs button (tab change)
   const useLink = !selfCompleted || !onTabChange;
 
+  const allDone = stepsCompleted === totalSteps && surveyDone;
+  const showSurveyInSticky = stepsCompleted === totalSteps && !surveyDone && !!onOpenSurvey;
+  const showStickyBar = !journeyVisible && !allDone;
+
   return (
-    <div className="mt-6">
+    <>
+    <div ref={containerRef} className="mt-6">
       <div className="mt-6 flex justify-center md:hidden">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-xl font-bold text-white shadow-lg">
           {stepsCompleted}/{totalSteps}
@@ -398,5 +420,80 @@ export function JourneyProgress({
         </div>
       )}
     </div>
+
+    {/* Sticky floating next-step bar — portalled to body to escape parent CSS transforms */}
+    {mounted && !allDone && createPortal(
+      <div
+        className={`fixed inset-x-0 bottom-0 z-50 transition-all duration-300 ease-out ${
+          showStickyBar ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
+        }`}
+      >
+        <div
+          className={`px-4 py-4 shadow-2xl ${showSurveyInSticky ? "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500" : "bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600"}`}
+          style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+        >
+          <div className="mx-auto flex max-w-lg items-center gap-3">
+            {/* Mini step dots — green=done, amber=in-progress, dim=not started */}
+            <div className="flex shrink-0 items-center gap-1.5">
+              {[
+                // Step 1: self assessment
+                selfCompleted ? "bg-emerald-400" : hasDraft ? "bg-amber-300" : "bg-white/30",
+                // Step 2: invites sent
+                stepsCompleted >= 2 ? "bg-emerald-400" : "bg-white/30",
+                // Step 3: observer feedback
+                stepsCompleted >= 3
+                  ? feedbackPartial ? "bg-amber-300" : "bg-emerald-400"
+                  : feedbackInProgress ? "bg-amber-300" : "bg-white/30",
+              ].map((cls, i) => (
+                <div key={i} className={`h-2.5 w-2.5 rounded-full transition-colors ${cls}`} />
+              ))}
+            </div>
+
+            {/* Next step label */}
+            <p className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+              {showSurveyInSticky
+                ? t("dashboard.nextStepSurveyTitle", locale)
+                : nextStep.title}
+            </p>
+
+            {/* CTA — white button, colored text */}
+            {showSurveyInSticky ? (
+              <button
+                type="button"
+                onClick={onOpenSurvey}
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-amber-600 shadow-md transition-all hover:scale-[1.03]"
+              >
+                {t("dashboard.nextStepSurveyCta", locale)}
+              </button>
+            ) : nextStep.onAction ? (
+              <button
+                type="button"
+                onClick={nextStep.onAction}
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 shadow-md transition-all hover:scale-[1.03]"
+              >
+                {nextStep.cta}
+              </button>
+            ) : useLink ? (
+              <Link
+                href={nextStep.href}
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 shadow-md transition-all hover:scale-[1.03]"
+              >
+                {nextStep.cta}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onTabChange!(nextStep.href === "#comparison" ? "comparison" : "invites")}
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-indigo-700 shadow-md transition-all hover:scale-[1.03]"
+              >
+                {nextStep.cta}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>,
+      document.body,
+    )}
+    </>
   );
 }

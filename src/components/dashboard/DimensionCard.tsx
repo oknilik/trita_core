@@ -413,19 +413,40 @@ export const DimensionCard = memo(function DimensionCard({
                     >
                       {/* Header — hidden in thank-you state */}
                       {!feedbackSubmitted && (
-                        <div className="mb-6 flex items-center gap-3">
-                          <span
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
-                            style={{ backgroundColor: color }}
-                          >
-                            {code}
-                          </span>
-                          <div>
-                            <p className="text-xs text-gray-400">{resolvedLabel}</p>
-                            <h2 className="text-base font-bold text-gray-900">
-                              {t("dashboard.dimension.feedbackTitle", locale)}
-                            </h2>
+                        <div className="mb-6 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <span
+                              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+                              style={{ backgroundColor: color }}
+                            >
+                              {code}
+                            </span>
+                            <div>
+                              <p className="text-xs text-gray-400">{resolvedLabel}</p>
+                              <h2 className="text-base font-bold text-gray-900">
+                                {t("dashboard.dimension.feedbackTitle", locale)}
+                              </h2>
+                            </div>
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowFeedback(false)}
+                            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50 hover:text-indigo-700"
+                          >
+                            <svg
+                              viewBox="0 0 16 16"
+                              className="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M10 3L5 8l5 5" />
+                            </svg>
+                            {t("dashboard.dimension.feedbackBackToDetails", locale)}
+                          </button>
                         </div>
                       )}
 
