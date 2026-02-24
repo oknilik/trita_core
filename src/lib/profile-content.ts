@@ -252,19 +252,19 @@ export const BLOCK7_TITLE: LocalizedText = {
 
 export const RISK_TEXTS: Record<string, LocalizedText> = {
   supportedVisibility: {
-    hu: "Jellemző jel: a sok társas inger után gyorsan csökken az energiád. Ami segít: tervezz fix visszajelzési pontokat és tudatos regenerációs időablakokat.",
-    en: "Typical sign: your energy drops quickly after prolonged social intensity. What helps: schedule regular feedback check-ins and deliberate recovery windows.",
-    de: "Typisches Signal: Deine Energie fällt nach längerer sozialer Intensität schnell ab. Hilfreich ist: Plane feste Feedback-Termine und bewusste Regenerationsfenster ein.",
+    hu: "Ha sok a társas inger, gyorsan lemerülhetsz. Segíthet, ha előre beépítesz fix visszajelzési pontokat, és hagysz időt a feltöltődésre.",
+    en: "If social intensity runs long, your energy may drop fast. Try scheduling regular feedback check-ins and leaving deliberate recovery time.",
+    de: "Wenn soziale Intensität lange anhält, sinkt deine Energie oft schnell. Hilfreich: feste Feedback-Check-ins einplanen und bewusst Zeit zur Erholung lassen.",
   },
   structuredStability: {
-    hu: "Jellemző jel: túlzott önellenőrzés és folyamatos készenléti érzés. Ami segít: bontsd a munkát rövid, egyértelmű szakaszokra, és állíts be reális lezárási pontokat.",
-    en: "Typical sign: excessive self-monitoring and a constant sense of alertness. What helps: break work into short, clear phases and set realistic endpoints.",
-    de: "Typisches Signal: übermäßige Selbstkontrolle und ein ständiges Alarmgefühl. Hilfreich ist: Teile Arbeit in kurze, klare Phasen und setze realistische Endpunkte.",
+    hu: "Néha túl sokat ellenőrzöd magad, és mintha állandó készenlétben lennél. Segíthet, ha a munkát rövid, tiszta szakaszokra bontod, és előre kijelölöd, mi számít késznek.",
+    en: "You may find yourself over-monitoring and staying on constant alert. Try breaking work into short, clear phases and defining realistic endpoints.",
+    de: "Vielleicht kontrollierst du dich zu stark und bist dauerhaft in Alarmbereitschaft. Hilfreich: Arbeit in kurze, klare Phasen teilen und realistische Endpunkte festlegen.",
   },
   safeExperimentation: {
-    hu: "Jellemző jel: sok irány között ugrálsz, és nehéz lezárni a döntéseket. Ami segít: egyszerre legfeljebb 1-2 kísérletet futtass, előre definiált stop- és visszalépési szabályokkal.",
-    en: "Typical sign: you bounce between directions and it becomes harder to commit. What helps: run at most 1-2 experiments at a time, with clear stop criteria and fallback rules.",
-    de: "Typisches Signal: Du springst zwischen vielen Richtungen, und es wird schwieriger, Entscheidungen zu schließen. Hilfreich ist: Führe höchstens 1-2 Experimente gleichzeitig durch, mit klaren Stop-Kriterien und Fallback-Regeln.",
+    hu: "Könnyen ugrálsz a lehetőségek között, és nehéz lehet lezárni egy döntést. Segíthet, ha egyszerre csak 1-2 új irányt vagy megoldást próbálsz ki, és előre rögzíted magadnak, mi alapján állsz le vagy váltasz vissza egy-egy megoldásra.",
+    en: "You may bounce between options and struggle to close decisions. Try running no more than 1–2 experiments at a time, with clear stop criteria and fallback rules.",
+    de: "Vielleicht springst du zwischen Optionen hin und her und tust dich schwer, Entscheidungen zu schließen. Hilfreich: höchstens 1–2 Experimente gleichzeitig, mit klaren Stop-Kriterien und Fallback-Regeln.",
   },
 };
 
