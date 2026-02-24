@@ -110,7 +110,9 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
               const cat = categories[code];
               const score = (() => {
                 if (testType === "BIG_FIVE") {
-                  if (code === "E") return dimensions.N ?? dimensions.E ?? 0;
+                  // Big Five N (Neuroticism) → internal E (Emotionality)
+                  if (code === "E") return dimensions.N ?? 0;
+                  // Big Five E (Extraversion) → internal X
                   if (code === "X") return dimensions.E ?? 0;
                 }
                 return dimensions[code] ?? 0;

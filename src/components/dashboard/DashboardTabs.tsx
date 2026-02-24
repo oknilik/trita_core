@@ -352,10 +352,9 @@ function ResultsTabPanel({
   testType,
   locale,
 }: ResultsTabPanelProps) {
-  // For inverted dimensions (e.g. Neuroticism), lower raw score = better outcome.
-  // Use effectiveScore for ranking: inverted ? (100 - score) : score
-  const effectiveScore = (d: SerializedScore) => d.inverted ? 100 - d.score : d.score;
-  const sorted = mainScores ? [...mainScores].sort((a, b) => effectiveScore(b) - effectiveScore(a)) : null;
+  // Highlights are "spectrum high/low" (raw trait intensity), not "best/worst".
+  // So we intentionally sort by raw score, even for inverted dimensions.
+  const sorted = mainScores ? [...mainScores].sort((a, b) => b.score - a.score) : null;
   const strongest = sorted?.[0];
   const weakest = sorted?.[sorted.length - 1];
 
