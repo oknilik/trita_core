@@ -863,14 +863,14 @@ export const hexacoModifiedConfig: TestConfig = {
       facet: "diligence",
       text: "I often push myself very hard when trying to achieve a goal.",
       textByLocale: {
-        hu: "Céljaim elérésére sokszor minden minden erőmet beleadom.",
+        hu: "Céljaim elérésére sokszor minden erőmet beleadom.",
         en: "I often push myself very hard when trying to achieve a goal.",
         de: "Ich treibe mich oft selbst sehr stark an, wenn ich versuche, ein Ziel zu erreichen.",
       },
       textObserver: "He/she often pushes himself/herself very hard when trying to achieve a goal.",
       textObserverByLocale: {
         en: "He/she often pushes himself/herself very hard when trying to achieve a goal.",
-        hu: "Céljainak elérésére sokszor minden minden erejét beleadja.",
+        hu: "Céljainak elérésére sokszor minden erejét beleadja.",
         de: "Er/Sie treibt sich oft selbst sehr stark an, wenn er/sie versucht, ein Ziel zu erreichen.",
       },
     },
