@@ -1830,7 +1830,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she finds it hard to compromise with people when he/she really thinks he/she is right.",
       textObserverByLocale: {
         en: "He/she finds it hard to compromise with people when he/she really thinks he/she is right.",
-        hu: "Nehezemre esik neki másokkal kompromisszumot kötni, amikor úgy érzi, hogy igaza van.",
+        hu: "Nehezére esik neki másokkal kompromisszumot kötni, amikor úgy érzi, hogy igaza van.",
         de: "Es fällt ihm/ihr schwer, mit anderen einen Kompromiss einzugehen, wenn er/sie überzeugt ist, dass er/sie Recht hat.",
       },
       reversed: true,
