@@ -714,7 +714,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she feels like crying when he/she sees other people crying.",
       textObserverByLocale: {
         en: "He/she feels like crying when he/she sees other people crying.",
-        hu: "Úgy érzi, őt is elkap a sírás, ha másokat sírni lát.",
+        hu: "Elérzékenyül, ha másokat sírni lát.",
         de: "Er/Sie könnte weinen, wenn er/sie andere Personen sieht, die weinen.",
       },
     },
@@ -1937,7 +1937,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she finds it hard to keep his/her temper when people insult him/her.",
       textObserverByLocale: {
         en: "He/she finds it hard to keep his/her temper when people insult him/her.",
-        hu: "Nehezemre esik neki uralkodni magán, ha megsértik.",
+        hu: "Nehezére esik neki uralkodni magán, ha megsértik.",
         de: "Es fällt ihm/ihr schwer, sich zu beherrschen, wenn Leute ihn/sie beleidigen.",
       },
       reversed: true,
