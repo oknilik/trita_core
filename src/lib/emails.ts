@@ -79,7 +79,7 @@ const translations = {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
       greeting: (_name: string) => "Szia,",
       body: (inviter: string) =>
-        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet, hogy képet kapjon arról, hogyan látják őt mások. A te nézőpontod nagyon fontos. A válaszaid anonimak maradnak, és az eredmények csak összesítve (több értékelés átlaga alapján) jelennek meg.`,
+        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet, hogy képet kapjon arról, hogyan látják őt mások.\n\nA te nézőpontod nagyon fontos. A válaszaid anonimak maradnak, és az eredmények csak összesítve (több értékelés átlaga alapján) jelennek meg.`,
       cta: "Visszajelzés kitöltése",
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
@@ -90,7 +90,7 @@ const translations = {
       subject: "Invitation to a personality assessment – Trita",
       greeting: (_name: string) => "Hi,",
       body: (inviter: string) =>
-        `${inviter} is asking you to complete a short personality questionnaire about them, to understand how others see them. Your perspective matters. Your answers stay anonymous, and results are shown only in aggregate (as an average across multiple responses).`,
+        `${inviter} is asking you to complete a short personality questionnaire about them, to understand how others see them.\n\nYour perspective matters. Your answers stay anonymous, and results are shown only in aggregate (as an average across multiple responses).`,
       cta: "Open the feedback form",
       footer:
         "If you don't recognize this invitation, you can ignore this email.",
@@ -101,7 +101,7 @@ const translations = {
       subject: "Einladung zum Persönlichkeitstest – Trita",
       greeting: (_name: string) => "Hallo,",
       body: (inviter: string) =>
-        `${inviter} bittet dich, einen kurzen Persönlichkeitstest über ${inviter} auszufüllen, um ein Bild davon zu bekommen, wie ${inviter} von anderen wahrgenommen wird. Deine Perspektive ist wichtig. Deine Antworten bleiben anonym und fließen nur aggregiert (als Durchschnitt mehrerer Rückmeldungen) in die Ergebnisse ein.`,
+        `${inviter} bittet dich, einen kurzen Fragebogen über ${inviter} auszufüllen, um ein Bild davon zu bekommen, wie ${inviter} von anderen wahrgenommen wird.\n\nDeine Perspektive ist wichtig. Deine Antworten bleiben anonym und fließen nur aggregiert (als Durchschnitt mehrerer Rückmeldungen) in die Ergebnisse ein.`,
       cta: "Fremdeinschätzung öffnen",
       footer:
         "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
@@ -253,6 +253,15 @@ const CTA_BG = "#4f46e5";
 // Default logo size matches the sign-in code email (140px).
 const DEFAULT_LOGO_SIZE = 140;
 const LOGO_ASPECT_RATIO = 1536 / 1024;
+
+function escapeHtml(input: string): string {
+  return input
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 function renderCtaButton(params: { href: string; label: string }): string {
   // Bulletproof button: table + td bgcolor works in Outlook.
@@ -455,16 +464,22 @@ function buildObserverInviteHtml(params: {
   recipientName: string;
 }): string {
   const t = translations.observerInvite[params.locale];
+  // Inline styles are the most reliable across Outlook versions.
+  const inviterStyled = `<span style="font-weight:700;font-style:italic">${escapeHtml(params.inviterName)}</span>`;
   const link = `${APP_URL}/observe/${params.token}`;
   const cta = renderCtaButton({ href: link, label: t.cta });
+  const bodyHtml = t
+    .body(inviterStyled)
+    .replaceAll("\n\n", "<br><br>")
+    .replaceAll("\n", "<br>");
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
-      ${t.greeting(params.recipientName)}
+      ${t.greeting(escapeHtml(params.recipientName))}
     </p>
     <div style="height:12px;line-height:12px;font-size:12px">&nbsp;</div>
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
-      ${t.body(params.inviterName)}
+      ${bodyHtml}
     </p>
     ${cta}`;
 
