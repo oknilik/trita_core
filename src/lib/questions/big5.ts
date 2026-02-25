@@ -724,7 +724,7 @@ export const big5Config: TestConfig = {
       dimension: "A",
       aspect: "politeness",
       text: "Rarely put people under pressure.",
-      textByLocale: { hu: "Ritkán nyomás alá helyezek másokat.", en: "Rarely put people under pressure.", de: "Ich setze andere nur selten unter Druck." },
+      textByLocale: { hu: "Ritkán helyezek nyomás alá másokat.", en: "Rarely put people under pressure.", de: "Ich setze andere nur selten unter Druck." },
       textObserver: "He/She rarely puts people under pressure.",
       textObserverByLocale: { hu: "Ritkán nyomás alá helyez másokat.", en: "He/She rarely puts people under pressure.", de: "Er/Sie setzt andere nur selten unter Druck." },
     },
@@ -839,7 +839,7 @@ export const big5Config: TestConfig = {
       text: "Can talk others into doing things.",
       textByLocale: { hu: "Rá tudok venni másokat, hogy megtegyenek valamit.", en: "Can talk others into doing things.", de: "Ich kann andere dazu bringen, Dinge zu tun, die ich will." },
       textObserver: "He/She can talk others into doing things.",
-      textObserverByLocale: { hu: "Rá tudja venni másokat, hogy megtegyenek valamit.", en: "He/She can talk others into doing things.", de: "Er/Sie kann andere dazu bringen, Dinge zu tun." },
+      textObserverByLocale: { hu: "Rá tud venni másokat, hogy megtegyenek valamit.", en: "He/She can talk others into doing things.", de: "Er/Sie kann andere dazu bringen, Dinge zu tun." },
     },
     {
       id: 70,
