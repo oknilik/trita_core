@@ -79,7 +79,7 @@ const translations = {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
       greeting: (_name: string) => "Szia,",
       body: (inviter: string) =>
-        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet. A válaszaid név nélkül jelennek meg, és csak kutatási célra használjuk.`,
+        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet, hogy képet kapjon arról, hogyan látják őt mások. A te nézőpontod nagyon fontos. A válaszaid anonimak maradnak, és az eredmények csak összesítve (több értékelés átlaga alapján) jelennek meg.`,
       cta: "Visszajelzés kitöltése",
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
@@ -90,7 +90,7 @@ const translations = {
       subject: "Invitation to a personality assessment – Trita",
       greeting: (_name: string) => "Hi,",
       body: (inviter: string) =>
-        `${inviter} invited you to complete a short personality assessment about them. Your answers remain anonymous and are used for research only.`,
+        `${inviter} is asking you to complete a short personality questionnaire about them, to understand how others see them. Your perspective matters. Your answers stay anonymous, and results are shown only in aggregate (as an average across multiple responses).`,
       cta: "Open the feedback form",
       footer:
         "If you don't recognize this invitation, you can ignore this email.",
@@ -101,7 +101,7 @@ const translations = {
       subject: "Einladung zum Persönlichkeitstest – Trita",
       greeting: (_name: string) => "Hallo,",
       body: (inviter: string) =>
-        `${inviter} hat dich eingeladen, eine kurze Einschätzung abzugeben. Deine Antworten bleiben anonym und werden nur zu Forschungszwecken verwendet.`,
+        `${inviter} bittet dich, einen kurzen Persönlichkeitstest über ${inviter} auszufüllen, um ein Bild davon zu bekommen, wie ${inviter} von anderen wahrgenommen wird. Deine Perspektive ist wichtig. Deine Antworten bleiben anonym und fließen nur aggregiert (als Durchschnitt mehrerer Rückmeldungen) in die Ergebnisse ein.`,
       cta: "Fremdeinschätzung öffnen",
       footer:
         "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
@@ -462,6 +462,7 @@ function buildObserverInviteHtml(params: {
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
       ${t.greeting(params.recipientName)}
     </p>
+    <div style="height:12px;line-height:12px;font-size:12px">&nbsp;</div>
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
       ${t.body(params.inviterName)}
     </p>
