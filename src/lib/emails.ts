@@ -244,10 +244,32 @@ function getLocale(email: string): Locale {
 const HEADER_GRADIENT = "linear-gradient(135deg,#c7d2fe 0%,#ddd6fe 50%,#fbcfe8 100%)";
 const FOOTER_GRADIENT = "linear-gradient(135deg,#eef2ff 0%,#f5f3ff 60%,#fdf4ff 100%)";
 const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
+// Outlook (Word rendering engine) doesn't support CSS gradients reliably.
+// Provide solid color fallbacks via background-color.
+const HEADER_BG = "#eef2ff";
+const FOOTER_BG = "#f5f3ff";
+const CTA_BG = "#4f46e5";
 
 // Default logo size matches the sign-in code email (140px).
 const DEFAULT_LOGO_SIZE = 140;
 const LOGO_ASPECT_RATIO = 1536 / 1024;
+
+function renderCtaButton(params: { href: string; label: string }): string {
+  // Bulletproof button: table + td bgcolor works in Outlook.
+  // Other clients can still get the gradient via background-image.
+  return `
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0 auto">
+      <tr>
+        <td bgcolor="${CTA_BG}"
+            style="background-color:${CTA_BG};background-image:${CTA_GRADIENT};border-radius:10px;text-align:center">
+          <a href="${params.href}" class="em-cta"
+             style="display:inline-block;color:#ffffff;font-size:14px;font-weight:600;padding:13px 32px;text-decoration:none;border-radius:10px;line-height:1.2">
+            ${params.label}
+          </a>
+        </td>
+      </tr>
+    </table>`.trim();
+}
 
 function buildEmailLayout(params: {
   locale: Locale;
@@ -268,12 +290,18 @@ function buildEmailLayout(params: {
   <meta name="color-scheme" content="light only">
   <meta name="supported-color-schemes" content="light">
   <style>
+    /* Basic email resets (Outlook-friendly). */
+    table { border-collapse: collapse; }
+    img { border: 0; outline: none; text-decoration: none; }
+    .ExternalClass { width: 100%; }
+    .ExternalClass * { line-height: 100%; }
+    a { text-decoration: none; }
     :root { color-scheme: light only; }
     html, body { color-scheme: light only !important; }
     @media (prefers-color-scheme: dark) {
       html, body    { background-color: #f3f4f6 !important; }
       .em-wrap      { background-color: #f3f4f6 !important; }
-      .em-head      { background: ${HEADER_GRADIENT} !important; background-image: ${HEADER_GRADIENT} !important; }
+      .em-head      { background-color: ${HEADER_BG} !important; background-image: ${HEADER_GRADIENT} !important; }
       .em-wave-top  { fill: #ffffff !important; }
       .em-wave-bot  { fill: #ffffff !important; }
       .em-body      { background-color: #ffffff !important; }
@@ -282,53 +310,68 @@ function buildEmailLayout(params: {
       .em-body h1,
       .em-heading   { color: #1e1b4b !important; }
       .em-muted     { color: #6b7280 !important; }
-      .em-foot      { background: ${FOOTER_GRADIENT} !important; background-image: ${FOOTER_GRADIENT} !important; }
+      .em-foot      { background-color: ${FOOTER_BG} !important; background-image: ${FOOTER_GRADIENT} !important; }
       .em-code-box  { background-color: #f3f4f6 !important; }
       .em-code-lbl  { color: #6b7280 !important; }
       .em-code-val  { color: #1e1b4b !important; }
-      .em-cta       { background: ${CTA_GRADIENT} !important; background-image: ${CTA_GRADIENT} !important; color: #ffffff !important; }
+      .em-cta       { background-color: ${CTA_BG} !important; background-image: ${CTA_GRADIENT} !important; color: #ffffff !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f4f6;color-scheme:light only">
-  <div class="em-wrap" style="max-width:600px;margin:0 auto;padding:32px 16px 24px">
+<body bgcolor="#f3f4f6" style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#f3f4f6;color-scheme:light only">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f3f4f6" style="background-color:#f3f4f6">
+    <tr>
+      <td align="center" style="padding:32px 16px 24px">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+               class="em-wrap" style="width:600px;max-width:600px">
+          <tr>
+            <td class="em-head" bgcolor="${HEADER_BG}"
+                style="background-color:${HEADER_BG};background-image:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
+              <div style="padding:24px 32px 10px;text-align:center">
+                <img src="${APP_URL}/trita-logo.svg" alt="trita" width="${logoWidth}" height="${logoSize}"
+                     style="display:inline-block;margin-bottom:10px;max-width:100%;height:auto">
+                ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
+              </div>
+              <!--[if !mso]><!-->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
+                   style="display:block;width:100%;height:28px">
+                <path class="em-wave-top" d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
+              </svg>
+              <!--<![endif]-->
+            </td>
+          </tr>
 
-    <!-- Gradient header with logo and wave bottom -->
-    <div class="em-head" style="background:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
-      <div style="padding:24px 32px 10px;text-align:center">
-        <img src="${APP_URL}/trita-logo.svg" alt="trita" width="${logoWidth}" height="${logoSize}"
-             style="display:inline-block;margin-bottom:10px;max-width:100%;height:auto">
-        ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
-      </div>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
-           style="display:block;width:100%;height:28px">
-        <path class="em-wave-top" d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
-      </svg>
-    </div>
+          <tr>
+            <td class="em-body" bgcolor="#ffffff" style="background-color:#ffffff;padding:16px 32px 32px">
+              ${params.bodyContent}
+            </td>
+          </tr>
 
-    <!-- White content area -->
-    <div class="em-body" style="background:#ffffff;padding:16px 32px 32px">
-      ${params.bodyContent}
-    </div>
+          <tr>
+            <td class="em-foot" bgcolor="${FOOTER_BG}"
+                style="background-color:${FOOTER_BG};background-image:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
+              <!--[if !mso]><!-->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
+                   style="display:block;width:100%;height:28px">
+                <path class="em-wave-bot" d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
+              </svg>
+              <!--<![endif]-->
+              <div style="padding:4px 32px 24px;text-align:center">
+                ${params.footerDisclaimer ? `<p class="em-muted" style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
+                <p class="em-muted" style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
+                  ${params.thanks}<br>${params.team}
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
 
-    <!-- Footer with wave top and light gradient -->
-    <div class="em-foot" style="background:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
-           style="display:block;width:100%;height:28px">
-        <path class="em-wave-bot" d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
-      </svg>
-      <div style="padding:4px 32px 24px;text-align:center">
-        ${params.footerDisclaimer ? `<p class="em-muted" style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
-        <p class="em-muted" style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
-          ${params.thanks}<br>${params.team}
+        <p class="em-muted" style="text-align:center;font-size:11px;color:#9ca3af;margin:16px 0 0">
+          &copy; trita 2026
         </p>
-      </div>
-    </div>
-
-    <p class="em-muted" style="text-align:center;font-size:11px;color:#d1d5db;margin:16px 0 0">
-      &copy; trita 2026
-    </p>
-  </div>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>`.trim();
 }
@@ -338,6 +381,7 @@ function buildOrderConfirmationHtml(locale: Locale, name: string): string {
   const features = t.featureList
     .map((f) => `<li style="padding:4px 0;color:#374151">${f}</li>`)
     .join("");
+  const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
@@ -352,12 +396,7 @@ function buildOrderConfirmationHtml(locale: Locale, name: string): string {
     <ul style="font-size:13px;line-height:1.7;margin:0 0 28px;padding-left:20px">
       ${features}
     </ul>
-    <div style="text-align:center">
-      <a href="${APP_URL}/dashboard"
-         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
-        ${t.cta}
-      </a>
-    </div>`;
+    ${cta}`;
 
   return buildEmailLayout({
     locale,
@@ -417,6 +456,7 @@ function buildObserverInviteHtml(params: {
 }): string {
   const t = translations.observerInvite[params.locale];
   const link = `${APP_URL}/observe/${params.token}`;
+  const cta = renderCtaButton({ href: link, label: t.cta });
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
@@ -425,12 +465,7 @@ function buildObserverInviteHtml(params: {
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
       ${t.body(params.inviterName)}
     </p>
-    <div style="text-align:center">
-      <a href="${link}"
-         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
-        ${t.cta}
-      </a>
-    </div>`;
+    ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
@@ -493,6 +528,7 @@ function buildObserverCompletionHtml(params: {
   inviterName: string;
 }): string {
   const t = translations.observerCompletion[params.locale];
+  const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
@@ -501,12 +537,7 @@ function buildObserverCompletionHtml(params: {
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
       ${t.body}
     </p>
-    <div style="text-align:center">
-      <a href="${APP_URL}/dashboard"
-         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
-        ${t.cta}
-      </a>
-    </div>`;
+    ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
@@ -642,17 +673,13 @@ function buildMagicLinkHtml(params: {
   magicLinkUrl: string;
 }): string {
   const t = translations.magicLink[params.locale];
+  const cta = renderCtaButton({ href: params.magicLinkUrl, label: t.cta });
 
   const bodyContent = `
     <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
       ${t.body}
     </p>
-    <div style="text-align:center">
-      <a href="${params.magicLinkUrl}"
-         class="em-cta" style="display:inline-block;background:${CTA_GRADIENT};color:#fff;font-size:14px;font-weight:600;padding:13px 32px;border-radius:10px;text-decoration:none">
-        ${t.cta}
-      </a>
-    </div>`;
+    ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
