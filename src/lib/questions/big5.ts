@@ -901,9 +901,9 @@ export const big5Config: TestConfig = {
       dimension: "N",
       aspect: "volatility",
       text: "Am not easily annoyed.",
-      textByLocale: { hu: "Nem bosszantodom fel könnyen.", en: "Am not easily annoyed.", de: "Ich bin nicht schnell verärgert." },
+      textByLocale: { hu: "Nem tudnak könnyen felbosszantani.", en: "Am not easily annoyed.", de: "Ich bin nicht schnell verärgert." },
       textObserver: "He/She is not easily annoyed.",
-      textObserverByLocale: { hu: "Nem bosszantódik fel könnyen.", en: "He/She is not easily annoyed.", de: "Er/Sie ist nicht schnell verärgert." },
+      textObserverByLocale: { hu: "Nem tudják könnyen felbosszantani.", en: "He/She is not easily annoyed.", de: "Er/Sie ist nicht schnell verärgert." },
       reversed: true,
     },
     {
@@ -911,9 +911,9 @@ export const big5Config: TestConfig = {
       dimension: "A",
       aspect: "politeness",
       text: "Seek conflict.",
-      textByLocale: { hu: "Konfliktust keresek.", en: "Seek conflict.", de: "Ich suche Streit." },
+      textByLocale: { hu: "Keresem a konfliktust.", en: "Seek conflict.", de: "Ich suche Streit." },
       textObserver: "He/She seeks conflict.",
-      textObserverByLocale: { hu: "Konfliktust keres.", en: "He/She seeks conflict.", de: "Er/Sie sucht Streit." },
+      textObserverByLocale: { hu: "Keresem a konfliktust.", en: "He/She seeks conflict.", de: "Er/Sie sucht Streit." },
       reversed: true,
     },
     {
