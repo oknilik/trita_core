@@ -121,9 +121,11 @@ export default async function AdminPage() {
         return { total, byTestType, selfVsObserver, byUserTestType };
       })(),
 
-      // Invitation metrics
+      // Invitation metrics — only live (PENDING + COMPLETED), excluding CANCELED/EXPIRED
       (async () => {
-        const total = await prisma.observerInvitation.count();
+        const total = await prisma.observerInvitation.count({
+          where: { status: { in: ["PENDING", "COMPLETED"] } },
+        });
         const byStatus = await prisma.observerInvitation.groupBy({
           by: ["status"],
           _count: { id: true },
@@ -283,7 +285,7 @@ export default async function AdminPage() {
               icon="📋"
             />
             <AdminStatCard
-              title={t("admin.totalInvitations", locale)}
+              title="Összes élő meghívó"
               value={invitationStats.total}
               subtitle={`${t("admin.conversionRate", locale)}: ${conversionRate}%`}
               color="#10B981"
