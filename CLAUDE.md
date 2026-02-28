@@ -25,6 +25,9 @@ practical decision-support tools for career and team contexts.
 - **ORM**: Prisma 6
 - **Animations**: Framer Motion
 - **Validation**: Zod
+- **Email**: Resend
+- **Webhooks**: Svix (Clerk webhook processing)
+- **Analytics**: Vercel Analytics + Speed Insights
 - **Package Manager**: pnpm
 
 ---
@@ -35,6 +38,7 @@ codebase/
 ├── src/
 │   ├── app/
 │   │   ├── (auth)/
+│   │   │   ├── layout.tsx
 │   │   │   ├── sign-in/              # Custom sign-in (useSignIn)
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── sso-callback/     # Google OAuth callback
@@ -44,45 +48,127 @@ codebase/
 │   │   ├── assessment/               # Dynamic assessment (testType-based)
 │   │   │   ├── page.tsx              # Server: retake guard (redirect if results exist)
 │   │   │   ├── AssessmentClient.tsx  # Client: localStorage draft + beforeunload warning
-│   │   │   └── loading.tsx           # Skeleton loader
-│   │   ├── dashboard/                # Results (real DB data) + observer comparison + invites
+│   │   │   └── loading.tsx
+│   │   ├── dashboard/                # Results + observer comparison + invites
 │   │   │   ├── page.tsx              # Server: generateMetadata, observer confidence
-│   │   │   └── loading.tsx           # Skeleton loader
+│   │   │   └── loading.tsx
 │   │   ├── observe/[token]/          # Public observer assessment (no auth)
 │   │   │   ├── page.tsx              # Server: token validation, status checks
 │   │   │   ├── ObserverClient.tsx    # Client: intro → assessment → confidence → done
-│   │   │   └── loading.tsx           # Skeleton loader
+│   │   │   └── loading.tsx
+│   │   ├── onboarding/               # Post-signup demographic onboarding
+│   │   │   ├── page.tsx
+│   │   │   ├── OnboardingClient.tsx
+│   │   │   └── loading.tsx
 │   │   ├── profile/                  # User profile management
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── loading.tsx
+│   │   ├── admin/                    # Admin dashboard (research stats)
+│   │   │   ├── page.tsx
+│   │   │   └── _components/
+│   │   │       ├── AdminStatCard.tsx
+│   │   │       ├── AdminMetricsGrid.tsx
+│   │   │       └── AdminTableSection.tsx
+│   │   ├── privacy/page.tsx          # Privacy policy
+│   │   ├── research/page.tsx         # Research info page
 │   │   ├── api/
-│   │   │   ├── assessment/submit/    # Multi-test score calculation + save
+│   │   │   ├── assessment/
+│   │   │   │   ├── submit/route.ts   # Multi-test score calculation + save
+│   │   │   │   ├── draft/route.ts    # GET/POST server-side assessment draft
+│   │   │   │   └── questions/route.ts # GET questions by test type
 │   │   │   ├── observer/
-│   │   │   │   ├── invite/           # POST create / GET list invitations
-│   │   │   │   ├── invite/[id]/      # DELETE single invitation (→ CANCELED)
-│   │   │   │   └── submit/           # Save observer assessment (+ confidence)
-│   │   │   ├── profile/delete/       # Anonymize + Clerk delete
-│   │   │   └── webhooks/clerk/       # Clerk event sync
+│   │   │   │   ├── invite/route.ts       # POST create / GET list invitations
+│   │   │   │   ├── invite/[id]/route.ts  # DELETE single invitation (→ CANCELED)
+│   │   │   │   ├── draft/route.ts        # GET/POST observer draft state
+│   │   │   │   ├── submit/route.ts       # Save observer assessment + confidence
+│   │   │   │   └── link/route.ts         # GET observer link validation
+│   │   │   ├── profile/
+│   │   │   │   ├── delete/route.ts       # Anonymize + Clerk delete
+│   │   │   │   ├── locale/route.ts       # GET/POST user locale preference
+│   │   │   │   ├── status/route.ts       # GET user profile status
+│   │   │   │   └── onboarding/route.ts   # POST onboarding demographic data
+│   │   │   ├── dashboard/
+│   │   │   │   └── status/route.ts       # GET dashboard data (results, invites, observer aggregates)
+│   │   │   ├── feedback/
+│   │   │   │   ├── route.ts              # POST satisfaction feedback
+│   │   │   │   └── dimension/route.ts    # POST dimension-level accuracy feedback
+│   │   │   ├── survey/route.ts           # POST research survey responses
+│   │   │   ├── features/
+│   │   │   │   └── interest/route.ts     # POST feature interest (fake door validation)
+│   │   │   └── webhooks/clerk/route.ts   # Clerk event sync
 │   │   ├── layout.tsx                # Root layout + ClerkProvider + generateMetadata (i18n)
-│   │   └── page.tsx                  # Landing page (research context)
+│   │   ├── page.tsx                  # Landing page (research context)
+│   │   ├── not-found.tsx             # 404 page
+│   │   ├── icon.tsx                  # Favicon generator
+│   │   ├── apple-icon.tsx            # Apple touch icon
+│   │   ├── robots.ts                 # SEO robots.txt
+│   │   └── sitemap.ts                # SEO sitemap
 │   ├── components/
-│   │   ├── assessment/               # ProgressBar, QuestionCard, SliderSelector, ABSelector
+│   │   ├── assessment/
+│   │   │   ├── ProgressBar.tsx
+│   │   │   ├── QuestionCard.tsx
+│   │   │   ├── ScaleSelector.tsx     # Likert scale selector (1-5)
+│   │   │   ├── SliderSelector.tsx
+│   │   │   ├── ABSelector.tsx
+│   │   │   └── EvaluatingScreen.tsx  # Loading/evaluating screen
 │   │   ├── dashboard/
 │   │   │   ├── RadarChart.tsx         # Generic radar chart (5-6 dimensions)
+│   │   │   ├── DimensionCard.tsx      # Single dimension score card
+│   │   │   ├── DimensionHighlights.tsx # Dimension insights/highlights
+│   │   │   ├── ProfileInsights.tsx    # Profile result insights
 │   │   │   ├── InviteSection.tsx      # Observer invite management (create/copy/delete)
 │   │   │   ├── ObserverComparison.tsx # Self vs observer comparison (with confidence avg)
-│   │   │   └── RetakeButton.tsx       # Retake CTA with ConfirmModal
-│   │   ├── landing/                  # HeroSection, FeatureCards, BottomCTA, DoodleIllustration
-│   │   ├── illustrations/            # AssessmentDoodle, DashboardDoodle, ProfileDoodle
+│   │   │   ├── RetakeButton.tsx       # Retake CTA with ConfirmModal
+│   │   │   ├── DiscardDraftButton.tsx # Discard in-progress draft
+│   │   │   ├── FeedbackForm.tsx       # Satisfaction + dimension feedback form
+│   │   │   ├── ResearchSurvey.tsx     # Post-assessment research survey
+│   │   │   ├── DashboardTabs.tsx      # Tab navigation for dashboard sections
+│   │   │   ├── DashboardAutoRefresh.tsx # Polls for new observer results
+│   │   │   ├── AnimatedBar.tsx        # Animated dimension bar
+│   │   │   ├── JourneyProgress.tsx    # Research study progress tracker
+│   │   │   ├── HashScroll.tsx         # Hash-based scroll behavior
+│   │   │   └── UpcomingFeaturesCTA.tsx # Fake door feature validation CTA
+│   │   ├── landing/
+│   │   │   ├── HeroSection.tsx
+│   │   │   ├── FeatureCards.tsx
+│   │   │   ├── HowItWorks.tsx
+│   │   │   ├── StatsSection.tsx
+│   │   │   ├── BottomCTA.tsx
+│   │   │   ├── DoodleIllustration.tsx
+│   │   │   └── FadeIn.tsx
+│   │   ├── illustrations/
+│   │   │   ├── AssessmentDoodle.tsx
+│   │   │   ├── DashboardDoodle.tsx
+│   │   │   └── ProfileDoodle.tsx
+│   │   ├── ui/
+│   │   │   ├── Modal.tsx             # Reusable modal/dialog
+│   │   │   ├── Picker.tsx            # Date/option picker
+│   │   │   └── Toast.tsx             # Toast notification
+│   │   ├── Footer.tsx
 │   │   ├── LocaleProvider.tsx        # Client locale state + persistence
 │   │   ├── LocaleSwitcher.tsx        # Header language switcher
+│   │   ├── MobileDrawer.tsx          # Mobile navigation drawer
 │   │   ├── NavBar.tsx                # Localized main navigation (active link highlighting)
+│   │   ├── SkeletonLoader.tsx        # Shared skeleton loader component
 │   │   ├── TritaLogo.tsx
 │   │   └── UserMenu.tsx
 │   ├── lib/
 │   │   ├── prisma.ts                 # Singleton Prisma client
+│   │   ├── auth.ts                   # Authentication helpers
+│   │   ├── seo.ts                    # SEO metadata helpers
 │   │   ├── assignTestType.ts         # Priority-balanced test type assignment (core first)
 │   │   ├── scoring.ts                # Scoring logic per test type
+│   │   ├── profile-engine.ts         # Profile result calculations
+│   │   ├── profile-content.ts        # Dimension descriptions and insights content
 │   │   ├── i18n.ts                   # Translation dictionary + t/tf helpers
 │   │   ├── i18n-server.ts            # Server locale resolver (cookie/header)
+│   │   ├── onboarding-options.ts     # Onboarding field definitions (gender, education, etc.)
+│   │   ├── countries.ts              # Country list for selection
+│   │   ├── design-tokens.ts          # Color palette and design tokens
+│   │   ├── doodles.ts                # Doodle illustration mappings
+│   │   ├── emails.ts                 # Email template helpers
+│   │   ├── resend.ts                 # Resend email service wrapper
 │   │   └── questions/
 │   │       ├── types.ts              # Common question/test interfaces
 │   │       ├── hexaco.ts             # Official HEXACO-PI-R questions (60)
@@ -93,6 +179,8 @@ codebase/
 ├── prisma/
 │   ├── schema.prisma
 │   └── migrations/
+├── scripts/
+│   └── seed-assessment.ts            # CLI: seed test data with optional observers
 ├── .env                              # Environment variables (NEVER commit)
 ├── CLAUDE.md                         # This file
 └── package.json
@@ -128,14 +216,17 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 ### User Flow
 1. User arrives → landing page (research explanation + consent)
 2. Signs up / signs in (Clerk)
-3. Gets randomly assigned ONE test type (priority-balanced)
-4. Completes the assigned assessment
-5. Sees results on adaptive dashboard (radar chart)
-6. Can invite 1+ observers (friends/colleagues) via unique link
-7. Observer fills out the SAME test type about the inviter (public, no auth required)
-8. Observer provides: relationship type + known duration + confidence rating
-9. Observer can optionally register → gets own random test type (viral loop)
-10. User sees anonymized observer comparison on dashboard
+3. **Onboarding**: demographic data collection (birthYear, gender, education, occupation, country, etc.)
+4. Gets randomly assigned ONE test type (priority-balanced)
+5. Completes the assigned assessment
+6. Sees results on adaptive dashboard (radar chart + dimension insights)
+7. Fills out **satisfaction feedback** + **dimension accuracy feedback**
+8. Fills out **research survey** (post-assessment)
+9. Can invite 1+ observers (friends/colleagues) via unique link
+10. Observer fills out the SAME test type about the inviter (public, no auth required)
+11. Observer provides: relationship type + known duration + confidence rating
+12. Observer can optionally register → gets own random test type (viral loop)
+13. User sees anonymized observer comparison on dashboard
 
 ### Random Assignment
 - **Balanced distribution**: all three core types (HEXACO, HEXACO_MODIFIED, BIG_FIVE) are filled evenly
@@ -144,11 +235,18 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 - Once assigned, never changes
 - Implementation: `assignTestType.ts` uses `TEST_TYPES` from `questions/index.ts`
 
+### Onboarding
+- Triggered after first sign-up, before test assignment
+- Collects demographic data: birthYear, gender, education, occupation, occupationStatus, workSchedule, companySize, studyLevel, unemploymentDuration, country
+- Stored on `UserProfile`; `onboardedAt` timestamp marks completion
+- Field definitions centralized in `lib/onboarding-options.ts`
+- API: `POST /api/profile/onboarding`
+
 ### Observer Flow
 - Public link: `/observe/{token}` (no auth required)
 - Token-based, expires in 30 days
 - Same test type as inviter
-- Questions use observer wording (E/3) or instruction: "Gondolj arra a személyre, aki meghívott"
+- Questions use observer wording or instruction: "Gondolj arra a személyre, aki meghívott"
 - **Confidence rating**: separate phase between last question and submission; observer rates certainty (1-5, optional)
   - DB field: `ObserverAssessment.confidence` (`Int?`)
   - Purpose: research quality filter — low-confidence responses can be excluded/weighted in SPSS analysis
@@ -156,10 +254,11 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 - DB maintains full connections for research analysis
 - After completion: observer can optionally register → gets own test type
 - UI phases: intro (relationship + duration) → assessment (questions) → confidence → done
+- **Server-side draft**: observer answers synced to `ObserverDraft` via `/api/observer/draft`
 - Meghívók:
   - Max 5 aktív meghívó link felhasználónként
   - Meghívó törlése → státusz `CANCELED`, eredmények megmaradnak; COMPLETED nem törölhető
-  - Email meghívás támogatott (Resend), a listában látszik a cím vagy „anonim”
+  - Email meghívás támogatott (Resend), a listában látszik a cím vagy „anonim"
   - Regisztráló observer összeköthető a meghívóval (`observerProfileId`)
   - Inaktív (lejárt/canceled) meghívó oldal információs státusszal tér vissza
   - Dashboard mutatja a beérkezett meghívókat; pendingre kattintva kitölthető
@@ -169,6 +268,38 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
   - Duration values stored as locale-independent keys: `"LT_1"`, `"1_3"`, `"3_5"`, `"5P"`
   - `observeToken` param: preserved across sign-in ↔ sign-up links and Google SSO redirects
 
+### Feedback System
+- **Satisfaction feedback** (`SatisfactionFeedback`):
+  - `agreementScore` (1-5): overall accuracy rating
+  - `observerFeedbackUsefulness` (1-5): how useful observer comparison was
+  - `siteUsefulness` (1-5): overall site usefulness
+  - `freeformFeedback`: optional text
+  - `interestedInUpdates`: boolean (email opt-in for future results)
+  - API: `POST /api/feedback`
+- **Dimension feedback** (`DimensionFeedback`):
+  - Per-dimension accuracy rating (1-5) + optional comment
+  - Unique per (assessmentResultId, dimensionCode)
+  - API: `POST /api/feedback/dimension`
+- Both collected via `FeedbackForm` component on dashboard
+
+### Research Survey
+- Post-assessment survey for research depth (`ResearchSurvey` model)
+- Fields: selfAccuracy, priorTest, positionLevel, studyField, industry, motivation, sharingIntent, feedbackSources, has360Process, personalityImportance, observerUsefulness
+- Collected via `ResearchSurvey` component on dashboard
+- API: `POST /api/survey`
+
+### Fake Door Feature Validation
+- `UpcomingFeaturesCTA` component shows upcoming features (team analysis, communication insights, 360° feedback)
+- Clicking → records interest in `FeatureInterest` table
+- Feature keys: `"team"`, `"comm"`, `"360"`
+- Unique per (userProfileId, featureKey) — one vote per feature per user
+- API: `POST /api/features/interest`
+
+### Admin Dashboard
+- Route: `/admin` — research statistics and overview
+- Components: `AdminStatCard`, `AdminMetricsGrid`, `AdminTableSection`
+- Shows aggregate data for research monitoring
+
 ### API Error Handling
 - API routes return short error codes (e.g., `"INVITE_LIMIT_REACHED"`, `"INVALID_TOKEN"`)
 - Client localizes via `t(\`error.${code}\`, locale)` with fallback to generic error message
@@ -177,11 +308,12 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
   `MISSING_ANSWER`, `INVALID_LIKERT_ANSWER`, `EMAIL_SEND_FAILED`
 
 ### Assessment UX
-- **localStorage draft**: answers saved to `trita_draft_{testType}` on every change; restored on mount; cleared on successful submit
+- **Server-side draft sync**: answers saved to `AssessmentDraft` (DB) via `/api/assessment/draft`; also mirrored to `trita_draft_{testType}` localStorage
 - **beforeunload warning**: browser warns if navigating away with unsaved answers
 - **Retake guard**: if user already has results and visits `/assessment`, redirected to `/dashboard?retake=true`
   - Dashboard shows `ConfirmModal` → on confirm navigates to `/assessment?confirmed=true`
   - `RetakeButton` component handles both manual click and auto-open from redirect
+- **EvaluatingScreen**: shown during scoring/submission
 
 ### Dashboard Enhancements
 - Observer comparison shows observer count in label: "Mások (X)" / "Others (X)"
@@ -189,22 +321,94 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 - `generateMetadata` on dashboard and assessment pages (locale-aware titles)
 - Data loading is split into targeted parallel queries (`assessmentResult`, sent/received invites, observer aggregates)
 - Observer confidence average is computed with DB-side aggregate (`observerAssessment.aggregate`) instead of client-side scanning
+- `DashboardAutoRefresh`: polls for new observer results automatically
+- `JourneyProgress`: shows user's progress through the research study steps
+- `DashboardTabs`: tab-based navigation between results, observer, and research survey sections
+- `DimensionHighlights` + `ProfileInsights`: narrative insights per dimension from `profile-content.ts`
 
 ### Loading States
-- Skeleton `loading.tsx` files for `/dashboard`, `/assessment`, `/observe/[token]` (Next.js Suspense boundaries)
+- Skeleton `loading.tsx` files for `/dashboard`, `/assessment`, `/observe/[token]`, `/onboarding`, `/profile` (Next.js Suspense boundaries)
+- Shared `SkeletonLoader` component for reuse
 - `ConfirmModal`: `confirmText` and `cancelText` are required props (no hardcoded defaults); `loadingText` optional prop for loading state
 
-### NavBar
+### NavBar & Layout
 - Active link highlighting via `usePathname()` — active route gets `text-indigo-600`
+- `MobileDrawer`: slide-in mobile navigation drawer
+- `Footer` component on all pages
+
+### SEO
+- `robots.ts`: programmatic robots.txt generation
+- `sitemap.ts`: programmatic sitemap generation
+- `lib/seo.ts`: shared metadata helper functions
+- `generateMetadata()` on all major pages (locale-aware `<title>`)
+- `icon.tsx` / `apple-icon.tsx`: programmatic favicon generation
 
 ### Email (Observer invites)
 - `RESEND_API_KEY` (required)
 - `RESEND_FROM_EMAIL` (optional)
 - `NEXT_PUBLIC_APP_URL` (used to build invite links)
+- Templates in `lib/emails.ts`, Resend client in `lib/resend.ts`
 
 ### Scoring
 - **HEXACO / HEXACO_MODIFIED:** 6 dims, average per dimension → 0-100%, reverse scoring support
 - **Big Five (BFAS):** 5 dims (O,C,E,A,N), same Likert logic
+- Profile insights generated by `profile-engine.ts` using content from `profile-content.ts`
+
+### Seed Script
+```bash
+pnpm seed:assessment --email user@example.com --type HEXACO --observers 3 --clean
+```
+- `--email`: required user email
+- `--type`: HEXACO | HEXACO_MODIFIED | BIG_FIVE (default: HEXACO)
+- `--observers`: number of observer assessments (default: 0)
+- `--clean`: delete existing assessments before seeding
+
+---
+
+## Database Schema
+
+### Enums
+- `TestType`: HEXACO, HEXACO_MODIFIED, BIG_FIVE
+- `RelationshipType`: FRIEND, COLLEAGUE, FAMILY, PARTNER, OTHER
+- `InvitationStatus`: PENDING, COMPLETED, EXPIRED, CANCELED
+
+### Models
+
+**UserProfile**
+- Core: id, clerkId, email, username, deleted, locale
+- Demographics (from onboarding): birthYear, gender, education, occupation, occupationStatus, workSchedule, companySize, studyLevel, unemploymentDuration, country, onboardedAt
+- Research: testType, testTypeAssignedAt, consentedAt
+- Relations: assessmentResults, assessmentDraft, sentInvitations, receivedInvitations, satisfactionFeedback, researchSurvey, featureInterests
+
+**AssessmentDraft** — in-progress self-assessment (server-synced)
+- id, userProfileId, testType, answers (JSON), currentPage, timestamps
+
+**AssessmentResult** — completed self-assessment
+- id, userProfileId, scores (JSON), testType, isSelfAssessment, timestamp
+- Relations: dimensionFeedback
+
+**ObserverInvitation** — peer assessment invite
+- id, token, inviterId, observerProfileId, observerEmail, observerName, testType, status, expiresAt, completedAt
+
+**ObserverDraft** — in-progress observer assessment (server-synced)
+- id, invitationId, phase, relationshipType, knownDuration, answers (JSON), currentPage, timestamps
+
+**ObserverAssessment** — completed observer assessment
+- id, invitationId, relationshipType, knownDuration, scores (JSON), confidence (1-5 optional), timestamp
+
+**ResearchSurvey** — post-assessment research survey
+- id, userProfileId, selfAccuracy, priorTest, positionLevel, studyField, industry, motivation, sharingIntent, feedbackSources, has360Process, personalityImportance, observerUsefulness
+
+**SatisfactionFeedback** — satisfaction/usefulness feedback
+- id, userProfileId, agreementScore, observerFeedbackUsefulness, siteUsefulness, freeformFeedback, interestedInUpdates, timestamp
+
+**DimensionFeedback** — dimension-level accuracy ratings
+- id, assessmentResultId, dimensionCode, accuracyRating (1-5), comment, timestamps
+- Unique: (assessmentResultId, dimensionCode)
+
+**FeatureInterest** — fake door validation
+- id, userProfileId, featureKey ("team", "comm", "360"), timestamp
+- Unique: (userProfileId, featureKey)
 
 ---
 

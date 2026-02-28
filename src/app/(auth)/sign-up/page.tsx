@@ -3,7 +3,7 @@
 import { Component, Suspense, useEffect, useState } from "react";
 import type { ErrorInfo, ReactNode } from "react";
 import { useSignUp } from "@clerk/nextjs";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import Link from "next/link";
@@ -43,7 +43,6 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
 
 function SignUpContent() {
   const { isLoaded, signUp, setActive } = useSignUp();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const observeToken = searchParams.get("observeToken");
   const { locale } = useLocale();
@@ -139,7 +138,9 @@ function SignUpContent() {
             body: JSON.stringify({ token: observeToken }),
           }).catch(() => null);
         }
-        router.push("/onboarding");
+        // Full page reload: ensures Clerk session is fully propagated before
+        // the next page renders, preventing auth-state race condition (#310).
+        window.location.href = "/onboarding";
       } else {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
@@ -246,8 +247,6 @@ function SignUpContent() {
               {t("actions.backToSignUp", locale)}
             </button>
           </div>
-
-          <div className="mt-4 flex justify-center"><div id="clerk-captcha" /></div>
         </div>
       </div>
     );

@@ -257,8 +257,6 @@ function SignInContent() {
               {t("auth.backToSignIn", locale)}
             </button>
           </div>
-
-          <div className="mt-4 flex justify-center"><div id="clerk-captcha" /></div>
         </div>
       </div>
     );
