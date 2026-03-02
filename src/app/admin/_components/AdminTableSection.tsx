@@ -8,6 +8,7 @@ interface AdminTableSectionProps {
     value: number;
     percentage?: number;
     color?: string;
+    subtitle?: string;
   }>;
 }
 
@@ -32,9 +33,14 @@ export function AdminTableSection({
           return (
             <div key={idx}>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
-                  {row.label}
-                </span>
+                <div>
+                  <span className="text-sm font-medium text-gray-700">
+                    {row.label}
+                  </span>
+                  {row.subtitle && (
+                    <p className="text-xs text-gray-400 mt-0.5">{row.subtitle}</p>
+                  )}
+                </div>
                 <span className="text-sm font-semibold text-gray-900">
                   {row.value}
                 </span>

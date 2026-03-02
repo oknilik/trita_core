@@ -108,17 +108,14 @@ export default async function AdminPage() {
           _count: { id: true },
           orderBy: { _count: { id: "desc" } },
         });
-        const selfVsObserver = await prisma.assessmentResult.groupBy({
-          by: ["isSelfAssessment"],
-          _count: { id: true },
-        });
+        const observerTotal = await prisma.observerAssessment.count();
         const byUserTestType = await prisma.userProfile.groupBy({
           by: ["testType"],
           _count: { id: true },
           where: { deleted: false, testType: { not: null } },
           orderBy: { _count: { id: "desc" } },
         });
-        return { total, byTestType, selfVsObserver, byUserTestType };
+        return { total, byTestType, observerTotal, byUserTestType };
       })(),
 
       // Invitation metrics — only live (PENDING + COMPLETED), excluding CANCELED/EXPIRED
@@ -129,8 +126,17 @@ export default async function AdminPage() {
         const byStatus = await prisma.observerInvitation.groupBy({
           by: ["status"],
           _count: { id: true },
+          where: { status: { in: ["PENDING", "COMPLETED"] } },
         });
-        return { total, byStatus };
+        const [pendingEmail, completedEmail] = await Promise.all([
+          prisma.observerInvitation.count({
+            where: { status: "PENDING", observerEmail: { not: null } },
+          }),
+          prisma.observerInvitation.count({
+            where: { status: "COMPLETED", observerEmail: { not: null } },
+          }),
+        ]);
+        return { total, byStatus, pendingEmail, completedEmail };
       })(),
 
       // Feedback metrics
@@ -217,12 +223,14 @@ export default async function AdminPage() {
       ? Math.round((completedInvites / invitationStats.total) * 100)
       : 0;
 
-  const selfCount =
-    assessmentStats.selfVsObserver.find((s: { isSelfAssessment: boolean; _count: { id: number } }) => s.isSelfAssessment)?._count
+  const pendingInvites =
+    invitationStats.byStatus.find((s: { status: string; _count: { id: number } }) => s.status === "PENDING")?._count
       .id ?? 0;
-  const observerCount =
-    assessmentStats.selfVsObserver.find((s: { isSelfAssessment: boolean; _count: { id: number } }) => !s.isSelfAssessment)?._count
-      .id ?? 0;
+  const pendingLink = pendingInvites - invitationStats.pendingEmail;
+  const completedLink = completedInvites - invitationStats.completedEmail;
+
+  const selfCount = assessmentStats.total;
+  const observerCount = assessmentStats.observerTotal;
 
   // Format survey averages
   const avgSelfAccuracy = surveyStats.avgs._avg.selfAccuracy
@@ -333,12 +341,13 @@ export default async function AdminPage() {
               const statusColors: Record<string, string> = {
                 COMPLETED: "#10B981",
                 PENDING: "#F59E0B",
-                EXPIRED: "#6B7280",
-                CANCELED: "#EF4444",
               };
+              const emailCount = item.status === "PENDING" ? invitationStats.pendingEmail : item.status === "COMPLETED" ? invitationStats.completedEmail : null;
+              const linkCount = item.status === "PENDING" ? pendingLink : item.status === "COMPLETED" ? completedLink : null;
               return {
                 label: t(`common.status${item.status.charAt(0)}${item.status.slice(1).toLowerCase()}`, locale),
                 value: item._count.id,
+                subtitle: emailCount !== null ? `Email: ${emailCount} | Link: ${linkCount}` : undefined,
                 color: statusColors[item.status] ?? "#6366F1",
               };
             })}
