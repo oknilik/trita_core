@@ -14,6 +14,7 @@ const APP_URL = normalizeBaseUrl(
     ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://trita.io"),
 );
 
+
 const translations = {
   orderConfirmation: {
     hu: {
@@ -498,6 +499,7 @@ export async function sendObserverInviteEmail(params: {
   token: string;
   recipientName?: string;
   locale?: Locale;
+  isReminder?: boolean;
 }) {
   const locale = params.locale ?? getLocale(params.to);
   const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend", de: "Freund/in" };
@@ -511,6 +513,8 @@ export async function sendObserverInviteEmail(params: {
   });
   const link = `${APP_URL}/observe/${params.token}`;
   const t = translations.observerInvite[locale];
+  const reminderPrefix: Record<Locale, string> = { hu: "Emlékeztető: ", en: "Reminder: ", de: "Erinnerung: " };
+  const subject = params.isReminder ? `${reminderPrefix[locale]}${t.subject}` : t.subject;
   const text = [
     t.greeting(recipientName),
     "",
@@ -527,7 +531,7 @@ export async function sendObserverInviteEmail(params: {
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
     to: params.to,
-    subject: t.subject,
+    subject,
     html,
     text,
   });

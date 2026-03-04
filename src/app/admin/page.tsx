@@ -7,6 +7,7 @@ import { FadeIn } from "@/components/landing/FadeIn";
 import { AdminStatCard } from "@/app/admin/_components/AdminStatCard";
 import { AdminTableSection } from "@/app/admin/_components/AdminTableSection";
 import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
+import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
 
 export const dynamic = "force-dynamic";
 
@@ -209,6 +210,26 @@ export default async function AdminPage() {
       })(),
     ]);
 
+  // Pending reminders (3+ days, email invites only)
+  const pendingReminders = await prisma.observerInvitation.findMany({
+    where: {
+      status: "PENDING",
+      observerEmail: { not: null },
+      expiresAt: { gt: new Date() },
+      createdAt: { lt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) },
+    },
+    select: {
+      id: true,
+      observerEmail: true,
+      observerName: true,
+      createdAt: true,
+      reminderCount: true,
+      lastReminderSentAt: true,
+      inviter: { select: { username: true, email: true } },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
   // Calculate metrics
   const growthRate =
     userStats.total > 0
@@ -258,7 +279,7 @@ export default async function AdminPage() {
     : 0;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-8 md:px-6">
+    <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50/40 to-white px-4 py-8 md:px-6">
       <div className="mx-auto max-w-7xl">
         {/* Hero */}
         <FadeIn>
@@ -556,6 +577,24 @@ export default async function AdminPage() {
               </div>
             </div>
           </div>
+        </FadeIn>
+
+        {/* Reminder Section */}
+        <FadeIn delay={0.6}>
+          <AdminReminderSection
+            invitations={pendingReminders.map((inv) => ({
+              id: inv.id,
+              observerEmail: inv.observerEmail!,
+              observerName: inv.observerName,
+              createdAt: inv.createdAt.toISOString(),
+              reminderCount: inv.reminderCount,
+              lastReminderSentAt: inv.lastReminderSentAt?.toISOString() ?? null,
+              inviter: {
+                username: inv.inviter.username,
+                email: inv.inviter.email ?? "",
+              },
+            }))}
+          />
         </FadeIn>
       </div>
     </main>

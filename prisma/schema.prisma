@@ -112,9 +112,11 @@ model ObserverInvitation {
   observerName  String?
   testType      TestType
   status        InvitationStatus @default(PENDING)
-  expiresAt     DateTime
-  createdAt     DateTime         @default(now())
-  completedAt   DateTime?
+  expiresAt          DateTime
+  createdAt          DateTime         @default(now())
+  completedAt        DateTime?
+  reminderCount      Int              @default(0)
+  lastReminderSentAt DateTime?
 
   inviter    UserProfile         @relation("InviterInvitations", fields: [inviterId], references: [id])
   observer   UserProfile?        @relation("ObserverInvitations", fields: [observerProfileId], references: [id])
