@@ -381,7 +381,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she feels reasonably satisfied with himself/herself overall.",
       textObserverByLocale: {
         en: "He/she feels reasonably satisfied with himself/herself overall.",
-        hu: "Alapjában véve úgy érzi, hogy elégedett magával.",
+        hu: "Alapjában véve elégedett magával.",
         de: "Im Allgemeinen ist er/sie mit sich ziemlich zufrieden.",
       },
     },
@@ -408,14 +408,14 @@ export const hexacoConfig: TestConfig = {
       facet: "sincerity",
       text: "If I want something from a person I dislike, I will act very nicely toward that person in order to get it.",
       textByLocale: {
-        hu: "Ha valakitől, akit tulajdonképpen nem is kedvelek, szeretnék valamit, a cél érdekében képes vagyok ehhez a személyhez nagyon kedvesnek lenni.",
+        hu: "Ha valakitől, akit tulajdonképpen nem is kedvelek, szeretnék valamit, a cél érdekében képes vagyok ehhez a személyhez nagyon kedves lenni.",
         en: "If I want something from a person I dislike, I will act very nicely toward that person in order to get it.",
         de: "Wenn ich von einer Person, die ich nicht mag, etwas will, verhalte ich mich dieser Person gegenüber sehr nett um es zu bekommen.",
       },
       textObserver: "If he/she wants something from a person he/she dislikes, he/she will act very nicely toward that person in order to get it.",
       textObserverByLocale: {
         en: "If he/she wants something from a person he/she dislikes, he/she will act very nicely toward that person in order to get it.",
-        hu: "Ha valakitől, akit tulajdonképpen nem is kedvel, szeretne valamit, a cél érdekében képes ehhez a személyhez nagyon kedvesnek lenni.",
+        hu: "Ha valakitől, akit tulajdonképpen nem is kedvel, szeretne valamit, a cél érdekében képes ehhez a személyhez nagyon kedves lenni.",
         de: "Wenn er/sie von einer Person, die er/sie nicht mag, etwas will, verhält er/sie sich dieser Person gegenüber sehr nett um es zu bekommen.",
       },
       reversed: true,
@@ -731,7 +731,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she thinks that he/she is an ordinary person who is no better than others.",
       textObserverByLocale: {
         en: "He/she thinks that he/she is an ordinary person who is no better than others.",
-        hu: "Olyan, mint a többi ember: se jobb, se rosszabb.",
+        hu: "Úgy gondolja olyan, mint a többi ember: se jobb, se rosszabb.",
         de: "Er/Sie denkt, dass er/sie eine ganz normale Person ist, die nicht besser ist als andere.",
       },
     },
@@ -852,7 +852,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she enjoys looking at maps of different places.",
       textObserverByLocale: {
         en: "He/she enjoys looking at maps of different places.",
-        hu: "Szívesen nézeget idegen helyek térképeit.",
+        hu: "Szívesen nézegeti idegen helyek térképeit.",
         de: "Er/Sie mag es, Landkarten von anderen Orten zu betrachten.",
       },
     },
@@ -1461,7 +1461,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she would like to be seen driving around in a very expensive car.",
       textObserverByLocale: {
         en: "He/she would like to be seen driving around in a very expensive car.",
-        hu: "Jó lenne, ha az emberek látnák, amint egy jó drága autóban ülve vezet.",
+        hu: "Örülne, ha az emberek látnák, amint egy jó drága autóban ülve vezet.",
         de: "Er/Sie würde gerne dabei gesehen werden, wie er/sie in einem sehr teuren Auto herumfährt.",
       },
       reversed: true,
@@ -1689,7 +1689,7 @@ export const hexacoConfig: TestConfig = {
       textObserver: "He/she has never really enjoyed looking through an encyclopedia.",
       textObserverByLocale: {
         en: "He/she has never really enjoyed looking through an encyclopedia.",
-        hu: "Igazából még sohasem lapozgatott élvezettel egy lexikonban.",
+        hu: "Valószínű még sohasem lapozgatott élvezettel egy lexikonban.",
         de: "Er/Sie hat es noch nie wirklich gemocht, eine Enzyklopädie durchzublättern.",
       },
       reversed: true,

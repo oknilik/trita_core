@@ -848,7 +848,7 @@ const translations = {
     introPauseNote: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "😅 Wir wissen, 100 Fragen sind viel. Aber du kannst jederzeit pausieren — dein Fortschritt wird automatisch gespeichert." },
     relationshipLabel: { hu: "Milyen a kapcsolatotok?", en: "What is your relationship?", de: "Wie ist eure Beziehung?" },
     durationLabel: { hu: "Mióta ismered?", en: "How long have you known them?", de: "Wie lange kennst du die Person?" },
-    start: { hu: "Kezdjük ({count} kérdés)", en: "Start ({count} questions)", de: "Starten ({count} Fragen)" },
+    start: { hu: "Kezdjük el →", en: "Let's start →", de: "Los geht's →" },
     thinkOf: {
       hu: "Ne feledd! {inviter} kért meg az értékelésre, gondolj rá, amikor válaszolsz a kérdésekre. ✨",
       en: "Don't forget: {inviter} asked you for this assessment. Keep them in mind as you answer the questions. ✨",

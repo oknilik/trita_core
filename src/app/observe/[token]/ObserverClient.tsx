@@ -592,7 +592,7 @@ export function ObserverClient({
               disabled={!canStart}
               className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:shadow-none"
             >
-              {tf("observer.start", locale, { count: questions.length })}
+              {t("observer.start", locale)}
             </button>
           </div>
         </div>

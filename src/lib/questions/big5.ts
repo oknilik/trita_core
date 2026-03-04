@@ -726,7 +726,7 @@ export const big5Config: TestConfig = {
       text: "Rarely put people under pressure.",
       textByLocale: { hu: "Ritkán helyezek nyomás alá másokat.", en: "Rarely put people under pressure.", de: "Ich setze andere nur selten unter Druck." },
       textObserver: "He/She rarely puts people under pressure.",
-      textObserverByLocale: { hu: "Ritkán nyomás alá helyez másokat.", en: "He/She rarely puts people under pressure.", de: "Er/Sie setzt andere nur selten unter Druck." },
+      textObserverByLocale: { hu: "Ritkán helyes nyomás alá másokat.", en: "He/She rarely puts people under pressure.", de: "Er/Sie setzt andere nur selten unter Druck." },
     },
     {
       id: 58,
