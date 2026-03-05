@@ -12,7 +12,7 @@ item_id;domain;aspect;reverse;english;german;hungarian
 11;Agreeableness;Politeness;0;Respect authority.;Ich respektiere Autoritäten.;Tisztelem a tekintélyt.
 12;Agreeableness;Politeness;1;Believe that I am better than others.;Ich fühle mich anderen überlegen.;Azt hiszem, jobb vagyok másoknál.
 13;Agreeableness;Politeness;0;Hate to seem pushy.;Es ist mir unangenehm, aufdringlich zu erscheinen.;Utálok tolakodónak tűnni.
-14;Agreeableness;Politeness;1;Take advantage of others.;Ich nutze andere aus.;Kihasználom másokat.
+14;Aggreeableness;Politeness;1;Take advantage of others.;Ich nutze andere aus.;Kihasználom másokat.
 15;Agreeableness;Politeness;0;Avoid imposing my will on others.;Ich vermeide es, anderen meinen Willen aufzuzwingen.;Kerülöm, hogy másokra erőltessem az akaratomat.
 16;Agreeableness;Politeness;0;Rarely put people under pressure.;Ich setze andere nur selten unter Druck.;Ritkán nyomás alá helyezek másokat.
 17;Agreeableness;Politeness;1;Insult people.;Manchmal beleidige ich andere Leute.;Sértegetem az embereket.
