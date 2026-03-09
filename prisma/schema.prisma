@@ -33,6 +33,25 @@ enum InvitationStatus {
   CANCELED
 }
 
+enum UserRole {
+  INDIVIDUAL
+  COACH
+  ORG_ADMIN
+  ORG_MEMBER
+}
+
+enum CoachRelationshipStatus {
+  ACTIVE
+  PAUSED
+  ENDED
+}
+
+enum ScoreRange {
+  LOW
+  MED
+  HIGH
+}
+
 // ============================================
 // MODELS
 // ============================================
@@ -65,6 +84,9 @@ model UserProfile {
   testTypeAssignedAt DateTime?
   consentedAt        DateTime?
 
+  // Role (default: INDIVIDUAL, set to COACH for coach accounts)
+  role      UserRole @default(INDIVIDUAL)
+
   assessmentResults    AssessmentResult[]
   assessmentDraft      AssessmentDraft?
   sentInvitations      ObserverInvitation[] @relation("InviterInvitations")
@@ -72,6 +94,13 @@ model UserProfile {
   satisfactionFeedback SatisfactionFeedback?
   researchSurvey       ResearchSurvey?
   featureInterests     FeatureInterest[]
+
+  // Coach layer
+  coachProfile              CoachProfile?
+  coachClientRelationships  CoachClientRelationship[] @relation("CoachRelationships")
+  clientCoachRelationships  CoachClientRelationship[] @relation("ClientRelationships")
+  generatedOutputsAsCoach   GeneratedOutput[]         @relation("CoachOutputs")
+  generatedOutputsAsClient  GeneratedOutput[]         @relation("ClientOutputs")
 }
 
 model AssessmentDraft {
@@ -218,4 +247,74 @@ model FeatureInterest {
 
   @@unique([userProfileId, featureKey])
   @@index([featureKey])
+}
+
+// ============================================
+// COACH LAYER
+// ============================================
+
+// Extended profile for coach accounts
+model CoachProfile {
+  id            String   @id @default(cuid())
+  userProfileId String   @unique
+  bio           String?
+  specializations Json?  // string[] e.g. ["leadership", "career", "team-dynamics"]
+  maxClientSlots  Int    @default(10)
+  verifiedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+}
+
+// Coach ↔ Client relationship
+model CoachClientRelationship {
+  id        String                  @id @default(cuid())
+  coachId   String
+  clientId  String
+  status    CoachRelationshipStatus @default(ACTIVE)
+  startedAt DateTime                @default(now())
+  endedAt   DateTime?
+
+  coach  UserProfile @relation("CoachRelationships", fields: [coachId], references: [id])
+  client UserProfile @relation("ClientRelationships", fields: [clientId], references: [id])
+
+  @@unique([coachId, clientId])
+  @@index([coachId])
+  @@index([clientId])
+}
+
+// Seed-elt intervenció blokkok dimenzió tartományokhoz
+// Ezekből épül a coach recommendation engine
+model RecommendationBlock {
+  id            String    @id @default(cuid())
+  dimensionCode String    // "H" | "E" | "X" | "A" | "C" | "O" | "N"
+  scoreRange    ScoreRange
+  deltaFlag     String?   // "SELF_HIGH_OBS_LOW" | "SELF_LOW_OBS_HIGH" | "ALIGNED" | null
+  testType      String    @default("ALL") // "HEXACO" | "BIG_FIVE" | "ALL"
+  locale        String    @default("hu")  // "hu" | "en" | "de"
+  content       Json      // { title: string, bullets: string[], deepDive: string, actionItems: string[] }
+  createdAt     DateTime  @default(now())
+
+  @@index([dimensionCode, scoreRange])
+  @@index([locale])
+}
+
+// Cache-elt AI-generált coach output-ok
+// cacheKey = testType:H-h:E-m:X-l:...:delta-H+2:...
+model GeneratedOutput {
+  id        String   @id @default(cuid())
+  coachId   String
+  clientId  String
+  cacheKey  String   @unique // determinisztikus kulcs a profil kombinációból
+  content   String   // markdown szöveg
+  model     String   @default("claude-sonnet-4-6")
+  hitCount  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  coach  UserProfile @relation("CoachOutputs", fields: [coachId], references: [id])
+  client UserProfile @relation("ClientOutputs", fields: [clientId], references: [id])
+
+  @@index([coachId])
+  @@index([clientId])
 }
