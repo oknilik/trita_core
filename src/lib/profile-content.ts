@@ -213,7 +213,7 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     de: "Du gehst dem Unbekannten mit Neugier und Ruhe entgegen. Andere könnten sich von Neuem beunruhigt fühlen — du schöpfst Energie daraus und behältst dabei den analytischen Fokus.",
   },
   organizedLeader: {
-    hu: "Emberekkel dolgozol és le is zársz. A csapatot mozgásban tartod, de mindig van kéznél terv és határidő.",
+    hu: "Szeretsz emberekkel dolgozni és végig vinni minden egyes feladatot. A csapatot mozgásban tartod, de mindig van kéznél terv és határidő.",
     en: "You work with people and you close things out. You keep the team moving while always having a plan and a deadline at hand.",
     de: "Du arbeitest mit Menschen und bringst Dinge zum Abschluss. Du hältst das Team in Bewegung, während du immer einen Plan und eine Frist parat hast.",
   },
