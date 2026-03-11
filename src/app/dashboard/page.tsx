@@ -478,6 +478,7 @@ export default async function DashboardPage({
         hasInvites={hasInvites}
         pendingInvitesCount={pendingInvites.length}
         surveySubmitted={surveySubmitted}
+        feedbackSubmitted={feedbackSubmitted}
         occupationStatus={profile.occupationStatus ?? null}
       />
 

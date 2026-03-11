@@ -16,6 +16,7 @@ import { RetakeButton } from "@/components/dashboard/RetakeButton";
 import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
 import { ProfileInsights } from "@/components/dashboard/ProfileInsights";
 import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
+import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 
 type TabId = "results" | "comparison" | "invites";
 
@@ -118,6 +119,7 @@ export interface DashboardTabsProps {
   hasInvites: boolean;
   pendingInvitesCount: number;
   surveySubmitted: boolean;
+  feedbackSubmitted: boolean;
   occupationStatus: string | null;
 }
 
@@ -308,6 +310,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             hasDraft={props.hasDraft}
             rawDimensions={props.rawDimensions}
             testType={props.testType}
+            feedbackSubmitted={props.feedbackSubmitted}
             locale={locale}
           />
           </div>
@@ -353,6 +356,7 @@ interface ResultsTabPanelProps {
   hasDraft: boolean;
   rawDimensions: Record<string, number>;
   testType: string;
+  feedbackSubmitted: boolean;
   locale: Locale;
 }
 
@@ -367,6 +371,7 @@ function ResultsTabPanel({
   hasDraft,
   rawDimensions,
   testType,
+  feedbackSubmitted,
   locale,
 }: ResultsTabPanelProps) {
   // Highlights are "spectrum high/low" (raw trait intensity), not "best/worst".
@@ -510,6 +515,11 @@ function ResultsTabPanel({
           <ProfileInsights dimensions={rawDimensions} testType={testType} />
         </FadeIn>
       )}
+
+      {/* Satisfaction feedback */}
+      <FadeIn delay={0.14}>
+        <FeedbackForm initialSubmitted={feedbackSubmitted} />
+      </FadeIn>
 
       {/* Retake CTA */}
       <FadeIn delay={0.15}>
