@@ -7,9 +7,10 @@ import { t } from "@/lib/i18n";
 
 type FeedbackFormProps = {
   initialSubmitted: boolean;
+  hasObserverFeedback?: boolean;
 };
 
-export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
+export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: FeedbackFormProps) {
   const { locale } = useLocale();
   const router = useRouter();
 
@@ -43,8 +44,10 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
     if (currentQuestion === 3 && siteUsefulness == null) return;
     if (currentQuestion === 4 && interested == null) return;
 
-    // Move to next question
-    if (currentQuestion < 5) {
+    // Move to next question (skip question 2 if no observer feedback)
+    if (currentQuestion === 1 && !hasObserverFeedback) {
+      setCurrentQuestion(3);
+    } else if (currentQuestion < 5) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       handleFinalSubmit();
@@ -106,7 +109,7 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
           </p>
         </div>
         <span className="text-xs font-medium text-gray-500">
-          {currentQuestion}/5
+          {hasObserverFeedback ? currentQuestion : (currentQuestion <= 1 ? currentQuestion : currentQuestion - 1)}/{hasObserverFeedback ? 5 : 4}
         </span>
       </div>
 
@@ -143,8 +146,8 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
           </div>
         )}
 
-        {/* Question 2: Observer feedback usefulness */}
-        {currentQuestion === 2 && (
+        {/* Question 2: Observer feedback usefulness (only for users with observer feedback) */}
+        {currentQuestion === 2 && hasObserverFeedback && (
           <div>
             <p className="text-sm font-semibold text-gray-900">
               {t("dashboard.feedbackObserverUsefulnessLabel", locale)}
@@ -252,7 +255,7 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
           disabled={
             isSubmitting ||
             (currentQuestion === 1 && agreementScore == null) ||
-            (currentQuestion === 2 && observerUsefulness == null) ||
+            (currentQuestion === 2 && hasObserverFeedback && observerUsefulness == null) ||
             (currentQuestion === 3 && siteUsefulness == null) ||
             (currentQuestion === 4 && interested == null)
           }

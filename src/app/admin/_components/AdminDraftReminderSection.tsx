@@ -2,26 +2,28 @@
 
 import { useState } from "react";
 
-interface ReminderInvitation {
+interface IncompleteDraft {
   id: string;
-  observerEmail: string;
-  observerName: string | null;
-  createdAt: string;
-  reminderCount: number;
-  lastReminderSentAt: string | null;
-  inviter: { username: string | null; email: string };
+  email: string;
+  username: string | null;
+  testType: string;
+  answeredCount: number;
+  totalCount: number;
+  updatedAt: string;
+  draftReminderCount: number;
+  lastDraftReminderSentAt: string | null;
   completedMeanwhile?: boolean;
 }
 
 interface Props {
-  invitations: ReminderInvitation[];
+  drafts: IncompleteDraft[];
 }
 
 interface RowState {
   sending: boolean;
   sentAt: string | null;
   error: string | null;
-  completed: boolean; // observer filled it out since page was loaded
+  completed: boolean; // user finished the test since the page was loaded
 }
 
 const PAGE_SIZE = 10;
@@ -39,32 +41,32 @@ function relativeTime(iso: string): string {
   return `${Math.floor(hours / 24)} napja`;
 }
 
-function isRecentlyReminded(inv: ReminderInvitation): boolean {
-  if (!inv.lastReminderSentAt) return false;
-  return daysSince(inv.lastReminderSentAt) < 3;
+function isRecentlyReminded(draft: IncompleteDraft): boolean {
+  if (!draft.lastDraftReminderSentAt) return false;
+  return daysSince(draft.lastDraftReminderSentAt) < 3;
 }
 
-export function AdminReminderSection({ invitations }: Props) {
+export function AdminDraftReminderSection({ drafts }: Props) {
   const [onlyActive, setOnlyActive] = useState(true);
   const [page, setPage] = useState(0);
 
-  const visibleInvitations = onlyActive
-    ? invitations.filter((inv) => inv.completedMeanwhile || !isRecentlyReminded(inv))
-    : invitations;
+  const visibleDrafts = onlyActive
+    ? drafts.filter((d) => d.completedMeanwhile || !isRecentlyReminded(d))
+    : drafts;
 
-  const totalPages = Math.ceil(visibleInvitations.length / PAGE_SIZE);
+  const totalPages = Math.ceil(visibleDrafts.length / PAGE_SIZE);
   const safePage = Math.min(page, Math.max(0, totalPages - 1));
-  const pageInvitations = visibleInvitations.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
+  const pageDrafts = visibleDrafts.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
 
   const [checked, setChecked] = useState<Record<string, boolean>>(
-    Object.fromEntries(invitations.map((inv) => [inv.id, !isRecentlyReminded(inv) && !inv.completedMeanwhile]))
+    Object.fromEntries(drafts.map((d) => [d.id, !isRecentlyReminded(d) && !d.completedMeanwhile]))
   );
   const [selectAll, setSelectAll] = useState(false);
   const [states, setStates] = useState<Record<string, RowState>>(() => {
     const initial: Record<string, RowState> = {};
-    for (const inv of invitations) {
-      if (inv.completedMeanwhile) {
-        initial[inv.id] = { sending: false, sentAt: null, error: null, completed: true };
+    for (const d of drafts) {
+      if (d.completedMeanwhile) {
+        initial[d.id] = { sending: false, sentAt: null, error: null, completed: true };
       }
     }
     return initial;
@@ -77,7 +79,8 @@ export function AdminReminderSection({ invitations }: Props) {
 
   function handleSelectAll(val: boolean) {
     setSelectAll(val);
-    const pageIds = pageInvitations.map((inv) => inv.id);
+    // selectAll operates on the current page only
+    const pageIds = pageDrafts.map((d) => d.id);
     setChecked((prev) => {
       const next = { ...prev };
       for (const id of pageIds) next[id] = val;
@@ -88,7 +91,7 @@ export function AdminReminderSection({ invitations }: Props) {
   function toggleRow(id: string) {
     setChecked((prev) => {
       const next = { ...prev, [id]: !prev[id] };
-      const allChecked = pageInvitations.every((inv) => next[inv.id]);
+      const allChecked = pageDrafts.every((d) => next[d.id]);
       setSelectAll(allChecked);
       return next;
     });
@@ -102,10 +105,10 @@ export function AdminReminderSection({ invitations }: Props) {
   async function sendReminder(id: string) {
     setStates((prev) => ({ ...prev, [id]: { ...getState(id), sending: true, error: null } }));
     try {
-      const res = await fetch(`/api/admin/send-reminder/${id}`, { method: "POST" });
+      const res = await fetch(`/api/admin/send-draft-reminder/${id}`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        const isCompleted = data.error === "Invitation is not pending";
+        const isCompleted = data.error === "User already completed assessment";
         setStates((prev) => ({
           ...prev,
           [id]: { sending: false, sentAt: null, error: isCompleted ? null : (data.error ?? "Hiba történt"), completed: isCompleted },
@@ -120,26 +123,27 @@ export function AdminReminderSection({ invitations }: Props) {
 
   async function sendChecked() {
     setBulkRunning(true);
-    for (const inv of visibleInvitations) {
-      if (!checked[inv.id]) continue;
-      const s = getState(inv.id);
+    // Send across all visible pages, not just current
+    for (const d of visibleDrafts) {
+      if (!checked[d.id]) continue;
+      const s = getState(d.id);
       if (s.sentAt || s.completed) continue;
-      await sendReminder(inv.id);
+      await sendReminder(d.id);
     }
     setBulkRunning(false);
   }
 
-  const checkedCount = visibleInvitations.filter((inv) => {
-    const s = getState(inv.id);
-    return checked[inv.id] && !s.sentAt && !s.completed;
+  const checkedCount = visibleDrafts.filter((d) => {
+    const s = getState(d.id);
+    return checked[d.id] && !s.sentAt && !s.completed;
   }).length;
-  const activeCount = invitations.filter((inv) => !isRecentlyReminded(inv) && !inv.completedMeanwhile).length;
+  const activeCount = drafts.filter((d) => !isRecentlyReminded(d) && !d.completedMeanwhile).length;
 
-  if (invitations.length === 0) {
+  if (drafts.length === 0) {
     return (
       <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-gray-900">Emlékeztető küldés</h2>
-        <p className="mt-4 text-sm text-gray-500">Nincs 3+ napja kitöltetlen emailes meghívó.</p>
+        <h2 className="text-xl font-semibold text-gray-900">Félbehagyott tesztek</h2>
+        <p className="mt-4 text-sm text-gray-500">Nincs 1+ napja félbehagyott teszt.</p>
       </div>
     );
   }
@@ -148,9 +152,9 @@ export function AdminReminderSection({ invitations }: Props) {
     <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
       <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Emlékeztető küldés</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Félbehagyott tesztek</h2>
           <p className="mt-1 text-sm text-gray-500">
-            3+ napja kitöltetlen emailes meghívók ({invitations.length} db · {activeCount} kiküldendő)
+            1+ napja félbehagyott kitöltők ({drafts.length} db · {activeCount} kiküldendő)
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -164,7 +168,7 @@ export function AdminReminderSection({ invitations }: Props) {
           >
             {onlyActive ? "Csak kiküldendők" : "Összes"}
             <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-indigo-200 text-indigo-800" : "bg-gray-100 text-gray-500"}`}>
-              {onlyActive ? activeCount : invitations.length}
+              {onlyActive ? activeCount : drafts.length}
             </span>
           </button>
           <button
@@ -189,24 +193,26 @@ export function AdminReminderSection({ invitations }: Props) {
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
               </th>
-              <th className="pb-3 pr-4">Observer</th>
-              <th className="pb-3 pr-4">Meghívó</th>
-              <th className="pb-3 pr-4">Kor</th>
+              <th className="pb-3 pr-4">Felhasználó</th>
+              <th className="pb-3 pr-4">Teszt</th>
+              <th className="pb-3 pr-4">Haladás</th>
+              <th className="pb-3 pr-4">Utolsó aktivitás</th>
               <th className="pb-3 pr-4">Utolsó emlékeztető</th>
               <th className="pb-3 pr-4">Db</th>
               <th className="pb-3"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {pageInvitations.map((inv) => {
-              const s = getState(inv.id);
+            {pageDrafts.map((draft) => {
+              const s = getState(draft.id);
               const sent = s.sentAt !== null;
-              const recent = isRecentlyReminded(inv);
-              const isChecked = !!checked[inv.id];
+              const recent = isRecentlyReminded(draft);
+              const isChecked = !!checked[draft.id];
+              const pct = draft.totalCount > 0 ? Math.round((draft.answeredCount / draft.totalCount) * 100) : 0;
               const isInactive = s.completed || (recent && !isChecked);
               return (
                 <tr
-                  key={inv.id}
+                  key={draft.id}
                   className={`transition-colors ${s.completed ? "bg-gray-50 opacity-60" : isInactive ? "opacity-50" : ""}`}
                 >
                   <td className="py-3 pr-3">
@@ -214,7 +220,7 @@ export function AdminReminderSection({ invitations }: Props) {
                       type="checkbox"
                       checked={isChecked && !s.completed}
                       disabled={s.completed}
-                      onChange={() => !s.completed && toggleRow(inv.id)}
+                      onChange={() => !s.completed && toggleRow(draft.id)}
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-default"
                     />
                   </td>
@@ -222,10 +228,10 @@ export function AdminReminderSection({ invitations }: Props) {
                     <div className="flex items-center gap-2">
                       <div>
                         <p className={`font-medium ${s.completed ? "text-gray-400 line-through" : "text-gray-800"}`}>
-                          {inv.observerEmail}
+                          {draft.email}
                         </p>
-                        {inv.observerName && (
-                          <p className="text-xs text-gray-400">{inv.observerName}</p>
+                        {draft.username && (
+                          <p className="text-xs text-gray-400">{draft.username}</p>
                         )}
                       </div>
                       {s.completed && (
@@ -240,24 +246,35 @@ export function AdminReminderSection({ invitations }: Props) {
                       )}
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-gray-600">
-                    {inv.inviter.username ?? inv.inviter.email}
+                  <td className="py-3 pr-4 text-gray-600 text-xs font-medium">{draft.testType}</td>
+                  <td className="py-3 pr-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                          className={`h-1.5 rounded-full ${s.completed ? "bg-emerald-400" : "bg-indigo-400"}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500 whitespace-nowrap">
+                        {draft.answeredCount}/{draft.totalCount}
+                      </span>
+                    </div>
                   </td>
-                  <td className="py-3 pr-4 text-gray-600">{daysSince(inv.createdAt)} napja</td>
-                  <td className="py-3 pr-4 text-gray-500">
+                  <td className="py-3 pr-4 text-gray-500 text-xs">{relativeTime(draft.updatedAt)}</td>
+                  <td className="py-3 pr-4 text-gray-500 text-xs">
                     {s.sentAt
                       ? `${relativeTime(s.sentAt)} (most)`
-                      : inv.lastReminderSentAt
-                        ? relativeTime(inv.lastReminderSentAt)
+                      : draft.lastDraftReminderSentAt
+                        ? relativeTime(draft.lastDraftReminderSentAt)
                         : "–"}
                   </td>
-                  <td className="py-3 pr-4 text-gray-500">
-                    {inv.reminderCount + (sent ? 1 : 0)}
+                  <td className="py-3 pr-4 text-gray-500 text-xs">
+                    {draft.draftReminderCount + (sent ? 1 : 0)}
                   </td>
                   <td className="py-3">
                     {s.error && <p className="text-xs text-red-500 mb-1">{s.error}</p>}
                     <button
-                      onClick={() => sendReminder(inv.id)}
+                      onClick={() => sendReminder(draft.id)}
                       disabled={s.sending || sent || s.completed}
                       className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                         s.completed
@@ -282,7 +299,7 @@ export function AdminReminderSection({ invitations }: Props) {
       {totalPages > 1 && (
         <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
           <p className="text-xs text-gray-500">
-            {safePage + 1} / {totalPages} oldal · {visibleInvitations.length} sor
+            {safePage + 1} / {totalPages} oldal · {visibleDrafts.length} sor
           </p>
           <div className="flex items-center gap-2">
             <button
