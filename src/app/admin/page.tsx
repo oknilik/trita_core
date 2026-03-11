@@ -143,6 +143,9 @@ export default async function AdminPage() {
       // Feedback metrics
       (async () => {
         const satisfactionCount = await prisma.satisfactionFeedback.count();
+        const interestedInUpdatesCount = await prisma.satisfactionFeedback.count({
+          where: { interestedInUpdates: true },
+        });
         const avgScores = await prisma.satisfactionFeedback.aggregate({
           _avg: {
             agreementScore: true,
@@ -179,6 +182,7 @@ export default async function AdminPage() {
 
         return {
           satisfactionCount,
+          interestedInUpdatesCount,
           avgScores,
           dimensionCount,
           dimensionAvgBigFive,
@@ -267,16 +271,16 @@ export default async function AdminPage() {
   // Format average scores
   const avgAgreement = feedbackStats.avgScores._avg.agreementScore
     ? Math.round(feedbackStats.avgScores._avg.agreementScore * 10) / 10
-    : 0;
+    : null;
   const avgObserverUsefulness =
     feedbackStats.avgScores._avg.observerFeedbackUsefulness
       ? Math.round(
           feedbackStats.avgScores._avg.observerFeedbackUsefulness * 10
         ) / 10
-      : 0;
+      : null;
   const avgSiteUsefulness = feedbackStats.avgScores._avg.siteUsefulness
     ? Math.round(feedbackStats.avgScores._avg.siteUsefulness * 10) / 10
-    : 0;
+    : null;
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50/40 to-white px-4 py-8 md:px-6">
@@ -323,7 +327,7 @@ export default async function AdminPage() {
             <AdminStatCard
               title={t("admin.totalFeedback", locale)}
               value={feedbackStats.satisfactionCount + feedbackStats.dimensionCount}
-              subtitle={`Satisfaction: ${feedbackStats.satisfactionCount} | Dimension: ${feedbackStats.dimensionCount}`}
+              subtitle={`Satisfaction: ${feedbackStats.satisfactionCount} | Dimension: ${feedbackStats.dimensionCount} | Opt-in: ${feedbackStats.interestedInUpdatesCount}`}
               color="#F59E0B"
               icon="💬"
             />
@@ -453,16 +457,21 @@ export default async function AdminPage() {
         {/* Feedback Insights */}
         <FadeIn delay={0.5}>
           <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
-            <h2 className="text-xl font-semibold text-gray-900">
-              {t("admin.feedbackTitle", locale)}
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t("admin.feedbackTitle", locale)}
+              </h2>
+              <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
+                {feedbackStats.satisfactionCount} responses · {feedbackStats.interestedInUpdatesCount} opt-in
+              </span>
+            </div>
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-4">
                 <p className="text-sm font-semibold text-gray-600">
                   Agreement (Avg)
                 </p>
                 <p className="mt-2 text-2xl font-bold text-gray-900">
-                  {avgAgreement}/5
+                  {avgAgreement !== null ? `${avgAgreement}/5` : "–"}
                 </p>
               </div>
               <div className="rounded-lg border border-purple-100 bg-purple-50 p-4">
@@ -470,7 +479,7 @@ export default async function AdminPage() {
                   Observer Usefulness (Avg)
                 </p>
                 <p className="mt-2 text-2xl font-bold text-gray-900">
-                  {avgObserverUsefulness}/5
+                  {avgObserverUsefulness !== null ? `${avgObserverUsefulness}/5` : "–"}
                 </p>
               </div>
               <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4">
@@ -478,7 +487,7 @@ export default async function AdminPage() {
                   Site Usefulness (Avg)
                 </p>
                 <p className="mt-2 text-2xl font-bold text-gray-900">
-                  {avgSiteUsefulness}/5
+                  {avgSiteUsefulness !== null ? `${avgSiteUsefulness}/5` : "–"}
                 </p>
               </div>
             </div>
