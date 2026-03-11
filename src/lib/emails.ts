@@ -232,6 +232,38 @@ const translations = {
       team: "das trita-Team",
     },
   },
+  assessmentDraftReminder: {
+    hu: {
+      subject: "Már majdnem kész vagy a teszttel – folytasd itt",
+      greeting: (name: string) => `Szia, ${name}!`,
+      body: (testName: string, answeredCount: number, totalCount: number) =>
+        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a ${testName} személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
+      cta: "Folytatom a tesztet",
+      footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
+      thanks: "Köszönjük, hogy segíted a kutatásunkat!",
+      team: "A Trita csapata",
+    },
+    en: {
+      subject: "Continue your assessment – you're almost there! – trita",
+      greeting: (name: string) => `Hi ${name}!`,
+      body: (testName: string, answeredCount: number, totalCount: number) =>
+        `We noticed you started the ${testName} personality assessment but haven't finished yet. You're already ${answeredCount} questions in out of ${totalCount} — you're almost there!\n\nYour results will show how you see yourself across the ${testName} dimensions, and you'll also get the chance to invite observers to compare their view with yours. Click below to pick up where you left off.`,
+      cta: "Continue my assessment",
+      footer: "If you've already completed the test, feel free to ignore this email.",
+      thanks: "Thank you for participating in the research!",
+      team: "the trita team",
+    },
+    de: {
+      subject: "Setz deinen Test fort – du bist fast am Ziel! – trita",
+      greeting: (name: string) => `Hallo, ${name}!`,
+      body: (testName: string, answeredCount: number, totalCount: number) =>
+        `Wir haben gesehen, dass du mit dem ${testName}-Persönlichkeitstest begonnen, ihn aber noch nicht abgeschlossen hast. Du hast bereits ${answeredCount} von ${totalCount} Fragen beantwortet – du bist fast fertig!\n\nDeine Ergebnisse zeigen dir, wie du dich selbst entlang der ${testName}-Dimensionen siehst, und du kannst anschließend Beobachter einladen, um deren Sicht mit deiner zu vergleichen. Klicke unten, um weiterzumachen.`,
+      cta: "Test fortsetzen",
+      footer: "Falls du den Test bereits abgeschlossen hast, kannst du diese E-Mail ignorieren.",
+      thanks: "Danke, dass du an der Forschung teilnimmst!",
+      team: "das trita-Team",
+    },
+  },
 } as const;
 
 function getLocale(email: string): Locale {
@@ -685,6 +717,84 @@ export async function sendVerificationCodeEmail(params: {
     console.error("[Email] Failed to send verification code:", error);
   } else {
     console.log("[Email] Verification code sent to:", params.to);
+  }
+}
+
+function buildAssessmentDraftReminderHtml(params: {
+  locale: Locale;
+  name: string;
+  testName: string;
+  answeredCount: number;
+  totalCount: number;
+}): string {
+  const t = translations.assessmentDraftReminder[params.locale];
+  const cta = renderCtaButton({ href: `${APP_URL}/assessment`, label: t.cta });
+  const bodyHtml = t
+    .body(escapeHtml(params.testName), params.answeredCount, params.totalCount)
+    .replaceAll("\n\n", "<br><br>")
+    .replaceAll("\n", "<br>");
+
+  const bodyContent = `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 16px">
+      ${t.greeting(escapeHtml(params.name))}
+    </p>
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 24px">
+      ${bodyHtml}
+    </p>
+    ${cta}`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
+}
+
+export async function sendAssessmentDraftReminderEmail(params: {
+  to: string;
+  name: string;
+  testName: string;
+  answeredCount: number;
+  totalCount: number;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.assessmentDraftReminder[locale];
+  const html = buildAssessmentDraftReminderHtml({
+    locale,
+    name: params.name,
+    testName: params.testName,
+    answeredCount: params.answeredCount,
+    totalCount: params.totalCount,
+  });
+
+  const text = [
+    t.greeting(params.name),
+    "",
+    t.body(params.testName, params.answeredCount, params.totalCount),
+    "",
+    `${t.cta}: ${APP_URL}/assessment`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+    text,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send draft reminder:", error);
+  } else {
+    console.log("[Email] Draft reminder sent to:", params.to);
   }
 }
 

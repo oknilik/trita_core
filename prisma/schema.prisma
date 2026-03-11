@@ -83,6 +83,9 @@ model AssessmentDraft {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  draftReminderCount     Int       @default(0)
+  lastDraftReminderSentAt DateTime?
+
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
 }
 

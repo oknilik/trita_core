@@ -311,6 +311,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             rawDimensions={props.rawDimensions}
             testType={props.testType}
             feedbackSubmitted={props.feedbackSubmitted}
+            hasObserverFeedback={props.hasObserverFeedback}
             locale={locale}
           />
           </div>
@@ -357,6 +358,7 @@ interface ResultsTabPanelProps {
   rawDimensions: Record<string, number>;
   testType: string;
   feedbackSubmitted: boolean;
+  hasObserverFeedback: boolean;
   locale: Locale;
 }
 
@@ -372,6 +374,7 @@ function ResultsTabPanel({
   rawDimensions,
   testType,
   feedbackSubmitted,
+  hasObserverFeedback,
   locale,
 }: ResultsTabPanelProps) {
   // Highlights are "spectrum high/low" (raw trait intensity), not "best/worst".
@@ -518,7 +521,7 @@ function ResultsTabPanel({
 
       {/* Satisfaction feedback */}
       <FadeIn delay={0.14}>
-        <FeedbackForm initialSubmitted={feedbackSubmitted} />
+        <FeedbackForm initialSubmitted={feedbackSubmitted} hasObserverFeedback={hasObserverFeedback} />
       </FadeIn>
 
       {/* Retake CTA */}

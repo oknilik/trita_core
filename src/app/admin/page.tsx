@@ -8,8 +8,14 @@ import { AdminStatCard } from "@/app/admin/_components/AdminStatCard";
 import { AdminTableSection } from "@/app/admin/_components/AdminTableSection";
 import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
 import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
+import { AdminDraftReminderSection } from "@/app/admin/_components/AdminDraftReminderSection";
+import { AdminPageTabs } from "@/app/admin/_components/AdminPageTabs";
+import { getTestConfig } from "@/lib/questions";
+import type { TestType } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
+
+const RESEARCH_TARGET = 50;
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -33,7 +39,7 @@ export default async function AdminPage() {
   const locale = await getServerLocale();
 
   // Parallel data fetching
-  const [userStats, assessmentStats, invitationStats, feedbackStats, surveyStats] =
+  const [userStats, assessmentStats, invitationStats, feedbackStats, surveyStats, progressStats, demographicsStats] =
     await Promise.all([
       // User metrics
       (async () => {
@@ -116,7 +122,28 @@ export default async function AdminPage() {
           where: { deleted: false, testType: { not: null } },
           orderBy: { _count: { id: "desc" } },
         });
-        return { total, byTestType, observerTotal, byUserTestType };
+        // Observer breakdown by test type (via invitation relation)
+        const [obsHexaco, obsHexacoMod, obsBigFive, avgConfidence, obsByRelationship] =
+          await Promise.all([
+            prisma.observerAssessment.count({ where: { invitation: { testType: "HEXACO" } } }),
+            prisma.observerAssessment.count({ where: { invitation: { testType: "HEXACO_MODIFIED" } } }),
+            prisma.observerAssessment.count({ where: { invitation: { testType: "BIG_FIVE" } } }),
+            prisma.observerAssessment.aggregate({ _avg: { confidence: true } }),
+            prisma.observerAssessment.groupBy({
+              by: ["relationshipType"],
+              _count: { id: true },
+              orderBy: { _count: { id: "desc" } },
+            }),
+          ]);
+        const observerByTestType = [
+          { testType: "HEXACO", count: obsHexaco },
+          { testType: "HEXACO_MODIFIED", count: obsHexacoMod },
+          { testType: "BIG_FIVE", count: obsBigFive },
+        ];
+        const avgObserverConfidence = avgConfidence._avg.confidence
+          ? Math.round(avgConfidence._avg.confidence * 10) / 10
+          : null;
+        return { total, byTestType, observerTotal, byUserTestType, observerByTestType, avgObserverConfidence, obsByRelationship };
       })(),
 
       // Invitation metrics — only live (PENDING + COMPLETED), excluding CANCELED/EXPIRED
@@ -212,10 +239,72 @@ export default async function AdminPage() {
         });
         return { count, byPriorTest, byHas360, avgs };
       })(),
+
+      // Research progress + completion funnel + feature interest
+      (async () => {
+        const [onboardedCount, featureInterest, inviterGroups] = await Promise.all([
+          prisma.userProfile.count({ where: { deleted: false, onboardedAt: { not: null } } }),
+          prisma.featureInterest.groupBy({
+            by: ["featureKey"],
+            _count: { id: true },
+            orderBy: { featureKey: "asc" },
+          }),
+          prisma.observerInvitation.groupBy({
+            by: ["inviterId"],
+            where: { status: "COMPLETED" },
+            _count: { id: true },
+          }),
+        ]);
+        const usersWithTwoPlusObservers = inviterGroups.filter(
+          (g: { _count: { id: number } }) => g._count.id >= 2
+        ).length;
+        return { onboardedCount, featureInterest, usersWithTwoPlusObservers };
+      })(),
+
+      // Demographics
+      (async () => {
+        const [byGender, byEducation, byOccupationStatus, byCountry] = await Promise.all([
+          prisma.userProfile.groupBy({
+            by: ["gender"],
+            _count: { id: true },
+            where: { deleted: false, gender: { not: null } },
+            orderBy: { _count: { id: "desc" } },
+          }),
+          prisma.userProfile.groupBy({
+            by: ["education"],
+            _count: { id: true },
+            where: { deleted: false, education: { not: null } },
+            orderBy: { _count: { id: "desc" } },
+          }),
+          prisma.userProfile.groupBy({
+            by: ["occupationStatus"],
+            _count: { id: true },
+            where: { deleted: false, occupationStatus: { not: null } },
+            orderBy: { _count: { id: "desc" } },
+          }),
+          prisma.userProfile.groupBy({
+            by: ["country"],
+            _count: { id: true },
+            where: { deleted: false, country: { not: null } },
+            orderBy: { _count: { id: "desc" } },
+            take: 10,
+          }),
+        ]);
+        return { byGender, byEducation, byOccupationStatus, byCountry };
+      })(),
     ]);
 
+  // Freeform feedback (latest 15)
+  const freeformFeedbacks = await prisma.satisfactionFeedback.findMany({
+    where: { freeformFeedback: { not: null } },
+    select: { freeformFeedback: true, createdAt: true },
+    orderBy: { createdAt: "desc" },
+    take: 15,
+  });
+
   // Pending reminders (3+ days, email invites only)
-  const pendingReminders = await prisma.observerInvitation.findMany({
+  const [pendingReminders, recentlyCompletedInvitations, incompleteDrafts, recentlyCompletedDrafts] = await Promise.all([
+  prisma.observerInvitation.findMany({
     where: {
       status: "PENDING",
       observerEmail: { not: null },
@@ -232,7 +321,83 @@ export default async function AdminPage() {
       inviter: { select: { username: true, email: true } },
     },
     orderBy: { createdAt: "asc" },
-  });
+  }),
+
+  // Recently completed invitations (completed in last 7 days — show as gray "Már kész")
+  prisma.observerInvitation.findMany({
+    where: {
+      status: "COMPLETED",
+      observerEmail: { not: null },
+      completedAt: { gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+      createdAt: { lt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) },
+    },
+    select: {
+      id: true,
+      observerEmail: true,
+      observerName: true,
+      createdAt: true,
+      reminderCount: true,
+      lastReminderSentAt: true,
+      inviter: { select: { username: true, email: true } },
+    },
+    orderBy: { completedAt: "desc" },
+    take: 5,
+  }),
+
+  // Incomplete drafts (no completed assessment, 1+ day old, user has email)
+  prisma.assessmentDraft.findMany({
+    where: {
+      updatedAt: { lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      userProfile: {
+        deleted: false,
+        email: { not: null },
+        assessmentResults: { none: {} },
+      },
+    },
+    select: {
+      id: true,
+      testType: true,
+      answers: true,
+      currentPage: true,
+      updatedAt: true,
+      draftReminderCount: true,
+      lastDraftReminderSentAt: true,
+      userProfile: { select: { email: true, username: true, locale: true } },
+    },
+    orderBy: { updatedAt: "asc" },
+  }),
+
+  // Recently completed drafts (user finished since last page load — show as gray "Már kész")
+  prisma.assessmentDraft.findMany({
+    where: {
+      updatedAt: { lt: new Date(Date.now() - 24 * 60 * 60 * 1000), gt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      userProfile: {
+        deleted: false,
+        email: { not: null },
+        assessmentResults: { some: {} },
+      },
+    },
+    select: {
+      id: true,
+      testType: true,
+      answers: true,
+      currentPage: true,
+      updatedAt: true,
+      draftReminderCount: true,
+      lastDraftReminderSentAt: true,
+      userProfile: { select: { email: true, username: true, locale: true } },
+    },
+    orderBy: { updatedAt: "desc" },
+    take: 5,
+  }),
+  ]);
+
+  // Question counts per test type (for progress display)
+  const questionCounts: Record<string, number> = {
+    HEXACO: getTestConfig("HEXACO" as TestType).questions.length,
+    HEXACO_MODIFIED: getTestConfig("HEXACO_MODIFIED" as TestType).questions.length,
+    BIG_FIVE: getTestConfig("BIG_FIVE" as TestType).questions.length,
+  };
 
   // Calculate metrics
   const growthRate =
@@ -281,6 +446,25 @@ export default async function AdminPage() {
   const avgSiteUsefulness = feedbackStats.avgScores._avg.siteUsefulness
     ? Math.round(feedbackStats.avgScores._avg.siteUsefulness * 10) / 10
     : null;
+
+  // Research target progress per test type
+  const testTypeOrder = ["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"];
+  const researchProgress = testTypeOrder.map((type) => {
+    const count =
+      assessmentStats.byTestType.find(
+        (t: { testType: string | null; _count: { id: number } }) => t.testType === type
+      )?._count.id ?? 0;
+    return { type, count, pct: Math.min(Math.round((count / RESEARCH_TARGET) * 100), 100) };
+  });
+
+  // Funnel steps
+  const funnelSteps = [
+    { label: "Regisztrált", count: userStats.total },
+    { label: "Onboarded", count: progressStats.onboardedCount },
+    { label: "Teszt kitöltve", count: assessmentStats.total },
+    { label: "Survey kitöltve", count: surveyStats.count },
+    { label: "Van 2+ observer", count: progressStats.usersWithTwoPlusObservers },
+  ];
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50/40 to-white px-4 py-8 md:px-6">
@@ -334,6 +518,152 @@ export default async function AdminPage() {
           </AdminMetricsGrid>
         </FadeIn>
 
+        <AdminPageTabs
+          reminderCount={
+            pendingReminders.filter((inv) => {
+              if (!inv.lastReminderSentAt) return true;
+              return Date.now() - new Date(inv.lastReminderSentAt).getTime() >= 3 * 24 * 60 * 60 * 1000;
+            }).length +
+            incompleteDrafts.filter((d) => {
+              if (!d.lastDraftReminderSentAt) return true;
+              return Date.now() - new Date(d.lastDraftReminderSentAt).getTime() >= 3 * 24 * 60 * 60 * 1000;
+            }).length
+          }
+          remindersContent={
+            <>
+            <AdminDraftReminderSection
+              drafts={[
+                ...incompleteDrafts.map((d) => ({
+                  id: d.id,
+                  email: d.userProfile.email!,
+                  username: d.userProfile.username,
+                  testType: d.testType,
+                  answeredCount: Object.keys(d.answers as Record<string, number>).length,
+                  totalCount: questionCounts[d.testType] ?? 0,
+                  updatedAt: d.updatedAt.toISOString(),
+                  draftReminderCount: d.draftReminderCount,
+                  lastDraftReminderSentAt: d.lastDraftReminderSentAt?.toISOString() ?? null,
+                })),
+                ...recentlyCompletedDrafts.map((d) => ({
+                  id: d.id,
+                  email: d.userProfile.email!,
+                  username: d.userProfile.username,
+                  testType: d.testType,
+                  answeredCount: Object.keys(d.answers as Record<string, number>).length,
+                  totalCount: questionCounts[d.testType] ?? 0,
+                  updatedAt: d.updatedAt.toISOString(),
+                  draftReminderCount: d.draftReminderCount,
+                  lastDraftReminderSentAt: d.lastDraftReminderSentAt?.toISOString() ?? null,
+                  completedMeanwhile: true as const,
+                })),
+              ]}
+            />
+            <AdminReminderSection
+              invitations={[
+                ...pendingReminders.map((inv) => ({
+                  id: inv.id,
+                  observerEmail: inv.observerEmail!,
+                  observerName: inv.observerName,
+                  createdAt: inv.createdAt.toISOString(),
+                  reminderCount: inv.reminderCount,
+                  lastReminderSentAt: inv.lastReminderSentAt?.toISOString() ?? null,
+                  inviter: {
+                    username: inv.inviter.username,
+                    email: inv.inviter.email ?? "",
+                  },
+                })),
+                ...recentlyCompletedInvitations.map((inv) => ({
+                  id: inv.id,
+                  observerEmail: inv.observerEmail!,
+                  observerName: inv.observerName,
+                  createdAt: inv.createdAt.toISOString(),
+                  reminderCount: inv.reminderCount,
+                  lastReminderSentAt: inv.lastReminderSentAt?.toISOString() ?? null,
+                  inviter: {
+                    username: inv.inviter.username,
+                    email: inv.inviter.email ?? "",
+                  },
+                  completedMeanwhile: true as const,
+                })),
+              ]}
+            />
+            </>
+          }
+          overviewContent={
+            <>
+        {/* Research Target Progress */}
+        <FadeIn delay={0.15}>
+          <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Kutatási célszámok</h2>
+              <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
+                Cél: {RESEARCH_TARGET} / teszttípus
+              </span>
+            </div>
+            <div className="space-y-5">
+              {researchProgress.map(({ type, count, pct }) => (
+                <div key={type}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-semibold text-gray-700">{type}</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {count} / {RESEARCH_TARGET}
+                      <span className="ml-2 text-xs font-normal text-gray-400">({pct}%)</span>
+                    </span>
+                  </div>
+                  <div className="h-3 w-full rounded-full bg-gray-100 overflow-hidden">
+                    <div
+                      className="h-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Completion Funnel */}
+        <FadeIn delay={0.18}>
+          <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Completion funnel</h2>
+            <div className="flex flex-col gap-2 md:flex-row md:items-end md:gap-0">
+              {funnelSteps.map((step, i) => {
+                const pct = funnelSteps[0].count > 0
+                  ? Math.round((step.count / funnelSteps[0].count) * 100)
+                  : 0;
+                const isLast = i === funnelSteps.length - 1;
+                return (
+                  <div key={step.label} className="flex flex-1 flex-col items-center gap-1">
+                    <span className="text-xs font-semibold text-gray-500 text-center">{step.label}</span>
+                    <span className="text-2xl font-bold text-gray-900">{step.count}</span>
+                    <span className="text-xs text-gray-400">{pct}%</span>
+                    {!isLast && (
+                      <span className="hidden md:block text-gray-300 text-xl self-center mt-1">→</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {/* Drop-off bars */}
+            <div className="mt-4 grid grid-cols-1 gap-1 md:grid-cols-5">
+              {funnelSteps.map((step, i) => {
+                const pct = funnelSteps[0].count > 0
+                  ? Math.round((step.count / funnelSteps[0].count) * 100)
+                  : 0;
+                const colors = ["#6366F1", "#8B5CF6", "#A78BFA", "#10B981", "#0EA5E9"];
+                return (
+                  <div key={step.label} className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+                    <div
+                      className="h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, backgroundColor: colors[i] }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </FadeIn>
+
         {/* Test Type Breakdown */}
         <FadeIn delay={0.2}>
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -351,6 +681,30 @@ export default async function AdminPage() {
               description="Users assigned per test type"
               rows={assessmentStats.byUserTestType.map((item: { testType: string | null; _count: { id: number } }) => ({
                 label: item.testType ?? "Unknown",
+                value: item._count.id,
+                color: "#6366F1",
+              }))}
+            />
+          </div>
+        </FadeIn>
+
+        {/* Observer breakdown by test type + relationship */}
+        <FadeIn delay={0.25}>
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <AdminTableSection
+              title="Observer kitöltések teszttípusonként"
+              description={`Összes: ${assessmentStats.observerTotal}${assessmentStats.avgObserverConfidence !== null ? ` · Átlag konfidencia: ${assessmentStats.avgObserverConfidence}/5` : ""}`}
+              rows={assessmentStats.observerByTestType.map((item: { testType: string; count: number }) => ({
+                label: item.testType,
+                value: item.count,
+                color: "#10B981",
+              }))}
+            />
+            <AdminTableSection
+              title="Observer kapcsolat típusa"
+              description="Kapcsolat megoszlása az observer kitöltők között"
+              rows={assessmentStats.obsByRelationship.map((item: { relationshipType: string; _count: { id: number } }) => ({
+                label: item.relationshipType,
                 value: item._count.id,
                 color: "#6366F1",
               }))}
@@ -377,6 +731,68 @@ export default async function AdminPage() {
               };
             })}
           />
+        </FadeIn>
+
+        {/* Demographics */}
+        <FadeIn delay={0.32}>
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <AdminTableSection
+              title="Nem megoszlása"
+              description={`${demographicsStats.byGender.reduce((s: number, g: { _count: { id: number } }) => s + g._count.id, 0)} kitöltő adott meg nemet`}
+              rows={demographicsStats.byGender.map((item: { gender: string | null; _count: { id: number } }) => ({
+                label: item.gender ?? "–",
+                value: item._count.id,
+                color: "#8B5CF6",
+              }))}
+            />
+            <AdminTableSection
+              title="Iskolai végzettség"
+              description="Onboarding-ban megadott végzettség"
+              rows={demographicsStats.byEducation.map((item: { education: string | null; _count: { id: number } }) => ({
+                label: item.education ?? "–",
+                value: item._count.id,
+                color: "#6366F1",
+              }))}
+            />
+            <AdminTableSection
+              title="Foglalkozási státusz"
+              description="Munkavégzési státusz megoszlása"
+              rows={demographicsStats.byOccupationStatus.map((item: { occupationStatus: string | null; _count: { id: number } }) => ({
+                label: item.occupationStatus ?? "–",
+                value: item._count.id,
+                color: "#F59E0B",
+              }))}
+            />
+            <AdminTableSection
+              title="Top 10 ország"
+              description="Legtöbb kitöltő szerint"
+              rows={demographicsStats.byCountry.map((item: { country: string | null; _count: { id: number } }) => ({
+                label: item.country ?? "–",
+                value: item._count.id,
+                color: "#10B981",
+              }))}
+            />
+          </div>
+        </FadeIn>
+
+        {/* Feature interest (fake door) */}
+        <FadeIn delay={0.34}>
+          <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Feature interest (fake door)</h2>
+            {progressStats.featureInterest.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {progressStats.featureInterest.map((item: { featureKey: string; _count: { id: number } }) => (
+                  <div key={item.featureKey} className="rounded-lg border border-indigo-100 bg-indigo-50 p-4">
+                    <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{item.featureKey}</p>
+                    <p className="mt-2 text-3xl font-bold text-gray-900">{item._count.id}</p>
+                    <p className="text-xs text-gray-400 mt-1">érdeklődő</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">Még nincs adat.</p>
+            )}
+          </div>
         </FadeIn>
 
         {/* Research Survey Stats */}
@@ -585,26 +1001,30 @@ export default async function AdminPage() {
                 </div>
               </div>
             </div>
+
+            {/* Freeform feedback */}
+            {freeformFeedbacks.length > 0 && (
+              <div className="mt-8">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  Szöveges visszajelzések (legutóbbi {freeformFeedbacks.length})
+                </h3>
+                <div className="space-y-3">
+                  {freeformFeedbacks.map((fb: { freeformFeedback: string | null; createdAt: Date }, i: number) => (
+                    <div key={i} className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3">
+                      <p className="text-sm text-gray-700">{fb.freeformFeedback}</p>
+                      <p className="mt-1 text-xs text-gray-400">
+                        {fb.createdAt.toLocaleDateString("hu-HU")}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </FadeIn>
-
-        {/* Reminder Section */}
-        <FadeIn delay={0.6}>
-          <AdminReminderSection
-            invitations={pendingReminders.map((inv) => ({
-              id: inv.id,
-              observerEmail: inv.observerEmail!,
-              observerName: inv.observerName,
-              createdAt: inv.createdAt.toISOString(),
-              reminderCount: inv.reminderCount,
-              lastReminderSentAt: inv.lastReminderSentAt?.toISOString() ?? null,
-              inviter: {
-                username: inv.inviter.username,
-                email: inv.inviter.email ?? "",
-              },
-            }))}
-          />
-        </FadeIn>
+            </>
+          }
+        />
       </div>
     </main>
   );
