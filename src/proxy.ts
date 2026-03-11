@@ -7,12 +7,14 @@ const isProtectedRoute = createRouteMatcher([
   "/assessment(.*)",
   "/dashboard(.*)",
   "/profile(.*)",
-  "/coach(.*)",
+  "/manager(.*)",
 ]);
 
 // Public pages (no auth required)
 const isPublicRoute = createRouteMatcher([
   "/observe(.*)",
+  "/share(.*)",
+  "/apply(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
 ]);

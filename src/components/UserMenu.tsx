@@ -21,6 +21,7 @@ export function UserMenu() {
     }
     return null;
   });
+  const [isCoach, setIsCoach] = useState(false);
 
   // Fetch user profile name from database
   const fetchProfile = useCallback(async () => {
@@ -37,6 +38,7 @@ export function UserMenu() {
           setProfileName(null);
           window.localStorage.removeItem("trita_username");
         }
+        setIsCoach(data.role === "MANAGER");
       }
     } catch {
       // Silently fail, fallback to Clerk data
@@ -174,7 +176,7 @@ export function UserMenu() {
                       {user?.primaryEmailAddress?.emailAddress}
                     </p>
                     <p className="mt-1 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-100">
-                      {t("userMenu.participant", locale)}
+                      {isCoach ? t("userMenu.coach", locale) : t("userMenu.participant", locale)}
                     </p>
                   </div>
                 </div>
@@ -212,6 +214,58 @@ export function UserMenu() {
                   </svg>
                   {t("userMenu.research", locale)}
                 </Link>
+
+                <div className="h-px bg-gray-100" />
+                {isCoach ? (
+                  <>
+                    <Link
+                      href="/manager"
+                      className={itemClass(pathname.startsWith("/manager"))}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
+                        <path d="M14.5 9.5l1.5 1.5 3-3" />
+                      </svg>
+                      {t("userMenu.coachDashboard", locale)}
+                    </Link>
+                    <Link
+                      href="/team"
+                      className={itemClass(pathname.startsWith("/team"))}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M13 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM7 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                        <path d="M1.5 17.5c0-2.21 2.46-4 5.5-4 .8 0 1.55.14 2.22.38M10.5 17.5c0-2.21 2.46-4 5.5-4s5.5 1.79 5.5 4" />
+                      </svg>
+                      {t("userMenu.teams", locale)}
+                    </Link>
+                    <Link
+                      href="/manager/candidates"
+                      className={itemClass(pathname.startsWith("/manager/candidates"))}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 2.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" />
+                        <path d="M3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
+                        <path d="M15.5 8l1.5 1.5 2.5-2.5" />
+                      </svg>
+                      {locale === "en" ? "Candidates" : locale === "de" ? "Kandidaten" : "Jelöltek"}
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    href="/become-coach"
+                    className={itemClass(pathname.startsWith("/become-coach"))}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
+                      <path d="M16 13v4M14 15h4" />
+                    </svg>
+                    {t("userMenu.becomeCoach", locale)}
+                  </Link>
+                )}
 
                 <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">

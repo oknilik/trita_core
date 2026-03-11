@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     const fallbackEmail = user.email_addresses?.[0]?.email_address;
     const email = primaryEmail ?? fallbackEmail ?? null;
 
-    await prisma.userProfile.upsert({
+    const upserted = await prisma.userProfile.upsert({
       where: { clerkId: user.id },
       create: {
         clerkId: user.id,
@@ -91,7 +91,31 @@ export async function POST(req: Request) {
         email,
         ...(user.username ? { username: user.username } : {}),
       },
+      select: { id: true },
     });
+
+    // Fulfill any pending team invites for this email (new user registration)
+    if (event.type === "user.created" && email) {
+      const pendingInvites = await prisma.teamPendingInvite.findMany({
+        where: { email: { equals: email, mode: "insensitive" } },
+        select: { id: true, teamId: true },
+      });
+      if (pendingInvites.length > 0) {
+        await prisma.$transaction([
+          ...pendingInvites.map((invite) =>
+            prisma.teamMember.upsert({
+              where: { teamId_userId: { teamId: invite.teamId, userId: upserted.id } },
+              create: { teamId: invite.teamId, userId: upserted.id },
+              update: {},
+            })
+          ),
+          prisma.teamPendingInvite.deleteMany({
+            where: { email: { equals: email, mode: "insensitive" } },
+          }),
+        ]);
+        console.log(`[Webhook] Fulfilled ${pendingInvites.length} pending team invite(s) for ${email}`);
+      }
+    }
   }
 
   if (event.type === "user.deleted") {

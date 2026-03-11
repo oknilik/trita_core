@@ -15,9 +15,9 @@ export const getResend = () => {
 
 // For backwards compatibility, export as resend
 export const resend = new Proxy({} as Resend, {
-  get: (target, prop) => {
+  get: (_target, prop) => {
     const instance = getResend();
-    return (instance as any)[prop];
+    return instance[prop as keyof Resend];
   }
 });
 

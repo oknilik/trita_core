@@ -15,8 +15,8 @@ export function NavBar() {
   const pathname = usePathname();
   const { isSignedIn } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!isSignedIn) setDrawerOpen(false);
   }, [isSignedIn]);
 

@@ -12,7 +12,7 @@ const schema = z.object({
   maxClientSlots: z.number().int().min(1).max(100).optional().default(10),
 }).strict();
 
-// POST /api/admin/promote-coach — promote a user to COACH role
+// POST /api/admin/promote-coach — promote a user to MANAGER role
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return new NextResponse("Unauthorized", { status: 401 });
@@ -43,14 +43,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
   }
 
-  if (profile.role === "COACH") {
-    return NextResponse.json({ error: "ALREADY_COACH", userId: profile.id }, { status: 400 });
+  if (profile.role === "MANAGER") {
+    return NextResponse.json({ error: "ALREADY_MANAGER", userId: profile.id }, { status: 400 });
   }
 
   await prisma.$transaction([
     prisma.userProfile.update({
       where: { id: profile.id },
-      data: { role: "COACH" },
+      data: { role: "MANAGER" },
     }),
     prisma.coachProfile.upsert({
       where: { userProfileId: profile.id },

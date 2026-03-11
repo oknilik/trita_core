@@ -11,6 +11,9 @@
  *   --email <email>       Felhasználó email (kötelező)
  *   --type  <type>        HEXACO | HEXACO_MODIFIED | BIG_FIVE  (alapértelmezett: HEXACO)
  *   --observers <n>       Observer válaszok száma (alapértelmezett: 0)
+ *   --candidates <n>      Candidate (jelölt) assessmentek száma (alapértelmezett: 0)
+ *   --team-id <id>        Team ID amelyhez a jelöltek kapcsolódnak (opcionális)
+ *   --hexaco <values>     Fix HEXACO dimenziók (pl.: H=70,E=40,X=60,A=55,C=80,O=35)
  *   --clean               Törli az összes meglévő assessment eredményt a userhez
  *   --help                Súgó
  */
@@ -101,12 +104,79 @@ type ScoreJSON = {
   questionCount: number;
 };
 
-function generateHexacoScores(): ScoreJSON {
+type HexacoDimensions = Record<"H" | "E" | "X" | "A" | "C" | "O", number>;
+
+const HEXACO_DIM_CODES = ["H", "E", "X", "A", "C", "O"] as const;
+
+function clampScore(score: number): number {
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function parseHexacoDimensions(raw: string): HexacoDimensions {
+  const trimmed = raw.trim();
+  const result: Partial<HexacoDimensions> = {};
+
+  if (trimmed.startsWith("{")) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      throw new Error("A --hexaco JSON formátuma hibás.");
+    }
+    if (!parsed || typeof parsed !== "object") {
+      throw new Error("A --hexaco JSON formátuma hibás.");
+    }
+    for (const [k, v] of Object.entries(parsed as Record<string, unknown>)) {
+      const key = k.trim().toUpperCase();
+      if (!HEXACO_DIM_CODES.includes(key as (typeof HEXACO_DIM_CODES)[number])) continue;
+      if (typeof v !== "number" || !Number.isFinite(v)) {
+        throw new Error(`A --hexaco dimenzió értéke szám kell legyen: ${key}`);
+      }
+      result[key as keyof HexacoDimensions] = clampScore(v);
+    }
+  } else {
+    const pairs = trimmed.split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+    for (const pair of pairs) {
+      const match = pair.match(/^([A-Za-z])\s*[:=]\s*(-?\d+(?:\.\d+)?)$/);
+      if (!match) {
+        throw new Error(`Érvénytelen --hexaco elem: "${pair}". Várt formátum pl. H=70`);
+      }
+      const key = match[1].toUpperCase();
+      const value = Number.parseFloat(match[2]);
+      if (!HEXACO_DIM_CODES.includes(key as (typeof HEXACO_DIM_CODES)[number])) {
+        throw new Error(`Ismeretlen HEXACO dimenzió: ${key}`);
+      }
+      if (!Number.isFinite(value)) {
+        throw new Error(`Érvénytelen szám: ${pair}`);
+      }
+      result[key as keyof HexacoDimensions] = clampScore(value);
+    }
+  }
+
+  for (const dim of HEXACO_DIM_CODES) {
+    if (result[dim] === undefined) {
+      throw new Error(`A --hexaco paraméterből hiányzik a(z) ${dim} dimenzió.`);
+    }
+  }
+
+  return result as HexacoDimensions;
+}
+
+function generateHexacoScores(opts?: {
+  fixedDimensions?: HexacoDimensions;
+  aroundBaseVariance?: number;
+}): ScoreJSON {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
 
   for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
-    const base = rand(22, 83);
+    const fixed = opts?.fixedDimensions?.[dim as keyof HexacoDimensions];
+    const variance = opts?.aroundBaseVariance ?? 0;
+    const base = fixed === undefined
+      ? rand(22, 83)
+      : variance > 0
+        ? nearbyScore(fixed, variance)
+        : clampScore(fixed);
     dimensions[dim] = base;
     facets[dim] = {};
     for (const facet of facetList) {
@@ -133,8 +203,18 @@ function generateBig5Scores(): ScoreJSON {
   return { type: "likert", dimensions, aspects, answers: [], questionCount: 100 };
 }
 
-function generateScores(testType: TestType): ScoreJSON {
-  return testType === "BIG_FIVE" ? generateBig5Scores() : generateHexacoScores();
+function generateScores(
+  testType: TestType,
+  opts?: {
+    fixedHexacoDimensions?: HexacoDimensions;
+    hexacoAroundBaseVariance?: number;
+  }
+): ScoreJSON {
+  if (testType === "BIG_FIVE") return generateBig5Scores();
+  return generateHexacoScores({
+    fixedDimensions: opts?.fixedHexacoDimensions,
+    aroundBaseVariance: opts?.hexacoAroundBaseVariance,
+  });
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -145,6 +225,19 @@ function pick<T>(arr: T[]): T {
 
 const RELATIONSHIPS: RelationshipType[] = ["FRIEND", "COLLEAGUE", "FAMILY", "PARTNER", "OTHER"];
 const DURATIONS = ["LT_1", "1_3", "3_5", "5P"];
+
+const FAKE_CANDIDATES: { name: string; email: string; position: string }[] = [
+  { name: "Kovács Péter",    email: "kovacs.peter@seed.test",    position: "Frontend fejlesztő" },
+  { name: "Nagy Eszter",     email: "nagy.eszter@seed.test",     position: "Termékmenedzser" },
+  { name: "Szabó Dávid",    email: "szabo.david@seed.test",     position: "Backend fejlesztő" },
+  { name: "Tóth Réka",      email: "toth.reka@seed.test",       position: "UX designer" },
+  { name: "Horváth Balázs", email: "horvath.balazs@seed.test",  position: "DevOps mérnök" },
+  { name: "Varga Anna",     email: "varga.anna@seed.test",      position: "Értékesítési vezető" },
+  { name: "Kiss Gábor",     email: "kiss.gabor@seed.test",      position: "Adatelemző" },
+  { name: "Fekete Zsófia",  email: "fekete.zsofia@seed.test",   position: "Marketingmenedzser" },
+  { name: "Balogh Tamás",   email: "balogh.tamas@seed.test",    position: "Ügyfélsikermenedzser" },
+  { name: "Molnár Lilla",   email: "molnar.lilla@seed.test",    position: "HR specialista" },
+];
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -162,6 +255,9 @@ Opciók:
   --email <email>       Felhasználó email (kötelező)
   --type <type>         HEXACO | HEXACO_MODIFIED | BIG_FIVE  (alapért.: HEXACO)
   --observers <n>       Observer válaszok száma  (alapért.: 0)
+  --candidates <n>      Jelölt (candidate) assessmentek száma  (alapért.: 0)
+  --team-id <id>        Team ID amelyhez a jelöltek kapcsolódnak  (opcionális)
+  --hexaco <values>     Fix HEXACO dimenziók (pl. H=70,E=40,X=60,A=55,C=80,O=35)
   --clean               Törli az összes korábbi assessment eredményt
   --help                Ez a súgó
 
@@ -169,6 +265,9 @@ Példák:
   pnpm seed:assessment --email me@example.com
   pnpm seed:assessment --email me@example.com --type BIG_FIVE --observers 4
   pnpm seed:assessment --email me@example.com --clean --observers 2
+  pnpm seed:assessment --email me@example.com --type HEXACO --hexaco H=70,E=40,X=60,A=55,C=80,O=35
+  pnpm seed:assessment --email me@example.com --candidates 5
+  pnpm seed:assessment --email me@example.com --candidates 3 --team-id clxyz123 --hexaco H=70,E=40,X=60,A=55,C=80,O=35
 `);
     return;
   }
@@ -187,7 +286,24 @@ Példák:
   }
 
   const observerCount = Math.max(0, parseInt(args.observers ?? "0", 10) || 0);
+  const candidateCount = Math.max(0, parseInt(args.candidates ?? "0", 10) || 0);
+  const teamId = args["team-id"] ?? null;
   const clean = "clean" in args;
+  const hexacoInput = args.hexaco;
+
+  let fixedHexaco: HexacoDimensions | undefined;
+  if (hexacoInput) {
+    if (testType === "BIG_FIVE") {
+      console.error("❌  --hexaco csak HEXACO / HEXACO_MODIFIED típusnál használható");
+      process.exit(1);
+    }
+    try {
+      fixedHexaco = parseHexacoDimensions(hexacoInput);
+    } catch (error) {
+      console.error(`❌  Hibás --hexaco paraméter: ${(error as Error).message}`);
+      process.exit(1);
+    }
+  }
 
   const prisma = new PrismaClient();
 
@@ -259,7 +375,10 @@ Példák:
     }
 
     // ── Self assessment ─────────────────────────────────────────────────────
-    const selfScores = generateScores(testType);
+    const selfScores = generateScores(testType, {
+      fixedHexacoDimensions: fixedHexaco,
+      hexacoAroundBaseVariance: 0,
+    });
     const result = await prisma.assessmentResult.create({
       data: {
         userProfileId: profile.id,
@@ -270,6 +389,9 @@ Példák:
     });
     console.log(`✅  AssessmentResult létrehozva: ${result.id}`);
     console.log(`    Dimenziók: ${JSON.stringify(selfScores.dimensions)}`);
+    if (fixedHexaco) {
+      console.log("    (Fix HEXACO bemenet alapján generálva)");
+    }
 
     // Always sync profile.testType to match the new result
     if (profile.testType !== testType) {
@@ -296,7 +418,13 @@ Példák:
           },
         });
 
-        const obsScores = generateScores(testType);
+        const obsScores = generateScores(testType, fixedHexaco
+          ? {
+              fixedHexacoDimensions: fixedHexaco,
+              hexacoAroundBaseVariance: 15,
+            }
+          : undefined
+        );
         await prisma.observerAssessment.create({
           data: {
             invitationId: invitation.id,
@@ -311,12 +439,64 @@ Példák:
       }
     }
 
+    // ── Candidate assessments ───────────────────────────────────────────────
+    if (candidateCount > 0) {
+      console.log(`\n🧑‍💼  Jelölt assessmentek generálása: ${candidateCount} db`);
+
+      if (teamId) {
+        const team = await prisma.team.findUnique({ where: { id: teamId }, select: { id: true, name: true } });
+        if (!team) {
+          console.warn(`⚠️   Team nem található: ${teamId} — jelöltek team nélkül generálódnak`);
+        } else {
+          console.log(`    Team: ${team.name} (${team.id})`);
+        }
+      }
+
+      for (let i = 0; i < candidateCount; i++) {
+        const fake = FAKE_CANDIDATES[i % FAKE_CANDIDATES.length];
+        const candidateTestType = "HEXACO" as const;
+
+        const invite = await prisma.candidateInvite.create({
+          data: {
+            managerId: profile.id,
+            ...(teamId ? { teamId } : {}),
+            email: fake.email,
+            name: fake.name,
+            position: fake.position,
+            status: "COMPLETED",
+            testType: candidateTestType,
+            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            completedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          },
+        });
+
+        const candidateScores = generateHexacoScores(
+          fixedHexaco
+            ? { fixedDimensions: fixedHexaco, aroundBaseVariance: 20 }
+            : undefined
+        );
+
+        await prisma.candidateResult.create({
+          data: {
+            inviteId: invite.id,
+            testType: candidateTestType,
+            scores: candidateScores as object,
+          },
+        });
+
+        console.log(`   ✅  Jelölt ${i + 1}: ${fake.name} (${fake.position})  dims: ${JSON.stringify(candidateScores.dimensions)}`);
+      }
+    }
+
     // ── Done ────────────────────────────────────────────────────────────────
     console.log(`\n🎉  Kész! Nyisd meg: http://localhost:3000/dashboard`);
     if (observerCount >= 2) {
       console.log(`    (${observerCount} observer van → az összehasonlítás tab aktív lesz)`);
     } else if (observerCount === 1) {
       console.log(`    (1 observer van → az összehasonlítás tab 2 válasz alatt zárolt)`);
+    }
+    if (candidateCount > 0) {
+      console.log(`    Jelöltek: http://localhost:3000/manager/candidates`);
     }
   } finally {
     await prisma.$disconnect();

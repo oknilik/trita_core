@@ -35,7 +35,7 @@ enum InvitationStatus {
 
 enum UserRole {
   INDIVIDUAL
-  COACH
+  MANAGER
   ORG_ADMIN
   ORG_MEMBER
 }
@@ -84,7 +84,7 @@ model UserProfile {
   testTypeAssignedAt DateTime?
   consentedAt        DateTime?
 
-  // Role (default: INDIVIDUAL, set to COACH for coach accounts)
+  // Role (default: INDIVIDUAL, set to MANAGER for manager accounts)
   role      UserRole @default(INDIVIDUAL)
 
   assessmentResults    AssessmentResult[]
@@ -95,12 +95,20 @@ model UserProfile {
   researchSurvey       ResearchSurvey?
   featureInterests     FeatureInterest[]
 
-  // Coach layer
+  // Manager layer
   coachProfile              CoachProfile?
-  coachClientRelationships  CoachClientRelationship[] @relation("CoachRelationships")
-  clientCoachRelationships  CoachClientRelationship[] @relation("ClientRelationships")
-  generatedOutputsAsCoach   GeneratedOutput[]         @relation("CoachOutputs")
-  generatedOutputsAsClient  GeneratedOutput[]         @relation("ClientOutputs")
+  managerRelationships      ManagerClientRelationship[] @relation("ManagerRelationships")
+  clientRelationships       ManagerClientRelationship[] @relation("ClientRelationships")
+  generatedOutputsAsManager GeneratedOutput[]           @relation("ManagerOutputs")
+  generatedOutputsAsClient  GeneratedOutput[]           @relation("ClientOutputs")
+  coachApplications         CoachApplication[]
+
+  // Team layer (KKV)
+  ownedTeams       Team[]       @relation("TeamOwner")
+  teamMemberships  TeamMember[]
+
+  // Candidate hiring layer
+  managedCandidates CandidateInvite[] @relation("ManagedCandidates")
 }
 
 model AssessmentDraft {
@@ -250,10 +258,10 @@ model FeatureInterest {
 }
 
 // ============================================
-// COACH LAYER
+// MANAGER LAYER
 // ============================================
 
-// Extended profile for coach accounts
+// Extended profile for manager accounts
 model CoachProfile {
   id            String   @id @default(cuid())
   userProfileId String   @unique
@@ -267,54 +275,162 @@ model CoachProfile {
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
 }
 
-// Coach ↔ Client relationship
-model CoachClientRelationship {
+// Manager ↔ Client relationship
+model ManagerClientRelationship {
   id        String                  @id @default(cuid())
-  coachId   String
+  managerId String
   clientId  String
   status    CoachRelationshipStatus @default(ACTIVE)
   startedAt DateTime                @default(now())
   endedAt   DateTime?
 
-  coach  UserProfile @relation("CoachRelationships", fields: [coachId], references: [id])
-  client UserProfile @relation("ClientRelationships", fields: [clientId], references: [id])
+  manager UserProfile @relation("ManagerRelationships", fields: [managerId], references: [id])
+  client  UserProfile @relation("ClientRelationships", fields: [clientId], references: [id])
 
-  @@unique([coachId, clientId])
-  @@index([coachId])
+  @@unique([managerId, clientId])
+  @@index([managerId])
   @@index([clientId])
 }
 
 // Seed-elt intervenció blokkok dimenzió tartományokhoz
-// Ezekből épül a coach recommendation engine
+// Ezekből épül a manager recommendation engine
 model RecommendationBlock {
   id            String    @id @default(cuid())
   dimensionCode String    // "H" | "E" | "X" | "A" | "C" | "O" | "N"
+  facetCode     String?   // null = dimenzió szintű; "sincerity", "fairness", stb. = facet szintű
   scoreRange    ScoreRange
   deltaFlag     String?   // "SELF_HIGH_OBS_LOW" | "SELF_LOW_OBS_HIGH" | "ALIGNED" | null
   testType      String    @default("ALL") // "HEXACO" | "BIG_FIVE" | "ALL"
   locale        String    @default("hu")  // "hu" | "en" | "de"
-  content       Json      // { title: string, bullets: string[], deepDive: string, actionItems: string[] }
+  content       Json      // { body: string } — coaching snippet
   createdAt     DateTime  @default(now())
 
-  @@index([dimensionCode, scoreRange])
+  @@index([dimensionCode, facetCode, scoreRange])
   @@index([locale])
 }
 
-// Cache-elt AI-generált coach output-ok
-// cacheKey = testType:H-h:E-m:X-l:...:delta-H+2:...
+// Cache-elt AI-generált manager output-ok
+// cacheKey = locale:testType:H-h:E-m:X-l:...:delta-H+2:...
+// managerId / clientId null = pre-generált template output (nincs konkrét manager/client)
 model GeneratedOutput {
   id        String   @id @default(cuid())
-  coachId   String
-  clientId  String
-  cacheKey  String   @unique // determinisztikus kulcs a profil kombinációból
-  content   String   // markdown szöveg
-  model     String   @default("claude-sonnet-4-6")
-  hitCount  Int      @default(0)
+  managerId String?
+  clientId  String?
+  cacheKey     String   @unique // determinisztikus kulcs: locale + profil kombináció
+  content      String   // markdown szöveg
+  model        String   @default("claude-opus-4-6")
+  qualityScore Int?     // audit score (0-100) a generáláskor
+  hitCount     Int      @default(0)
   createdAt DateTime @default(now())
 
-  coach  UserProfile @relation("CoachOutputs", fields: [coachId], references: [id])
-  client UserProfile @relation("ClientOutputs", fields: [clientId], references: [id])
+  shareToken String?  @unique // opcionális publikus megosztási token
 
-  @@index([coachId])
+  manager UserProfile? @relation("ManagerOutputs", fields: [managerId], references: [id])
+  client  UserProfile? @relation("ClientOutputs", fields: [clientId], references: [id])
+
+  @@index([managerId])
   @@index([clientId])
+}
+
+// Manager application — submitted via /become-coach page, reviewed by admin
+model CoachApplication {
+  id              String    @id @default(cuid())
+  email           String
+  name            String
+  background      String
+  motivation      String
+  specializations String?
+  status          String    @default("PENDING") // PENDING | APPROVED | REJECTED
+  reviewNote      String?
+  createdAt       DateTime  @default(now())
+  reviewedAt      DateTime?
+
+  userProfileId String?
+  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([status])
+}
+
+// ============================================
+// TEAM LAYER (KKV)
+// ============================================
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
+  members          TeamMember[]
+  pendingInvites   TeamPendingInvite[]
+  candidateInvites CandidateInvite[]
+
+  @@index([ownerId])
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     String   @default("member") // "member" | "admin"
+  joinedAt DateTime @default(now())
+
+  team Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user UserProfile @relation(fields: [userId], references: [id])
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+// Pending team invites for users who haven't registered yet
+model TeamPendingInvite {
+  id        String   @id @default(cuid())
+  teamId    String
+  email     String
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, email])
+  @@index([email])
+}
+
+// ============================================
+// CANDIDATE / HIRING LAYER
+// ============================================
+
+model CandidateInvite {
+  id          String    @id @default(cuid())
+  token       String    @unique @default(cuid())
+  managerId   String
+  teamId      String?
+  email       String?
+  name        String?
+  position    String?
+  status      String    @default("PENDING")   // PENDING | COMPLETED | EXPIRED
+  testType    String    @default("HEXACO")
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  manager UserProfile      @relation("ManagedCandidates", fields: [managerId], references: [id])
+  team    Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  result  CandidateResult?
+
+  @@index([managerId])
+  @@index([token])
+  @@index([teamId])
+}
+
+model CandidateResult {
+  id        String   @id @default(cuid())
+  inviteId  String   @unique
+  testType  String
+  scores    Json
+  createdAt DateTime @default(now())
+
+  invite CandidateInvite @relation(fields: [inviteId], references: [id])
 }

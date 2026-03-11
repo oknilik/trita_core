@@ -10,7 +10,14 @@
     "type-check": "tsc --noEmit",
     "check": "pnpm type-check && pnpm lint",
     "postinstall": "prisma generate",
-    "seed:assessment": "npx tsx scripts/seed-assessment.ts"
+    "seed:assessment": "npx tsx scripts/seed-assessment.ts",
+    "seed:blocks": "npx tsx scripts/seed-recommendation-blocks.ts",
+    "pregen:outputs": "npx tsx scripts/pre-generate-outputs.ts",
+    "pregen:outputs:haiku3": "npx tsx scripts/pre-generate-outputs.ts --provider anthropic --model claude-3-haiku-20240307 --concurrency 4",
+    "pregen:outputs:haiku3:quality": "npx tsx scripts/pre-generate-outputs.ts --provider anthropic --model claude-3-haiku-20240307 --rewrite-model claude-3-haiku-20240307 --rewrite-max-attempts 1 --min-quality-score 80 --concurrency 4",
+    "pregen:outputs:fast": "npx tsx scripts/pre-generate-outputs.ts --provider openai --model gpt-4.1-mini --concurrency 8",
+    "audit:outputs": "npx tsx scripts/audit-generated-outputs.ts",
+    "audit:outputs:hu": "npx tsx scripts/audit-generated-outputs.ts --locale hu --test-type HEXACO --limit 200 --min-score 78"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

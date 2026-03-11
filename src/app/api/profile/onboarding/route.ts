@@ -81,6 +81,7 @@ export async function GET() {
       studyLevel: true,
       unemploymentDuration: true,
       country: true,
+      role: true,
     },
   });
 

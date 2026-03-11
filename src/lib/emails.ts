@@ -711,6 +711,77 @@ function buildMagicLinkHtml(params: {
   });
 }
 
+export async function sendCoachApplicationNotification(params: {
+  applicantName: string;
+  applicantEmail: string;
+  background: string;
+  motivation: string;
+  specializations?: string | null;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL ?? "kilinkod@gmail.com";
+
+  const rows = [
+    ["Név", params.applicantName],
+    ["Email", params.applicantEmail],
+    ["Szakterületek", params.specializations ?? "–"],
+  ]
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:6px 12px 6px 0;font-size:13px;font-weight:600;color:#374151;white-space:nowrap;vertical-align:top">${label}:</td><td style="padding:6px 0;font-size:13px;color:#374151">${escapeHtml(String(value))}</td></tr>`
+    )
+    .join("");
+
+  const bodyContent = `
+    <p style="font-size:15px;font-weight:600;color:#1e1b4b;margin:0 0 16px">
+      Új coach jelentkezés érkezett
+    </p>
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 20px">
+      ${rows}
+    </table>
+    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#6b7280;margin:0 0 6px">Szakmai háttér</p>
+    <p style="font-size:13px;color:#374151;line-height:1.6;margin:0 0 16px;white-space:pre-line">${escapeHtml(params.background)}</p>
+    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#6b7280;margin:0 0 6px">Motiváció</p>
+    <p style="font-size:13px;color:#374151;line-height:1.6;margin:0 0 24px;white-space:pre-line">${escapeHtml(params.motivation)}</p>
+    ${renderCtaButton({ href: `${APP_URL}/admin`, label: "Admin felület megnyitása" })}`;
+
+  const html = buildEmailLayout({
+    locale: "hu",
+    bodyContent,
+    thanks: "Üdvözlettel,",
+    team: "a trita rendszer",
+  });
+
+  const text = [
+    "Új coach jelentkezés érkezett",
+    "",
+    `Név: ${params.applicantName}`,
+    `Email: ${params.applicantEmail}`,
+    `Szakterületek: ${params.specializations ?? "–"}`,
+    "",
+    "Szakmai háttér:",
+    params.background,
+    "",
+    "Motiváció:",
+    params.motivation,
+    "",
+    `Admin: ${APP_URL}/admin`,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: adminEmail,
+    subject: `Új coach jelentkezés – ${params.applicantName}`,
+    html,
+    text,
+  });
+
+  if (error) {
+    console.error("[Email] Coach application notification failed:", error);
+  } else {
+    console.log("[Email] Coach application notification sent to:", adminEmail);
+  }
+}
+
 export async function sendMagicLinkEmail(params: {
   to: string;
   magicLinkUrl: string;
@@ -744,4 +815,188 @@ export async function sendMagicLinkEmail(params: {
   } else {
     console.log("[Email] Magic link sent to:", params.to);
   }
+}
+
+// ─── Team invite email (for users without an account) ────────────────────────
+
+const teamInviteTranslations = {
+  hu: {
+    subject: (teamName: string) => `Meghívtak a(z) ${teamName} csapatba – Trita`,
+    heading: (teamName: string) => `Meghívtak a(z) ${teamName} csapatba`,
+    body: "Személyiséges profilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadjuk!",
+    cta: "Regisztráció és csatlakozás",
+    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: (teamName: string) => `You've been invited to join ${teamName} – Trita`,
+    heading: (teamName: string) => `You've been invited to join ${teamName}`,
+    body: "Share your personality profile with your team by joining Trita. Register and you'll be added automatically!",
+    cta: "Register and join",
+    footer: "If you don't want to join, simply ignore this email.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+  de: {
+    subject: (teamName: string) => `Du wurdest in das Team ${teamName} eingeladen – Trita`,
+    heading: (teamName: string) => `Du wurdest in das Team ${teamName} eingeladen`,
+    body: "Teile dein Persönlichkeitsprofil mit deinem Team. Registriere dich bei Trita und du wirst automatisch hinzugefügt!",
+    cta: "Registrieren und beitreten",
+    footer: "Wenn du nicht beitreten möchtest, ignoriere diese E-Mail.",
+    thanks: "Mit freundlichen Grüßen,",
+    team: "das Trita-Team",
+  },
+};
+
+// ─── Candidate invite email (for job applicants, no account needed) ──────────
+
+const candidateInviteTranslations = {
+  hu: {
+    subject: (position?: string) =>
+      position
+        ? `Meghívó személyiségfelmérésre – ${position} pozíció`
+        : "Meghívó személyiségfelmérésre",
+    heading: (position?: string) =>
+      position ? `Személyiségfelmérés – ${position}` : "Személyiségfelmérés",
+    body: (managerName: string) =>
+      `${managerName} meghívott, hogy töltsd ki az alábbi személyiségfelmérést. A teszt körülbelül 10–15 percet vesz igénybe, és regisztráció nélkül elvégezhető.`,
+    cta: "Felmérés megkezdése",
+    footer:
+      "Ha nem számítottál erre az emailre, egyszerűen hagyd figyelmen kívül.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: (position?: string) =>
+      position
+        ? `Invitation to personality assessment – ${position}`
+        : "Invitation to complete a personality assessment",
+    heading: (position?: string) =>
+      position ? `Personality Assessment – ${position}` : "Personality Assessment",
+    body: (managerName: string) =>
+      `${managerName} has invited you to complete a personality assessment. The questionnaire takes about 10–15 minutes and requires no registration.`,
+    cta: "Start assessment",
+    footer:
+      "If you did not expect this email, you can safely ignore it.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+  de: {
+    subject: (position?: string) =>
+      position
+        ? `Einladung zur Persönlichkeitsbewertung – ${position}`
+        : "Einladung zur Persönlichkeitsbewertung",
+    heading: (position?: string) =>
+      position ? `Persönlichkeitsbewertung – ${position}` : "Persönlichkeitsbewertung",
+    body: (managerName: string) =>
+      `${managerName} hat dich eingeladen, eine Persönlichkeitsbefragung auszufüllen. Der Fragebogen dauert ca. 10–15 Minuten und erfordert keine Registrierung.`,
+    cta: "Befragung starten",
+    footer:
+      "Wenn du diese E-Mail nicht erwartet hast, kannst du sie einfach ignorieren.",
+    thanks: "Mit freundlichen Grüßen,",
+    team: "das Trita-Team",
+  },
+};
+
+export async function sendCandidateInviteEmail(params: {
+  to: string;
+  managerName: string;
+  token: string;
+  position?: string;
+  applyUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? getLocale(params.to);
+  const tr = candidateInviteTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    heading: tr.heading(params.position),
+    bodyContent: `
+    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+      ${escapeHtml(tr.body(params.managerName))}
+    </p>
+    ${renderCtaButton({ href: params.applyUrl, label: tr.cta })}`,
+    footerDisclaimer: tr.footer,
+    thanks: tr.thanks,
+    team: tr.team,
+  });
+
+  const text = [
+    tr.heading(params.position),
+    "",
+    tr.body(params.managerName),
+    "",
+    `${tr.cta}: ${params.applyUrl}`,
+    "",
+    tr.footer,
+    "",
+    tr.thanks,
+    tr.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: tr.subject(params.position),
+    html,
+    text,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send candidate invite:", error);
+    return false;
+  }
+  console.log("[Email] Candidate invite sent to:", params.to);
+  return true;
+}
+
+// ─── Team invite email (for users without an account) ────────────────────────
+
+export async function sendTeamInviteEmail(params: {
+  to: string;
+  teamName: string;
+  signUpUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? "en";
+  const t = teamInviteTranslations[locale];
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 0">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+<tr><td style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:32px 40px;text-align:center">
+<h1 style="margin:0;color:#fff;font-size:22px;font-weight:700">${t.heading(params.teamName)}</h1>
+</td></tr>
+<tr><td style="padding:32px 40px">
+<p style="margin:0 0 24px;color:#374151;font-size:15px;line-height:1.6">${t.body}</p>
+<div style="text-align:center;margin:28px 0">
+<a href="${params.signUpUrl}" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:10px;text-decoration:none">${t.cta}</a>
+</div>
+<p style="margin:24px 0 0;color:#9ca3af;font-size:13px">${t.footer}</p>
+</td></tr>
+<tr><td style="padding:16px 40px 28px;border-top:1px solid #f3f4f6;text-align:center">
+<p style="margin:0;color:#9ca3af;font-size:13px">${t.thanks}<br><strong>${t.team}</strong></p>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>`;
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject(params.teamName),
+    html,
+    text: `${t.heading(params.teamName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send team invite:", error);
+    return false;
+  }
+  console.log("[Email] Team invite sent to:", params.to);
+  return true;
 }

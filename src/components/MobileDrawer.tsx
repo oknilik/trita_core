@@ -24,6 +24,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     }
     return null;
   });
+  const [isCoach, setIsCoach] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -36,6 +37,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           setProfileName(data.username);
           window.localStorage.setItem("trita_username", data.username);
         }
+        setIsCoach(data.role === "MANAGER");
       } catch {
         // noop
       }
@@ -141,7 +143,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                       {user?.primaryEmailAddress?.emailAddress}
                     </p>
                     <p className="mt-1 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-100">
-                      {t("userMenu.participant", locale)}
+                      {isCoach ? t("userMenu.coach", locale) : t("userMenu.participant", locale)}
                     </p>
                   </div>
                 </div>
@@ -178,6 +180,58 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   </svg>
                   {t("userMenu.research", locale)}
                 </Link>
+
+                <div className="h-px bg-gray-100" />
+                {isCoach ? (
+                  <>
+                    <Link
+                      href="/manager"
+                      className={itemClass(pathname === "/manager")}
+                      onClick={onClose}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
+                        <path d="M14.5 9.5l1.5 1.5 3-3" />
+                      </svg>
+                      {t("userMenu.coachDashboard", locale)}
+                    </Link>
+                    <Link
+                      href="/manager/candidates"
+                      className={itemClass(pathname.startsWith("/manager/candidates"))}
+                      onClick={onClose}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 4.5H4.5A1.5 1.5 0 0 0 3 6v9a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 17 15v-4.5" />
+                        <path d="M7.5 13.5c0-1.66 1.12-3 2.5-3s2.5 1.34 2.5 3" />
+                        <circle cx="10" cy="8.25" r="1.75" />
+                        <path d="M14.5 3l1.5 1.5-4 4-2-.5.5-2 4-3Z" />
+                      </svg>
+                      {locale === "hu" ? "Jelöltek" : "Candidates"}
+                    </Link>
+                    <Link
+                      href="/team"
+                      className={itemClass(pathname.startsWith("/team"))}
+                      onClick={onClose}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M13.5 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM6.5 5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM1 17c0-2.21 2.46-4 5.5-4 .64 0 1.26.08 1.83.23M9.5 17c0-2.21 2.24-4 5-4s5 1.79 5 4" />
+                      </svg>
+                      {locale === "hu" ? "Csapatok" : "Teams"}
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    href="/become-coach"
+                    className={itemClass(pathname.startsWith("/become-coach"))}
+                    onClick={onClose}
+                  >
+                    <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
+                      <path d="M16 13v4M14 15h4" />
+                    </svg>
+                    {t("userMenu.becomeCoach", locale)}
+                  </Link>
+                )}
 
                 <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">

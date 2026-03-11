@@ -3,11 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { AdminStatCard } from "@/app/admin/_components/AdminStatCard";
 import { AdminTableSection } from "@/app/admin/_components/AdminTableSection";
 import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
 import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
+import { AdminTabNav } from "@/app/admin/_components/AdminTabNav";
+import { AdminCoachApplications } from "@/app/admin/_components/AdminCoachApplications";
 
 export const dynamic = "force-dynamic";
 
@@ -28,11 +31,105 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
   await requireAdmin(); // Auth check
   const locale = await getServerLocale();
+  const { tab = "research" } = await searchParams;
 
-  // Parallel data fetching
+  // Coach tab — only fetch coach data when on that tab
+  if (tab === "coach") {
+    const [coachStats, applications] = await Promise.all([
+      (async () => {
+        const totalCoaches = await prisma.userProfile.count({ where: { role: "MANAGER", deleted: false } });
+        const totalActiveRelationships = await prisma.managerClientRelationship.count({ where: { status: "ACTIVE" } });
+        const totalOutputs = await prisma.generatedOutput.count();
+        const pendingApplications = await prisma.$queryRaw<Array<{ count: bigint }>>`
+          SELECT COUNT(*) as count FROM "CoachApplication" WHERE "status" = 'PENDING'
+        `;
+        return {
+          totalCoaches,
+          totalActiveRelationships,
+          totalOutputs,
+          pendingCount: Number(pendingApplications[0]?.count ?? 0),
+        };
+      })(),
+      prisma.$queryRaw<Array<{
+        id: string; name: string; email: string; background: string;
+        motivation: string; specializations: string | null; status: string;
+        "createdAt": Date; "userProfileId": string | null;
+      }>>`
+        SELECT "id", "name", "email", "background", "motivation", "specializations",
+               "status", "createdAt", "userProfileId"
+        FROM "CoachApplication"
+        ORDER BY
+          CASE "status" WHEN 'PENDING' THEN 0 ELSE 1 END,
+          "createdAt" DESC
+        LIMIT 100
+      `,
+    ]);
+
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50/40 to-white px-4 py-8 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <FadeIn>
+            <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">{t("admin.title", locale)}</h1>
+            <p className="mt-2 text-sm text-gray-600">{t("admin.subtitle", locale)}</p>
+          </FadeIn>
+
+          <FadeIn delay={0.05}>
+            <Suspense>
+              <AdminTabNav />
+            </Suspense>
+          </FadeIn>
+
+          {/* Coach KPI */}
+          <FadeIn delay={0.1}>
+            <AdminMetricsGrid>
+              <AdminStatCard title="Aktív coachok" value={coachStats.totalCoaches} color="#6366F1" icon="🎓" />
+              <AdminStatCard title="Aktív coach–kliens" value={coachStats.totalActiveRelationships} color="#8B5CF6" icon="🤝" />
+              <AdminStatCard title="Generált outputok" value={coachStats.totalOutputs} color="#10B981" icon="✨" />
+              <AdminStatCard
+                title="Függő kérelmek"
+                value={coachStats.pendingCount}
+                color={coachStats.pendingCount > 0 ? "#F59E0B" : "#9CA3AF"}
+                icon="📬"
+              />
+            </AdminMetricsGrid>
+          </FadeIn>
+
+          {/* Applications */}
+          <FadeIn delay={0.2}>
+            <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900">Coach kérelmek</h2>
+                <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
+                  {applications.length} db
+                </span>
+              </div>
+              <AdminCoachApplications
+                applications={applications.map((a) => ({
+                  ...a,
+                  createdAt: a.createdAt.toISOString(),
+                }))}
+              />
+            </div>
+          </FadeIn>
+        </div>
+      </main>
+    );
+  }
+
+  // Research tab — Parallel data fetching
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+  const threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000);
+
   const [userStats, assessmentStats, invitationStats, feedbackStats, surveyStats] =
     await Promise.all([
       // User metrics
@@ -45,13 +142,13 @@ export default async function AdminPage() {
         const new7d = await prisma.userProfile.count({
           where: {
             deleted: false,
-            createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+            createdAt: { gte: sevenDaysAgo },
           },
         });
         const new30d = await prisma.userProfile.count({
           where: {
             deleted: false,
-            createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+            createdAt: { gte: thirtyDaysAgo },
           },
         });
 
@@ -216,7 +313,7 @@ export default async function AdminPage() {
       status: "PENDING",
       observerEmail: { not: null },
       expiresAt: { gt: new Date() },
-      createdAt: { lt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) },
+      createdAt: { lt: threeDaysAgo },
     },
     select: {
       id: true,
@@ -289,6 +386,12 @@ export default async function AdminPage() {
           <p className="mt-2 text-sm text-gray-600">
             {t("admin.subtitle", locale)}
           </p>
+        </FadeIn>
+
+        <FadeIn delay={0.05}>
+          <Suspense>
+            <AdminTabNav />
+          </Suspense>
         </FadeIn>
 
         {/* KPI Cards */}

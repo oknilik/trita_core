@@ -130,7 +130,7 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
       lerp(c, targetRadii.current[i], eased)
     );
     setPathD(toSmoothPath(interpolated));
-
+    // eslint-disable-next-line react-hooks/immutability
     rafRef.current = requestAnimationFrame(animate);
   }, []);
 
