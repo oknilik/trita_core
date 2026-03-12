@@ -1,6 +1,6 @@
 import { resend, EMAIL_FROM } from "./resend";
 
-type Locale = "hu" | "en" | "de";
+type Locale = "hu" | "en";
 
 // Single module-level constant — avoids the Turbopack inlining bug where
 // local `const appUrl` declarations inside functions are dropped.
@@ -55,25 +55,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Danke für deinen Kauf! – trita",
-      heading: "Danke für deinen Kauf!",
-      greeting: (name: string) =>
-        `Hallo ${name},`,
-      body: "Deine Zahlung wurde erfolgreich verarbeitet. Deine Pro-Funktionen sind ab sofort verfügbar.",
-      features: "Das kannst du jetzt nutzen:",
-      featureList: [
-        "Detaillierte, personalisierte Auswertung",
-        "Bestimmung des Persönlichkeitstyps",
-        "Fortschrittsverfolgung",
-        "PDF-Export",
-      ],
-      cta: "Zum Dashboard",
-      footer:
-        "Bei Fragen antworte einfach auf diese E-Mail. Wir helfen dir gern!",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   observerInvite: {
     hu: {
@@ -98,17 +79,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Einladung zum Persönlichkeitstest – Trita",
-      greeting: (_name: string) => "Hallo,",
-      body: (inviter: string) =>
-        `${inviter} bittet dich, einen kurzen Fragebogen über ${inviter} auszufüllen, um ein Bild davon zu bekommen, wie ${inviter} von anderen wahrgenommen wird.\n\nDeine Perspektive ist wichtig. Deine Antworten bleiben anonym und fließen nur aggregiert (als Durchschnitt mehrerer Rückmeldungen) in die Ergebnisse ein.`,
-      cta: "Fremdeinschätzung öffnen",
-      footer:
-        "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   observerCompletion: {
     hu: {
@@ -126,14 +96,6 @@ const translations = {
       cta: "View my results",
       thanks: "Thank you for participating in the research!",
       team: "the trita team",
-    },
-    de: {
-      subject: "Eine Rückmeldung ist eingegangen – trita",
-      greeting: (name: string) => `Hallo, ${name}!`,
-      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Personen hat den Fragebogen ausgefüllt. Schau, wie andere dich wahrnehmen!",
-      cta: "Ergebnisse ansehen",
-      thanks: "Danke, dass du an der Forschung teilnimmst!",
-      team: "das trita-Team",
     },
   },
   verificationCode: {
@@ -157,16 +119,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Dein Bestätigungscode – trita",
-      codeLabel: "Dein Code:",
-      ttl: (minutes?: number) =>
-        minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
-      footer:
-        "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   signInCode: {
     hu: {
@@ -188,16 +140,6 @@ const translations = {
         "If you didn't request this code, you can safely ignore this email.",
       thanks: "Best regards,",
       team: "the trita team",
-    },
-    de: {
-      subject: "Dein Anmeldecode – trita",
-      codeLabel: "Dein Code:",
-      ttl: (minutes?: number) =>
-        minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
-      footer:
-        "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
     },
   },
   magicLink: {
@@ -221,24 +163,12 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Dein Anmelde-Link – Trita",
-      heading: "Bei Trita anmelden",
-      body: "Klicke auf den Button unten, um dich bei deinem Konto anzumelden. Dieser Link läuft in 10 Minuten ab.",
-      cta: "Anmelden",
-      footer:
-        "Wenn du diesen Link nicht angefordert hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
 } as const;
 
 function getLocale(email: string): Locale {
   const lower = email.toLowerCase();
   if (lower.endsWith(".hu")) return "hu";
-  if (lower.endsWith(".de") || lower.endsWith(".at") || lower.endsWith(".ch"))
-    return "de";
   return "en";
 }
 
@@ -502,7 +432,7 @@ export async function sendObserverInviteEmail(params: {
   isReminder?: boolean;
 }) {
   const locale = params.locale ?? getLocale(params.to);
-  const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend", de: "Freund/in" };
+  const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend" };
   const recipientName = params.recipientName ?? fallbackNames[locale];
 
   const html = buildObserverInviteHtml({
@@ -513,7 +443,7 @@ export async function sendObserverInviteEmail(params: {
   });
   const link = `${APP_URL}/observe/${params.token}`;
   const t = translations.observerInvite[locale];
-  const reminderPrefix: Record<Locale, string> = { hu: "Emlékeztető: ", en: "Reminder: ", de: "Erinnerung: " };
+  const reminderPrefix: Record<Locale, string> = { hu: "Emlékeztető: ", en: "Reminder: " };
   const subject = params.isReminder ? `${reminderPrefix[locale]}${t.subject}` : t.subject;
   const text = [
     t.greeting(recipientName),
@@ -838,15 +768,6 @@ const teamInviteTranslations = {
     thanks: "Best regards,",
     team: "the Trita team",
   },
-  de: {
-    subject: (teamName: string) => `Du wurdest in das Team ${teamName} eingeladen – Trita`,
-    heading: (teamName: string) => `Du wurdest in das Team ${teamName} eingeladen`,
-    body: "Teile dein Persönlichkeitsprofil mit deinem Team. Registriere dich bei Trita und du wirst automatisch hinzugefügt!",
-    cta: "Registrieren und beitreten",
-    footer: "Wenn du nicht beitreten möchtest, ignoriere diese E-Mail.",
-    thanks: "Mit freundlichen Grüßen,",
-    team: "das Trita-Team",
-  },
 };
 
 // ─── Candidate invite email (for job applicants, no account needed) ──────────
@@ -881,21 +802,6 @@ const candidateInviteTranslations = {
       "If you did not expect this email, you can safely ignore it.",
     thanks: "Best regards,",
     team: "the Trita team",
-  },
-  de: {
-    subject: (position?: string) =>
-      position
-        ? `Einladung zur Persönlichkeitsbewertung – ${position}`
-        : "Einladung zur Persönlichkeitsbewertung",
-    heading: (position?: string) =>
-      position ? `Persönlichkeitsbewertung – ${position}` : "Persönlichkeitsbewertung",
-    body: (managerName: string) =>
-      `${managerName} hat dich eingeladen, eine Persönlichkeitsbefragung auszufüllen. Der Fragebogen dauert ca. 10–15 Minuten und erfordert keine Registrierung.`,
-    cta: "Befragung starten",
-    footer:
-      "Wenn du diese E-Mail nicht erwartet hast, kannst du sie einfach ignorieren.",
-    thanks: "Mit freundlichen Grüßen,",
-    team: "das Trita-Team",
   },
 };
 
@@ -1021,15 +927,6 @@ const orgInviteTranslations = {
     footer: "If you don't want to join, simply ignore this email.",
     thanks: "Best regards,",
     team: "the Trita team",
-  },
-  de: {
-    subject: (orgName: string) => `Du wurdest zu ${orgName} eingeladen – Trita`,
-    heading: (orgName: string) => `Du wurdest zu ${orgName} eingeladen`,
-    body: "Registriere dich bei Trita und tritt der Organisation automatisch bei. Fülle die Persönlichkeitsbeurteilung aus, um zu sehen, wie du ins Team passt.",
-    cta: "Registrieren und beitreten",
-    footer: "Wenn du nicht beitreten möchtest, ignoriere diese E-Mail.",
-    thanks: "Mit freundlichen Grüßen,",
-    team: "das Trita-Team",
   },
 };
 

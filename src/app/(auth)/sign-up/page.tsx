@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import Link from "next/link";
-import { TritaLogo } from "@/components/TritaLogo";
 
 class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -23,13 +22,13 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   render() {
     if (this.state.hasError) {
       return (
-        <div className="relative flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4">
-          <div className="w-full max-w-md rounded-xl border border-gray-100 bg-white p-8 text-center shadow-sm">
-            <p className="text-sm text-gray-600">Valami hiba történt. Kérjük, frissítsd az oldalt.</p>
+        <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4">
+          <div className="w-full max-w-md rounded border border-[#e0ddd6] bg-white p-8 text-center">
+            <p className="text-sm text-[#5a5650]">Valami hiba történt. Kérjük, frissítsd az oldalt.</p>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-4 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white"
+              className="mt-4 rounded bg-[#c8410a] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#a33408]"
             >
               Újratöltés
             </button>
@@ -172,28 +171,29 @@ function SignUpContent() {
 
   if (isVerifying) {
     return (
-      <div className="relative flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/4 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-        <div className="relative z-10 w-full max-w-md">
+      <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4 py-10">
+        <div className="w-full max-w-md">
           <div className="mb-8 flex flex-col items-center gap-3">
-            <TritaLogo size={72} showText={false} />
-            <h1 className="text-2xl font-bold text-gray-900">
+            <Link href="/" className="font-playfair text-3xl font-black tracking-[-0.03em] text-[#1a1814]">
+              {"trit"}<span className="text-[#c8410a]">a</span>
+            </Link>
+            <h1 className="text-xl font-semibold text-[#1a1814]">
               {t("auth.verifyTitle", locale)}
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-center text-sm text-[#5a5650]">
               {tf("auth.verifySent", locale, { email })}
             </p>
           </div>
 
-          <div className="rounded-xl border border-gray-100 bg-white p-6">
+          <div className="rounded border border-[#e0ddd6] bg-white p-6">
             {error && (
-              <div className="mb-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <div className="mb-4 rounded border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleVerify} className="flex flex-col gap-4">
-              <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
                 {t("auth.verifyCodeLabel", locale)}
                 <input
                   type="text"
@@ -204,14 +204,14 @@ function SignUpContent() {
                   maxLength={6}
                   placeholder="000000"
                   autoFocus
-                  className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-center text-lg font-semibold tracking-[0.3em] text-gray-900 focus:border-indigo-300 focus:outline-none"
+                  className="min-h-[44px] rounded border border-[#e0ddd6] bg-[#f7f5f0] px-3 text-center text-lg font-semibold tracking-[0.3em] text-[#1a1814] focus:border-[#c8410a]/50 focus:outline-none"
                 />
               </label>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-2 min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+                className="mt-2 min-h-[48px] rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition-all hover:-translate-y-px hover:bg-[#a33408] disabled:cursor-not-allowed disabled:bg-[#e0ddd6] disabled:text-[#a09c96] disabled:hover:translate-y-0"
               >
                 {isSubmitting ? t("actions.verifying", locale) : t("actions.verify", locale)}
               </button>
@@ -222,14 +222,14 @@ function SignUpContent() {
                 type="button"
                 onClick={handleResendCode}
                 disabled={!canResend}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 disabled:cursor-not-allowed disabled:text-gray-400"
+                className="text-sm font-medium text-[#c8410a] hover:text-[#a33408] disabled:cursor-not-allowed disabled:text-[#a09c96]"
               >
                 {resendCooldown > 0
                   ? tf("auth.resendCodeWait", locale, { seconds: resendCooldown })
                   : t("auth.resendCode", locale)}
               </button>
               {resendNote ? (
-                <p className="mt-2 text-xs text-gray-500">{resendNote}</p>
+                <p className="mt-2 text-xs text-[#5a5650]">{resendNote}</p>
               ) : null}
             </div>
 
@@ -242,7 +242,7 @@ function SignUpContent() {
                 setResendCooldown(0);
                 setResendNote(null);
               }}
-              className="mt-4 w-full text-center text-sm text-gray-500 hover:text-gray-700"
+              className="mt-4 w-full text-center text-sm text-[#5a5650] hover:text-[#1a1814]"
             >
               {t("actions.backToSignUp", locale)}
             </button>
@@ -253,33 +253,34 @@ function SignUpContent() {
   }
 
   return (
-    <div className="relative flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/4 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-      <div className="relative z-10 w-full max-w-md">
+    <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4 py-10">
+      <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <TritaLogo size={72} showText={false} />
-          <h1 className="text-2xl font-bold text-gray-900">
+          <Link href="/" className="font-playfair text-3xl font-black tracking-[-0.03em] text-[#1a1814]">
+            {"trit"}<span className="text-[#c8410a]">a</span>
+          </Link>
+          <h1 className="text-xl font-semibold text-[#1a1814]">
             {t("auth.signUpTitle", locale)}
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-[#5a5650]">
             {t("auth.signUpSubtitle", locale)}
           </p>
           {observeToken ? (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-[#5a5650]">
               {t("auth.observeTokenHint", locale)}
             </p>
           ) : null}
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-white p-6">
+        <div className="rounded border border-[#e0ddd6] bg-white p-6">
           {error && (
-            <div className="mb-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="mb-4 rounded border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+            <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
               {t("auth.emailLabel", locale)}
               <input
                 type="email"
@@ -288,33 +289,33 @@ function SignUpContent() {
                 required
                 autoComplete="email"
                 placeholder="email@example.com"
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+                className="min-h-[44px] rounded border border-[#e0ddd6] bg-[#f7f5f0] px-3 text-sm text-[#1a1814] focus:border-[#c8410a]/50 focus:outline-none"
               />
             </label>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-2 min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+              className="mt-2 min-h-[48px] rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition-all hover:-translate-y-px hover:bg-[#a33408] disabled:cursor-not-allowed disabled:bg-[#e0ddd6] disabled:text-[#a09c96] disabled:hover:translate-y-0"
             >
               {isSubmitting ? t("auth.submitSendCodeLoading", locale) : t("auth.submitSendCode", locale)}
             </button>
           </form>
 
           <div className="my-5 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gray-100" />
-            <span className="text-xs text-gray-400">{t("common.or", locale)}</span>
-            <div className="h-px flex-1 bg-gray-100" />
+            <div className="h-px flex-1 bg-[#e0ddd6]" />
+            <span className="font-ibm-plex-mono text-[11px] text-[#a09c96]">{t("common.or", locale)}</span>
+            <div className="h-px flex-1 bg-[#e0ddd6]" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleSignUp}
             disabled={isGoogleLoading}
-            className="flex min-h-[44px] w-full items-center justify-center gap-3 rounded-lg border border-gray-100 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex min-h-[44px] w-full items-center justify-center gap-3 rounded border border-[#e0ddd6] bg-white px-4 text-sm font-medium text-[#1a1814] transition hover:bg-[#f7f5f0] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isGoogleLoading ? (
-              <svg className="h-4 w-4 animate-spin text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg className="h-4 w-4 animate-spin text-[#a09c96]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
               </svg>
@@ -330,11 +331,11 @@ function SignUpContent() {
           </button>
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-[#5a5650]">
           {t("auth.hasAccount", locale)}{" "}
           <Link
             href={observeToken ? `/sign-in?observeToken=${observeToken}` : "/sign-in"}
-            className="font-semibold text-indigo-600 hover:text-indigo-700"
+            className="font-medium text-[#c8410a] hover:text-[#a33408]"
           >
             {t("actions.signInCta", locale)}
           </Link>
@@ -349,7 +350,7 @@ function SignUpContent() {
 export default function SignUpPage() {
   return (
     <SignUpErrorBoundary>
-      <Suspense fallback={<div className="min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" />}>
+      <Suspense fallback={<div className="min-h-dvh bg-[#faf9f6]" />}>
         <SignUpContent />
       </Suspense>
     </SignUpErrorBoundary>

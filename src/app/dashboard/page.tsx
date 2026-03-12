@@ -13,8 +13,6 @@ import { t, tf } from "@/lib/i18n";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { HashScroll } from "@/components/dashboard/HashScroll";
 import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
-import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
-import { UpcomingFeaturesCTA } from "@/components/dashboard/UpcomingFeaturesCTA";
 import { DiscardDraftButton } from "@/components/dashboard/DiscardDraftButton";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +63,6 @@ export default async function DashboardPage({
       email: true,
       onboardedAt: true,
       deleted: true,
-      occupationStatus: true,
     },
   });
 
@@ -90,9 +87,6 @@ export default async function DashboardPage({
     receivedInvitations,
     completedObserverAssessments,
     confidenceStats,
-    satisfactionFeedback,
-    researchSurvey,
-    featureInterestCount,
   ] =
     profile
       ? await Promise.all([
@@ -171,19 +165,8 @@ export default async function DashboardPage({
             },
             _avg: { confidence: true },
           }),
-          prisma.satisfactionFeedback.findUnique({
-            where: { userProfileId: profile.id },
-            select: { id: true },
-          }),
-          prisma.researchSurvey.findUnique({
-            where: { userProfileId: profile.id },
-            select: { id: true },
-          }),
-          prisma.featureInterest.count({
-            where: { userProfileId: profile.id },
-          }),
         ])
-      : [null, null, [], [], [], { _avg: { confidence: null } }, null, null, 0];
+      : [null, null, [], [], [], { _avg: { confidence: null } }];
 
   const draftAnsweredCount = draft
     ? Object.keys(draft.answers as Record<string, number>).length
@@ -195,7 +178,7 @@ export default async function DashboardPage({
   const testType = profile?.testType as TestType | null;
   const config = testType ? getTestConfig(testType, locale) : null;
   const profileOverviewTestName =
-    testType === "HEXACO_MODIFIED" ? "HEXACO" : (config?.name ?? "test");
+    config?.name ?? "test";
 
   // Total question count for draft progress display
   const draftTotalQuestions = config
@@ -209,37 +192,45 @@ export default async function DashboardPage({
     return (
       <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
         <FadeIn>
-          <section className="relative overflow-hidden rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-100/80 via-purple-50/60 to-pink-50/40 p-8 shadow-md shadow-indigo-200/40 md:p-12">
-            {/* Background glow */}
-            <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-500/25 via-purple-500/15 to-pink-500/15 blur-3xl" aria-hidden="true" />
-            <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-gradient-to-tr from-purple-500/20 via-indigo-500/10 to-pink-500/10 blur-3xl" aria-hidden="true" />
-
-            <div className="relative z-10">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
-                  {t("dashboard.guidedTag", locale)}
+          <section className="rounded border border-[#e0ddd6] bg-white p-8 md:p-12">
+            <p className="font-ibm-plex-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+              {t("dashboard.guidedTag", locale)}
+            </p>
+            <h2 className="mt-3 text-2xl font-bold text-[#1a1814]">
+              {t("dashboard.nextStepTitle", locale)}
+            </h2>
+            <p className="mt-2 text-sm text-[#5a5650]">
+              {t("dashboard.guidedPraise", locale)}
+            </p>
+            {draft && draftTotalQuestions > 0 ? (
+              <div className="mt-6">
+                <p className="text-sm text-[#5a5650]">
+                  {tf("dashboard.continueDraftBody", locale, {
+                    answered: draftAnsweredCount,
+                    total: draftTotalQuestions,
+                  })}
                 </p>
-                <div className="mt-3 flex items-center gap-3">
-                  <div className="h-1 w-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                    {t("dashboard.nextStepTitle", locale)}
-                  </h2>
+                <div className="mt-3 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-[#e0ddd6]">
+                  <div
+                    className="h-full rounded-full bg-[#c8410a] transition-all"
+                    style={{ width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%` }}
+                  />
                 </div>
-                <p className="mt-3 text-sm text-gray-700">
-                  {t("dashboard.guidedPraise", locale)}
-                </p>
+                <Link
+                  href="/assessment"
+                  className="mt-5 inline-flex min-h-[48px] items-center rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408]"
+                >
+                  {t("actions.continueTest", locale)}
+                </Link>
               </div>
-              <JourneyProgress
-                locale={locale}
-                initialHasInvites={false}
-                initialPendingInvites={0}
-                hasObserverFeedback={false}
-                selfCompleted={false}
-                hasDraft={Boolean(draft)}
-                draftAnsweredCount={draftAnsweredCount}
-                draftTotalQuestions={draftTotalQuestions}
-              />
-            </div>
+            ) : (
+              <Link
+                href="/assessment"
+                className="mt-6 inline-flex min-h-[48px] items-center rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408]"
+              >
+                {t("actions.startTest", locale)}
+              </Link>
+            )}
           </section>
         </FadeIn>
       </main>
@@ -286,9 +277,6 @@ export default async function DashboardPage({
   );
   const hasInvites = sentInvitations.length > 0;
   const hasObserverFeedback = completedObservers.length >= 2;
-  const feedbackSubmitted = Boolean(satisfactionFeedback);
-  const surveySubmitted = Boolean(researchSurvey);
-  const journeyComplete = Boolean(latestResult) && hasInvites && hasObserverFeedback;
   const avgConfidence =
     confidenceStats._avg.confidence != null
       ? Math.round(confidenceStats._avg.confidence * 10) / 10
@@ -381,7 +369,7 @@ export default async function DashboardPage({
     : "results";
 
   return (
-    <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
+    <div className="bg-gradient-to-b from-[#faf9f6] via-white to-white">
       <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
       <HashScroll />
       <DashboardAutoRefresh
@@ -391,21 +379,21 @@ export default async function DashboardPage({
       {/* ── Continue draft banner ── */}
       {draft && draftTotalQuestions > 0 && (
         <FadeIn>
-          <section className="rounded-2xl border border-amber-200/50 bg-gradient-to-br from-amber-50/80 via-white to-white glass-effect p-8 md:p-12">
+          <section className="rounded border border-[#e0ddd6] bg-white p-8 md:p-10">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-[#1a1814]">
                   {t("dashboard.continueDraftTitle", locale)}
                 </h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-[#5a5650]">
                   {tf("dashboard.continueDraftBody", locale, {
                     answered: draftAnsweredCount,
                     total: draftTotalQuestions,
                   })}
                 </p>
-                <div className="mt-3 h-2 w-full max-w-xs overflow-hidden rounded-full bg-amber-100">
+                <div className="mt-3 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-[#e0ddd6]">
                   <div
-                    className="h-full rounded-full bg-amber-500 transition-all"
+                    className="h-full rounded-full bg-[#c8410a] transition-all"
                     style={{
                       width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%`,
                     }}
@@ -415,7 +403,7 @@ export default async function DashboardPage({
               <div className="flex flex-col items-center gap-2">
                 <Link
                   href="/assessment"
-                  className="group inline-flex min-h-[52px] md:min-h-[48px] items-center justify-center rounded-xl bg-amber-500 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-600 hover:scale-105"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded bg-[#c8410a] px-8 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408]"
                 >
                   {t("actions.continueTest", locale)}
                 </Link>
@@ -477,16 +465,7 @@ export default async function DashboardPage({
         }))}
         hasInvites={hasInvites}
         pendingInvitesCount={pendingInvites.length}
-        surveySubmitted={surveySubmitted}
-        occupationStatus={profile.occupationStatus ?? null}
       />
-
-      {/* ── Upcoming features validation — hidden once user has answered ── */}
-      {journeyComplete && featureInterestCount === 0 && (
-        <FadeIn>
-          <UpcomingFeaturesCTA locale={locale} />
-        </FadeIn>
-      )}
       </main>
     </div>
   );

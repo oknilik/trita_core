@@ -22,7 +22,7 @@ export default async function OrgSettingsPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { profileId, org } = await requireOrgRole(orgId, "ORG_ADMIN");
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
 
   const members = await prisma.organizationMember.findMany({
     where: { orgId },

@@ -9,24 +9,21 @@ interface ObserverComparisonProps {
   observerCount: number;
   avgConfidence: number | null;
   facetDivergences: SerializedFacetDivergence[];
-  surveySubmitted?: boolean;
 }
 
 function getChipStyle(delta: number): string {
   if (Math.abs(delta) <= 5) return "bg-gray-50 text-gray-700 border-gray-200";
-  if (delta > 0) return "bg-indigo-50 text-indigo-700 border-indigo-200";
-  return "bg-violet-50 text-violet-700 border-violet-200";
+  if (delta > 0) return "bg-[#fef3ec] text-[#8b2f09] border-[#f3d4c8]";
+  return "bg-[#edf4ef] text-[#1a5c3a] border-[#cfe2d6]";
 }
 
 export function ObserverComparison({
   observerCount,
   avgConfidence,
   facetDivergences,
-  surveySubmitted,
 }: ObserverComparisonProps) {
   const { locale } = useLocale();
   const [showAll, setShowAll] = useState(false);
-  const showSurveyCta = !surveySubmitted;
   const pointsUnit = t("comparison.pointsUnitShort", locale);
 
   const sortedEntries = useMemo(
@@ -40,7 +37,7 @@ export function ObserverComparison({
     <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
       {/* Modern header with decorative bar */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+        <div className="h-1 w-12 bg-gradient-to-r from-[#c8410a] to-[#8b2f09] rounded-full" />
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {t("comparison.title", locale)}
         </h2>
@@ -52,11 +49,11 @@ export function ObserverComparison({
 
       {/* Stat badges */}
       <div className="mt-6 flex flex-wrap gap-3">
-        <div className="rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 px-5 py-3 border border-indigo-100/50">
-          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+        <div className="rounded-xl bg-gradient-to-br from-[#fef3ec] to-[#f3eee4] px-5 py-3 border border-[#f3d4c8]/50">
+          <p className="text-xs font-semibold text-[#c8410a] uppercase tracking-wider">
             {t("comparison.observersLabel", locale) || "Értékelők"}
           </p>
-          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-[#c8410a] to-[#8b2f09] bg-clip-text text-transparent">
             {observerCount}
           </p>
         </div>
@@ -77,7 +74,7 @@ export function ObserverComparison({
       {sortedEntries.length > 0 && (
         <div className="mt-10">
           <div className="mb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c8410a]">
               {t("comparison.facetMapTitle", locale)}
             </p>
             <p className="mt-1 text-sm text-gray-500">
@@ -91,12 +88,12 @@ export function ObserverComparison({
               <span className="h-2 w-2 rounded-full bg-gray-400" />
               {t("comparison.heatmapMatch", locale)}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-              <span className="h-2 w-2 rounded-full bg-indigo-500" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f3d4c8] bg-[#fef3ec] px-3 py-1 text-xs font-medium text-[#8b2f09]">
+              <span className="h-2 w-2 rounded-full bg-[#c8410a]" />
               {t("comparison.heatmapObsHigher", locale)}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
-              <span className="h-2 w-2 rounded-full bg-violet-500" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#cfe2d6] bg-[#edf4ef] px-3 py-1 text-xs font-medium text-[#1a5c3a]">
+              <span className="h-2 w-2 rounded-full bg-[#1a5c3a]" />
               {t("comparison.heatmapSelfHigher", locale)}
             </span>
           </div>
@@ -167,7 +164,7 @@ export function ObserverComparison({
               <button
                 type="button"
                 onClick={() => setShowAll((prev) => !prev)}
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-indigo-200 bg-white px-6 text-sm font-semibold text-indigo-700 shadow-sm transition-all duration-300 hover:bg-indigo-50 hover:shadow-md"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#f3d4c8] bg-white px-6 text-sm font-semibold text-[#8b2f09] shadow-sm transition-all duration-300 hover:bg-[#fef3ec] hover:shadow-md"
               >
                 {showAll ? t("comparison.showLess", locale) : t("comparison.showAll", locale)}
               </button>
@@ -177,26 +174,15 @@ export function ObserverComparison({
           <div className="mt-8 rounded-2xl border border-gray-100 bg-gray-50/60 p-5">
             <p className="text-sm font-semibold text-gray-900">{t("comparison.nextActionTitle", locale)}</p>
             <p className="mt-1 text-sm text-gray-600">
-              {showSurveyCta
-                ? t("comparison.nextActionBody", locale)
-                : t("comparison.nextActionBodyNoSurvey", locale)}
+              {t("comparison.nextActionBodyNoSurvey", locale)}
             </p>
             <div className="mt-4 flex flex-col gap-2 sm:flex-row">
               <a
                 href="/dashboard?tab=invites#invite"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
               >
                 {t("comparison.nextActionInvite", locale)}
               </a>
-              {showSurveyCta && (
-                <button
-                  type="button"
-                  onClick={() => window.dispatchEvent(new CustomEvent("dashboard:open-survey"))}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-indigo-200 bg-white px-5 text-sm font-semibold text-indigo-700 shadow-sm transition-all duration-300 hover:bg-indigo-50 hover:shadow-md"
-                >
-                  {t("comparison.nextActionSurvey", locale)}
-                </button>
-              )}
             </div>
           </div>
         </div>

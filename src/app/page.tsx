@@ -1,22 +1,35 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { StatsSection } from "@/components/landing/StatsSection";
-import { HowItWorks } from "@/components/landing/HowItWorks";
-import { FeatureCards } from "@/components/landing/FeatureCards";
+import { PainSection } from "@/components/landing/PainSection";
+import { UseCaseSection } from "@/components/landing/UseCaseSection";
+import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { ScienceSection } from "@/components/landing/ScienceSection";
+import { PricingSection } from "@/components/landing/PricingSection";
 import { BottomCTA } from "@/components/landing/BottomCTA";
-import { t } from "@/lib/i18n";
-import { getServerLocale } from "@/lib/i18n-server";
 import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
+import { getServerLocale } from "@/lib/i18n-server";
+import type { Locale } from "@/lib/i18n";
 
-// ISR: Revalidate every 1 hour (3600 seconds)
-// This makes the landing page load instantly for most visitors
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  const title = "trita";
-  const ogTitle = t("landing.heroTitle", locale);
-  const description = t("meta.description", locale);
+
+  const copy: Record<Locale, { title: string; description: string }> = {
+    hu: {
+      title: "trita",
+      description:
+        "A trita kutatás alapú csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
+    },
+    en: {
+      title: "trita",
+      description:
+        "trita is a research-based team intelligence platform: measurable personality and team dynamics insights for hiring, development, and decision support.",
+    },
+  };
+
+  const { title, description } = copy[locale] ?? copy.hu;
 
   return {
     title,
@@ -27,37 +40,38 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: "website",
-      title: ogTitle,
+      title,
       description,
       url: "/",
       siteName: "trita",
     },
     twitter: {
       card: "summary_large_image",
-      title: ogTitle,
+      title,
       description,
     },
   };
 }
 
-export default function Home() {
+export default async function Home() {
+  const locale = await getServerLocale();
   const siteUrl = getSiteUrl();
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Trita",
+    name: "trita",
     url: siteUrl,
     logo: `${siteUrl}/favicon.svg`,
   };
   const websiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Trita",
+    name: "trita",
     url: siteUrl,
   };
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#faf9f6]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -66,11 +80,15 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-      <HeroSection />
-      <StatsSection />
-      <HowItWorks />
-      <FeatureCards />
-      <BottomCTA />
+
+      <HeroSection locale={locale} />
+      <StatsSection locale={locale} />
+      <PainSection locale={locale} />
+      <UseCaseSection locale={locale} />
+      <HowItWorksSection locale={locale} />
+      <ScienceSection locale={locale} />
+      <PricingSection locale={locale} />
+      <BottomCTA locale={locale} />
     </main>
   );
 }

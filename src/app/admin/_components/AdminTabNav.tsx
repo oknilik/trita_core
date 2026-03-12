@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 
 const TABS = [
   { id: "research", label: "Kutatás" },
-  { id: "coach", label: "Coach" },
 ] as const;
 
 export function AdminTabNav() {

@@ -5,11 +5,10 @@
  * a DB-ben, opcionálisan observer válaszokkal.
  *
  * Futtatás:
- *   pnpm seed:assessment --email user@example.com --type HEXACO --observers 3
+ *   pnpm seed:assessment --email user@example.com --observers 3
  *
  * Opciók:
  *   --email <email>       Felhasználó email (kötelező)
- *   --type  <type>        HEXACO | HEXACO_MODIFIED | BIG_FIVE  (alapértelmezett: HEXACO)
  *   --observers <n>       Observer válaszok száma (alapértelmezett: 0)
  *   --candidates <n>      Candidate (jelölt) assessmentek száma (alapértelmezett: 0)
  *   --team-id <id>        Team ID amelyhez a jelöltek kapcsolódnak (opcionális)
@@ -20,7 +19,7 @@
 
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { PrismaClient, type TestType, type RelationshipType } from "@prisma/client";
+import { PrismaClient, type RelationshipType } from "@prisma/client";
 
 // ─── Load .env.local ──────────────────────────────────────────────────────────
 
@@ -82,24 +81,15 @@ const HEXACO_FACETS: Record<string, string[]> = {
   H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
   E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
   X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  A: ["forgivingness", "gentleness", "flexibility", "patience"],
+  A: ["forgiveness", "gentleness", "flexibility", "patience"],
   C: ["organization", "diligence", "prudence", "perfectionism"],
-  O: ["aesthetic", "inquisitiveness", "creativity", "unconventionality"],
-};
-
-const BIG5_ASPECTS: Record<string, string[]> = {
-  O: ["intellect", "openness"],
-  C: ["industriousness", "orderliness"],
-  E: ["enthusiasm", "assertiveness"],
-  A: ["compassion", "politeness"],
-  N: ["withdrawal", "volatility"],
+  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
 };
 
 type ScoreJSON = {
   type: "likert";
   dimensions: Record<string, number>;
   facets?: Record<string, Record<string, number>>;
-  aspects?: Record<string, Record<string, number>>;
   answers: unknown[];
   questionCount: number;
 };
@@ -184,37 +174,7 @@ function generateHexacoScores(opts?: {
     }
   }
 
-  return { type: "likert", dimensions, facets, answers: [], questionCount: 100 };
-}
-
-function generateBig5Scores(): ScoreJSON {
-  const dimensions: Record<string, number> = {};
-  const aspects: Record<string, Record<string, number>> = {};
-
-  for (const [dim, aspectList] of Object.entries(BIG5_ASPECTS)) {
-    const base = rand(22, 83);
-    dimensions[dim] = base;
-    aspects[dim] = {};
-    for (const aspect of aspectList) {
-      aspects[dim][aspect] = nearbyScore(base);
-    }
-  }
-
-  return { type: "likert", dimensions, aspects, answers: [], questionCount: 100 };
-}
-
-function generateScores(
-  testType: TestType,
-  opts?: {
-    fixedHexacoDimensions?: HexacoDimensions;
-    hexacoAroundBaseVariance?: number;
-  }
-): ScoreJSON {
-  if (testType === "BIG_FIVE") return generateBig5Scores();
-  return generateHexacoScores({
-    fixedDimensions: opts?.fixedHexacoDimensions,
-    aroundBaseVariance: opts?.hexacoAroundBaseVariance,
-  });
+  return { type: "likert", dimensions, facets, answers: [], questionCount: 60 };
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -253,7 +213,6 @@ Futtatás:
 
 Opciók:
   --email <email>       Felhasználó email (kötelező)
-  --type <type>         HEXACO | HEXACO_MODIFIED | BIG_FIVE  (alapért.: HEXACO)
   --observers <n>       Observer válaszok száma  (alapért.: 0)
   --candidates <n>      Jelölt (candidate) assessmentek száma  (alapért.: 0)
   --team-id <id>        Team ID amelyhez a jelöltek kapcsolódnak  (opcionális)
@@ -263,9 +222,9 @@ Opciók:
 
 Példák:
   pnpm seed:assessment --email me@example.com
-  pnpm seed:assessment --email me@example.com --type BIG_FIVE --observers 4
+  pnpm seed:assessment --email me@example.com --observers 3
   pnpm seed:assessment --email me@example.com --clean --observers 2
-  pnpm seed:assessment --email me@example.com --type HEXACO --hexaco H=70,E=40,X=60,A=55,C=80,O=35
+  pnpm seed:assessment --email me@example.com --hexaco H=70,E=40,X=60,A=55,C=80,O=35
   pnpm seed:assessment --email me@example.com --candidates 5
   pnpm seed:assessment --email me@example.com --candidates 3 --team-id clxyz123 --hexaco H=70,E=40,X=60,A=55,C=80,O=35
 `);
@@ -278,13 +237,6 @@ Példák:
     process.exit(1);
   }
 
-  const VALID_TYPES: TestType[] = ["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"];
-  const testType = ((args.type ?? "HEXACO").toUpperCase()) as TestType;
-  if (!VALID_TYPES.includes(testType)) {
-    console.error(`❌  --type értéke csak: ${VALID_TYPES.join(" | ")} lehet`);
-    process.exit(1);
-  }
-
   const observerCount = Math.max(0, parseInt(args.observers ?? "0", 10) || 0);
   const candidateCount = Math.max(0, parseInt(args.candidates ?? "0", 10) || 0);
   const teamId = args["team-id"] ?? null;
@@ -293,10 +245,6 @@ Példák:
 
   let fixedHexaco: HexacoDimensions | undefined;
   if (hexacoInput) {
-    if (testType === "BIG_FIVE") {
-      console.error("❌  --hexaco csak HEXACO / HEXACO_MODIFIED típusnál használható");
-      process.exit(1);
-    }
     try {
       fixedHexaco = parseHexacoDimensions(hexacoInput);
     } catch (error) {
@@ -323,14 +271,12 @@ Példák:
 
     // ── Clean up existing results ───────────────────────────────────────────
     if (clean) {
-      // 1. AssessmentDraft
       const draft = await prisma.assessmentDraft.findUnique({ where: { userProfileId: profile.id } });
       if (draft) {
         await prisma.assessmentDraft.delete({ where: { userProfileId: profile.id } });
         console.log(`🧹  Törölve AssessmentDraft`);
       }
 
-      // 2. DimensionFeedback (AssessmentResult-hez kötött, explicit törlés a biztonság kedvéért)
       const results = await prisma.assessmentResult.findMany({
         where: { userProfileId: profile.id },
         select: { id: true },
@@ -343,13 +289,11 @@ Példák:
         if (fbCount > 0) console.log(`🧹  Törölve ${fbCount} DimensionFeedback`);
       }
 
-      // 3. AssessmentResult
       const { count: resultCount } = await prisma.assessmentResult.deleteMany({
         where: { userProfileId: profile.id },
       });
       if (resultCount > 0) console.log(`🧹  Törölve ${resultCount} AssessmentResult`);
 
-      // 4. Observer invitations + kapcsolódó rekordok (helyes sorrend a FK miatt)
       const invites = await prisma.observerInvitation.findMany({
         where: { inviterId: profile.id },
         select: { id: true },
@@ -362,7 +306,6 @@ Példák:
         console.log(`🧹  Törölve ${invites.length} ObserverInvitation (draft + assessment)`);
       }
 
-      // 5. ResearchSurvey + SatisfactionFeedback (UserProfile-hoz kötöttek, nem cascade)
       const { count: surveyCount } = await prisma.researchSurvey.deleteMany({
         where: { userProfileId: profile.id },
       });
@@ -372,17 +315,28 @@ Példák:
         where: { userProfileId: profile.id },
       });
       if (satCount > 0) console.log(`🧹  Törölve SatisfactionFeedback`);
+
+      const candidateInvites = await prisma.candidateInvite.findMany({
+        where: { managerId: profile.id },
+        select: { id: true },
+      });
+      if (candidateInvites.length > 0) {
+        const ids = candidateInvites.map((c) => c.id);
+        await prisma.candidateResult.deleteMany({ where: { inviteId: { in: ids } } });
+        await prisma.candidateInvite.deleteMany({ where: { managerId: profile.id } });
+        console.log(`🧹  Törölve ${candidateInvites.length} CandidateInvite (+ result)`);
+      }
     }
 
     // ── Self assessment ─────────────────────────────────────────────────────
-    const selfScores = generateScores(testType, {
-      fixedHexacoDimensions: fixedHexaco,
-      hexacoAroundBaseVariance: 0,
+    const selfScores = generateHexacoScores({
+      fixedDimensions: fixedHexaco,
+      aroundBaseVariance: 0,
     });
     const result = await prisma.assessmentResult.create({
       data: {
         userProfileId: profile.id,
-        testType,
+        testType: "HEXACO",
         isSelfAssessment: true,
         scores: selfScores as object,
       },
@@ -393,13 +347,12 @@ Példák:
       console.log("    (Fix HEXACO bemenet alapján generálva)");
     }
 
-    // Always sync profile.testType to match the new result
-    if (profile.testType !== testType) {
+    if (profile.testType !== "HEXACO") {
       await prisma.userProfile.update({
         where: { id: profile.id },
-        data: { testType },
+        data: { testType: "HEXACO" },
       });
-      console.log(`✅  UserProfile.testType frissítve: ${profile.testType ?? "null"} → ${testType}`);
+      console.log(`✅  UserProfile.testType beállítva: HEXACO`);
     }
 
     // ── Observer assessments ────────────────────────────────────────────────
@@ -411,19 +364,15 @@ Példák:
           data: {
             inviterId: profile.id,
             observerEmail: `observer${i + 1}@seed.test`,
-            testType,
+            testType: "HEXACO",
             status: "COMPLETED",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(),
           },
         });
 
-        const obsScores = generateScores(testType, fixedHexaco
-          ? {
-              fixedHexacoDimensions: fixedHexaco,
-              hexacoAroundBaseVariance: 15,
-            }
-          : undefined
+        const obsScores = generateHexacoScores(
+          fixedHexaco ? { fixedDimensions: fixedHexaco, aroundBaseVariance: 15 } : undefined
         );
         await prisma.observerAssessment.create({
           data: {
@@ -454,7 +403,6 @@ Példák:
 
       for (let i = 0; i < candidateCount; i++) {
         const fake = FAKE_CANDIDATES[i % FAKE_CANDIDATES.length];
-        const candidateTestType = "HEXACO" as const;
 
         const invite = await prisma.candidateInvite.create({
           data: {
@@ -464,22 +412,20 @@ Példák:
             name: fake.name,
             position: fake.position,
             status: "COMPLETED",
-            testType: candidateTestType,
+            testType: "HEXACO",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
           },
         });
 
         const candidateScores = generateHexacoScores(
-          fixedHexaco
-            ? { fixedDimensions: fixedHexaco, aroundBaseVariance: 20 }
-            : undefined
+          fixedHexaco ? { fixedDimensions: fixedHexaco, aroundBaseVariance: 20 } : undefined
         );
 
         await prisma.candidateResult.create({
           data: {
             inviteId: invite.id,
-            testType: candidateTestType,
+            testType: "HEXACO",
             scores: candidateScores as object,
           },
         });

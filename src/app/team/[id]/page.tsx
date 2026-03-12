@@ -34,7 +34,7 @@ export default async function TeamDetailPage({
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, role: true },
+    select: { id: true },
   });
   if (!profile) redirect("/dashboard");
 
@@ -44,8 +44,7 @@ export default async function TeamDetailPage({
   });
   if (!team) notFound();
 
-  // Access: legacy MANAGER + owner (for non-org teams), OR any org member of the team's org
-  const isManagerOwner = profile.role === "MANAGER" && team.ownerId === profile.id;
+  // Access: any org member of the team's org
   const orgMembership = team.orgId
     ? await prisma.organizationMember.findUnique({
         where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
@@ -55,7 +54,7 @@ export default async function TeamDetailPage({
   const isOrgMember = !!orgMembership;
   // ORG_MANAGER and above can manage team members; ORG_MEMBER can only view
   const isOrgManager = isOrgMember && hasOrgRole(orgMembership!.role, "ORG_MANAGER");
-  if (!isManagerOwner && !isOrgMember) redirect("/dashboard");
+  if (!isOrgMember) redirect("/dashboard");
 
   const members = await prisma.teamMember.findMany({
     where: { teamId },
@@ -87,7 +86,7 @@ export default async function TeamDetailPage({
       select: { id: true, email: true, createdAt: true },
     }),
     // Only load candidates if user can manage the team
-    (isManagerOwner || isOrgManager)
+    (isOrgManager)
       ? prisma.candidateInvite.findMany({
           where: { teamId },
           orderBy: { createdAt: "desc" },
@@ -105,8 +104,8 @@ export default async function TeamDetailPage({
       : Promise.resolve([]),
   ]);
 
-  const isHu = locale !== "en" && locale !== "de";
-  const dateLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "hu-HU";
+  const isHu = locale !== "en";
+  const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
   // Build heatmap data — use first member's test type for dimension config
   // (all HEXACO variants share the same dim codes)
@@ -195,7 +194,7 @@ export default async function TeamDetailPage({
                   ? "Minden oszlop egy HEXACO személyiségdimenziót mutat — minél mélyebb a szín, annál magasabb a pontszám. A dimenziók leírása a táblázat alatt található."
                   : "Each column represents a HEXACO personality dimension — deeper color means a higher score. Dimension descriptions are shown below the table."}
               </p>
-              <TeamHeatmap rows={heatmapRows} dims={dims.map((d) => ({ code: d.code, label: d.labelByLocale?.[locale as "hu" | "en" | "de"] ?? d.label, color: d.color }))} isHu={isHu} />
+              <TeamHeatmap rows={heatmapRows} dims={dims.map((d) => ({ code: d.code, label: d.labelByLocale?.[locale as "hu" | "en"] ?? d.label, color: d.color }))} isHu={isHu} />
             </section>
           </FadeIn>
         ) : (
@@ -222,7 +221,7 @@ export default async function TeamDetailPage({
               </div>
               <TeamInsights
                 rows={heatmapRows}
-                dims={dims.map((d) => ({ code: d.code, label: d.labelByLocale?.[locale as "hu" | "en" | "de"] ?? d.label, color: d.color }))}
+                dims={dims.map((d) => ({ code: d.code, label: d.labelByLocale?.[locale as "hu" | "en"] ?? d.label, color: d.color }))}
                 isHu={isHu}
               />
             </section>
@@ -257,7 +256,7 @@ export default async function TeamDetailPage({
                       <div className="flex shrink-0 items-center gap-2">
                         {assessment ? (
                           <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600">
-                            {assessment.testType === "HEXACO_MODIFIED" ? "HEXACO" : assessment.testType === "BIG_FIVE" ? "BIG 5" : assessment.testType}
+                            {assessment.testType}
                           </span>
                         ) : (
                           <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-400">
@@ -285,7 +284,7 @@ export default async function TeamDetailPage({
               </div>
             )}
 
-            {(isManagerOwner || isOrgManager) && (
+            {(isOrgManager) && (
               <div className="border-t border-gray-100 pt-5">
                 <h3 className="mb-3 text-sm font-semibold text-gray-700">
                   {isHu ? "Tag hozzáadása" : "Add a member"}
@@ -302,7 +301,7 @@ export default async function TeamDetailPage({
         </FadeIn>
 
         {/* Candidates */}
-        {(isManagerOwner || isOrgManager) && (
+        {(isOrgManager) && (
           <FadeIn delay={0.15}>
             <section className="rounded-xl border border-gray-100 bg-white p-6 md:p-8">
               <div className="mb-5 flex items-center gap-3">

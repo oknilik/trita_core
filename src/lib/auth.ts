@@ -109,7 +109,6 @@ export async function requireOrgRole(
 }
 
 // Returns the current user's org membership (null if not in any org).
-// Useful for routes that need to allow both legacy MANAGER role and ORG_MANAGER+.
 export async function getUserOrgMembership(profileId: string): Promise<{
   orgId: string;
   role: string;

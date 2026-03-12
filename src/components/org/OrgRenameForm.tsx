@@ -11,7 +11,7 @@ interface OrgRenameFormProps {
 
 export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps) {
   const router = useRouter();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

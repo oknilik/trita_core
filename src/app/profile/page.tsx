@@ -28,7 +28,6 @@ import {
 const LOCALE_META: Record<Locale, { flag: string; label: string }> = {
   hu: { flag: "🇭🇺", label: "HU" },
   en: { flag: "🇬🇧", label: "EN" },
-  de: { flag: "🇩🇪", label: "DE" },
 };
 
 type FormSnapshot = {
@@ -42,15 +41,6 @@ type FormSnapshot = {
   studyLevel: string;
   unemploymentDuration: string;
   country: string;
-};
-
-type ProfileStatus = {
-  onboarded: boolean;
-  hasDraft: boolean;
-  hasResult: boolean;
-  sentInvites: number;
-  pendingInvites: number;
-  completedObserver: number;
 };
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -89,7 +79,6 @@ export default function ProfilePage() {
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
   const [initialSnapshot, setInitialSnapshot] = useState<FormSnapshot | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
-  const [profileStatus, setProfileStatus] = useState<ProfileStatus | null>(null);
   const [selectedLocale, setSelectedLocale] = useState<Locale>(locale);
   const [savedLocale, setSavedLocale] = useState<Locale>(locale);
   const [invalidFieldFlash, setInvalidFieldFlash] = useState<InvalidField | null>(null);
@@ -115,7 +104,6 @@ export default function ProfilePage() {
     [country, countryOptions],
   );
 
-  // Load demographics
   const loadDemographics = useCallback(async () => {
     try {
       const res = await fetch("/api/profile/onboarding");
@@ -149,22 +137,10 @@ export default function ProfilePage() {
     }
   }, []);
 
-  const loadProfileStatus = useCallback(async () => {
-    try {
-      const res = await fetch("/api/profile/status");
-      if (!res.ok) return;
-      const data = await res.json();
-      setProfileStatus(data as ProfileStatus);
-    } catch {
-      // silent — non-critical
-    }
-  }, []);
-
   useEffect(() => {
     if (!isSignedIn) return;
     loadDemographics();
-    loadProfileStatus();
-  }, [isSignedIn, loadDemographics, loadProfileStatus]);
+  }, [isSignedIn, loadDemographics]);
 
   useEffect(() => {
     if (saveState !== "saved" && saveState !== "error") return;
@@ -189,24 +165,24 @@ export default function ProfilePage() {
 
   if (!isLoaded) {
     return (
-      <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
-        <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 py-10">
-          <div className="animate-pulse rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 p-6 pb-14 md:p-8 md:pb-16">
+      <div className="min-h-dvh bg-[#faf9f6]">
+        <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
+          <div className="animate-pulse rounded border border-[#e0ddd6] bg-[#f0ede6] p-6">
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-full bg-white/20" />
+              <div className="h-11 w-11 rounded-full bg-[#e0ddd6]" />
               <div>
-                <div className="h-7 w-40 rounded bg-white/20" />
-                <div className="mt-2 h-4 w-52 rounded bg-white/10" />
+                <div className="h-5 w-40 rounded bg-[#e0ddd6]" />
+                <div className="mt-2 h-3.5 w-52 rounded bg-[#e8e4dc]" />
               </div>
             </div>
           </div>
-          <div className="animate-pulse rounded-2xl border border-gray-100 bg-white p-6">
-            <div className="h-5 w-48 rounded bg-gray-200" />
-            <div className="mt-4 h-4 w-72 rounded bg-gray-100" />
+          <div className="animate-pulse rounded border border-[#e0ddd6] bg-white p-6">
+            <div className="h-5 w-48 rounded bg-[#e0ddd6]" />
+            <div className="mt-4 h-4 w-72 rounded bg-[#e8e4dc]" />
             <div className="mt-6 flex flex-col gap-4">
-              <div className="h-11 rounded-lg bg-gray-100" />
-              <div className="h-11 rounded-lg bg-gray-100" />
-              <div className="h-20 rounded-lg bg-gray-100" />
+              <div className="h-11 rounded bg-[#e8e4dc]" />
+              <div className="h-11 rounded bg-[#e8e4dc]" />
+              <div className="h-20 rounded bg-[#e8e4dc]" />
             </div>
           </div>
         </main>
@@ -322,41 +298,15 @@ export default function ProfilePage() {
   };
 
   const focusFirstInvalidField = () => {
-    if (!usernameValid) {
-      focusAndFlashInvalidField("username");
-      return;
-    }
-    if (!birthYearValid) {
-      focusAndFlashInvalidField("birthYear");
-      return;
-    }
-    if (gender === "") {
-      focusAndFlashInvalidField("gender");
-      return;
-    }
-    if (education === "") {
-      focusAndFlashInvalidField("education");
-      return;
-    }
-    if (occupationStatus === "") {
-      focusAndFlashInvalidField("occupationStatus");
-      return;
-    }
-    if (needsWorkFields && workSchedule === "") {
-      focusAndFlashInvalidField("workSchedule");
-      return;
-    }
-    if (needsWorkFields && companySize === "") {
-      focusAndFlashInvalidField("companySize");
-      return;
-    }
-    if (needsStudyLevel && studyLevel === "") {
-      focusAndFlashInvalidField("studyLevel");
-      return;
-    }
-    if (country === "") {
-      focusAndFlashInvalidField("country");
-    }
+    if (!usernameValid) { focusAndFlashInvalidField("username"); return; }
+    if (!birthYearValid) { focusAndFlashInvalidField("birthYear"); return; }
+    if (gender === "") { focusAndFlashInvalidField("gender"); return; }
+    if (education === "") { focusAndFlashInvalidField("education"); return; }
+    if (occupationStatus === "") { focusAndFlashInvalidField("occupationStatus"); return; }
+    if (needsWorkFields && workSchedule === "") { focusAndFlashInvalidField("workSchedule"); return; }
+    if (needsWorkFields && companySize === "") { focusAndFlashInvalidField("companySize"); return; }
+    if (needsStudyLevel && studyLevel === "") { focusAndFlashInvalidField("studyLevel"); return; }
+    if (country === "") { focusAndFlashInvalidField("country"); }
   };
 
   const handleSaveDemographics = async () => {
@@ -406,7 +356,6 @@ export default function ProfilePage() {
         setSavedLocale(selectedLocale);
       }
       setSaveState("saved");
-      loadProfileStatus();
 
       // Notify UserMenu to refresh profile name
       window.dispatchEvent(new CustomEvent("profile-updated"));
@@ -451,557 +400,445 @@ export default function ProfilePage() {
     }
   };
 
-  const profileStatusValue = profileStatus?.onboarded
-    ? t("profile.statusDone", locale)
-    : t("profile.statusInProgress", locale);
-  const testStatusValue = !profileStatus
-    ? t("common.statusPending", locale)
-    : profileStatus.hasResult
-      ? t("profile.statusDone", locale)
-      : profileStatus.hasDraft
-        ? t("profile.statusInProgress", locale)
-        : t("profile.statusNotStarted", locale);
-  const feedbackStatusValue = !profileStatus
-    ? t("common.statusPending", locale)
-    : profileStatus.completedObserver > 0
-      ? t("profile.statusReceived", locale)
-      : profileStatus.pendingInvites > 0
-        ? t("profile.statusWaiting", locale)
-        : profileStatus.sentInvites > 0
-          ? t("profile.statusRequested", locale)
-          : t("profile.statusNotStarted", locale);
-
-  const statusPillClass = (value: string) => {
-    if (value === t("profile.statusDone", locale) || value === t("profile.statusReceived", locale)) {
-      return "bg-emerald-50 text-emerald-700";
-    }
-    if (value === t("profile.statusInProgress", locale) || value === t("profile.statusWaiting", locale) || value === t("profile.statusRequested", locale)) {
-      return "bg-amber-50 text-amber-700";
-    }
-    return "bg-gray-100 text-gray-600";
-  };
-
   const toggleClass = (isActive: boolean) =>
-    `min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
+    `min-h-[44px] rounded border px-4 text-sm font-medium transition ${
       isActive
-        ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+        ? "border-[#c8410a]/30 bg-[#fef3ec] text-[#c8410a]"
+        : "border-[#e0ddd6] bg-white text-[#5a5650] hover:border-[#c8410a]/20 hover:bg-[#faf9f6]"
     }`;
 
   return (
-    <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white">
-      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 px-4 pt-10 pb-20">
-      {/* ── Context ── */}
-      <FadeIn delay={0.05}>
-        <div className="grid gap-4 md:grid-cols-2">
-          <section className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-base font-bold text-white">
-                {initials}
-              </div>
-              <div className="min-w-0">
-                <h1 className="truncate text-lg font-bold text-gray-900">
-                  {displayName}
-                </h1>
-                <p className="truncate text-xs text-gray-500">
-                  {user?.primaryEmailAddress?.emailAddress ?? t("profile.missingEmail", locale)}
-                </p>
-              </div>
-            </div>
-            <div className="my-4 h-px bg-indigo-100" />
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-indigo-600">
-              {t("profile.researchTag", locale)}
-            </p>
-            <p className="mt-2 text-sm text-indigo-900">
-              {t("profile.researchBody", locale)}
-            </p>
-          </section>
+    <div className="min-h-dvh bg-[#faf9f6]">
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pt-10 pb-20">
 
-          <section className="rounded-2xl border border-gray-100 bg-white p-5">
-            <h2 className="text-base font-semibold text-gray-900">
-              {t("profile.participationTitle", locale)}
+        {/* ── Demographics ── */}
+        <FadeIn delay={0.05}>
+          <section className="rounded border border-[#e0ddd6] bg-white p-6">
+            <h2 className="text-base font-semibold text-[#1a1814]">
+              {t("profile.demographicsTitle", locale)}
             </h2>
-            <p className="mt-1 text-sm text-gray-600">
-              {t("profile.participationBody", locale)}
+            <p className="mt-1 text-sm text-[#5a5650]">
+              {t("profile.demographicsBody", locale)}
             </p>
 
-            {/* Loading skeleton while fetching profile status */}
-            {profileStatus === null ? (
-              <div className="mt-4 space-y-2 animate-pulse">
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <div className="h-4 w-24 rounded bg-gray-200" />
-                  <div className="h-6 w-20 rounded-full bg-gray-200" />
+            <div className="mt-6 flex flex-col gap-4">
+              {/* Basics block */}
+              <section className="rounded border border-[#e0ddd6] bg-[#f7f5f0] p-4">
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-[#1a1814]">
+                    👤 {t("onboarding.blockBasicsTitle", locale)}
+                  </p>
+                  <p className="text-xs text-[#5a5650]">{t("onboarding.blockBasicsHint", locale)}</p>
                 </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <div className="h-4 w-20 rounded bg-gray-200" />
-                  <div className="h-6 w-24 rounded-full bg-gray-200" />
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <div className="h-4 w-28 rounded bg-gray-200" />
-                  <div className="h-6 w-20 rounded-full bg-gray-200" />
-                </div>
-              </div>
-            ) : (
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="text-sm font-medium text-gray-700">{t("profile.statusProfile", locale)}</span>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(profileStatusValue)}`}>
-                    {profileStatusValue}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="text-sm font-medium text-gray-700">{t("profile.statusTest", locale)}</span>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(testStatusValue)}`}>
-                    {testStatusValue}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="text-sm font-medium text-gray-700">{t("profile.statusFeedback", locale)}</span>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusPillClass(feedbackStatusValue)}`}>
-                    {feedbackStatusValue}
-                  </span>
-                </div>
-              </div>
-            )}
-          </section>
-        </div>
-      </FadeIn>
+                <div className="flex flex-col gap-5">
+                  <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
+                    {t("onboarding.usernameLabel", locale)}
+                    <input
+                      ref={usernameInputRef}
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      onBlur={() => setUsernameTouched(true)}
+                      placeholder={t("onboarding.usernamePlaceholder", locale)}
+                      minLength={2}
+                      maxLength={12}
+                      className={`min-h-[44px] rounded border-2 px-3 text-sm text-[#1a1814] focus:outline-none ${
+                        usernameTouched && username.trim() !== "" && !usernameValid
+                          ? "border-orange-400 bg-orange-50"
+                          : "border-[#e0ddd6] bg-white focus:border-[#c8410a]/50"
+                      } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
+                    />
+                    {usernameTouched && username.trim() !== "" && !usernameValid ? (
+                      <span className="pl-1 text-xs italic text-orange-700">
+                        {t("onboarding.usernameError", locale)}
+                      </span>
+                    ) : (
+                      <span className="pl-1 text-xs italic text-[#5a5650]">
+                        {t("onboarding.usernameHint", locale)}
+                      </span>
+                    )}
+                  </label>
 
-      {/* ── Demographics ── */}
-      <FadeIn delay={0.1}>
-        <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {t("profile.demographicsTitle", locale)}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t("profile.demographicsBody", locale)}
-          </p>
+                  <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
+                    {t("onboarding.birthYearLabel", locale)}
+                    <input
+                      ref={birthYearInputRef}
+                      type="number"
+                      inputMode="numeric"
+                      value={birthYear}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value.length <= 4) setBirthYear(value);
+                      }}
+                      onBlur={() => setBirthYearTouched(true)}
+                      placeholder={t("onboarding.birthYearPlaceholder", locale)}
+                      min={minBirthYear}
+                      max={maxBirthYear}
+                      maxLength={4}
+                      className={`min-h-[44px] rounded border-2 px-3 text-sm text-[#1a1814] focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                        birthYearTouched && birthYear !== "" && !birthYearValid
+                          ? "border-orange-400 bg-orange-50"
+                          : "border-[#e0ddd6] bg-white focus:border-[#c8410a]/50"
+                      } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
+                    />
+                    {birthYearTouched && birthYear !== "" && !birthYearValid ? (
+                      <span className="pl-1 text-xs italic text-orange-700">
+                        {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
+                      </span>
+                    ) : (
+                      <span className="pl-1 text-xs italic text-[#5a5650]">
+                        {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
+                      </span>
+                    )}
+                  </label>
 
-          <div className="mt-6 flex flex-col gap-4">
-            <section className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
-              <div className="mb-4">
-                <p className="text-base font-semibold text-gray-900">
-                  👤 {t("onboarding.blockBasicsTitle", locale)}
-                </p>
-                <p className="text-xs text-gray-600">{t("onboarding.blockBasicsHint", locale)}</p>
-              </div>
-              <div className="flex flex-col gap-5">
-                <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-                  {t("onboarding.usernameLabel", locale)}
-                  <input
-                    ref={usernameInputRef}
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    onBlur={() => setUsernameTouched(true)}
-                    placeholder={t("onboarding.usernamePlaceholder", locale)}
-                    minLength={2}
-                    maxLength={12}
-                    className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none ${
-                      usernameTouched && username.trim() !== "" && !usernameValid
-                        ? "border-orange-400 bg-orange-100"
-                        : "border-gray-200 bg-gray-50 focus:border-indigo-300"
-                    } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
-                  />
-                  {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                    <span className="pl-1 text-xs italic text-orange-700">
-                      {t("onboarding.usernameError", locale)}
+                  <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "gender" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                    <span className="text-sm font-medium text-[#1a1814]">
+                      {t("onboarding.genderLabel", locale)}
                     </span>
-                  ) : (
-                    <span className="pl-1 text-xs italic text-gray-500">
-                      {t("onboarding.usernameHint", locale)}
-                    </span>
-                  )}
-                </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {GENDER_OPTIONS.map((opt, idx) => (
+                        <button
+                          key={opt.value}
+                          ref={idx === 0 ? genderFirstButtonRef : undefined}
+                          type="button"
+                          onClick={() => setGender(opt.value)}
+                          className={toggleClass(gender === opt.value)}
+                        >
+                          {t(opt.labelKey, locale)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
-                  {t("onboarding.birthYearLabel", locale)}
-                  <input
-                    ref={birthYearInputRef}
-                    type="number"
-                    inputMode="numeric"
-                    value={birthYear}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value.length <= 4) {
-                        setBirthYear(value);
-                      }
-                    }}
-                    onBlur={() => setBirthYearTouched(true)}
-                    placeholder={t("onboarding.birthYearPlaceholder", locale)}
-                    min={minBirthYear}
-                    max={maxBirthYear}
-                    maxLength={4}
-                    className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
-                      birthYearTouched && birthYear !== "" && !birthYearValid
-                        ? "border-orange-400 bg-orange-100"
-                        : "border-gray-200 bg-gray-50 focus:border-indigo-300"
-                    } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
-                  />
-                  {birthYearTouched && birthYear !== "" && !birthYearValid ? (
-                    <span className="pl-1 text-xs italic text-orange-700">
-                      {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                    </span>
-                  ) : (
-                    <span className="pl-1 text-xs italic text-gray-500">
-                      {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                    </span>
-                  )}
-                </label>
+                  <div
+                    ref={countryFieldRef}
+                    className={`rounded transition ${invalidFieldFlash === "country" ? "ring-2 ring-orange-300 bg-orange-50/60 p-1" : ""}`}
+                  >
+                    <PickerTrigger
+                      label={t("onboarding.countryLabel", locale)}
+                      value={countryLabel}
+                      placeholder={t("onboarding.countryPlaceholder", locale)}
+                      onClick={() => setCountryPickerOpen(true)}
+                    />
+                  </div>
+                </div>
+              </section>
 
-                <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                  <span className="text-sm font-semibold text-gray-700">
-                    {t("onboarding.genderLabel", locale)}
+              {/* Education block */}
+              <section className="rounded border border-[#e0ddd6] bg-[#f7f5f0] p-4">
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-[#1a1814]">
+                    🎓 {t("onboarding.blockEducationTitle", locale)}
+                  </p>
+                  <p className="text-xs text-[#5a5650]">{t("onboarding.blockEducationHint", locale)}</p>
+                </div>
+                <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "education" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                  <span className="text-sm font-medium text-[#1a1814]">
+                    {t("onboarding.educationLabel", locale)}
                   </span>
                   <div className="grid grid-cols-2 gap-2">
-                    {GENDER_OPTIONS.map((opt, idx) => (
+                    {EDUCATION_OPTIONS.map((opt, idx) => (
                       <button
                         key={opt.value}
-                        ref={idx === 0 ? genderFirstButtonRef : undefined}
+                        ref={idx === 0 ? educationFirstButtonRef : undefined}
                         type="button"
-                        onClick={() => setGender(opt.value)}
-                        className={toggleClass(gender === opt.value)}
+                        onClick={() => setEducation(opt.value)}
+                        className={toggleClass(education === opt.value)}
                       >
                         {t(opt.labelKey, locale)}
                       </button>
                     ))}
                   </div>
                 </div>
+              </section>
 
-                <div
-                  ref={countryFieldRef}
-                  className={`rounded-lg transition ${invalidFieldFlash === "country" ? "ring-2 ring-orange-300 bg-orange-50/60 p-1" : ""}`}
-                >
-                  <PickerTrigger
-                    label={t("onboarding.countryLabel", locale)}
-                    value={countryLabel}
-                    placeholder={t("onboarding.countryPlaceholder", locale)}
-                    onClick={() => setCountryPickerOpen(true)}
-                  />
+              {/* Occupation block */}
+              <section className="rounded border border-[#e0ddd6] bg-[#f7f5f0] p-4">
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-[#1a1814]">
+                    💼 {t("onboarding.blockStatusTitle", locale)}
+                  </p>
+                  <p className="text-xs text-[#5a5650]">{t("onboarding.blockStatusHint", locale)}</p>
                 </div>
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-purple-100 bg-purple-50/40 p-4">
-              <div className="mb-4">
-                <p className="text-base font-semibold text-gray-900">
-                  🎓 {t("onboarding.blockEducationTitle", locale)}
-                </p>
-                <p className="text-xs text-gray-600">{t("onboarding.blockEducationHint", locale)}</p>
-              </div>
-              <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "education" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                <span className="text-sm font-semibold text-gray-700">
-                  {t("onboarding.educationLabel", locale)}
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {EDUCATION_OPTIONS.map((opt, idx) => (
-                    <button
-                      key={opt.value}
-                      ref={idx === 0 ? educationFirstButtonRef : undefined}
-                      type="button"
-                      onClick={() => setEducation(opt.value)}
-                      className={toggleClass(education === opt.value)}
-                    >
-                      {t(opt.labelKey, locale)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4">
-              <div className="mb-4">
-                <p className="text-base font-semibold text-gray-900">
-                  💼 {t("onboarding.blockStatusTitle", locale)}
-                </p>
-                <p className="text-xs text-gray-600">{t("onboarding.blockStatusHint", locale)}</p>
-              </div>
-              <div className="flex flex-col gap-5">
-                <div
-                  className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "occupationStatus" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                >
-                  <span className="text-sm font-semibold text-gray-700">
-                    {t("onboarding.occupationStatusLabel", locale)}
-                  </span>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {OCCUPATION_STATUS_OPTIONS.map((opt, idx) => (
-                      <button
-                        key={opt.value}
-                        ref={idx === 0 ? occupationStatusFirstButtonRef : undefined}
-                        type="button"
-                        onClick={() => handleOccupationStatusChange(opt.value)}
-                        className={toggleClass(occupationStatus === opt.value)}
-                      >
-                        {t(opt.labelKey, locale)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {needsWorkFields && (
-                  <>
-                    <div
-                      className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "workSchedule" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                    >
-                      <span className="text-sm font-semibold text-gray-700">
-                        {t("onboarding.workScheduleLabel", locale)}
-                      </span>
-                      <div className="grid grid-cols-2 gap-2">
-                        {WORK_SCHEDULE_OPTIONS.map((opt, idx) => (
-                          <button
-                            key={opt.value}
-                            ref={idx === 0 ? workScheduleFirstButtonRef : undefined}
-                            type="button"
-                            onClick={() => setWorkSchedule(opt.value)}
-                            className={toggleClass(workSchedule === opt.value)}
-                          >
-                            {t(opt.labelKey, locale)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div
-                      className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "companySize" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                    >
-                      <span className="text-sm font-semibold text-gray-700">
-                        {t("onboarding.companySizeLabel", locale)}
-                      </span>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {COMPANY_SIZE_OPTIONS.map((opt, idx) => (
-                          <button
-                            key={opt.value}
-                            ref={idx === 0 ? companySizeFirstButtonRef : undefined}
-                            type="button"
-                            onClick={() => setCompanySize(opt.value)}
-                            className={toggleClass(companySize === opt.value)}
-                          >
-                            {t(opt.labelKey, locale)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {needsStudyLevel && (
-                  <div
-                    className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "studyLevel" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                  >
-                    <span className="text-sm font-semibold text-gray-700">
-                      {t("onboarding.studyLevelLabel", locale)}
+                <div className="flex flex-col gap-5">
+                  <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "occupationStatus" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                    <span className="text-sm font-medium text-[#1a1814]">
+                      {t("onboarding.occupationStatusLabel", locale)}
                     </span>
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {STUDY_LEVEL_OPTIONS.map((opt, idx) => (
+                      {OCCUPATION_STATUS_OPTIONS.map((opt, idx) => (
                         <button
                           key={opt.value}
-                          ref={idx === 0 ? studyLevelFirstButtonRef : undefined}
+                          ref={idx === 0 ? occupationStatusFirstButtonRef : undefined}
                           type="button"
-                          onClick={() => setStudyLevel(opt.value)}
-                          className={toggleClass(studyLevel === opt.value)}
+                          onClick={() => handleOccupationStatusChange(opt.value)}
+                          className={toggleClass(occupationStatus === opt.value)}
                         >
                           {t(opt.labelKey, locale)}
                         </button>
                       ))}
                     </div>
                   </div>
-                )}
 
-                {occupationStatus === "unemployed" && (
-                  <div className="flex flex-col gap-2 rounded-lg p-1 transition">
-                    <span className="text-sm font-semibold text-gray-700">
-                      {t("onboarding.unemploymentDurationLabel", locale)}
-                    </span>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                      {UNEMPLOYMENT_DURATION_OPTIONS.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => setUnemploymentDuration(opt.value)}
-                          className={toggleClass(unemploymentDuration === opt.value)}
-                        >
-                          {t(opt.labelKey, locale)}
-                        </button>
-                      ))}
+                  {needsWorkFields && (
+                    <>
+                      <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "workSchedule" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                        <span className="text-sm font-medium text-[#1a1814]">
+                          {t("onboarding.workScheduleLabel", locale)}
+                        </span>
+                        <div className="grid grid-cols-2 gap-2">
+                          {WORK_SCHEDULE_OPTIONS.map((opt, idx) => (
+                            <button
+                              key={opt.value}
+                              ref={idx === 0 ? workScheduleFirstButtonRef : undefined}
+                              type="button"
+                              onClick={() => setWorkSchedule(opt.value)}
+                              className={toggleClass(workSchedule === opt.value)}
+                            >
+                              {t(opt.labelKey, locale)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "companySize" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                        <span className="text-sm font-medium text-[#1a1814]">
+                          {t("onboarding.companySizeLabel", locale)}
+                        </span>
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          {COMPANY_SIZE_OPTIONS.map((opt, idx) => (
+                            <button
+                              key={opt.value}
+                              ref={idx === 0 ? companySizeFirstButtonRef : undefined}
+                              type="button"
+                              onClick={() => setCompanySize(opt.value)}
+                              className={toggleClass(companySize === opt.value)}
+                            >
+                              {t(opt.labelKey, locale)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {needsStudyLevel && (
+                    <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "studyLevel" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
+                      <span className="text-sm font-medium text-[#1a1814]">
+                        {t("onboarding.studyLevelLabel", locale)}
+                      </span>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {STUDY_LEVEL_OPTIONS.map((opt, idx) => (
+                          <button
+                            key={opt.value}
+                            ref={idx === 0 ? studyLevelFirstButtonRef : undefined}
+                            type="button"
+                            onClick={() => setStudyLevel(opt.value)}
+                            className={toggleClass(studyLevel === opt.value)}
+                          >
+                            {t(opt.labelKey, locale)}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <span className="pl-1 text-xs italic text-gray-500">
-                      {t("onboarding.unemploymentDurationOptionalHint", locale)}
+                  )}
+
+                  {occupationStatus === "unemployed" && (
+                    <div className="flex flex-col gap-2 rounded p-1 transition">
+                      <span className="text-sm font-medium text-[#1a1814]">
+                        {t("onboarding.unemploymentDurationLabel", locale)}
+                      </span>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                        {UNEMPLOYMENT_DURATION_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setUnemploymentDuration(opt.value)}
+                            className={toggleClass(unemploymentDuration === opt.value)}
+                          >
+                            {t(opt.labelKey, locale)}
+                          </button>
+                        ))}
+                      </div>
+                      <span className="pl-1 text-xs italic text-[#5a5650]">
+                        {t("onboarding.unemploymentDurationOptionalHint", locale)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </div>
+          </section>
+        </FadeIn>
+
+        {/* ── Locale ── */}
+        <FadeIn delay={0.1}>
+          <section className="rounded border border-[#e0ddd6] bg-white p-6">
+            <h2 className="text-base font-semibold text-[#1a1814]">{t("profile.localeTitle", locale)}</h2>
+            <p className="mt-1 text-sm text-[#5a5650]">
+              {t("profile.localeBody", locale)}
+            </p>
+            <p className="mt-1 text-xs text-[#a09c96]">
+              {t("profile.localeAutoHint", locale)}
+            </p>
+
+            <div className="mt-4 rounded border border-[#e0ddd6] bg-[#f7f5f0] p-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                {SUPPORTED_LOCALES.map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => setSelectedLocale(loc)}
+                    className={`group relative flex min-h-[52px] items-center gap-3 rounded border px-4 text-left text-sm font-medium transition ${
+                      selectedLocale === loc
+                        ? "border-[#c8410a]/30 bg-white text-[#c8410a] shadow-sm"
+                        : "border-transparent bg-white/60 text-[#5a5650] hover:border-[#e0ddd6] hover:bg-white"
+                    }`}
+                  >
+                    <span className="text-xl leading-none">{LOCALE_META[loc].flag}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold">
+                        {t(`locale.${loc}` as const, loc)}
+                      </span>
+                      <span className="font-ibm-plex-mono block text-[10px] uppercase tracking-[1px] text-[#a09c96]">
+                        {LOCALE_META[loc].label}
+                      </span>
                     </span>
-                  </div>
-                )}
+                    {selectedLocale === loc && (
+                      <span className="ml-auto h-2 w-2 rounded-full bg-[#c8410a]" />
+                    )}
+                  </button>
+                ))}
               </div>
-            </section>
-          </div>
-
-        </section>
-      </FadeIn>
-
-      {/* ── Locale ── */}
-      <FadeIn delay={0.2}>
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-900">{t("profile.localeTitle", locale)}</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t("profile.localeBody", locale)}
-          </p>
-          <p className="mt-1 text-xs text-gray-500">
-            {t("profile.localeAutoHint", locale)}
-          </p>
-
-          <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            {SUPPORTED_LOCALES.map((loc) => (
-              <button
-                key={loc}
-                type="button"
-                onClick={() => setSelectedLocale(loc)}
-                className={`group relative flex min-h-[52px] items-center gap-3 rounded-lg border px-4 text-left text-sm font-medium transition ${
-                  selectedLocale === loc
-                    ? "scale-[1.01] border-indigo-300 bg-white text-indigo-700 shadow-sm"
-                    : "border-transparent bg-white/60 text-gray-600 hover:border-gray-200 hover:bg-white"
-                }`}
-              >
-                <span className="text-xl leading-none">{LOCALE_META[loc].flag}</span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold">
-                    {t(`locale.${loc}` as const, loc)}
-                  </span>
-                  <span className="block text-xs uppercase tracking-[0.08em] text-gray-400">
-                    {LOCALE_META[loc].label}
-                  </span>
-                </span>
-                {selectedLocale === loc && (
-                  <span className="ml-auto h-2 w-2 rounded-full bg-indigo-500" />
-                )}
-              </button>
-            ))}
             </div>
-          </div>
 
-          <div className="mt-3 min-h-[20px]">
-            {selectedLocale !== savedLocale ? (
-              <p className="text-xs text-amber-700">{t("profile.localePending", locale)}</p>
-            ) : saveState === "saved" ? (
-              <p className="inline-flex items-center gap-1 text-xs text-emerald-700">
-                <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4.5 10.5l3.2 3.2L15.5 6.3" />
-                </svg>
-                {t("profile.localeSaved", locale)}
-              </p>
-            ) : null}
-          </div>
-        </section>
-      </FadeIn>
-
-      {/* ── Delete zone ── */}
-      <FadeIn delay={0.25}>
-        <section className="rounded-2xl border border-rose-200 bg-rose-50/70 p-6">
-          <h2 className="inline-flex items-center gap-2 text-lg font-semibold text-rose-900">
-            <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3h4m-7 3h10m-1 0-.7 9.1a1.2 1.2 0 0 1-1.2 1.1H8a1.2 1.2 0 0 1-1.2-1.1L6 6m2 0v8m4-8v8" />
-            </svg>
-            {t("profile.deleteTitle", locale)}
-          </h2>
-          <p className="mt-2 text-sm text-rose-800">
-            {t("profile.deleteBody", locale)}
-          </p>
-          <button
-            type="button"
-            onClick={() => setShowDeleteModal(true)}
-            disabled={isDeleting}
-            className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-rose-600 px-5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:bg-rose-300"
-          >
-            {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
-          </button>
-        </section>
-      </FadeIn>
-
-      {showSaveBar && (
-        <div className="sticky bottom-4 z-30 mt-2">
-          <div className="flex items-center justify-between gap-3 rounded-2xl border border-indigo-100 bg-white/95 px-4 py-3 shadow-lg shadow-indigo-100 backdrop-blur">
-            <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-indigo-500">
-                {t("profile.saveBarLabel", locale)}
-              </p>
-              <p className="truncate text-sm font-medium text-gray-700">
-                {isDirty || saveState === "saving"
-                  ? t("profile.saveBarUnsaved", locale)
-                  : saveState === "saved"
-                    ? t("profile.saveBarSaved", locale)
-                    : saveState === "error"
-                      ? t("profile.saveError", locale)
-                      : t("profile.saveBarUnsaved", locale)}
-              </p>
-            </div>
-            <AnimatePresence mode="wait">
-              {saveState === "saved" && (
-                <motion.div
-                  key="saved"
-                  initial={{ opacity: 0, scale: 0.7 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.7 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 20 }}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
-                  aria-live="polite"
-                >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="mt-3 min-h-[20px]">
+              {selectedLocale !== savedLocale ? (
+                <p className="text-xs text-amber-700">{t("profile.localePending", locale)}</p>
+              ) : saveState === "saved" ? (
+                <p className="inline-flex items-center gap-1 text-xs text-emerald-700">
+                  <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4.5 10.5l3.2 3.2L15.5 6.3" />
                   </svg>
-                </motion.div>
-              )}
-              {saveState === "error" && (
-                <motion.div
-                  key="error"
-                  initial={{ opacity: 0, scale: 0.7 }}
-                  animate={{ opacity: 1, scale: 1, x: [0, -3, 3, -2, 2, 0] }}
-                  exit={{ opacity: 0, scale: 0.7 }}
-                  transition={{ duration: 0.35 }}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-100 text-rose-600"
-                  aria-live="polite"
-                >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" />
-                  </svg>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {t("profile.localeSaved", locale)}
+                </p>
+              ) : null}
+            </div>
+          </section>
+        </FadeIn>
+
+        {/* ── Delete zone ── */}
+        <FadeIn delay={0.15}>
+          <section className="rounded border border-rose-200 bg-rose-50/70 p-6">
+            <h2 className="inline-flex items-center gap-2 text-base font-semibold text-rose-900">
+              <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 3h4m-7 3h10m-1 0-.7 9.1a1.2 1.2 0 0 1-1.2 1.1H8a1.2 1.2 0 0 1-1.2-1.1L6 6m2 0v8m4-8v8" />
+              </svg>
+              {t("profile.deleteTitle", locale)}
+            </h2>
+            <p className="mt-2 text-sm text-rose-800">
+              {t("profile.deleteBody", locale)}
+            </p>
             <button
               type="button"
-              onClick={handleSaveDemographics}
-              disabled={!canSubmitDemo}
-              className="min-h-[44px] shrink-0 rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+              onClick={() => setShowDeleteModal(true)}
+              disabled={isDeleting}
+              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded bg-rose-600 px-5 text-sm font-medium text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:bg-rose-300"
             >
-              {isSavingDemo ? t("actions.save", locale) : t("profile.saveChanges", locale)}
+              {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
             </button>
+          </section>
+        </FadeIn>
+
+        {/* ── Save bar ── */}
+        {showSaveBar && (
+          <div className="sticky bottom-4 z-30 mt-2">
+            <div className="flex items-center justify-between gap-3 rounded border border-[#e0ddd6] bg-white/95 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur">
+              <div className="min-w-0">
+                <p className="font-ibm-plex-mono text-[10px] uppercase tracking-[2px] text-[#c8410a]">
+                  {t("profile.saveBarLabel", locale)}
+                </p>
+                <p className="truncate text-sm font-medium text-[#1a1814]">
+                  {isDirty || saveState === "saving"
+                    ? t("profile.saveBarUnsaved", locale)
+                    : saveState === "saved"
+                      ? t("profile.saveBarSaved", locale)
+                      : saveState === "error"
+                        ? t("profile.saveError", locale)
+                        : t("profile.saveBarUnsaved", locale)}
+                </p>
+              </div>
+              <AnimatePresence mode="wait">
+                {saveState === "saved" && (
+                  <motion.div
+                    key="saved"
+                    initial={{ opacity: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.7 }}
+                    transition={{ type: "spring", stiffness: 280, damping: 20 }}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
+                    aria-live="polite"
+                  >
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4.5 10.5l3.2 3.2L15.5 6.3" />
+                    </svg>
+                  </motion.div>
+                )}
+                {saveState === "error" && (
+                  <motion.div
+                    key="error"
+                    initial={{ opacity: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, scale: 1, x: [0, -3, 3, -2, 2, 0] }}
+                    exit={{ opacity: 0, scale: 0.7 }}
+                    transition={{ duration: 0.35 }}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-100 text-rose-600"
+                    aria-live="polite"
+                  >
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" />
+                    </svg>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <button
+                type="button"
+                onClick={handleSaveDemographics}
+                disabled={!canSubmitDemo}
+                className="min-h-[44px] shrink-0 rounded bg-[#c8410a] px-5 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408] disabled:cursor-not-allowed disabled:bg-[#e0ddd6] disabled:text-[#a09c96] disabled:hover:translate-y-0"
+              >
+                {isSavingDemo ? t("actions.save", locale) : t("profile.saveChanges", locale)}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <ConfirmModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDeleteConfirm}
-        title={t("profile.confirmTitle", locale)}
-        description={t("profile.confirmBody", locale)}
-        confirmText={t("profile.modalConfirm", locale)}
-        cancelText={t("profile.modalCancel", locale)}
-        loadingText={t("actions.deleting", locale)}
-        loadingNote={t("profile.deleteLoadingNote", locale)}
-        loadingDurationMs={DELETE_GOODBYE_MS}
-        variant="danger"
-        isLoading={isDeleting}
-      />
+        <ConfirmModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteConfirm}
+          title={t("profile.confirmTitle", locale)}
+          description={t("profile.confirmBody", locale)}
+          confirmText={t("profile.modalConfirm", locale)}
+          cancelText={t("profile.modalCancel", locale)}
+          loadingText={t("actions.deleting", locale)}
+          loadingNote={t("profile.deleteLoadingNote", locale)}
+          loadingDurationMs={DELETE_GOODBYE_MS}
+          variant="danger"
+          isLoading={isDeleting}
+        />
 
-      {/* Country picker */}
-      <Picker
-        isOpen={countryPickerOpen}
-        onClose={() => setCountryPickerOpen(false)}
-        onSelect={setCountry}
-        options={countryOptions}
-        selectedValue={country}
-        title={t("onboarding.countryLabel", locale)}
-        searchable
-        searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
-      />
+        {/* Country picker */}
+        <Picker
+          isOpen={countryPickerOpen}
+          onClose={() => setCountryPickerOpen(false)}
+          onSelect={setCountry}
+          options={countryOptions}
+          selectedValue={country}
+          title={t("onboarding.countryLabel", locale)}
+          searchable
+          searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
+        />
       </main>
     </div>
   );

@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -12,18 +12,24 @@ import { Footer } from "@/components/Footer";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  display: "swap", // Show fallback font immediately
-  preload: true,
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
-  display: "swap", // Show fallback font immediately
-  preload: true,
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,9 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
         { url: "/favicon.svg", type: "image/svg+xml" },
       ],
       shortcut: ["/favicon.svg"],
-      apple: [
-        { url: "/apple-icon" },
-      ],
+      apple: [{ url: "/apple-icon" }],
     },
   };
 }
@@ -78,9 +82,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang={DEFAULT_LOCALE}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${playfair.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} antialiased`}>
         <ClerkProvider
           signInFallbackRedirectUrl="/dashboard"
           signUpFallbackRedirectUrl="/onboarding"
@@ -88,7 +90,7 @@ export default async function RootLayout({
           <LocaleProvider>
             <ToastProvider>
               <NavBar />
-              <div className="pb-20">{children}</div>
+              <div className="pb-16">{children}</div>
               <Footer />
             </ToastProvider>
           </LocaleProvider>

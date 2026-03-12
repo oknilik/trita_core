@@ -22,10 +22,10 @@ interface InviteSectionProps {
 function getRelationshipColor(relationship?: string | null): string {
   if (!relationship) return "";
   const rel = relationship.toUpperCase();
-  if (rel === "FRIEND") return "bg-blue-50 text-blue-600 border-blue-200";
-  if (rel === "COLLEAGUE") return "bg-purple-50 text-purple-600 border-purple-200";
-  if (rel === "FAMILY") return "bg-pink-50 text-pink-600 border-pink-200";
-  if (rel === "PARTNER") return "bg-rose-50 text-rose-600 border-rose-200";
+  if (rel === "FRIEND") return "bg-[#edf4ef] text-[#1a5c3a] border-[#cfe2d6]";
+  if (rel === "COLLEAGUE") return "bg-[#fef3ec] text-[#8b2f09] border-[#f3d4c8]";
+  if (rel === "FAMILY") return "bg-[#f3eee4] text-[#5b4a3c] border-[#dfd3c5]";
+  if (rel === "PARTNER") return "bg-[#f7efe8] text-[#9a4a2b] border-[#e8d2c3]";
   return "bg-gray-50 text-gray-600 border-gray-200"; // OTHER
 }
 
@@ -178,7 +178,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
     <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
       {/* Modern header with decorative bar */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+        <div className="h-1 w-12 bg-gradient-to-r from-[#c8410a] to-[#8b2f09] rounded-full" />
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {t("invite.title", locale)}
         </h2>
@@ -208,20 +208,20 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
           </p>
         </div>
 
-        <div className="rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 px-5 py-3 border border-indigo-100/50">
-          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+        <div className="rounded-xl bg-gradient-to-br from-[#fef3ec] to-[#f3eee4] px-5 py-3 border border-[#f3d4c8]/50">
+          <p className="text-xs font-semibold text-[#c8410a] uppercase tracking-wider">
             {t("invite.limit", locale) || "Limit"}
           </p>
-          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-[#c8410a] to-[#8b2f09] bg-clip-text text-transparent">
             {activeCount}/5
           </p>
         </div>
       </div>
 
       {/* Unified invitation creation */}
-      <div className="rounded-2xl border border-indigo-100/50 bg-gradient-to-br from-indigo-50/30 to-purple-50/30 p-6 glass-effect">
+      <div className="rounded-2xl border border-[#f3d4c8]/50 bg-gradient-to-br from-[#fef3ec]/60 to-[#f3eee4]/60 p-6 glass-effect">
         <div className="flex items-center gap-2 mb-4">
-          <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-5 w-5 text-[#c8410a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           <p className="text-sm font-semibold text-gray-900">
@@ -235,13 +235,13 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
             value={email}
             onChange={(event) => { setEmail(event.target.value); setCreateError(null); }}
             placeholder={t("invite.emailPlaceholder", locale) || "Email cím (opcionális)"}
-            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-gray-900 focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-indigo-100 focus:border-indigo-300 focus:ring-indigo-100"}`}
+            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-gray-900 focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-[#f3d4c8] focus:border-[#e8c7b8] focus:ring-[#f3d4c8]"}`}
           />
           <button
             type="button"
             onClick={handleCreate}
             disabled={isCreating || !canCreate || showSuccess}
-            className="group min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+            className="group min-h-[48px] rounded-lg bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
             {showSuccess ? (
               <span className="inline-flex items-center gap-2">
@@ -268,7 +268,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
         )}
 
         <div className="mt-3 flex items-start gap-2">
-          <svg className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-4 w-4 text-[#c8410a] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xs text-gray-600 leading-relaxed">
@@ -281,7 +281,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
         </p>
 
         {completed.length < 2 && (
-          <p className="mt-2 text-xs font-medium text-indigo-700">
+          <p className="mt-2 text-xs font-medium text-[#8b2f09]">
             {tf("invite.compareHint", locale, { count: completed.length })}
           </p>
         )}
@@ -345,7 +345,7 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
                         className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                           copiedToken === inv.token
                             ? "text-emerald-600 bg-emerald-50"
-                            : "text-indigo-600 hover:bg-indigo-50"
+                            : "text-[#c8410a] hover:bg-[#fef3ec]"
                         }`}
                       >
                         {copiedToken === inv.token ? (

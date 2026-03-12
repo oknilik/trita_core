@@ -19,12 +19,19 @@ export default async function TeamListPage() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, role: true },
+    select: { id: true },
   });
-  if (!profile || profile.role !== "MANAGER") redirect("/dashboard");
+  if (!profile) redirect("/dashboard");
 
+  const memberships = await prisma.organizationMember.findMany({
+    where: { userId: profile.id },
+    select: { orgId: true },
+  });
+  if (memberships.length === 0) redirect("/org");
+
+  const orgIds = memberships.map((m) => m.orgId);
   const teams = await prisma.team.findMany({
-    where: { ownerId: profile.id },
+    where: { orgId: { in: orgIds } },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -34,8 +41,8 @@ export default async function TeamListPage() {
     },
   });
 
-  const isHu = locale !== "en" && locale !== "de";
-  const dateLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "hu-HU";
+  const isHu = locale !== "en";
+  const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
   return (
     <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white min-h-dvh">

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { ProgressBar } from '@/components/assessment/ProgressBar'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
-import { AssessmentDoodle } from '@/components/illustrations/AssessmentDoodle'
+import { BackgroundDoodles } from '@/components/illustrations/BackgroundDoodles'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
@@ -490,26 +490,26 @@ export function AssessmentClient({
 
   if (showIntro) {
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-[#faf9f6]">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-[#faf9f6]" aria-hidden="true" />
         <div className="relative z-10 mx-auto max-w-2xl px-4 py-12">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-10 shadow-sm">
-            <h1 className="text-2xl font-bold text-gray-900">
+          <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-10">
+            <h1 className="text-2xl font-bold text-[#1a1814]">
               👋 {t('assessment.introWelcome', locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
               {t('assessment.introBody', locale)}
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
               {t("assessment.introAutoAdvanceHint", locale)}
             </p>
-            <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
+            <div className="mt-5 rounded-xl border border-[#f3d4c8] bg-[#fef3ec] px-5 py-4 text-sm leading-relaxed text-[#8b2f09]">
               {t('assessment.introCount', locale)}
             </div>
             <button
               type="button"
               onClick={() => setShowIntro(false)}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[#a8340a] hover:shadow-xl"
             >
               {t('assessment.introStart', locale)}
             </button>
@@ -520,36 +520,31 @@ export function AssessmentClient({
   }
 
   return (
-    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+    <div className="relative min-h-dvh bg-[#faf9f6]">
+      <BackgroundDoodles primarySrc={doodleSrc} />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-[#faf9f6]" aria-hidden="true" />
       <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-[#f3d4c8]/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
           <div className="mt-2 overflow-x-auto">
             <div className="flex min-w-max items-center gap-2 text-xs text-gray-600">
               <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
                 {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
               </div>
-              <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1 font-medium text-indigo-700">
+              <div className="whitespace-nowrap rounded-md bg-[#fef3ec] px-2 py-1 font-medium text-[#8b2f09]">
                 {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mb-6 hidden rounded-2xl border border-gray-100 bg-white p-4 sm:block">
-          <div className="h-36 w-full">
-            <AssessmentDoodle src={doodleSrc} />
-          </div>
-        </div>
-
         <div className="mb-4 flex flex-wrap items-center gap-3">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-xs text-[#3d3a35]">
             <input
               type="checkbox"
               checked={autoAdvance}
               onChange={(event) => setAutoAdvance(event.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+              className="h-4 w-4 rounded border-gray-300 text-[#c8410a]"
             />
             {t('assessment.autoAdvance', locale)}
           </label>
@@ -630,9 +625,9 @@ export function AssessmentClient({
             <motion.button
               onClick={() => void handleNextStep()}
               aria-disabled={!canProceed || isSavingDraft}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                canProceed && !isSavingDraft
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'
+            className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+              canProceed && !isSavingDraft
+                  ? 'bg-[#c8410a] text-white shadow-md hover:bg-[#a8340a] hover:shadow-lg'
                   : 'cursor-not-allowed bg-gray-200 text-gray-400'
               }`}
               whileHover={canProceed && !isSavingDraft ? { scale: 1.02 } : {}}
@@ -646,7 +641,7 @@ export function AssessmentClient({
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 !isSubmitting
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'
+                  ? 'bg-[#c8410a] text-white shadow-md hover:bg-[#a8340a] hover:shadow-lg'
                   : 'cursor-not-allowed bg-gray-200 text-gray-400'
               }`}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}

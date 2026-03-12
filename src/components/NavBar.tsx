@@ -1,49 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { MobileDrawer } from "@/components/MobileDrawer";
-import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 
 export function NavBar() {
   const { locale } = useLocale();
-  const pathname = usePathname();
   const { isSignedIn } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!isSignedIn) setDrawerOpen(false);
   }, [isSignedIn]);
 
-  const linkClass = (href: string) =>
-    `min-h-[44px] flex items-center hover:text-indigo-600 ${
-      pathname === href ? "text-indigo-600" : ""
-    }`;
-
   return (
-    <header className="relative z-40 w-full bg-white pb-2">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/trita-logo.svg" alt="trita" className="h-[90px] w-auto" />
+    <header className="sticky top-0 z-40 w-full border-b border-[#e8e4dc] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-4 lg:px-16">
+        <Link
+          href="/"
+          aria-label="trita"
+          className="font-playfair inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-[#1a1814]"
+        >
+          {"trit"}
+          <span className="text-[#c8410a]">a</span>
         </Link>
-        {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-4 text-sm font-semibold text-gray-600">
+
+        <nav className="hidden items-center gap-7 lg:flex">
           <SignedOut>
-            <LocaleSwitcher />
-            <Link href="/sign-in" className={linkClass("/sign-in")}>
-              {t("actions.signInCta", locale)}
+            <Link href="/#how-it-works" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+              Hogyan működik
+            </Link>
+            <Link href="/#science" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+              Tudomány
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+              Árazás
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
             >
-              {t("actions.signUpCta", locale)}
+              Kipróbálom ingyen
             </Link>
           </SignedOut>
           <SignedIn>
@@ -51,33 +52,24 @@ export function NavBar() {
           </SignedIn>
         </nav>
 
-        {/* Mobile: signed out → auth buttons only (no hamburger, no locale switcher) */}
         <SignedOut>
-          <div className="flex items-center gap-3 lg:hidden">
-            <LocaleSwitcher variant="icon" />
-            <Link
-              href="/sign-in"
-              className="min-h-[44px] flex items-center text-sm font-semibold text-gray-600 hover:text-indigo-600"
-            >
-              {t("actions.signInCta", locale)}
-            </Link>
+          <div className="flex items-center lg:hidden">
             <Link
               href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
             >
-              {t("actions.signUpCta", locale)}
+              Kipróbálom
             </Link>
           </div>
         </SignedOut>
 
-        {/* Mobile: signed in → hamburger menu */}
         <SignedIn>
           <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-[#e8e4dc] bg-white text-[#3d3a35] transition hover:bg-[#f5efe6] hover:text-[#1a1814]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,9 +90,6 @@ export function NavBar() {
 
         <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
       </div>
-      <svg className="absolute inset-x-0 -bottom-5 h-7 w-full text-white" viewBox="0 0 1200 50" preserveAspectRatio="none" fill="currentColor">
-        <path d="M0,0 L0,10 C150,42 350,0 600,22 C850,44 1050,0 1200,10 L1200,0 Z" />
-      </svg>
     </header>
   );
 }

@@ -13,7 +13,7 @@ type Step = "name" | "invite";
 
 export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) {
   const router = useRouter();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [step, setStep] = useState<Step>("name");
   const [name, setName] = useState(orgName);
   const [inviteEmails, setInviteEmails] = useState(["", "", ""]);

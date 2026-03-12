@@ -15,14 +15,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Honesty–Humility",
         hu: "Őszinteség–alázat",
-        de: "Ehrlichkeit–Bescheidenheit",
       },
       color: "#818CF8",
       description: "Az őszinteség-alázat dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy alskálára bontható: Őszinteség (valódi, nem manipulatív viszonyulás másokhoz), Igazságosság (a csalás és korrupció kerülése), Kapzsiság-kerülés (az anyagi javak és státusz iránti közömbösség), Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
       descriptionByLocale: {
         en: "The Honesty-Humility dimension reflects the extent to which a person avoids manipulating others for personal gain, feels little temptation to break rules, is uninterested in lavish wealth and luxury, and feels no special sense of entitlement. Its four facets are Sincerity (genuine, non-manipulative engagement with others), Fairness (avoidance of fraud and exploitation), Greed Avoidance (indifference to material wealth and social status), and Modesty (not viewing oneself as superior or deserving of special treatment).",
         hu: "Az őszinteség-alázat dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy alskálára bontható: Őszinteség (valódi, nem manipulatív viszonyulás másokhoz), Igazságosság (a csalás és korrupció kerülése), Kapzsiság-kerülés (az anyagi javak és státusz iránti közömbösség), Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
-        de: "Die Ehrlichkeit-Bescheidenheit-Dimension spiegelt wider, inwieweit eine Person Manipulation anderer vermeidet, wenig Versuchung verspürt Regeln zu brechen, kein Interesse an Luxus und Reichtum hat und kein besonderes Anspruchsdenken zeigt. Ihre vier Facetten sind Aufrichtigkeit (echtes, nicht-manipulatives Verhalten gegenüber anderen), Fairness (Vermeidung von Betrug und Ausbeutung), Genügsamkeit (Gleichgültigkeit gegenüber materiellem Reichtum und sozialem Status) und Bescheidenheit (sich nicht als überlegen oder sonderlich privilegiert zu betrachten).",
       },
       insights: {
         low: "Hajlamos vagy másokat hízelgéssel vagy tettetett barátsággal befolyásolni, szabályokat megszegni személyes haszonszerzés céljából, és erős anyagi, illetve státuszorientált motivációval rendelkezel.",
@@ -40,17 +38,12 @@ export const hexacoConfig: TestConfig = {
           mid: "Általában becsületesen és igazságosan viszonyulsz másokhoz, bár bizonyos helyzetekben a személyes érdekek is befolyásolhatják a döntéseidet.",
           high: "Kerülöd a manipulációt és a megtévesztést, kevéssé vonz az anyagi gazdagság és a státusz, és valódi szerénységgel, őszintén viszonyulsz másokhoz.",
         },
-        de: {
-          low: "Du neigst dazu, andere zu schmeicheln oder so zu tun, als mögest du sie, um Gefallen zu erlangen, biegst oder brichst Regeln zu deinem Vorteil und bist stark von materiellem Gewinn und Statusdenken motiviert.",
-          mid: "Du verhältst dich anderen gegenüber generell ehrlich und fair, obwohl persönliche Interessen in bestimmten Situationen deine Entscheidungen beeinflussen können.",
-          high: "Du vermeidest Manipulation und Täuschung, verspürst wenig Zug zu materiellem Reichtum oder Status und begegnest anderen mit echter Aufrichtigkeit und Bescheidenheit.",
-        },
       },
       facets: [
-        { code: "sincerity", label: "Sincerity", labelByLocale: { en: "Sincerity", hu: "Őszinteség", de: "Aufrichtigkeit" } },
-        { code: "fairness", label: "Fairness", labelByLocale: { en: "Fairness", hu: "Igazságosság", de: "Fairness" } },
-        { code: "greed_avoidance", label: "Greed Avoidance", labelByLocale: { en: "Greed Avoidance", hu: "Kapzsiság-kerülés", de: "Genügsamkeit" } },
-        { code: "modesty", label: "Modesty", labelByLocale: { en: "Modesty", hu: "Szerénység", de: "Bescheidenheit" } },
+        { code: "sincerity", label: "Sincerity", labelByLocale: { en: "Sincerity", hu: "Őszinteség" } },
+        { code: "fairness", label: "Fairness", labelByLocale: { en: "Fairness", hu: "Igazságosság" } },
+        { code: "greed_avoidance", label: "Greed Avoidance", labelByLocale: { en: "Greed Avoidance", hu: "Kapzsiság-kerülés" } },
+        { code: "modesty", label: "Modesty", labelByLocale: { en: "Modesty", hu: "Szerénység" } },
       ],
     },
     {
@@ -59,14 +52,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Emotionality",
         hu: "Érzelmesség",
-        de: "Emotionalität",
       },
       color: "#FB7185",
       description: "Az érzelmesség dimenzió azt méri, mennyire érzékeny valaki a fizikai veszélyekre és a stresszes helyzetekre, mennyire igényli mások érzelmi támogatását, és mennyire erős az érzelmi kötődése és empátiája. Négy facetje a Félelem (a fizikai sérülés elkerülésére való hajlam), a Szorongás (aggódásra való hajlam különféle nehézségekkel szemben), a Függőség (mások érzelmi támogatásának igénye) és az Érzelmesség (erős érzelmi kötődés és empatikus érzékenység mások iránt).",
       descriptionByLocale: {
         en: "The Emotionality dimension measures sensitivity to physical danger and life stresses, the need for emotional support from others, and the strength of emotional bonds and empathic sensitivity. Its four facets are Fearfulness (tendency to avoid physical harm), Anxiety (tendency to worry in response to difficulties), Dependence (need for emotional support from others), and Sentimentality (strong emotional attachments and empathic sensitivity to others' feelings).",
         hu: "Az érzelmesség dimenzió azt méri, mennyire érzékeny valaki a fizikai veszélyekre és a stresszes helyzetekre, mennyire igényli mások érzelmi támogatását, és mennyire erős az érzelmi kötődése és empátiája. Négy facetje a Félelem (a fizikai sérülés elkerülésére való hajlam), a Szorongás (aggódásra való hajlam különféle nehézségekkel szemben), a Függőség (mások érzelmi támogatásának igénye) és az Érzelmesség (erős érzelmi kötődés és empatikus érzékenység mások iránt).",
-        de: "Die Emotionalitätsdimension misst die Empfindlichkeit gegenüber physischen Gefahren und Lebensstress, das Bedürfnis nach emotionaler Unterstützung durch andere sowie die Stärke emotionaler Bindungen und empathischer Sensibilität. Ihre vier Facetten sind Ängstlichkeit (Neigung, körperlichen Schaden zu vermeiden), Besorgnis (Neigung zur Sorge bei Schwierigkeiten), Abhängigkeit (Bedürfnis nach emotionaler Unterstützung von anderen) und Empfindsamkeit (starke emotionale Bindungen und empathische Sensibilität für die Gefühle anderer).",
       },
       insights: {
         low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, kevés szükséged van mások érzelmi támogatására, és érzelmileg elkülönülten éled meg a kapcsolataidat.",
@@ -84,17 +75,12 @@ export const hexacoConfig: TestConfig = {
           mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és empátiát érzel mások iránt, de általában önállóan is megbirkózol a kihívásokkal.",
           high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, fontos számodra a közel állókkal való érzelmi megosztás. Ez az empátia és érzelmi mélység a meleg, gondoskodó kapcsolatok alapja lehet.",
         },
-        de: {
-          low: "Physische Gefahren schrecken dich nicht ab, du machst dir auch in stressigen Situationen wenig Sorgen, hast wenig Bedürfnis, deine Probleme mit anderen zu teilen, und erlebst deine Beziehungen eher emotional distanziert.",
-          mid: "Du erlebst mäßige emotionale Intensität: Du suchst gelegentlich Unterstützung in stressigen Situationen und empfindest Empathie für andere, meisterst Herausforderungen aber meist selbstständig.",
-          high: "Du bist stark emotional verbunden: empfindlich für die Gefühle anderer, von Ängsten und Stress intensiv beeinflusst und fühlst ein echtes Bedürfnis, deine Sorgen mit nahestehenden Menschen zu teilen. Diese emotionale Tiefe und Empathie kann die Grundlage warmer, fürsorglicher Beziehungen sein.",
-        },
       },
       facets: [
-        { code: "fearfulness", label: "Fearfulness", labelByLocale: { en: "Fearfulness", hu: "Félelem", de: "Ängstlichkeit" } },
-        { code: "anxiety", label: "Anxiety", labelByLocale: { en: "Anxiety", hu: "Szorongás", de: "Besorgnis" } },
-        { code: "dependence", label: "Dependence", labelByLocale: { en: "Dependence", hu: "Függőség", de: "Abhängigkeit" } },
-        { code: "sentimentality", label: "Sentimentality", labelByLocale: { en: "Sentimentality", hu: "Érzelmesség", de: "Empfindsamkeit" } },
+        { code: "fearfulness", label: "Fearfulness", labelByLocale: { en: "Fearfulness", hu: "Félelem" } },
+        { code: "anxiety", label: "Anxiety", labelByLocale: { en: "Anxiety", hu: "Szorongás" } },
+        { code: "dependence", label: "Dependence", labelByLocale: { en: "Dependence", hu: "Függőség" } },
+        { code: "sentimentality", label: "Sentimentality", labelByLocale: { en: "Sentimentality", hu: "Érzelmesség" } },
       ],
     },
     {
@@ -103,14 +89,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Extraversion",
         hu: "Extraverzió",
-        de: "Extraversion",
       },
       color: "#F59E0B",
       description: "Az extraverzió a HEXACO-ban a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas bátorság (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       descriptionByLocale: {
         en: "Extraversion in the HEXACO model reflects social self-confidence, comfort across social situations, enjoyment of conversation and social gatherings, and overall enthusiasm and energy. Its four facets are Social Self-Esteem (positive self-regard, especially in social contexts), Social Boldness (confidence in group or public settings), Sociability (enjoyment of conversation, interaction, and social gatherings), and Liveliness (general sense of enthusiasm and optimism).",
         hu: "Az extraverzió a HEXACO-ban a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas bátorság (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
-        de: "Extraversion im HEXACO-Modell spiegelt soziales Selbstvertrauen, Wohlbefinden in sozialen Situationen, Freude an Gesprächen und gesellschaftlichen Zusammenkünften sowie allgemeinen Enthusiasmus und Energie wider. Ihre vier Facetten sind Soziales Selbstwertgefühl (positives Selbstbild, besonders in sozialen Kontexten), Soziale Kühnheit (Selbstsicherheit in Gruppen- oder öffentlichen Situationen), Geselligkeit (Freude an Gesprächen, Interaktionen und sozialen Zusammenkünften) und Lebhaftigkeit (allgemeines Gefühl von Enthusiasmus und Optimismus).",
       },
       insights: {
         low: "Kényelmetlenül érezheted magad a figyelem középpontjában, és hajlamos lehetsz kevésbé népszerűnek látni magad. Az egyéni tevékenységeket részesíted előnyben, és kevésbé érzel általános lelkesedést vagy optimizmust.",
@@ -128,17 +112,12 @@ export const hexacoConfig: TestConfig = {
           mid: "Társas helyzetekben általában magabiztosnak érzed magad, és tudsz vezető szerepet vállalni, miközben az egyéni tevékenységeket és a csendebb pillanatokat is értékeled.",
           high: "Magabiztosnak és energikusnak érzed magad társas közegben, élvezed a társalgást, az összejöveteleket és a csoporthelyzeteket, pozitívan gondolsz magadra, és lelkesedéssel és optimizmussal tekintesz a mindennapokra.",
         },
-        de: {
-          low: "Du fühlst dich möglicherweise unwohl, wenn du im Mittelpunkt sozialer Aufmerksamkeit stehst, und neigst dazu, dich selbst als weniger beliebt zu sehen. Du bevorzugst Einzelaktivitäten und empfindest weniger Lebhaftigkeit oder Optimismus als andere.",
-          mid: "Du fühlst dich in sozialen Situationen generell selbstsicher und kannst Führungsrollen übernehmen, schätzt aber auch Zeit für eigenständige Aktivitäten und ruhige Momente.",
-          high: "Du fühlst dich in sozialen Umgebungen selbstsicher und energiegeladen, genießt Gespräche, Zusammenkünfte und Gruppensituationen, hast ein positives Selbstbild und gehst mit Begeisterung und Optimismus durch den Alltag.",
-        },
       },
       facets: [
-        { code: "social_self_esteem", label: "Social Self-Esteem", labelByLocale: { en: "Social Self-Esteem", hu: "Társas önértékelés", de: "Soziales Selbstwertgefühl" } },
-        { code: "social_boldness", label: "Social Boldness", labelByLocale: { en: "Social Boldness", hu: "Társas bátorság", de: "Soziale Kühnheit" } },
-        { code: "sociability", label: "Sociability", labelByLocale: { en: "Sociability", hu: "Társaságkedvelés", de: "Geselligkeit" } },
-        { code: "liveliness", label: "Liveliness", labelByLocale: { en: "Liveliness", hu: "Élénkség", de: "Lebhaftigkeit" } },
+        { code: "social_self_esteem", label: "Social Self-Esteem", labelByLocale: { en: "Social Self-Esteem", hu: "Társas önértékelés" } },
+        { code: "social_boldness", label: "Social Boldness", labelByLocale: { en: "Social Boldness", hu: "Társas bátorság" } },
+        { code: "sociability", label: "Sociability", labelByLocale: { en: "Sociability", hu: "Társaságkedvelés" } },
+        { code: "liveliness", label: "Liveliness", labelByLocale: { en: "Liveliness", hu: "Élénkség" } },
       ],
     },
     {
@@ -147,14 +126,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Agreeableness",
         hu: "Barátságosság",
-        de: "Verträglichkeit",
       },
       color: "#34D399",
       description: "A barátságosság dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Szelídség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
       descriptionByLocale: {
         en: "The Agreeableness dimension (versus Anger) reflects the tendency to forgive wrongs, judge others with leniency, willingness to compromise and cooperate, and the ability to keep one's temper even when mistreated. Its four facets are Forgivingness (restoring trust and goodwill toward those who have caused harm), Gentleness (mild and lenient judgment of others), Flexibility (willingness to adapt and compromise), and Patience (restraining anger and irritation).",
         hu: "A barátságosság dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Szelídség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
-        de: "Die Verträglichkeitsdimension (gegenüber Ärger) spiegelt die Neigung wider, Unrecht zu vergeben, andere nachsichtig zu beurteilen, Kompromisse einzugehen und zu kooperieren sowie das Temperament auch bei Fehlbehandlung zu beherrschen. Ihre vier Facetten sind Vergebung (Wiederherstellung von Vertrauen gegenüber Personen, die Schaden verursacht haben), Sanftmut (milde und nachsichtige Beurteilung anderer), Flexibilität (Bereitschaft zur Anpassung und zum Kompromiss) und Geduld (Unterdrückung von Ärger und Reizbarkeit).",
       },
       insights: {
         low: "Hajlamos vagy haragot tartani azok iránt, akik megbántottak, kritikusan ítéled meg mások hibáit, makacsan véded az álláspontodat, és provokáció hatására könnyen elveszíted a türelmedet.",
@@ -172,17 +149,12 @@ export const hexacoConfig: TestConfig = {
           mid: "Képes vagy megbocsátani és kompromisszumot kötni, miközben szükség esetén megvédeni az álláspontodat is. Általában megőrzöd a nyugalmad, de komoly provokáció esetén ingerültté válhatsz.",
           high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet.",
         },
-        de: {
-          low: "Du neigst dazu, Groll gegen jene zu hegen, die dir Unrecht getan haben, beurteilst die Schwächen anderer kritisch, verteidigst deinen Standpunkt stur und verlierst bei Fehlbehandlung leicht die Geduld.",
-          mid: "Du bist in der Lage, zu vergeben und Kompromisse einzugehen, während du deinen Standpunkt bei Bedarf verteidigst. Du bleibst generell ruhig, obwohl erhebliche Provokation dich noch verärgern kann.",
-          high: "Du vergibst denen, die dir Unrecht getan haben, leicht, beurteilst die Schwächen anderer nachsichtig, bist bereit, flexibel anzupassen und Kompromisse einzugehen, und verlierst selten die Geduld.",
-        },
       },
       facets: [
-        { code: "forgiveness", label: "Forgiveness", labelByLocale: { en: "Forgiveness", hu: "Megbocsátás", de: "Vergebung" } },
-        { code: "gentleness", label: "Gentleness", labelByLocale: { en: "Gentleness", hu: "Szelídség", de: "Sanftmut" } },
-        { code: "flexibility", label: "Flexibility", labelByLocale: { en: "Flexibility", hu: "Rugalmasság", de: "Flexibilität" } },
-        { code: "patience", label: "Patience", labelByLocale: { en: "Patience", hu: "Türelem", de: "Geduld" } },
+        { code: "forgiveness", label: "Forgiveness", labelByLocale: { en: "Forgiveness", hu: "Megbocsátás" } },
+        { code: "gentleness", label: "Gentleness", labelByLocale: { en: "Gentleness", hu: "Szelídség" } },
+        { code: "flexibility", label: "Flexibility", labelByLocale: { en: "Flexibility", hu: "Rugalmasság" } },
+        { code: "patience", label: "Patience", labelByLocale: { en: "Patience", hu: "Türelem" } },
       ],
     },
     {
@@ -191,14 +163,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Conscientiousness",
         hu: "Lelkiismeretesség",
-        de: "Gewissenhaftigkeit",
       },
       color: "#A78BFA",
       description: "A lelkiismeretesség dimenzió azt méri, mennyire szervezett és rendszeres valaki a mindennapi élete terén, mennyire kitartóan és fegyelmezetten törekszik a céljai elérésére, mennyire törekszik pontosságra és tökéletességre, és mennyire gondolkodik meg alaposan a döntések előtt. Négy facetje a Szervezettség (rendezett fizikai környezet és időbeosztás igénye), a Szorgalom (erős munkásmotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre való odafigyelés) és a Megfontoltság (impulzusok kontrollja, a döntések átgondolása).",
       descriptionByLocale: {
         en: "The Conscientiousness dimension measures how organized and structured a person is, how persistently and disciplinedly they work toward goals, their drive for accuracy and thoroughness, and how carefully they deliberate before making decisions. Its four facets are Organization (preference for tidy surroundings and structured schedules), Diligence (strong work ethic and motivation to achieve), Perfectionism (thoroughness and attention to detail), and Prudence (impulse control and careful deliberation).",
         hu: "A lelkiismeretesség dimenzió azt méri, mennyire szervezett és rendszeres valaki a mindennapi élete terén, mennyire kitartóan és fegyelmezetten törekszik a céljai elérésére, mennyire törekszik pontosságra és tökéletességre, és mennyire gondolkodik meg alaposan a döntések előtt. Négy facetje a Szervezettség (rendezett fizikai környezet és időbeosztás igénye), a Szorgalom (erős munkásmotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre való odafigyelés) és a Megfontoltság (impulzusok kontrollja, a döntések átgondolása).",
-        de: "Die Gewissenhaftigkeitsdimension misst, wie organisiert und strukturiert jemand ist, wie ausdauernd und diszipliniert er auf seine Ziele hinarbeitet, seinen Antrieb nach Genauigkeit und Gründlichkeit sowie wie sorgfältig er vor Entscheidungen abwägt. Ihre vier Facetten sind Organisation (Präferenz für aufgeräumte Umgebungen und strukturierte Zeitpläne), Fleiß (starke Arbeitsmoral und Motivation zu leisten), Perfektionismus (Gründlichkeit und Liebe zum Detail) und Besonnenheit (Impulskontrolle und sorgfältige Überlegung).",
       },
       insights: {
         low: "Kevésbé foglalkoztat a rend és a struktúra: hajlamos vagy elkerülni a nehéz feladatokat, megelégedni a nem tökéletes eredményekkel, és inkább impulzívan, mint alapos mérlegelés után dönteni.",
@@ -216,17 +186,12 @@ export const hexacoConfig: TestConfig = {
           mid: "Megbízhatóan hajtod végre a feladatokat, és általában rendszerezetten végzed a munkát, de nem hajszolod el magad a tökéletesség érdekében. Rugalmasan alkalmazkodsz a változásokhoz anélkül, hogy elveszítenéd a fókuszodat.",
           high: "Gondosan szervezed az idődet és a fizikai környezetedet, fegyelmezetten és kitartóan dolgozol a céljaidért, alaposan odafigyelve a részletekre és a pontosságra, és döntés előtt mindig körültekintően mérlegelsz.",
         },
-        de: {
-          low: "Du bist weniger um Ordnung und Struktur besorgt: du neigst dazu, schwierige Aufgaben zu meiden, bist mit Arbeitsergebnissen zufrieden, die einige Fehler enthalten, und triffst Entscheidungen eher impulsiv als nach sorgfältiger Überlegung.",
-          mid: "Du erledigst Aufgaben zuverlässig und arbeitest generell organisiert, ohne dich in Perfektion zu verlieren. Du passt dich flexibel an Veränderungen an, ohne den Fokus zu verlieren.",
-          high: "Du organisierst deine Zeit und dein Umfeld sorgfältig, arbeitest diszipliniert und ausdauernd auf deine Ziele hin, achtest genau auf Genauigkeit und Details und überlegst sorgfältig vor Entscheidungen.",
-        },
       },
       facets: [
-        { code: "organization", label: "Organization", labelByLocale: { en: "Organization", hu: "Szervezettség", de: "Organisation" } },
-        { code: "diligence", label: "Diligence", labelByLocale: { en: "Diligence", hu: "Szorgalom", de: "Fleiß" } },
-        { code: "perfectionism", label: "Perfectionism", labelByLocale: { en: "Perfectionism", hu: "Perfekcionizmus", de: "Perfektionismus" } },
-        { code: "prudence", label: "Prudence", labelByLocale: { en: "Prudence", hu: "Megfontoltság", de: "Besonnenheit" } },
+        { code: "organization", label: "Organization", labelByLocale: { en: "Organization", hu: "Szervezettség" } },
+        { code: "diligence", label: "Diligence", labelByLocale: { en: "Diligence", hu: "Szorgalom" } },
+        { code: "perfectionism", label: "Perfectionism", labelByLocale: { en: "Perfectionism", hu: "Perfekcionizmus" } },
+        { code: "prudence", label: "Prudence", labelByLocale: { en: "Prudence", hu: "Megfontoltság" } },
       ],
     },
     {
@@ -235,14 +200,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Openness",
         hu: "Nyitottság",
-        de: "Offenheit",
       },
       color: "#38BDF8",
       description: "A nyitottság dimenzió az esztétikai fogékonyságot, az intellektuális kíváncsiságot, a kreativitást és a szokatlan ötletek iránti befogadóképességet méri. Négy facetje az Esztétikai fogékonyság (elmerülés a természet és a művészet szépségébe), a Kíváncsiság (ismeretek és tapasztalatok aktív keresése), a Kreativitás (az innováció és a kísérletezés iránti preferencia, eredeti megoldások keresése) és az Eredetiség (nyitottság a szokatlan, esetleg radikális ötletekre).",
       descriptionByLocale: {
         en: "The Openness to Experience dimension measures aesthetic appreciation, intellectual curiosity, creativity, and receptiveness to unusual ideas and perspectives. Its four facets are Aesthetic Appreciation (absorption in the beauty of art and nature), Inquisitiveness (active seeking of knowledge and experience), Creativity (preference for innovation and experimentation, seeking original solutions), and Unconventionality (openness to ideas that may seem strange or radical).",
         hu: "A nyitottság dimenzió az esztétikai fogékonyságot, az intellektuális kíváncsiságot, a kreativitást és a szokatlan ötletek iránti befogadóképességet méri. Négy facetje az Esztétikai fogékonyság (elmerülés a természet és a művészet szépségébe), a Kíváncsiság (ismeretek és tapasztalatok aktív keresése), a Kreativitás (az innováció és a kísérletezés iránti preferencia, eredeti megoldások keresése) és az Eredetiség (nyitottság a szokatlan, esetleg radikális ötletekre).",
-        de: "Die Offenheitsdimension misst ästhetische Wertschätzung, intellektuelle Neugier, Kreativität und Offenheit für ungewöhnliche Ideen und Perspektiven. Ihre vier Facetten sind Ästhetisches Empfinden (Versunkenheit in die Schönheit von Kunst und Natur), Wissbegier (aktives Streben nach Wissen und Erfahrung), Kreativität (Präferenz für Innovation und Experimentieren, Suche nach originellen Lösungen) und Unkonventionalität (Offenheit für Ideen, die seltsam oder radikal erscheinen mögen).",
       },
       insights: {
         low: "Kevéssé ragadnak meg a műalkotások vagy a természeti csodák, nem különösebben foglalkoztat az intellektuális felfedezés, a kreatív tevékenységektől inkább tartózkodol, és a radikális vagy szokatlan ötletek nem vonzanak.",
@@ -260,17 +223,12 @@ export const hexacoConfig: TestConfig = {
           mid: "Nyitott vagy néhány új ötletre és kreatív élményre, miközben a praktikus, bevált megközelítések is vonzanak. A kíváncsiság és a pragmatizmus egyensúlyban van benned.",
           high: "Elmerülsz a természet és a művészet szépségébe, aktívan keresed az ismereteket és az új tapasztalatokat, szívesen kísérletezel eredeti megközelítésekkel, és nyitott vagy a szokatlan, esetleg radikális ötletekre.",
         },
-        de: {
-          low: "Kunstwerke oder Naturwunder beeindrucken dich wenig, du spürst wenig Zug zu intellektueller Erkundung, meidest kreative Tätigkeiten eher und zeigst wenig Anziehungskraft für radikale oder unkonventionelle Ideen.",
-          mid: "Du bist offen für einige neue Ideen und kreative Erfahrungen, während du auch von praktischen, bewährten Ansätzen angezogen wirst. Neugier und Pragmatismus sind in dir ausgewogen.",
-          high: "Du versinkst in die Schönheit von Kunst und Natur, suchst aktiv nach Wissen und neuen Erfahrungen, experimentierst gerne mit originellen Ansätzen und bist offen für Ideen, die anderen seltsam oder radikal erscheinen mögen.",
-        },
       },
       facets: [
-        { code: "aesthetic_appreciation", label: "Aesthetic Appreciation", labelByLocale: { en: "Aesthetic Appreciation", hu: "Esztétikai fogékonyság", de: "Ästhetisches Empfinden" } },
-        { code: "inquisitiveness", label: "Inquisitiveness", labelByLocale: { en: "Inquisitiveness", hu: "Kíváncsiság", de: "Wissbegier" } },
-        { code: "creativity", label: "Creativity", labelByLocale: { en: "Creativity", hu: "Kreativitás", de: "Kreativität" } },
-        { code: "unconventionality", label: "Unconventionality", labelByLocale: { en: "Unconventionality", hu: "Eredetiség", de: "Unkonventionalität" } },
+        { code: "aesthetic_appreciation", label: "Aesthetic Appreciation", labelByLocale: { en: "Aesthetic Appreciation", hu: "Esztétikai fogékonyság" } },
+        { code: "inquisitiveness", label: "Inquisitiveness", labelByLocale: { en: "Inquisitiveness", hu: "Kíváncsiság" } },
+        { code: "creativity", label: "Creativity", labelByLocale: { en: "Creativity", hu: "Kreativitás" } },
+        { code: "unconventionality", label: "Unconventionality", labelByLocale: { en: "Unconventionality", hu: "Eredetiség" } },
       ],
     },
     {
@@ -279,14 +237,12 @@ export const hexacoConfig: TestConfig = {
       labelByLocale: {
         en: "Altruism",
         hu: "Altruizmus",
-        de: "Altruismus",
       },
       color: "#34D399",
       description: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
       descriptionByLocale: {
         en: "The Altruism (Interstitial) scale measures the extent to which a person feels genuine sympathy for the less fortunate and is motivated to give generously to those in need. Low scorers are relatively unmoved by others' hardship, while high scorers feel a strong inner drive to help and support those who are weak or in difficulty.",
         hu: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
-        de: "Die Altruismus-Skala (Interstitial) misst, inwieweit jemand echtes Mitgefühl für Benachteiligte empfindet und motiviert ist, Bedürftigen großzügig zu helfen. Niedrig Ausgewertete sind relativ unberührt von den Schwierigkeiten anderer, während hoch Ausgewertete einen starken inneren Antrieb verspüren, Schwache oder in Not geratene Menschen zu unterstützen.",
       },
       insights: {
         low: "Kevéssé érintenek meg mások bajából adódó szenvedések, és nem valószínű, hogy saját komfortodból kilépve a rászoruló személyek segítségére sietnél.",
@@ -304,14 +260,9 @@ export const hexacoConfig: TestConfig = {
           mid: "Mérsékelt együttérzéssel fordulsz a nehéz helyzetben lévők felé, és helyzettől függően hajlandó vagy segíteni azokon, akiknek szükségük van rá.",
           high: "Valódi együttérzéssel fordulsz a hátrányos helyzetűek felé, és erős belső késztetést érzel arra, hogy nagylelkűen segíts azokon, akik gyengék vagy nehéz helyzetben vannak.",
         },
-        de: {
-          low: "Du empfindest wenig Besorgnis, wenn andere leiden, und bist nicht geneigt, anderen, die schwach sind oder Hilfe benötigen, uneigennützig zu helfen.",
-          mid: "Du empfindest mäßiges Mitgefühl für Menschen in Schwierigkeiten und bist je nach Umständen manchmal bereit, Bedürftigen zu helfen.",
-          high: "Du empfindest echtes Mitgefühl für Benachteiligte und erlebst einen starken inneren Antrieb, großzügig zu geben und denen zu helfen, die schwach sind oder Hilfe benötigen.",
-        },
       },
       facets: [
-        { code: "altruism", label: "Altruism", labelByLocale: { en: "Altruism", hu: "Altruizmus", de: "Altruismus" } },
+        { code: "altruism", label: "Altruism", labelByLocale: { en: "Altruism", hu: "Altruizmus" } },
       ],
     },
   ],
@@ -324,13 +275,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Meglehetősen untatna egy képtár meglátogatása.",
         en: "I would be quite bored by a visit to an art gallery.",
-        de: "Der Besuch einer Kunstausstellung würde mich ziemlich langweilen.",
       },
       textObserver: "He/she would be quite bored by a visit to an art gallery.",
       textObserverByLocale: {
         en: "He/she would be quite bored by a visit to an art gallery.",
         hu: "Meglehetősen untatná egy képtár meglátogatása.",
-        de: "Der Besuch einer Kunstausstellung würde ihn/sie ziemlich langweilen.",
       },
       reversed: true,
     },
@@ -342,13 +291,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Mind a munkahelyemen, mind otthonomban rendszeresen ügyelek a rendre és tisztaságra.",
         en: "I clean my office or home quite frequently.",
-        de: "Ich putze mein Büro oder zuhause ziemlich oft.",
       },
       textObserver: "He/she cleans his/her office or home quite frequently.",
       textObserverByLocale: {
         en: "He/she cleans his/her office or home quite frequently.",
         hu: "Mind a munkahelyén, mind otthonában rendszeresen ügyel a rendre és tisztaságra.",
-        de: "Er/Sie putzt sein/ihr Büro oder zuhause ziemlich oft.",
       },
     },
     {
@@ -359,13 +306,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Még azokkal szemben sem vagyok haragtartó, akik csúnyán megbántottak.",
         en: "I rarely hold a grudge, even against people who have badly wronged me.",
-        de: "Ich habe selten Wut im Bauch, nicht mal gegen Leute, die mich sehr ungerecht behandelt haben.",
       },
       textObserver: "He/she rarely holds a grudge, even against people who have badly wronged him/her.",
       textObserverByLocale: {
         en: "He/she rarely holds a grudge, even against people who have badly wronged him/her.",
         hu: "Még azokkal szemben sem haragtartó, akik csúnyán megbántották.",
-        de: "Er/Sie hat selten Wut im Bauch, nicht mal gegen Leute, die ihn/sie sehr ungerecht behandelt haben.",
       },
     },
     {
@@ -376,13 +321,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Alapjában véve úgy érzem, hogy elégedett vagyok magammal.",
         en: "I feel reasonably satisfied with myself overall.",
-        de: "Im Allgemeinen bin ich mit mir ziemlich zufrieden.",
       },
       textObserver: "He/she feels reasonably satisfied with himself/herself overall.",
       textObserverByLocale: {
         en: "He/she feels reasonably satisfied with himself/herself overall.",
         hu: "Alapjában véve elégedett magával.",
-        de: "Im Allgemeinen ist er/sie mit sich ziemlich zufrieden.",
       },
     },
     {
@@ -393,13 +336,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Félnék, ha rossz időjárási körülmények között kellene utaznom.",
         en: "I would feel afraid if I had to travel in bad weather conditions.",
-        de: "Ich hätte Angst, wenn ich bei schlechten Wetterbedingungen verreisen müsste.",
       },
       textObserver: "He/she would feel afraid if he/she had to travel in bad weather conditions.",
       textObserverByLocale: {
         en: "He/she would feel afraid if he/she had to travel in bad weather conditions.",
         hu: "Félne, ha rossz időjárási körülmények között kellene utaznia.",
-        de: "Er/Sie hätte Angst, wenn er/sie bei schlechten Wetterbedingungen verreisen müsste.",
       },
     },
     {
@@ -410,13 +351,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valakitől, akit tulajdonképpen nem is kedvelek, szeretnék valamit, a cél érdekében képes vagyok ehhez a személyhez nagyon kedves lenni.",
         en: "If I want something from a person I dislike, I will act very nicely toward that person in order to get it.",
-        de: "Wenn ich von einer Person, die ich nicht mag, etwas will, verhalte ich mich dieser Person gegenüber sehr nett um es zu bekommen.",
       },
       textObserver: "If he/she wants something from a person he/she dislikes, he/she will act very nicely toward that person in order to get it.",
       textObserverByLocale: {
         en: "If he/she wants something from a person he/she dislikes, he/she will act very nicely toward that person in order to get it.",
         hu: "Ha valakitől, akit tulajdonképpen nem is kedvel, szeretne valamit, a cél érdekében képes ehhez a személyhez nagyon kedves lenni.",
-        de: "Wenn er/sie von einer Person, die er/sie nicht mag, etwas will, verhält er/sie sich dieser Person gegenüber sehr nett um es zu bekommen.",
       },
       reversed: true,
     },
@@ -428,13 +367,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Érdekelnek más országok történelmi és politikai sajátosságai.",
         en: "I'm interested in learning about the history and politics of other countries.",
-        de: "Ich bin daran interessiert, etwas über die Geschichte und Politik anderer Länder zu lernen.",
       },
       textObserver: "He/she is interested in learning about the history and politics of other countries.",
       textObserverByLocale: {
         en: "He/she is interested in learning about the history and politics of other countries.",
         hu: "Érdeklik más országok történelmi és politikai sajátosságai.",
-        de: "Er/Sie ist daran interessiert, etwas über die Geschichte und Politik anderer Länder zu lernen.",
       },
     },
     {
@@ -445,13 +382,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A munkámban gyakran tűzök ki ambiciózus célokat magam elé.",
         en: "When working, I often set ambitious goals for myself.",
-        de: "Wenn ich arbeite, setze ich mir oft ehrgeizige Ziele.",
       },
       textObserver: "When working, he/she often sets ambitious goals for himself/herself.",
       textObserverByLocale: {
         en: "When working, he/she often sets ambitious goals for himself/herself.",
         hu: "A munkájában gyakran tűz ki ambiciózus célokat maga elé.",
-        de: "Wenn er/sie arbeitet, setzt er/sie sich oft ehrgeizige Ziele.",
       },
     },
     {
@@ -462,13 +397,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Az ismerőseim gyakran állítják, hogy túl kritikus vagyok másokhoz.",
         en: "People sometimes tell me that I am too critical of others.",
-        de: "Andere sagen mir manchmal, dass ich zu kritisch gegenüber anderen bin.",
       },
       textObserver: "People sometimes say that he/she is too critical of others.",
       textObserverByLocale: {
         en: "People sometimes say that he/she is too critical of others.",
         hu: "Az ismerősei gyakran állítják, hogy túl kritikus másokhoz.",
-        de: "Andere sagen ihm/ihr manchmal, dass er/sie zu kritisch gegenüber anderen ist.",
       },
       reversed: true,
     },
@@ -480,13 +413,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Csoportos megbeszéléseken ritkán adok hangot véleményemnek.",
         en: "I rarely express my opinions in group meetings.",
-        de: "Bei Gruppentreffen sage ich nur selten meine Meinung.",
       },
       textObserver: "He/she rarely expresses his/her opinions in group meetings.",
       textObserverByLocale: {
         en: "He/she rarely expresses his/her opinions in group meetings.",
         hu: "Csoportos megbeszéléseken ritkán ad hangot véleményének.",
-        de: "Bei Gruppentreffen sagt er/sie nur selten seine/ihre Meinung.",
       },
       reversed: true,
     },
@@ -498,13 +429,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Néha nem tudom megállni, hogy ne aggodalmaskodjak apróságokon.",
         en: "I sometimes can't help worrying about little things.",
-        de: "Ich kann manchmal nichts dagegen machen, dass ich mir über kleine Dinge Sorgen mache.",
       },
       textObserver: "He/she worries about little things.",
       textObserverByLocale: {
         en: "He/she worries about little things.",
         hu: "Néha nem tudja megállni, hogy ne aggódjon apróságokon.",
-        de: "Er/Sie kann manchmal nichts dagegen machen, dass er/sie sich über kleine Dinge Sorgen macht.",
       },
     },
     {
@@ -515,13 +444,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha tudnám, hogy sosem kapnak el, kész lennék egy millió dollárt vagy eurót ellopni.",
         en: "If I knew that I could never get caught, I would be willing to steal a million dollars.",
-        de: "Wenn ich wüsste, dass ich niemals erwischt werde, wäre ich bereit, eine Million zu stehlen.",
       },
       textObserver: "If he/she knew that he/she could never get caught, he/she would be willing to steal a million dollars.",
       textObserverByLocale: {
         en: "If he/she knew that he/she could never get caught, he/she would be willing to steal a million dollars.",
         hu: "Ha tudná, hogy sosem kapják el, kész lenne egy millió dollárt vagy eurót ellopni.",
-        de: "Wenn er/sie wüsste, dass er/sie niemals erwischt wird, wäre er/sie bereit, eine Million zu stehlen.",
       },
       reversed: true,
     },
@@ -533,13 +460,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Inkább olyan állást szeretnék, ahol a rutin fontosabb, mint a kreativitás.",
         en: "I would like a job that requires following a routine rather than being creative.",
-        de: "Ich wünsche mir einen Beruf, der Routine verlangt, anstatt einen, der Kreativität fordert.",
       },
       textObserver: "He/she would like a job that requires following a routine rather than being creative.",
       textObserverByLocale: {
         en: "He/she would like a job that requires following a routine rather than being creative.",
         hu: "Inkább olyan állást szeretne, ahol a rutin fontosabb, mint a kreativitás.",
-        de: "Er/Sie wünscht sich einen Beruf, der Routine verlangt, anstatt einen, der Kreativität fordert.",
       },
       reversed: true,
     },
@@ -551,13 +476,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Gyakran ismételten is leellenőrzöm a munkámat, hogy nincs-e mégis hiba benne.",
         en: "I often check my work over repeatedly to find any mistakes.",
-        de: "Oft kontrolliere ich meine Arbeit mehrfach, um alle Fehler zu finden.",
       },
       textObserver: "He/she often checks his/her work over repeatedly to find any mistakes.",
       textObserverByLocale: {
         en: "He/she often checks his/her work over repeatedly to find any mistakes.",
         hu: "Gyakran ismételten is leellenőrzi a munkáját, hogy nincs-e mégis hiba benne.",
-        de: "Oft kontrolliert er/sie seine/ihre Arbeit mehrfach, um alle Fehler zu finden.",
       },
     },
     {
@@ -568,13 +491,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Az ismerőseim néha azt mondják, hogy túlzottan makacs vagyok.",
         en: "People sometimes tell me that I'm too stubborn.",
-        de: "Andere sagen mir manchmal, dass ich zu dickköpfig bin.",
       },
       textObserver: "People sometimes think that he/she is too stubborn.",
       textObserverByLocale: {
         en: "People sometimes think that he/she is too stubborn.",
         hu: "Az ismerősei néha azt mondják, hogy túlzottan makacs.",
-        de: "Andere sagen ihm/ihr manchmal, dass er/sie zu dickköpfig ist.",
       },
       reversed: true,
     },
@@ -586,13 +507,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Kerülöm az üres társalkodást.",
         en: "I avoid making \"small talk\" with people.",
-        de: "Ich vermeide es, mit anderen Leuten Small Talk zu halten.",
       },
       textObserver: "He/she avoids making \"small talk\" with people.",
       textObserverByLocale: {
         en: "He/she avoids making \"small talk\" with people.",
         hu: "Kerüli az üres társalkodást.",
-        de: "Er/Sie vermeidet es, mit anderen Leuten Small Talk zu halten.",
       },
       reversed: true,
     },
@@ -604,13 +523,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valami rossz történt velem, szükségem van valakire, aki megvigasztal.",
         en: "When I suffer from a painful experience, I need someone to make me feel comfortable.",
-        de: "Wenn ich wegen einer schmerzvollen Erfahrung leide, brauche ich jemanden, der mich tröstet.",
       },
       textObserver: "When he/she suffers from a painful experience, he/she needs someone to make him/her feel comfortable.",
       textObserverByLocale: {
         en: "When he/she suffers from a painful experience, he/she needs someone to make him/her feel comfortable.",
         hu: "Ha valami rossz történt vele, szüksége van valakire, aki megvigasztalja.",
-        de: "Wenn er/sie wegen einer schmerzvollen Erfahrung leidet, brauche er/sie jemanden, der ihn/sie tröstet.",
       },
     },
     {
@@ -621,13 +538,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem igazán fontos nekem, hogy sok pénzem legyen.",
         en: "Having a lot of money is not especially important to me.",
-        de: "Viel Geld zu haben ist nicht besonders wichtig für mich.",
       },
       textObserver: "Having a lot of money is not especially important to him/her.",
       textObserverByLocale: {
         en: "Having a lot of money is not especially important to him/her.",
         hu: "Nem igazán fontos neki, hogy sok pénze legyen.",
-        de: "Viel Geld zu haben ist nicht besonders wichtig für ihn/sie.",
       },
     },
     {
@@ -638,13 +553,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A radikális nézetekkel való foglalkozás egyszerűen időpocsékolás.",
         en: "I think that paying attention to radical ideas is a waste of time.",
-        de: "Ich denke, dass es Zeitverschwendung ist, radikalen Ideen Aufmerksamkeit zu schenken.",
       },
       textObserver: "He/she thinks that paying attention to radical ideas is a waste of time.",
       textObserverByLocale: {
         en: "He/she thinks that paying attention to radical ideas is a waste of time.",
         hu: "A radikális nézetekkel való foglalkozás szerinte egyszerűen időpocsékolás.",
-        de: "Er/Sie denkt, dass es Zeitverschwendung ist, radikalen Ideen Aufmerksamkeit zu schenken.",
       },
       reversed: true,
     },
@@ -656,13 +569,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Inkább a pillanatnyi érzelmeim, mint a gondos megfontolás irányítják a döntéseimet.",
         en: "I make decisions based on the feeling of the moment rather than on careful thought.",
-        de: "Ich treffe Entscheidungen eher aus dem Bauch heraus als durch sorgfältiges Nachdenken.",
       },
       textObserver: "He/she makes decisions based on the feeling of the moment rather than on careful thought.",
       textObserverByLocale: {
         en: "He/she makes decisions based on the feeling of the moment rather than on careful thought.",
         hu: "Inkább a pillanatnyi érzelmei, mint a gondos megfontolás irányítják a döntéseit.",
-        de: "Er/Sie trifft Entscheidungen eher aus dem Bauch heraus als durch sorgfältiges Nachdenken.",
       },
       reversed: true,
     },
@@ -674,13 +585,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Az emberek robbanékony természetűnek tartanak.",
         en: "People think of me as someone who has a quick temper.",
-        de: "Andere halten mich für jähzornig.",
       },
       textObserver: "People think of him/her as someone who has a quick temper.",
       textObserverByLocale: {
         en: "People think of him/her as someone who has a quick temper.",
         hu: "Az emberek robbanékony természetűnek tartják.",
-        de: "Andere halten ihn/sie für jähzornig.",
       },
       reversed: true,
     },
@@ -692,13 +601,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szinte mindig tele vagyok energiával.",
         en: "I am energetic nearly all the time.",
-        de: "Ich bin fast immer voller Energie.",
       },
       textObserver: "He/she is energetic nearly all the time.",
       textObserverByLocale: {
         en: "He/she is energetic nearly all the time.",
         hu: "Szinte mindig tele van energiával.",
-        de: "Er/Sie ist fast immer voller Energie.",
       },
     },
     {
@@ -709,13 +616,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Úgy érzem, engem is elkap a sírás, ha másokat sírni látok.",
         en: "I feel like crying when I see other people crying.",
-        de: "Ich könnte weinen, wenn ich andere Personen sehe, die weinen.",
       },
       textObserver: "He/she feels like crying when he/she sees other people crying.",
       textObserverByLocale: {
         en: "He/she feels like crying when he/she sees other people crying.",
         hu: "Elérzékenyül, ha másokat sírni lát.",
-        de: "Er/Sie könnte weinen, wenn er/sie andere Personen sieht, die weinen.",
       },
     },
     {
@@ -726,13 +631,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Olyan vagyok, mint a többi ember: se jobb, se rosszabb.",
         en: "I am an ordinary person who is no better than others.",
-        de: "Ich bin eine ganz normale Person, die nicht besser ist als andere.",
       },
       textObserver: "He/she thinks that he/she is an ordinary person who is no better than others.",
       textObserverByLocale: {
         en: "He/she thinks that he/she is an ordinary person who is no better than others.",
         hu: "Úgy gondolja olyan, mint a többi ember: se jobb, se rosszabb.",
-        de: "Er/Sie denkt, dass er/sie eine ganz normale Person ist, die nicht besser ist als andere.",
       },
     },
     {
@@ -743,13 +646,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem fordítanám az időmet egy verses kötet olvasására.",
         en: "I wouldn't spend my time reading a book of poetry.",
-        de: "Ich würde meine Zeit nicht damit verbringen, einen Gedichtband zu lesen.",
       },
       textObserver: "He/she wouldn't spend his/her time reading a book of poetry.",
       textObserverByLocale: {
         en: "He/she wouldn't spend his/her time reading a book of poetry.",
         hu: "Nem fordítaná az idejét egy verses kötet olvasására.",
-        de: "Er/Sie würde seine/ihre Zeit nicht damit verbringen, einen Gedichtband zu lesen.",
       },
       reversed: true,
     },
@@ -761,13 +662,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A dolgaimat előre eltervezem, hogy elkerüljem az utolsó percben való kapkodást.",
         en: "I plan ahead and organize things, to avoid scrambling at the last minute.",
-        de: "Ich plane im Voraus und organisiere, damit in letzter Minute kein Zeitdruck aufkommt.",
       },
       textObserver: "He/she plans ahead and organizes things, to avoid scrambling at the last minute.",
       textObserverByLocale: {
         en: "He/she plans ahead and organizes things, to avoid scrambling at the last minute.",
         hu: "A dolgait előre eltervezi, hogy elkerülje az utolsó percben való kapkodást.",
-        de: "Er/Sie plant im Voraus und organisiert, damit in letzter Minute kein Zeitdruck aufkommt.",
       },
     },
     {
@@ -778,13 +677,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valaki rosszul bánt velem, képes vagyok megbocsátani és a feledés fátylát borítani a történtekre.",
         en: "My attitude toward people who have treated me badly is \"forgive and forget\".",
-        de: "Meine Einstellung gegenüber Personen, die mich schlecht behandelt haben, ist \"vergeben und vergessen\".",
       },
       textObserver: "His/her attitude toward people who have treated him/her badly is \"forgive and forget\".",
       textObserverByLocale: {
         en: "His/her attitude toward people who have treated him/her badly is \"forgive and forget\".",
         hu: "Ha valaki rosszul bánt vele, képes megbocsátani és a feledés fátylát borítani a történtekre.",
-        de: "Seine/Ihre Einstellung gegenüber Personen, die ihn/sie schlecht behandelt haben, ist \"vergeben und vergessen\".",
       },
     },
     {
@@ -795,13 +692,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Úgy gondolom, hogy az emberek többsége talál bennem szimpatikus vonásokat.",
         en: "I think that most people like some aspects of my personality.",
-        de: "Ich glaube, dass die meisten Menschen einige Aspekte meines Charakters mögen.",
       },
       textObserver: "He/she thinks that most people like some aspects of his/her personality.",
       textObserverByLocale: {
         en: "He/she thinks that most people like some aspects of his/her personality.",
         hu: "Úgy gondolja, hogy az emberek többsége talál benne szimpatikus vonásokat.",
-        de: "Er/Sie glaubt, dass die meisten Menschen einige Aspekte seines/ihres Charakters mögen.",
       },
     },
     {
@@ -812,13 +707,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem zavar, ha a munkám veszélyekkel is jár.",
         en: "I don't mind doing jobs that involve dangerous work.",
-        de: "Es stört mich nicht, Arbeiten zu erledigen, die gefährlich sind.",
       },
       textObserver: "He/she doesn't mind doing jobs that involve dangerous work.",
       textObserverByLocale: {
         en: "He/she doesn't mind doing jobs that involve dangerous work.",
         hu: "Nem zavarja, ha a munkája veszélyekkel is jár.",
-        de: "Es stört ihn/sie nicht, Arbeiten zu erledigen, die gefährlich sind.",
       },
       reversed: true,
     },
@@ -830,13 +723,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Akkor sem hízelegnék a főnökömnek, ha tudnám, fizetésemelést vagy előrelépést érnék el vele.",
         en: "I wouldn't use flattery to get a raise or promotion at work, even if I thought it would succeed.",
-        de: "Ich würde keine Schmeicheleien benutzen, um eine Gehaltserhöhung zu bekommen oder befördert zu werden, auch wenn ich wüsste, dass es erfolgreich wäre.",
       },
       textObserver: "He/she wouldn't use flattery to get a raise or promotion at work, even if he/she thought it would succeed.",
       textObserverByLocale: {
         en: "He/she wouldn't use flattery to get a raise or promotion at work, even if he/she thought it would succeed.",
         hu: "Akkor sem hízelgene a főnökének, ha tudná, fizetésemelést vagy előrelépést érne el vele.",
-        de: "Er/Sie würde keine Schmeicheleien benutzen, um eine Gehaltserhöhung zu bekommen oder befördert zu werden, auch wenn er/sie wüsste, dass es erfolgreich wäre.",
       },
     },
     {
@@ -847,13 +738,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szívesen nézegetem idegen helyek térképeit.",
         en: "I enjoy looking at maps of different places.",
-        de: "Ich mag es, Landkarten von anderen Orten zu betrachten.",
       },
       textObserver: "He/she enjoys looking at maps of different places.",
       textObserverByLocale: {
         en: "He/she enjoys looking at maps of different places.",
         hu: "Szívesen nézegeti idegen helyek térképeit.",
-        de: "Er/Sie mag es, Landkarten von anderen Orten zu betrachten.",
       },
     },
     {
@@ -864,13 +753,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Céljaim elérésére gyakran minden erőmet bevetem.",
         en: "I often push myself very hard when trying to achieve a goal.",
-        de: "Ich treibe mich oft selbst sehr stark an, wenn ich versuche, ein Ziel zu erreichen.",
       },
       textObserver: "He/she often pushes himself/herself very hard when trying to achieve a goal.",
       textObserverByLocale: {
         en: "He/she often pushes himself/herself very hard when trying to achieve a goal.",
         hu: "Céljainak elérésére gyakran minden erejét beveti.",
-        de: "Er/Sie treibt sich oft selbst sehr stark an, wenn er/sie versucht, ein Ziel zu erreichen.",
       },
     },
     {
@@ -881,13 +768,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Általában zokszó nélkül elfogadom mások hibáit.",
         en: "I generally accept people's faults without complaining about them.",
-        de: "Ich akzeptiere im Allgemeinen die Schwächen anderer, ohne mich darüber zu beschweren.",
       },
       textObserver: "He/she generally accepts people's faults without complaining about them.",
       textObserverByLocale: {
         en: "He/she generally accepts people's faults without complaining about them.",
         hu: "Általában zokszó nélkül elfogadja mások hibáit.",
-        de: "Er/Sie akzeptiert im Allgemeinen die Schwächen anderer, ohne sich darüber zu beschweren.",
       },
     },
     {
@@ -898,13 +783,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Társas helyzetekben általában én vagyok az, aki beszélgetést kezdeményez.",
         en: "In social situations, I'm usually the one who makes the first move.",
-        de: "In sozialen Situationen bin ich gewöhnlich der, der den ersten Schritt macht.",
       },
       textObserver: "In social situations, he/she is usually the one who makes the first move.",
       textObserverByLocale: {
         en: "In social situations, he/she is usually the one who makes the first move.",
         hu: "Társas helyzetekben általában ő az, aki beszélgetést kezdeményez.",
-        de: "In sozialen Situationen ist er/sie gewöhnlich der/die, der/die den ersten Schritt macht.",
       },
     },
     {
@@ -915,13 +798,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Sokkal kevesebbet aggódom, mint a legtöbb ember.",
         en: "I worry a lot less than most people do.",
-        de: "Ich mache mir viel weniger Sorgen als die meisten Leute.",
       },
       textObserver: "He/she worries a lot less than most people do.",
       textObserverByLocale: {
         en: "He/she worries a lot less than most people do.",
         hu: "Sokkal kevesebbet aggódik, mint a legtöbb ember.",
-        de: "Er/Sie macht sich viel weniger Sorgen als die meisten Leute.",
       },
       reversed: true,
     },
@@ -933,13 +814,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szűkös anyagi helyzetben kísértésbe tudnék esni, hogy lopott árut vásároljak.",
         en: "I would be tempted to buy stolen property if I were financially tight.",
-        de: "Ich würde in Versuchung geraten, Diebesgut zu kaufen, wenn ich knapp bei Kasse wäre.",
       },
       textObserver: "He/she would be tempted to buy stolen property if he/she were financially tight.",
       textObserverByLocale: {
         en: "He/she would be tempted to buy stolen property if he/she were financially tight.",
         hu: "Szűkös anyagi helyzetben kísértésbe tudna esni, hogy lopott árut vásároljon.",
-        de: "Er/Sie würde in Versuchung geraten, Diebesgut zu kaufen, wenn er/sie knapp bei Kasse wäre.",
       },
       reversed: true,
     },
@@ -951,13 +830,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szívesen alkotnék valami művészi munkát: egy regényt, zeneszámot, vagy festményt.",
         en: "I would enjoy creating a work of art, such as a novel, a song, or a painting.",
-        de: "Ich würde es genießen, ein Kunstwerk zu schaffen, etwa einen Roman, ein Lied oder ein Gemälde.",
       },
       textObserver: "He/she would enjoy creating a work of art, such as a novel, a song, or a painting.",
       textObserverByLocale: {
         en: "He/she would enjoy creating a work of art, such as a novel, a song, or a painting.",
         hu: "Szívesen alkotna valami művészi munkát: egy regényt, zeneszámot, vagy festményt.",
-        de: "Er/Sie würde es genießen, ein Kunstwerk zu schaffen, etwa einen Roman, ein Lied oder ein Gemälde.",
       },
     },
     {
@@ -968,13 +845,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha dolgozom valamin, nem igazán fordítok különös figyelmet az apró részletekre.",
         en: "When working on something, I don't pay much attention to small details.",
-        de: "Wenn ich an irgendetwas arbeite, beachte ich kleine Details nicht allzu sehr.",
       },
       textObserver: "When working on something, he/she doesn't pay much attention to small details.",
       textObserverByLocale: {
         en: "When working on something, he/she doesn't pay much attention to small details.",
         hu: "Ha dolgozik valamin, nem igazán fordít különös figyelmet az apró részletekre.",
-        de: "Wenn er/sie an irgendetwas arbeitet, beachtet er/sie kleine Details nicht allzu sehr.",
       },
       reversed: true,
     },
@@ -986,13 +861,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Általában könnyen megváltoztatom a véleményem, ha az emberek nem értenek vele egyet.",
         en: "I am usually quite flexible in my opinions when people disagree with me.",
-        de: "Ich bin gewöhnlich ziemlich flexibel in meinen Ansichten, wenn andere Leute mir nicht zustimmen.",
       },
       textObserver: "He/she is usually quite flexible in his/her opinions when people disagree with him/her.",
       textObserverByLocale: {
         en: "He/she is usually quite flexible in his/her opinions when people disagree with him/her.",
         hu: "Általában könnyen megváltoztatja a véleményét, ha az emberek nem értenek vele egyet.",
-        de: "Er/Sie ist gewöhnlich ziemlich flexibel in seinen/ihren Ansichten, wenn andere Leute ihm/ihr nicht zustimmen.",
       },
     },
     {
@@ -1003,13 +876,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szeretem, ha sokan vesznek körül és élénk beszélgetés folyik.",
         en: "I enjoy having lots of people around to talk with.",
-        de: "Ich genieße es, viele Leute um mich herum zu haben, mit denen ich reden kann.",
       },
       textObserver: "He/she enjoys having lots of people around to talk with.",
       textObserverByLocale: {
         en: "He/she enjoys having lots of people around to talk with.",
         hu: "Szereti, ha sokan veszik körül és élénk beszélgetés folyik.",
-        de: "Er/Sie genießt es, viele Leute um sich herum zu haben, mit denen er/sie reden kann.",
       },
     },
     {
@@ -1020,13 +891,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nehezebb helyzetekkel is elboldogulok anélkül, hogy érzelmi támogatásra lenne szükségem.",
         en: "I can handle difficult situations without needing emotional support from anyone else.",
-        de: "Ich kann mit schwierigen Situationen umgehen, ohne dass ich emotionale Unterstützung von irgendjemandem brauche.",
       },
       textObserver: "He/she can handle difficult situations without needing emotional support from anyone else.",
       textObserverByLocale: {
         en: "He/she can handle difficult situations without needing emotional support from anyone else.",
         hu: "Nehezebb helyzetekkel is elboldogul anélkül, hogy érzelmi támogatásra lenne szüksége.",
-        de: "Er/Sie kann mit schwierigen Situationen umgehen, ohne dass er/sie emotionale Unterstützung von irgendjemandem braucht.",
       },
       reversed: true,
     },
@@ -1038,13 +907,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szívesen laknék egy gazdag és előkelő negyedben.",
         en: "I would like to live in a very expensive, high-class neighborhood.",
-        de: "Ich würde gerne in einer sehr teuren, angesehenen Nachbarschaft wohnen.",
       },
       textObserver: "He/she would like to live in a very expensive, high-class neighborhood.",
       textObserverByLocale: {
         en: "He/she would like to live in a very expensive, high-class neighborhood.",
         hu: "Szívesen lakna egy gazdag és előkelő negyedben.",
-        de: "Er/Sie würde gerne in einer sehr teuren, angesehenen Nachbarschaft wohnen.",
       },
       reversed: true,
     },
@@ -1056,13 +923,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nekem szimpatikusak azok az emberek, akiknek eredeti, az átlagtól eltérő nézeteik vannak.",
         en: "I like people who have unconventional views.",
-        de: "Ich mag Leute, die unkonventionelle Ideen haben.",
       },
       textObserver: "He/she likes people who have unconventional views.",
       textObserverByLocale: {
         en: "He/she likes people who have unconventional views.",
         hu: "Szimpatikusak számára azok az emberek, akiknek eredeti, az átlagtól eltérő nézeteik vannak.",
-        de: "Er/Sie mag Leute, die unkonventionelle Ideen haben.",
       },
     },
     {
@@ -1073,13 +938,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Sok hibát követek el, mert előbb cselekszem és csak aztán gondolkodom.",
         en: "I make a lot of mistakes because I don't think before I act.",
-        de: "Ich mache viele Fehler, weil ich nicht nachdenke, bevor ich handele.",
       },
       textObserver: "He/she makes a lot of mistakes because he/she doesn't think before he/she acts.",
       textObserverByLocale: {
         en: "He/she makes a lot of mistakes because he/she doesn't think before he/she acts.",
         hu: "Sok hibát követ el, mert előbb cselekszik és csak aztán gondolkodik.",
-        de: "Er/Sie macht viele Fehler, weil er/sie nicht nachdenkt, bevor er/sie handelt.",
       },
       reversed: true,
     },
@@ -1091,13 +954,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem szoktam felkapni a vizet akkor sem, ha valaki rosszul bánik velem.",
         en: "I rarely feel anger, even when people treat me quite badly.",
-        de: "Ich werde selten wütend, selbst wenn andere mich ziemlich schlecht behandeln.",
       },
       textObserver: "He/she rarely feels anger, even when people treat him/her quite badly.",
       textObserverByLocale: {
         en: "He/she rarely feels anger, even when people treat him/her quite badly.",
         hu: "Nem szokta felkapni a vizet akkor sem, ha valaki rosszul bánik vele.",
-        de: "Er/Sie wird selten wütend, selbst wenn andere ihn/sie ziemlich schlecht behandeln.",
       },
     },
     {
@@ -1108,13 +969,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Többnyire vidám és optimista vagyok.",
         en: "On most days, I feel cheerful and optimistic.",
-        de: "An den meisten Tagen bin ich fröhlich und optimistisch.",
       },
       textObserver: "On most days, he/she feels cheerful and optimistic.",
       textObserverByLocale: {
         en: "On most days, he/she feels cheerful and optimistic.",
         hu: "Többnyire vidám és optimista.",
-        de: "An den meisten Tagen ist er/sie fröhlich und optimistisch.",
       },
     },
     {
@@ -1125,13 +984,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valaki, akit jól ismerek, el van keseredve, szinte fizikailag érzem a fájdalmát.",
         en: "When someone I know well is unhappy, I can almost feel that person's pain myself.",
-        de: "Wenn jemand, den ich gut kenne, unglücklich ist, kann ich den Schmerz dieser Person fast selber spüren.",
       },
       textObserver: "When someone he/she knows well is unhappy, he/she can almost feel that person's pain himself/herself.",
       textObserverByLocale: {
         en: "When someone he/she knows well is unhappy, he/she can almost feel that person's pain himself/herself.",
         hu: "Ha valaki, akit jól ismer, el van keseredve, szinte fizikailag érzi a fájdalmát.",
-        de: "Wenn jemand, den er/sie gut kennt, unglücklich ist, kann er/sie den Schmerz dieser Person fast selber spüren.",
       },
     },
     {
@@ -1142,13 +999,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem szeretném, ha mások jobbnak tartanának maguknál.",
         en: "I wouldn't want people to treat me as though I were superior to them.",
-        de: "Ich will nicht, dass andere Leute mich behandeln, als ob ich ihnen überlegen sei.",
       },
       textObserver: "He/she wouldn't want people to treat him/her as though he/she were superior to them.",
       textObserverByLocale: {
         en: "He/she wouldn't want people to treat him/her as though he/she were superior to them.",
         hu: "Nem szeretné, ha mások jobbnak tartanák maguknál.",
-        de: "Er/Sie will nicht, dass andere Leute ihn/sie behandeln, als ob er/sie ihnen überlegen sei.",
       },
     },
     {
@@ -1159,13 +1014,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha az alkalom úgy hozná, szívesen elmennék egy klasszikus koncertre.",
         en: "If I had the opportunity, I would like to attend a classical music concert.",
-        de: "Wenn ich die Gelegenheit dazu hätte, würde ich gerne ein Konzert mit klassischer Musik besuchen.",
       },
       textObserver: "If he/she had the opportunity, he/she would like to attend a classical music concert.",
       textObserverByLocale: {
         en: "If he/she had the opportunity, he/she would like to attend a classical music concert.",
         hu: "Ha az alkalom úgy hozná, szívesen elmenne egy klasszikus koncertre.",
-        de: "Wenn er/sie die Gelegenheit dazu hätte, würde er/sie gerne ein Konzert mit klassischer Musik besuchen.",
       },
     },
     {
@@ -1176,13 +1029,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Mások sokszor ugratnak a rendetlenségem miatt.",
         en: "People often joke with me about the messiness of my room or desk.",
-        de: "Andere machen oft mit mir zusammen Witze über die Unordentlichkeit meines Zimmers oder Schreibtisches.",
       },
       textObserver: "People often joke with him/her about the messiness of his/her room or desk.",
       textObserverByLocale: {
         en: "People often joke with him/her about the messiness of his/her room or desk.",
         hu: "Mások sokszor ugratják a rendetlensége miatt.",
-        de: "Andere machen oft mit ihm/ihr zusammen Witze über die Unordentlichkeit seines/ihres Zimmers oder Schreibtisches.",
       },
       reversed: true,
     },
@@ -1194,13 +1045,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valaki egyszer már átvert, azzal szemben mindig is gyanakvó maradok.",
         en: "If someone has cheated me once, I will always feel suspicious of that person.",
-        de: "Wenn mich jemand einmal betrogen hat, werde ich dieser Person gegenüber immer misstrauisch bleiben.",
       },
       textObserver: "If someone has cheated him/her once, he/she will always feel suspicious of that person.",
       textObserverByLocale: {
         en: "If someone has cheated him/her once, he/she will always feel suspicious of that person.",
         hu: "Ha valaki egyszer már átverte, azzal szemben mindig is gyanakvó marad.",
-        de: "Wenn ihn/sie jemand einmal betrogen hat, wird er/sie dieser Person gegenüber immer misstrauisch bleiben.",
       },
       reversed: true,
     },
@@ -1212,13 +1061,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Úgy érzem, hogy népszerűtlen vagyok.",
         en: "I feel that I am an unpopular person.",
-        de: "Ich bin der Meinung, dass ich nicht beliebt bin.",
       },
       textObserver: "He/she feels that he/she is an unpopular person.",
       textObserverByLocale: {
         en: "He/she feels that he/she is an unpopular person.",
         hu: "Úgy érzi, hogy népszerűtlen.",
-        de: "Er/Sie ist der Meinung, dass er/sie nicht beliebt ist.",
       },
       reversed: true,
     },
@@ -1230,13 +1077,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Testi épségemet veszélyeztető helyzetekben nagyon félek.",
         en: "When it comes to physical danger, I am very fearful.",
-        de: "Wenn es um körperliche Gefahren geht, bin ich sehr ängstlich.",
       },
       textObserver: "When it comes to physical danger, he/she is very fearful.",
       textObserverByLocale: {
         en: "When it comes to physical danger, he/she is very fearful.",
         hu: "Testi épségét veszélyeztető helyzetekben nagyon fél.",
-        de: "Wenn es um körperliche Gefahren geht, ist er/sie sehr ängstlich.",
       },
     },
     {
@@ -1247,13 +1092,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valakitől valamit akarok, akkor még a faviccein is képes vagyok nevetni.",
         en: "If I want something from someone, I will laugh at that person's worst jokes.",
-        de: "Wenn ich von jemandem etwas will, lache ich auch noch über dessen schlechteste Witze.",
       },
       textObserver: "If he/she wants something from someone, he/she will laugh at that person's worst jokes.",
       textObserverByLocale: {
         en: "If he/she wants something from someone, he/she will laugh at that person's worst jokes.",
         hu: "Ha valakitől valamit akar, akkor még a faviccein is képes nevetni.",
-        de: "Wenn er/sie von jemandem etwas will, lacht er/sie auch noch über dessen schlechteste Witze.",
       },
       reversed: true,
     },
@@ -1265,13 +1108,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Egy, a tudomány és technika történetéről szóló könyv, a végletekig untatna.",
         en: "I would be very bored by a book about the history of science and technology.",
-        de: "Ich wäre von einem Buch über die Geschichte der Wissenschaft und Technik sehr gelangweilt.",
       },
       textObserver: "He/she would be very bored by a book about the history of science and technology.",
       textObserverByLocale: {
         en: "He/she would be very bored by a book about the history of science and technology.",
         hu: "Egy, a tudomány és technika történetéről szóló könyv, a végletekig untatná.",
-        de: "Er/Sie wäre von einem Buch über die Geschichte der Wissenschaft und Technik sehr gelangweilt.",
       },
       reversed: true,
     },
@@ -1283,13 +1124,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha kitűzök egy célt magam elé, gyakran feladom mielőtt elérném.",
         en: "Often when I set a goal, I end up quitting without having reached it.",
-        de: "Wenn ich mir ein Ziel setze, gebe ich oft auf, bevor ich es erreicht habe.",
       },
       textObserver: "Often when he/she sets a goal, he/she ends up quitting without having reached it.",
       textObserverByLocale: {
         en: "Often when he/she sets a goal, he/she ends up quitting without having reached it.",
         hu: "Ha kitűz egy célt maga elé, gyakran feladja, mielőtt elérné.",
-        de: "Wenn er/sie sich ein Ziel setzt, gibt er/sie oft auf, bevor er/sie es erreicht hat.",
       },
       reversed: true,
     },
@@ -1301,13 +1140,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Jobbára jóindulattal ítélkezem mások felett.",
         en: "I tend to be lenient in judging other people.",
-        de: "Ich neige dazu, nachsichtig zu sein, wenn ich andere beurteile.",
       },
       textObserver: "He/she tends to be lenient in judging other people.",
       textObserverByLocale: {
         en: "He/she tends to be lenient in judging other people.",
         hu: "Jobbára jóindulattal ítélkezik mások felett.",
-        de: "Er/Sie neigt dazu, nachsichtig zu sein, wenn er/sie andere beurteilt.",
       },
     },
     {
@@ -1318,13 +1155,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha egy csoport tagja vagyok, gyakran leszek a szóvivője is.",
         en: "When I'm in a group of people, I'm often the one who speaks on behalf of the group.",
-        de: "Wenn ich in einer Gruppe von Leuten bin, bin ich oft derjenige, der im Namen der Gruppe spricht.",
       },
       textObserver: "When he/she is in a group of people, he/she is often the one who speaks on behalf of the group.",
       textObserverByLocale: {
         en: "When he/she is in a group of people, he/she is often the one who speaks on behalf of the group.",
         hu: "Ha egy csoport tagja, gyakran lesz a szóvivője is.",
-        de: "Wenn er/sie in einer Gruppe von Leuten ist, ist er/sie oft derjenige/diejenige, der/die im Namen der Gruppe spricht.",
       },
     },
     {
@@ -1335,13 +1170,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szinte sosincs gondom az alvással stressz vagy szorongás miatt.",
         en: "I rarely, if ever, have trouble sleeping due to stress or anxiety.",
-        de: "Ich habe selten, wenn überhaupt, Schlafprobleme durch Stress oder Angst.",
       },
       textObserver: "He/she rarely, if ever, has trouble sleeping due to stress or anxiety.",
       textObserverByLocale: {
         en: "He/she rarely, if ever, has trouble sleeping due to stress or anxiety.",
         hu: "Szinte sosincs gondja az alvással stressz vagy szorongás miatt.",
-        de: "Er/Sie hat selten, wenn überhaupt, Schlafprobleme durch Stress oder Angst.",
       },
       reversed: true,
     },
@@ -1353,13 +1186,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Sosem hagynám magam megvesztegetni, mindegy mekkora is lenne az az ajánlat.",
         en: "I would never accept a bribe, even if it were very large.",
-        de: "Ich würde niemals Bestechungsgeld annehmen, auch wenn es sehr viel wäre.",
       },
       textObserver: "He/she would never accept a bribe, even if it were very large.",
       textObserverByLocale: {
         en: "He/she would never accept a bribe, even if it were very large.",
         hu: "Sosem hagyná magát megvesztegetni, mindegy mekkora is lenne az az ajánlat.",
-        de: "Er/Sie würde niemals Bestechungsgeld annehmen, auch wenn es sehr viel wäre.",
       },
     },
     {
@@ -1370,13 +1201,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Sokszor mondták már nekem, hogy jó a fantáziám.",
         en: "People have often told me that I have a good imagination.",
-        de: "Man hat mir schon oft gesagt, dass ich eine gute Vorstellungskraft habe.",
       },
       textObserver: "He/she has a good imagination.",
       textObserverByLocale: {
         en: "He/she has a good imagination.",
         hu: "Sokszor mondták már neki, hogy jó a fantáziája.",
-        de: "Man hat ihm/ihr schon oft gesagt, dass er/sie eine gute Vorstellungskraft hat.",
       },
     },
     {
@@ -1387,13 +1216,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A munkámban megpróbálok még akkor is mindig precíznek lenni, ha ez többletidőmbe kerül.",
         en: "I always try to be accurate in my work, even at the expense of time.",
-        de: "Ich versuche immer, fehlerfrei zu arbeiten, auch wenn es Zeit kostet.",
       },
       textObserver: "He/she always tries to be accurate in his/her work, even at the expense of time.",
       textObserverByLocale: {
         en: "He/she always tries to be accurate in his/her work, even at the expense of time.",
         hu: "A munkájában megpróbál még akkor is mindig precíz lenni, ha ez többletidejébe kerül.",
-        de: "Er/Sie versucht immer, fehlerfrei zu arbeiten, auch wenn es Zeit kostet.",
       },
     },
     {
@@ -1404,13 +1231,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha azt mondják, hogy nincs igazam, az első reakcióm, hogy vitába szállok.",
         en: "When people tell me that I'm wrong, my first reaction is to argue with them.",
-        de: "Wenn mir andere sagen, dass ich falsch liege, ist meine erste Reaktion, mit ihnen zu streiten.",
       },
       textObserver: "When people tell him/her that he/she is wrong, his/her first reaction is to argue with them.",
       textObserverByLocale: {
         en: "When people tell him/her that he/she is wrong, his/her first reaction is to argue with them.",
         hu: "Ha azt mondják, hogy nincs igaza, az első reakciója, hogy vitába száll.",
-        de: "Wenn ihm/ihr andere sagen, dass er/sie falsch liegt, ist seine/ihre erste Reaktion, mit ihnen zu streiten.",
       },
       reversed: true,
     },
@@ -1422,13 +1247,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Inkább az olyan munkákat szeretem ahol emberekkel kell foglalkozni, mint ahol egyedül kell dolgozni.",
         en: "I prefer jobs that involve active social interaction to those that involve working alone.",
-        de: "Ich ziehe Berufe, in denen man sich aktiv mit anderen Menschen auseinandersetzt solchen vor, in denen man alleine arbeitet.",
       },
       textObserver: "He/she prefers jobs that involve active social interaction to those that involve working alone.",
       textObserverByLocale: {
         en: "He/she prefers jobs that involve active social interaction to those that involve working alone.",
         hu: "Inkább az olyan munkákat szereti, ahol emberekkel kell foglalkozni, mint ahol egyedül kell dolgozni.",
-        de: "Er/Sie zieht Berufe, in denen man sich aktiv mit anderen Menschen auseinandersetzt solchen vor, in denen man alleine arbeitet.",
       },
     },
     {
@@ -1439,13 +1262,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha valami aggaszt, szeretem megosztani valakivel a gondom.",
         en: "Whenever I feel worried about something, I want to share my concern with another person.",
-        de: "Wenn ich mir um irgendetwas Sorgen mache, will ich meine Sorgen mit einer anderen Person teilen.",
       },
       textObserver: "Whenever he/she feels worried about something, he/she wants to share his/her concern with another person.",
       textObserverByLocale: {
         en: "Whenever he/she feels worried about something, he/she wants to share his/her concern with another person.",
         hu: "Ha valami aggasztja, szereti megosztani valakivel a gondját.",
-        de: "Wenn er/sie sich um irgendetwas Sorgen macht, will er/sie seine/ihre Sorgen mit einer anderen Person teilen.",
       },
     },
     {
@@ -1456,13 +1277,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Jó lenne, ha az emberek látnák, amint egy jó drága autóban ülve vezetek.",
         en: "I would like to be seen driving around in a very expensive car.",
-        de: "Ich würde gerne dabei gesehen werden, wie ich in einem sehr teuren Auto herumfahre.",
       },
       textObserver: "He/she would like to be seen driving around in a very expensive car.",
       textObserverByLocale: {
         en: "He/she would like to be seen driving around in a very expensive car.",
         hu: "Örülne, ha az emberek látnák, amint egy jó drága autóban ülve vezet.",
-        de: "Er/Sie würde gerne dabei gesehen werden, wie er/sie in einem sehr teuren Auto herumfährt.",
       },
       reversed: true,
     },
@@ -1474,13 +1293,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Azt hiszem, kissé különc vagyok.",
         en: "I think of myself as a somewhat eccentric person.",
-        de: "Ich halte mich selber für eine etwas exzentrische Person.",
       },
       textObserver: "I think of him/her as a somewhat eccentric person.",
       textObserverByLocale: {
         en: "I think of him/her as a somewhat eccentric person.",
         hu: "Kissé különcnek tartja magát.",
-        de: "Er/Sie hält sich selber für eine etwas exzentrische Person.",
       },
     },
     {
@@ -1491,13 +1308,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem engedem, hogy a pillanatnyi érzelmeim irányítsák a viselkedésem.",
         en: "I don't allow my impulses to govern my behavior.",
-        de: "Ich lasse nicht zu, dass meine Impulse mein Verhalten dominieren.",
       },
       textObserver: "He/she doesn't allow his/her impulses to govern his/her behavior.",
       textObserverByLocale: {
         en: "He/she doesn't allow his/her impulses to govern his/her behavior.",
         hu: "Nem engedi, hogy a pillanatnyi érzelmei irányítsák a viselkedését.",
-        de: "Er/Sie lässt nicht zu, dass seine/ihre Impulse sein/ihr Verhalten dominieren.",
       },
     },
     {
@@ -1508,13 +1323,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A legtöbb embert könnyebb felbosszantani, mint engem.",
         en: "Most people tend to get angry more quickly than I do.",
-        de: "Die meisten Leute werden schneller ärgerlich als ich.",
       },
       textObserver: "Most people tend to get angry more quickly than he/she does.",
       textObserverByLocale: {
         en: "Most people tend to get angry more quickly than he/she does.",
         hu: "A legtöbb embert könnyebb felbosszantani, mint őt.",
-        de: "Die meisten Leute werden schneller ärgerlich als er/sie.",
       },
     },
     {
@@ -1525,13 +1338,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Sokszor mondják nekem, hogy ne legyek olyan búval bélelt.",
         en: "People often tell me that I should try to cheer up.",
-        de: "Andere sagen mir oft, dass ich versuchen sollte, etwas fröhlicher zu sein.",
       },
       textObserver: "People often tell him/her that he/she should try to cheer up.",
       textObserverByLocale: {
         en: "People often tell him/her that he/she should try to cheer up.",
         hu: "Sokszor mondják neki, hogy ne legyen olyan búval bélelt.",
-        de: "Andere sagen ihm/ihr oft, dass er/sie versuchen sollte, etwas fröhlicher zu sein.",
       },
       reversed: true,
     },
@@ -1543,13 +1354,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nagyon megindít, ha hozzám közelálló személyektől kell hosszú távra elbúcsúznom.",
         en: "I feel strong emotions when someone close to me is going away for a long time.",
-        de: "Ich fühle starke Emotionen, wenn jemand, der mir nahe steht, für eine längere Zeit weggeht.",
       },
       textObserver: "He/she feels strong emotions when someone close to him/her is going away for a long time.",
       textObserverByLocale: {
         en: "He/she feels strong emotions when someone close to him/her is going away for a long time.",
         hu: "Nagyon megindítja, ha hozzá közelálló személyektől kell hosszú távra elbúcsúznia.",
-        de: "Er/Sie fühlt starke Emotionen, wenn jemand, der ihm/ihr nahe steht, für eine längere Zeit weggeht.",
       },
     },
     {
@@ -1560,13 +1369,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Úgy érzem, hogy több elismerés jár nekem mint egy átlagembernek.",
         en: "I think that I am entitled to more respect than the average person is.",
-        de: "Ich denke, dass ich mehr Respekt verdiene als ein durchschnittlicher Mensch.",
       },
       textObserver: "He/she thinks that he/she is entitled to more respect than the average person is.",
       textObserverByLocale: {
         en: "He/she thinks that he/she is entitled to more respect than the average person is.",
         hu: "Úgy érzi, hogy több elismerés jár neki, mint egy átlagembernek.",
-        de: "Er/Sie denkt, dass er/sie mehr Respekt verdient als ein durchschnittlicher Mensch.",
       },
       reversed: true,
     },
@@ -1578,13 +1385,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Néha szeretem nézni, ahogy a szél bolyong a fák között.",
         en: "Sometimes I like to just watch the wind as it blows through the trees.",
-        de: "Manchmal mag ich es, einfach nur dem Wind zuzusehen, wie er durch die Bäume bläst.",
       },
       textObserver: "Sometimes he/she likes to just watch the wind as it blows through the trees.",
       textObserverByLocale: {
         en: "Sometimes he/she likes to just watch the wind as it blows through the trees.",
         hu: "Néha szereti nézni, ahogy a szél bolyong a fák között.",
-        de: "Manchmal mag er/sie es, einfach nur dem Wind zuzusehen, wie er durch die Bäume bläst.",
       },
     },
     {
@@ -1595,13 +1400,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A munkámban néha hátráltat, hogy nem vagyok jól szervezett.",
         en: "When working, I sometimes have difficulties due to being disorganized.",
-        de: "Wenn ich arbeite, habe ich manchmal Schwierigkeiten, weil ich unorganisiert bin.",
       },
       textObserver: "When working, he/she sometimes has difficulties due to being disorganized.",
       textObserverByLocale: {
         en: "When working, he/she sometimes has difficulties due to being disorganized.",
         hu: "A munkájában néha hátráltatja, hogy nem jól szervezett.",
-        de: "Wenn er/sie arbeitet, hat er/sie manchmal Schwierigkeiten, weil er/sie unorganisiert ist.",
       },
       reversed: true,
     },
@@ -1613,13 +1416,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nehezemre esik teljes szívből megbocsátani, ha csúnyán megbántottak.",
         en: "I find it hard to fully forgive someone who has done something mean to me.",
-        de: "Es fällt mir schwer, jemandem vollkommen zu vergeben, der mir etwas Gemeines angetan hat.",
       },
       textObserver: "He/she finds it hard to fully forgive someone who has done something mean to him/her.",
       textObserverByLocale: {
         en: "He/she finds it hard to fully forgive someone who has done something mean to him/her.",
         hu: "Nehéz számára teljes szívből megbocsátani, ha csúnyán megbántották.",
-        de: "Es fällt ihm/ihr schwer, jemandem vollkommen zu vergeben, der ihm/ihr etwas Gemeines angetan hat.",
       },
       reversed: true,
     },
@@ -1631,13 +1432,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Néha az az érzésem, hogy értéktelen ember vagyok.",
         en: "I sometimes feel that I am a worthless person.",
-        de: "Manchmal habe ich den Eindruck, dass ich wertlos bin.",
       },
       textObserver: "He/she sometimes feels that he/she is a worthless person.",
       textObserverByLocale: {
         en: "He/she sometimes feels that he/she is a worthless person.",
         hu: "Néha az az érzése, hogy értéktelen ember.",
-        de: "Manchmal hat er/sie den Eindruck, dass er/sie wertlos ist.",
       },
       reversed: true,
     },
@@ -1649,13 +1448,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Még egy vészhelyzetben sem veszteném el a fejem.",
         en: "Even in an emergency I wouldn't feel like panicking.",
-        de: "Selbst in einem Notfall würde ich nicht in Panik geraten.",
       },
       textObserver: "Even in an emergency he/she wouldn't feel like panicking.",
       textObserverByLocale: {
         en: "Even in an emergency he/she wouldn't feel like panicking.",
         hu: "Még egy vészhelyzetben sem vesztené el a fejét.",
-        de: "Selbst in einem Notfall würde er/sie nicht in Panik geraten.",
       },
       reversed: true,
     },
@@ -1667,13 +1464,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem tettetném, hogy kedvelek valakit csak azért, hogy rávegyem egy szívességre.",
         en: "I wouldn't pretend to like someone just to get that person to do favors for me.",
-        de: "Ich würde nicht vortäuschen, jemanden zu mögen, nur um diese Person dazu zu bringen, mir Gefälligkeiten zu erweisen.",
       },
       textObserver: "He/she wouldn't pretend to like someone just to get that person to do favors for him/her.",
       textObserverByLocale: {
         en: "He/she wouldn't pretend to like someone just to get that person to do favors for him/her.",
         hu: "Nem tettetné, hogy kedvel valakit, csak azért, hogy rávegye egy szívességre.",
-        de: "Er/Sie würde nicht vortäuschen, jemanden zu mögen, nur um diese Person dazu zu bringen, ihm/ihr Gefälligkeiten zu erweisen.",
       },
     },
     {
@@ -1684,13 +1479,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Igazából még sohasem lapozgattam élvezettel egy lexikonban.",
         en: "I've never really enjoyed looking through an encyclopedia.",
-        de: "Ich habe es noch nie wirklich gemocht, eine Enzyklopädie durchzublättern.",
       },
       textObserver: "He/she has never really enjoyed looking through an encyclopedia.",
       textObserverByLocale: {
         en: "He/she has never really enjoyed looking through an encyclopedia.",
         hu: "Valószínű még sohasem lapozgatott élvezettel egy lexikonban.",
-        de: "Er/Sie hat es noch nie wirklich gemocht, eine Enzyklopädie durchzublättern.",
       },
       reversed: true,
     },
@@ -1702,13 +1495,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ami a munkát illeti, csak a legszükségesebb erőfeszítéssel dolgozom.",
         en: "I do only the minimum amount of work needed to get by.",
-        de: "Ich arbeite nur so viel wie nötig, um gerade so durchzukommen.",
       },
       textObserver: "He/she does only the minimum amount of work needed to get by.",
       textObserverByLocale: {
         en: "He/she does only the minimum amount of work needed to get by.",
         hu: "Ami a munkát illeti, csak a legszükségesebb erőfeszítéssel dolgozik.",
-        de: "Er/Sie arbeitet nur so viel wie nötig, um gerade so durchzukommen.",
       },
       reversed: true,
     },
@@ -1720,13 +1511,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Még akkor sem nyilatkozom másokról negatívan, ha sok hibát követnek el.",
         en: "Even when people make a lot of mistakes, I rarely say anything negative.",
-        de: "Selbst wenn Leute viele Fehler machen, sage ich nur selten etwas Negatives.",
       },
       textObserver: "Even when people make a lot of mistakes, he/she rarely says anything negative.",
       textObserverByLocale: {
         en: "Even when people make a lot of mistakes, he/she rarely says anything negative.",
         hu: "Még akkor sem nyilatkozik másokról negatívan, ha sok hibát követnek el.",
-        de: "Selbst wenn Leute viele Fehler machen, sagt er/sie nur selten etwas Negatives.",
       },
     },
     {
@@ -1737,13 +1526,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem szeretek sok ember előtt felszólalni vagy beszédet tartani.",
         en: "I tend to feel quite self-conscious when speaking in front of a group of people.",
-        de: "Ich fühle mich nicht ganz behaglich wenn ich vor einer Gruppe von Leuten spreche.",
       },
       textObserver: "He/she tends to feel quite self-conscious when speaking in front of a group of people.",
       textObserverByLocale: {
         en: "He/she tends to feel quite self-conscious when speaking in front of a group of people.",
         hu: "Nem szeret sok ember előtt felszólalni vagy beszédet tartani.",
-        de: "Er/Sie fühlt sich nicht ganz behaglich wenn er/sie vor einer Gruppe von Leuten spricht.",
       },
       reversed: true,
     },
@@ -1755,13 +1542,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nagyon izgulok, ha egy fontos döntés eredményére kell várnom.",
         en: "I get very anxious when waiting to hear about an important decision.",
-        de: "Ich werde sehr unruhig, wenn ich auf eine wichtige Entscheidung warte.",
       },
       textObserver: "He/she gets very anxious when waiting to hear about an important decision.",
       textObserverByLocale: {
         en: "He/she gets very anxious when waiting to hear about an important decision.",
         hu: "Nagyon izgul, ha egy fontos döntés eredményére kell várnia.",
-        de: "Er/Sie wird sehr unruhig, wenn er/sie auf eine wichtige Entscheidung wartet.",
       },
     },
     {
@@ -1772,13 +1557,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Kísértésbe vinne, hogy hamisított pénzt használjak, ha tudnám, biztos nem buknék le vele.",
         en: "I'd be tempted to use counterfeit money, if I were sure I could get away with it.",
-        de: "Ich würde in die Versuchung geraten, Falschgeld zu benutzen, wenn ich sicher sein könnte, damit durchzukommen.",
       },
       textObserver: "He/she'd be tempted to use counterfeit money, if he/she were sure he/she could get away with it.",
       textObserverByLocale: {
         en: "He/she'd be tempted to use counterfeit money, if he/she were sure he/she could get away with it.",
         hu: "Kísértésbe vinné, hogy hamisított pénzt használjon, ha tudná, biztosan nem bukna le vele.",
-        de: "Er/Sie würde in die Versuchung geraten, Falschgeld zu benutzen, wenn er/sie sicher sein könnte, damit durchzukommen.",
       },
       reversed: true,
     },
@@ -1790,13 +1573,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem hiszem, hogy én egy kreatív vagy művészileg tehetséges típus vagyok.",
         en: "I don't think of myself as the artistic or creative type.",
-        de: "Ich halte mich nicht für einen künstlerischen oder kreativen Menschen.",
       },
       textObserver: "I don't think of him/her as the artistic or creative type.",
       textObserverByLocale: {
         en: "I don't think of him/her as the artistic or creative type.",
         hu: "Nem hiszi, hogy kreatív vagy művészileg tehetséges típus lenne.",
-        de: "Er/Sie hält sich nicht für einen künstlerischen oder kreativen Menschen.",
       },
       reversed: true,
     },
@@ -1808,13 +1589,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Az emberek gyakran tartanak perfekcionistának.",
         en: "People often call me a perfectionist.",
-        de: "Andere nennen mich oft einen Perfektionisten.",
       },
       textObserver: "People often call him/her a perfectionist.",
       textObserverByLocale: {
         en: "People often call him/her a perfectionist.",
         hu: "Az emberek gyakran tartják perfekcionistának.",
-        de: "Andere nennen ihn/sie oft einen Perfektionisten/eine Perfektionistin.",
       },
     },
     {
@@ -1825,13 +1604,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nehezemre esik másokkal kompromisszumot kötni, amikor tényleg úgy érzem, hogy igazam van.",
         en: "I find it hard to compromise with people when I really think I'm right.",
-        de: "Es fällt mir schwer, mit anderen einen Kompromiss einzugehen, wenn ich überzeugt bin, dass ich Recht habe.",
       },
       textObserver: "He/she finds it hard to compromise with people when he/she really thinks he/she is right.",
       textObserverByLocale: {
         en: "He/she finds it hard to compromise with people when he/she really thinks he/she is right.",
         hu: "Nehezére esik neki másokkal kompromisszumot kötni, amikor úgy érzi, hogy igaza van.",
-        de: "Es fällt ihm/ihr schwer, mit anderen einen Kompromiss einzugehen, wenn er/sie überzeugt ist, dass er/sie Recht hat.",
       },
       reversed: true,
     },
@@ -1843,13 +1620,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Ha egy új helyre kerülök, hamarosan új barátságokat is kötök.",
         en: "The first thing that I always do in a new place is to make friends.",
-        de: "Das erste, was ich an einem neuen Ort tue, ist, Freundschaften zu schließen.",
       },
       textObserver: "The first thing that he/she always does in a new place is to make friends.",
       textObserverByLocale: {
         en: "The first thing that he/she always does in a new place is to make friends.",
         hu: "Ha egy új helyre kerül, hamarosan új barátságokat is köt.",
-        de: "Das erste, was er/sie an einem neuen Ort tut, ist, Freundschaften zu schließen.",
       },
     },
     {
@@ -1860,13 +1635,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Szinte sosem vitatom meg másokkal a problémáimat.",
         en: "I rarely discuss my problems with other people.",
-        de: "Ich diskutiere selten meine Probleme mit anderen Leuten.",
       },
       textObserver: "He/she rarely discusses his/her problems with other people.",
       textObserverByLocale: {
         en: "He/she rarely discusses his/her problems with other people.",
         hu: "Szinte sosem vitatja meg másokkal a problémáit.",
-        de: "Er/Sie diskutiert selten seine/ihre Probleme mit anderen Leuten.",
       },
       reversed: true,
     },
@@ -1878,13 +1651,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nagyon örülnék neki, ha méregdrága, luxus cuccaim lennének.",
         en: "I would get a lot of pleasure from owning expensive luxury goods.",
-        de: "Es würde mir viel Freude bereiten, teure Luxusgüter zu besitzen.",
       },
       textObserver: "He/she would get a lot of pleasure from owning expensive luxury goods.",
       textObserverByLocale: {
         en: "He/she would get a lot of pleasure from owning expensive luxury goods.",
         hu: "Nagyon örülne neki, ha méregdrága, luxus cuccai lennének.",
-        de: "Es würde ihm/ihr viel Freude bereiten, teure Luxusgüter zu besitzen.",
       },
       reversed: true,
     },
@@ -1896,13 +1667,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A filozófiai eszmecseréket unalmasnak tartom.",
         en: "I find it boring to discuss philosophy.",
-        de: "Ich finde es langweilig, über Philosophie zu diskutieren.",
       },
       textObserver: "He/she finds it boring to discuss philosophy.",
       textObserverByLocale: {
         en: "He/she finds it boring to discuss philosophy.",
         hu: "A filozófiai eszmecseréket unalmasnak tartja.",
-        de: "Er/Sie findet es langweilig, über Philosophie zu diskutieren.",
       },
       reversed: true,
     },
@@ -1914,13 +1683,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Inkább spontán szeretek cselekedni, mint mindent előre eltervezni.",
         en: "I prefer to do whatever comes to mind, rather than stick to a plan.",
-        de: "Ich ziehe es vor, das zu tun, was mir gerade in den Sinn kommt, anstatt an einem Plan festzuhalten.",
       },
       textObserver: "He/she prefers to do whatever comes to mind, rather than stick to a plan.",
       textObserverByLocale: {
         en: "He/she prefers to do whatever comes to mind, rather than stick to a plan.",
         hu: "Inkább spontán szeret cselekedni, mint mindent előre eltervezni.",
-        de: "Er/Sie zieht es vor, das zu tun, was ihm/ihr gerade in den Sinn kommt, anstatt an einem Plan festzuhalten.",
       },
       reversed: true,
     },
@@ -1932,13 +1699,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nehezemre esik uralkodni magamon, ha megsértenek.",
         en: "I find it hard to keep my temper when people insult me.",
-        de: "Es fällt mir schwer, mich zu beherrschen, wenn Leute mich beleidigen.",
       },
       textObserver: "He/she finds it hard to keep his/her temper when people insult him/her.",
       textObserverByLocale: {
         en: "He/she finds it hard to keep his/her temper when people insult him/her.",
         hu: "Nehezére esik neki uralkodni magán, ha megsértik.",
-        de: "Es fällt ihm/ihr schwer, sich zu beherrschen, wenn Leute ihn/sie beleidigen.",
       },
       reversed: true,
     },
@@ -1950,13 +1715,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "A legtöbb ember dinamikusabb és élettelibb, mint én.",
         en: "Most people are more upbeat and dynamic than I generally am.",
-        de: "Die meisten Leute sind aufgedrehter und dynamischer als ich es im Allgemeinen bin.",
       },
       textObserver: "Most people are more upbeat and dynamic than he/she generally is.",
       textObserverByLocale: {
         en: "Most people are more upbeat and dynamic than he/she generally is.",
         hu: "A legtöbb ember dinamikusabb és élettelibb nála.",
-        de: "Die meisten Leute sind aufgedrehter und dynamischer als er/sie es im Allgemeinen ist.",
       },
       reversed: true,
     },
@@ -1968,13 +1731,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Semleges maradok olyan helyzetekben is, ahol mások érzelmessé válnak.",
         en: "I remain unemotional even in situations where most people get very sentimental.",
-        de: "Ich bleibe emotionslos, selbst in Situationen, in denen die meisten Leute sehr sentimental werden.",
       },
       textObserver: "He/she remains unemotional even in situations where most people get very sentimental.",
       textObserverByLocale: {
         en: "He/she remains unemotional even in situations where most people get very sentimental.",
         hu: "Semleges marad olyan helyzetekben is, ahol mások érzelmessé válnak.",
-        de: "Er/Sie bleibt emotionslos, selbst in Situationen, in denen die meisten Leute sehr sentimental werden.",
       },
       reversed: true,
     },
@@ -1986,13 +1747,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Azt szeretném, ha mások fontos és magas pozícióban lévő embernek tartanának.",
         en: "I want people to know that I am an important person of high status.",
-        de: "Ich will, dass alle wissen, dass ich eine wichtige angesehene Person bin.",
       },
       textObserver: "He/she wants people to know that he/she is an important person of high status.",
       textObserverByLocale: {
         en: "He/she wants people to know that he/she is an important person of high status.",
         hu: "Azt szeretné, ha mások fontos és magas pozícióban lévő embernek tartanák.",
-        de: "Er/Sie will, dass alle wissen, dass er/sie eine wichtige angesehene Person ist.",
       },
       reversed: true,
     },
@@ -2004,13 +1763,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Együttérzéssel tölt el, ha látom, másoknak kevesebb szerencse jutott az életben.",
         en: "I have sympathy for people who are less fortunate than I am.",
-        de: "Ich habe Mitgefühl mit Menschen, die weniger Glück haben als ich.",
       },
       textObserver: "He/she has sympathy for people who are less fortunate than he/she is.",
       textObserverByLocale: {
         en: "He/she has sympathy for people who are less fortunate than he/she is.",
         hu: "Együttérzéssel tölti el, ha látja, másoknak kevesebb szerencse jutott az életben.",
-        de: "Er/Sie hat Mitgefühl mit Menschen, die weniger Glück haben als er/sie.",
       },
     },
     {
@@ -2021,13 +1778,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Megpróbálok adakozni a rászorulóknak.",
         en: "I try to give generously to those in need.",
-        de: "Ich versuche, Notleidende großzügig zu unterstützen.",
       },
       textObserver: "He/she tries to give generously to those in need.",
       textObserverByLocale: {
         en: "He/she tries to give generously to those in need.",
         hu: "Megpróbál adakozni a rászorulóknak.",
-        de: "Er/Sie versucht, Notleidende großzügig zu unterstützen.",
       },
     },
     {
@@ -2038,13 +1793,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Nem okozna lelkiismeret-furdalást, ha megbántanék valakit, akit nem kedvelek.",
         en: "It wouldn't bother me to harm someone I didn't like.",
-        de: "Es würde mich nicht stören, jemandem zu schaden, den ich nicht mag.",
       },
       textObserver: "It wouldn't bother him/her to harm someone he/she didn't like.",
       textObserverByLocale: {
         en: "It wouldn't bother him/her to harm someone he/she didn't like.",
         hu: "Nem okozna lelkiismeret-furdalást neki, ha megbántana valakit, akit nem kedvel.",
-        de: "Es würde ihn/sie nicht stören, jemandem zu schaden, den er/sie nicht mag.",
       },
       reversed: true,
     },
@@ -2056,13 +1809,11 @@ export const hexacoConfig: TestConfig = {
       textByLocale: {
         hu: "Keményszívű embernek tartanak.",
         en: "People see me as a hard-hearted person.",
-        de: "Man hält mich für einen hartherzigen Menschen.",
       },
       textObserver: "People see him/her as a hard-hearted person.",
       textObserverByLocale: {
         en: "People see him/her as a hard-hearted person.",
         hu: "Keményszívű embernek tartják.",
-        de: "Man hält ihn/sie für einen hartherzigen Menschen.",
       },
       reversed: true,
     },

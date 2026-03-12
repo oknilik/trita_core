@@ -2,24 +2,21 @@
 
 import { useState, useEffect } from "react";
 
-type Locale = "hu" | "en" | "de";
+type Locale = "hu" | "en";
 
 const texts = {
-  tag: { hu: "KÖVETKEZŐ FÁZIS", en: "COMING NEXT", de: "NÄCHSTE PHASE" },
+  tag: { hu: "KÖVETKEZŐ FÁZIS", en: "COMING NEXT" },
   title: {
     hu: "Mi érdekelne a következő fázisból?",
     en: "What interests you for the next phase?",
-    de: "Was interessiert dich für die nächste Phase?",
   },
   subtitle: {
     hu: "Segíts meghatározni, mire fókuszáljunk. Kattints arra, ami számodra releváns lenne.",
     en: "Help us decide what to build next. Click anything that would be relevant to you.",
-    de: "Hilf uns zu entscheiden, was wir als Nächstes bauen. Klick, was für dich relevant wäre.",
   },
   thanks: {
     hu: "Köszönjük! Értesítünk, ha elindul.",
     en: "Thank you! We'll let you know when it launches.",
-    de: "Danke! Wir melden uns, wenn es startet.",
   },
   features: {
     hu: [
@@ -32,16 +29,11 @@ const texts = {
       { key: "comm", icon: "💬", label: "Communication gap discovery" },
       { key: "360", icon: "🔄", label: "360° feedback at work" },
     ],
-    de: [
-      { key: "team", icon: "👥", label: "Teamdynamik-Analyse" },
-      { key: "comm", icon: "💬", label: "Kommunikationslücken aufdecken" },
-      { key: "360", icon: "🔄", label: "360°-Feedback am Arbeitsplatz" },
-    ],
   },
 };
 
 export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
-  const l = (["hu", "en", "de"].includes(locale) ? locale : "en") as Locale;
+  const l = (["hu", "en"].includes(locale) ? locale : "en") as Locale;
   const [clicked, setClicked] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
 
@@ -76,8 +68,8 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
   const features = texts.features[l];
 
   return (
-    <section className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/60 via-purple-50/40 to-pink-50/30 p-6 md:p-8">
-      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
+    <section className="rounded-2xl border border-[#f3d4c8] bg-gradient-to-br from-[#fef3ec] via-[#faf9f6] to-[#f3eee4] p-6 md:p-8">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#c8410a]">
         {texts.tag[l]}
       </div>
       <h2 className="mb-2 text-xl font-bold text-gray-900">{texts.title[l]}</h2>
@@ -93,20 +85,20 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
               disabled={!loaded}
               className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all disabled:opacity-50 ${
                 isClicked
-                  ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                  : "border-gray-200 bg-white text-gray-700 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-700"
+                  ? "border-[#f3d4c8] bg-[#fef3ec] text-[#8b2f09]"
+                  : "border-gray-200 bg-white text-gray-700 hover:border-[#f3d4c8] hover:bg-[#fef3ec] hover:text-[#8b2f09]"
               }`}
             >
               <span className="text-base">{f.icon}</span>
               <span className="flex-1">{f.label}</span>
-              {isClicked && <span className="text-indigo-500">✓</span>}
+              {isClicked && <span className="text-[#c8410a]">✓</span>}
             </button>
           );
         })}
       </div>
 
       {clicked.size > 0 && (
-        <p className="mt-4 text-sm font-medium text-indigo-600">
+        <p className="mt-4 text-sm font-medium text-[#c8410a]">
           {texts.thanks[l]}
         </p>
       )}

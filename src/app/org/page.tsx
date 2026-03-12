@@ -41,8 +41,8 @@ export default async function OrgListPage() {
   });
   const memberships = membership ? [membership] : [];
 
-  const isHu = locale !== "en" && locale !== "de";
-  const dateLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "hu-HU";
+  const isHu = locale !== "en";
+  const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
   return (
     <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white min-h-dvh">

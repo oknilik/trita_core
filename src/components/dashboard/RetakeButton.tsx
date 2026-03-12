@@ -30,7 +30,7 @@ export function RetakeButton() {
       <button
         type="button"
         onClick={() => setShowModal(true)}
-        className="flex min-h-[44px] items-center rounded-lg border border-indigo-600 bg-transparent px-6 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
+        className="flex min-h-[44px] items-center rounded-lg border border-[#c8410a] bg-transparent px-6 text-sm font-semibold text-[#c8410a] transition hover:bg-[#fef3ec]"
       >
         {t("dashboard.retake", locale)}
       </button>

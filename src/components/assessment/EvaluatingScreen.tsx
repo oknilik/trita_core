@@ -140,7 +140,7 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
   }, [animate]);
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
+    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-hidden bg-[#faf9f6] px-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -152,12 +152,12 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
           <svg viewBox="0 0 300 300" className="h-full w-full">
             <defs>
               <linearGradient id="evalFill" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#6366F1" stopOpacity="0.18" />
-                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.08" />
+                <stop offset="0%" stopColor="#c8410a" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#8b2f09" stopOpacity="0.1" />
               </linearGradient>
               <linearGradient id="evalStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#6366F1" />
-                <stop offset="100%" stopColor="#8B5CF6" />
+                <stop offset="0%" stopColor="#c8410a" />
+                <stop offset="100%" stopColor="#8b2f09" />
               </linearGradient>
             </defs>
 
@@ -167,7 +167,7 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
                 key={ring}
                 d={wobblyRingPath(MAX_R * ring, ri * 31)}
                 fill="none"
-                stroke={ring === 1 ? "#D1D5DB" : "#E5E7EB"}
+                stroke={ring === 1 ? "#d9cfc1" : "#e8e4dc"}
                 strokeWidth={ring === 1 ? "1.2" : "0.7"}
                 strokeLinecap="round"
                 opacity="0.5"
@@ -180,7 +180,7 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
                 key={i}
                 d={wobblyAxisPath(i, 42)}
                 fill="none"
-                stroke="#E5E7EB"
+                stroke="#e8e4dc"
                 strokeWidth="0.7"
                 strokeLinecap="round"
                 opacity="0.5"
@@ -200,17 +200,17 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
         </div>
 
         {/* Text */}
-        <h2 className="mt-6 text-center text-xl font-bold text-gray-900 md:text-2xl">
+        <h2 className="mt-6 text-center text-xl font-bold text-[#1a1814] md:text-2xl">
           {t("assessment.evaluatingTitle", locale)}
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-500">
+        <p className="mt-2 text-center text-sm text-[#5a5650]">
           {t("assessment.evaluatingBody", locale)}
         </p>
 
         {/* Progress bar */}
-        <div className="mt-8 h-2 w-64 overflow-hidden rounded-full bg-gray-100 md:w-80">
+        <div className="mt-8 h-2 w-64 overflow-hidden rounded-full bg-[#e8e4dc] md:w-80">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+            className="h-full rounded-full bg-gradient-to-r from-[#c8410a] to-[#8b2f09]"
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(progress, 100)}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}

@@ -10,7 +10,6 @@ const createSchema = z.object({
 });
 
 // POST /api/team — create a new team
-// - MANAGER role: can create standalone teams (no orgId)
 // - Org ADMIN: can create teams under their org (orgId required)
 export async function POST(req: Request) {
   const { userId } = await auth();
@@ -18,7 +17,7 @@ export async function POST(req: Request) {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, role: true },
+    select: { id: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -44,34 +43,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ team }, { status: 201 });
   }
 
-  // Standalone team: requires MANAGER role
-  if (profile.role !== "MANAGER") {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  }
-
-  const team = await prisma.team.create({
-    data: { name, ownerId: profile.id },
-    select: { id: true, name: true, createdAt: true },
-  });
-
-  return NextResponse.json({ team }, { status: 201 });
+  // No orgId: forbidden
+  return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 }
 
-// GET /api/team — list teams owned by the current coach
+// GET /api/team — list org teams the current user has access to
 export async function GET() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, role: true },
+    select: { id: true },
   });
-  if (!profile || profile.role !== "MANAGER") {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  }
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const memberships = await prisma.organizationMember.findMany({
+    where: { userId: profile.id },
+    select: { orgId: true },
+  });
+
+  const orgIds = memberships.map((m) => m.orgId);
+  if (orgIds.length === 0) return NextResponse.json({ teams: [] });
 
   const teams = await prisma.team.findMany({
-    where: { ownerId: profile.id },
+    where: { orgId: { in: orgIds } },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,

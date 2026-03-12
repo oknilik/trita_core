@@ -12,7 +12,6 @@ const inviteSchema = z.object({
 
 // POST /api/team/[id]/invite — add a member to the team by email
 // - Org team: requires ORG_MANAGER+ in the team's org
-// - Standalone team: requires global MANAGER role + ownership
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -24,7 +23,7 @@ export async function POST(
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, role: true },
+    select: { id: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -34,20 +33,17 @@ export async function POST(
   });
   if (!team) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-  if (team.orgId) {
-    // Org team: verify ORG_MANAGER+ in the team's org
-    const membership = await prisma.organizationMember.findUnique({
-      where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-      select: { role: true },
-    });
-    if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
-      return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-    }
-  } else {
-    // Standalone team: global MANAGER + ownership
-    if (profile.role !== "MANAGER" || team.ownerId !== profile.id) {
-      return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-    }
+  if (!team.orgId) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+
+  // Org team: verify ORG_MANAGER+ in the team's org
+  const membership = await prisma.organizationMember.findUnique({
+    where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
+    select: { role: true },
+  });
+  if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
   const body = inviteSchema.safeParse(await req.json());
@@ -78,7 +74,7 @@ export async function POST(
       to: email,
       teamName: team.name,
       signUpUrl: `${appUrl}/sign-up`,
-      locale: (locale === "hu" || locale === "en" || locale === "de") ? locale : "en",
+      locale: (locale === "hu" || locale === "en") ? locale : "en",
     });
 
     return NextResponse.json({ pending: true }, { status: 201 });

@@ -10,7 +10,7 @@ interface OrgDeactivateButtonProps {
 
 export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps) {
   const router = useRouter();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [confirm, setConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

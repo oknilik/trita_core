@@ -18,8 +18,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'A'
-              ? 'border-indigo-500 bg-indigo-50 text-gray-900 shadow-md'
-              : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              ? 'border-[#c8410a] bg-[#fef3ec] text-[#1a1814] shadow-md'
+              : 'border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1] hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -29,7 +29,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           <div
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'A'
-                ? 'border-indigo-500 bg-indigo-500'
+                ? 'border-[#c8410a] bg-[#c8410a]'
                 : 'border-gray-300 bg-white'
             }`}
           >
@@ -54,8 +54,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'B'
-              ? 'border-purple-500 bg-purple-50 text-gray-900 shadow-md'
-              : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              ? 'border-[#1a5c3a] bg-[#edf4ef] text-[#1a1814] shadow-md'
+              : 'border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1] hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -65,7 +65,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           <div
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'B'
-                ? 'border-purple-500 bg-purple-500'
+                ? 'border-[#1a5c3a] bg-[#1a5c3a]'
                 : 'border-gray-300 bg-white'
             }`}
           >

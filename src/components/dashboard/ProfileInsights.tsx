@@ -36,15 +36,15 @@ interface ProfileInsightsProps {
 }
 
 function categoryColor(cat: ProfileCategory): string {
-  if (cat === "high") return "bg-indigo-500";
+  if (cat === "high") return "bg-[#c8410a]";
   if (cat === "low") return "bg-gray-300";
-  return "bg-violet-300";
+  return "bg-[#d7c9be]";
 }
 
 function categoryTextColor(cat: ProfileCategory): string {
-  if (cat === "high") return "text-indigo-700 bg-indigo-50";
+  if (cat === "high") return "text-[#8b2f09] bg-[#fef3ec]";
   if (cat === "low") return "text-gray-500 bg-gray-100";
-  return "text-violet-600 bg-violet-50";
+  return "text-[#6f5b4a] bg-[#f3eee4]";
 }
 
 export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) {
@@ -102,21 +102,13 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "01",
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-4">
             {BLOCK2_TITLE[l]}
           </h3>
           <div className="space-y-3">
             {displayDims.map((code) => {
               const cat = categories[code];
-              const score = (() => {
-                if (testType === "BIG_FIVE") {
-                  // Big Five N (Neuroticism) → internal E (Emotionality)
-                  if (code === "E") return dimensions.N ?? 0;
-                  // Big Five E (Extraversion) → internal X
-                  if (code === "X") return dimensions.E ?? 0;
-                }
-                return dimensions[code] ?? 0;
-              })();
+              const score = dimensions[code] ?? 0;
               return (
                 <div key={code} className="flex items-center gap-3">
                   <span className="w-[130px] shrink-0 text-xs font-medium text-gray-700 truncate">
@@ -142,7 +134,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "02",
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-3">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-3">
             {BLOCK3_TITLE[l]}
           </h3>
           <p className="text-sm text-gray-700 leading-relaxed">{block3Text}</p>
@@ -153,7 +145,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "03",
       node: envRows.length > 0 ? (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-4">
             {BLOCK4_TITLE[l]}
           </h3>
           <div className="divide-y divide-gray-50">
@@ -177,7 +169,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
             num: "04",
             node: (
               <section className="rounded-2xl border border-gray-100 bg-white p-6">
-                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-500 mb-4">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-4">
                   {BLOCK5_TITLE[l]}
                 </h3>
                 <div className="space-y-3">
@@ -205,28 +197,28 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
     <div className="space-y-6 mt-6">
       {/* ── Section title ── */}
       <div className="flex items-center gap-3">
-        <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+        <div className="h-1 w-12 bg-gradient-to-r from-[#c8410a] to-[#8b2f09] rounded-full" />
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {SECTION_TITLE[l]}
         </h2>
       </div>
 
       {/* ── Block 1: Bevezető framing ── */}
-      <section className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 p-6 shadow-md shadow-indigo-200/50">
+      <section className="rounded-2xl border border-[#f3d4c8]/70 bg-gradient-to-br from-[#c8410a] via-[#b84512] to-[#8b2f09] p-6 shadow-md shadow-[#c8410a]/20">
         <p className="text-sm text-white/90 leading-relaxed italic">{BLOCK1[l]}</p>
       </section>
 
       {/* ── Timeline: Blocks 2–5 ── */}
       <div className="relative">
         {/* Connecting line */}
-        <div className="absolute left-[19px] top-5 bottom-5 w-0.5 bg-gradient-to-b from-indigo-200 via-purple-100 to-violet-200 rounded-full" />
+        <div className="absolute left-[19px] top-5 bottom-5 w-0.5 bg-gradient-to-b from-[#f3d4c8] via-[#f6e5dd] to-[#f0ded5] rounded-full" />
 
         <div className="space-y-5">
           {steps.map(({ num, node }) => (
             <div key={num} className="flex gap-4">
               {/* Step badge */}
               <div
-                className="relative z-10 shrink-0 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md shadow-indigo-200/60"
+                className="relative z-10 shrink-0 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#c8410a] to-[#8b2f09] shadow-md shadow-[#c8410a]/25"
                 aria-hidden="true"
               >
                 <span className="h-2.5 w-2.5 rounded-full bg-white shadow-sm md:h-3 md:w-3" />
@@ -240,13 +232,13 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
 
       {/* ── Block 6: Kombináció-insight ── */}
       {showBlock6 && (
-        <section className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-indigo-600 mb-3">
+        <section className="rounded-2xl border border-[#f3d4c8] bg-[#fef3ec] p-6">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-3">
             {BLOCK6_TITLE[l]}
           </h3>
           <div className="space-y-3">
             {block6Pairs.map((pair) => (
-              <p key={pair.contentKey} className="text-sm text-indigo-900 leading-relaxed">
+              <p key={pair.contentKey} className="text-sm text-[#6c2a0d] leading-relaxed">
                 {RESOLUTION_NARRATIVES[pair.contentKey]?.[l]}
               </p>
             ))}
@@ -274,7 +266,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       )}
 
       {/* ── Block 8: Záró framing ── */}
-      <section className="rounded-2xl border border-purple-200/70 bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 p-6 shadow-md shadow-purple-200/50">
+      <section className="rounded-2xl border border-[#f3d4c8]/70 bg-gradient-to-br from-[#c8410a] via-[#b84512] to-[#8b2f09] p-6 shadow-md shadow-[#c8410a]/20">
         <p className="text-sm text-white/90 leading-relaxed italic">{BLOCK8[l]}</p>
       </section>
     </div>

@@ -9,7 +9,7 @@ interface OrgCreateFormProps {
 
 export function OrgCreateForm({ locale }: OrgCreateFormProps) {
   const router = useRouter();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

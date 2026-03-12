@@ -13,7 +13,7 @@ interface OrgInviteFormProps {
 
 export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgInviteFormProps) {
   const router = useRouter();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<OrgRole>("ORG_MEMBER");
   const [loading, setLoading] = useState(false);

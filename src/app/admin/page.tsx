@@ -10,7 +10,6 @@ import { AdminTableSection } from "@/app/admin/_components/AdminTableSection";
 import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
 import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
 import { AdminTabNav } from "@/app/admin/_components/AdminTabNav";
-import { AdminCoachApplications } from "@/app/admin/_components/AdminCoachApplications";
 
 export const dynamic = "force-dynamic";
 
@@ -31,97 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function AdminPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ tab?: string }>;
-}) {
+export default async function AdminPage() {
   await requireAdmin(); // Auth check
   const locale = await getServerLocale();
-  const { tab = "research" } = await searchParams;
-
-  // Coach tab — only fetch coach data when on that tab
-  if (tab === "coach") {
-    const [coachStats, applications] = await Promise.all([
-      (async () => {
-        const totalCoaches = await prisma.userProfile.count({ where: { role: "MANAGER", deleted: false } });
-        const totalActiveRelationships = await prisma.managerClientRelationship.count({ where: { status: "ACTIVE" } });
-        const totalOutputs = await prisma.generatedOutput.count();
-        const pendingApplications = await prisma.$queryRaw<Array<{ count: bigint }>>`
-          SELECT COUNT(*) as count FROM "CoachApplication" WHERE "status" = 'PENDING'
-        `;
-        return {
-          totalCoaches,
-          totalActiveRelationships,
-          totalOutputs,
-          pendingCount: Number(pendingApplications[0]?.count ?? 0),
-        };
-      })(),
-      prisma.$queryRaw<Array<{
-        id: string; name: string; email: string; background: string;
-        motivation: string; specializations: string | null; status: string;
-        "createdAt": Date; "userProfileId": string | null;
-      }>>`
-        SELECT "id", "name", "email", "background", "motivation", "specializations",
-               "status", "createdAt", "userProfileId"
-        FROM "CoachApplication"
-        ORDER BY
-          CASE "status" WHEN 'PENDING' THEN 0 ELSE 1 END,
-          "createdAt" DESC
-        LIMIT 100
-      `,
-    ]);
-
-    return (
-      <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50/40 to-white px-4 py-8 md:px-6">
-        <div className="mx-auto max-w-7xl">
-          <FadeIn>
-            <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">{t("admin.title", locale)}</h1>
-            <p className="mt-2 text-sm text-gray-600">{t("admin.subtitle", locale)}</p>
-          </FadeIn>
-
-          <FadeIn delay={0.05}>
-            <Suspense>
-              <AdminTabNav />
-            </Suspense>
-          </FadeIn>
-
-          {/* Coach KPI */}
-          <FadeIn delay={0.1}>
-            <AdminMetricsGrid>
-              <AdminStatCard title="Aktív coachok" value={coachStats.totalCoaches} color="#6366F1" icon="🎓" />
-              <AdminStatCard title="Aktív coach–kliens" value={coachStats.totalActiveRelationships} color="#8B5CF6" icon="🤝" />
-              <AdminStatCard title="Generált outputok" value={coachStats.totalOutputs} color="#10B981" icon="✨" />
-              <AdminStatCard
-                title="Függő kérelmek"
-                value={coachStats.pendingCount}
-                color={coachStats.pendingCount > 0 ? "#F59E0B" : "#9CA3AF"}
-                icon="📬"
-              />
-            </AdminMetricsGrid>
-          </FadeIn>
-
-          {/* Applications */}
-          <FadeIn delay={0.2}>
-            <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-              <div className="mb-5 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">Coach kérelmek</h2>
-                <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
-                  {applications.length} db
-                </span>
-              </div>
-              <AdminCoachApplications
-                applications={applications.map((a) => ({
-                  ...a,
-                  createdAt: a.createdAt.toISOString(),
-                }))}
-              />
-            </div>
-          </FadeIn>
-        </div>
-      </main>
-    );
-  }
 
   // Research tab — Parallel data fetching
   // eslint-disable-next-line react-hooks/purity
@@ -249,38 +160,19 @@ export default async function AdminPage({
         });
         const dimensionCount = await prisma.dimensionFeedback.count();
 
-        // Dimension feedback by test type
-        const [dimensionAvgBigFive, dimensionAvgHexaco, dimensionAvgHexacoMod] = await Promise.all([
-          prisma.dimensionFeedback.groupBy({
-            by: ["dimensionCode"],
-            _avg: { accuracyRating: true },
-            _count: { id: true },
-            where: { assessmentResult: { testType: "BIG_FIVE" } },
-            orderBy: { _avg: { accuracyRating: "desc" } },
-          }),
-          prisma.dimensionFeedback.groupBy({
-            by: ["dimensionCode"],
-            _avg: { accuracyRating: true },
-            _count: { id: true },
-            where: { assessmentResult: { testType: "HEXACO" } },
-            orderBy: { _avg: { accuracyRating: "desc" } },
-          }),
-          prisma.dimensionFeedback.groupBy({
-            by: ["dimensionCode"],
-            _avg: { accuracyRating: true },
-            _count: { id: true },
-            where: { assessmentResult: { testType: "HEXACO_MODIFIED" } },
-            orderBy: { _avg: { accuracyRating: "desc" } },
-          }),
-        ]);
+        const dimensionAvgHexaco = await prisma.dimensionFeedback.groupBy({
+          by: ["dimensionCode"],
+          _avg: { accuracyRating: true },
+          _count: { id: true },
+          where: { assessmentResult: { testType: "HEXACO" } },
+          orderBy: { _avg: { accuracyRating: "desc" } },
+        });
 
         return {
           satisfactionCount,
           avgScores,
           dimensionCount,
-          dimensionAvgBigFive,
           dimensionAvgHexaco,
-          dimensionAvgHexacoMod,
         };
       })(),
 
@@ -592,37 +484,8 @@ export default async function AdminPage({
                 Dimension Accuracy by Test Type
               </h3>
 
-              {/* Big Five */}
-              <div className="mb-6">
-                <h4 className="text-xs font-semibold text-indigo-600 mb-2">
-                  Big Five
-                </h4>
-                <div className="space-y-2">
-                  {feedbackStats.dimensionAvgBigFive.length > 0 ? (
-                    feedbackStats.dimensionAvgBigFive.map((dim: { dimensionCode: string; _avg: { accuracyRating: number | null }; _count: { id: number } }) => (
-                      <div
-                        key={dim.dimensionCode}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <span className="font-medium text-gray-700">
-                          {dim.dimensionCode}
-                        </span>
-                        <span className="text-gray-900">
-                          {dim._avg.accuracyRating
-                            ? Math.round(dim._avg.accuracyRating * 10) / 10
-                            : 0}
-                          /5 ({dim._count.id} ratings)
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-xs text-gray-500">No feedback yet.</p>
-                  )}
-                </div>
-              </div>
-
               {/* HEXACO */}
-              <div className="mb-6">
+              <div>
                 <h4 className="text-xs font-semibold text-purple-600 mb-2">
                   HEXACO
                 </h4>
@@ -650,33 +513,7 @@ export default async function AdminPage({
                 </div>
               </div>
 
-              {/* HEXACO Modified */}
               <div>
-                <h4 className="text-xs font-semibold text-emerald-600 mb-2">
-                  HEXACO Modified
-                </h4>
-                <div className="space-y-2">
-                  {feedbackStats.dimensionAvgHexacoMod.length > 0 ? (
-                    feedbackStats.dimensionAvgHexacoMod.map((dim: { dimensionCode: string; _avg: { accuracyRating: number | null }; _count: { id: number } }) => (
-                      <div
-                        key={dim.dimensionCode}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <span className="font-medium text-gray-700">
-                          {dim.dimensionCode}
-                        </span>
-                        <span className="text-gray-900">
-                          {dim._avg.accuracyRating
-                            ? Math.round(dim._avg.accuracyRating * 10) / 10
-                            : 0}
-                          /5 ({dim._count.id} ratings)
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-xs text-gray-500">No feedback yet.</p>
-                  )}
-                </div>
               </div>
             </div>
           </div>

@@ -13,7 +13,7 @@ const answerSchema = z.object({
 });
 
 const submissionSchema = z.object({
-  testType: z.enum(["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"]),
+  testType: z.enum(["HEXACO"]),
   answers: z.array(answerSchema),
 });
 

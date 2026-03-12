@@ -10,7 +10,7 @@ interface TeamInviteFormProps {
 }
 
 export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

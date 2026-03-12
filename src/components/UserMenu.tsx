@@ -21,8 +21,6 @@ export function UserMenu() {
     }
     return null;
   });
-  const [isCoach, setIsCoach] = useState(false);
-
   // Fetch user profile name from database
   const fetchProfile = useCallback(async () => {
     try {
@@ -38,7 +36,6 @@ export function UserMenu() {
           setProfileName(null);
           window.localStorage.removeItem("trita_username");
         }
-        setIsCoach(data.role === "MANAGER");
       }
     } catch {
       // Silently fail, fallback to Clerk data
@@ -81,8 +78,8 @@ export function UserMenu() {
   const itemClass = (active: boolean) =>
     `flex min-h-[46px] items-center gap-3 rounded-xl px-3.5 text-sm font-semibold transition ${
       active
-        ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200"
-        : "text-gray-700 hover:bg-gray-50 hover:text-indigo-700"
+        ? "bg-[#fef3ec] text-[#1a1814] ring-1 ring-[#f3d4c8]"
+        : "text-[#3d3a35] hover:bg-white hover:text-[#1a1814]"
     }`;
 
   useEffect(() => {
@@ -111,12 +108,12 @@ export function UserMenu() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex min-h-[44px] items-center gap-2 rounded-full border border-gray-100 bg-white px-2 py-1 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-indigo-200 hover:text-indigo-600"
+        className="flex min-h-[44px] items-center gap-2 rounded-full border border-[#e8e4dc] bg-white px-2 py-1 text-sm font-semibold text-[#3d3a35] shadow-sm transition hover:border-[#d9cfc1] hover:text-[#1a1814]"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#f3d4c8] bg-[#fef3ec] text-sm font-semibold text-[#8b2f09]">
           {initials}
         </span>
-        <span className="hidden max-w-[120px] truncate text-sm text-gray-600 lg:block">
+        <span className="hidden max-w-[120px] truncate text-sm text-[#5a5650] lg:block">
           {label ?? t("userMenu.profileFallback", locale)}
         </span>
       </button>
@@ -140,43 +137,37 @@ export function UserMenu() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 360, opacity: 0.98 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="fixed right-0 top-0 z-50 flex h-dvh w-full max-w-sm flex-col border-l border-indigo-100 bg-white shadow-2xl"
+              className="fixed right-0 top-0 z-50 flex h-dvh w-full max-w-sm flex-col border-l border-[#e8e4dc] bg-[#faf9f6] shadow-2xl"
             >
-              <div className="relative z-10 flex h-28 items-center justify-center bg-gradient-to-br from-indigo-200 via-indigo-100 to-violet-100 px-5 pb-4 pt-4">
-                <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                  <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-white/30 blur-2xl" />
-                </div>
+              <div className="relative z-10 flex h-20 items-center justify-center border-b border-[#e8e4dc] bg-[#faf9f6] px-5">
                 <TritaLogo size={40} showText={false} />
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
                   aria-label={t("userMenu.closePanel", locale)}
-                  className="absolute right-4 top-3 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg text-indigo-500/80 transition hover:bg-white/50 hover:text-indigo-700"
+                  className="absolute right-4 top-1/2 flex min-h-[40px] min-w-[40px] -translate-y-1/2 items-center justify-center rounded-lg text-[#5a5650] transition hover:bg-[#f5efe6] hover:text-[#1a1814]"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
                     <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
                   </svg>
                 </button>
-                <svg className="absolute inset-x-0 -bottom-5 h-7 w-full text-white" viewBox="0 0 1200 50" preserveAspectRatio="none" fill="currentColor" aria-hidden="true">
-                  <path d="M0,50 L0,40 C150,8 350,50 600,28 C850,6 1050,50 1200,40 L1200,50 Z" />
-                </svg>
               </div>
 
-              <div className="border-b border-gray-100 px-5 py-5">
+              <div className="border-b border-[#e8e4dc] px-5 py-5">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-indigo-200 bg-white text-base font-semibold text-indigo-600 shadow-lg shadow-indigo-200/60 ring-2 ring-white">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#f3d4c8] bg-[#fef3ec] text-base font-semibold text-[#8b2f09]">
                     {initials}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-gray-900">
+                    <p className="truncate text-sm font-semibold text-[#1a1814]">
                       {t("userMenu.greetingPrefix", locale)}
                       {label ?? t("userMenu.profileFallback", locale)}
                     </p>
-                    <p className="truncate text-xs text-gray-500">
+                    <p className="truncate text-xs text-[#5a5650]">
                       {user?.primaryEmailAddress?.emailAddress}
                     </p>
-                    <p className="mt-1 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-100">
-                      {isCoach ? t("userMenu.coach", locale) : t("userMenu.participant", locale)}
+                    <p className="mt-1 inline-flex rounded-full border border-[#e8e4dc] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#3d3a35]">
+                      {t("userMenu.participant", locale)}
                     </p>
                   </div>
                 </div>
@@ -188,7 +179,7 @@ export function UserMenu() {
                   className={itemClass(pathname.startsWith("/dashboard"))}
                   onClick={() => setIsOpen(false)}
                 >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3.5 10.2 10 4.5l6.5 5.7v6a1 1 0 0 1-1 1h-3.7v-4h-3.6v4H4.5a1 1 0 0 1-1-1v-6Z" />
                   </svg>
                   {t("nav.dashboard", locale)}
@@ -198,80 +189,19 @@ export function UserMenu() {
                   className={itemClass(pathname.startsWith("/profile"))}
                   onClick={() => setIsOpen(false)}
                 >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M10 10a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Zm-5.6 6.1a5.6 5.6 0 0 1 11.2 0" />
                   </svg>
                   {t("userMenu.profile", locale)}
                 </Link>
 
-                <Link
-                  href="/research"
-                  className={itemClass(pathname.startsWith("/research"))}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M8.2 4.2h3.6M9 4.2v4.4l-3.8 6.1a1 1 0 0 0 .9 1.5h7.8a1 1 0 0 0 .9-1.5L11 8.6V4.2" />
-                  </svg>
-                  {t("userMenu.research", locale)}
-                </Link>
+                <div className="h-px bg-[#e8e4dc]" />
 
-                <div className="h-px bg-gray-100" />
-                {isCoach ? (
-                  <>
-                    <Link
-                      href="/manager"
-                      className={itemClass(pathname.startsWith("/manager"))}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
-                        <path d="M14.5 9.5l1.5 1.5 3-3" />
-                      </svg>
-                      {t("userMenu.coachDashboard", locale)}
-                    </Link>
-                    <Link
-                      href="/team"
-                      className={itemClass(pathname.startsWith("/team"))}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M13 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM7 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                        <path d="M1.5 17.5c0-2.21 2.46-4 5.5-4 .8 0 1.55.14 2.22.38M10.5 17.5c0-2.21 2.46-4 5.5-4s5.5 1.79 5.5 4" />
-                      </svg>
-                      {t("userMenu.teams", locale)}
-                    </Link>
-                    <Link
-                      href="/manager/candidates"
-                      className={itemClass(pathname.startsWith("/manager/candidates"))}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10 2.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" />
-                        <path d="M3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
-                        <path d="M15.5 8l1.5 1.5 2.5-2.5" />
-                      </svg>
-                      {locale === "en" ? "Candidates" : locale === "de" ? "Kandidaten" : "Jelöltek"}
-                    </Link>
-                  </>
-                ) : (
-                  <Link
-                    href="/become-coach"
-                    className={itemClass(pathname.startsWith("/become-coach"))}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
-                      <path d="M16 13v4M14 15h4" />
-                    </svg>
-                    {t("userMenu.becomeCoach", locale)}
-                  </Link>
-                )}
-
-                <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">
+                <div className="rounded-xl border border-[#e8e4dc] bg-white p-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5a5650]">
                     {t("userMenu.settings", locale)}
                   </p>
-                  <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
+                  <div className="mb-2 flex items-center gap-2 text-xs text-[#5a5650]">
                     <span>🌍</span>
                     <span>{t("locale.label", locale)}</span>
                   </div>
@@ -283,8 +213,8 @@ export function UserMenu() {
                         onClick={() => setLocale(loc as Locale)}
                         className={`min-h-[38px] rounded-lg border text-xs font-semibold transition ${
                           locale === loc
-                            ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                            : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                            ? "border-[#f3d4c8] bg-[#fef3ec] text-[#8b2f09]"
+                            : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1]"
                         }`}
                       >
                         {t(`locale.${loc}` as const, loc)}
@@ -294,11 +224,11 @@ export function UserMenu() {
                 </div>
               </div>
 
-              <div className="border-t border-gray-100 p-4">
+              <div className="border-t border-[#e8e4dc] p-4">
                 <SignOutButton>
                   <button
                     type="button"
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-semibold text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-[#f3d4c8] text-sm font-semibold text-[#8b2f09] transition hover:bg-[#fef3ec]"
                   >
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12.5 4h2.2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2.2M8 6.5 4.5 10 8 13.5M4.5 10H13" />

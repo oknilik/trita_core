@@ -4,7 +4,7 @@ import { useEffect, useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
-import { AnimatePresence, motion } from "framer-motion";
+import { createPortal } from "react-dom";
 import { useLocale } from "@/components/LocaleProvider";
 import { SUPPORTED_LOCALES, t, type Locale } from "@/lib/i18n";
 import { TritaLogo } from "@/components/TritaLogo";
@@ -18,14 +18,13 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const { user } = useUser();
   const { locale, setLocale } = useLocale();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [profileName, setProfileName] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
       return window.localStorage.getItem("trita_username");
     }
     return null;
   });
-  const [isCoach, setIsCoach] = useState(false);
-
   useEffect(() => {
     if (!isOpen) return;
     const timer = window.setTimeout(async () => {
@@ -37,13 +36,16 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           setProfileName(data.username);
           window.localStorage.setItem("trita_username", data.username);
         }
-        setIsCoach(data.role === "MANAGER");
       } catch {
         // noop
       }
     }, 0);
     return () => window.clearTimeout(timer);
   }, [isOpen]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -77,42 +79,35 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const itemClass = (active: boolean) =>
     `flex min-h-[46px] items-center gap-3 rounded-lg px-3.5 text-sm font-semibold transition ${
       active
-        ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200"
-        : "text-gray-700 hover:bg-gray-50 hover:text-indigo-700"
+        ? "bg-[#fef3ec] text-[#1a1814] ring-1 ring-[#f3d4c8]"
+        : "text-[#3d3a35] hover:bg-white hover:text-[#1a1814]"
     }`;
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-          />
+  if (!mounted) return null;
 
-          {/* Panel */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="absolute right-0 top-0 flex h-full w-80 max-w-[92vw] flex-col border-l border-indigo-100 bg-white shadow-2xl"
-          >
-            <div className="relative z-10 flex h-28 items-center justify-center bg-gradient-to-br from-indigo-200 via-indigo-100 to-violet-100 px-5 pb-4 pt-4">
-              <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-white/30 blur-2xl" />
-              </div>
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 lg:hidden" style={{ zIndex: 9999 }}>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={t("userMenu.closePanel", locale)}
+        className="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
+      />
+
+      <aside
+        role="dialog"
+        aria-modal="true"
+        className="absolute right-0 top-0 flex h-dvh w-80 max-w-[92vw] flex-col overflow-y-auto overscroll-contain border-l border-[#e8e4dc] bg-[#faf9f6] shadow-2xl"
+      >
+            <div className="relative z-10 flex h-20 items-center justify-center border-b border-[#e8e4dc] bg-[#faf9f6] px-5">
               <TritaLogo size={40} showText={false} />
               <button
                 type="button"
                 onClick={onClose}
                 aria-label={t("userMenu.closePanel", locale)}
-                className="absolute right-4 top-3 flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg text-indigo-500/80 transition hover:bg-white/50 hover:text-indigo-700"
+                className="absolute right-4 top-1/2 flex min-h-[40px] min-w-[40px] -translate-y-1/2 items-center justify-center rounded-lg text-[#5a5650] transition hover:bg-[#f5efe6] hover:text-[#1a1814]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -123,27 +118,24 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
                 </svg>
               </button>
-              <svg className="absolute inset-x-0 -bottom-5 h-7 w-full text-white" viewBox="0 0 1200 50" preserveAspectRatio="none" fill="currentColor" aria-hidden="true">
-                <path d="M0,50 L0,40 C150,8 350,50 600,28 C850,6 1050,50 1200,40 L1200,50 Z" />
-              </svg>
             </div>
 
             <SignedIn>
-              <div className="border-b border-gray-100 px-5 py-5">
+              <div className="border-b border-[#e8e4dc] px-5 py-5">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-indigo-200 bg-white text-base font-semibold text-indigo-600 shadow-lg shadow-indigo-200/60 ring-2 ring-white">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#f3d4c8] bg-[#fef3ec] text-base font-semibold text-[#8b2f09]">
                     {initials}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-gray-900">
+                    <p className="truncate text-sm font-semibold text-[#1a1814]">
                       {t("userMenu.greetingPrefix", locale)}
                       {displayName ?? t("userMenu.profileFallback", locale)}
                     </p>
-                    <p className="truncate text-xs text-gray-500">
+                    <p className="truncate text-xs text-[#5a5650]">
                       {user?.primaryEmailAddress?.emailAddress}
                     </p>
-                    <p className="mt-1 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-100">
-                      {isCoach ? t("userMenu.coach", locale) : t("userMenu.participant", locale)}
+                    <p className="mt-1 inline-flex rounded-full border border-[#e8e4dc] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#3d3a35]">
+                      {t("userMenu.participant", locale)}
                     </p>
                   </div>
                 </div>
@@ -155,7 +147,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   className={itemClass(pathname.startsWith("/dashboard"))}
                   onClick={onClose}
                 >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3.5 10.2 10 4.5l6.5 5.7v6a1 1 0 0 1-1 1h-3.7v-4h-3.6v4H4.5a1 1 0 0 1-1-1v-6Z" />
                   </svg>
                   {t("nav.dashboard", locale)}
@@ -165,91 +157,31 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   className={itemClass(pathname.startsWith("/profile"))}
                   onClick={onClose}
                 >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M10 10a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Zm-5.6 6.1a5.6 5.6 0 0 1 11.2 0" />
                   </svg>
                   {t("userMenu.profile", locale)}
                 </Link>
-                <Link
-                  href="/research"
-                  className={itemClass(pathname.startsWith("/research"))}
-                  onClick={onClose}
-                >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M8.2 4.2h3.6M9 4.2v4.4l-3.8 6.1a1 1 0 0 0 .9 1.5h7.8a1 1 0 0 0 .9-1.5L11 8.6V4.2" />
-                  </svg>
-                  {t("userMenu.research", locale)}
-                </Link>
 
-                <div className="h-px bg-gray-100" />
+                <div className="h-px bg-[#e8e4dc]" />
                 <Link
                   href="/org"
                   className={itemClass(pathname.startsWith("/org"))}
                   onClick={onClose}
                 >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="7" width="16" height="11" rx="1.5" />
                     <path d="M6 7V5.5a4 4 0 0 1 8 0V7" />
                     <path d="M10 11v3M8 13h4" />
                   </svg>
                   {locale === "hu" ? "Szervezetek" : "Organizations"}
                 </Link>
-                {isCoach ? (
-                  <>
-                    <Link
-                      href="/manager"
-                      className={itemClass(pathname === "/manager")}
-                      onClick={onClose}
-                    >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
-                        <path d="M14.5 9.5l1.5 1.5 3-3" />
-                      </svg>
-                      {t("userMenu.coachDashboard", locale)}
-                    </Link>
-                    <Link
-                      href="/manager/candidates"
-                      className={itemClass(pathname.startsWith("/manager/candidates"))}
-                      onClick={onClose}
-                    >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 4.5H4.5A1.5 1.5 0 0 0 3 6v9a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 17 15v-4.5" />
-                        <path d="M7.5 13.5c0-1.66 1.12-3 2.5-3s2.5 1.34 2.5 3" />
-                        <circle cx="10" cy="8.25" r="1.75" />
-                        <path d="M14.5 3l1.5 1.5-4 4-2-.5.5-2 4-3Z" />
-                      </svg>
-                      {locale === "hu" ? "Jelöltek" : "Candidates"}
-                    </Link>
-                    <Link
-                      href="/team"
-                      className={itemClass(pathname.startsWith("/team"))}
-                      onClick={onClose}
-                    >
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M13.5 6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM6.5 5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM1 17c0-2.21 2.46-4 5.5-4 .64 0 1.26.08 1.83.23M9.5 17c0-2.21 2.24-4 5-4s5 1.79 5 4" />
-                      </svg>
-                      {locale === "hu" ? "Csapatok" : "Teams"}
-                    </Link>
-                  </>
-                ) : (
-                  <Link
-                    href="/become-coach"
-                    className={itemClass(pathname.startsWith("/become-coach"))}
-                    onClick={onClose}
-                  >
-                    <svg viewBox="0 0 20 20" className="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M10 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM3.5 17.5c0-2.76 2.91-5 6.5-5s6.5 2.24 6.5 5" />
-                      <path d="M16 13v4M14 15h4" />
-                    </svg>
-                    {t("userMenu.becomeCoach", locale)}
-                  </Link>
-                )}
 
-                <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">
+                <div className="rounded-xl border border-[#e8e4dc] bg-white p-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5a5650]">
                     {t("userMenu.settings", locale)}
                   </p>
-                  <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
+                  <div className="mb-2 flex items-center gap-2 text-xs text-[#5a5650]">
                     <span>🌍</span>
                     <span>{t("locale.label", locale)}</span>
                   </div>
@@ -261,8 +193,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                         onClick={() => setLocale(loc as Locale)}
                         className={`min-h-[38px] rounded-lg border text-xs font-semibold transition ${
                           locale === loc
-                            ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                            : "border-gray-100 bg-white text-gray-600 hover:border-gray-300"
+                            ? "border-[#f3d4c8] bg-[#fef3ec] text-[#8b2f09]"
+                            : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1]"
                         }`}
                       >
                         {t(`locale.${loc}` as const, loc)}
@@ -272,11 +204,11 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 </div>
               </div>
 
-              <div className="border-t border-gray-100 p-4">
+              <div className="border-t border-[#e8e4dc] p-4">
                 <SignOutButton>
                   <button
                     type="button"
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg text-sm font-semibold text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-[#f3d4c8] text-sm font-semibold text-[#8b2f09] transition hover:bg-[#fef3ec]"
                   >
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12.5 4h2.2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-2.2M8 6.5 4.5 10 8 13.5M4.5 10H13" />
@@ -286,9 +218,9 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 </SignOutButton>
               </div>
             </SignedIn>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+      </aside>
+    </div>
+    ,
+    document.body,
   );
 }

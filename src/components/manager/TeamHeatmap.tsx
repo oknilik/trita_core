@@ -36,41 +36,34 @@ function scoreZone(score: number | null, isHu: boolean): { label: string; textCl
   return { label: isHu ? "Alacsony" : "Low", textClass: "text-gray-700" };
 }
 
-const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string; de: string }> = {
+const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
   H: {
     hu: "Becsületesség, igazságosság, szerénység — mennyire kerüli a manipulációt és az önérdek-érvényesítést",
     en: "Honesty, fairness, modesty — tendency to avoid manipulation and self-promotion",
-    de: "Ehrlichkeit, Fairness, Bescheidenheit — Vermeidung von Manipulation und Selbstdarstellung",
   },
   E: {
     hu: "Érzelmi érzékenység, szorongásra való hajlam, empátia mások iránt",
     en: "Emotional sensitivity, tendency toward anxiety, empathy for others",
-    de: "Emotionale Sensibilität, Neigung zu Angst, Empathie für andere",
   },
   X: {
     hu: "Szociabilitás, magabiztosság, energikusság — mennyire tölt fel a társas közeg",
     en: "Sociability, confidence, energy — degree to which social settings are energizing",
-    de: "Geselligkeit, Selbstvertrauen, Energie — wie sehr soziale Umgebungen Energie geben",
   },
   A: {
     hu: "Türelem, együttműködés, megbocsátás — mennyire kerüli a konfliktust és törekszik harmóniára",
     en: "Patience, cooperation, forgiveness — tendency to avoid conflict and seek harmony",
-    de: "Geduld, Kooperation, Vergebung — Neigung, Konflikte zu vermeiden und Harmonie zu suchen",
   },
   C: {
     hu: "Szervezettség, kitartás, fegyelmezettség — mennyire megbízható és célirányos a munkavégzés",
     en: "Organization, diligence, self-discipline — reliability and goal-directedness at work",
-    de: "Organisation, Fleiß, Selbstdisziplin — Zuverlässigkeit und Zielorientierung bei der Arbeit",
   },
   O: {
     hu: "Nyitottság, kreativitás, intellektuális kíváncsiság — mennyire keresi az újszerű megközelítéseket",
     en: "Openness, creativity, intellectual curiosity — tendency to seek novel ideas and approaches",
-    de: "Offenheit, Kreativität, intellektuelle Neugier — Suche nach neuen Ideen und Ansätzen",
   },
   N: {
     hu: "Érzelmi instabilitás, stressz-érzékenység — reakció nyomáshelyzetre",
     en: "Emotional instability, stress sensitivity — response to pressure situations",
-    de: "Emotionale Instabilität, Stressempfindlichkeit — Reaktion auf Drucksituationen",
   },
 };
 

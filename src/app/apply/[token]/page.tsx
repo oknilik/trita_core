@@ -42,7 +42,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     notFound();
   }
 
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
 
   if (invite.status === "COMPLETED") {
     return (

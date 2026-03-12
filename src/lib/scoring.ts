@@ -6,7 +6,7 @@ import {
 } from "./questions";
 
 // ============================================
-// Likert scoring (HEXACO, HEXACO_MODIFIED, BIG_FIVE)
+// Likert scoring (HEXACO)
 // ============================================
 
 interface LikertAnswer {

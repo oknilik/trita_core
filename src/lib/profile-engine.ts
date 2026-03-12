@@ -72,19 +72,6 @@ function normalizeToCodes(
   dimensions: Record<string, number>,
   testType: string
 ): Record<string, number> {
-  if (testType === "BIG_FIVE") {
-    const normalized: Record<string, number> = {};
-    if (dimensions.O !== undefined) normalized.O = dimensions.O;
-    if (dimensions.C !== undefined) normalized.C = dimensions.C;
-    if (dimensions.A !== undefined) normalized.A = dimensions.A;
-    // Big Five E (Extraversion) → internal X
-    if (dimensions.E !== undefined) normalized.X = dimensions.E;
-    // Big Five N (Neuroticism) → internal E
-    if (dimensions.N !== undefined) normalized.E = dimensions.N;
-    // H is not available — intentionally omitted
-    return normalized;
-  }
-  // HEXACO and HEXACO_MODIFIED use codes directly
   return dimensions;
 }
 

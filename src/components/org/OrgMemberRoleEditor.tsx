@@ -28,7 +28,7 @@ export function OrgMemberRoleEditor({
   locale,
 }: OrgMemberRoleEditorProps) {
   const router = useRouter();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [role, setRole] = useState<OrgRole>(
     ROLES.includes(currentRole as OrgRole) ? (currentRole as OrgRole) : "ORG_MEMBER"
   );

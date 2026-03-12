@@ -123,9 +123,9 @@ export async function POST(req: Request) {
       select: { email: true, locale: true, username: true },
     });
     if (!inviter?.email) return;
-    const locale = (["hu", "en", "de"].includes(inviter.locale ?? "")
+    const locale = (["hu", "en"].includes(inviter.locale ?? "")
       ? inviter.locale
-      : undefined) as "hu" | "en" | "de" | undefined;
+      : undefined) as "hu" | "en" | undefined;
     sendObserverCompletionEmail({
       to: inviter.email,
       inviterName: inviter.username ?? inviter.email,

@@ -32,8 +32,8 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
               font-semibold transition-all
               ${
                 value === scale
-                  ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg'
-                  : 'border-gray-100 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50'
+                  ? 'border-[#c8410a] bg-[#c8410a] text-white shadow-lg'
+                  : 'border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#f3d4c8] hover:bg-[#fef3ec]'
               }
             `}
             whileHover={{ scale: 1.02 }}
@@ -51,7 +51,7 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
             {value === scale && (
               <motion.div
                 layoutId="selected"
-                className="absolute inset-0 rounded-lg border-2 border-indigo-600"
+                className="absolute inset-0 rounded-lg border-2 border-[#c8410a]"
                 initial={false}
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />

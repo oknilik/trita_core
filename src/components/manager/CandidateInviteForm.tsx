@@ -23,7 +23,7 @@ interface CreatedInvite {
 }
 
 export function CandidateInviteForm({ locale, teams, preselectedTeamId }: CandidateInviteFormProps) {
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const router = useRouter();
 
   const [email, setEmail] = useState("");

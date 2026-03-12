@@ -14,8 +14,6 @@ datasource db {
 
 enum TestType {
   HEXACO
-  HEXACO_MODIFIED
-  BIG_FIVE
 }
 
 enum RelationshipType {
@@ -35,15 +33,8 @@ enum InvitationStatus {
 
 enum UserRole {
   INDIVIDUAL
-  MANAGER
   ORG_ADMIN
   ORG_MEMBER
-}
-
-enum CoachRelationshipStatus {
-  ACTIVE
-  PAUSED
-  ENDED
 }
 
 enum ScoreRange {
@@ -84,7 +75,7 @@ model UserProfile {
   testTypeAssignedAt DateTime?
   consentedAt        DateTime?
 
-  // Role (default: INDIVIDUAL, set to MANAGER for manager accounts)
+  // Role (default: INDIVIDUAL)
   role      UserRole @default(INDIVIDUAL)
 
   assessmentResults    AssessmentResult[]
@@ -94,14 +85,6 @@ model UserProfile {
   satisfactionFeedback SatisfactionFeedback?
   researchSurvey       ResearchSurvey?
   featureInterests     FeatureInterest[]
-
-  // Manager layer
-  coachProfile              CoachProfile?
-  managerRelationships      ManagerClientRelationship[] @relation("ManagerRelationships")
-  clientRelationships       ManagerClientRelationship[] @relation("ClientRelationships")
-  generatedOutputsAsManager GeneratedOutput[]           @relation("ManagerOutputs")
-  generatedOutputsAsClient  GeneratedOutput[]           @relation("ClientOutputs")
-  coachApplications         CoachApplication[]
 
   // Team layer (KKV)
   ownedTeams       Team[]       @relation("TeamOwner")
@@ -236,7 +219,7 @@ model SatisfactionFeedback {
 model DimensionFeedback {
   id                String   @id @default(cuid())
   assessmentResultId String
-  dimensionCode     String   // "H", "E", "X", "A", "C", "O" (HEXACO) or "O", "C", "E", "A", "N" (BIG_FIVE)
+  dimensionCode     String   // "H", "E", "X", "A", "C", "O"
   accuracyRating    Int      // 1-5 (😕😐🙂😊🤩)
   comment           String?
   createdAt         DateTime @default(now())
@@ -259,101 +242,6 @@ model FeatureInterest {
 
   @@unique([userProfileId, featureKey])
   @@index([featureKey])
-}
-
-// ============================================
-// MANAGER LAYER
-// ============================================
-
-// Extended profile for manager accounts
-model CoachProfile {
-  id            String   @id @default(cuid())
-  userProfileId String   @unique
-  bio           String?
-  specializations Json?  // string[] e.g. ["leadership", "career", "team-dynamics"]
-  maxClientSlots  Int    @default(10)
-  verifiedAt    DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
-}
-
-// Manager ↔ Client relationship
-model ManagerClientRelationship {
-  id        String                  @id @default(cuid())
-  managerId String
-  clientId  String
-  status    CoachRelationshipStatus @default(ACTIVE)
-  startedAt DateTime                @default(now())
-  endedAt   DateTime?
-
-  manager UserProfile @relation("ManagerRelationships", fields: [managerId], references: [id])
-  client  UserProfile @relation("ClientRelationships", fields: [clientId], references: [id])
-
-  @@unique([managerId, clientId])
-  @@index([managerId])
-  @@index([clientId])
-}
-
-// Seed-elt intervenció blokkok dimenzió tartományokhoz
-// Ezekből épül a manager recommendation engine
-model RecommendationBlock {
-  id            String    @id @default(cuid())
-  dimensionCode String    // "H" | "E" | "X" | "A" | "C" | "O" | "N"
-  facetCode     String?   // null = dimenzió szintű; "sincerity", "fairness", stb. = facet szintű
-  scoreRange    ScoreRange
-  deltaFlag     String?   // "SELF_HIGH_OBS_LOW" | "SELF_LOW_OBS_HIGH" | "ALIGNED" | null
-  testType      String    @default("ALL") // "HEXACO" | "BIG_FIVE" | "ALL"
-  locale        String    @default("hu")  // "hu" | "en" | "de"
-  content       Json      // { body: string } — coaching snippet
-  createdAt     DateTime  @default(now())
-
-  @@index([dimensionCode, facetCode, scoreRange])
-  @@index([locale])
-}
-
-// Cache-elt AI-generált manager output-ok
-// cacheKey = locale:testType:H-h:E-m:X-l:...:delta-H+2:...
-// managerId / clientId null = pre-generált template output (nincs konkrét manager/client)
-model GeneratedOutput {
-  id        String   @id @default(cuid())
-  managerId String?
-  clientId  String?
-  cacheKey     String   @unique // determinisztikus kulcs: locale + profil kombináció
-  content      String   // markdown szöveg
-  model        String   @default("claude-opus-4-6")
-  qualityScore Int?     // audit score (0-100) a generáláskor
-  hitCount     Int      @default(0)
-  createdAt DateTime @default(now())
-
-  shareToken String?  @unique // opcionális publikus megosztási token
-
-  manager UserProfile? @relation("ManagerOutputs", fields: [managerId], references: [id])
-  client  UserProfile? @relation("ClientOutputs", fields: [clientId], references: [id])
-
-  @@index([managerId])
-  @@index([clientId])
-}
-
-// Manager application — submitted via /become-coach page, reviewed by admin
-model CoachApplication {
-  id              String    @id @default(cuid())
-  email           String
-  name            String
-  background      String
-  motivation      String
-  specializations String?
-  status          String    @default("PENDING") // PENDING | APPROVED | REJECTED
-  reviewNote      String?
-  createdAt       DateTime  @default(now())
-  reviewedAt      DateTime?
-
-  userProfileId String?
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
-
-  @@index([email])
-  @@index([status])
 }
 
 // ============================================

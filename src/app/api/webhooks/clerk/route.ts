@@ -191,7 +191,7 @@ export async function POST(req: Request) {
       console.log("[Webhook] email.created extracted:", { to, code: code ? "****" : undefined, magicLink: magicLink ? "yes" : undefined });
 
       if (to && (magicLink || code)) {
-        let locale: "hu" | "en" | "de" | undefined;
+        let locale: "hu" | "en" | undefined;
         // For existing users (sign-in): locale is stored in the DB, not in Clerk metadata
         try {
           const profile = await prisma.userProfile.findFirst({
@@ -199,7 +199,7 @@ export async function POST(req: Request) {
             select: { locale: true },
           });
           const dbLocale = profile?.locale;
-          if (dbLocale === "hu" || dbLocale === "en" || dbLocale === "de") {
+          if (dbLocale === "hu" || dbLocale === "en") {
             locale = dbLocale;
           }
         } catch (err) {
@@ -211,7 +211,7 @@ export async function POST(req: Request) {
             const client = await clerkClient();
             const signUp = await client.signUps.get(data.sign_up_id);
             const metaLocale = signUp.unsafeMetadata?.locale as string | undefined;
-            if (metaLocale === "hu" || metaLocale === "en" || metaLocale === "de") {
+            if (metaLocale === "hu" || metaLocale === "en") {
               locale = metaLocale;
             }
           } catch (err) {
@@ -219,7 +219,7 @@ export async function POST(req: Request) {
           }
         }
 
-        const resolvedLocale: "hu" | "en" | "de" = locale ?? "en";
+        const resolvedLocale: "hu" | "en" = locale ?? "en";
 
         if (magicLink) {
           await sendMagicLinkEmail({ to, magicLinkUrl: magicLink, locale: resolvedLocale });

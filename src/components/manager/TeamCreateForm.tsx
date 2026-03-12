@@ -10,7 +10,7 @@ interface TeamCreateFormProps {
 }
 
 export function TeamCreateForm({ locale, orgId }: TeamCreateFormProps) {
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

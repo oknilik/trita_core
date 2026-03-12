@@ -53,7 +53,7 @@ export function CandidateClient({
   locale,
 }: CandidateClientProps) {
   const { showToast } = useToast();
-  const isHu = locale !== "en" && locale !== "de";
+  const isHu = locale !== "en";
 
   const DRAFT_KEY = `trita_candidate_draft_${token}`;
 
