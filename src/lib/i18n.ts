@@ -1248,8 +1248,8 @@ const translations = {
       en: "Saving...",
     },
     usernameError: {
-      hu: "A névnek 2-12 karakter hosszúnak kell lennie",
-      en: "Name must be 2-12 characters long",
+      hu: "A névnek 2-20 karakter hosszúnak kell lennie",
+      en: "Name must be 2-20 characters long",
     },
     birthYearError: {
       hu: "Az életkornak 16-100 év közé kell esnie",
@@ -1260,8 +1260,8 @@ const translations = {
       en: "Please correct the following errors:",
     },
     usernameHint: {
-      hu: "2-12 karakter",
-      en: "2-12 characters",
+      hu: "2-20 karakter",
+      en: "2-20 characters",
     },
     birthYearHint: {
       hu: "16-100 év között",
@@ -1282,6 +1282,16 @@ const translations = {
     consentLinkText: {
       hu: "Adatvédelmi tájékoztató",
       en: "Privacy Policy",
+    },
+    optional: {
+      hu: "opcionális",
+      en: "optional",
+      de: "optional",
+    },
+    footerHint: {
+      hu: "Ezeket az adatokat bármikor módosíthatod a profil oldalon.",
+      en: "You can update these details at any time from your profile.",
+      de: "Diese Angaben können jederzeit in deinem Profil geändert werden.",
     },
   },
   privacy: {
