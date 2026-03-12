@@ -94,15 +94,22 @@ export async function POST(req: Request) {
       select: { id: true },
     });
 
-    // Fulfill any pending team invites for this email (new user registration)
+    // Fulfill any pending team + org invites for this email (new user registration)
     if (event.type === "user.created" && email) {
-      const pendingInvites = await prisma.teamPendingInvite.findMany({
-        where: { email: { equals: email, mode: "insensitive" } },
-        select: { id: true, teamId: true },
-      });
-      if (pendingInvites.length > 0) {
+      const [pendingTeamInvites, pendingOrgInvites] = await Promise.all([
+        prisma.teamPendingInvite.findMany({
+          where: { email: { equals: email, mode: "insensitive" } },
+          select: { id: true, teamId: true },
+        }),
+        prisma.organizationPendingInvite.findMany({
+          where: { email: { equals: email, mode: "insensitive" } },
+          select: { id: true, orgId: true, role: true },
+        }),
+      ]);
+
+      if (pendingTeamInvites.length > 0) {
         await prisma.$transaction([
-          ...pendingInvites.map((invite) =>
+          ...pendingTeamInvites.map((invite) =>
             prisma.teamMember.upsert({
               where: { teamId_userId: { teamId: invite.teamId, userId: upserted.id } },
               create: { teamId: invite.teamId, userId: upserted.id },
@@ -113,7 +120,23 @@ export async function POST(req: Request) {
             where: { email: { equals: email, mode: "insensitive" } },
           }),
         ]);
-        console.log(`[Webhook] Fulfilled ${pendingInvites.length} pending team invite(s) for ${email}`);
+        console.log(`[Webhook] Fulfilled ${pendingTeamInvites.length} pending team invite(s) for ${email}`);
+      }
+
+      if (pendingOrgInvites.length > 0) {
+        await prisma.$transaction([
+          ...pendingOrgInvites.map((invite) =>
+            prisma.organizationMember.upsert({
+              where: { orgId_userId: { orgId: invite.orgId, userId: upserted.id } },
+              create: { orgId: invite.orgId, userId: upserted.id, role: invite.role },
+              update: {},
+            })
+          ),
+          prisma.organizationPendingInvite.deleteMany({
+            where: { email: { equals: email, mode: "insensitive" } },
+          }),
+        ]);
+        console.log(`[Webhook] Fulfilled ${pendingOrgInvites.length} pending org invite(s) for ${email}`);
       }
     }
   }

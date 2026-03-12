@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { hasOrgRole, getUserOrgMembership } from "@/lib/auth";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 import type { ScoreResult } from "@/lib/scoring";
@@ -38,7 +39,12 @@ export default async function CandidateDetailPage({
     where: { clerkId: userId },
     select: { id: true, role: true },
   });
-  if (!manager || manager.role !== "MANAGER") redirect("/dashboard");
+  if (!manager) redirect("/dashboard");
+
+  const isLegacyManager = manager.role === "MANAGER";
+  const orgMembership = isLegacyManager ? null : await getUserOrgMembership(manager.id);
+  const isOrgManager = !!orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER");
+  if (!isLegacyManager && !isOrgManager) redirect("/dashboard");
 
   const invite = await prisma.candidateInvite.findUnique({
     where: { id },
@@ -63,7 +69,9 @@ export default async function CandidateDetailPage({
   if (!invite || invite.managerId !== manager.id) notFound();
 
   const managerTeams = await prisma.team.findMany({
-    where: { ownerId: manager.id },
+    where: isLegacyManager
+      ? { ownerId: manager.id }
+      : { orgId: orgMembership!.orgId },
     select: { id: true, name: true },
     orderBy: { name: "asc" },
   });

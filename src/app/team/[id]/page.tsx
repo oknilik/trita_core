@@ -5,12 +5,14 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getTestConfig } from "@/lib/questions";
+import { hasOrgRole } from "@/lib/auth";
 import type { TestType } from "@prisma/client";
 import type { ScoreResult } from "@/lib/scoring";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { TeamHeatmap } from "@/components/manager/TeamHeatmap";
 import { TeamInsights } from "@/components/manager/TeamInsights";
 import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
+import { CandidateInviteForm } from "@/components/manager/CandidateInviteForm";
 
 export const dynamic = "force-dynamic";
 
@@ -34,13 +36,26 @@ export default async function TeamDetailPage({
     where: { clerkId: userId },
     select: { id: true, role: true },
   });
-  if (!profile || profile.role !== "MANAGER") redirect("/dashboard");
+  if (!profile) redirect("/dashboard");
 
   const team = await prisma.team.findUnique({
     where: { id: teamId },
-    select: { id: true, name: true, ownerId: true, createdAt: true },
+    select: { id: true, name: true, ownerId: true, orgId: true, createdAt: true },
   });
-  if (!team || team.ownerId !== profile.id) notFound();
+  if (!team) notFound();
+
+  // Access: legacy MANAGER + owner (for non-org teams), OR any org member of the team's org
+  const isManagerOwner = profile.role === "MANAGER" && team.ownerId === profile.id;
+  const orgMembership = team.orgId
+    ? await prisma.organizationMember.findUnique({
+        where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
+        select: { role: true },
+      })
+    : null;
+  const isOrgMember = !!orgMembership;
+  // ORG_MANAGER and above can manage team members; ORG_MEMBER can only view
+  const isOrgManager = isOrgMember && hasOrgRole(orgMembership!.role, "ORG_MANAGER");
+  if (!isManagerOwner && !isOrgMember) redirect("/dashboard");
 
   const members = await prisma.teamMember.findMany({
     where: { teamId },
@@ -65,11 +80,30 @@ export default async function TeamDetailPage({
     },
   });
 
-  const pendingInvites = await prisma.teamPendingInvite.findMany({
-    where: { teamId },
-    orderBy: { createdAt: "asc" },
-    select: { id: true, email: true, createdAt: true },
-  });
+  const [pendingInvites, candidateInvites] = await Promise.all([
+    prisma.teamPendingInvite.findMany({
+      where: { teamId },
+      orderBy: { createdAt: "asc" },
+      select: { id: true, email: true, createdAt: true },
+    }),
+    // Only load candidates if user can manage the team
+    (isManagerOwner || isOrgManager)
+      ? prisma.candidateInvite.findMany({
+          where: { teamId },
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            position: true,
+            status: true,
+            expiresAt: true,
+            createdAt: true,
+            result: { select: { id: true } },
+          },
+        })
+      : Promise.resolve([]),
+  ]);
 
   const isHu = locale !== "en" && locale !== "de";
   const dateLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "hu-HU";
@@ -113,13 +147,15 @@ export default async function TeamDetailPage({
         <FadeIn>
           <div>
             <Link
-              href="/team"
+              href={isOrgMember && team.orgId ? `/org/${team.orgId}` : "/team"}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-700 mb-6"
             >
               <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10 3L5 8l5 5" />
               </svg>
-              {isHu ? "Vissza a csapatokhoz" : "Back to teams"}
+              {isOrgMember && team.orgId
+                ? isHu ? "Vissza a szervezethez" : "Back to organization"
+                : isHu ? "Vissza a csapatokhoz" : "Back to teams"}
             </Link>
 
             <section className="relative overflow-hidden rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-100/80 via-purple-50/60 to-pink-50/40 p-8 shadow-md shadow-indigo-200/40">
@@ -249,19 +285,91 @@ export default async function TeamDetailPage({
               </div>
             )}
 
-            <div className="border-t border-gray-100 pt-5">
-              <h3 className="mb-3 text-sm font-semibold text-gray-700">
-                {isHu ? "Tag hozzáadása" : "Add a member"}
-              </h3>
-              <p className="mb-4 text-xs text-gray-500">
-                {isHu
-                  ? "Add meg a csapattag emailcímét. A felhasználónak regisztrálva kell lennie."
-                  : "Enter the member's email. They must already be registered on Trita."}
-              </p>
-              <TeamInviteForm teamId={teamId} locale={locale} />
-            </div>
+            {(isManagerOwner || isOrgManager) && (
+              <div className="border-t border-gray-100 pt-5">
+                <h3 className="mb-3 text-sm font-semibold text-gray-700">
+                  {isHu ? "Tag hozzáadása" : "Add a member"}
+                </h3>
+                <p className="mb-4 text-xs text-gray-500">
+                  {isHu
+                    ? "Add meg a csapattag emailcímét. A felhasználónak regisztrálva kell lennie."
+                    : "Enter the member's email. They must already be registered on Trita."}
+                </p>
+                <TeamInviteForm teamId={teamId} locale={locale} />
+              </div>
+            )}
           </section>
         </FadeIn>
+
+        {/* Candidates */}
+        {(isManagerOwner || isOrgManager) && (
+          <FadeIn delay={0.15}>
+            <section className="rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="h-1 w-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {isHu ? "Jelöltek" : "Candidates"}{" "}
+                  <span className="text-sm font-normal text-gray-400">({candidateInvites.length})</span>
+                </h2>
+              </div>
+
+              {candidateInvites.length > 0 && (
+                <div className="mb-6 flex flex-col divide-y divide-gray-100">
+                  {candidateInvites.map((c) => {
+                    const isExpired = c.status !== "COMPLETED" && c.expiresAt < new Date();
+                    const displayStatus = isExpired ? "EXPIRED" : c.status;
+                    const statusClass =
+                      displayStatus === "COMPLETED" ? "bg-emerald-50 text-emerald-700" :
+                      displayStatus === "EXPIRED" ? "bg-gray-100 text-gray-500" :
+                      "bg-amber-50 text-amber-700";
+                    const statusText =
+                      displayStatus === "COMPLETED" ? (isHu ? "Kész" : "Completed") :
+                      displayStatus === "EXPIRED" ? (isHu ? "Lejárt" : "Expired") :
+                      (isHu ? "Függőben" : "Pending");
+                    return (
+                      <div key={c.id} className="flex items-center justify-between gap-3 py-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-gray-900">
+                            {c.name ?? c.email ?? (isHu ? "Névtelen jelölt" : "Anonymous candidate")}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                            {c.position && <span className="text-xs text-gray-500">{c.position}</span>}
+                            <span className="text-xs text-gray-400">{c.createdAt.toLocaleDateString(dateLocale)}</span>
+                          </div>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusClass}`}>
+                            {statusText}
+                          </span>
+                          {c.status === "COMPLETED" && c.result && (
+                            <a
+                              href={`/manager/candidates/${c.id}`}
+                              className="min-h-[36px] inline-flex items-center rounded-lg border border-indigo-200 bg-indigo-50 px-3 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100"
+                            >
+                              {isHu ? "Eredmény" : "Results"}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className={candidateInvites.length > 0 ? "border-t border-gray-100 pt-5" : ""}>
+                <h3 className="mb-3 text-sm font-semibold text-gray-700">
+                  {isHu ? "Jelölt meghívása" : "Invite a candidate"}
+                </h3>
+                <p className="mb-4 text-xs text-gray-500">
+                  {isHu
+                    ? "Értékelési linket kap a jelölt. Regisztráció nélkül kitölthető."
+                    : "The candidate receives an assessment link. No registration required."}
+                </p>
+                <CandidateInviteForm locale={locale} teams={[{ id: teamId, name: team.name }]} preselectedTeamId={teamId} />
+              </div>
+            </section>
+          </FadeIn>
+        )}
 
       </main>
     </div>

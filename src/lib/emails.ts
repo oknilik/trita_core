@@ -1000,3 +1000,83 @@ export async function sendTeamInviteEmail(params: {
   console.log("[Email] Team invite sent to:", params.to);
   return true;
 }
+
+// ─── Org invite email ─────────────────────────────────────────────────────────
+
+const orgInviteTranslations = {
+  hu: {
+    subject: (orgName: string) => `Meghívtak a(z) ${orgName} szervezetbe – Trita`,
+    heading: (orgName: string) => `Meghívtak a(z) ${orgName} szervezetbe`,
+    body: "Regisztrálj a Tritára, és automatikusan csatlakozol a szervezethez. Kitöltheted a személyiségtesztet, és láthatod, hogyan illesz a csapatba.",
+    cta: "Regisztráció és csatlakozás",
+    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: (orgName: string) => `You've been invited to join ${orgName} – Trita`,
+    heading: (orgName: string) => `You've been invited to join ${orgName}`,
+    body: "Register on Trita and you'll automatically join the organization. Complete the personality assessment to see how you fit with your team.",
+    cta: "Register and join",
+    footer: "If you don't want to join, simply ignore this email.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+  de: {
+    subject: (orgName: string) => `Du wurdest zu ${orgName} eingeladen – Trita`,
+    heading: (orgName: string) => `Du wurdest zu ${orgName} eingeladen`,
+    body: "Registriere dich bei Trita und tritt der Organisation automatisch bei. Fülle die Persönlichkeitsbeurteilung aus, um zu sehen, wie du ins Team passt.",
+    cta: "Registrieren und beitreten",
+    footer: "Wenn du nicht beitreten möchtest, ignoriere diese E-Mail.",
+    thanks: "Mit freundlichen Grüßen,",
+    team: "das Trita-Team",
+  },
+};
+
+export async function sendOrgInviteEmail(params: {
+  to: string;
+  orgName: string;
+  role: string;
+  signUpUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? "en";
+  const t = orgInviteTranslations[locale];
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 0">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+<tr><td style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:32px 40px;text-align:center">
+<h1 style="margin:0;color:#fff;font-size:22px;font-weight:700">${t.heading(params.orgName)}</h1>
+</td></tr>
+<tr><td style="padding:32px 40px">
+<p style="margin:0 0 24px;color:#374151;font-size:15px;line-height:1.6">${t.body}</p>
+<div style="text-align:center;margin:28px 0">
+<a href="${params.signUpUrl}" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:10px;text-decoration:none">${t.cta}</a>
+</div>
+<p style="margin:24px 0 0;color:#9ca3af;font-size:13px">${t.footer}</p>
+</td></tr>
+<tr><td style="padding:16px 40px 28px;border-top:1px solid #f3f4f6;text-align:center">
+<p style="margin:0;color:#9ca3af;font-size:13px">${t.thanks}<br><strong>${t.team}</strong></p>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>`;
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject(params.orgName),
+    html,
+    text: `${t.heading(params.orgName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send org invite:", error);
+    return false;
+  }
+  console.log("[Email] Org invite sent to:", params.to);
+  return true;
+}

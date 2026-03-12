@@ -11,6 +11,7 @@ interface Team {
 interface CandidateInviteFormProps {
   locale: string;
   teams: Team[];
+  preselectedTeamId?: string;
 }
 
 interface CreatedInvite {
@@ -21,14 +22,14 @@ interface CreatedInvite {
   position?: string | null;
 }
 
-export function CandidateInviteForm({ locale, teams }: CandidateInviteFormProps) {
+export function CandidateInviteForm({ locale, teams, preselectedTeamId }: CandidateInviteFormProps) {
   const isHu = locale !== "en" && locale !== "de";
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
-  const [teamId, setTeamId] = useState("");
+  const [teamId, setTeamId] = useState(preselectedTeamId ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(null);

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { hasOrgRole, getUserOrgMembership } from "@/lib/auth";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 
 const createSchema = z.object({
@@ -13,15 +14,22 @@ const createSchema = z.object({
 });
 
 // POST /api/manager/candidates — create a new candidate invite
+// Allowed: global MANAGER role OR ORG_MANAGER+ (org member)
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const manager = await prisma.userProfile.findUnique({
+  const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true, role: true, username: true, email: true },
   });
-  if (!manager || manager.role !== "MANAGER") {
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const isLegacyManager = profile.role === "MANAGER";
+  const orgMembership = isLegacyManager ? null : await getUserOrgMembership(profile.id);
+  const isOrgManager = !!orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER");
+
+  if (!isLegacyManager && !isOrgManager) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
@@ -32,14 +40,30 @@ export async function POST(req: Request) {
 
   const { email, name, position, teamId, testType } = body.data;
 
-  // Verify team ownership if teamId provided
+  // Verify team access if teamId provided
   if (teamId) {
     const team = await prisma.team.findUnique({
       where: { id: teamId },
-      select: { ownerId: true },
+      select: { ownerId: true, orgId: true },
     });
-    if (!team || team.ownerId !== manager.id) {
-      return NextResponse.json({ error: "TEAM_NOT_FOUND" }, { status: 404 });
+    if (!team) return NextResponse.json({ error: "TEAM_NOT_FOUND" }, { status: 404 });
+
+    if (team.orgId) {
+      // Org team: verify ORG_MANAGER+ in the org
+      const membership = orgMembership?.orgId === team.orgId
+        ? orgMembership
+        : await prisma.organizationMember.findUnique({
+            where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
+            select: { orgId: true, role: true },
+          });
+      if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+        return NextResponse.json({ error: "TEAM_NOT_FOUND" }, { status: 404 });
+      }
+    } else {
+      // Standalone team: must own it
+      if (team.ownerId !== profile.id) {
+        return NextResponse.json({ error: "TEAM_NOT_FOUND" }, { status: 404 });
+      }
     }
   }
 
@@ -48,7 +72,7 @@ export async function POST(req: Request) {
 
   const invite = await prisma.candidateInvite.create({
     data: {
-      managerId: manager.id,
+      managerId: profile.id,
       teamId: teamId ?? null,
       email: email ?? null,
       name: name ?? null,
@@ -72,13 +96,13 @@ export async function POST(req: Request) {
 
   let emailSent = false;
   if (email) {
-    const managerName = manager.username ?? manager.email ?? "HR";
+    const managerName = profile.username ?? profile.email ?? "HR";
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
     emailSent = await sendCandidateInviteEmail({
       to: email,
       managerName,
       token: invite.token,
-      position: position,
+      position,
       applyUrl: `${appUrl}/apply/${invite.token}`,
     });
   }
@@ -86,21 +110,27 @@ export async function POST(req: Request) {
   return NextResponse.json({ invite, emailSent }, { status: 201 });
 }
 
-// GET /api/manager/candidates — list all candidate invites for this manager
+// GET /api/manager/candidates — list candidate invites sent by this user
 export async function GET() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const manager = await prisma.userProfile.findUnique({
+  const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true, role: true },
   });
-  if (!manager || manager.role !== "MANAGER") {
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const isLegacyManager = profile.role === "MANAGER";
+  const orgMembership = isLegacyManager ? null : await getUserOrgMembership(profile.id);
+  const isOrgManager = !!orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER");
+
+  if (!isLegacyManager && !isOrgManager) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
   const invites = await prisma.candidateInvite.findMany({
-    where: { managerId: manager.id },
+    where: { managerId: profile.id },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,

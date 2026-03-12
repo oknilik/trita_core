@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { hasOrgRole, getUserOrgMembership } from "@/lib/auth";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { CandidateInviteForm } from "@/components/manager/CandidateInviteForm";
 
@@ -27,7 +28,12 @@ export default async function CandidatesPage() {
     where: { clerkId: userId },
     select: { id: true, role: true },
   });
-  if (!manager || manager.role !== "MANAGER") redirect("/dashboard");
+  if (!manager) redirect("/dashboard");
+
+  const isLegacyManager = manager.role === "MANAGER";
+  const orgMembership = isLegacyManager ? null : await getUserOrgMembership(manager.id);
+  const isOrgManager = !!orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER");
+  if (!isLegacyManager && !isOrgManager) redirect("/dashboard");
 
   const [invites, teams] = await Promise.all([
     prisma.candidateInvite.findMany({
@@ -47,11 +53,18 @@ export default async function CandidatesPage() {
         result: { select: { id: true } },
       },
     }),
-    prisma.team.findMany({
-      where: { ownerId: manager.id },
-      orderBy: { createdAt: "asc" },
-      select: { id: true, name: true },
-    }),
+    // Legacy: own standalone teams; Org: all teams in user's org
+    isLegacyManager
+      ? prisma.team.findMany({
+          where: { ownerId: manager.id },
+          orderBy: { createdAt: "asc" },
+          select: { id: true, name: true },
+        })
+      : prisma.team.findMany({
+          where: { orgId: orgMembership!.orgId },
+          orderBy: { createdAt: "asc" },
+          select: { id: true, name: true },
+        }),
   ]);
 
   const isHu = locale !== "en" && locale !== "de";

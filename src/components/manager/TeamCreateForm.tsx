@@ -6,9 +6,10 @@ import type { Locale } from "@/lib/i18n";
 
 interface TeamCreateFormProps {
   locale: Locale;
+  orgId?: string;
 }
 
-export function TeamCreateForm({ locale }: TeamCreateFormProps) {
+export function TeamCreateForm({ locale, orgId }: TeamCreateFormProps) {
   const isHu = locale !== "en" && locale !== "de";
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export function TeamCreateForm({ locale }: TeamCreateFormProps) {
       const res = await fetch("/api/team", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim() }),
+        body: JSON.stringify({ name: name.trim(), ...(orgId ? { orgId } : {}) }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

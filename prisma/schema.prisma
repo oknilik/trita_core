@@ -107,6 +107,10 @@ model UserProfile {
   ownedTeams       Team[]       @relation("TeamOwner")
   teamMemberships  TeamMember[]
 
+  // Organization layer (KKV)
+  ownedOrgs      Organization[]       @relation("OrgOwner")
+  orgMemberships OrganizationMember[]
+
   // Candidate hiring layer
   managedCandidates CandidateInvite[] @relation("ManagedCandidates")
 }
@@ -360,14 +364,17 @@ model Team {
   id        String   @id @default(cuid())
   name      String
   ownerId   String
+  orgId     String?
   createdAt DateTime @default(now())
 
   owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
+  org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
   members          TeamMember[]
   pendingInvites   TeamPendingInvite[]
   candidateInvites CandidateInvite[]
 
   @@index([ownerId])
+  @@index([orgId])
 }
 
 model TeamMember {
@@ -433,4 +440,53 @@ model CandidateResult {
   createdAt DateTime @default(now())
 
   invite CandidateInvite @relation(fields: [inviteId], references: [id])
+}
+
+// ============================================
+// ORGANIZATION LAYER (KKV)
+// ============================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  status    String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner          UserProfile                @relation("OrgOwner", fields: [ownerId], references: [id])
+  members        OrganizationMember[]
+  pendingInvites OrganizationPendingInvite[]
+  teams          Team[]
+
+  @@index([ownerId])
+}
+
+model OrganizationMember {
+  id       String   @id @default(cuid())
+  orgId    String
+  userId   String
+  role     String   @default("ORG_MEMBER") // "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER"
+  joinedAt DateTime @default(now())
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user UserProfile  @relation(fields: [userId], references: [id])
+
+  @@unique([orgId, userId])
+  @@unique([userId])
+  @@index([orgId])
+  @@index([userId])
+}
+
+model OrganizationPendingInvite {
+  id        String   @id @default(cuid())
+  orgId     String
+  email     String
+  role      String   @default("ORG_MEMBER") // "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER"
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, email])
+  @@index([email])
 }

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { hasOrgRole } from "@/lib/auth";
 import { sendTeamInviteEmail } from "@/lib/emails";
 import { getServerLocale } from "@/lib/i18n-server";
 
@@ -10,6 +11,8 @@ const inviteSchema = z.object({
 });
 
 // POST /api/team/[id]/invite — add a member to the team by email
+// - Org team: requires ORG_MANAGER+ in the team's org
+// - Standalone team: requires global MANAGER role + ownership
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -23,23 +26,33 @@ export async function POST(
     where: { clerkId: userId },
     select: { id: true, role: true },
   });
-  if (!profile || profile.role !== "MANAGER") {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  }
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  // Verify ownership
   const team = await prisma.team.findUnique({
     where: { id: teamId },
-    select: { id: true, ownerId: true, name: true },
+    select: { id: true, ownerId: true, orgId: true, name: true },
   });
-  if (!team || team.ownerId !== profile.id) {
-    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  if (!team) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+  if (team.orgId) {
+    // Org team: verify ORG_MANAGER+ in the team's org
+    const membership = await prisma.organizationMember.findUnique({
+      where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
+      select: { role: true },
+    });
+    if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+      return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+    }
+  } else {
+    // Standalone team: global MANAGER + ownership
+    if (profile.role !== "MANAGER" || team.ownerId !== profile.id) {
+      return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+    }
   }
 
   const body = inviteSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  // Normalize to lowercase to prevent case-sensitive duplicates
   const email = body.data.email.toLowerCase();
 
   const targetUser = await prisma.userProfile.findFirst({
@@ -47,7 +60,6 @@ export async function POST(
     select: { id: true },
   });
 
-  // User doesn't exist yet — create a pending invite and send email
   if (!targetUser) {
     const existingPending = await prisma.teamPendingInvite.findUnique({
       where: { teamId_email: { teamId, email } },
@@ -62,18 +74,16 @@ export async function POST(
 
     const locale = await getServerLocale();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
-    const signUpUrl = `${appUrl}/sign-up`;
     await sendTeamInviteEmail({
       to: email,
       teamName: team.name,
-      signUpUrl,
+      signUpUrl: `${appUrl}/sign-up`,
       locale: (locale === "hu" || locale === "en" || locale === "de") ? locale : "en",
     });
 
     return NextResponse.json({ pending: true }, { status: 201 });
   }
 
-  // Prevent duplicate membership
   const existing = await prisma.teamMember.findUnique({
     where: { teamId_userId: { teamId, userId: targetUser.id } },
   });
