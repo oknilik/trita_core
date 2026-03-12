@@ -52,8 +52,12 @@ export default async function AssessmentPage({
   }
 
   // Redirect to onboarding if demographics not yet collected
+  // Org-flow users don't have onboardedAt — check org membership before redirecting
   if (!profile.onboardedAt) {
-    redirect("/onboarding");
+    const orgMembership = await prisma.organizationMember.findUnique({
+      where: { userId: profile.id },
+    });
+    if (!orgMembership) redirect("/onboarding");
   }
 
   // Load existing draft (if any)

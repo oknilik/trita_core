@@ -2,23 +2,16 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { getServerLocale } from "@/lib/i18n-server";
-import { t } from "@/lib/i18n";
-import { OnboardingClient } from "./OnboardingClient";
+import { OrgOnboardingWizard } from "./OrgOnboardingWizard";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
   return {
-    title: t("meta.onboardingTitle", locale),
+    title: "Beállítás | trita",
     robots: {
       index: false,
       follow: false,
       nocache: true,
-      googleBot: {
-        index: false,
-        follow: false,
-        noimageindex: true,
-      },
+      googleBot: { index: false, follow: false, noimageindex: true },
     },
   };
 }
@@ -32,7 +25,7 @@ export default async function OnboardingPage() {
     select: { id: true, onboardedAt: true, deleted: true },
   });
 
-  // Race condition: deleted profile still has clerkId set — detach it and create fresh
+  // Race condition: deleted profile still has clerkId — detach and recreate
   if (profile?.deleted) {
     await prisma.userProfile.update({
       where: { id: profile.id },
@@ -46,10 +39,8 @@ export default async function OnboardingPage() {
       },
       update: {},
     });
-    return <OnboardingClient />;
+    return <OrgOnboardingWizard />;
   }
-
-  if (profile?.onboardedAt) redirect("/dashboard");
 
   // Profile may not exist yet (webhook race) — create it
   if (!profile) {
@@ -61,7 +52,17 @@ export default async function OnboardingPage() {
       },
       update: {},
     });
+    return <OrgOnboardingWizard />;
   }
 
-  return <OnboardingClient />;
+  // Already has org membership → wizard complete
+  const orgMembership = await prisma.organizationMember.findUnique({
+    where: { userId: profile.id },
+  });
+  if (orgMembership) redirect("/dashboard");
+
+  // Old-flow users (personal onboarding done, no org) → dashboard
+  if (profile.onboardedAt) redirect("/dashboard");
+
+  return <OrgOnboardingWizard />;
 }

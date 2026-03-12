@@ -71,7 +71,11 @@ export default async function DashboardPage({
   if (profile?.deleted) redirect("/onboarding");
 
   if (profile && !profile.onboardedAt) {
-    redirect("/onboarding");
+    // Org-flow users don't have onboardedAt set — check org membership before redirecting
+    const orgMembership = await prisma.organizationMember.findUnique({
+      where: { userId: profile.id },
+    });
+    if (!orgMembership) redirect("/onboarding");
   }
 
   const displayName =
