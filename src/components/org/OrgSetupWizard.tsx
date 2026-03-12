@@ -79,27 +79,30 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
     <div className="mx-auto w-full max-w-lg">
       {/* Progress indicator */}
       <div className="mb-8 flex items-center gap-3">
-        <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${step === "name" ? "bg-indigo-600 text-white" : "bg-green-500 text-white"}`}>
+        <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${step === "name" ? "bg-[#c8410a] text-white" : "bg-[#c8410a] text-white"}`}>
           {step === "name" ? "1" : "✓"}
         </div>
-        <div className="h-0.5 flex-1 bg-gray-200">
-          <div className={`h-full bg-indigo-600 transition-all ${step === "invite" ? "w-full" : "w-0"}`} />
+        <div className="h-0.5 flex-1 bg-[#e8e4dc]">
+          <div className={`h-full bg-[#c8410a] transition-all ${step === "invite" ? "w-full" : "w-0"}`} />
         </div>
-        <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${step === "invite" ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-500"}`}>
+        <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${step === "invite" ? "bg-[#c8410a] text-white" : "bg-[#e8e4dc] text-[#3d3a35]"}`}>
           2
         </div>
       </div>
 
       {step === "name" && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">
+        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+            {isHu ? "// 1. lépés" : "// step 1"}
+          </p>
+          <h1 className="font-playfair text-xl text-[#1a1814] mb-2">
             {isHu ? "Szervezet neve" : "Organization name"}
           </h1>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-[#3d3a35]/70 mb-6">
             {isHu ? "Erősítsd meg vagy módosítsd a szervezet nevét." : "Confirm or update your organization name."}
           </p>
           <form onSubmit={handleNameNext} className="flex flex-col gap-4">
-            <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+            <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
               {isHu ? "Szervezet neve" : "Name"}
               <input
                 type="text"
@@ -107,14 +110,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
                 required
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+                className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
               />
             </label>
             {error && <p className="text-xs text-rose-600">{error}</p>}
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
             >
               {loading ? "..." : isHu ? "Tovább" : "Next"}
             </button>
@@ -123,11 +126,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       )}
 
       {step === "invite" && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">
+        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+            {isHu ? "// 2. lépés" : "// step 2"}
+          </p>
+          <h1 className="font-playfair text-xl text-[#1a1814] mb-2">
             {isHu ? "Tagok meghívása" : "Invite members"}
           </h1>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-[#3d3a35]/70 mb-6">
             {isHu
               ? "Hívj meg tagokat az induláshoz (opcionális). Emailcímek, akik még nem regisztráltak, meghívót kapnak."
               : "Invite members to get started (optional). Unregistered emails will receive an invite."}
@@ -144,7 +150,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                   setInviteEmails(next);
                 }}
                 placeholder={`${isHu ? "Email" : "Email"} ${i + 1}`}
-                className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+                className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
               />
             ))}
           </div>
@@ -153,7 +159,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
             <button
               type="button"
               onClick={() => setStep("name")}
-              className="min-h-[44px] rounded-lg border border-gray-200 px-5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+              className="min-h-[44px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-semibold text-[#3d3a35] transition hover:bg-[#faf9f6]"
             >
               {isHu ? "Vissza" : "Back"}
             </button>
@@ -161,7 +167,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               type="button"
               onClick={handleFinish}
               disabled={loading}
-              className="flex-1 min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              className="flex-1 min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
             >
               {loading ? "..." : isHu ? "Befejezés" : "Finish setup"}
             </button>

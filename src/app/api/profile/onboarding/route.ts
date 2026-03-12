@@ -16,7 +16,7 @@ import {
 const currentYear = new Date().getFullYear();
 
 const onboardingSchema = z.object({
-  username: z.string().min(2).max(12),
+  username: z.string().min(2).max(20),
   birthYear: z.number().int().min(currentYear - 100).max(currentYear - 16),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
   education: z.enum([
@@ -26,8 +26,8 @@ const onboardingSchema = z.object({
     "master",
     "doctorate",
     "other",
-  ]),
-  occupationStatus: z.enum(OCCUPATION_STATUS_VALUES),
+  ]).optional(),
+  occupationStatus: z.enum(OCCUPATION_STATUS_VALUES).optional(),
   workSchedule: z.enum(WORK_SCHEDULE_VALUES).optional(),
   companySize: z.enum(COMPANY_SIZE_VALUES).optional(),
   studyLevel: z.enum(STUDY_LEVEL_VALUES).optional(),
@@ -35,7 +35,7 @@ const onboardingSchema = z.object({
   country: z.string().min(1).max(100),
   consentedAt: z.string().datetime().optional(),
 }).superRefine((data, ctx) => {
-  if (requiresWorkFields(data.occupationStatus)) {
+  if (data.occupationStatus && requiresWorkFields(data.occupationStatus)) {
     if (!data.workSchedule) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -52,7 +52,7 @@ const onboardingSchema = z.object({
     }
   }
 
-  if (requiresStudyLevel(data.occupationStatus) && !data.studyLevel) {
+  if (data.occupationStatus && requiresStudyLevel(data.occupationStatus) && !data.studyLevel) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ["studyLevel"],
@@ -103,26 +103,22 @@ export async function POST(req: Request) {
     );
   }
 
+  const { occupationStatus } = parsed.data;
+
   await prisma.userProfile.updateMany({
     where: { clerkId: userId },
     data: {
       username: parsed.data.username,
       birthYear: parsed.data.birthYear,
       gender: parsed.data.gender,
-      education: parsed.data.education,
-      occupationStatus: parsed.data.occupationStatus,
-      workSchedule: requiresWorkFields(parsed.data.occupationStatus)
-        ? parsed.data.workSchedule
-        : null,
-      companySize: requiresWorkFields(parsed.data.occupationStatus)
-        ? parsed.data.companySize
-        : null,
-      studyLevel: requiresStudyLevel(parsed.data.occupationStatus)
-        ? parsed.data.studyLevel
-        : null,
-      unemploymentDuration: parsed.data.occupationStatus === "unemployed"
-        ? parsed.data.unemploymentDuration
-        : null,
+      ...(parsed.data.education !== undefined && { education: parsed.data.education }),
+      ...(occupationStatus !== undefined && {
+        occupationStatus,
+        workSchedule: requiresWorkFields(occupationStatus) ? parsed.data.workSchedule : null,
+        companySize: requiresWorkFields(occupationStatus) ? parsed.data.companySize : null,
+        studyLevel: requiresStudyLevel(occupationStatus) ? parsed.data.studyLevel : null,
+        unemploymentDuration: occupationStatus === "unemployed" ? parsed.data.unemploymentDuration : null,
+      }),
       country: parsed.data.country,
       ...(parsed.data.consentedAt && {
         consentedAt: new Date(parsed.data.consentedAt),

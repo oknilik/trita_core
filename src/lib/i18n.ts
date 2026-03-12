@@ -373,13 +373,13 @@ const translations = {
     magicLinkBack: { hu: "Más email cím megadása", en: "Use a different email" },
   },
   assessment: {
-    introWelcome: { hu: "Köszönjük, hogy részt veszel a kutatásban!", en: "Thank you for taking part in the research!" },
+    introWelcome: { hu: "Örülünk, hogy itt vagy!", en: "We're glad you're here!", de: "Schön, dass du dabei bist!" },
     introBody: { hu: "A következő kérdőívet kérjük figyelmesen töltsd ki — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat.", en: "Please fill in the questionnaire carefully — go with your first impression on each question, don't overthink it." },
     introAutoAdvanceHint: {
       hu: "Alapból automatikusan továbblépünk, miután válaszolsz. Ha lassabban mennél, bármikor kikapcsolhatod.",
       en: "By default, we move forward automatically after you answer. You can turn this off anytime.",
     },
-    introCount: { hu: "😅 Tudjuk, 100 kérdés sok. De bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "😅 We know, 100 questions is a lot. But you can stop anytime — your progress saves automatically so you can pick up right where you left off." },
+    introCount: { hu: "Bármikor félbeszakíthatod — mentjük a haladásod, és később ott folytathatod, ahol abbahagytad.", en: "You can stop anytime — your progress saves automatically so you can pick up right where you left off.", de: "Du kannst jederzeit pausieren — dein Fortschritt wird gespeichert, damit du später dort weitermachen kannst." },
     introStart: { hu: "Kezdjük el →", en: "Let's start →" },
     helpLikert: {
       hu: "Válaszd ki, mennyire értesz egyet az állítással (1 = egyáltalán nem, 5 = teljesen)",

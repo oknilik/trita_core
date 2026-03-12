@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function OrgSuspendedPage() {
   return (
-    <div className="bg-gradient-to-b from-indigo-50/70 via-white to-white min-h-dvh flex items-center justify-center px-4">
+    <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center px-4">
       <div className="mx-auto w-full max-w-md text-center">
         <div className="mb-6 flex justify-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100">
@@ -28,26 +28,29 @@ export default function OrgSuspendedPage() {
           </span>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">
+        <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-3">
+          // inaktív
+        </p>
+        <h1 className="font-playfair text-2xl text-[#1a1814] mb-3">
           Szervezet inaktív
         </h1>
-        <p className="text-sm text-gray-500 mb-2">
+        <p className="text-sm text-[#3d3a35]/70 mb-2">
           A szervezet, amelyhez tartozol, jelenleg inaktív.
         </p>
-        <p className="text-sm text-gray-500 mb-8">
+        <p className="text-sm text-[#3d3a35]/70 mb-8">
           Ha úgy gondolod, ez hiba, keresd a szervezet adminisztrátorát.
         </p>
 
         <div className="flex flex-col gap-3 items-center">
           <Link
             href="/dashboard"
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a]"
           >
             Vissza az irányítópulthoz
           </Link>
           <Link
             href="/org"
-            className="inline-flex min-h-[44px] items-center rounded-lg border border-gray-200 px-6 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            className="inline-flex min-h-[44px] items-center rounded-lg border border-[#e8e4dc] px-6 text-sm font-semibold text-[#3d3a35] transition hover:bg-white"
           >
             Szervezetek
           </Link>

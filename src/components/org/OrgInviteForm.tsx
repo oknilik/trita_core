@@ -61,7 +61,7 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
   return (
     <div className="flex flex-col gap-3">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <label className="flex flex-1 flex-col gap-2 text-sm font-semibold text-gray-700">
+        <label className="flex flex-1 flex-col gap-2 text-sm font-semibold text-[#1a1814]">
           {isHu ? "Email cím" : "Email address"}
           <input
             type="email"
@@ -69,16 +69,16 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
             onChange={(e) => setEmail(e.target.value)}
             placeholder={isHu ? "kolléga@cég.hu" : "colleague@company.com"}
             required
-            className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+            className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
           />
         </label>
         {canInviteManager && (
-          <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
             {isHu ? "Szerepkör" : "Role"}
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as OrgRole)}
-              className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm text-gray-900 focus:border-indigo-300 focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
             >
               <option value="ORG_MEMBER">{isHu ? "Tag" : "Member"}</option>
               <option value="ORG_MANAGER">{isHu ? "Menedzser" : "Manager"}</option>
@@ -89,7 +89,7 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
         <button
           type="submit"
           disabled={loading || !email.trim()}
-          className="min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+          className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:cursor-not-allowed disabled:bg-[#e8e4dc] disabled:text-[#3d3a35]/50"
         >
           {loading
             ? isHu ? "Meghívás..." : "Inviting..."

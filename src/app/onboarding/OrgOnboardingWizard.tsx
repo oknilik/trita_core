@@ -49,6 +49,7 @@ export function OrgOnboardingWizard() {
   const [step, setStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [teamId, setTeamId] = useState<string | null>(null);
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<FieldError>({});
 
@@ -154,12 +155,19 @@ export function OrgOnboardingWizard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: teamName, orgId: state.orgId }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setTeamId(data.team.id);
-      } else {
-        router.push("/dashboard");
-      }
+      if (!res.ok) { router.push("/dashboard"); return; }
+      const data = await res.json();
+      const createdTeamId = data.team.id;
+      setTeamId(createdTeamId);
+
+      const inviteRes = await fetch("/api/team/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamId: createdTeamId }),
+      });
+      if (!inviteRes.ok) { router.push("/dashboard"); return; }
+      const inviteData = await inviteRes.json();
+      setInviteUrl(inviteData.inviteUrl);
     } catch {
       router.push("/dashboard");
     } finally {
@@ -168,9 +176,8 @@ export function OrgOnboardingWizard() {
   };
 
   const handleCopyLink = () => {
-    if (!teamId) return;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
-    navigator.clipboard.writeText(`${appUrl}/team/${teamId}`);
+    if (!inviteUrl) return;
+    navigator.clipboard.writeText(inviteUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -451,7 +458,7 @@ export function OrgOnboardingWizard() {
                     </p>
                     <div className="flex items-center gap-2">
                       <code className="flex-1 truncate rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-xs text-[#1a1814]">
-                        {(process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io")}/team/{teamId}
+                        {inviteUrl}
                       </code>
                       <button
                         type="button"
@@ -468,8 +475,8 @@ export function OrgOnboardingWizard() {
                   </div>
 
                   <p className="text-sm text-[#3d3a35]/70">
-                    Küldd el ezt a linket a csapattagjaidnak. Bejelentkezés után közvetlenül
-                    megnyithatják a csapatoldalt, ahol emailcím alapján hozzáadhatod őket.
+                    Küldd el ezt a linket a csapattagjaidnak. Regisztráció után automatikusan
+                    csatlakoznak a csapathoz és elkezdhetik a felmérést.
                   </p>
 
                   <button

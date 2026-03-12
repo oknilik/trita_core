@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
+import { hasOrgRole } from "@/lib/auth";
 
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
@@ -82,6 +83,21 @@ export default async function DashboardPage({
     profile?.username ||
     profile?.email ||
     t("common.userFallback", locale);
+
+  // --- ADMIN BRANCH ---
+  // If the user is an ORG_ADMIN or ORG_MANAGER, render the admin dashboard instead.
+  if (profile) {
+    const orgMembership = await prisma.organizationMember.findUnique({
+      where: { userId: profile.id },
+      select: { role: true },
+    });
+
+    if (orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
+      const { AdminDashboard } = await import("./AdminDashboard");
+      return <AdminDashboard />;
+    }
+  }
+  // --- END ADMIN BRANCH ---
 
   // Parallel database queries for better performance
   const [

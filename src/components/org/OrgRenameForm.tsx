@@ -45,7 +45,7 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
       <div className="flex-1">
-        <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+        <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
           {isHu ? "Szervezet neve" : "Organization name"}
           <input
             type="text"
@@ -53,14 +53,14 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
             onChange={(e) => { setName(e.target.value); setSaved(false); }}
             maxLength={100}
             required
-            className="min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3 text-sm font-normal text-gray-900 focus:border-indigo-300 focus:outline-none"
+            className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
           />
         </label>
       </div>
       <button
         type="submit"
         disabled={loading || name.trim() === currentName}
-        className="min-h-[44px] rounded-lg bg-indigo-600 px-5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
+        className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
       >
         {loading ? "..." : isHu ? "Mentés" : "Save"}
       </button>
