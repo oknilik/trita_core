@@ -60,13 +60,6 @@ model UserProfile {
   // Demographic data (onboarding)
   birthYear   Int?
   gender      String?
-  education   String?
-  occupation  String?
-  occupationStatus String?
-  workSchedule String?
-  companySize String?
-  studyLevel String?
-  unemploymentDuration String?
   country     String?
   onboardedAt DateTime?
 
@@ -346,8 +339,29 @@ model Organization {
   members        OrganizationMember[]
   pendingInvites OrganizationPendingInvite[]
   teams          Team[]
+  subscription   Subscription?
 
   @@index([ownerId])
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  orgId                String    @unique
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  stripePriceId        String?
+  status               String    @default("trialing")
+  trialEndsAt          DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
 }
 
 model OrganizationMember {

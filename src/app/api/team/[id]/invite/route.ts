@@ -64,8 +64,9 @@ export async function POST(
       return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
     }
 
-    await prisma.teamPendingInvite.create({
+    const invite = await prisma.teamPendingInvite.create({
       data: { teamId, email },
+      select: { id: true },
     });
 
     const locale = await getServerLocale();
@@ -73,7 +74,7 @@ export async function POST(
     await sendTeamInviteEmail({
       to: email,
       teamName: team.name,
-      signUpUrl: `${appUrl}/sign-up`,
+      signUpUrl: `${appUrl}/join/${invite.id}`,
       locale: (locale === "hu" || locale === "en") ? locale : "en",
     });
 
@@ -87,10 +88,25 @@ export async function POST(
     return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
   }
 
-  const member = await prisma.teamMember.create({
-    data: { teamId, userId: targetUser.id },
-    select: { id: true, userId: true, joinedAt: true },
+  // Check org membership — 1-org constraint
+  const existingOrgMembership = await prisma.organizationMember.findUnique({
+    where: { userId: targetUser.id },
   });
+  if (existingOrgMembership && existingOrgMembership.orgId !== team.orgId) {
+    return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
+  }
+
+  const [member] = await prisma.$transaction([
+    prisma.teamMember.create({
+      data: { teamId, userId: targetUser.id },
+      select: { id: true, userId: true, joinedAt: true },
+    }),
+    ...(existingOrgMembership
+      ? []
+      : [prisma.organizationMember.create({
+          data: { orgId: team.orgId, userId: targetUser.id, role: "ORG_MEMBER" },
+        })]),
+  ]);
 
   return NextResponse.json({ member }, { status: 201 });
 }

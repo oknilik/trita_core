@@ -70,6 +70,7 @@ export function AdminDashboard() {
   const [data, setData] = useState<OrgStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [reactivating, setReactivating] = useState(false);
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -86,6 +87,24 @@ export function AdminDashboard() {
     await navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleReactivate = async () => {
+    if (!data || reactivating) return;
+    setReactivating(true);
+    try {
+      const res = await fetch(`/api/org/${data.org.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "ACTIVE" }),
+      });
+      if (res.ok) {
+        setLoading(true);
+        await fetchStatus();
+      }
+    } finally {
+      setReactivating(false);
+    }
   };
 
   if (loading) {
@@ -194,25 +213,62 @@ export function AdminDashboard() {
       <main className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col gap-8 px-4 py-10 md:py-12">
 
         {/* ── Page header ── */}
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c8410a]">
-            // vezérlőpult
-          </p>
-          <h1 className="mt-1 font-playfair text-[28px] leading-tight text-[#1a1814]">
-            {org.name}
-          </h1>
-          <p className="mt-1 text-sm text-[#7a756e]">
-            {firstTeam ? `${firstTeam.name} · ${firstTeam.members.length} tag` : "Még nincs csapat"}
-            {" · "}
-            <span className="font-medium text-[#3d3a35]">org admin</span>
-          </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c8410a]">
+              // vezérlőpult
+            </p>
+            <h1 className="mt-1 font-playfair text-[28px] leading-tight text-[#1a1814]">
+              {org.name}
+            </h1>
+            <p className="mt-1 text-sm text-[#7a756e]">
+              {firstTeam ? `${firstTeam.name} · ${firstTeam.members.length} tag` : "Még nincs csapat"}
+              {" · "}
+              <span className="font-medium text-[#3d3a35]">org admin</span>
+            </p>
+          </div>
+          {org.status !== "INACTIVE" && (
+            <div className="flex flex-shrink-0 items-center gap-2">
+              {firstTeam && (
+                <Link href={`/team/${firstTeam.id}`} className={btnSm}>
+                  Csapat →
+                </Link>
+              )}
+              <Link href={`/org/${org.id}`} className={btnSm}>
+                Szervezet →
+              </Link>
+              <Link href={`/org/${org.id}/settings`} className={btnSm}>
+                Beállítások
+              </Link>
+            </div>
+          )}
         </div>
+
+        {/* ── Inactive banner ── */}
+        {org.status === "INACTIVE" && (
+          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6">
+            <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-rose-600 mb-1">// inaktív</p>
+            <h2 className="font-playfair text-lg text-rose-900 mb-2">Szervezet inaktív</h2>
+            <p className="mb-4 text-sm text-rose-700">
+              Ez a szervezet jelenleg inaktív – a tagok nem tudnak hozzáférni az org-specifikus oldalakhoz.
+              Reaktiváld az alábbi gombbal.
+            </p>
+            <button
+              type="button"
+              onClick={handleReactivate}
+              disabled={reactivating}
+              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
+            >
+              {reactivating ? "..." : "Szervezet reaktiválása"}
+            </button>
+          </div>
+        )}
 
         {/* ── Getting Started Card ── */}
         <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm overflow-hidden">
 
           {/* Card header */}
-          <div className="flex items-start justify-between gap-6 border-b border-[#e8e4dc] px-7 py-6">
+          <div className="flex items-start justify-between gap-4 border-b border-[#e8e4dc] px-4 py-4 sm:gap-6 sm:px-7 sm:py-6">
             <div>
               <h2 className="font-playfair text-xl text-[#1a1814]">Első lépések</h2>
               <p className="mt-1 text-[13px] text-[#7a756e] max-w-sm">
@@ -252,7 +308,7 @@ export function AdminDashboard() {
             {steps.map((step, i) => (
               <div
                 key={i}
-                className={`flex items-start gap-4 border-b border-[#e8e4dc] px-7 py-5 last:border-b-0 transition-colors hover:bg-[#faf9f6]/60 ${step.done ? "opacity-60" : ""}`}
+                className={`flex items-start gap-3 border-b border-[#e8e4dc] px-4 py-4 sm:gap-4 sm:px-7 sm:py-5 last:border-b-0 transition-colors hover:bg-[#faf9f6]/60 ${step.done ? "opacity-60" : ""}`}
               >
                 {/* Icon */}
                 <div
@@ -358,9 +414,11 @@ export function AdminDashboard() {
         {/* ── Team Table ── */}
         {firstTeam && firstTeam.members.length > 0 && (
           <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-[#e8e4dc] px-7 py-5">
+            <div className="flex items-center justify-between border-b border-[#e8e4dc] px-4 py-4 sm:px-7 sm:py-5">
               <div>
-                <h3 className="font-playfair text-[16px] text-[#1a1814]">{firstTeam.name}</h3>
+                <Link href={`/team/${firstTeam.id}`} className="font-playfair text-[16px] text-[#1a1814] hover:text-[#c8410a] transition-colors">
+                  {firstTeam.name} →
+                </Link>
                 <p className="text-[12px] text-[#a09a90]">
                   {firstTeam.members.length} tag · {firstTeam.members.filter((m) => m.assessmentDone).length} kész ·{" "}
                   {firstTeam.members.filter((m) => !m.assessmentDone).length} várakozik
@@ -373,7 +431,8 @@ export function AdminDashboard() {
               )}
             </div>
 
-            <table className="w-full border-collapse">
+            <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse">
               <thead>
                 <tr className="border-b border-[#e8e4dc] bg-[#faf9f6]/60">
                   {["Tag", "Státusz", "Átlagos eredmény", "Csatlakozás"].map((h) => (
@@ -434,6 +493,7 @@ export function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )}
 

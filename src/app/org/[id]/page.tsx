@@ -6,6 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { OrgInviteForm } from "@/components/org/OrgInviteForm";
 import { OrgRemoveMemberButton } from "@/components/org/OrgRemoveMemberButton";
+import { OrgPendingInviteCancelButton } from "@/components/org/OrgPendingInviteCancelButton";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 
 export const dynamic = "force-dynamic";
@@ -216,14 +217,19 @@ export default async function OrgDetailPage({
             ))}
 
             {pendingInvites.map((inv) => (
-              <div key={inv.id} className="flex items-center justify-between gap-3 py-3 opacity-60">
-                <div className="min-w-0">
+              <div key={inv.id} className="flex items-center justify-between gap-3 py-3">
+                <div className="min-w-0 opacity-60">
                   <p className="truncate text-sm font-semibold text-[#1a1814]">{inv.email}</p>
                   <p className="text-xs text-[#3d3a35]/60">{isHu ? "Meghívó függőben" : "Invite pending"}</p>
                 </div>
-                <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600">
-                  {isHu ? "Függőben" : "Pending"}
-                </span>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600">
+                    {isHu ? "Függőben" : "Pending"}
+                  </span>
+                  {isManager && (
+                    <OrgPendingInviteCancelButton orgId={orgId} inviteId={inv.id} isHu={isHu} />
+                  )}
+                </div>
               </div>
             ))}
 

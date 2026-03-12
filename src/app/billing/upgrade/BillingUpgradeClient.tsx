@@ -1,0 +1,147 @@
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+
+type Props = {
+  isAdmin: boolean;
+  subscriptionStatus: string;
+  trialEndsAt: string | null;
+};
+
+export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt }: Props) {
+  const [loading, setLoading] = useState(false);
+
+  const isExpiredTrial =
+    subscriptionStatus === "trialing" &&
+    trialEndsAt &&
+    new Date(trialEndsAt) < new Date();
+
+  const isPastDue = subscriptionStatus === "past_due";
+  const isCanceled = subscriptionStatus === "canceled";
+
+  const handleCheckout = async (priceKey: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceKey }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4">
+      <div className="w-full max-w-lg">
+        <div className="mb-8 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c8410a]">
+            // előfizetés
+          </p>
+          <h1 className="mt-2 font-playfair text-3xl text-[#1a1814]">
+            {isExpiredTrial
+              ? "A trial lejárt"
+              : isPastDue
+              ? "Fizetési probléma"
+              : isCanceled
+              ? "Előfizetés megszűnt"
+              : "Aktiváld az előfizetést"}
+          </h1>
+          <p className="mt-3 text-sm text-[#5a5650]">
+            {isExpiredTrial
+              ? "A 14 napos próbaidőszakod lejárt. Aktiváld az előfizetést a hozzáférés folytatásához."
+              : isPastDue
+              ? "Az utolsó fizetési kísérlet sikertelen volt. Frissítsd a fizetési adatokat."
+              : isCanceled
+              ? "Az előfizetésed megszűnt. Bármikor újraaktiválhatod."
+              : "Válassz csomagot az előfizetés megkezdéséhez."}
+          </p>
+        </div>
+
+        {!isAdmin ? (
+          <div className="rounded-xl border border-[#e0ddd6] bg-white p-6 text-center">
+            <p className="text-sm text-[#5a5650]">
+              Az előfizetés kezeléséhez adminisztrátori jogosultság szükséges.
+              Kérj meg egy adminisztrátort, hogy aktiválja az előfizetést.
+            </p>
+          </div>
+        ) : isPastDue || isCanceled ? (
+          <div className="rounded-xl border border-[#e0ddd6] bg-white p-6 text-center">
+            <button
+              onClick={async () => {
+                setLoading(true);
+                const res = await fetch("/api/billing/portal", { method: "POST" });
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
+                setLoading(false);
+              }}
+              disabled={loading}
+              className="inline-flex min-h-[48px] items-center rounded-lg bg-[#c8410a] px-8 text-sm font-semibold text-white hover:bg-[#a33408] disabled:opacity-60"
+            >
+              {loading ? "Betöltés..." : "Számlázás kezelése →"}
+            </button>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {[
+              {
+                key: "team_annual",
+                name: "Team",
+                price: "€49",
+                cadence: "/ hó (éves)",
+                desc: "10 seatig, éves számlázás",
+              },
+              {
+                key: "org_annual",
+                name: "Org",
+                price: "€99",
+                cadence: "/ hó (éves)",
+                desc: "Korlátlan seat, csapatjelentések",
+                badge: "Ajánlott",
+              },
+            ].map((plan) => (
+              <div
+                key={plan.key}
+                className={`relative rounded-xl border p-5 ${
+                  plan.badge ? "border-[#c8410a] bg-[#fef3ec]" : "border-[#e0ddd6] bg-white"
+                }`}
+              >
+                {plan.badge && (
+                  <span className="absolute -top-3 left-5 rounded-full bg-[#c8410a] px-3 py-0.5 font-mono text-[10px] uppercase tracking-widest text-white">
+                    {plan.badge}
+                  </span>
+                )}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[#1a1814]">{plan.name}</p>
+                    <p className="text-xs text-[#7a756e]">{plan.desc}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-playfair text-2xl text-[#1a1814]">{plan.price}</span>
+                    <span className="ml-1 text-xs text-[#7a756e]">{plan.cadence}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleCheckout(plan.key)}
+                  disabled={loading}
+                  className="mt-4 w-full min-h-[44px] rounded-lg bg-[#c8410a] text-sm font-semibold text-white hover:bg-[#a33408] disabled:opacity-60"
+                >
+                  {loading ? "Átirányítás..." : "Fizetés →"}
+                </button>
+              </div>
+            ))}
+            <Link
+              href="/pricing"
+              className="block text-center text-sm text-[#7a756e] hover:text-[#1a1814]"
+            >
+              Részletes összehasonlítás →
+            </Link>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

@@ -44,6 +44,8 @@ function SignUpContent() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const searchParams = useSearchParams();
   const observeToken = searchParams.get("observeToken");
+  const redirectUrl = searchParams.get("redirect_url");
+  const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") ? redirectUrl : null;
   const { locale } = useLocale();
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -139,7 +141,7 @@ function SignUpContent() {
         }
         // Full page reload: ensures Clerk session is fully propagated before
         // the next page renders, preventing auth-state race condition (#310).
-        window.location.href = "/onboarding";
+        window.location.href = safeRedirectUrl ?? "/onboarding";
       } else {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
@@ -161,7 +163,7 @@ function SignUpContent() {
         redirectUrl: "/sign-up/sso-callback",
         redirectUrlComplete: observeToken
           ? `/observe/${observeToken}`
-          : "/onboarding",
+          : safeRedirectUrl ?? "/onboarding",
       });
     } catch {
       setError(t("auth.errorGoogleSignUp", locale));
@@ -334,7 +336,13 @@ function SignUpContent() {
         <p className="mt-6 text-center text-sm text-[#5a5650]">
           {t("auth.hasAccount", locale)}{" "}
           <Link
-            href={observeToken ? `/sign-in?observeToken=${observeToken}` : "/sign-in"}
+            href={
+              observeToken
+                ? `/sign-in?observeToken=${observeToken}`
+                : safeRedirectUrl
+                ? `/sign-in?redirect_url=${encodeURIComponent(safeRedirectUrl)}`
+                : "/sign-in"
+            }
             className="font-medium text-[#c8410a] hover:text-[#a33408]"
           >
             {t("actions.signInCta", locale)}

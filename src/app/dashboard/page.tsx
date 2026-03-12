@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { hasOrgRole } from "@/lib/auth";
+import { getOrgSubscription, trialDaysLeft as calcTrialDaysLeft } from "@/lib/subscription";
 
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
@@ -15,6 +16,7 @@ import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefres
 import { HashScroll } from "@/components/dashboard/HashScroll";
 import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
 import { DiscardDraftButton } from "@/components/dashboard/DiscardDraftButton";
+import { RadarChart } from "@/components/dashboard/RadarChart";
 
 export const dynamic = "force-dynamic";
 
@@ -89,12 +91,39 @@ export default async function DashboardPage({
   if (profile) {
     const orgMembership = await prisma.organizationMember.findUnique({
       where: { userId: profile.id },
-      select: { role: true },
+      select: { role: true, orgId: true },
     });
 
     if (orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
+      const sub = await getOrgSubscription(orgMembership.orgId);
+      const daysLeft = calcTrialDaysLeft(sub);
       const { AdminDashboard } = await import("./AdminDashboard");
-      return <AdminDashboard />;
+      return (
+        <>
+          {daysLeft !== null && daysLeft <= 7 && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-[#c8410a]/30 bg-[#fef3ec] px-5 py-3.5 mx-4 mt-4">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+                  // trial
+                </span>
+                <span className="text-sm text-[#5a5650]">
+                  {daysLeft === 0
+                    ? "A trial ma lejár."
+                    : `${daysLeft} nap van hátra a trialból.`}
+                  {" "}Aktiváld az előfizetést a hozzáférés megtartásához.
+                </span>
+              </div>
+              <a
+                href="/billing/upgrade"
+                className="flex-shrink-0 rounded-lg bg-[#c8410a] px-4 py-2 text-xs font-semibold text-white hover:bg-[#a33408]"
+              >
+                Aktiválás →
+              </a>
+            </div>
+          )}
+          <AdminDashboard />
+        </>
+      );
     }
   }
   // --- END ADMIN BRANCH ---
@@ -209,49 +238,195 @@ export default async function DashboardPage({
 
   /* ───── Empty state ───── */
   if (!profile || !latestResult || !scores || !config) {
+    const isHu = locale !== "en";
+
+    const previewDimensions = [
+      { code: "H", color: "#c8410a", score: 62 },
+      { code: "E", color: "#1a5c3a", score: 55 },
+      { code: "X", color: "#3d5c6a", score: 70 },
+      { code: "A", color: "#7a5c3a", score: 48 },
+      { code: "C", color: "#5a4060", score: 65 },
+      { code: "O", color: "#3a6050", score: 58 },
+    ];
+
+    const featureCards = isHu
+      ? [
+          {
+            icon: "◆",
+            title: "Erősségeid",
+            desc: "Megtudod miben vagy természetesen jó, és hogyan hasznosíthatod ezt a munkában és kapcsolatokban.",
+            color: "#c8410a",
+          },
+          {
+            icon: "◎",
+            title: "Fejlődési irányok",
+            desc: "Látod hol érdemes tudatosan fejleszteni magadat – konkrét, személyre szabott szempontok alapján.",
+            color: "#1a5c3a",
+          },
+          {
+            icon: "◈",
+            title: "Observer összehasonlítás",
+            desc: "Kitöltés után meghívhatsz másokat, hogy ők is értékeljenek. Megmutatja hol látnak másképp.",
+            color: "#3d5c6a",
+          },
+        ]
+      : [
+          {
+            icon: "◆",
+            title: "Your strengths",
+            desc: "Find out what you're naturally good at and how to leverage it in work and relationships.",
+            color: "#c8410a",
+          },
+          {
+            icon: "◎",
+            title: "Growth areas",
+            desc: "See where it's worth developing yourself intentionally — based on concrete, personalized insights.",
+            color: "#1a5c3a",
+          },
+          {
+            icon: "◈",
+            title: "Observer comparison",
+            desc: "After completing, invite others to rate you too. See where they perceive you differently.",
+            color: "#3d5c6a",
+          },
+        ];
+
     return (
-      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 md:gap-12 px-4 py-10">
+      <main className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col gap-6 px-4 py-10 md:py-14">
         <FadeIn>
-          <section className="rounded border border-[#e0ddd6] bg-white p-8 md:p-12">
-            <p className="font-ibm-plex-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
-              {t("dashboard.guidedTag", locale)}
-            </p>
-            <h2 className="mt-3 text-2xl font-bold text-[#1a1814]">
-              {t("dashboard.nextStepTitle", locale)}
-            </h2>
-            <p className="mt-2 text-sm text-[#5a5650]">
-              {t("dashboard.guidedPraise", locale)}
-            </p>
-            {draft && draftTotalQuestions > 0 ? (
-              <div className="mt-6">
-                <p className="text-sm text-[#5a5650]">
-                  {tf("dashboard.continueDraftBody", locale, {
-                    answered: draftAnsweredCount,
-                    total: draftTotalQuestions,
-                  })}
-                </p>
-                <div className="mt-3 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-[#e0ddd6]">
-                  <div
-                    className="h-full rounded-full bg-[#c8410a] transition-all"
-                    style={{ width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%` }}
-                  />
+
+          {/* ── Hero card ── */}
+          <section className="rounded-2xl border border-[#e0ddd6] bg-white p-8 md:p-10">
+            <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
+
+              {/* Left: text + CTA */}
+              <div className="flex flex-1 flex-col gap-5">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c8410a]">
+                    {isHu ? "// következő lépés" : "// next step"}
+                  </p>
+                  <h2 className="mt-2 font-playfair text-[26px] leading-snug text-[#1a1814]">
+                    {isHu
+                      ? "Ismerd meg magadat – és azt, hogyan látnak mások."
+                      : "Know yourself — and how others see you."}
+                  </h2>
+                  <p className="mt-3 text-sm leading-relaxed text-[#5a5650]">
+                    {isHu
+                      ? "A trita személyiségfelmérés megmutatja hol vagy erős, hol van fejlődési tér, és hogyan kommunikálsz másokkal. Nem teszt – tükör."
+                      : "The trita personality assessment shows where you're strong, where you can grow, and how you come across to others. Not a test — a mirror."}
+                  </p>
                 </div>
-                <Link
-                  href="/assessment"
-                  className="mt-5 inline-flex min-h-[48px] items-center rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408]"
-                >
-                  {t("actions.continueTest", locale)}
-                </Link>
+
+                {/* Meta row */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                  {[
+                    { icon: "⏱", text: isHu ? "~12 perc" : "~12 min" },
+                    { icon: "◎", text: isHu ? "60 kérdés" : "60 questions" },
+                    { icon: "◈", text: isHu ? "6 dimenzió" : "6 dimensions" },
+                  ].map((item) => (
+                    <span key={item.text} className="flex items-center gap-1.5 text-sm text-[#5a5650]">
+                      <span className="font-mono text-[#c8410a]">{item.icon}</span>
+                      {item.text}
+                    </span>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                {draft && draftTotalQuestions > 0 ? (
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <div className="mb-1.5 flex items-center justify-between">
+                        <span className="text-xs text-[#5a5650]">
+                          {isHu
+                            ? `${draftAnsweredCount} / ${draftTotalQuestions} kérdés megválaszolva`
+                            : `${draftAnsweredCount} / ${draftTotalQuestions} questions answered`}
+                        </span>
+                        <span className="font-mono text-xs text-[#c8410a]">
+                          {Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#e0ddd6]">
+                        <div
+                          className="h-full rounded-full bg-[#c8410a] transition-all"
+                          style={{ width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <Link
+                        href="/assessment"
+                        className="inline-flex min-h-[48px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a33408]"
+                      >
+                        {isHu ? "Folytatás →" : "Continue →"}
+                      </Link>
+                      <DiscardDraftButton />
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    href="/assessment"
+                    className="inline-flex min-h-[48px] w-fit items-center rounded-lg bg-[#c8410a] px-8 text-sm font-semibold text-white transition hover:-translate-y-px hover:bg-[#a33408]"
+                  >
+                    {isHu ? "Felmérés indítása →" : "Start assessment →"}
+                  </Link>
+                )}
               </div>
-            ) : (
-              <Link
-                href="/assessment"
-                className="mt-6 inline-flex min-h-[48px] items-center rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408]"
-              >
-                {t("actions.startTest", locale)}
-              </Link>
-            )}
+
+              {/* Right: blurred radar chart preview */}
+              <div className="relative flex flex-shrink-0 flex-col items-center gap-2 md:w-[220px]">
+                <div className="relative w-[200px]">
+                  <div
+                    className="pointer-events-none absolute inset-0 z-10 rounded-xl"
+                    style={{ backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)" }}
+                  />
+                  <div className="opacity-40">
+                    <RadarChart dimensions={previewDimensions} uid="preview" />
+                  </div>
+                </div>
+                <p className="z-10 text-center text-xs text-[#a09a90]">
+                  {isHu ? "A te radar diagramod kitöltés után" : "Your radar chart after completing"}
+                </p>
+              </div>
+
+            </div>
           </section>
+
+          {/* ── Feature cards ── */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {featureCards.map((card) => (
+              <div
+                key={card.title}
+                className="rounded-xl border border-[#e0ddd6] bg-white p-5 transition-shadow hover:shadow-sm"
+              >
+                <div
+                  className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg text-sm"
+                  style={{ background: `${card.color}14`, color: card.color }}
+                >
+                  {card.icon}
+                </div>
+                <h3 className="mb-1.5 text-sm font-semibold text-[#1a1814]">{card.title}</h3>
+                <p className="text-xs leading-relaxed text-[#7a756e]">{card.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Observer teaser ── */}
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-[#e0ddd6] bg-[#faf9f6] px-6 py-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+                {isHu ? "// következő szint" : "// next level"}
+              </span>
+              <span className="text-sm text-[#5a5650]">
+                {isHu
+                  ? "Kitöltés után mások is értékelhetnek téged – a különbséget te is látni fogod."
+                  : "After completing, others can rate you too — you'll see the difference."}
+              </span>
+            </div>
+            <span className="flex-shrink-0 font-mono text-xs text-[#c8410a]">
+              {isHu ? "hamarosan →" : "coming →"}
+            </span>
+          </div>
+
         </FadeIn>
       </main>
     );

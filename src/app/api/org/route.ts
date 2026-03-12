@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { TRIAL_DAYS } from "@/lib/stripe";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
@@ -39,6 +40,17 @@ export async function POST(req: Request) {
       },
     },
     select: { id: true, name: true, createdAt: true, status: true },
+  });
+
+  const trialEndsAt = new Date();
+  trialEndsAt.setDate(trialEndsAt.getDate() + TRIAL_DAYS);
+
+  await prisma.subscription.create({
+    data: {
+      orgId: org.id,
+      status: "trialing",
+      trialEndsAt,
+    },
   });
 
   return NextResponse.json({ org }, { status: 201 });

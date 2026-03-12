@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     select: {
       id: true,
       teamId: true,
+      email: true,
       team: { select: { orgId: true } },
     },
   });
@@ -42,6 +43,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
   }
 
+  // Email-specific invites (not the reusable open-link type) are consumed on join.
+  const isEmailInvite = invite.email !== "__open__";
+
   await prisma.$transaction([
     prisma.organizationMember.create({
       data: { orgId, userId: profile.id, role: "ORG_MEMBER" },
@@ -51,6 +55,11 @@ export async function POST(req: Request) {
       create: { teamId, userId: profile.id, role: "member" },
       update: {},
     }),
+    // Delete email-specific pending invites after accepting — open link invites
+    // (email === "__open__") are reusable and must not be deleted.
+    ...(isEmailInvite
+      ? [prisma.teamPendingInvite.delete({ where: { id: invite.id } })]
+      : []),
   ]);
 
   return NextResponse.json({ ok: true });

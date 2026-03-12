@@ -46,6 +46,8 @@ function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const observeToken = searchParams.get("observeToken");
+  const redirectUrl = searchParams.get("redirect_url");
+  const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") ? redirectUrl : null;
   const { locale } = useLocale();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -149,7 +151,7 @@ function SignInContent() {
             body: JSON.stringify({ token: observeToken }),
           }).catch(() => null);
         }
-        router.push("/dashboard");
+        router.push(safeRedirectUrl ?? "/dashboard");
       } else {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
@@ -170,7 +172,9 @@ function SignInContent() {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sign-in/sso-callback",
-        redirectUrlComplete: observeToken ? `/observe/${observeToken}` : "/dashboard",
+        redirectUrlComplete: observeToken
+          ? `/observe/${observeToken}`
+          : safeRedirectUrl ?? "/dashboard",
       });
     } catch {
       setError(t("auth.errorGoogleSignIn", locale));
@@ -344,7 +348,13 @@ function SignInContent() {
         <p className="mt-6 text-center text-sm text-[#5a5650]">
           {t("auth.noAccount", locale)}{" "}
           <Link
-            href={observeToken ? `/sign-up?observeToken=${observeToken}` : "/sign-up"}
+            href={
+              observeToken
+                ? `/sign-up?observeToken=${observeToken}`
+                : safeRedirectUrl
+                ? `/sign-up?redirect_url=${encodeURIComponent(safeRedirectUrl)}`
+                : "/sign-up"
+            }
             className="font-medium text-[#c8410a] hover:text-[#a33408]"
           >
             {t("actions.signUpCta", locale)}

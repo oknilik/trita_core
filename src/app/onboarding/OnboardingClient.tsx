@@ -9,11 +9,7 @@ import { t, tf } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
 import {
-  COMPANY_SIZE_OPTIONS,
   GENDER_OPTIONS,
-  OCCUPATION_STATUS_OPTIONS,
-  type OccupationStatus,
-  requiresWorkFields,
 } from "@/lib/onboarding-options";
 
 // ── Helper styles ────────────────────────────────────────────────────────────
@@ -42,8 +38,6 @@ export function OnboardingClient() {
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
-  const [occupationStatus, setOccupationStatus] = useState("");
-  const [companySize, setCompanySize] = useState("");
   const [country, setCountry] = useState("");
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,8 +48,6 @@ export function OnboardingClient() {
     | "username"
     | "birthYear"
     | "gender"
-    | "occupationStatus"
-    | "companySize"
     | "country"
     | "consent"
     | null
@@ -69,14 +61,10 @@ export function OnboardingClient() {
   const usernameFieldRef = useRef<HTMLDivElement>(null);
   const birthYearFieldRef = useRef<HTMLDivElement>(null);
   const genderFieldRef = useRef<HTMLDivElement>(null);
-  const occupationFieldRef = useRef<HTMLDivElement>(null);
-  const companySizeFieldRef = useRef<HTMLDivElement>(null);
   const countryFieldRef = useRef<HTMLDivElement>(null);
   const consentFieldRef = useRef<HTMLLabelElement>(null);
   const consentCheckboxRef = useRef<HTMLInputElement>(null);
   const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const occupationFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const companySizeFirstButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     return () => {
@@ -105,10 +93,6 @@ export function OnboardingClient() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
-  const needsCompanySize =
-    occupationStatus !== "" &&
-    requiresWorkFields(occupationStatus as OccupationStatus);
-
   const canSubmit =
     usernameValid &&
     birthYearValid &&
@@ -136,8 +120,6 @@ export function OnboardingClient() {
       | "username"
       | "birthYear"
       | "gender"
-      | "occupationStatus"
-      | "companySize"
       | "country"
       | "consent",
   ) => {
@@ -152,8 +134,6 @@ export function OnboardingClient() {
       field === "username" ? usernameFieldRef.current :
       field === "birthYear" ? birthYearFieldRef.current :
       field === "gender" ? genderFieldRef.current :
-      field === "occupationStatus" ? occupationFieldRef.current :
-      field === "companySize" ? companySizeFieldRef.current :
       field === "country" ? countryFieldRef.current :
       consentFieldRef.current;
 
@@ -163,8 +143,6 @@ export function OnboardingClient() {
       if (field === "username") usernameInputRef.current?.focus();
       if (field === "birthYear") birthYearInputRef.current?.focus();
       if (field === "gender") genderFirstButtonRef.current?.focus();
-      if (field === "occupationStatus") occupationFirstButtonRef.current?.focus();
-      if (field === "companySize") companySizeFirstButtonRef.current?.focus();
       if (field === "country") countryFieldRef.current?.querySelector("button")?.focus();
       if (field === "consent") consentCheckboxRef.current?.focus();
     }, 180);
@@ -198,8 +176,6 @@ export function OnboardingClient() {
           username: username.trim(),
           birthYear: birthYearNum,
           gender,
-          occupationStatus: occupationStatus || undefined,
-          companySize: companySize || undefined,
           country,
           consentedAt: new Date().toISOString(),
         }),
@@ -369,78 +345,6 @@ export function OnboardingClient() {
                     onClick={() => setCountryPickerOpen(true)}
                   />
                 </div>
-
-              </div>
-            </section>
-
-            {/* Divider */}
-            <div className="h-px bg-[#e8e4dc]" />
-
-            {/* ── Block 2: Work context (optional) ─────────────────────── */}
-            <section>
-              <div className="mb-5">
-                <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 02</p>
-                <p className="font-playfair text-xl text-[#1a1814]">
-                  {t("onboarding.blockStatusTitle", locale)}
-                  <span className="font-sans text-sm font-normal text-[#a09a90] ml-2">
-                    ({t("onboarding.optional", locale)})
-                  </span>
-                </p>
-                <p className="text-xs text-[#a09a90] mt-0.5">
-                  {t("onboarding.blockStatusHint", locale)}
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-5">
-
-                {/* Occupation status */}
-                <div ref={occupationFieldRef} className="flex flex-col gap-2">
-                  <span className="text-sm font-semibold text-[#1a1814]">
-                    {t("onboarding.occupationStatusLabel", locale)}
-                  </span>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {OCCUPATION_STATUS_OPTIONS.map((opt, idx) => (
-                      <button
-                        key={opt.value}
-                        ref={idx === 0 ? occupationFirstButtonRef : undefined}
-                        type="button"
-                        onClick={() => {
-                          setOccupationStatus(
-                            occupationStatus === opt.value ? "" : opt.value,
-                          );
-                          if (!requiresWorkFields(opt.value as OccupationStatus)) {
-                            setCompanySize("");
-                          }
-                        }}
-                        className={toggleBtn(occupationStatus === opt.value)}
-                      >
-                        {t(opt.labelKey, locale)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Company size — only if employed */}
-                {needsCompanySize && (
-                  <div ref={companySizeFieldRef} className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-[#1a1814]">
-                      {t("onboarding.companySizeLabel", locale)}
-                    </span>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {COMPANY_SIZE_OPTIONS.map((opt, idx) => (
-                        <button
-                          key={opt.value}
-                          ref={idx === 0 ? companySizeFirstButtonRef : undefined}
-                          type="button"
-                          onClick={() => setCompanySize(opt.value)}
-                          className={toggleBtn(companySize === opt.value)}
-                        >
-                          {t(opt.labelKey, locale)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
               </div>
             </section>

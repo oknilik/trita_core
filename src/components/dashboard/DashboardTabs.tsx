@@ -328,7 +328,7 @@ function ResultsTabPanel({
           {mainScores && (
             <div className="mt-6 grid items-start gap-6 md:grid-cols-[1fr_13rem]">
               <div className="flex items-center justify-center">
-                <div className="h-[21rem] w-[21rem] md:h-[24rem] md:w-[24rem]">
+                <div className="aspect-square w-full max-w-[21rem] md:max-w-[24rem]">
                   <RadarChart
                     dimensions={mainScores.map((d) => ({
                       code: d.code,

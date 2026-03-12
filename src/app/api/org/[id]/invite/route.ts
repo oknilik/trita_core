@@ -73,15 +73,16 @@ export async function POST(
     });
     if (existing) return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
 
-    await prisma.organizationPendingInvite.create({
+    const invite = await prisma.organizationPendingInvite.create({
       data: { orgId, email, role },
+      select: { id: true },
     });
 
     const emailSent = await sendOrgInviteEmail({
       to: email,
       orgName: org.name,
       role,
-      signUpUrl: `${APP_URL}/sign-up`,
+      signUpUrl: `${APP_URL}/join/org/${invite.id}`,
     });
 
     return NextResponse.json({ pending: true, emailSent }, { status: 201 });

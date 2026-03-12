@@ -13,16 +13,7 @@ import { t, type Locale } from "@/lib/i18n";
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import {
-  COMPANY_SIZE_OPTIONS,
-  EDUCATION_OPTIONS,
   GENDER_OPTIONS,
-  OCCUPATION_STATUS_OPTIONS,
-  STUDY_LEVEL_OPTIONS,
-  UNEMPLOYMENT_DURATION_OPTIONS,
-  WORK_SCHEDULE_OPTIONS,
-  type OccupationStatus,
-  requiresStudyLevel,
-  requiresWorkFields,
 } from "@/lib/onboarding-options";
 
 const LOCALE_META: Record<Locale, { flag: string; label: string }> = {
@@ -34,12 +25,6 @@ type FormSnapshot = {
   username: string;
   birthYear: string;
   gender: string;
-  education: string;
-  occupationStatus: string;
-  workSchedule: string;
-  companySize: string;
-  studyLevel: string;
-  unemploymentDuration: string;
   country: string;
 };
 
@@ -48,11 +33,6 @@ type InvalidField =
   | "username"
   | "birthYear"
   | "gender"
-  | "education"
-  | "occupationStatus"
-  | "workSchedule"
-  | "companySize"
-  | "studyLevel"
   | "country";
 const DELETE_GOODBYE_MS = 1300;
 
@@ -64,16 +44,14 @@ export default function ProfilePage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const [email, setEmail] = useState<string | null>(null);
+  const [org, setOrg] = useState<{ id: string; name: string; role: string } | null>(null);
+  const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
+
   // Demographics
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
-  const [education, setEducation] = useState("");
-  const [occupationStatus, setOccupationStatus] = useState("");
-  const [workSchedule, setWorkSchedule] = useState("");
-  const [companySize, setCompanySize] = useState("");
-  const [studyLevel, setStudyLevel] = useState("");
-  const [unemploymentDuration, setUnemploymentDuration] = useState("");
   const [country, setCountry] = useState("");
   const [isSavingDemo, setIsSavingDemo] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
@@ -87,11 +65,6 @@ export default function ProfilePage() {
   const usernameInputRef = useRef<HTMLInputElement>(null);
   const birthYearInputRef = useRef<HTMLInputElement>(null);
   const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const educationFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const occupationStatusFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const workScheduleFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const companySizeFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const studyLevelFirstButtonRef = useRef<HTMLButtonElement>(null);
   const countryFieldRef = useRef<HTMLDivElement>(null);
 
   // Touch state for blur validation
@@ -109,27 +82,23 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile/onboarding");
       if (!res.ok) return;
       const data = await res.json();
+      setEmail(data.email ?? null);
+      if (data.orgMemberships?.length > 0) {
+        const m = data.orgMemberships[0];
+        setOrg({ id: m.org.id, name: m.org.name, role: m.role });
+      }
+      if (data.teamMemberships?.length > 0) {
+        setTeams(data.teamMemberships.map((tm: { team: { id: string; name: string } }) => tm.team));
+      }
       const snapshot: FormSnapshot = {
         username: data.username ?? "",
         birthYear: data.birthYear ? String(data.birthYear) : "",
         gender: data.gender ?? "",
-        education: data.education ?? "",
-        occupationStatus: data.occupationStatus ?? "",
-        workSchedule: data.workSchedule ?? "",
-        companySize: data.companySize ?? "",
-        studyLevel: data.studyLevel ?? "",
-        unemploymentDuration: data.unemploymentDuration ?? "",
         country: data.country ?? "",
       };
       setUsername(snapshot.username);
       setBirthYear(snapshot.birthYear);
       setGender(snapshot.gender);
-      setEducation(snapshot.education);
-      setOccupationStatus(snapshot.occupationStatus);
-      setWorkSchedule(snapshot.workSchedule);
-      setCompanySize(snapshot.companySize);
-      setStudyLevel(snapshot.studyLevel);
-      setUnemploymentDuration(snapshot.unemploymentDuration);
       setCountry(snapshot.country);
       setInitialSnapshot(snapshot);
     } catch {
@@ -211,7 +180,7 @@ export default function ProfilePage() {
   const maxBirthYear = currentYear - 16;
 
   const usernameValid =
-    username.trim().length >= 2 && username.trim().length <= 12;
+    username.trim().length >= 2 && username.trim().length <= 20;
 
   const birthYearNum = Number(birthYear);
   const birthYearValid =
@@ -221,34 +190,17 @@ export default function ProfilePage() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
-  const needsWorkFields =
-    occupationStatus !== "" && requiresWorkFields(occupationStatus as OccupationStatus);
-  const needsStudyLevel =
-    occupationStatus !== "" && requiresStudyLevel(occupationStatus as OccupationStatus);
-
-  const occupationDetailsValid =
-    occupationStatus !== "" &&
-    (!needsWorkFields || (workSchedule !== "" && companySize !== "")) &&
-    (!needsStudyLevel || studyLevel !== "");
-
   const canSaveDemo =
     usernameValid &&
     birthYearValid &&
     gender !== "" &&
-    education !== "" &&
-    occupationDetailsValid &&
     country !== "";
+
   const isDemographicsDirty =
     initialSnapshot != null &&
     (username.trim() !== initialSnapshot.username ||
       birthYear !== initialSnapshot.birthYear ||
       gender !== initialSnapshot.gender ||
-      education !== initialSnapshot.education ||
-      occupationStatus !== initialSnapshot.occupationStatus ||
-      workSchedule !== initialSnapshot.workSchedule ||
-      companySize !== initialSnapshot.companySize ||
-      studyLevel !== initialSnapshot.studyLevel ||
-      unemploymentDuration !== initialSnapshot.unemploymentDuration ||
       country !== initialSnapshot.country);
   const isLocaleDirty = selectedLocale !== savedLocale;
   const isDirty = isDemographicsDirty || isLocaleDirty;
@@ -272,40 +224,16 @@ export default function ProfilePage() {
       if (field === "username") usernameInputRef.current?.focus();
       if (field === "birthYear") birthYearInputRef.current?.focus();
       if (field === "gender") genderFirstButtonRef.current?.focus();
-      if (field === "education") educationFirstButtonRef.current?.focus();
-      if (field === "occupationStatus") occupationStatusFirstButtonRef.current?.focus();
-      if (field === "workSchedule") workScheduleFirstButtonRef.current?.focus();
-      if (field === "companySize") companySizeFirstButtonRef.current?.focus();
-      if (field === "studyLevel") studyLevelFirstButtonRef.current?.focus();
       if (field === "country") {
         countryFieldRef.current?.querySelector("button")?.focus();
       }
     }, 20);
   };
 
-  const handleOccupationStatusChange = (value: OccupationStatus) => {
-    setOccupationStatus(value);
-    if (!requiresWorkFields(value)) {
-      setWorkSchedule("");
-      setCompanySize("");
-    }
-    if (!requiresStudyLevel(value)) {
-      setStudyLevel("");
-    }
-    if (value !== "unemployed") {
-      setUnemploymentDuration("");
-    }
-  };
-
   const focusFirstInvalidField = () => {
     if (!usernameValid) { focusAndFlashInvalidField("username"); return; }
     if (!birthYearValid) { focusAndFlashInvalidField("birthYear"); return; }
     if (gender === "") { focusAndFlashInvalidField("gender"); return; }
-    if (education === "") { focusAndFlashInvalidField("education"); return; }
-    if (occupationStatus === "") { focusAndFlashInvalidField("occupationStatus"); return; }
-    if (needsWorkFields && workSchedule === "") { focusAndFlashInvalidField("workSchedule"); return; }
-    if (needsWorkFields && companySize === "") { focusAndFlashInvalidField("companySize"); return; }
-    if (needsStudyLevel && studyLevel === "") { focusAndFlashInvalidField("studyLevel"); return; }
     if (country === "") { focusAndFlashInvalidField("country"); }
   };
 
@@ -328,12 +256,6 @@ export default function ProfilePage() {
             username: username.trim(),
             birthYear: Number(birthYear),
             gender,
-            education,
-            occupationStatus,
-            workSchedule: workSchedule || undefined,
-            companySize: companySize || undefined,
-            studyLevel: studyLevel || undefined,
-            unemploymentDuration: unemploymentDuration || undefined,
             country,
           }),
         });
@@ -342,12 +264,6 @@ export default function ProfilePage() {
           username: username.trim(),
           birthYear,
           gender,
-          education,
-          occupationStatus,
-          workSchedule,
-          companySize,
-          studyLevel,
-          unemploymentDuration,
           country,
         });
       }
@@ -411,6 +327,47 @@ export default function ProfilePage() {
     <div className="min-h-dvh bg-[#faf9f6]">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pt-10 pb-20">
 
+        {/* ── Profile header ── */}
+        <FadeIn delay={0}>
+          <section className="rounded border border-[#e0ddd6] bg-white p-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#c8410a]/10 text-lg font-semibold text-[#c8410a]">
+                {initials}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-base font-semibold text-[#1a1814]">{displayName}</p>
+                {email && (
+                  <p className="truncate text-sm text-[#5a5650]">{email}</p>
+                )}
+              </div>
+            </div>
+
+            {(org || teams.length > 0) && (
+              <div className="mt-4 flex flex-col gap-2 border-t border-[#e0ddd6] pt-4">
+                {org && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-[#a09c96]">{locale === "en" ? "Organization" : "Szervezet"}</span>
+                    <span className="font-medium text-[#1a1814]">{org.name}</span>
+                    <span className="rounded-full bg-[#e8e4dc] px-2 py-0.5 text-xs text-[#5a5650]">
+                      {org.role === "ORG_ADMIN" ? "Admin" : org.role === "ORG_MANAGER" ? (locale === "en" ? "Manager" : "Menedzser") : (locale === "en" ? "Member" : "Tag")}
+                    </span>
+                  </div>
+                )}
+                {teams.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="text-[#a09c96]">{locale === "en" ? "Teams" : "Csapatok"}</span>
+                    {teams.map((team) => (
+                      <span key={team.id} className="rounded-full bg-[#e8e4dc] px-2 py-0.5 text-xs font-medium text-[#1a1814]">
+                        {team.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+        </FadeIn>
+
         {/* ── Demographics ── */}
         <FadeIn delay={0.05}>
           <section className="rounded border border-[#e0ddd6] bg-white p-6">
@@ -441,7 +398,7 @@ export default function ProfilePage() {
                       onBlur={() => setUsernameTouched(true)}
                       placeholder={t("onboarding.usernamePlaceholder", locale)}
                       minLength={2}
-                      maxLength={12}
+                      maxLength={20}
                       className={`min-h-[44px] rounded border-2 px-3 text-sm text-[#1a1814] focus:outline-none ${
                         usernameTouched && username.trim() !== "" && !usernameValid
                           ? "border-orange-400 bg-orange-50"
@@ -522,150 +479,6 @@ export default function ProfilePage() {
                       onClick={() => setCountryPickerOpen(true)}
                     />
                   </div>
-                </div>
-              </section>
-
-              {/* Education block */}
-              <section className="rounded border border-[#e0ddd6] bg-[#f7f5f0] p-4">
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-[#1a1814]">
-                    🎓 {t("onboarding.blockEducationTitle", locale)}
-                  </p>
-                  <p className="text-xs text-[#5a5650]">{t("onboarding.blockEducationHint", locale)}</p>
-                </div>
-                <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "education" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                  <span className="text-sm font-medium text-[#1a1814]">
-                    {t("onboarding.educationLabel", locale)}
-                  </span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {EDUCATION_OPTIONS.map((opt, idx) => (
-                      <button
-                        key={opt.value}
-                        ref={idx === 0 ? educationFirstButtonRef : undefined}
-                        type="button"
-                        onClick={() => setEducation(opt.value)}
-                        className={toggleClass(education === opt.value)}
-                      >
-                        {t(opt.labelKey, locale)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* Occupation block */}
-              <section className="rounded border border-[#e0ddd6] bg-[#f7f5f0] p-4">
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-[#1a1814]">
-                    💼 {t("onboarding.blockStatusTitle", locale)}
-                  </p>
-                  <p className="text-xs text-[#5a5650]">{t("onboarding.blockStatusHint", locale)}</p>
-                </div>
-                <div className="flex flex-col gap-5">
-                  <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "occupationStatus" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                    <span className="text-sm font-medium text-[#1a1814]">
-                      {t("onboarding.occupationStatusLabel", locale)}
-                    </span>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {OCCUPATION_STATUS_OPTIONS.map((opt, idx) => (
-                        <button
-                          key={opt.value}
-                          ref={idx === 0 ? occupationStatusFirstButtonRef : undefined}
-                          type="button"
-                          onClick={() => handleOccupationStatusChange(opt.value)}
-                          className={toggleClass(occupationStatus === opt.value)}
-                        >
-                          {t(opt.labelKey, locale)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {needsWorkFields && (
-                    <>
-                      <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "workSchedule" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                        <span className="text-sm font-medium text-[#1a1814]">
-                          {t("onboarding.workScheduleLabel", locale)}
-                        </span>
-                        <div className="grid grid-cols-2 gap-2">
-                          {WORK_SCHEDULE_OPTIONS.map((opt, idx) => (
-                            <button
-                              key={opt.value}
-                              ref={idx === 0 ? workScheduleFirstButtonRef : undefined}
-                              type="button"
-                              onClick={() => setWorkSchedule(opt.value)}
-                              className={toggleClass(workSchedule === opt.value)}
-                            >
-                              {t(opt.labelKey, locale)}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "companySize" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                        <span className="text-sm font-medium text-[#1a1814]">
-                          {t("onboarding.companySizeLabel", locale)}
-                        </span>
-                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                          {COMPANY_SIZE_OPTIONS.map((opt, idx) => (
-                            <button
-                              key={opt.value}
-                              ref={idx === 0 ? companySizeFirstButtonRef : undefined}
-                              type="button"
-                              onClick={() => setCompanySize(opt.value)}
-                              className={toggleClass(companySize === opt.value)}
-                            >
-                              {t(opt.labelKey, locale)}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {needsStudyLevel && (
-                    <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "studyLevel" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                      <span className="text-sm font-medium text-[#1a1814]">
-                        {t("onboarding.studyLevelLabel", locale)}
-                      </span>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {STUDY_LEVEL_OPTIONS.map((opt, idx) => (
-                          <button
-                            key={opt.value}
-                            ref={idx === 0 ? studyLevelFirstButtonRef : undefined}
-                            type="button"
-                            onClick={() => setStudyLevel(opt.value)}
-                            className={toggleClass(studyLevel === opt.value)}
-                          >
-                            {t(opt.labelKey, locale)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {occupationStatus === "unemployed" && (
-                    <div className="flex flex-col gap-2 rounded p-1 transition">
-                      <span className="text-sm font-medium text-[#1a1814]">
-                        {t("onboarding.unemploymentDurationLabel", locale)}
-                      </span>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                        {UNEMPLOYMENT_DURATION_OPTIONS.map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            onClick={() => setUnemploymentDuration(opt.value)}
-                            className={toggleClass(unemploymentDuration === opt.value)}
-                          >
-                            {t(opt.labelKey, locale)}
-                          </button>
-                        ))}
-                      </div>
-                      <span className="pl-1 text-xs italic text-[#5a5650]">
-                        {t("onboarding.unemploymentDurationOptionalHint", locale)}
-                      </span>
-                    </div>
-                  )}
                 </div>
               </section>
             </div>
