@@ -12,7 +12,7 @@ export async function GET() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, assessmentSkippedAt: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -136,7 +136,7 @@ export async function GET() {
 
   const totalMembers = memberUserIds.length;
   const completedCount = assessmentResults.length;
-  const adminHasAssessment = resultsByUserId.has(profile.id);
+  const adminHasAssessment = resultsByUserId.has(profile.id) || !!profile.assessmentSkippedAt;
   const firstTeam = teams[0] ?? null;
   const firstTeamInviteUrl = firstTeam && inviteByTeamId.has(firstTeam.id)
     ? `${baseUrl}/join/${inviteByTeamId.get(firstTeam.id)}`

@@ -69,8 +69,15 @@ export default async function JoinPage({
     select: { leftAt: true, orgId: true, org: { select: { name: true } } },
   });
 
+  // Already in the same org (e.g. the admin who created it) → go straight to dashboard
+  const alreadyInSameOrg =
+    existingOrgMembership &&
+    !existingOrgMembership.leftAt &&
+    existingOrgMembership.orgId === invite.team.orgId;
+  if (alreadyInSameOrg && profile.onboardedAt) redirect("/dashboard");
+
   const existingOrg =
-    existingOrgMembership && !existingOrgMembership.leftAt
+    existingOrgMembership && !existingOrgMembership.leftAt && existingOrgMembership.orgId !== invite.team.orgId
       ? { orgId: existingOrgMembership.orgId, orgName: existingOrgMembership.org.name }
       : null;
 

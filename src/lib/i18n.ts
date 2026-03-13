@@ -97,6 +97,7 @@ const translations = {
     },
     continueTest: { hu: "Folytatás", en: "Continue" },
     continueDraft: { hu: "Teszt folytatása", en: "Continue test" },
+    back: { hu: "Vissza", en: "Back" },
   },
   landing: {
     heroTag: { hu: "Kutatási fázis", en: "Research phase" },
@@ -1293,6 +1294,9 @@ const translations = {
       en: "You can update these details at any time from your profile.",
       de: "Diese Angaben können jederzeit in deinem Profil geändert werden.",
     },
+    step1Label: { hu: "Alapadatok", en: "Basic info" },
+    step2Label: { hu: "Hozzájárulás", en: "Consent" },
+    step2Title: { hu: "Egy utolsó lépés", en: "One last step" },
   },
   privacy: {
     title: {

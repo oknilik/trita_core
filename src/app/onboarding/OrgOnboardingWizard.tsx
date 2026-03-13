@@ -1,46 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
+import { Picker, PickerTrigger } from "@/components/ui/Picker";
+import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
+import { getCountryOptions } from "@/lib/countries";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4;
 
 interface WizardState {
   username: string;
+  birthYear: string;
+  gender: string;
+  country: string;
   role: string;
   orgName: string;
   orgId: string;
   industry: string;
   teamSize: string;
   teamName: string;
+  consent: boolean;
 }
 
 type FieldError = Partial<Record<keyof WizardState, string>>;
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
+const GENDER_OPTIONS = [
+  { value: "male", label: "Férfi" },
+  { value: "female", label: "Nő" },
+  { value: "other", label: "Egyéb" },
+  { value: "prefer_not_to_say", label: "Nem kívánom megadni" },
+];
+
 const ROLE_OPTIONS = ["CEO", "Vezető", "HR", "Egyéb"] as const;
 const INDUSTRY_OPTIONS = ["Tech / SaaS", "Gyártás", "Kereskedelem", "Szolgáltatás", "Egyéb"] as const;
 const TEAM_SIZE_OPTIONS = ["1–9", "10–49", "50–249", "250+"] as const;
-
-// ── Style helpers ─────────────────────────────────────────────────────────────
-
-const toggleBtn = (active: boolean) =>
-  `min-h-[44px] rounded-lg border px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
-    active
-      ? "border-[#c8410a] bg-[#c8410a]/8 text-[#c8410a] font-semibold"
-      : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#c8410a]/40"
-  }`;
-
-const inputClass = (hasError?: boolean) =>
-  `w-full min-h-[48px] rounded-lg border-2 px-4 text-sm text-[#1a1814] font-normal focus:outline-none transition-colors ${
-    hasError
-      ? "border-red-300 bg-red-50"
-      : "border-[#e8e4dc] bg-white focus:border-[#c8410a]"
-  }`;
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -52,21 +50,36 @@ export function OrgOnboardingWizard() {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<FieldError>({});
+  const [countryPickerOpen, setCountryPickerOpen] = useState(false);
 
   const [state, setState] = useState<WizardState>({
     username: "",
+    birthYear: "",
+    gender: "",
+    country: "",
     role: "",
     orgName: "",
     orgId: "",
     industry: "",
     teamSize: "",
     teamName: "",
+    consent: false,
   });
+
+  const countryOptions = useMemo(() => getCountryOptions("hu"), []);
+  const countryLabel = useMemo(
+    () => countryOptions.find((c) => c.value === state.country)?.label,
+    [state.country, countryOptions],
+  );
 
   const set = (key: keyof WizardState) => (value: string) => {
     setState((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
+
+  const currentYear = new Date().getFullYear();
+  const minBirthYear = currentYear - 100;
+  const maxBirthYear = currentYear - 16;
 
   // ── Validation ────────────────────────────────────────────────────────────
 
@@ -75,6 +88,18 @@ export function OrgOnboardingWizard() {
     const u = state.username.trim();
     if (u.length < 2) e.username = "Legalább 2 karakter szükséges";
     else if (u.length > 20) e.username = "Maximum 20 karakter";
+    const yr = Number(state.birthYear);
+    if (
+      !state.birthYear ||
+      state.birthYear.length !== 4 ||
+      !Number.isInteger(yr) ||
+      yr < minBirthYear ||
+      yr > maxBirthYear
+    ) {
+      e.birthYear = `${minBirthYear}–${maxBirthYear} között`;
+    }
+    if (!state.gender) e.gender = "Kérjük válassz";
+    if (!state.country) e.country = "Kérjük válassz";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -99,23 +124,19 @@ export function OrgOnboardingWizard() {
 
   // ── Step handlers ─────────────────────────────────────────────────────────
 
-  const handleStep1Next = async () => {
-    if (!validateStep1()) return;
-    setIsSubmitting(true);
-    try {
-      await fetch("/api/profile/username", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: state.username.trim() }),
-      });
-    } finally {
-      setIsSubmitting(false);
-      setStep(2);
+  const handleStep1Next = () => {
+    if (!validateStep1()) {
+      document.querySelector<HTMLInputElement>('input[type="text"]')?.focus();
+      return;
     }
+    setStep(2);
   };
 
   const handleStep2Next = async () => {
-    if (!validateStep2()) return;
+    if (!validateStep2()) {
+      document.querySelector<HTMLInputElement>('input[type="text"]')?.focus();
+      return;
+    }
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/org", {
@@ -128,7 +149,6 @@ export function OrgOnboardingWizard() {
         set("orgId")(data.org.id);
         setStep(3);
       } else if (data.error === "ALREADY_IN_ORG") {
-        // Edge case: already in an org, skip to team creation
         const orgRes = await fetch("/api/org");
         if (orgRes.ok) {
           const orgData = await orgRes.json();
@@ -146,7 +166,10 @@ export function OrgOnboardingWizard() {
   };
 
   const handleStep3Finish = async (skip = false) => {
-    if (!skip && !validateStep3()) return;
+    if (!skip && !validateStep3()) {
+      document.querySelector<HTMLInputElement>('input[type="text"]')?.focus();
+      return;
+    }
     setIsSubmitting(true);
     const teamName = skip ? "Első csapatom" : state.teamName.trim();
     try {
@@ -155,7 +178,7 @@ export function OrgOnboardingWizard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: teamName, orgId: state.orgId }),
       });
-      if (!res.ok) { router.push("/dashboard"); return; }
+      if (!res.ok) { setStep(4); return; }
       const data = await res.json();
       const createdTeamId = data.team.id;
       setTeamId(createdTeamId);
@@ -165,11 +188,35 @@ export function OrgOnboardingWizard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamId: createdTeamId }),
       });
-      if (!inviteRes.ok) { router.push("/dashboard"); return; }
+      if (!inviteRes.ok) { setStep(4); return; }
       const inviteData = await inviteRes.json();
       setInviteUrl(inviteData.inviteUrl);
     } catch {
+      setStep(4);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleStep4Finish = async () => {
+    if (isSubmitting || !state.consent) return;
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/profile/onboarding", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: state.username.trim(),
+          birthYear: Number(state.birthYear),
+          gender: state.gender,
+          country: state.country,
+          consentedAt: new Date().toISOString(),
+        }),
+      });
+      if (!res.ok) throw new Error("Save failed");
       router.push("/dashboard");
+    } catch {
+      setErrors((prev) => ({ ...prev, consent: "Hiba történt, kérjük próbáld újra." }));
     } finally {
       setIsSubmitting(false);
     }
@@ -184,8 +231,8 @@ export function OrgOnboardingWizard() {
 
   // ── Progress ──────────────────────────────────────────────────────────────
 
-  const stepLabels = ["Profil", "Cég", "Csapat"];
-  const progress = ((step - 1) / 2) * 100;
+  const stepLabels = ["Profil", "Cég", "Csapat", "Kész"];
+  const progress = ((step - 1) / 3) * 100;
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -243,17 +290,18 @@ export function OrgOnboardingWizard() {
         {/* Card */}
         <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
 
-          {/* ── Step 1: Profile ───────────────────────────────────────────── */}
+          {/* ── Step 1: Profil ────────────────────────────────────────────── */}
           {step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
                 <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 01</p>
-                <h2 className="font-playfair text-2xl text-[#1a1814]">Hogyan szólítunk?</h2>
+                <h2 className="font-playfair text-2xl text-[#1a1814]">Személyes adatok</h2>
                 <p className="mt-1 text-sm text-[#3d3a35]/70">
-                  Ez lesz a megjelenítési neved a csapatodon belül.
+                  Ezek szükségesek a személyre szabott csapatképhez.
                 </p>
               </div>
 
+              {/* Username */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-[#1a1814]">
                   Megjelenítési név
@@ -265,12 +313,88 @@ export function OrgOnboardingWizard() {
                   onKeyDown={(e) => e.key === "Enter" && handleStep1Next()}
                   placeholder="pl. Kovács Péter"
                   maxLength={20}
-                  className={inputClass(!!errors.username)}
+                  className={inputBase(!!errors.username)}
                   autoFocus
                 />
                 {errors.username && (
-                  <span className="pl-1 text-xs text-red-600">{errors.username}</span>
+                  <span className="pl-1 text-xs text-[#c8410a]">{errors.username}</span>
                 )}
+              </div>
+
+              {/* Birth year */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold text-[#1a1814]">
+                  Születési év
+                </label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={state.birthYear}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 4) set("birthYear")(e.target.value);
+                  }}
+                  placeholder={`pl. ${currentYear - 30}`}
+                  min={minBirthYear}
+                  max={maxBirthYear}
+                  className={`${inputBase(!!errors.birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+                />
+                <span className={`pl-1 text-xs ${errors.birthYear ? "text-[#c8410a]" : "text-[#a09a90]"}`}>
+                  {errors.birthYear || `${minBirthYear}–${maxBirthYear} között`}
+                </span>
+              </div>
+
+              {/* Gender */}
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-semibold text-[#1a1814]">Nem</span>
+                <div className="grid grid-cols-2 gap-2">
+                  {GENDER_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => set("gender")(opt.value)}
+                      className={toggleBtn(state.gender === opt.value)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {errors.gender && (
+                  <span className="pl-1 text-xs text-[#c8410a]">{errors.gender}</span>
+                )}
+              </div>
+
+              {/* Country */}
+              <div className="flex flex-col gap-2">
+                <PickerTrigger
+                  label="Ország"
+                  value={countryLabel}
+                  placeholder="Válassz országot"
+                  onClick={() => setCountryPickerOpen(true)}
+                />
+                {errors.country && (
+                  <span className="pl-1 text-xs text-[#c8410a]">{errors.country}</span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleStep1Next}
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+              >
+                Tovább →
+              </button>
+            </div>
+          )}
+
+          {/* ── Step 2: Cég ───────────────────────────────────────────────── */}
+          {step === 2 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 02</p>
+                <h2 className="font-playfair text-2xl text-[#1a1814]">A céged</h2>
+                <p className="mt-1 text-sm text-[#3d3a35]/70">
+                  Ezek az adatok segítenek személyre szabni a csapatképet.
+                </p>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -292,28 +416,6 @@ export function OrgOnboardingWizard() {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleStep1Next}
-                disabled={isSubmitting}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
-              >
-                {isSubmitting ? "Mentés..." : "Tovább →"}
-              </button>
-            </div>
-          )}
-
-          {/* ── Step 2: Organization ──────────────────────────────────────── */}
-          {step === 2 && (
-            <div className="flex flex-col gap-6">
-              <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 02</p>
-                <h2 className="font-playfair text-2xl text-[#1a1814]">A céged</h2>
-                <p className="mt-1 text-sm text-[#3d3a35]/70">
-                  Ezek az adatok segítenek személyre szabni a csapatképet.
-                </p>
-              </div>
-
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-[#1a1814]">
                   Cég neve <span className="text-[#c8410a]">*</span>
@@ -325,11 +427,11 @@ export function OrgOnboardingWizard() {
                   onKeyDown={(e) => e.key === "Enter" && handleStep2Next()}
                   placeholder="pl. Kovács és Társa Kft."
                   maxLength={100}
-                  className={inputClass(!!errors.orgName)}
+                  className={inputBase(!!errors.orgName)}
                   autoFocus
                 />
                 {errors.orgName && (
-                  <span className="pl-1 text-xs text-red-600">{errors.orgName}</span>
+                  <span className="pl-1 text-xs text-[#c8410a]">{errors.orgName}</span>
                 )}
               </div>
 
@@ -391,7 +493,7 @@ export function OrgOnboardingWizard() {
             </div>
           )}
 
-          {/* ── Step 3: Team ──────────────────────────────────────────────── */}
+          {/* ── Step 3: Csapat ────────────────────────────────────────────── */}
           {step === 3 && (
             <div className="flex flex-col gap-6">
               <div>
@@ -415,11 +517,11 @@ export function OrgOnboardingWizard() {
                       onKeyDown={(e) => e.key === "Enter" && handleStep3Finish(false)}
                       placeholder="pl. Értékesítési csapat"
                       maxLength={60}
-                      className={inputClass(!!errors.teamName)}
+                      className={inputBase(!!errors.teamName)}
                       autoFocus
                     />
                     {errors.teamName && (
-                      <span className="pl-1 text-xs text-red-600">{errors.teamName}</span>
+                      <span className="pl-1 text-xs text-[#c8410a]">{errors.teamName}</span>
                     )}
                   </div>
 
@@ -443,7 +545,7 @@ export function OrgOnboardingWizard() {
 
                   <button
                     type="button"
-                    onClick={() => handleStep3Finish(true)}
+                    onClick={() => setStep(4)}
                     className="text-center text-xs text-[#a09a90] underline underline-offset-2 transition-colors hover:text-[#3d3a35]"
                   >
                     Kihagyom most, beállítom később
@@ -481,7 +583,7 @@ export function OrgOnboardingWizard() {
 
                   <button
                     type="button"
-                    onClick={() => router.push("/dashboard")}
+                    onClick={() => setStep(4)}
                     className="min-h-[48px] w-full rounded-lg bg-[#1a1814] text-sm font-semibold text-white transition-colors hover:bg-[#3d3a35]"
                   >
                     Megyek a dashboardra →
@@ -491,12 +593,71 @@ export function OrgOnboardingWizard() {
             </div>
           )}
 
+          {/* ── Step 4: Kész ──────────────────────────────────────────────── */}
+          {step === 4 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 04</p>
+                <h2 className="font-playfair text-2xl text-[#1a1814]">Egy utolsó lépés</h2>
+              </div>
+
+              <label className="flex cursor-pointer items-start gap-3 rounded-lg p-2">
+                <input
+                  type="checkbox"
+                  checked={state.consent}
+                  onChange={(e) => {
+                    setState((prev) => ({ ...prev, consent: e.target.checked }));
+                    setErrors((prev) => ({ ...prev, consent: undefined }));
+                  }}
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-[#e8e4dc] accent-[#c8410a] focus:ring-[#c8410a]/30"
+                />
+                <span className="text-sm text-[#3d3a35]">
+                  Hozzájárulok adataim kezeléséhez az{" "}
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-[#c8410a] underline hover:text-[#a8340a]"
+                  >
+                    Adatvédelmi tájékoztató
+                  </a>{" "}
+                  alapján.
+                </span>
+              </label>
+
+              {errors.consent && (
+                <span className="text-sm text-[#c8410a]">{errors.consent}</span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleStep4Finish}
+                disabled={isSubmitting || !state.consent}
+                className="min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+              >
+                {isSubmitting ? "Mentés..." : "Beállítások mentése és tovább →"}
+              </button>
+            </div>
+          )}
+
         </div>
 
         <p className="mt-6 text-center text-xs text-[#a09a90]">
           Bármikor módosíthatod ezeket a beállításokat a profil oldalon.
         </p>
       </div>
+
+      {/* Country picker */}
+      <Picker
+        isOpen={countryPickerOpen}
+        onClose={() => setCountryPickerOpen(false)}
+        onSelect={(val) => set("country")(val)}
+        options={countryOptions}
+        selectedValue={state.country}
+        title="Ország"
+        searchable
+        searchPlaceholder="Keresés..."
+      />
     </div>
   );
 }

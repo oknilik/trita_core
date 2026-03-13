@@ -69,8 +69,9 @@ function formatDate(iso: string | null) {
 export function AdminDashboard() {
   const [data, setData] = useState<OrgStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [reactivating, setReactivating] = useState(false);
+  const [skipping, setSkipping] = useState(false);
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -85,8 +86,22 @@ export function AdminDashboard() {
 
   const handleCopy = async (url: string) => {
     await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedUrl(url);
+    setTimeout(() => setCopiedUrl(null), 2000);
+  };
+
+  const handleSkipAssessment = async () => {
+    if (skipping) return;
+    setSkipping(true);
+    try {
+      const res = await fetch("/api/assessment/skip", { method: "POST" });
+      if (res.ok) {
+        setLoading(true);
+        await fetchStatus();
+      }
+    } finally {
+      setSkipping(false);
+    }
   };
 
   const handleReactivate = async () => {
@@ -134,8 +149,9 @@ export function AdminDashboard() {
   // ── Setup steps logic ──────────────────────────────────────────────────────
 
   type StepAction =
-    | { label: string; href: string; copy?: undefined }
-    | { label: string; copy: string; href?: undefined }
+    | { label: string; href: string; copy?: undefined; skip?: undefined }
+    | { label: string; copy: string; href?: undefined; skip?: undefined }
+    | { label: string; skip: true; href?: undefined; copy?: undefined }
     | null;
 
   type Step = {
@@ -144,6 +160,7 @@ export function AdminDashboard() {
     desc: string;
     done: boolean;
     action: StepAction;
+    secondaryAction?: StepAction;
     countLabel?: string | null;
     locked?: boolean;
   };
@@ -174,6 +191,9 @@ export function AdminDashboard() {
       done: stats.adminHasAssessment,
       action: !stats.adminHasAssessment
         ? { label: "Felmérés indítása", href: "/assessment" }
+        : null,
+      secondaryAction: !stats.adminHasAssessment
+        ? { label: "Kihagyás", skip: true as const }
         : null,
     },
     {
@@ -356,13 +376,22 @@ export function AdminDashboard() {
                       onClick={() => handleCopy(step.action!.copy as string)}
                       className={btnSm}
                     >
-                      {copied ? "✓ Másolva!" : "Link másolása"}
+                      {copiedUrl === step.action.copy ? "✓ Másolva!" : "Link másolása"}
                     </button>
                   )}
                   {step.action?.href && (
                     <Link href={step.action.href} className={step.done ? btnSm : btnPrimary}>
                       {step.action.label}
                     </Link>
+                  )}
+                  {step.secondaryAction?.skip && (
+                    <button
+                      onClick={handleSkipAssessment}
+                      disabled={skipping}
+                      className={btnSm}
+                    >
+                      {skipping ? "..." : step.secondaryAction.label}
+                    </button>
                   )}
                 </div>
               </div>
@@ -411,22 +440,22 @@ export function AdminDashboard() {
           ))}
         </div>
 
-        {/* ── Team Table ── */}
-        {firstTeam && firstTeam.members.length > 0 && (
-          <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
+        {/* ── Team Tables ── */}
+        {teams.filter((t) => t.members.length > 0).map((team) => (
+          <div key={team.id} className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-[#e8e4dc] px-4 py-4 sm:px-7 sm:py-5">
               <div>
-                <Link href={`/team/${firstTeam.id}`} className="font-playfair text-[16px] text-[#1a1814] hover:text-[#c8410a] transition-colors">
-                  {firstTeam.name} →
+                <Link href={`/team/${team.id}`} className="font-playfair text-[16px] text-[#1a1814] hover:text-[#c8410a] transition-colors">
+                  {team.name} →
                 </Link>
                 <p className="text-[12px] text-[#a09a90]">
-                  {firstTeam.members.length} tag · {firstTeam.members.filter((m) => m.assessmentDone).length} kész ·{" "}
-                  {firstTeam.members.filter((m) => !m.assessmentDone).length} várakozik
+                  {team.members.length} tag · {team.members.filter((m) => m.assessmentDone).length} kész ·{" "}
+                  {team.members.filter((m) => !m.assessmentDone).length} várakozik
                 </p>
               </div>
-              {inviteUrl && (
-                <button onClick={() => handleCopy(inviteUrl)} className={btnSm}>
-                  {copied ? "✓ Másolva!" : "Meghívó másolás"}
+              {team.inviteUrl && (
+                <button onClick={() => handleCopy(team.inviteUrl!)} className={btnSm}>
+                  {copiedUrl === team.inviteUrl ? "✓ Másolva!" : "Meghívó másolás"}
                 </button>
               )}
             </div>
@@ -443,7 +472,7 @@ export function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {firstTeam.members.map((member) => (
+                {team.members.map((member) => (
                   <tr key={member.userId} className="border-b border-[#e8e4dc] transition-colors hover:bg-[#faf9f6]/70 last:border-b-0">
                     <td className="px-7 py-3.5">
                       <div className="flex items-center gap-2.5">
@@ -495,7 +524,7 @@ export function AdminDashboard() {
             </table>
             </div>
           </div>
-        )}
+        ))}
 
         {/* ── Invite Banner ── */}
         {inviteUrl && (
@@ -520,7 +549,7 @@ export function AdminDashboard() {
                 onClick={() => handleCopy(inviteUrl)}
                 className="flex-shrink-0 rounded-lg bg-[#c8410a] px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#a8340a]"
               >
-                {copied ? "✓ Másolva!" : "Másolás"}
+                {copiedUrl === inviteUrl ? "✓ Másolva!" : "Másolás"}
               </button>
             </div>
           </div>

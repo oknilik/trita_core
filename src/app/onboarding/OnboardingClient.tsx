@@ -5,28 +5,11 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { t, tf } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
-import {
-  GENDER_OPTIONS,
-} from "@/lib/onboarding-options";
-
-// ── Helper styles ────────────────────────────────────────────────────────────
-
-const toggleBtn = (isActive: boolean, flash?: boolean) =>
-  `min-h-[44px] rounded-lg border px-4 text-sm font-medium transition-all cursor-pointer ${
-    isActive
-      ? "border-[#c8410a] bg-[#c8410a]/8 text-[#c8410a] font-semibold"
-      : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#c8410a]/40"
-  } ${flash ? "ring-2 ring-[#c8410a]/40 bg-orange-50/60" : ""}`;
-
-const inputBase = (error?: boolean, flash?: boolean) =>
-  `min-h-[48px] w-full rounded-lg border-2 px-4 text-sm font-normal text-[#1a1814] focus:outline-none transition-colors ${
-    error
-      ? "border-orange-400 bg-orange-50"
-      : "border-[#e8e4dc] bg-white focus:border-[#c8410a]"
-  } ${flash ? "ring-2 ring-[#c8410a]/30" : ""}`;
+import { GENDER_OPTIONS } from "@/lib/onboarding-options";
+import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
 
 // ── Main component ───────────────────────────────────────────────────────────
 
@@ -35,6 +18,7 @@ export function OnboardingClient() {
   const { locale } = useLocale();
   const { showToast } = useToast();
 
+  const [step, setStep] = useState<1 | 2>(1);
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
@@ -49,7 +33,6 @@ export function OnboardingClient() {
     | "birthYear"
     | "gender"
     | "country"
-    | "consent"
     | null
   >(null);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
@@ -93,35 +76,12 @@ export function OnboardingClient() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
-  const canSubmit =
-    usernameValid &&
-    birthYearValid &&
-    gender !== "" &&
-    country !== "" &&
-    consent;
-
-  const progressTotals = useMemo(() => {
-    const required: boolean[] = [
-      usernameValid,
-      birthYearValid,
-      gender !== "",
-      country !== "",
-      consent,
-    ];
-    const total = required.length;
-    const completed = required.filter(Boolean).length;
-    return { total, completed, pct: Math.round((completed / Math.max(1, total)) * 100) };
-  }, [usernameValid, birthYearValid, gender, country, consent]);
+  const canStep1 = usernameValid && birthYearValid && gender !== "" && country !== "";
 
   // ── Flash + focus logic ──────────────────────────────────────────────────
 
   const flashField = (
-    field:
-      | "username"
-      | "birthYear"
-      | "gender"
-      | "country"
-      | "consent",
+    field: "username" | "birthYear" | "gender" | "country",
   ) => {
     setInvalidFieldFlash(field);
     if (invalidFlashTimerRef.current !== null) window.clearTimeout(invalidFlashTimerRef.current);
@@ -134,8 +94,7 @@ export function OnboardingClient() {
       field === "username" ? usernameFieldRef.current :
       field === "birthYear" ? birthYearFieldRef.current :
       field === "gender" ? genderFieldRef.current :
-      field === "country" ? countryFieldRef.current :
-      consentFieldRef.current;
+      countryFieldRef.current;
 
     target?.scrollIntoView({ behavior: "smooth", block: "center" });
 
@@ -144,7 +103,6 @@ export function OnboardingClient() {
       if (field === "birthYear") birthYearInputRef.current?.focus();
       if (field === "gender") genderFirstButtonRef.current?.focus();
       if (field === "country") countryFieldRef.current?.querySelector("button")?.focus();
-      if (field === "consent") consentCheckboxRef.current?.focus();
     }, 180);
   };
 
@@ -152,20 +110,25 @@ export function OnboardingClient() {
     if (!usernameValid) { flashField("username"); return; }
     if (!birthYearValid) { flashField("birthYear"); return; }
     if (gender === "") { flashField("gender"); return; }
-    if (country === "") { flashField("country"); return; }
-    if (!consent) { flashField("consent"); }
+    if (country === "") { flashField("country"); }
+  };
+
+  // ── Step handlers ────────────────────────────────────────────────────────
+
+  const handleStep1Next = () => {
+    setUsernameTouched(true);
+    setBirthYearTouched(true);
+    if (!canStep1) {
+      focusFirstInvalid();
+      return;
+    }
+    setStep(2);
   };
 
   // ── Submit ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async () => {
-    if (isSubmitting) return;
-    if (!canSubmit) {
-      setUsernameTouched(true);
-      setBirthYearTouched(true);
-      focusFirstInvalid();
-      return;
-    }
+    if (isSubmitting || !consent) return;
 
     setIsSubmitting(true);
     try {
@@ -192,6 +155,14 @@ export function OnboardingClient() {
     }
   };
 
+  // ── Step indicator ───────────────────────────────────────────────────────
+
+  const stepLabels = [
+    t("onboarding.step1Label", locale),
+    t("onboarding.step2Label", locale),
+  ];
+  const progress = ((step - 1) / 1) * 100;
+
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
@@ -209,31 +180,49 @@ export function OnboardingClient() {
               {t("onboarding.subtitle", locale)}
             </p>
           </div>
+        </div>
 
-          {/* Progress */}
-          <div className="w-full max-w-sm">
-            <div className="h-1.5 w-full bg-[#e8e4dc] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[#c8410a] rounded-full transition-all duration-500"
-                style={{ width: `${progressTotals.pct}%` }}
-              />
-            </div>
-            <p className="mt-2 text-center text-xs text-[#a09a90] font-mono">
-              {tf("onboarding.progress", locale, {
-                completed: progressTotals.completed,
-                total: progressTotals.total,
-              })}
-            </p>
+        {/* Step indicator */}
+        <div className="mb-8">
+          <div className="mb-2 flex items-center justify-between">
+            {stepLabels.map((label, i) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
+                    i + 1 < step
+                      ? "bg-[#c8410a] text-white"
+                      : i + 1 === step
+                      ? "bg-[#1a1814] text-white"
+                      : "bg-[#e8e4dc] text-[#a09a90]"
+                  }`}
+                >
+                  {i + 1 < step ? "✓" : i + 1}
+                </div>
+                <span
+                  className={`hidden text-xs font-medium sm:block ${
+                    i + 1 === step ? "text-[#1a1814]" : "text-[#a09a90]"
+                  }`}
+                >
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="h-1 w-full overflow-hidden rounded-full bg-[#e8e4dc]">
+            <div
+              className="h-full rounded-full bg-[#c8410a] transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#e8e4dc] p-6 md:p-8 shadow-sm">
-          <div className="flex flex-col gap-8">
 
-            {/* ── Block 1: Who are you? ─────────────────────────────────── */}
-            <section>
-              <div className="mb-5">
+          {/* ── Step 1: Alapadatok ──────────────────────────────────────── */}
+          {step === 1 && (
+            <div className="flex flex-col gap-6">
+              <div>
                 <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 01</p>
                 <p className="font-playfair text-xl text-[#1a1814]">
                   {t("onboarding.blockBasicsTitle", locale)}
@@ -347,62 +336,83 @@ export function OnboardingClient() {
                 </div>
 
               </div>
-            </section>
 
-          </div>
+              <button
+                type="button"
+                onClick={handleStep1Next}
+                disabled={isSubmitting}
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+              >
+                {t("actions.next", locale)}
+              </button>
+            </div>
+          )}
 
-          {/* ── Consent ─────────────────────────────────────────────────── */}
-          <label
-            ref={consentFieldRef}
-            className={`mt-6 flex cursor-pointer items-start gap-3 rounded-lg p-2 transition ${
-              invalidFieldFlash === "consent" ? "ring-2 ring-[#c8410a]/30 bg-orange-50/40" : ""
-            }`}
-          >
-            <input
-              ref={consentCheckboxRef}
-              type="checkbox"
-              checked={consent}
-              onChange={(e) => setConsent(e.target.checked)}
-              className="mt-0.5 h-5 w-5 shrink-0 rounded border-[#e8e4dc] accent-[#c8410a] focus:ring-[#c8410a]/30"
-            />
-            <span className="text-sm text-[#3d3a35]">
-              {t("onboarding.consentLabel", locale)
-                .split("{link}")
-                .map((part, i, arr) =>
-                  i < arr.length - 1 ? (
-                    <span key={i}>
-                      {part}
-                      <a
-                        href="/privacy"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-[#c8410a] underline hover:text-[#a8340a]"
-                      >
-                        {t("onboarding.consentLinkText", locale)}
-                      </a>
-                    </span>
-                  ) : (
-                    <span key={i}>{part}</span>
-                  ),
-                )}
-            </span>
-          </label>
+          {/* ── Step 2: Hozzájárulás ────────────────────────────────────── */}
+          {step === 2 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 02</p>
+                <p className="font-playfair text-xl text-[#1a1814]">
+                  {t("onboarding.step2Title", locale)}
+                </p>
+              </div>
 
-          {/* ── Submit ──────────────────────────────────────────────────── */}
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className={`mt-6 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition-all ${
-              canSubmit && !isSubmitting
-                ? "bg-[#c8410a] text-white hover:bg-[#a8340a]"
-                : "cursor-not-allowed bg-[#e8e4dc] text-[#a09a90]"
-            }`}
-          >
-            {isSubmitting
-              ? t("onboarding.saving", locale)
-              : t("onboarding.submit", locale)}
-          </button>
+              <label
+                ref={consentFieldRef}
+                className="flex cursor-pointer items-start gap-3 rounded-lg p-2"
+              >
+                <input
+                  ref={consentCheckboxRef}
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-[#e8e4dc] accent-[#c8410a] focus:ring-[#c8410a]/30"
+                />
+                <span className="text-sm text-[#3d3a35]">
+                  {t("onboarding.consentLabel", locale)
+                    .split("{link}")
+                    .map((part, i, arr) =>
+                      i < arr.length - 1 ? (
+                        <span key={i}>
+                          {part}
+                          <a
+                            href="/privacy"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-[#c8410a] underline hover:text-[#a8340a]"
+                          >
+                            {t("onboarding.consentLinkText", locale)}
+                          </a>
+                        </span>
+                      ) : (
+                        <span key={i}>{part}</span>
+                      ),
+                    )}
+                </span>
+              </label>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
+                >
+                  ← {t("actions.back", locale)}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !consent}
+                  className="min-h-[48px] flex-1 rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                >
+                  {isSubmitting
+                    ? t("onboarding.saving", locale)
+                    : t("onboarding.submit", locale)}
+                </button>
+              </div>
+            </div>
+          )}
 
         </div>
 

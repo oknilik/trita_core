@@ -9,7 +9,7 @@ const onboardingSchema = z.object({
   username: z.string().min(2).max(20),
   birthYear: z.number().int().min(currentYear - 100).max(currentYear - 16),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
-  country: z.string().min(1).max(100),
+  country: z.string().min(1).max(100).optional(),
   consentedAt: z.string().datetime().optional(),
 });
 
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       username: parsed.data.username,
       birthYear: parsed.data.birthYear,
       gender: parsed.data.gender,
-      country: parsed.data.country,
+      ...(parsed.data.country && { country: parsed.data.country }),
       ...(parsed.data.consentedAt && {
         consentedAt: new Date(parsed.data.consentedAt),
         onboardedAt: new Date(),

@@ -72,7 +72,8 @@ model UserProfile {
   // Research study fields
   testType           TestType?
   testTypeAssignedAt DateTime?
-  consentedAt        DateTime?
+  consentedAt           DateTime?
+  assessmentSkippedAt   DateTime?
 
   // Role (default: INDIVIDUAL)
   role      UserRole @default(INDIVIDUAL)
