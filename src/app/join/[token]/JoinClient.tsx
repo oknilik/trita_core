@@ -94,7 +94,6 @@ export function JoinClient({
           username: username.trim(),
           gender,
           birthYear: Number(birthYear),
-          country: "HU",
           consentedAt: new Date().toISOString(),
         }),
       });
