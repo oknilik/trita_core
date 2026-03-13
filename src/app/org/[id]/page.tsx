@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
+import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { OrgInviteForm } from "@/components/org/OrgInviteForm";
 import { OrgRemoveMemberButton } from "@/components/org/OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "@/components/org/OrgPendingInviteCancelButton";
@@ -35,6 +36,7 @@ export default async function OrgDetailPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
+  await requireActiveSubscription();
   const isAdmin = hasOrgRole(memberRole, "ORG_ADMIN");
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   const isHu = locale !== "en";

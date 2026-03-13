@@ -3,9 +3,12 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgRole } from "@/lib/auth";
+import { requireActiveSubscription } from "@/lib/require-active-subscription";
+import { getOrgSubscription, trialDaysLeft as calcTrialDaysLeft } from "@/lib/subscription";
 import { OrgRenameForm } from "@/components/org/OrgRenameForm";
 import { OrgDeactivateButton } from "@/components/org/OrgDeactivateButton";
 import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
+import { BillingPortalButton } from "@/components/org/BillingPortalButton";
 
 export const dynamic = "force-dynamic";
 
@@ -21,17 +24,25 @@ export default async function OrgSettingsPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { profileId, org } = await requireOrgRole(orgId, "ORG_ADMIN");
+  await requireActiveSubscription();
   const isHu = locale !== "en";
 
-  const members = await prisma.organizationMember.findMany({
-    where: { orgId },
-    orderBy: { joinedAt: "asc" },
-    select: {
-      userId: true,
-      role: true,
-      user: { select: { id: true, email: true, username: true } },
-    },
-  });
+  const [members, sub] = await Promise.all([
+    prisma.organizationMember.findMany({
+      where: { orgId },
+      orderBy: { joinedAt: "asc" },
+      select: {
+        userId: true,
+        role: true,
+        user: { select: { id: true, email: true, username: true } },
+      },
+    }),
+    getOrgSubscription(orgId),
+  ]);
+
+  const daysLeft = calcTrialDaysLeft(sub);
+  const subStatus = sub?.status ?? "none";
+  const trialEnd = sub?.trialEndsAt?.toISOString() ?? null;
 
   return (
     <div className="min-h-dvh bg-[#faf9f6]">
@@ -67,6 +78,88 @@ export default async function OrgSettingsPage({
             {isHu ? "Szervezet neve" : "Organization name"}
           </h2>
           <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
+        </section>
+
+        {/* Előfizetés */}
+        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+            {isHu ? "// előfizetés" : "// subscription"}
+          </p>
+          <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+            {isHu ? "Előfizetés" : "Subscription"}
+          </h2>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    subStatus === "active"
+                      ? "bg-[rgba(26,92,58,0.08)] text-[#1a5c3a]"
+                      : subStatus === "trialing"
+                      ? "bg-[rgba(200,65,10,0.08)] text-[#c8410a]"
+                      : "bg-[#e8e4dc] text-[#5a5650]"
+                  }`}
+                >
+                  {subStatus === "active"
+                    ? isHu ? "Aktív" : "Active"
+                    : subStatus === "trialing"
+                    ? "Trial"
+                    : subStatus === "past_due"
+                    ? isHu ? "Fizetési hiba" : "Past due"
+                    : subStatus === "canceled"
+                    ? isHu ? "Lemondva" : "Canceled"
+                    : isHu ? "Nincs előfizetés" : "No subscription"}
+                </span>
+                {subStatus === "trialing" && trialEnd && (
+                  <span className="text-xs text-[#7a756e]">
+                    {daysLeft !== null && daysLeft > 0
+                      ? isHu
+                        ? `${daysLeft} nap van hátra`
+                        : `${daysLeft} days left`
+                      : isHu
+                      ? "Ma jár le"
+                      : "Expires today"}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-[#a09a90]">
+                {subStatus === "active"
+                  ? isHu
+                    ? "A hozzáférés aktív."
+                    : "Access is active."
+                  : subStatus === "trialing"
+                  ? isHu
+                    ? "14 napos próbaidőszak – kártyaadat nélkül."
+                    : "14-day trial – no credit card required."
+                  : isHu
+                  ? "Az előfizetés aktiválásához kattints az alábbi gombra."
+                  : "Activate your subscription using the button below."}
+              </p>
+            </div>
+
+            <div className="flex flex-shrink-0 gap-2">
+              {(subStatus === "trialing" || subStatus === "none") && (
+                <a
+                  href="/billing/upgrade"
+                  className="inline-flex min-h-[40px] items-center rounded-lg bg-[#c8410a] px-4 text-xs font-semibold text-white hover:bg-[#a33408] transition-colors"
+                >
+                  {isHu ? "Aktiválás →" : "Activate →"}
+                </a>
+              )}
+              {(subStatus === "active" || subStatus === "past_due") && (
+                <BillingPortalButton isHu={isHu} />
+              )}
+              {subStatus === "canceled" && (
+                <a
+                  href="/billing/upgrade"
+                  className="inline-flex min-h-[40px] items-center rounded-lg border border-[#c8410a] px-4 text-xs font-semibold text-[#c8410a] hover:bg-[#fef3ec] transition-colors"
+                >
+                  {isHu ? "Újraaktiválás" : "Reactivate"}
+                </a>
+              )}
+            </div>
+          </div>
         </section>
 
         {/* Member roles */}

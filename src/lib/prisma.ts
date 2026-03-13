@@ -7,7 +7,7 @@ function buildDatasourceUrl() {
   if (!base) return undefined;
   // Limit pool size to avoid exhaustion on Neon free tier / dev HMR
   const separator = base.includes("?") ? "&" : "?";
-  return `${base}${separator}connection_limit=5&connect_timeout=15`;
+  return `${base}${separator}connection_limit=3&connect_timeout=20&pool_timeout=30`;
 }
 
 export const prisma =

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireOrgRole } from "@/lib/auth";
+import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getServerLocale } from "@/lib/i18n-server";
 import { OrgSetupWizard } from "@/components/org/OrgSetupWizard";
 
@@ -18,6 +19,7 @@ export default async function OrgSetupPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { org } = await requireOrgRole(orgId, "ORG_ADMIN");
+  await requireActiveSubscription();
 
   // If already active, redirect to org detail
   if (org.status === "ACTIVE") {

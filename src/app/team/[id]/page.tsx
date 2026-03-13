@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getTestConfig } from "@/lib/questions";
 import { hasOrgRole } from "@/lib/auth";
+import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import type { TestType } from "@prisma/client";
 import type { ScoreResult } from "@/lib/scoring";
 import { TeamHeatmap } from "@/components/manager/TeamHeatmap";
@@ -57,6 +58,7 @@ export default async function TeamDetailPage({
   // ORG_MANAGER and above can manage team members; ORG_MEMBER can only view
   const isOrgManager = isOrgMember && hasOrgRole(orgMembership!.role, "ORG_MANAGER");
   if (!isOrgMember) redirect("/dashboard");
+  await requireActiveSubscription();
 
   const members = await prisma.teamMember.findMany({
     where: { teamId },
