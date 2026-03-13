@@ -27,6 +27,7 @@ export default async function BillingUpgradePage() {
       isAdmin={membership.role === "ORG_ADMIN"}
       subscriptionStatus={sub?.status ?? "none"}
       trialEndsAt={sub?.trialEndsAt?.toISOString() ?? null}
+      alreadySetup={!!sub?.stripeSubscriptionId}
     />
   );
 }

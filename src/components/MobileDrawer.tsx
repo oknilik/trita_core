@@ -25,6 +25,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     }
     return null;
   });
+  const [orgRole, setOrgRole] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
     const timer = window.setTimeout(async () => {
@@ -36,6 +38,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           setProfileName(data.username);
           window.localStorage.setItem("trita_username", data.username);
         }
+        setOrgRole(data.orgMemberships?.[0]?.role ?? null);
       } catch {
         // noop
       }
@@ -135,7 +138,13 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                       {user?.primaryEmailAddress?.emailAddress}
                     </p>
                     <p className="mt-1 inline-flex rounded-full border border-[#e8e4dc] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#3d3a35]">
-                      {t("userMenu.participant", locale)}
+                      {orgRole === "ORG_ADMIN"
+                        ? "org admin"
+                        : orgRole === "ORG_MANAGER"
+                        ? "menedzser"
+                        : orgRole === "ORG_MEMBER"
+                        ? "org tag"
+                        : t("userMenu.participant", locale)}
                     </p>
                   </div>
                 </div>

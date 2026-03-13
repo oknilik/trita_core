@@ -6,9 +6,10 @@ type Props = {
   isAdmin: boolean;
   subscriptionStatus: string;
   trialEndsAt: string | null;
+  alreadySetup?: boolean;
 };
 
-export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt }: Props) {
+export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt, alreadySetup }: Props) {
   const [loading, setLoading] = useState(false);
 
   const isExpiredTrial =
@@ -18,6 +19,7 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt 
 
   const isPastDue = subscriptionStatus === "past_due";
   const isCanceled = subscriptionStatus === "canceled";
+  const isActiveOrSetup = subscriptionStatus === "active" || (subscriptionStatus === "trialing" && alreadySetup && !isExpiredTrial);
 
   const handleCheckout = async (priceKey: string) => {
     setLoading(true);
@@ -42,7 +44,9 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt 
             // előfizetés
           </p>
           <h1 className="mt-2 font-playfair text-3xl text-[#1a1814]">
-            {isExpiredTrial
+            {isActiveOrSetup
+              ? "Előfizetés aktív"
+              : isExpiredTrial
               ? "A trial lejárt"
               : isPastDue
               ? "Fizetési probléma"
@@ -51,7 +55,9 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt 
               : "Aktiváld az előfizetést"}
           </h1>
           <p className="mt-3 text-sm text-[#5a5650]">
-            {isExpiredTrial
+            {isActiveOrSetup
+              ? "A fizetési módod el van mentve. A trial időszak végén automatikusan számlázunk."
+              : isExpiredTrial
               ? "A 14 napos próbaidőszakod lejárt. Aktiváld az előfizetést a hozzáférés folytatásához."
               : isPastDue
               ? "Az utolsó fizetési kísérlet sikertelen volt. Frissítsd a fizetési adatokat."
@@ -67,6 +73,33 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt 
               Az előfizetés kezeléséhez adminisztrátori jogosultság szükséges.
               Kérj meg egy adminisztrátort, hogy aktiválja az előfizetést.
             </p>
+          </div>
+        ) : isActiveOrSetup ? (
+          <div className="rounded-xl border border-[#1a5c3a]/20 bg-[#f0fdf4] p-6 text-center">
+            <p className="text-sm text-[#1a5c3a] font-medium mb-4">
+              Minden rendben — a számlázás be van állítva.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Link
+                href="/dashboard"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a33408]"
+              >
+                Vissza a dashboardra →
+              </Link>
+              <button
+                onClick={async () => {
+                  setLoading(true);
+                  const res = await fetch("/api/billing/portal", { method: "POST" });
+                  const data = await res.json();
+                  if (data.url) window.location.href = data.url;
+                  setLoading(false);
+                }}
+                disabled={loading}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#e0ddd6] bg-white px-6 text-sm font-semibold text-[#3d3a35] hover:border-[#c8410a] hover:text-[#c8410a] disabled:opacity-60"
+              >
+                {loading ? "Betöltés..." : "Számlázás kezelése"}
+              </button>
+            </div>
           </div>
         ) : isPastDue || isCanceled ? (
           <div className="rounded-xl border border-[#e0ddd6] bg-white p-6 text-center">

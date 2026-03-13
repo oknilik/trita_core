@@ -72,6 +72,13 @@ export async function POST(req: Request) {
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
         await upsertSubscription(orgId, subscription, customerId);
+
+        // Activate org if it was in PENDING_SETUP
+        await prisma.organization.updateMany({
+          where: { id: orgId, status: "PENDING_SETUP" },
+          data: { status: "ACTIVE" },
+        });
+
         console.log(`[Stripe] Checkout complete for org ${orgId}`);
         break;
       }

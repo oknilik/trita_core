@@ -51,6 +51,12 @@ export async function POST(req: Request) {
       metadata: { orgId: membership.orgId, profileId: profile.id },
     });
     customerId = customer.id;
+    // Persist customerId immediately so the Portal works even if webhook is delayed
+    await prisma.subscription.upsert({
+      where: { orgId: membership.orgId },
+      create: { orgId: membership.orgId, stripeCustomerId: customerId },
+      update: { stripeCustomerId: customerId },
+    });
   }
 
   const session = await stripe.checkout.sessions.create({

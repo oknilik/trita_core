@@ -21,6 +21,8 @@ export function UserMenu() {
     }
     return null;
   });
+  const [orgRole, setOrgRole] = useState<string | null>(null);
+
   // Fetch user profile name from database
   const fetchProfile = useCallback(async () => {
     try {
@@ -36,6 +38,7 @@ export function UserMenu() {
           setProfileName(null);
           window.localStorage.removeItem("trita_username");
         }
+        setOrgRole(data.orgMemberships?.[0]?.role ?? null);
       }
     } catch {
       // Silently fail, fallback to Clerk data
@@ -167,7 +170,13 @@ export function UserMenu() {
                       {user?.primaryEmailAddress?.emailAddress}
                     </p>
                     <p className="mt-1 inline-flex rounded-full border border-[#e8e4dc] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#3d3a35]">
-                      {t("userMenu.participant", locale)}
+                      {orgRole === "ORG_ADMIN"
+                        ? "org admin"
+                        : orgRole === "ORG_MANAGER"
+                        ? "menedzser"
+                        : orgRole === "ORG_MEMBER"
+                        ? "org tag"
+                        : t("userMenu.participant", locale)}
                     </p>
                   </div>
                 </div>

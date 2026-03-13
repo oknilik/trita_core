@@ -97,30 +97,47 @@ export default async function DashboardPage({
     if (orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
       const sub = await getOrgSubscription(orgMembership.orgId);
       const daysLeft = calcTrialDaysLeft(sub);
+      const resolvedAdminParams = await searchParams;
+      const checkoutSuccess = resolvedAdminParams?.checkout === "success";
+      const portalUpdated = resolvedAdminParams?.portal === "updated";
       const { AdminDashboard } = await import("./AdminDashboard");
       return (
         <>
-          {daysLeft !== null && daysLeft <= 7 && (
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-[#c8410a]/30 bg-[#fef3ec] px-5 py-3.5 mx-4 mt-4">
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
-                  // trial
+          <div className="flex flex-col gap-2 mx-4 mt-4">
+            {(checkoutSuccess || portalUpdated) && (
+              <div className="flex items-center gap-3 rounded-xl border border-[#1a5c3a]/30 bg-[#f0fdf4] px-5 py-3.5">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[#1a5c3a]">
+                  // siker
                 </span>
-                <span className="text-sm text-[#5a5650]">
-                  {daysLeft === 0
-                    ? "A trial ma lejár."
-                    : `${daysLeft} nap van hátra a trialból.`}
-                  {" "}Aktiváld az előfizetést a hozzáférés megtartásához.
+                <span className="text-sm text-[#1a5c3a]">
+                  {checkoutSuccess
+                    ? "Az előfizetés aktiválva. Köszönjük!"
+                    : "A számlázási adatok frissítve."}
                 </span>
               </div>
-              <a
-                href="/billing/upgrade"
-                className="flex-shrink-0 rounded-lg bg-[#c8410a] px-4 py-2 text-xs font-semibold text-white hover:bg-[#a33408]"
-              >
-                Aktiválás →
-              </a>
-            </div>
-          )}
+            )}
+            {!checkoutSuccess && daysLeft !== null && daysLeft <= 7 && (
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-[#c8410a]/30 bg-[#fef3ec] px-5 py-3.5">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+                    // trial
+                  </span>
+                  <span className="text-sm text-[#5a5650]">
+                    {daysLeft === 0
+                      ? "A trial ma lejár."
+                      : `${daysLeft} nap van hátra a trialból.`}
+                    {" "}Aktiváld az előfizetést a hozzáférés megtartásához.
+                  </span>
+                </div>
+                <a
+                  href="/billing/upgrade"
+                  className="flex-shrink-0 rounded-lg bg-[#c8410a] px-4 py-2 text-xs font-semibold text-white hover:bg-[#a33408]"
+                >
+                  Aktiválás →
+                </a>
+              </div>
+            )}
+          </div>
           <AdminDashboard />
         </>
       );
