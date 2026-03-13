@@ -6,23 +6,35 @@ locale: "hu"
 tags: ["bevezetés", "change management", "csapatvezetés"]
 ---
 
+<StatRow>
+  <StatCard value="3 modell" label="Adathozzáférési lehetőség: csak egyén, egyén + vezető, vagy teljes csapat" />
+  <StatCard value="1 óra" label="Elegendő egy közös értelmező workshophoz, ha a profil már elkészült" />
+  <StatCard value="0" label="Kötelező részvétel esetén torzuló válaszok aránya – ezért önkéntes" />
+</StatRow>
+
 ## Az ellenállás forrása
 
 Az ellenállás általában nem a teszttel szemben van. Hanem azzal szemben, amit a teszt következményének gondolnak az emberek.
 
 „Ezzel fogják megmondani, hogy alkalmas vagyok-e." „Ez az adatot felhasználják ellenem." „Ez azt jelenti, hogy nem bíznak bennünk."
 
+<Callout>
 Ezek a félelmek ráció nélkül is működnek. Ha a bevezetés kommunikációja nem kezeli ezeket előre, az ellenállás garantált – még akkor is, ha a szándékod teljesen más.
+</Callout>
 
 ## Az egyetlen dolog, ami meghatározza a sikert: ki kapja az adatot?
 
 A legfontosabb döntés a bevezetésnél nem az eszköz, hanem az adathozzáférés. Három modell létezik:
 
-**Csak az egyén látja** – a profil a sajátja, senki más nem fér hozzá automatikusan. Ez maximális bizalmat épít, de a csapat szintű tanulás korlátozott.
-
-**Az egyén és a közvetlen vezető látja** – ez a legelterjedtebb modell fejlesztési kontextusban. Előfeltétele a bizalom a vezető és beosztott között.
-
-**Mindenki látja a csapatban** – teljes transzparencia. Csak akkor működik, ha a csapatkultúra már elég érett és biztonságos. Erőltetni ellenproduktív.
+<CompareTable
+  leftLabel="Modell"
+  rightLabel="Mikor működik"
+  rows={[
+    ["Csak az egyén látja a profilját", "Induláshoz a legbiztonságosabb; bizalmat épít"],
+    ["Az egyén és a közvetlen vezető látja", "Fejlesztési kontextusban elterjedt; igényel bizalmat"],
+    ["Mindenki látja a csapatban", "Csak érett, biztonságos csapatkultúrában működik"],
+  ]}
+/>
 
 A legtöbb csapatnál az induláshoz az első modell a legbiztonságosabb. Ahogy nő a bizalom, a megosztás önkéntesen bővül.
 
@@ -50,6 +62,12 @@ A profil az egyéné. A szervezet nem kapja meg automatikusan. Ez nem gyengeség
 
 **4. lépés – Közös értelmezés:** Amikor elegendő csapattag megosztotta, tartsatok egy egyórás workshopot – nem elemzéssel, hanem kérdésekkel. „Hol ismertek egymásra? Hol lepett meg valamit?"
 
+<KeyInsight>
+A közös értelmező workshop nem a számokról szól. Hanem arról, hogy a csapat egy közös nyelvet kap a különbségek kezelésére – anélkül, hogy személyes kritikának éreznék egymás stílusát.
+</KeyInsight>
+
 ## Mikor ne vezess be pszichometriai értékelést?
 
 Ha a csapatban aktív konfliktus van, vagy bizalmi válság. A profil ilyenkor fegyverré válik – mindkét irányban. Előbb a kapcsolatot kell stabilizálni, utána jöhet az eszköz.
+
+A <DimBadge code="H" label="Őszinteség-Alázat" /> és <DimBadge code="A" label="Barátságosság" /> dimenziók különösen érzékenyek ilyen helyzetben: alacsony értékek konfliktusos csapatban könnyen személyes vádakká válnak, ha nincs meg az értelmező keret.

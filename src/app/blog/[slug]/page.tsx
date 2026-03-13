@@ -45,6 +45,94 @@ export async function generateMetadata({
   };
 }
 
+// ─── Custom MDX Components ────────────────────────────────────────────────────
+
+const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  H: { bg: "#eef2ff", text: "#3730a3", border: "#c7d2fe" },
+  E: { bg: "#f5f3ff", text: "#5b21b6", border: "#ddd6fe" },
+  X: { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
+  A: { bg: "#f0fdf4", text: "#166534", border: "#bbf7d0" },
+  C: { bg: "#fff7ed", text: "#9a3412", border: "#fed7aa" },
+  O: { bg: "#fdf2f8", text: "#86198f", border: "#f5d0fe" },
+  N: { bg: "#fff1f2", text: "#9f1239", border: "#fecdd3" },
+};
+
+function Callout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="my-7 border-l-[3px] border-[#c8410a] bg-[#fdf5f0] px-5 py-4 rounded-r-lg">
+      <p className="font-playfair text-[17px] italic leading-[1.7] text-[#3d3a35]">{children}</p>
+    </div>
+  );
+}
+
+function StatCard({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex flex-1 flex-col items-center rounded-xl border border-[#e8e4dc] bg-white px-6 py-5 text-center">
+      <span className="font-playfair text-4xl font-black text-[#c8410a] leading-none">{value}</span>
+      <span className="mt-2 text-[13px] leading-[1.55] text-[#5a5650]">{label}</span>
+    </div>
+  );
+}
+
+function StatRow({ children }: { children: React.ReactNode }) {
+  return <div className="my-7 flex flex-col gap-3 sm:flex-row">{children}</div>;
+}
+
+function DimBadge({ code, label }: { code: string; label: string }) {
+  const colors = DIM_COLORS[code] ?? { bg: "#f3f4f6", text: "#374151", border: "#e5e7eb" };
+  return (
+    <span
+      style={{ backgroundColor: colors.bg, color: colors.text, borderColor: colors.border }}
+      className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold"
+    >
+      <span className="font-ibm-plex-mono font-bold">{code}</span>
+      <span>{label}</span>
+    </span>
+  );
+}
+
+function CompareTable({
+  leftLabel,
+  rightLabel,
+  rows = [],
+}: {
+  leftLabel: string;
+  rightLabel: string;
+  rows?: [string, string][];
+}) {
+  return (
+    <div className="my-8 overflow-hidden rounded-xl border border-[#e8e4dc]">
+      <div className="grid grid-cols-2">
+        <div className="bg-white px-5 py-3 text-[12px] font-semibold uppercase tracking-[1px] text-[#5a5650]">
+          {leftLabel}
+        </div>
+        <div className="bg-[#1a1814] px-5 py-3 text-[12px] font-semibold uppercase tracking-[1px] text-[#faf9f6]/60">
+          {rightLabel}
+        </div>
+      </div>
+      {rows.map(([left, right], i) => (
+        <div key={i} className="grid grid-cols-2 border-t border-[#e8e4dc]">
+          <div className="bg-white px-5 py-3 text-[14px] text-[#3d3a35]">{left}</div>
+          <div className="bg-[#1a1814] px-5 py-3 text-[14px] text-[#faf9f6]/80">{right}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function KeyInsight({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="my-8 rounded-xl bg-[#1a1814] px-6 py-5">
+      <p className="font-ibm-plex-mono mb-2 text-[10px] uppercase tracking-[2px] text-[#c8410a]">
+        // kulcsgondolat
+      </p>
+      <p className="text-[15px] leading-[1.75] text-[#faf9f6]/85">{children}</p>
+    </div>
+  );
+}
+
+// ─── Prose overrides ──────────────────────────────────────────────────────────
+
 const components = {
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1 className="font-playfair text-3xl text-[#1a1814] mt-10 mb-4 leading-tight" {...props} />
@@ -83,6 +171,12 @@ const components = {
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a className="text-[#c8410a] underline underline-offset-2 hover:text-[#a33408]" {...props} />
   ),
+  Callout,
+  StatCard,
+  StatRow,
+  DimBadge,
+  CompareTable,
+  KeyInsight,
 };
 
 export default async function BlogPostPage({
