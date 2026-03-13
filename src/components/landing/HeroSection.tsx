@@ -10,6 +10,7 @@ const copy: Record<
     heading: string;
     sub: string;
     cta: string;
+    signInCta: string;
     mockCardHeader: string;
     insightCards: Array<{ tone: "accent" | "green" | "purple"; title: string; body: string }>;
     legendSelf: string;
@@ -27,6 +28,7 @@ const copy: Record<
     heading: "Lásd tisztábban a csapatod működését",
     sub: "A trita megmutatja, ami eddig láthatatlan volt - a csapatod valódi dinamikáját. Mielőtt a feszültség konfliktussá, a konfliktus pedig költséggé válik.",
     cta: "Megnézem a csapatomat →",
+    signInCta: "Van már fiókod? Jelentkezz be",
     mockCardHeader: "CSAPAT PROFIL — Sales (6 fő)",
     insightCards: [
       { tone: "accent", title: "⚠ FESZÜLTSÉG", body: "Döntéshozatalnál konfliktus valószínű - 3 fő eltérő stílus" },
@@ -47,6 +49,7 @@ const copy: Record<
     heading: "See your team's dynamics more clearly",
     sub: "trita shows what's been invisible — your team's real dynamics. Before tension becomes conflict, and conflict becomes cost.",
     cta: "See my team →",
+    signInCta: "Already have an account? Sign in",
     mockCardHeader: "TEAM PROFILE — Sales (6 members)",
     insightCards: [
       { tone: "accent", title: "⚠ TENSION", body: "Conflict likely at decision-making — 3 members with different styles" },
@@ -92,6 +95,12 @@ export function HeroSection({ locale }: { locale: Locale }) {
               className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded bg-[#c8410a] px-6 py-4 text-[15px] font-medium text-white transition-all hover:-translate-y-px hover:bg-[#a33408] lg:w-auto lg:px-8"
             >
               {c.cta}
+            </Link>
+            <Link
+              href="/sign-in"
+              className="text-sm text-[#5a5650] transition-colors hover:text-[#1a1814]"
+            >
+              {c.signInCta}
             </Link>
           </div>
         </div>

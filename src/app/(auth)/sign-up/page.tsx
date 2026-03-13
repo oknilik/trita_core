@@ -102,7 +102,7 @@ function SignUpContent() {
     try {
       await signUp.create({
         emailAddress: email,
-        unsafeMetadata: { locale },
+        unsafeMetadata: { locale, intent },
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -148,7 +148,7 @@ function SignUpContent() {
             body: JSON.stringify({ token: observeToken }),
           }).catch(() => null);
         }
-        window.location.href = safeRedirectUrl ?? "/onboarding";
+        window.location.href = safeRedirectUrl ?? `/onboarding?intent=${intent}`;
       } else {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
@@ -170,7 +170,7 @@ function SignUpContent() {
         redirectUrl: "/sign-up/sso-callback",
         redirectUrlComplete: observeToken
           ? `/observe/${observeToken}`
-          : safeRedirectUrl ?? "/onboarding",
+          : safeRedirectUrl ?? `/onboarding?intent=${intent}`,
       });
     } catch {
       setError(t("auth.errorGoogleSignUp", locale));

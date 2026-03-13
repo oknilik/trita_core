@@ -44,6 +44,12 @@ export function NavBar() {
               Árazás
             </Link>
             <Link
+              href="/sign-in"
+              className="inline-flex min-h-[44px] items-center text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]"
+            >
+              Bejelentkezés
+            </Link>
+            <Link
               href="/sign-up"
               className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
             >
@@ -56,7 +62,13 @@ export function NavBar() {
         </nav>
 
         <SignedOut>
-          <div className="flex items-center lg:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
+            <Link
+              href="/sign-in"
+              className="inline-flex min-h-[44px] items-center text-sm font-medium text-[#3d3a35] hover:text-[#c8410a]"
+            >
+              Bejelentkezés
+            </Link>
             <Link
               href="/sign-up"
               className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
