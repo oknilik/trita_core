@@ -37,6 +37,9 @@ export function NavBar() {
             <Link href="/#science" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
               Tudomány
             </Link>
+            <Link href="/blog" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+              Blog
+            </Link>
             <Link href="/pricing" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
               Árazás
             </Link>
