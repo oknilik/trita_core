@@ -20,17 +20,17 @@ export function AdminTableSection({
   const total = rows.reduce((sum, row) => sum + row.value, 0);
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-6">
+    <div className="rounded-xl border border-[#e8e4dc] bg-white p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-gray-500">
+          <h2 className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
             {title}
           </h2>
           {description && (
-            <p className="mt-0.5 text-xs text-gray-400">{description}</p>
+            <p className="mt-0.5 text-xs text-[#5a5650]">{description}</p>
           )}
         </div>
-        <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+        <span className="rounded-full bg-[#e8e4dc] px-2.5 py-0.5 text-xs font-semibold text-[#3d3a35]">
           {total}
         </span>
       </div>
@@ -43,16 +43,16 @@ export function AdminTableSection({
             <div key={idx}>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-[#3d3a35]">
                     {row.label}
                   </span>
                   {row.subtitle && (
-                    <p className="mt-0.5 text-xs text-gray-400">
+                    <p className="mt-0.5 text-xs text-[#5a5650]">
                       {row.subtitle}
                     </p>
                   )}
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-sm font-semibold text-[#1a1814]">
                   {row.value}
                 </span>
               </div>

@@ -103,16 +103,16 @@ function generateHexacoScores() {
 // ─── Fake team members ─────────────────────────────────────────────────────────
 
 const FAKE_MEMBERS = [
-  { username: "Kovács Péter",    email: "kovacs.peter@seed.test",    occupation: "Frontend fejlesztő" },
-  { username: "Nagy Eszter",     email: "nagy.eszter@seed.test",     occupation: "Termékmenedzser" },
-  { username: "Szabó Dávid",     email: "szabo.david@seed.test",     occupation: "Backend fejlesztő" },
-  { username: "Tóth Réka",       email: "toth.reka@seed.test",       occupation: "UX designer" },
-  { username: "Horváth Balázs",  email: "horvath.balazs@seed.test",  occupation: "DevOps mérnök" },
-  { username: "Varga Anna",      email: "varga.anna@seed.test",      occupation: "Értékesítési vezető" },
-  { username: "Kiss Gábor",      email: "kiss.gabor@seed.test",      occupation: "Adatelemző" },
-  { username: "Fekete Zsófia",   email: "fekete.zsofia@seed.test",   occupation: "Marketingmenedzser" },
-  { username: "Balogh Tamás",    email: "balogh.tamas@seed.test",    occupation: "Ügyfélsikermenedzser" },
-  { username: "Molnár Lilla",    email: "molnar.lilla@seed.test",    occupation: "HR specialista" },
+  { username: "Kovács Péter",    email: "kovacs.peter@seed.test" },
+  { username: "Nagy Eszter",     email: "nagy.eszter@seed.test" },
+  { username: "Szabó Dávid",     email: "szabo.david@seed.test" },
+  { username: "Tóth Réka",       email: "toth.reka@seed.test" },
+  { username: "Horváth Balázs",  email: "horvath.balazs@seed.test" },
+  { username: "Varga Anna",      email: "varga.anna@seed.test" },
+  { username: "Kiss Gábor",      email: "kiss.gabor@seed.test" },
+  { username: "Fekete Zsófia",   email: "fekete.zsofia@seed.test" },
+  { username: "Balogh Tamás",    email: "balogh.tamas@seed.test" },
+  { username: "Molnár Lilla",    email: "molnar.lilla@seed.test" },
 ];
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
@@ -285,7 +285,6 @@ Opciók:
           data: {
             email: fake.email,
             username: fake.username,
-            occupation: fake.occupation,
             testType: "HEXACO",
             testTypeAssignedAt: new Date(),
             onboardedAt: new Date(),
@@ -331,8 +330,136 @@ Opciók:
         });
       }
 
-      console.log(`   ✅  ${fake.username} (${fake.occupation}) — ${userProfile.id}`);
+      console.log(`   ✅  ${fake.username} — ${userProfile.id}`);
     }
+
+    // ── Create active subscription ─────────────────────────────────────────────
+    await prisma.subscription.upsert({
+      where: { orgId: org.id },
+      create: {
+        orgId: org.id,
+        status: "active",
+        currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      },
+      update: {
+        status: "active",
+        currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      },
+    });
+    console.log(`   ✅  Subscription: active (1 év)`);
+
+    // ── Seed observer data: each member gets 2–3 observer assessments ──────────
+    console.log("\n👁️   Observer adatok generálása...");
+
+    // Collect all seeded member ids
+    const seededEmails = FAKE_MEMBERS.slice(0, memberCount).map((m) => m.email);
+    const seededProfiles = await prisma.userProfile.findMany({
+      where: { email: { in: seededEmails } },
+      select: { id: true, email: true },
+    });
+
+    const RELATIONSHIPS = ["COLLEAGUE", "FRIEND", "FAMILY"] as const;
+    const DURATIONS = ["LT_1", "1_3", "3_5", "5P"] as const;
+
+    for (const profile of seededProfiles) {
+      // Pick 2 other seeded profiles as observers
+      const observers = seededProfiles.filter((p) => p.id !== profile.id).slice(0, 2);
+      for (const observer of observers) {
+        // Check if invitation already exists
+        const existing = await prisma.observerInvitation.findFirst({
+          where: { inviterId: profile.id, observerProfileId: observer.id },
+          select: { id: true },
+        });
+        if (existing) continue;
+
+        const rel = RELATIONSHIPS[rand(0, 2)];
+        const dur = DURATIONS[rand(0, 3)];
+        const scores = generateHexacoScores();
+
+        const invitation = await prisma.observerInvitation.create({
+          data: {
+            inviterId: profile.id,
+            observerProfileId: observer.id,
+            observerEmail: observer.email,
+            testType: "HEXACO",
+            status: "COMPLETED",
+            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            completedAt: new Date(),
+          },
+          select: { id: true },
+        });
+
+        await prisma.observerAssessment.create({
+          data: {
+            invitationId: invitation.id,
+            relationshipType: rel,
+            knownDuration: dur,
+            scores: scores as object,
+            confidence: rand(3, 5),
+          },
+        });
+      }
+    }
+
+    // Admin also gets 2 observer assessments from seeded members
+    const adminObservers = seededProfiles.slice(0, 2);
+    for (const observer of adminObservers) {
+      const existing = await prisma.observerInvitation.findFirst({
+        where: { inviterId: admin.id, observerProfileId: observer.id },
+        select: { id: true },
+      });
+      if (existing) continue;
+
+      const rel = RELATIONSHIPS[rand(0, 2)];
+      const dur = DURATIONS[rand(0, 3)];
+      const scores = generateHexacoScores();
+
+      const invitation = await prisma.observerInvitation.create({
+        data: {
+          inviterId: admin.id,
+          observerProfileId: observer.id,
+          observerEmail: observer.email,
+          testType: "HEXACO",
+          status: "COMPLETED",
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          completedAt: new Date(),
+        },
+        select: { id: true },
+      });
+
+      await prisma.observerAssessment.create({
+        data: {
+          invitationId: invitation.id,
+          relationshipType: rel,
+          knownDuration: dur,
+          scores: scores as object,
+          confidence: rand(3, 5),
+        },
+      });
+    }
+    console.log(`   ✅  Observer assessmentek létrehozva`);
+
+    // ── Seed campaign ──────────────────────────────────────────────────────────
+    console.log("\n🎯  Kampány létrehozása...");
+    const campaign = await prisma.campaign.create({
+      data: {
+        orgId: org.id,
+        name: "Q1 2026 — 360° Értékelés",
+        description: "Negyedéves személyiségalapú 360 fokos értékelés a csapat minden tagjára.",
+        status: "ACTIVE",
+        createdBy: admin.id,
+      },
+      select: { id: true },
+    });
+
+    // Add all seeded members as participants
+    const allMemberIds = [admin.id, ...seededProfiles.map((p) => p.id)];
+    for (const userId of allMemberIds) {
+      await prisma.campaignParticipant.create({
+        data: { campaignId: campaign.id, userId },
+      }).catch(() => {/* skip duplicates */});
+    }
+    console.log(`   ✅  Kampány létrehozva, ${allMemberIds.length} résztvevővel`);
 
     // ── Done ───────────────────────────────────────────────────────────────────
     console.log(`
@@ -340,6 +467,7 @@ Opciók:
 
    Szervezet:  http://localhost:3000/org/${org.id}
    Csapat:     http://localhost:3000/team/${team.id}
+   Kampány:    http://localhost:3000/org/${org.id}/campaigns/${campaign.id}
    Dashboard:  http://localhost:3000/dashboard
 `);
   } finally {

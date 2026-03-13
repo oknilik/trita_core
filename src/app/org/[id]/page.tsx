@@ -192,8 +192,21 @@ export default async function OrgDetailPage({
           )}
         </section>
 
+        {/* Active campaign banner */}
+        {campaigns.some((c) => c.status === "ACTIVE") && (
+          <a
+            href="#campaigns"
+            className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100"
+          >
+            <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+            {isHu
+              ? `${campaigns.filter((c) => c.status === "ACTIVE").length} aktív 360° kampány folyamatban →`
+              : `${campaigns.filter((c) => c.status === "ACTIVE").length} active 360° campaign${campaigns.filter((c) => c.status === "ACTIVE").length > 1 ? "s" : ""} in progress →`}
+          </a>
+        )}
+
         {/* Campaigns */}
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
+        <section id="campaigns" className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
             {isHu ? "// 360° kampányok" : "// 360° campaigns"}
           </p>
@@ -209,6 +222,11 @@ export default async function OrgDetailPage({
               ...c,
               createdAt: c.createdAt.toISOString(),
               closedAt: c.closedAt?.toISOString() ?? null,
+            }))}
+            members={members.map((m) => ({
+              id: m.id,
+              userId: m.userId,
+              user: { username: m.user.username ?? null, email: m.user.email ?? null },
             }))}
             canManage={isManager}
             isHu={isHu}

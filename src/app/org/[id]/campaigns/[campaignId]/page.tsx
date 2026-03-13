@@ -6,6 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
+import { AddParticipantButton } from "@/components/org/AddParticipantButton";
 
 export const dynamic = "force-dynamic";
 
@@ -34,26 +35,35 @@ export default async function CampaignDetailPage({
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   const isHu = locale !== "en";
 
-  const campaign = await prisma.campaign.findUnique({
-    where: { id: campaignId, orgId },
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      status: true,
-      createdAt: true,
-      closedAt: true,
-      creator: { select: { username: true } },
-      participants: {
-        orderBy: { addedAt: "asc" },
-        select: {
-          id: true,
-          addedAt: true,
-          user: { select: { id: true, username: true, email: true } },
+  const [campaign, orgMembers] = await Promise.all([
+    prisma.campaign.findUnique({
+      where: { id: campaignId, orgId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        status: true,
+        createdAt: true,
+        closedAt: true,
+        creator: { select: { username: true } },
+        participants: {
+          orderBy: { addedAt: "asc" },
+          select: {
+            id: true,
+            addedAt: true,
+            user: { select: { id: true, username: true, email: true } },
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.organizationMember.findMany({
+      where: { orgId },
+      select: {
+        userId: true,
+        user: { select: { username: true, email: true } },
+      },
+    }),
+  ]);
 
   if (!campaign) notFound();
 
@@ -157,6 +167,27 @@ export default async function CampaignDetailPage({
               ))}
             </div>
           )}
+
+          {isManager && campaign.status !== "CLOSED" && (() => {
+            const addedUserIds = new Set(campaign.participants.map((p) => p.user.id));
+            const availableMembers = orgMembers
+              .filter((m) => !addedUserIds.has(m.userId))
+              .map((m) => ({
+                userId: m.userId,
+                username: m.user.username ?? null,
+                email: m.user.email ?? null,
+              }));
+            return availableMembers.length > 0 ? (
+              <div className="mt-5 border-t border-[#e8e4dc] pt-5">
+                <AddParticipantButton
+                  orgId={orgId}
+                  campaignId={campaign.id}
+                  members={availableMembers}
+                  isHu={isHu}
+                />
+              </div>
+            ) : null;
+          })()}
         </section>
 
         {/* Status transition (manager only) */}
