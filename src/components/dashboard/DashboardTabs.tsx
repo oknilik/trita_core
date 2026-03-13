@@ -115,6 +115,9 @@ export interface DashboardTabsProps {
   receivedInvitations: SerializedReceivedInvitation[];
   hasInvites: boolean;
   pendingInvitesCount: number;
+
+  // Paywall
+  hasObserverAccess: boolean;
 }
 
 export function DashboardTabs(props: DashboardTabsProps) {
@@ -254,6 +257,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             completedObserversCount={props.completedObserversCount}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
+            hasObserverAccess={props.hasObserverAccess}
             onTabChange={handleTabChange}
             locale={locale}
           />
@@ -264,6 +268,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             <InvitesTabPanel
             sentInvitations={props.sentInvitations}
             receivedInvitations={props.receivedInvitations}
+            hasObserverAccess={props.hasObserverAccess}
             locale={locale}
           />
           </div>
@@ -473,6 +478,7 @@ interface ComparisonTabPanelProps {
   completedObserversCount: number;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
+  hasObserverAccess: boolean;
   onTabChange: (tab: TabId) => void;
   locale: Locale;
 }
@@ -483,6 +489,7 @@ function ComparisonTabPanel({
   completedObserversCount,
   avgConfidence,
   hasObserverFeedback,
+  hasObserverAccess,
   onTabChange,
   locale,
 }: ComparisonTabPanelProps) {
@@ -525,11 +532,26 @@ function ComparisonTabPanel({
   return (
     <>
       <FadeIn delay={0.05}>
-        <ObserverComparison
-          observerCount={observerComparison.count}
-          avgConfidence={avgConfidence}
-          facetDivergences={facetDivergences}
-        />
+        <div className={!hasObserverAccess ? "relative" : undefined}>
+          <ObserverComparison
+            observerCount={observerComparison.count}
+            avgConfidence={avgConfidence}
+            facetDivergences={facetDivergences}
+          />
+          {!hasObserverAccess && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-white/80 backdrop-blur-sm">
+              <p className="mb-4 text-center text-sm font-semibold text-[#1a1814]">
+                Az összehasonlítás csomag-előfizetéssel érhető el.
+              </p>
+              <a
+                href="/billing/upgrade"
+                className="inline-flex min-h-[44px] items-center justify-center rounded bg-[#c8410a] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+              >
+                Trial indítása →
+              </a>
+            </div>
+          )}
+        </div>
       </FadeIn>
 
     </>
@@ -541,12 +563,14 @@ function ComparisonTabPanel({
 interface InvitesTabPanelProps {
   sentInvitations: SerializedInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
+  hasObserverAccess: boolean;
   locale: Locale;
 }
 
 function InvitesTabPanel({
   sentInvitations,
   receivedInvitations,
+  hasObserverAccess,
   locale,
 }: InvitesTabPanelProps) {
   return (
@@ -554,7 +578,7 @@ function InvitesTabPanel({
       {/* Invite section */}
       <FadeIn delay={0.1}>
         <div className="relative overflow-hidden rounded-2xl scroll-mt-24">
-          <InviteSection initialInvitations={sentInvitations} />
+          <InviteSection initialInvitations={sentInvitations} hasObserverAccess={hasObserverAccess} />
         </div>
       </FadeIn>
 

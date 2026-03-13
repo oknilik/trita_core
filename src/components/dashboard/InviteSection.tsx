@@ -17,6 +17,7 @@ interface Invitation {
 
 interface InviteSectionProps {
   initialInvitations: Invitation[];
+  hasObserverAccess: boolean;
 }
 
 function getRelationshipColor(relationship?: string | null): string {
@@ -67,7 +68,7 @@ async function copyTextWithFallback(text: string): Promise<boolean> {
   }
 }
 
-export function InviteSection({ initialInvitations }: InviteSectionProps) {
+export function InviteSection({ initialInvitations, hasObserverAccess }: InviteSectionProps) {
   const { showToast } = useToast();
   const { locale } = useLocale();
   const [invitations, setInvitations] = useState(initialInvitations);
@@ -173,6 +174,29 @@ export function InviteSection({ initialInvitations }: InviteSectionProps) {
       setDeletingId(null);
     }
   };
+
+  if (!hasObserverAccess) {
+    return (
+      <section className="rounded-2xl border border-[#e8e4dc] bg-white p-8 md:p-12">
+        <p className="font-ibm-plex-mono mb-3 text-[10px] uppercase tracking-[2px] text-[#c8410a]">
+          // observer meghívók
+        </p>
+        <p className="font-playfair mb-2 text-xl text-[#1a1814]">
+          Hívd meg a csapatod
+        </p>
+        <p className="mb-6 text-sm leading-relaxed text-[#5a5650]">
+          Az observer visszajelzés csak csomag-előfizetéssel érhető el. Indíts 14 napos
+          ingyenes trialt – kártyaadat nélkül.
+        </p>
+        <a
+          href="/billing/upgrade"
+          className="inline-flex min-h-[44px] items-center justify-center rounded bg-[#c8410a] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+        >
+          Trial indítása →
+        </a>
+      </section>
+    );
+  }
 
   return (
     <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">

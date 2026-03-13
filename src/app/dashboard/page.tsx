@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { hasOrgRole } from "@/lib/auth";
-import { getOrgSubscription, trialDaysLeft as calcTrialDaysLeft } from "@/lib/subscription";
+import { getOrgSubscription, hasAccess, trialDaysLeft as calcTrialDaysLeft } from "@/lib/subscription";
 
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
@@ -489,6 +489,19 @@ export default async function DashboardPage({
   );
   const hasInvites = sentInvitations.length > 0;
   const hasObserverFeedback = completedObservers.length >= 2;
+
+  // Paywall: org members with active/trial subscription get observer access
+  let hasObserverAccess = false;
+  if (profile) {
+    const membershipForAccess = await prisma.organizationMember.findUnique({
+      where: { userId: profile.id },
+      select: { orgId: true, leftAt: true },
+    });
+    if (membershipForAccess && !membershipForAccess.leftAt) {
+      const subForAccess = await getOrgSubscription(membershipForAccess.orgId);
+      hasObserverAccess = hasAccess(subForAccess);
+    }
+  }
   const avgConfidence =
     confidenceStats._avg.confidence != null
       ? Math.round(confidenceStats._avg.confidence * 10) / 10
@@ -677,6 +690,7 @@ export default async function DashboardPage({
         }))}
         hasInvites={hasInvites}
         pendingInvitesCount={pendingInvites.length}
+        hasObserverAccess={hasObserverAccess}
       />
       </main>
     </div>

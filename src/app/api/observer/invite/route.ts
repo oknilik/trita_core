@@ -10,6 +10,8 @@ const inviteSchema = z
   .object({
     email: z.string().email().optional(),
     name: z.string().min(1).max(100).optional(),
+    observerType: z.enum(["INTERNAL", "EXTERNAL", "ANONYMOUS"]).default("INTERNAL"),
+    externalContext: z.string().max(200).optional(),
   })
   .strict();
 
@@ -77,6 +79,8 @@ export async function POST(req: Request) {
       observerName: parsed.data.name ?? null,
       testType: profile.testType,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      observerType: parsed.data.observerType,
+      externalContext: parsed.data.externalContext ?? null,
     },
   });
 

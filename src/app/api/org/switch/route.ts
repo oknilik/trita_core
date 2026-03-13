@@ -3,9 +3,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
-const schema = z.object({ inviteId: z.string().min(1) });
+const schema = z.object({
+  inviteId: z.string().min(1),
+});
 
-// POST /api/team/join — add authenticated user to team + org via invite token
+// POST /api/org/switch — leave current org and join a new one via pending invite
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
@@ -34,20 +36,14 @@ export async function POST(req: Request) {
 
   const { teamId } = invite;
   const orgId = invite.team.orgId;
-
-  // 1-org enforcement
-  const existingOrg = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { leftAt: true, orgId: true },
-  });
-  if (existingOrg && !existingOrg.leftAt) {
-    return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
-  }
-
-  // Email-specific invites (not the reusable open-link type) are consumed on join.
   const isEmailInvite = invite.email !== "__open__";
 
+  // Delete old membership (@@unique([userId]) prevents soft-delete for now)
+  // and create the new one in a transaction
   await prisma.$transaction([
+    prisma.organizationMember.deleteMany({
+      where: { userId: profile.id },
+    }),
     prisma.organizationMember.create({
       data: { orgId, userId: profile.id, role: "ORG_MEMBER" },
     }),
@@ -56,8 +52,6 @@ export async function POST(req: Request) {
       create: { teamId, userId: profile.id, role: "member" },
       update: {},
     }),
-    // Delete email-specific pending invites after accepting — open link invites
-    // (email === "__open__") are reusable and must not be deleted.
     ...(isEmailInvite
       ? [prisma.teamPendingInvite.delete({ where: { id: invite.id } })]
       : []),

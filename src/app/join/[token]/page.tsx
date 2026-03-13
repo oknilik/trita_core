@@ -48,7 +48,7 @@ export default async function JoinPage({
   // Ensure profile exists (Clerk webhook may lag)
   let profile = await prisma.userProfile.findUnique({
     where: { clerkId: clerkUser.id },
-    select: { id: true, onboardedAt: true },
+    select: { id: true, username: true, onboardedAt: true },
   });
 
   if (!profile) {
@@ -56,20 +56,27 @@ export default async function JoinPage({
       where: { clerkId: clerkUser.id },
       create: { clerkId: clerkUser.id },
       update: {},
-      select: { id: true, onboardedAt: true },
+      select: { id: true, username: true, onboardedAt: true },
     });
     profile = created;
   }
 
   if (!profile) notFound();
 
-  // Already in an org → send to dashboard
+  // Check existing org membership
   const existingOrgMembership = await prisma.organizationMember.findUnique({
     where: { userId: profile.id },
+    select: { leftAt: true, orgId: true, org: { select: { name: true } } },
   });
-  if (existingOrgMembership) {
-    redirect("/dashboard");
-  }
+
+  const existingOrg =
+    existingOrgMembership && !existingOrgMembership.leftAt
+      ? { orgId: existingOrgMembership.orgId, orgName: existingOrgMembership.org.name }
+      : null;
+
+  const existingProfile = profile.onboardedAt
+    ? { username: profile.username ?? null, onboardedAt: profile.onboardedAt.toISOString() }
+    : null;
 
   return (
     <JoinClient
@@ -77,6 +84,8 @@ export default async function JoinPage({
       teamId={invite.teamId}
       teamName={invite.team.name}
       orgName={invite.team.org?.name ?? ""}
+      existingProfile={existingProfile}
+      existingOrg={existingOrg}
     />
   );
 }

@@ -97,6 +97,27 @@ export async function POST(req: Request) {
     // Note: org invites are fulfilled via the /join/org/[inviteId] page, not here,
     // so that profile data (username, gender, etc.) gets collected first.
     // Note: team invites are fulfilled via the /join/[token] page, not here.
+
+    // Back-link any observer invitations sent to this email before registration
+    if (event.type === "user.created" && email) {
+      const newProfile = await prisma.userProfile.findUnique({
+        where: { clerkId: user.id },
+        select: { id: true },
+      });
+      if (newProfile) {
+        await prisma.observerInvitation.updateMany({
+          where: {
+            observerEmail: { equals: email, mode: "insensitive" },
+            observerProfileId: null,
+            status: { in: ["PENDING", "COMPLETED"] },
+          },
+          data: {
+            observerProfileId: newProfile.id,
+            observerType: "INTERNAL",
+          },
+        });
+      }
+    }
   }
 
   if (event.type === "user.deleted") {
