@@ -4,15 +4,19 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const TABS = [
+  { id: "overview", label: "Áttekintés" },
   { id: "research", label: "Kutatás" },
+  { id: "reminders", label: "Emlékeztetők" },
 ] as const;
+
+type TabId = (typeof TABS)[number]["id"];
 
 export function AdminTabNav() {
   const searchParams = useSearchParams();
-  const active = searchParams.get("tab") ?? "research";
+  const active = (searchParams.get("tab") ?? "overview") as TabId;
 
   return (
-    <div className="mb-8 flex gap-1 rounded-xl border border-gray-100 bg-gray-50 p-1">
+    <div className="mt-6 mb-8 flex gap-1 rounded-xl border border-gray-100 bg-gray-50 p-1">
       {TABS.map((tab) => (
         <Link
           key={tab.id}

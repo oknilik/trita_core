@@ -20,13 +20,22 @@ export function AdminTableSection({
   const total = rows.reduce((sum, row) => sum + row.value, 0);
 
   return (
-    <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
-      <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-      {description && (
-        <p className="mt-1 text-sm text-gray-600">{description}</p>
-      )}
+    <div className="rounded-xl border border-gray-100 bg-white p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-gray-500">
+            {title}
+          </h2>
+          {description && (
+            <p className="mt-0.5 text-xs text-gray-400">{description}</p>
+          )}
+        </div>
+        <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+          {total}
+        </span>
+      </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         {rows.map((row, idx) => {
           const percentage =
             row.percentage ?? (total > 0 ? (row.value / total) * 100 : 0);
@@ -38,7 +47,9 @@ export function AdminTableSection({
                     {row.label}
                   </span>
                   {row.subtitle && (
-                    <p className="text-xs text-gray-400 mt-0.5">{row.subtitle}</p>
+                    <p className="mt-0.5 text-xs text-gray-400">
+                      {row.subtitle}
+                    </p>
                   )}
                 </div>
                 <span className="text-sm font-semibold text-gray-900">
@@ -49,7 +60,7 @@ export function AdminTableSection({
                 <AnimatedBar
                   value={percentage}
                   color={row.color ?? "#6366F1"}
-                  height="h-2"
+                  height="h-1.5"
                   delay={idx * 0.1}
                 />
               </div>

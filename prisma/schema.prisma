@@ -94,6 +94,10 @@ model UserProfile {
   ownedOrgs      Organization[]       @relation("OrgOwner")
   orgMemberships OrganizationMember[]
 
+  // Campaign layer (360°)
+  createdCampaigns       Campaign[]            @relation("CampaignCreator")
+  campaignParticipations CampaignParticipant[]
+
   // Candidate hiring layer
   managedCandidates CandidateInvite[] @relation("ManagedCandidates")
 }
@@ -348,6 +352,7 @@ model Organization {
   members        OrganizationMember[]
   pendingInvites OrganizationPendingInvite[]
   teams          Team[]
+  campaigns      Campaign[]
   subscription   Subscription?
 
   @@index([ownerId])
@@ -401,4 +406,39 @@ model OrganizationPendingInvite {
 
   @@unique([orgId, email])
   @@index([email])
+}
+
+// ── 360° Campaign layer ────────────────────────────────────────────────────
+
+model Campaign {
+  id          String    @id @default(cuid())
+  orgId       String
+  name        String
+  description String?
+  status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  closedAt    DateTime?
+
+  org          Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  creator      UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
+  participants CampaignParticipant[]
+
+  @@index([orgId])
+  @@index([createdBy])
+}
+
+model CampaignParticipant {
+  id         String   @id @default(cuid())
+  campaignId String
+  userId     String
+  addedAt    DateTime @default(now())
+
+  campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     UserProfile @relation(fields: [userId], references: [id])
+
+  @@unique([campaignId, userId])
+  @@index([campaignId])
+  @@index([userId])
 }

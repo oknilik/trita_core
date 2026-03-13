@@ -9,6 +9,7 @@ import { OrgInviteForm } from "@/components/org/OrgInviteForm";
 import { OrgRemoveMemberButton } from "@/components/org/OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "@/components/org/OrgPendingInviteCancelButton";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
+import { CampaignList } from "@/components/org/CampaignList";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,7 @@ export default async function OrgDetailPage({
   const isHu = locale !== "en";
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
-  const [members, pendingInvites, teams] = await Promise.all([
+  const [members, pendingInvites, teams, campaigns] = await Promise.all([
     prisma.organizationMember.findMany({
       where: { orgId },
       orderBy: { joinedAt: "asc" },
@@ -67,6 +68,20 @@ export default async function OrgDetailPage({
         name: true,
         createdAt: true,
         _count: { select: { members: true } },
+      },
+    }),
+    prisma.campaign.findMany({
+      where: { orgId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        status: true,
+        createdAt: true,
+        closedAt: true,
+        creator: { select: { username: true } },
+        _count: { select: { participants: true } },
       },
     }),
   ]);
@@ -175,6 +190,29 @@ export default async function OrgDetailPage({
               <TeamCreateForm locale={locale} orgId={orgId} />
             </div>
           )}
+        </section>
+
+        {/* Campaigns */}
+        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+            {isHu ? "// 360° kampányok" : "// 360° campaigns"}
+          </p>
+          <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+            {isHu ? "360° kampányok" : "360° Campaigns"}{" "}
+            <span className="font-sans text-sm font-normal text-[#3d3a35]/50">
+              ({campaigns.length})
+            </span>
+          </h2>
+          <CampaignList
+            orgId={orgId}
+            campaigns={campaigns.map((c) => ({
+              ...c,
+              createdAt: c.createdAt.toISOString(),
+              closedAt: c.closedAt?.toISOString() ?? null,
+            }))}
+            canManage={isManager}
+            isHu={isHu}
+          />
         </section>
 
         {/* Members */}
