@@ -146,6 +146,12 @@ export function AdminDashboard() {
   const firstTeam = teams[0] ?? null;
   const inviteUrl = stats.firstTeamInviteUrl;
 
+  const teamStatusLabel = stats.teamMapUnlocked
+    ? "csapatkép elérhető"
+    : stats.pendingCount > 0
+    ? `${stats.pendingCount} tag vár`
+    : "profil feltöltés alatt";
+
   // ── Setup steps logic ──────────────────────────────────────────────────────
 
   type StepAction =
@@ -247,22 +253,45 @@ export function AdminDashboard() {
               <span className="font-medium text-[#3d3a35]">org admin</span>
             </p>
           </div>
-          {org.status !== "INACTIVE" && (
-            <div className="flex flex-shrink-0 items-center gap-2">
-              {firstTeam && (
-                <Link href={`/team/${firstTeam.id}`} className={btnSm}>
-                  Csapat →
-                </Link>
-              )}
-              <Link href={`/org/${org.id}`} className={btnSm}>
-                Szervezet →
-              </Link>
-              <Link href={`/org/${org.id}/settings`} className={btnSm}>
-                Beállítások
-              </Link>
-            </div>
-          )}
         </div>
+
+        {/* ── Nav cards ── */}
+        {org.status !== "INACTIVE" && (
+          <div className={`grid gap-3 ${firstTeam ? "grid-cols-2" : "grid-cols-1"}`}>
+            {firstTeam && (
+              <Link
+                href={`/team/${firstTeam.id}`}
+                className="block rounded-xl border border-[#e8e4dc] bg-white p-5 transition-all hover:border-[#c8410a]"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-1">
+                  // csapat
+                </p>
+                <p className="font-playfair text-xl text-[#1a1814]">{firstTeam.name}</p>
+                <p className="text-xs text-[#a09a90] mt-1">
+                  {firstTeam.members.length} tag · {teamStatusLabel}
+                </p>
+                <p className="text-sm font-semibold text-[#c8410a] mt-3 text-right">
+                  Megnyitás →
+                </p>
+              </Link>
+            )}
+            <Link
+              href={`/org/${org.id}`}
+              className="block rounded-xl border border-[#e8e4dc] bg-white p-5 transition-all hover:border-[#c8410a]"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-1">
+                // szervezet
+              </p>
+              <p className="font-playfair text-xl text-[#1a1814]">{org.name}</p>
+              <p className="text-xs text-[#a09a90] mt-1">
+                {teams.length} csapat · {stats.totalMembers} tag
+              </p>
+              <p className="text-sm font-semibold text-[#c8410a] mt-3 text-right">
+                Megnyitás →
+              </p>
+            </Link>
+          </div>
+        )}
 
         {/* ── Inactive banner ── */}
         {org.status === "INACTIVE" && (
@@ -285,7 +314,7 @@ export function AdminDashboard() {
         )}
 
         {/* ── Getting Started Card ── */}
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm overflow-hidden">
+        {completedSteps < steps.length && <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm overflow-hidden">
 
           {/* Card header */}
           <div className="flex items-start justify-between gap-4 border-b border-[#e8e4dc] px-4 py-4 sm:gap-6 sm:px-7 sm:py-6">
@@ -397,7 +426,7 @@ export function AdminDashboard() {
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* ── Stats Row ── */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -408,6 +437,7 @@ export function AdminDashboard() {
               sub: `${stats.totalMembers} tagból`,
               note: stats.pendingCount > 0 ? `${stats.pendingCount} tag még nem kezdte el` : "Mindenki kész!",
               noteHighlight: false,
+              accentColor: "#6366F1",
             },
             {
               label: "csapatkép",
@@ -415,6 +445,7 @@ export function AdminDashboard() {
               sub: stats.teamMapUnlocked ? "minimum teljesítve" : "3 kitöltés kell",
               note: stats.teamMapUnlocked ? "Radar diagram feloldva" : `${stats.completedCount} / 3 minimum`,
               noteHighlight: stats.teamMapUnlocked,
+              accentColor: "#10B981",
             },
             {
               label: "observer párok",
@@ -422,10 +453,11 @@ export function AdminDashboard() {
               sub: "aktív visszajelzés",
               note: "Csapatkép után elérhető",
               noteHighlight: false,
+              accentColor: "#8B5CF6",
             },
           ].map((s, i) => (
-            <div key={i} className="group relative overflow-hidden rounded-xl border border-[#e8e4dc] bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
-              <div className="absolute inset-x-0 top-0 h-[3px] bg-[#c8410a] opacity-0 transition-opacity group-hover:opacity-100" />
+            <div key={i} className="relative overflow-hidden rounded-xl border border-[#e8e4dc] bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+              <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.accentColor }} />
               <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#a09a90]">{s.label}</p>
               <p className="mt-2 font-playfair text-[32px] leading-none text-[#1a1814]">{s.value}</p>
               <p className="mt-1 text-[12px] text-[#7a756e]">{s.sub}</p>
