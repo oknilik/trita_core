@@ -120,7 +120,7 @@ export function TeamOverviewTab({
     <div className="flex flex-col gap-6 pt-6">
       {/* Active campaign banner */}
       {activeCampaign && (
-        <div className="rounded-2xl border-[1.5px] border-[#1D9E75] bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] p-5 flex items-start justify-between gap-4">
+        <div className="rounded-2xl border-[1.5px] border-[#1D9E75] bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] p-4 md:p-5 flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
           <div className="flex items-start gap-3 min-w-0">
             {/* Pulsing green dot */}
             <span className="relative mt-1 flex h-3 w-3 shrink-0">
@@ -149,7 +149,7 @@ export function TeamOverviewTab({
           </div>
           <Link
             href={`/org/${activeCampaign.orgId}/campaigns/${activeCampaign.id}`}
-            className="min-h-[36px] inline-flex items-center rounded-lg bg-[#1D9E75] px-4 text-xs font-semibold text-white transition hover:bg-[#158c66] whitespace-nowrap shrink-0"
+            className="min-h-[36px] self-start md:self-auto inline-flex items-center rounded-lg bg-[#1D9E75] px-4 text-xs font-semibold text-white transition hover:bg-[#158c66] whitespace-nowrap shrink-0"
           >
             {isHu ? "Kampány nézete →" : "View campaign →"}
           </Link>

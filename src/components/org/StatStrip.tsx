@@ -11,11 +11,11 @@ interface StatStripProps {
 
 export function StatStrip({ cells }: StatStripProps) {
   return (
-    <div className="flex flex-wrap items-stretch divide-x divide-[#e8e4dc] overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
+    <div className="flex items-stretch divide-x divide-[#e8e4dc] overflow-x-auto overflow-y-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {cells.map((cell, i) => (
         <div
           key={i}
-          className="relative flex min-w-[120px] flex-1 flex-col gap-1 px-5 py-4"
+          className="relative flex min-w-[140px] flex-shrink-0 flex-1 flex-col gap-1 px-5 py-4"
         >
           {/* Top accent bar */}
           <div

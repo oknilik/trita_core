@@ -317,220 +317,199 @@ export default function ProfilePage() {
   };
 
   const toggleClass = (isActive: boolean) =>
-    `min-h-[44px] rounded border px-4 text-sm font-medium transition ${
+    `min-h-[44px] rounded-full border px-4 py-1.5 text-[12px] font-medium transition-colors ${
       isActive
-        ? "border-[#c8410a]/30 bg-[#fef3ec] text-[#c8410a]"
-        : "border-[#e0ddd6] bg-white text-[#5a5650] hover:border-[#c8410a]/20 hover:bg-[#faf9f6]"
+        ? "border-[#c8410a] bg-[#fce7d6] font-semibold text-[#c8410a]"
+        : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a] hover:text-[#c8410a]"
     }`;
+
+  const roleLabel =
+    org?.role === "ORG_ADMIN"
+      ? "Admin"
+      : org?.role === "ORG_MANAGER"
+      ? (locale === "en" ? "Manager" : "Menedzser")
+      : org?.role
+      ? (locale === "en" ? "Member" : "Tag")
+      : "";
+  const metaParts = [org?.name, teams.map((tm) => tm.name).join(", ") || null, roleLabel || null].filter(Boolean);
 
   return (
     <div className="min-h-dvh bg-[#faf9f6]">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pt-10 pb-20">
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pt-8 pb-20">
 
         {/* ── Profile header ── */}
         <FadeIn delay={0}>
-          <section className="rounded border border-[#e0ddd6] bg-white p-6">
+          <section className="rounded-xl bg-[#1a1814] px-6 py-5">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#c8410a]/10 text-lg font-semibold text-[#c8410a]">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-[#2a2824] bg-[#f0c4b0] text-xl font-bold text-[#c8410a]">
                 {initials}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-base font-semibold text-[#1a1814]">{displayName}</p>
-                {email && (
-                  <p className="truncate text-sm text-[#5a5650]">{email}</p>
+                <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-[#c8410a]">
+                  // profil
+                </p>
+                <p className="truncate font-playfair text-[22px] font-black leading-tight tracking-tight text-white">
+                  {displayName}
+                </p>
+                {metaParts.length > 0 && (
+                  <p className="mt-1 text-[12px] text-[#6b6560]">
+                    {metaParts.join(" · ")}
+                  </p>
                 )}
               </div>
             </div>
-
-            {(org || teams.length > 0) && (
-              <div className="mt-4 flex flex-col gap-2 border-t border-[#e0ddd6] pt-4">
-                {org && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-[#a09c96]">{locale === "en" ? "Organization" : "Szervezet"}</span>
-                    <span className="font-medium text-[#1a1814]">{org.name}</span>
-                    <span className="rounded-full bg-[#e8e4dc] px-2 py-0.5 text-xs text-[#5a5650]">
-                      {org.role === "ORG_ADMIN" ? "Admin" : org.role === "ORG_MANAGER" ? (locale === "en" ? "Manager" : "Menedzser") : (locale === "en" ? "Member" : "Tag")}
-                    </span>
-                  </div>
-                )}
-                {teams.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2 text-sm">
-                    <span className="text-[#a09c96]">{locale === "en" ? "Teams" : "Csapatok"}</span>
-                    {teams.map((team) => (
-                      <span key={team.id} className="rounded-full bg-[#e8e4dc] px-2 py-0.5 text-xs font-medium text-[#1a1814]">
-                        {team.name}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
           </section>
         </FadeIn>
 
         {/* ── Demographics ── */}
         <FadeIn delay={0.05}>
-          <section className="rounded border border-[#e0ddd6] bg-white p-6">
-            <h2 className="text-base font-semibold text-[#1a1814]">
-              {t("profile.demographicsTitle", locale)}
-            </h2>
-            <p className="mt-1 text-sm text-[#5a5650]">
-              {t("profile.demographicsBody", locale)}
-            </p>
+          <section className="overflow-hidden rounded-xl border border-[#e8e4dc] bg-white">
+            <div className="border-b border-[#f0ede6] px-5 py-4">
+              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#c8410a]">
+                // személyes adatok
+              </p>
+              <h2 className="text-[15px] font-bold text-[#1a1814]">
+                {t("profile.demographicsTitle", locale)}
+              </h2>
+              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+                {t("profile.demographicsBody", locale)}
+              </p>
+            </div>
 
-            <div className="mt-6 flex flex-col gap-4">
-              {/* Basics block */}
-              <section className="rounded border border-[#e0ddd6] bg-[#f7f5f0] p-4">
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-[#1a1814]">
-                    👤 {t("onboarding.blockBasicsTitle", locale)}
-                  </p>
-                  <p className="text-xs text-[#5a5650]">{t("onboarding.blockBasicsHint", locale)}</p>
-                </div>
-                <div className="flex flex-col gap-5">
-                  <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
-                    {t("onboarding.usernameLabel", locale)}
-                    <input
-                      ref={usernameInputRef}
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      onBlur={() => setUsernameTouched(true)}
-                      placeholder={t("onboarding.usernamePlaceholder", locale)}
-                      minLength={2}
-                      maxLength={20}
-                      className={`min-h-[44px] rounded border-2 px-3 text-sm text-[#1a1814] focus:outline-none ${
-                        usernameTouched && username.trim() !== "" && !usernameValid
-                          ? "border-orange-400 bg-orange-50"
-                          : "border-[#e0ddd6] bg-white focus:border-[#c8410a]/50"
-                      } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
-                    />
-                    {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                      <span className="pl-1 text-xs italic text-orange-700">
-                        {t("onboarding.usernameError", locale)}
-                      </span>
-                    ) : (
-                      <span className="pl-1 text-xs italic text-[#5a5650]">
-                        {t("onboarding.usernameHint", locale)}
-                      </span>
-                    )}
-                  </label>
-
-                  <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
-                    {t("onboarding.birthYearLabel", locale)}
-                    <input
-                      ref={birthYearInputRef}
-                      type="number"
-                      inputMode="numeric"
-                      value={birthYear}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value.length <= 4) setBirthYear(value);
-                      }}
-                      onBlur={() => setBirthYearTouched(true)}
-                      placeholder={t("onboarding.birthYearPlaceholder", locale)}
-                      min={minBirthYear}
-                      max={maxBirthYear}
-                      maxLength={4}
-                      className={`min-h-[44px] rounded border-2 px-3 text-sm text-[#1a1814] focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
-                        birthYearTouched && birthYear !== "" && !birthYearValid
-                          ? "border-orange-400 bg-orange-50"
-                          : "border-[#e0ddd6] bg-white focus:border-[#c8410a]/50"
-                      } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
-                    />
-                    {birthYearTouched && birthYear !== "" && !birthYearValid ? (
-                      <span className="pl-1 text-xs italic text-orange-700">
-                        {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                      </span>
-                    ) : (
-                      <span className="pl-1 text-xs italic text-[#5a5650]">
-                        {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                      </span>
-                    )}
-                  </label>
-
-                  <div className={`flex flex-col gap-2 rounded p-1 transition ${invalidFieldFlash === "gender" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}>
-                    <span className="text-sm font-medium text-[#1a1814]">
-                      {t("onboarding.genderLabel", locale)}
+            <div className="flex flex-col gap-5 px-5 py-5">
+              <div className="grid grid-cols-2 gap-4">
+                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-[#5a5650]">
+                  {t("onboarding.usernameLabel", locale)}
+                  <input
+                    ref={usernameInputRef}
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onBlur={() => setUsernameTouched(true)}
+                    placeholder={t("onboarding.usernamePlaceholder", locale)}
+                    minLength={2}
+                    maxLength={20}
+                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-[#1a1814] focus:outline-none ${
+                      usernameTouched && username.trim() !== "" && !usernameValid
+                        ? "border-orange-400 bg-orange-50"
+                        : "border-[#e8e4dc] bg-white focus:border-[#c8410a]/50"
+                    } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
+                  />
+                  {usernameTouched && username.trim() !== "" && !usernameValid ? (
+                    <span className="pl-1 text-[11px] italic text-orange-700">
+                      {t("onboarding.usernameError", locale)}
                     </span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {GENDER_OPTIONS.map((opt, idx) => (
-                        <button
-                          key={opt.value}
-                          ref={idx === 0 ? genderFirstButtonRef : undefined}
-                          type="button"
-                          onClick={() => setGender(opt.value)}
-                          className={toggleClass(gender === opt.value)}
-                        >
-                          {t(opt.labelKey, locale)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  ) : (
+                    <span className="pl-1 text-[11px] text-[#a09a90]">
+                      {t("onboarding.usernameHint", locale)}
+                    </span>
+                  )}
+                </label>
 
-                  <div
-                    ref={countryFieldRef}
-                    className={`rounded transition ${invalidFieldFlash === "country" ? "ring-2 ring-orange-300 bg-orange-50/60 p-1" : ""}`}
-                  >
-                    <PickerTrigger
-                      label={t("onboarding.countryLabel", locale)}
-                      value={countryLabel}
-                      placeholder={t("onboarding.countryPlaceholder", locale)}
-                      onClick={() => setCountryPickerOpen(true)}
-                    />
-                  </div>
+                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-[#5a5650]">
+                  {t("onboarding.birthYearLabel", locale)}
+                  <input
+                    ref={birthYearInputRef}
+                    type="number"
+                    inputMode="numeric"
+                    value={birthYear}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value.length <= 4) setBirthYear(value);
+                    }}
+                    onBlur={() => setBirthYearTouched(true)}
+                    placeholder={t("onboarding.birthYearPlaceholder", locale)}
+                    min={minBirthYear}
+                    max={maxBirthYear}
+                    maxLength={4}
+                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-[#1a1814] focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                      birthYearTouched && birthYear !== "" && !birthYearValid
+                        ? "border-orange-400 bg-orange-50"
+                        : "border-[#e8e4dc] bg-white focus:border-[#c8410a]/50"
+                    } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
+                  />
+                  {birthYearTouched && birthYear !== "" && !birthYearValid ? (
+                    <span className="pl-1 text-[11px] italic text-orange-700">
+                      {minBirthYear}–{maxBirthYear}
+                    </span>
+                  ) : (
+                    <span className="pl-1 text-[11px] text-[#a09a90]">
+                      {minBirthYear}–{maxBirthYear}
+                    </span>
+                  )}
+                </label>
+              </div>
+
+              <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-orange-50/60 ring-2 ring-orange-300" : ""}`}>
+                <span className="text-[12px] font-semibold text-[#5a5650]">
+                  {t("onboarding.genderLabel", locale)}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {GENDER_OPTIONS.map((opt, idx) => (
+                    <button
+                      key={opt.value}
+                      ref={idx === 0 ? genderFirstButtonRef : undefined}
+                      type="button"
+                      onClick={() => setGender(opt.value)}
+                      className={toggleClass(gender === opt.value)}
+                    >
+                      {t(opt.labelKey, locale)}
+                    </button>
+                  ))}
                 </div>
-              </section>
+              </div>
+
+              <div
+                ref={countryFieldRef}
+                className={`rounded-lg transition ${invalidFieldFlash === "country" ? "bg-orange-50/60 p-1 ring-2 ring-orange-300" : ""}`}
+              >
+                <PickerTrigger
+                  label={t("onboarding.countryLabel", locale)}
+                  value={countryLabel}
+                  placeholder={t("onboarding.countryPlaceholder", locale)}
+                  onClick={() => setCountryPickerOpen(true)}
+                />
+              </div>
             </div>
           </section>
         </FadeIn>
 
         {/* ── Locale ── */}
         <FadeIn delay={0.1}>
-          <section className="rounded border border-[#e0ddd6] bg-white p-6">
-            <h2 className="text-base font-semibold text-[#1a1814]">{t("profile.localeTitle", locale)}</h2>
-            <p className="mt-1 text-sm text-[#5a5650]">
-              {t("profile.localeBody", locale)}
-            </p>
-            <p className="mt-1 text-xs text-[#a09c96]">
-              {t("profile.localeAutoHint", locale)}
-            </p>
-
-            <div className="mt-4 rounded border border-[#e0ddd6] bg-[#f7f5f0] p-2">
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                {SUPPORTED_LOCALES.map((loc) => (
-                  <button
-                    key={loc}
-                    type="button"
-                    onClick={() => setSelectedLocale(loc)}
-                    className={`group relative flex min-h-[52px] items-center gap-3 rounded border px-4 text-left text-sm font-medium transition ${
-                      selectedLocale === loc
-                        ? "border-[#c8410a]/30 bg-white text-[#c8410a] shadow-sm"
-                        : "border-transparent bg-white/60 text-[#5a5650] hover:border-[#e0ddd6] hover:bg-white"
-                    }`}
-                  >
-                    <span className="text-xl leading-none">{LOCALE_META[loc].flag}</span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-semibold">
-                        {t(`locale.${loc}` as const, loc)}
-                      </span>
-                      <span className="font-ibm-plex-mono block text-[10px] uppercase tracking-[1px] text-[#a09c96]">
-                        {LOCALE_META[loc].label}
-                      </span>
-                    </span>
-                    {selectedLocale === loc && (
-                      <span className="ml-auto h-2 w-2 rounded-full bg-[#c8410a]" />
-                    )}
-                  </button>
-                ))}
-              </div>
+          <section className="overflow-hidden rounded-xl border border-[#e8e4dc] bg-white">
+            <div className="border-b border-[#f0ede6] px-5 py-4">
+              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#c8410a]">
+                // nyelv
+              </p>
+              <h2 className="text-[15px] font-bold text-[#1a1814]">{t("profile.localeTitle", locale)}</h2>
+              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+                {t("profile.localeBody", locale)}
+              </p>
             </div>
 
-            <div className="mt-3 min-h-[20px]">
+            <div className="flex flex-wrap gap-2 px-5 py-4">
+              {SUPPORTED_LOCALES.map((loc) => (
+                <button
+                  key={loc}
+                  type="button"
+                  onClick={() => setSelectedLocale(loc)}
+                  className={`flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-[12px] font-medium transition-colors ${
+                    selectedLocale === loc
+                      ? "border-[#c8410a] bg-[#fce7d6] font-semibold text-[#c8410a]"
+                      : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a] hover:text-[#c8410a]"
+                  }`}
+                >
+                  <span className="text-base leading-none">{LOCALE_META[loc].flag}</span>
+                  {t(`locale.${loc}` as const, loc)}
+                </button>
+              ))}
+            </div>
+
+            <div className="min-h-[20px] px-5 pb-3">
               {selectedLocale !== savedLocale ? (
-                <p className="text-xs text-amber-700">{t("profile.localePending", locale)}</p>
+                <p className="text-[11px] text-amber-700">{t("profile.localePending", locale)}</p>
               ) : saveState === "saved" ? (
-                <p className="inline-flex items-center gap-1 text-xs text-emerald-700">
+                <p className="inline-flex items-center gap-1 text-[11px] text-emerald-700">
                   <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4.5 10.5l3.2 3.2L15.5 6.3" />
                   </svg>
@@ -543,21 +522,18 @@ export default function ProfilePage() {
 
         {/* ── Delete zone ── */}
         <FadeIn delay={0.15}>
-          <section className="rounded border border-rose-200 bg-rose-50/70 p-6">
-            <h2 className="inline-flex items-center gap-2 text-base font-semibold text-rose-900">
-              <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 3h4m-7 3h10m-1 0-.7 9.1a1.2 1.2 0 0 1-1.2 1.1H8a1.2 1.2 0 0 1-1.2-1.1L6 6m2 0v8m4-8v8" />
-              </svg>
-              {t("profile.deleteTitle", locale)}
-            </h2>
-            <p className="mt-2 text-sm text-rose-800">
-              {t("profile.deleteBody", locale)}
-            </p>
+          <section className="flex items-center justify-between gap-4 rounded-xl border border-[#f5c4b3] bg-white px-5 py-4">
+            <div>
+              <p className="text-[13px] font-semibold text-[#c8410a]">{t("profile.deleteTitle", locale)}</p>
+              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+                {t("profile.deleteBody", locale)}
+              </p>
+            </div>
             <button
               type="button"
               onClick={() => setShowDeleteModal(true)}
               disabled={isDeleting}
-              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded bg-rose-600 px-5 text-sm font-medium text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:bg-rose-300"
+              className="min-h-[44px] shrink-0 rounded-lg border border-[#f5c4b3] bg-white px-4 py-2 text-[12px] font-semibold text-[#c8410a] transition hover:bg-[#fce7d6] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
             </button>

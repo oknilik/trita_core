@@ -3,6 +3,7 @@
 export interface TabDef {
   key: string;
   label: string;
+  shortLabel?: string;
   badge?: number | string;
 }
 
@@ -14,7 +15,7 @@ interface PrimaryTabsProps {
 
 export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) {
   return (
-    <div className="flex items-end gap-0 border-b border-[#e8e4dc]">
+    <div className="flex items-end gap-0 overflow-x-auto border-b border-[#e8e4dc] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
@@ -29,7 +30,14 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
                 : "border-transparent text-[#a09a90] font-normal hover:text-[#3d3a35]",
             ].join(" ")}
           >
-            {tab.label}
+            {tab.shortLabel ? (
+              <>
+                <span className="md:hidden">{tab.shortLabel}</span>
+                <span className="hidden md:inline">{tab.label}</span>
+              </>
+            ) : (
+              tab.label
+            )}
             {tab.badge !== undefined && tab.badge !== null && (
               <span className="ml-1.5 rounded-full bg-[#c8410a] px-[5px] py-px text-[9px] font-semibold text-white leading-none">
                 {tab.badge}
