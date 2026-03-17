@@ -14,7 +14,7 @@ const answerSchema = z.object({
 });
 
 const submissionSchema = z.object({
-  testType: z.enum(["HEXACO"]),
+  testType: z.enum(["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"]),
   answers: z.array(answerSchema),
 });
 

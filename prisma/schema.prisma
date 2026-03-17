@@ -14,6 +14,8 @@ datasource db {
 
 enum TestType {
   HEXACO
+  HEXACO_MODIFIED
+  BIG_FIVE
 }
 
 enum RelationshipType {
