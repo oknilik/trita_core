@@ -84,8 +84,8 @@ export function TeamPageShell({
     },
     {
       key: "intelligence",
-      label: "Team Intelligence",
-      shortLabel: "Intelligence",
+      label: isHu ? "Csapatintelligencia" : "Team Intelligence",
+      shortLabel: isHu ? "Intelligencia" : "Intelligence",
     },
     {
       key: "profile",
