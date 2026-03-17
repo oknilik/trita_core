@@ -66,7 +66,7 @@ function formatDate(iso: string | null) {
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
-export function AdminDashboard() {
+export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
   const [data, setData] = useState<OrgStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
@@ -257,7 +257,7 @@ export function AdminDashboard() {
 
         {/* ── Nav cards ── */}
         {org.status !== "INACTIVE" && (
-          <div className={`grid gap-3 ${firstTeam ? "grid-cols-2" : "grid-cols-1"}`}>
+          <div className={`grid gap-3 ${firstTeam && isAdmin ? "grid-cols-2" : "grid-cols-1"}`}>
             {firstTeam && (
               <Link
                 href={`/team/${firstTeam.id}`}
@@ -275,21 +275,23 @@ export function AdminDashboard() {
                 </p>
               </Link>
             )}
-            <Link
-              href={`/org/${org.id}`}
-              className="block rounded-xl border border-[#e8e4dc] bg-white p-5 transition-all hover:border-[#c8410a]"
-            >
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-1">
-                // szervezet
-              </p>
-              <p className="font-playfair text-xl text-[#1a1814]">{org.name}</p>
-              <p className="text-xs text-[#a09a90] mt-1">
-                {teams.length} csapat · {stats.totalMembers} tag
-              </p>
-              <p className="text-sm font-semibold text-[#c8410a] mt-3 text-right">
-                Megnyitás →
-              </p>
-            </Link>
+            {isAdmin && (
+              <Link
+                href={`/org/${org.id}`}
+                className="block rounded-xl border border-[#e8e4dc] bg-white p-5 transition-all hover:border-[#c8410a]"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-1">
+                  // szervezet
+                </p>
+                <p className="font-playfair text-xl text-[#1a1814]">{org.name}</p>
+                <p className="text-xs text-[#a09a90] mt-1">
+                  {teams.length} csapat · {stats.totalMembers} tag
+                </p>
+                <p className="text-sm font-semibold text-[#c8410a] mt-3 text-right">
+                  Megnyitás →
+                </p>
+              </Link>
+            )}
           </div>
         )}
 

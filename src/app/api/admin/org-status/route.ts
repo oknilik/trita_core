@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { getManageableTeamIds } from "@/lib/team-auth";
 
 // GET /api/admin/org-status
 // Returns org, team, member, and assessment status for the admin dashboard.
@@ -26,6 +27,12 @@ export async function GET() {
   }
 
   const orgId = orgMembership.orgId;
+  const isAdmin = hasOrgRole(orgMembership.role, "ORG_ADMIN");
+
+  // For non-admins, restrict to teams they can manage
+  const manageableTeamIds = isAdmin
+    ? null
+    : await getManageableTeamIds(profile.id, orgId, orgMembership.role);
 
   // Parallel fetch
   const [org, teams, allOrgMembers] = await Promise.all([
@@ -34,7 +41,9 @@ export async function GET() {
       select: { id: true, name: true, status: true, createdAt: true },
     }),
     prisma.team.findMany({
-      where: { orgId },
+      where: manageableTeamIds
+        ? { orgId, id: { in: manageableTeamIds } }
+        : { orgId },
       select: {
         id: true,
         name: true,
@@ -61,20 +70,24 @@ export async function GET() {
         role: true,
         joinedAt: true,
         user: {
-          select: {
-            id: true,
-            username: true,
-            onboardedAt: true,
-          },
+          select: { id: true, username: true, onboardedAt: true },
         },
       },
     }),
   ]);
 
+  // For non-admins, restrict allOrgMembers to members of their accessible teams only
+  const visibleMemberIds = isAdmin
+    ? null
+    : new Set(teams.flatMap((t) => t.members.map((m) => m.userId)));
+  const filteredOrgMembers = visibleMemberIds
+    ? allOrgMembers.filter((m) => visibleMemberIds.has(m.userId))
+    : allOrgMembers;
+
   if (!org) return NextResponse.json({ error: "ORG_NOT_FOUND" }, { status: 404 });
 
-  // Gather all member user IDs
-  const memberUserIds = allOrgMembers.map((m) => m.userId);
+  // Gather all member user IDs (scoped for non-admins)
+  const memberUserIds = filteredOrgMembers.map((m) => m.userId);
 
   // Fetch assessment results for all members
   const assessmentResults = await prisma.assessmentResult.findMany({
@@ -111,7 +124,7 @@ export async function GET() {
       : null,
     members: team.members.map((tm) => {
       const result = resultsByUserId.get(tm.userId);
-      const orgMember = allOrgMembers.find((m) => m.userId === tm.userId);
+      const orgMember = filteredOrgMembers.find((m) => m.userId === tm.userId);
       return {
         userId: tm.userId,
         username: tm.user.username ?? "–",

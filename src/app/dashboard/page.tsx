@@ -138,7 +138,7 @@ export default async function DashboardPage({
               </div>
             )}
           </div>
-          <AdminDashboard />
+          <AdminDashboard isAdmin={hasOrgRole(orgMembership.role, "ORG_ADMIN")} />
         </>
       );
     }
