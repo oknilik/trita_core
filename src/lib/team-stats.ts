@@ -195,66 +195,71 @@ export async function getTeamPageData(
     }
   }
 
-  // Find active campaign for the team's org
-  let activeCampaign: TeamActiveCampaign | null = null;
-  if (team.orgId) {
-    const campaign = await prisma.campaign.findFirst({
-      where: { orgId: team.orgId, status: "ACTIVE" },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        name: true,
-        orgId: true,
-        createdAt: true,
-        participants: { select: { userId: true } },
-      },
-    });
-
-    if (campaign) {
-      const teamUserIds = new Set(team.members.map((m) => m.user.id));
-      const teamParticipants = campaign.participants.filter((p) =>
-        teamUserIds.has(p.userId)
-      );
-      const teamParticipantCount = teamParticipants.length;
-
-      // Self done count: team participants who have completed assessment results
-      const teamSelfDoneCount = members.filter(
-        (m) =>
-          teamParticipants.some((p) => p.userId === m.userId) &&
-          m.scores !== null
-      ).length;
-
-      // Observer done count: team participants who have at least one completed observer assessment
-      // We check ObserverInvitation with status COMPLETED for team participant user IDs
-      let teamObserverDoneCount = 0;
-      if (teamParticipantCount > 0) {
-        const participantUserIds = teamParticipants.map((p) => p.userId);
-        const completedObserverInvitations = await prisma.observerInvitation.findMany({
-          where: {
-            inviterId: { in: participantUserIds },
-            status: "COMPLETED",
+  // Parallelize: campaign lookup + pending invites
+  const [campaignRaw, pendingInvitesRaw] = await Promise.all([
+    team.orgId
+      ? prisma.campaign.findFirst({
+          where: { orgId: team.orgId, status: "ACTIVE" },
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            name: true,
+            orgId: true,
+            createdAt: true,
+            participants: { select: { userId: true } },
           },
-          select: { inviterId: true },
-          distinct: ["inviterId"],
-        });
-        teamObserverDoneCount = completedObserverInvitations.length;
-      }
+        })
+      : Promise.resolve(null),
+    prisma.teamPendingInvite.findMany({
+      where: { teamId },
+      orderBy: { createdAt: "asc" },
+      select: { id: true, email: true, createdAt: true },
+    }),
+  ]);
 
-      const daysActive = Math.floor(
-        (Date.now() - campaign.createdAt.getTime()) / (1000 * 60 * 60 * 24)
-      );
+  // Compute active campaign stats
+  let activeCampaign: TeamActiveCampaign | null = null;
+  if (campaignRaw) {
+    const teamUserIds = new Set(team.members.map((m) => m.user.id));
+    const teamParticipants = campaignRaw.participants.filter((p) =>
+      teamUserIds.has(p.userId)
+    );
+    const teamParticipantCount = teamParticipants.length;
 
-      activeCampaign = {
-        id: campaign.id,
-        name: campaign.name,
-        orgId: campaign.orgId,
-        createdAt: campaign.createdAt.toISOString(),
-        teamParticipantCount,
-        teamSelfDoneCount,
-        teamObserverDoneCount,
-        daysActive,
-      };
+    const teamSelfDoneCount = members.filter(
+      (m) =>
+        teamParticipants.some((p) => p.userId === m.userId) &&
+        m.scores !== null
+    ).length;
+
+    let teamObserverDoneCount = 0;
+    if (teamParticipantCount > 0) {
+      const participantUserIds = teamParticipants.map((p) => p.userId);
+      const completedObserverInvitations = await prisma.observerInvitation.findMany({
+        where: {
+          inviterId: { in: participantUserIds },
+          status: "COMPLETED",
+        },
+        select: { inviterId: true },
+        distinct: ["inviterId"],
+      });
+      teamObserverDoneCount = completedObserverInvitations.length;
     }
+
+    const daysActive = Math.floor(
+      (Date.now() - campaignRaw.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    activeCampaign = {
+      id: campaignRaw.id,
+      name: campaignRaw.name,
+      orgId: campaignRaw.orgId,
+      createdAt: campaignRaw.createdAt.toISOString(),
+      teamParticipantCount,
+      teamSelfDoneCount,
+      teamObserverDoneCount,
+      daysActive,
+    };
   }
 
   // Build dimConfigs: only dims that appear in at least one member's scores
@@ -292,13 +297,6 @@ export async function getTeamPageData(
       scores,
       testType: m.testType,
     };
-  });
-
-  // Pending invites
-  const pendingInvitesRaw = await prisma.teamPendingInvite.findMany({
-    where: { teamId },
-    orderBy: { createdAt: "asc" },
-    select: { id: true, email: true, createdAt: true },
   });
 
   const pendingInvites = pendingInvitesRaw.map((inv) => ({
