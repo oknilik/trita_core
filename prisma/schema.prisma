@@ -278,7 +278,7 @@ model TeamMember {
   id       String   @id @default(cuid())
   teamId   String
   userId   String
-  role     String   @default("member") // "member" | "admin"
+  role     String   @default("member") // "member" | "manager" | "admin"
   joinedAt DateTime @default(now())
 
   team Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)

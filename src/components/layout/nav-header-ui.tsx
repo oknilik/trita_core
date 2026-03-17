@@ -11,9 +11,10 @@ const DEFAULT_AVATAR = "/avatars/avatar-1.png";
 interface NavHeaderUIProps {
   user: { username: string | null; email: string | null };
   org: { id: string; name: string } | null;
-  team: { id: string; name: string } | null;
+  teams: Array<{ id: string; name: string }>;
   role: string;
   activeCampaignCount: number;
+  isAdmin: boolean;
   isManager: boolean;
   hasHiringAccess: boolean;
 }
@@ -26,8 +27,9 @@ function getInitials(name: string): string {
 export function NavHeaderUI({
   user,
   org,
-  team,
+  teams,
   activeCampaignCount,
+  isAdmin,
   isManager,
   hasHiringAccess,
 }: NavHeaderUIProps) {
@@ -45,8 +47,10 @@ export function NavHeaderUI({
     if (stored) setAvatarSrc(stored);
   }, []);
 
+  // Use first accessible team for display; all for dropdown
+  const team = teams[0] ?? null;
   const onDashboard = pathname === "/dashboard";
-  const onTeam = team ? pathname.startsWith(`/team/${team.id}`) : false;
+  const onTeam = teams.some((t) => pathname.startsWith(`/team/${t.id}`));
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
 
@@ -109,7 +113,7 @@ export function NavHeaderUI({
                     setAvatarOpen(false);
                   }}
                 >
-                  {team.name}
+                  {teams.length === 1 ? team.name : "Csapatok"}
                   <svg
                     className="h-3 w-3"
                     viewBox="0 0 12 12"
@@ -123,19 +127,32 @@ export function NavHeaderUI({
                 </button>
                 {teamOpen && (
                   <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-[#e8e4dc] bg-white p-1.5 shadow-lg">
-                    <DropItem
-                      href={`/team/${team.id}`}
-                      label="Áttekintés"
-                      active={onTeam && !pathname.includes("?")}
-                    />
-                    <DropItem href={`/team/${team.id}?tab=profile`} label="Személyiségprofil" />
-                    <DropItem href={`/team/${team.id}?tab=members`} label="Tagok" />
+                    {teams.length === 1 ? (
+                      <>
+                        <DropItem
+                          href={`/team/${team.id}`}
+                          label="Áttekintés"
+                          active={pathname === `/team/${team.id}`}
+                        />
+                        <DropItem href={`/team/${team.id}?tab=profile`} label="Személyiségprofil" />
+                        <DropItem href={`/team/${team.id}?tab=members`} label="Tagok" />
+                      </>
+                    ) : (
+                      teams.map((t) => (
+                        <DropItem
+                          key={t.id}
+                          href={`/team/${t.id}`}
+                          label={t.name}
+                          active={pathname.startsWith(`/team/${t.id}`)}
+                        />
+                      ))
+                    )}
                   </div>
                 )}
               </div>
             )}
 
-            {org && isManager && (
+            {org && isAdmin && (
               <div className="relative">
                 <button
                   type="button"
@@ -327,28 +344,42 @@ export function NavHeaderUI({
                 />
               </MobileNavSection>
 
-              {team && (
-                <MobileNavSection label={team.name}>
-                  <MobileNavItem
-                    href={`/team/${team.id}`}
-                    label="Áttekintés"
-                    active={onTeam && !pathname.includes("?")}
-                    onClose={() => setMobileOpen(false)}
-                  />
-                  <MobileNavItem
-                    href={`/team/${team.id}?tab=profile`}
-                    label="Személyiségprofil"
-                    onClose={() => setMobileOpen(false)}
-                  />
-                  <MobileNavItem
-                    href={`/team/${team.id}?tab=members`}
-                    label="Tagok"
-                    onClose={() => setMobileOpen(false)}
-                  />
-                </MobileNavSection>
+              {teams.length > 0 && (
+                teams.length === 1 ? (
+                  <MobileNavSection label={team!.name}>
+                    <MobileNavItem
+                      href={`/team/${team!.id}`}
+                      label="Áttekintés"
+                      active={pathname === `/team/${team!.id}`}
+                      onClose={() => setMobileOpen(false)}
+                    />
+                    <MobileNavItem
+                      href={`/team/${team!.id}?tab=profile`}
+                      label="Személyiségprofil"
+                      onClose={() => setMobileOpen(false)}
+                    />
+                    <MobileNavItem
+                      href={`/team/${team!.id}?tab=members`}
+                      label="Tagok"
+                      onClose={() => setMobileOpen(false)}
+                    />
+                  </MobileNavSection>
+                ) : (
+                  <MobileNavSection label="Csapatok">
+                    {teams.map((t) => (
+                      <MobileNavItem
+                        key={t.id}
+                        href={`/team/${t.id}`}
+                        label={t.name}
+                        active={pathname.startsWith(`/team/${t.id}`)}
+                        onClose={() => setMobileOpen(false)}
+                      />
+                    ))}
+                  </MobileNavSection>
+                )
               )}
 
-              {org && isManager && (
+              {org && isAdmin && (
                 <MobileNavSection label={org.name}>
                   <MobileNavItem
                     href={`/org/${org.id}`}

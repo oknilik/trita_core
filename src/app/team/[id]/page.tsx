@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { hasOrgRole } from "@/lib/auth";
+import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getTeamPageData } from "@/lib/team-stats";
 import { StatStrip } from "@/components/org/StatStrip";
@@ -60,7 +60,7 @@ export default async function TeamDetailPage({
   });
   if (!team) notFound();
 
-  // Access: any org member of the team's org
+  // Check org membership
   const orgMembership = team.orgId
     ? await prisma.organizationMember.findUnique({
         where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
@@ -68,11 +68,14 @@ export default async function TeamDetailPage({
       })
     : null;
 
-  const isOrgMember = !!orgMembership;
-  const isOrgManager =
-    isOrgMember && hasOrgRole(orgMembership!.role, "ORG_MANAGER");
+  const orgMemberRole = orgMembership?.role ?? null;
+  if (!orgMemberRole) redirect("/dashboard");
 
-  if (!isOrgMember) redirect("/dashboard");
+  // Scope: admin sees all teams, manager/member only their own
+  const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
+  if (!hasTeamAccess) redirect("/dashboard");
+
+  const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
 
   await requireActiveSubscription();
 

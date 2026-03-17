@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
@@ -27,6 +27,9 @@ export default async function OrgDetailPage({
   await requireActiveSubscription();
 
   if (!org) notFound();
+
+  // Org dashboard is admin-only; managers/members go to their team or dashboard
+  if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect("/dashboard");
 
   const isAdmin = hasOrgRole(memberRole, "ORG_ADMIN");
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");

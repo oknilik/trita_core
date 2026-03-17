@@ -14,6 +14,7 @@ import { NavHeaderUI } from "@/components/layout/nav-header-ui";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { getOrgSubscription, hasAccess } from "@/lib/subscription";
+import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
@@ -90,22 +91,29 @@ export default async function RootLayout({
           select: { role: true, orgId: true },
         });
         if (membership) {
-          const [org, teamMember, activeCampaignCount, sub] = await Promise.all([
+          const isAdmin = hasOrgRole(membership.role, "ORG_ADMIN");
+          const isManager = hasOrgRole(membership.role, "ORG_MANAGER");
+
+          const [org, accessibleTeamIds, activeCampaignCount, sub] = await Promise.all([
             prisma.organization.findUnique({
               where: { id: membership.orgId },
               select: { id: true, name: true },
             }),
-            prisma.teamMember.findFirst({
-              where: { userId: profile.id },
-              select: { team: { select: { id: true, name: true } } },
-            }),
+            getAccessibleTeamIds(profile.id, membership.orgId, membership.role),
             prisma.campaign.count({
               where: { orgId: membership.orgId, status: "ACTIVE" },
             }),
             getOrgSubscription(membership.orgId),
           ]);
-          const team = teamMember?.team ?? null;
-          const isManager = hasOrgRole(membership.role, "ORG_MANAGER");
+
+          const teams = accessibleTeamIds.length > 0
+            ? await prisma.team.findMany({
+                where: { id: { in: accessibleTeamIds } },
+                select: { id: true, name: true },
+                orderBy: { name: "asc" },
+              })
+            : [];
+
           const hasHiringAccess = isManager && hasAccess(sub);
           navData = {
             user: {
@@ -113,9 +121,10 @@ export default async function RootLayout({
               email: profile.email ?? null,
             },
             org: org ?? null,
-            team: team ?? null,
+            teams,
             role: membership.role,
             activeCampaignCount,
+            isAdmin,
             isManager,
             hasHiringAccess,
           };

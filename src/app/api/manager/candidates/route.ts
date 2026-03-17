@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendCandidateInviteEmail } from "@/lib/emails";
+import { canManageTeam } from "@/lib/team-auth";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -30,13 +31,15 @@ export async function POST(req: Request) {
 
   const { email, name, position, teamId, inviteLocale } = parsed.data;
 
-  // Verify teamId belongs to this manager if provided
+  // Verify the caller can manage the given team
   if (teamId) {
-    const team = await prisma.team.findFirst({
-      where: { id: teamId, ownerId: profile.id },
-      select: { id: true },
+    const orgMembership = await prisma.organizationMember.findFirst({
+      where: { userId: profile.id, org: { teams: { some: { id: teamId } } } },
+      select: { role: true },
     });
-    if (!team) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+    if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+    const allowed = await canManageTeam(profile.id, teamId, orgMembership.role);
+    if (!allowed) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
