@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { resend, EMAIL_FROM } from "@/lib/resend";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -22,6 +23,9 @@ const topicLabel: Record<z.infer<typeof contactSchema>["topic"], string> = {
 };
 
 export async function POST(req: Request) {
+  const rateLimitResponse = await checkRateLimit("contact");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const body = await req.json().catch(() => ({}));
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) {

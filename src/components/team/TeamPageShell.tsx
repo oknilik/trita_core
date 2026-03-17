@@ -19,7 +19,7 @@ const AVATAR_COLORS = [
   "#06B6D4",
 ];
 
-const ZONE_NAMES: Record<string, string> = {
+const ZONE_NAMES_EN: Record<string, string> = {
   "3_1": "Emerging talent",
   "3_2": "High growth",
   "3_3": "Future leader",
@@ -31,8 +31,21 @@ const ZONE_NAMES: Record<string, string> = {
   "1_3": "Senior expert",
 };
 
-function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3): string {
-  return ZONE_NAMES[`${potential}_${skill}`] ?? "Solid contributor";
+const ZONE_NAMES_HU: Record<string, string> = {
+  "3_1": "Feltörekvő tehetség",
+  "3_2": "Magas növekedés",
+  "3_3": "Jövő vezetője",
+  "2_1": "Fejlődik",
+  "2_2": "Megbízható tag",
+  "2_3": "Kiváló teljesítő",
+  "1_1": "Fejlesztési fókusz",
+  "1_2": "Stabil hozzájáruló",
+  "1_3": "Senior szakértő",
+};
+
+function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3, isHu: boolean): string {
+  const names = isHu ? ZONE_NAMES_HU : ZONE_NAMES_EN;
+  return names[`${potential}_${skill}`] ?? (isHu ? "Megbízható tag" : "Solid contributor");
 }
 
 interface TeamPageShellProps {
@@ -111,7 +124,7 @@ export function TeamPageShell({
         ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
         : name.slice(0, 2).toUpperCase();
 
-    const zoneName = getZoneName(2, 2);
+    const zoneName = getZoneName(2, 2, isHu);
 
     return {
       id: m.userId,

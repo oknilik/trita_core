@@ -68,7 +68,7 @@ export function TeamIntelligence({ members, edges, isHu = true }: TeamIntelligen
         ))}
       </div>
 
-      {sub === "map" && <TeamMap members={members} />}
+      {sub === "map" && <TeamMap members={members} isHu={isHu} />}
       {sub === "dynamics" && <DynamicsMap members={members} edges={edges} isHu={isHu} />}
       {sub === "roles" && <RoleFitMap members={members} isHu={isHu} />}
     </div>

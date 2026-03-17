@@ -2,10 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
 export async function POST() {
+  const rateLimitResponse = await checkRateLimit("billing");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 

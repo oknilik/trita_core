@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { TRIAL_DAYS } from "@/lib/stripe";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
@@ -10,6 +11,9 @@ const createSchema = z.object({
 
 // POST /api/org — create a new organization (any authed user, 1-org limit)
 export async function POST(req: Request) {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 

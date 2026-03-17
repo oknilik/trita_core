@@ -6,6 +6,7 @@ import { assignTestType } from "@/lib/assignTestType";
 import { getTestConfig } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -18,6 +19,9 @@ const submissionSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });

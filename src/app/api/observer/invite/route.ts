@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendObserverInviteEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const inviteSchema = z
   .object({
@@ -16,6 +17,9 @@ const inviteSchema = z
   .strict();
 
 export async function POST(req: Request) {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const body = await req.json().catch(() => ({}));
   const parsed = inviteSchema.safeParse(body);
   if (!parsed.success) {

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { IntelligenceMember } from "./TeamIntelligence";
 
-const ZONE_LABELS: Record<string, string> = {
+const ZONE_LABELS_EN: Record<string, string> = {
   "3_1": "Emerging talent",
   "3_2": "High growth",
   "3_3": "Future leader",
@@ -13,6 +13,18 @@ const ZONE_LABELS: Record<string, string> = {
   "1_1": "Development focus",
   "1_2": "Stable contributor",
   "1_3": "Senior expert",
+};
+
+const ZONE_LABELS_HU: Record<string, string> = {
+  "3_1": "Feltörekvő tehetség",
+  "3_2": "Magas növekedés",
+  "3_3": "Jövő vezetője",
+  "2_1": "Fejlődik",
+  "2_2": "Megbízható tag",
+  "2_3": "Kiváló teljesítő",
+  "1_1": "Fejlesztési fókusz",
+  "1_2": "Stabil hozzájáruló",
+  "1_3": "Senior szakértő",
 };
 
 const DIM_COLORS: Record<string, string> = {
@@ -154,9 +166,11 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
 
 interface TeamMapProps {
   members: IntelligenceMember[];
+  isHu?: boolean;
 }
 
-export function TeamMap({ members }: TeamMapProps) {
+export function TeamMap({ members, isHu = true }: TeamMapProps) {
+  const ZONE_LABELS = isHu ? ZONE_LABELS_HU : ZONE_LABELS_EN;
   const [selected, setSelected] = useState<string | null>(null);
 
   const placedMembers: PlacedMember[] = members.map((m) => {

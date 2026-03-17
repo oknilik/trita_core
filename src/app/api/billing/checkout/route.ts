@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { stripe, STRIPE_PRICES, TRIAL_DAYS, type PriceKey } from "@/lib/stripe";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const schema = z.object({
   priceKey: z.enum(["team_monthly", "team_annual", "org_monthly", "org_annual"]),
@@ -19,6 +20,9 @@ export async function POST(req: Request) {
     select: { id: true, email: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimitResponse = await checkRateLimit("billing", profile.id);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const membership = await prisma.organizationMember.findUnique({
     where: { userId: profile.id },
