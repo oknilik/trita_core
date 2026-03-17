@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { TRIAL_DAYS } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -34,30 +35,51 @@ export async function POST(req: Request) {
   const body = createSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  const org = await prisma.organization.create({
-    data: {
-      name: body.data.name,
-      ownerId: profile.id,
-      status: "PENDING_SETUP",
-      members: {
-        create: { userId: profile.id, role: "ORG_ADMIN" },
-      },
-    },
-    select: { id: true, name: true, createdAt: true, status: true },
-  });
+  try {
+    const org = await prisma.$transaction(async (tx) => {
+      // Double-check membership inside transaction to prevent race conditions
+      const existing = await tx.organizationMember.findUnique({
+        where: { userId: profile.id },
+      });
+      if (existing) throw new Error("ALREADY_IN_ORG");
 
-  const trialEndsAt = new Date();
-  trialEndsAt.setDate(trialEndsAt.getDate() + TRIAL_DAYS);
+      const newOrg = await tx.organization.create({
+        data: {
+          name: body.data.name,
+          ownerId: profile.id,
+          status: "PENDING_SETUP",
+          members: {
+            create: { userId: profile.id, role: "ORG_ADMIN" },
+          },
+        },
+        select: { id: true, name: true, createdAt: true, status: true },
+      });
 
-  await prisma.subscription.create({
-    data: {
-      orgId: org.id,
-      status: "trialing",
-      trialEndsAt,
-    },
-  });
+      const trialEndsAt = new Date();
+      trialEndsAt.setDate(trialEndsAt.getDate() + TRIAL_DAYS);
 
-  return NextResponse.json({ org }, { status: 201 });
+      await tx.subscription.create({
+        data: {
+          orgId: newOrg.id,
+          status: "trialing",
+          trialEndsAt,
+        },
+      });
+
+      console.log(`[Org] Created org ${newOrg.id} with trialing subscription (ends ${trialEndsAt.toISOString()})`);
+      return newOrg;
+    });
+
+    return NextResponse.json({ org }, { status: 201 });
+  } catch (err) {
+    if (err instanceof Error && err.message === "ALREADY_IN_ORG") {
+      return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
+    }
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
+    }
+    throw err;
+  }
 }
 
 // GET /api/org — list orgs where I'm a member
