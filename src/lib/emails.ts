@@ -642,7 +642,11 @@ export async function sendCoachApplicationNotification(params: {
   motivation: string;
   specializations?: string | null;
 }) {
-  const adminEmail = process.env.ADMIN_EMAIL ?? "kilinkod@gmail.com";
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    console.error("[Email] ADMIN_EMAIL not configured, skipping coach application notification");
+    return;
+  }
 
   const rows = [
     ["Név", params.applicantName],

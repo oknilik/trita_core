@@ -5,17 +5,17 @@ import { UserRole } from "@prisma/client";
 
 export type { UserRole };
 
-// Hardcoded admin email list - update this to add/remove admins
-const ADMIN_EMAILS = [
-  "kilinkod@gmail.com", // Replace with actual admin email(s)
-];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
 
 export async function requireAdmin() {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
 
   const userEmail = user.primaryEmailAddress?.emailAddress;
-  if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
+  if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
     redirect("/dashboard");
   }
 
