@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { StatsSection } from "@/components/landing/StatsSection";
 import { PainSection } from "@/components/landing/PainSection";
@@ -10,8 +12,6 @@ import { BottomCTA } from "@/components/landing/BottomCTA";
 import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
 import { getServerLocale } from "@/lib/i18n-server";
 import type { Locale } from "@/lib/i18n";
-
-export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -54,6 +54,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
+  const { userId } = await auth();
+  if (userId) redirect("/dashboard");
+
   const locale = await getServerLocale();
   const siteUrl = getSiteUrl();
   const organizationJsonLd = {
