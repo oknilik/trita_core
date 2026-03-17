@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+
+function memberAvatar(_seed: string) {
+  return "/avatars/avatar-1.png";
+}
 import { useRouter } from "next/navigation";
 import type { CampaignWithStats } from "@/lib/org-stats";
 
@@ -248,13 +253,18 @@ export function CampaignCard({
                   key={p.userId}
                   title={p.username ?? p.email ?? "?"}
                   className={[
-                    "inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-xs font-semibold",
-                    p.selfDone
-                      ? "bg-emerald-100 text-emerald-800"
-                      : "bg-[#e8e4dc] text-[#5a5650]",
+                    "inline-block h-8 w-8 rounded-full border-2 overflow-hidden",
+                    p.selfDone ? "border-emerald-200" : "border-white",
                   ].join(" ")}
                 >
-                  {getInitials(p.username ?? p.email)}
+                  <Image
+                    src={memberAvatar(p.userId)}
+                    alt={p.username ?? p.email ?? "?"}
+                    width={32}
+                    height={32}
+                    unoptimized
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               ))}
               {campaign.participants.length > 6 && (

@@ -46,14 +46,14 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
 
   if (invite.status === "COMPLETED") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <div className="min-h-dvh bg-[#faf9f6]">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🎉</div>
-            <h1 className="mt-4 text-2xl font-bold text-gray-900">
+            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
               {isHu ? "Már kitöltötted!" : "Already completed!"}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
               {isHu
                 ? "Ezt a felmérést már korábban sikeresen beküldted. Köszönjük a részvételt!"
                 : "You have already submitted this assessment. Thank you for your participation!"}
@@ -64,16 +64,36 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
+  if (invite.status === "CANCELED") {
+    return (
+      <div className="min-h-dvh bg-[#faf9f6]">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+            <div className="text-5xl leading-none">🔒</div>
+            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
+              {isHu ? "A meghívó visszavonva" : "Invitation revoked"}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+              {isHu
+                ? "Ezt a meghívót visszavonták. Ha kérdésed van, vedd fel a kapcsolatot a szervezővel."
+                : "This invitation has been revoked. Please contact the organiser if you have any questions."}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (invite.expiresAt < new Date()) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <div className="min-h-dvh bg-[#faf9f6]">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-amber-100 bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">⏰</div>
-            <h1 className="mt-4 text-2xl font-bold text-gray-900">
+            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
               {isHu ? "A meghívó lejárt" : "Invitation expired"}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
               {isHu
                 ? "Ez a meghívó link sajnos már nem érvényes. Kérj új linket a szervezőtől."
                 : "This invitation link is no longer valid. Please request a new link from the organiser."}

@@ -11,6 +11,7 @@ const onboardingSchema = z.object({
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
   country: z.string().min(1).max(100).optional(),
   consentedAt: z.string().datetime().optional(),
+  avatarUrl: z.string().max(500).optional(),
 });
 
 export async function GET() {
@@ -27,6 +28,7 @@ export async function GET() {
       birthYear: true,
       gender: true,
       country: true,
+      avatarUrl: true,
       role: true,
       orgMemberships: {
         select: {
@@ -67,6 +69,7 @@ export async function POST(req: Request) {
       birthYear: parsed.data.birthYear,
       gender: parsed.data.gender,
       ...(parsed.data.country && { country: parsed.data.country }),
+      ...(parsed.data.avatarUrl && { avatarUrl: parsed.data.avatarUrl }),
       ...(parsed.data.consentedAt && {
         consentedAt: new Date(parsed.data.consentedAt),
         onboardedAt: new Date(),

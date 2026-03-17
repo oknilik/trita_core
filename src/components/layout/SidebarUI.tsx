@@ -1,9 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import Link from "next/link";
+import { useState } from "react";
+
+const DEFAULT_AVATAR = "/avatars/avatar-1.png";
 
 interface SidebarUIProps {
   user: { username: string | null; email: string | null };
@@ -31,6 +35,12 @@ export function SidebarUI({
   const searchParams = useSearchParams();
   const router = useRouter();
   const { signOut } = useClerk();
+  const [avatarSrc] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
+    }
+    return DEFAULT_AVATAR;
+  });
 
   const tab = searchParams.get("tab");
 
@@ -197,9 +207,14 @@ export function SidebarUI({
           onClick={() => router.push("/profile")}
           className="flex w-full items-center gap-2 rounded-lg p-2 text-left transition-colors hover:bg-[#2a2824]"
         >
-          <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#f0c4b0] text-[10px] font-semibold text-[#c8410a]">
-            {userInitials}
-          </div>
+          <Image
+            src={avatarSrc}
+            alt="Avatar"
+            width={28}
+            height={28}
+            unoptimized
+            className="h-7 w-7 flex-shrink-0 rounded-full object-cover"
+          />
           <div className="min-w-0">
             <p className="truncate text-[12px] font-medium text-[#e8e4dc]">{displayName}</p>
             <p className="text-[10px] text-[#6b6560]">{roleLabel}</p>

@@ -80,38 +80,9 @@ export default async function TeamDetailPage({
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
   const dimLabels = isHu ? DIM_LABELS_HU : DIM_LABELS_EN;
 
-  const [teamData, candidateInvitesRaw] = await Promise.all([
-    getTeamPageData(teamId, locale as "hu" | "en"),
-    isOrgManager
-      ? prisma.candidateInvite.findMany({
-          where: { teamId },
-          orderBy: { createdAt: "desc" },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            position: true,
-            status: true,
-            expiresAt: true,
-            createdAt: true,
-            result: { select: { id: true } },
-          },
-        })
-      : Promise.resolve([]),
-  ]);
+  const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
 
   if (!teamData) notFound();
-
-  const candidateInvites = candidateInvitesRaw.map((c) => ({
-    id: c.id,
-    name: c.name,
-    email: c.email,
-    position: c.position,
-    status: c.status,
-    expiresAt: c.expiresAt.toISOString(),
-    createdAt: c.createdAt.toISOString(),
-    hasResult: !!c.result,
-  }));
 
   const statCells = [
     {
@@ -219,7 +190,6 @@ export default async function TeamDetailPage({
             locale={locale}
             dateLocale={dateLocale}
             profileId={profile.id}
-            candidateInvites={candidateInvites}
           />
         </Suspense>
       </main>

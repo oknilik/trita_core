@@ -54,6 +54,7 @@ export interface OrgPageData {
   closedCampaignCount: number;
   activeSelfDone: number;
   activeTotalParticipants: number;
+  completedMemberCount: number;
 }
 
 export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
@@ -152,6 +153,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   const orgMemberIds = orgMembers.map((m) => m.userId);
 
   let hexacoAvg: Record<string, number> | null = null;
+  let completedMemberCount = 0;
   if (orgMemberIds.length > 0) {
     const assessmentResults = await prisma.assessmentResult.findMany({
       where: {
@@ -162,27 +164,24 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       distinct: ["userProfileId"],
     });
 
-    if (assessmentResults.length >= 3) {
-      const dims = ["H", "E", "X", "A", "C", "O"];
-      const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
-      let validCount = 0;
+    const dims = ["H", "E", "X", "A", "C", "O"];
+    const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
 
-      for (const ar of assessmentResults) {
-        const scores = ar.scores as Record<string, number>;
-        const hasAllDims = dims.every((d) => typeof scores[d] === "number");
-        if (hasAllDims) {
-          for (const d of dims) {
-            sums[d] += scores[d];
-          }
-          validCount++;
-        }
-      }
-
-      if (validCount >= 3) {
-        hexacoAvg = {};
+    for (const ar of assessmentResults) {
+      const scores = ar.scores as Record<string, number>;
+      const hasAllDims = dims.every((d) => typeof scores[d] === "number");
+      if (hasAllDims) {
         for (const d of dims) {
-          hexacoAvg[d] = Math.round(sums[d] / validCount);
+          sums[d] += scores[d];
         }
+        completedMemberCount++;
+      }
+    }
+
+    if (completedMemberCount >= 3) {
+      hexacoAvg = {};
+      for (const d of dims) {
+        hexacoAvg[d] = Math.round(sums[d] / completedMemberCount);
       }
     }
   }
@@ -203,5 +202,6 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     closedCampaignCount: closedCampaigns.length,
     activeSelfDone,
     activeTotalParticipants,
+    completedMemberCount,
   };
 }

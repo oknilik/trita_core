@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
+
+const DEFAULT_AVATAR = "/avatars/avatar-1.png";
 
 interface NavHeaderUIProps {
   user: { username: string | null; email: string | null };
@@ -12,6 +15,7 @@ interface NavHeaderUIProps {
   role: string;
   activeCampaignCount: number;
   isManager: boolean;
+  hasHiringAccess: boolean;
 }
 
 function getInitials(name: string): string {
@@ -25,6 +29,7 @@ export function NavHeaderUI({
   team,
   activeCampaignCount,
   isManager,
+  hasHiringAccess,
 }: NavHeaderUIProps) {
   const pathname = usePathname();
   const { signOut } = useClerk();
@@ -33,10 +38,17 @@ export function NavHeaderUI({
   const [orgOpen, setOrgOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [avatarSrc] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
+    }
+    return DEFAULT_AVATAR;
+  });
 
   const onDashboard = pathname === "/dashboard";
   const onTeam = team ? pathname.startsWith(`/team/${team.id}`) : false;
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
+  const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
 
   const displayName = user.username ?? user.email ?? "?";
   const userInitials = getInitials(displayName);
@@ -70,12 +82,12 @@ export function NavHeaderUI({
           onClick={closeAll}
         />
       )}
-      <header className="sticky top-0 z-40 h-[52px] w-full border-b border-[#e8e4dc] bg-[#faf9f6]">
+      <header className="sticky top-0 z-40 h-[52px] w-full border-b border-[#e8e4dc] bg-[#faf9f6] lg:h-[64px]">
         <div className="mx-auto flex h-full w-full max-w-5xl items-center gap-3 px-4">
           {/* Logo */}
           <Link
             href="/dashboard"
-            className="font-playfair mr-2 inline-flex flex-shrink-0 items-baseline text-[18px] font-black tracking-tight text-[#1a1814]"
+            className="font-playfair mr-2 inline-flex flex-shrink-0 items-baseline text-[18px] font-black tracking-tight text-[#1a1814] lg:text-[22px]"
           >
             trit<span className="text-[#c8410a]">a</span>
           </Link>
@@ -169,6 +181,12 @@ export function NavHeaderUI({
                 )}
               </div>
             )}
+
+            {org && isManager && hasHiringAccess && (
+              <Link href={`/hiring/${org.id}`} className={onHiring ? pillActive : pillInactive}>
+                Felvétel
+              </Link>
+            )}
           </nav>
 
           {/* Desktop right: avatar pill */}
@@ -183,9 +201,14 @@ export function NavHeaderUI({
                   setOrgOpen(false);
                 }}
               >
-                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#f0c4b0] text-[9px] font-semibold text-[#c8410a]">
-                  {userInitials}
-                </div>
+                <Image
+                  src={avatarSrc}
+                  alt="Avatar"
+                  width={40}
+                  height={40}
+                  unoptimized
+                  className="h-8 w-8 flex-shrink-0 rounded-full object-cover lg:h-10 lg:w-10"
+                />
                 <span className="max-w-[120px] truncate">{displayName}</span>
                 <svg
                   className="h-3 w-3 text-[#a09a90]"
@@ -217,9 +240,14 @@ export function NavHeaderUI({
 
           {/* Mobile: avatar chip + hamburger */}
           <div className="ml-auto flex items-center gap-2 lg:hidden">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f0c4b0] text-[9px] font-semibold text-[#c8410a]">
-              {userInitials}
-            </div>
+            <Image
+              src={avatarSrc}
+              alt="Avatar"
+              width={36}
+              height={36}
+              unoptimized
+              className="h-9 w-9 rounded-full object-cover"
+            />
             <button
               type="button"
               onClick={() => setMobileOpen((p) => !p)}
@@ -347,6 +375,17 @@ export function NavHeaderUI({
                 </MobileNavSection>
               )}
 
+              {org && isManager && hasHiringAccess && (
+                <MobileNavSection label="Felvétel">
+                  <MobileNavItem
+                    href={`/hiring/${org.id}`}
+                    label="Jelöltek"
+                    active={onHiring}
+                    onClose={() => setMobileOpen(false)}
+                  />
+                </MobileNavSection>
+              )}
+
               <MobileNavSection label="Fiók">
                 <MobileNavItem
                   href="/profile"
@@ -364,9 +403,14 @@ export function NavHeaderUI({
             {/* Drawer footer */}
             <div className="border-t border-[#e8e4dc] p-4">
               <div className="mb-3 flex items-center gap-2.5 px-1">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#f0c4b0] text-[10px] font-semibold text-[#c8410a]">
-                  {userInitials}
-                </div>
+                <Image
+                  src={avatarSrc}
+                  alt="Avatar"
+                  width={40}
+                  height={40}
+                  unoptimized
+                  className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+                />
                 <p className="min-w-0 truncate text-[13px] font-medium text-[#1a1814]">
                   {displayName}
                 </p>

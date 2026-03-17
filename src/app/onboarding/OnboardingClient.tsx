@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
@@ -10,6 +11,10 @@ import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
+import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
+
+
+
 
 // ── Main component ───────────────────────────────────────────────────────────
 
@@ -18,11 +23,13 @@ export function OnboardingClient() {
   const { locale } = useLocale();
   const { showToast } = useToast();
 
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string>(AVATAR_OPTIONS[0] ?? "");
+  const [avatarsShown, setAvatarsShown] = useState(AVATARS_INITIAL_COUNT);
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -125,6 +132,10 @@ export function OnboardingClient() {
     setStep(2);
   };
 
+  const handleStep2Next = () => {
+    setStep(3);
+  };
+
   // ── Submit ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async () => {
@@ -140,6 +151,7 @@ export function OnboardingClient() {
           birthYear: birthYearNum,
           gender,
           country,
+          avatarUrl: avatarUrl || undefined,
           consentedAt: new Date().toISOString(),
         }),
       });
@@ -159,9 +171,10 @@ export function OnboardingClient() {
 
   const stepLabels = [
     t("onboarding.step1Label", locale),
+    locale === "hu" ? "Avatar" : "Avatar",
     t("onboarding.step2Label", locale),
   ];
-  const progress = ((step - 1) / 1) * 100;
+  const progress = ((step - 1) / 2) * 100;
 
   // ── Render ───────────────────────────────────────────────────────────────
 
@@ -348,11 +361,77 @@ export function OnboardingClient() {
             </div>
           )}
 
-          {/* ── Step 2: Hozzájárulás ────────────────────────────────────── */}
+          {/* ── Step 2: Avatar ──────────────────────────────────────────── */}
           {step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
                 <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 02</p>
+                <p className="font-playfair text-xl text-[#1a1814]">
+                  {locale === "hu" ? "Válassz avatart" : "Choose an avatar"}
+                </p>
+                <p className="text-xs text-[#a09a90] mt-0.5">
+                  {locale === "hu" ? "Ez jelenik meg a profilodban." : "This will appear on your profile."}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2">
+                {AVATAR_OPTIONS.slice(0, avatarsShown).map((src) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setAvatarUrl(src)}
+                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
+                      avatarUrl === src
+                        ? "border-[#c8410a] ring-2 ring-[#c8410a]/30"
+                        : "border-[#e8e4dc] hover:border-[#c8410a]/40"
+                    }`}
+                  >
+                    <Image
+                      src={src}
+                      alt="avatar option"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+              {AVATAR_OPTIONS.length > avatarsShown && (
+                <button
+                  type="button"
+                  onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
+                  className="text-xs font-medium text-[#c8410a] hover:underline self-start"
+                >
+                  {locale === "hu"
+                    ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
+                    : `+ Show all (${AVATAR_OPTIONS.length})`}
+                </button>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
+                >
+                  ← {t("actions.back", locale)}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleStep2Next}
+                  className="min-h-[48px] flex-1 rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+                >
+                  {t("actions.next", locale)}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 3: Hozzájárulás ────────────────────────────────────── */}
+          {step === 3 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 03</p>
                 <p className="font-playfair text-xl text-[#1a1814]">
                   {t("onboarding.step2Title", locale)}
                 </p>
@@ -395,7 +474,7 @@ export function OnboardingClient() {
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setStep(1)}
+                  onClick={() => setStep(2)}
                   className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
                 >
                   ← {t("actions.back", locale)}

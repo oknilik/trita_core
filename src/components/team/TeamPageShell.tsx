@@ -35,24 +35,12 @@ function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3): string {
   return ZONE_NAMES[`${potential}_${skill}`] ?? "Solid contributor";
 }
 
-interface SerializedCandidateInvite {
-  id: string;
-  name: string | null;
-  email: string | null;
-  position: string | null;
-  status: string;
-  expiresAt: string;
-  createdAt: string;
-  hasResult: boolean;
-}
-
 interface TeamPageShellProps {
   data: TeamPageData;
   isOrgManager: boolean;
   locale: string;
   dateLocale: string;
   profileId: string;
-  candidateInvites: SerializedCandidateInvite[];
 }
 
 export function TeamPageShell({
@@ -61,7 +49,6 @@ export function TeamPageShell({
   locale,
   dateLocale,
   profileId,
-  candidateInvites,
 }: TeamPageShellProps) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>(
@@ -83,6 +70,11 @@ export function TeamPageShell({
       label: isHu ? "Áttekintés" : "Overview",
     },
     {
+      key: "intelligence",
+      label: "Team Intelligence",
+      shortLabel: "Intelligence",
+    },
+    {
       key: "profile",
       label: isHu ? "Személyiségprofil" : "Personality",
       badge:
@@ -92,11 +84,6 @@ export function TeamPageShell({
       key: "members",
       label: isHu ? "Tagok" : "Members",
       badge: data.memberCount + data.pendingInvites.length,
-    },
-    {
-      key: "intelligence",
-      label: "Team Intelligence",
-      shortLabel: "Intelligence",
     },
   ];
 
@@ -181,7 +168,6 @@ export function TeamPageShell({
         <TeamMembersTab
           members={serializedMembers}
           pendingInvites={data.pendingInvites}
-          candidateInvites={candidateInvites}
           teamId={data.teamId}
           teamName={data.teamName}
           profileId={profileId}

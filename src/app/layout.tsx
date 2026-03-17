@@ -13,6 +13,7 @@ import { Footer } from "@/components/Footer";
 import { NavHeaderUI } from "@/components/layout/nav-header-ui";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { getOrgSubscription, hasAccess } from "@/lib/subscription";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
@@ -89,7 +90,7 @@ export default async function RootLayout({
           select: { role: true, orgId: true },
         });
         if (membership) {
-          const [org, teamMember, activeCampaignCount] = await Promise.all([
+          const [org, teamMember, activeCampaignCount, sub] = await Promise.all([
             prisma.organization.findUnique({
               where: { id: membership.orgId },
               select: { id: true, name: true },
@@ -101,9 +102,11 @@ export default async function RootLayout({
             prisma.campaign.count({
               where: { orgId: membership.orgId, status: "ACTIVE" },
             }),
+            getOrgSubscription(membership.orgId),
           ]);
           const team = teamMember?.team ?? null;
           const isManager = hasOrgRole(membership.role, "ORG_MANAGER");
+          const hasHiringAccess = isManager && hasAccess(sub);
           navData = {
             user: {
               username: profile.username ?? null,
@@ -114,6 +117,7 @@ export default async function RootLayout({
             role: membership.role,
             activeCampaignCount,
             isManager,
+            hasHiringAccess,
           };
         }
       }

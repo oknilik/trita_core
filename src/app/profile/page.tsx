@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+import { AVATAR_OPTIONS, DEFAULT_AVATAR, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
+
+
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { ConfirmModal } from "@/components/ui/Modal";
@@ -47,6 +52,15 @@ export default function ProfilePage() {
   const [email, setEmail] = useState<string | null>(null);
   const [org, setOrg] = useState<{ id: string; name: string; role: string } | null>(null);
   const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
+
+  const [avatarSrc, setAvatarSrc] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
+    }
+    return DEFAULT_AVATAR;
+  });
+  const [pendingAvatarUrl, setPendingAvatarUrl] = useState<string>(avatarSrc);
+  const [avatarsExpanded, setAvatarsExpanded] = useState(false);
 
   // Demographics
   const [username, setUsername] = useState("");
@@ -101,6 +115,11 @@ export default function ProfilePage() {
       setGender(snapshot.gender);
       setCountry(snapshot.country);
       setInitialSnapshot(snapshot);
+      if (data.avatarUrl) {
+        setAvatarSrc(data.avatarUrl);
+        setPendingAvatarUrl(data.avatarUrl);
+        window.localStorage.setItem("trita_avatar", data.avatarUrl);
+      }
     } catch {
       // silent — non-critical
     }
@@ -203,8 +222,9 @@ export default function ProfilePage() {
       gender !== initialSnapshot.gender ||
       country !== initialSnapshot.country);
   const isLocaleDirty = selectedLocale !== savedLocale;
-  const isDirty = isDemographicsDirty || isLocaleDirty;
-  const canSubmitDemo = !isSavingDemo && isDirty;
+  const isAvatarDirty = pendingAvatarUrl !== avatarSrc;
+  const isDirty = isDemographicsDirty || isLocaleDirty || isAvatarDirty;
+  const canSubmitDemo = !isSavingDemo && isDirty && (!isDemographicsDirty || canSaveDemo);
   const showSaveBar = isDirty || saveState !== "idle";
 
   const flashInvalidField = (field: InvalidField) => {
@@ -238,17 +258,18 @@ export default function ProfilePage() {
   };
 
   const handleSaveDemographics = async () => {
-    if (!canSubmitDemo) return;
+    if (isSavingDemo) return;
     if (isDemographicsDirty && !canSaveDemo) {
       setUsernameTouched(true);
       setBirthYearTouched(true);
       focusFirstInvalidField();
       return;
     }
+    if (!isDirty) return;
     setSaveState("saving");
     setIsSavingDemo(true);
     try {
-      if (isDemographicsDirty) {
+      if (isDemographicsDirty || isAvatarDirty) {
         const res = await fetch("/api/profile/onboarding", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -257,6 +278,7 @@ export default function ProfilePage() {
             birthYear: Number(birthYear),
             gender,
             country,
+            ...(isAvatarDirty && { avatarUrl: pendingAvatarUrl }),
           }),
         });
         if (!res.ok) throw new Error("Save failed");
@@ -266,6 +288,10 @@ export default function ProfilePage() {
           gender,
           country,
         });
+        if (isAvatarDirty) {
+          setAvatarSrc(pendingAvatarUrl);
+          window.localStorage.setItem("trita_avatar", pendingAvatarUrl);
+        }
       }
       if (isLocaleDirty) {
         setLocale(selectedLocale);
@@ -341,9 +367,14 @@ export default function ProfilePage() {
         <FadeIn delay={0}>
           <section className="rounded-xl bg-[#1a1814] px-6 py-5">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-[#2a2824] bg-[#f0c4b0] text-xl font-bold text-[#c8410a]">
-                {initials}
-              </div>
+              <Image
+                src={avatarSrc}
+                alt="Avatar"
+                width={48}
+                height={48}
+                unoptimized
+                className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#2a2824]"
+              />
               <div className="min-w-0">
                 <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-[#c8410a]">
                   // profil
@@ -470,6 +501,60 @@ export default function ProfilePage() {
                   onClick={() => setCountryPickerOpen(true)}
                 />
               </div>
+            </div>
+          </section>
+        </FadeIn>
+
+        {/* ── Avatar ── */}
+        <FadeIn delay={0.08}>
+          <section className="overflow-hidden rounded-xl border border-[#e8e4dc] bg-white">
+            <div className="border-b border-[#f0ede6] px-5 py-4">
+              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#c8410a]">
+                // avatar
+              </p>
+              <h2 className="text-[15px] font-bold text-[#1a1814]">
+                {locale === "hu" ? "Avatar" : "Avatar"}
+              </h2>
+              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+                {locale === "hu" ? "Válaszd ki a profilképedet." : "Choose your profile picture."}
+              </p>
+            </div>
+            <div className="px-5 py-5">
+              <div className="grid grid-cols-5 gap-3">
+                {AVATAR_OPTIONS.slice(0, avatarsExpanded ? AVATAR_OPTIONS.length : AVATARS_INITIAL_COUNT).map((src) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setPendingAvatarUrl(src)}
+                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
+                      pendingAvatarUrl === src
+                        ? "border-[#c8410a] ring-2 ring-[#c8410a]/30"
+                        : "border-[#e8e4dc] hover:border-[#c8410a]/40"
+                    }`}
+                  >
+                    <Image
+                      src={src}
+                      alt="avatar option"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+              {AVATAR_OPTIONS.length > AVATARS_INITIAL_COUNT && (
+                <button
+                  type="button"
+                  onClick={() => setAvatarsExpanded((v) => !v)}
+                  className="mt-3 text-[12px] font-medium text-[#c8410a] hover:underline"
+                >
+                  {avatarsExpanded
+                    ? (locale === "hu" ? "− Kevesebb" : "− Show less")
+                    : (locale === "hu"
+                        ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
+                        : `+ Show all (${AVATAR_OPTIONS.length})`)}
+                </button>
+              )}
             </div>
           </section>
         </FadeIn>

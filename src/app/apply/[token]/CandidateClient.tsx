@@ -57,7 +57,7 @@ export function CandidateClient({
 
   const DRAFT_KEY = `trita_candidate_draft_${token}`;
 
-  const [phase, setPhase] = useState<"intro" | "assessment" | "done">("intro");
+  const [phase, setPhase] = useState<"intro" | "assessment" | "done" | "revoked">("intro");
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [currentPage, setCurrentPage] = useState(0);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
@@ -69,10 +69,36 @@ export function CandidateClient({
   const latestAnswersRef = useRef(answers);
   const questionAreaRef = useRef<HTMLDivElement>(null);
   const scrollMounted = useRef(false);
+  const progressSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     latestAnswersRef.current = answers;
   }, [answers]);
+
+  // Sync draft progress to server (debounced); detect revocation via response
+  useEffect(() => {
+    const count = Object.keys(answers).length;
+    if (phase !== "assessment" || count === 0) return;
+    if (progressSyncTimer.current) clearTimeout(progressSyncTimer.current);
+    progressSyncTimer.current = setTimeout(() => {
+      fetch(`/api/candidate/${token}/progress`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answeredCount: Object.keys(answers).length }),
+      })
+        .then((res) => res.json() as Promise<{ ok: boolean; revoked?: boolean }>)
+        .then((data) => {
+          if (!data.ok && data.revoked) {
+            setPhase("revoked");
+          }
+        })
+        .catch(() => {/* ignore */});
+    }, 2000);
+    return () => {
+      if (progressSyncTimer.current) clearTimeout(progressSyncTimer.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, phase]);
 
   // Restore from localStorage on mount
   useEffect(() => {
@@ -279,19 +305,18 @@ export function CandidateClient({
   // Intro screen
   if (phase === "intro") {
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-2xl px-4 py-12 md:py-16">
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
-              {isHu ? "Személyiségfelmérés" : "Personality Assessment"}
+      <div className="min-h-dvh bg-[#faf9f6]">
+        <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
+          <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+              {isHu ? "// személyiségfelmérés" : "// personality assessment"}
             </p>
-            <h1 className="mt-3 text-2xl font-bold text-gray-900 md:text-3xl">
+            <h1 className="mt-3 font-playfair text-2xl text-[#1a1814] md:text-3xl">
               {position
                 ? (isHu ? `${position} pozíció` : `${position} position`)
                 : (isHu ? "Személyiségfelmérés" : "Personality Assessment")}
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-gray-600">
+            <p className="mt-4 text-sm leading-relaxed text-[#3d3a35]">
               {isHu
                 ? `Ez a felmérés ${totalQuestions} kérdésből áll, és körülbelül 15–20 percet vesz igénybe. Kérjük, válaszolj őszintén, az első benyomásod alapján.`
                 : `This assessment contains ${totalQuestions} questions and takes approximately 15–20 minutes. Please answer honestly based on your first impression.`}
@@ -301,26 +326,26 @@ export function CandidateClient({
                 ? "A válaszaidat automatikusan mentjük — ha megszakad a kitöltés, onnan folytathatod, ahol abbahagytad."
                 : "Your answers are saved automatically — if you stop and return, you can continue where you left off."}
             </div>
-            <div className="mt-6 flex flex-col gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600">
+            <div className="mt-6 flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4 text-sm text-[#5a5650]">
               <div className="flex items-center gap-2">
-                <span className="text-indigo-500">✓</span>
+                <span className="text-[#c8410a]">✓</span>
                 {isHu ? "Regisztráció nem szükséges" : "No registration required"}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-indigo-500">✓</span>
+                <span className="text-[#c8410a]">✓</span>
                 {isHu
                   ? `${totalQuestions} kérdés, 1–5-ös skálán`
                   : `${totalQuestions} questions, rated on a 1–5 scale`}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-indigo-500">✓</span>
+                <span className="text-[#c8410a]">✓</span>
                 {isHu ? "Bizalmas adatkezelés" : "Confidential data handling"}
               </div>
             </div>
             <button
               type="button"
               onClick={() => setPhase("assessment")}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
             >
               {isHu ? "Felmérés megkezdése" : "Start assessment"}
             </button>
@@ -333,18 +358,38 @@ export function CandidateClient({
   // Done screen
   if (phase === "done") {
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="min-h-dvh bg-[#faf9f6]">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 text-2xl font-bold text-gray-900">
+            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
               {isHu ? "Köszönjük a kitöltést!" : "Thank you for completing the assessment!"}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
               {isHu
                 ? "A válaszaid sikeresen beküldtük. A szervező hamarosan értesítést kap az eredményekről."
                 : "Your answers have been successfully submitted. The organiser will be notified of the results shortly."}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Revoked screen
+  if (phase === "revoked") {
+    return (
+      <div className="min-h-dvh bg-[#faf9f6]">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+            <div className="text-5xl leading-none">🔒</div>
+            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
+              {isHu ? "A meghívó visszavonva" : "Invitation revoked"}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+              {isHu
+                ? "Ezt a meghívót visszavonták. Ha kérdésed van, vedd fel a kapcsolatot a szervezővel."
+                : "This invitation has been revoked. Please contact the organiser if you have any questions."}
             </p>
           </div>
         </div>
@@ -358,26 +403,25 @@ export function CandidateClient({
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined;
 
   return (
-    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-      <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <div className="min-h-dvh bg-[#faf9f6]">
+      <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
 
         {/* Sticky progress bar */}
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-[#e8e4dc] bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
-          <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-            <span className="rounded-md bg-gray-50 px-2 py-1 whitespace-nowrap">
+          <div className="mt-2 flex items-center gap-2 text-xs text-[#a09a90]">
+            <span className="rounded-md bg-[#f0ede6] px-2 py-1 whitespace-nowrap">
               {isHu ? `~${etaMinutes} perc hátra` : `~${etaMinutes} min remaining`}
             </span>
             {position && (
-              <span className="hidden truncate text-gray-400 sm:block">
+              <span className="hidden truncate sm:block">
                 {position}
               </span>
             )}
           </div>
         </div>
 
-        <div className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-center text-sm font-medium text-indigo-700">
+        <div className="mb-4 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] px-4 py-2.5 text-center text-sm text-[#5a5650]">
           {isHu
             ? "Válaszolj úgy, ahogy általában gondolkodsz és viselkedsz."
             : "Answer based on how you generally think and behave."}
@@ -385,12 +429,12 @@ export function CandidateClient({
 
         {/* Auto-advance toggle */}
         <div className="mb-4">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-xs text-[#5a5650]">
             <input
               type="checkbox"
               checked={autoAdvance}
               onChange={(e) => setAutoAdvance(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+              className="h-4 w-4 rounded border-[#e8e4dc]"
             />
             {isHu ? "Automatikus továbblépés" : "Auto-advance"}
           </label>
@@ -429,10 +473,10 @@ export function CandidateClient({
           <motion.button
             onClick={handlePrevStep}
             disabled={!canGoPrev}
-            className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+            className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
               !canGoPrev
-                ? "cursor-not-allowed bg-gray-200 text-gray-400"
-                : "bg-white text-gray-700 shadow-md hover:shadow-lg"
+                ? "cursor-not-allowed bg-[#e8e4dc] text-[#a09a90]"
+                : "border border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#c8410a]/40 hover:text-[#c8410a]"
             }`}
             whileHover={canGoPrev ? { scale: 1.02 } : {}}
             whileTap={canGoPrev ? { scale: 0.98 } : {}}
@@ -444,10 +488,10 @@ export function CandidateClient({
             <motion.button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+              className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
                 !isSubmitting
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
-                  : "bg-gray-200 text-gray-400"
+                  ? "bg-[#c8410a] text-white hover:bg-[#b53a09]"
+                  : "bg-[#e8e4dc] text-[#a09a90]"
               }`}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}
               whileTap={!isSubmitting ? { scale: 0.98 } : {}}
@@ -461,10 +505,10 @@ export function CandidateClient({
               onClick={handleNextStep}
               disabled={isSubmitting}
               aria-disabled={!currentQuestionAnswered || isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
+              className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
                 currentQuestionAnswered && !isSubmitting
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
-                  : "cursor-not-allowed bg-gray-200 text-gray-400"
+                  ? "bg-[#c8410a] text-white hover:bg-[#b53a09]"
+                  : "cursor-not-allowed bg-[#e8e4dc] text-[#a09a90]"
               }`}
               whileHover={currentQuestionAnswered && !isSubmitting ? { scale: 1.02 } : {}}
               whileTap={currentQuestionAnswered && !isSubmitting ? { scale: 0.98 } : {}}
@@ -474,7 +518,7 @@ export function CandidateClient({
           )}
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-sm text-[#a09a90]">
           {isHu
             ? "Az 1–5 skálán: 1 = Egyáltalán nem értek egyet, 5 = Teljes mértékben egyetértek"
             : "On the 1–5 scale: 1 = Strongly disagree, 5 = Strongly agree"}

@@ -88,8 +88,11 @@ export function OrgPageShell({
             orgId={orgId}
             campaigns={pageData.campaigns}
             memberCount={pageData.memberCount}
+            completedMemberCount={pageData.completedMemberCount}
+            activeCampaignCount={pageData.activeCampaignCount}
             isHu={isHu}
             dateLocale={dateLocale}
+            isManager={isManager}
           />
         )}
 

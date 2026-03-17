@@ -67,6 +67,7 @@ model UserProfile {
   birthYear   Int?
   gender      String?
   country     String?
+  avatarUrl   String?
   onboardedAt DateTime?
 
   // Research study fields
@@ -315,7 +316,9 @@ model CandidateInvite {
   testType    String    @default("HEXACO")
   expiresAt   DateTime
   createdAt   DateTime  @default(now())
-  completedAt DateTime?
+  completedAt        DateTime?
+  draftStartedAt     DateTime?
+  draftAnsweredCount Int       @default(0)
 
   manager UserProfile      @relation("ManagedCandidates", fields: [managerId], references: [id])
   team    Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)

@@ -1,8 +1,6 @@
 "use client";
 
 import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
-import { CandidateInviteForm } from "@/components/manager/CandidateInviteForm";
-import { CandidateRevokeButton } from "@/components/manager/CandidateRevokeButton";
 import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCancelButton";
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
 
@@ -23,21 +21,9 @@ interface SerializedPendingInvite {
   createdAt: string;
 }
 
-interface SerializedCandidateInvite {
-  id: string;
-  name: string | null;
-  email: string | null;
-  position: string | null;
-  status: string;
-  expiresAt: string;
-  createdAt: string;
-  hasResult: boolean;
-}
-
 interface TeamMembersTabProps {
   members: SerializedMemberRow[];
   pendingInvites: SerializedPendingInvite[];
-  candidateInvites: SerializedCandidateInvite[];
   teamId: string;
   teamName: string;
   profileId: string;
@@ -50,7 +36,6 @@ interface TeamMembersTabProps {
 export function TeamMembersTab({
   members,
   pendingInvites,
-  candidateInvites,
   teamId,
   teamName,
   profileId,
@@ -163,123 +148,6 @@ export function TeamMembersTab({
         )}
       </section>
 
-      {/* Candidates section */}
-      {isOrgManager && (
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
-            {isHu ? "// jelöltek" : "// candidates"}
-          </p>
-          <h2 className="font-playfair text-xl text-[#1a1814] mb-0.5">
-            {isHu ? "Jelöltek" : "Candidates"}{" "}
-            <span className="font-sans text-sm font-normal text-[#3d3a35]/50">
-              ({candidateInvites.length})
-            </span>
-          </h2>
-
-          {candidateInvites.length > 0 && (
-            <div className="mt-5 flex flex-col divide-y divide-[#e8e4dc]">
-              {candidateInvites.map((c) => {
-                const isExpired =
-                  c.status !== "COMPLETED" &&
-                  c.status !== "CANCELED" &&
-                  new Date(c.expiresAt) < new Date();
-                const displayStatus = isExpired ? "EXPIRED" : c.status;
-
-                const statusClass =
-                  displayStatus === "COMPLETED"
-                    ? "bg-emerald-50 text-emerald-700"
-                    : displayStatus === "EXPIRED"
-                    ? "bg-[#e8e4dc] text-[#3d3a35]/60"
-                    : displayStatus === "CANCELED"
-                    ? "bg-rose-50 text-rose-600"
-                    : "bg-amber-50 text-amber-700";
-
-                const statusText =
-                  displayStatus === "COMPLETED"
-                    ? isHu
-                      ? "Kész"
-                      : "Completed"
-                    : displayStatus === "EXPIRED"
-                    ? isHu
-                      ? "Lejárt"
-                      : "Expired"
-                    : displayStatus === "CANCELED"
-                    ? isHu
-                      ? "Visszavonva"
-                      : "Revoked"
-                    : isHu
-                    ? "Függőben"
-                    : "Pending";
-
-                return (
-                  <div
-                    key={c.id}
-                    className="flex items-center justify-between gap-3 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[#1a1814]">
-                        {c.name ??
-                          c.email ??
-                          (isHu ? "Névtelen jelölt" : "Anonymous candidate")}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                        {c.position && (
-                          <span className="text-xs text-[#3d3a35]/60">
-                            {c.position}
-                          </span>
-                        )}
-                        <span className="text-xs text-[#3d3a35]/50">
-                          {new Date(c.createdAt).toLocaleDateString(dateLocale)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusClass}`}
-                      >
-                        {statusText}
-                      </span>
-                      {c.status === "COMPLETED" && c.hasResult && (
-                        <a
-                          href={`/manager/candidates/${c.id}`}
-                          className="min-h-[36px] inline-flex items-center rounded-lg border border-[#e8e4dc] bg-white px-3 text-xs font-semibold text-[#c8410a] transition hover:border-[#c8410a]/30 hover:bg-[#faf9f6]"
-                        >
-                          {isHu ? "Eredmény" : "Results"}
-                        </a>
-                      )}
-                      {c.status === "PENDING" && !isExpired && (
-                        <CandidateRevokeButton inviteId={c.id} isHu={isHu} />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          <div
-            className={
-              candidateInvites.length > 0
-                ? "border-t border-[#e8e4dc] mt-5 pt-5"
-                : "mt-5"
-            }
-          >
-            <h3 className="mb-3 text-sm font-semibold text-[#1a1814]">
-              {isHu ? "Jelölt meghívása" : "Invite a candidate"}
-            </h3>
-            <p className="mb-4 text-xs text-[#3d3a35]/60">
-              {isHu
-                ? "Értékelési linket kap a jelölt. Regisztráció nélkül kitölthető."
-                : "The candidate receives an assessment link. No registration required."}
-            </p>
-            <CandidateInviteForm
-              locale={locale}
-              teams={[{ id: teamId, name: teamName }]}
-              preselectedTeamId={teamId}
-            />
-          </div>
-        </section>
-      )}
     </div>
   );
 }

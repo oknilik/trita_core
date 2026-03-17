@@ -1,7 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+
+const DEFAULT_AVATAR = "/avatars/avatar-1.png";
 import { usePathname } from "next/navigation";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -21,6 +24,12 @@ export function UserMenu() {
     }
     return null;
   });
+  const [avatarSrc, setAvatarSrc] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
+    }
+    return DEFAULT_AVATAR;
+  });
   const [orgRole, setOrgRole] = useState<string | null>(null);
 
   // Fetch user profile name from database
@@ -37,6 +46,10 @@ export function UserMenu() {
           // Profile has no username yet (deleted or in onboarding) — clear stale cache
           setProfileName(null);
           window.localStorage.removeItem("trita_username");
+        }
+        if (data.avatarUrl) {
+          setAvatarSrc(data.avatarUrl);
+          window.localStorage.setItem("trita_avatar", data.avatarUrl);
         }
         setOrgRole(data.orgMemberships?.[0]?.role ?? null);
       }
@@ -113,9 +126,14 @@ export function UserMenu() {
         onClick={() => setIsOpen(true)}
         className="flex min-h-[44px] items-center gap-2 rounded-full border border-[#e8e4dc] bg-white px-2 py-1 text-sm font-semibold text-[#3d3a35] shadow-sm transition hover:border-[#d9cfc1] hover:text-[#1a1814]"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#f3d4c8] bg-[#fef3ec] text-sm font-semibold text-[#8b2f09]">
-          {initials}
-        </span>
+        <Image
+          src={avatarSrc}
+          alt="Avatar"
+          width={32}
+          height={32}
+          unoptimized
+          className="h-8 w-8 rounded-full object-cover"
+        />
         <span className="hidden max-w-[120px] truncate text-sm text-[#5a5650] lg:block">
           {label ?? t("userMenu.profileFallback", locale)}
         </span>
@@ -158,9 +176,14 @@ export function UserMenu() {
 
               <div className="border-b border-[#e8e4dc] px-5 py-5">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#f3d4c8] bg-[#fef3ec] text-base font-semibold text-[#8b2f09]">
-                    {initials}
-                  </span>
+                  <Image
+                    src={avatarSrc}
+                    alt="Avatar"
+                    width={48}
+                    height={48}
+                    unoptimized
+                    className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
+                  />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-[#1a1814]">
                       {t("userMenu.greetingPrefix", locale)}

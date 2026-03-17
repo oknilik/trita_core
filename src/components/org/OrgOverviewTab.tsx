@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import type { SerializedTeam, CampaignWithStats } from "@/lib/org-stats";
+import { NextStepBanner } from "./NextStepBanner";
+import { RemindPendingButton } from "./RemindPendingButton";
 
 const HEXACO_COLORS: Record<string, string> = {
   H: "#6366F1",
@@ -36,8 +38,11 @@ interface OrgOverviewTabProps {
   orgId: string;
   campaigns: CampaignWithStats[];
   memberCount: number;
+  completedMemberCount: number;
+  activeCampaignCount: number;
   isHu: boolean;
   dateLocale: string;
+  isManager: boolean;
 }
 
 export function OrgOverviewTab({
@@ -45,7 +50,11 @@ export function OrgOverviewTab({
   teams,
   orgId,
   campaigns,
+  memberCount,
+  completedMemberCount,
+  activeCampaignCount,
   isHu,
+  isManager,
 }: OrgOverviewTabProps) {
   const activeCampaigns = campaigns.filter((c) => c.status === "ACTIVE");
   const dims = ["H", "E", "X", "A", "C", "O"];
@@ -70,6 +79,16 @@ export function OrgOverviewTab({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Next step banner */}
+      <NextStepBanner
+        orgId={orgId}
+        memberCount={memberCount}
+        activeCampaignCount={activeCampaignCount}
+        completedMemberCount={completedMemberCount}
+        hexacoAvg={hexacoAvg}
+        isHu={isHu}
+      />
+
       {/* Active campaign banner */}
       {activeCampaigns.length > 0 && (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4">
@@ -116,15 +135,33 @@ export function OrgOverviewTab({
           </h3>
 
           {!hexacoAvg ? (
-            <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-6 text-center">
-              <p className="text-sm font-semibold text-[#1a1814] mb-1">
-                {isHu ? "Nincs elég adat" : "Not enough data"}
-              </p>
-              <p className="text-xs text-[#5a5650]">
-                {isHu
-                  ? "Minimum 3 kitöltés szükséges a szervezeti személyiségprofil megjelenítéséhez."
-                  : "At least 3 completed assessments are required to display the org personality profile."}
-              </p>
+            <div className="flex flex-col gap-4 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-5">
+              <div>
+                <div className="mb-1.5 flex items-center justify-between gap-2">
+                  <p className="text-[13px] font-semibold text-[#1a1814]">
+                    {isHu
+                      ? `${completedMemberCount} / 3 kitöltés`
+                      : `${completedMemberCount} / 3 completions`}
+                  </p>
+                  <span className="font-mono text-[10px] text-[#a09a90]">
+                    {Math.round((completedMemberCount / 3) * 100)}%
+                  </span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-[#e8e4dc]">
+                  <div
+                    className="h-full rounded-full bg-[#c8410a] transition-all duration-700"
+                    style={{ width: `${Math.min((completedMemberCount / 3) * 100, 100)}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-[11px] text-[#5a5650]">
+                  {isHu
+                    ? "A szervezeti személyiségprofil 3 befejezett értékelés után jelenik meg."
+                    : "The org personality profile appears after 3 completed assessments."}
+                </p>
+              </div>
+              {isManager && (
+                <RemindPendingButton orgId={orgId} isHu={isHu} />
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-2.5">
