@@ -161,6 +161,33 @@ export function TeamOverviewTab({
         </div>
       )}
 
+      {/* Empty state: no completed assessments */}
+      {data.completedCount === 0 && (
+        <div className="rounded-2xl border-2 border-dashed border-[#e8e4dc] bg-white p-8 text-center">
+          <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+            // {isHu ? "nincs adat" : "no data yet"}
+          </p>
+          <p className="mt-3 font-playfair text-xl text-[#1a1814]">
+            {isHu
+              ? "Még nincs kitöltött értékelés"
+              : "No completed assessments yet"}
+          </p>
+          <p className="mt-2 text-sm text-[#5a5650]">
+            {isHu
+              ? "Indíts egy 360° kampányt, hogy a csapattagok megkezdhessék az értékeléseket."
+              : "Start a 360° campaign so team members can begin their assessments."}
+          </p>
+          {data.orgId && (
+            <a
+              href={`/org/${data.orgId}?tab=campaigns`}
+              className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+            >
+              {isHu ? "Kampány indítása" : "Start a campaign"}
+            </a>
+          )}
+        </div>
+      )}
+
       {/* 2-column grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left: HEXACO profile card */}
