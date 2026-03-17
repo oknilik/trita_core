@@ -38,12 +38,12 @@ export function NavHeaderUI({
   const [orgOpen, setOrgOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [avatarSrc] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
-    }
-    return DEFAULT_AVATAR;
-  });
+  const [avatarSrc, setAvatarSrc] = useState<string>(DEFAULT_AVATAR);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("trita_avatar");
+    if (stored) setAvatarSrc(stored);
+  }, []);
 
   const onDashboard = pathname === "/dashboard";
   const onTeam = team ? pathname.startsWith(`/team/${team.id}`) : false;
