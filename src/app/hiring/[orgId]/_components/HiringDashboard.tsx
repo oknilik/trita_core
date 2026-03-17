@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CandidateInviteForm } from "@/components/manager/CandidateInviteForm";
 import { CandidateRevokeButton } from "@/components/manager/CandidateRevokeButton";
+import { RequestCreditsButton } from "@/components/hiring/RequestCreditsButton";
 
 interface Team {
   id: string;
@@ -25,6 +26,22 @@ interface SerializedInvite {
   totalQuestions: number;
 }
 
+interface CreditBalance {
+  available: number;
+  totalPurchased: number;
+  totalUsed: number;
+}
+
+interface CreditHistoryEntry {
+  id: string;
+  type: string;
+  amount: number;
+  balance: number;
+  note: string | null;
+  actorId: string | null;
+  createdAt: string;
+}
+
 interface HiringDashboardProps {
   orgId: string;
   orgName: string;
@@ -32,6 +49,11 @@ interface HiringDashboardProps {
   invites: SerializedInvite[];
   isHu: boolean;
   locale: string;
+  planTier: string;
+  creditBalance: CreditBalance | null;
+  creditHistory: CreditHistoryEntry[] | null;
+  canInviteNew: boolean;
+  isAdmin: boolean;
 }
 
 function statusLabel(status: string, isExpired: boolean, isHu: boolean): string {
@@ -168,9 +190,18 @@ export function HiringDashboard({
   invites,
   isHu,
   locale,
+  planTier,
+  creditBalance,
+  creditHistory,
+  canInviteNew,
+  isAdmin,
 }: HiringDashboardProps) {
   const [showForm, setShowForm] = useState(false);
+  const [creditQty, setCreditQty] = useState(1);
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
+
+  const creditUnitPrice = creditQty >= 10 ? 31.20 : creditQty >= 5 ? 33.15 : 39;
+  const creditTotal = (creditUnitPrice * creditQty).toFixed(2);
 
   const pending = invites.filter(
     (i) => i.status === "PENDING" && new Date(i.expiresAt) >= new Date()
@@ -201,19 +232,139 @@ export function HiringDashboard({
             {pending.length} {isHu ? "folyamatban" : "in progress"}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowForm((v) => !v)}
-          className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
-        >
-          {showForm
-            ? isHu ? "✕ Mégse" : "✕ Cancel"
-            : isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
-        </button>
+        {canInviteNew ? (
+          <button
+            type="button"
+            onClick={() => setShowForm((v) => !v)}
+            className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+          >
+            {showForm
+              ? isHu ? "✕ Mégse" : "✕ Cancel"
+              : isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="min-h-[44px] rounded-lg bg-[#e8e4dc] px-5 text-sm font-semibold text-[#a09a90] cursor-not-allowed"
+          >
+            {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
+          </button>
+        )}
       </div>
 
+      {/* Credit pool bar — credit-based tiers */}
+      {creditBalance && (
+        <div className="rounded-xl border border-[#e8e4dc] bg-white p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+                {isHu ? "// jelölt kreditek" : "// candidate credits"}
+              </p>
+              <p className="mt-1 text-sm text-[#3d3a35]">
+                <span className="font-playfair text-2xl text-[#1a1814]">
+                  {creditBalance.available}
+                </span>
+                {" "}
+                {isHu ? "elérhető kredit" : "credits available"}
+              </p>
+              <p className="text-[11px] text-[#a09a90] mt-0.5">
+                {isHu
+                  ? `${creditBalance.totalPurchased} vásárolt · ${creditBalance.totalUsed} felhasznált`
+                  : `${creditBalance.totalPurchased} purchased · ${creditBalance.totalUsed} used`}
+              </p>
+            </div>
+
+            {isAdmin ? (
+              <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                {/* Quick-select presets */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setCreditQty(5)}
+                    className={`min-h-[32px] rounded-lg border px-3 text-[10px] font-semibold transition ${
+                      creditQty === 5
+                        ? "border-[#c8410a]/40 bg-[#c8410a]/5 text-[#c8410a]"
+                        : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a]/30 hover:text-[#c8410a]"
+                    }`}
+                  >
+                    5× <span className="text-emerald-600">−15%</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCreditQty(10)}
+                    className={`min-h-[32px] rounded-lg border px-3 text-[10px] font-semibold transition ${
+                      creditQty === 10
+                        ? "border-[#c8410a]/40 bg-[#c8410a]/5 text-[#c8410a]"
+                        : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a]/30 hover:text-[#c8410a]"
+                    }`}
+                  >
+                    10× <span className="text-emerald-600">−20%</span>
+                  </button>
+                </div>
+                {/* Stepper row */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center rounded-lg border border-[#e8e4dc] bg-white overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setCreditQty((q) => Math.max(1, q - 1))}
+                      className="min-h-[36px] w-8 text-sm text-[#5a5650] hover:text-[#c8410a] transition"
+                    >
+                      −
+                    </button>
+                    <span className="min-w-[28px] text-center font-mono text-xs font-semibold text-[#1a1814]">
+                      {creditQty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCreditQty((q) => q + 1)}
+                      className="min-h-[36px] w-8 text-sm text-[#5a5650] hover:text-[#c8410a] transition"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="font-mono text-[10px] text-[#a09a90]">
+                      €{creditUnitPrice.toFixed(2)}/db
+                    </span>
+                    <a
+                      href={`/billing/checkout?plan=candidate_custom&qty=${creditQty}`}
+                      className="min-h-[36px] inline-flex items-center rounded-lg bg-[#c8410a] px-3 text-[11px] font-semibold text-white transition hover:bg-[#b53a09]"
+                    >
+                      +{creditQty} · €{creditTotal}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ) : creditBalance.available === 0 ? (
+              <RequestCreditsButton orgId={orgId} isHu={isHu} />
+            ) : null}
+          </div>
+
+          {creditBalance.totalPurchased > 0 && (
+            <div className="mt-3 h-1.5 w-full rounded-full bg-[#e8e4dc] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#c8410a] transition-all"
+                style={{
+                  width: `${Math.min(100, Math.round((creditBalance.available / creditBalance.totalPurchased) * 100))}%`,
+                }}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* No-credits warning banner for managers */}
+      {!canInviteNew && creditBalance !== null && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm text-amber-800">
+          {isHu
+            ? "Nincs elérhető kredit. Kérd az admint a pool feltöltésére, vagy váltson Org csomagra a korlátlan hozzáférésért."
+            : "No credits available. Ask your admin to top up, or upgrade to Org for unlimited access."}
+        </div>
+      )}
+
       {/* Inline invite form */}
-      {showForm && (
+      {showForm && canInviteNew && (
         <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
           <div className="border-b border-[#e8e4dc] px-6 py-4">
             <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
@@ -295,6 +446,46 @@ export function HiringDashboard({
         </div>
       )}
 
+      {/* Credit history — admin only, when credits are tracked */}
+      {isAdmin && creditHistory && creditHistory.length > 0 && (
+        <div className="rounded-xl border border-[#e8e4dc] bg-white p-5">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-3">
+            {isHu ? "// kredit napló" : "// credit log"}
+          </p>
+          <div className="divide-y divide-[#e8e4dc]">
+            {creditHistory.map((entry) => (
+              <div key={entry.id} className="flex items-center justify-between py-2.5">
+                <div className="min-w-0">
+                  <p className="text-xs text-[#3d3a35] truncate">
+                    {entry.note ?? (entry.type === "purchase"
+                      ? (isHu ? "Vásárlás" : "Purchase")
+                      : (isHu ? "Felhasználás" : "Usage"))}
+                  </p>
+                  <p className="text-[10px] text-[#a09a90]">
+                    {new Date(entry.createdAt).toLocaleDateString(
+                      locale === "en" ? "en-GB" : "hu-HU",
+                      { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
+                    )}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span
+                    className={`font-mono text-xs font-semibold ${
+                      entry.amount > 0 ? "text-emerald-700" : "text-[#c8410a]"
+                    }`}
+                  >
+                    {entry.amount > 0 ? `+${entry.amount}` : entry.amount}
+                  </span>
+                  <span className="font-mono text-[10px] text-[#a09a90] w-6 text-right">
+                    {entry.balance}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Empty state */}
       {invites.length === 0 && !showForm && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#e8e4dc] bg-white py-16 text-center">
@@ -306,13 +497,15 @@ export function HiringDashboard({
               ? "Hívj meg jelölteket HEXACO felmérésre az alábbi gombbal"
               : "Invite candidates to a HEXACO assessment"}
           </p>
-          <button
-            type="button"
-            onClick={() => setShowForm(true)}
-            className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
-          >
-            {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
-          </button>
+          {canInviteNew && (
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+            >
+              {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
+            </button>
+          )}
         </div>
       )}
     </div>

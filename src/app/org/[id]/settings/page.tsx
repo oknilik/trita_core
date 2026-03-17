@@ -141,7 +141,7 @@ export default async function OrgSettingsPage({
             <div className="flex flex-shrink-0 gap-2">
               {(subStatus === "trialing" || subStatus === "none") && (
                 <a
-                  href="/billing/upgrade"
+                  href="/billing/checkout?plan=org_monthly"
                   className="inline-flex min-h-[40px] items-center rounded-lg bg-[#c8410a] px-4 text-xs font-semibold text-white hover:bg-[#a33408] transition-colors"
                 >
                   {isHu ? "Aktiválás →" : "Activate →"}
@@ -152,7 +152,7 @@ export default async function OrgSettingsPage({
               )}
               {subStatus === "canceled" && (
                 <a
-                  href="/billing/upgrade"
+                  href="/billing/checkout?plan=org_monthly"
                   className="inline-flex min-h-[40px] items-center rounded-lg border border-[#c8410a] px-4 text-xs font-semibold text-[#c8410a] hover:bg-[#fef3ec] transition-colors"
                 >
                   {isHu ? "Újraaktiválás" : "Reactivate"}

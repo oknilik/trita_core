@@ -87,6 +87,13 @@ export function OrgMemberRoleEditor({
           <option key={r} value={r}>{roleLabel(r, isHu)}</option>
         ))}
       </select>
+      {role === "ORG_MANAGER" && (
+        <p className="text-[10px] text-[#a09a90]">
+          {isHu
+            ? "Csapat jogosultságok külön állíthatók."
+            : "Team permissions set per team."}
+        </p>
+      )}
       {error && <p className="text-xs text-rose-600">{error}</p>}
     </div>
   );

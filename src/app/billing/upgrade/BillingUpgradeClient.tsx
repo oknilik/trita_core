@@ -21,19 +21,8 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
   const isCanceled = subscriptionStatus === "canceled";
   const isActiveOrSetup = subscriptionStatus === "active" || (subscriptionStatus === "trialing" && alreadySetup && !isExpiredTrial);
 
-  const handleCheckout = async (priceKey: string) => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceKey }),
-      });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-    } finally {
-      setLoading(false);
-    }
+  const handleCheckout = (priceKey: string) => {
+    window.location.href = `/billing/checkout?plan=${priceKey}`;
   };
 
   return (
@@ -159,10 +148,9 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
                 </div>
                 <button
                   onClick={() => handleCheckout(plan.key)}
-                  disabled={loading}
-                  className="mt-4 w-full min-h-[44px] rounded-lg bg-[#c8410a] text-sm font-semibold text-white hover:bg-[#a33408] disabled:opacity-60"
+                  className="mt-4 w-full min-h-[44px] rounded-lg bg-[#c8410a] text-sm font-semibold text-white hover:bg-[#a33408]"
                 >
-                  {loading ? "Átirányítás..." : "Fizetés →"}
+                  Fizetés →
                 </button>
               </div>
             ))}

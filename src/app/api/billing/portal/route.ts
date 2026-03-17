@@ -15,7 +15,7 @@ export async function POST() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, locale: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -35,8 +35,11 @@ export async function POST() {
     return NextResponse.json({ error: "NO_SUBSCRIPTION" }, { status: 404 });
   }
 
+  const stripeLocale = profile.locale === "hu" ? "hu" : "en";
+
   const session = await stripe.billingPortal.sessions.create({
     customer: sub.stripeCustomerId,
+    locale: stripeLocale,
     return_url: `${APP_URL}/dashboard?portal=updated`,
   });
 

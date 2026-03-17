@@ -91,13 +91,21 @@ const copy: Record<
   },
 };
 
-export function PricingClient({ locale }: { locale: Locale }) {
+export function PricingClient({ locale, isLoggedIn = false }: { locale: Locale; isLoggedIn?: boolean }) {
   const [billing, setBilling] = useState<BillingMode>("annual");
   const [showComparison, setShowComparison] = useState(false);
 
   const c = copy[locale] ?? copy.hu;
   const trustedLabels = trustedLabelsData[locale] ?? trustedLabelsData.hu;
-  const displayPlans = getPricingDisplayPlans(locale);
+  const rawDisplayPlans = getPricingDisplayPlans(locale);
+  const displayPlans = isLoggedIn
+    ? rawDisplayPlans.map((plan) => {
+        if (plan.id === "team" || plan.id === "org") {
+          return { ...plan, ctaHref: `/billing/checkout?plan=${plan.id}_${billing}` };
+        }
+        return plan;
+      })
+    : rawDisplayPlans;
   const addOns = getPricingAddOns(locale);
   const comparisonRows = getPricingComparisonRows(locale);
   const faqs = getPricingFaqs(locale);

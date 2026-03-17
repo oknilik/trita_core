@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
 import { getLanguageAlternates } from "@/lib/seo";
 import { getServerLocale } from "@/lib/i18n-server";
 import type { Locale } from "@/lib/i18n";
@@ -43,6 +44,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PricingPage() {
-  const locale = await getServerLocale();
-  return <PricingClient locale={locale} />;
+  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  return <PricingClient locale={locale} isLoggedIn={!!userId} />;
 }

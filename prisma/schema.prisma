@@ -353,14 +353,31 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner          UserProfile                @relation("OrgOwner", fields: [ownerId], references: [id])
-  members        OrganizationMember[]
-  pendingInvites OrganizationPendingInvite[]
-  teams          Team[]
-  campaigns      Campaign[]
-  subscription   Subscription?
+  owner            UserProfile                @relation("OrgOwner", fields: [ownerId], references: [id])
+  members          OrganizationMember[]
+  pendingInvites   OrganizationPendingInvite[]
+  teams            Team[]
+  campaigns        Campaign[]
+  subscription     Subscription?
+  candidateCredits CandidateCredit[]
 
   @@index([ownerId])
+}
+
+model CandidateCredit {
+  id        String   @id @default(cuid())
+  orgId     String
+  type      String   // "purchase" | "usage" | "refund"
+  amount    Int      // positive: top-up, negative: usage
+  balance   Int      // running balance AFTER this transaction
+  note      String?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([orgId, createdAt])
 }
 
 model Subscription {
@@ -373,6 +390,7 @@ model Subscription {
   trialEndsAt          DateTime?
   currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean   @default(false)
+  candidateCredits     Int       @default(0)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 

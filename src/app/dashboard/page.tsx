@@ -130,7 +130,7 @@ export default async function DashboardPage({
                   </span>
                 </div>
                 <a
-                  href="/billing/upgrade"
+                  href="/billing/checkout?plan=org_monthly"
                   className="flex-shrink-0 rounded-lg bg-[#c8410a] px-4 py-2 text-xs font-semibold text-white hover:bg-[#a33408]"
                 >
                   Aktiválás →

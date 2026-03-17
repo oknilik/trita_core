@@ -27,6 +27,7 @@ export async function requireActiveSubscription() {
                   stripeCustomerId: true,
                   stripeSubscriptionId: true,
                   stripePriceId: true,
+                  candidateCredits: true,
                 },
               },
             },

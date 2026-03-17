@@ -3,6 +3,7 @@
 import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
 import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCancelButton";
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
+import { TeamMemberRoleEditor } from "@/components/team/TeamMemberRoleEditor";
 
 interface SerializedMemberRow {
   id: string;
@@ -76,6 +77,14 @@ export function TeamMembersTab({
                   )}
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
+                  <TeamMemberRoleEditor
+                    teamId={teamId}
+                    userId={m.userId}
+                    currentRole={m.role}
+                    isSelf={m.userId === profileId}
+                    canEdit={isOrgManager}
+                    locale={locale}
+                  />
                   {m.hasAssessment ? (
                     <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
                       {m.testType ?? (isHu ? "Kész" : "Done")}

@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail } from "@/lib/emails";
+import { addCredits } from "@/lib/candidate-credits";
 
 export const dynamic = "force-dynamic";
 
@@ -68,9 +69,39 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        if (session.mode !== "subscription") break;
         const orgId = session.metadata?.orgId;
         if (!orgId) break;
+
+        // Candidate addon one-time payment
+        if (session.mode === "payment" && session.metadata?.type === "candidate_addon") {
+          const creditCount = parseInt(session.metadata.creditCount ?? "1", 10);
+          const actorId = session.metadata.actorId ?? "system";
+          const creditLabels: Record<number, string> = {
+            1: "1× jelölt értékelés",
+            5: "5× jelölt értékelés csomag",
+            10: "10× jelölt értékelés csomag",
+          };
+          const label = creditLabels[creditCount] ?? `${creditCount}× jelölt értékelés`;
+          // Idempotency: return page may have already processed this session
+          const alreadyProcessed = await prisma.candidateCredit.findFirst({
+            where: { orgId, note: { contains: session.id } },
+            select: { id: true },
+          });
+          if (!alreadyProcessed) {
+            await addCredits({
+              orgId,
+              amount: creditCount,
+              actorId,
+              note: `${label} [${session.id}]`,
+            });
+            console.log(`[Stripe] +${creditCount} candidate credits for org ${orgId}`);
+          } else {
+            console.log(`[Stripe] Skipping duplicate credit for session ${session.id}`);
+          }
+          break;
+        }
+
+        if (session.mode !== "subscription") break;
 
         const subscriptionId = session.subscription as string;
         const customerId = session.customer as string;
