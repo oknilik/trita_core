@@ -6,7 +6,7 @@ import { sendOrderConfirmationEmail } from "@/lib/emails";
 
 export const dynamic = "force-dynamic";
 
-const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
+const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 async function upsertSubscription(
   orgId: string,
@@ -46,6 +46,11 @@ async function upsertSubscription(
 }
 
 export async function POST(req: Request) {
+  if (!WEBHOOK_SECRET) {
+    console.error("[Stripe webhook] STRIPE_WEBHOOK_SECRET is not configured!");
+    return new NextResponse("Webhook secret not configured", { status: 500 });
+  }
+
   const payload = await req.text();
   const sig = req.headers.get("stripe-signature");
 
