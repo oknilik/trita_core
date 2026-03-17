@@ -8,6 +8,8 @@ export type SubscriptionStatus =
   | "unpaid"
   | "none";
 
+const PAST_DUE_GRACE_DAYS = 5;
+
 export async function getOrgSubscription(orgId: string) {
   return prisma.subscription.findUnique({
     where: { orgId },
@@ -27,7 +29,17 @@ export function hasAccess(sub: Awaited<ReturnType<typeof getOrgSubscription>>): 
   if (!sub) return false;
   if (sub.status === "active") return true;
   if (sub.status === "trialing" && sub.trialEndsAt && sub.trialEndsAt > new Date()) return true;
+  if (sub.status === "past_due" && sub.currentPeriodEnd) {
+    const graceCutoff = new Date(
+      sub.currentPeriodEnd.getTime() + PAST_DUE_GRACE_DAYS * 24 * 60 * 60 * 1000
+    );
+    if (graceCutoff > new Date()) return true;
+  }
   return false;
+}
+
+export function isPastDue(sub: Awaited<ReturnType<typeof getOrgSubscription>>): boolean {
+  return !!sub && sub.status === "past_due";
 }
 
 export function trialDaysLeft(sub: Awaited<ReturnType<typeof getOrgSubscription>>): number | null {
