@@ -8,6 +8,11 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/profile(.*)",
   "/manager(.*)",
+  "/org(.*)",
+  "/billing(.*)",
+  "/admin(.*)",
+  "/team(.*)",
+  "/onboarding(.*)",
 ]);
 
 // Public pages (no auth required)
