@@ -39,7 +39,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
               tab.label
             )}
             {tab.badge !== undefined && tab.badge !== null && (
-              <span className="ml-1.5 rounded-full bg-[#c8410a] px-[5px] py-px text-[9px] font-semibold text-white leading-none">
+              <span className="ml-1.5 rounded-full bg-[#e8e4dc] px-[5px] py-px text-[9px] font-semibold text-[#7a756e] leading-none">
                 {tab.badge}
               </span>
             )}

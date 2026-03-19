@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { syncSeatBilling } from "@/lib/seat-billing";
 
 const patchSchema = z.object({
   role: z.enum(["ORG_ADMIN", "ORG_MANAGER", "ORG_MEMBER"]),
@@ -103,6 +104,8 @@ export async function DELETE(
   await prisma.organizationMember.delete({
     where: { orgId_userId: { orgId, userId: targetUserId } },
   });
+
+  void syncSeatBilling(orgId);
 
   return NextResponse.json({ ok: true });
 }

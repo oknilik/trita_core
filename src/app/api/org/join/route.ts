@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { syncSeatBilling } from "@/lib/seat-billing";
 
 const schema = z.object({ inviteId: z.string().min(1) });
 
@@ -37,6 +38,8 @@ export async function POST(req: Request) {
     }),
     prisma.organizationPendingInvite.delete({ where: { id: invite.id } }),
   ]);
+
+  void syncSeatBilling(invite.orgId);
 
   return NextResponse.json({ ok: true });
 }

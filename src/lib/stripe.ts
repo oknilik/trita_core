@@ -32,6 +32,11 @@ export const ORG_PRICE_IDS = [
   process.env.STRIPE_PRICE_ORG_ANNUAL,
 ].filter(Boolean) as string[];
 
+export const EXTRA_SEAT_PRICES = {
+  monthly: process.env.STRIPE_PRICE_EXTRA_SEAT_MONTHLY ?? "",
+  annual:  process.env.STRIPE_PRICE_EXTRA_SEAT_ANNUAL ?? "",
+} as const;
+
 export const TRIAL_DAYS = 14;
 
 // Lazy singleton — nem dob hibát importáláskor, csak használatkor

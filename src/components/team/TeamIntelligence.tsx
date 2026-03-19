@@ -32,9 +32,9 @@ interface TeamIntelligenceProps {
 }
 
 const SUB_LABELS_HU = {
-  map: "① Team Map",
-  dynamics: "② Dynamics Map",
-  roles: "③ Role Fit",
+  map: "① Csapattérkép",
+  dynamics: "② Dinamika",
+  roles: "③ Szerep illeszkedés",
 } as const;
 
 const SUB_LABELS_EN = {

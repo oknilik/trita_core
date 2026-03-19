@@ -56,12 +56,14 @@ interface HiringDashboardProps {
   isAdmin: boolean;
 }
 
-function statusLabel(status: string, isExpired: boolean, isHu: boolean): string {
+function statusLabel(status: string, isExpired: boolean, isHu: boolean, draftAnsweredCount?: number): string {
   if (isExpired) return isHu ? "Lejárt" : "Expired";
   switch (status) {
     case "COMPLETED": return isHu ? "✓ kész" : "✓ done";
     case "CANCELED": return isHu ? "Visszavonva" : "Revoked";
-    default: return isHu ? "Folyamatban" : "In progress";
+    default:
+      if ((draftAnsweredCount ?? 0) > 0) return isHu ? "Kitöltés alatt" : "In progress";
+      return isHu ? "Elküldve" : "Sent";
   }
 }
 
@@ -116,8 +118,7 @@ function CandidateRow({
         </p>
         <p className="truncate text-[11px] text-[#a09a90]">
           {invite.position && `${invite.position} · `}
-          {invite.teamName ?? (isHu ? "Nincs csapat" : "No team")}
-          {" · "}
+          {invite.teamName && `${invite.teamName} · `}
           {new Date(invite.createdAt).toLocaleDateString(dateLocale)}
         </p>
         {invite.status === "PENDING" && !isExpired && invite.draftAnsweredCount > 0 && (
@@ -144,7 +145,7 @@ function CandidateRow({
           statusClass(invite.status, isExpired),
         ].join(" ")}
       >
-        {statusLabel(invite.status, isExpired, isHu)}
+        {statusLabel(invite.status, isExpired, isHu, invite.draftAnsweredCount)}
       </span>
 
       {/* Actions */}
@@ -206,6 +207,8 @@ export function HiringDashboard({
   const pending = invites.filter(
     (i) => i.status === "PENDING" && new Date(i.expiresAt) >= new Date()
   );
+  const inProgressInvites = pending.filter((i) => i.draftAnsweredCount > 0);
+  const sentInvites = pending.filter((i) => i.draftAnsweredCount === 0);
   const completed = invites.filter((i) => i.status === "COMPLETED");
   const expired = invites.filter(
     (i) =>
@@ -222,7 +225,7 @@ export function HiringDashboard({
             {isHu ? `// felvétel · ${orgName}` : `// hiring · ${orgName}`}
           </p>
           <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
-            trita Hiring
+            trita {isHu ? "Felvétel" : "Hiring"}
           </h1>
           <p className="mt-1 text-xs text-[#a09a90]">
             {invites.length} {isHu ? "jelölt összesen" : "candidates total"}
@@ -406,14 +409,38 @@ export function HiringDashboard({
         ))}
       </div>
 
-      {/* Pending candidates */}
-      {pending.length > 0 && (
+      {/* In-progress candidates (draft started) */}
+      {inProgressInvites.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
-            {isHu ? `// folyamatban · ${pending.length} jelölt` : `// in progress · ${pending.length}`}
+          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#c8410a]">
+            {isHu
+              ? `// kitöltés alatt · ${inProgressInvites.length} jelölt`
+              : `// in progress · ${inProgressInvites.length} candidate${inProgressInvites.length !== 1 ? "s" : ""}`}
           </p>
           <div className="flex flex-col gap-2">
-            {pending.map((inv) => (
+            {inProgressInvites.map((inv) => (
+              <CandidateRow
+                key={inv.id}
+                invite={inv}
+                orgId={orgId}
+                isHu={isHu}
+                dateLocale={dateLocale}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sent candidates (not yet started) */}
+      {sentInvites.length > 0 && (
+        <div>
+          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+            {isHu
+              ? `// elküldve · ${sentInvites.length} jelölt`
+              : `// sent · ${sentInvites.length} candidate${sentInvites.length !== 1 ? "s" : ""}`}
+          </p>
+          <div className="flex flex-col gap-2">
+            {sentInvites.map((inv) => (
               <CandidateRow
                 key={inv.id}
                 invite={inv}

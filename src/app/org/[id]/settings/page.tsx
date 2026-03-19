@@ -4,7 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
-import { getOrgSubscription, trialDaysLeft as calcTrialDaysLeft } from "@/lib/subscription";
+import {
+  getOrgSubscription,
+  trialDaysLeft as calcTrialDaysLeft,
+  getPlanTier,
+  PLAN_SEAT_LIMITS,
+  calculateExtraSeats,
+} from "@/lib/subscription";
 import { OrgRenameForm } from "@/components/org/OrgRenameForm";
 import { OrgDeactivateButton } from "@/components/org/OrgDeactivateButton";
 import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
@@ -27,7 +33,7 @@ export default async function OrgSettingsPage({
   await requireActiveSubscription();
   const isHu = locale !== "en";
 
-  const [members, sub] = await Promise.all([
+  const [members, sub, memberCount, pendingCount] = await Promise.all([
     prisma.organizationMember.findMany({
       where: { orgId },
       orderBy: { joinedAt: "asc" },
@@ -38,10 +44,15 @@ export default async function OrgSettingsPage({
       },
     }),
     getOrgSubscription(orgId),
+    prisma.organizationMember.count({ where: { orgId } }),
+    prisma.organizationPendingInvite.count({ where: { orgId } }),
   ]);
 
   const daysLeft = calcTrialDaysLeft(sub);
   const subStatus = sub?.status ?? "none";
+  const tier = getPlanTier(sub);
+  const includedSeats = PLAN_SEAT_LIMITS[tier];
+  const extraSeats = calculateExtraSeats(sub, memberCount);
   const trialEnd = sub?.trialEndsAt?.toISOString() ?? null;
 
   return (
@@ -161,6 +172,84 @@ export default async function OrgSettingsPage({
             </div>
           </div>
         </section>
+
+        {/* Seat info — team / org plans only */}
+        {tier !== "scale" && tier !== "none" && includedSeats !== Infinity && (
+          <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
+            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+              {isHu ? "// létszám" : "// seats"}
+            </p>
+            <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+              {isHu ? "Aktív helyek" : "Active seats"}
+            </h2>
+
+            <div className="flex items-start justify-between gap-6">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-2 mb-3">
+                  <span className="font-playfair text-3xl text-[#1a1814]">
+                    {memberCount}
+                  </span>
+                  <span className="text-sm text-[#5a5650]">
+                    / {includedSeats} {isHu ? "alap hely" : "included seats"}
+                  </span>
+                </div>
+
+                <div className="h-2 w-full max-w-xs rounded-full bg-[#e8e4dc] overflow-hidden mb-3">
+                  <div
+                    className={`h-full rounded-full transition-all ${
+                      memberCount > includedSeats ? "bg-[#c8410a]" : "bg-[#1a5c3a]"
+                    }`}
+                    style={{
+                      width: `${Math.min(100, Math.round((memberCount / includedSeats) * 100))}%`,
+                    }}
+                  />
+                </div>
+
+                {extraSeats > 0 ? (
+                  <p className="text-sm text-[#c8410a]">
+                    {isHu
+                      ? `+${extraSeats} extra hely · ${extraSeats} × €19/hó a következő számlán`
+                      : `+${extraSeats} extra seat${extraSeats !== 1 ? "s" : ""} · ${extraSeats} × €19/mo on next invoice`}
+                  </p>
+                ) : (
+                  <p className="text-sm text-[#5a5650]">
+                    {isHu
+                      ? `${includedSeats - memberCount} hely elérhető`
+                      : `${includedSeats - memberCount} seat${includedSeats - memberCount !== 1 ? "s" : ""} available`}
+                  </p>
+                )}
+
+                {pendingCount > 0 && (
+                  <p className="text-xs text-[#a09a90] mt-1">
+                    {isHu
+                      ? `+${pendingCount} meghívás függőben`
+                      : `+${pendingCount} invitation${pendingCount !== 1 ? "s" : ""} pending`}
+                  </p>
+                )}
+              </div>
+
+              {/* Upgrade hint for team plan near limit */}
+              {tier === "team" && memberCount >= includedSeats - 2 && (
+                <div className="shrink-0 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4 text-xs max-w-[200px]">
+                  <p className="font-semibold text-[#1a1814] mb-1">
+                    {isHu ? "Több hely kell?" : "Need more seats?"}
+                  </p>
+                  <p className="text-[#5a5650] mb-2">
+                    {isHu
+                      ? "Az Org csomag 40 helyet tartalmaz €149/hó áron."
+                      : "The Org plan includes 40 seats for €149/mo."}
+                  </p>
+                  <a
+                    href="/billing/checkout?plan=org_monthly"
+                    className="font-semibold text-[#c8410a] hover:underline"
+                  >
+                    {isHu ? "Upgrade →" : "Upgrade →"}
+                  </a>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Member roles */}
         <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">

@@ -241,9 +241,9 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                                 onClick={() => setSelected(selected === m.id ? null : m.id)}
                                 title={m.name}
                                 className={[
-                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold transition-transform hover:scale-110",
+                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-[#c8410a] hover:ring-offset-1 cursor-pointer",
                                   selected === m.id
-                                    ? "outline outline-2 outline-[#c8410a] outline-offset-1"
+                                    ? "ring-2 ring-[#c8410a] ring-offset-1"
                                     : "",
                                   m.isEstimated ? "opacity-50" : "",
                                 ].join(" ")}
@@ -282,10 +282,17 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
           {selectedMember ? (
             <MemberDetailPanel member={selectedMember} />
           ) : (
-            <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-[#e8e4dc] bg-white p-6 text-center">
-              <p className="text-[12px] text-[#a09a90]">
-                Kattints egy személyre
-                <br />a részletek megtekintéséhez
+            <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-xl border border-[#e8e4dc] bg-white p-6 text-center">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-[#e8e4dc]">
+                <svg viewBox="0 0 20 20" className="h-5 w-5 text-[#a09a90]" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-[12px] font-medium text-[#5a5650]">
+                {isHu ? "Kattints egy avatárra" : "Click on an avatar"}
+              </p>
+              <p className="mt-1 text-[11px] text-[#a09a90]">
+                {isHu ? "a részletes profil megtekintéséhez" : "to view detailed profile"}
               </p>
             </div>
           )}

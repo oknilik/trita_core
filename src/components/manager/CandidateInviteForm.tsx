@@ -45,6 +45,10 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
     e.preventDefault();
     setError(null);
     setCreatedInvite(null);
+    if (!name.trim()) {
+      setError(isHu ? "A jelölt neve kötelező." : "Candidate name is required.");
+      return;
+    }
     setLoading(true);
     try {
       const body: Record<string, string> = {};
@@ -107,12 +111,13 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
-            {isHu ? "Jelölt neve (opcionális)" : "Candidate name (optional)"}
+            {isHu ? "Jelölt neve" : "Candidate name"}
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={isHu ? "Kovács Anna" : "Jane Smith"}
+              required
               className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
             />
           </label>
@@ -124,7 +129,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
               type="text"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              placeholder={isHu ? "pl. Termékmenedzser" : "e.g. Product Manager"}
+              placeholder={isHu ? "pl. Frontend fejlesztő, CTO, Sales manager" : "e.g. Frontend dev, CTO, Sales manager"}
               className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
             />
           </label>

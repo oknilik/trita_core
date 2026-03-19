@@ -334,15 +334,18 @@ Opciók:
     }
 
     // ── Create active subscription ─────────────────────────────────────────────
+    const seedPriceId = process.env.STRIPE_PRICE_TEAM_MONTHLY ?? null;
     await prisma.subscription.upsert({
       where: { orgId: org.id },
       create: {
         orgId: org.id,
         status: "active",
+        stripePriceId: seedPriceId,
         currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       },
       update: {
         status: "active",
+        stripePriceId: seedPriceId,
         currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       },
     });

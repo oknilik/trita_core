@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { Playfair_Display, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
@@ -77,6 +78,9 @@ export default async function RootLayout({
   type NavData = React.ComponentProps<typeof NavHeaderUI>;
   let navData: NavData | null = null;
   const locale = await getServerLocale();
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "";
+  const isNoShell = pathname.startsWith("/founding");
 
   try {
     const { userId } = await auth();
@@ -146,7 +150,9 @@ export default async function RootLayout({
         >
           <LocaleProvider initialLocale={locale}>
             <ToastProvider>
-              {navData ? (
+              {isNoShell ? (
+                <>{children}</>
+              ) : navData ? (
                 <div className="flex min-h-screen flex-col">
                   <NavHeaderUI {...navData} />
                   <main className="mx-auto w-full max-w-5xl px-4 py-8">

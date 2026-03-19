@@ -11,7 +11,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
 const bodySchema = z.object({
   email: z.string().email().optional(),
-  name: z.string().max(100).optional(),
+  name: z.string().min(1).max(100),
   position: z.string().max(100).optional(),
   teamId: z.string().optional(),
   inviteLocale: z.enum(["hu", "en"]).optional(),

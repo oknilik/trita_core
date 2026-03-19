@@ -220,8 +220,16 @@ export function TeamOverviewTab({
                   {data.dimConfigs.map((dim) => {
                     const value = data.dimAvg?.[dim.code];
                     if (value === undefined) return null;
+                    const insight = value >= 70
+                      ? (isHu ? strengthInsights[dim.code] : (STRENGTH_INSIGHTS_EN[dim.code] ?? ""))
+                      : (isHu ? growthInsights[dim.code] : (GROWTH_INSIGHTS_EN[dim.code] ?? ""));
                     return (
-                      <div key={dim.code} className="flex items-center gap-3">
+                      <div key={dim.code} className="group relative flex items-center gap-3">
+                        {/* Tooltip */}
+                        <div className="pointer-events-none absolute bottom-full left-0 z-10 mb-2 hidden w-64 rounded-lg bg-[#1a1814] p-3 text-xs text-white shadow-lg group-hover:block">
+                          <p className="mb-1 font-semibold">{dim.label}: {value}%</p>
+                          <p className="text-[11px] leading-relaxed text-[#a09a90]">{insight}</p>
+                        </div>
                         {/* Dim code pill */}
                         <span
                           className="w-8 h-6 rounded flex items-center justify-center text-[10px] font-mono font-semibold text-white shrink-0"

@@ -21,6 +21,16 @@
   --color-trita-ink: #1a1814;
   --color-trita-ink-light: #3d3a35;
   --color-trita-border: #e8e4dc;
+
+  /* Founding page — slightly warmer editorial palette */
+  --font-serif: var(--font-playfair);
+  --color-founding-bg: #FAF7F2;
+  --color-founding-text: #2C2420;
+  --color-founding-muted: #5C4F45;
+  --color-founding-heading: #1a1410;
+  --color-founding-card: #F3EDE4;
+  --color-founding-accent: #c8410a;
+  --color-founding-accent-hover: #a83508;
 }
 
 html {

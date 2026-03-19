@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { normalizeLocale } from "@/lib/i18n";
 
+function nextWithPathname(req: NextRequest) {
+  const res = NextResponse.next();
+  res.headers.set("x-pathname", req.nextUrl.pathname);
+  return res;
+}
+
 const isProtectedRoute = createRouteMatcher([
   "/assessment(.*)",
   "/dashboard(.*)",
@@ -28,7 +34,7 @@ const isAuthRoute = createRouteMatcher(["/sign-in", "/sign-up"]);
 
 const handler = clerkMiddleware(async (auth, req) => {
   if (req.nextUrl.pathname.startsWith("/api")) {
-    return NextResponse.next();
+    return nextWithPathname(req);
   }
 
   // Redirect authenticated users away from sign-in/sign-up to dashboard
@@ -37,11 +43,11 @@ const handler = clerkMiddleware(async (auth, req) => {
     if (userId) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
-    return NextResponse.next();
+    return nextWithPathname(req);
   }
 
   if (isPublicRoute(req)) {
-    return NextResponse.next();
+    return nextWithPathname(req);
   }
   if (isProtectedRoute(req)) {
     const homeUrl = new URL("/", req.url).toString();
@@ -55,12 +61,12 @@ const handler = clerkMiddleware(async (auth, req) => {
   if (!cookieLocale) {
     const accept = req.headers.get("accept-language");
     const locale = normalizeLocale(accept);
-    const res = NextResponse.next();
+    const res = nextWithPathname(req);
     res.cookies.set("trita_locale", locale, { path: "/", maxAge: 60 * 60 * 24 * 365 });
     return res;
   }
 
-  return NextResponse.next();
+  return nextWithPathname(req);
 });
 
 export function proxy(req: NextRequest, event: import("next/server").NextFetchEvent) {
@@ -68,7 +74,7 @@ export function proxy(req: NextRequest, event: import("next/server").NextFetchEv
   // component handles the OAuth flow client-side. Running clerkMiddleware on these
   // routes causes an infinite redirect loop in development (ngrok/tunnel).
   if (req.nextUrl.pathname.includes("/sso-callback")) {
-    return NextResponse.next();
+    return nextWithPathname(req);
   }
   return handler(req, event);
 }

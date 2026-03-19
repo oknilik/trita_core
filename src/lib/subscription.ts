@@ -78,3 +78,51 @@ export function trialDaysLeft(sub: Awaited<ReturnType<typeof getOrgSubscription>
   const msLeft = sub.trialEndsAt.getTime() - Date.now();
   return Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
 }
+
+// --- Seat billing ---
+
+export const PLAN_SEAT_LIMITS: Record<PlanTier, number> = {
+  team: 10,
+  org: 40,
+  scale: Infinity,
+  none: 0,
+};
+
+export function getIncludedSeats(
+  sub: Awaited<ReturnType<typeof getOrgSubscription>>
+): number {
+  return PLAN_SEAT_LIMITS[getPlanTier(sub)];
+}
+
+export function calculateExtraSeats(
+  sub: Awaited<ReturnType<typeof getOrgSubscription>>,
+  currentMemberCount: number
+): number {
+  const included = getIncludedSeats(sub);
+  if (included === Infinity) return 0;
+  return Math.max(0, currentMemberCount - included);
+}
+
+export function canAddMember(
+  sub: Awaited<ReturnType<typeof getOrgSubscription>>,
+  currentMemberCount: number
+): { allowed: boolean; requiresExtraSeat: boolean; extraSeatsAfterAdd: number } {
+  if (!sub || !hasAccess(sub)) {
+    return { allowed: false, requiresExtraSeat: false, extraSeatsAfterAdd: 0 };
+  }
+
+  const tier = getPlanTier(sub);
+  if (tier === "scale") {
+    return { allowed: true, requiresExtraSeat: false, extraSeatsAfterAdd: 0 };
+  }
+
+  const included = PLAN_SEAT_LIMITS[tier];
+  const extraAfter = Math.max(0, currentMemberCount + 1 - included);
+  const extraBefore = Math.max(0, currentMemberCount - included);
+
+  return {
+    allowed: true,
+    requiresExtraSeat: extraAfter > extraBefore,
+    extraSeatsAfterAdd: extraAfter,
+  };
+}

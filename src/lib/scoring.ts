@@ -111,3 +111,22 @@ export function calculateScores(
   const { dimensions, facets, aspects } = scoreLikert(testType, answers);
   return { type: "likert", dimensions, facets, aspects };
 }
+
+/**
+ * Extracts dimension scores from a stored scores JSON, handling both:
+ * - Nested ScoreResult: { type: "likert", dimensions: { H: 62, ... } }
+ * - Legacy flat format: { H: 62, E: 45, ... }
+ */
+export function extractDimensionScores(
+  scores: unknown
+): Record<string, number> | null {
+  if (!scores || typeof scores !== "object") return null;
+  const obj = scores as Record<string, unknown>;
+  if ("dimensions" in obj && obj.dimensions && typeof obj.dimensions === "object") {
+    return obj.dimensions as Record<string, number>;
+  }
+  if ("H" in obj && typeof obj.H === "number") {
+    return obj as Record<string, number>;
+  }
+  return null;
+}

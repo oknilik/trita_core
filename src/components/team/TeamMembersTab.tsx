@@ -64,7 +64,7 @@ export function TeamMembersTab({
             {members.map((m) => (
               <div
                 key={m.id}
-                className="flex items-center justify-between gap-3 py-3"
+                className={`flex items-center justify-between gap-3 py-3 ${!m.hasAssessment ? "opacity-60" : ""}`}
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-[#1a1814]">
