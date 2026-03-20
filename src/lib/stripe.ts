@@ -39,6 +39,66 @@ export const EXTRA_SEAT_PRICES = {
 
 export const TRIAL_DAYS = 14;
 
+// ── One-time purchase prices ──────────────────────────────────
+export const STRIPE_ONE_TIME_PRICES = {
+  self_plus:       process.env.STRIPE_PRICE_SELF_PLUS ?? "",
+  self_reflect:    process.env.STRIPE_PRICE_SELF_REFLECT ?? "",
+  team_scan:       process.env.STRIPE_PRICE_TEAM_SCAN ?? "",
+  team_deep_dive:  process.env.STRIPE_PRICE_TEAM_DEEP_DIVE ?? "",
+} as const;
+
+export type OneTimeTier = keyof typeof STRIPE_ONE_TIME_PRICES;
+
+export function getOneTimePriceId(tier: OneTimeTier): string {
+  return STRIPE_ONE_TIME_PRICES[tier];
+}
+
+export function isOneTimeTier(tier: string): tier is OneTimeTier {
+  return tier in STRIPE_ONE_TIME_PRICES;
+}
+
+export const TIER_CONFIG: Record<string, {
+  name: string;
+  price: number;
+  isOneTime: boolean;
+  includesAdvisory: boolean;
+  includedCredits: number;
+  level: "self" | "team" | "org";
+}> = {
+  self_plus: {
+    name: "Self Plus",
+    price: 49,
+    isOneTime: true,
+    includesAdvisory: false,
+    includedCredits: 0,
+    level: "self",
+  },
+  self_reflect: {
+    name: "Self Reflect",
+    price: 89,
+    isOneTime: true,
+    includesAdvisory: false,
+    includedCredits: 0,
+    level: "self",
+  },
+  team_scan: {
+    name: "Team Scan",
+    price: 490,
+    isOneTime: true,
+    includesAdvisory: false,
+    includedCredits: 0,
+    level: "team",
+  },
+  team_deep_dive: {
+    name: "Team Deep Dive",
+    price: 990,
+    isOneTime: true,
+    includesAdvisory: true,
+    includedCredits: 0,
+    level: "team",
+  },
+};
+
 // Lazy singleton — nem dob hibát importáláskor, csak használatkor
 let _stripe: Stripe | undefined;
 

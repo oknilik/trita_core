@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail } from "@/lib/emails";
 import { addCredits } from "@/lib/candidate-credits";
+import { TIER_CONFIG } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
@@ -72,7 +73,53 @@ export async function POST(req: Request) {
         const orgId = session.metadata?.orgId;
         if (!orgId) break;
 
-        // Candidate addon one-time payment
+        // ── One-time purchase ──────────────────────────────────
+        if (session.mode === "payment" && session.metadata?.type === "one_time_purchase") {
+          const tier = session.metadata.tier;
+          const userProfileId = session.metadata.userProfileId;
+          const orgId = session.metadata.orgId || null;
+          const teamId = session.metadata.teamId || null;
+
+          if (!tier || !userProfileId) {
+            console.error("[Stripe] Missing metadata in one_time_purchase session", session.id);
+            break;
+          }
+
+          // Duplikáció védelem
+          const existing = await prisma.purchase.findFirst({
+            where: { stripeCheckoutSessionId: session.id },
+          });
+          if (existing) {
+            console.log(`[Stripe] Skipping duplicate purchase for session ${session.id}`);
+            break;
+          }
+
+          const config = TIER_CONFIG[tier];
+
+          await prisma.purchase.create({
+            data: {
+              userProfileId,
+              orgId: orgId || null,
+              teamId: teamId || null,
+              tier,
+              stripePaymentIntentId:
+                typeof session.payment_intent === "string"
+                  ? session.payment_intent
+                  : (session.payment_intent as { id: string } | null)?.id ?? null,
+              stripeCheckoutSessionId: session.id,
+              amount: session.amount_total ?? 0,
+              currency: session.currency ?? "eur",
+              status: "completed",
+              includesAdvisory: config?.includesAdvisory ?? false,
+              includedCredits: config?.includedCredits ?? 0,
+            },
+          });
+
+          console.log(`[Stripe] Purchase created: ${tier} for profile ${userProfileId}`);
+          break;
+        }
+
+        // ── Candidate addon one-time payment ─────────────────
         if (session.mode === "payment" && session.metadata?.type === "candidate_addon") {
           const creditCount = parseInt(session.metadata.creditCount ?? "1", 10);
           const actorId = session.metadata.actorId ?? "system";

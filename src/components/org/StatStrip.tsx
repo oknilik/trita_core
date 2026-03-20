@@ -2,6 +2,7 @@ export interface StatCell {
   label: string;
   value: string | number;
   sub?: string;
+  insight?: string;
   accentColor?: string;
 }
 
@@ -57,6 +58,18 @@ export function StatStrip({ cells }: StatStripProps) {
               }}
             >
               {cell.sub}
+            </p>
+          )}
+          {cell.insight && (
+            <p
+              style={{
+                fontSize: "10px",
+                color: "#a09a90",
+                lineHeight: 1.4,
+                fontStyle: "italic",
+              }}
+            >
+              {cell.insight}
             </p>
           )}
         </div>

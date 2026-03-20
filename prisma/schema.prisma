@@ -103,6 +103,9 @@ model UserProfile {
 
   // Candidate hiring layer
   managedCandidates CandidateInvite[] @relation("ManagedCandidates")
+
+  // Billing: one-time purchases
+  purchases Purchase[]
 }
 
 model AssessmentDraft {
@@ -464,4 +467,71 @@ model CampaignParticipant {
   @@unique([campaignId, userId])
   @@index([campaignId])
   @@index([userId])
+}
+
+// ============================================
+// PURCHASE LAYER (one-time payments)
+// ============================================
+
+model Purchase {
+  id                      String   @id @default(cuid())
+
+  userProfileId           String
+  userProfile             UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  orgId                   String?
+  teamId                  String?
+
+  // "self_plus" | "self_reflect" | "team_scan" | "team_deep_dive"
+  tier                    String
+
+  stripePaymentIntentId   String?
+  stripeCheckoutSessionId String?
+  amount                  Int      // cent-ben (€49 = 4900)
+  currency                String   @default("eur")
+  status                  String   @default("completed")
+  // "pending" | "completed" | "refunded"
+
+  // Advisory tracking (Team Deep Dive tartalmaz 1 session-t)
+  includesAdvisory        Boolean  @default(false)
+  advisoryUsed            Boolean  @default(false)
+
+  // Candidate credit (későbbi csomagokhoz)
+  includedCredits         Int      @default(0)
+
+  metadata                Json?
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([userProfileId])
+  @@index([orgId])
+  @@index([teamId])
+  @@index([tier])
+  @@index([stripeCheckoutSessionId])
+}
+
+model AdvisorySession {
+  id             String    @id @default(cuid())
+
+  orgId          String?
+  teamId         String?
+  purchaseId     String?
+  subscriptionId String?
+  requestedById  String
+
+  type           String    // "guided" | "facilitation" | "workshop"
+  status         String    @default("requested")
+  // "requested" | "scheduled" | "completed" | "canceled"
+
+  scheduledAt    DateTime?
+  completedAt    DateTime?
+  notes          String?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([orgId])
+  @@index([teamId])
+  @@index([purchaseId])
 }

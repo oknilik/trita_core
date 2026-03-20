@@ -2,6 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { TeamPatternCard } from "./TeamPatternCard";
+import {
+  generateTeamSummary,
+  getStrengthInsight,
+  getWeaknessInsight,
+  getDiversityInsight,
+} from "@/lib/team-insights";
 
 function memberAvatar(_seed: string) {
   return "/avatars/avatar-1.png";
@@ -197,7 +204,7 @@ export function TeamOverviewTab({
               <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
                 // {isHu ? "csapat átlag · önkép" : "team avg · self"}
               </p>
-              <h2 className="font-playfair text-xl text-[#1a1814] mt-0.5">
+              <h2 className="font-playfair text-lg text-[#1a1814] mt-0.5">
                 HEXACO {isHu ? "profil" : "profile"}
               </h2>
             </div>
@@ -259,14 +266,12 @@ export function TeamOverviewTab({
                     );
                   })}
                 </div>
-                {/* Observer note */}
-                <div className="mt-4 border-t border-[#f0ede6] pt-4">
-                  <p className="font-mono text-[11px] text-[#a09a90]">
-                    {isHu
-                      ? "Observer adat: nincs — indíts 360° kampányt az összehasonlításhoz"
-                      : "No observer data — start a 360° campaign for comparison"}
+                {/* 1 mondatos összefoglaló */}
+                {data.dimAvg && (
+                  <p className="mt-4 border-t border-[#f0ede6] pt-4 text-sm leading-relaxed text-[#5a5650]">
+                    {generateTeamSummary(data.dimAvg)}
                   </p>
-                </div>
+                )}
               </>
             )}
           </div>
@@ -280,7 +285,7 @@ export function TeamOverviewTab({
               <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
                 // {isHu ? "csapatdinamika" : "team dynamics"}
               </p>
-              <h2 className="font-playfair text-xl text-[#1a1814] mt-0.5">
+              <h2 className="font-playfair text-lg text-[#1a1814] mt-0.5">
                 {isHu ? "Kulcs jellemzők" : "Key characteristics"}
               </h2>
             </div>
@@ -306,6 +311,9 @@ export function TeamOverviewTab({
                         {data.topDim.value}% —{" "}
                         {strengthInsights[topDimConfig.code] ?? ""}
                       </p>
+                      <p className="mt-2 text-xs font-medium text-[#059669]">
+                        → {getStrengthInsight(topDimConfig.code)}
+                      </p>
                     </div>
                   )}
 
@@ -324,6 +332,9 @@ export function TeamOverviewTab({
                           {data.bottomDim.value}% —{" "}
                           {growthInsights[bottomDimConfig.code] ?? ""}
                         </p>
+                        <p className="mt-2 text-xs font-medium text-[#b45309]">
+                          → {getWeaknessInsight(bottomDimConfig.code)}
+                        </p>
                       </div>
                     )}
 
@@ -341,6 +352,9 @@ export function TeamOverviewTab({
                         {isHu
                           ? "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre."
                           : "Team members bring diverse perspectives to this area."}
+                      </p>
+                      <p className="mt-2 text-xs font-medium text-[#7c3aed]">
+                        → {getDiversityInsight(diverseDimConfig.code)}
                       </p>
                     </div>
                   )}
@@ -421,6 +435,15 @@ export function TeamOverviewTab({
           </div>
         </div>
       </div>
+
+      {/* Team Pattern Card — full width, below the 2-col grid */}
+      <section className="mt-6 pt-10 border-t-2 border-[#c8410a]/20">
+        <TeamPatternCard
+          patternResult={data.patternResult}
+          totalMembers={data.memberCount}
+          isHu={isHu}
+        />
+      </section>
     </div>
   );
 }

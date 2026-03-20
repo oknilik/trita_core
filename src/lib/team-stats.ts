@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
+import { calculateTeamPattern, type TeamPatternResult, type HexacoScores } from "./team-pattern";
 
 const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 type DimCode = (typeof DIM_ORDER)[number];
@@ -75,6 +76,7 @@ export interface TeamPageData {
     testType: string | null;
   }>;
   dimConfigs: Array<{ code: string; label: string; color: string }>;
+  patternResult: TeamPatternResult | null;
 }
 
 export async function getTeamPageData(
@@ -305,6 +307,32 @@ export async function getTeamPageData(
     createdAt: inv.createdAt.toISOString(),
   }));
 
+  // Compute team pattern (requires at least 3 members with full HEXACO scores)
+  const hexacoMembers: Array<{ userId: string; scores: HexacoScores }> = [];
+  for (const m of members) {
+    const s = m.scores;
+    if (
+      s &&
+      s.H !== undefined && s.E !== undefined && s.X !== undefined &&
+      s.A !== undefined && s.C !== undefined && s.O !== undefined
+    ) {
+      hexacoMembers.push({
+        userId: m.userId,
+        scores: { H: s.H, E: s.E, X: s.X, A: s.A, C: s.C, O: s.O },
+      });
+    }
+  }
+
+  const corePattern = calculateTeamPattern(hexacoMembers);
+  const patternResult: TeamPatternResult | null = corePattern
+    ? {
+        ...corePattern,
+        memberCount:           members.length,
+        membersWithAssessment: hexacoMembers.length,
+        missingMembers:        members.length - hexacoMembers.length,
+      }
+    : null;
+
   return {
     teamId: team.id,
     teamName: team.name,
@@ -321,5 +349,6 @@ export async function getTeamPageData(
     pendingInvites,
     heatmapRows,
     dimConfigs,
+    patternResult,
   };
 }

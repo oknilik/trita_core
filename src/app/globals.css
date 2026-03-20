@@ -131,3 +131,45 @@ body {
   width: 100%;
   margin-top: 1rem;
 }
+
+/* PatternExplorer range input */
+input[type="range"].pattern-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 20px;
+}
+
+input[type="range"].pattern-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #c8410a;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  margin-top: -6px;
+}
+
+input[type="range"].pattern-range::-webkit-slider-runnable-track {
+  height: 8px;
+  background: transparent;
+  border-radius: 9999px;
+}
+
+input[type="range"].pattern-range::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #c8410a;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+input[type="range"].pattern-range::-moz-range-track {
+  height: 8px;
+  background: transparent;
+  border-radius: 9999px;
+}

@@ -155,9 +155,10 @@ export default async function RootLayout({
               ) : navData ? (
                 <div className="flex min-h-screen flex-col">
                   <NavHeaderUI {...navData} />
-                  <main className="mx-auto w-full max-w-5xl px-4 py-8">
+                  <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
                     {children}
                   </main>
+                  <Footer />
                 </div>
               ) : (
                 <>

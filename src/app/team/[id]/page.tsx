@@ -9,6 +9,7 @@ import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getTeamPageData } from "@/lib/team-stats";
 import { StatStrip } from "@/components/org/StatStrip";
+import { getDimensionInsight } from "@/lib/team-insights";
 import { TeamPageShell } from "@/components/team/TeamPageShell";
 
 export const dynamic = "force-dynamic";
@@ -107,6 +108,13 @@ export default async function TeamDetailPage({
         : isHu
         ? "nincs aktív kampány"
         : "no active campaign",
+      insight: teamData.activeCampaign
+        ? isHu
+          ? `${teamData.activeCampaign.daysActive} napja aktív`
+          : `Active for ${teamData.activeCampaign.daysActive} days`
+        : isHu
+        ? "Indíts 360° kampányt az összehasonlításhoz"
+        : "Start a 360° campaign to compare",
       accentColor: "#10B981",
     },
     {
@@ -115,6 +123,9 @@ export default async function TeamDetailPage({
         ? `${teamData.topDim.code} · ${teamData.topDim.value}%`
         : "—",
       sub: teamData.topDim ? dimLabels[teamData.topDim.code] : undefined,
+      insight: teamData.topDim
+        ? getDimensionInsight(teamData.topDim.code, teamData.topDim.value)
+        : undefined,
       accentColor: "#F59E0B",
     },
     {
@@ -123,12 +134,18 @@ export default async function TeamDetailPage({
         ? `${teamData.bottomDim.code} · ${teamData.bottomDim.value}%`
         : "—",
       sub: teamData.bottomDim ? dimLabels[teamData.bottomDim.code] : undefined,
+      insight: teamData.bottomDim
+        ? getDimensionInsight(teamData.bottomDim.code, teamData.bottomDim.value)
+        : undefined,
       accentColor: "#c8410a",
     },
     {
       label: isHu ? "Aktív kampány" : "Active campaign",
       value: teamData.activeCampaign ? "1" : "—",
       sub: teamData.activeCampaign ? teamData.activeCampaign.name : undefined,
+      insight: teamData.activeCampaign
+        ? isHu ? "folyamatban" : "in progress"
+        : undefined,
       accentColor: "#8B5CF6",
     },
   ];
