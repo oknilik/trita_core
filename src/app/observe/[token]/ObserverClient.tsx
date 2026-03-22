@@ -638,7 +638,7 @@ export function ObserverClient({
                   {t("observer.doneSignedInHint", locale)}
                 </p>
                 <a
-                  href="/dashboard"
+                  href="/profile/results"
                   className="mt-4 inline-block min-h-[48px] rounded-lg bg-[#c8410a] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[#a8340a] hover:shadow-xl"
                 >
                   {t("observer.goDashboard", locale)}

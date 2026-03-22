@@ -30,11 +30,11 @@ const CONTENT: Record<
       </>
     ),
     quote:
-      "A HEXACO modell hat dimenzióban mutatja meg, hogyan gondolkodsz, hogyan viszonyulsz másokhoz – és mi mozgat belülről.",
+      "Hat dimenzión keresztül láthatóvá válik, hogyan gondolkodsz, hogyan viszonyulsz másokhoz – és mi mozgat belülről.",
     quoteAuthor: "trita",
     stats: [
       { value: "6", label: "személyiségdimenzió" },
-      { value: "60", label: "kérdéses teszt" },
+      { value: "~15", label: "perces teszt" },
     ],
   },
   team: {

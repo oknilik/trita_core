@@ -168,11 +168,13 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
 
     for (const ar of assessmentResults) {
-      const scores = ar.scores as Record<string, number>;
-      const hasAllDims = dims.every((d) => typeof scores[d] === "number");
+      const scores = ar.scores as { type?: string; dimensions?: Record<string, number> };
+      const dimScores = scores.dimensions;
+      if (!dimScores) continue;
+      const hasAllDims = dims.every((d) => typeof dimScores[d] === "number");
       if (hasAllDims) {
         for (const d of dims) {
-          sums[d] += scores[d];
+          sums[d] += dimScores[d];
         }
         completedMemberCount++;
       }

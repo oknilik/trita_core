@@ -207,8 +207,8 @@ export function UserMenu() {
 
               <div className="flex-1 space-y-5 px-4 py-4">
                 <Link
-                  href="/dashboard"
-                  className={itemClass(pathname.startsWith("/dashboard"))}
+                  href="/profile/results"
+                  className={itemClass(pathname.startsWith("/profile/results"))}
                   onClick={() => setIsOpen(false)}
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -218,7 +218,7 @@ export function UserMenu() {
                 </Link>
                 <Link
                   href="/profile"
-                  className={itemClass(pathname.startsWith("/profile"))}
+                  className={itemClass(pathname === "/profile")}
                   onClick={() => setIsOpen(false)}
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">

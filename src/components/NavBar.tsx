@@ -34,8 +34,8 @@ export function NavBar() {
             <Link href="/#how-it-works" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
               Hogyan működik
             </Link>
-            <Link href="/#science" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
-              Tudomány
+            <Link href="/founding" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+              Alapító program
             </Link>
             <Link href="/blog" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
               Blog

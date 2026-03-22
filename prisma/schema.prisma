@@ -106,6 +106,10 @@ model UserProfile {
 
   // Billing: one-time purchases
   purchases Purchase[]
+
+  // Belbin layer
+  belbinAnswer BelbinAnswer?
+  belbinScore  BelbinScore?
 }
 
 model AssessmentDraft {
@@ -509,6 +513,36 @@ model Purchase {
   @@index([teamId])
   @@index([tier])
   @@index([stripeCheckoutSessionId])
+}
+
+// ============================================
+// BELBIN LAYER
+// ============================================
+
+model BelbinAnswer {
+  id            String   @id @default(cuid())
+  userProfileId String   @unique
+  answers       Json     // Record<groupIndex 0-6, Record<statementIndex 0-7, points>>
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  userProfile UserProfile  @relation(fields: [userProfileId], references: [id])
+  score       BelbinScore?
+}
+
+model BelbinScore {
+  id             String   @id @default(cuid())
+  userProfileId  String   @unique
+  scores         Json     // Record<roleCode, totalPoints>
+  source         String   // "questionnaire" | "estimate"
+  belbinAnswerId String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  userProfile  UserProfile   @relation(fields: [userProfileId], references: [id])
+  belbinAnswer BelbinAnswer? @relation(fields: [belbinAnswerId], references: [id])
+
+  @@index([userProfileId])
 }
 
 model AdvisorySession {

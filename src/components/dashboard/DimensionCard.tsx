@@ -29,6 +29,12 @@ interface DimensionCardProps {
     accuracyRating: number;
     comment: string | null;
   } | null;
+  /** When true: hides the feedback gate on close (profile/results context) */
+  hideFeedback?: boolean;
+  /** When true: blurs the facets section in the modal */
+  facetsLocked?: boolean;
+  /** CTA rendered inside the facet lock overlay */
+  facetsLockedCta?: React.ReactNode;
 }
 
 function getLevel(score: number): "low" | "mid" | "high" {
@@ -50,6 +56,9 @@ export const DimensionCard = memo(function DimensionCard({
   delay = 0,
   assessmentResultId,
   existingFeedback,
+  hideFeedback = false,
+  facetsLocked = false,
+  facetsLockedCta,
 }: DimensionCardProps) {
   const { locale } = useLocale();
   const { showToast } = useToast();
@@ -90,15 +99,15 @@ export const DimensionCard = memo(function DimensionCard({
   const resolvedInsights = insightsByLocale?.[locale] ?? insights;
   const resolvedInsight = resolvedInsights[level];
 
-  // Close handler — shows feedback gate if feedback not yet submitted
+  // Close handler — shows feedback gate unless hideFeedback or already submitted
   const handleClose = useCallback(() => {
-    if (feedbackSubmitted) {
+    if (hideFeedback || feedbackSubmitted) {
       setIsOpen(false);
       setShowFeedback(false);
     } else {
       setShowFeedback(true);
     }
-  }, [feedbackSubmitted]);
+  }, [hideFeedback, feedbackSubmitted]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -318,6 +327,37 @@ export const DimensionCard = memo(function DimensionCard({
                           <AnimatedBar value={score} color={color} height="h-3" />
                         </div>
 
+                        {facetsLocked ? (
+                          /* ── Locked state: teaser + CTA ── */
+                          <>
+                            {/* First ~2 lines of description visible, rest fades */}
+                            <div className="relative mt-6 overflow-hidden" style={{ maxHeight: "6rem" }}>
+                              <h3 className="text-sm font-semibold text-gray-900">
+                                {t("dashboard.dimensionWhat", locale)}
+                              </h3>
+                              <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                                {resolvedDescription}
+                              </p>
+                              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent" />
+                            </div>
+
+                            {/* Lock CTA */}
+                            <div className="mt-5 flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-6 text-center">
+                              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#c8410a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="3" y="9" width="14" height="10" rx="2" />
+                                <path d="M7 9V6a3 3 0 0 1 6 0v3" />
+                              </svg>
+                              <p className="text-xs leading-relaxed text-gray-500">
+                                {locale === "hu"
+                                  ? "A részletes alskála-bontás Self Plus csomaggal érhető el."
+                                  : "Detailed subscale breakdown is available with Self Plus."}
+                              </p>
+                              {facetsLockedCta}
+                            </div>
+                          </>
+                        ) : (
+                          /* ── Unlocked state: full content ── */
+                          <>
                         {/* Description */}
                         <div className="mt-6">
                           <h3 className="text-sm font-semibold text-gray-900">
@@ -379,23 +419,25 @@ export const DimensionCard = memo(function DimensionCard({
                                 locale
                               )}
                             </h3>
-                            <div className="mt-4 flex flex-col gap-3">
-                              {subScales.map((sub) => (
-                                <div key={sub.code} className="flex items-center gap-3">
-                                  <div className="min-w-0 flex-1">
-                                    <div className="mb-1 flex items-center justify-between gap-2">
-                                      <p className="truncate text-xs font-medium text-gray-700">
-                                        {sub.label}
-                                      </p>
-                                      <p className="shrink-0 text-xs font-semibold text-gray-500">
-                                        {sub.score}%
-                                      </p>
+                              <div className="mt-4 flex flex-col gap-3">
+                                {subScales.map((sub) => (
+                                  <div key={sub.code} className="flex items-center gap-3">
+                                    <div className="min-w-0 flex-1">
+                                      <div className="mb-1 flex items-center justify-between gap-2">
+                                        <p className="truncate text-xs font-medium text-gray-700">
+                                          {sub.label}
+                                        </p>
+                                        <p className="shrink-0 text-xs font-semibold text-gray-500">
+                                          {sub.score}%
+                                        </p>
+                                      </div>
+                                      <AnimatedBar value={sub.score} color={color} height="h-2" />
                                     </div>
-                                    <AnimatedBar value={sub.score} color={color} height="h-2" />
                                   </div>
-                                </div>
-                              ))}
-                            </div>
+                                ))}
+                              </div>
+                          </>
+                        )}
                           </>
                         )}
                       </div>

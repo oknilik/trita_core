@@ -42,7 +42,7 @@ const translations = {
   },
   nav: {
     home: { hu: "Főoldal", en: "Home" },
-    dashboard: { hu: "Dashboard", en: "Dashboard" },
+    dashboard: { hu: "Vezérlő", en: "Dashboard" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     menu: { hu: "Menü", en: "Menu" },
   },

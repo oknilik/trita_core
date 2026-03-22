@@ -12,7 +12,7 @@ const OPTIONS: { value: AuthIntent; icon: string; label: string; blurb: string }
     value: "explore",
     icon: "🪞",
     label: "Önismeret",
-    blurb: "Töltsd ki a HEXACO tesztet és nézd meg, hogyan látnak mások.",
+    blurb: "Töltsd ki a személyiségtesztet és nézd meg, hogyan látnak mások.",
   },
   {
     value: "team",

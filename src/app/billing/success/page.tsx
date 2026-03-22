@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 };
 
 const REDIRECT_MAP: Record<string, string> = {
-  self_plus:      "/profile",
-  self_reflect:   "/profile",
+  self_plus:      "/profile/results",
+  self_reflect:   "/profile/results",
   team_scan:      "/dashboard",
   team_deep_dive: "/dashboard",
 };

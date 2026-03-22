@@ -70,7 +70,7 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
-                href="/dashboard"
+                href="/profile/results"
                 className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a33408]"
               >
                 Vissza a dashboardra →

@@ -151,7 +151,11 @@ export default async function RootLayout({
           <LocaleProvider initialLocale={locale}>
             <ToastProvider>
               {isNoShell ? (
-                <>{children}</>
+                <>
+                  <NavBar />
+                  <div className="pb-16">{children}</div>
+                  <Footer />
+                </>
               ) : navData ? (
                 <div className="flex min-h-screen flex-col">
                   <NavHeaderUI {...navData} />

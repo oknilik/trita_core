@@ -38,7 +38,7 @@ const copy: Record<
       "Observer összehasonlítás",
       "PDF profil export",
     ],
-    plusCta: "Megveszem · €49",
+    plusCta: "Megveszem · €7",
     reflectName: "Self Reflect",
     reflectDesc: "Observer meghívók és fejlődési check-in.",
     reflectFeatures: [
@@ -47,7 +47,7 @@ const copy: Record<
       "Fejlődési check-in kérdőív",
       "Önkép vs. observer összehasonlítás",
     ],
-    reflectCta: "Megveszem · €89",
+    reflectCta: "Megveszem · €12",
   },
   en: {
     intro: "For personal development — facet-level depth, with observer feedback.",
@@ -68,7 +68,7 @@ const copy: Record<
       "Observer comparison",
       "PDF profile export",
     ],
-    plusCta: "Buy · €49",
+    plusCta: "Buy · €7",
     reflectName: "Self Reflect",
     reflectDesc: "Observer invitations and a development check-in.",
     reflectFeatures: [
@@ -77,7 +77,7 @@ const copy: Record<
       "Development check-in survey",
       "Self vs. observer comparison",
     ],
-    reflectCta: "Buy · €89",
+    reflectCta: "Buy · €12",
   },
 };
 
@@ -108,7 +108,7 @@ export function SelfTierPanel({
         <TierCard
           eyebrow={locale === "hu" ? "egyéni · egyszeri" : "individual · one-time"}
           name={c.plusName}
-          price="€49"
+          price="€7"
           priceSub={locale === "hu" ? "egyszeri" : "one-time"}
           description={c.plusDesc}
           features={c.plusFeatures}
@@ -120,7 +120,7 @@ export function SelfTierPanel({
         <TierCard
           eyebrow={locale === "hu" ? "egyéni · egyszeri" : "individual · one-time"}
           name={c.reflectName}
-          price="€89"
+          price="€12"
           priceSub={locale === "hu" ? "egyszeri" : "one-time"}
           description={c.reflectDesc}
           features={c.reflectFeatures}

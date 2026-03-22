@@ -4,12 +4,12 @@ const copy: Record<Locale, { eyebrow: string; heading: string; sub: string }> = 
   hu: {
     eyebrow: "// árazás",
     heading: "Válaszd azt a szintet,\namely most valóban hasznos.",
-    sub: "Egyszeri vásárlások és előfizetések — a saját ritmusodban, overcommitment nélkül.",
+    sub: "Egyszeri vásárlások és előfizetések — a saját ritmusodban, elköteleződés nélkül.",
   },
   en: {
     eyebrow: "// pricing",
     heading: "Choose the level\nthat's actually useful right now.",
-    sub: "One-time purchases and subscriptions — at your own pace, without overcommitment.",
+    sub: "One-time purchases and subscriptions — at your own pace, no long-term commitment.",
   },
 };
 

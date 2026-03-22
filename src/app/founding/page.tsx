@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Footer } from "@/components/Footer";
 
 export default function FoundingPage() {
   const [form, setForm] = useState({ name: "", email: "", company: "", size: "", message: "" });
@@ -24,38 +23,20 @@ export default function FoundingPage() {
   };
 
   return (
-    <>
-      <div className="bg-founding-bg pb-16 text-founding-text selection:bg-founding-accent/20">
-        {/* Mini nav */}
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 md:px-12">
-          <a
-            href="/"
-            aria-label="trita"
-            className="font-playfair inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-[#1a1814]"
-          >
-            {"trit"}<span className="text-[#c8410a]">a</span>
-          </a>
-          <a
-            href="#jelentkezes"
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-founding-accent px-5 text-sm font-semibold text-white transition-colors hover:bg-founding-accent-hover"
-          >
-            Jelentkezem
-          </a>
-        </nav>
-
+    <div className="bg-founding-bg text-founding-text selection:bg-founding-accent/20">
         {/* Hero */}
         <header className="mx-auto max-w-4xl px-6 pb-16 pt-16 md:px-12 md:pt-28">
           <div className="mb-8 inline-block rounded-full bg-founding-accent/10 px-4 py-1.5 text-sm font-medium tracking-wide text-founding-accent">
             10 hely · Alapító ügyfél program
           </div>
           <h1 className="mb-8 font-serif text-4xl font-normal leading-[1.08] text-founding-heading md:text-6xl lg:text-7xl">
-            Lásd, ami a csapatodban
+            Tedd láthatóvá, hogyan
             <br />
-            <span className="text-founding-accent">nem látszik.</span>
+            <span className="text-founding-accent">működik a csapatod.</span>
           </h1>
           <p className="max-w-2xl text-lg leading-relaxed text-founding-muted md:text-xl">
-            A Trita HEXACO-alapú csapatdiagnosztikai platform és tanácsadási szolgáltatás
-            segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban.
+            A trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat,
+            feszültségeket és potenciált a csapatodban — validált személyiséglélektani adatok alapján.
             Az első 10 ügyfélnek különleges feltételekkel.
           </p>
         </header>
@@ -75,13 +56,13 @@ export default function FoundingPage() {
             <div className="space-y-6">
               <FeatureBlock
                 number="01"
-                title="Advisory csomag – €99/hó"
-                desc="Az Advisory csomag (normál ár: €149/hó + €400/negyedév) 33%-os kedvezménnyel, örökre. Teljes platform-hozzáférés + negyedéves személyes tanácsadói konzultáció."
+                title="Org csomag – €99/hó"
+                desc="Az Org csomag (normál ár: €149/hó) 33%-os kedvezménnyel, örökre. Korlátlan csapat, szervezeti szerepkörök, teljes platform-hozzáférés."
               />
               <FeatureBlock
                 number="02"
-                title="Első konzultáció ingyenes"
-                desc="90 perces online session, ahol áttekintjük a csapatod HEXACO-profilját, a feszültségpontokat, és konkrét lépéseket tervezünk."
+                title="Ingyenes onboarding session"
+                desc="60 perces fókuszált session, ahol együtt értelmezzük a csapatod profilját, azonosítjuk a feszültségpontokat, és konkrét lépéseket tervezünk."
               />
               <FeatureBlock
                 number="03"
@@ -124,17 +105,17 @@ export default function FoundingPage() {
             <StepBlock
               step="1"
               title="Felmérés"
-              desc="A csapattagok kitöltik a 60 kérdéses HEXACO személyiségkérdőívet — online, 12-15 perc alatt. Opcionálisan observerek (kollégák, vezetők) is értékelnek."
+              desc="A csapattagok kitöltik a tudományosan validált személyiségtesztet — online, kb. 15 perc alatt. Opcionálisan kollégák is értékelhetnek (observer visszajelzés)."
             />
             <StepBlock
               step="2"
               title="Mintázat"
-              desc="A platform azonnal megjeleníti a csapat heatmap-jét, radar chartokat, tension pair-eket és kompatibilitási mátrixot. Látod, hol van összhang — és hol csúszik."
+              desc="A platform azonnal megjeleníti a csapat heatmap-jét, radar chartokat és kompatibilitási összképet. Látod, hol van összhang — és hol csúszik."
             />
             <StepBlock
               step="3"
               title="Akció"
-              desc="A negyedéves tanácsadói konzultáción személyesen értelmezzük az eredményeket, feltárjuk a feszültségek okait, és konkrét akcióterveket dolgozunk ki."
+              desc="Az onboarding session és a dashboard segítségével azonosítjuk a csapatfeszültségeket, és konkrét akciótervet állítunk össze a következő lépésekhez."
             />
           </div>
         </section>
@@ -262,10 +243,7 @@ export default function FoundingPage() {
             </form>
           )}
         </section>
-      </div>
-
-      <Footer />
-    </>
+    </div>
   );
 }
 

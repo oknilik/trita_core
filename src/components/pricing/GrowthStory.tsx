@@ -21,13 +21,13 @@ const copy: Record<
         type: "free",
       },
       {
-        tier: "€49",
+        tier: "€7",
         label: "Self Plus",
         desc: "Facet szint + munkastílus",
         type: "one-time",
       },
       {
-        tier: "€89",
+        tier: "€12",
         label: "Self Reflect",
         desc: "Observer visszajelzés + check-in",
         type: "one-time",
@@ -64,13 +64,13 @@ const copy: Record<
         type: "free",
       },
       {
-        tier: "€49",
+        tier: "€7",
         label: "Self Plus",
         desc: "Facet level + work style",
         type: "one-time",
       },
       {
-        tier: "€89",
+        tier: "€12",
         label: "Self Reflect",
         desc: "Observer feedback + check-in",
         type: "one-time",

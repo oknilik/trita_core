@@ -320,7 +320,7 @@ export function AssessmentClient({
       clearInterval(rampInterval)
       setEvaluationProgress(100)
       await new Promise((resolve) => setTimeout(resolve, 600))
-      router.push('/dashboard')
+      router.push('/assessment/belbin')
     } catch (error) {
       clearInterval(progressInterval)
       setIsSubmitting(false)

@@ -43,7 +43,7 @@ export default function OrgSuspendedPage() {
 
         <div className="flex flex-col gap-3 items-center">
           <Link
-            href="/dashboard"
+            href="/profile/results"
             className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a]"
           >
             Vissza az irányítópulthoz

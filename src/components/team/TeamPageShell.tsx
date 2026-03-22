@@ -9,6 +9,7 @@ import { TeamMembersTab } from "./TeamMembersTab";
 import { TeamIntelligence } from "./TeamIntelligence";
 import type { IntelligenceMember } from "./TeamIntelligence";
 import type { TeamPageData } from "@/lib/team-stats";
+import { TeamBelbinSection } from "./TeamBelbinSection";
 
 const AVATAR_COLORS = [
   "#6366F1",
@@ -97,6 +98,10 @@ export function TeamPageShell({
       key: "members",
       label: isHu ? "Tagok" : "Members",
       badge: data.memberCount + data.pendingInvites.length,
+    },
+    {
+      key: "belbin",
+      label: "Belbin",
     },
   ];
 
@@ -197,6 +202,10 @@ export function TeamPageShell({
           edges={[]}
           isHu={isHu}
         />
+      )}
+
+      {activeTab === "belbin" && (
+        <TeamBelbinSection members={data.members} isHu={isHu} />
       )}
     </div>
   );

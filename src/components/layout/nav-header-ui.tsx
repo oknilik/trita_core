@@ -49,7 +49,8 @@ export function NavHeaderUI({
 
   // Use first accessible team for display; all for dropdown
   const team = teams[0] ?? null;
-  const onDashboard = pathname === "/dashboard";
+  const dashboardHref = isManager || isAdmin ? "/dashboard" : "/profile/results";
+  const onDashboard = pathname === "/dashboard" || pathname === "/profile/results";
   const onTeam = teams.some((t) => pathname.startsWith(`/team/${t.id}`));
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
@@ -90,7 +91,7 @@ export function NavHeaderUI({
         <div className="mx-auto flex h-full w-full max-w-5xl items-center gap-3 px-4">
           {/* Logo */}
           <Link
-            href="/dashboard"
+            href={dashboardHref}
             className="font-playfair mr-2 inline-flex flex-shrink-0 items-baseline text-[18px] font-black tracking-tight text-[#1a1814] lg:text-[22px]"
           >
             trit<span className="text-[#c8410a]">a</span>
@@ -98,8 +99,8 @@ export function NavHeaderUI({
 
           {/* Desktop center nav */}
           <nav className="hidden flex-1 items-center gap-1 lg:flex">
-            <Link href="/dashboard" className={onDashboard ? pillActive : pillInactive}>
-              Dashboard
+            <Link href={dashboardHref} className={onDashboard ? pillActive : pillInactive}>
+              Vezérlő
             </Link>
 
             {team && (
@@ -309,7 +310,7 @@ export function NavHeaderUI({
             {/* Drawer header */}
             <div className="flex items-center justify-between border-b border-[#e8e4dc] px-5 py-4">
               <Link
-                href="/dashboard"
+                href={dashboardHref}
                 className="font-playfair text-[18px] font-black tracking-tight text-[#1a1814]"
                 onClick={() => setMobileOpen(false)}
               >
@@ -337,8 +338,8 @@ export function NavHeaderUI({
             <nav className="flex-1 overflow-y-auto px-3 py-4">
               <MobileNavSection>
                 <MobileNavItem
-                  href="/dashboard"
-                  label="Dashboard"
+                  href={dashboardHref}
+                  label="Vezérlő"
                   active={onDashboard}
                   onClose={() => setMobileOpen(false)}
                 />

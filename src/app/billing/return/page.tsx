@@ -118,7 +118,7 @@ export default async function ReturnPage({
               : "Your subscription is now active. Your team has access to all features."}
           </p>
           <Link
-            href="/dashboard"
+            href="/profile/results"
             className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a8340a] transition"
           >
             {isHu ? "Vissza a vezérlőpulthoz →" : "Go to dashboard →"}

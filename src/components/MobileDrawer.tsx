@@ -170,8 +170,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
 
               <div className="flex-1 space-y-5 px-4 py-4">
                 <Link
-                  href="/dashboard"
-                  className={itemClass(pathname.startsWith("/dashboard"))}
+                  href="/profile/results"
+                  className={itemClass(pathname.startsWith("/profile/results"))}
                   onClick={onClose}
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -181,7 +181,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 </Link>
                 <Link
                   href="/profile"
-                  className={itemClass(pathname.startsWith("/profile"))}
+                  className={itemClass(pathname === "/profile")}
                   onClick={onClose}
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -190,19 +190,23 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   {t("userMenu.profile", locale)}
                 </Link>
 
-                <div className="h-px bg-[#e8e4dc]" />
-                <Link
-                  href="/org"
-                  className={itemClass(pathname.startsWith("/org"))}
-                  onClick={onClose}
-                >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="7" width="16" height="11" rx="1.5" />
-                    <path d="M6 7V5.5a4 4 0 0 1 8 0V7" />
-                    <path d="M10 11v3M8 13h4" />
-                  </svg>
-                  {locale === "hu" ? "Szervezetek" : "Organizations"}
-                </Link>
+                {orgRole && (
+                  <>
+                    <div className="h-px bg-[#e8e4dc]" />
+                    <Link
+                      href="/org"
+                      className={itemClass(pathname.startsWith("/org"))}
+                      onClick={onClose}
+                    >
+                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-[#c8410a]" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="7" width="16" height="11" rx="1.5" />
+                        <path d="M6 7V5.5a4 4 0 0 1 8 0V7" />
+                        <path d="M10 11v3M8 13h4" />
+                      </svg>
+                      {locale === "hu" ? "Szervezetek" : "Organizations"}
+                    </Link>
+                  </>
+                )}
 
                 <div className="rounded-xl border border-[#e8e4dc] bg-white p-3">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#5a5650]">

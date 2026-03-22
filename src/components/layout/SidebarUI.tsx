@@ -44,7 +44,7 @@ export function SidebarUI({
 
   const tab = searchParams.get("tab");
 
-  const isDashboard = pathname === "/dashboard";
+  const isDashboard = pathname === "/profile/results";
 
   const isTeamTab = (t?: string) => {
     if (!team || pathname !== `/team/${team.id}`) return false;
@@ -120,7 +120,7 @@ export function SidebarUI({
       {/* Logo */}
       <div className="border-b border-[#2a2824] px-5 py-[18px]">
         <Link
-          href="/dashboard"
+          href="/profile/results"
           className="font-playfair inline-block text-[18px] font-black tracking-tight text-white"
         >
           trit<span className="text-[#c8410a]">a</span>
@@ -130,7 +130,7 @@ export function SidebarUI({
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-3">
         <SectionLabel label="Áttekintés" />
-        <NavItem href="/dashboard" icon="⌂" label="Dashboard" active={isDashboard} />
+        <NavItem href="/profile/results" icon="⌂" label="Vezérlő" active={isDashboard} />
 
         {team && (
           <>
