@@ -241,12 +241,12 @@ export default async function CandidateResultPage({
     invite.name ?? invite.email ?? (isHu ? "Névtelen jelölt" : "Unnamed candidate");
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-5xl px-4 py-10">
         {/* Back */}
         <Link
           href={`/hiring/${orgId}`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#3d3a35] transition-colors hover:text-[#c8410a]"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -256,18 +256,18 @@ export default async function CandidateResultPage({
 
         {/* Header */}
         <div className="mb-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// jelölt eredménye" : "// candidate result"}
           </p>
-          <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {displayName}
           </h1>
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
             {invite.position && (
-              <span className="text-sm text-[#5a5650]">{invite.position}</span>
+              <span className="text-sm text-ink-body">{invite.position}</span>
             )}
             {invite.team && (
-              <span className="text-xs text-[#a09a90]">
+              <span className="text-xs text-muted">
                 {isHu ? "Hozzárendelt csapat: " : "Assigned team: "}{invite.team.name}
               </span>
             )}
@@ -277,7 +277,7 @@ export default async function CandidateResultPage({
         {/* Team selector */}
         {orgTeams.length > 0 && (
           <div className="mb-8">
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
               {isHu ? "Összehasonlítás csapattal" : "Compare with team"}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -290,13 +290,13 @@ export default async function CandidateResultPage({
                     className={[
                       "inline-flex min-h-[36px] items-center rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
                       isSelected
-                        ? "border-[#c8410a] bg-[#c8410a] text-white"
-                        : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#c8410a]/40 hover:text-[#c8410a]",
+                        ? "border-sage bg-sage text-white"
+                        : "border-sand bg-white text-ink-body hover:border-sage/40 hover:text-bronze",
                     ].join(" ")}
                   >
                     {team.name}
                     {team.id === invite.teamId && (
-                      <span className={`ml-1.5 text-[10px] ${isSelected ? "opacity-70" : "text-[#a09a90]"}`}>
+                      <span className={`ml-1.5 text-[10px] ${isSelected ? "opacity-70" : "text-muted"}`}>
                         ★
                       </span>
                     )}
@@ -305,7 +305,7 @@ export default async function CandidateResultPage({
               })}
             </div>
             {selectedTeam && !teamAvg && (
-              <p className="mt-2 text-xs text-[#a09a90]">
+              <p className="mt-2 text-xs text-muted">
                 {isHu
                   ? `A(z) ${selectedTeam.name} csapatnak nincs befejezett értékelése.`
                   : `${selectedTeam.name} has no completed assessments.`}
@@ -315,32 +315,32 @@ export default async function CandidateResultPage({
         )}
 
         {/* ① VEZETŐI ÖSSZEFOGLALÓ */}
-        <section className="mb-6 rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// vezetői összefoglaló" : "// manager summary"}
           </p>
-          <h2 className="mb-4 font-playfair text-xl text-[#1a1814]">
+          <h2 className="mb-4 font-fraunces text-xl text-ink">
             {isHu ? "Gyors áttekintés" : "Quick overview"}
           </h2>
 
           <div className="grid gap-4 md:grid-cols-3">
             {/* Erősségek */}
             <div className="rounded-xl bg-[rgba(26,92,58,0.06)] p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#1a5c3a]">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-sage">
                 {isHu ? "// erősségek" : "// strengths"}
               </p>
               <div className="space-y-1.5">
                 {highDims.length > 0 ? (
                   highDims.map((d) => (
-                    <p key={d} className="text-sm text-[#1a1814]">
+                    <p key={d} className="text-sm text-ink">
                       <span className="font-semibold">{DIM_LABELS[d]?.[contentLocale] ?? d}</span>
-                      <span className="text-[#5a5650]">
+                      <span className="text-ink-body">
                         {" — "}{CATEGORY_LABELS.high[contentLocale]}
                       </span>
                     </p>
                   ))
                 ) : (
-                  <p className="text-xs text-[#a09a90]">
+                  <p className="text-xs text-muted">
                     {isHu
                       ? "Kiegyensúlyozott profil, nincs kiemelkedő dimenzió"
                       : "Balanced profile, no standout dimension"}
@@ -351,21 +351,21 @@ export default async function CandidateResultPage({
 
             {/* Figyelendő területek */}
             <div className="rounded-xl bg-[rgba(200,65,10,0.06)] p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
                 {isHu ? "// figyelendő" : "// watch areas"}
               </p>
               <div className="space-y-1.5">
                 {lowDims.length > 0 ? (
                   lowDims.map((d) => (
-                    <p key={d} className="text-sm text-[#1a1814]">
+                    <p key={d} className="text-sm text-ink">
                       <span className="font-semibold">{DIM_LABELS[d]?.[contentLocale] ?? d}</span>
-                      <span className="text-[#5a5650]">
+                      <span className="text-ink-body">
                         {" — "}{CATEGORY_LABELS.low[contentLocale]}
                       </span>
                     </p>
                   ))
                 ) : (
-                  <p className="text-xs text-[#a09a90]">
+                  <p className="text-xs text-muted">
                     {isHu
                       ? "Nincs kritikusan alacsony terület"
                       : "No critically low area"}
@@ -386,9 +386,9 @@ export default async function CandidateResultPage({
                 const fitLevel =
                   avgAbsGap < 10 ? "excellent" : avgAbsGap < 20 ? "good" : "divergent";
                 const fitLabels = {
-                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: "#1a5c3a" },
+                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: "var(--color-sage)" },
                   good: { hu: "Jó illeszkedés", en: "Good fit", color: "#92400e" },
-                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: "#c8410a" },
+                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: "var(--color-bronze)" },
                 };
                 const fit = fitLabels[fitLevel];
                 const topGap = gapAnalysis[0];
@@ -397,13 +397,13 @@ export default async function CandidateResultPage({
                     <p className="text-lg font-semibold" style={{ color: fit.color }}>
                       {isHu ? fit.hu : fit.en}
                     </p>
-                    <p className="mt-1 text-xs text-[#5a5650]">
+                    <p className="mt-1 text-xs text-ink-body">
                       {isHu
                         ? `Átlagos eltérés: ±${avgAbsGap} pont`
                         : `Average deviation: ±${avgAbsGap} points`}
                     </p>
                     {topGap && Math.abs(topGap.gap) > 15 && (
-                      <p className="mt-1 text-xs text-[#a09a90]">
+                      <p className="mt-1 text-xs text-muted">
                         {isHu
                           ? `Legnagyobb: ${topGap.label} (${topGap.gap > 0 ? "+" : ""}${topGap.gap})`
                           : `Largest: ${topGap.label} (${topGap.gap > 0 ? "+" : ""}${topGap.gap})`}
@@ -412,7 +412,7 @@ export default async function CandidateResultPage({
                   </>
                 );
               })() : (
-                <p className="text-xs text-[#a09a90]">
+                <p className="text-xs text-muted">
                   {isHu
                     ? "Csapat összehasonlítás nem elérhető"
                     : "Team comparison not available"}
@@ -423,11 +423,11 @@ export default async function CandidateResultPage({
         </section>
 
         {/* ② HEXACO PROFIL + ÉRTELMEZÉS */}
-        <section className="mb-6 rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// hexaco profil" : "// hexaco profile"}
           </p>
-          <h2 className="mb-6 font-playfair text-xl text-[#1a1814]">
+          <h2 className="mb-6 font-fraunces text-xl text-ink">
             {isHu ? "Személyiségprofil" : "Personality profile"}
           </h2>
 
@@ -443,7 +443,7 @@ export default async function CandidateResultPage({
               return (
                 <div
                   key={d}
-                  className="rounded-xl border border-[#f0ede6] p-4 transition hover:bg-[#faf9f6]/50"
+                  className="rounded-xl border border-warm-mid p-4 transition hover:bg-cream/50"
                 >
                   <div className="mb-2 flex items-center gap-3">
                     <div
@@ -452,15 +452,15 @@ export default async function CandidateResultPage({
                     >
                       {d}
                     </div>
-                    <span className="text-sm font-semibold text-[#1a1814]">{dimLabel}</span>
+                    <span className="text-sm font-semibold text-ink">{dimLabel}</span>
                     <span
                       className={[
                         "ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold",
                         category === "high"
-                          ? "bg-[rgba(26,92,58,0.08)] text-[#1a5c3a]"
+                          ? "bg-[rgba(26,92,58,0.08)] text-sage"
                           : category === "low"
-                            ? "bg-[rgba(200,65,10,0.08)] text-[#c8410a]"
-                            : "bg-[#f3eee4] text-[#5a5650]",
+                            ? "bg-[rgba(200,65,10,0.08)] text-bronze"
+                            : "bg-warm text-ink-body",
                       ].join(" ")}
                     >
                       {score}% · {CATEGORY_LABELS[category][contentLocale]}
@@ -468,14 +468,14 @@ export default async function CandidateResultPage({
                   </div>
 
                   {/* Bar */}
-                  <div className="relative mb-2 h-3 overflow-hidden rounded-full bg-[#f0ede6]">
+                  <div className="relative mb-2 h-3 overflow-hidden rounded-full bg-warm-mid">
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{ width: `${score}%`, background: color, opacity: 0.85 }}
                     />
                     {teamVal !== null && (
                       <div
-                        className="absolute top-0 h-3 w-0.5 rounded-full bg-[#3d3a35]/40"
+                        className="absolute top-0 h-3 w-0.5 rounded-full bg-ink-body/40"
                         style={{ left: `${teamVal}%` }}
                         title={`${isHu ? "Csapatátlag" : "Team avg"}: ${teamVal}%`}
                       />
@@ -483,7 +483,7 @@ export default async function CandidateResultPage({
                   </div>
 
                   {insight && (
-                    <p className="text-xs leading-relaxed text-[#7a756e]">{insight}</p>
+                    <p className="text-xs leading-relaxed text-ink-warm">{insight}</p>
                   )}
                 </div>
               );
@@ -494,11 +494,11 @@ export default async function CandidateResultPage({
 
         {/* ③ TEAM FIT VIZUALIZÁCIÓ */}
         {teamAvg && gapAnalysis && (
-          <section className="mb-6 rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// csapat illeszkedés" : "// team fit"}
             </p>
-            <h2 className="mb-6 font-playfair text-xl text-[#1a1814]">
+            <h2 className="mb-6 font-fraunces text-xl text-ink">
               {isHu ? "Jelölt a csapatban" : "Candidate in the team"}
             </h2>
 
@@ -523,7 +523,7 @@ export default async function CandidateResultPage({
 
               {/* Gap analysis */}
               <div>
-                <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-[#5a5650]">
+                <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-ink-body">
                   {isHu ? "Eltérések a csapatátlagtól" : "Deviations from team average"}
                 </p>
                 <div className="space-y-2">
@@ -535,16 +535,16 @@ export default async function CandidateResultPage({
                       >
                         {g.dim}
                       </div>
-                      <span className="w-28 truncate text-xs text-[#5a5650]">{g.label}</span>
+                      <span className="w-28 truncate text-xs text-ink-body">{g.label}</span>
 
                       {/* Gap bar */}
                       <div className="relative flex-1">
-                        <div className="h-2 w-full rounded-full bg-[#f0ede6]">
+                        <div className="h-2 w-full rounded-full bg-warm-mid">
                           <div className="absolute left-1/2 top-0 h-2 w-px bg-[#d0cbc2]" />
                           <div
                             className="absolute top-0 h-2 rounded-full transition-all"
                             style={{
-                              background: g.gap > 0 ? "#1a5c3a" : "#c8410a",
+                              background: g.gap > 0 ? "#3d6b5e" : "#c17f4a",
                               opacity: 0.7,
                               left: g.gap > 0 ? "50%" : `${50 + (g.gap / 100) * 50}%`,
                               width: `${Math.abs(g.gap) / 2}%`,
@@ -557,10 +557,10 @@ export default async function CandidateResultPage({
                         className={[
                           "w-12 text-right font-mono text-xs font-semibold",
                           Math.abs(g.gap) > 20
-                            ? "text-[#c8410a]"
+                            ? "text-bronze"
                             : Math.abs(g.gap) > 10
                               ? "text-[#92400e]"
-                              : "text-[#1a5c3a]",
+                              : "text-sage",
                         ].join(" ")}
                       >
                         {g.gap > 0 ? "+" : ""}{g.gap}
@@ -569,7 +569,7 @@ export default async function CandidateResultPage({
                   ))}
                 </div>
 
-                <p className="mt-4 text-[11px] leading-relaxed text-[#a09a90]">
+                <p className="mt-4 text-[11px] leading-relaxed text-muted">
                   {isHu
                     ? "A pozitív eltérés azt jelenti, hogy a jelölt erősebb ebben a dimenzióban. A negatív eltérés fejlesztési lehetőséget jelez."
                     : "Positive deviation means the candidate scores higher. Negative deviation suggests a growth area."}
@@ -581,11 +581,11 @@ export default async function CandidateResultPage({
 
         {/* ④ MŰKÖDÉSI MINTÁK */}
         {(profileOutput.showBlock6 || profileOutput.showBlock7) && (
-          <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// működési minták" : "// behavioral patterns"}
             </p>
-            <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+            <h2 className="mb-5 font-fraunces text-xl text-ink">
               {isHu ? "Jellemző működési dinamikák" : "Characteristic dynamics"}
             </h2>
 
@@ -606,7 +606,7 @@ export default async function CandidateResultPage({
                         >
                           {pair.dimA}
                         </span>
-                        <span className="text-[10px] text-[#a09a90]">+</span>
+                        <span className="text-[10px] text-muted">+</span>
                         <span
                           className="rounded px-1.5 py-0.5 text-[9px] font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
@@ -614,12 +614,12 @@ export default async function CandidateResultPage({
                           {pair.dimB}
                         </span>
                       </div>
-                      <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-[10px] font-semibold text-[#1a5c3a]">
+                      <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-[10px] font-semibold text-sage">
                         {isHu ? "Erősség" : "Strength"}
                       </span>
                     </div>
                     {narrative && (
-                      <p className="text-sm leading-relaxed text-[#3d3a35]">{narrative}</p>
+                      <p className="text-sm leading-relaxed text-ink-body">{narrative}</p>
                     )}
                   </div>
                 );
@@ -641,7 +641,7 @@ export default async function CandidateResultPage({
                         >
                           {pair.dimA}
                         </span>
-                        <span className="text-[10px] text-[#a09a90]">+</span>
+                        <span className="text-[10px] text-muted">+</span>
                         <span
                           className="rounded px-1.5 py-0.5 text-[9px] font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
@@ -649,12 +649,12 @@ export default async function CandidateResultPage({
                           {pair.dimB}
                         </span>
                       </div>
-                      <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-[10px] font-semibold text-[#c8410a]">
+                      <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-[10px] font-semibold text-bronze">
                         {isHu ? "Figyelendő" : "Watch area"}
                       </span>
                     </div>
                     {narrative && (
-                      <p className="text-sm leading-relaxed text-[#3d3a35]">{narrative}</p>
+                      <p className="text-sm leading-relaxed text-ink-body">{narrative}</p>
                     )}
                   </div>
                 );

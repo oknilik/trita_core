@@ -52,7 +52,7 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
         <div className="flex flex-1 flex-col gap-2">
-          <label className="text-sm font-semibold text-[#1a1814]">
+          <label className="text-sm font-semibold text-ink">
             {isHu ? "Emailcím" : "Email address"}
           </label>
           <input
@@ -60,14 +60,14 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={isHu ? "kolléga@cég.hu" : "colleague@company.com"}
-            className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+            className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             disabled={loading}
           />
         </div>
         <button
           type="submit"
           disabled={loading || !email.trim()}
-          className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:cursor-not-allowed disabled:bg-[#e8e4dc] disabled:text-[#3d3a35]/50"
+          className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
         >
           {loading
             ? isHu ? "Hozzáadás…" : "Adding…"

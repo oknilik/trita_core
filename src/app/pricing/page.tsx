@@ -65,7 +65,7 @@ export default async function PricingPage() {
   const bottom = bottomCopy[locale] ?? bottomCopy.hu;
 
   return (
-    <main className="min-h-dvh bg-[#faf9f6]">
+    <main className="min-h-dvh bg-cream">
       <PricingHero locale={locale} />
       <PathSelector locale={locale} isLoggedIn={isLoggedIn} />
       <GrowthStory locale={locale} />
@@ -73,14 +73,14 @@ export default async function PricingPage() {
       <PricingFAQ locale={locale} />
 
       {/* Bottom CTA */}
-      <section className="border-t border-[#e8e4dc] bg-[#c8410a] px-6 py-16 md:px-16">
+      <section className="border-t border-sand bg-sage px-6 py-16 md:px-16">
         <div className="mx-auto flex max-w-5xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <h2 className="font-playfair text-4xl leading-tight text-white md:text-[48px]">
+          <h2 className="font-fraunces text-4xl leading-tight text-white md:text-[48px]">
             {bottom.heading}
           </h2>
           <Link
             href="/sign-up"
-            className="inline-flex min-h-[52px] items-center justify-center rounded-lg bg-white px-8 text-sm font-semibold text-[#c8410a] transition hover:bg-[#f7eee8]"
+            className="inline-flex min-h-[52px] items-center justify-center rounded-lg bg-white px-8 text-sm font-semibold text-bronze transition hover:bg-[#f7eee8]"
           >
             {bottom.cta}
           </Link>

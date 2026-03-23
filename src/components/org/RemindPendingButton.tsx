@@ -36,7 +36,7 @@ export function RemindPendingButton({ orgId, isHu }: RemindPendingButtonProps) {
       type="button"
       disabled={state === "loading"}
       onClick={handleRemind}
-      className="min-h-[36px] rounded-lg border border-[#e8e4dc] bg-white px-4 text-[12px] font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a] disabled:cursor-not-allowed disabled:opacity-50"
+      className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-[12px] font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-50"
     >
       {state === "loading"
         ? isHu ? "Küldés..." : "Sending..."

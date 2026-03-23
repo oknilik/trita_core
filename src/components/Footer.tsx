@@ -11,7 +11,7 @@ export function Footer() {
 
   return (
     <footer
-      className="relative -mt-16 w-full bg-gradient-to-br from-[#1a1814] via-[#2a2722] to-[#3d3a35] pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
+      className="relative -mt-16 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
       style={{ clipPath: "url(#footer-wave)" }}
     >
       <svg width="0" height="0" className="absolute" aria-hidden="true">
@@ -25,18 +25,18 @@ export function Footer() {
       <div className="mx-auto w-full max-w-5xl px-4">
         <div className="flex flex-col items-center gap-6 pt-4 md:flex-row md:items-start md:justify-between md:pt-8">
           <div className="text-center md:text-left">
-            <p className="text-sm text-[#faf9f6]/85">
+            <p className="text-sm text-cream/85">
               © 2026 trita
             </p>
           </div>
 
           <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm md:justify-end">
-            <Link href="/privacy" className="text-[#faf9f6]/75 underline-offset-4 transition-colors hover:text-[#c8410a] hover:underline">
+            <Link href="/privacy" className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline">
               {t("landing.privacyLink", locale)}
             </Link>
             <Link
               href="/contact"
-              className="text-[#faf9f6]/75 underline-offset-4 transition-colors hover:text-[#c8410a] hover:underline"
+              className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
             >
               {t("landing.contactLink", locale)}
             </Link>
@@ -44,7 +44,7 @@ export function Footer() {
         </div>
 
         <SignedOut>
-          <div className="mt-6 flex justify-center border-t border-[#faf9f6]/10 pt-4 md:hidden">
+          <div className="mt-6 flex justify-center border-t border-cream/10 pt-4 md:hidden">
             <LocaleSwitcher />
           </div>
         </SignedOut>

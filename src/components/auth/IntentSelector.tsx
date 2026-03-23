@@ -36,7 +36,7 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
               className={[
                 "flex flex-col items-start rounded-lg border px-4 py-3 text-left transition",
                 active
-                  ? "border-[#c8410a] bg-[#fdf5f2]"
+                  ? "border-sage bg-[#fdf5f2]"
                   : "border-gray-100 bg-gray-50 hover:border-gray-200 hover:bg-white",
               ].join(" ")}
             >
@@ -44,7 +44,7 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
               <span
                 className={[
                   "text-sm font-semibold",
-                  active ? "text-[#c8410a]" : "text-gray-700",
+                  active ? "text-bronze" : "text-gray-700",
                 ].join(" ")}
               >
                 {opt.label}

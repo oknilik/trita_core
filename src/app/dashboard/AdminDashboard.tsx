@@ -33,12 +33,12 @@ interface OrgStatusResponse {
 
 // ── Style helpers ──────────────────────────────────────────────────────────────
 
-const btnSm = "inline-flex items-center gap-1.5 rounded-lg border border-[#e8e4dc] px-3.5 py-1.5 text-xs font-semibold text-[#3d3a35] transition-colors hover:border-[#c8410a] hover:text-[#c8410a] cursor-pointer bg-white";
-const btnPrimary = "inline-flex items-center gap-2 rounded-lg bg-[#c8410a] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#a8340a] cursor-pointer";
+const btnSm = "inline-flex items-center gap-1.5 rounded-lg border border-sand px-3.5 py-1.5 text-xs font-semibold text-ink-body transition-colors hover:border-sage hover:text-bronze cursor-pointer bg-white";
+const btnPrimary = "inline-flex items-center gap-2 rounded-lg bg-sage px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-sage-dark cursor-pointer";
 
 // ── Avatar colors ──────────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
-  "#c8410a", "#1a5c3a", "#3d5c6a", "#7a5c3a", "#5a5650",
+  "#c17f4a", "#3d6b5e", "#3d5c6a", "#7a5c3a", "#4a4a5e",
   "#6a3a5c", "#3a5c6a", "#5c6a3a",
 ];
 
@@ -124,10 +124,10 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6]">
+      <div className="flex min-h-dvh items-center justify-center bg-cream">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#e8e4dc] border-t-[#c8410a]" />
-          <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">Betöltés...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sand border-t-sage" />
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">Betöltés...</p>
         </div>
       </div>
     );
@@ -136,7 +136,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
   if (!data) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-4xl flex-col items-center justify-center gap-4 px-4">
-        <p className="text-sm text-[#7a756e]">Nem sikerült betölteni az adatokat.</p>
+        <p className="text-sm text-ink-warm">Nem sikerült betölteni az adatokat.</p>
         <button onClick={fetchStatus} className={btnPrimary}>Újrapróbálás</button>
       </main>
     );
@@ -235,22 +235,22 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="bg-[#faf9f6]">
+    <div className="bg-cream">
       <main className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col gap-8 px-4 py-10 md:py-12">
 
         {/* ── Page header ── */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c8410a]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-bronze">
               // vezérlőpult
             </p>
-            <h1 className="mt-1 font-playfair text-[28px] leading-tight text-[#1a1814]">
+            <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink">
               {org.name}
             </h1>
-            <p className="mt-1 text-sm text-[#7a756e]">
+            <p className="mt-1 text-sm text-ink-warm">
               {firstTeam ? `${firstTeam.name} · ${firstTeam.members.length} tag` : "Még nincs csapat"}
               {" · "}
-              <span className="font-medium text-[#3d3a35]">org admin</span>
+              <span className="font-medium text-ink-body">org admin</span>
             </p>
           </div>
         </div>
@@ -261,16 +261,16 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
             {firstTeam && (
               <Link
                 href={`/team/${firstTeam.id}`}
-                className="block rounded-xl border border-[#e8e4dc] bg-white p-5 transition-all hover:border-[#c8410a]"
+                className="block rounded-xl border border-sand bg-white p-5 transition-all hover:border-sage"
               >
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-1">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-1">
                   // csapat
                 </p>
-                <p className="font-playfair text-xl text-[#1a1814]">{firstTeam.name}</p>
-                <p className="text-xs text-[#a09a90] mt-1">
+                <p className="font-fraunces text-xl text-ink">{firstTeam.name}</p>
+                <p className="text-xs text-muted mt-1">
                   {firstTeam.members.length} tag · {teamStatusLabel}
                 </p>
-                <p className="text-sm font-semibold text-[#c8410a] mt-3 text-right">
+                <p className="text-sm font-semibold text-bronze mt-3 text-right">
                   Megnyitás →
                 </p>
               </Link>
@@ -278,16 +278,16 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
             {isAdmin && (
               <Link
                 href={`/org/${org.id}`}
-                className="block rounded-xl border border-[#e8e4dc] bg-white p-5 transition-all hover:border-[#c8410a]"
+                className="block rounded-xl border border-sand bg-white p-5 transition-all hover:border-sage"
               >
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-1">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-1">
                   // szervezet
                 </p>
-                <p className="font-playfair text-xl text-[#1a1814]">{org.name}</p>
-                <p className="text-xs text-[#a09a90] mt-1">
+                <p className="font-fraunces text-xl text-ink">{org.name}</p>
+                <p className="text-xs text-muted mt-1">
                   {teams.length} csapat · {stats.totalMembers} tag
                 </p>
-                <p className="text-sm font-semibold text-[#c8410a] mt-3 text-right">
+                <p className="text-sm font-semibold text-bronze mt-3 text-right">
                   Megnyitás →
                 </p>
               </Link>
@@ -299,7 +299,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
         {org.status === "INACTIVE" && (
           <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6">
             <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-rose-600 mb-1">// inaktív</p>
-            <h2 className="font-playfair text-lg text-rose-900 mb-2">Szervezet inaktív</h2>
+            <h2 className="font-fraunces text-lg text-rose-900 mb-2">Szervezet inaktív</h2>
             <p className="mb-4 text-sm text-rose-700">
               Ez a szervezet jelenleg inaktív – a tagok nem tudnak hozzáférni az org-specifikus oldalakhoz.
               Reaktiváld az alábbi gombbal.
@@ -308,7 +308,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
               type="button"
               onClick={handleReactivate}
               disabled={reactivating}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
               {reactivating ? "..." : "Szervezet reaktiválása"}
             </button>
@@ -316,29 +316,29 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
         )}
 
         {/* ── Getting Started Card ── */}
-        {completedSteps < steps.length && <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm overflow-hidden">
+        {completedSteps < steps.length && <div className="rounded-2xl border border-sand bg-white shadow-sm overflow-hidden">
 
           {/* Card header */}
-          <div className="flex items-start justify-between gap-4 border-b border-[#e8e4dc] px-4 py-4 sm:gap-6 sm:px-7 sm:py-6">
+          <div className="flex items-start justify-between gap-4 border-b border-sand px-4 py-4 sm:gap-6 sm:px-7 sm:py-6">
             <div>
-              <h2 className="font-playfair text-xl text-[#1a1814]">Első lépések</h2>
-              <p className="mt-1 text-[13px] text-[#7a756e] max-w-sm">
+              <h2 className="font-fraunces text-xl text-ink">Első lépések</h2>
+              <p className="mt-1 text-[13px] text-ink-warm max-w-sm">
                 A csapatkép akkor válik teljessé, ha mindenki kitöltötte a felmérést.
               </p>
             </div>
             {/* Progress ring */}
             <div className="flex flex-shrink-0 items-center gap-3">
               <div className="text-right">
-                <p className="font-mono text-[11px] text-[#3d3a35]">
+                <p className="font-mono text-[11px] text-ink-body">
                   {completedSteps} / {steps.length}
                 </p>
-                <p className="font-mono text-[10px] text-[#a09a90]">kész</p>
+                <p className="font-mono text-[10px] text-muted">kész</p>
               </div>
               <svg width="52" height="52" viewBox="0 0 52 52">
-                <circle cx="26" cy="26" r="20" fill="none" stroke="#e8e4dc" strokeWidth="4" />
+                <circle cx="26" cy="26" r="20" fill="none" stroke="#e8e0d3" strokeWidth="4" />
                 <circle
                   cx="26" cy="26" r="20" fill="none"
-                  stroke="#c8410a" strokeWidth="4" strokeLinecap="round"
+                  stroke="#c17f4a" strokeWidth="4" strokeLinecap="round"
                   strokeDasharray={circumference}
                   strokeDashoffset={dashOffset}
                   style={{ transform: "rotate(-90deg)", transformOrigin: "center", transition: "stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)" }}
@@ -346,7 +346,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
                 <text
                   x="26" y="26"
                   textAnchor="middle" dominantBaseline="middle"
-                  style={{ fontFamily: "monospace", fontSize: "11px", fontWeight: 500, fill: "#1a1814" }}
+                  style={{ fontFamily: "monospace", fontSize: "11px", fontWeight: 500, fill: "#1a1a2e" }}
                 >
                   {progressPct}%
                 </text>
@@ -359,16 +359,16 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
             {steps.map((step, i) => (
               <div
                 key={i}
-                className={`flex items-start gap-3 border-b border-[#e8e4dc] px-4 py-4 sm:gap-4 sm:px-7 sm:py-5 last:border-b-0 transition-colors hover:bg-[#faf9f6]/60 ${step.done ? "opacity-60" : ""}`}
+                className={`flex items-start gap-3 border-b border-sand px-4 py-4 sm:gap-4 sm:px-7 sm:py-5 last:border-b-0 transition-colors hover:bg-cream/60 ${step.done ? "opacity-60" : ""}`}
               >
                 {/* Icon */}
                 <div
                   className={`mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-base ${
                     step.done
-                      ? "border border-[rgba(26,92,58,0.2)] bg-[rgba(26,92,58,0.08)] text-[#1a5c3a]"
+                      ? "border border-[rgba(26,92,58,0.2)] bg-[rgba(26,92,58,0.08)] text-sage"
                       : step.locked
-                      ? "border border-[#e8e4dc] bg-[rgba(160,154,144,0.1)] text-[#a09a90]"
-                      : "border border-[rgba(200,65,10,0.2)] bg-[rgba(200,65,10,0.08)] text-[#c8410a]"
+                      ? "border border-sand bg-[rgba(160,154,144,0.1)] text-muted"
+                      : "border border-[rgba(200,65,10,0.2)] bg-[rgba(200,65,10,0.08)] text-bronze"
                   }`}
                 >
                   {step.done ? "✓" : step.locked ? "🔒" : "⟳"}
@@ -377,28 +377,28 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
                 {/* Body */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#a09a90]">{step.num}</span>
-                    <span className={`text-[14px] font-semibold ${step.done ? "text-[#7a756e] line-through decoration-[#c8b09a]" : "text-[#1a1814]"}`}>
+                    <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-muted">{step.num}</span>
+                    <span className={`text-[14px] font-semibold ${step.done ? "text-ink-warm line-through decoration-[#c8b09a]" : "text-ink"}`}>
                       {step.title}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-[12px] text-[#7a756e]">{step.desc}</p>
+                  <p className="mt-0.5 text-[12px] text-ink-warm">{step.desc}</p>
                 </div>
 
                 {/* Action */}
                 <div className="flex flex-shrink-0 items-center gap-2 mt-0.5">
                   {step.countLabel && !step.done && (
-                    <span className="rounded-full border border-[rgba(200,65,10,0.2)] bg-[rgba(200,65,10,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-[#c8410a]">
+                    <span className="rounded-full border border-[rgba(200,65,10,0.2)] bg-[rgba(200,65,10,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-bronze">
                       {step.countLabel}
                     </span>
                   )}
                   {step.done && !step.action && (
-                    <span className="rounded-full border border-[rgba(26,92,58,0.2)] bg-[rgba(26,92,58,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-[#1a5c3a]">
+                    <span className="rounded-full border border-[rgba(26,92,58,0.2)] bg-[rgba(26,92,58,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-sage">
                       kész
                     </span>
                   )}
                   {step.locked && !step.done && !step.action && (
-                    <span className="rounded-full border border-[#e8e4dc] bg-[rgba(160,154,144,0.1)] px-2.5 py-0.5 font-mono text-[10px] text-[#a09a90]">
+                    <span className="rounded-full border border-sand bg-[rgba(160,154,144,0.1)] px-2.5 py-0.5 font-mono text-[10px] text-muted">
                       {Math.max(0, 3 - stats.completedCount) > 0 ? `${Math.max(0, 3 - stats.completedCount)} hiányzik` : "hamarosan"}
                     </span>
                   )}
@@ -458,14 +458,14 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
               accentColor: "#8B5CF6",
             },
           ].map((s, i) => (
-            <div key={i} className="relative overflow-hidden rounded-xl border border-[#e8e4dc] bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+            <div key={i} className="relative overflow-hidden rounded-xl border border-sand bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
               <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.accentColor }} />
-              <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#a09a90]">{s.label}</p>
-              <p className="mt-2 font-playfair text-[32px] leading-none text-[#1a1814]">{s.value}</p>
-              <p className="mt-1 text-[12px] text-[#7a756e]">{s.sub}</p>
-              <div className="mt-3 border-t border-[#e8e4dc] pt-3 text-[11px] text-[#a09a90]">
+              <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted">{s.label}</p>
+              <p className="mt-2 font-fraunces text-[32px] leading-none text-ink">{s.value}</p>
+              <p className="mt-1 text-[12px] text-ink-warm">{s.sub}</p>
+              <div className="mt-3 border-t border-sand pt-3 text-[11px] text-muted">
                 {s.noteHighlight ? (
-                  <span className="text-[#1a5c3a] font-medium">{s.note}</span>
+                  <span className="text-sage font-medium">{s.note}</span>
                 ) : (
                   s.note
                 )}
@@ -476,13 +476,13 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
 
         {/* ── Team Tables ── */}
         {teams.filter((t) => t.members.length > 0).map((team) => (
-          <div key={team.id} className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-[#e8e4dc] px-4 py-4 sm:px-7 sm:py-5">
+          <div key={team.id} className="overflow-hidden rounded-2xl border border-sand bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-sand px-4 py-4 sm:px-7 sm:py-5">
               <div>
-                <Link href={`/team/${team.id}`} className="font-playfair text-[16px] text-[#1a1814] hover:text-[#c8410a] transition-colors">
+                <Link href={`/team/${team.id}`} className="font-fraunces text-[16px] text-ink hover:text-bronze transition-colors">
                   {team.name} →
                 </Link>
-                <p className="text-[12px] text-[#a09a90]">
+                <p className="text-[12px] text-muted">
                   {team.members.length} tag · {team.members.filter((m) => m.assessmentDone).length} kész ·{" "}
                   {team.members.filter((m) => !m.assessmentDone).length} várakozik
                 </p>
@@ -497,9 +497,9 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
             <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
               <thead>
-                <tr className="border-b border-[#e8e4dc] bg-[#faf9f6]/60">
+                <tr className="border-b border-sand bg-cream/60">
                   {["Tag", "Státusz", "Átlagos eredmény", "Csatlakozás"].map((h) => (
-                    <th key={h} className="px-7 py-3 text-left font-mono text-[10px] uppercase tracking-[0.08em] text-[#a09a90]">
+                    <th key={h} className="px-7 py-3 text-left font-mono text-[10px] uppercase tracking-[0.08em] text-muted">
                       {h}
                     </th>
                   ))}
@@ -507,7 +507,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
               </thead>
               <tbody>
                 {team.members.map((member) => (
-                  <tr key={member.userId} className="border-b border-[#e8e4dc] transition-colors hover:bg-[#faf9f6]/70 last:border-b-0">
+                  <tr key={member.userId} className="border-b border-sand transition-colors hover:bg-cream/70 last:border-b-0">
                     <td className="px-7 py-3.5">
                       <div className="flex items-center gap-2.5">
                         <div
@@ -516,20 +516,20 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
                         >
                           {initials(member.username)}
                         </div>
-                        <span className="text-[13px] font-medium text-[#1a1814]">{member.username}</span>
+                        <span className="text-[13px] font-medium text-ink">{member.username}</span>
                       </div>
                     </td>
                     <td className="px-7 py-3.5">
                       {member.assessmentDone ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(26,92,58,0.2)] bg-[rgba(26,92,58,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-[#1a5c3a]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(26,92,58,0.2)] bg-[rgba(26,92,58,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-sage">
                           ✓ kész
                         </span>
                       ) : member.joinedAt ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(200,65,10,0.2)] bg-[rgba(200,65,10,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-[#c8410a]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(200,65,10,0.2)] bg-[rgba(200,65,10,0.08)] px-2.5 py-0.5 font-mono text-[10px] text-bronze">
                           ⟳ folyamatban
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e4dc] bg-[rgba(160,154,144,0.1)] px-2.5 py-0.5 font-mono text-[10px] text-[#a09a90]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-sand bg-[rgba(160,154,144,0.1)] px-2.5 py-0.5 font-mono text-[10px] text-muted">
                           meghívva
                         </span>
                       )}
@@ -537,19 +537,19 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
                     <td className="px-7 py-3.5">
                       {member.assessmentScore !== null ? (
                         <div className="flex items-center gap-2.5">
-                          <div className="h-1 w-14 overflow-hidden rounded-full bg-[#e8e4dc]">
+                          <div className="h-1 w-14 overflow-hidden rounded-full bg-sand">
                             <div
-                              className="h-full rounded-full bg-[#c8410a] transition-all"
+                              className="h-full rounded-full bg-sage transition-all"
                               style={{ width: `${member.assessmentScore}%` }}
                             />
                           </div>
-                          <span className="font-mono text-[11px] text-[#3d3a35]">{member.assessmentScore}</span>
+                          <span className="font-mono text-[11px] text-ink-body">{member.assessmentScore}</span>
                         </div>
                       ) : (
-                        <span className="text-[12px] text-[#a09a90]">–</span>
+                        <span className="text-[12px] text-muted">–</span>
                       )}
                     </td>
-                    <td className="px-7 py-3.5 text-[12px] text-[#a09a90]">
+                    <td className="px-7 py-3.5 text-[12px] text-muted">
                       {formatDate(member.joinedAt)}
                     </td>
                   </tr>
@@ -562,7 +562,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
 
         {/* ── Invite Banner ── */}
         {inviteUrl && (
-          <div className="relative overflow-hidden rounded-2xl bg-[#1a1814] p-7 md:p-8">
+          <div className="relative overflow-hidden rounded-2xl bg-ink p-7 md:p-8">
             <div
               className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full"
               style={{ background: "radial-gradient(circle, rgba(200,65,10,0.3) 0%, transparent 70%)" }}
@@ -570,7 +570,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
             <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[rgba(250,249,246,0.45)]">
               // meghívó link
             </p>
-            <h3 className="mt-2 font-playfair text-[18px] text-[#faf9f6]">Hívd meg a csapatod</h3>
+            <h3 className="mt-2 font-fraunces text-[18px] text-cream">Hívd meg a csapatod</h3>
             <p className="mt-1.5 text-[12px] text-[rgba(250,249,246,0.5)] max-w-sm">
               Oszd meg ezt a linket a csapattagjaiddal. Regisztráció után automatikusan
               csatlakoznak és elkezdhetik a felmérést.
@@ -581,7 +581,7 @@ export function AdminDashboard({ isAdmin = false }: { isAdmin?: boolean }) {
               </span>
               <button
                 onClick={() => handleCopy(inviteUrl)}
-                className="flex-shrink-0 rounded-lg bg-[#c8410a] px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#a8340a]"
+                className="flex-shrink-0 rounded-lg bg-sage px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-sage-dark"
               >
                 {copiedUrl === inviteUrl ? "✓ Másolva!" : "Másolás"}
               </button>

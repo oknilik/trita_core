@@ -86,28 +86,28 @@ export function ScienceSection({ locale }: { locale: Locale }) {
   const [headingLine1, headingLine2] = c.heading.split("\n");
 
   return (
-    <section id="science" className="grid grid-cols-1 border-b border-[#e0ddd6] md:grid-cols-2">
-      <div className="border-b border-[#e0ddd6] px-6 py-12 md:border-b-0 md:border-r md:px-16 md:py-20">
-        <div className="font-ibm-plex-mono mb-8 inline-flex items-center gap-2 rounded-sm border border-[#1a5c3a]/20 bg-[#edf7f2] px-[14px] py-1.5 text-[11px] text-[#1a5c3a]">
+    <section id="science" className="grid grid-cols-1 border-b border-sand md:grid-cols-2">
+      <div className="border-b border-sand px-6 py-12 md:border-b-0 md:border-r md:px-16 md:py-20">
+        <div className="font-dm-sans mb-8 inline-flex items-center gap-2 rounded-sm border border-sage/20 bg-sage-soft px-[14px] py-1.5 text-[11px] text-sage">
           {c.badge}
         </div>
 
-        <h2 className="font-playfair mb-6 text-[clamp(28px,7vw,48px)] font-black leading-[1.1] tracking-[-1px] text-[#1a1814] md:tracking-[-1.5px]">
+        <h2 className="font-fraunces mb-6 text-[clamp(28px,7vw,48px)] font-black leading-[1.1] tracking-[-1px] text-ink md:tracking-[-1.5px]">
           {headingLine1}
           <br />
           {headingLine2}
         </h2>
 
-        <p className="mb-6 text-[15px] leading-[1.7] text-[#5a5650]">
+        <p className="mb-6 text-[15px] leading-[1.7] text-ink-body">
           {c.body}
         </p>
 
         <div className="mt-8 flex flex-col gap-5">
           {c.points.map((item, idx) => (
-            <div key={item.title} className={`flex gap-4 pb-5 ${idx < c.points.length - 1 ? "border-b border-[#e0ddd6]" : ""}`}>
-              <div className="min-w-6 text-lg text-[#1a5c3a]">○</div>
-              <p className="text-sm leading-[1.7] text-[#5a5650]">
-                <strong className="font-semibold text-[#1a1814]">{item.title}</strong> — {item.body}
+            <div key={item.title} className={`flex gap-4 pb-5 ${idx < c.points.length - 1 ? "border-b border-sand" : ""}`}>
+              <div className="min-w-6 text-lg text-sage">○</div>
+              <p className="text-sm leading-[1.7] text-ink-body">
+                <strong className="font-semibold text-ink">{item.title}</strong> — {item.body}
               </p>
             </div>
           ))}
@@ -115,34 +115,34 @@ export function ScienceSection({ locale }: { locale: Locale }) {
 
         <Link
           href="/science"
-          className="mt-7 inline-flex items-center gap-2 text-[13px] font-medium text-[#c8410a] hover:opacity-90"
+          className="mt-7 inline-flex items-center gap-2 text-[13px] font-medium text-bronze hover:opacity-90"
         >
           {c.linkText}
         </Link>
       </div>
 
-      <div className="bg-[#edf7f2] px-6 py-12 md:px-16 md:py-20">
-        <div className="font-ibm-plex-mono mb-6 text-[11px] uppercase tracking-[1px] text-[#1a5c3a]">
+      <div className="bg-sage-soft px-6 py-12 md:px-16 md:py-20">
+        <div className="font-dm-sans mb-6 text-[11px] uppercase tracking-[1px] text-sage">
           {c.chartEyebrow}
         </div>
 
         <div className="flex flex-col gap-3">
           {c.dimensions.map((dim) => (
-            <div key={dim.name} className="flex items-center justify-between rounded border border-[#1a5c3a]/10 bg-white px-4 py-3.5">
-              <div className="text-sm font-medium text-[#1a1814]">{dim.name}</div>
+            <div key={dim.name} className="flex items-center justify-between rounded border border-sage/10 bg-white px-4 py-3.5">
+              <div className="text-sm font-medium text-ink">{dim.name}</div>
               <div className="flex items-center gap-3">
-                <div className="h-1 w-20 overflow-hidden rounded bg-[#1a5c3a]/10">
-                  <div className="h-full rounded bg-[#1a5c3a]" style={{ width: `${dim.value}%` }} />
+                <div className="h-1 w-20 overflow-hidden rounded bg-sage/10">
+                  <div className="h-full rounded bg-sage" style={{ width: `${dim.value}%` }} />
                 </div>
-                <div className="font-ibm-plex-mono w-7 text-right text-xs text-[#1a5c3a]">{dim.value}</div>
+                <div className="font-dm-sans w-7 text-right text-xs text-sage">{dim.value}</div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-6 rounded border-l-[3px] border-l-[#1a5c3a] bg-white p-4">
-          <div className="font-ibm-plex-mono mb-1.5 text-[10px] text-[#1a5c3a]">{c.insightLabel}</div>
-          <div className="text-[13px] leading-[1.6] text-[#5a5650]">
+        <div className="mt-6 rounded border-l-[3px] border-l-sage bg-white p-4">
+          <div className="font-dm-sans mb-1.5 text-[10px] text-sage">{c.insightLabel}</div>
+          <div className="text-[13px] leading-[1.6] text-ink-body">
             {c.insightText}
           </div>
         </div>

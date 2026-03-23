@@ -73,7 +73,7 @@ interface MemberDetailPanelProps {
 
 function MemberDetailPanel({ member }: MemberDetailPanelProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-white p-4">
+    <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div
@@ -83,9 +83,9 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
           {member.initials}
         </div>
         <div>
-          <p className="text-[14px] font-bold text-[#1a1814]">{member.name}</p>
+          <p className="text-[14px] font-bold text-ink">{member.name}</p>
           <div className="flex items-center gap-1.5">
-            <span className="inline-block rounded-full bg-[#f0ede6] px-2 py-0.5 text-[10px] font-medium text-[#5a5650]">
+            <span className="inline-block rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
               {member.zone}
             </span>
             {member.isEstimated && (
@@ -99,7 +99,7 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
 
       {/* HEXACO bars */}
       <div>
-        <p className="mb-2 font-mono text-[8px] uppercase tracking-widest text-[#c8410a]">
+        <p className="mb-2 font-mono text-[8px] uppercase tracking-widest text-bronze">
           // hexaco profil
         </p>
         <div className="flex flex-col gap-1.5">
@@ -111,7 +111,7 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
               >
                 {k}
               </div>
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#f0ede6]">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-warm-mid">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -121,7 +121,7 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
                   }}
                 />
               </div>
-              <span className="w-8 text-right font-mono text-[10px] text-[#5a5650]">
+              <span className="w-8 text-right font-mono text-[10px] text-ink-body">
                 {member.hexaco[k as keyof typeof member.hexaco]}%
               </span>
             </div>
@@ -130,30 +130,30 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
       </div>
 
       {/* Skill & growth */}
-      <div className="flex gap-3 border-t border-[#e8e4dc] pt-3">
+      <div className="flex gap-3 border-t border-sand pt-3">
         <div className="flex-1 text-center">
-          <p className="font-mono text-[8px] uppercase tracking-widest text-[#a09a90]">skill</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">skill</p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
               <div
                 key={v}
                 className="h-2 w-2 rounded-full"
                 style={{
-                  background: v <= member.skillLevel ? "#c8410a" : "#e8e4dc",
+                  background: v <= member.skillLevel ? "#3d6b5e" : "#e8e0d3",
                 }}
               />
             ))}
           </div>
         </div>
         <div className="flex-1 text-center">
-          <p className="font-mono text-[8px] uppercase tracking-widest text-[#a09a90]">potenciál</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">potenciál</p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
               <div
                 key={v}
                 className="h-2 w-2 rounded-full"
                 style={{
-                  background: v <= member.growthPotential ? "#10B981" : "#e8e4dc",
+                  background: v <= member.growthPotential ? "#10B981" : "#e8e0d3",
                 }}
               />
             ))}
@@ -197,7 +197,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
         {/* Left: 3×3 grid */}
         <div className="flex-1">
           <div className="mb-1 text-center">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-muted">
               ← fejlődési potenciál →
             </span>
           </div>
@@ -206,7 +206,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
             {/* Y-axis label */}
             <div className="flex w-4 items-center justify-center">
               <span
-                className="font-mono text-[8px] uppercase tracking-widest text-[#a09a90]"
+                className="font-mono text-[8px] uppercase tracking-widest text-muted"
                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
               >
                 magas → alacsony
@@ -226,7 +226,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                       return (
                         <div
                           key={key}
-                          className="relative min-h-[90px] rounded-xl border border-[#e8e4dc] bg-[#f8f7f4] p-2"
+                          className="relative min-h-[90px] rounded-xl border border-sand bg-[#f8f7f4] p-2"
                         >
                           {zoneLabel && (
                             <span className="absolute left-2 top-2 font-mono text-[8px] leading-tight text-[#b0ada6]">
@@ -241,9 +241,9 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                                 onClick={() => setSelected(selected === m.id ? null : m.id)}
                                 title={m.name}
                                 className={[
-                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-[#c8410a] hover:ring-offset-1 cursor-pointer",
+                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-sage hover:ring-offset-1 cursor-pointer",
                                   selected === m.id
-                                    ? "ring-2 ring-[#c8410a] ring-offset-1"
+                                    ? "ring-2 ring-sage ring-offset-1"
                                     : "",
                                   m.isEstimated ? "opacity-50" : "",
                                 ].join(" ")}
@@ -263,13 +263,13 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
               {/* X-axis labels */}
               <div className="mt-1.5 grid grid-cols-3 gap-1.5">
                 {["alacsony", "közép", "magas"].map((l) => (
-                  <div key={l} className="text-center font-mono text-[8px] text-[#a09a90]">
+                  <div key={l} className="text-center font-mono text-[8px] text-muted">
                     {l}
                   </div>
                 ))}
               </div>
               <div className="mt-0.5 text-center">
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+                <span className="font-mono text-[9px] uppercase tracking-widest text-muted">
                   ← szakmai szint →
                 </span>
               </div>
@@ -282,16 +282,16 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
           {selectedMember ? (
             <MemberDetailPanel member={selectedMember} />
           ) : (
-            <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-xl border border-[#e8e4dc] bg-white p-6 text-center">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-[#e8e4dc]">
-                <svg viewBox="0 0 20 20" className="h-5 w-5 text-[#a09a90]" fill="currentColor">
+            <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-sand">
+                <svg viewBox="0 0 20 20" className="h-5 w-5 text-muted" fill="currentColor">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="text-[12px] font-medium text-[#5a5650]">
+              <p className="text-[12px] font-medium text-ink-body">
                 {isHu ? "Kattints egy avatárra" : "Click on an avatar"}
               </p>
-              <p className="mt-1 text-[11px] text-[#a09a90]">
+              <p className="mt-1 text-[11px] text-muted">
                 {isHu ? "a részletes profil megtekintéséhez" : "to view detailed profile"}
               </p>
             </div>

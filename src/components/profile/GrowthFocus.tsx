@@ -52,7 +52,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
 
   if (items.length === 0) {
     return (
-      <p className="text-sm text-[#5a5650]">
+      <p className="text-sm text-ink-body">
         {isHu
           ? "Kiváló eredmények — nincs kiemelt fejlődési terület."
           : "Excellent results — no highlighted growth areas."}
@@ -67,11 +67,11 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
         return (
           <div
             key={item.code}
-            className="flex gap-4 rounded-2xl border border-[#e8e4dc] bg-white p-5"
+            className="flex gap-4 rounded-2xl border border-sand bg-white p-5"
           >
             {/* Number badge */}
             <div
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-playfair text-lg font-semibold text-white"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-fraunces text-lg font-semibold text-white"
               style={{ backgroundColor: item.dimColor }}
             >
               {idx + 1}
@@ -79,7 +79,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold text-[#1a1814]">{item.label}</span>
+                <span className="text-sm font-semibold text-ink">{item.label}</span>
                 <span
                   className="rounded-full px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest"
                   style={{
@@ -93,19 +93,19 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
 
               {/* Score bar */}
               <div className="mt-2 flex items-center gap-2">
-                <div className="flex-1 h-1.5 rounded-full bg-[#e8e4dc]">
+                <div className="flex-1 h-1.5 rounded-full bg-sand">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${item.score}%`, backgroundColor: item.dimColor }}
                   />
                 </div>
-                <span className="shrink-0 font-mono text-xs text-[#5a5650]">
+                <span className="shrink-0 font-mono text-xs text-ink-body">
                   {item.score}%
                 </span>
               </div>
 
               {/* Growth hint */}
-              <p className="mt-2 text-sm leading-relaxed text-[#5a5650]">{hint}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-body">{hint}</p>
             </div>
           </div>
         );

@@ -148,18 +148,18 @@ export function JourneyProgress({
     <>
     <div ref={containerRef} className="mt-6">
       <div className="mt-6 flex justify-center md:hidden">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#c8410a] to-[#8b2f09] text-xl font-bold text-white shadow-lg">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-deep text-xl font-bold text-white shadow-lg">
           {stepsCompleted}/{totalSteps}
         </div>
       </div>
       <div className="absolute right-6 top-6 hidden md:flex">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#c8410a] to-[#8b2f09] text-xl font-bold text-white shadow-lg">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-deep text-xl font-bold text-white shadow-lg">
           {stepsCompleted}/{totalSteps}
         </div>
       </div>
       <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-gray-100 shadow-inner">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-[#c8410a] via-[#b84512] to-[#8b2f09] shadow-lg transition-all duration-700 ease-out"
+          className="h-full rounded-full bg-gradient-to-r from-sage via-sage-dark to-sage-deep shadow-lg transition-all duration-700 ease-out"
           style={{
             width: `${progressPct}%`,
             background: feedbackPartial
@@ -281,7 +281,7 @@ export function JourneyProgress({
         <span
           className={
             selfCompleted
-              ? "text-[#c8410a]"
+              ? "text-bronze"
               : hasDraft
                 ? "text-amber-500"
                 : ""
@@ -289,7 +289,7 @@ export function JourneyProgress({
         >
           {t("dashboard.journeyStepSelf", locale)}
         </span>
-        <span className={stepsCompleted >= 2 ? "text-[#c8410a]" : ""}>
+        <span className={stepsCompleted >= 2 ? "text-bronze" : ""}>
           {t("dashboard.journeyStepInvite", locale)}
         </span>
         <span
@@ -297,7 +297,7 @@ export function JourneyProgress({
             stepsCompleted >= 3
               ? feedbackPartial
                 ? "text-amber-500"
-                : "text-[#c8410a]"
+                : "text-bronze"
               : feedbackInProgress
                 ? "text-amber-500"
                 : ""
@@ -375,13 +375,13 @@ export function JourneyProgress({
           </div>
         </div>
       ) : (
-        <div className="mt-6 rounded-2xl border border-[#f3d4c8]/60 bg-gradient-to-br from-[#fef3ec] via-[#faf9f6] to-[#f3eee4] p-6 md:p-8 shadow-md">
+        <div className="mt-6 rounded-2xl border border-sage-ring/60 bg-gradient-to-br from-sage-soft via-cream to-warm p-6 md:p-8 shadow-md">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-semibold text-[#6c2a0d]">{nextStep.title}</p>
-              <p className="mt-1 text-sm text-[#8b2f09]/80">{nextStep.body}</p>
+              <p className="mt-1 text-sm text-bronze-dark/80">{nextStep.body}</p>
               {selfCompleted && nextStep.href === "#invite" ? (
-                <p className="mt-2 text-xs text-[#8b2f09]/80">
+                <p className="mt-2 text-xs text-bronze-dark/80">
                   {t("dashboard.nextStepInviteNote", locale)}
                 </p>
               ) : null}
@@ -390,7 +390,7 @@ export function JourneyProgress({
               <button
                 type="button"
                 onClick={nextStep.onAction}
-                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-[#e8c7b8]/40 ring-offset-2 ring-offset-[#faf9f6] hover:shadow-xl hover:ring-[#e8c7b8]/60 transition-all duration-300 hover:scale-105"
+                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sage to-sage-deep px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-sage-ring/40 ring-offset-2 ring-offset-cream hover:shadow-xl hover:ring-sage-ring/60 transition-all duration-300 hover:scale-105"
               >
                 {nextStep.cta}
                 <svg viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -400,7 +400,7 @@ export function JourneyProgress({
             ) : useLink ? (
               <Link
                 href={nextStep.href}
-                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-[#e8c7b8]/40 ring-offset-2 ring-offset-[#faf9f6] hover:shadow-xl hover:ring-[#e8c7b8]/60 transition-all duration-300 hover:scale-105"
+                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sage to-sage-deep px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-sage-ring/40 ring-offset-2 ring-offset-cream hover:shadow-xl hover:ring-sage-ring/60 transition-all duration-300 hover:scale-105"
               >
                 {nextStep.cta}
                 <svg viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -411,7 +411,7 @@ export function JourneyProgress({
               <button
                 type="button"
                 onClick={() => onTabChange!(nextStep.href === "#comparison" ? "comparison" : "invites")}
-                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-[#e8c7b8]/40 ring-offset-2 ring-offset-[#faf9f6] hover:shadow-xl hover:ring-[#e8c7b8]/60 transition-all duration-300 hover:scale-105"
+                className="group inline-flex shrink-0 min-h-[48px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sage to-sage-deep px-8 text-sm font-semibold text-white shadow-lg ring-2 ring-sage-ring/40 ring-offset-2 ring-offset-cream hover:shadow-xl hover:ring-sage-ring/60 transition-all duration-300 hover:scale-105"
               >
                 {nextStep.cta}
                 <svg viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -432,7 +432,7 @@ export function JourneyProgress({
         }`}
       >
         <div
-          className={`px-4 py-4 shadow-2xl ${showSurveyInSticky ? "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500" : "bg-gradient-to-r from-[#c8410a] via-[#b84512] to-[#8b2f09]"}`}
+          className={`px-4 py-4 shadow-2xl ${showSurveyInSticky ? "bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500" : "bg-gradient-to-r from-sage via-sage-dark to-sage-deep"}`}
           style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
         >
           <div className="mx-auto flex max-w-lg items-center gap-3">
@@ -472,14 +472,14 @@ export function JourneyProgress({
               <button
                 type="button"
                 onClick={nextStep.onAction}
-                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-[#8b2f09] shadow-md transition-all hover:scale-[1.03]"
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-bronze-dark shadow-md transition-all hover:scale-[1.03]"
               >
                 {nextStep.cta}
               </button>
             ) : useLink ? (
               <Link
                 href={nextStep.href}
-                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-[#8b2f09] shadow-md transition-all hover:scale-[1.03]"
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-bronze-dark shadow-md transition-all hover:scale-[1.03]"
               >
                 {nextStep.cta}
               </Link>
@@ -487,7 +487,7 @@ export function JourneyProgress({
               <button
                 type="button"
                 onClick={() => onTabChange!(nextStep.href === "#comparison" ? "comparison" : "invites")}
-                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-[#8b2f09] shadow-md transition-all hover:scale-[1.03]"
+                className="shrink-0 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-bronze-dark shadow-md transition-all hover:scale-[1.03]"
               >
                 {nextStep.cta}
               </button>

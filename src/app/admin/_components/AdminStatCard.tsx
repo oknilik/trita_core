@@ -8,15 +8,15 @@ interface AdminStatCardProps {
 export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardProps) {
   return (
     <div
-      className="rounded-xl border border-[#e8e4dc] bg-white p-6"
-      style={{ borderTopWidth: "3px", borderTopColor: "#c8410a" }}
+      className="rounded-xl border border-sand bg-white p-6"
+      style={{ borderTopWidth: "3px", borderTopColor: "var(--color-sage)" }}
     >
-      <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+      <p className="font-mono text-xs uppercase tracking-widest text-muted">
         {title}
       </p>
-      <p className="mt-3 text-3xl font-bold text-[#1a1814]">{value}</p>
+      <p className="mt-3 text-3xl font-bold text-ink">{value}</p>
       {subtitle && (
-        <p className="mt-1.5 text-xs text-[#5a5650]">{subtitle}</p>
+        <p className="mt-1.5 text-xs text-ink-body">{subtitle}</p>
       )}
       {trend && (
         <div

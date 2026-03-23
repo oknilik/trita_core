@@ -305,18 +305,18 @@ export function CandidateClient({
   // Intro screen
   if (phase === "intro") {
     return (
-      <div className="min-h-dvh bg-[#faf9f6]">
+      <div className="min-h-dvh bg-cream">
         <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
-          <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// személyiségfelmérés" : "// personality assessment"}
             </p>
-            <h1 className="mt-3 font-playfair text-2xl text-[#1a1814] md:text-3xl">
+            <h1 className="mt-3 font-fraunces text-2xl text-ink md:text-3xl">
               {position
                 ? (isHu ? `${position} pozíció` : `${position} position`)
                 : (isHu ? "Személyiségfelmérés" : "Personality Assessment")}
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-4 text-sm leading-relaxed text-ink-body">
               {isHu
                 ? `Ez a felmérés ${totalQuestions} kérdésből áll, és körülbelül 15–20 percet vesz igénybe. Kérjük, válaszolj őszintén, az első benyomásod alapján.`
                 : `This assessment contains ${totalQuestions} questions and takes approximately 15–20 minutes. Please answer honestly based on your first impression.`}
@@ -326,26 +326,26 @@ export function CandidateClient({
                 ? "A válaszaidat automatikusan mentjük — ha megszakad a kitöltés, onnan folytathatod, ahol abbahagytad."
                 : "Your answers are saved automatically — if you stop and return, you can continue where you left off."}
             </div>
-            <div className="mt-6 flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4 text-sm text-[#5a5650]">
+            <div className="mt-6 flex flex-col gap-3 rounded-xl border border-sand bg-cream p-4 text-sm text-ink-body">
               <div className="flex items-center gap-2">
-                <span className="text-[#c8410a]">✓</span>
+                <span className="text-bronze">✓</span>
                 {isHu ? "Regisztráció nem szükséges" : "No registration required"}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[#c8410a]">✓</span>
+                <span className="text-bronze">✓</span>
                 {isHu
                   ? `${totalQuestions} kérdés, 1–5-ös skálán`
                   : `${totalQuestions} questions, rated on a 1–5 scale`}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[#c8410a]">✓</span>
+                <span className="text-bronze">✓</span>
                 {isHu ? "Bizalmas adatkezelés" : "Confidential data handling"}
               </div>
             </div>
             <button
               type="button"
               onClick={() => setPhase("assessment")}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
               {isHu ? "Felmérés megkezdése" : "Start assessment"}
             </button>
@@ -358,14 +358,14 @@ export function CandidateClient({
   // Done screen
   if (phase === "done") {
     return (
-      <div className="min-h-dvh bg-[#faf9f6]">
+      <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
+            <h1 className="mt-4 font-fraunces text-2xl text-ink">
               {isHu ? "Köszönjük a kitöltést!" : "Thank you for completing the assessment!"}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {isHu
                 ? "A válaszaid sikeresen beküldtük. A szervező hamarosan értesítést kap az eredményekről."
                 : "Your answers have been successfully submitted. The organiser will be notified of the results shortly."}
@@ -379,14 +379,14 @@ export function CandidateClient({
   // Revoked screen
   if (phase === "revoked") {
     return (
-      <div className="min-h-dvh bg-[#faf9f6]">
+      <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🔒</div>
-            <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
+            <h1 className="mt-4 font-fraunces text-2xl text-ink">
               {isHu ? "A meghívó visszavonva" : "Invitation revoked"}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {isHu
                 ? "Ezt a meghívót visszavonták. Ha kérdésed van, vedd fel a kapcsolatot a szervezővel."
                 : "This invitation has been revoked. Please contact the organiser if you have any questions."}
@@ -403,14 +403,14 @@ export function CandidateClient({
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined;
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
 
         {/* Sticky progress bar */}
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-[#e8e4dc] bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sand bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
-          <div className="mt-2 flex items-center gap-2 text-xs text-[#a09a90]">
-            <span className="rounded-md bg-[#f0ede6] px-2 py-1 whitespace-nowrap">
+          <div className="mt-2 flex items-center gap-2 text-xs text-muted">
+            <span className="rounded-md bg-warm-mid px-2 py-1 whitespace-nowrap">
               {isHu ? `~${etaMinutes} perc hátra` : `~${etaMinutes} min remaining`}
             </span>
             {position && (
@@ -421,7 +421,7 @@ export function CandidateClient({
           </div>
         </div>
 
-        <div className="mb-4 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] px-4 py-2.5 text-center text-sm text-[#5a5650]">
+        <div className="mb-4 rounded-xl border border-sand bg-cream px-4 py-2.5 text-center text-sm text-ink-body">
           {isHu
             ? "Válaszolj úgy, ahogy általában gondolkodsz és viselkedsz."
             : "Answer based on how you generally think and behave."}
@@ -429,12 +429,12 @@ export function CandidateClient({
 
         {/* Auto-advance toggle */}
         <div className="mb-4">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-xs text-[#5a5650]">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink-body">
             <input
               type="checkbox"
               checked={autoAdvance}
               onChange={(e) => setAutoAdvance(e.target.checked)}
-              className="h-4 w-4 rounded border-[#e8e4dc]"
+              className="h-4 w-4 rounded border-sand"
             />
             {isHu ? "Automatikus továbblépés" : "Auto-advance"}
           </label>
@@ -475,8 +475,8 @@ export function CandidateClient({
             disabled={!canGoPrev}
             className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
               !canGoPrev
-                ? "cursor-not-allowed bg-[#e8e4dc] text-[#a09a90]"
-                : "border border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+                ? "cursor-not-allowed bg-sand text-muted"
+                : "border border-sand bg-white text-ink-body hover:border-sage/40 hover:text-bronze"
             }`}
             whileHover={canGoPrev ? { scale: 1.02 } : {}}
             whileTap={canGoPrev ? { scale: 0.98 } : {}}
@@ -490,8 +490,8 @@ export function CandidateClient({
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
                 !isSubmitting
-                  ? "bg-[#c8410a] text-white hover:bg-[#b53a09]"
-                  : "bg-[#e8e4dc] text-[#a09a90]"
+                  ? "bg-sage text-white hover:bg-sage-dark"
+                  : "bg-sand text-muted"
               }`}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}
               whileTap={!isSubmitting ? { scale: 0.98 } : {}}
@@ -507,8 +507,8 @@ export function CandidateClient({
               aria-disabled={!currentQuestionAnswered || isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
                 currentQuestionAnswered && !isSubmitting
-                  ? "bg-[#c8410a] text-white hover:bg-[#b53a09]"
-                  : "cursor-not-allowed bg-[#e8e4dc] text-[#a09a90]"
+                  ? "bg-sage text-white hover:bg-sage-dark"
+                  : "cursor-not-allowed bg-sand text-muted"
               }`}
               whileHover={currentQuestionAnswered && !isSubmitting ? { scale: 1.02 } : {}}
               whileTap={currentQuestionAnswered && !isSubmitting ? { scale: 0.98 } : {}}
@@ -518,7 +518,7 @@ export function CandidateClient({
           )}
         </div>
 
-        <p className="mt-6 text-center text-sm text-[#a09a90]">
+        <p className="mt-6 text-center text-sm text-muted">
           {isHu
             ? "Az 1–5 skálán: 1 = Egyáltalán nem értek egyet, 5 = Teljes mértékben egyetértek"
             : "On the 1–5 scale: 1 = Strongly disagree, 5 = Strongly agree"}

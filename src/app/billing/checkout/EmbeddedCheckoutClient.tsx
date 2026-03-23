@@ -31,7 +31,7 @@ export function EmbeddedCheckoutClient({ priceKey, quantity }: Props) {
   }, [priceKey, quantity]);
 
   return (
-    <div className="rounded-2xl border border-[#e8e4dc] bg-white overflow-hidden shadow-sm">
+    <div className="rounded-2xl border border-sand bg-white overflow-hidden shadow-sm">
       <EmbeddedCheckoutProvider
         stripe={getStripe()}
         options={{ fetchClientSecret }}

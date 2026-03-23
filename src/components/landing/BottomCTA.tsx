@@ -17,15 +17,15 @@ export function BottomCTA({ locale }: { locale: Locale }) {
   const [headingLine1, headingLine2] = c.heading.split("\n");
 
   return (
-    <section className="-mb-16 grid grid-cols-1 items-center gap-8 bg-[#c8410a] px-6 py-16 md:grid-cols-[1fr_auto] md:gap-[60px] md:px-16 md:py-[100px]">
-      <h2 className="font-playfair text-[clamp(36px,4vw,56px)] font-black leading-[1.05] tracking-[-2px] text-white">
+    <section className="-mb-16 grid grid-cols-1 items-center gap-8 bg-sage-deep px-6 py-16 md:grid-cols-[1fr_auto] md:gap-[60px] md:px-16 md:py-[100px]">
+      <h2 className="font-fraunces text-[clamp(36px,4vw,56px)] font-black leading-[1.05] tracking-[-2px] text-white">
         {headingLine1}
         <br />
         {headingLine2}
       </h2>
       <Link
         href="/sign-up"
-        className="inline-flex min-h-[54px] items-center justify-center rounded bg-white px-9 text-[15px] font-semibold text-[#c8410a] transition-all hover:-translate-y-px hover:opacity-90"
+        className="inline-flex min-h-[54px] items-center justify-center rounded bg-white px-9 text-[15px] font-semibold text-bronze transition-all hover:-translate-y-px hover:opacity-90"
       >
         {c.cta}
       </Link>

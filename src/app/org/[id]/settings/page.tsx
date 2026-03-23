@@ -56,13 +56,13 @@ export default async function OrgSettingsPage({
   const trialEnd = sub?.trialEndsAt?.toISOString() ?? null;
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10">
 
         <div>
           <Link
             href={`/org/${orgId}`}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3d3a35] hover:text-[#c8410a] mb-6 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body hover:text-bronze mb-6 transition-colors"
           >
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 3L5 8l5 5" />
@@ -71,32 +71,32 @@ export default async function OrgSettingsPage({
           </Link>
 
           <div className="flex flex-col gap-1">
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// beállítások" : "// settings"}
             </p>
-            <h1 className="font-playfair text-3xl text-[#1a1814] md:text-4xl">
+            <h1 className="font-fraunces text-3xl text-ink md:text-4xl">
               {org.name}
             </h1>
           </div>
         </div>
 
         {/* Org name */}
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {isHu ? "// szervezet neve" : "// organization name"}
           </p>
-          <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+          <h2 className="font-fraunces text-xl text-ink mb-5">
             {isHu ? "Szervezet neve" : "Organization name"}
           </h2>
           <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
         </section>
 
         {/* Előfizetés */}
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {isHu ? "// előfizetés" : "// subscription"}
           </p>
-          <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+          <h2 className="font-fraunces text-xl text-ink mb-5">
             {isHu ? "Előfizetés" : "Subscription"}
           </h2>
 
@@ -106,10 +106,10 @@ export default async function OrgSettingsPage({
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                     subStatus === "active"
-                      ? "bg-[rgba(26,92,58,0.08)] text-[#1a5c3a]"
+                      ? "bg-[rgba(26,92,58,0.08)] text-sage"
                       : subStatus === "trialing"
-                      ? "bg-[rgba(200,65,10,0.08)] text-[#c8410a]"
-                      : "bg-[#e8e4dc] text-[#5a5650]"
+                      ? "bg-[rgba(200,65,10,0.08)] text-bronze"
+                      : "bg-sand text-ink-body"
                   }`}
                 >
                   {subStatus === "active"
@@ -123,7 +123,7 @@ export default async function OrgSettingsPage({
                     : isHu ? "Nincs előfizetés" : "No subscription"}
                 </span>
                 {subStatus === "trialing" && trialEnd && (
-                  <span className="text-xs text-[#7a756e]">
+                  <span className="text-xs text-ink-warm">
                     {daysLeft !== null && daysLeft > 0
                       ? isHu
                         ? `${daysLeft} nap van hátra`
@@ -134,7 +134,7 @@ export default async function OrgSettingsPage({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#a09a90]">
+              <p className="text-xs text-muted">
                 {subStatus === "active"
                   ? isHu
                     ? "A hozzáférés aktív."
@@ -153,7 +153,7 @@ export default async function OrgSettingsPage({
               {(subStatus === "trialing" || subStatus === "none") && (
                 <a
                   href="/billing/checkout?plan=org_monthly"
-                  className="inline-flex min-h-[40px] items-center rounded-lg bg-[#c8410a] px-4 text-xs font-semibold text-white hover:bg-[#a33408] transition-colors"
+                  className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white hover:bg-sage-dark transition-colors"
                 >
                   {isHu ? "Aktiválás →" : "Activate →"}
                 </a>
@@ -164,7 +164,7 @@ export default async function OrgSettingsPage({
               {subStatus === "canceled" && (
                 <a
                   href="/billing/checkout?plan=org_monthly"
-                  className="inline-flex min-h-[40px] items-center rounded-lg border border-[#c8410a] px-4 text-xs font-semibold text-[#c8410a] hover:bg-[#fef3ec] transition-colors"
+                  className="inline-flex min-h-[40px] items-center rounded-lg border border-sage px-4 text-xs font-semibold text-bronze hover:bg-sage-soft transition-colors"
                 >
                   {isHu ? "Újraaktiválás" : "Reactivate"}
                 </a>
@@ -175,29 +175,29 @@ export default async function OrgSettingsPage({
 
         {/* Seat info — team / org plans only */}
         {tier !== "scale" && tier !== "none" && includedSeats !== Infinity && (
-          <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
               {isHu ? "// létszám" : "// seats"}
             </p>
-            <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+            <h2 className="font-fraunces text-xl text-ink mb-5">
               {isHu ? "Aktív helyek" : "Active seats"}
             </h2>
 
             <div className="flex items-start justify-between gap-6">
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline gap-2 mb-3">
-                  <span className="font-playfair text-3xl text-[#1a1814]">
+                  <span className="font-fraunces text-3xl text-ink">
                     {memberCount}
                   </span>
-                  <span className="text-sm text-[#5a5650]">
+                  <span className="text-sm text-ink-body">
                     / {includedSeats} {isHu ? "alap hely" : "included seats"}
                   </span>
                 </div>
 
-                <div className="h-2 w-full max-w-xs rounded-full bg-[#e8e4dc] overflow-hidden mb-3">
+                <div className="h-2 w-full max-w-xs rounded-full bg-sand overflow-hidden mb-3">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      memberCount > includedSeats ? "bg-[#c8410a]" : "bg-[#1a5c3a]"
+                      memberCount > includedSeats ? "bg-sage" : "bg-sage"
                     }`}
                     style={{
                       width: `${Math.min(100, Math.round((memberCount / includedSeats) * 100))}%`,
@@ -206,13 +206,13 @@ export default async function OrgSettingsPage({
                 </div>
 
                 {extraSeats > 0 ? (
-                  <p className="text-sm text-[#c8410a]">
+                  <p className="text-sm text-bronze">
                     {isHu
                       ? `+${extraSeats} extra hely · ${extraSeats} × €19/hó a következő számlán`
                       : `+${extraSeats} extra seat${extraSeats !== 1 ? "s" : ""} · ${extraSeats} × €19/mo on next invoice`}
                   </p>
                 ) : (
-                  <p className="text-sm text-[#5a5650]">
+                  <p className="text-sm text-ink-body">
                     {isHu
                       ? `${includedSeats - memberCount} hely elérhető`
                       : `${includedSeats - memberCount} seat${includedSeats - memberCount !== 1 ? "s" : ""} available`}
@@ -220,7 +220,7 @@ export default async function OrgSettingsPage({
                 )}
 
                 {pendingCount > 0 && (
-                  <p className="text-xs text-[#a09a90] mt-1">
+                  <p className="text-xs text-muted mt-1">
                     {isHu
                       ? `+${pendingCount} meghívás függőben`
                       : `+${pendingCount} invitation${pendingCount !== 1 ? "s" : ""} pending`}
@@ -230,18 +230,18 @@ export default async function OrgSettingsPage({
 
               {/* Upgrade hint for team plan near limit */}
               {tier === "team" && memberCount >= includedSeats - 2 && (
-                <div className="shrink-0 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4 text-xs max-w-[200px]">
-                  <p className="font-semibold text-[#1a1814] mb-1">
+                <div className="shrink-0 rounded-xl border border-sand bg-cream p-4 text-xs max-w-[200px]">
+                  <p className="font-semibold text-ink mb-1">
                     {isHu ? "Több hely kell?" : "Need more seats?"}
                   </p>
-                  <p className="text-[#5a5650] mb-2">
+                  <p className="text-ink-body mb-2">
                     {isHu
                       ? "Az Org csomag 40 helyet tartalmaz €149/hó áron."
                       : "The Org plan includes 40 seats for €149/mo."}
                   </p>
                   <a
                     href="/billing/checkout?plan=org_monthly"
-                    className="font-semibold text-[#c8410a] hover:underline"
+                    className="font-semibold text-bronze hover:underline"
                   >
                     {isHu ? "Upgrade →" : "Upgrade →"}
                   </a>
@@ -252,22 +252,22 @@ export default async function OrgSettingsPage({
         )}
 
         {/* Member roles */}
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {isHu ? "// szerepkörök" : "// roles"}
           </p>
-          <h2 className="font-playfair text-xl text-[#1a1814] mb-5">
+          <h2 className="font-fraunces text-xl text-ink mb-5">
             {isHu ? "Tagok szerepkörei" : "Member roles"}
           </h2>
-          <div className="flex flex-col divide-y divide-[#e8e4dc]">
+          <div className="flex flex-col divide-y divide-sand">
             {members.map((m) => (
               <div key={m.userId} className="flex items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-[#1a1814]">
+                  <p className="truncate text-sm font-semibold text-ink">
                     {m.user.username ?? m.user.email ?? "—"}
                   </p>
                   {m.user.username && (
-                    <p className="truncate text-xs text-[#3d3a35]/60">{m.user.email}</p>
+                    <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
                   )}
                 </div>
                 <OrgMemberRoleEditor
@@ -287,7 +287,7 @@ export default async function OrgSettingsPage({
           <p className="font-mono text-xs uppercase tracking-widest text-rose-600 mb-1">
             {isHu ? "// veszélyes zóna" : "// danger zone"}
           </p>
-          <h2 className="font-playfair text-xl text-rose-900 mb-4">
+          <h2 className="font-fraunces text-xl text-rose-900 mb-4">
             {isHu ? "Veszélyes zóna" : "Danger zone"}
           </h2>
           <p className="mb-4 text-sm text-rose-700">

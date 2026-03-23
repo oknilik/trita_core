@@ -36,15 +36,15 @@ interface ProfileInsightsProps {
 }
 
 function categoryColor(cat: ProfileCategory): string {
-  if (cat === "high") return "bg-[#c8410a]";
+  if (cat === "high") return "bg-sage";
   if (cat === "low") return "bg-gray-300";
   return "bg-[#d7c9be]";
 }
 
 function categoryTextColor(cat: ProfileCategory): string {
-  if (cat === "high") return "text-[#8b2f09] bg-[#fef3ec]";
+  if (cat === "high") return "text-bronze-dark bg-sage-soft";
   if (cat === "low") return "text-gray-500 bg-gray-100";
-  return "text-[#6f5b4a] bg-[#f3eee4]";
+  return "text-[#6f5b4a] bg-warm";
 }
 
 export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) {
@@ -102,7 +102,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "01",
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-4">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-4">
             {BLOCK2_TITLE[l]}
           </h3>
           <div className="space-y-3">
@@ -134,7 +134,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "02",
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-3">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-3">
             {BLOCK3_TITLE[l]}
           </h3>
           <p className="text-sm text-gray-700 leading-relaxed">{block3Text}</p>
@@ -145,7 +145,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "03",
       node: envRows.length > 0 ? (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-4">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-4">
             {BLOCK4_TITLE[l]}
           </h3>
           <div className="divide-y divide-gray-50">
@@ -169,7 +169,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
             num: "04",
             node: (
               <section className="rounded-2xl border border-gray-100 bg-white p-6">
-                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-4">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-4">
                   {BLOCK5_TITLE[l]}
                 </h3>
                 <div className="space-y-3">
@@ -197,28 +197,28 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
     <div className="space-y-6 mt-6">
       {/* ── Section title ── */}
       <div className="flex items-center gap-3">
-        <div className="h-1 w-12 bg-gradient-to-r from-[#c8410a] to-[#8b2f09] rounded-full" />
+        <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {SECTION_TITLE[l]}
         </h2>
       </div>
 
       {/* ── Block 1: Bevezető framing ── */}
-      <section className="rounded-2xl border border-[#f3d4c8]/70 bg-gradient-to-br from-[#c8410a] via-[#b84512] to-[#8b2f09] p-6 shadow-md shadow-[#c8410a]/20">
+      <section className="rounded-2xl border border-sage-ring/70 bg-gradient-to-br from-sage via-sage-dark to-sage-deep p-6 shadow-md shadow-sage/20">
         <p className="text-sm text-white/90 leading-relaxed italic">{BLOCK1[l]}</p>
       </section>
 
       {/* ── Timeline: Blocks 2–5 ── */}
       <div className="relative">
         {/* Connecting line */}
-        <div className="absolute left-[19px] top-5 bottom-5 w-0.5 bg-gradient-to-b from-[#f3d4c8] via-[#f6e5dd] to-[#f0ded5] rounded-full" />
+        <div className="absolute left-[19px] top-5 bottom-5 w-0.5 bg-gradient-to-b from-bronze-soft via-[#f6e5dd] to-[#f0ded5] rounded-full" />
 
         <div className="space-y-5">
           {steps.map(({ num, node }) => (
             <div key={num} className="flex gap-4">
               {/* Step badge */}
               <div
-                className="relative z-10 shrink-0 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#c8410a] to-[#8b2f09] shadow-md shadow-[#c8410a]/25"
+                className="relative z-10 shrink-0 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-deep shadow-md shadow-sage/25"
                 aria-hidden="true"
               >
                 <span className="h-2.5 w-2.5 rounded-full bg-white shadow-sm md:h-3 md:w-3" />
@@ -232,8 +232,8 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
 
       {/* ── Block 6: Kombináció-insight ── */}
       {showBlock6 && (
-        <section className="rounded-2xl border border-[#f3d4c8] bg-[#fef3ec] p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c8410a] mb-3">
+        <section className="rounded-2xl border border-sage-ring bg-sage-soft p-6">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-3">
             {BLOCK6_TITLE[l]}
           </h3>
           <div className="space-y-3">
@@ -266,7 +266,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       )}
 
       {/* ── Block 8: Záró framing ── */}
-      <section className="rounded-2xl border border-[#f3d4c8]/70 bg-gradient-to-br from-[#c8410a] via-[#b84512] to-[#8b2f09] p-6 shadow-md shadow-[#c8410a]/20">
+      <section className="rounded-2xl border border-sage-ring/70 bg-gradient-to-br from-sage via-sage-dark to-sage-deep p-6 shadow-md shadow-sage/20">
         <p className="text-sm text-white/90 leading-relaxed italic">{BLOCK8[l]}</p>
       </section>
     </div>

@@ -137,7 +137,7 @@ export default async function TeamDetailPage({
       insight: teamData.bottomDim
         ? getDimensionInsight(teamData.bottomDim.code, teamData.bottomDim.value)
         : undefined,
-      accentColor: "#c8410a",
+      accentColor: "#3d6b5e",
     },
     {
       label: isHu ? "Aktív kampány" : "Active campaign",
@@ -151,7 +151,7 @@ export default async function TeamDetailPage({
   ];
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-5xl px-4 py-10">
         <StatStrip cells={statCells} />
         {/* Header */}
@@ -159,15 +159,15 @@ export default async function TeamDetailPage({
           {/* Hero */}
           <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+              <p className="font-mono text-xs uppercase tracking-widest text-bronze">
                 {isHu
                   ? `// csapat · ${teamData.orgName ?? ""}`
                   : `// team · ${teamData.orgName ?? ""}`}
               </p>
-              <h1 className="font-playfair text-3xl text-[#1a1814] mt-1 md:text-4xl">
+              <h1 className="font-fraunces text-3xl text-ink mt-1 md:text-4xl">
                 {teamData.teamName}
               </h1>
-              <p className="mt-1 text-xs text-[#3d3a35]/60">
+              <p className="mt-1 text-xs text-ink-body/60">
                 {isHu ? "Létrehozva: " : "Created "}
                 {new Date(teamData.teamCreatedAt).toLocaleDateString(
                   dateLocale
@@ -194,7 +194,7 @@ export default async function TeamDetailPage({
               <div className="flex shrink-0 items-center gap-2">
                 <Link
                   href={`/org/${teamData.orgId}?tab=campaigns`}
-                  className="min-h-[44px] inline-flex items-center rounded-lg border border-[#e8e4dc] bg-white px-5 text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+                  className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
                 >
                   + {isHu ? "Kampány" : "Campaign"}
                 </Link>

@@ -70,36 +70,36 @@ export function AddParticipantButton({
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-5 text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+          className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
         >
           {isHu ? "+ Résztvevők hozzáadása" : "+ Add participants"}
         </button>
       ) : (
         <form
           onSubmit={handleAdd}
-          className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4"
+          className="rounded-xl border border-sand bg-cream p-4"
         >
-          <p className="mb-3 font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+          <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
             {isHu ? "// résztvevők kiválasztása" : "// select participants"}
           </p>
           <div className="mb-4 max-h-56 overflow-y-auto space-y-1">
             {members.map((m) => (
               <label
                 key={m.userId}
-                className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 hover:bg-[#e8e4dc]/50"
+                className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 hover:bg-sand/50"
               >
                 <input
                   type="checkbox"
                   checked={selected.has(m.userId)}
                   onChange={() => toggle(m.userId)}
-                  className="accent-[#c8410a]"
+                  className="accent-sage"
                 />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-[#1a1814]">
+                  <p className="truncate text-sm font-medium text-ink">
                     {m.username ?? m.email ?? "—"}
                   </p>
                   {m.username && m.email && (
-                    <p className="truncate text-xs text-[#3d3a35]/60">{m.email}</p>
+                    <p className="truncate text-xs text-ink-body/60">{m.email}</p>
                   )}
                 </div>
               </label>
@@ -110,7 +110,7 @@ export function AddParticipantButton({
             <button
               type="submit"
               disabled={loading || selected.size === 0}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
                 ? isHu ? "Hozzáadás…" : "Adding…"
@@ -121,7 +121,7 @@ export function AddParticipantButton({
             <button
               type="button"
               onClick={() => { setOpen(false); setSelected(new Set()); setError(null); }}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-semibold text-[#3d3a35] transition hover:bg-[#e8e4dc]"
+              className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-sand"
             >
               {isHu ? "Mégse" : "Cancel"}
             </button>

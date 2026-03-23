@@ -38,22 +38,22 @@ export async function POST(req: NextRequest) {
         to: ADMIN_EMAIL,
         subject: `🟢 Konzultáció igény: ${orgName} – ${displayName}`,
         html: `
-          <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1814;">
-            <h1 style="font-size: 20px; color: #c8410a; margin: 0 0 24px;">Tanácsadói konzultáció igény</h1>
+          <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1a2e;">
+            <h1 style="font-size: 20px; color: #c17f4a; margin: 0 0 24px;">Tanácsadói konzultáció igény</h1>
             <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e4dc; font-weight: bold; width: 120px;">Név</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e4dc;">${displayName}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3; font-weight: bold; width: 120px;">Név</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3;">${displayName}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e4dc; font-weight: bold;">Email</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e4dc;">
-                  <a href="mailto:${userEmail}" style="color: #c8410a;">${userEmail}</a>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3; font-weight: bold;">Email</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3;">
+                  <a href="mailto:${userEmail}" style="color: #c17f4a;">${userEmail}</a>
                 </td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e4dc; font-weight: bold;">Szervezet</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e4dc;">${orgName}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3; font-weight: bold;">Szervezet</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3;">${orgName}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; font-weight: bold; vertical-align: top;">Csapatok</td>
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
                 </td>
               </tr>
             </table>
-            <p style="margin-top: 24px; font-size: 13px; color: #a09a90;">
+            <p style="margin-top: 24px; font-size: 13px; color: #8a8a9a;">
               Válaszolj 24 órán belül időpont-egyeztetéssel.
             </p>
           </div>
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
               to: userEmail,
               subject: "Megkaptuk a konzultáció-igényed — Trita Advisory",
               html: `
-                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1814;">
+                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1a2e;">
                   <p style="font-size: 16px; line-height: 1.7;">Kedves ${firstName},</p>
                   <p style="font-size: 16px; line-height: 1.7;">
                     Megkaptuk a tanácsadói konzultáció igényedet!
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
                   <p style="font-size: 16px; line-height: 1.7; margin-top: 24px;">
                     Üdvözlettel,<br/>
                     <strong>Leinad</strong><br/>
-                    <span style="color: #c8410a;">Trita</span>
+                    <span style="color: #c17f4a;">Trita</span>
                   </p>
                 </div>
               `,

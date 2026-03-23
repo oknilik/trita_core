@@ -26,13 +26,13 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
   };
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4">
+    <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
       <div className="w-full max-w-lg">
         <div className="mb-8 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#c8410a]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-bronze">
             // előfizetés
           </p>
-          <h1 className="mt-2 font-playfair text-3xl text-[#1a1814]">
+          <h1 className="mt-2 font-fraunces text-3xl text-ink">
             {isActiveOrSetup
               ? "Előfizetés aktív"
               : isExpiredTrial
@@ -43,7 +43,7 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
               ? "Előfizetés megszűnt"
               : "Aktiváld az előfizetést"}
           </h1>
-          <p className="mt-3 text-sm text-[#5a5650]">
+          <p className="mt-3 text-sm text-ink-body">
             {isActiveOrSetup
               ? "A fizetési módod el van mentve. A trial időszak végén automatikusan számlázunk."
               : isExpiredTrial
@@ -57,21 +57,21 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
         </div>
 
         {!isAdmin ? (
-          <div className="rounded-xl border border-[#e0ddd6] bg-white p-6 text-center">
-            <p className="text-sm text-[#5a5650]">
+          <div className="rounded-xl border border-sand bg-white p-6 text-center">
+            <p className="text-sm text-ink-body">
               Az előfizetés kezeléséhez adminisztrátori jogosultság szükséges.
               Kérj meg egy adminisztrátort, hogy aktiválja az előfizetést.
             </p>
           </div>
         ) : isActiveOrSetup ? (
-          <div className="rounded-xl border border-[#1a5c3a]/20 bg-[#f0fdf4] p-6 text-center">
-            <p className="text-sm text-[#1a5c3a] font-medium mb-4">
+          <div className="rounded-xl border border-sage/20 bg-[#f0fdf4] p-6 text-center">
+            <p className="text-sm text-sage font-medium mb-4">
               Minden rendben — a számlázás be van állítva.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/profile/results"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a33408]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark"
               >
                 Vissza a dashboardra →
               </Link>
@@ -84,14 +84,14 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
                   setLoading(false);
                 }}
                 disabled={loading}
-                className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#e0ddd6] bg-white px-6 text-sm font-semibold text-[#3d3a35] hover:border-[#c8410a] hover:text-[#c8410a] disabled:opacity-60"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sand bg-white px-6 text-sm font-semibold text-ink-body hover:border-sage hover:text-bronze disabled:opacity-60"
               >
                 {loading ? "Betöltés..." : "Számlázás kezelése"}
               </button>
             </div>
           </div>
         ) : isPastDue || isCanceled ? (
-          <div className="rounded-xl border border-[#e0ddd6] bg-white p-6 text-center">
+          <div className="rounded-xl border border-sand bg-white p-6 text-center">
             <button
               onClick={async () => {
                 setLoading(true);
@@ -101,7 +101,7 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
                 setLoading(false);
               }}
               disabled={loading}
-              className="inline-flex min-h-[48px] items-center rounded-lg bg-[#c8410a] px-8 text-sm font-semibold text-white hover:bg-[#a33408] disabled:opacity-60"
+              className="inline-flex min-h-[48px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white hover:bg-sage-dark disabled:opacity-60"
             >
               {loading ? "Betöltés..." : "Számlázás kezelése →"}
             </button>
@@ -128,27 +128,27 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
               <div
                 key={plan.key}
                 className={`relative rounded-xl border p-5 ${
-                  plan.badge ? "border-[#c8410a] bg-[#fef3ec]" : "border-[#e0ddd6] bg-white"
+                  plan.badge ? "border-sage bg-sage-soft" : "border-sand bg-white"
                 }`}
               >
                 {plan.badge && (
-                  <span className="absolute -top-3 left-5 rounded-full bg-[#c8410a] px-3 py-0.5 font-mono text-[10px] uppercase tracking-widest text-white">
+                  <span className="absolute -top-3 left-5 rounded-full bg-sage px-3 py-0.5 font-mono text-[10px] uppercase tracking-widest text-white">
                     {plan.badge}
                   </span>
                 )}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-[#1a1814]">{plan.name}</p>
-                    <p className="text-xs text-[#7a756e]">{plan.desc}</p>
+                    <p className="font-semibold text-ink">{plan.name}</p>
+                    <p className="text-xs text-ink-warm">{plan.desc}</p>
                   </div>
                   <div className="text-right">
-                    <span className="font-playfair text-2xl text-[#1a1814]">{plan.price}</span>
-                    <span className="ml-1 text-xs text-[#7a756e]">{plan.cadence}</span>
+                    <span className="font-fraunces text-2xl text-ink">{plan.price}</span>
+                    <span className="ml-1 text-xs text-ink-warm">{plan.cadence}</span>
                   </div>
                 </div>
                 <button
                   onClick={() => handleCheckout(plan.key)}
-                  className="mt-4 w-full min-h-[44px] rounded-lg bg-[#c8410a] text-sm font-semibold text-white hover:bg-[#a33408]"
+                  className="mt-4 w-full min-h-[44px] rounded-lg bg-sage text-sm font-semibold text-white hover:bg-sage-dark"
                 >
                   Fizetés →
                 </button>
@@ -156,7 +156,7 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
             ))}
             <Link
               href="/pricing"
-              className="block text-center text-sm text-[#7a756e] hover:text-[#1a1814]"
+              className="block text-center text-sm text-ink-warm hover:text-ink"
             >
               Részletes összehasonlítás →
             </Link>

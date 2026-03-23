@@ -126,34 +126,34 @@ export function OrgOverviewTab({
       {/* 2-column grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left: Szervezeti személyiség */}
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// szervezeti profil" : "// org profile"}
           </p>
-          <h3 className="mb-4 font-playfair text-xl text-[#1a1814]">
+          <h3 className="mb-4 font-fraunces text-xl text-ink">
             {isHu ? "Szervezeti személyiség" : "Org personality"}
           </h3>
 
           {!hexacoAvg ? (
-            <div className="flex flex-col gap-4 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-5">
+            <div className="flex flex-col gap-4 rounded-xl border border-sand bg-cream p-5">
               <div>
                 <div className="mb-1.5 flex items-center justify-between gap-2">
-                  <p className="text-[13px] font-semibold text-[#1a1814]">
+                  <p className="text-[13px] font-semibold text-ink">
                     {isHu
                       ? `${completedMemberCount} / 3 kitöltés`
                       : `${completedMemberCount} / 3 completions`}
                   </p>
-                  <span className="font-mono text-[10px] text-[#a09a90]">
+                  <span className="font-mono text-[10px] text-muted">
                     {Math.round((completedMemberCount / 3) * 100)}%
                   </span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-[#e8e4dc]">
+                <div className="h-2 overflow-hidden rounded-full bg-sand">
                   <div
-                    className="h-full rounded-full bg-[#c8410a] transition-all duration-700"
+                    className="h-full rounded-full bg-sage transition-all duration-700"
                     style={{ width: `${Math.min((completedMemberCount / 3) * 100, 100)}%` }}
                   />
                 </div>
-                <p className="mt-2 text-[11px] text-[#5a5650]">
+                <p className="mt-2 text-[11px] text-ink-body">
                   {isHu
                     ? "A szervezeti személyiségprofil 3 befejezett értékelés után jelenik meg."
                     : "The org personality profile appears after 3 completed assessments."}
@@ -170,14 +170,14 @@ export function OrgOverviewTab({
                 const label = isHu ? HEXACO_LABELS_HU[d] : HEXACO_LABELS_EN[d];
                 return (
                   <div key={d} className="flex items-center gap-3">
-                    <span className="w-36 shrink-0 text-xs text-[#5a5650] truncate">{label}</span>
-                    <div className="flex-1 h-[6px] rounded-full overflow-hidden bg-[#e8e4dc]">
+                    <span className="w-36 shrink-0 text-xs text-ink-body truncate">{label}</span>
+                    <div className="flex-1 h-[6px] rounded-full overflow-hidden bg-sand">
                       <div
                         className="h-full rounded-full transition-all duration-700"
                         style={{ width: `${val}%`, backgroundColor: HEXACO_COLORS[d] }}
                       />
                     </div>
-                    <span className="w-8 text-right text-xs tabular-nums text-[#a09a90]">
+                    <span className="w-8 text-right text-xs tabular-nums text-muted">
                       {val}
                     </span>
                   </div>
@@ -206,22 +206,22 @@ export function OrgOverviewTab({
         </div>
 
         {/* Right: Csapatok */}
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// csapatok" : "// teams"}
           </p>
-          <h3 className="mb-4 font-playfair text-xl text-[#1a1814]">
+          <h3 className="mb-4 font-fraunces text-xl text-ink">
             {isHu ? "Csapatok" : "Teams"}
             {teams.length > 0 && (
-              <span className="ml-2 font-sans text-sm font-normal text-[#3d3a35]/50">
+              <span className="ml-2 font-sans text-sm font-normal text-ink-body/50">
                 ({teams.length})
               </span>
             )}
           </h3>
 
           {teams.length === 0 ? (
-            <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-6 text-center">
-              <p className="text-sm text-[#3d3a35]/60">
+            <div className="rounded-xl border border-sand bg-cream p-6 text-center">
+              <p className="text-sm text-ink-body/60">
                 {isHu
                   ? "Még nincs csapat. Hozz létre egyet a Csapatok fülön!"
                   : "No teams yet. Create one in the Teams tab!"}
@@ -233,18 +233,18 @@ export function OrgOverviewTab({
                 <Link
                   key={team.id}
                   href={`/team/${team.id}`}
-                  className="group flex items-center justify-between rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-3.5 transition-all hover:border-[#c8410a]/30 hover:bg-white"
+                  className="group flex items-center justify-between rounded-xl border border-sand bg-cream p-3.5 transition-all hover:border-sage/30 hover:bg-white"
                 >
                   <div>
-                    <p className="text-sm font-semibold text-[#1a1814] transition-colors group-hover:text-[#c8410a]">
+                    <p className="text-sm font-semibold text-ink transition-colors group-hover:text-bronze">
                       {team.name}
                     </p>
-                    <p className="text-xs text-[#3d3a35]/60">
+                    <p className="text-xs text-ink-body/60">
                       {team._count.members}{" "}
                       {isHu ? "tag" : team._count.members === 1 ? "member" : "members"}
                     </p>
                   </div>
-                  <span className="font-mono text-xs text-[#c8410a] opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="font-mono text-xs text-bronze opacity-0 transition-opacity group-hover:opacity-100">
                     →
                   </span>
                 </Link>

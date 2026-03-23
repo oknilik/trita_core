@@ -74,8 +74,8 @@ export function NavHeaderUI({
 
   const pillBase =
     "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors cursor-pointer select-none";
-  const pillActive = `${pillBase} bg-[#1a1814] text-white`;
-  const pillInactive = `${pillBase} text-[#3d3a35] hover:bg-[#f0ede8]`;
+  const pillActive = `${pillBase} bg-ink text-white`;
+  const pillInactive = `${pillBase} text-ink-body hover:bg-warm-mid`;
 
   const anyOpen = teamOpen || orgOpen || avatarOpen;
 
@@ -87,14 +87,14 @@ export function NavHeaderUI({
           onClick={closeAll}
         />
       )}
-      <header className="sticky top-0 z-40 h-[52px] w-full border-b border-[#e8e4dc] bg-[#faf9f6] lg:h-[64px]">
+      <header className="sticky top-0 z-40 h-[52px] w-full border-b border-sand bg-cream lg:h-[64px]">
         <div className="mx-auto flex h-full w-full max-w-5xl items-center gap-3 px-4">
           {/* Logo */}
           <Link
             href={dashboardHref}
-            className="font-playfair mr-2 inline-flex flex-shrink-0 items-baseline text-[18px] font-black tracking-tight text-[#1a1814] lg:text-[22px]"
+            className="font-fraunces mr-2 inline-flex flex-shrink-0 items-baseline text-[18px] font-black tracking-tight text-ink lg:text-[22px]"
           >
-            trit<span className="text-[#c8410a]">a</span>
+            trit<span className="text-bronze">a</span>
           </Link>
 
           {/* Desktop center nav */}
@@ -127,7 +127,7 @@ export function NavHeaderUI({
                   </svg>
                 </button>
                 {teamOpen && (
-                  <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-[#e8e4dc] bg-white p-1.5 shadow-lg">
+                  <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-sand bg-white p-1.5 shadow-lg">
                     {teams.length === 1 ? (
                       <>
                         <DropItem
@@ -166,7 +166,7 @@ export function NavHeaderUI({
                 >
                   {org.name}
                   {activeCampaignCount > 0 && (
-                    <span className="ml-0.5 rounded-full bg-[#c8410a] px-1.5 py-[1px] font-mono text-[9px] text-white">
+                    <span className="ml-0.5 rounded-full bg-sage px-1.5 py-[1px] font-mono text-[9px] text-white">
                       {activeCampaignCount}
                     </span>
                   )}
@@ -182,7 +182,7 @@ export function NavHeaderUI({
                   </svg>
                 </button>
                 {orgOpen && (
-                  <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-[#e8e4dc] bg-white p-1.5 shadow-lg">
+                  <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-sand bg-white p-1.5 shadow-lg">
                     <DropItem
                       href={`/org/${org.id}`}
                       label="Áttekintés"
@@ -212,7 +212,7 @@ export function NavHeaderUI({
             <div className="relative">
               <button
                 type="button"
-                className="flex min-h-[32px] cursor-pointer items-center gap-2 rounded-full border border-[#e8e4dc] bg-white px-2.5 py-1 text-[13px] font-medium text-[#3d3a35] transition hover:bg-[#f0ede8]"
+                className="flex min-h-[32px] cursor-pointer items-center gap-2 rounded-full border border-sand bg-white px-2.5 py-1 text-[13px] font-medium text-ink-body transition hover:bg-warm-mid"
                 onClick={() => {
                   setAvatarOpen((p) => !p);
                   setTeamOpen(false);
@@ -229,7 +229,7 @@ export function NavHeaderUI({
                 />
                 <span className="max-w-[120px] truncate">{displayName}</span>
                 <svg
-                  className="h-3 w-3 text-[#a09a90]"
+                  className="h-3 w-3 text-muted"
                   viewBox="0 0 12 12"
                   fill="none"
                   stroke="currentColor"
@@ -240,10 +240,10 @@ export function NavHeaderUI({
                 </svg>
               </button>
               {avatarOpen && (
-                <div className="absolute right-0 top-[calc(100%+6px)] w-48 rounded-xl border border-[#e8e4dc] bg-white p-1.5 shadow-lg">
+                <div className="absolute right-0 top-[calc(100%+6px)] w-48 rounded-xl border border-sand bg-white p-1.5 shadow-lg">
                   <DropItem href="/profile" label="Profil" />
                   <DropItem href="/billing" label="Számlázás" />
-                  <div className="my-1 border-t border-[#e8e4dc]" />
+                  <div className="my-1 border-t border-sand" />
                   <button
                     type="button"
                     onClick={() => signOut({ redirectUrl: "/" })}
@@ -269,7 +269,7 @@ export function NavHeaderUI({
             <button
               type="button"
               onClick={() => setMobileOpen((p) => !p)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-[#e8e4dc] bg-white text-[#3d3a35] transition hover:bg-[#f0ede8]"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:bg-warm-mid"
             >
               {mobileOpen ? (
                 <svg
@@ -308,18 +308,18 @@ export function NavHeaderUI({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer header */}
-            <div className="flex items-center justify-between border-b border-[#e8e4dc] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-sand px-5 py-4">
               <Link
                 href={dashboardHref}
-                className="font-playfair text-[18px] font-black tracking-tight text-[#1a1814]"
+                className="font-fraunces text-[18px] font-black tracking-tight text-ink"
                 onClick={() => setMobileOpen(false)}
               >
-                trit<span className="text-[#c8410a]">a</span>
+                trit<span className="text-bronze">a</span>
               </Link>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#e8e4dc] text-[#3d3a35]"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand text-ink-body"
               >
                 <svg
                   viewBox="0 0 16 16"
@@ -433,7 +433,7 @@ export function NavHeaderUI({
             </nav>
 
             {/* Drawer footer */}
-            <div className="border-t border-[#e8e4dc] p-4">
+            <div className="border-t border-sand p-4">
               <div className="mb-3 flex items-center gap-2.5 px-1">
                 <Image
                   src={avatarSrc}
@@ -443,7 +443,7 @@ export function NavHeaderUI({
                   unoptimized
                   className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
                 />
-                <p className="min-w-0 truncate text-[13px] font-medium text-[#1a1814]">
+                <p className="min-w-0 truncate text-[13px] font-medium text-ink">
                   {displayName}
                 </p>
               </div>
@@ -478,13 +478,13 @@ function DropItem({
       href={href}
       className={`flex items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
         active
-          ? "bg-[#f5ede8] text-[#c8410a]"
-          : "text-[#3d3a35] hover:bg-[#f5ede8] hover:text-[#1a1814]"
+          ? "bg-[#f5ede8] text-bronze"
+          : "text-ink-body hover:bg-[#f5ede8] hover:text-ink"
       }`}
     >
       {label}
       {badge != null && (
-        <span className="rounded-full bg-[#c8410a] px-1.5 py-[1px] font-mono text-[9px] text-white">
+        <span className="rounded-full bg-sage px-1.5 py-[1px] font-mono text-[9px] text-white">
           {badge}
         </span>
       )}
@@ -502,7 +502,7 @@ function MobileNavSection({
   return (
     <div className="mb-4">
       {label && (
-        <p className="mb-1 px-2 font-mono text-[9px] uppercase tracking-[.14em] text-[#a09a90]">
+        <p className="mb-1 px-2 font-mono text-[9px] uppercase tracking-[.14em] text-muted">
           {label}
         </p>
       )}
@@ -529,12 +529,12 @@ function MobileNavItem({
       href={href}
       onClick={onClose}
       className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors ${
-        active ? "bg-[#1a1814] text-white" : "text-[#3d3a35] hover:bg-[#f0ede8]"
+        active ? "bg-ink text-white" : "text-ink-body hover:bg-warm-mid"
       }`}
     >
       {label}
       {badge != null && (
-        <span className="rounded-full bg-[#c8410a] px-1.5 py-[1px] font-mono text-[9px] text-white">
+        <span className="rounded-full bg-sage px-1.5 py-[1px] font-mono text-[9px] text-white">
           {badge}
         </span>
       )}

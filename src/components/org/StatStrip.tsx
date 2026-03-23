@@ -12,7 +12,7 @@ interface StatStripProps {
 
 export function StatStrip({ cells }: StatStripProps) {
   return (
-    <div className="flex items-stretch divide-x divide-[#e8e4dc] overflow-x-auto overflow-y-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex items-stretch divide-x divide-sand overflow-x-auto overflow-y-hidden rounded-2xl border border-sand bg-white shadow-sm [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {cells.map((cell, i) => (
         <div
           key={i}
@@ -21,7 +21,7 @@ export function StatStrip({ cells }: StatStripProps) {
           {/* Top accent bar */}
           <div
             className="absolute left-0 right-0 top-0 h-[3px]"
-            style={{ backgroundColor: cell.accentColor ?? "#c8410a" }}
+            style={{ backgroundColor: cell.accentColor ?? "#3d6b5e" }}
           />
           {/* Label */}
           <p
@@ -30,7 +30,7 @@ export function StatStrip({ cells }: StatStripProps) {
               fontSize: "10px",
               textTransform: "uppercase",
               letterSpacing: "0.1em",
-              color: "#a09a90",
+              color: "var(--color-muted)",
               lineHeight: 1.4,
             }}
           >
@@ -39,9 +39,9 @@ export function StatStrip({ cells }: StatStripProps) {
           {/* Value */}
           <p
             style={{
-              fontFamily: "var(--font-playfair, serif)",
+              fontFamily: "var(--font-fraunces, serif)",
               fontSize: "22px",
-              color: "#1a1814",
+              color: "var(--color-ink)",
               lineHeight: 1.2,
               fontWeight: 400,
             }}
@@ -53,7 +53,7 @@ export function StatStrip({ cells }: StatStripProps) {
             <p
               style={{
                 fontSize: "10px",
-                color: "#5a5650",
+                color: "var(--color-ink-body)",
                 lineHeight: 1.4,
               }}
             >
@@ -64,7 +64,7 @@ export function StatStrip({ cells }: StatStripProps) {
             <p
               style={{
                 fontSize: "10px",
-                color: "#a09a90",
+                color: "var(--color-muted)",
                 lineHeight: 1.4,
                 fontStyle: "italic",
               }}

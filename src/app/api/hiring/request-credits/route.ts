@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       subject: `Jelölt kredit igénylés – ${orgName}`,
       html: `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:20px">
-          <p style="font-size:14px;color:#3d3a35">
+          <p style="font-size:14px;color:#4a4a5e">
             <strong>${requesterName}</strong> jelölt értékelési krediteket kér a
             <strong>${orgName}</strong> szervezethez.
           </p>
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
           </p>
           <div style="margin-top:20px">
             <a href="${APP_URL}/hiring/${orgId}"
-               style="display:inline-block;background:#c8410a;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">
+               style="display:inline-block;background:#3d6b5e;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">
               Kreditek vásárlása →
             </a>
           </div>

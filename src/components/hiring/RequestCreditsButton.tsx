@@ -42,7 +42,7 @@ export function RequestCreditsButton({
       type="button"
       onClick={() => void handleRequest()}
       disabled={loading}
-      className="min-h-[36px] inline-flex items-center rounded-lg border border-[#c8410a] bg-white px-4 text-[11px] font-semibold text-[#c8410a] transition hover:bg-[#fff5f0] disabled:opacity-50"
+      className="min-h-[36px] inline-flex items-center rounded-lg border border-sage bg-white px-4 text-[11px] font-semibold text-bronze transition hover:bg-sage-ghost disabled:opacity-50"
     >
       {loading
         ? "…"

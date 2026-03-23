@@ -15,7 +15,7 @@ interface PrimaryTabsProps {
 
 export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) {
   return (
-    <div className="flex items-end gap-0 overflow-x-auto border-b border-[#e8e4dc] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex items-end gap-0 overflow-x-auto border-b border-sand [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
@@ -26,8 +26,8 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             className={[
               "inline-flex min-h-[44px] items-center px-[18px] py-[10px] text-[13px] border-b-2 transition-colors whitespace-nowrap",
               isActive
-                ? "border-[#c8410a] text-[#1a1814] font-semibold"
-                : "border-transparent text-[#a09a90] font-normal hover:text-[#3d3a35]",
+                ? "border-sage text-ink font-semibold"
+                : "border-transparent text-muted font-normal hover:text-ink-body",
             ].join(" ")}
           >
             {tab.shortLabel ? (
@@ -39,7 +39,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
               tab.label
             )}
             {tab.badge !== undefined && tab.badge !== null && (
-              <span className="ml-1.5 rounded-full bg-[#e8e4dc] px-[5px] py-px text-[9px] font-semibold text-[#7a756e] leading-none">
+              <span className="ml-1.5 rounded-full bg-sand px-[5px] py-px text-[9px] font-semibold text-ink-warm leading-none">
                 {tab.badge}
               </span>
             )}

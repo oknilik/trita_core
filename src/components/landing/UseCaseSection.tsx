@@ -12,26 +12,26 @@ interface UseCase {
 const icons: ReactNode[] = [
   (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <circle cx="16" cy="10" r="5" stroke="#c8410a" strokeWidth="1.5" />
-      <path d="M6 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#c8410a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M22 8l2 2 4-4" stroke="#1a5c3a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="16" cy="10" r="5" stroke="#c17f4a" strokeWidth="1.5" />
+      <path d="M6 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#c17f4a" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M22 8l2 2 4-4" stroke="#3d6b5e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <circle cx="10" cy="16" r="5" stroke="#c8410a" strokeWidth="1.5" />
-      <circle cx="22" cy="16" r="5" stroke="#c8410a" strokeWidth="1.5" />
-      <path d="M15 16h2" stroke="#c8410a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M10 8V6M22 8V6" stroke="#1a5c3a" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="10" cy="16" r="5" stroke="#c17f4a" strokeWidth="1.5" />
+      <circle cx="22" cy="16" r="5" stroke="#c17f4a" strokeWidth="1.5" />
+      <path d="M15 16h2" stroke="#c17f4a" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10 8V6M22 8V6" stroke="#3d6b5e" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   ),
   (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="6" y="6" width="8" height="8" rx="1" stroke="#c8410a" strokeWidth="1.5" />
-      <rect x="18" y="6" width="8" height="8" rx="1" stroke="#c8410a" strokeWidth="1.5" />
-      <rect x="6" y="18" width="8" height="8" rx="1" stroke="#c8410a" strokeWidth="1.5" />
-      <rect x="18" y="18" width="8" height="8" rx="1" stroke="#1a5c3a" strokeWidth="1.5" />
-      <path d="M10 14v4M22 14v4M14 10h4M14 22h4" stroke="#c8410a" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      <rect x="6" y="6" width="8" height="8" rx="1" stroke="#c17f4a" strokeWidth="1.5" />
+      <rect x="18" y="6" width="8" height="8" rx="1" stroke="#c17f4a" strokeWidth="1.5" />
+      <rect x="6" y="18" width="8" height="8" rx="1" stroke="#c17f4a" strokeWidth="1.5" />
+      <rect x="18" y="18" width="8" height="8" rx="1" stroke="#3d6b5e" strokeWidth="1.5" />
+      <path d="M10 14v4M22 14v4M14 10h4M14 22h4" stroke="#c17f4a" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
     </svg>
   ),
 ];
@@ -102,28 +102,28 @@ export function UseCaseSection({ locale }: { locale: Locale }) {
   const [headingLine1, headingLine2] = sectionCopy.heading.split("\n");
 
   return (
-    <section className="border-b border-[#e0ddd6] px-6 py-12 md:px-16 md:py-20">
+    <section className="border-b border-sand px-6 py-12 md:px-16 md:py-20">
       <div className="mb-12">
-        <div className="font-ibm-plex-mono mb-3 text-[11px] uppercase tracking-[2px] text-[#5a5650]">
+        <div className="font-dm-sans mb-3 text-[11px] uppercase tracking-[2px] text-ink-body">
           {sectionCopy.eyebrow}
         </div>
-        <h2 className="font-playfair text-[clamp(28px,7vw,40px)] font-black leading-[1.1] tracking-[-1px] text-[#1a1814] md:tracking-[-1.5px]">
+        <h2 className="font-fraunces text-[clamp(28px,7vw,40px)] font-black leading-[1.1] tracking-[-1px] text-ink md:tracking-[-1.5px]">
           {headingLine1}
           <br />
           {headingLine2}
         </h2>
       </div>
 
-      <div className="overflow-hidden rounded-md border border-[#e0ddd6] bg-[#e0ddd6]">
+      <div className="overflow-hidden rounded-md border border-sand bg-sand">
         <div className="grid grid-cols-1 gap-[2px] md:grid-cols-3">
           {useCases.map((item) => (
-            <article key={item.label} className="group relative bg-[#faf9f6] px-8 py-9 transition-colors hover:bg-white">
-              <div className="absolute inset-x-0 top-0 h-0.5 bg-[#c8410a] opacity-0 transition-opacity group-hover:opacity-100" />
+            <article key={item.label} className="group relative bg-cream px-8 py-9 transition-colors hover:bg-white">
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-sage opacity-0 transition-opacity group-hover:opacity-100" />
               <div className="mb-5">{item.icon}</div>
-              <p className="font-ibm-plex-mono mb-2 text-[10px] uppercase tracking-[2px] text-[#5a5650]">{item.label}</p>
-              <h3 className="font-playfair mb-3 text-[22px] leading-[1.2] font-bold text-[#1a1814]">{item.title}</h3>
-              <p className="mb-5 text-sm leading-[1.7] font-light text-[#5a5650]">{item.desc}</p>
-              <p className="font-ibm-plex-mono flex items-center gap-1.5 border-t border-[#e0ddd6] pt-4 text-xs text-[#1a5c3a]">
+              <p className="font-dm-sans mb-2 text-[10px] uppercase tracking-[2px] text-ink-body">{item.label}</p>
+              <h3 className="font-fraunces mb-3 text-[22px] leading-[1.2] font-bold text-ink">{item.title}</h3>
+              <p className="mb-5 text-sm leading-[1.7] font-light text-ink-body">{item.desc}</p>
+              <p className="font-dm-sans flex items-center gap-1.5 border-t border-sand pt-4 text-xs text-sage">
                 <span>→</span>
                 {item.outcome}
               </p>

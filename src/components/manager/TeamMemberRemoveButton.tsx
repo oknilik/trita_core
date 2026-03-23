@@ -40,7 +40,7 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
           type="button"
           onClick={() => setConfirm(false)}
           disabled={loading}
-          className="min-h-[32px] inline-flex items-center rounded-lg border border-[#e8e4dc] bg-white px-2.5 text-xs font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/30"
+          className="min-h-[32px] inline-flex items-center rounded-lg border border-sand bg-white px-2.5 text-xs font-semibold text-ink-body transition hover:border-sage/30"
         >
           {isHu ? "Nem" : "No"}
         </button>
@@ -52,7 +52,7 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
     <button
       type="button"
       onClick={() => setConfirm(true)}
-      className="min-h-[36px] inline-flex items-center rounded-lg border border-[#e8e4dc] bg-white px-3 text-xs font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-50"
+      className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-50"
     >
       {isHu ? "Eltávolítás" : "Remove"}
     </button>

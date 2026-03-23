@@ -31,28 +31,28 @@ export function TierCard({
     <article
       className={`relative flex flex-col rounded-2xl border p-6 md:p-8 ${
         highlighted
-          ? "border-[#c8410a] bg-[#fff5f0] shadow-sm"
-          : "border-[#e8e4dc] bg-white"
+          ? "border-sage bg-sage-ghost shadow-sm"
+          : "border-sand bg-white"
       }`}
     >
       {badge && (
-        <span className="absolute -top-3 left-6 rounded-full bg-[#c8410a] px-3 py-0.5 font-mono text-[10px] uppercase tracking-widest text-white">
+        <span className="absolute -top-3 left-6 rounded-full bg-sage px-3 py-0.5 font-mono text-[10px] uppercase tracking-widest text-white">
           {badge}
         </span>
       )}
 
-      <p className="font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
         {eyebrow}
       </p>
-      <h3 className="mt-2 font-playfair text-2xl text-[#1a1814]">{name}</h3>
-      <p className="mt-1.5 text-sm text-[#5a5650]">{description}</p>
+      <h3 className="mt-2 font-fraunces text-2xl text-ink">{name}</h3>
+      <p className="mt-1.5 text-sm text-ink-body">{description}</p>
 
-      <div className="mt-5 border-t border-[#e8e4dc] pt-4">
-        <span className="font-playfair text-4xl tracking-tight text-[#1a1814]">
+      <div className="mt-5 border-t border-sand pt-4">
+        <span className="font-fraunces text-4xl tracking-tight text-ink">
           {price}
         </span>
         {priceSub && (
-          <span className="ml-2 text-sm text-[#a09a90]">{priceSub}</span>
+          <span className="ml-2 text-sm text-muted">{priceSub}</span>
         )}
       </div>
 
@@ -60,7 +60,7 @@ export function TierCard({
         {features.map((f) => (
           <li
             key={f}
-            className="relative pl-5 text-sm leading-relaxed text-[#3d3a35] before:absolute before:left-0 before:top-[0.75em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#c8410a]"
+            className="relative pl-5 text-sm leading-relaxed text-ink-body before:absolute before:left-0 before:top-[0.75em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-bronze"
           >
             {f}
           </li>
@@ -71,8 +71,8 @@ export function TierCard({
         href={ctaHref}
         className={`mt-6 inline-flex min-h-[44px] w-full items-center justify-center rounded-lg px-5 text-sm font-semibold transition ${
           ctaVariant === "primary"
-            ? "bg-[#c8410a] text-white hover:bg-[#b53a09]"
-            : "border border-[#c8410a] text-[#c8410a] hover:bg-[#fff5f0]"
+            ? "bg-sage text-white hover:bg-sage-dark"
+            : "border border-sage text-bronze hover:bg-sage-ghost"
         }`}
       >
         {ctaLabel}

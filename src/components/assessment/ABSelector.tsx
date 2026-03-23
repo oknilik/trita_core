@@ -18,8 +18,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'A'
-              ? 'border-[#c8410a] bg-[#fef3ec] text-[#1a1814] shadow-md'
-              : 'border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1] hover:bg-[#faf5ef]'
+              ? 'border-sage bg-sage-soft text-ink shadow-md'
+              : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -29,7 +29,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           <div
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'A'
-                ? 'border-[#c8410a] bg-[#c8410a]'
+                ? 'border-sage bg-sage'
                 : 'border-gray-300 bg-white'
             }`}
           >
@@ -54,8 +54,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'B'
-              ? 'border-[#1a5c3a] bg-[#edf4ef] text-[#1a1814] shadow-md'
-              : 'border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1] hover:bg-[#faf5ef]'
+              ? 'border-sage bg-[#edf4ef] text-ink shadow-md'
+              : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -65,7 +65,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           <div
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'B'
-                ? 'border-[#1a5c3a] bg-[#1a5c3a]'
+                ? 'border-sage bg-sage'
                 : 'border-gray-300 bg-white'
             }`}
           >

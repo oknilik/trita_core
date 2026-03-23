@@ -12,8 +12,8 @@ function roleLabel(role: string, isHu: boolean): string {
 }
 
 function roleBadgeStyle(role: string): string {
-  if (role === "manager") return "bg-[#c8410a]/10 text-[#c8410a] border-[#c8410a]/20";
-  return "bg-[#e8e4dc] text-[#3d3a35] border-[#e8e4dc]";
+  if (role === "manager") return "bg-sage/10 text-bronze border-sage/20";
+  return "bg-sand text-ink-body border-sand";
 }
 
 interface TeamMemberRoleEditorProps {
@@ -85,7 +85,7 @@ export function TeamMemberRoleEditor({
         value={role}
         disabled={loading}
         onChange={(e) => handleChange(e.target.value as TeamRole)}
-        className="min-h-[36px] rounded-lg border border-[#e8e4dc] bg-white px-2 text-xs font-semibold text-[#1a1814] focus:border-[#c8410a] focus:outline-none disabled:opacity-50"
+        className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
       >
         {TEAM_ROLES.map((r) => (
           <option key={r} value={r}>

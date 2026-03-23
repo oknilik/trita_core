@@ -22,7 +22,7 @@ const ROLE_ZONES: RoleZone[] = [
   { id: "exe", label: "Kivitelező",  x: 300, y: 285, r: 50, bg: "#ede9fe", stroke: "#c4b5fd", tc: "#4c1d95", dims: ["C"] },
   { id: "ana", label: "Analizátor",  x: 130, y: 285, r: 50, bg: "#fef9c3", stroke: "#fcd34d", tc: "#713f12", dims: ["H", "C"] },
   { id: "ene", label: "Energizáló",  x: 70,  y: 185, r: 55, bg: "#fce7f3", stroke: "#f9a8d4", tc: "#831843", dims: ["E", "X"] },
-  { id: "str", label: "Stratégista", x: 215, y: 210, r: 42, bg: "#f5f3ef", stroke: "#e8e4dc", tc: "#a09a90", dims: [], missing: true },
+  { id: "str", label: "Stratégista", x: 215, y: 210, r: 42, bg: "#f5f3ef", stroke: "#e8e0d3", tc: "#8a8a9a", dims: [], missing: true },
 ];
 
 function getZoneForMember(hexaco: IntelligenceMember["hexaco"]): string {
@@ -52,7 +52,7 @@ interface RoleDetailPanelProps {
 
 function RoleDetailPanel({ member, zone }: RoleDetailPanelProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-white p-4">
+    <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
       <div className="flex items-center gap-3">
         <div
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-white text-[12px] font-bold"
@@ -61,7 +61,7 @@ function RoleDetailPanel({ member, zone }: RoleDetailPanelProps) {
           {member.initials}
         </div>
         <div>
-          <p className="text-[14px] font-bold text-[#1a1814]">{member.name}</p>
+          <p className="text-[14px] font-bold text-ink">{member.name}</p>
           <span
             className="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
             style={{ background: zone.bg, color: zone.tc, border: `1px solid ${zone.stroke}` }}
@@ -72,7 +72,7 @@ function RoleDetailPanel({ member, zone }: RoleDetailPanelProps) {
       </div>
 
       <div>
-        <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-[#c8410a]">
+        <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-bronze">
           // domináns dimenziók
         </p>
         <div className="flex flex-col gap-1.5">
@@ -87,13 +87,13 @@ function RoleDetailPanel({ member, zone }: RoleDetailPanelProps) {
                 >
                   {k}
                 </div>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#f0ede6]">
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-warm-mid">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${v}%`, background: DIM_COLORS[k] ?? "#888", opacity: 0.85 }}
                   />
                 </div>
-                <span className="w-8 text-right font-mono text-[10px] text-[#5a5650]">{v}%</span>
+                <span className="w-8 text-right font-mono text-[10px] text-ink-body">{v}%</span>
               </div>
             ))}
         </div>
@@ -131,7 +131,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
       <div className="flex-1">
         <svg
           viewBox="0 0 430 340"
-          className="w-full rounded-xl border border-[#e8e4dc] bg-white"
+          className="w-full rounded-xl border border-sand bg-white"
         >
           {/* Zone circles */}
           {ROLE_ZONES.map((z) => (
@@ -191,7 +191,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                     cy={py}
                     r={16}
                     fill={m.color}
-                    stroke={selected === m.id ? "#c8410a" : "white"}
+                    stroke={selected === m.id ? "#3d6b5e" : "white"}
                     strokeWidth={selected === m.id ? 2.5 : 2}
                   />
                   <text
@@ -219,11 +219,11 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                 className="h-3 w-3 rounded"
                 style={{ background: z.bg, border: `1px solid ${z.stroke}` }}
               />
-              <span className="text-[10px] text-[#5a5650]">{z.label}</span>
+              <span className="text-[10px] text-ink-body">{z.label}</span>
             </div>
           ))}
           {missingZones.length > 0 && (
-            <div className="ml-auto text-[10px] text-[#a09a90]">
+            <div className="ml-auto text-[10px] text-muted">
               ⚠ {isHu ? "Hiányzó szerep:" : "Missing role:"}{" "}
               {missingZones.map((z) => z.label).join(", ")}
             </div>
@@ -236,8 +236,8 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
         {selectedMember && selectedZone ? (
           <RoleDetailPanel member={selectedMember} zone={selectedZone} />
         ) : (
-          <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-[#e8e4dc] bg-white p-6 text-center">
-            <p className="text-[12px] text-[#a09a90]">
+          <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
+            <p className="text-[12px] text-muted">
               Kattints egy személyre
               <br />a szerepe megtekintéséhez
             </p>

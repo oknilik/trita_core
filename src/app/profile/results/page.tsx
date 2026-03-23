@@ -267,7 +267,7 @@ export default async function ProfileResultsPage({
     profile.username ?? profile.email ?? (locale === "hu" ? "Felhasználó" : "User");
 
   return (
-    <main className="min-h-dvh bg-[#faf9f6]">
+    <main className="min-h-dvh bg-cream">
       <DashboardAutoRefresh
         pendingInvites={pendingInvitesCount}
         completedObserver={completedObservers.length}

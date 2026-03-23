@@ -35,7 +35,7 @@ export function PathSelector({
     <section className="px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-5xl">
         {/* Tab bar */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:gap-1 rounded-xl border border-[#e8e4dc] bg-white p-1.5 mb-8">
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-1 rounded-xl border border-sand bg-white p-1.5 mb-8">
           {tabList.map((tab) => (
             <button
               key={tab.id}
@@ -43,14 +43,14 @@ export function PathSelector({
               onClick={() => setActive(tab.id)}
               className={`flex-1 flex flex-col items-center rounded-lg px-4 py-3 text-sm font-semibold transition-colors min-h-[44px] ${
                 active === tab.id
-                  ? "bg-[#1a1814] text-white"
-                  : "text-[#3d3a35] hover:bg-[#faf9f6]"
+                  ? "bg-ink text-white"
+                  : "text-ink-body hover:bg-cream"
               }`}
             >
               <span>{tab.label}</span>
               <span
                 className={`mt-0.5 font-mono text-[10px] font-normal uppercase tracking-widest ${
-                  active === tab.id ? "text-white/60" : "text-[#a09a90]"
+                  active === tab.id ? "text-white/60" : "text-muted"
                 }`}
               >
                 {tab.sub}

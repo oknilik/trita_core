@@ -73,25 +73,25 @@ export default async function ReturnPage({
 
     if (isCandidateAddon && orgId) {
       return (
-        <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center">
+        <div className="min-h-dvh bg-cream flex items-center justify-center">
           <div className="max-w-md text-center px-6">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(26,92,58,0.08)]">
-              <span className="text-3xl text-[#1a5c3a]">✓</span>
+              <span className="text-3xl text-sage">✓</span>
             </div>
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-2">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
               // siker
             </p>
-            <h1 className="font-playfair text-2xl text-[#1a1814] mb-3">
+            <h1 className="font-fraunces text-2xl text-ink mb-3">
               {isHu ? "Köszönjük!" : "Thank you!"}
             </h1>
-            <p className="text-sm text-[#7a756e] mb-6">
+            <p className="text-sm text-ink-warm mb-6">
               {isHu
                 ? "A jelölt kreditek sikeresen hozzáadva. Most már meghívhatod a következő jelölteket."
                 : "Candidate credits have been added. You can now invite new candidates."}
             </p>
             <Link
               href={`/hiring/${orgId}`}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a8340a] transition"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
             >
               {isHu ? "Vissza a felvételhez →" : "Back to hiring →"}
             </Link>
@@ -101,25 +101,25 @@ export default async function ReturnPage({
     }
 
     return (
-      <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center">
+      <div className="min-h-dvh bg-cream flex items-center justify-center">
         <div className="max-w-md text-center px-6">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(26,92,58,0.08)]">
-            <span className="text-3xl text-[#1a5c3a]">✓</span>
+            <span className="text-3xl text-sage">✓</span>
           </div>
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-2">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
             // siker
           </p>
-          <h1 className="font-playfair text-2xl text-[#1a1814] mb-3">
+          <h1 className="font-fraunces text-2xl text-ink mb-3">
             {isHu ? "Köszönjük!" : "Thank you!"}
           </h1>
-          <p className="text-sm text-[#7a756e] mb-6">
+          <p className="text-sm text-ink-warm mb-6">
             {isHu
               ? "Az előfizetés aktiválva. A csapatod most már hozzáfér az összes funkcióhoz."
               : "Your subscription is now active. Your team has access to all features."}
           </p>
           <Link
             href="/profile/results"
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a8340a] transition"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
           >
             {isHu ? "Vissza a vezérlőpulthoz →" : "Go to dashboard →"}
           </Link>
@@ -130,19 +130,19 @@ export default async function ReturnPage({
 
   // Expired or unknown state
   return (
-    <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center">
+    <div className="min-h-dvh bg-cream flex items-center justify-center">
       <div className="max-w-md text-center px-6">
-        <h1 className="font-playfair text-2xl text-[#1a1814] mb-3">
+        <h1 className="font-fraunces text-2xl text-ink mb-3">
           {isHu ? "A munkamenet lejárt" : "Session expired"}
         </h1>
-        <p className="text-sm text-[#7a756e] mb-6">
+        <p className="text-sm text-ink-warm mb-6">
           {isHu
             ? "Kérjük, próbáld újra az előfizetés aktiválását."
             : "Please try activating your subscription again."}
         </p>
         <Link
           href="/billing/checkout"
-          className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white hover:bg-[#a8340a] transition"
+          className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
         >
           {isHu ? "Újrapróbálás" : "Try again"}
         </Link>

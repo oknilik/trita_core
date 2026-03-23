@@ -50,10 +50,10 @@ export function PainSection({ locale }: { locale: Locale }) {
   const sectionLabel = sectionLabelData[locale] ?? sectionLabelData.hu;
 
   return (
-    <section className="grid grid-cols-1 border-b border-[#e0ddd6] md:grid-cols-[240px_1fr]">
-      <aside className="flex items-center gap-4 border-b border-[#e0ddd6] bg-[#f0ede6] px-6 py-6 md:block md:border-b-0 md:border-r md:px-10 md:py-[60px]">
-        <div className="font-playfair text-5xl leading-none font-black text-[#e0ddd6] md:mb-4 md:text-[80px]">01</div>
-        <div className="font-ibm-plex-mono text-[11px] uppercase tracking-[2px] text-[#5a5650]">
+    <section className="grid grid-cols-1 border-b border-sand md:grid-cols-[240px_1fr]">
+      <aside className="flex items-center gap-4 border-b border-sand bg-warm-mid px-6 py-6 md:block md:border-b-0 md:border-r md:px-10 md:py-[60px]">
+        <div className="font-fraunces text-5xl leading-none font-black text-sand md:mb-4 md:text-[80px]">01</div>
+        <div className="font-dm-sans text-[11px] uppercase tracking-[2px] text-ink-body">
           {sectionLabel}
         </div>
       </aside>
@@ -63,15 +63,15 @@ export function PainSection({ locale }: { locale: Locale }) {
           {painItems.map((item, index) => (
             <article
               key={item.title}
-              className={`group grid grid-cols-1 gap-3 py-7 md:grid-cols-[1fr_auto] md:gap-6 ${index < painItems.length - 1 ? "border-b border-[#e0ddd6]" : ""}`}
+              className={`group grid grid-cols-1 gap-3 py-7 md:grid-cols-[1fr_auto] md:gap-6 ${index < painItems.length - 1 ? "border-b border-sand" : ""}`}
             >
               <div>
-                <h3 className="font-playfair mb-2 text-[22px] leading-[1.2] font-bold text-[#1a1814]">
+                <h3 className="font-fraunces mb-2 text-[22px] leading-[1.2] font-bold text-ink">
                   {item.title}
                 </h3>
-                <p className="max-w-[520px] text-sm leading-[1.7] text-[#5a5650]">{item.desc}</p>
+                <p className="max-w-[520px] text-sm leading-[1.7] text-ink-body">{item.desc}</p>
               </div>
-              <div className="font-ibm-plex-mono h-fit w-fit rounded-sm bg-[#fef3ec] px-3 py-1.5 text-[11px] text-[#c8410a]">
+              <div className="font-dm-sans h-fit w-fit rounded-sm bg-sage-soft px-3 py-1.5 text-[11px] text-bronze">
                 {item.tag}
               </div>
             </article>

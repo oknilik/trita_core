@@ -79,21 +79,21 @@ export function OrgCampaignsTab({
     <div className="flex flex-col gap-8">
       {/* Active campaigns */}
       <section>
-        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
           {isHu ? "// aktív körök" : "// active rounds"}
         </p>
-        <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+        <h2 className="mb-5 font-fraunces text-xl text-ink">
           {isHu ? "Aktív kampányok" : "Active campaigns"}
           {activeCampaigns.length > 0 && (
-            <span className="ml-2 font-sans text-sm font-normal text-[#3d3a35]/50">
+            <span className="ml-2 font-sans text-sm font-normal text-ink-body/50">
               ({activeCampaigns.length})
             </span>
           )}
         </h2>
 
         {activeCampaigns.length === 0 ? (
-          <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-8 text-center">
-            <p className="text-sm text-[#3d3a35]/60">
+          <div className="rounded-xl border border-sand bg-cream p-8 text-center">
+            <p className="text-sm text-ink-body/60">
               {isHu
                 ? "Nincs aktív kampány. Indíts egy vázlatból, vagy hozz létre újat!"
                 : "No active campaigns. Activate a draft or create a new one!"}
@@ -119,11 +119,11 @@ export function OrgCampaignsTab({
       {draftCampaigns.length > 0 && (
         <section>
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex-1 border-t border-[#e8e4dc]" />
-            <span className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+            <div className="flex-1 border-t border-sand" />
+            <span className="font-mono text-xs uppercase tracking-widest text-muted">
               {isHu ? "vázlatok" : "drafts"}
             </span>
-            <div className="flex-1 border-t border-[#e8e4dc]" />
+            <div className="flex-1 border-t border-sand" />
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {draftCampaigns.map((c) => (
@@ -147,10 +147,10 @@ export function OrgCampaignsTab({
             <button
               type="button"
               onClick={() => setShowNewForm(true)}
-              className="group w-full rounded-2xl border-2 border-dashed border-[#e8e4dc] bg-white p-8 text-center transition hover:border-[#c8410a]/40 hover:bg-[#faf9f6]"
+              className="group w-full rounded-2xl border-2 border-dashed border-sand bg-white p-8 text-center transition hover:border-sage/40 hover:bg-cream"
             >
               <div className="flex flex-col items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#faf9f6] text-[#c8410a] transition group-hover:bg-[#c8410a]/10">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cream text-bronze transition group-hover:bg-sage/10">
                   <svg
                     viewBox="0 0 16 16"
                     className="h-5 w-5"
@@ -164,31 +164,31 @@ export function OrgCampaignsTab({
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#1a1814]">
+                  <p className="text-sm font-semibold text-ink">
                     {isHu ? "Új 360° kampány" : "New 360° campaign"}
                   </p>
-                  <p className="mt-0.5 text-xs text-[#5a5650]">
+                  <p className="mt-0.5 text-xs text-ink-body">
                     {isHu
                       ? "Szervezett 360° visszajelzési kör indítása a csapatban"
                       : "Launch a structured 360° feedback round for your team"}
                   </p>
                 </div>
-                <span className="text-xs font-semibold text-[#c8410a]">
+                <span className="text-xs font-semibold text-bronze">
                   {isHu ? "Létrehozás →" : "Create →"}
                 </span>
               </div>
             </button>
           ) : (
-            <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+            <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
                 {isHu ? "// új kampány" : "// new campaign"}
               </p>
-              <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+              <h2 className="mb-5 font-fraunces text-xl text-ink">
                 {isHu ? "Kampány létrehozása" : "Create campaign"}
               </h2>
               <form onSubmit={handleCreate} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-[#1a1814]">
+                  <label className="text-sm font-semibold text-ink">
                     {isHu ? "Kampány neve" : "Campaign name"}
                   </label>
                   <input
@@ -199,11 +199,11 @@ export function OrgCampaignsTab({
                     maxLength={100}
                     required
                     disabled={loading}
-                    className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-[#faf9f6] px-3 text-sm text-[#1a1814] placeholder:text-[#a09a90] focus:border-[#c8410a]/40 focus:outline-none"
+                    className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-muted focus:border-sage/40 focus:outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-[#1a1814]">
+                  <label className="text-sm font-semibold text-ink">
                     {isHu ? "Leírás (opcionális)" : "Description (optional)"}
                   </label>
                   <input
@@ -213,7 +213,7 @@ export function OrgCampaignsTab({
                     placeholder={isHu ? "Rövid leírás a kampányról…" : "Brief description…"}
                     maxLength={500}
                     disabled={loading}
-                    className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-[#faf9f6] px-3 text-sm text-[#1a1814] placeholder:text-[#a09a90] focus:border-[#c8410a]/40 focus:outline-none"
+                    className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-muted focus:border-sage/40 focus:outline-none"
                   />
                 </div>
                 {error && (
@@ -225,7 +225,7 @@ export function OrgCampaignsTab({
                   <button
                     type="submit"
                     disabled={loading || !name.trim()}
-                    className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {loading
                       ? isHu ? "Létrehozás…" : "Creating…"
@@ -240,7 +240,7 @@ export function OrgCampaignsTab({
                       setError(null);
                     }}
                     disabled={loading}
-                    className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-5 text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a] disabled:opacity-50"
+                    className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
                   >
                     {isHu ? "Mégse" : "Cancel"}
                   </button>
@@ -255,13 +255,13 @@ export function OrgCampaignsTab({
       {closedCampaigns.length > 0 && (
         <section>
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex-1 border-t border-[#e8e4dc]" />
-            <span className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+            <div className="flex-1 border-t border-sand" />
+            <span className="font-mono text-xs uppercase tracking-widest text-muted">
               {isHu ? "lezárt körök" : "closed rounds"}
             </span>
-            <div className="flex-1 border-t border-[#e8e4dc]" />
+            <div className="flex-1 border-t border-sand" />
           </div>
-          <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm overflow-hidden">
+          <div className="rounded-2xl border border-sand bg-white shadow-sm overflow-hidden">
             <div className="px-6 py-4 divide-y divide-transparent">
               {closedCampaigns.map((c) => (
                 <CampaignCard

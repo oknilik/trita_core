@@ -179,17 +179,17 @@ export function OnboardingClient() {
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center px-4 py-12">
+    <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
 
         {/* Logo + title */}
         <div className="mb-10 flex flex-col items-center gap-4">
           <TritaLogo size={40} showText={false} />
           <div className="text-center">
-            <h1 className="font-playfair text-3xl text-[#1a1814]">
+            <h1 className="font-fraunces text-3xl text-ink">
               {t("onboarding.title", locale)}
             </h1>
-            <p className="mt-2 text-sm text-[#3d3a35]/70 max-w-sm">
+            <p className="mt-2 text-sm text-ink-body/70 max-w-sm">
               {t("onboarding.subtitle", locale)}
             </p>
           </div>
@@ -203,17 +203,17 @@ export function OnboardingClient() {
                 <div
                   className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
                     i + 1 < step
-                      ? "bg-[#c8410a] text-white"
+                      ? "bg-sage text-white"
                       : i + 1 === step
-                      ? "bg-[#1a1814] text-white"
-                      : "bg-[#e8e4dc] text-[#a09a90]"
+                      ? "bg-ink text-white"
+                      : "bg-sand text-muted"
                   }`}
                 >
                   {i + 1 < step ? "✓" : i + 1}
                 </div>
                 <span
                   className={`hidden text-xs font-medium sm:block ${
-                    i + 1 === step ? "text-[#1a1814]" : "text-[#a09a90]"
+                    i + 1 === step ? "text-ink" : "text-muted"
                   }`}
                 >
                   {label}
@@ -221,26 +221,26 @@ export function OnboardingClient() {
               </div>
             ))}
           </div>
-          <div className="h-1 w-full overflow-hidden rounded-full bg-[#e8e4dc]">
+          <div className="h-1 w-full overflow-hidden rounded-full bg-sand">
             <div
-              className="h-full rounded-full bg-[#c8410a] transition-all duration-500"
+              className="h-full rounded-full bg-sage transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-[#e8e4dc] p-6 md:p-8 shadow-sm">
+        <div className="bg-white rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
 
           {/* ── Step 1: Alapadatok ──────────────────────────────────────── */}
           {step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 01</p>
-                <p className="font-playfair text-xl text-[#1a1814]">
+                <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 01</p>
+                <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.blockBasicsTitle", locale)}
                 </p>
-                <p className="text-xs text-[#a09a90] mt-0.5">
+                <p className="text-xs text-muted mt-0.5">
                   {t("onboarding.blockBasicsHint", locale)}
                 </p>
               </div>
@@ -249,7 +249,7 @@ export function OnboardingClient() {
 
                 {/* Username */}
                 <div ref={usernameFieldRef} className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-[#1a1814]">
+                  <label className="text-sm font-semibold text-ink">
                     {t("onboarding.usernameLabel", locale)}
                   </label>
                   <input
@@ -267,11 +267,11 @@ export function OnboardingClient() {
                     )}
                   />
                   {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                    <span className="text-xs text-[#c8410a] pl-1 italic">
+                    <span className="text-xs text-bronze pl-1 italic">
                       {t("onboarding.usernameError", locale)}
                     </span>
                   ) : (
-                    <span className="text-xs text-[#a09a90] pl-1 italic">
+                    <span className="text-xs text-muted pl-1 italic">
                       {t("onboarding.usernameHint", locale)}
                     </span>
                   )}
@@ -279,7 +279,7 @@ export function OnboardingClient() {
 
                 {/* Birth year */}
                 <div ref={birthYearFieldRef} className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-[#1a1814]">
+                  <label className="text-sm font-semibold text-ink">
                     {t("onboarding.birthYearLabel", locale)}
                   </label>
                   <input
@@ -301,8 +301,8 @@ export function OnboardingClient() {
                   />
                   <span className={`text-xs pl-1 italic ${
                     birthYearTouched && birthYear !== "" && !birthYearValid
-                      ? "text-[#c8410a]"
-                      : "text-[#a09a90]"
+                      ? "text-bronze"
+                      : "text-muted"
                   }`}>
                     {t("onboarding.validRangeLabel", locale)}: {minBirthYear} – {maxBirthYear}
                   </span>
@@ -312,10 +312,10 @@ export function OnboardingClient() {
                 <div
                   ref={genderFieldRef}
                   className={`flex flex-col gap-2 rounded-lg p-1 transition ${
-                    invalidFieldFlash === "gender" ? "ring-2 ring-[#c8410a]/30 bg-orange-50/40" : ""
+                    invalidFieldFlash === "gender" ? "ring-2 ring-sage/30 bg-orange-50/40" : ""
                   }`}
                 >
-                  <span className="text-sm font-semibold text-[#1a1814]">
+                  <span className="text-sm font-semibold text-ink">
                     {t("onboarding.genderLabel", locale)}
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -337,7 +337,7 @@ export function OnboardingClient() {
                 <div
                   ref={countryFieldRef}
                   className={`rounded-lg transition ${
-                    invalidFieldFlash === "country" ? "ring-2 ring-[#c8410a]/30 bg-orange-50/40 p-1" : ""
+                    invalidFieldFlash === "country" ? "ring-2 ring-sage/30 bg-orange-50/40 p-1" : ""
                   }`}
                 >
                   <PickerTrigger
@@ -354,7 +354,7 @@ export function OnboardingClient() {
                 type="button"
                 onClick={handleStep1Next}
                 disabled={isSubmitting}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {t("actions.next", locale)}
               </button>
@@ -365,11 +365,11 @@ export function OnboardingClient() {
           {step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 02</p>
-                <p className="font-playfair text-xl text-[#1a1814]">
+                <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 02</p>
+                <p className="font-fraunces text-xl text-ink">
                   {locale === "hu" ? "Válassz avatart" : "Choose an avatar"}
                 </p>
-                <p className="text-xs text-[#a09a90] mt-0.5">
+                <p className="text-xs text-muted mt-0.5">
                   {locale === "hu" ? "Ez jelenik meg a profilodban." : "This will appear on your profile."}
                 </p>
               </div>
@@ -382,8 +382,8 @@ export function OnboardingClient() {
                     onClick={() => setAvatarUrl(src)}
                     className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
                       avatarUrl === src
-                        ? "border-[#c8410a] ring-2 ring-[#c8410a]/30"
-                        : "border-[#e8e4dc] hover:border-[#c8410a]/40"
+                        ? "border-sage ring-2 ring-sage/30"
+                        : "border-sand hover:border-sage/40"
                     }`}
                   >
                     <Image
@@ -400,7 +400,7 @@ export function OnboardingClient() {
                 <button
                   type="button"
                   onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
-                  className="text-xs font-medium text-[#c8410a] hover:underline self-start"
+                  className="text-xs font-medium text-bronze hover:underline self-start"
                 >
                   {locale === "hu"
                     ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
@@ -412,14 +412,14 @@ export function OnboardingClient() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
+                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
                   ← {t("actions.back", locale)}
                 </button>
                 <button
                   type="button"
                   onClick={handleStep2Next}
-                  className="min-h-[48px] flex-1 rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
                 >
                   {t("actions.next", locale)}
                 </button>
@@ -431,8 +431,8 @@ export function OnboardingClient() {
           {step === 3 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="font-mono text-xs text-[#c8410a] tracking-widest uppercase mb-1">// 03</p>
-                <p className="font-playfair text-xl text-[#1a1814]">
+                <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 03</p>
+                <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.step2Title", locale)}
                 </p>
               </div>
@@ -446,9 +446,9 @@ export function OnboardingClient() {
                   type="checkbox"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-[#e8e4dc] accent-[#c8410a] focus:ring-[#c8410a]/30"
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-sand accent-sage focus:ring-sage/30"
                 />
-                <span className="text-sm text-[#3d3a35]">
+                <span className="text-sm text-ink-body">
                   {t("onboarding.consentLabel", locale)
                     .split("{link}")
                     .map((part, i, arr) =>
@@ -459,7 +459,7 @@ export function OnboardingClient() {
                             href="/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-[#c8410a] underline hover:text-[#a8340a]"
+                            className="font-medium text-bronze underline hover:text-bronze-dark"
                           >
                             {t("onboarding.consentLinkText", locale)}
                           </a>
@@ -475,7 +475,7 @@ export function OnboardingClient() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
+                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
                   ← {t("actions.back", locale)}
                 </button>
@@ -483,7 +483,7 @@ export function OnboardingClient() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={isSubmitting || !consent}
-                  className="min-h-[48px] flex-1 rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting
                     ? t("onboarding.saving", locale)
@@ -496,7 +496,7 @@ export function OnboardingClient() {
         </div>
 
         {/* Footer hint */}
-        <p className="mt-6 text-center text-xs text-[#a09a90]">
+        <p className="mt-6 text-center text-xs text-muted">
           {t("onboarding.footerHint", locale)}
         </p>
 

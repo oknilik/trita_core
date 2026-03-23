@@ -101,7 +101,7 @@ export default async function OrgDetailPage({
       sub: pageData.pendingCount > 0
         ? `+${pageData.pendingCount} ${isHu ? "függőben" : "pending"}`
         : undefined,
-      accentColor: "#c8410a",
+      accentColor: "#3d6b5e",
     },
     {
       label: isHu ? "Csapatok" : "Teams",
@@ -129,16 +129,16 @@ export default async function OrgDetailPage({
   ];
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
 
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// szervezet" : "// organization"}
             </p>
-            <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
               {org.name}
             </h1>
             {org.status === "PENDING_SETUP" && (
@@ -150,7 +150,7 @@ export default async function OrgDetailPage({
           {isAdmin && (
             <Link
               href={`/org/${orgId}/settings`}
-              className="shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-lg border border-[#e8e4dc] bg-white px-3 text-xs font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+              className="shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
               <svg
                 viewBox="0 0 16 16"
@@ -175,7 +175,7 @@ export default async function OrgDetailPage({
         {/* Tabs shell */}
         <Suspense
           fallback={
-            <div className="h-10 rounded-lg bg-[#e8e4dc]/40 animate-pulse" />
+            <div className="h-10 rounded-lg bg-sand/40 animate-pulse" />
           }
         >
           <OrgPageShell

@@ -29,10 +29,10 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
 
   return (
     <section>
-      <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+      <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
         {isHu ? "// dimenziók" : "// dimensions"}
       </p>
-      <h2 className="mt-2 mb-6 font-playfair text-2xl text-[#1a1814]">
+      <h2 className="mt-2 mb-6 font-fraunces text-2xl text-ink">
         {isHu ? "A 6 dimenzió részletesen" : "6 dimensions in detail"}
       </h2>
 
@@ -42,7 +42,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
           return (
             <div
               key={dim.code}
-              className="rounded-2xl border border-[#e8e4dc] bg-white p-5"
+              className="rounded-2xl border border-sand bg-white p-5"
             >
               {/* Header row */}
               <div className="flex items-center justify-between gap-3 mb-4">
@@ -53,10 +53,10 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
                   >
                     {dim.code}
                   </div>
-                  <span className="font-semibold text-sm text-[#1a1814]">{dim.label}</span>
+                  <span className="font-semibold text-sm text-ink">{dim.label}</span>
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
-                  <span className="font-mono text-xs text-[#5a5650]">{dim.score}%</span>
+                  <span className="font-mono text-xs text-ink-body">{dim.score}%</span>
                   <span
                     className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
                     style={{
@@ -70,7 +70,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
               </div>
 
               {/* Score bar */}
-              <div className="h-1.5 w-full rounded-full bg-[#e8e4dc] mb-4">
+              <div className="h-1.5 w-full rounded-full bg-sand mb-4">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${dim.score}%`, backgroundColor: dim.color }}
@@ -78,7 +78,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
               </div>
 
               {/* Insight text */}
-              <p className="text-sm leading-relaxed text-[#3d3a35]">{dim.insight}</p>
+              <p className="text-sm leading-relaxed text-ink-body">{dim.insight}</p>
             </div>
           );
         })}

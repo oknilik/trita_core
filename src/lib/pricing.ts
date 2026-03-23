@@ -1,5 +1,42 @@
 import type { Locale } from "@/lib/i18n";
 
+export interface SelfPricingPlan {
+  id: "free" | "solo";
+  name: string;
+  description: string;
+  price: string;
+  perMonth: string;
+  seats: string;
+  features: string[];
+  badge?: string;
+  ctaHref: string;
+}
+
+export interface TeamPricingPlan {
+  id: "starter" | "team";
+  name: string;
+  description: string;
+  price: string;
+  perMonth: string;
+  seats: string;
+  features: string[];
+  badge?: string;
+  ctaHref: string;
+}
+
+export interface OrgPricingPlan {
+  id: "org" | "scale";
+  name: string;
+  description: string;
+  price: string;
+  perMonth: string;
+  seats: string;
+  features: string[];
+  badge?: string;
+  ctaHref: string;
+  isCustom?: boolean;
+}
+
 export interface PricingPlan {
   id: "team" | "org" | "scale";
   name: string;
@@ -397,8 +434,243 @@ const pricingFaqsData: Record<Locale, PricingFaqItem[]> = {
   ],
 };
 
+const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
+  hu: [
+    {
+      id: "free",
+      name: "Free",
+      description: "Az alapok, ingyenesen.",
+      price: "€0",
+      perMonth: "",
+      seats: "1 felmérés · max 2 observer",
+      features: [
+        "1 személyiségteszt (véletlenszerű kiosztás)",
+        "Dimension szintű eredmények",
+        "Max 2 observer meghívás",
+        "Önkép vs. observer összehasonlítás",
+        "Eredmények és visszajelzések megtekintése",
+      ],
+      ctaHref: "/sign-up",
+    },
+    {
+      id: "solo",
+      name: "Solo",
+      description: "Teljes profil facet szintig, fejlődéskövetéssel.",
+      price: "€9",
+      perMonth: "/hó",
+      seats: "éves számlázással",
+      features: [
+        "Szabad teszttípus-választás (HEXACO, BFAS)",
+        "Facet szintű részletes eredmények",
+        "Korlátlan observer meghívás",
+        "Önkép vs. observer összehasonlítás",
+        "PDF eredményexport",
+        "Retake és fejlődéskövetés",
+      ],
+      badge: "Teljes hozzáférés",
+      ctaHref: "/sign-up",
+    },
+  ],
+  en: [
+    {
+      id: "free",
+      name: "Free",
+      description: "The basics, for free.",
+      price: "€0",
+      perMonth: "",
+      seats: "1 assessment · max 2 observers",
+      features: [
+        "1 personality test (random assignment)",
+        "Dimension-level results",
+        "Up to 2 observer invitations",
+        "Self vs. observer comparison",
+        "View results and feedback",
+      ],
+      ctaHref: "/sign-up",
+    },
+    {
+      id: "solo",
+      name: "Solo",
+      description: "Full profile to facet level, with progress tracking.",
+      price: "€9",
+      perMonth: "/mo",
+      seats: "annual billing",
+      features: [
+        "Free test type selection (HEXACO, BFAS)",
+        "Facet-level detailed results",
+        "Unlimited observer invitations",
+        "Self vs. observer comparison",
+        "PDF result export",
+        "Retake and progress tracking",
+      ],
+      badge: "Full access",
+      ctaHref: "/sign-up",
+    },
+  ],
+};
+
+const teamPricingPlansData: Record<Locale, TeamPricingPlan[]> = {
+  hu: [
+    {
+      id: "starter",
+      name: "Starter",
+      description: "Kis csapatoknak, gyors indulással.",
+      price: "€29",
+      perMonth: "/hó",
+      seats: "5 főig · éves számlázás",
+      features: [
+        "Self-assessment minden tagnak",
+        "Observer visszajelzés (max 3/fő)",
+        "Csapat RadarChart dashboard",
+        "Önkép vs. observer összehasonlítás",
+        "Manager nézet és meghívások",
+      ],
+      ctaHref: "/sign-up",
+    },
+    {
+      id: "team",
+      name: "Team",
+      description: "Növekvő csapatoknak, teljes funkcionalitással.",
+      price: "€49",
+      perMonth: "/hó",
+      seats: "10 főig · éves számlázás",
+      features: [
+        "Minden Starter funkció",
+        "Korlátlan observer meghívás",
+        "Csapatdinamika elemzés és riportok",
+        "Jelölt értékelés (add-on)",
+        "Priority email support",
+      ],
+      badge: "Legnépszerűbb",
+      ctaHref: "/sign-up",
+    },
+  ],
+  en: [
+    {
+      id: "starter",
+      name: "Starter",
+      description: "For small teams, quick to launch.",
+      price: "€29",
+      perMonth: "/mo",
+      seats: "up to 5 members · annual billing",
+      features: [
+        "Self-assessment for every member",
+        "Observer feedback (max 3/person)",
+        "Team RadarChart dashboard",
+        "Self vs. observer comparison",
+        "Manager view and invitations",
+      ],
+      ctaHref: "/sign-up",
+    },
+    {
+      id: "team",
+      name: "Team",
+      description: "For growing teams, with full feature access.",
+      price: "€49",
+      perMonth: "/mo",
+      seats: "up to 10 members · annual billing",
+      features: [
+        "Everything in Starter",
+        "Unlimited observer invitations",
+        "Team dynamics analysis and reports",
+        "Candidate assessment (add-on)",
+        "Priority email support",
+      ],
+      badge: "Most popular",
+      ctaHref: "/sign-up",
+    },
+  ],
+};
+
+const orgPricingPlansData: Record<Locale, OrgPricingPlan[]> = {
+  hu: [
+    {
+      id: "org",
+      name: "Org",
+      description: "Növekvő szervezeteknek, több csapattal.",
+      price: "€149",
+      perMonth: "/hó",
+      seats: "40 főig · éves számlázás",
+      features: [
+        "Minden Team funkció",
+        "Több csapat kezelése egy szervezetben",
+        "Org szerepkörök: admin, manager, member",
+        "Tag- és csapatmeghívás jogosultság alapon",
+        "Candidate flow manager jogosultsággal",
+        "Szervezeti szintű összehasonlítás",
+      ],
+      ctaHref: "/sign-up",
+    },
+    {
+      id: "scale",
+      name: "Scale",
+      description: "Egyedi bevezetés nagyobb szervezeteknek.",
+      price: "Egyedi",
+      perMonth: "ajánlat",
+      seats: "41+ fő",
+      features: [
+        "Minden Org funkció",
+        "Dedikált onboarding és rollout támogatás",
+        "Priority support csatorna",
+        "Egyedi szerződéses és számlázási feltételek",
+        "SLA és adatfeldolgozási megállapodás",
+      ],
+      ctaHref: "/contact",
+      isCustom: true,
+    },
+  ],
+  en: [
+    {
+      id: "org",
+      name: "Org",
+      description: "For growing organizations with multiple teams.",
+      price: "€149",
+      perMonth: "/mo",
+      seats: "up to 40 members · annual billing",
+      features: [
+        "Everything in Team",
+        "Multiple teams in one organization",
+        "Org roles: admin, manager, member",
+        "Member and team invitations by role",
+        "Candidate flow with manager permissions",
+        "Organization-level comparison",
+      ],
+      ctaHref: "/sign-up",
+    },
+    {
+      id: "scale",
+      name: "Scale",
+      description: "Custom rollout for larger organizations.",
+      price: "Custom",
+      perMonth: "quote",
+      seats: "41+ members",
+      features: [
+        "Everything in Org",
+        "Dedicated onboarding and rollout support",
+        "Priority support channel",
+        "Custom contract and billing terms",
+        "SLA and data processing agreement",
+      ],
+      ctaHref: "/contact",
+      isCustom: true,
+    },
+  ],
+};
+
 export function getPricingPlans(locale: Locale): PricingPlan[] {
   return pricingPlansData[locale] ?? pricingPlansData.hu;
+}
+
+export function getSelfPricingPlans(locale: Locale): SelfPricingPlan[] {
+  return selfPricingPlansData[locale] ?? selfPricingPlansData.hu;
+}
+
+export function getTeamPricingPlans(locale: Locale): TeamPricingPlan[] {
+  return teamPricingPlansData[locale] ?? teamPricingPlansData.hu;
+}
+
+export function getOrgPricingPlans(locale: Locale): OrgPricingPlan[] {
+  return orgPricingPlansData[locale] ?? orgPricingPlansData.hu;
 }
 
 export function getPricingAddOns(locale: Locale): PricingAddOn[] {

@@ -26,7 +26,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
     { bg: '#f5eee4', border: '#e4d4c5', text: '#655447', activeBg: '#ebdccb' },
     { bg: '#f3e7d8', border: '#dfccb8', text: '#5f4c3f', activeBg: '#e5d0ba' },
     { bg: '#f5ddd0', border: '#e9bea8', text: '#7a3a1e', activeBg: '#dfb194' },
-    { bg: '#f0c8b3', border: '#d8906f', text: '#6c2a0d', activeBg: '#c8410a' },
+    { bg: '#f0c8b3', border: '#d8906f', text: '#6c2a0d', activeBg: '#3d6b5e' },
   ]
 
   const displayMark = hoveredMark ?? value
@@ -51,7 +51,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border text-sm font-semibold transition-colors md:h-12 md:w-12"
               style={{
                 backgroundColor: isSelected ? color.activeBg : isHovered ? color.border : color.bg,
-                borderColor: isSelected ? '#8b2f09' : isHovered ? '#c8410a' : color.border,
+                borderColor: isSelected ? '#8b2f09' : isHovered ? '#3d6b5e' : color.border,
                 borderWidth: isSelected || isHovered ? '3px' : '1.5px',
                 color: isSelected || isHovered ? '#FFFFFF' : color.text,
                 opacity: isSelected ? 1 : 0.95,

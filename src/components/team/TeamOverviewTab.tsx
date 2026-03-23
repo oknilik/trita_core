@@ -141,14 +141,14 @@ export function TeamOverviewTab({
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-sm font-semibold text-[#1a1814] truncate">
+                <p className="text-sm font-semibold text-ink truncate">
                   {activeCampaign.name}
                 </p>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                   {isHu ? "Aktív" : "Active"}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-[#5a5650]">
+              <p className="mt-0.5 text-xs text-ink-body">
                 {activeCampaign.teamSelfDoneCount}/
                 {activeCampaign.teamParticipantCount}{" "}
                 {isHu ? "önértékelés" : "self-assessment"} ·{" "}
@@ -170,16 +170,16 @@ export function TeamOverviewTab({
 
       {/* Empty state: no completed assessments */}
       {data.completedCount === 0 && (
-        <div className="rounded-2xl border-2 border-dashed border-[#e8e4dc] bg-white p-8 text-center">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+        <div className="rounded-2xl border-2 border-dashed border-sand bg-white p-8 text-center">
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">
             // {isHu ? "nincs adat" : "no data yet"}
           </p>
-          <p className="mt-3 font-playfair text-xl text-[#1a1814]">
+          <p className="mt-3 font-fraunces text-xl text-ink">
             {isHu
               ? "Még nincs kitöltött értékelés"
               : "No completed assessments yet"}
           </p>
-          <p className="mt-2 text-sm text-[#5a5650]">
+          <p className="mt-2 text-sm text-ink-body">
             {isHu
               ? "Indíts egy 360° kampányt, hogy a csapattagok megkezdhessék az értékeléseket."
               : "Start a 360° campaign so team members can begin their assessments."}
@@ -187,7 +187,7 @@ export function TeamOverviewTab({
           {data.orgId && (
             <a
               href={`/org/${data.orgId}?tab=campaigns`}
-              className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+              className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
               {isHu ? "Kampány indítása" : "Start a campaign"}
             </a>
@@ -198,24 +198,24 @@ export function TeamOverviewTab({
       {/* 2-column grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left: HEXACO profile card */}
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-          <div className="px-6 py-4 border-b border-[#f0ede6] flex items-center justify-between gap-3">
+        <div className="rounded-2xl border border-sand bg-white shadow-sm">
+          <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
                 // {isHu ? "csapat átlag · önkép" : "team avg · self"}
               </p>
-              <h2 className="font-playfair text-lg text-[#1a1814] mt-0.5">
+              <h2 className="font-fraunces text-lg text-ink mt-0.5">
                 HEXACO {isHu ? "profil" : "profile"}
               </h2>
             </div>
-            <p className="text-xs text-[#a09a90] shrink-0">
+            <p className="text-xs text-muted shrink-0">
               {data.completedCount} {isHu ? "fő · önértékelés" : "members · self"}
             </p>
           </div>
           <div className="p-6">
             {data.dimAvg === null ? (
-              <div className="rounded-xl bg-[#faf9f6] border border-[#e8e4dc] p-6 text-center">
-                <p className="text-sm text-[#5a5650]">
+              <div className="rounded-xl bg-cream border border-sand p-6 text-center">
+                <p className="text-sm text-ink-body">
                   {isHu
                     ? "Még nincs kitöltött assessment. A profilok megjelenítéséhez legalább 1 tag töltse ki."
                     : "No completed assessments yet."}
@@ -233,9 +233,9 @@ export function TeamOverviewTab({
                     return (
                       <div key={dim.code} className="group relative flex items-center gap-3">
                         {/* Tooltip */}
-                        <div className="pointer-events-none absolute bottom-full left-0 z-10 mb-2 hidden w-64 rounded-lg bg-[#1a1814] p-3 text-xs text-white shadow-lg group-hover:block">
+                        <div className="pointer-events-none absolute bottom-full left-0 z-10 mb-2 hidden w-64 rounded-lg bg-ink p-3 text-xs text-white shadow-lg group-hover:block">
                           <p className="mb-1 font-semibold">{dim.label}: {value}%</p>
-                          <p className="text-[11px] leading-relaxed text-[#a09a90]">{insight}</p>
+                          <p className="text-[11px] leading-relaxed text-muted">{insight}</p>
                         </div>
                         {/* Dim code pill */}
                         <span
@@ -245,11 +245,11 @@ export function TeamOverviewTab({
                           {dim.code}
                         </span>
                         {/* Dim label */}
-                        <span className="w-[130px] text-xs text-[#5a5650] truncate shrink-0">
+                        <span className="w-[130px] text-xs text-ink-body truncate shrink-0">
                           {dim.label}
                         </span>
                         {/* Bar */}
-                        <div className="flex-1 h-[5px] bg-[#e8e4dc] rounded-full overflow-hidden">
+                        <div className="flex-1 h-[5px] bg-sand rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full"
                             style={{
@@ -259,7 +259,7 @@ export function TeamOverviewTab({
                           />
                         </div>
                         {/* Value */}
-                        <span className="text-xs text-[#3d3a35] w-10 text-right tabular-nums font-mono shrink-0">
+                        <span className="text-xs text-ink-body w-10 text-right tabular-nums font-mono shrink-0">
                           {value}%
                         </span>
                       </div>
@@ -268,7 +268,7 @@ export function TeamOverviewTab({
                 </div>
                 {/* 1 mondatos összefoglaló */}
                 {data.dimAvg && (
-                  <p className="mt-4 border-t border-[#f0ede6] pt-4 text-sm leading-relaxed text-[#5a5650]">
+                  <p className="mt-4 border-t border-warm-mid pt-4 text-sm leading-relaxed text-ink-body">
                     {generateTeamSummary(data.dimAvg)}
                   </p>
                 )}
@@ -280,18 +280,18 @@ export function TeamOverviewTab({
         {/* Right column */}
         <div className="flex flex-col gap-6">
           {/* Card 1: Csapatdinamika */}
-          <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-            <div className="px-6 py-4 border-b border-[#f0ede6]">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+          <div className="rounded-2xl border border-sand bg-white shadow-sm">
+            <div className="px-6 py-4 border-b border-warm-mid">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
                 // {isHu ? "csapatdinamika" : "team dynamics"}
               </p>
-              <h2 className="font-playfair text-lg text-[#1a1814] mt-0.5">
+              <h2 className="font-fraunces text-lg text-ink mt-0.5">
                 {isHu ? "Kulcs jellemzők" : "Key characteristics"}
               </h2>
             </div>
             <div className="p-6">
               {!data.dimAvg ? (
-                <p className="text-sm text-[#5a5650]">
+                <p className="text-sm text-ink-body">
                   {isHu
                     ? "Nincs elég adat az elemzéshez."
                     : "Not enough data for analysis."}
@@ -304,10 +304,10 @@ export function TeamOverviewTab({
                       <p className="font-mono text-[9px] uppercase tracking-widest text-[#059669] mb-1">
                         // {isHu ? "csapat erőssége" : "team strength"}
                       </p>
-                      <p className="text-sm font-semibold text-[#1a1814]">
+                      <p className="text-sm font-semibold text-ink">
                         {topDimConfig.code} · {topDimConfig.label}
                       </p>
-                      <p className="text-xs text-[#3d3a35]/70 mt-1">
+                      <p className="text-xs text-ink-body/70 mt-1">
                         {data.topDim.value}% —{" "}
                         {strengthInsights[topDimConfig.code] ?? ""}
                       </p>
@@ -325,10 +325,10 @@ export function TeamOverviewTab({
                         <p className="font-mono text-[9px] uppercase tracking-widest text-[#b45309] mb-1">
                           // {isHu ? "fejlesztési terület" : "growth area"}
                         </p>
-                        <p className="text-sm font-semibold text-[#1a1814]">
+                        <p className="text-sm font-semibold text-ink">
                           {bottomDimConfig.code} · {bottomDimConfig.label}
                         </p>
-                        <p className="text-xs text-[#3d3a35]/70 mt-1">
+                        <p className="text-xs text-ink-body/70 mt-1">
                           {data.bottomDim.value}% —{" "}
                           {growthInsights[bottomDimConfig.code] ?? ""}
                         </p>
@@ -344,10 +344,10 @@ export function TeamOverviewTab({
                       <p className="font-mono text-[9px] uppercase tracking-widest text-[#7c3aed] mb-1">
                         // {isHu ? "legnagyobb sokszínűség" : "most diverse"}
                       </p>
-                      <p className="text-sm font-semibold text-[#1a1814]">
+                      <p className="text-sm font-semibold text-ink">
                         {diverseDimConfig.code} · {diverseDimConfig.label}
                       </p>
-                      <p className="text-xs text-[#3d3a35]/70 mt-1">
+                      <p className="text-xs text-ink-body/70 mt-1">
                         ±{diverseStdDev} —{" "}
                         {isHu
                           ? "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre."
@@ -364,24 +364,24 @@ export function TeamOverviewTab({
           </div>
 
           {/* Card 2: Members mini list */}
-          <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-            <div className="px-6 py-4 border-b border-[#f0ede6] flex items-center justify-between gap-3">
+          <div className="rounded-2xl border border-sand bg-white shadow-sm">
+            <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
                   // {isHu ? "tagok" : "members"}
                 </p>
-                <h2 className="font-playfair text-xl text-[#1a1814] mt-0.5">
+                <h2 className="font-fraunces text-xl text-ink mt-0.5">
                   {isHu ? `Csapattagok (${data.memberCount})` : `Members (${data.memberCount})`}
                 </h2>
               </div>
             </div>
             <div className="p-4 max-h-60 overflow-y-auto">
               {data.members.length === 0 ? (
-                <p className="text-xs text-[#a09a90] text-center py-4">
+                <p className="text-xs text-muted text-center py-4">
                   {isHu ? "Még nincsenek tagok." : "No members yet."}
                 </p>
               ) : (
-                <div className="flex flex-col divide-y divide-[#f0ede6]">
+                <div className="flex flex-col divide-y divide-warm-mid">
                   {data.members.map((member) => {
                     const selfDone = member.scores !== null;
                     const avatarColor = getAvatarColor(member.displayName);
@@ -405,11 +405,11 @@ export function TeamOverviewTab({
                             className="w-8 h-8 rounded-full object-cover shrink-0"
                           />
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-[#1a1814] truncate">
+                            <p className="text-sm font-semibold text-ink truncate">
                               {member.displayName}
                             </p>
                             {top3Text && (
-                              <p className="text-[10px] font-mono text-[#a09a90] truncate">
+                              <p className="text-[10px] font-mono text-muted truncate">
                                 {top3Text}
                               </p>
                             )}
@@ -421,7 +421,7 @@ export function TeamOverviewTab({
                               {isHu ? "✓ Kész" : "✓ Done"}
                             </span>
                           ) : (
-                            <span className="rounded-full bg-[#e8e4dc] px-2 py-0.5 text-[10px] text-[#a09a90]">
+                            <span className="rounded-full bg-sand px-2 py-0.5 text-[10px] text-muted">
                               {isHu ? "◌ Függőben" : "◌ Pending"}
                             </span>
                           )}
@@ -437,7 +437,7 @@ export function TeamOverviewTab({
       </div>
 
       {/* Team Pattern Card — full width, below the 2-col grid */}
-      <section className="mt-6 pt-10 border-t-2 border-[#c8410a]/20">
+      <section className="mt-6 pt-10 border-t-2 border-sage/20">
         <TeamPatternCard
           patternResult={data.patternResult}
           totalMembers={data.memberCount}

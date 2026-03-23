@@ -62,7 +62,7 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
   const incoming = edges.filter((e) => e.to === member.id);
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-white p-4">
+    <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
       <div className="flex items-center gap-3">
         <div
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-white text-[12px] font-bold"
@@ -71,13 +71,13 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
           {member.initials}
         </div>
         <div>
-          <p className="text-[14px] font-bold text-[#1a1814]">{member.name}</p>
+          <p className="text-[14px] font-bold text-ink">{member.name}</p>
         </div>
       </div>
 
       {outgoing.length > 0 && (
         <div>
-          <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-[#c8410a]">
+          <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-bronze">
             // kapcsolatok
           </p>
           <div className="flex flex-col gap-1">
@@ -90,8 +90,8 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
                     className="h-2 w-2 flex-shrink-0 rounded-full"
                     style={{ background: EDGE_COLORS[e.type] }}
                   />
-                  <span className="text-[11px] text-[#3d3a35]">{target.name}</span>
-                  <span className="ml-auto text-[10px] text-[#a09a90]">
+                  <span className="text-[11px] text-ink-body">{target.name}</span>
+                  <span className="ml-auto text-[10px] text-muted">
                     {e.type === "good"
                       ? "jó együttmű."
                       : e.type === "tension"
@@ -105,8 +105,8 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
         </div>
       )}
 
-      <div className="border-t border-[#e8e4dc] pt-2 text-[11px] text-[#5a5650]">
-        <span className="font-semibold text-[#1a1814]">{incoming.length}</span> bejövő kapcsolat
+      <div className="border-t border-sand pt-2 text-[11px] text-ink-body">
+        <span className="font-semibold text-ink">{incoming.length}</span> bejövő kapcsolat
       </div>
     </div>
   );
@@ -123,11 +123,11 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
   if (edges.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#e8e4dc] bg-[#f8f7f4] py-16 text-center">
-        <p className="text-[14px] font-semibold text-[#1a1814]">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sand bg-[#f8f7f4] py-16 text-center">
+        <p className="text-[14px] font-semibold text-ink">
           {isHu ? "Még nincs kapcsolati adat" : "No dynamics data yet"}
         </p>
-        <p className="mt-1 text-[12px] text-[#a09a90]">
+        <p className="mt-1 text-[12px] text-muted">
           {isHu
             ? "Indíts szakmai visszajelzési kört a dynamics map feltöltéséhez"
             : "Run a peer feedback round to populate the dynamics map"}
@@ -145,7 +145,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
       <div className="flex-1">
         <svg
           viewBox="0 0 360 360"
-          className="w-full rounded-xl border border-[#e8e4dc] bg-white"
+          className="w-full rounded-xl border border-sand bg-white"
         >
           {/* Edges */}
           {edges.map((e, i) => {
@@ -185,7 +185,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                     cy={pos.y}
                     r={r + 5}
                     fill="none"
-                    stroke="#c8410a"
+                    stroke="#c17f4a"
                     strokeWidth={1}
                     opacity={0.35}
                   />
@@ -195,7 +195,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                   cy={pos.y}
                   r={r}
                   fill={m.color}
-                  stroke={selected === m.id ? "#c8410a" : "white"}
+                  stroke={selected === m.id ? "#3d6b5e" : "white"}
                   strokeWidth={selected === m.id ? 2.5 : 2}
                 />
                 <text
@@ -214,7 +214,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                   y={pos.y + r + 11}
                   textAnchor="middle"
                   fontSize={9}
-                  fill="#5a5650"
+                  fill="#4a4a5e"
                 >
                   {m.name.split(" ")[0]}
                 </text>
@@ -228,14 +228,14 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
           {(["good", "neutral", "tension"] as DynamicsEdge["type"][]).map((t) => (
             <div key={t} className="flex items-center gap-2">
               <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[t] }} />
-              <span className="text-[11px] text-[#5a5650]">
+              <span className="text-[11px] text-ink-body">
                 {t === "good" ? "Jó együttmű." : t === "neutral" ? "Semleges" : "Feszültség"}
               </span>
             </div>
           ))}
           <div className="ml-auto flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-[#fce7d6] ring-1 ring-[#c8410a]" />
-            <span className="text-[11px] text-[#5a5650]">Hub személy</span>
+            <div className="h-3 w-3 rounded-full bg-[#fce7d6] ring-1 ring-sage" />
+            <span className="text-[11px] text-ink-body">Hub személy</span>
           </div>
         </div>
       </div>
@@ -249,8 +249,8 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             members={members}
           />
         ) : (
-          <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-[#e8e4dc] bg-white p-6 text-center">
-            <p className="text-[12px] text-[#a09a90]">
+          <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
+            <p className="text-[12px] text-muted">
               Kattints egy személyre
               <br />a kapcsolatai megtekintéséhez
             </p>

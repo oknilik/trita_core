@@ -24,7 +24,7 @@ export function BackgroundDoodles({ primarySrc }: BackgroundDoodlesProps) {
         style={maskStyle}
       />
       <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#faf9f6]/30"
+        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cream/30"
         aria-hidden="true"
       >
       </div>

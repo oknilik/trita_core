@@ -86,16 +86,16 @@ export default async function ContactPage() {
   const copy = pageCopy[locale] ?? pageCopy.hu;
 
   return (
-    <main className="min-h-dvh bg-[#faf9f6]">
-      <section className="border-b border-[#e8e4dc] bg-[#1a1814] px-6 py-14 lg:px-16 lg:py-16">
+    <main className="min-h-dvh bg-cream">
+      <section className="border-b border-sand bg-ink px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ibm-plex-mono mb-4 text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+          <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-[2px] text-bronze">
             {copy.eyebrow}
           </p>
-          <h1 className="font-playfair text-4xl leading-tight text-[#faf9f6] lg:text-[52px]">
+          <h1 className="font-fraunces text-4xl leading-tight text-cream lg:text-[52px]">
             {copy.title}
           </h1>
-          <p className="mt-4 max-w-2xl text-[15px] leading-[1.75] text-[#faf9f6]/75">
+          <p className="mt-4 max-w-2xl text-[15px] leading-[1.75] text-cream/75">
             {copy.subtitle}
           </p>
         </div>
@@ -103,39 +103,39 @@ export default async function ContactPage() {
 
       <section className="px-6 py-10 lg:px-16 lg:py-14">
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8">
-          <div className="rounded border border-[#e8e4dc] bg-white p-5 md:p-7">
-            <h2 className="font-playfair text-3xl leading-tight text-[#1a1814]">
+          <div className="rounded border border-sand bg-white p-5 md:p-7">
+            <h2 className="font-fraunces text-3xl leading-tight text-ink">
               {copy.formTitle}
             </h2>
-            <p className="mt-2 mb-6 text-[15px] leading-[1.75] text-[#3d3a35]">
+            <p className="mt-2 mb-6 text-[15px] leading-[1.75] text-ink-body">
               {copy.formLead}
             </p>
             <ContactForm locale={locale} />
           </div>
 
           <div className="space-y-4">
-            <article className="rounded border border-[#e8e4dc] bg-white p-5 md:p-6">
-              <p className="font-ibm-plex-mono mb-3 text-[11px] uppercase tracking-[1px] text-[#c8410a]">
+            <article className="rounded border border-sand bg-white p-5 md:p-6">
+              <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
                 01
               </p>
-              <h3 className="font-playfair text-2xl text-[#1a1814]">{copy.infoTitle}</h3>
-              <p className="mt-2 text-[15px] leading-[1.75] text-[#3d3a35]">{copy.infoBody}</p>
+              <h3 className="font-fraunces text-2xl text-ink">{copy.infoTitle}</h3>
+              <p className="mt-2 text-[15px] leading-[1.75] text-ink-body">{copy.infoBody}</p>
             </article>
 
-            <article className="rounded border border-[#e8e4dc] bg-white p-5 md:p-6">
-              <p className="font-ibm-plex-mono mb-3 text-[11px] uppercase tracking-[1px] text-[#c8410a]">
+            <article className="rounded border border-sand bg-white p-5 md:p-6">
+              <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
                 02
               </p>
-              <h3 className="font-playfair text-2xl text-[#1a1814]">{copy.responseTitle}</h3>
-              <p className="mt-2 text-[15px] leading-[1.75] text-[#3d3a35]">{copy.responseBody}</p>
+              <h3 className="font-fraunces text-2xl text-ink">{copy.responseTitle}</h3>
+              <p className="mt-2 text-[15px] leading-[1.75] text-ink-body">{copy.responseBody}</p>
             </article>
 
-            <article className="rounded border border-[#e8e4dc] bg-[#fef3ec] p-5 md:p-6">
-              <p className="font-ibm-plex-mono mb-3 text-[11px] uppercase tracking-[1px] text-[#c8410a]">
+            <article className="rounded border border-sand bg-sage-soft p-5 md:p-6">
+              <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
                 03
               </p>
-              <h3 className="font-playfair text-2xl text-[#1a1814]">{copy.legalTitle}</h3>
-              <p className="mt-2 text-[15px] leading-[1.75] text-[#3d3a35]">{copy.legalBody}</p>
+              <h3 className="font-fraunces text-2xl text-ink">{copy.legalTitle}</h3>
+              <p className="mt-2 text-[15px] leading-[1.75] text-ink-body">{copy.legalBody}</p>
             </article>
           </div>
         </div>

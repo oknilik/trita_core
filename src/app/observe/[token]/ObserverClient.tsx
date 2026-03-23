@@ -522,25 +522,25 @@ export function ObserverClient({
     const canStart = relationshipType !== "" && knownDuration !== "";
 
     return (
-      <div className="relative min-h-dvh bg-[#faf9f6]">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-[#faf9f6]" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-cream">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto max-w-2xl px-4 py-8 md:py-12">
-          <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 md:p-8">
-            <h1 className="text-2xl font-bold text-[#1a1814]">
+          <div className="rounded-2xl border border-sand bg-white p-6 md:p-8">
+            <h1 className="text-2xl font-bold text-ink">
               👋 {t("observer.introWelcome", locale)}
             </h1>
-            <div className="mt-4 rounded-xl border border-[#f3d4c8] bg-gradient-to-r from-[#c8410a] via-[#b84512] to-[#8b2f09] px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+            <div className="mt-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
               {tf("observer.introInvitedBy", locale, { inviter: inviterName })}
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-4 text-sm leading-relaxed text-ink-body">
               {t("observer.introBodyShort", locale)}
             </p>
-            <div className="mt-4 rounded-xl border border-[#f3d4c8] bg-[#fef3ec] px-4 py-3 text-sm leading-relaxed text-[#8b2f09]">
+            <div className="mt-4 rounded-xl border border-sage-ring bg-sage-soft px-4 py-3 text-sm leading-relaxed text-bronze-dark">
               {t("observer.introPauseNote", locale)}
             </div>
 
             <div className="mt-6 flex flex-col gap-4">
-              <label className="flex flex-col gap-2 text-sm font-semibold text-[#3d3a35]">
+              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
                 {t("observer.relationshipLabel", locale)}
                 <div className="flex flex-wrap gap-2">
                   {RELATIONSHIP_OPTIONS.map((opt) => (
@@ -550,8 +550,8 @@ export function ObserverClient({
                       onClick={() => setRelationshipType(opt.value)}
                       className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
                         relationshipType === opt.value
-                          ? "border-[#f3d4c8] bg-[#fef3ec] text-[#8b2f09]"
-                          : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1]"
+                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                          : "border-sand bg-white text-ink-body hover:border-warm-dark"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
@@ -560,7 +560,7 @@ export function ObserverClient({
                 </div>
               </label>
 
-              <label className="flex flex-col gap-2 text-sm font-semibold text-[#3d3a35]">
+              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
                 {t("observer.durationLabel", locale)}
                 <div className="flex flex-wrap gap-2">
                   {DURATION_OPTIONS.map((opt) => (
@@ -570,8 +570,8 @@ export function ObserverClient({
                       onClick={() => setKnownDuration(opt.value)}
                       className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
                         knownDuration === opt.value
-                          ? "border-[#f3d4c8] bg-[#fef3ec] text-[#8b2f09]"
-                          : "border-[#e8e4dc] bg-white text-[#3d3a35] hover:border-[#d9cfc1]"
+                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                          : "border-sand bg-white text-ink-body hover:border-warm-dark"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
@@ -590,7 +590,7 @@ export function ObserverClient({
               type="button"
               onClick={() => setPhase("assessment")}
               disabled={!canStart}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[#a8340a] hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
             >
               {t("observer.start", locale)}
             </button>
@@ -602,15 +602,15 @@ export function ObserverClient({
 
   if (phase === "inactive") {
     return (
-      <div className="relative min-h-dvh bg-[#faf9f6]">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-[#faf9f6]" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-cream">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">😕</div>
-            <h1 className="mt-4 text-2xl font-bold text-[#1a1814]">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.inactiveTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.inactiveBody", locale)}
             </p>
           </div>
@@ -621,44 +621,44 @@ export function ObserverClient({
 
   if (phase === "done") {
     return (
-      <div className="relative min-h-dvh bg-[#faf9f6]">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-[#faf9f6]" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-cream">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-[#cfe2d6] bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 text-2xl font-bold text-[#1a1814]">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.doneTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.doneBody", locale)}
             </p>
             {isSignedIn ? (
               <>
-                <p className="mt-4 text-sm leading-relaxed text-[#5a5650]">
+                <p className="mt-4 text-sm leading-relaxed text-ink-body">
                   {t("observer.doneSignedInHint", locale)}
                 </p>
                 <a
                   href="/profile/results"
-                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-[#c8410a] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[#a8340a] hover:shadow-xl"
+                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
                 >
                   {t("observer.goDashboard", locale)}
                 </a>
               </>
             ) : (
               <>
-                <p className="mt-4 text-sm leading-relaxed text-[#5a5650]">
+                <p className="mt-4 text-sm leading-relaxed text-ink-body">
                   {t("observer.doneSignedOutHint", locale)}
                 </p>
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
                   <a
                     href={`/sign-up?observeToken=${token}`}
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-[#a8340a] hover:shadow-xl"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
                   >
                     {t("observer.signUpCta", locale)}
                   </a>
                   <a
                     href={`/sign-in?observeToken=${token}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#c8410a] bg-transparent px-6 text-sm font-semibold text-[#c8410a] transition hover:bg-[#fef3ec]"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-bronze transition hover:bg-sage-soft"
                   >
                     {t("observer.signInCta", locale)}
                   </a>
@@ -672,11 +672,11 @@ export function ObserverClient({
   }
 
   return (
-    <div className="relative min-h-dvh bg-[#faf9f6]">
+    <div className="relative min-h-dvh bg-cream">
       <BackgroundDoodles primarySrc={doodleSrc} />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-[#faf9f6]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
       <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-[#f3d4c8]/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sage-ring/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
           {phase === "assessment" && (
             <div className="mt-2 overflow-x-auto">
@@ -689,7 +689,7 @@ export function ObserverClient({
           )}
         </div>
 
-        <div className="mb-4 rounded-xl border border-[#f3d4c8] bg-gradient-to-r from-[#c8410a] via-[#b84512] to-[#8b2f09] px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+        <div className="mb-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
           {thinkOfParts.length > 1 ? (
             thinkOfParts.map((part, index) => (
               <span key={`thinkof-${index}`}>
@@ -704,12 +704,12 @@ export function ObserverClient({
 
         {phase === "assessment" && (
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-xs text-[#3d3a35]">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink-body">
               <input
                 type="checkbox"
                 checked={autoAdvance}
                 onChange={(event) => setAutoAdvance(event.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-[#c8410a]"
+                className="h-4 w-4 rounded border-gray-300 text-bronze"
               />
               {t("assessment.autoAdvance", locale)}
             </label>
@@ -809,7 +809,7 @@ export function ObserverClient({
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 !isSubmitting && confidence !== null
-                  ? "bg-[#c8410a] text-white shadow-md hover:bg-[#a8340a] hover:shadow-lg"
+                  ? "bg-sage text-white shadow-md hover:bg-sage-dark hover:shadow-lg"
                   : "bg-gray-200 text-gray-400"
               }`}
               whileHover={!isSubmitting && confidence !== null ? { scale: 1.02 } : {}}
@@ -824,7 +824,7 @@ export function ObserverClient({
               aria-disabled={!canProceed || isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canProceed && !isSubmitting
-                  ? "bg-[#c8410a] text-white shadow-md hover:bg-[#a8340a] hover:shadow-lg"
+                  ? "bg-sage text-white shadow-md hover:bg-sage-dark hover:shadow-lg"
                   : "cursor-not-allowed bg-gray-200 text-gray-400"
               }`}
               whileHover={canProceed && !isSubmitting ? { scale: 1.02 } : {}}

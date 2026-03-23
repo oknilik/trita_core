@@ -20,7 +20,7 @@ const T = {
   muted: "#5C4F45",
   heading: "#1a1410",
   border: "#E8E0D4",
-  accent: "#c8410a",
+  accent: "#3d6b5e",
   accentHover: "#a83508",
 };
 
@@ -135,7 +135,7 @@ function PatternCard({
 
         {/* Name */}
         <h2
-          className="font-playfair text-2xl leading-tight"
+          className="font-fraunces text-2xl leading-tight"
           style={{ color: T.heading }}
         >
           {pattern.alias}
@@ -235,7 +235,7 @@ function HybridCard({
         >
           Kontextusfüggő működés
         </span>
-        <h2 className="font-playfair text-2xl" style={{ color: T.heading }}>
+        <h2 className="font-fraunces text-2xl" style={{ color: T.heading }}>
           Két mintázat határán
         </h2>
         <p className="mt-1 text-sm" style={{ color: T.muted }}>
@@ -282,7 +282,7 @@ const QUADRANTS = [
     label: "Energikus + Összetartó",
     desc: "Magas hajtóerő, erős kohézió",
     codes: ["1111", "1110", "1101", "1100"],
-    accent: "#c8410a",
+    accent: "#3d6b5e",
   },
   {
     label: "Energikus + Versengő",
@@ -310,7 +310,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
       <p className="mb-1 font-mono text-[10px] uppercase tracking-widest" style={{ color: T.muted }}>
         // mind a 16 mintázat
       </p>
-      <h3 className="mb-8 font-playfair text-xl" style={{ color: T.heading }}>
+      <h3 className="mb-8 font-fraunces text-xl" style={{ color: T.heading }}>
         Összes csapatmintázat
       </h3>
 
@@ -478,7 +478,7 @@ export function PatternExplorer() {
           // csapatminta felfedező
         </p>
         <h1
-          className="mt-1 font-playfair text-3xl leading-tight md:text-4xl"
+          className="mt-1 font-fraunces text-3xl leading-tight md:text-4xl"
           style={{ color: T.heading }}
         >
           16 csapatmintázat — melyik a tiéd?
@@ -564,7 +564,7 @@ export function PatternExplorer() {
                 )}
                 <PatternCard
                   code={activeCode ?? bestCode}
-                  matchLabel={isHybridState && activeCode ? "kiválasztott" : matchLabel}
+                  matchLabel={isHybridState && activeCode ? { label: "kiválasztott", color: matchLabel.color, bg: matchLabel.bg } : matchLabel}
                 />
               </>
             )}
@@ -579,7 +579,7 @@ export function PatternExplorer() {
             {/* Framing note */}
             <p
               className="border-t pt-4 text-xs italic leading-relaxed"
-              style={{ color: "#a09a90", borderColor: T.border }}
+              style={{ color: "var(--color-muted)", borderColor: T.border }}
             >
               Ezek a mintázatok tudományos személyiségkutatáson alapuló csapat-szintű értelmezések. Nem fix
               címkék — a csapat működése idővel változik, és ugyanaz a csapat különböző
@@ -621,7 +621,7 @@ export function PatternExplorer() {
             // tudományos személyiségmérés
           </p>
           <h2
-            className="mt-2 font-playfair text-2xl leading-snug"
+            className="mt-2 font-fraunces text-2xl leading-snug"
             style={{ color: T.heading }}
           >
             Kíváncsi vagy a csapatod valódi mintázatára?
@@ -645,7 +645,7 @@ export function PatternExplorer() {
             >
               Ingyenes próba →
             </a>
-            <p className="mt-3 text-xs" style={{ color: "#a09a90" }}>
+            <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
               Nincs kártyaadathoz kötés. Az első felmérés ingyenes.
             </p>
           </SignedOut>

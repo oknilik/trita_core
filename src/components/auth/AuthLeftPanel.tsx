@@ -26,7 +26,7 @@ const CONTENT: Record<
     title: (
       <>
         Ismerd meg magad –{" "}
-        <span className="text-[#c8410a]">tudományos alapon.</span>
+        <span className="text-bronze">tudományos alapon.</span>
       </>
     ),
     quote:
@@ -42,7 +42,7 @@ const CONTENT: Record<
     title: (
       <>
         Értsd meg a csapatod –{" "}
-        <span className="text-[#c8410a]">adatvezérelt módon.</span>
+        <span className="text-bronze">adatvezérelt módon.</span>
       </>
     ),
     quote:
@@ -58,7 +58,7 @@ const CONTENT: Record<
     title: (
       <>
         Adj visszajelzést –{" "}
-        <span className="text-[#c8410a]">névtelenül és őszintén.</span>
+        <span className="text-bronze">névtelenül és őszintén.</span>
       </>
     ),
     quote:
@@ -70,7 +70,7 @@ const CONTENT: Record<
     title: (
       <>
         Folytasd ott,{" "}
-        <span className="text-[#c8410a]">ahol abbahagytad.</span>
+        <span className="text-bronze">ahol abbahagytad.</span>
       </>
     ),
     quote:
@@ -82,7 +82,7 @@ const CONTENT: Record<
     title: (
       <>
         Már majdnem{" "}
-        <span className="text-[#c8410a]">kész vagy.</span>
+        <span className="text-bronze">kész vagy.</span>
       </>
     ),
     quote: "Ellenőrizd az e-mail fiókodat és add meg a kódot a folytatáshoz.",
@@ -94,25 +94,25 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
   const content = CONTENT[context];
 
   return (
-    <div className="hidden w-[260px] shrink-0 flex-col justify-between bg-[#1a1814] px-8 py-10 lg:flex">
+    <div className="hidden w-[260px] shrink-0 flex-col justify-between bg-ink px-8 py-10 lg:flex">
       <div>
-        <p className="font-ibm-plex-mono mb-6 text-[10px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-dm-sans mb-6 text-[10px] uppercase tracking-[2px] text-bronze">
           trita
         </p>
 
-        <p className="font-ibm-plex-mono mb-3 text-[10px] uppercase tracking-[1.5px] text-[#faf9f6]/40">
+        <p className="font-dm-sans mb-3 text-[10px] uppercase tracking-[1.5px] text-cream/40">
           {content.tag}
         </p>
 
-        <h2 className="font-playfair mb-6 text-[22px] leading-snug text-[#faf9f6]">
+        <h2 className="font-fraunces mb-6 text-[22px] leading-snug text-cream">
           {content.title}
         </h2>
 
-        <div className="rounded-lg border border-[#faf9f6]/10 bg-[#faf9f6]/5 px-4 py-3">
-          <p className="text-[13px] leading-[1.7] text-[#faf9f6]/70">
+        <div className="rounded-lg border border-cream/10 bg-cream/5 px-4 py-3">
+          <p className="text-[13px] leading-[1.7] text-cream/70">
             &ldquo;{content.quote}&rdquo;
           </p>
-          <p className="mt-2 font-ibm-plex-mono text-[10px] uppercase tracking-[1px] text-[#faf9f6]/30">
+          <p className="mt-2 font-dm-sans text-[10px] uppercase tracking-[1px] text-cream/30">
             — {content.quoteAuthor}
           </p>
         </div>
@@ -122,10 +122,10 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
         <div className="flex gap-4">
           {content.stats.map((s) => (
             <div key={s.label} className="flex flex-col">
-              <span className="font-playfair text-2xl font-black text-[#c8410a]">
+              <span className="font-fraunces text-2xl font-black text-bronze">
                 {s.value}
               </span>
-              <span className="text-[11px] leading-snug text-[#faf9f6]/40">
+              <span className="text-[11px] leading-snug text-cream/40">
                 {s.label}
               </span>
             </div>

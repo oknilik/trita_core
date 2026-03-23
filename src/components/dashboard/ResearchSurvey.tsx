@@ -51,8 +51,8 @@ function LikertScale({
             onClick={() => onChange(score)}
             className={`flex flex-col items-center gap-0.5 rounded-xl border-2 px-2 py-1.5 text-2xl transition-all duration-150 ${
               active
-                ? "border-[#c8410a] bg-[#fef3ec] shadow-md scale-110"
-                : "border-gray-200 bg-white hover:border-[#f3d4c8] hover:bg-[#fef3ec]"
+                ? "border-sage bg-sage-soft shadow-md scale-110"
+                : "border-gray-200 bg-white hover:border-sage-ring hover:bg-sage-soft"
             }`}
           >
             {emoji}
@@ -83,8 +83,8 @@ function Bubble({
       onClick={onClick}
       className={`min-h-[38px] rounded-xl border-2 px-3 py-1.5 text-sm font-medium transition-all duration-150 ${
         active
-          ? "border-[#c8410a] bg-[#fef3ec] text-[#8b2f09] shadow-sm"
-          : "border-gray-200 bg-white text-gray-600 hover:border-[#f3d4c8] hover:bg-[#fef3ec]"
+          ? "border-sage bg-sage-soft text-bronze-dark shadow-sm"
+          : "border-gray-200 bg-white text-gray-600 hover:border-sage-ring hover:bg-sage-soft"
       }`}
     >
       {label}
@@ -284,7 +284,7 @@ export function ResearchSurvey({
                   className="flex flex-col items-center justify-center px-8 py-16 text-center"
                 >
                   <div className="text-5xl leading-none">🙏</div>
-                  <p className="mt-4 text-base font-semibold text-[#8b2f09]">
+                  <p className="mt-4 text-base font-semibold text-bronze-dark">
                     {t("dashboard.surveyThanks", locale)}
                   </p>
                   <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-gray-100">
@@ -292,7 +292,7 @@ export function ResearchSurvey({
                       initial={{ width: 0 }}
                       animate={{ width: "100%" }}
                       transition={{ duration: 1.4, ease: "linear" }}
-                      className="h-full rounded-full bg-gradient-to-r from-[#c8410a] to-[#8b2f09]"
+                      className="h-full rounded-full bg-gradient-to-r from-sage to-sage-deep"
                     />
                   </div>
                 </motion.div>
@@ -308,12 +308,12 @@ export function ResearchSurvey({
                   {/* Header */}
                   <div className="mb-3 flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c8410a]">
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bronze">
                         {t("dashboard.surveyTitle", locale)}
                       </p>
                       <p className="mt-0.5 text-xs text-gray-500">{t("dashboard.surveySubtitle", locale)}</p>
                     </div>
-                    <span className="shrink-0 rounded-full bg-[#f9e7de] px-3 py-1 text-xs font-semibold text-[#8b2f09]">
+                    <span className="shrink-0 rounded-full bg-sage-soft px-3 py-1 text-xs font-semibold text-bronze-dark">
                       {step + 1} / {totalSteps}
                     </span>
                   </div>
@@ -321,7 +321,7 @@ export function ResearchSurvey({
                   {/* Progress bar */}
                   <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#c8410a] to-[#8b2f09] transition-all duration-500"
+                      className="h-full rounded-full bg-gradient-to-r from-sage to-sage-deep transition-all duration-500"
                       style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
                     />
                   </div>
@@ -500,7 +500,7 @@ export function ResearchSurvey({
                       disabled={!canAdvance() || isSubmitting}
                       className={`inline-flex min-h-[40px] items-center justify-center rounded-lg px-5 text-sm font-semibold transition-all duration-200 ${
                         canAdvance() && !isSubmitting
-                          ? "bg-gradient-to-r from-[#c8410a] to-[#8b2f09] text-white shadow-md hover:shadow-lg hover:scale-[1.02]"
+                          ? "bg-gradient-to-r from-sage to-sage-deep text-white shadow-md hover:shadow-lg hover:scale-[1.02]"
                           : "cursor-not-allowed bg-gray-100 text-gray-400"
                       }`}
                     >

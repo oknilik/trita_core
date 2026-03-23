@@ -41,10 +41,10 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
   // Dot color by grade
   const dotColor =
     axis.grade === "balanced"
-      ? "#a09a90"
+      ? "#8a8a9a"
       : axis.grade === "strong_high" || axis.grade === "slight_high"
-      ? "#c8410a"
-      : "#3d3a35";
+      ? "#3d6b5e"
+      : "#4a4a5e";
 
   const diversityColors = {
     homogén: "text-emerald-600",
@@ -56,11 +56,11 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
     <div>
       <div className="mb-1 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-semibold text-[#1a1814]">{label.name}</span>
+          <span className="text-xs font-semibold text-ink">{label.name}</span>
           {"tooltip" in label && (
             <span
               title={label.tooltip as string}
-              className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-[#e8e4dc] text-[9px] font-semibold text-[#5a5650]"
+              className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-sand text-[9px] font-semibold text-ink-body"
             >
               i
             </span>
@@ -72,10 +72,10 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
       </div>
 
       {/* Bar */}
-      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-[#e8e4dc]">
+      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-sand">
         {/* Balanced zone highlight (middle 20% → approx zone 2-3 of 5) */}
         <div
-          className="absolute inset-y-0 bg-[#f0ede6]"
+          className="absolute inset-y-0 bg-warm-mid"
           style={{ left: "40%", width: "20%" }}
         />
         {/* Dot */}
@@ -87,10 +87,10 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
 
       {/* Pole labels */}
       <div className="mt-0.5 flex items-center justify-between">
-        <span className="font-mono text-[9px] uppercase tracking-wider text-[#a09a90]">
+        <span className="font-mono text-[9px] uppercase tracking-wider text-muted">
           {label.low}
         </span>
-        <span className="font-mono text-[9px] uppercase tracking-wider text-[#a09a90]">
+        <span className="font-mono text-[9px] uppercase tracking-wider text-muted">
           {label.high}
         </span>
       </div>
@@ -104,17 +104,17 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
   // Not enough data
   if (!data) {
     return (
-      <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-        <div className="border-b border-[#f0ede6] px-6 py-4">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+      <div className="rounded-2xl border border-sand bg-white shadow-sm">
+        <div className="border-b border-warm-mid px-6 py-4">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
             // {isHu ? "csapatminta" : "team pattern"}
           </p>
-          <h2 className="mt-0.5 font-playfair text-xl text-[#1a1814]">
+          <h2 className="mt-0.5 font-fraunces text-xl text-ink">
             {isHu ? "Domináns működési mintázat" : "Dominant operating pattern"}
           </h2>
         </div>
         <div className="p-6">
-          <p className="text-sm text-[#5a5650]">
+          <p className="text-sm text-ink-body">
             {isHu
               ? `A mintázat kiszámításához legalább 3 kitöltött értékelés szükséges. Jelenleg: ${totalMembers} tagból ${0} töltötte ki.`
               : `Pattern calculation requires at least 3 completed assessments.`}
@@ -128,16 +128,16 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
   const confColors = CONFIDENCE_COLORS[data.confidence];
 
   return (
-    <div className="rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
+    <div className="rounded-2xl border border-sand bg-white shadow-sm">
       {/* Header */}
-      <div className="border-b border-[#f0ede6] px-6 py-4">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+      <div className="border-b border-warm-mid px-6 py-4">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
           // {isHu ? "csapatminta" : "team pattern"}
         </p>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-2">
-          <h2 className="font-playfair text-3xl text-[#1a1814] md:text-4xl">
+          <h2 className="font-fraunces text-3xl text-ink md:text-4xl">
             {data.patternName}
-            <span className="ml-3 text-lg font-normal text-[#a09a90]">
+            <span className="ml-3 text-lg font-normal text-muted">
               — {data.diversitySuffix}
             </span>
           </h2>
@@ -150,7 +150,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
           </span>
         </div>
         {content && (
-          <p className="mt-1 text-xs text-[#5a5650]">{content.subtitle}</p>
+          <p className="mt-1 text-xs text-ink-body">{content.subtitle}</p>
         )}
       </div>
 
@@ -164,7 +164,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
 
         {/* Description */}
         {content && (
-          <p className="mb-5 text-sm leading-relaxed text-[#3d3a35]">
+          <p className="mb-5 text-sm leading-relaxed text-ink-body">
             {content.description}
           </p>
         )}
@@ -185,7 +185,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
               </p>
               <ul className="space-y-1">
                 {content.strengths.map((s, i) => (
-                  <li key={i} className="flex items-start gap-1.5 text-xs text-[#3d3a35]">
+                  <li key={i} className="flex items-start gap-1.5 text-xs text-ink-body">
                     <span className="mt-0.5 shrink-0 text-[#059669]">✓</span>
                     {s}
                   </li>
@@ -198,7 +198,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
               </p>
               <ul className="space-y-1">
                 {content.blindSpots.map((s, i) => (
-                  <li key={i} className="flex items-start gap-1.5 text-xs text-[#3d3a35]">
+                  <li key={i} className="flex items-start gap-1.5 text-xs text-ink-body">
                     <span className="mt-0.5 shrink-0 text-[#b45309]">△</span>
                     {s}
                   </li>
@@ -211,18 +211,18 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {/* Next steps — 3 timed action cards */}
         {content && content.leaderActions.length >= 3 && (
           <div className="mb-5">
-            <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#c8410a]">
+            <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-bronze">
               // {isHu ? "ajánlott következő lépések" : "recommended next steps"}
             </p>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {[
-                { timing: isHu ? "Ezen a héten" : "This week",    action: content.leaderActions[0], accent: "#c8410a" },
+                { timing: isHu ? "Ezen a héten" : "This week",    action: content.leaderActions[0], accent: "#3d6b5e" },
                 { timing: isHu ? "Ezen a hónapban" : "This month", action: content.leaderActions[1], accent: "#8B5CF6" },
                 { timing: isHu ? "Rendszeresen" : "Ongoing",       action: content.leaderActions[2], accent: "#10B981" },
               ].map(({ timing, action, accent }) => (
                 <div
                   key={timing}
-                  className="relative overflow-hidden rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4 pt-5"
+                  className="relative overflow-hidden rounded-xl border border-sand bg-cream p-4 pt-5"
                 >
                   <div
                     className="absolute left-0 right-0 top-0 h-[3px]"
@@ -231,13 +231,13 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
                   <p className="mb-1 font-mono text-[9px] uppercase tracking-widest" style={{ color: accent }}>
                     {timing}
                   </p>
-                  <p className="text-xs leading-relaxed text-[#3d3a35]">{action}</p>
+                  <p className="text-xs leading-relaxed text-ink-body">{action}</p>
                 </div>
               ))}
             </div>
             <a
               href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
-              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-[#c8410a]/30 bg-white px-5 text-sm font-semibold text-[#c8410a] transition hover:bg-[#c8410a] hover:text-white"
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-white px-5 text-sm font-semibold text-bronze transition hover:bg-sage hover:text-white"
             >
               {isHu ? "Megnézem a csapatmintát →" : "Explore team pattern →"}
             </a>
@@ -246,14 +246,14 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
 
         {/* Alternative pattern */}
         {data.alternativeName && (
-          <p className="mb-4 text-sm text-[#5a5650]">
+          <p className="mb-4 text-sm text-ink-body">
             {isHu ? "Közeli alternatív mintázat:" : "Closest alternative pattern:"}{" "}
-            <span className="font-semibold text-[#1a1814]">{data.alternativeName}</span>
+            <span className="font-semibold text-ink">{data.alternativeName}</span>
           </p>
         )}
 
         {/* Meta */}
-        <p className="mb-4 font-mono text-[10px] text-[#a09a90]">
+        <p className="mb-4 font-mono text-[10px] text-muted">
           {data.membersWithAssessment}/{data.memberCount}{" "}
           {isHu ? "tag értékelése alapján" : "member assessments"}
           {data.missingMembers > 0 && (
@@ -262,7 +262,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         </p>
 
         {/* Framing note */}
-        <p className="border-t border-[#e8e4dc] pt-4 text-xs italic text-[#a09a90]">
+        <p className="border-t border-sand pt-4 text-xs italic text-muted">
           {isHu
             ? "A csapat jelenlegi önértékelés-alapú működési mintázatának értelmezése. Nem diagnózis, nem teljesítménycímke — idővel változhat."
             : "This is an interpretation of the team's current self-assessment-based operating pattern. Not a diagnosis or performance label — it can change over time."}

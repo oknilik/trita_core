@@ -51,7 +51,7 @@ export function CandidateRevokeButton({ inviteId, isHu }: Props) {
             type="button"
             onClick={() => setOpen(false)}
             disabled={loading}
-            className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-5 text-sm font-semibold text-[#3d3a35] transition hover:bg-[#faf9f6] disabled:opacity-50"
+            className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:opacity-50"
           >
             {isHu ? "Mégsem" : "Cancel"}
           </button>

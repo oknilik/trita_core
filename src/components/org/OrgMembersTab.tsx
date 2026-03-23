@@ -6,9 +6,9 @@ import { OrgRemoveMemberButton } from "./OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
 
 function roleBadgeClass(role: string) {
-  if (role === "ORG_ADMIN") return "bg-[#c8410a]/10 text-[#c8410a]";
-  if (role === "ORG_MANAGER") return "bg-[#1a1814]/10 text-[#1a1814]";
-  return "bg-[#e8e4dc] text-[#3d3a35]";
+  if (role === "ORG_ADMIN") return "bg-sage/10 text-bronze";
+  if (role === "ORG_MANAGER") return "bg-ink/10 text-ink";
+  return "bg-sand text-ink-body";
 }
 
 function roleLabel(role: string, isHu: boolean) {
@@ -43,26 +43,26 @@ export function OrgMembersTab({
   return (
     <div className="flex flex-col gap-6">
       {/* Members list */}
-      <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+      <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
           {isHu ? "// tagok" : "// members"}
         </p>
-        <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+        <h2 className="mb-5 font-fraunces text-xl text-ink">
           {isHu ? "Tagok" : "Members"}{" "}
-          <span className="font-sans text-sm font-normal text-[#3d3a35]/50">
+          <span className="font-sans text-sm font-normal text-ink-body/50">
             ({members.length + pendingInvites.length})
           </span>
         </h2>
 
-        <div className="flex flex-col divide-y divide-[#e8e4dc]">
+        <div className="flex flex-col divide-y divide-sand">
           {members.map((m) => (
             <div key={m.id} className="flex items-center justify-between gap-3 py-3">
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-[#1a1814]">
+                <p className="truncate text-sm font-semibold text-ink">
                   {m.user.username ?? m.user.email ?? "—"}
                 </p>
                 {m.user.username && (
-                  <p className="truncate text-xs text-[#3d3a35]/60">{m.user.email}</p>
+                  <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
                 )}
               </div>
               <div className="flex shrink-0 items-center gap-2">
@@ -71,7 +71,7 @@ export function OrgMembersTab({
                 >
                   {roleLabel(m.role, isHu)}
                 </span>
-                <span className="text-xs text-[#3d3a35]/50">
+                <span className="text-xs text-ink-body/50">
                   {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
                 </span>
                 {isAdmin && m.userId !== profileId && (
@@ -84,8 +84,8 @@ export function OrgMembersTab({
           {pendingInvites.map((inv) => (
             <div key={inv.id} className="flex items-center justify-between gap-3 py-3">
               <div className="min-w-0 opacity-60">
-                <p className="truncate text-sm font-semibold text-[#1a1814]">{inv.email}</p>
-                <p className="text-xs text-[#3d3a35]/60">
+                <p className="truncate text-sm font-semibold text-ink">{inv.email}</p>
+                <p className="text-xs text-ink-body/60">
                   {isHu ? "Meghívó függőben" : "Invite pending"}
                 </p>
               </div>
@@ -101,7 +101,7 @@ export function OrgMembersTab({
           ))}
 
           {members.length === 0 && pendingInvites.length === 0 && (
-            <p className="py-6 text-center text-sm text-[#3d3a35]/50">
+            <p className="py-6 text-center text-sm text-ink-body/50">
               {isHu ? "Még nincs tag." : "No members yet."}
             </p>
           )}
@@ -110,14 +110,14 @@ export function OrgMembersTab({
 
       {/* Invite form */}
       {isManager && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// meghívás" : "// invite"}
           </p>
-          <h3 className="mb-3 text-sm font-semibold text-[#1a1814]">
+          <h3 className="mb-3 text-sm font-semibold text-ink">
             {isHu ? "Tag meghívása" : "Invite a member"}
           </h3>
-          <p className="mb-4 text-xs text-[#3d3a35]/60">
+          <p className="mb-4 text-xs text-ink-body/60">
             {isHu
               ? "Add meg a tag emailcímét. Ha már regisztrált a Tritán, azonnal csatlakozik."
               : "Enter the member's email. If they're already on Trita, they'll join immediately."}

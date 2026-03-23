@@ -83,7 +83,7 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
   // Final submitted state
   if (submitted) {
     return (
-      <div className="rounded-xl border border-[#f3d4c8] bg-[#fef3ec] p-6 md:p-8 text-center">
+      <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8 text-center">
         <div className="flex items-center justify-center gap-3">
           <span className="text-2xl">🙏</span>
           <span className="text-sm text-gray-600">
@@ -95,7 +95,7 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
   }
 
   return (
-    <div className="rounded-xl border border-[#f3d4c8] bg-[#fef3ec] p-6 md:p-8">
+    <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-gray-900">
@@ -132,8 +132,8 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
                   aria-label={item.label}
                   className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                     agreementScore === item.value
-                      ? "border-2 border-[#c8410a] bg-[#fef3ec]"
-                      : "border-gray-200 hover:border-[#e8c7b8]"
+                      ? "border-2 border-sage bg-sage-soft"
+                      : "border-gray-200 hover:border-bronze-edge"
                   }`}
                 >
                   {item.emoji}
@@ -158,8 +158,8 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
                   aria-label={item.label}
                   className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                     observerUsefulness === item.value
-                      ? "border-2 border-[#c8410a] bg-[#fef3ec]"
-                      : "border-gray-200 hover:border-[#e8c7b8]"
+                      ? "border-2 border-sage bg-sage-soft"
+                      : "border-gray-200 hover:border-bronze-edge"
                   }`}
                 >
                   {item.emoji}
@@ -184,8 +184,8 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
                   aria-label={item.label}
                   className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                     siteUsefulness === item.value
-                      ? "border-2 border-[#c8410a] bg-[#fef3ec]"
-                      : "border-gray-200 hover:border-[#e8c7b8]"
+                      ? "border-2 border-sage bg-sage-soft"
+                      : "border-gray-200 hover:border-bronze-edge"
                   }`}
                 >
                   {item.emoji}
@@ -207,8 +207,8 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
                 onClick={() => setInterested(true)}
                 className={`flex min-h-[44px] items-center justify-center gap-2 rounded-lg border text-lg transition ${
                   interested === true
-                    ? "border-2 border-[#c8410a] bg-[#fef3ec]"
-                    : "border-gray-200 hover:border-[#e8c7b8]"
+                    ? "border-2 border-sage bg-sage-soft"
+                    : "border-gray-200 hover:border-bronze-edge"
                 }`}
               >
                 <span className="text-2xl">👍</span>
@@ -219,8 +219,8 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
                 onClick={() => setInterested(false)}
                 className={`flex min-h-[44px] items-center justify-center gap-2 rounded-lg border text-lg transition ${
                   interested === false
-                    ? "border-2 border-[#c8410a] bg-[#fef3ec]"
-                    : "border-gray-200 hover:border-[#e8c7b8]"
+                    ? "border-2 border-sage bg-sage-soft"
+                    : "border-gray-200 hover:border-bronze-edge"
                 }`}
               >
                 <span className="text-2xl">👎</span>
@@ -241,7 +241,7 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
               onChange={(e) => setFreeform(e.target.value)}
               rows={4}
               placeholder={t("dashboard.feedbackFreeformPlaceholder", locale)}
-              className="mt-3 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 focus:border-[#e8c7b8] focus:outline-none"
+              className="mt-3 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 focus:border-bronze-edge focus:outline-none"
             />
           </div>
         )}
@@ -256,7 +256,7 @@ export function FeedbackForm({ initialSubmitted }: FeedbackFormProps) {
             (currentQuestion === 3 && siteUsefulness == null) ||
             (currentQuestion === 4 && interested == null)
           }
-          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
         >
           {isSubmitting
             ? t("dashboard.feedbackSubmitLoading", locale)

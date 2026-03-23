@@ -149,28 +149,28 @@ export function CareerFit({ dimensions, locale }: CareerFitProps) {
         return (
           <div
             key={role.id}
-            className="rounded-2xl border border-[#e8e4dc] bg-white p-5"
+            className="rounded-2xl border border-sand bg-white p-5"
           >
             <div className="flex items-start justify-between gap-3 mb-3">
-              <h3 className="text-sm font-semibold text-[#1a1814]">
+              <h3 className="text-sm font-semibold text-ink">
                 {isHu ? role.hu : role.en}
               </h3>
-              <span className="shrink-0 rounded-full bg-[#fff5f0] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-[#c8410a]">
+              <span className="shrink-0 rounded-full bg-sage-ghost px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-bronze">
                 #{idx + 1}
               </span>
             </div>
-            <p className="text-xs leading-relaxed text-[#5a5650] mb-3">
+            <p className="text-xs leading-relaxed text-ink-body mb-3">
               {isHu ? role.descHu : role.descEn}
             </p>
             {/* Fit bar */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 rounded-full bg-[#e8e4dc]">
+              <div className="flex-1 h-1.5 rounded-full bg-sand">
                 <div
-                  className="h-full rounded-full bg-[#c8410a]"
+                  className="h-full rounded-full bg-sage"
                   style={{ width: `${Math.max(20, strength)}%` }}
                 />
               </div>
-              <span className="shrink-0 font-mono text-[10px] text-[#a09a90]">
+              <span className="shrink-0 font-mono text-[10px] text-muted">
                 {isHu ? "Illeszkedés" : "Fit"}
               </span>
             </div>

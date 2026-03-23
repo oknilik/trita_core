@@ -47,14 +47,14 @@ export default async function ObservePage({ params }: ObservePageProps) {
 
   if (invitation.status === "COMPLETED") {
     return (
-      <div className="min-h-screen bg-[#faf9f6]">
+      <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
           <div className="w-full rounded-2xl border border-[#cfe2d6] bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🎉</div>
-            <h1 className="mt-4 text-2xl font-bold text-[#1a1814]">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.completeTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.completeBody", locale)}
             </p>
           </div>
@@ -65,14 +65,14 @@ export default async function ObservePage({ params }: ObservePageProps) {
 
   if (invitation.status === "CANCELED") {
     return (
-      <div className="min-h-screen bg-[#faf9f6]">
+      <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">😕</div>
-            <h1 className="mt-4 text-2xl font-bold text-[#1a1814]">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.inactiveTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.inactiveBody", locale)}
             </p>
           </div>
@@ -83,14 +83,14 @@ export default async function ObservePage({ params }: ObservePageProps) {
 
   if (invitation.expiresAt < new Date()) {
     return (
-      <div className="min-h-screen bg-[#faf9f6]">
+      <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#f3d4c8] bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sage-ring bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">⏰</div>
-            <h1 className="mt-4 text-2xl font-bold text-[#1a1814]">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.expiredTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-[#3d3a35]">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.expiredBody", locale)}
             </p>
           </div>

@@ -84,7 +84,7 @@ export default async function AdvisoryPage() {
   const org = membership?.org;
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-5xl px-4 py-10">
         <AdvisoryPageClient
           userName={displayName}

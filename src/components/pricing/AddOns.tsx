@@ -59,29 +59,29 @@ export function AddOns({ locale }: { locale: Locale }) {
   const c = copy[locale] ?? copy.hu;
 
   return (
-    <section className="border-t border-[#e8e4dc] bg-[#faf9f6] px-6 py-12 lg:px-16 lg:py-14">
+    <section className="border-t border-sand bg-cream px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-5xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {c.eyebrow}
         </p>
-        <h2 className="mt-2 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+        <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {c.heading}
         </h2>
-        <p className="mt-2 max-w-lg text-sm text-[#5a5650]">{c.sub}</p>
+        <p className="mt-2 max-w-lg text-sm text-ink-body">{c.sub}</p>
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
           {c.items.map((item) => (
             <div
               key={item.label}
-              className="rounded-xl border border-[#e8e4dc] bg-white p-5"
+              className="rounded-xl border border-sand bg-white p-5"
             >
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
                 {item.label}
               </p>
-              <p className="mt-2 font-playfair text-3xl text-[#1a1814]">
+              <p className="mt-2 font-fraunces text-3xl text-ink">
                 {item.price}
               </p>
-              <p className="mt-1.5 text-sm text-[#5a5650]">{item.desc}</p>
+              <p className="mt-1.5 text-sm text-ink-body">{item.desc}</p>
             </div>
           ))}
         </div>

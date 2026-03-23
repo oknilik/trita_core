@@ -74,7 +74,7 @@ export default async function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#faf9f6]">
+    <main className="min-h-screen bg-cream">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

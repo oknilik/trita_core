@@ -57,7 +57,7 @@ function statusLabel(status: string, isHu: boolean) {
 
 function statusBadgeClass(status: string) {
   if (status === "ACTIVE") return "bg-emerald-50 text-emerald-700";
-  if (status === "CLOSED") return "bg-[#e8e4dc] text-[#3d3a35]";
+  if (status === "CLOSED") return "bg-sand text-ink-body";
   return "bg-amber-50 text-amber-700";
 }
 
@@ -243,13 +243,13 @@ export default async function CampaignDetailPage({
     }));
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
 
         {/* Back link */}
         <Link
           href={`/org/${orgId}?tab=campaigns`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3d3a35] transition-colors hover:text-[#c8410a]"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
         >
           <svg
             viewBox="0 0 16 16"
@@ -267,14 +267,14 @@ export default async function CampaignDetailPage({
 
         {/* Header */}
         <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
             {eyebrowLabel(campaign.status, isHu)}
           </p>
-          <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {campaign.name}
           </h1>
           {campaign.description && (
-            <p className="mt-1 text-sm text-[#5a5650]">{campaign.description}</p>
+            <p className="mt-1 text-sm text-ink-body">{campaign.description}</p>
           )}
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <span
@@ -282,17 +282,17 @@ export default async function CampaignDetailPage({
             >
               {statusLabel(campaign.status, isHu)}
             </span>
-            <span className="text-xs text-[#3d3a35]/50">
+            <span className="text-xs text-ink-body/50">
               {isHu ? "Létrehozva:" : "Created:"}{" "}
               {campaign.createdAt.toLocaleDateString(dateLocale)}
             </span>
             {campaign.closedAt && (
-              <span className="text-xs text-[#3d3a35]/50">
+              <span className="text-xs text-ink-body/50">
                 {isHu ? "Lezárva:" : "Closed:"}{" "}
                 {campaign.closedAt.toLocaleDateString(dateLocale)}
               </span>
             )}
-            <span className="text-xs text-[#3d3a35]/50">
+            <span className="text-xs text-ink-body/50">
               {totalCount}{" "}
               {isHu
                 ? "résztvevő"
@@ -301,7 +301,7 @@ export default async function CampaignDetailPage({
                   : "participants"}
             </span>
             {totalCount > 0 && (
-              <span className="text-xs text-[#3d3a35]/50">
+              <span className="text-xs text-ink-body/50">
                 {completionPct}% {isHu ? "kitöltve" : "complete"}
               </span>
             )}
@@ -312,72 +312,72 @@ export default async function CampaignDetailPage({
         {totalCount > 0 && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {/* Self-assessment */}
-            <div className="relative overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white p-5 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "#c8410a" }}
+                style={{ backgroundColor: "var(--color-sage)" }}
               />
               <p
                 className="font-mono text-[10px] uppercase tracking-widest"
-                style={{ color: "#a09a90" }}
+                style={{ color: "var(--color-muted)" }}
               >
                 {isHu ? "Önértékelés" : "Self-assessment"}
               </p>
-              <p className="mt-1 font-playfair text-3xl text-[#1a1814]">
+              <p className="mt-1 font-fraunces text-3xl text-ink">
                 {selfDoneCount}
-                <span className="ml-1 font-sans text-sm font-normal text-[#a09a90]">
+                <span className="ml-1 font-sans text-sm font-normal text-muted">
                   / {totalCount}
                 </span>
               </p>
-              <p className="mt-1 text-xs text-[#5a5650]">
+              <p className="mt-1 text-xs text-ink-body">
                 {Math.round((selfDoneCount / totalCount) * 100)}%{" "}
                 {isHu ? "befejezett" : "completed"}
               </p>
             </div>
 
             {/* Observer */}
-            <div className="relative overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white p-5 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
                 style={{ backgroundColor: "#059669" }}
               />
               <p
                 className="font-mono text-[10px] uppercase tracking-widest"
-                style={{ color: "#a09a90" }}
+                style={{ color: "var(--color-muted)" }}
               >
                 {isHu ? "Observer kész" : "Observer done"}
               </p>
-              <p className="mt-1 font-playfair text-3xl text-[#1a1814]">
+              <p className="mt-1 font-fraunces text-3xl text-ink">
                 {observerDoneCount}
-                <span className="ml-1 font-sans text-sm font-normal text-[#a09a90]">
+                <span className="ml-1 font-sans text-sm font-normal text-muted">
                   / {totalCount}
                 </span>
               </p>
-              <p className="mt-1 text-xs text-[#5a5650]">
+              <p className="mt-1 text-xs text-ink-body">
                 {Math.round((observerDoneCount / totalCount) * 100)}%{" "}
                 {isHu ? "kapott visszajelzést" : "received feedback"}
               </p>
             </div>
 
             {/* Fully done */}
-            <div className="relative overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white p-5 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
                 style={{ backgroundColor: "#6366F1" }}
               />
               <p
                 className="font-mono text-[10px] uppercase tracking-widest"
-                style={{ color: "#a09a90" }}
+                style={{ color: "var(--color-muted)" }}
               >
                 {isHu ? "Teljes befejezés" : "Fully complete"}
               </p>
-              <p className="mt-1 font-playfair text-3xl text-[#1a1814]">
+              <p className="mt-1 font-fraunces text-3xl text-ink">
                 {fullyDoneCount}
-                <span className="ml-1 font-sans text-sm font-normal text-[#a09a90]">
+                <span className="ml-1 font-sans text-sm font-normal text-muted">
                   / {totalCount}
                 </span>
               </p>
-              <p className="mt-1 text-xs text-[#5a5650]">
+              <p className="mt-1 text-xs text-ink-body">
                 {Math.round((fullyDoneCount / totalCount) * 100)}%{" "}
                 {isHu ? "mindkettő kész" : "both done"}
               </p>
@@ -390,14 +390,14 @@ export default async function CampaignDetailPage({
           currentAvgScores &&
           previousAvgScores &&
           previousCampaignName && (
-            <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+            <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
                 {isHu ? "// fejlődési ív" : "// development arc"}
               </p>
-              <h2 className="mb-1 font-playfair text-xl text-[#1a1814]">
+              <h2 className="mb-1 font-fraunces text-xl text-ink">
                 {isHu ? "Fejlődési ív" : "Development arc"}
               </h2>
-              <p className="mb-5 text-xs text-[#5a5650]">
+              <p className="mb-5 text-xs text-ink-body">
                 {isHu
                   ? `Összehasonlítás: "${previousCampaignName}" kampányhoz képest`
                   : `Compared to: "${previousCampaignName}" campaign`}
@@ -410,10 +410,10 @@ export default async function CampaignDetailPage({
                   const label = isHu ? HEXACO_LABELS_HU[d] : HEXACO_LABELS_EN[d];
                   return (
                     <div key={d} className="flex items-center gap-3">
-                      <span className="w-36 shrink-0 text-xs text-[#5a5650] truncate">
+                      <span className="w-36 shrink-0 text-xs text-ink-body truncate">
                         {label}
                       </span>
-                      <div className="flex-1 h-[6px] rounded-full overflow-hidden bg-[#e8e4dc]">
+                      <div className="flex-1 h-[6px] rounded-full overflow-hidden bg-sand">
                         <div
                           className="h-full rounded-full transition-all duration-700"
                           style={{
@@ -428,12 +428,12 @@ export default async function CampaignDetailPage({
                             ? "text-emerald-600"
                             : delta < 0
                               ? "text-rose-600"
-                              : "text-[#a09a90]"
+                              : "text-muted"
                         }`}
                       >
                         {delta > 0 ? `+${delta}` : delta === 0 ? "=" : delta}
                       </span>
-                      <span className="w-8 text-right text-xs tabular-nums text-[#a09a90]">
+                      <span className="w-8 text-right text-xs tabular-nums text-muted">
                         {curr}
                       </span>
                     </div>
@@ -444,23 +444,23 @@ export default async function CampaignDetailPage({
           )}
 
         {/* Participants */}
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// résztvevők" : "// participants"}
           </p>
-          <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+          <h2 className="mb-5 font-fraunces text-xl text-ink">
             {isHu ? "Résztvevők" : "Participants"}{" "}
-            <span className="font-sans text-sm font-normal text-[#3d3a35]/50">
+            <span className="font-sans text-sm font-normal text-ink-body/50">
               ({totalCount})
             </span>
           </h2>
 
           {totalCount === 0 ? (
-            <p className="py-6 text-center text-sm text-[#3d3a35]/50">
+            <p className="py-6 text-center text-sm text-ink-body/50">
               {isHu ? "Még nincs résztvevő." : "No participants yet."}
             </p>
           ) : (
-            <div className="flex flex-col divide-y divide-[#e8e4dc]">
+            <div className="flex flex-col divide-y divide-sand">
               {campaign.participants.map((p) => {
                 const isSelfDone = selfDoneSet.has(p.userId);
                 const obsCount = observerCountMap.get(p.userId) ?? 0;
@@ -469,11 +469,11 @@ export default async function CampaignDetailPage({
                 return (
                   <div key={p.id} className="flex items-center justify-between gap-3 py-3">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[#1a1814]">
+                      <p className="truncate text-sm font-semibold text-ink">
                         {p.user.username ?? p.user.email ?? "—"}
                       </p>
                       {p.user.username && (
-                        <p className="truncate text-xs text-[#3d3a35]/60">{p.user.email}</p>
+                        <p className="truncate text-xs text-ink-body/60">{p.user.email}</p>
                       )}
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
@@ -486,16 +486,16 @@ export default async function CampaignDetailPage({
                           {isHu ? "Önért. kész" : "Self done"}
                         </span>
                       ) : (
-                        <span className="rounded-full bg-[#e8e4dc] px-2.5 py-0.5 text-xs font-semibold text-[#5a5650]">
+                        <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
                           {isHu ? "Nem kezdte" : "Not started"}
                         </span>
                       )}
                       {obsCount > 0 && (
-                        <span className="text-xs text-[#a09a90]">
+                        <span className="text-xs text-muted">
                           {obsCount} obs.
                         </span>
                       )}
-                      <span className="text-xs text-[#3d3a35]/50">
+                      <span className="text-xs text-ink-body/50">
                         {p.addedAt.toLocaleDateString(dateLocale)}
                       </span>
                     </div>
@@ -506,7 +506,7 @@ export default async function CampaignDetailPage({
           )}
 
           {isManager && campaign.status !== "CLOSED" && availableMembers.length > 0 && (
-            <div className="mt-5 border-t border-[#e8e4dc] pt-5">
+            <div className="mt-5 border-t border-sand pt-5">
               <AddParticipantButton
                 orgId={orgId}
                 campaignId={campaign.id}
@@ -519,14 +519,14 @@ export default async function CampaignDetailPage({
 
         {/* Status transition */}
         {isManager && nextStatus && (
-          <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// státusz" : "// status"}
             </p>
-            <h2 className="mb-3 text-sm font-semibold text-[#1a1814]">
+            <h2 className="mb-3 text-sm font-semibold text-ink">
               {isHu ? "Kampány kezelése" : "Campaign management"}
             </h2>
-            <p className="mb-4 text-xs text-[#3d3a35]/60">
+            <p className="mb-4 text-xs text-ink-body/60">
               {campaign.status === "DRAFT"
                 ? isHu
                   ? "Az aktiválás után a résztvevők értesítést kapnak és megkezdhetik az értékeléseket."

@@ -45,12 +45,12 @@ export default async function NewCampaignPage({
   }));
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-2xl px-4 py-10">
         {/* Back link */}
         <Link
           href={`/org/${orgId}?tab=campaigns`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#3d3a35] transition-colors hover:text-[#c8410a]"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
         >
           <svg
             viewBox="0 0 16 16"
@@ -68,10 +68,10 @@ export default async function NewCampaignPage({
 
         {/* Header */}
         <div className="mb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// új kampány" : "// new campaign"}
           </p>
-          <h1 className="mt-1 font-playfair text-3xl text-[#1a1814]">
+          <h1 className="mt-1 font-fraunces text-3xl text-ink">
             {isHu ? "Kampány létrehozása" : "Create campaign"}
           </h1>
         </div>

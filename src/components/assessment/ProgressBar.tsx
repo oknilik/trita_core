@@ -20,7 +20,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
         <span className="truncate whitespace-nowrap font-medium text-gray-700">
           {tf("assessment.questionCounter", locale, { current, total })}
         </span>
-        <span className="inline-flex shrink-0 items-center rounded-full bg-[#fef3ec] px-2 py-0.5 font-semibold text-[#8b2f09]">
+        <span className="inline-flex shrink-0 items-center rounded-full bg-sage-soft px-2 py-0.5 font-semibold text-bronze-dark">
           {Math.round(percentage)}%
         </span>
       </div>
@@ -28,7 +28,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
       {/* Progress bar track */}
       <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200">
         <motion.div
-          className="h-full bg-gradient-to-r from-[#c8410a] to-[#8b2f09]"
+          className="h-full bg-gradient-to-r from-sage to-sage-deep"
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.5, ease: 'easeOut' }}

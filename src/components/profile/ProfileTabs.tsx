@@ -96,7 +96,7 @@ function LockIcon() {
   return (
     <svg
       width="20" height="20" viewBox="0 0 20 20"
-      fill="none" stroke="#c8410a" strokeWidth="1.5"
+      fill="none" stroke="#c17f4a" strokeWidth="1.5"
       strokeLinecap="round" strokeLinejoin="round"
     >
       <rect x="3" y="9" width="14" height="10" rx="2" />
@@ -113,15 +113,15 @@ function TabPaywall({ tier, tierLabel, price, teaser, isHu }: {
   isHu: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-[#e8e4dc] bg-white px-6 py-20 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#e8e4dc] bg-[#faf9f6]">
+    <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-sand bg-white px-6 py-20 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-sand bg-cream">
         <LockIcon />
       </div>
       <div className="max-w-sm">
-        <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+        <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
           {tierLabel} · {price}
         </p>
-        <p className="text-sm leading-relaxed text-[#5a5650]">{teaser}</p>
+        <p className="text-sm leading-relaxed text-ink-body">{teaser}</p>
       </div>
       <UpgradeButton
         tier={tier}
@@ -145,7 +145,7 @@ function FacetPlaceholder() {
     { color: DIM_COLORS[3], b1: "44%", b2: "62%", opacity: 0.2,  blur: 5   },
   ];
   return (
-    <div className="space-y-4 rounded-2xl border border-[#e8e4dc] bg-white p-6">
+    <div className="space-y-4 rounded-2xl border border-sand bg-white p-6">
       {groups.map((g, i) => (
         <div
           key={i}
@@ -154,10 +154,10 @@ function FacetPlaceholder() {
         >
           <div className="mt-0.5 h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: g.color }} />
           <div className="flex-1 space-y-2">
-            <div className="h-2 w-full rounded-full bg-[#f0ece4]">
+            <div className="h-2 w-full rounded-full bg-warm-mid">
               <div className="h-full rounded-full" style={{ width: g.b1, backgroundColor: `${g.color}60` }} />
             </div>
-            <div className="h-2 w-full rounded-full bg-[#f0ece4]">
+            <div className="h-2 w-full rounded-full bg-warm-mid">
               <div className="h-full rounded-full" style={{ width: g.b2, backgroundColor: `${g.color}40` }} />
             </div>
           </div>
@@ -178,17 +178,17 @@ function GrowthPlaceholder() {
       {items.map((item, i) => (
         <div
           key={i}
-          className="flex items-start gap-4 rounded-xl border border-[#e8e4dc] bg-white p-4"
+          className="flex items-start gap-4 rounded-xl border border-sand bg-white p-4"
           style={{ opacity: item.opacity, filter: item.blur ? `blur(${item.blur}px)` : undefined }}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#e8e4dc] bg-[#faf9f6]">
-            <span className="font-mono text-xs font-bold text-[#a09a90]">#{i + 1}</span>
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sand bg-cream">
+            <span className="font-mono text-xs font-bold text-muted">#{i + 1}</span>
           </div>
           <div className="flex-1 space-y-2 pt-0.5">
-            <div className="h-3 rounded bg-[#e8e4dc]" style={{ width: item.titleW }} />
-            <div className="h-2 rounded bg-[#e8e4dc]/60" style={{ width: item.d1 }} />
-            <div className="h-1.5 w-full rounded-full bg-[#f0ece4]">
-              <div className="h-full w-2/3 rounded-full bg-[#c8410a]/18" />
+            <div className="h-3 rounded bg-sand" style={{ width: item.titleW }} />
+            <div className="h-2 rounded bg-sand/60" style={{ width: item.d1 }} />
+            <div className="h-1.5 w-full rounded-full bg-warm-mid">
+              <div className="h-full w-2/3 rounded-full bg-sage/18" />
             </div>
           </div>
         </div>
@@ -208,19 +208,19 @@ function CareerPlaceholder() {
       {cards.map((card, i) => (
         <div
           key={i}
-          className="rounded-xl border border-[#e8e4dc] bg-white p-4"
+          className="rounded-xl border border-sand bg-white p-4"
           style={{ opacity: card.opacity, filter: card.blur ? `blur(${card.blur}px)` : undefined }}
         >
           <div className="mb-3 flex items-center justify-between gap-2">
-            <div className="h-3 rounded bg-[#e8e4dc]" style={{ width: card.titleW }} />
-            <div className="h-5 w-10 shrink-0 rounded-full bg-[#e8e4dc]" />
+            <div className="h-3 rounded bg-sand" style={{ width: card.titleW }} />
+            <div className="h-5 w-10 shrink-0 rounded-full bg-sand" />
           </div>
-          <div className="h-1.5 w-full rounded-full bg-[#f0ece4]">
-            <div className="h-full rounded-full bg-[#c8410a]/20" style={{ width: card.barW }} />
+          <div className="h-1.5 w-full rounded-full bg-warm-mid">
+            <div className="h-full rounded-full bg-sage/20" style={{ width: card.barW }} />
           </div>
           <div className="mt-3 space-y-1.5">
-            <div className="h-2 rounded bg-[#e8e4dc]" style={{ width: "88%" }} />
-            <div className="h-2 rounded bg-[#e8e4dc]/60" style={{ width: "68%" }} />
+            <div className="h-2 rounded bg-sand" style={{ width: "88%" }} />
+            <div className="h-2 rounded bg-sand/60" style={{ width: "68%" }} />
           </div>
         </div>
       ))}
@@ -236,15 +236,15 @@ function ObserverPlaceholder() {
     { selfW: "55%", obsW: "40%", color: DIM_COLORS[3], opacity: 0.2,  blur: 5   },
   ];
   return (
-    <div className="space-y-4 rounded-2xl border border-[#e8e4dc] bg-white p-6">
+    <div className="space-y-4 rounded-2xl border border-sand bg-white p-6">
       <div className="mb-5 flex items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <div className="h-2 w-2 rounded-full bg-[#1a1814]" />
-          <div className="h-2 w-14 rounded bg-[#e8e4dc]" />
+          <div className="h-2 w-2 rounded-full bg-ink" />
+          <div className="h-2 w-14 rounded bg-sand" />
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="h-2 w-2 rounded-full bg-[#c8410a]/40" />
-          <div className="h-2 w-14 rounded bg-[#e8e4dc]" />
+          <div className="h-2 w-2 rounded-full bg-sage/40" />
+          <div className="h-2 w-14 rounded bg-sand" />
         </div>
       </div>
       {rows.map((row, i) => (
@@ -255,16 +255,16 @@ function ObserverPlaceholder() {
         >
           <div className="flex items-center gap-2">
             <div className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-sm" style={{ backgroundColor: row.color }} />
-            <div className="h-2.5 w-24 rounded bg-[#e8e4dc]" />
+            <div className="h-2.5 w-24 rounded bg-sand" />
           </div>
           <div className="flex items-center gap-2 pl-4">
-            <div className="h-1.5 flex-1 rounded-full bg-[#f0ece4]">
+            <div className="h-1.5 flex-1 rounded-full bg-warm-mid">
               <div className="h-full rounded-full" style={{ width: row.selfW, backgroundColor: `${row.color}60` }} />
             </div>
           </div>
           <div className="flex items-center gap-2 pl-4">
-            <div className="h-1.5 flex-1 rounded-full bg-[#f0ece4]">
-              <div className="h-full rounded-full bg-[#c8410a]/25" style={{ width: row.obsW }} />
+            <div className="h-1.5 flex-1 rounded-full bg-warm-mid">
+              <div className="h-full rounded-full bg-sage/25" style={{ width: row.obsW }} />
             </div>
           </div>
         </div>
@@ -284,19 +284,19 @@ function BlindSpotPlaceholder() {
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex items-start gap-4 rounded-xl border border-[#e8e4dc] bg-white p-4"
+          className="flex items-start gap-4 rounded-xl border border-sand bg-white p-4"
           style={{ opacity: card.opacity, filter: card.blur ? `blur(${card.blur}px)` : undefined }}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#e8e4dc] bg-[#faf9f6]">
-            <div className="h-3 w-3 rounded-sm bg-[#e8e4dc]" />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sand bg-cream">
+            <div className="h-3 w-3 rounded-sm bg-sand" />
           </div>
           <div className="flex-1 space-y-2 pt-0.5">
-            <div className="h-3 rounded bg-[#e8e4dc]" style={{ width: "55%" }} />
-            <div className="h-2 rounded bg-[#e8e4dc]/60" style={{ width: "80%" }} />
+            <div className="h-3 rounded bg-sand" style={{ width: "55%" }} />
+            <div className="h-2 rounded bg-sand/60" style={{ width: "80%" }} />
             <div className="mt-1 flex items-center gap-2">
-              <div className="text-[10px] text-[#a09a90]">gap</div>
-              <div className="h-1.5 flex-1 rounded-full bg-[#f0ece4]">
-                <div className="h-full rounded-full bg-[#c8410a]/30" style={{ width: card.gapW }} />
+              <div className="text-[10px] text-muted">gap</div>
+              <div className="h-1.5 flex-1 rounded-full bg-warm-mid">
+                <div className="h-full rounded-full bg-sage/30" style={{ width: card.gapW }} />
               </div>
             </div>
           </div>
@@ -319,7 +319,7 @@ function SectionLock({ variant }: { variant: SectionVariant }) {
     <CareerPlaceholder />;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white">
+    <div className="overflow-hidden rounded-2xl border border-sand bg-white">
       <div className="pointer-events-none relative select-none px-6 pb-2 pt-6" aria-hidden="true">
         {placeholder}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-white" />
@@ -333,8 +333,8 @@ function SectionLock({ variant }: { variant: SectionVariant }) {
 function CheckIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0">
-      <circle cx="7" cy="7" r="6.5" fill="#c8410a" fillOpacity="0.1" />
-      <path d="M4.5 7l2 2 3-3" stroke="#c8410a" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="7" cy="7" r="6.5" fill="#c17f4a" fillOpacity="0.1" />
+      <path d="M4.5 7l2 2 3-3" stroke="#c17f4a" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -350,16 +350,16 @@ function UpgradeBanner({ accessLevel, isHu }: { accessLevel: "start" | "plus"; i
       : ["Everything in Self Plus", "Send 3 observer invitations", "Blind spot analysis"];
 
     return (
-      <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white">
-        <div className="h-[3px] bg-[#c8410a]" />
+      <div className="overflow-hidden rounded-2xl border border-sand bg-white">
+        <div className="h-[3px] bg-sage" />
         <div className="px-6 py-8 md:px-10">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
             {isHu ? "// válassz csomagot" : "// choose a plan"}
           </p>
-          <h3 className="mt-2 font-playfair text-2xl text-[#1a1814]">
+          <h3 className="mt-2 font-fraunces text-2xl text-ink">
             {isHu ? "Mélyíts a profilodon" : "Go deeper on your profile"}
           </h3>
-          <p className="mt-1.5 text-sm text-[#5a5650]">
+          <p className="mt-1.5 text-sm text-ink-body">
             {isHu
               ? "Mindkettő egyszeri vásárlás — válaszd, mennyire mélyen szeretnél megismerni magad."
               : "Both are one-time purchases — choose how deep you want to go."}
@@ -367,15 +367,15 @@ function UpgradeBanner({ accessLevel, isHu }: { accessLevel: "start" | "plus"; i
 
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Self Plus card */}
-            <div className="flex flex-col rounded-xl border border-[#e8e4dc] p-5">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+            <div className="flex flex-col rounded-xl border border-sand p-5">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
                 {isHu ? "egyéni · egyszeri" : "individual · one-time"}
               </p>
-              <p className="mt-1.5 font-playfair text-lg text-[#1a1814]">Self Plus</p>
-              <p className="mt-0.5 text-2xl font-semibold text-[#1a1814]">€7</p>
+              <p className="mt-1.5 font-fraunces text-lg text-ink">Self Plus</p>
+              <p className="mt-0.5 text-2xl font-semibold text-ink">€7</p>
               <ul className="mt-4 flex flex-col gap-1.5">
                 {plusBullets.map((b) => (
-                  <li key={b} className="flex items-center gap-2 text-sm text-[#3d3a35]">
+                  <li key={b} className="flex items-center gap-2 text-sm text-ink-body">
                     <CheckIcon />
                     {b}
                   </li>
@@ -390,20 +390,20 @@ function UpgradeBanner({ accessLevel, isHu }: { accessLevel: "start" | "plus"; i
             </div>
 
             {/* Self Reflect card — highlighted */}
-            <div className="flex flex-col rounded-xl border-2 border-[#c8410a] p-5">
+            <div className="flex flex-col rounded-xl border-2 border-sage p-5">
               <div className="flex items-center justify-between">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
                   {isHu ? "egyéni · egyszeri" : "individual · one-time"}
                 </p>
-                <span className="rounded-full bg-[#c8410a] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white">
+                <span className="rounded-full bg-sage px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white">
                   {isHu ? "teljes" : "full"}
                 </span>
               </div>
-              <p className="mt-1.5 font-playfair text-lg text-[#1a1814]">Self Reflect</p>
-              <p className="mt-0.5 text-2xl font-semibold text-[#1a1814]">€12</p>
+              <p className="mt-1.5 font-fraunces text-lg text-ink">Self Reflect</p>
+              <p className="mt-0.5 text-2xl font-semibold text-ink">€12</p>
               <ul className="mt-4 flex flex-col gap-1.5">
                 {reflectBullets.map((b) => (
-                  <li key={b} className="flex items-center gap-2 text-sm text-[#3d3a35]">
+                  <li key={b} className="flex items-center gap-2 text-sm text-ink-body">
                     <CheckIcon />
                     {b}
                   </li>
@@ -418,7 +418,7 @@ function UpgradeBanner({ accessLevel, isHu }: { accessLevel: "start" | "plus"; i
             </div>
           </div>
 
-          <p className="mt-4 text-center text-xs text-[#a09a90]">
+          <p className="mt-4 text-center text-xs text-muted">
             {isHu ? "Egyszeri vásárlás · nincs előfizetés" : "One-time purchase · no subscription"}
           </p>
         </div>
@@ -432,20 +432,20 @@ function UpgradeBanner({ accessLevel, isHu }: { accessLevel: "start" | "plus"; i
     : ["Comparison with observer feedback", "Send 3 observer invitations", "Blind spot analysis"];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white text-center">
-      <div className="h-[3px] bg-[#c8410a]" />
+    <div className="overflow-hidden rounded-2xl border border-sand bg-white text-center">
+      <div className="h-[3px] bg-sage" />
       <div className="px-6 py-10 md:px-12">
-        <h3 className="font-playfair text-2xl text-[#1a1814]">
+        <h3 className="font-fraunces text-2xl text-ink">
           {isHu ? "Tudd meg, hogyan látnak mások" : "See how others see you"}
         </h3>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-[#5a5650]">
+        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-ink-body">
           {isHu
             ? "Az observer visszajelzések feltárják, hol tér el az önképed a külső megítéléstől."
             : "Observer feedback reveals where your self-image diverges from how others perceive you."}
         </p>
         <ul className="mt-6 inline-flex flex-col gap-2 text-left">
           {reflectBullets.map((b) => (
-            <li key={b} className="flex items-center gap-2 text-sm text-[#3d3a35]">
+            <li key={b} className="flex items-center gap-2 text-sm text-ink-body">
               <CheckIcon />
               {b}
             </li>
@@ -457,7 +457,7 @@ function UpgradeBanner({ accessLevel, isHu }: { accessLevel: "start" | "plus"; i
             label={isHu ? "Tükör feloldása — €12" : "Unlock mirror — €12"}
           />
         </div>
-        <p className="mt-3 text-xs text-[#a09a90]">
+        <p className="mt-3 text-xs text-muted">
           {isHu ? "Egyszeri vásárlás · nincs előfizetés" : "One-time purchase · no subscription"}
         </p>
       </div>
@@ -520,10 +520,10 @@ function ResultsTab({
 
       {/* 2. Dimension detail cards with modal — always visible */}
       <section>
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// dimenziók" : "// dimensions"}
         </p>
-        <h2 className="mt-2 mb-6 font-playfair text-2xl text-[#1a1814]">
+        <h2 className="mt-2 mb-6 font-fraunces text-2xl text-ink">
           {isHu ? "A dimenziók részletesen" : "Dimensions in detail"}
         </h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -561,15 +561,15 @@ function ResultsTab({
       {/* 4. "Mi áll a dimenziók mögött?" — Plus+ */}
       <div>
         <div className="mb-6 flex items-center gap-2.5">
-          <h2 className="font-playfair text-2xl text-[#1a1814]">
+          <h2 className="font-fraunces text-2xl text-ink">
             {isHu ? "Mi áll a dimenziók mögött?" : "What drives your dimensions?"}
           </h2>
           {!isPlus && (
             <>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#a09a90" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#8a8a9a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                 <rect x="3" y="9" width="14" height="10" rx="2" /><path d="M7 9V6a3 3 0 0 1 6 0v3" />
               </svg>
-              <span className="rounded-full bg-[#f0ece4] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#a09a90]">
+              <span className="rounded-full bg-warm-mid px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted">
                 Self Plus
               </span>
             </>
@@ -593,15 +593,15 @@ function ResultsTab({
       {/* 4. "Hol fejlődhetsz a leggyorsabban?" — Plus+ */}
       <div>
         <div className="mb-6 flex items-center gap-2.5">
-          <h2 className="font-playfair text-2xl text-[#1a1814]">
+          <h2 className="font-fraunces text-2xl text-ink">
             {isHu ? "Hol fejlődhetsz a leggyorsabban?" : "Where can you grow fastest?"}
           </h2>
           {!isPlus && (
             <>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#a09a90" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#8a8a9a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                 <rect x="3" y="9" width="14" height="10" rx="2" /><path d="M7 9V6a3 3 0 0 1 6 0v3" />
               </svg>
-              <span className="rounded-full bg-[#f0ece4] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#a09a90]">
+              <span className="rounded-full bg-warm-mid px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted">
                 Self Plus
               </span>
             </>
@@ -617,15 +617,15 @@ function ResultsTab({
       {/* 5. "Milyen szerepkörök illenek hozzád?" — Plus+ */}
       <div>
         <div className="mb-6 flex items-center gap-2.5">
-          <h2 className="font-playfair text-2xl text-[#1a1814]">
+          <h2 className="font-fraunces text-2xl text-ink">
             {isHu ? "Milyen szerepkörök illenek hozzád?" : "Which roles fit you?"}
           </h2>
           {!isPlus && (
             <>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#a09a90" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#8a8a9a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                 <rect x="3" y="9" width="14" height="10" rx="2" /><path d="M7 9V6a3 3 0 0 1 6 0v3" />
               </svg>
-              <span className="rounded-full bg-[#f0ece4] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#a09a90]">
+              <span className="rounded-full bg-warm-mid px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted">
                 Self Plus
               </span>
             </>
@@ -644,15 +644,15 @@ function ResultsTab({
       {/* 6. "Hogyan látnak mások?" — Reflect+ */}
       <div>
         <div className="mb-6 flex items-center gap-2.5">
-          <h2 className="font-playfair text-2xl text-[#1a1814]">
+          <h2 className="font-fraunces text-2xl text-ink">
             {isHu ? "Hogyan látnak mások?" : "How do others see you?"}
           </h2>
           {!isReflect && (
             <>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#a09a90" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#8a8a9a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                 <rect x="3" y="9" width="14" height="10" rx="2" /><path d="M7 9V6a3 3 0 0 1 6 0v3" />
               </svg>
-              <span className="rounded-full bg-[#f0ece4] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#a09a90]">
+              <span className="rounded-full bg-warm-mid px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted">
                 Self Reflect
               </span>
             </>
@@ -673,15 +673,15 @@ function ResultsTab({
       {/* 7. "Mik a vakfoltjaid?" — Reflect+ */}
       <div>
         <div className="mb-6 flex items-center gap-2.5">
-          <h2 className="font-playfair text-2xl text-[#1a1814]">
+          <h2 className="font-fraunces text-2xl text-ink">
             {isHu ? "Mik a vakfoltjaid?" : "What are your blind spots?"}
           </h2>
           {!isReflect && (
             <>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#a09a90" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#8a8a9a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                 <rect x="3" y="9" width="14" height="10" rx="2" /><path d="M7 9V6a3 3 0 0 1 6 0v3" />
               </svg>
-              <span className="rounded-full bg-[#f0ece4] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#a09a90]">
+              <span className="rounded-full bg-warm-mid px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted">
                 Self Reflect
               </span>
             </>
@@ -764,7 +764,7 @@ function ComparisonTab({
         locale={locale as Locale}
       />
       <div>
-        <h2 className="mb-6 font-playfair text-2xl text-[#1a1814]">
+        <h2 className="mb-6 font-fraunces text-2xl text-ink">
           {isHu ? "Vakfolt-elemzés" : "Blind spot analysis"}
         </h2>
         <BlindSpotAnalysis
@@ -818,11 +818,11 @@ function InvitesTab({
 
       {/* Received invitations */}
       {receivedInvitations.length > 0 && (
-        <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 md:p-8">
-          <h2 className="font-playfair text-xl text-[#1a1814]">
+        <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
+          <h2 className="font-fraunces text-xl text-ink">
             {isHu ? "Beérkező meghívók" : "Received invitations"}
           </h2>
-          <p className="mt-2 text-sm text-[#5a5650]">
+          <p className="mt-2 text-sm text-ink-body">
             {isHu
               ? "Ezek az emberek hívtak meg téged observer-ként."
               : "These people invited you as an observer."}
@@ -835,7 +835,7 @@ function InvitesTab({
               return (
                 <div
                   key={inv.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-[#e8e4dc] px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-sand px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
                     <span
@@ -843,13 +843,13 @@ function InvitesTab({
                         inv.status === "COMPLETED"
                           ? "bg-emerald-500"
                           : inv.status === "CANCELED" || isExpired
-                            ? "bg-[#e8e4dc]"
+                            ? "bg-sand"
                             : "bg-amber-400"
                       }`}
                     />
                     <div>
-                      <p className="text-sm font-semibold text-[#1a1814]">{name}</p>
-                      <p className="text-xs text-[#a09a90]">
+                      <p className="text-sm font-semibold text-ink">{name}</p>
+                      <p className="text-xs text-muted">
                         {inv.status === "COMPLETED"
                           ? isHu ? "Kitöltve" : "Completed"
                           : inv.status === "CANCELED"
@@ -863,7 +863,7 @@ function InvitesTab({
                   {isPending && !isExpired && (
                     <Link
                       href={`/observe/${inv.token}`}
-                      className="text-sm font-semibold text-[#c8410a] hover:text-[#b53a09]"
+                      className="text-sm font-semibold text-bronze hover:text-bronze-dark"
                     >
                       {isHu ? "Kitölt →" : "Fill in →"}
                     </Link>
@@ -972,20 +972,20 @@ export function ProfileTabs({
 
       {/* In-progress draft banner */}
       {hasDraft && draftTotalQuestions > 0 && (
-        <div className="rounded-xl border border-[#e8e4dc] bg-white p-5 md:p-6">
+        <div className="rounded-xl border border-sand bg-white p-5 md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-semibold text-[#1a1814]">
+              <p className="text-sm font-semibold text-ink">
                 {isHu ? "Folyamatban lévő teszt" : "Assessment in progress"}
               </p>
-              <p className="mt-0.5 text-sm text-[#5a5650]">
+              <p className="mt-0.5 text-sm text-ink-body">
                 {isHu
                   ? `${draftAnsweredCount} / ${draftTotalQuestions} kérdés megválaszolva`
                   : `${draftAnsweredCount} / ${draftTotalQuestions} questions answered`}
               </p>
-              <div className="mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-[#e8e4dc]">
+              <div className="mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-sand">
                 <div
-                  className="h-full rounded-full bg-[#c8410a] transition-all"
+                  className="h-full rounded-full bg-sage transition-all"
                   style={{
                     width: `${Math.round((draftAnsweredCount / draftTotalQuestions) * 100)}%`,
                   }}
@@ -995,7 +995,7 @@ export function ProfileTabs({
             <div className="flex flex-col items-start gap-2 md:items-end">
               <Link
                 href="/assessment"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
               >
                 {isHu ? "Folytatom →" : "Continue →"}
               </Link>
@@ -1028,7 +1028,7 @@ export function ProfileTabs({
       {/* Tab bar */}
       <div
         ref={tabBarRef}
-        className="scroll-mt-24 rounded-2xl border border-[#e8e4dc] bg-white p-2 shadow-sm"
+        className="scroll-mt-24 rounded-2xl border border-sand bg-white p-2 shadow-sm"
       >
         <div className="grid grid-cols-3 gap-1.5" role="tablist" aria-label="Profile navigation">
           {TABS.map((tab) => (
@@ -1039,8 +1039,8 @@ export function ProfileTabs({
               onClick={() => handleTabChange(tab.id)}
               className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-3 py-3 text-xs font-semibold transition-all duration-200 md:flex-row md:gap-2 md:text-sm ${
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-[#c8410a] to-[#8b2f09] text-white shadow-md shadow-[#c8410a]/25"
-                  : "text-[#a09a90] hover:bg-[#faf9f6] hover:text-[#3d3a35]"
+                  ? "bg-gradient-to-r from-sage to-sage-deep text-white shadow-md shadow-sage/25"
+                  : "text-muted hover:bg-cream hover:text-ink-body"
               }`}
             >
               {tab.locked ? (

@@ -36,7 +36,7 @@ export function UpgradeButton({ tier, label }: UpgradeButtonProps) {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-60"
     >
       {loading ? "…" : label}
     </button>

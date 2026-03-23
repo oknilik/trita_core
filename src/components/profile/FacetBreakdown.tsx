@@ -24,7 +24,7 @@ export function FacetBreakdown({ dimensions, locale }: FacetBreakdownProps) {
 
   if (!hasFacets) {
     return (
-      <p className="text-sm text-[#a09a90]">
+      <p className="text-sm text-muted">
         {isHu
           ? "Ehhez a teszttípushoz nincs facet-szintű bontás."
           : "No facet-level breakdown available for this test type."}
@@ -46,11 +46,11 @@ export function FacetBreakdown({ dimensions, locale }: FacetBreakdownProps) {
               >
                 {dim.code}
               </div>
-              <span className="text-sm font-semibold text-[#1a1814]">{dim.label}</span>
+              <span className="text-sm font-semibold text-ink">{dim.label}</span>
             </div>
 
             {/* Facet list */}
-            <div className="rounded-xl border border-[#e8e4dc] bg-white overflow-hidden">
+            <div className="rounded-xl border border-sand bg-white overflow-hidden">
               {dim.facets.map((facet, idx) => (
                 <div
                   key={facet.code}
@@ -58,8 +58,8 @@ export function FacetBreakdown({ dimensions, locale }: FacetBreakdownProps) {
                     idx < dim.facets.length - 1 ? "border-b border-[#f5f3ef]" : ""
                   }`}
                 >
-                  <span className="w-36 shrink-0 text-sm text-[#3d3a35]">{facet.label}</span>
-                  <div className="flex-1 h-1.5 rounded-full bg-[#e8e4dc]">
+                  <span className="w-36 shrink-0 text-sm text-ink-body">{facet.label}</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-sand">
                     <div
                       className="h-full rounded-full"
                       style={{
@@ -68,7 +68,7 @@ export function FacetBreakdown({ dimensions, locale }: FacetBreakdownProps) {
                       }}
                     />
                   </div>
-                  <span className="shrink-0 font-mono text-xs text-[#5a5650] w-9 text-right">
+                  <span className="shrink-0 font-mono text-xs text-ink-body w-9 text-right">
                     {facet.score}%
                   </span>
                 </div>

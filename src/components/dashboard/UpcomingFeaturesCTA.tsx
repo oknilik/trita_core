@@ -68,8 +68,8 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
   const features = texts.features[l];
 
   return (
-    <section className="rounded-2xl border border-[#f3d4c8] bg-gradient-to-br from-[#fef3ec] via-[#faf9f6] to-[#f3eee4] p-6 md:p-8">
-      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#c8410a]">
+    <section className="rounded-2xl border border-sage-ring bg-gradient-to-br from-sage-soft via-cream to-warm p-6 md:p-8">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-bronze">
         {texts.tag[l]}
       </div>
       <h2 className="mb-2 text-xl font-bold text-gray-900">{texts.title[l]}</h2>
@@ -85,20 +85,20 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
               disabled={!loaded}
               className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all disabled:opacity-50 ${
                 isClicked
-                  ? "border-[#f3d4c8] bg-[#fef3ec] text-[#8b2f09]"
-                  : "border-gray-200 bg-white text-gray-700 hover:border-[#f3d4c8] hover:bg-[#fef3ec] hover:text-[#8b2f09]"
+                  ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                  : "border-gray-200 bg-white text-gray-700 hover:border-sage-ring hover:bg-sage-soft hover:text-bronze-dark"
               }`}
             >
               <span className="text-base">{f.icon}</span>
               <span className="flex-1">{f.label}</span>
-              {isClicked && <span className="text-[#c8410a]">✓</span>}
+              {isClicked && <span className="text-bronze">✓</span>}
             </button>
           );
         })}
       </div>
 
       {clicked.size > 0 && (
-        <p className="mt-4 text-sm font-medium text-[#c8410a]">
+        <p className="mt-4 text-sm font-medium text-bronze">
           {texts.thanks[l]}
         </p>
       )}

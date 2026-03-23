@@ -24,13 +24,13 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4">
-          <div className="w-full max-w-md rounded border border-[#e0ddd6] bg-white p-8 text-center">
-            <p className="text-sm text-[#5a5650]">Valami hiba történt. Kérjük, frissítsd az oldalt.</p>
+        <div className="flex min-h-dvh items-center justify-center bg-cream px-4">
+          <div className="w-full max-w-md rounded border border-sand bg-white p-8 text-center">
+            <p className="text-sm text-ink-body">Valami hiba történt. Kérjük, frissítsd az oldalt.</p>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-4 rounded bg-[#c8410a] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#a33408]"
+              className="mt-4 rounded bg-sage px-6 py-2.5 text-sm font-medium text-white hover:bg-sage-dark"
             >
               Újratöltés
             </button>
@@ -180,17 +180,17 @@ function SignUpContent() {
 
   if (isVerifying) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4 py-10">
-        <div className="w-full max-w-[800px] overflow-hidden rounded-xl border border-[#e0ddd6] bg-white shadow-sm flex">
+      <div className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
+        <div className="w-full max-w-[800px] overflow-hidden rounded-xl border border-sand bg-white shadow-sm flex">
           <AuthLeftPanel context="verify" />
           <div className="flex flex-1 flex-col justify-center px-8 py-10">
-            <Link href="/" className="font-playfair mb-6 inline-block text-2xl font-black tracking-[-0.03em] text-[#1a1814]">
-              {"trit"}<span className="text-[#c8410a]">a</span>
+            <Link href="/" className="font-fraunces mb-6 inline-block text-2xl font-black tracking-[-0.03em] text-ink">
+              {"trit"}<span className="text-bronze">a</span>
             </Link>
-            <h1 className="mb-1 text-xl font-semibold text-[#1a1814]">
+            <h1 className="mb-1 text-xl font-semibold text-ink">
               {t("auth.verifyTitle", locale)}
             </h1>
-            <p className="mb-6 text-sm text-[#5a5650]">
+            <p className="mb-6 text-sm text-ink-body">
               {tf("auth.verifySent", locale, { email })}
             </p>
 
@@ -201,7 +201,7 @@ function SignUpContent() {
             )}
 
             <form onSubmit={handleVerify} className="flex flex-col gap-4">
-              <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
+              <label className="flex flex-col gap-2 text-sm font-medium text-ink">
                 {t("auth.verifyCodeLabel", locale)}
                 <input
                   type="text"
@@ -212,14 +212,14 @@ function SignUpContent() {
                   maxLength={6}
                   placeholder="000000"
                   autoFocus
-                  className="min-h-[44px] rounded border border-[#e0ddd6] bg-[#f7f5f0] px-3 text-center text-lg font-semibold tracking-[0.3em] text-[#1a1814] focus:border-[#c8410a]/50 focus:outline-none"
+                  className="min-h-[44px] rounded border border-sand bg-cream px-3 text-center text-lg font-semibold tracking-[0.3em] text-ink focus:border-sage/50 focus:outline-none"
                 />
               </label>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="min-h-[48px] rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition-all hover:-translate-y-px hover:bg-[#a33408] disabled:cursor-not-allowed disabled:bg-[#e0ddd6] disabled:text-[#a09c96] disabled:hover:translate-y-0"
+                className="min-h-[48px] rounded bg-sage px-6 text-sm font-medium text-white transition-all hover:-translate-y-px hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-muted-warm disabled:hover:translate-y-0"
               >
                 {isSubmitting ? t("actions.verifying", locale) : t("actions.verify", locale)}
               </button>
@@ -230,14 +230,14 @@ function SignUpContent() {
                 type="button"
                 onClick={handleResendCode}
                 disabled={!canResend}
-                className="text-sm font-medium text-[#c8410a] hover:text-[#a33408] disabled:cursor-not-allowed disabled:text-[#a09c96]"
+                className="text-sm font-medium text-bronze hover:text-bronze-dark disabled:cursor-not-allowed disabled:text-muted-warm"
               >
                 {resendCooldown > 0
                   ? tf("auth.resendCodeWait", locale, { seconds: resendCooldown })
                   : t("auth.resendCode", locale)}
               </button>
               {resendNote ? (
-                <p className="mt-2 text-xs text-[#5a5650]">{resendNote}</p>
+                <p className="mt-2 text-xs text-ink-body">{resendNote}</p>
               ) : null}
             </div>
 
@@ -250,7 +250,7 @@ function SignUpContent() {
                 setResendCooldown(0);
                 setResendNote(null);
               }}
-              className="mt-4 w-full text-center text-sm text-[#5a5650] hover:text-[#1a1814]"
+              className="mt-4 w-full text-center text-sm text-ink-body hover:text-ink"
             >
               {t("actions.backToSignUp", locale)}
             </button>
@@ -261,24 +261,24 @@ function SignUpContent() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4 py-10">
-      <div className="w-full max-w-[800px] overflow-hidden rounded-xl border border-[#e0ddd6] bg-white shadow-sm flex">
+    <div className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
+      <div className="w-full max-w-[800px] overflow-hidden rounded-xl border border-sand bg-white shadow-sm flex">
         <AuthLeftPanel context={intent} />
 
         <div className="flex flex-1 flex-col justify-center px-8 py-10">
-          <Link href="/" className="font-playfair mb-6 inline-block text-2xl font-black tracking-[-0.03em] text-[#1a1814]">
-            {"trit"}<span className="text-[#c8410a]">a</span>
+          <Link href="/" className="font-fraunces mb-6 inline-block text-2xl font-black tracking-[-0.03em] text-ink">
+            {"trit"}<span className="text-bronze">a</span>
           </Link>
 
-          <h1 className="mb-1 text-xl font-semibold text-[#1a1814]">
+          <h1 className="mb-1 text-xl font-semibold text-ink">
             {t("auth.signUpTitle", locale)}
           </h1>
-          <p className="mb-6 text-sm text-[#5a5650]">
+          <p className="mb-6 text-sm text-ink-body">
             {t("auth.signUpSubtitle", locale)}
           </p>
 
           {observeToken && (
-            <div className="mb-5 rounded border border-[#e0ddd6] bg-[#fdf5f0] px-4 py-3 text-sm text-[#5a5650]">
+            <div className="mb-5 rounded border border-sand bg-[#fdf5f0] px-4 py-3 text-sm text-ink-body">
               {t("auth.observeTokenHint", locale)}
             </div>
           )}
@@ -294,10 +294,10 @@ function SignUpContent() {
             type="button"
             onClick={handleGoogleSignUp}
             disabled={isGoogleLoading}
-            className="mb-4 flex min-h-[44px] w-full items-center justify-center gap-3 rounded border border-[#e0ddd6] bg-white px-4 text-sm font-medium text-[#1a1814] transition hover:bg-[#f7f5f0] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mb-4 flex min-h-[44px] w-full items-center justify-center gap-3 rounded border border-sand bg-white px-4 text-sm font-medium text-ink transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isGoogleLoading ? (
-              <svg className="h-4 w-4 animate-spin text-[#a09c96]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg className="h-4 w-4 animate-spin text-muted-warm" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
               </svg>
@@ -308,13 +308,13 @@ function SignUpContent() {
           </button>
 
           <div className="mb-4 flex items-center gap-3">
-            <div className="h-px flex-1 bg-[#e0ddd6]" />
-            <span className="font-ibm-plex-mono text-[11px] text-[#a09c96]">{t("common.or", locale)}</span>
-            <div className="h-px flex-1 bg-[#e0ddd6]" />
+            <div className="h-px flex-1 bg-sand" />
+            <span className="font-dm-sans text-[11px] text-muted-warm">{t("common.or", locale)}</span>
+            <div className="h-px flex-1 bg-sand" />
           </div>
 
           <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-4">
-            <label className="flex flex-col gap-2 text-sm font-medium text-[#1a1814]">
+            <label className="flex flex-col gap-2 text-sm font-medium text-ink">
               {t("auth.emailLabel", locale)}
               <input
                 type="email"
@@ -323,27 +323,27 @@ function SignUpContent() {
                 required
                 autoComplete="email"
                 placeholder="email@example.com"
-                className="min-h-[44px] rounded border border-[#e0ddd6] bg-[#f7f5f0] px-3 text-sm text-[#1a1814] focus:border-[#c8410a]/50 focus:outline-none"
+                className="min-h-[44px] rounded border border-sand bg-cream px-3 text-sm text-ink focus:border-sage/50 focus:outline-none"
               />
             </label>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="min-h-[48px] rounded bg-[#c8410a] px-6 text-sm font-medium text-white transition-all hover:-translate-y-px hover:bg-[#a33408] disabled:cursor-not-allowed disabled:bg-[#e0ddd6] disabled:text-[#a09c96] disabled:hover:translate-y-0"
+              className="min-h-[48px] rounded bg-sage px-6 text-sm font-medium text-white transition-all hover:-translate-y-px hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-muted-warm disabled:hover:translate-y-0"
             >
               {isSubmitting ? t("auth.submitSendCodeLoading", locale) : t("auth.submitSendCode", locale)}
             </button>
           </form>
 
           <div className="mb-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[1px] text-[#5a5650]">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[1px] text-ink-body">
               Mire használod a triát?
             </p>
             <IntentSelector value={intent} onChange={setIntent} />
           </div>
 
-          <p className="text-center text-sm text-[#5a5650]">
+          <p className="text-center text-sm text-ink-body">
             {t("auth.hasAccount", locale)}{" "}
             <Link
               href={
@@ -353,7 +353,7 @@ function SignUpContent() {
                   ? `/sign-in?redirect_url=${encodeURIComponent(safeRedirectUrl)}`
                   : "/sign-in"
               }
-              className="font-medium text-[#c8410a] hover:text-[#a33408]"
+              className="font-medium text-bronze hover:text-bronze-dark"
             >
               {t("actions.signInCta", locale)}
             </Link>
@@ -369,7 +369,7 @@ function SignUpContent() {
 export default function SignUpPage() {
   return (
     <SignUpErrorBoundary>
-      <Suspense fallback={<div className="min-h-dvh bg-[#faf9f6]" />}>
+      <Suspense fallback={<div className="min-h-dvh bg-cream" />}>
         <SignUpContent />
       </Suspense>
     </SignUpErrorBoundary>

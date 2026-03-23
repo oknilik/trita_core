@@ -52,7 +52,7 @@ export function CampaignStatusButton({
         className={`min-h-[44px] rounded-lg px-5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
           isDanger
             ? "border border-rose-200 bg-white text-rose-700 hover:bg-rose-50"
-            : "bg-[#c8410a] text-white hover:bg-[#b53a09]"
+            : "bg-sage text-white hover:bg-sage-dark"
         }`}
       >
         {loading ? "…" : label}

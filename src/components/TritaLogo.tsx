@@ -15,15 +15,15 @@ export function TritaLogo({
   return (
     <div className={`inline-flex flex-col items-center leading-none ${className}`}>
       <span
-        className="inline-flex items-baseline font-playfair font-black tracking-[-0.03em] text-[#1a1814]"
+        className="inline-flex items-baseline font-fraunces font-black tracking-[-0.03em] text-ink"
         style={{ fontSize }}
         aria-label="trita"
       >
-        {"trit"}<span className="text-[#c8410a]">a</span>
+        {"trit"}<span className="text-bronze">a</span>
       </span>
       {showText ? (
         <span
-          className="font-ibm-plex-mono mt-1 tracking-[0.16em] uppercase text-[#5a5650]"
+          className="font-dm-sans mt-1 tracking-[0.16em] uppercase text-ink-body"
           style={{ fontSize: taglineSize }}
         >
           team intelligence

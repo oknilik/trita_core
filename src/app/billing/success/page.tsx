@@ -56,24 +56,24 @@ export default async function BillingSuccessPage({
   const message = MESSAGES[tier] ?? "Vásárlásod sikeresen feldolgozva.";
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center px-4">
+    <div className="min-h-dvh bg-cream flex items-center justify-center px-4">
       <div className="mx-auto max-w-md text-center">
         <p
-          className="font-playfair text-5xl"
-          style={{ color: "#c8410a" }}
+          className="font-fraunces text-5xl"
+          style={{ color: "var(--color-bronze)" }}
           aria-hidden="true"
         >
           ✦
         </p>
-        <h1 className="mt-4 font-playfair text-2xl text-[#1a1814]">
+        <h1 className="mt-4 font-fraunces text-2xl text-ink">
           Sikeres vásárlás!
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-[#5a5650]">
+        <p className="mt-3 text-sm leading-relaxed text-ink-body">
           {message}
         </p>
         <a
           href={targetUrl}
-          className="mt-8 inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-8 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+          className="mt-8 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
         >
           Tovább →
         </a>

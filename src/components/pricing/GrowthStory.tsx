@@ -98,24 +98,24 @@ const copy: Record<
 };
 
 const typeStyles: Record<string, string> = {
-  free: "border-[#e8e4dc] bg-white text-[#a09a90]",
-  "one-time": "border-[#e8e4dc] bg-white text-[#3d3a35]",
-  subscription: "border-[#c8410a]/30 bg-[#fff5f0] text-[#c8410a]",
+  free: "border-sand bg-white text-muted",
+  "one-time": "border-sand bg-white text-ink-body",
+  subscription: "border-sage/30 bg-sage-ghost text-bronze",
 };
 
 export function GrowthStory({ locale }: { locale: Locale }) {
   const c = copy[locale] ?? copy.hu;
 
   return (
-    <section className="border-t border-[#e8e4dc] px-6 py-12 lg:px-16 lg:py-14">
+    <section className="border-t border-sand px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-5xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {c.eyebrow}
         </p>
-        <h2 className="mt-2 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+        <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {c.heading}
         </h2>
-        <p className="mt-2 max-w-lg text-sm text-[#5a5650]">{c.sub}</p>
+        <p className="mt-2 max-w-lg text-sm text-ink-body">{c.sub}</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-2">
           {c.steps.map((step, i) => (
@@ -123,16 +123,16 @@ export function GrowthStory({ locale }: { locale: Locale }) {
               <div
                 className={`rounded-xl border p-4 ${typeStyles[step.type] ?? typeStyles["one-time"]}`}
               >
-                <p className="font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
                   {step.tier}
                 </p>
-                <p className="mt-0.5 text-sm font-semibold text-[#1a1814]">
+                <p className="mt-0.5 text-sm font-semibold text-ink">
                   {step.label}
                 </p>
-                <p className="mt-0.5 text-[11px] text-[#5a5650]">{step.desc}</p>
+                <p className="mt-0.5 text-[11px] text-ink-body">{step.desc}</p>
               </div>
               {i < c.steps.length - 1 && (
-                <span className="text-[#e8e4dc] select-none" aria-hidden="true">
+                <span className="text-sand select-none" aria-hidden="true">
                   →
                 </span>
               )}

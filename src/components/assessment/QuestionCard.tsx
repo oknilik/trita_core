@@ -46,21 +46,21 @@ export function QuestionCard(props: QuestionCardProps) {
         animate={highlight ? { x: [0, -9, 9, -6, 6, -3, 3, 0] } : { x: 0 }}
         transition={{ duration: 0.4 }}
         className={`rounded-2xl border bg-white p-6 shadow-md md:p-8 ${
-          highlight ? 'border-[#c8410a] ring-2 ring-[#f3d4c8]' : 'border-[#e8e4dc]'
+          highlight ? 'border-sage ring-2 ring-bronze-soft' : 'border-sand'
         }`}
       >
         {/* Badge removed */}
 
         {format === 'likert' ? (
           <>
-            <h2 className="mb-6 flex min-h-[7rem] items-start text-lg font-semibold leading-relaxed text-[#1a1814] md:mb-8 md:text-xl">
+            <h2 className="mb-6 flex min-h-[7rem] items-start text-lg font-semibold leading-relaxed text-ink md:mb-8 md:text-xl">
               {props.question}
             </h2>
             <SliderSelector value={props.value} onChange={props.onChange} />
           </>
         ) : (
           <>
-            <h2 className="mb-6 text-lg font-semibold text-[#1a1814] md:text-xl">
+            <h2 className="mb-6 text-lg font-semibold text-ink md:text-xl">
               {t('assessment.helpBinary', locale)}
             </h2>
             <ABSelector

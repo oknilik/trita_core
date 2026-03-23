@@ -116,7 +116,7 @@ async function main() {
       });
       if (!hasOrg) {
         await prisma.organizationMember.create({
-          data: { orgId: team.orgId, userId: profile.id, role: "ORG_MEMBER" },
+          data: { orgId: team.orgId!, userId: profile.id, role: "ORG_MEMBER" },
         });
       }
 
@@ -147,7 +147,7 @@ async function main() {
         });
       }
 
-      createdProfiles.push(profile);
+      createdProfiles.push({ id: profile.id, email: profile.email! });
     }
 
     console.log(`\n👁️   Observer adatok generálása...`);

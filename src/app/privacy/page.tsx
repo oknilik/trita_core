@@ -81,16 +81,16 @@ export default async function PrivacyPage() {
   ] as const;
 
   return (
-    <main className="min-h-dvh bg-[#faf9f6]">
-      <section className="border-b border-[#e8e4dc] bg-[#1a1814] px-6 py-14 lg:px-16 lg:py-16">
+    <main className="min-h-dvh bg-cream">
+      <section className="border-b border-sand bg-ink px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ibm-plex-mono mb-4 text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+          <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-[2px] text-bronze">
             {legalLabel}
           </p>
-          <h1 className="font-playfair text-4xl leading-tight text-[#faf9f6] lg:text-[52px]">
+          <h1 className="font-fraunces text-4xl leading-tight text-cream lg:text-[52px]">
             {t("privacy.title", locale)}
           </h1>
-          <p className="font-ibm-plex-mono mt-4 text-[11px] uppercase tracking-[1px] text-[#faf9f6]/55">
+          <p className="font-dm-sans mt-4 text-[11px] uppercase tracking-[1px] text-cream/55">
             {t("privacy.lastUpdated", locale)}
           </p>
         </div>
@@ -98,8 +98,8 @@ export default async function PrivacyPage() {
 
       <section className="px-6 py-10 lg:px-16 lg:py-14">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
-          <aside className="h-fit rounded border border-[#e8e4dc] bg-white p-4 lg:sticky lg:top-28">
-            <p className="font-ibm-plex-mono mb-3 text-[11px] uppercase tracking-[1px] text-[#5a5650]">
+          <aside className="h-fit rounded border border-sand bg-white p-4 lg:sticky lg:top-28">
+            <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-ink-body">
               {tocLabel}
             </p>
             <nav className="space-y-2">
@@ -109,10 +109,10 @@ export default async function PrivacyPage() {
                   href={`#${section.id}`}
                   className="group flex items-baseline gap-2 rounded px-2 py-1.5 transition-colors hover:bg-[#faf5ef]"
                 >
-                  <span className="font-ibm-plex-mono text-[10px] text-[#c8410a]">
+                  <span className="font-dm-sans text-[10px] text-bronze">
                     {section.index}
                   </span>
-                  <span className="text-sm text-[#3d3a35] transition-colors group-hover:text-[#1a1814]">
+                  <span className="text-sm text-ink-body transition-colors group-hover:text-ink">
                     {t(section.title, locale)}
                   </span>
                 </a>
@@ -125,16 +125,16 @@ export default async function PrivacyPage() {
               <section
                 key={section.id}
                 id={section.id}
-                className="scroll-mt-28 rounded border border-[#e8e4dc] bg-white p-5 md:p-7"
+                className="scroll-mt-28 rounded border border-sand bg-white p-5 md:p-7"
               >
-                <p className="font-ibm-plex-mono mb-3 text-[11px] uppercase tracking-[1px] text-[#c8410a]">
+                <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
                   {section.index}
                 </p>
-                <h2 className="font-playfair mb-3 text-2xl leading-tight text-[#1a1814] md:text-[30px]">
+                <h2 className="font-fraunces mb-3 text-2xl leading-tight text-ink md:text-[30px]">
                   {t(section.title, locale)}
                 </h2>
                 {"body" in section && section.body ? (
-                  <p className="text-[15px] leading-[1.75] text-[#3d3a35]">
+                  <p className="text-[15px] leading-[1.75] text-ink-body">
                     {t(section.body, locale)}
                   </p>
                 ) : null}
@@ -143,7 +143,7 @@ export default async function PrivacyPage() {
                     {section.items.map((item) => (
                       <li
                         key={item}
-                        className="relative pl-5 text-[15px] leading-[1.75] text-[#3d3a35] before:absolute before:left-0 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[#c8410a]"
+                        className="relative pl-5 text-[15px] leading-[1.75] text-ink-body before:absolute before:left-0 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-bronze"
                       >
                         {t(item, locale)}
                       </li>

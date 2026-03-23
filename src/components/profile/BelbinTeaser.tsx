@@ -39,18 +39,18 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
   return (
     <section>
       <div className="mb-6 flex items-center gap-2.5">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// csapatszerepek (belbin)" : "// team roles (belbin)"}
         </p>
-        <span className="rounded-full bg-[#f0ece4] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-[#a09a90]">
+        <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-muted">
           {isHu ? "becslés" : "estimate"}
         </span>
       </div>
 
-      <h2 className="mb-2 font-playfair text-2xl text-[#1a1814]">
+      <h2 className="mb-2 font-fraunces text-2xl text-ink">
         {isHu ? "Valószínű csapatszerepeid" : "Your likely team roles"}
       </h2>
-      <p className="mb-6 max-w-lg text-sm leading-relaxed text-[#5a5650]">
+      <p className="mb-6 max-w-lg text-sm leading-relaxed text-ink-body">
         {isHu
           ? "Személyiségprofilod alapján ezek a Belbin-csapatszerepek illenek hozzád leginkább. A pontos méréshez töltsd ki a Belbin kérdőívet."
           : "Based on your personality profile, these Belbin team roles fit you best. Complete the Belbin questionnaire for an exact measurement."}
@@ -66,13 +66,13 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
               ? (isHu ? "Másodlagos" : "Secondary")
               : (isHu ? "Kiegészítő" : "Supporting");
           const rankColor = idx === 0
-            ? "bg-[#c8410a] text-white"
-            : "bg-[#f0ece4] text-[#5a5650]";
+            ? "bg-sage text-white"
+            : "bg-warm-mid text-ink-body";
 
           return (
             <div
               key={role}
-              className="flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-white p-5"
+              className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-5"
             >
               <div className="flex items-start justify-between gap-2">
                 <span
@@ -80,13 +80,13 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
                 >
                   {rankLabel}
                 </span>
-                <span className="font-mono text-xs text-[#a09a90]">{score}%</span>
+                <span className="font-mono text-xs text-muted">{score}%</span>
               </div>
               <div>
-                <p className="font-playfair text-lg leading-snug text-[#1a1814]">
+                <p className="font-fraunces text-lg leading-snug text-ink">
                   {isHu ? roleMeta.hu : roleMeta.en}
                 </p>
-                <p className="mt-1 text-[12px] leading-relaxed text-[#5a5650]">
+                <p className="mt-1 text-[12px] leading-relaxed text-ink-body">
                   {isHu ? desc.hu : desc.en}
                 </p>
               </div>
@@ -96,15 +96,15 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
       </div>
 
       {/* Info note + CTA */}
-      <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[12px] leading-relaxed text-[#5a5650]">
+      <div className="mt-5 flex flex-col gap-3 rounded-xl border border-sand bg-cream px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[12px] leading-relaxed text-ink-body">
           {isHu
             ? "Ez egy becslés a személyiségprofilodból. A pontos Belbin-kérdőív kitöltésével csapatszintű összehasonlítás is elérhetővé válik."
             : "This is an estimate from your personality profile. Completing the full Belbin questionnaire unlocks team-level comparison."}
         </p>
         <Link
           href="/sign-up?intent=team"
-          className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg border border-[#e8e4dc] bg-white px-4 text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+          className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg border border-sand bg-white px-4 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
         >
           {isHu ? "Csapatba lépés →" : "Join a team →"}
         </Link>

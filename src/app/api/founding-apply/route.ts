@@ -23,10 +23,10 @@ export async function POST(req: NextRequest) {
       subject: `Founding jelentkezes: ${company} – ${name}`,
       html: `
         <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0;">
-          <h1 style="font-size: 22px; color: #c8410a; margin-bottom: 24px;">Új Founding Customer jelentkezés</h1>
+          <h1 style="font-size: 22px; color: #c17f4a; margin-bottom: 24px;">Új Founding Customer jelentkezés</h1>
           <table style="width: 100%; border-collapse: collapse; font-size: 15px; color: #2C2420;">
             <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; width: 140px;">Név</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${esc(name)}</td></tr>
-            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Email</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="mailto:${esc(email)}" style="color: #c8410a;">${esc(email)}</a></td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Email</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="mailto:${esc(email)}" style="color: #c17f4a;">${esc(email)}</a></td></tr>
             <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Cég</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${esc(company)}</td></tr>
             <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Csapatméret</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${size ? esc(size) : "Nem adta meg"}</td></tr>
             ${message ? `<tr><td style="padding: 10px 0; font-weight: bold; vertical-align: top;">Kérdés</td><td style="padding: 10px 0;">${esc(message)}</td></tr>` : ""}
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
           <p style="font-size: 16px; line-height: 1.7;">Kedves ${esc(name.split(" ")[0] ?? name)},</p>
           <p style="font-size: 16px; line-height: 1.7;">Köszönjük, hogy jelentkeztél a Trita Alapító Ügyfél Programba!</p>
           <p style="font-size: 16px; line-height: 1.7;">24 órán belül személyesen kereslek, hogy megbeszéljük a részleteket és egyeztessünk egy rövid, kötelezettségmentes bevezető beszélgetést.</p>
-          <p style="font-size: 16px; line-height: 1.7; margin-top: 24px;">Üdvözlettel,<br/><strong>Leinad</strong><br/><span style="color: #c8410a;">Trita</span> · trita.io</p>
+          <p style="font-size: 16px; line-height: 1.7; margin-top: 24px;">Üdvözlettel,<br/><strong>Leinad</strong><br/><span style="color: #c17f4a;">Trita</span> · trita.io</p>
         </div>
       `,
     });

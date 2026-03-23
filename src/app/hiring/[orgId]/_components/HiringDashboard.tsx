@@ -68,7 +68,7 @@ function statusLabel(status: string, isExpired: boolean, isHu: boolean, draftAns
 }
 
 function statusClass(status: string, isExpired: boolean): string {
-  if (isExpired || status === "EXPIRED") return "bg-[#e8e4dc] text-[#3d3a35]/60";
+  if (isExpired || status === "EXPIRED") return "bg-sand text-ink-body/60";
   if (status === "COMPLETED") return "bg-emerald-50 text-emerald-700";
   if (status === "CANCELED") return "bg-rose-50 text-rose-600";
   return "bg-amber-50 text-amber-700";
@@ -105,33 +105,33 @@ function CandidateRow({
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-[#e8e4dc] bg-white px-4 py-3">
+    <div className="flex items-center gap-3 rounded-xl border border-sand bg-white px-4 py-3">
       {/* Avatar */}
-      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#f0ede6] text-[11px] font-bold text-[#5a5650]">
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-warm-mid text-[11px] font-bold text-ink-body">
         {initial}
       </div>
 
       {/* Info */}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[13px] font-semibold text-[#1a1814]">
+        <p className="truncate text-[13px] font-semibold text-ink">
           {displayName}
         </p>
-        <p className="truncate text-[11px] text-[#a09a90]">
+        <p className="truncate text-[11px] text-muted">
           {invite.position && `${invite.position} · `}
           {invite.teamName && `${invite.teamName} · `}
           {new Date(invite.createdAt).toLocaleDateString(dateLocale)}
         </p>
         {invite.status === "PENDING" && !isExpired && invite.draftAnsweredCount > 0 && (
           <div className="mt-1.5 flex items-center gap-2">
-            <div className="h-1 flex-1 overflow-hidden rounded-full bg-[#f0ede6]">
+            <div className="h-1 flex-1 overflow-hidden rounded-full bg-warm-mid">
               <div
-                className="h-full rounded-full bg-[#c8410a]/60"
+                className="h-full rounded-full bg-sage/60"
                 style={{
                   width: `${Math.min(100, Math.round((invite.draftAnsweredCount / invite.totalQuestions) * 100))}%`,
                 }}
               />
             </div>
-            <span className="shrink-0 font-mono text-[9px] text-[#a09a90]">
+            <span className="shrink-0 font-mono text-[9px] text-muted">
               {invite.draftAnsweredCount}/{invite.totalQuestions}
             </span>
           </div>
@@ -153,7 +153,7 @@ function CandidateRow({
         {invite.status === "COMPLETED" && invite.hasResult && (
           <Link
             href={`/hiring/${orgId}/candidates/${invite.id}`}
-            className="min-h-[36px] inline-flex items-center rounded-lg border border-[#e8e4dc] bg-white px-3 text-[11px] font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/30 hover:text-[#c8410a]"
+            className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-[11px] font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
           >
             {isHu ? "Eredmény →" : "Results →"}
           </Link>
@@ -166,7 +166,7 @@ function CandidateRow({
             className={`min-h-[36px] inline-flex items-center rounded-lg border px-3 text-[11px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
               resendState === "sent"
                 ? "border-emerald-100 bg-emerald-50 text-emerald-700"
-                : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a]/30 hover:text-[#c8410a]"
+                : "border-sand bg-white text-ink-body hover:border-sage/30 hover:text-bronze"
             }`}
           >
             {resendState === "loading"
@@ -221,13 +221,13 @@ export function HiringDashboard({
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? `// felvétel · ${orgName}` : `// hiring · ${orgName}`}
           </p>
-          <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             trita {isHu ? "Felvétel" : "Hiring"}
           </h1>
-          <p className="mt-1 text-xs text-[#a09a90]">
+          <p className="mt-1 text-xs text-muted">
             {invites.length} {isHu ? "jelölt összesen" : "candidates total"}
             {" · "}
             {completed.length} {isHu ? "befejezett" : "completed"}
@@ -239,7 +239,7 @@ export function HiringDashboard({
           <button
             type="button"
             onClick={() => setShowForm((v) => !v)}
-            className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+            className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
           >
             {showForm
               ? isHu ? "✕ Mégse" : "✕ Cancel"
@@ -249,7 +249,7 @@ export function HiringDashboard({
           <button
             type="button"
             disabled
-            className="min-h-[44px] rounded-lg bg-[#e8e4dc] px-5 text-sm font-semibold text-[#a09a90] cursor-not-allowed"
+            className="min-h-[44px] rounded-lg bg-sand px-5 text-sm font-semibold text-muted cursor-not-allowed"
           >
             {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
           </button>
@@ -258,20 +258,20 @@ export function HiringDashboard({
 
       {/* Credit pool bar — credit-based tiers */}
       {creditBalance && (
-        <div className="rounded-xl border border-[#e8e4dc] bg-white p-5">
+        <div className="rounded-xl border border-sand bg-white p-5">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
                 {isHu ? "// jelölt kreditek" : "// candidate credits"}
               </p>
-              <p className="mt-1 text-sm text-[#3d3a35]">
-                <span className="font-playfair text-2xl text-[#1a1814]">
+              <p className="mt-1 text-sm text-ink-body">
+                <span className="font-fraunces text-2xl text-ink">
                   {creditBalance.available}
                 </span>
                 {" "}
                 {isHu ? "elérhető kredit" : "credits available"}
               </p>
-              <p className="text-[11px] text-[#a09a90] mt-0.5">
+              <p className="text-[11px] text-muted mt-0.5">
                 {isHu
                   ? `${creditBalance.totalPurchased} vásárolt · ${creditBalance.totalUsed} felhasznált`
                   : `${creditBalance.totalPurchased} purchased · ${creditBalance.totalUsed} used`}
@@ -287,8 +287,8 @@ export function HiringDashboard({
                     onClick={() => setCreditQty(5)}
                     className={`min-h-[32px] rounded-lg border px-3 text-[10px] font-semibold transition ${
                       creditQty === 5
-                        ? "border-[#c8410a]/40 bg-[#c8410a]/5 text-[#c8410a]"
-                        : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a]/30 hover:text-[#c8410a]"
+                        ? "border-sage/40 bg-sage/5 text-bronze"
+                        : "border-sand bg-white text-ink-body hover:border-sage/30 hover:text-bronze"
                     }`}
                   >
                     5× <span className="text-emerald-600">−15%</span>
@@ -298,8 +298,8 @@ export function HiringDashboard({
                     onClick={() => setCreditQty(10)}
                     className={`min-h-[32px] rounded-lg border px-3 text-[10px] font-semibold transition ${
                       creditQty === 10
-                        ? "border-[#c8410a]/40 bg-[#c8410a]/5 text-[#c8410a]"
-                        : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a]/30 hover:text-[#c8410a]"
+                        ? "border-sage/40 bg-sage/5 text-bronze"
+                        : "border-sand bg-white text-ink-body hover:border-sage/30 hover:text-bronze"
                     }`}
                   >
                     10× <span className="text-emerald-600">−20%</span>
@@ -307,32 +307,32 @@ export function HiringDashboard({
                 </div>
                 {/* Stepper row */}
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center rounded-lg border border-[#e8e4dc] bg-white overflow-hidden">
+                  <div className="flex items-center rounded-lg border border-sand bg-white overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setCreditQty((q) => Math.max(1, q - 1))}
-                      className="min-h-[36px] w-8 text-sm text-[#5a5650] hover:text-[#c8410a] transition"
+                      className="min-h-[36px] w-8 text-sm text-ink-body hover:text-bronze transition"
                     >
                       −
                     </button>
-                    <span className="min-w-[28px] text-center font-mono text-xs font-semibold text-[#1a1814]">
+                    <span className="min-w-[28px] text-center font-mono text-xs font-semibold text-ink">
                       {creditQty}
                     </span>
                     <button
                       type="button"
                       onClick={() => setCreditQty((q) => q + 1)}
-                      className="min-h-[36px] w-8 text-sm text-[#5a5650] hover:text-[#c8410a] transition"
+                      className="min-h-[36px] w-8 text-sm text-ink-body hover:text-bronze transition"
                     >
                       +
                     </button>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="font-mono text-[10px] text-[#a09a90]">
+                    <span className="font-mono text-[10px] text-muted">
                       €{creditUnitPrice.toFixed(2)}/db
                     </span>
                     <a
                       href={`/billing/checkout?plan=candidate_custom&qty=${creditQty}`}
-                      className="min-h-[36px] inline-flex items-center rounded-lg bg-[#c8410a] px-3 text-[11px] font-semibold text-white transition hover:bg-[#b53a09]"
+                      className="min-h-[36px] inline-flex items-center rounded-lg bg-sage px-3 text-[11px] font-semibold text-white transition hover:bg-sage-dark"
                     >
                       +{creditQty} · €{creditTotal}
                     </a>
@@ -345,9 +345,9 @@ export function HiringDashboard({
           </div>
 
           {creditBalance.totalPurchased > 0 && (
-            <div className="mt-3 h-1.5 w-full rounded-full bg-[#e8e4dc] overflow-hidden">
+            <div className="mt-3 h-1.5 w-full rounded-full bg-sand overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#c8410a] transition-all"
+                className="h-full rounded-full bg-sage transition-all"
                 style={{
                   width: `${Math.min(100, Math.round((creditBalance.available / creditBalance.totalPurchased) * 100))}%`,
                 }}
@@ -368,9 +368,9 @@ export function HiringDashboard({
 
       {/* Inline invite form */}
       {showForm && canInviteNew && (
-        <div className="overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
-          <div className="border-b border-[#e8e4dc] px-6 py-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <div className="overflow-hidden rounded-2xl border border-sand bg-white shadow-sm">
+          <div className="border-b border-sand px-6 py-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "// új jelölt meghívása" : "// invite new candidate"}
             </p>
           </div>
@@ -384,27 +384,27 @@ export function HiringDashboard({
       )}
 
       {/* Stat strip */}
-      <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white shadow-sm">
+      <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-sand bg-white shadow-sm">
         {[
-          { label: isHu ? "Folyamatban" : "In progress", value: pending.length, color: "#c8410a" },
+          { label: isHu ? "Folyamatban" : "In progress", value: pending.length, color: "var(--color-bronze)" },
           { label: isHu ? "Befejezett" : "Completed", value: completed.length, color: "#10B981" },
-          { label: isHu ? "Lejárt" : "Expired", value: expired.length, color: "#a09a90" },
+          { label: isHu ? "Lejárt" : "Expired", value: expired.length, color: "var(--color-muted)" },
         ].map((s, i) => (
           <div
             key={s.label}
             className={[
               "relative flex flex-col gap-1 px-5 py-4",
-              i < 2 ? "border-r border-[#e8e4dc]" : "",
+              i < 2 ? "border-r border-sand" : "",
             ].join(" ")}
           >
             <div
               className="absolute left-0 right-0 top-0 h-[3px]"
               style={{ background: s.color }}
             />
-            <p className="font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
               {s.label}
             </p>
-            <p className="text-[22px] font-bold text-[#1a1814]">{s.value}</p>
+            <p className="text-[22px] font-bold text-ink">{s.value}</p>
           </div>
         ))}
       </div>
@@ -412,7 +412,7 @@ export function HiringDashboard({
       {/* In-progress candidates (draft started) */}
       {inProgressInvites.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#c8410a]">
+          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-bronze">
             {isHu
               ? `// kitöltés alatt · ${inProgressInvites.length} jelölt`
               : `// in progress · ${inProgressInvites.length} candidate${inProgressInvites.length !== 1 ? "s" : ""}`}
@@ -434,7 +434,7 @@ export function HiringDashboard({
       {/* Sent candidates (not yet started) */}
       {sentInvites.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-muted">
             {isHu
               ? `// elküldve · ${sentInvites.length} jelölt`
               : `// sent · ${sentInvites.length} candidate${sentInvites.length !== 1 ? "s" : ""}`}
@@ -456,7 +456,7 @@ export function HiringDashboard({
       {/* Completed candidates */}
       {completed.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+          <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-muted">
             {isHu ? `// befejezett · ${completed.length} jelölt` : `// completed · ${completed.length}`}
           </p>
           <div className="flex flex-col gap-2">
@@ -475,20 +475,20 @@ export function HiringDashboard({
 
       {/* Credit history — admin only, when credits are tracked */}
       {isAdmin && creditHistory && creditHistory.length > 0 && (
-        <div className="rounded-xl border border-[#e8e4dc] bg-white p-5">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-[#c8410a] mb-3">
+        <div className="rounded-xl border border-sand bg-white p-5">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-3">
             {isHu ? "// kredit napló" : "// credit log"}
           </p>
-          <div className="divide-y divide-[#e8e4dc]">
+          <div className="divide-y divide-sand">
             {creditHistory.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between py-2.5">
                 <div className="min-w-0">
-                  <p className="text-xs text-[#3d3a35] truncate">
+                  <p className="text-xs text-ink-body truncate">
                     {entry.note ?? (entry.type === "purchase"
                       ? (isHu ? "Vásárlás" : "Purchase")
                       : (isHu ? "Felhasználás" : "Usage"))}
                   </p>
-                  <p className="text-[10px] text-[#a09a90]">
+                  <p className="text-[10px] text-muted">
                     {new Date(entry.createdAt).toLocaleDateString(
                       locale === "en" ? "en-GB" : "hu-HU",
                       { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
@@ -498,12 +498,12 @@ export function HiringDashboard({
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <span
                     className={`font-mono text-xs font-semibold ${
-                      entry.amount > 0 ? "text-emerald-700" : "text-[#c8410a]"
+                      entry.amount > 0 ? "text-emerald-700" : "text-bronze"
                     }`}
                   >
                     {entry.amount > 0 ? `+${entry.amount}` : entry.amount}
                   </span>
-                  <span className="font-mono text-[10px] text-[#a09a90] w-6 text-right">
+                  <span className="font-mono text-[10px] text-muted w-6 text-right">
                     {entry.balance}
                   </span>
                 </div>
@@ -515,11 +515,11 @@ export function HiringDashboard({
 
       {/* Empty state */}
       {invites.length === 0 && !showForm && (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#e8e4dc] bg-white py-16 text-center">
-          <p className="mb-1 text-sm font-semibold text-[#1a1814]">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-sand bg-white py-16 text-center">
+          <p className="mb-1 text-sm font-semibold text-ink">
             {isHu ? "Még nincs jelölt" : "No candidates yet"}
           </p>
-          <p className="mb-4 text-xs text-[#a09a90]">
+          <p className="mb-4 text-xs text-muted">
             {isHu
               ? "Hívj meg jelölteket HEXACO felmérésre az alábbi gombbal"
               : "Invite candidates to a HEXACO assessment"}
@@ -528,7 +528,7 @@ export function HiringDashboard({
             <button
               type="button"
               onClick={() => setShowForm(true)}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+              className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
               {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
             </button>

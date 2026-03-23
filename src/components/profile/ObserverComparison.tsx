@@ -28,14 +28,14 @@ export function ObserverComparison({
   if (!hasObserverData) {
     // Access is unlocked but no observer data yet — show invite CTA
     return (
-      <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#e8e4dc] bg-[#faf9f6]">
+      <div className="rounded-2xl border border-sand bg-white p-8 text-center">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-sand bg-cream">
           <svg
             width="22"
             height="22"
             viewBox="0 0 22 22"
             fill="none"
-            stroke="#c8410a"
+            stroke="#c17f4a"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -45,19 +45,19 @@ export function ObserverComparison({
             <path d="M16 3v6M13 6h6" />
           </svg>
         </div>
-        <h3 className="font-playfair text-xl text-[#1a1814]">
+        <h3 className="font-fraunces text-xl text-ink">
           {isHu
             ? "Hívj meg 2-5 embert observer-ként"
             : "Invite 2–5 people as observers"}
         </h3>
-        <p className="mt-2 mx-auto max-w-sm text-sm text-[#5a5650]">
+        <p className="mt-2 mx-auto max-w-sm text-sm text-ink-body">
           {isHu
             ? "Az összehasonlítás csak akkor jelenik meg, ha legalább 2 kitöltött observer visszajelzés beérkezett."
             : "The comparison appears once at least 2 completed observer assessments have been received."}
         </p>
         <Link
           href="/dashboard?tab=invites"
-          className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#c8410a] px-6 text-sm font-semibold text-[#c8410a] transition hover:bg-[#fff5f0]"
+          className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage px-6 text-sm font-semibold text-bronze transition hover:bg-sage-ghost"
         >
           {isHu ? "Meghívók kezelése →" : "Manage invitations →"}
         </Link>
@@ -84,7 +84,7 @@ export function ObserverComparison({
   return (
     <div className="space-y-6">
       {/* Count badge */}
-      <p className="text-sm text-[#5a5650]">
+      <p className="text-sm text-ink-body">
         {isHu
           ? `${observerCount} observer visszajelzés átlaga alapján`
           : `Based on ${observerCount} observer assessments`}
@@ -103,8 +103,8 @@ export function ObserverComparison({
         {/* Gap list */}
         <div className="flex-1 space-y-3">
           {gaps.length === 0 ? (
-            <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] px-5 py-4">
-              <p className="text-sm text-[#5a5650]">
+            <div className="rounded-xl border border-sand bg-cream px-5 py-4">
+              <p className="text-sm text-ink-body">
                 {isHu
                   ? "Jó egyezés — az önképed és az observer visszajelzések közel azonosak."
                   : "Good alignment — your self-image and observer feedback are closely matched."}
@@ -117,7 +117,7 @@ export function ObserverComparison({
               return (
                 <div
                   key={dim.code}
-                  className="rounded-xl border border-[#e8e4dc] bg-white p-4"
+                  className="rounded-xl border border-sand bg-white p-4"
                 >
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2">
@@ -127,18 +127,18 @@ export function ObserverComparison({
                       >
                         {dim.code}
                       </div>
-                      <span className="text-sm font-semibold text-[#1a1814]">{dim.label}</span>
+                      <span className="text-sm font-semibold text-ink">{dim.label}</span>
                     </div>
                     <span
                       className={`font-mono text-xs font-semibold ${
-                        higherSelf ? "text-[#c8410a]" : "text-[#1a5c3a]"
+                        higherSelf ? "text-bronze" : "text-sage"
                       }`}
                     >
                       {delta > 0 ? "+" : ""}
                       {delta}%
                     </span>
                   </div>
-                  <p className="text-xs text-[#5a5650]">
+                  <p className="text-xs text-ink-body">
                     {isHu
                       ? higherSelf
                         ? "Te magasabbra értékeled magadat, mint ahogy mások látnak."

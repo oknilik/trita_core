@@ -66,9 +66,9 @@ export function OrgMemberRoleEditor({
   if (isSelf) {
     return (
       <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-        role === "ORG_ADMIN" ? "bg-[#c8410a]/10 text-[#c8410a]" :
-        role === "ORG_MANAGER" ? "bg-[#1a1814]/10 text-[#1a1814]" :
-        "bg-[#e8e4dc] text-[#3d3a35]"
+        role === "ORG_ADMIN" ? "bg-sage/10 text-bronze" :
+        role === "ORG_MANAGER" ? "bg-ink/10 text-ink" :
+        "bg-sand text-ink-body"
       }`}>
         {roleLabel(role, isHu)}
       </span>
@@ -81,14 +81,14 @@ export function OrgMemberRoleEditor({
         value={role}
         disabled={loading}
         onChange={(e) => handleChange(e.target.value as OrgRole)}
-        className="min-h-[36px] rounded-lg border border-[#e8e4dc] bg-white px-2 text-xs font-semibold text-[#1a1814] focus:border-[#c8410a] focus:outline-none disabled:opacity-50"
+        className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
       >
         {ROLES.map((r) => (
           <option key={r} value={r}>{roleLabel(r, isHu)}</option>
         ))}
       </select>
       {role === "ORG_MANAGER" && (
-        <p className="text-[10px] text-[#a09a90]">
+        <p className="text-[10px] text-muted">
           {isHu
             ? "Csapat jogosultságok külön állíthatók."
             : "Team permissions set per team."}

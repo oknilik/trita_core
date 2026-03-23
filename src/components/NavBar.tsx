@@ -18,40 +18,40 @@ export function NavBar() {
   }, [isSignedIn]);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#e8e4dc] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+    <header className="sticky top-0 z-40 w-full border-b border-sand bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-4 lg:px-16">
         <Link
           href="/"
           aria-label="trita"
-          className="font-playfair inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-[#1a1814]"
+          className="font-fraunces inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-ink"
         >
           {"trit"}
-          <span className="text-[#c8410a]">a</span>
+          <span className="text-bronze">a</span>
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
           <SignedOut>
-            <Link href="/#how-it-works" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+            <Link href="/#how-it-works" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
               Hogyan működik
             </Link>
-            <Link href="/founding" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+            <Link href="/founding" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
               Alapító program
             </Link>
-            <Link href="/blog" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+            <Link href="/blog" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
               Blog
             </Link>
-            <Link href="/pricing" className="text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+            <Link href="/pricing" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
               Árazás
             </Link>
             <Link
               href="/sign-in"
-              className="inline-flex min-h-[44px] items-center text-sm font-medium text-[#3d3a35] transition-colors hover:text-[#c8410a]"
+              className="inline-flex min-h-[44px] items-center text-sm font-medium text-ink-body transition-colors hover:text-bronze"
             >
               Bejelentkezés
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
             >
               Kipróbálom ingyen
             </Link>
@@ -65,13 +65,13 @@ export function NavBar() {
           <div className="flex items-center gap-3 lg:hidden">
             <Link
               href="/sign-in"
-              className="inline-flex min-h-[44px] items-center text-sm font-medium text-[#3d3a35] hover:text-[#c8410a]"
+              className="inline-flex min-h-[44px] items-center text-sm font-medium text-ink-body hover:text-bronze"
             >
               Bejelentkezés
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
             >
               Kipróbálom
             </Link>
@@ -84,7 +84,7 @@ export function NavBar() {
               type="button"
               onClick={() => setDrawerOpen(true)}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-[#e8e4dc] bg-white text-[#3d3a35] transition hover:bg-[#f5efe6] hover:text-[#1a1814]"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:bg-[#f5efe6] hover:text-ink"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

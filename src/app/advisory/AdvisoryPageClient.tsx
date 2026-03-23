@@ -96,10 +96,10 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
     <div>
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="mb-10">
-        <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
           // {isHu ? "tanácsadói konzultáció" : "advisory consultation"}
         </p>
-        <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+        <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
           {isAdvisory
             ? isHu
               ? `${firstName}, a csapataid készen állnak a következő lépésre.`
@@ -108,7 +108,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
             ? "Lásd, amit az adatok nem mondanak el."
             : "See what the data doesn't tell you."}
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#5a5650]">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-body">
           {isAdvisory
             ? isHu
               ? "A negyedéves tanácsadói konzultáción személyesen értelmezzük a csapataid mintázatait, és konkrét akcióterveket dolgozunk ki."
@@ -122,7 +122,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {/* ── A te csapataid most ────────────────────────────── */}
       {!loadingPatterns && patterns.length > 0 && (
         <div className="mb-10">
-          <h2 className="mb-4 font-playfair text-xl text-[#1a1814]">
+          <h2 className="mb-4 font-fraunces text-xl text-ink">
             {isHu ? "A te csapataid most" : "Your teams right now"}
           </h2>
           <div className="flex flex-col gap-3">
@@ -131,20 +131,20 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
               return (
                 <div
                   key={p.teamId}
-                  className="flex flex-col justify-between gap-3 rounded-2xl border border-[#e8e4dc] bg-white p-5 shadow-sm sm:flex-row sm:items-center"
+                  className="flex flex-col justify-between gap-3 rounded-2xl border border-sand bg-white p-5 shadow-sm sm:flex-row sm:items-center"
                 >
                   <div>
-                    <p className="font-semibold text-[#1a1814]">{team?.name}</p>
-                    <p className="mt-0.5 text-sm text-[#5a5650]">
+                    <p className="font-semibold text-ink">{team?.name}</p>
+                    <p className="mt-0.5 text-sm text-ink-body">
                       {p.patternName}
                       {p.diversitySuffix ? ` — ${p.diversitySuffix}` : ""}
-                      <span className="mx-2 text-[#e8e4dc]">·</span>
+                      <span className="mx-2 text-sand">·</span>
                       {team?.memberCount} {isHu ? "fő" : "members"}
                     </p>
                   </div>
                   <a
                     href={`/team/${p.teamId}`}
-                    className="shrink-0 text-sm font-semibold text-[#c8410a] transition-colors hover:text-[#b53a09]"
+                    className="shrink-0 text-sm font-semibold text-bronze transition-colors hover:text-bronze-dark"
                   >
                     {isHu ? "Részletek →" : "Details →"}
                   </a>
@@ -157,12 +157,12 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
 
       {/* ── Mit kapsz a konzultáción ──────────────────────── */}
       <div className="mb-10">
-        <h2 className="mb-2 font-playfair text-xl text-[#1a1814]">
+        <h2 className="mb-2 font-fraunces text-xl text-ink">
           {isHu
             ? "Mit kapsz a tanácsadói konzultáción"
             : "What you get in the advisory consultation"}
         </h2>
-        <p className="mb-6 text-sm text-[#5a5650]">
+        <p className="mb-6 text-sm text-ink-body">
           {isHu
             ? "A konzultáció szervezeti szintű — nem egy csapatról szól, hanem arról, hogyan működnek a csapataid együtt és külön-külön."
             : "The consultation is org-level — not about one team, but how your teams work together and individually."}
@@ -229,8 +229,8 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       </div>
 
       {/* ── Hogyan működik a negyedéves konzultáció ──────── */}
-      <div className="mb-10 rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-        <h2 className="mb-6 font-playfair text-xl text-[#1a1814]">
+      <div className="mb-10 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <h2 className="mb-6 font-fraunces text-xl text-ink">
           {isHu
             ? "Hogyan működik a negyedéves konzultáció"
             : "How the quarterly consultation works"}
@@ -275,31 +275,31 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
               ]
           ).map(({ n, title, body }) => (
             <div key={n} className="flex items-start gap-4">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#c8410a]/10 font-playfair text-sm font-medium text-[#c8410a]">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage/10 font-fraunces text-sm font-medium text-bronze">
                 {n}
               </span>
               <div>
-                <p className="mb-1 text-sm font-semibold text-[#1a1814]">{title}</p>
-                <p className="text-sm text-[#5a5650]">{body}</p>
+                <p className="mb-1 text-sm font-semibold text-ink">{title}</p>
+                <p className="text-sm text-ink-body">{body}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Add-on */}
-        <div className="border-t border-[#e8e4dc] pt-6">
+        <div className="border-t border-sand pt-6">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div>
-              <p className="text-sm font-semibold text-[#1a1814]">
+              <p className="text-sm font-semibold text-ink">
                 {isHu ? "Csapat deep-dive session" : "Team deep-dive session"}
               </p>
-              <p className="text-xs text-[#a09a90]">
+              <p className="text-xs text-muted">
                 {isHu
                   ? "Ha egy konkrét csapat mélyebb elemzést igényel — személyre szabott 60 perces session a csapatmenedzserrel."
                   : "If a specific team needs deeper analysis — a personalised 60-minute session with the team manager."}
               </p>
             </div>
-            <span className="shrink-0 text-sm font-semibold text-[#1a1814]">
+            <span className="shrink-0 text-sm font-semibold text-ink">
               + €200 / {isHu ? "alkalom" : "session"}
             </span>
           </div>
@@ -308,18 +308,18 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
 
       {/* ── CTA — advisory / custom ──────────────────────── */}
       {isAdvisory && !requestSent && (
-        <div className="mb-10 rounded-2xl border border-[#c8410a]/20 bg-white p-8 text-center shadow-sm">
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+        <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
             // {tier === "custom"
               ? isHu ? "egyedi program" : "custom programme"
               : isHu ? "advisory csomag" : "advisory plan"}
           </p>
-          <h2 className="mb-3 font-playfair text-2xl text-[#1a1814]">
+          <h2 className="mb-3 font-fraunces text-2xl text-ink">
             {tier === "custom"
               ? isHu ? "Egyeztessünk időpontot" : "Let's schedule a session"
               : isHu ? "Kérd a következő negyedéves konzultációt" : "Request your next quarterly consultation"}
           </h2>
-          <p className="mx-auto mb-6 max-w-lg text-sm text-[#5a5650]">
+          <p className="mx-auto mb-6 max-w-lg text-sm text-ink-body">
             {tier === "custom"
               ? isHu
                 ? "Az egyedi programod keretében személyre szabott ütemtervet dolgozunk ki — kattints, és koordinálunk."
@@ -331,7 +331,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
           <button
             onClick={handleRequestConsultation}
             disabled={requestLoading}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-8 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             {requestLoading
               ? isHu ? "Küldés..." : "Sending..."
@@ -341,12 +341,12 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       )}
 
       {isAdvisory && requestSent && (
-        <div className="mb-10 rounded-2xl border border-[#e8e4dc] bg-white p-8 text-center shadow-sm">
-          <p className="mb-3 font-playfair text-3xl text-[#c8410a]">✦</p>
-          <h2 className="mb-2 font-playfair text-2xl text-[#1a1814]">
+        <div className="mb-10 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+          <p className="mb-3 font-fraunces text-3xl text-bronze">✦</p>
+          <h2 className="mb-2 font-fraunces text-2xl text-ink">
             {isHu ? "Megkaptuk a kérésed!" : "We received your request!"}
           </h2>
-          <p className="text-sm text-[#5a5650]">
+          <p className="text-sm text-ink-body">
             {isHu
               ? "24 órán belül személyesen kereslek az időpont-egyeztetéssel."
               : "We'll reach out within 24 hours to schedule a time."}
@@ -356,21 +356,21 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
 
       {/* ── CTA — upgrade ────────────────────────────────── */}
       {isUpgrade && (
-        <div className="mb-10 rounded-2xl border-2 border-[#c8410a]/20 bg-white p-8 shadow-sm">
+        <div className="mb-10 rounded-2xl border-2 border-sage/20 bg-white p-8 shadow-sm">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
             <div>
-              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-bronze">
                 // advisory
               </p>
-              <h2 className="mb-3 font-playfair text-2xl text-[#1a1814]">
+              <h2 className="mb-3 font-fraunces text-2xl text-ink">
                 Trita Advisory
               </h2>
-              <p className="mb-5 text-sm leading-relaxed text-[#5a5650]">
+              <p className="mb-5 text-sm leading-relaxed text-ink-body">
                 {isHu
                   ? "Negyedéves személyes tanácsadói konzultáció + teljes platform hozzáférés. A csapatod adataiból konkrét, végrehajtható akcióterveket készítünk együtt."
                   : "Quarterly personal advisory consultation + full platform access. We build concrete, executable action plans from your team data together."}
               </p>
-              <ul className="mb-6 space-y-2 text-sm text-[#5a5650]">
+              <ul className="mb-6 space-y-2 text-sm text-ink-body">
                 {(isHu
                   ? [
                       "Negyedéves 90 perces szervezeti szintű tanácsadói konzultáció",
@@ -390,19 +390,19 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
                     ]
                 ).map((item) => (
                   <li key={item} className="flex gap-2">
-                    <span className="shrink-0 text-[#c8410a]">✓</span>
+                    <span className="shrink-0 text-bronze">✓</span>
                     {item}
                   </li>
                 ))}
               </ul>
               <div className="mb-4 flex items-baseline gap-2">
-                <span className="font-playfair text-3xl text-[#1a1814]">€149</span>
-                <span className="text-sm text-[#5a5650]">
+                <span className="font-fraunces text-3xl text-ink">€149</span>
+                <span className="text-sm text-ink-body">
                   {isHu ? "/hó + €400/negyedév" : "/mo + €400/quarter"}
                 </span>
               </div>
               {tier === "trial" && (
-                <p className="mb-4 text-xs font-semibold text-[#c8410a]">
+                <p className="mb-4 text-xs font-semibold text-bronze">
                   {isHu
                     ? "Founding customer? Az első 10 ügyfélnek €99/hó, örökre."
                     : "Founding customer? €99/mo forever for the first 10 clients."}
@@ -410,19 +410,19 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
               )}
               <a
                 href="/billing/upgrade"
-                className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c8410a] px-8 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+                className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
               >
                 {isHu ? "Váltás Advisory-ra →" : "Upgrade to Advisory →"}
               </a>
             </div>
             <div className="hidden md:block">
-              <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-6 text-center">
-                <p className="text-sm italic leading-relaxed text-[#5a5650]">
+              <div className="rounded-xl border border-sand bg-cream p-6 text-center">
+                <p className="text-sm italic leading-relaxed text-ink-body">
                   {isHu
                     ? "\u201EA konzultáción végre megértettem, miért van feszültség a sales és a product csapat között — és kaptam 3 konkrét lépést, amit azonnal elkezdtünk.\u201D"
                     : "\u201CAt the consultation I finally understood why there was tension between the sales and product teams — and I got 3 concrete steps we started immediately.\u201D"}
                 </p>
-                <p className="mt-3 text-xs text-[#a09a90]">
+                <p className="mt-3 text-xs text-muted">
                   {isHu ? "— Egy jövőbeli founding customer" : "— A future founding customer"}
                 </p>
               </div>
@@ -432,8 +432,8 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       )}
 
       {/* ── FAQ ──────────────────────────────────────────── */}
-      <div className="mt-4 border-t border-[#e8e4dc] pt-10">
-        <h2 className="mb-6 font-playfair text-xl text-[#1a1814]">
+      <div className="mt-4 border-t border-sand pt-10">
+        <h2 className="mb-6 font-fraunces text-xl text-ink">
           {isHu ? "Gyakori kérdések" : "Frequently asked questions"}
         </h2>
         <div className="space-y-3">
@@ -513,14 +513,14 @@ function ConsultationFeature({
   example?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-[#e8e4dc] bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
       <div className="mb-2 flex items-baseline gap-2">
-        <span className="font-mono text-sm text-[#c8410a]/50">{number}</span>
-        <h3 className="font-semibold text-[#1a1814]">{title}</h3>
+        <span className="font-mono text-sm text-bronze/50">{number}</span>
+        <h3 className="font-semibold text-ink">{title}</h3>
       </div>
-      <p className="text-sm leading-relaxed text-[#5a5650]">{description}</p>
+      <p className="text-sm leading-relaxed text-ink-body">{description}</p>
       {example && (
-        <p className="mt-3 text-xs italic text-[#c8410a]/70">{example}</p>
+        <p className="mt-3 text-xs italic text-bronze/70">{example}</p>
       )}
     </div>
   );
@@ -528,14 +528,14 @@ function ConsultationFeature({
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="group rounded-xl border border-[#e8e4dc] bg-white">
-      <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 text-sm font-semibold text-[#1a1814] transition-colors hover:text-[#c8410a]">
-        <span className="shrink-0 font-mono text-[#c8410a]/50 transition-transform group-open:rotate-90">
+    <details className="group rounded-xl border border-sand bg-white">
+      <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 text-sm font-semibold text-ink transition-colors hover:text-bronze">
+        <span className="shrink-0 font-mono text-bronze/50 transition-transform group-open:rotate-90">
           ›
         </span>
         {q}
       </summary>
-      <p className="px-5 pb-4 text-sm leading-relaxed text-[#5a5650]">{a}</p>
+      <p className="px-5 pb-4 text-sm leading-relaxed text-ink-body">{a}</p>
     </details>
   );
 }

@@ -13,8 +13,8 @@ interface ObserverComparisonProps {
 
 function getChipStyle(delta: number): string {
   if (Math.abs(delta) <= 5) return "bg-gray-50 text-gray-700 border-gray-200";
-  if (delta > 0) return "bg-[#fef3ec] text-[#8b2f09] border-[#f3d4c8]";
-  return "bg-[#edf4ef] text-[#1a5c3a] border-[#cfe2d6]";
+  if (delta > 0) return "bg-sage-soft text-bronze-dark border-sage-ring";
+  return "bg-[#edf4ef] text-sage border-[#cfe2d6]";
 }
 
 export function ObserverComparison({
@@ -37,7 +37,7 @@ export function ObserverComparison({
     <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
       {/* Modern header with decorative bar */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-1 w-12 bg-gradient-to-r from-[#c8410a] to-[#8b2f09] rounded-full" />
+        <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {t("comparison.title", locale)}
         </h2>
@@ -49,11 +49,11 @@ export function ObserverComparison({
 
       {/* Stat badges */}
       <div className="mt-6 flex flex-wrap gap-3">
-        <div className="rounded-xl bg-gradient-to-br from-[#fef3ec] to-[#f3eee4] px-5 py-3 border border-[#f3d4c8]/50">
-          <p className="text-xs font-semibold text-[#c8410a] uppercase tracking-wider">
+        <div className="rounded-xl bg-gradient-to-br from-sage-soft to-warm px-5 py-3 border border-sage-ring/50">
+          <p className="text-xs font-semibold text-bronze uppercase tracking-wider">
             {t("comparison.observersLabel", locale) || "Értékelők"}
           </p>
-          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-[#c8410a] to-[#8b2f09] bg-clip-text text-transparent">
+          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-sage to-sage-deep bg-clip-text text-transparent">
             {observerCount}
           </p>
         </div>
@@ -74,7 +74,7 @@ export function ObserverComparison({
       {sortedEntries.length > 0 && (
         <div className="mt-10">
           <div className="mb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c8410a]">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bronze">
               {t("comparison.facetMapTitle", locale)}
             </p>
             <p className="mt-1 text-sm text-gray-500">
@@ -88,12 +88,12 @@ export function ObserverComparison({
               <span className="h-2 w-2 rounded-full bg-gray-400" />
               {t("comparison.heatmapMatch", locale)}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f3d4c8] bg-[#fef3ec] px-3 py-1 text-xs font-medium text-[#8b2f09]">
-              <span className="h-2 w-2 rounded-full bg-[#c8410a]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-sage-ring bg-sage-soft px-3 py-1 text-xs font-medium text-bronze-dark">
+              <span className="h-2 w-2 rounded-full bg-sage" />
               {t("comparison.heatmapObsHigher", locale)}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#cfe2d6] bg-[#edf4ef] px-3 py-1 text-xs font-medium text-[#1a5c3a]">
-              <span className="h-2 w-2 rounded-full bg-[#1a5c3a]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#cfe2d6] bg-[#edf4ef] px-3 py-1 text-xs font-medium text-sage">
+              <span className="h-2 w-2 rounded-full bg-sage" />
               {t("comparison.heatmapSelfHigher", locale)}
             </span>
           </div>
@@ -164,7 +164,7 @@ export function ObserverComparison({
               <button
                 type="button"
                 onClick={() => setShowAll((prev) => !prev)}
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#f3d4c8] bg-white px-6 text-sm font-semibold text-[#8b2f09] shadow-sm transition-all duration-300 hover:bg-[#fef3ec] hover:shadow-md"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-sage-ring bg-white px-6 text-sm font-semibold text-bronze-dark shadow-sm transition-all duration-300 hover:bg-sage-soft hover:shadow-md"
               >
                 {showAll ? t("comparison.showLess", locale) : t("comparison.showAll", locale)}
               </button>
@@ -179,7 +179,7 @@ export function ObserverComparison({
             <div className="mt-4 flex flex-col gap-2 sm:flex-row">
               <a
                 href="/dashboard?tab=invites#invite"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
               >
                 {t("comparison.nextActionInvite", locale)}
               </a>

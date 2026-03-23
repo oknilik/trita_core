@@ -34,7 +34,7 @@ export function LockedSection({
   if (isUnlocked) {
     return (
       <section>
-        <h2 className="mb-6 font-playfair text-2xl text-[#1a1814]">{title}</h2>
+        <h2 className="mb-6 font-fraunces text-2xl text-ink">{title}</h2>
         {children}
       </section>
     );
@@ -43,8 +43,8 @@ export function LockedSection({
   // Locked: static placeholder + upgrade CTA (no real data transmitted)
   return (
     <section>
-      <h2 className="mb-6 font-playfair text-2xl text-[#1a1814]">{title}</h2>
-      <div className="relative overflow-hidden rounded-2xl border border-[#e8e4dc] bg-white">
+      <h2 className="mb-6 font-fraunces text-2xl text-ink">{title}</h2>
+      <div className="relative overflow-hidden rounded-2xl border border-sand bg-white">
         {/* Static blurred placeholder — NOT real data */}
         <div
           className="pointer-events-none select-none px-6 py-5 opacity-25"
@@ -54,8 +54,8 @@ export function LockedSection({
           <div className="space-y-4">
             {[72, 56, 88, 44, 63, 78].map((w, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="h-3 rounded bg-[#c8410a]/20" style={{ width: `${w}%` }} />
-                <div className="h-2 w-10 rounded bg-[#e8e4dc]" />
+                <div className="h-3 rounded bg-sage/20" style={{ width: `${w}%` }} />
+                <div className="h-2 w-10 rounded bg-sand" />
               </div>
             ))}
           </div>
@@ -63,13 +63,13 @@ export function LockedSection({
 
         {/* Lock overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-white/80 px-6 py-10 backdrop-blur-[2px]">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#e8e4dc] bg-[#faf9f6]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-sand bg-cream">
             <svg
               width="20"
               height="20"
               viewBox="0 0 20 20"
               fill="none"
-              stroke="#c8410a"
+              stroke="#c17f4a"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -79,10 +79,10 @@ export function LockedSection({
             </svg>
           </div>
           <div className="max-w-sm text-center">
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#a09a90]">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
               {upgradeTier} · {upgradePrice}
             </p>
-            <p className="text-sm leading-relaxed text-[#5a5650]">{teaser}</p>
+            <p className="text-sm leading-relaxed text-ink-body">{teaser}</p>
           </div>
           <UpgradeButton tier={TIER_MAP[requiredLevel]} label={upgradeCta} />
         </div>

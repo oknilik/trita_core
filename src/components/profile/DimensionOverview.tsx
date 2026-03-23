@@ -25,13 +25,13 @@ export function DimensionOverview({
 
   return (
     <section>
-      <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+      <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
         {isHu ? "// áttekintés" : "// overview"}
       </p>
-      <h2 className="mt-2 font-playfair text-2xl text-[#1a1814]">
+      <h2 className="mt-2 font-fraunces text-2xl text-ink">
         {isHu ? "Személyiségprofilod" : "Your personality profile"}
       </h2>
-      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#5a5650]">
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-body">
         {BLOCK1[locale] ?? BLOCK1.hu}
       </p>
 
@@ -51,7 +51,7 @@ export function DimensionOverview({
             {dimensions.map((dim) => (
               <div
                 key={dim.code}
-                className="flex items-center gap-3 rounded-xl border border-[#e8e4dc] bg-white px-4 py-3"
+                className="flex items-center gap-3 rounded-xl border border-sand bg-white px-4 py-3"
               >
                 <div
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white"
@@ -60,15 +60,15 @@ export function DimensionOverview({
                   {dim.code}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-[#1a1814] truncate">{dim.label}</p>
-                  <div className="mt-1.5 h-1.5 w-full rounded-full bg-[#e8e4dc]">
+                  <p className="text-xs font-semibold text-ink truncate">{dim.label}</p>
+                  <div className="mt-1.5 h-1.5 w-full rounded-full bg-sand">
                     <div
                       className="h-full rounded-full transition-all"
                       style={{ width: `${dim.score}%`, backgroundColor: dim.color }}
                     />
                   </div>
                 </div>
-                <span className="shrink-0 font-mono text-xs text-[#5a5650]">
+                <span className="shrink-0 font-mono text-xs text-ink-body">
                   {dim.score}%
                 </span>
               </div>

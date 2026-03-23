@@ -42,7 +42,7 @@ export function Topbar({ orgId, orgName, teamId, teamName }: TopbarProps) {
   }
 
   return (
-    <header className="flex h-[46px] flex-shrink-0 items-center border-b border-[#e8e4dc] bg-[#faf9f6] px-5">
+    <header className="flex h-[46px] flex-shrink-0 items-center border-b border-sand bg-cream px-5">
       <nav className="flex items-center gap-1.5">
         {crumbs.map((crumb, i) => {
           const isLast = i === crumbs.length - 1;
@@ -54,12 +54,12 @@ export function Topbar({ orgId, orgName, teamId, teamName }: TopbarProps) {
               {crumb.href && !isLast ? (
                 <Link
                   href={crumb.href}
-                  className="text-[12px] font-medium text-[#5a5650] transition-colors hover:text-[#c8410a]"
+                  className="text-[12px] font-medium text-ink-body transition-colors hover:text-bronze"
                 >
                   {crumb.label}
                 </Link>
               ) : (
-                <span className="text-[12px] font-semibold text-[#1a1814]">
+                <span className="text-[12px] font-semibold text-ink">
                   {crumb.label}
                 </span>
               )}

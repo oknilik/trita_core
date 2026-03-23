@@ -6,17 +6,17 @@ const BADGE: Record<ProfileLevel, { label: string; labelEn: string; classes: str
   start: {
     label: "Self Start",
     labelEn: "Self Start",
-    classes: "bg-[#f5f5f4] text-[#a09a90]",
+    classes: "bg-[#f5f5f4] text-muted",
   },
   plus: {
     label: "Self Plus",
     labelEn: "Self Plus",
-    classes: "bg-[#fff5f0] text-[#c8410a]",
+    classes: "bg-sage-ghost text-bronze",
   },
   reflect: {
     label: "Self Reflect",
     labelEn: "Self Reflect",
-    classes: "bg-[#f0fdf4] text-[#1a5c3a]",
+    classes: "bg-[#f0fdf4] text-sage",
   },
 };
 
@@ -43,15 +43,15 @@ export function ProfileHeader({
 
   return (
     <div>
-      <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+      <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
         // profil
       </p>
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-playfair text-3xl text-[#1a1814] md:text-4xl">{name}</h1>
-          <p className="mt-1.5 text-sm text-[#5a5650]">
+          <h1 className="font-fraunces text-3xl text-ink md:text-4xl">{name}</h1>
+          <p className="mt-1.5 text-sm text-ink-body">
             {isHu ? "Felmérés dátuma:" : "Assessment date:"}{" "}
-            <span className="text-[#3d3a35]">{formattedDate}</span>
+            <span className="text-ink-body">{formattedDate}</span>
           </p>
         </div>
         <span

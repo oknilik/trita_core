@@ -65,12 +65,12 @@ export function PricingFAQ({ locale }: { locale: Locale }) {
   const eyebrow = locale === "hu" ? "// faq" : "// faq";
 
   return (
-    <section className="border-t border-[#e8e4dc] px-6 py-12 lg:px-16 lg:py-14">
+    <section className="border-t border-sand px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-3xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {eyebrow}
         </p>
-        <h2 className="mt-2 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+        <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {heading}
         </h2>
 
@@ -78,7 +78,7 @@ export function PricingFAQ({ locale }: { locale: Locale }) {
           {items.map((item, i) => (
             <div
               key={item.q}
-              className="rounded-xl border border-[#e8e4dc] bg-white overflow-hidden"
+              className="rounded-xl border border-sand bg-white overflow-hidden"
             >
               <button
                 type="button"
@@ -86,11 +86,11 @@ export function PricingFAQ({ locale }: { locale: Locale }) {
                 className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left min-h-[44px]"
                 aria-expanded={open === i}
               >
-                <span className="text-[15px] font-semibold text-[#1a1814]">
+                <span className="text-[15px] font-semibold text-ink">
                   {item.q}
                 </span>
                 <span
-                  className={`shrink-0 text-[#c8410a] transition-transform duration-200 ${
+                  className={`shrink-0 text-bronze transition-transform duration-200 ${
                     open === i ? "rotate-45" : ""
                   }`}
                   aria-hidden="true"
@@ -109,8 +109,8 @@ export function PricingFAQ({ locale }: { locale: Locale }) {
                 </span>
               </button>
               {open === i && (
-                <div className="border-t border-[#e8e4dc] px-5 pb-4 pt-3">
-                  <p className="text-sm leading-[1.7] text-[#3d3a35]">{item.a}</p>
+                <div className="border-t border-sand px-5 pb-4 pt-3">
+                  <p className="text-sm leading-[1.7] text-ink-body">{item.a}</p>
                 </div>
               )}
             </div>

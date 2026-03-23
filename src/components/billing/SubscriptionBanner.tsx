@@ -43,13 +43,13 @@ export function SubscriptionBanner({ status, trialDaysLeft, billingUrl, locale }
         className={`rounded-lg border px-4 py-3 ${
           isUrgent
             ? "border-amber-200 bg-amber-50"
-            : "border-[#e8e4dc] bg-[#faf9f6]"
+            : "border-sand bg-cream"
         }`}
       >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p
             className={`text-sm font-medium ${
-              isUrgent ? "text-amber-700" : "text-[#3d3a35]"
+              isUrgent ? "text-amber-700" : "text-ink-body"
             }`}
           >
             {hu
@@ -58,7 +58,7 @@ export function SubscriptionBanner({ status, trialDaysLeft, billingUrl, locale }
           </p>
           <Link
             href={billingUrl}
-            className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-[#c8410a] px-4 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+            className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark"
           >
             {hu ? "Előfizetés aktiválása" : "Activate subscription"}
           </Link>

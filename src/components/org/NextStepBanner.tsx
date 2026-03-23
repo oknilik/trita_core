@@ -37,10 +37,10 @@ const STEP_CONFIG: Record<
 > = {
   invite_members: {
     icon: "👥",
-    bgClass: "bg-[#fff5f0]",
-    borderClass: "border-[#c8410a]/20",
-    titleColor: "text-[#c8410a]",
-    subColor: "text-[#c8410a]/70",
+    bgClass: "bg-sage-ghost",
+    borderClass: "border-sage/20",
+    titleColor: "text-bronze",
+    subColor: "text-bronze/70",
   },
   create_campaign: {
     icon: "📋",

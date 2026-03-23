@@ -67,14 +67,14 @@ export default async function AdminPage({
     });
 
     return (
-      <main className="min-h-dvh bg-[#faf9f6] px-4 py-10 md:px-6">
+      <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
         <div className="mx-auto max-w-7xl">
           <FadeIn>
-            <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">// admin</p>
-            <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">// admin</p>
+            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
               {t("admin.title", locale)}
             </h1>
-            <p className="mt-2 text-sm text-[#5a5650]">
+            <p className="mt-2 text-sm text-ink-body">
               {t("admin.subtitle", locale)}
             </p>
           </FadeIn>
@@ -285,14 +285,14 @@ export default async function AdminPage({
     : 0;
 
   return (
-    <main className="min-h-dvh bg-[#faf9f6] px-4 py-10 md:px-6">
+    <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">// admin</p>
-          <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">// admin</p>
+          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {t("admin.title", locale)}
           </h1>
-          <p className="mt-2 text-sm text-[#5a5650]">
+          <p className="mt-2 text-sm text-ink-body">
             {t("admin.subtitle", locale)}
           </p>
         </FadeIn>
@@ -373,8 +373,8 @@ export default async function AdminPage({
                   rows={invitationStats.byStatus.map(
                     (item: { status: string; _count: { id: number } }) => {
                       const statusColors: Record<string, string> = {
-                        COMPLETED: "#c8410a",
-                        PENDING: "#c8410a",
+                        COMPLETED: "#3d6b5e",
+                        PENDING: "#c17f4a",
                       };
                       const emailCount =
                         item.status === "PENDING"
@@ -408,40 +408,40 @@ export default async function AdminPage({
 
             {/* Research Survey Stats */}
             <FadeIn delay={0.3}>
-              <div className="mt-6 rounded-xl border border-[#e8e4dc] bg-white p-6">
+              <div className="mt-6 rounded-xl border border-sand bg-white p-6">
                 <div className="mb-5 flex items-center justify-between">
-                  <h2 className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
                     Research Survey
                   </h2>
-                  <span className="rounded-full bg-[#e8e4dc] px-2.5 py-0.5 text-xs font-semibold text-[#3d3a35]">
+                  <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
                     {surveyStats.count} responses
                   </span>
                 </div>
 
                 <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <div className="rounded-lg border border-sand bg-cream p-4">
+                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Self-accuracy (Avg)
                     </p>
-                    <p className="mt-2 text-2xl font-bold text-[#1a1814]">
+                    <p className="mt-2 text-2xl font-bold text-ink">
                       {avgSelfAccuracy !== null ? `${avgSelfAccuracy}/5` : "–"}
                     </p>
                   </div>
-                  <div className="rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <div className="rounded-lg border border-sand bg-cream p-4">
+                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Personality importance (Avg)
                     </p>
-                    <p className="mt-2 text-2xl font-bold text-[#1a1814]">
+                    <p className="mt-2 text-2xl font-bold text-ink">
                       {avgPersonalityImportance !== null
                         ? `${avgPersonalityImportance}/5`
                         : "–"}
                     </p>
                   </div>
-                  <div className="rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <div className="rounded-lg border border-sand bg-cream p-4">
+                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Observer usefulness (Avg)
                     </p>
-                    <p className="mt-2 text-2xl font-bold text-[#1a1814]">
+                    <p className="mt-2 text-2xl font-bold text-ink">
                       {avgSurveyObserverUsefulness !== null
                         ? `${avgSurveyObserverUsefulness}/5`
                         : "–"}
@@ -451,7 +451,7 @@ export default async function AdminPage({
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                    <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
                       Prior personality test
                     </h3>
                     <div className="space-y-2">
@@ -462,12 +462,12 @@ export default async function AdminPage({
                               key={item.priorTest}
                               className="flex items-center justify-between text-sm"
                             >
-                              <span className="font-medium uppercase text-[#3d3a35]">
+                              <span className="font-medium uppercase text-ink-body">
                                 {item.priorTest}
                               </span>
-                              <span className="text-[#1a1814]">
+                              <span className="text-ink">
                                 {item._count.id}
-                                <span className="ml-1 text-[#a09a90]">
+                                <span className="ml-1 text-muted">
                                   (
                                   {surveyStats.count > 0
                                     ? Math.round(
@@ -481,12 +481,12 @@ export default async function AdminPage({
                           )
                         )
                       ) : (
-                        <p className="text-xs text-[#a09a90]">No data yet</p>
+                        <p className="text-xs text-muted">No data yet</p>
                       )}
                     </div>
                   </div>
                   <div>
-                    <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                    <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
                       Has 360 process
                     </h3>
                     <div className="space-y-2">
@@ -510,17 +510,17 @@ export default async function AdminPage({
                                 key={item.has360Process}
                                 className="flex items-center justify-between text-sm"
                               >
-                                <span className="font-medium uppercase text-[#3d3a35]">
+                                <span className="font-medium uppercase text-ink-body">
                                   {item.has360Process}
                                 </span>
-                                <span className="text-[#1a1814]">
+                                <span className="text-ink">
                                   {item._count.id}
                                 </span>
                               </div>
                             )
                           )
                       ) : (
-                        <p className="text-xs text-[#a09a90]">No data yet</p>
+                        <p className="text-xs text-muted">No data yet</p>
                       )}
                     </div>
                   </div>
@@ -530,39 +530,39 @@ export default async function AdminPage({
 
             {/* Feedback Insights */}
             <FadeIn delay={0.4}>
-              <div className="mt-6 rounded-xl border border-[#e8e4dc] bg-white p-6">
-                <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+              <div className="mt-6 rounded-xl border border-sand bg-white p-6">
+                <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-muted">
                   {t("admin.feedbackTitle", locale)}
                 </h2>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <div className="rounded-lg border border-sand bg-cream p-4">
+                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Agreement (Avg)
                     </p>
-                    <p className="mt-2 text-2xl font-bold text-[#1a1814]">
+                    <p className="mt-2 text-2xl font-bold text-ink">
                       {avgAgreement}/5
                     </p>
                   </div>
-                  <div className="rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <div className="rounded-lg border border-sand bg-cream p-4">
+                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Observer Usefulness (Avg)
                     </p>
-                    <p className="mt-2 text-2xl font-bold text-[#1a1814]">
+                    <p className="mt-2 text-2xl font-bold text-ink">
                       {avgObserverUsefulness}/5
                     </p>
                   </div>
-                  <div className="rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <div className="rounded-lg border border-sand bg-cream p-4">
+                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Site Usefulness (Avg)
                     </p>
-                    <p className="mt-2 text-2xl font-bold text-[#1a1814]">
+                    <p className="mt-2 text-2xl font-bold text-ink">
                       {avgSiteUsefulness}/5
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+                  <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">
                     Dimension Accuracy — HEXACO
                   </h3>
                   <div className="space-y-2">
@@ -577,15 +577,15 @@ export default async function AdminPage({
                             key={dim.dimensionCode}
                             className="flex items-center justify-between text-sm"
                           >
-                            <span className="font-medium text-[#3d3a35]">
+                            <span className="font-medium text-ink-body">
                               {dim.dimensionCode}
                             </span>
-                            <span className="text-[#1a1814]">
+                            <span className="text-ink">
                               {dim._avg.accuracyRating
                                 ? Math.round(dim._avg.accuracyRating * 10) / 10
                                 : 0}
                               /5{" "}
-                              <span className="text-[#a09a90]">
+                              <span className="text-muted">
                                 ({dim._count.id})
                               </span>
                             </span>
@@ -593,7 +593,7 @@ export default async function AdminPage({
                         )
                       )
                     ) : (
-                      <p className="text-xs text-[#a09a90]">No feedback yet.</p>
+                      <p className="text-xs text-muted">No feedback yet.</p>
                     )}
                   </div>
                 </div>

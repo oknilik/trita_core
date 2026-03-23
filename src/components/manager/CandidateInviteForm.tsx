@@ -100,17 +100,17 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
     <div className="flex flex-col gap-5">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             {isHu ? "Email cím (opcionális)" : "Email address (optional)"}
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={isHu ? "jelolt@pelda.hu" : "candidate@example.com"}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             />
           </label>
-          <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             {isHu ? "Jelölt neve" : "Candidate name"}
             <input
               type="text"
@@ -118,28 +118,28 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
               onChange={(e) => setName(e.target.value)}
               placeholder={isHu ? "Kovács Anna" : "Jane Smith"}
               required
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             />
           </label>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             {isHu ? "Pozíció (opcionális)" : "Position (optional)"}
             <input
               type="text"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
               placeholder={isHu ? "pl. Frontend fejlesztő, CTO, Sales manager" : "e.g. Frontend dev, CTO, Sales manager"}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             />
           </label>
           {teams.length > 0 && (
-            <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
+            <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
               {isHu ? "Csapat (opcionális)" : "Team (optional)"}
               <select
                 value={teamId}
                 onChange={(e) => setTeamId(e.target.value)}
-                className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+                className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
               >
                 <option value="">{isHu ? "— Nincs csapat —" : "— No team —"}</option>
                 {teams.map((t) => (
@@ -150,12 +150,12 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
           )}
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             {isHu ? "Email nyelve" : "Email language"}
             <select
               value={inviteLocale}
               onChange={(e) => setInviteLocale(e.target.value as "hu" | "en")}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             >
               <option value="hu">Magyar</option>
               <option value="en">English</option>
@@ -172,7 +172,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
         <button
           type="submit"
           disabled={loading}
-          className="min-h-[44px] self-start rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:cursor-not-allowed disabled:bg-[#e8e4dc] disabled:text-[#3d3a35]/50"
+          className="min-h-[44px] self-start rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
         >
           {loading
             ? (isHu ? "Létrehozás…" : "Creating…")

@@ -69,25 +69,25 @@ function BelbinCompletionStatus({
   const pct = total > 0 ? Math.round((withScores / total) * 100) : 0;
 
   return (
-    <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4">
+    <div className="rounded-xl border border-sand bg-cream p-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-[#1a1814]">
+          <p className="text-sm font-semibold text-ink">
             {isHu ? "Személyiségprofil státusz" : "Personality profile status"}
           </p>
-          <p className="mt-0.5 text-xs text-[#5a5650]">
+          <p className="mt-0.5 text-xs text-ink-body">
             {isHu
               ? `${withScores} / ${total} tagnak van HEXACO adata — a Belbin-becslések erre épülnek`
               : `${withScores} / ${total} members have HEXACO data — Belbin estimates are derived from this`}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className="font-mono text-sm font-semibold text-[#1a1814]">
+          <span className="font-mono text-sm font-semibold text-ink">
             {pct}%
           </span>
-          <div className="h-1.5 w-24 overflow-hidden rounded-full bg-[#e8e4dc]">
+          <div className="h-1.5 w-24 overflow-hidden rounded-full bg-sand">
             <div
-              className="h-full rounded-full bg-[#c8410a] transition-all"
+              className="h-full rounded-full bg-sage transition-all"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -122,7 +122,7 @@ function RoleComposition({
 
   if (withData === 0) {
     return (
-      <p className="text-sm text-[#a09a90]">
+      <p className="text-sm text-muted">
         {isHu ? "Nincs elég adat a csapatszerep-eloszláshoz." : "Not enough data for role distribution."}
       </p>
     );
@@ -138,13 +138,13 @@ function RoleComposition({
               <RoleChip role={role} isHu={isHu} size="xs" />
             </div>
             <div className="flex flex-1 items-center gap-2">
-              <div className="flex-1 overflow-hidden rounded-full bg-[#e8e4dc]">
+              <div className="flex-1 overflow-hidden rounded-full bg-sand">
                 <div
                   className="h-2 rounded-full transition-all"
                   style={{ width: `${pct}%`, backgroundColor: ROLE_COLORS[role] }}
                 />
               </div>
-              <span className="w-6 text-right font-mono text-xs text-[#5a5650]">
+              <span className="w-6 text-right font-mono text-xs text-ink-body">
                 {count}
               </span>
             </div>
@@ -236,29 +236,29 @@ function IndividualBelbinTable({
   isHu: boolean;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-[#e8e4dc]">
+    <div className="overflow-hidden rounded-xl border border-sand">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[#e8e4dc] bg-[#faf9f6]">
-            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#5a5650]">
+          <tr className="border-b border-sand bg-cream">
+            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body">
               {isHu ? "Tag" : "Member"}
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#5a5650]">
+            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body">
               {isHu ? "Elsődleges" : "Primary"}
             </th>
-            <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#5a5650] sm:table-cell">
+            <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body sm:table-cell">
               {isHu ? "Másodlagos" : "Secondary"}
             </th>
-            <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[#5a5650] md:table-cell">
+            <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body md:table-cell">
               {isHu ? "Kiegészítő" : "Supporting"}
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#e8e4dc] bg-white">
+        <tbody className="divide-y divide-sand bg-white">
           {members.map((m) => (
             <tr key={m.id}>
               <td className="px-4 py-3">
-                <span className="text-sm font-semibold text-[#1a1814]">
+                <span className="text-sm font-semibold text-ink">
                   {m.displayName}
                 </span>
               </td>
@@ -266,7 +266,7 @@ function IndividualBelbinTable({
                 {m.top3[0] ? (
                   <RoleChip role={m.top3[0].role} isHu={isHu} size="xs" />
                 ) : (
-                  <span className="text-xs text-[#a09a90]">
+                  <span className="text-xs text-muted">
                     {isHu ? "Nincs adat" : "No data"}
                   </span>
                 )}
@@ -351,15 +351,15 @@ function CrossAnalysis({
         return (
           <div
             key={cat.key}
-            className="flex flex-col gap-2 rounded-xl border border-[#e8e4dc] bg-white p-4"
+            className="flex flex-col gap-2 rounded-xl border border-sand bg-white p-4"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-[#1a1814]">
+              <span className="text-sm font-semibold text-ink">
                 {isHu ? cat.labelHu : cat.labelEn}
               </span>
-              <span className="font-mono text-xs text-[#5a5650]">{pct}%</span>
+              <span className="font-mono text-xs text-ink-body">{pct}%</span>
             </div>
-            <div className="flex-1 overflow-hidden rounded-full bg-[#e8e4dc]">
+            <div className="flex-1 overflow-hidden rounded-full bg-sand">
               <div
                 className="h-2 rounded-full transition-all"
                 style={{ width: `${pct}%`, backgroundColor: cat.color }}
@@ -430,13 +430,13 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
   return (
     <div className="flex flex-col gap-8 py-6">
       <div>
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// csapatszerepek becslése" : "// estimated team roles"}
         </p>
-        <h2 className="mt-1 font-playfair text-2xl text-[#1a1814]">
+        <h2 className="mt-1 font-fraunces text-2xl text-ink">
           {isHu ? "Belbin csapatszerep-elemzés" : "Belbin team role analysis"}
         </h2>
-        <p className="mt-2 max-w-lg text-sm leading-relaxed text-[#5a5650]">
+        <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink-body">
           {isHu
             ? "A személyiségprofilok alapján becsült Belbin-szerepkörök. A pontos méréshez minden tagnak ki kell töltenie a Belbin kérdőívet."
             : "Belbin roles estimated from personality profiles. For exact measurements, all members should complete the Belbin questionnaire."}
@@ -447,11 +447,11 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
       <BelbinCompletionStatus members={membersWithBelbin} isHu={isHu} />
 
       {/* Role composition */}
-      <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
-        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// szerepkör-eloszlás" : "// role distribution"}
         </h3>
-        <h4 className="mb-5 font-playfair text-xl text-[#1a1814]">
+        <h4 className="mb-5 font-fraunces text-xl text-ink">
           {isHu ? "Csapatszerepek megoszlása" : "Team role composition"}
         </h4>
         <RoleComposition members={membersWithBelbin} isHu={isHu} />
@@ -459,7 +459,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
 
       {/* Alerts */}
       <section>
-        <h3 className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <h3 className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// egyensúly-figyelmeztetések" : "// balance alerts"}
         </h3>
         <RoleAlerts members={membersWithBelbin} isHu={isHu} />
@@ -467,10 +467,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
 
       {/* Cross-analysis */}
       <section>
-        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// kategória-elemzés" : "// category analysis"}
         </h3>
-        <p className="mb-4 text-sm text-[#5a5650]">
+        <p className="mb-4 text-sm text-ink-body">
           {isHu
             ? "A csapat tagjai hogyan oszlanak meg a három fő szerepkategória között."
             : "How team members distribute across the three core role categories."}
@@ -480,10 +480,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
 
       {/* Individual table */}
       <section>
-        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-[#c8410a]">
+        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
           {isHu ? "// egyéni szerepkörök" : "// individual roles"}
         </h3>
-        <h4 className="mb-4 font-playfair text-xl text-[#1a1814]">
+        <h4 className="mb-4 font-fraunces text-xl text-ink">
           {isHu ? "Tagok szerep-profilja" : "Member role profiles"}
         </h4>
         <IndividualBelbinTable members={membersWithBelbin} isHu={isHu} />

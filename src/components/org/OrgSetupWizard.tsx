@@ -101,36 +101,36 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
     <div className="mx-auto w-full max-w-lg">
       {/* Progress indicator */}
       <div className="mb-8 flex items-center gap-3">
-        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "name" ? "bg-[#c8410a] text-white" : "bg-[#c8410a] text-white"}`}>
+        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "name" ? "bg-sage text-white" : "bg-sage text-white"}`}>
           {step === "name" ? "1" : "✓"}
         </div>
-        <div className="h-0.5 flex-1 bg-[#e8e4dc]">
-          <div className={`h-full bg-[#c8410a] transition-all ${step === "avatar" || step === "invite" ? "w-full" : "w-0"}`} />
+        <div className="h-0.5 flex-1 bg-sand">
+          <div className={`h-full bg-sage transition-all ${step === "avatar" || step === "invite" ? "w-full" : "w-0"}`} />
         </div>
-        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "avatar" ? "bg-[#c8410a] text-white" : step === "invite" ? "bg-[#c8410a] text-white" : "bg-[#e8e4dc] text-[#3d3a35]"}`}>
+        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "avatar" ? "bg-sage text-white" : step === "invite" ? "bg-sage text-white" : "bg-sand text-ink-body"}`}>
           {step === "invite" ? "✓" : "2"}
         </div>
-        <div className="h-0.5 flex-1 bg-[#e8e4dc]">
-          <div className={`h-full bg-[#c8410a] transition-all ${step === "invite" ? "w-full" : "w-0"}`} />
+        <div className="h-0.5 flex-1 bg-sand">
+          <div className={`h-full bg-sage transition-all ${step === "invite" ? "w-full" : "w-0"}`} />
         </div>
-        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "invite" ? "bg-[#c8410a] text-white" : "bg-[#e8e4dc] text-[#3d3a35]"}`}>
+        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "invite" ? "bg-sage text-white" : "bg-sand text-ink-body"}`}>
           3
         </div>
       </div>
 
       {step === "name" && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {isHu ? "// 1. lépés" : "// step 1"}
           </p>
-          <h1 className="font-playfair text-xl text-[#1a1814] mb-2">
+          <h1 className="font-fraunces text-xl text-ink mb-2">
             {isHu ? "Szervezet neve" : "Organization name"}
           </h1>
-          <p className="text-sm text-[#3d3a35]/70 mb-6">
+          <p className="text-sm text-ink-body/70 mb-6">
             {isHu ? "Erősítsd meg vagy módosítsd a szervezet nevét." : "Confirm or update your organization name."}
           </p>
           <form onSubmit={handleNameNext} className="flex flex-col gap-4">
-            <label className="flex flex-col gap-2 text-sm font-semibold text-[#1a1814]">
+            <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
               {isHu ? "Szervezet neve" : "Name"}
               <input
                 type="text"
@@ -138,14 +138,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
                 required
-                className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+                className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
               />
             </label>
             {error && <p className="text-xs text-rose-600">{error}</p>}
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
               {loading ? "..." : isHu ? "Tovább" : "Next"}
             </button>
@@ -154,14 +154,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       )}
 
       {step === "avatar" && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {isHu ? "// 2. lépés" : "// step 2"}
           </p>
-          <h1 className="font-playfair text-xl text-[#1a1814] mb-2">
+          <h1 className="font-fraunces text-xl text-ink mb-2">
             {isHu ? "Válassz avatart" : "Choose an avatar"}
           </h1>
-          <p className="text-sm text-[#3d3a35]/70 mb-6">
+          <p className="text-sm text-ink-body/70 mb-6">
             {isHu ? "Ez jelenik meg a profilodban." : "This will appear on your profile."}
           </p>
           <div className="grid grid-cols-4 gap-2 mb-4">
@@ -172,8 +172,8 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                 onClick={() => setAvatarUrl(src)}
                 className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
                   avatarUrl === src
-                    ? "border-[#c8410a] ring-2 ring-[#c8410a]/30"
-                    : "border-[#e8e4dc] hover:border-[#c8410a]/40"
+                    ? "border-sage ring-2 ring-sage/30"
+                    : "border-sand hover:border-sage/40"
                 }`}
               >
                 <Image
@@ -190,7 +190,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
             <button
               type="button"
               onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
-              className="mb-6 text-xs font-medium text-[#c8410a] hover:underline"
+              className="mb-6 text-xs font-medium text-bronze hover:underline"
             >
               {isHu
                 ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
@@ -202,7 +202,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
             <button
               type="button"
               onClick={() => setStep("name")}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-semibold text-[#3d3a35] transition hover:bg-[#faf9f6]"
+              className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
             >
               {isHu ? "Vissza" : "Back"}
             </button>
@@ -210,7 +210,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               type="button"
               onClick={handleAvatarNext}
               disabled={loading}
-              className="flex-1 min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
+              className="flex-1 min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
               {loading ? "..." : isHu ? "Tovább" : "Next"}
             </button>
@@ -219,14 +219,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       )}
 
       {step === "invite" && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-8 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a] mb-1">
+        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {isHu ? "// 3. lépés" : "// step 3"}
           </p>
-          <h1 className="font-playfair text-xl text-[#1a1814] mb-2">
+          <h1 className="font-fraunces text-xl text-ink mb-2">
             {isHu ? "Tagok meghívása" : "Invite members"}
           </h1>
-          <p className="text-sm text-[#3d3a35]/70 mb-6">
+          <p className="text-sm text-ink-body/70 mb-6">
             {isHu
               ? "Hívj meg tagokat az induláshoz (opcionális). Emailcímek, akik még nem regisztráltak, meghívót kapnak."
               : "Invite members to get started (optional). Unregistered emails will receive an invite."}
@@ -243,7 +243,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                   setInviteEmails(next);
                 }}
                 placeholder={`${isHu ? "Email" : "Email"} ${i + 1}`}
-                className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-3 text-sm font-normal text-[#1a1814] focus:border-[#c8410a] focus:outline-none"
+                className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
               />
             ))}
           </div>
@@ -252,7 +252,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
             <button
               type="button"
               onClick={() => setStep("avatar")}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-semibold text-[#3d3a35] transition hover:bg-[#faf9f6]"
+              className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
             >
               {isHu ? "Vissza" : "Back"}
             </button>
@@ -260,7 +260,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               type="button"
               onClick={handleFinish}
               disabled={loading}
-              className="flex-1 min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#a8340a] disabled:opacity-50"
+              className="flex-1 min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
               {loading ? "..." : isHu ? "Befejezés" : "Finish setup"}
             </button>

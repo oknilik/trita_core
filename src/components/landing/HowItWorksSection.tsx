@@ -56,8 +56,8 @@ export function HowItWorksSection({ locale }: { locale: Locale }) {
   const sectionLabel = sectionLabelData[locale] ?? sectionLabelData.hu;
 
   return (
-    <section id="how-it-works" className="border-b border-[#e0ddd6] bg-[#1a1814] px-6 py-12 md:px-16 md:py-20">
-      <div className="font-ibm-plex-mono mb-12 flex items-center gap-4 text-[11px] uppercase tracking-[2px] text-white/40">
+    <section id="how-it-works" className="border-b border-sand bg-ink px-6 py-12 md:px-16 md:py-20">
+      <div className="font-dm-sans mb-12 flex items-center gap-4 text-[11px] uppercase tracking-[2px] text-white/40">
         {sectionLabel}
         <span className="h-px flex-1 bg-white/10" />
       </div>
@@ -68,12 +68,12 @@ export function HowItWorksSection({ locale }: { locale: Locale }) {
             key={step.number}
             className="border border-white/10 bg-white/[0.03] px-8 py-10 transition-colors hover:bg-white/[0.06]"
           >
-            <p className="font-playfair mb-5 text-[64px] leading-none font-black text-white/[0.07]">
+            <p className="font-fraunces mb-5 text-[64px] leading-none font-black text-white/[0.07]">
               {step.number}
             </p>
-            <h3 className="font-playfair mb-3 text-[22px] font-bold text-white">{step.title}</h3>
+            <h3 className="font-fraunces mb-3 text-[22px] font-bold text-white">{step.title}</h3>
             <p className="text-sm leading-[1.7] text-white/50">{step.desc}</p>
-            <p className="font-ibm-plex-mono mt-5 text-[11px] text-[#c8410a]">{step.time}</p>
+            <p className="font-dm-sans mt-5 text-[11px] text-bronze">{step.time}</p>
           </article>
         ))}
       </div>

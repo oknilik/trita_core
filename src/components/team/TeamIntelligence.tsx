@@ -59,8 +59,8 @@ export function TeamIntelligence({ members, edges, isHu = true }: TeamIntelligen
             className={[
               "rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors",
               sub === t
-                ? "bg-[#1a1814] text-white"
-                : "bg-[#f0ede6] text-[#5a5650] hover:bg-[#e8e4dc]",
+                ? "bg-ink text-white"
+                : "bg-warm-mid text-ink-body hover:bg-sand",
             ].join(" ")}
           >
             {labels[t]}

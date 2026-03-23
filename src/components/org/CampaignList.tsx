@@ -37,7 +37,7 @@ function statusBadge(status: string, isHu: boolean) {
     );
   if (status === "CLOSED")
     return (
-      <span className="rounded-full bg-[#e8e4dc] px-2.5 py-0.5 text-xs font-semibold text-[#3d3a35]">
+      <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
         {isHu ? "Lezárva" : "Closed"}
       </span>
     );
@@ -105,13 +105,13 @@ function AddMembersPanel({
     <form
       onSubmit={handleAdd}
       onClick={(e) => e.stopPropagation()}
-      className="mt-2 rounded-lg border border-[#e8e4dc] bg-[#faf9f6] p-3"
+      className="mt-2 rounded-lg border border-sand bg-cream p-3"
     >
-      <p className="mb-2 font-mono text-xs uppercase tracking-widest text-[#a09a90]">
+      <p className="mb-2 font-mono text-xs uppercase tracking-widest text-muted">
         {isHu ? "// résztvevők hozzáadása" : "// add participants"}
       </p>
       {members.length === 0 ? (
-        <p className="text-xs text-[#a09a90]">
+        <p className="text-xs text-muted">
           {isHu ? "Nincsenek tagok." : "No members."}
         </p>
       ) : (
@@ -119,15 +119,15 @@ function AddMembersPanel({
           {members.map((m) => (
             <label
               key={m.userId}
-              className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-[#e8e4dc]/50"
+              className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-sand/50"
             >
               <input
                 type="checkbox"
                 checked={selected.has(m.userId)}
                 onChange={() => toggle(m.userId)}
-                className="accent-[#c8410a]"
+                className="accent-sage"
               />
-              <span className="text-sm text-[#1a1814]">
+              <span className="text-sm text-ink">
                 {m.user.username ?? m.user.email ?? "—"}
               </span>
             </label>
@@ -139,7 +139,7 @@ function AddMembersPanel({
         <button
           type="submit"
           disabled={loading || selected.size === 0}
-          className="min-h-[36px] rounded-lg bg-[#c8410a] px-4 text-xs font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-[36px] rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading
             ? isHu ? "Hozzáadás…" : "Adding…"
@@ -148,7 +148,7 @@ function AddMembersPanel({
         <button
           type="button"
           onClick={onClose}
-          className="min-h-[36px] rounded-lg border border-[#e8e4dc] px-4 text-xs font-semibold text-[#3d3a35] transition hover:bg-[#e8e4dc]"
+          className="min-h-[36px] rounded-lg border border-sand px-4 text-xs font-semibold text-ink-body transition hover:bg-sand"
         >
           {isHu ? "Mégse" : "Cancel"}
         </button>
@@ -208,15 +208,15 @@ export function CampaignList({
   return (
     <div>
       {campaigns.length === 0 ? (
-        <div className="mb-6 rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-8 text-center">
-          <p className="text-sm text-[#3d3a35]/60">
+        <div className="mb-6 rounded-xl border border-sand bg-cream p-8 text-center">
+          <p className="text-sm text-ink-body/60">
             {isHu
               ? "Még nincs 360° kampány. Hozz létre egyet lentebb!"
               : "No 360° campaigns yet. Create one below!"}
           </p>
         </div>
       ) : (
-        <div className="mb-6 flex flex-col divide-y divide-[#e8e4dc]">
+        <div className="mb-6 flex flex-col divide-y divide-sand">
           {campaigns.map((c) => (
             <div key={c.id} className="py-3">
               <div className="flex items-center justify-between gap-3">
@@ -224,15 +224,15 @@ export function CampaignList({
                   href={`/org/${orgId}/campaigns/${c.id}`}
                   className="group min-w-0 flex-1"
                 >
-                  <p className="truncate text-sm font-semibold text-[#1a1814] transition-colors group-hover:text-[#c8410a]">
+                  <p className="truncate text-sm font-semibold text-ink transition-colors group-hover:text-bronze">
                     {c.name}
                   </p>
                   {c.description && (
-                    <p className="mt-0.5 truncate text-xs text-[#3d3a35]/60">
+                    <p className="mt-0.5 truncate text-xs text-ink-body/60">
                       {c.description}
                     </p>
                   )}
-                  <p className="mt-0.5 text-xs text-[#3d3a35]/50">
+                  <p className="mt-0.5 text-xs text-ink-body/50">
                     {c._count.participants}{" "}
                     {isHu ? "résztvevő" : c._count.participants === 1 ? "participant" : "participants"}
                   </p>
@@ -242,7 +242,7 @@ export function CampaignList({
                   {canManage && c.status !== "CLOSED" && (
                     <button
                       onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
-                      className="min-h-[32px] rounded-lg border border-[#e8e4dc] px-2.5 text-xs font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+                      className="min-h-[32px] rounded-lg border border-sand px-2.5 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
                       title={isHu ? "Résztvevők kezelése" : "Manage participants"}
                     >
                       +
@@ -274,11 +274,11 @@ export function CampaignList({
       )}
 
       {canManage && (
-        <div className="border-t border-[#e8e4dc] pt-5">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <div className="border-t border-sand pt-5">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {isHu ? "// új kampány" : "// new campaign"}
           </p>
-          <h3 className="mb-3 text-sm font-semibold text-[#1a1814]">
+          <h3 className="mb-3 text-sm font-semibold text-ink">
             {isHu ? "Új 360° kampány" : "New 360° campaign"}
           </h3>
           <form onSubmit={handleCreate} className="flex flex-col gap-3">
@@ -289,7 +289,7 @@ export function CampaignList({
               placeholder={isHu ? "Kampány neve" : "Campaign name"}
               maxLength={100}
               required
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-[#faf9f6] px-3 text-sm text-[#1a1814] placeholder:text-[#3d3a35]/40 focus:border-[#c8410a]/40 focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
             />
             <input
               type="text"
@@ -297,7 +297,7 @@ export function CampaignList({
               onChange={(e) => setDescription(e.target.value)}
               placeholder={isHu ? "Leírás (opcionális)" : "Description (optional)"}
               maxLength={500}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-[#faf9f6] px-3 text-sm text-[#1a1814] placeholder:text-[#3d3a35]/40 focus:border-[#c8410a]/40 focus:outline-none"
+              className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
             />
             {error && (
               <p className="text-xs text-rose-600">{error}</p>
@@ -305,7 +305,7 @@ export function CampaignList({
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
                 ? isHu ? "Létrehozás…" : "Creating…"

@@ -106,10 +106,10 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 className={[
                   "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-colors",
                   step === s
-                    ? "bg-[#c8410a] text-white"
+                    ? "bg-sage text-white"
                     : step > s
-                    ? "bg-[#c8410a]/20 text-[#c8410a]"
-                    : "bg-[#e8e4dc] text-[#a09a90]",
+                    ? "bg-sage/20 text-bronze"
+                    : "bg-sand text-muted",
                 ].join(" ")}
               >
                 {step > s ? (
@@ -123,14 +123,14 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               <span
                 className={[
                   "text-[13px] font-medium",
-                  step === s ? "text-[#1a1814]" : "text-[#a09a90]",
+                  step === s ? "text-ink" : "text-muted",
                 ].join(" ")}
               >
                 {STEP_LABELS[s]}
               </span>
             </div>
             {i < 2 && (
-              <div className="mx-3 h-px w-8 bg-[#e8e4dc]" />
+              <div className="mx-3 h-px w-8 bg-sand" />
             )}
           </div>
         ))}
@@ -138,15 +138,15 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
 
       {/* Step 1: Details */}
       {step === 1 && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm">
-          <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <h2 className="mb-5 font-fraunces text-xl text-ink">
             {isHu ? "Kampány adatai" : "Campaign details"}
           </h2>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-[#1a1814]">
+              <label className="text-[13px] font-semibold text-ink">
                 {isHu ? "Kampány neve" : "Campaign name"}
-                <span className="ml-1 text-[#c8410a]">*</span>
+                <span className="ml-1 text-bronze">*</span>
               </label>
               <input
                 type="text"
@@ -154,13 +154,13 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
                 placeholder={isHu ? "pl. Q2 360° visszajelzés" : "e.g. Q2 360° feedback"}
-                className="min-h-[44px] w-full rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-sm text-[#1a1814] placeholder:text-[#a09a90] focus:border-[#c8410a]/50 focus:outline-none"
+                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-sage/50 focus:outline-none"
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-[#1a1814]">
+              <label className="text-[13px] font-semibold text-ink">
                 {isHu ? "Leírás" : "Description"}
-                <span className="ml-1.5 text-[11px] font-normal text-[#a09a90]">
+                <span className="ml-1.5 text-[11px] font-normal text-muted">
                   {isHu ? "(opcionális)" : "(optional)"}
                 </span>
               </label>
@@ -170,9 +170,9 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 maxLength={500}
                 rows={3}
                 placeholder={isHu ? "Rövid leírás a kampányról..." : "Brief description..."}
-                className="w-full resize-none rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-sm text-[#1a1814] placeholder:text-[#a09a90] focus:border-[#c8410a]/50 focus:outline-none"
+                className="w-full resize-none rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-sage/50 focus:outline-none"
               />
-              <p className="text-right font-mono text-[10px] text-[#a09a90]">
+              <p className="text-right font-mono text-[10px] text-muted">
                 {description.length}/500
               </p>
             </div>
@@ -182,7 +182,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               type="button"
               disabled={!name.trim()}
               onClick={() => setStep(2)}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isHu ? "Tovább →" : "Next →"}
             </button>
@@ -192,16 +192,16 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
 
       {/* Step 2: Members */}
       {step === 2 && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between gap-4">
-            <h2 className="font-playfair text-xl text-[#1a1814]">
+            <h2 className="font-fraunces text-xl text-ink">
               {isHu ? "Résztvevők kiválasztása" : "Select participants"}
             </h2>
             {members.length > 0 && (
               <button
                 type="button"
                 onClick={toggleAll}
-                className="text-[12px] font-semibold text-[#c8410a] hover:underline"
+                className="text-[12px] font-semibold text-bronze hover:underline"
               >
                 {selectedIds.size === members.length
                   ? isHu ? "Mind törlése" : "Deselect all"
@@ -211,25 +211,25 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
           </div>
 
           {members.length === 0 ? (
-            <p className="text-sm text-[#a09a90]">
+            <p className="text-sm text-muted">
               {isHu ? "Nincsenek tagok a szervezetben." : "No members in this organization."}
             </p>
           ) : (
-            <div className="flex flex-col divide-y divide-[#e8e4dc]">
+            <div className="flex flex-col divide-y divide-sand">
               {members.map((m) => {
                 const checked = selectedIds.has(m.userId);
                 return (
                   <label
                     key={m.userId}
-                    className="flex cursor-pointer items-center gap-3 py-3 transition-colors hover:bg-[#faf9f6]"
+                    className="flex cursor-pointer items-center gap-3 py-3 transition-colors hover:bg-cream"
                   >
                     <input
                       type="checkbox"
                       checked={checked}
                       onChange={() => toggleMember(m.userId)}
-                      className="h-4 w-4 accent-[#c8410a]"
+                      className="h-4 w-4 accent-sage"
                     />
-                    <span className="text-sm text-[#1a1814]">{m.displayName}</span>
+                    <span className="text-sm text-ink">{m.displayName}</span>
                   </label>
                 );
               })}
@@ -240,14 +240,14 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-5 text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]"
+              className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
               ← {isHu ? "Vissza" : "Back"}
             </button>
             <button
               type="button"
               onClick={() => setStep(3)}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#b53a09]"
+              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
               {isHu ? "Tovább →" : "Next →"}
             </button>
@@ -257,32 +257,32 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
 
       {/* Step 3: Confirm */}
       {step === 3 && (
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm">
-          <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <h2 className="mb-5 font-fraunces text-xl text-ink">
             {isHu ? "Összefoglalás" : "Summary"}
           </h2>
 
           <div className="flex flex-col gap-4">
             {/* Campaign details */}
-            <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4">
-              <p className="mb-1 font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+            <div className="rounded-xl border border-sand bg-cream p-4">
+              <p className="mb-1 font-mono text-[9px] uppercase tracking-widest text-muted">
                 {isHu ? "// kampány neve" : "// campaign name"}
               </p>
-              <p className="text-[15px] font-semibold text-[#1a1814]">{name}</p>
+              <p className="text-[15px] font-semibold text-ink">{name}</p>
               {description && (
-                <p className="mt-1 text-sm text-[#5a5650]">{description}</p>
+                <p className="mt-1 text-sm text-ink-body">{description}</p>
               )}
             </div>
 
             {/* Participants */}
-            <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4">
-              <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#a09a90]">
+            <div className="rounded-xl border border-sand bg-cream p-4">
+              <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-muted">
                 {isHu
                   ? `// résztvevők · ${selectedIds.size} fő`
                   : `// participants · ${selectedIds.size}`}
               </p>
               {selectedIds.size === 0 ? (
-                <p className="text-sm text-[#a09a90]">
+                <p className="text-sm text-muted">
                   {isHu
                     ? "Nincs kiválasztva — később is hozzáadhatók."
                     : "None selected — can be added later."}
@@ -292,7 +292,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                   {selectedMembers.map((m) => (
                     <span
                       key={m.userId}
-                      className="rounded-full border border-[#e8e4dc] bg-white px-2.5 py-0.5 text-[12px] text-[#3d3a35]"
+                      className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-[12px] text-ink-body"
                     >
                       {m.displayName}
                     </span>
@@ -328,7 +328,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               type="button"
               onClick={() => setStep(2)}
               disabled={loading}
-              className="min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-5 text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a] disabled:opacity-50"
+              className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
             >
               ← {isHu ? "Vissza" : "Back"}
             </button>
@@ -336,7 +336,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="min-h-[44px] rounded-lg bg-[#c8410a] px-6 text-sm font-semibold text-white transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
                 ? isHu ? "Létrehozás..." : "Creating..."

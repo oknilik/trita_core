@@ -27,7 +27,7 @@ export default async function OrgSetupPage({
   }
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6] flex items-center justify-center px-4 py-10">
+    <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-10">
       <OrgSetupWizard orgId={orgId} orgName={org.name} locale={locale} />
     </div>
   );

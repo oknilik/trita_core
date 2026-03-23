@@ -153,24 +153,24 @@ export default function ProfilePage() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-dvh bg-[#faf9f6]">
+      <div className="min-h-dvh bg-cream">
         <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
-          <div className="animate-pulse rounded border border-[#e0ddd6] bg-[#f0ede6] p-6">
+          <div className="animate-pulse rounded border border-sand bg-warm-mid p-6">
             <div className="flex items-center gap-4">
-              <div className="h-11 w-11 rounded-full bg-[#e0ddd6]" />
+              <div className="h-11 w-11 rounded-full bg-sand" />
               <div>
-                <div className="h-5 w-40 rounded bg-[#e0ddd6]" />
-                <div className="mt-2 h-3.5 w-52 rounded bg-[#e8e4dc]" />
+                <div className="h-5 w-40 rounded bg-sand" />
+                <div className="mt-2 h-3.5 w-52 rounded bg-sand" />
               </div>
             </div>
           </div>
-          <div className="animate-pulse rounded border border-[#e0ddd6] bg-white p-6">
-            <div className="h-5 w-48 rounded bg-[#e0ddd6]" />
-            <div className="mt-4 h-4 w-72 rounded bg-[#e8e4dc]" />
+          <div className="animate-pulse rounded border border-sand bg-white p-6">
+            <div className="h-5 w-48 rounded bg-sand" />
+            <div className="mt-4 h-4 w-72 rounded bg-sand" />
             <div className="mt-6 flex flex-col gap-4">
-              <div className="h-11 rounded bg-[#e8e4dc]" />
-              <div className="h-11 rounded bg-[#e8e4dc]" />
-              <div className="h-20 rounded bg-[#e8e4dc]" />
+              <div className="h-11 rounded bg-sand" />
+              <div className="h-11 rounded bg-sand" />
+              <div className="h-20 rounded bg-sand" />
             </div>
           </div>
         </main>
@@ -345,8 +345,8 @@ export default function ProfilePage() {
   const toggleClass = (isActive: boolean) =>
     `min-h-[44px] rounded-full border px-4 py-1.5 text-[12px] font-medium transition-colors ${
       isActive
-        ? "border-[#c8410a] bg-[#fce7d6] font-semibold text-[#c8410a]"
-        : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a] hover:text-[#c8410a]"
+        ? "border-sage bg-[#fce7d6] font-semibold text-bronze"
+        : "border-sand bg-white text-ink-body hover:border-sage hover:text-bronze"
     }`;
 
   const roleLabel =
@@ -360,12 +360,12 @@ export default function ProfilePage() {
   const metaParts = [org?.name, teams.map((tm) => tm.name).join(", ") || null, roleLabel || null].filter(Boolean);
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pt-8 pb-20">
 
         {/* ── Profile header ── */}
         <FadeIn delay={0}>
-          <section className="rounded-xl bg-[#1a1814] px-6 py-5">
+          <section className="rounded-xl bg-ink px-6 py-5">
             <div className="flex items-center gap-4">
               <Image
                 src={avatarSrc}
@@ -376,14 +376,14 @@ export default function ProfilePage() {
                 className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#2a2824]"
               />
               <div className="min-w-0">
-                <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-[#c8410a]">
+                <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-bronze">
                   // profil
                 </p>
-                <p className="truncate font-playfair text-[22px] font-black leading-tight tracking-tight text-white">
+                <p className="truncate font-fraunces text-[22px] font-black leading-tight tracking-tight text-white">
                   {displayName}
                 </p>
                 {metaParts.length > 0 && (
-                  <p className="mt-1 text-[12px] text-[#6b6560]">
+                  <p className="mt-1 text-[12px] text-ink-warm">
                     {metaParts.join(" · ")}
                   </p>
                 )}
@@ -394,22 +394,22 @@ export default function ProfilePage() {
 
         {/* ── Demographics ── */}
         <FadeIn delay={0.05}>
-          <section className="overflow-hidden rounded-xl border border-[#e8e4dc] bg-white">
-            <div className="border-b border-[#f0ede6] px-5 py-4">
-              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#c8410a]">
+          <section className="overflow-hidden rounded-xl border border-sand bg-white">
+            <div className="border-b border-warm-mid px-5 py-4">
+              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-bronze">
                 // személyes adatok
               </p>
-              <h2 className="text-[15px] font-bold text-[#1a1814]">
+              <h2 className="text-[15px] font-bold text-ink">
                 {t("profile.demographicsTitle", locale)}
               </h2>
-              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+              <p className="mt-0.5 text-[12px] text-muted">
                 {t("profile.demographicsBody", locale)}
               </p>
             </div>
 
             <div className="flex flex-col gap-5 px-5 py-5">
               <div className="grid grid-cols-2 gap-4">
-                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-[#5a5650]">
+                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-ink-body">
                   {t("onboarding.usernameLabel", locale)}
                   <input
                     ref={usernameInputRef}
@@ -420,10 +420,10 @@ export default function ProfilePage() {
                     placeholder={t("onboarding.usernamePlaceholder", locale)}
                     minLength={2}
                     maxLength={20}
-                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-[#1a1814] focus:outline-none ${
+                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-ink focus:outline-none ${
                       usernameTouched && username.trim() !== "" && !usernameValid
                         ? "border-orange-400 bg-orange-50"
-                        : "border-[#e8e4dc] bg-white focus:border-[#c8410a]/50"
+                        : "border-sand bg-white focus:border-sage/50"
                     } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
                   />
                   {usernameTouched && username.trim() !== "" && !usernameValid ? (
@@ -431,13 +431,13 @@ export default function ProfilePage() {
                       {t("onboarding.usernameError", locale)}
                     </span>
                   ) : (
-                    <span className="pl-1 text-[11px] text-[#a09a90]">
+                    <span className="pl-1 text-[11px] text-muted">
                       {t("onboarding.usernameHint", locale)}
                     </span>
                   )}
                 </label>
 
-                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-[#5a5650]">
+                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-ink-body">
                   {t("onboarding.birthYearLabel", locale)}
                   <input
                     ref={birthYearInputRef}
@@ -453,10 +453,10 @@ export default function ProfilePage() {
                     min={minBirthYear}
                     max={maxBirthYear}
                     maxLength={4}
-                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-[#1a1814] focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-ink focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
                       birthYearTouched && birthYear !== "" && !birthYearValid
                         ? "border-orange-400 bg-orange-50"
-                        : "border-[#e8e4dc] bg-white focus:border-[#c8410a]/50"
+                        : "border-sand bg-white focus:border-sage/50"
                     } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
                   />
                   {birthYearTouched && birthYear !== "" && !birthYearValid ? (
@@ -464,7 +464,7 @@ export default function ProfilePage() {
                       {minBirthYear}–{maxBirthYear}
                     </span>
                   ) : (
-                    <span className="pl-1 text-[11px] text-[#a09a90]">
+                    <span className="pl-1 text-[11px] text-muted">
                       {minBirthYear}–{maxBirthYear}
                     </span>
                   )}
@@ -472,7 +472,7 @@ export default function ProfilePage() {
               </div>
 
               <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-orange-50/60 ring-2 ring-orange-300" : ""}`}>
-                <span className="text-[12px] font-semibold text-[#5a5650]">
+                <span className="text-[12px] font-semibold text-ink-body">
                   {t("onboarding.genderLabel", locale)}
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -507,15 +507,15 @@ export default function ProfilePage() {
 
         {/* ── Avatar ── */}
         <FadeIn delay={0.08}>
-          <section className="overflow-hidden rounded-xl border border-[#e8e4dc] bg-white">
-            <div className="border-b border-[#f0ede6] px-5 py-4">
-              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#c8410a]">
+          <section className="overflow-hidden rounded-xl border border-sand bg-white">
+            <div className="border-b border-warm-mid px-5 py-4">
+              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-bronze">
                 // avatar
               </p>
-              <h2 className="text-[15px] font-bold text-[#1a1814]">
+              <h2 className="text-[15px] font-bold text-ink">
                 {locale === "hu" ? "Avatar" : "Avatar"}
               </h2>
-              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+              <p className="mt-0.5 text-[12px] text-muted">
                 {locale === "hu" ? "Válaszd ki a profilképedet." : "Choose your profile picture."}
               </p>
             </div>
@@ -528,8 +528,8 @@ export default function ProfilePage() {
                     onClick={() => setPendingAvatarUrl(src)}
                     className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
                       pendingAvatarUrl === src
-                        ? "border-[#c8410a] ring-2 ring-[#c8410a]/30"
-                        : "border-[#e8e4dc] hover:border-[#c8410a]/40"
+                        ? "border-sage ring-2 ring-sage/30"
+                        : "border-sand hover:border-sage/40"
                     }`}
                   >
                     <Image
@@ -546,7 +546,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setAvatarsExpanded((v) => !v)}
-                  className="mt-3 text-[12px] font-medium text-[#c8410a] hover:underline"
+                  className="mt-3 text-[12px] font-medium text-bronze hover:underline"
                 >
                   {avatarsExpanded
                     ? (locale === "hu" ? "− Kevesebb" : "− Show less")
@@ -561,13 +561,13 @@ export default function ProfilePage() {
 
         {/* ── Locale ── */}
         <FadeIn delay={0.1}>
-          <section className="overflow-hidden rounded-xl border border-[#e8e4dc] bg-white">
-            <div className="border-b border-[#f0ede6] px-5 py-4">
-              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-[#c8410a]">
+          <section className="overflow-hidden rounded-xl border border-sand bg-white">
+            <div className="border-b border-warm-mid px-5 py-4">
+              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-bronze">
                 // nyelv
               </p>
-              <h2 className="text-[15px] font-bold text-[#1a1814]">{t("profile.localeTitle", locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+              <h2 className="text-[15px] font-bold text-ink">{t("profile.localeTitle", locale)}</h2>
+              <p className="mt-0.5 text-[12px] text-muted">
                 {t("profile.localeBody", locale)}
               </p>
             </div>
@@ -580,8 +580,8 @@ export default function ProfilePage() {
                   onClick={() => setSelectedLocale(loc)}
                   className={`flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-[12px] font-medium transition-colors ${
                     selectedLocale === loc
-                      ? "border-[#c8410a] bg-[#fce7d6] font-semibold text-[#c8410a]"
-                      : "border-[#e8e4dc] bg-white text-[#5a5650] hover:border-[#c8410a] hover:text-[#c8410a]"
+                      ? "border-sage bg-[#fce7d6] font-semibold text-bronze"
+                      : "border-sand bg-white text-ink-body hover:border-sage hover:text-bronze"
                   }`}
                 >
                   <span className="text-base leading-none">{LOCALE_META[loc].flag}</span>
@@ -609,8 +609,8 @@ export default function ProfilePage() {
         <FadeIn delay={0.15}>
           <section className="flex items-center justify-between gap-4 rounded-xl border border-[#f5c4b3] bg-white px-5 py-4">
             <div>
-              <p className="text-[13px] font-semibold text-[#c8410a]">{t("profile.deleteTitle", locale)}</p>
-              <p className="mt-0.5 text-[12px] text-[#a09a90]">
+              <p className="text-[13px] font-semibold text-bronze">{t("profile.deleteTitle", locale)}</p>
+              <p className="mt-0.5 text-[12px] text-muted">
                 {t("profile.deleteBody", locale)}
               </p>
             </div>
@@ -618,7 +618,7 @@ export default function ProfilePage() {
               type="button"
               onClick={() => setShowDeleteModal(true)}
               disabled={isDeleting}
-              className="min-h-[44px] shrink-0 rounded-lg border border-[#f5c4b3] bg-white px-4 py-2 text-[12px] font-semibold text-[#c8410a] transition hover:bg-[#fce7d6] disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[44px] shrink-0 rounded-lg border border-[#f5c4b3] bg-white px-4 py-2 text-[12px] font-semibold text-bronze transition hover:bg-[#fce7d6] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
             </button>
@@ -628,12 +628,12 @@ export default function ProfilePage() {
         {/* ── Save bar ── */}
         {showSaveBar && (
           <div className="sticky bottom-4 z-30 mt-2">
-            <div className="flex items-center justify-between gap-3 rounded border border-[#e0ddd6] bg-white/95 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur">
+            <div className="flex items-center justify-between gap-3 rounded border border-sand bg-white/95 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur">
               <div className="min-w-0">
-                <p className="font-ibm-plex-mono text-[10px] uppercase tracking-[2px] text-[#c8410a]">
+                <p className="font-dm-sans text-[10px] uppercase tracking-[2px] text-bronze">
                   {t("profile.saveBarLabel", locale)}
                 </p>
-                <p className="truncate text-sm font-medium text-[#1a1814]">
+                <p className="truncate text-sm font-medium text-ink">
                   {isDirty || saveState === "saving"
                     ? t("profile.saveBarUnsaved", locale)
                     : saveState === "saved"
@@ -679,7 +679,7 @@ export default function ProfilePage() {
                 type="button"
                 onClick={handleSaveDemographics}
                 disabled={!canSubmitDemo}
-                className="min-h-[44px] shrink-0 rounded bg-[#c8410a] px-5 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-[#a33408] disabled:cursor-not-allowed disabled:bg-[#e0ddd6] disabled:text-[#a09c96] disabled:hover:translate-y-0"
+                className="min-h-[44px] shrink-0 rounded bg-sage px-5 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-muted-warm disabled:hover:translate-y-0"
               >
                 {isSavingDemo ? t("actions.save", locale) : t("profile.saveChanges", locale)}
               </button>

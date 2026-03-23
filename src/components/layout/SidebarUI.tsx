@@ -90,19 +90,19 @@ export function SidebarUI({
       } font-medium ${
         active
           ? "bg-[#2a2824] text-white"
-          : "text-[#9a9590] hover:bg-[#2a2824] hover:text-[#e8e4dc]"
+          : "text-muted-warm hover:bg-[#2a2824] hover:text-sand"
       }`}
     >
       <span
         className={`flex h-[16px] w-[16px] flex-shrink-0 items-center justify-center rounded-[4px] text-[9px] font-semibold ${
-          active ? "bg-[#c8410a] text-white" : "bg-[#3a3834] text-[#9a9590]"
+          active ? "bg-sage text-white" : "bg-[#3a3834] text-muted-warm"
         }`}
       >
         {icon}
       </span>
       {label}
       {badge != null && badge > 0 && (
-        <span className="ml-auto rounded-full bg-[#c8410a] px-[5px] py-[1px] font-mono text-[8px] text-white">
+        <span className="ml-auto rounded-full bg-sage px-[5px] py-[1px] font-mono text-[8px] text-white">
           {badge}
         </span>
       )}
@@ -110,20 +110,20 @@ export function SidebarUI({
   );
 
   const SectionLabel = ({ label }: { label: string }) => (
-    <p className="mb-1 mt-3 px-3 font-mono text-[8px] uppercase tracking-[.14em] text-[#6b6560]">
+    <p className="mb-1 mt-3 px-3 font-mono text-[8px] uppercase tracking-[.14em] text-ink-warm">
       {label}
     </p>
   );
 
   return (
-    <aside className="flex h-full w-[220px] flex-shrink-0 flex-col bg-[#1a1814]">
+    <aside className="flex h-full w-[220px] flex-shrink-0 flex-col bg-ink">
       {/* Logo */}
       <div className="border-b border-[#2a2824] px-5 py-[18px]">
         <Link
           href="/profile/results"
-          className="font-playfair inline-block text-[18px] font-black tracking-tight text-white"
+          className="font-fraunces inline-block text-[18px] font-black tracking-tight text-white"
         >
-          trit<span className="text-[#c8410a]">a</span>
+          trit<span className="text-bronze">a</span>
         </Link>
       </div>
 
@@ -216,21 +216,21 @@ export function SidebarUI({
             className="h-7 w-7 flex-shrink-0 rounded-full object-cover"
           />
           <div className="min-w-0">
-            <p className="truncate text-[12px] font-medium text-[#e8e4dc]">{displayName}</p>
-            <p className="text-[10px] text-[#6b6560]">{roleLabel}</p>
+            <p className="truncate text-[12px] font-medium text-sand">{displayName}</p>
+            <p className="text-[10px] text-ink-warm">{roleLabel}</p>
           </div>
         </button>
         <div className="mt-2 flex items-center gap-3 px-2">
           <Link
             href="/privacy"
-            className="text-[10px] text-[#6b6560] transition-colors hover:text-[#9a9590]"
+            className="text-[10px] text-ink-warm transition-colors hover:text-muted-warm"
           >
             Adatvédelem
           </Link>
           <button
             type="button"
             onClick={() => signOut({ redirectUrl: "/" })}
-            className="ml-auto text-[10px] text-[#6b6560] transition-colors hover:text-[#c8410a]"
+            className="ml-auto text-[10px] text-ink-warm transition-colors hover:text-bronze"
           >
             Kilépés
           </button>

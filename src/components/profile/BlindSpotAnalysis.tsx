@@ -23,8 +23,8 @@ export function BlindSpotAnalysis({
 
   if (!hasObserverData) {
     return (
-      <div className="rounded-2xl border border-[#e8e4dc] bg-[#faf9f6] px-6 py-8 text-center">
-        <p className="text-sm text-[#5a5650]">
+      <div className="rounded-2xl border border-sand bg-cream px-6 py-8 text-center">
+        <p className="text-sm text-ink-body">
           {isHu
             ? "Observer adatok nélkül a vakfolt-elemzés nem elérhető."
             : "Blind spot analysis requires observer data."}
@@ -46,8 +46,8 @@ export function BlindSpotAnalysis({
 
   if (!hasAny) {
     return (
-      <div className="rounded-2xl border border-[#e8e4dc] bg-[#faf9f6] px-6 py-8 text-center">
-        <p className="text-sm text-[#5a5650]">
+      <div className="rounded-2xl border border-sand bg-cream px-6 py-8 text-center">
+        <p className="text-sm text-ink-body">
           {isHu
             ? "Nincs szignifikáns vakfolt — az önképed és az observer visszajelzések jól egyeznek."
             : "No significant blind spots — your self-image aligns well with observer feedback."}
@@ -61,7 +61,7 @@ export function BlindSpotAnalysis({
       {/* Hidden strengths — observer > self */}
       {hiddenOnly.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-[#1a5c3a]">
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-sage">
             {isHu
               ? "// erősségek, amiket nem látsz"
               : "// strengths you don't see in yourself"}
@@ -70,7 +70,7 @@ export function BlindSpotAnalysis({
             {hiddenOnly.map((dim) => (
               <div
                 key={dim.code}
-                className="flex items-start gap-4 rounded-xl border border-[#e8e4dc] bg-white p-4"
+                className="flex items-start gap-4 rounded-xl border border-sand bg-white p-4"
               >
                 <div
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white mt-0.5"
@@ -79,13 +79,13 @@ export function BlindSpotAnalysis({
                   {dim.code}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#1a1814]">{dim.label}</p>
-                  <p className="mt-0.5 text-xs text-[#5a5650]">
+                  <p className="text-sm font-semibold text-ink">{dim.label}</p>
+                  <p className="mt-0.5 text-xs text-ink-body">
                     {isHu
                       ? `Mások +${dim.observerScore - dim.selfScore}%-kal magasabbra értékelik.`
                       : `Others rate this ${dim.observerScore - dim.selfScore}% higher than you do.`}
                   </p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-[#3d3a35]">
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink-body">
                     {isHu
                       ? "Mások ezt erősségként látják benned — érdemes tudatosabban támaszkodni rá."
                       : "Others see this as a strength in you — worth leaning into more consciously."}
@@ -100,7 +100,7 @@ export function BlindSpotAnalysis({
       {/* Overestimated — self > observer */}
       {overOnly.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-[#c8410a]">
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-bronze">
             {isHu
               ? "// figyelmet érdemlő területek"
               : "// areas worth more attention"}
@@ -109,7 +109,7 @@ export function BlindSpotAnalysis({
             {overOnly.map((dim) => (
               <div
                 key={dim.code}
-                className="flex items-start gap-4 rounded-xl border border-[#e8e4dc] bg-white p-4"
+                className="flex items-start gap-4 rounded-xl border border-sand bg-white p-4"
               >
                 <div
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white mt-0.5"
@@ -118,13 +118,13 @@ export function BlindSpotAnalysis({
                   {dim.code}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#1a1814]">{dim.label}</p>
-                  <p className="mt-0.5 text-xs text-[#5a5650]">
+                  <p className="text-sm font-semibold text-ink">{dim.label}</p>
+                  <p className="mt-0.5 text-xs text-ink-body">
                     {isHu
                       ? `Te +${dim.selfScore - dim.observerScore}%-kal magasabbra értékeled, mint mások.`
                       : `You rate this ${dim.selfScore - dim.observerScore}% higher than observers do.`}
                   </p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-[#3d3a35]">
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink-body">
                     {isHu
                       ? "Ez a terület nagyobb figyelmet érdemelhet — a visszajelzések eltérnek az önképedtől."
                       : "This area may deserve more attention — feedback diverges from your self-image."}

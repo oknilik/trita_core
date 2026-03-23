@@ -115,13 +115,13 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
   if (success) {
     return (
-      <div className="rounded border border-[#d7ebde] bg-[#edf7f2] p-6">
-        <h3 className="font-playfair text-2xl text-[#1a1814]">{copy.successTitle}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-[#3d3a35]">{copy.successBody}</p>
+      <div className="rounded border border-[#d7ebde] bg-sage-soft p-6">
+        <h3 className="font-fraunces text-2xl text-ink">{copy.successTitle}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-body">{copy.successBody}</p>
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-5 inline-flex min-h-[44px] items-center rounded bg-[#1a1814] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#3d3a35]"
+          className="mt-5 inline-flex min-h-[44px] items-center rounded bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
         >
           {copy.sendAnother}
         </button>
@@ -129,8 +129,8 @@ export function ContactForm({ locale }: { locale: Locale }) {
     );
   }
 
-  const inputClass = "min-h-[46px] w-full rounded border border-[#e8e4dc] bg-[#faf9f6] px-3 text-sm text-[#1a1814] outline-none transition-colors focus:border-[#c8410a]";
-  const labelClass = "flex flex-col gap-1.5 text-sm font-medium text-[#1a1814]";
+  const inputClass = "min-h-[46px] w-full rounded border border-sand bg-cream px-3 text-sm text-ink outline-none transition-colors focus:border-sage";
+  const labelClass = "flex flex-col gap-1.5 text-sm font-medium text-ink";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -213,19 +213,19 @@ export function ContactForm({ locale }: { locale: Locale }) {
       />
 
       {error ? (
-        <p className="rounded border border-[#f3d4c8] bg-[#fef3ec] px-4 py-3 text-sm text-[#8b2f09]">
+        <p className="rounded border border-sage-ring bg-sage-soft px-4 py-3 text-sm text-bronze-dark">
           {error}
         </p>
       ) : null}
 
       <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-ibm-plex-mono text-[11px] uppercase tracking-[1px] text-[#5a5650]">
+        <p className="font-dm-sans text-[11px] uppercase tracking-[1px] text-ink-body">
           {copy.requiredHint}
         </p>
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-[46px] items-center rounded bg-[#c8410a] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:cursor-not-allowed disabled:bg-[#d89b83]"
+          className="inline-flex min-h-[46px] items-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sage-soft"
         >
           {loading ? copy.submitting : copy.submit}
         </button>

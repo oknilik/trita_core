@@ -88,7 +88,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Kiégés veszélye", "Fókusz-szétszóródás", "Groupthink", "Túl merev folyamatok"],
     people: "Innovatív, társas, szervezett emberek, akik szeretnek csapatban alkotni.",
     contexts: "Termékfejlesztés, innovációs labor, design thinking csapatok, startup core team",
-    color: "#c8410a",
+    color: "var(--color-bronze)",
   },
   "1110": {
     name: "Összehangolt Végrehajtó Csapat",

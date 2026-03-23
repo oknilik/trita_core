@@ -65,7 +65,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
         <button
           type="button"
           onClick={() => setConfirm(false)}
-          className="min-h-[44px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-semibold text-[#3d3a35] transition hover:bg-[#faf9f6]"
+          className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
         >
           {isHu ? "Mégse" : "Cancel"}
         </button>

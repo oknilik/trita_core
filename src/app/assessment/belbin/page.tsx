@@ -28,7 +28,7 @@ export default async function BelbinAssessmentPage() {
   if (!isTeamUser) redirect("/dashboard");
 
   return (
-    <main className="min-h-dvh bg-[#faf9f6]">
+    <main className="min-h-dvh bg-cream">
       <BelbinClient locale={locale as Locale} />
     </main>
   );

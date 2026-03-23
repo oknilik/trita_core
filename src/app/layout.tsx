@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
-import { Playfair_Display, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Fraunces, DM_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -21,24 +21,22 @@ import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
+  axes: ["opsz"],
+  weight: "variable",
+  style: ["normal", "italic"],
 });
 
-const ibmPlexSans = IBM_Plex_Sans({
-  variable: "--font-ibm-plex-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
   display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
+  axes: ["opsz"],
+  weight: "variable",
+  style: ["normal", "italic"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -139,7 +137,7 @@ export default async function RootLayout({
     navData = null;
   }
 
-  const bodyClasses = `${playfair.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} antialiased`;
+  const bodyClasses = `${fraunces.variable} ${dmSans.variable} antialiased`;
 
   return (
     <html lang={DEFAULT_LOCALE}>

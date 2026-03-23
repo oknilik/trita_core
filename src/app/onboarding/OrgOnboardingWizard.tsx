@@ -237,17 +237,17 @@ export function OrgOnboardingWizard() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-[#faf9f6] px-4 py-12">
+    <div className="flex min-h-dvh items-center justify-center bg-cream px-4 py-12">
       <div className="w-full max-w-lg">
 
         {/* Logo + heading */}
         <div className="mb-10 flex flex-col items-center gap-4">
           <TritaLogo size={40} showText={false} />
           <div className="text-center">
-            <h1 className="font-playfair text-3xl text-[#1a1814]">
+            <h1 className="font-fraunces text-3xl text-ink">
               Üdvözlünk a tritán.
             </h1>
-            <p className="mt-2 text-sm text-[#3d3a35]/70">
+            <p className="mt-2 text-sm text-ink-body/70">
               3 perc és látod az első csapatképet.
             </p>
           </div>
@@ -261,17 +261,17 @@ export function OrgOnboardingWizard() {
                 <div
                   className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
                     i + 1 < step
-                      ? "bg-[#c8410a] text-white"
+                      ? "bg-sage text-white"
                       : i + 1 === step
-                      ? "bg-[#1a1814] text-white"
-                      : "bg-[#e8e4dc] text-[#a09a90]"
+                      ? "bg-ink text-white"
+                      : "bg-sand text-muted"
                   }`}
                 >
                   {i + 1 < step ? "✓" : i + 1}
                 </div>
                 <span
                   className={`hidden text-xs font-medium sm:block ${
-                    i + 1 === step ? "text-[#1a1814]" : "text-[#a09a90]"
+                    i + 1 === step ? "text-ink" : "text-muted"
                   }`}
                 >
                   {label}
@@ -279,31 +279,31 @@ export function OrgOnboardingWizard() {
               </div>
             ))}
           </div>
-          <div className="h-1 w-full overflow-hidden rounded-full bg-[#e8e4dc]">
+          <div className="h-1 w-full overflow-hidden rounded-full bg-sand">
             <div
-              className="h-full rounded-full bg-[#c8410a] transition-all duration-500"
+              className="h-full rounded-full bg-sage transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
 
           {/* ── Step 1: Profil ────────────────────────────────────────────── */}
           {step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 01</p>
-                <h2 className="font-playfair text-2xl text-[#1a1814]">Személyes adatok</h2>
-                <p className="mt-1 text-sm text-[#3d3a35]/70">
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">// 01</p>
+                <h2 className="font-fraunces text-2xl text-ink">Személyes adatok</h2>
+                <p className="mt-1 text-sm text-ink-body/70">
                   Ezek szükségesek a személyre szabott csapatképhez.
                 </p>
               </div>
 
               {/* Username */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-[#1a1814]">
+                <label className="text-sm font-semibold text-ink">
                   Megjelenítési név
                 </label>
                 <input
@@ -317,13 +317,13 @@ export function OrgOnboardingWizard() {
                   autoFocus
                 />
                 {errors.username && (
-                  <span className="pl-1 text-xs text-[#c8410a]">{errors.username}</span>
+                  <span className="pl-1 text-xs text-bronze">{errors.username}</span>
                 )}
               </div>
 
               {/* Birth year */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-[#1a1814]">
+                <label className="text-sm font-semibold text-ink">
                   Születési év
                 </label>
                 <input
@@ -338,14 +338,14 @@ export function OrgOnboardingWizard() {
                   max={maxBirthYear}
                   className={`${inputBase(!!errors.birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
                 />
-                <span className={`pl-1 text-xs ${errors.birthYear ? "text-[#c8410a]" : "text-[#a09a90]"}`}>
+                <span className={`pl-1 text-xs ${errors.birthYear ? "text-bronze" : "text-muted"}`}>
                   {errors.birthYear || `${minBirthYear}–${maxBirthYear} között`}
                 </span>
               </div>
 
               {/* Gender */}
               <div className="flex flex-col gap-2">
-                <span className="text-sm font-semibold text-[#1a1814]">Nem</span>
+                <span className="text-sm font-semibold text-ink">Nem</span>
                 <div className="grid grid-cols-2 gap-2">
                   {GENDER_OPTIONS.map((opt) => (
                     <button
@@ -359,7 +359,7 @@ export function OrgOnboardingWizard() {
                   ))}
                 </div>
                 {errors.gender && (
-                  <span className="pl-1 text-xs text-[#c8410a]">{errors.gender}</span>
+                  <span className="pl-1 text-xs text-bronze">{errors.gender}</span>
                 )}
               </div>
 
@@ -372,14 +372,14 @@ export function OrgOnboardingWizard() {
                   onClick={() => setCountryPickerOpen(true)}
                 />
                 {errors.country && (
-                  <span className="pl-1 text-xs text-[#c8410a]">{errors.country}</span>
+                  <span className="pl-1 text-xs text-bronze">{errors.country}</span>
                 )}
               </div>
 
               <button
                 type="button"
                 onClick={handleStep1Next}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 Tovább →
               </button>
@@ -390,17 +390,17 @@ export function OrgOnboardingWizard() {
           {step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 02</p>
-                <h2 className="font-playfair text-2xl text-[#1a1814]">A céged</h2>
-                <p className="mt-1 text-sm text-[#3d3a35]/70">
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">// 02</p>
+                <h2 className="font-fraunces text-2xl text-ink">A céged</h2>
+                <p className="mt-1 text-sm text-ink-body/70">
                   Ezek az adatok segítenek személyre szabni a csapatképet.
                 </p>
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-[#1a1814]">
+                <label className="text-sm font-semibold text-ink">
                   Mi a szerepköröd?{" "}
-                  <span className="font-normal text-[#a09a90]">(opcionális)</span>
+                  <span className="font-normal text-muted">(opcionális)</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {ROLE_OPTIONS.map((r) => (
@@ -417,8 +417,8 @@ export function OrgOnboardingWizard() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-[#1a1814]">
-                  Cég neve <span className="text-[#c8410a]">*</span>
+                <label className="text-sm font-semibold text-ink">
+                  Cég neve <span className="text-bronze">*</span>
                 </label>
                 <input
                   type="text"
@@ -431,14 +431,14 @@ export function OrgOnboardingWizard() {
                   autoFocus
                 />
                 {errors.orgName && (
-                  <span className="pl-1 text-xs text-[#c8410a]">{errors.orgName}</span>
+                  <span className="pl-1 text-xs text-bronze">{errors.orgName}</span>
                 )}
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-[#1a1814]">
+                <label className="text-sm font-semibold text-ink">
                   Iparág{" "}
-                  <span className="font-normal text-[#a09a90]">(opcionális)</span>
+                  <span className="font-normal text-muted">(opcionális)</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {INDUSTRY_OPTIONS.map((ind) => (
@@ -455,9 +455,9 @@ export function OrgOnboardingWizard() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-[#1a1814]">
+                <label className="text-sm font-semibold text-ink">
                   Csapat mérete{" "}
-                  <span className="font-normal text-[#a09a90]">(opcionális)</span>
+                  <span className="font-normal text-muted">(opcionális)</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {TEAM_SIZE_OPTIONS.map((sz) => (
@@ -477,7 +477,7 @@ export function OrgOnboardingWizard() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
+                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
                   ← Vissza
                 </button>
@@ -485,7 +485,7 @@ export function OrgOnboardingWizard() {
                   type="button"
                   onClick={handleStep2Next}
                   disabled={isSubmitting}
-                  className="min-h-[48px] flex-1 rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting ? "Létrehozás..." : "Tovább →"}
                 </button>
@@ -497,9 +497,9 @@ export function OrgOnboardingWizard() {
           {step === 3 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 03</p>
-                <h2 className="font-playfair text-2xl text-[#1a1814]">Az első csapatod</h2>
-                <p className="mt-1 text-sm text-[#3d3a35]/70">
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">// 03</p>
+                <h2 className="font-fraunces text-2xl text-ink">Az első csapatod</h2>
+                <p className="mt-1 text-sm text-ink-body/70">
                   Adj nevet a csapatnak, majd oszd meg a meghívó linket a tagokkal.
                 </p>
               </div>
@@ -507,8 +507,8 @@ export function OrgOnboardingWizard() {
               {!teamId ? (
                 <>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-semibold text-[#1a1814]">
-                      Csapat neve <span className="text-[#c8410a]">*</span>
+                    <label className="text-sm font-semibold text-ink">
+                      Csapat neve <span className="text-bronze">*</span>
                     </label>
                     <input
                       type="text"
@@ -521,7 +521,7 @@ export function OrgOnboardingWizard() {
                       autoFocus
                     />
                     {errors.teamName && (
-                      <span className="pl-1 text-xs text-[#c8410a]">{errors.teamName}</span>
+                      <span className="pl-1 text-xs text-bronze">{errors.teamName}</span>
                     )}
                   </div>
 
@@ -529,7 +529,7 @@ export function OrgOnboardingWizard() {
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="min-h-[48px] rounded-lg border border-[#e8e4dc] px-5 text-sm font-medium text-[#3d3a35] transition-colors hover:border-[#c8410a]/40"
+                      className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                     >
                       ← Vissza
                     </button>
@@ -537,7 +537,7 @@ export function OrgOnboardingWizard() {
                       type="button"
                       onClick={() => handleStep3Finish(false)}
                       disabled={isSubmitting}
-                      className="min-h-[48px] flex-1 rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                      className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
                     >
                       {isSubmitting ? "Létrehozás..." : "Csapat létrehozása →"}
                     </button>
@@ -546,7 +546,7 @@ export function OrgOnboardingWizard() {
                   <button
                     type="button"
                     onClick={() => setStep(4)}
-                    className="text-center text-xs text-[#a09a90] underline underline-offset-2 transition-colors hover:text-[#3d3a35]"
+                    className="text-center text-xs text-muted underline underline-offset-2 transition-colors hover:text-ink-body"
                   >
                     Kihagyom most, beállítom később
                   </button>
@@ -554,12 +554,12 @@ export function OrgOnboardingWizard() {
               ) : (
                 /* Invite link display */
                 <div className="flex flex-col gap-5">
-                  <div className="rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4">
-                    <p className="mb-2 font-mono text-xs uppercase tracking-wider text-[#a09a90]">
+                  <div className="rounded-xl border border-sand bg-cream p-4">
+                    <p className="mb-2 font-mono text-xs uppercase tracking-wider text-muted">
                       // meghívó link
                     </p>
                     <div className="flex items-center gap-2">
-                      <code className="flex-1 truncate rounded-lg border border-[#e8e4dc] bg-white px-3 py-2 text-xs text-[#1a1814]">
+                      <code className="flex-1 truncate rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink">
                         {inviteUrl}
                       </code>
                       <button
@@ -567,8 +567,8 @@ export function OrgOnboardingWizard() {
                         onClick={handleCopyLink}
                         className={`min-h-[36px] rounded-lg px-4 text-sm font-semibold transition-all ${
                           copied
-                            ? "bg-[#1a5c3a] text-white"
-                            : "bg-[#c8410a] text-white hover:bg-[#a8340a]"
+                            ? "bg-sage text-white"
+                            : "bg-sage text-white hover:bg-sage-dark"
                         }`}
                       >
                         {copied ? "✓ Másolva!" : "Másolás"}
@@ -576,7 +576,7 @@ export function OrgOnboardingWizard() {
                     </div>
                   </div>
 
-                  <p className="text-sm text-[#3d3a35]/70">
+                  <p className="text-sm text-ink-body/70">
                     Küldd el ezt a linket a csapattagjaidnak. Regisztráció után automatikusan
                     csatlakoznak a csapathoz és elkezdhetik a felmérést.
                   </p>
@@ -584,7 +584,7 @@ export function OrgOnboardingWizard() {
                   <button
                     type="button"
                     onClick={() => setStep(4)}
-                    className="min-h-[48px] w-full rounded-lg bg-[#1a1814] text-sm font-semibold text-white transition-colors hover:bg-[#3d3a35]"
+                    className="min-h-[48px] w-full rounded-lg bg-ink text-sm font-semibold text-white transition-colors hover:bg-ink-body"
                   >
                     Megyek a dashboardra →
                   </button>
@@ -597,8 +597,8 @@ export function OrgOnboardingWizard() {
           {step === 4 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// 04</p>
-                <h2 className="font-playfair text-2xl text-[#1a1814]">Egy utolsó lépés</h2>
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">// 04</p>
+                <h2 className="font-fraunces text-2xl text-ink">Egy utolsó lépés</h2>
               </div>
 
               <label className="flex cursor-pointer items-start gap-3 rounded-lg p-2">
@@ -609,15 +609,15 @@ export function OrgOnboardingWizard() {
                     setState((prev) => ({ ...prev, consent: e.target.checked }));
                     setErrors((prev) => ({ ...prev, consent: undefined }));
                   }}
-                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-[#e8e4dc] accent-[#c8410a] focus:ring-[#c8410a]/30"
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-sand accent-sage focus:ring-sage/30"
                 />
-                <span className="text-sm text-[#3d3a35]">
+                <span className="text-sm text-ink-body">
                   Hozzájárulok adataim kezeléséhez az{" "}
                   <a
                     href="/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-[#c8410a] underline hover:text-[#a8340a]"
+                    className="font-medium text-bronze underline hover:text-bronze-dark"
                   >
                     Adatvédelmi tájékoztató
                   </a>{" "}
@@ -626,14 +626,14 @@ export function OrgOnboardingWizard() {
               </label>
 
               {errors.consent && (
-                <span className="text-sm text-[#c8410a]">{errors.consent}</span>
+                <span className="text-sm text-bronze">{errors.consent}</span>
               )}
 
               <button
                 type="button"
                 onClick={handleStep4Finish}
                 disabled={isSubmitting || !state.consent}
-                className="min-h-[48px] w-full rounded-lg bg-[#c8410a] text-sm font-semibold text-white transition-colors hover:bg-[#a8340a] disabled:opacity-50"
+                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {isSubmitting ? "Mentés..." : "Beállítások mentése és tovább →"}
               </button>
@@ -642,7 +642,7 @@ export function OrgOnboardingWizard() {
 
         </div>
 
-        <p className="mt-6 text-center text-xs text-[#a09a90]">
+        <p className="mt-6 text-center text-xs text-muted">
           Bármikor módosíthatod ezeket a beállításokat a profil oldalon.
         </p>
       </div>

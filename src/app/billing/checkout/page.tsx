@@ -44,15 +44,15 @@ export default async function CheckoutPage({
   const quantity = qty ? Math.max(1, parseInt(qty, 10) || 1) : undefined;
 
   return (
-    <div className="min-h-dvh bg-[#faf9f6]">
+    <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-3xl px-4 py-10">
-        <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">
+        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
           // előfizetés
         </p>
-        <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] mb-2">
+        <h1 className="mt-1 font-fraunces text-3xl text-ink mb-2">
           {isHu ? "Előfizetés aktiválása" : "Activate subscription"}
         </h1>
-        <p className="text-sm text-[#7a756e] mb-8">
+        <p className="text-sm text-ink-warm mb-8">
           {isHu
             ? "A fizetés biztonságos — a Stripe kezeli az adataidat."
             : "Payment is secure — handled by Stripe."}

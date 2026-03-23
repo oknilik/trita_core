@@ -23,9 +23,9 @@ interface InviteSectionProps {
 function getRelationshipColor(relationship?: string | null): string {
   if (!relationship) return "";
   const rel = relationship.toUpperCase();
-  if (rel === "FRIEND") return "bg-[#edf4ef] text-[#1a5c3a] border-[#cfe2d6]";
-  if (rel === "COLLEAGUE") return "bg-[#fef3ec] text-[#8b2f09] border-[#f3d4c8]";
-  if (rel === "FAMILY") return "bg-[#f3eee4] text-[#5b4a3c] border-[#dfd3c5]";
+  if (rel === "FRIEND") return "bg-[#edf4ef] text-sage border-[#cfe2d6]";
+  if (rel === "COLLEAGUE") return "bg-sage-soft text-bronze-dark border-sage-ring";
+  if (rel === "FAMILY") return "bg-warm text-[#5b4a3c] border-[#dfd3c5]";
   if (rel === "PARTNER") return "bg-[#f7efe8] text-[#9a4a2b] border-[#e8d2c3]";
   return "bg-gray-50 text-gray-600 border-gray-200"; // OTHER
 }
@@ -177,20 +177,20 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
 
   if (!hasObserverAccess) {
     return (
-      <section className="rounded-2xl border border-[#e8e4dc] bg-white p-8 md:p-12">
-        <p className="font-ibm-plex-mono mb-3 text-[10px] uppercase tracking-[2px] text-[#c8410a]">
+      <section className="rounded-2xl border border-sand bg-white p-8 md:p-12">
+        <p className="font-dm-sans mb-3 text-[10px] uppercase tracking-[2px] text-bronze">
           // observer meghívók
         </p>
-        <p className="font-playfair mb-2 text-xl text-[#1a1814]">
+        <p className="font-fraunces mb-2 text-xl text-ink">
           Hívd meg a csapatod
         </p>
-        <p className="mb-6 text-sm leading-relaxed text-[#5a5650]">
+        <p className="mb-6 text-sm leading-relaxed text-ink-body">
           Az observer visszajelzés csak csomag-előfizetéssel érhető el. Indíts 14 napos
           ingyenes trialt – kártyaadat nélkül.
         </p>
         <a
           href="/billing/upgrade"
-          className="inline-flex min-h-[44px] items-center justify-center rounded bg-[#c8410a] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#a8340a]"
+          className="inline-flex min-h-[44px] items-center justify-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
         >
           Trial indítása →
         </a>
@@ -202,7 +202,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
     <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
       {/* Modern header with decorative bar */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-1 w-12 bg-gradient-to-r from-[#c8410a] to-[#8b2f09] rounded-full" />
+        <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {t("invite.title", locale)}
         </h2>
@@ -232,20 +232,20 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
           </p>
         </div>
 
-        <div className="rounded-xl bg-gradient-to-br from-[#fef3ec] to-[#f3eee4] px-5 py-3 border border-[#f3d4c8]/50">
-          <p className="text-xs font-semibold text-[#c8410a] uppercase tracking-wider">
+        <div className="rounded-xl bg-gradient-to-br from-sage-soft to-warm px-5 py-3 border border-sage-ring/50">
+          <p className="text-xs font-semibold text-bronze uppercase tracking-wider">
             {t("invite.limit", locale) || "Limit"}
           </p>
-          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-[#c8410a] to-[#8b2f09] bg-clip-text text-transparent">
+          <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-sage to-sage-deep bg-clip-text text-transparent">
             {activeCount}/5
           </p>
         </div>
       </div>
 
       {/* Unified invitation creation */}
-      <div className="rounded-2xl border border-[#f3d4c8]/50 bg-gradient-to-br from-[#fef3ec]/60 to-[#f3eee4]/60 p-6 glass-effect">
+      <div className="rounded-2xl border border-sage-ring/50 bg-gradient-to-br from-sage-soft/60 to-warm/60 p-6 glass-effect">
         <div className="flex items-center gap-2 mb-4">
-          <svg className="h-5 w-5 text-[#c8410a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-5 w-5 text-bronze" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           <p className="text-sm font-semibold text-gray-900">
@@ -259,13 +259,13 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
             value={email}
             onChange={(event) => { setEmail(event.target.value); setCreateError(null); }}
             placeholder={t("invite.emailPlaceholder", locale) || "Email cím (opcionális)"}
-            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-gray-900 focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-[#f3d4c8] focus:border-[#e8c7b8] focus:ring-[#f3d4c8]"}`}
+            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-gray-900 focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-sage-ring focus:border-bronze-edge focus:ring-bronze-soft"}`}
           />
           <button
             type="button"
             onClick={handleCreate}
             disabled={isCreating || !canCreate || showSuccess}
-            className="group min-h-[48px] rounded-lg bg-gradient-to-r from-[#c8410a] to-[#8b2f09] px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+            className="group min-h-[48px] rounded-lg bg-gradient-to-r from-sage to-sage-deep px-8 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
             {showSuccess ? (
               <span className="inline-flex items-center gap-2">
@@ -292,7 +292,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
         )}
 
         <div className="mt-3 flex items-start gap-2">
-          <svg className="h-4 w-4 text-[#c8410a] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="h-4 w-4 text-bronze mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xs text-gray-600 leading-relaxed">
@@ -305,7 +305,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
         </p>
 
         {completed.length < 2 && (
-          <p className="mt-2 text-xs font-medium text-[#8b2f09]">
+          <p className="mt-2 text-xs font-medium text-bronze-dark">
             {tf("invite.compareHint", locale, { count: completed.length })}
           </p>
         )}
@@ -369,7 +369,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
                         className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                           copiedToken === inv.token
                             ? "text-emerald-600 bg-emerald-50"
-                            : "text-[#c8410a] hover:bg-[#fef3ec]"
+                            : "text-bronze hover:bg-sage-soft"
                         }`}
                       >
                         {copiedToken === inv.token ? (
