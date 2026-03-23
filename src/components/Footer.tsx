@@ -30,14 +30,21 @@ export function Footer() {
             </p>
           </div>
 
-          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm md:justify-end">
+          <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm md:justify-end">
+            <Link href="/blog" className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline">
+              Blog
+            </Link>
+            <Link href="/pricing" className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline">
+              Árazás
+            </Link>
+            <Link href="/founding" className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline">
+              Alapítói program
+            </Link>
+            <span className="text-cream/20">·</span>
             <Link href="/privacy" className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline">
               {t("landing.privacyLink", locale)}
             </Link>
-            <Link
-              href="/contact"
-              className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
-            >
+            <Link href="/contact" className="text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline">
               {t("landing.contactLink", locale)}
             </Link>
           </nav>

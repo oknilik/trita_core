@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
+import { ModeSwitcher } from "@/components/landing/ModeSwitcher";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { MobileDrawer } from "@/components/MobileDrawer";
-import { ModeSwitcher } from "@/components/landing/ModeSwitcher";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 
@@ -65,10 +65,17 @@ export function NavBar() {
   const { locale } = useLocale();
   const { isSignedIn } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) setDrawerOpen(false);
   }, [isSignedIn]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
@@ -83,19 +90,21 @@ export function NavBar() {
           <span className="text-bronze">a</span>
         </Link>
 
-        {/* Center: ModeSwitcher (tablet + desktop) */}
-        <SignedOut>
-          <div className="hidden flex-1 items-center justify-center sm:flex">
-            <ModeSwitcher />
-          </div>
-        </SignedOut>
-        <SignedIn>
-          <div className="flex-1" />
-        </SignedIn>
-
-        {/* Right: nav links + CTA */}
-        <nav className="hidden items-center gap-6 sm:flex">
+        {/* Right: nav links + CTA — elrejtve görgetéskor */}
+        <nav
+          className={[
+            "hidden items-center gap-6 sm:flex transition-all duration-300",
+            scrolled ? "opacity-0 pointer-events-none" : "opacity-100",
+          ].join(" ")}
+        >
           <SignedOut>
+            <Link href="/blog" className="text-sm font-medium text-ink-body/60 transition-colors hover:text-ink-body">
+              Blog
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium text-ink-body/60 transition-colors hover:text-ink-body">
+              Árazás
+            </Link>
+            <div className="h-4 w-px bg-ink-body/15" />
             <Link href="/sign-in" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
               Bejelentkezés
             </Link>
@@ -106,9 +115,14 @@ export function NavBar() {
           </SignedIn>
         </nav>
 
-        {/* Mobile right */}
+        {/* Mobile right — elrejtve görgetéskor */}
         <SignedOut>
-          <div className="flex items-center sm:hidden">
+          <div
+            className={[
+              "flex items-center sm:hidden transition-all duration-300",
+              scrolled ? "opacity-0 pointer-events-none" : "opacity-100",
+            ].join(" ")}
+          >
             <Suspense
               fallback={
                 <Link href="/sign-up" className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c17f4a] px-4 text-sm font-semibold text-white">
@@ -149,9 +163,9 @@ export function NavBar() {
         <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
       </div>
 
-      {/* Mobile ModeSwitcher row */}
+      {/* Switcher sor — mindig látható */}
       <SignedOut>
-        <div className="flex justify-center py-2 sm:hidden">
+        <div className="flex justify-center pb-3 pt-1">
           <ModeSwitcher />
         </div>
       </SignedOut>
