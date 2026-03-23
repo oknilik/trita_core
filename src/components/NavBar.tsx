@@ -1,12 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { MobileDrawer } from "@/components/MobileDrawer";
+import { ModeSwitcher } from "@/components/landing/ModeSwitcher";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+
+function NavCTAInner() {
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode") ?? "self";
+  const isTeam = mode === "team";
+  return (
+    <Link
+      href="/sign-up"
+      className={[
+        "inline-flex min-h-[44px] items-center rounded-lg px-5 text-sm font-semibold text-white transition-colors",
+        isTeam ? "bg-[#3d6b5e] hover:bg-[#2d5a4e]" : "bg-[#c17f4a] hover:bg-[#9a6538]",
+      ].join(" ")}
+    >
+      {isTeam ? "Csapat →" : "Kipróbálom →"}
+    </Link>
+  );
+}
+
+function NavCTA() {
+  return (
+    <Suspense
+      fallback={
+        <Link
+          href="/sign-up"
+          className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c17f4a] px-5 text-sm font-semibold text-white"
+        >
+          Kipróbálom →
+        </Link>
+      }
+    >
+      <NavCTAInner />
+    </Suspense>
+  );
+}
+
+function MobileNavCTAInner() {
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode") ?? "self";
+  const isTeam = mode === "team";
+  return (
+    <Link
+      href="/sign-up"
+      className={[
+        "inline-flex min-h-[44px] items-center rounded-lg px-4 text-sm font-semibold text-white transition-colors",
+        isTeam ? "bg-[#3d6b5e] hover:bg-[#2d5a4e]" : "bg-[#c17f4a] hover:bg-[#9a6538]",
+      ].join(" ")}
+    >
+      {isTeam ? "Csapat" : "Kipróbálom"}
+    </Link>
+  );
+}
 
 export function NavBar() {
   const { locale } = useLocale();
@@ -18,68 +71,58 @@ export function NavBar() {
   }, [isSignedIn]);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-sand bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
-      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-4 lg:px-16">
+    <header className="sticky top-0 z-40 w-full bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-3 sm:px-10 lg:px-16">
+        {/* Logo */}
         <Link
           href="/"
           aria-label="trita"
           className="font-fraunces inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-ink"
         >
-          {"trit"}
+          <span style={{ color: "#3d6b5e" }}>t</span>{"rit"}
           <span className="text-bronze">a</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex">
+        {/* Center: ModeSwitcher (tablet + desktop) */}
+        <SignedOut>
+          <div className="hidden flex-1 items-center justify-center sm:flex">
+            <ModeSwitcher />
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <div className="flex-1" />
+        </SignedIn>
+
+        {/* Right: nav links + CTA */}
+        <nav className="hidden items-center gap-6 sm:flex">
           <SignedOut>
-            <Link href="/#how-it-works" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
-              Hogyan működik
-            </Link>
-            <Link href="/founding" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
-              Alapító program
-            </Link>
-            <Link href="/blog" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
-              Blog
-            </Link>
-            <Link href="/pricing" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
-              Árazás
-            </Link>
-            <Link
-              href="/sign-in"
-              className="inline-flex min-h-[44px] items-center text-sm font-medium text-ink-body transition-colors hover:text-bronze"
-            >
+            <Link href="/sign-in" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
               Bejelentkezés
             </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
-            >
-              Kipróbálom ingyen
-            </Link>
+            <NavCTA />
           </SignedOut>
           <SignedIn>
             <UserMenu />
           </SignedIn>
         </nav>
 
+        {/* Mobile right */}
         <SignedOut>
-          <div className="flex items-center gap-3 lg:hidden">
-            <Link
-              href="/sign-in"
-              className="inline-flex min-h-[44px] items-center text-sm font-medium text-ink-body hover:text-bronze"
+          <div className="flex items-center sm:hidden">
+            <Suspense
+              fallback={
+                <Link href="/sign-up" className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c17f4a] px-4 text-sm font-semibold text-white">
+                  Kipróbálom
+                </Link>
+              }
             >
-              Bejelentkezés
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
-            >
-              Kipróbálom
-            </Link>
+              <MobileNavCTAInner />
+            </Suspense>
           </div>
         </SignedOut>
 
         <SignedIn>
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-2 sm:hidden">
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
@@ -105,6 +148,13 @@ export function NavBar() {
 
         <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
       </div>
+
+      {/* Mobile ModeSwitcher row */}
+      <SignedOut>
+        <div className="flex justify-center py-2 sm:hidden">
+          <ModeSwitcher />
+        </div>
+      </SignedOut>
     </header>
   );
 }

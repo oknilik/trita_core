@@ -53,6 +53,23 @@
   --color-warm-mid:     #f0ede6;
   --color-warm-dark:    #d9cfc1;
 
+  /* ─── Numbered aliases (design system) ────────────────────────────── */
+  --color-sage-700:    #3d6b5e;
+  --color-sage-900:    #1e3d34;
+  --color-sage-500:    #5a8f7f;
+  --color-sage-100:    #e8f2f0;
+  --color-bronze-500:  #c17f4a;
+  --color-bronze-300:  #e8a96a;
+  --color-bronze-100:  #fdf5ee;
+  --color-bronze-700:  #8a5530;
+  --color-ink-800:     #1a1a2e;
+  --color-ink-500:     #4a4a5e;
+  --color-ink-300:     #8a8a9a;
+  --color-cream-100:   #f7f4ef;
+  --color-cream-500:   #e8e0d3;
+  --color-cream-300:   #f2ede6;
+  --color-cream-warm:  #ede8e1;
+
   /* ─── Founding page (saját paletta) ────────────────────────────────── */
   --color-founding-bg:           #FAF7F2;
   --color-founding-text:         #2C2420;

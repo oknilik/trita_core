@@ -2,62 +2,30 @@ import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { StatsSection } from "@/components/landing/StatsSection";
-import { PainSection } from "@/components/landing/PainSection";
-import { UseCaseSection } from "@/components/landing/UseCaseSection";
-import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
-import { ScienceSection } from "@/components/landing/ScienceSection";
-import { PricingSection } from "@/components/landing/PricingSection";
-import { BottomCTA } from "@/components/landing/BottomCTA";
-import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
-import { getServerLocale } from "@/lib/i18n-server";
-import type { Locale } from "@/lib/i18n";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { Features } from "@/components/landing/Features";
+import { StatsBar } from "@/components/landing/StatsBar";
+import { CtaSection } from "@/components/landing/CtaSection";
+import { getSiteUrl } from "@/lib/seo";
+import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
+export const metadata: Metadata = {
+  title: "trita",
+  description:
+    "A trita kutatás alapú csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
+};
 
-  const copy: Record<Locale, { title: string; description: string }> = {
-    hu: {
-      title: "trita",
-      description:
-        "A trita kutatás alapú csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
-    },
-    en: {
-      title: "trita",
-      description:
-        "trita is a research-based team intelligence platform: measurable personality and team dynamics insights for hiring, development, and decision support.",
-    },
-  };
-
-  const { title, description } = copy[locale] ?? copy.hu;
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: "/",
-      languages: getLanguageAlternates("/"),
-    },
-    openGraph: {
-      type: "website",
-      title,
-      description,
-      url: "/",
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
-}
-
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ mode?: string }>;
+}) {
   const { userId } = await auth();
   if (userId) redirect("/dashboard");
 
-  const locale = await getServerLocale();
+  const params = await searchParams;
+  const mode: SiteMode = params.mode === "team" ? "team" : "self";
+
   const siteUrl = getSiteUrl();
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -83,15 +51,11 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-
-      <HeroSection locale={locale} />
-      <StatsSection locale={locale} />
-      <PainSection locale={locale} />
-      <UseCaseSection locale={locale} />
-      <HowItWorksSection locale={locale} />
-      <ScienceSection locale={locale} />
-      <PricingSection locale={locale} />
-      <BottomCTA locale={locale} />
+      <HeroSection mode={mode} />
+      <HowItWorks mode={mode} />
+      <Features mode={mode} />
+      <StatsBar />
+      <CtaSection mode={mode} />
     </main>
   );
 }

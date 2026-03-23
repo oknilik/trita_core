@@ -1,290 +1,348 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import type { Locale } from "@/lib/i18n";
+import { motion } from "framer-motion";
+import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-type HeadingSlide = { before: string; word: string; after: string };
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
+};
 
-const copy: Record<
-  Locale,
-  {
-    eyebrow: string;
-    headingSlides: [HeadingSlide, HeadingSlide];
-    sub: string;
-    cta: string;
-    signInCta: string;
-    mockCardHeader: string;
-    insightCards: Array<{ tone: "accent" | "green" | "purple"; title: string; body: string }>;
-    legendSelf: string;
-    legendObserver: string;
-    quote: string;
-    quoteAttribution: string;
-    foundingTitle: string;
-    foundingSub: string;
-    spotsLeft: string;
-    radarLabels: [string, string, string, string, string, string];
-  }
-> = {
-  hu: {
-    eyebrow: "Csapatintelligencia platform",
-    headingSlides: [
-      { before: "Értsd meg jobban a ", word: "saját", after: " működésedet." },
-      { before: "Értsd meg jobban a ", word: "csapatod", after: " működését." },
-    ],
-    sub: "A trita megmutatja, ami eddig láthatatlan volt - a csapatod valódi dinamikáját. Mielőtt a feszültség konfliktussá, a konfliktus pedig költséggé válik.",
-    cta: "Megnézem a csapatomat →",
-    signInCta: "Van már fiókod? Jelentkezz be",
-    mockCardHeader: "CSAPAT PROFIL — Sales (6 fő)",
-    insightCards: [
-      { tone: "accent", title: "⚠ FESZÜLTSÉG", body: "Döntéshozatalnál konfliktus valószínű - 3 fő eltérő stílus" },
-      { tone: "green", title: "✓ ERŐSSÉG", body: "Magas megbízhatóság, határidők tartása erős" },
-      { tone: "purple", title: "◎ SELF VS OBSERVER", body: "2 tag önképe jelentősen eltér mások visszajelzésétől" },
-    ],
-    legendSelf: "önkép",
-    legendObserver: "observer",
-    quote: "\"48 óra alatt többet tudtam meg a csapatomról, mint az előző két évben.\"",
-    quoteAttribution: "— Pilot tesztelő, 12 fős tech csapat",
-    foundingTitle: "Csatlakozz az első 10 cég közé",
-    foundingSub: "Személyes onboarding + founding ár az első évre",
-    spotsLeft: "3 hely maradt",
-    radarLabels: ["Nyitottság", "Lelkiis.", "Extrav.", "Egym.", "Becsül.", "Érz. st."],
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+// ─── Left column copy ───────────────────────────────────────────────────────
+
+const leftCopy = {
+  self: {
+    eyebrow: "HEXACO KARRIERPROFIL",
+    headline: ["Fedezd fel, milyen karrierre ", "vagy teremtve."],
+    sub: "Tudományosan validált személyiségprofil, amely konkrét karrierirányokat mutat — nem általánosságokat.",
+    cta: "Ingyenes teszt indítása →",
+    ctaHref: "/sign-up",
+    signIn: "Van már fiókom",
+    trust: ["⏱ ~12 perc", "🔬 Validált HEXACO", "🆓 Ingyenes"],
   },
-  en: {
-    eyebrow: "Team intelligence platform",
-    headingSlides: [
-      { before: "Understand your ", word: "own", after: " dynamics better." },
-      { before: "Understand your ", word: "team's", after: " dynamics better." },
-    ],
-    sub: "trita shows what's been invisible — your team's real dynamics. Before tension becomes conflict, and conflict becomes cost.",
-    cta: "See my team →",
-    signInCta: "Already have an account? Sign in",
-    mockCardHeader: "TEAM PROFILE — Sales (6 members)",
-    insightCards: [
-      { tone: "accent", title: "⚠ TENSION", body: "Conflict likely at decision-making — 3 members with different styles" },
-      { tone: "green", title: "✓ STRENGTH", body: "High reliability, strong on deadlines" },
-      { tone: "purple", title: "◎ SELF VS OBSERVER", body: "2 members' self-image differs significantly from others' feedback" },
-    ],
-    legendSelf: "self",
-    legendObserver: "observer",
-    quote: "\"In 48 hours I learned more about my team than in the previous two years.\"",
-    quoteAttribution: "— Pilot tester, 12-person tech team",
-    foundingTitle: "Join the first 10 companies",
-    foundingSub: "Personal onboarding + founding price for the first year",
-    spotsLeft: "3 spots left",
-    radarLabels: ["Openness", "Conscient.", "Extrav.", "Agreeable.", "Integrity", "Emot. st."],
+  team: {
+    eyebrow: "CSAPATINTELLIGENCIA",
+    headline: ["Lásd tisztábban a ", "csapatod működését."],
+    headlineEm: "csapatod",
+    sub: "A trita megmutatja, ami eddig láthatatlan volt — a csapatod valódi dinamikáját. Mielőtt a feszültség konfliktussá válik.",
+    cta: "Megnézem a csapatomat →",
+    ctaHref: "/sign-up?type=team",
+    signIn: "Van már fiókom",
+    trust: ["✓ 18 csapat", "⚡ 48h elemzés", "🔬 Validált"],
   },
 };
 
-export function HeroSection({ locale }: { locale: Locale }) {
-  const c = copy[locale] ?? copy.hu;
-  const [idx, setIdx] = useState(0);
-  const [visible, setVisible] = useState(true);
+// ─── Self dark panel ─────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIdx((i) => 1 - i);
-        setVisible(true);
-      }, 260);
-    }, 3200);
-    return () => clearInterval(timer);
-  }, []);
-
-  const slide = c.headingSlides[idx];
+function SelfPanel() {
+  const dims = [
+    { label: "Nyitottság", value: 85, fill: "#c17f4a" },
+    { label: "Lelkiismeretesség", value: 78, fill: "#c17f4a" },
+    { label: "Becsületesség", value: 72, fill: "#e8a96a" },
+    { label: "Extravertáltság", value: 54, fill: "rgba(193,127,74,0.2)" },
+  ];
 
   return (
-    <section className="grid min-h-[85vh] grid-cols-1 border-b border-sand lg:grid-cols-2">
-      <div className="flex border-b border-sand px-6 py-12 lg:border-b-0 lg:border-r lg:px-16 lg:py-20">
-        <div className="my-auto w-full">
-          <div className="mb-8 flex items-center gap-3">
-            <div className="h-px w-8 bg-bronze" />
-            <div className="font-dm-sans text-[11px] uppercase tracking-[2px] text-bronze">
-              {c.eyebrow}
+    <>
+      {/* Stat sor */}
+      <div className="flex gap-2.5">
+        {[
+          { num: "100", label: "kérdés" },
+          { num: "6", label: "dimenzió" },
+          { num: "12", suffix: "'", label: "perc" },
+        ].map((s) => (
+          <div
+            key={s.label}
+            className="flex-1 rounded-xl p-3.5 text-center"
+            style={{ background: "rgba(193,127,74,0.08)", border: "1px solid rgba(193,127,74,0.18)" }}
+          >
+            <div className="font-fraunces text-[28px] leading-none text-white">
+              {s.num}
+              {s.suffix && <span style={{ color: "#e8a96a" }}>{s.suffix}</span>}
             </div>
+            <div className="mt-1 text-[10px]" style={{ color: "rgba(193,127,74,0.55)" }}>{s.label}</div>
           </div>
+        ))}
+      </div>
 
-          <h1 className="font-fraunces mb-7 text-[clamp(40px,10vw,72px)] font-normal leading-[1.05] tracking-[-1.5px] text-ink lg:tracking-[-2px]">
-            <span
-              style={{ transition: "opacity 260ms ease, transform 260ms ease" }}
-              className={visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[6px]"}
-            >
-              {slide.before}
-              <span className="italic text-sage">
-                {slide.word}
-              </span>
-              {slide.after}
+      {/* Dimenzió kártya */}
+      <div
+        className="rounded-[14px] p-4 px-5"
+        style={{ background: "rgba(193,127,74,0.06)", border: "1px solid rgba(193,127,74,0.12)" }}
+      >
+        <p
+          className="mb-3 font-dm-sans text-[9px] uppercase tracking-widest"
+          style={{ color: "rgba(193,127,74,0.5)" }}
+        >
+          Példa profil — Stratégiai Innovátor
+        </p>
+        {dims.map((d) => (
+          <div key={d.label} className="mb-2 flex items-center gap-2.5">
+            <span className="w-[100px] shrink-0 text-[11px]" style={{ color: "rgba(232,169,106,0.6)" }}>
+              {d.label}
             </span>
-          </h1>
+            <div
+              className="flex-1 overflow-hidden rounded-sm"
+              style={{ height: 5, background: "rgba(193,127,74,0.12)" }}
+            >
+              <div className="h-full rounded-sm" style={{ width: `${d.value}%`, background: d.fill }} />
+            </div>
+            <span className="w-6 text-right text-[10px] font-semibold" style={{ color: "rgba(232,169,106,0.6)" }}>
+              {d.value}
+            </span>
+          </div>
+        ))}
+      </div>
 
-          <p className="mb-8 max-w-[440px] text-[15px] font-light leading-[1.75] text-ink-body lg:mb-12 lg:text-[17px]">
-            {c.sub}
+      {/* Insight idézet */}
+      <div
+        className="rounded-[10px] p-3 px-3.5"
+        style={{ background: "rgba(193,127,74,0.12)", border: "1px solid rgba(193,127,74,0.25)" }}
+      >
+        <p className="mb-1 font-dm-sans text-[8px] uppercase tracking-wide" style={{ color: "#c17f4a" }}>
+          KARRIERINSIGHT
+        </p>
+        <p className="font-fraunces text-[14px] italic leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+          "Stratégiai, alapítói és tanácsadói szerepkörökben kiemelkedő — ahol a nagy kép látása fontosabb, mint a napi operáció."
+        </p>
+      </div>
+    </>
+  );
+}
+
+// ─── Team dark panel ─────────────────────────────────────────────────────────
+
+const members = [
+  {
+    initials: "KA",
+    name: "Kovács Anna",
+    role: "Sales Lead",
+    avatarBg: "#3d6b5e",
+    badge: "Vezető stílus",
+    badgeBg: "rgba(61,107,94,0.25)",
+    badgeColor: "#7aaa9a",
+    bars: [true, true, true, true, false],
+  },
+  {
+    initials: "NP",
+    name: "Nagy Péter",
+    role: "Account Exec",
+    avatarBg: "#8a5530",
+    badge: "⚠ Ütközési pont",
+    badgeBg: "rgba(193,127,74,0.2)",
+    badgeColor: "#e8a96a",
+    bars: [true, true, false, true, false],
+  },
+  {
+    initials: "SZ",
+    name: "Szabó Zsófia",
+    role: "BDR",
+    avatarBg: "#4a4a5e",
+    badge: "Önkép eltérés",
+    badgeBg: "rgba(255,255,255,0.07)",
+    badgeColor: "rgba(255,255,255,0.4)",
+    bars: [true, false, true, false, true],
+  },
+];
+
+function TeamPanel() {
+  return (
+    <>
+      {/* Member list card */}
+      <div className="overflow-hidden rounded-[14px] border border-white/7 bg-white/4">
+        <div className="flex items-center justify-between border-b border-white/6 p-3 px-4">
+          <span className="font-dm-sans text-[10px] uppercase tracking-wide text-white/30">
+            Sales csapat · 6 tag · kész
+          </span>
+          <div className="flex gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
+            <span className="h-1.5 w-1.5 rounded-full opacity-70" style={{ background: "#c17f4a" }} />
+          </div>
+        </div>
+        <div className="p-2.5">
+          {members.map((m) => (
+            <div
+              key={m.initials}
+              className="flex cursor-pointer items-center gap-2.5 rounded-lg p-2 hover:bg-white/4"
+            >
+              <div
+                className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                style={{ background: m.avatarBg }}
+              >
+                {m.initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[12px] font-semibold text-white/75">
+                  {m.name} · <span className="font-normal">{m.role}</span>
+                </div>
+                <div className="mt-1 flex gap-[3px]">
+                  {m.bars.map((active, i) => (
+                    <div
+                      key={i}
+                      className="h-[3px] w-4 rounded-sm"
+                      style={{
+                        background: active
+                          ? i % 2 === 0
+                            ? "#5a8f7f"
+                            : "#c17f4a"
+                          : "rgba(255,255,255,0.08)",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <span
+                className="shrink-0 rounded px-2 py-0.5 text-[9px] font-semibold"
+                style={{ background: m.badgeBg, color: m.badgeColor }}
+              >
+                {m.badge}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Insight kártya */}
+      <div className="rounded-xl border border-white/8 bg-white/4 p-3.5">
+        <p className="mb-1.5 font-dm-sans text-[10px] uppercase tracking-widest text-white/25">
+          Csapat insight
+        </p>
+        <p className="text-[13px] leading-relaxed text-white/55">
+          Magas Lelkiismeretesség + alacsony Együttműködés: erős executer profil, de döntési
+          feszültség valószínű a 2-4. személyek között.
+        </p>
+        <span
+          className="mt-2 inline-block rounded px-2 py-0.5 text-[10px] font-semibold"
+          style={{ background: "rgba(193,127,74,0.15)", color: "#e8a96a" }}
+        >
+          ⚠ Konfliktusveszély döntési helyzetben
+        </span>
+      </div>
+
+      {/* Founding kártya */}
+      <div
+        className="flex items-center justify-between gap-3 rounded-xl p-3.5"
+        style={{
+          background: "rgba(193,127,74,0.08)",
+          border: "1px solid rgba(193,127,74,0.18)",
+        }}
+      >
+        <div>
+          <p className="font-dm-sans text-[10px] uppercase tracking-wide" style={{ color: "#c17f4a" }}>
+            ◆ FOUNDING PROGRAM
           </p>
+          <p className="text-[13px] font-semibold text-white/75">Csatlakozz az első 10 cég közé</p>
+          <p className="text-[11px] text-white/35">Személyes onboarding + founding ár</p>
+        </div>
+        <span
+          className="animate-pulse shrink-0 rounded-full px-3 py-1.5 text-[10px] font-semibold text-white"
+          style={{ background: "#c17f4a" }}
+        >
+          3 hely maradt
+        </span>
+      </div>
+    </>
+  );
+}
 
-          <div className="flex flex-col items-start gap-4">
+// ─── Main component ───────────────────────────────────────────────────────────
+
+export function HeroSection({ mode }: { mode: SiteMode }) {
+  const c = leftCopy[mode];
+  const isSelf = mode === "self";
+
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-8 px-7 pb-6 pt-12 sm:grid-cols-2 sm:items-start sm:gap-10">
+        {/* Left column */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col"
+        >
+          {/* Eyebrow */}
+          <motion.div variants={fadeUpVariants} className="mb-5 flex items-center gap-3">
+            <div
+              className="h-[1.5px] w-5 shrink-0"
+              style={{ background: isSelf ? "#c17f4a" : "#3d6b5e" }}
+            />
+            <span
+              className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest"
+              style={{ color: isSelf ? "#c17f4a" : "#3d6b5e" }}
+            >
+              {c.eyebrow}
+            </span>
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h1
+            variants={fadeUpVariants}
+            className="font-fraunces mb-[18px] text-[clamp(32px,4vw,48px)] font-normal leading-[1.08] tracking-tight text-ink"
+          >
+            {c.headline[0]}
+            <em
+              className="not-italic italic"
+              style={{ color: isSelf ? "#c17f4a" : "#3d6b5e" }}
+            >
+              {c.headline[1]}
+            </em>
+          </motion.h1>
+
+          {/* Sub */}
+          <motion.p
+            variants={fadeUpVariants}
+            className="mb-7 max-w-[380px] text-[15px] font-light leading-relaxed text-ink-body"
+          >
+            {c.sub}
+          </motion.p>
+
+          {/* CTA */}
+          <motion.div variants={fadeUpVariants} className="mb-2.5">
             <Link
-              href="/sign-up"
-              className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded bg-sage px-6 py-4 text-[15px] font-medium text-white transition-all hover:-translate-y-px hover:bg-sage-dark lg:w-auto lg:px-8"
+              href={c.ctaHref}
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl px-[26px] py-[13px] text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ background: isSelf ? "#c17f4a" : "#3d6b5e" }}
             >
               {c.cta}
             </Link>
-            <Link
-              href="/sign-in"
-              className="text-sm text-ink-body transition-colors hover:text-ink"
-            >
-              {c.signInCta}
+          </motion.div>
+
+          {/* Sign in link */}
+          <motion.div variants={fadeUpVariants} className="mb-5">
+            <Link href="/sign-in" className="text-[13px] text-ink-body/60 hover:text-ink-body">
+              {c.signIn}
             </Link>
-          </div>
-        </div>
-      </div>
+          </motion.div>
 
-      <div className="relative flex items-center overflow-hidden bg-warm-mid px-6 py-10 lg:px-12 lg:py-[60px]">
-        <div className="relative z-10 mx-auto flex w-full max-w-[640px] flex-col gap-8 lg:gap-10">
-          <div className="hidden overflow-hidden rounded-[6px] border border-sand bg-white shadow-[0_4px_24px_rgba(26,24,20,0.07)] md:block">
-            <div className="flex items-center justify-between border-b border-sand bg-warm-mid px-4 py-[10px]">
-              <div className="font-dm-sans text-[10px] tracking-[1px] text-ink-body">
-                {c.mockCardHeader}
-              </div>
-              <div className="flex gap-[6px]">
-                <span className="h-2 w-2 rounded-full bg-sand" />
-                <span className="h-2 w-2 rounded-full bg-sand" />
-                <span className="h-2 w-2 rounded-full bg-sage/50" />
-              </div>
-            </div>
+          {/* Trust pills */}
+          <motion.div variants={fadeUpVariants} className="flex flex-wrap gap-2">
+            {c.trust.map((pill) => (
+              <span
+                key={pill}
+                className="rounded-full border border-[#e8e0d3] bg-[#f2ede6] px-2.5 py-1 text-[11px] text-ink-body/60"
+              >
+                {pill}
+              </span>
+            ))}
+          </motion.div>
+        </motion.div>
 
-            <div className="grid grid-cols-2 items-center gap-4 p-5">
-              <div className="flex justify-center">
-                <RadarChartPreview labels={c.radarLabels} />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                {c.insightCards.map((card) => (
-                  <InsightCard key={card.title} tone={card.tone} title={card.title} body={card.body} />
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-5 border-t border-sand bg-warm-mid px-5 py-[10px]">
-              <LegendItem color="#3d6b5e" dashed={false} label={c.legendSelf} />
-              <LegendItem color="#3d6b5e" dashed label={c.legendObserver} />
-            </div>
-          </div>
-
-          <div className="relative rounded border-l-[3px] border-l-sand bg-warm-mid px-5 py-4 pl-7">
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute left-2 top-[-14px] font-fraunces text-5xl leading-none text-[#d6d0c5]"
-            >
-              &quot;
-            </span>
-            <p className="font-fraunces mb-2 text-sm italic leading-[1.6] text-ink md:text-[14px]">
-              {c.quote}
-            </p>
-            <div className="font-dm-sans text-[10px] tracking-[1px] text-ink-body uppercase">
-              {c.quoteAttribution}
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden rounded border border-sand bg-white px-5 py-4">
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-sage to-[#e8a87c]" />
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="font-dm-sans mb-1 text-[10px] uppercase tracking-[1px] text-bronze">
-                  ◆ Founding Customer Program
-                </div>
-                <div className="text-[13px] font-semibold text-ink">{c.foundingTitle}</div>
-                <div className="mt-1 text-xs text-ink-body">
-                  {c.foundingSub}
-                </div>
-              </div>
-              <div className="ml-4 flex shrink-0 flex-col items-center gap-1">
-                <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-sage" />
-                <span className="font-dm-sans text-[10px] whitespace-nowrap text-ink-body">
-                  {c.spotsLeft}
-                </span>
-              </div>
-            </div>
-          </div>
+        {/* Right column — dark data panel */}
+        <div
+          className="flex flex-col justify-center gap-4 overflow-hidden rounded-[20px] p-6 sm:p-7 lg:p-9"
+          style={{ background: isSelf ? "#1c1208" : "#1a1a2e", minHeight: 480 }}
+        >
+          {isSelf ? <SelfPanel /> : <TeamPanel />}
         </div>
       </div>
     </section>
-  );
-}
-
-function InsightCard({
-  tone,
-  title,
-  body,
-}: {
-  tone: "accent" | "green" | "purple";
-  title: string;
-  body: string;
-}) {
-  const toneClass =
-    tone === "accent"
-      ? "border-l-sage text-bronze"
-      : tone === "green"
-        ? "border-l-sage text-sage"
-        : "border-l-[#9333ea] text-[#9333ea]";
-
-  return (
-    <div className={`rounded bg-cream px-3 py-2.5 border-l-2 ${toneClass}`}>
-      <div className="font-dm-sans mb-1 text-[9px]">{title}</div>
-      <div className="text-[11px] leading-[1.5] text-ink-body">{body}</div>
-    </div>
-  );
-}
-
-function LegendItem({ color, dashed, label }: { color: string; dashed?: boolean; label: string }) {
-  return (
-    <div className="font-dm-sans flex items-center gap-[6px] text-[10px] text-ink-body">
-      <svg width="20" height="8" aria-hidden="true">
-        <line
-          x1="0"
-          y1="4"
-          x2="20"
-          y2="4"
-          stroke={color}
-          strokeWidth="2"
-          strokeDasharray={dashed ? "4 2" : undefined}
-        />
-      </svg>
-      {label}
-    </div>
-  );
-}
-
-function RadarChartPreview({ labels }: { labels: [string, string, string, string, string, string] }) {
-  return (
-    <svg width="160" height="160" viewBox="-88 -88 176 176" overflow="visible" aria-label="Csapat profil radar chart">
-      <polygon points="0,-70 61,-35 61,35 0,70 -61,35 -61,-35" fill="none" stroke="#e8e0d3" strokeWidth="1" />
-      <polygon points="0,-52 45,-26 45,26 0,52 -45,26 -45,-26" fill="none" stroke="#e8e0d3" strokeWidth="1" />
-      <polygon points="0,-35 30,-17 30,17 0,35 -30,17 -30,-17" fill="none" stroke="#e8e0d3" strokeWidth="1" />
-
-      <line x1="0" y1="0" x2="0" y2="-70" stroke="#e8e0d3" strokeWidth="1" />
-      <line x1="0" y1="0" x2="61" y2="-35" stroke="#e8e0d3" strokeWidth="1" />
-      <line x1="0" y1="0" x2="61" y2="35" stroke="#e8e0d3" strokeWidth="1" />
-      <line x1="0" y1="0" x2="0" y2="70" stroke="#e8e0d3" strokeWidth="1" />
-      <line x1="0" y1="0" x2="-61" y2="35" stroke="#e8e0d3" strokeWidth="1" />
-      <line x1="0" y1="0" x2="-61" y2="-35" stroke="#e8e0d3" strokeWidth="1" />
-
-      <polygon points="0,-62 52,-24 54,32 0,58 -56,28 -44,-40" fill="rgba(61,107,94,0.1)" stroke="#3d6b5e" strokeWidth="2.5" />
-      <polygon
-        points="0,-50 42,-30 44,26 0,48 -50,24 -38,-42"
-        fill="none"
-        stroke="#3d6b5e"
-        strokeWidth="1.5"
-        strokeDasharray="4,3"
-        opacity="0.7"
-      />
-
-      <text x="0" y="-78" textAnchor="middle" fontFamily="IBM Plex Mono" fontSize="8" fill="#4a4a5e">{labels[0]}</text>
-      <text x="70" y="-38" textAnchor="start" fontFamily="IBM Plex Mono" fontSize="8" fill="#4a4a5e">{labels[1]}</text>
-      <text x="70" y="42" textAnchor="start" fontFamily="IBM Plex Mono" fontSize="8" fill="#4a4a5e">{labels[2]}</text>
-      <text x="0" y="84" textAnchor="middle" fontFamily="IBM Plex Mono" fontSize="8" fill="#4a4a5e">{labels[3]}</text>
-      <text x="-70" y="42" textAnchor="end" fontFamily="IBM Plex Mono" fontSize="8" fill="#4a4a5e">{labels[4]}</text>
-      <text x="-70" y="-38" textAnchor="end" fontFamily="IBM Plex Mono" fontSize="8" fill="#4a4a5e">{labels[5]}</text>
-    </svg>
   );
 }
