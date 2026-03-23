@@ -1,22 +1,26 @@
+"use client";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
+
 export function StatsBar() {
+  const { locale } = useLocale();
+
   const stats = [
-    { value: "100", label: "kérdés a tesztben" },
-    { value: "300", suffix: "+", label: "elemzett adatpont" },
-    { value: "6", label: "HEXACO dimenzió" },
-    { value: "92", suffix: "%", label: "változtatott az ajánlások alapján" },
+    { value: "12", suffix: t("landing.statMinSuffix", locale), label: t("landing.statMinLabel", locale) },
+    { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
+    { value: t("landing.statResultValue", locale), suffix: "", label: t("landing.statResultLabel", locale), isText: true },
+    { value: t("landing.statSelfValue", locale), suffix: "", label: t("landing.statSelfLabel", locale), isText: true },
   ];
 
   return (
-    <div className="mx-auto mt-12 max-w-[1120px] px-7">
-      <div className="rounded-[20px] bg-[#1a1a2e] px-6 py-8 lg:px-12 lg:py-10">
+    <div className="mx-auto max-w-[1120px] px-7">
+      <div className="rounded-[20px] bg-[#1a1a2e] px-8 py-10 lg:px-12">
         <div className="flex flex-col items-center gap-8 lg:flex-row lg:justify-around">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <div className="font-fraunces text-4xl font-normal tracking-tight text-white">
+              <div className={["font-fraunces font-normal tracking-tight text-white", s.isText ? "text-2xl font-semibold" : "text-[32px]"].join(" ")}>
                 {s.value}
-                {s.suffix && (
-                  <span style={{ color: "#e8a96a" }}>{s.suffix}</span>
-                )}
+                {s.suffix && <span style={{ color: "#e8a96a" }}>{s.suffix}</span>}
               </div>
               <div className="mt-1 text-xs text-white/40">{s.label}</div>
             </div>

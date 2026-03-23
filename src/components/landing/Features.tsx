@@ -1,96 +1,37 @@
 "use client";
-
 import { motion } from "framer-motion";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-const fadeUpVariants = {
+const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-type Feature = {
-  icon: string;
-  iconBg: string;
-  title: string;
-  desc: string;
-  tag: string;
-  tagBg: string;
-  tagColor: string;
-};
-
-const selfFeatures: Feature[] = [
-  {
-    icon: "📊",
-    iconBg: "#fdf5ee",
-    title: "Személyiségprofil",
-    desc: "Részletes HEXACO eredmény, 6 dimenzió mentén — erősségek, vakfoltok, és amit mások nem mondanak el.",
-    tag: "🆓 Ingyenes",
-    tagBg: "#e8f2f0",
-    tagColor: "#1e3d34",
-  },
-  {
-    icon: "🧭",
-    iconBg: "#fdf5ee",
-    title: "Karriertérkép",
-    desc: "Konkrét karrierirányok, szerepek és iparágak, amelyek a profilodhoz illeszkednek — nem általánosságok.",
-    tag: "✦ Pro · 7€",
-    tagBg: "#fdf5ee",
-    tagColor: "#8a5530",
-  },
-  {
-    icon: "📈",
-    iconBg: "rgba(26,26,46,0.06)",
-    title: "Fejlődési terv",
-    desc: "ABA-alapú viselkedéselemzéssel összeállított fejlesztési javaslatok — kis lépések, nagy változás.",
-    tag: "✦ Pro · 7€",
-    tagBg: "#fdf5ee",
-    tagColor: "#8a5530",
-  },
-];
-
-const teamFeatures: Feature[] = [
-  {
-    icon: "👥",
-    iconBg: "#e8f2f0",
-    title: "Csapatdinamika",
-    desc: "Vizuális térkép: ki kivel dolgozik jól, hol vannak természetes szövetségesek és potenciális ütközések.",
-    tag: "Csapat csomagban",
-    tagBg: "#e8f2f0",
-    tagColor: "#1e3d34",
-  },
-  {
-    icon: "⚠️",
-    iconBg: "#e8f2f0",
-    title: "Konfliktus-érzékelés",
-    desc: "Observer feedback + önkép összevetés: mielőtt a feszültségből valódi konfliktus lesz.",
-    tag: "Csapat csomagban",
-    tagBg: "#e8f2f0",
-    tagColor: "#1e3d34",
-  },
-  {
-    icon: "📋",
-    iconBg: "rgba(26,26,46,0.06)",
-    title: "Csapatjelentés",
-    desc: "Vezetői összefoglaló: erősségek, kockázatok, és konkrét javaslatok a csapatépítéshez.",
-    tag: "Csapat csomagban",
-    tagBg: "#e8f2f0",
-    tagColor: "#1e3d34",
-  },
-];
-
 export function Features({ mode }: { mode: SiteMode }) {
-  const features = mode === "self" ? selfFeatures : teamFeatures;
+  const { locale } = useLocale();
+  const accentColor = mode === "self" ? "#c17f4a" : "#3d6b5e";
+
+  const features = mode === "self"
+    ? [
+        { badge: t("landing.selfFeat1Badge", locale), title: t("landing.selfFeat1Title", locale), desc: t("landing.selfFeat1Desc", locale), featured: true },
+        { badge: t("landing.selfFeat2Badge", locale), title: t("landing.selfFeat2Title", locale), desc: t("landing.selfFeat2Desc", locale), featured: false },
+        { badge: t("landing.selfFeat3Badge", locale), title: t("landing.selfFeat3Title", locale), desc: t("landing.selfFeat3Desc", locale), featured: false },
+      ]
+    : [
+        { badge: t("landing.teamFeat1Badge", locale), title: t("landing.teamFeat1Title", locale), desc: t("landing.teamFeat1Desc", locale), featured: true },
+        { badge: t("landing.teamFeat2Badge", locale), title: t("landing.teamFeat2Title", locale), desc: t("landing.teamFeat2Desc", locale), featured: false },
+        { badge: t("landing.teamFeat3Badge", locale), title: t("landing.teamFeat3Title", locale), desc: t("landing.teamFeat3Desc", locale), featured: false },
+      ];
 
   return (
-    <section className="py-12 px-7">
+    <section className="px-7 py-20">
       <div className="mx-auto max-w-[1120px]">
-        <div className="mb-[60px] text-center">
-          <p className="mb-3 font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
-            AMIT KAPSZ
-          </p>
+        <div className="mb-16 text-center">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
-            Nem tippek —{" "}
-            <em className="not-italic italic text-sage">személyre szabott</em> irány
+            {t("landing.featuresTitleBefore", locale)}
+            <em className="not-italic italic text-[#5a8f7f]">{t("landing.featuresTitleEm", locale)}</em>
           </h2>
         </div>
 
@@ -98,28 +39,24 @@ export function Features({ mode }: { mode: SiteMode }) {
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              variants={fadeUpVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
+              variants={fadeUp}
               transition={{ delay: i * 0.08 } as Parameters<typeof motion.div>[0]["transition"]}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="flex flex-col rounded-2xl border border-[#e8e0d3] bg-white p-7 shadow-sm transition-shadow hover:shadow-[0_12px_32px_rgba(26,26,46,0.06)]"
+              className={[
+                "flex flex-col rounded-2xl border border-[#e8e0d3] p-7 shadow-sm transition-shadow hover:shadow-[0_12px_32px_rgba(26,26,46,0.06)]",
+                f.featured ? "bg-[#f2ede6]" : "bg-white",
+                i === 0 ? "lg:col-span-1" : "",
+              ].join(" ")}
             >
-              <div className="mb-4 flex items-start justify-between">
-                <div
-                  className="flex h-11 w-11 items-center justify-center rounded-xl text-xl"
-                  style={{ background: f.iconBg }}
-                >
-                  {f.icon}
-                </div>
-                <span
-                  className="rounded px-2 py-0.5 text-[10px] font-semibold"
-                  style={{ background: f.tagBg, color: f.tagColor }}
-                >
-                  {f.tag}
-                </span>
-              </div>
+              <span
+                className="mb-4 self-start rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                style={{ background: `${accentColor}15`, color: accentColor }}
+              >
+                {f.badge}
+              </span>
               <h3 className="font-fraunces mb-2 text-lg text-ink">{f.title}</h3>
               <p className="flex-1 text-[13px] leading-relaxed text-ink-body">{f.desc}</p>
             </motion.div>

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { HeroSection } from "@/components/landing/HeroSection";
+import { TrustBar } from "@/components/landing/TrustBar";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Features } from "@/components/landing/Features";
+import { ProofSection } from "@/components/landing/ProofSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { getSiteUrl } from "@/lib/seo";
@@ -52,8 +54,10 @@ export default async function Home({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
       <HeroSection mode={mode} />
+      <TrustBar mode={mode} />
       <HowItWorks mode={mode} />
       <Features mode={mode} />
+      <ProofSection />
       <StatsBar />
       <CtaSection mode={mode} />
     </main>

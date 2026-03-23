@@ -2,6 +2,8 @@
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Suspense } from "react";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 export type SiteMode = "self" | "team";
 
@@ -9,6 +11,7 @@ function ModeSwitcherInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const { locale } = useLocale();
   const mode = (searchParams.get("mode") ?? "self") as SiteMode;
 
   const switchTo = (m: SiteMode) => {
@@ -38,7 +41,7 @@ function ModeSwitcherInner() {
               .join(" ")}
           >
             <span className="text-xs">{m === "self" ? "👤" : "👥"}</span>
-            {m === "self" ? "Egyéneknek" : "Csapatoknak"}
+            {m === "self" ? t("nav.modeSelf", locale) : t("nav.modeTeam", locale)}
           </button>
         );
       })}
@@ -47,15 +50,16 @@ function ModeSwitcherInner() {
 }
 
 export function ModeSwitcher() {
+  const { locale } = useLocale();
   return (
     <Suspense
       fallback={
         <div className="inline-flex items-center rounded-full bg-[#1a1a2e] p-1">
           <div className="flex items-center gap-1.5 rounded-full bg-[#c17f4a] px-5 py-2 text-[13px] font-medium text-white">
-            <span className="text-xs">👤</span>Egyéneknek
+            <span className="text-xs">👤</span>{t("nav.modeSelf", locale)}
           </div>
           <div className="flex items-center gap-1.5 rounded-full px-5 py-2 text-[13px] font-medium text-white/35">
-            <span className="text-xs">👥</span>Csapatoknak
+            <span className="text-xs">👥</span>{t("nav.modeTeam", locale)}
           </div>
         </div>
       }

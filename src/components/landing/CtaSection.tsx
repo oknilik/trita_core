@@ -1,50 +1,42 @@
+"use client";
 import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-const copy = {
-  self: {
-    titleBefore: "Fedezd fel a",
-    titleEm: "karrierprofilod",
-    sub: "12 perc — ennyi kell, hogy megtudd, milyen karrierre vagy teremtve. Tudományosan validált, azonnal elérhető.",
-    cta: "Ingyenes teszt indítása →",
-    ctaHref: "/sign-up",
-    note: "Ingyenes · Nem kell bankkártya · Azonnali eredmény",
-  },
-  team: {
-    titleBefore: "Érted meg a",
-    titleEm: "csapatod",
-    sub: "A trita megmutatja a csapatod valódi dinamikáját — mielőtt a feszültség konfliktussá válik.",
-    cta: "Csapat elemzés indítása →",
-    ctaHref: "/sign-up?type=team",
-    note: "€49/hó · Founding program: személyes onboarding",
-  },
-};
-
 export function CtaSection({ mode }: { mode: SiteMode }) {
-  const c = copy[mode];
+  const { locale } = useLocale();
   const isSelf = mode === "self";
 
+  const headlineBefore = isSelf
+    ? t("landing.ctaSelfHeadlineBefore", locale)
+    : t("landing.ctaTeamHeadlineBefore", locale);
+  const headlineEm = isSelf
+    ? t("landing.ctaSelfHeadlineEm", locale)
+    : t("landing.ctaTeamHeadlineEm", locale);
+  const sub = isSelf ? t("landing.ctaSelfSub", locale) : t("landing.ctaTeamSub", locale);
+  const cta = isSelf ? t("landing.ctaSelfCta", locale) : t("landing.ctaTeamCta", locale);
+  const microcopy = isSelf ? t("landing.ctaSelfMicrocopy", locale) : t("landing.ctaTeamMicrocopy", locale);
+  const ctaHref = isSelf ? "/sign-up" : "/sign-up?type=team";
+
   return (
-    <section className="py-12 px-7">
+    <section className="px-7 py-20">
       <div className="mx-auto max-w-[640px] text-center">
-        <p className="mb-3 font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
-          KÉSZEN ÁLLSZ?
-        </p>
         <h2 className="font-fraunces mb-5 text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
-          {c.titleBefore}{" "}
-          <em className="not-italic italic text-sage">{c.titleEm}</em>
+          {headlineBefore}
+          <em className="not-italic italic text-[#5a8f7f]">{headlineEm}</em>
         </h2>
-        <p className="mb-9 text-base leading-relaxed text-ink-body">{c.sub}</p>
+        <p className="mb-9 text-base leading-relaxed text-ink-body">{sub}</p>
         <Link
-          href={c.ctaHref}
+          href={ctaHref}
           className={[
             "inline-flex min-h-[54px] items-center justify-center rounded-[14px] px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
             isSelf ? "bg-[#c17f4a] hover:bg-[#9a6538]" : "bg-[#3d6b5e] hover:bg-[#2d5a4e]",
           ].join(" ")}
         >
-          {c.cta}
+          {cta}
         </Link>
-        <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">{c.note}</p>
+        <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">{microcopy}</p>
       </div>
     </section>
   );
