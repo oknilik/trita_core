@@ -394,6 +394,32 @@ export function ProfileTabs({
           try {
             const { downloadPdf } = await import("@/components/pdf/TritaPdf");
             const mainDims = dimensions.filter((d) => d.code !== "I");
+            // Build bullet-based insights from dimension data
+            const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
+            const highDims = mainDims.filter((d) => d.score >= 70);
+            const lowDims = mainDims.filter((d) => d.score < 40);
+
+            const strengthBullets = highDims.length > 0
+              ? highDims.map((d) => d.label.toLowerCase())
+              : [isHu ? "kiegyensúlyozott profil" : "balanced profile"];
+            const watchBullets = lowDims.length > 0
+              ? lowDims.map((d) => `${isHu ? "alacsony" : "low"} ${d.label.toLowerCase()}`)
+              : [isHu ? "nincs kritikusan alacsony dimenzió" : "no critically low dimension"];
+
+            // Profile character
+            const profileCharacter = (() => {
+              const top2 = sortedDims.slice(0, 2);
+              const bottom = sortedDims[sortedDims.length - 1];
+              if (!top2[0] || !bottom) return "";
+              return isHu
+                ? `A profilod fő karaktere: magas ${top2[0].label.toLowerCase()}${top2[1] ? `, magas ${top2[1].label.toLowerCase()}` : ""}. ${bottom.label} területen nyílhat tér a fejlődésre.`
+                : `Your profile character: high ${top2[0].label.toLowerCase()}${top2[1] ? `, high ${top2[1].label.toLowerCase()}` : ""}. ${bottom.label} is where growth potential lies.`;
+            })();
+
+            // Workplace / risk insights for Plus callouts
+            const workplaceInsight = plusContent?.howYouWork[0] ?? "";
+            const riskInsight = plusContent?.howYouWork[1] ?? "";
+
             await downloadPdf({
               userName: name,
               completedAt: new Date(assessmentDate).toLocaleDateString(
@@ -406,6 +432,11 @@ export function ProfileTabs({
               plan: accessLevel,
               strengths: strengths ?? "",
               watchAreas: watchAreas ?? "",
+              strengthBullets,
+              watchBullets,
+              profileCharacter,
+              workplaceInsight,
+              riskInsight,
               dimensions: mainDims.map((d) => ({
                 name: d.label,
                 shortName: d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label,

@@ -11,9 +11,9 @@ interface RoleFitProps {
 }
 
 const TIERS = [
-  { key: "strong" as const, label: "Erős illeszkedés", color: colors.sage, bg: colors.sage100, labelColor: colors.sageDark, pillBg: "rgba(61,107,94,0.15)", pillText: colors.sage },
-  { key: "might" as const, label: "Működhet, ha készülsz", color: colors.bronze, bg: colors.bronze100, labelColor: colors.bronzeDark, pillBg: "rgba(193,127,74,0.12)", pillText: colors.bronzeDark },
-  { key: "prep" as const, label: "Ahol segít a felkészülés", color: colors.ink300, bg: colors.cream300, labelColor: colors.ink300, pillBg: "rgba(138,138,154,0.1)", pillText: colors.ink300 },
+  { key: "strong" as const, label: { hu: "Erős illeszkedés", en: "Strong fit" }, color: colors.sage, bg: colors.sage100, labelColor: colors.sageDark, pillBg: "rgba(61,107,94,0.15)", pillText: colors.sage },
+  { key: "might" as const, label: { hu: "Működhet, ha készülsz", en: "May work with preparation" }, color: colors.bronze, bg: colors.bronze100, labelColor: colors.bronzeDark, pillBg: "rgba(193,127,74,0.12)", pillText: colors.bronzeDark },
+  { key: "prep" as const, label: { hu: "Ahol segít a felkészülés", en: "Where preparation helps" }, color: colors.ink300, bg: colors.cream300, labelColor: colors.ink300, pillBg: "rgba(138,138,154,0.1)", pillText: colors.ink300 },
 ];
 
 export function PdfRoleFit({ strong, might, prep, strongRoles, mightRoles, prepRoles }: RoleFitProps) {
@@ -38,7 +38,7 @@ export function PdfRoleFit({ strong, might, prep, strongRoles, mightRoles, prepR
             }}
           >
             <Text style={{ fontSize: 6, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: tier.labelColor, marginBottom: 2 }}>
-              {tier.label}
+              {tier.label.hu}
             </Text>
             <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.35, marginBottom: tierRoles.length > 0 ? 4 : 0 }}>
               {text}

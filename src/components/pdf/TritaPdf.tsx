@@ -13,8 +13,15 @@ export interface PdfData {
   percentile: string;
   heroInsight: string;
   plan: "start" | "plus" | "reflect";
+  // Bullet-based insights
+  strengthBullets: string[];
+  watchBullets: string[];
+  // Legacy string versions (fallback)
   strengths: string;
   watchAreas: string;
+  // Profile character callout
+  profileCharacter?: string;
+  // Dimensions
   dimensions: { name: string; shortName: string; value: number; description: string }[];
   belbinRoles: { name: string; subtitle: string; score: number; rank: number }[];
   // Plus content
@@ -32,6 +39,9 @@ export interface PdfData {
     closingText: string;
   };
   facetDimensions?: { name: string; value: number; insight?: string; description?: string; facets: { label: string; score: number }[] }[];
+  // Callout insights for Plus page
+  workplaceInsight?: string;
+  riskInsight?: string;
   // Reflect observer data
   observerData?: {
     count: number;

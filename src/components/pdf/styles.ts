@@ -49,13 +49,14 @@ export const s = StyleSheet.create({
     fontSize: 9,
     color: colors.ink,
     position: "relative",
+    paddingBottom: 32,
   },
   header: {
     backgroundColor: colors.sageDark,
-    padding: "32 40 24 40",
+    padding: "28 40 20 40",
   },
   body: {
-    padding: "20 40",
+    padding: "16 40",
   },
   sectionEyebrow: {
     fontSize: 7,
@@ -63,7 +64,23 @@ export const s = StyleSheet.create({
     textTransform: "uppercase",
     color: colors.ink300,
     marginBottom: 5,
+    marginTop: 14,
     fontWeight: 600,
+  },
+  // First eyebrow after header — no top margin
+  sectionEyebrowFirst: {
+    fontSize: 7,
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    color: colors.ink300,
+    marginBottom: 5,
+    fontWeight: 600,
+  },
+  // Divider line between major sections
+  divider: {
+    borderTop: `1 solid ${colors.cream500}`,
+    marginTop: 12,
+    marginBottom: 12,
   },
   footer: {
     position: "absolute",

@@ -25,7 +25,7 @@ export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: Key
       <div className="flex flex-col gap-3">
         {paragraphs.map((t, i) => (
           <div key={i} className="flex items-start gap-3">
-            <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#5a8f7f" }} />
+            <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
             <p className="text-[13px] leading-[1.7] text-white/[0.55]">{t}</p>
           </div>
         ))}

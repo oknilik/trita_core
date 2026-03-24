@@ -10,9 +10,9 @@ interface BelbinRole {
 
 export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
   const rankColors = [
-    { bg: colors.sage, text: colors.white, label: "Elsődleges" },
-    { bg: colors.bronze100, text: colors.bronzeDark, label: "Másodlagos" },
-    { bg: colors.cream300, text: colors.ink300, label: "Harmadik" },
+    { bg: colors.sage, text: colors.white, label: { hu: "Elsődleges", en: "Primary" } },
+    { bg: colors.bronze100, text: colors.bronzeDark, label: { hu: "Másodlagos", en: "Secondary" } },
+    { bg: colors.cream300, text: colors.ink300, label: { hu: "Harmadik", en: "Tertiary" } },
   ];
 
   return (
@@ -45,7 +45,7 @@ export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
                 marginBottom: 4,
               }}
             >
-              {rc.label} · {role.score}%
+              {rc.label.hu} · {role.score}%
             </Text>
             <Text style={{ fontFamily: "Fraunces", fontSize: isPrimary ? 11 : 10, color: colors.ink, marginBottom: 2 }}>
               {role.name}

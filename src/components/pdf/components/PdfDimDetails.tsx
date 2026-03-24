@@ -8,10 +8,20 @@ interface Dim {
   description: string;
 }
 
-export function PdfDimDetails({ dimensions }: { dimensions: Dim[] }) {
+interface PdfDimDetailsProps {
+  dimensions: Dim[];
+  previewOnly?: boolean;
+  hasPlus?: boolean;
+}
+
+export function PdfDimDetails({ dimensions, previewOnly = false, hasPlus = false }: PdfDimDetailsProps) {
+  const sorted = [...dimensions].sort((a, b) => b.value - a.value);
+  const displayed = previewOnly ? sorted.slice(0, 3) : dimensions;
+  const rest = previewOnly ? dimensions.length - 3 : 0;
+
   return (
     <View style={{ marginBottom: 14 }}>
-      {dimensions.map((dim) => {
+      {displayed.map((dim) => {
         const tier = getDimensionTier(dim.value);
         const dotColor = tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
         return (
@@ -39,6 +49,11 @@ export function PdfDimDetails({ dimensions }: { dimensions: Dim[] }) {
           </View>
         );
       })}
+      {rest > 0 && (
+        <Text style={{ fontSize: 7.5, color: colors.sage, marginTop: 3, fontWeight: 500 }}>
+          + {rest} további dimenzió → {hasPlus ? "lásd 2. oldal" : "Self Plus csomagban"}
+        </Text>
+      )}
     </View>
   );
 }

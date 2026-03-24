@@ -4,9 +4,12 @@ import { colors } from "../styles";
 interface PdfFooterProps {
   pageNum: number;
   totalPages: number;
+  locale?: string;
 }
 
-export function PdfFooter({ pageNum, totalPages }: PdfFooterProps) {
+export function PdfFooter({ pageNum, totalPages, locale = "hu" }: PdfFooterProps) {
+  const isHu = locale === "hu";
+
   return (
     <View
       style={{
@@ -26,7 +29,7 @@ export function PdfFooter({ pageNum, totalPages }: PdfFooterProps) {
       <Text style={{ fontFamily: "Fraunces", fontSize: 8, color: "rgba(26,26,46,0.2)" }}>
         trita
       </Text>
-      <Text>trita.io · Személyiség és csapatintelligencia</Text>
+      <Text>trita.io · {isHu ? "Személyiség és csapatintelligencia" : "Personality and team intelligence"}</Text>
       <Text>
         {pageNum} / {totalPages}
       </Text>

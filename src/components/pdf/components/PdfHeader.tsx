@@ -8,6 +8,7 @@ interface PdfHeaderProps {
   percentile: string;
   insight: string;
   plan: "start" | "plus" | "reflect";
+  locale?: string;
 }
 
 const PLAN_LABELS: Record<string, string> = {
@@ -16,20 +17,22 @@ const PLAN_LABELS: Record<string, string> = {
   reflect: "Self Reflect",
 };
 
-export function PdfHeader({ name, date, type, percentile, insight, plan }: PdfHeaderProps) {
+export function PdfHeader({ name, date, type, percentile, insight, plan, locale = "hu" }: PdfHeaderProps) {
+  const isHu = locale === "hu";
+
   return (
-    <View style={{ backgroundColor: colors.sageDark, padding: "32 40 24 40" }}>
-      <Text style={{ fontFamily: "Fraunces", fontSize: 13, color: "rgba(255,255,255,0.22)", marginBottom: 16 }}>
+    <View style={{ backgroundColor: colors.sageDark, padding: "28 40 20 40" }}>
+      <Text style={{ fontFamily: "Fraunces", fontSize: 13, color: "rgba(255,255,255,0.22)", marginBottom: 14 }}>
         trita
       </Text>
       <Text style={{ fontSize: 7, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.18)", marginBottom: 4 }}>
-        A te profilod
+        {isHu ? "Személyiségprofil" : "Personality profile"}
       </Text>
       <Text style={{ fontFamily: "Fraunces", fontSize: 24, color: colors.white, marginBottom: 1 }}>
         {name}
       </Text>
       <Text style={{ fontSize: 8, color: "rgba(255,255,255,0.15)", marginBottom: 8 }}>
-        Felmérés: {date}
+        {isHu ? "Felmérés:" : "Assessment:"} {date}
       </Text>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 2 }}>
@@ -44,7 +47,7 @@ export function PdfHeader({ name, date, type, percentile, insight, plan }: PdfHe
       </View>
 
       {insight ? (
-        <Text style={{ fontSize: 10, color: "rgba(255,255,255,0.28)", lineHeight: 1.5, marginTop: 8, maxWidth: 340 }}>
+        <Text style={{ fontSize: 10, color: "rgba(255,255,255,0.28)", lineHeight: 1.5, marginTop: 6, maxWidth: 340 }}>
           {insight}
         </Text>
       ) : null}
