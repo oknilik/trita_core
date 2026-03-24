@@ -357,7 +357,7 @@ const translations = {
     proofTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
     proofTitleEm: { hu: "átlagos személyiségteszt?", en: "average personality test?" },
     proof1Title: { hu: "Validált", en: "Validated" },
-    proof1Desc: { hu: "Tudományos személyiségmodellre épül, nem internetes quiz.", en: "Built on a scientific personality model, not an internet quiz." },
+    proof1Desc: { hu: "Tudományos személyiségmodellekre épül, nem internetes quiz.", en: "Built on scientific personality models, not an internet quiz." },
     proof2Title: { hu: "Nem csak címkéz", en: "Not just labels" },
     proof2Desc: { hu: "Értelmezhető karrierirányokat is mutat, nem csak típusnevet ad.", en: "Also shows actionable career directions, not just a type name." },
     proof3Title: { hu: "Gyakorlati nyelven", en: "Practical language" },
