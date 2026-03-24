@@ -22,83 +22,129 @@ function SelfPanel() {
   const { locale } = useLocale();
 
   const dims = [
-    { label: t("landing.selfDimOpenness", locale), value: 85 },
-    { label: t("landing.selfDimConscientiousness", locale), value: 78 },
-    { label: t("landing.selfDimExtraversion", locale), value: 54 },
+    { name: t("landing.selfDim1", locale), val: 79, tier: "high" as const },
+    { name: t("landing.selfDim2", locale), val: 46, tier: "moderate" as const },
+    { name: t("landing.selfDim3", locale), val: 34, tier: "low" as const },
   ];
 
+  const tierStyle = {
+    high:     { text: "text-[#3d6b5e]", bg: "bg-[#e8f2f0]", tagText: "text-[#1e3d34]" },
+    moderate: { text: "text-[#c17f4a]", bg: "bg-[#fdf5ee]", tagText: "text-[#8a5530]" },
+    low:      { text: "text-[#8a8a9a]", bg: "bg-[#f2ede6]", tagText: "text-[#8a8a9a]" },
+  };
+
+  const tierLabel = {
+    high: t("landing.selfTagHigh", locale),
+    moderate: t("landing.selfTagMod", locale),
+    low: t("landing.selfTagLow", locale),
+  };
+
   return (
-    <>
-      {/* Fő eredmény kártya */}
-      <div className="overflow-hidden rounded-[14px] border border-white/8 bg-white/5">
-        {/* Header */}
-        <div
-          className="p-5"
-          style={{ background: "linear-gradient(135deg, #2a5244, #1e3d34)" }}
-        >
-          <p className="mb-1.5 font-dm-sans text-[9px] uppercase tracking-widest text-white/40">
-            {t("landing.selfPanelLabel", locale)}
+    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
+      {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
+      <div className="relative bg-gradient-to-br from-[#2a5244] via-[#1e3d34] to-[#1a2e28] px-6 pb-5 pt-6">
+        <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/[0.015]" />
+        <p className="text-[8px] uppercase tracking-[1.5px] text-white/20">
+          {t("landing.selfPanelEyebrow", locale)}
+        </p>
+        <p className="mt-1 font-fraunces text-[14px] text-white/[0.35]">
+          {t("landing.selfPanelName", locale)}
+        </p>
+        <div className="mt-0.5 flex items-center gap-2.5">
+          <p className="font-fraunces text-xl font-medium italic text-[#e8a96a]">
+            {t("landing.selfPanelType", locale)}
           </p>
-          <p className="font-fraunces text-[22px] text-white">{t("landing.selfPanelTitle", locale)}</p>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">
-            {t("landing.selfPanelDesc", locale)}
-          </p>
+          <span className="rounded-md bg-white/[0.08] px-2 py-0.5 text-[8px] font-medium text-white/[0.35]">
+            Top 25%
+          </span>
+        </div>
+        <p className="mt-1.5 max-w-[340px] text-[10px] leading-[1.45] text-white/[0.22]">
+          {t("landing.selfPanelInsight", locale)}
+        </p>
+      </div>
+
+      {/* ═══ FEHÉR BODY ═══ */}
+      <div className="bg-white px-5 pb-0 pt-4 md:flex md:flex-1 md:flex-col md:justify-between">
+        {/* 3 dimenzió */}
+        <div className="mb-3 grid grid-cols-3 gap-1.5">
+          {dims.map((d) => {
+            const c = tierStyle[d.tier];
+            return (
+              <div key={d.name} className="rounded-lg bg-[#f2ede6] px-1.5 py-2.5 text-center">
+                <p className="text-[9px] font-medium text-[#8a8a9a]">{d.name}</p>
+                <p className={`font-fraunces text-2xl leading-none ${c.text}`}>{d.val}</p>
+                <span className={`mt-1 inline-block rounded-sm px-1.5 py-0.5 text-[7px] font-semibold ${c.bg} ${c.tagText}${d.tier === "low" ? " border border-[#e8e0d3]/60" : ""}`}>
+                  {tierLabel[d.tier]}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Body */}
-        <div className="p-5">
-          {dims.map((d) => (
-            <div key={d.label} className="mb-2.5 flex items-center gap-2.5">
-              <span className="w-[110px] shrink-0 text-[12px] text-white/50">{d.label}</span>
-              <div
-                className="flex-1 overflow-hidden rounded-sm"
-                style={{ height: 5, background: "rgba(255,255,255,0.07)" }}
-              >
-                <div
-                  className="h-full rounded-sm"
-                  style={{
-                    width: `${d.value}%`,
-                    background: d.value >= 70 ? "#5a8f7f" : "rgba(255,255,255,0.15)",
-                  }}
-                />
-              </div>
-              <span className="w-6 text-right text-[11px] font-semibold text-white/50">
-                {d.value}
-              </span>
-            </div>
-          ))}
+        {/* Erősségeid / Figyelendő */}
+        <div className="mb-3 grid grid-cols-2 gap-1.5">
+          <div className="rounded-lg border border-[#3d6b5e]/10 bg-[#e8f2f0] px-3 py-2.5">
+            <p className="mb-1 text-[8px] font-semibold uppercase tracking-wide text-[#1e3d34]/60">
+              {t("landing.selfStrLabel", locale)}
+            </p>
+            <p className="text-[9px] leading-[1.4] text-[#4a4a5e]">
+              <span className="text-[#3d6b5e]">• </span>
+              <span className="font-medium text-[#1e3d34]">{t("landing.selfStr1Dim", locale)}</span>
+              {" "}{t("landing.selfStr1Desc", locale)}
+            </p>
+            <p className="mt-0.5 text-[9px] leading-[1.4] text-[#4a4a5e]">
+              <span className="text-[#3d6b5e]">• </span>
+              <span className="font-medium text-[#1e3d34]">{t("landing.selfStr2Dim", locale)}</span>
+              {" "}{t("landing.selfStr2Desc", locale)}
+            </p>
+          </div>
+          <div className="rounded-lg border border-[#c17f4a]/10 bg-[#fdf5ee] px-3 py-2.5">
+            <p className="mb-1 text-[8px] font-semibold uppercase tracking-wide text-[#8a5530]/60">
+              {t("landing.selfWatchLabel", locale)}
+            </p>
+            <p className="text-[9px] leading-[1.4] text-[#4a4a5e]">
+              <span className="text-[#c17f4a]">• </span>
+              <span className="font-medium text-[#8a5530]">{t("landing.selfWatch1Dim", locale)}</span>
+            </p>
+            <p className="mt-0.5 pl-2.5 text-[9px] leading-[1.4] text-[#4a4a5e]">
+              {t("landing.selfWatch1Desc", locale)}
+            </p>
+          </div>
+        </div>
 
-          {/* Szerepcímkék */}
-          <div className="mt-4 flex gap-2">
-            {["Stratégia", "Product"].map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full px-3 py-1 text-xs"
-                style={{ background: "rgba(61,107,94,0.2)", color: "#7aaa9a" }}
-              >
-                {tag}
-              </span>
-            ))}
+        {/* Belbin teaser */}
+        <div className="flex gap-1.5">
+          <div className="flex-[1.2] rounded-lg border border-[#3d6b5e]/30 bg-[#e8f2f0] px-2.5 py-2">
+            <span className="inline-flex rounded-sm bg-[#3d6b5e] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-white">
+              {t("landing.selfBelbinPrimary", locale)}
+            </span>
+            <p className="mt-0.5 text-[11px] font-semibold text-[#1a1a2e]">{t("landing.selfBelbin1Name", locale)}</p>
+            <p className="text-[8px] text-[#4a4a5e]">{t("landing.selfBelbin1Desc", locale)}</p>
+          </div>
+          <div className="flex-1 rounded-lg border border-[#e8e0d3] px-2.5 py-2">
+            <span className="inline-flex rounded-sm bg-[#fdf5ee] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[#8a5530]">
+              {t("landing.selfBelbinSecondary", locale)}
+            </span>
+            <p className="mt-0.5 text-[11px] font-semibold text-[#1a1a2e]">{t("landing.selfBelbin2Name", locale)}</p>
+            <p className="text-[8px] text-[#4a4a5e]">{t("landing.selfBelbin2Desc", locale)}</p>
+          </div>
+          <div className="flex-1 rounded-lg border border-[#e8e0d3] px-2.5 py-2">
+            <span className="inline-flex rounded-sm bg-[#f2ede6] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[#8a8a9a]">
+              {t("landing.selfBelbinTertiary", locale)}
+            </span>
+            <p className="mt-0.5 text-[11px] font-semibold text-[#1a1a2e]">{t("landing.selfBelbin3Name", locale)}</p>
+            <p className="text-[8px] text-[#4a4a5e]">{t("landing.selfBelbin3Desc", locale)}</p>
           </div>
         </div>
       </div>
 
-      {/* Mini insight kártya */}
-      <div
-        className="rounded-[10px] p-3 px-4"
-        style={{
-          background: "rgba(193,127,74,0.1)",
-          border: "1px solid rgba(193,127,74,0.2)",
-        }}
-      >
-        <p className="mb-1 font-dm-sans text-[8px] uppercase tracking-wide text-[#c17f4a]">
-          {t("landing.selfWatchLabel", locale)}
-        </p>
-        <p className="text-[13px] leading-relaxed text-white/55">
-          {t("landing.selfWatchDesc", locale)}
-        </p>
+      {/* ═══ FADE-OUT CTA ═══ */}
+      <div className="flex h-10 items-center justify-center rounded-b-2xl bg-gradient-to-b from-white to-[#f2ede6]">
+        <span className="text-[11px] font-medium text-[#3d6b5e]">
+          {t("landing.selfFadeCta", locale)}
+        </span>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -275,13 +321,21 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </motion.h1>
           </motion.div>
 
-          {/* 2. Dark panel */}
-          <div
-            className="order-2 flex flex-col gap-4 overflow-hidden rounded-[20px] p-6 md:col-start-2 md:row-span-2 md:row-start-1 md:p-7 lg:p-9"
-            style={{ background: "#1a1a2e", minHeight: 420 }}
-          >
-            {isSelf ? <SelfPanel /> : <TeamPanel />}
-          </div>
+          {/* 2. Preview panel */}
+          {isSelf ? (
+            <div className="order-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
+              <div className="mx-auto w-full max-w-[460px] md:flex md:h-full md:flex-col">
+                <SelfPanel />
+              </div>
+            </div>
+          ) : (
+            <div
+              className="order-2 flex flex-col gap-4 overflow-hidden rounded-[20px] p-6 md:col-start-2 md:row-span-2 md:row-start-1 md:p-7 lg:p-9"
+              style={{ background: "#1a1a2e", minHeight: 420 }}
+            >
+              <TeamPanel />
+            </div>
+          )}
 
           {/* 3. Sub + CTA + Microcopy */}
           <motion.div
@@ -297,19 +351,38 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </motion.p>
 
-            <motion.div variants={fadeUp} className="mb-3">
+            <motion.div variants={fadeUp} className="mb-4">
               <Link
                 href={isSelf ? "/sign-up" : "/sign-up?type=team"}
-                className="flex min-h-[52px] w-full items-center justify-center rounded-xl px-[28px] py-[14px] text-[15px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg sm:inline-flex sm:w-auto"
-                style={{ background: accentColor }}
+                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto"
+                style={{
+                  background: accentColor,
+                  boxShadow: `0 4px 14px ${isSelf ? "rgba(193,127,74,0.25)" : "rgba(61,107,94,0.25)"}`,
+                }}
               >
                 {isSelf ? t("landing.selfCta", locale) : t("landing.teamCta", locale)}
               </Link>
             </motion.div>
 
-            <motion.p variants={fadeUp} className="text-center text-[13px] text-[#8a8a9a] sm:text-left">
-              {isSelf ? t("landing.selfMicrocopy", locale) : t("landing.teamMicrocopy", locale)}
-            </motion.p>
+            {isSelf ? (
+              <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
+                {[
+                  { icon: "⏱", text: t("landing.selfMetaTime", locale) },
+                  { icon: "🔬", text: t("landing.selfMetaMethod", locale) },
+                  { icon: "⚡", text: t("landing.selfMetaInstant", locale) },
+                  { icon: "🆓", text: t("landing.selfMetaFree", locale) },
+                ].map((m) => (
+                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e0d3] bg-white/60 px-3 py-1.5 text-[11px] text-[#4a4a5e]">
+                    <span className="text-[10px]">{m.icon}</span>
+                    {m.text}
+                  </span>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.p variants={fadeUp} className="text-center text-[13px] text-[#8a8a9a] sm:text-left">
+                {t("landing.teamMicrocopy", locale)}
+              </motion.p>
+            )}
           </motion.div>
 
         </div>

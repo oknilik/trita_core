@@ -629,7 +629,7 @@ export function PatternExplorer() {
 
           <SignedOut>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
-              A Trita felmérése 12–15 perc — és az eredmény nem egy csúszka, hanem a
+              A Trita felmérése ~15 perc — és az eredmény nem egy csúszka, hanem a
               csapatod valódi adata. Csapatprofilok, heatmap, tension pair elemzés.
             </p>
             <a

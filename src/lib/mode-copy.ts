@@ -21,7 +21,7 @@ export const modeCopy: Record<SiteMode, Record<Locale, {
       sub: 'Tudományosan validált személyiségprofil, amely konkrét karrierirányokat és fejlesztési utat mutat — nem általánosságokat.',
       cta: 'Ingyenes teszt indítása →',
       ctaSecondary: 'Van már fiókom',
-      trust: ['⏱ ~12 perc', '🔬 Tudományos', '🆓 Ingyenes start'],
+      trust: ['⏱ ~15 perc', '🔬 Tudományos', '🆓 Ingyenes start'],
       statsLabel: 'Egyéni karrierprofil',
     },
     en: {
@@ -32,7 +32,7 @@ export const modeCopy: Record<SiteMode, Record<Locale, {
       sub: 'A scientifically validated personality profile that shows concrete career directions and a development path — not generalities.',
       cta: 'Start free test →',
       ctaSecondary: 'I already have an account',
-      trust: ['⏱ ~12 min', '🔬 Scientific', '🆓 Free start'],
+      trust: ['⏱ ~15 min', '🔬 Scientific', '🆓 Free start'],
       statsLabel: 'Individual career profile',
     },
   },

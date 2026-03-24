@@ -20,7 +20,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   const ctaHref = isSelf ? "/sign-up" : "/sign-up?type=team";
 
   return (
-    <section className="px-7 py-20">
+    <section className="px-7 py-12 md:py-20">
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
           {headlineBefore}

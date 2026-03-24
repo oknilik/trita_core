@@ -26,9 +26,9 @@ export function Features({ mode }: { mode: SiteMode }) {
       ];
 
   return (
-    <section className="px-7 py-20">
+    <section className="px-7 py-12 md:py-20">
       <div className="mx-auto max-w-[1120px]">
-        <div className="mb-16 text-center">
+        <div className="mb-8 text-center md:mb-16">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
             {t("landing.featuresTitleBefore", locale)}
             <em className="not-italic italic text-[#5a8f7f]">{t("landing.featuresTitleEm", locale)}</em>

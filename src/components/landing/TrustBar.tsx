@@ -6,19 +6,15 @@ import type { SiteMode } from "@/components/landing/ModeSwitcher";
 export function TrustBar({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
 
-  const items = mode === "self"
-    ? [
-        { icon: "⏱", text: t("landing.trustSelf1", locale) },
-        { icon: "🔬", text: t("landing.trustSelf2", locale) },
-        { icon: "⚡", text: t("landing.trustSelf3", locale) },
-        { icon: "🆓", text: t("landing.trustSelf4", locale) },
-      ]
-    : [
-        { icon: "✓", text: t("landing.trustTeam1", locale) },
-        { icon: "⏱", text: t("landing.trustTeam2", locale) },
-        { icon: "🔬", text: t("landing.trustTeam3", locale) },
-        { icon: "🔒", text: t("landing.trustTeam4", locale) },
-      ];
+  // Self mode: trust pills are already in the hero section
+  if (mode === "self") return null;
+
+  const items = [
+    { icon: "✓", text: t("landing.trustTeam1", locale) },
+    { icon: "⏱", text: t("landing.trustTeam2", locale) },
+    { icon: "🔬", text: t("landing.trustTeam3", locale) },
+    { icon: "🔒", text: t("landing.trustTeam4", locale) },
+  ];
 
   return (
     <div className="border-y border-[#e8e0d3]">
