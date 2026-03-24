@@ -34,7 +34,7 @@ export function Footer() {
 
   return (
     <footer
-      className="relative -mt-16 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-24 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pt-20 md:pb-14"
+      className="relative -mt-16 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
       style={{ clipPath: "url(#footer-wave)" }}
     >
       <svg width="0" height="0" className="absolute" aria-hidden="true">
