@@ -130,9 +130,9 @@ export function NavBar() {
 
         {/* Row 1: logo + right side (always) */}
         <div className="flex items-center justify-between py-3">
-          {/* Logo */}
+          {/* Logo — signed-in users go to profile, signed-out to landing */}
           <Link
-            href="/"
+            href={isSignedIn ? "/profile/results" : "/"}
             aria-label="trita"
             className="font-fraunces inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-ink"
           >

@@ -49,7 +49,9 @@ export function NavHeaderUI({
 
   // Use first accessible team for display; all for dropdown
   const team = teams[0] ?? null;
-  const dashboardHref = isManager || isAdmin ? "/dashboard" : "/profile/results";
+  const isOrgUser = isManager || isAdmin;
+  const dashboardHref = isOrgUser ? "/dashboard" : "/profile/results";
+  const dashboardLabel = isOrgUser ? "Vezérlő" : "Profilom";
   const onDashboard = pathname === "/dashboard" || pathname === "/profile/results";
   const onTeam = teams.some((t) => pathname.startsWith(`/team/${t.id}`));
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
@@ -100,7 +102,7 @@ export function NavHeaderUI({
           {/* Desktop center nav */}
           <nav className="hidden flex-1 items-center gap-1 lg:flex">
             <Link href={dashboardHref} className={onDashboard ? pillActive : pillInactive}>
-              Vezérlő
+              {dashboardLabel}
             </Link>
 
             {team && (
@@ -339,7 +341,7 @@ export function NavHeaderUI({
               <MobileNavSection>
                 <MobileNavItem
                   href={dashboardHref}
-                  label="Vezérlő"
+                  label={dashboardLabel}
                   active={onDashboard}
                   onClose={() => setMobileOpen(false)}
                 />
