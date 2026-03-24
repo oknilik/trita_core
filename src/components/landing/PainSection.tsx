@@ -11,7 +11,7 @@ const painItemsData: Record<
       tag: "3–6 havi bér",
     },
     {
-      title: "Rejtett csapatkonfiktus",
+      title: "Rejtett csapatkonfliktus",
       desc: "Két kollégád nem tud együtt dolgozni. Mindenki látja, de senki nem érti a forrását. A projekt csúszik, a megbeszélések feszültek. A dinamika láthatatlan, de mérhető.",
       tag: "-30% produktivitás",
     },

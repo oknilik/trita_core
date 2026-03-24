@@ -72,12 +72,12 @@ export function ProfileHero({
           {isHu ? "Felmérés:" : "Assessment:"} {completedAt}
         </p>
 
-        <div className="mb-2.5 flex items-center gap-2.5">
+        <div className="mb-2.5 flex items-start justify-between gap-3">
           <span className="font-fraunces text-[22px] italic text-[#e8a96a]">
             {personalityType}
           </span>
           {percentile && (
-            <span className="rounded-md bg-white/10 px-2.5 py-0.5 text-[9px] text-white/[0.45]">
+            <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[9px] text-white/[0.45]">
               {percentile}
             </span>
           )}

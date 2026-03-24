@@ -34,14 +34,14 @@ export function PdfCalloutBox({ variant, title, children }: PdfCalloutBoxProps) 
         backgroundColor: st.bg,
         borderLeft: `3 solid ${st.border}`,
         borderRadius: 4,
-        padding: "8 10",
-        marginBottom: 8,
+        padding: "6 8",
+        marginBottom: 6,
       }}
     >
       {title && (
         <Text
           style={{
-            fontSize: 7,
+            fontSize: 6,
             fontWeight: 700,
             letterSpacing: 0.8,
             textTransform: "uppercase",

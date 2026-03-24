@@ -46,8 +46,8 @@ export function ProfileHeader({
       <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
         // profil
       </p>
-      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
+      <div className="mt-3 flex flex-row items-start justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="font-fraunces text-3xl text-ink md:text-4xl">{name}</h1>
           <p className="mt-1.5 text-sm text-ink-body">
             {isHu ? "Felmérés dátuma:" : "Assessment date:"}{" "}
@@ -55,7 +55,7 @@ export function ProfileHeader({
           </p>
         </div>
         <span
-          className={`self-start rounded-full px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-widest ${badge.classes}`}
+          className={`shrink-0 rounded-full px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-widest ${badge.classes}`}
         >
           {badge.label}
         </span>

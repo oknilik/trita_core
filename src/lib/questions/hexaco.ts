@@ -245,20 +245,20 @@ export const hexacoConfig: TestConfig = {
         hu: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
       },
       insights: {
-        low: "Kevéssé érintenek meg mások bajából adódó szenvedések, és nem valószínű, hogy saját komfortodból kilépve a rászoruló személyek segítségére sietnél.",
-        mid: "Mérsékelt együttérzéssel fordulsz a nehéz helyzetben lévők felé, és helyzettől függően hajlandó vagy segíteni azokon, akiknek szükségük van rá.",
-        high: "Valódi együttérzéssel fordulsz a hátrányos helyzetűek felé, és erős belső késztetést érzel arra, hogy nagylelkűen segíts azokon, akik gyengék vagy nehéz helyzetben vannak.",
+        low: "Nem az azonnali érzelmi bevonódás jellemző rád — inkább megfontoltan döntesz arról, mikor és hogyan segíts. Racionális hozzáállással közelítesz mások nehézségeihez.",
+        mid: "Helyzetfüggően hajlandó vagy segíteni másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
+        high: "Mélyen érint mások helyzete, és természetes késztetést érzel a segítésre. Az empátia és a cselekvés nálad összekapcsolódik.",
       },
       insightsByLocale: {
         en: {
-          low: "You feel little concern when others suffer hardship and are unlikely to go out of your way to help those who are weak or in need.",
-          mid: "You feel moderate sympathy toward those in difficulty and are sometimes moved to help those in need, depending on the circumstances.",
-          high: "You feel genuine sympathy for those less fortunate and experience a strong inner drive to give generously and support those who are weak or in need of help.",
+          low: "You tend to approach others' difficulties rationally rather than with immediate emotional involvement — you decide thoughtfully when and how to help.",
+          mid: "You are willing to help others depending on the situation. You are guided by assessment of the circumstances rather than momentary emotion.",
+          high: "You are deeply moved by others' situations and feel a natural drive to help. Empathy and action are naturally connected for you.",
         },
         hu: {
-          low: "Kevéssé érintenek meg mások bajából adódó szenvedések, és nem valószínű, hogy saját komfortodból kilépve a rászoruló személyek segítségére sietnél.",
-          mid: "Mérsékelt együttérzéssel fordulsz a nehéz helyzetben lévők felé, és helyzettől függően hajlandó vagy segíteni azokon, akiknek szükségük van rá.",
-          high: "Valódi együttérzéssel fordulsz a hátrányos helyzetűek felé, és erős belső késztetést érzel arra, hogy nagylelkűen segíts azokon, akik gyengék vagy nehéz helyzetben vannak.",
+          low: "Nem az azonnali érzelmi bevonódás jellemző rád — inkább megfontoltan döntesz arról, mikor és hogyan segíts. Racionális hozzáállással közelítesz mások nehézségeihez.",
+          mid: "Helyzetfüggően hajlandó vagy segíteni másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
+          high: "Mélyen érint mások helyzete, és természetes késztetést érzel a segítésre. Az empátia és a cselekvés nálad összekapcsolódik.",
         },
       },
       facets: [

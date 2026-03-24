@@ -1,7 +1,8 @@
 import { Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { StartPage } from "./pages/StartPage";
-import { PlusPage } from "./pages/PlusPage";
+import { PlusFacetsPage } from "./pages/PlusFacetsPage";
+import { PlusWorkStylePage } from "./pages/PlusWorkStylePage";
 import { ReflectPage } from "./pages/ReflectPage";
 
 // ─── Data interface ──────────────────────────────────────────────────────────
@@ -16,14 +17,19 @@ export interface PdfData {
   // Bullet-based insights
   strengthBullets: string[];
   watchBullets: string[];
-  // Legacy string versions (fallback)
+  // Legacy string versions
   strengths: string;
   watchAreas: string;
   // Profile character callout
   profileCharacter?: string;
+  // Hero dimension chips
+  topDimensions?: string[];
+  watchDimensions?: string[];
   // Dimensions
   dimensions: { name: string; shortName: string; value: number; description: string }[];
   belbinRoles: { name: string; subtitle: string; score: number; rank: number }[];
+  // Altruism
+  altruism?: { value: number; description: string };
   // Plus content
   plusContent?: {
     howYouWork: string[];
@@ -39,7 +45,7 @@ export interface PdfData {
     closingText: string;
   };
   facetDimensions?: { name: string; value: number; insight?: string; description?: string; facets: { label: string; score: number }[] }[];
-  // Callout insights for Plus page
+  // Callout insights (kept for data but no longer rendered as separate callouts)
   workplaceInsight?: string;
   riskInsight?: string;
   // Reflect observer data
@@ -56,13 +62,15 @@ function TritaDocument({ data }: { data: PdfData }) {
   const hasPlus = data.plan === "plus" || data.plan === "reflect";
   const hasObservers = data.plan === "reflect" && data.observerData && data.observerData.count > 0;
 
-  const totalPages = hasObservers ? 3 : hasPlus ? 2 : 1;
+  // Start: 1, Plus: 3 (start + facets + workstyle), Reflect: 3 or 4
+  const totalPages = hasObservers ? 4 : hasPlus ? 3 : 1;
 
   return (
     <Document>
       <StartPage data={data} pageNum={1} totalPages={totalPages} />
-      {hasPlus && <PlusPage data={data} pageNum={2} totalPages={totalPages} />}
-      {hasObservers && <ReflectPage data={data} pageNum={3} totalPages={totalPages} />}
+      {hasPlus && <PlusFacetsPage data={data} pageNum={2} totalPages={totalPages} />}
+      {hasPlus && <PlusWorkStylePage data={data} pageNum={3} totalPages={totalPages} />}
+      {hasObservers && <ReflectPage data={data} pageNum={4} totalPages={totalPages} />}
     </Document>
   );
 }

@@ -13,6 +13,7 @@ interface ProgressBarProps {
   sentCount: number;
   receivedCount: number;
   onNavigateToComparison?: () => void;
+  onNavigateToInvites?: () => void;
 }
 
 // ─── Package card ────────────────────────────────────────────────────────────
@@ -125,6 +126,7 @@ export function ProgressBar({
   sentCount,
   receivedCount,
   onNavigateToComparison,
+  onNavigateToInvites,
 }: ProgressBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale } = useLocale();
@@ -347,6 +349,7 @@ export function ProgressBar({
                 {hasSelfReflect && !observersSent && (
                   <button
                     type="button"
+                    onClick={onNavigateToInvites}
                     className="min-h-[44px] shrink-0 rounded-lg bg-[#3d6b5e] px-3.5 py-1.5 text-[11px] font-semibold text-white"
                   >
                     {isHu ? "Meghívó küldése →" : "Send invitation →"}

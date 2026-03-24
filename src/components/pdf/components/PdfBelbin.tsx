@@ -16,7 +16,7 @@ export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
   ];
 
   return (
-    <View style={{ flexDirection: "row", gap: 5, marginBottom: 14 }}>
+    <View style={{ flexDirection: "row", gap: 4, marginBottom: 6 }}>
       {roles.map((role, i) => {
         const rc = rankColors[i] ?? rankColors[2];
         const isPrimary = i === 0;
@@ -25,7 +25,7 @@ export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
             key={role.name}
             style={{
               flex: isPrimary ? 1.4 : 1,
-              padding: isPrimary ? 10 : 8,
+              padding: isPrimary ? "5 8" : "5 6",
               borderRadius: 6,
               border: isPrimary ? `1.5 solid ${colors.sage}` : `1 solid ${colors.cream500}`,
               backgroundColor: isPrimary ? colors.sage100 : colors.white,
@@ -33,7 +33,7 @@ export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
           >
             <Text
               style={{
-                fontSize: 5.5,
+                fontSize: 5,
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: 0.8,
@@ -42,15 +42,17 @@ export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
                 padding: "1.5 5",
                 borderRadius: 2,
                 alignSelf: "flex-start",
-                marginBottom: 4,
+                marginBottom: 3,
               }}
             >
               {rc.label.hu} · {role.score}%
             </Text>
-            <Text style={{ fontFamily: "Fraunces", fontSize: isPrimary ? 11 : 10, color: colors.ink, marginBottom: 2 }}>
+            <Text style={{ fontFamily: "Fraunces", fontSize: isPrimary ? 9 : 8.5, color: colors.ink, marginBottom: 1 }}>
               {role.name}
             </Text>
-            <Text style={{ fontSize: 7, color: colors.ink500, lineHeight: 1.3 }}>{role.subtitle}</Text>
+            {role.subtitle ? (
+              <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.3 }}>{role.subtitle}</Text>
+            ) : null}
           </View>
         );
       })}

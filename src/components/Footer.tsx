@@ -34,13 +34,13 @@ export function Footer() {
 
   return (
     <footer
-      className="relative -mt-16 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
+      className="relative -mt-16 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-24 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pt-20 md:pb-14"
       style={{ clipPath: "url(#footer-wave)" }}
     >
       <svg width="0" height="0" className="absolute" aria-hidden="true">
         <defs>
           <clipPath id="footer-wave" clipPathUnits="objectBoundingBox">
-            <path d="M0,0.22 C0.18,0.06 0.36,0.3 0.62,0.15 C0.82,0.04 0.95,0.26 1,0.18 L1,1 L0,1 Z" />
+            <path d="M0,0.1 C0.25,0.04 0.5,0.12 0.75,0.06 C0.9,0.03 0.97,0.08 1,0.06 L1,1 L0,1 Z" />
           </clipPath>
         </defs>
       </svg>

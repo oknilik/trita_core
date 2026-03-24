@@ -17,17 +17,17 @@ export function PdfFooter({ pageNum, totalPages, locale = "hu" }: PdfFooterProps
         bottom: 0,
         left: 0,
         right: 0,
-        padding: "8 40",
+        padding: "6 32",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        fontSize: 6,
+        fontSize: 5,
         color: colors.ink300,
-        borderTop: `1 solid ${colors.cream500}`,
+        borderTop: `0.5 solid ${colors.cream500}`,
       }}
     >
-      <Text style={{ fontFamily: "Fraunces", fontSize: 8, color: "rgba(26,26,46,0.2)" }}>
-        trita
+      <Text style={{ fontFamily: "Fraunces", fontSize: 6, color: "#3d6b5e" }}>
+        tri<Text style={{ color: "#c17f4a" }}>ta</Text>
       </Text>
       <Text>trita.io · {isHu ? "Személyiség és csapatintelligencia" : "Personality and team intelligence"}</Text>
       <Text>

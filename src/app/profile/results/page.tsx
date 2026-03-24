@@ -302,14 +302,35 @@ export default async function ProfileResultsPage({
   );
   const percentile = avgScore >= 70 ? "Top 10%" : avgScore >= 60 ? "Top 25%" : "";
 
-  // Hero insight — one sentence from strongest and weakest
+  // Hero insight — behavior-based sentence (not dimension names)
   const heroInsight = (() => {
-    const strongest = [...mainDimensions].sort((a, b) => b.score - a.score)[0];
-    const weakest = [...mainDimensions].sort((a, b) => a.score - b.score)[0];
+    const sorted = [...mainDimensions].sort((a, b) => b.score - a.score);
+    const strongest = sorted[0];
+    const weakest = sorted[sorted.length - 1];
     if (!strongest || !weakest) return "";
+
+    const strengthVerbs: Record<string, { hu: string; en: string }> = {
+      H: { hu: "Hitelesen és manipulációmentesen működsz", en: "You operate with authenticity and integrity" },
+      E: { hu: "Mélyen és empatikusan kapcsolódsz másokhoz", en: "You connect deeply and empathetically with others" },
+      X: { hu: "Energikusan és inspirálóan vagy jelen", en: "You bring energy and inspiration to your interactions" },
+      A: { hu: "Rugalmasan és türelmesen kezeled a helyzeteket", en: "You handle situations with flexibility and patience" },
+      C: { hu: "Rendszerben és felelősen működsz", en: "You work systematically and responsibly" },
+      O: { hu: "Kísérletezően és stratégiailag gondolkodsz", en: "You think experimentally and strategically" },
+    };
+    const weakVerbs: Record<string, { hu: string; en: string }> = {
+      H: { hu: "a státusz és pozíció természetesebb tereped", en: "status and positioning come more naturally to you" },
+      E: { hu: "az érzelmi bevonódás kevésbé természetes tereped", en: "emotional involvement is less natural for you" },
+      X: { hu: "a társas láthatóság kevésbé természetes tereped", en: "social visibility is less natural for you" },
+      A: { hu: "a konfliktusos helyzetekben élesebb reakciók jellemzőek", en: "you tend to react more sharply in conflict" },
+      C: { hu: "a strukturált végrehajtás kevésbé természetes tereped", en: "structured execution is less natural for you" },
+      O: { hu: "a bevált módszereket részesíted előnyben", en: "you prefer established methods" },
+    };
+
+    const s = strengthVerbs[strongest.code]?.[isHu ? "hu" : "en"] ?? strongest.label;
+    const w = weakVerbs[weakest.code]?.[isHu ? "hu" : "en"] ?? weakest.label.toLowerCase();
     return isHu
-      ? `${strongest.label} a legfőbb erősséged — ${weakest.label.toLowerCase()} területen nyílhat tér a fejlődésre.`
-      : `${strongest.label} is your core strength — ${weakest.label.toLowerCase()} is where growth potential lies.`;
+      ? `${s} — ${w}.`
+      : `${s} — ${w}.`;
   })();
 
   // InsightPair

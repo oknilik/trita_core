@@ -15,7 +15,7 @@ const tierBg = (tier: string) =>
 
 export function PdfDimStrip({ dimensions }: { dimensions: Dim[] }) {
   return (
-    <View style={{ flexDirection: "row", marginBottom: 14, border: `1 solid ${colors.cream500}`, borderRadius: 4 }}>
+    <View style={{ flexDirection: "row", marginBottom: 6, border: `1 solid ${colors.cream500}`, borderRadius: 4 }}>
       {dimensions.map((dim, i) => {
         const tier = getDimensionTier(dim.value);
         const tc = tierColor(tier);
@@ -24,22 +24,22 @@ export function PdfDimStrip({ dimensions }: { dimensions: Dim[] }) {
             key={dim.name}
             style={{
               flex: 1,
-              padding: "8 6",
+              padding: "6 4",
               alignItems: "center",
               borderRight: i < dimensions.length - 1 ? `1 solid ${colors.cream500}` : undefined,
             }}
           >
-            <Text style={{ fontSize: 6.5, color: colors.ink300, marginBottom: 3 }}>{dim.shortName}</Text>
-            <Text style={{ fontFamily: "Fraunces", fontSize: 16, color: tc, marginBottom: 3 }}>{dim.value}</Text>
+            <Text style={{ fontSize: 5, color: colors.ink300, marginBottom: 2 }}>{dim.shortName}</Text>
+            <Text style={{ fontFamily: "Fraunces", fontSize: 13, color: tc, marginBottom: 2 }}>{dim.value}</Text>
             <Text
               style={{
-                fontSize: 5.5,
+                fontSize: 5,
                 fontWeight: 600,
                 backgroundColor: tierBg(tier),
                 color: tc,
-                padding: "1.5 4",
+                padding: "1 3",
                 borderRadius: 2,
-                marginBottom: 3,
+                marginBottom: 2,
               }}
             >
               {getDimensionLabel(dim.value, "hu")}

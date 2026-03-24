@@ -10,20 +10,20 @@ export function PdfNextStep({ text, locale = "hu" }: PdfNextStepProps) {
   const isHu = locale === "hu";
 
   return (
-    <View style={{ borderTop: `1 solid ${colors.cream500}`, paddingTop: 8, marginTop: 14 }}>
+    <View style={{ borderTop: `1 solid ${colors.cream500}`, paddingTop: 6, marginTop: 10 }}>
       <Text
         style={{
-          fontSize: 7,
+          fontSize: 6,
           letterSpacing: 1,
           textTransform: "uppercase",
           color: colors.ink300,
           fontWeight: 600,
-          marginBottom: 3,
+          marginBottom: 2,
         }}
       >
         {isHu ? "Következő lépés" : "Next step"}
       </Text>
-      <Text style={{ fontSize: 8, color: colors.sage, lineHeight: 1.4 }}>→ {text}</Text>
+      <Text style={{ fontSize: 7, color: colors.sage, lineHeight: 1.4 }}>→ {text}</Text>
     </View>
   );
 }

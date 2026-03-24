@@ -20,7 +20,7 @@ export function PdfDimDetails({ dimensions, previewOnly = false, hasPlus = false
   const rest = previewOnly ? dimensions.length - 3 : 0;
 
   return (
-    <View style={{ marginBottom: 14 }}>
+    <View style={{ marginBottom: 6 }}>
       {displayed.map((dim) => {
         const tier = getDimensionTier(dim.value);
         const dotColor = tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
@@ -30,19 +30,19 @@ export function PdfDimDetails({ dimensions, previewOnly = false, hasPlus = false
             style={{
               flexDirection: "row",
               alignItems: "flex-start",
-              gap: 5,
-              padding: "5 7",
+              gap: 4,
+              padding: "4 6",
               borderRadius: 4,
               backgroundColor: colors.cream300,
-              marginBottom: 3,
+              marginBottom: 2,
             }}
           >
-            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: dotColor, marginTop: 4 }} />
+            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: dotColor, marginTop: 3 }} />
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 8.5, fontWeight: 500, color: colors.ink }}>
+              <Text style={{ fontSize: 7, fontWeight: 500, color: colors.ink }}>
                 {dim.name} · {dim.value}%
               </Text>
-              <Text style={{ fontSize: 7.5, color: colors.ink300, lineHeight: 1.35, marginTop: 1 }}>
+              <Text style={{ fontSize: 6, color: colors.ink300, lineHeight: 1.35, marginTop: 1 }}>
                 {dim.description}
               </Text>
             </View>
@@ -50,7 +50,7 @@ export function PdfDimDetails({ dimensions, previewOnly = false, hasPlus = false
         );
       })}
       {rest > 0 && (
-        <Text style={{ fontSize: 7.5, color: colors.sage, marginTop: 3, fontWeight: 500 }}>
+        <Text style={{ fontSize: 6.5, color: colors.sage, marginTop: 2, fontWeight: 500 }}>
           + {rest} további dimenzió → {hasPlus ? "lásd 2. oldal" : "Self Plus csomagban"}
         </Text>
       )}

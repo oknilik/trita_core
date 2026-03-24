@@ -21,7 +21,7 @@ export function PdfRoleFit({ strong, might, prep, strongRoles, mightRoles, prepR
   const roles = { strong: strongRoles ?? [], might: mightRoles ?? [], prep: prepRoles ?? [] };
 
   return (
-    <View style={{ marginBottom: 14 }}>
+    <View style={{ marginBottom: 10 }}>
       {TIERS.map((tier) => {
         const text = texts[tier.key];
         if (!text) return null;
@@ -30,23 +30,23 @@ export function PdfRoleFit({ strong, might, prep, strongRoles, mightRoles, prepR
           <View
             key={tier.key}
             style={{
-              borderLeft: `3 solid ${tier.color}`,
+              borderLeft: `2.5 solid ${tier.color}`,
               backgroundColor: tier.bg,
-              borderTopRightRadius: 5, borderBottomRightRadius: 5,
-              padding: "6 10",
-              marginBottom: 4,
+              borderTopRightRadius: 4, borderBottomRightRadius: 4,
+              padding: "4 8",
+              marginBottom: 3,
             }}
           >
-            <Text style={{ fontSize: 6, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: tier.labelColor, marginBottom: 2 }}>
+            <Text style={{ fontSize: 5, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: tier.labelColor, marginBottom: 1.5 }}>
               {tier.label.hu}
             </Text>
-            <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.35, marginBottom: tierRoles.length > 0 ? 4 : 0 }}>
+            <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.35, marginBottom: tierRoles.length > 0 ? 3 : 0 }}>
               {text}
             </Text>
             {tierRoles.length > 0 && (
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 3 }}>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 2 }}>
                 {tierRoles.map((r) => (
-                  <Text key={r} style={{ fontSize: 6, backgroundColor: tier.pillBg, color: tier.pillText, padding: "2 5", borderRadius: 8 }}>
+                  <Text key={r} style={{ fontSize: 5.5, backgroundColor: tier.pillBg, color: tier.pillText, padding: "1.5 4", borderRadius: 6 }}>
                     {r}
                   </Text>
                 ))}

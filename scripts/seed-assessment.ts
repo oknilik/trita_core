@@ -84,6 +84,7 @@ const HEXACO_FACETS: Record<string, string[]> = {
   A: ["forgiveness", "gentleness", "flexibility", "patience"],
   C: ["organization", "diligence", "prudence", "perfectionism"],
   O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+  I: ["altruism"], // Interstitial altruism scale
 };
 
 type ScoreJSON = {

@@ -1688,6 +1688,10 @@ const translations = {
     roleFitMaybe: { hu: "Itt jöhet súrlódás", en: "Friction may arise here" },
     roleFitPrep: { hu: "Felkészüléssel működhet", en: "Works with preparation" },
     belbinSub: { hu: "A HEXACO mintázataid alapján ezek a csapatszerepek illenek hozzád.", en: "Based on your HEXACO patterns, these team roles suit you." },
+    altruismTitle: { hu: "Kiegészítő skála", en: "Supplementary scale" },
+    altruismName: { hu: "Altruizmus", en: "Altruism" },
+    altruismInfo: { hu: "Több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score." },
+    altruismDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
   },
   invitations: {
     eyebrow: { hu: "Visszajelzési meghívók", en: "Feedback invitations" },

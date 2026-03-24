@@ -19,6 +19,7 @@ import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSe
 import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
+import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 
 type ProfileLevel = "start" | "plus" | "reflect";
@@ -220,6 +221,18 @@ function ResultsTab({
         dimensions={accordionDims}
         showUpsell={!isPlus}
       />
+
+      {/* Altruism — supplementary scale */}
+      {(() => {
+        const altDim = dimensions.find((d) => d.code === "I");
+        if (!altDim) return null;
+        return (
+          <AltruismCard
+            value={altDim.score}
+            description={altDim.insight}
+          />
+        );
+      })()}
 
       {/* Profile summary dark card — between dimensions and plus content */}
       {isPlus && plusContent && plusContent.takeaways.length > 0 && (
@@ -426,11 +439,34 @@ export function ProfileTabs({
             const highDims = mainDims.filter((d) => d.score >= 70);
             const lowDims = mainDims.filter((d) => d.score < 40);
 
+            const strengthDescs: Record<string, { hu: string; en: string }> = {
+              "H": { hu: "hiteles, manipulációmentes", en: "authentic, manipulation-free" },
+              "E": { hu: "erős empátia, mély kapcsolódás", en: "strong empathy, deep connection" },
+              "X": { hu: "inspiráló, energikus jelenlét", en: "inspiring, energetic presence" },
+              "A": { hu: "megbocsátó, rugalmas, türelmes", en: "forgiving, flexible, patient" },
+              "C": { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
+              "O": { hu: "kísérletező, stratégiai gondolkodó", en: "experimental, strategic thinker" },
+            };
+            const watchDescs: Record<string, { hu: string; en: string }> = {
+              "H": { hu: "státuszorientáltabb, versengőbb", en: "more status-oriented, competitive" },
+              "E": { hu: "érzelmileg távolabb, kevesebb empátia", en: "emotionally distant, less empathy" },
+              "X": { hu: "kisebb társas láthatóság, visszahúzódóbb", en: "lower social visibility, more reserved" },
+              "A": { hu: "élesebb reakciók konfliktusban", en: "sharper reactions in conflict" },
+              "C": { hu: "kevésbé szervezett, rugalmasabb", en: "less organized, more flexible" },
+              "O": { hu: "bevált módszereket preferálja", en: "prefers established methods" },
+            };
+            const lang = isHu ? "hu" : "en";
             const strengthBullets = highDims.length > 0
-              ? highDims.map((d) => d.label.toLowerCase())
+              ? highDims.map((d) => {
+                  const desc = strengthDescs[d.code]?.[lang];
+                  return desc ? `${d.label} — ${desc}` : d.label;
+                })
               : [isHu ? "kiegyensúlyozott profil" : "balanced profile"];
             const watchBullets = lowDims.length > 0
-              ? lowDims.map((d) => `${isHu ? "alacsony" : "low"} ${d.label.toLowerCase()}`)
+              ? lowDims.map((d) => {
+                  const desc = watchDescs[d.code]?.[lang];
+                  return desc ? `${d.label} — ${desc}` : d.label;
+                })
               : [isHu ? "nincs kritikusan alacsony dimenzió" : "no critically low dimension"];
 
             // Profile character
@@ -462,6 +498,12 @@ export function ProfileTabs({
               strengthBullets,
               watchBullets,
               profileCharacter,
+              topDimensions: highDims.map((d) => d.label),
+              watchDimensions: lowDims.map((d) => d.label),
+              altruism: (() => {
+                const alt = dimensions.find((d) => d.code === "I");
+                return alt ? { value: alt.score, description: alt.insight } : undefined;
+              })(),
               workplaceInsight,
               riskInsight,
               dimensions: mainDims.map((d) => ({
@@ -527,6 +569,7 @@ export function ProfileTabs({
         sentCount={sentInvitations.length}
         receivedCount={observerCount}
         onNavigateToComparison={() => handleTabChange("comparison")}
+        onNavigateToInvites={() => handleTabChange("invites")}
       />
 
       {/* Insight pair */}
