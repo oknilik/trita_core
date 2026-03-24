@@ -23,6 +23,7 @@ interface AssessmentClientProps {
   questions: AssessmentQuestion[]
   initialDraft?: { answers: Record<string, number>; currentPage: number }
   clearDraft?: boolean
+  guestMode?: boolean
 }
 
 export function AssessmentClient({
@@ -32,6 +33,7 @@ export function AssessmentClient({
   questions,
   initialDraft,
   clearDraft = false,
+  guestMode = false,
 }: AssessmentClientProps) {
   const router = useRouter()
   const { showToast } = useToast()
@@ -147,9 +149,10 @@ export function AssessmentClient({
     }
   }, [answers, currentPage, draftKey])
 
-  // Debounced server save (2 s)
+  // Debounced server save (2 s) — skip for guest users
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
+    if (guestMode) return
     if (Object.keys(answers).length === 0) return
     if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
     serverSaveDebounce.current = setTimeout(async () => {
@@ -226,6 +229,7 @@ export function AssessmentClient({
   )
 
   const saveDraftToServer = useCallback(async (page: number) => {
+    if (guestMode) return
     setIsSavingDraft(true)
     try {
       await fetch('/api/assessment/draft', {
@@ -288,6 +292,23 @@ export function AssessmentClient({
     }, 300)
 
     try {
+      if (guestMode) {
+        // Guest mode: skip API submit, keep localStorage draft, redirect to registration gate
+        clearInterval(progressInterval)
+        const rampInterval = setInterval(() => {
+          setEvaluationProgress((prev) => {
+            if (prev >= 100) { clearInterval(rampInterval); return 100 }
+            return prev + Math.random() * 4 + 2
+          })
+        }, 200)
+        await new Promise((resolve) => setTimeout(resolve, 2500))
+        clearInterval(rampInterval)
+        setEvaluationProgress(100)
+        await new Promise((resolve) => setTimeout(resolve, 400))
+        router.push('/try/complete')
+        return
+      }
+
       const payload = {
         testType,
         answers: Object.entries(currentAnswers).map(([questionId, value]) => ({
@@ -360,12 +381,14 @@ export function AssessmentClient({
           void handleFinish()
         } else {
           const nextPage = currentPage + 1
-          setIsSavingDraft(true)
-          fetch('/api/assessment/draft', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
-          }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
+          if (!guestMode) {
+            setIsSavingDraft(true)
+            fetch('/api/assessment/draft', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
+            }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
+          }
           setCurrentPage(nextPage)
         }
         return
@@ -376,12 +399,14 @@ export function AssessmentClient({
         return
       }
       const nextPage = currentPage + 1
-      setIsSavingDraft(true)
-      fetch('/api/assessment/draft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
-      }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
+      if (!guestMode) {
+        setIsSavingDraft(true)
+        fetch('/api/assessment/draft', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
+        }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
+      }
       setCurrentPage(nextPage)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }, 130)

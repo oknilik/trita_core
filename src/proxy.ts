@@ -28,6 +28,7 @@ const isPublicRoute = createRouteMatcher([
   "/apply(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/try(.*)",
 ]);
 
 const isAuthRoute = createRouteMatcher(["/sign-in", "/sign-up"]);

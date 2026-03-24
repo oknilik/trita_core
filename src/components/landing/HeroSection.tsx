@@ -357,7 +357,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
 
             <motion.div variants={fadeUp} className="mb-4">
               <Link
-                href={isSelf ? "/sign-up" : "/sign-up?type=team"}
+                href={isSelf ? "/try" : "/sign-up?type=team"}
                 className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto"
                 style={{
                   background: accentColor,
