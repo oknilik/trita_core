@@ -28,6 +28,17 @@ const POLES: Record<string, { low: string; high: string }> = {
   Culture: { low: "pragmatic", high: "values-driven" },
 };
 
+function getShortLabel(value: string, isHu: boolean): string {
+  const v = value.toLowerCase();
+  if (v.startsWith("magas") || v.startsWith("high")) return isHu ? "Magas" : "High";
+  if (v.startsWith("alacsony") || v.startsWith("low")) return isHu ? "Alacsony" : "Low";
+  if (v.startsWith("közepes") || v.startsWith("medium")) return isHu ? "Közepes" : "Medium";
+  if (v.startsWith("rövid") || v.startsWith("short")) return isHu ? "Rövid" : "Short";
+  if (v.startsWith("hosszú") || v.startsWith("long")) return isHu ? "Hosszú" : "Long";
+  if (v.startsWith("gyors") || v.startsWith("fast")) return isHu ? "Gyors" : "Fast";
+  return isHu ? "Közepes" : "Medium";
+}
+
 function getPosition(value: string): number {
   const v = value.toLowerCase();
   if (v.startsWith("magas") || v.startsWith("high")) return 80;
@@ -102,7 +113,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
                 </div>
               </div>
               <span className="text-[11px] text-[#8a8a9a] sm:w-[180px] sm:shrink-0 sm:text-right">
-                {desc}
+                <strong className="text-[#1a1a2e]">{getShortLabel(item.value, isHu)}</strong> — {desc}
               </span>
             </div>
           );

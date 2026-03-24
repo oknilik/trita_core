@@ -96,47 +96,64 @@ function AccordionItem({
             className="overflow-hidden"
           >
             <div className="border-t border-[#e8e0d3] bg-[#f2ede6] p-[18px] pb-5">
-              {/* Insight (rövid) — mindig látszik */}
-              <p className="mb-2 text-[13px] font-medium leading-[1.7] text-[#1a1a2e]">
+              {/* 1. Mit jelent ez rólad? */}
+              <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+                {isHu ? "Mit jelent ez rólad?" : "What this means for you"}
+              </p>
+              <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
                 {insight}
               </p>
 
-              {/* Description (bővebb) — csak Plus+ */}
-              {!showUpsell && (
-                <p className="mb-3.5 text-[13px] leading-[1.7] text-[#4a4a5e]">
-                  {description}
-                </p>
+              {/* 2. Munkahelyi helyzetekben — csak Plus+ */}
+              {!showUpsell && description && (
+                <>
+                  <div className="my-3 h-px bg-[#e8e0d3]" />
+                  <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+                    {isHu ? "Munkahelyi helyzetekben" : "In workplace situations"}
+                  </p>
+                  <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
+                    {description}
+                  </p>
+                </>
               )}
 
-              {/* Facet mini-cards — Self Plus unlocked */}
+              {/* 3. Részletes bontás — alskálák, vizuálisan leválasztva */}
               {hasFacetData && (
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {facets.map((f) => {
-                    const fTier = getDimensionTier(f.score);
-                    const fColors = tierColors[fTier];
-                    return (
-                      <div
-                        key={f.code}
-                        className="flex items-center gap-2.5 rounded-[10px] border border-[#e8e0d3] bg-white px-3.5 py-3"
-                      >
-                        <span className="flex-1 text-xs font-medium text-[#1a1a2e]">
-                          {f.label}
-                        </span>
-                        <div className="h-1 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[#e8e0d3]">
+                <>
+                  <div className="my-3 h-px bg-[#e8e0d3]" />
+                  <p className="mb-2 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+                    {isHu ? "Részletes bontás" : "Detailed breakdown"}
+                  </p>
+                  <div className="rounded-lg bg-white/60 p-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      {facets.map((f) => {
+                        const fTier = getDimensionTier(f.score);
+                        const fColors = tierColors[fTier];
+                        return (
                           <div
-                            className={`h-full rounded-sm ${fColors.fill}`}
-                            style={{ width: `${f.score}%` }}
-                          />
-                        </div>
-                        <span
-                          className={`w-6 shrink-0 text-right text-[11px] font-semibold ${fColors.text}`}
-                        >
-                          {f.score}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
+                            key={f.code}
+                            className="flex items-center gap-2.5 rounded-[10px] border border-[#e8e0d3] bg-white px-3.5 py-3"
+                          >
+                            <span className="flex-1 text-xs font-medium text-[#1a1a2e]">
+                              {f.label}
+                            </span>
+                            <div className="h-1 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[#e8e0d3]">
+                              <div
+                                className={`h-full rounded-sm ${fColors.fill}`}
+                                style={{ width: `${f.score}%` }}
+                              />
+                            </div>
+                            <span
+                              className={`w-6 shrink-0 text-right text-[11px] font-semibold ${fColors.text}`}
+                            >
+                              {f.score}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
               )}
 
               {/* Upsell teaser — Self Start only */}

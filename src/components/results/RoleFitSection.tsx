@@ -13,7 +13,7 @@ interface RoleFitSectionProps {
 const TIERS = [
   {
     key: "strong" as const,
-    label: { hu: "Erős illeszkedés", en: "Strong fit" },
+    label: { hu: "Jól illeszkedsz ide", en: "You fit well here" },
     bg: "bg-[#e8f2f0]",
     borderColor: "#3d6b5e",
     labelColor: "text-[#1e3d34]",
@@ -21,7 +21,7 @@ const TIERS = [
   },
   {
     key: "might" as const,
-    label: { hu: "Működhet, ha készülsz", en: "May work with preparation" },
+    label: { hu: "Itt jöhet súrlódás", en: "Friction may arise here" },
     bg: "bg-[#fdf5ee]",
     borderColor: "#c17f4a",
     labelColor: "text-[#8a5530]",
@@ -29,7 +29,7 @@ const TIERS = [
   },
   {
     key: "prep" as const,
-    label: { hu: "Ahol segít a felkészülés", en: "Where preparation helps" },
+    label: { hu: "Felkészüléssel működhet", en: "Works with preparation" },
     bg: "bg-[#f2ede6]",
     borderColor: "#8a8a9a",
     labelColor: "text-[#8a8a9a]",

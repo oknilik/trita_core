@@ -21,6 +21,8 @@ interface ProfileHeroProps {
   pdfLoading?: boolean;
   onShare?: () => void;
   shareLoading?: boolean;
+  topDimensions?: string[];
+  watchDimensions?: string[];
 }
 
 export function ProfileHero({
@@ -34,6 +36,8 @@ export function ProfileHero({
   pdfLoading,
   onShare,
   shareLoading,
+  topDimensions = [],
+  watchDimensions = [],
 }: ProfileHeroProps) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
@@ -83,6 +87,36 @@ export function ProfileHero({
           <p className="max-w-[480px] text-[14px] leading-relaxed text-white/[0.42]">
             {insight}
           </p>
+        )}
+
+        {/* Dimension chips */}
+        {(topDimensions.length > 0 || watchDimensions.length > 0) && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {topDimensions.length > 0 && (
+              <>
+                <span className="text-[9px] uppercase tracking-wide text-white/[0.25]">
+                  {isHu ? "Legerősebb:" : "Top:"}
+                </span>
+                {topDimensions.map((d) => (
+                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(61,107,94,0.3)", color: "#e8f2f0" }}>
+                    {d}
+                  </span>
+                ))}
+              </>
+            )}
+            {watchDimensions.length > 0 && (
+              <>
+                <span className="ml-2 text-[9px] uppercase tracking-wide text-white/[0.25]">
+                  {isHu ? "Figyelendő:" : "Watch:"}
+                </span>
+                {watchDimensions.map((d) => (
+                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(193,127,74,0.2)", color: "#e8a96a" }}>
+                    {d}
+                  </span>
+                ))}
+              </>
+            )}
+          </div>
         )}
 
         <div className="mt-[18px] flex gap-2">

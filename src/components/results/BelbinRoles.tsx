@@ -58,6 +58,11 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
       <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
         {isHu ? "Így jelenhetsz meg csapatban" : "How you show up in a team"}
       </h2>
+      <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[#8a8a9a]">
+        {isHu
+          ? "A HEXACO mintázataid alapján ezek a csapatszerepek illenek hozzád."
+          : "Based on your HEXACO patterns, these team roles suit you."}
+      </p>
 
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
         {top3.map(({ role, score }, idx) => {

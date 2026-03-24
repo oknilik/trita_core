@@ -19,14 +19,17 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
 
   return (
     <div className="py-8">
-      <div className="mb-4 flex items-center gap-2.5">
+      <div className="mb-1.5 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
         <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
           {isHu ? "Ahogy működsz" : "How you operate"}
         </p>
       </div>
+      <h3 className="mb-5 font-fraunces text-lg text-[#1a1a2e]">
+        {isHu ? "Milyen környezetben működsz jól — és hol jöhetnek súrlódások" : "Where you thrive — and where friction may arise"}
+      </h3>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <div className="rounded-[14px] border-[1.5px] border-[#3d6b5e]/20 bg-[#e8f2f0] p-[18px]">
           <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1e3d34]">
             {isHu ? "Fő mintázat" : "Key pattern"}

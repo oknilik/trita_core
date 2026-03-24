@@ -208,13 +208,38 @@ function ResultsTab({
   return (
     <div className="flex flex-col gap-10 md:gap-14">
       {/* 1. Dimension strip — 6 column overview */}
-      <DimensionStrip dimensions={stripDims} />
+      <div>
+        <p className="mb-1.5 text-[11px] font-medium text-[#8a8a9a]">
+          {isHu ? "Gyors áttekintés — a 6 fő dimenzió mentén" : "Quick overview — across the 6 key dimensions"}
+        </p>
+        <DimensionStrip dimensions={stripDims} />
+      </div>
 
       {/* 2. Dimension accordion */}
       <DimensionAccordion
         dimensions={accordionDims}
         showUpsell={!isPlus}
       />
+
+      {/* Profile summary dark card — between dimensions and plus content */}
+      {isPlus && plusContent && plusContent.takeaways.length > 0 && (
+        <div
+          className="rounded-2xl p-5 px-6"
+          style={{ background: "linear-gradient(135deg, #1a1a2e, #2a2740)" }}
+        >
+          <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "#e8a96a" }}>
+            {isHu ? "Profil összefoglaló" : "Profile summary"}
+          </p>
+          <div className="flex flex-col gap-2">
+            {plusContent.takeaways.slice(0, 2).map((t, i) => (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
+                <p className="text-[13px] leading-[1.6] text-white/[0.55]">{t}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 3. Plus content sections */}
       {isPlus && plusContent && (
@@ -372,6 +397,8 @@ export function ProfileTabs({
         percentile={percentile ?? ""}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
+        topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
+        watchDimensions={dimensions.filter((d) => d.code !== "I" && d.score < 40).map((d) => d.label)}
         onShare={async () => {
           setShareLoading(true);
           try {
@@ -504,7 +531,20 @@ export function ProfileTabs({
 
       {/* Insight pair */}
       {strengths && watchAreas && (
-        <InsightPair strengths={strengths} watchAreas={watchAreas} />
+        <InsightPair
+          strengths={(() => {
+            const mainDims = dimensions.filter((d) => d.code !== "I");
+            const high = mainDims.filter((d) => d.score >= 70);
+            if (high.length === 0) return [{ text: isHu ? "kiegyensúlyozott profil" : "balanced profile" }];
+            return high.map((d) => ({ dimension: d.label, text: d.insight }));
+          })()}
+          watchAreas={(() => {
+            const mainDims = dimensions.filter((d) => d.code !== "I");
+            const low = mainDims.filter((d) => d.score < 40);
+            if (low.length === 0) return [{ text: isHu ? "nincs kritikusan alacsony dimenzió" : "no critically low dimension" }];
+            return low.map((d) => ({ dimension: d.label, text: d.insight }));
+          })()}
+        />
       )}
 
       {/* Tab bar — pill style */}

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
 import { headers } from "next/headers";
@@ -149,11 +150,11 @@ export default async function RootLayout({
           <LocaleProvider initialLocale={locale}>
             <ToastProvider>
               {isNoShell ? (
-                <>
+                <Suspense>
                   <NavBar />
                   <div className="pb-16">{children}</div>
                   <Footer />
-                </>
+                </Suspense>
               ) : navData ? (
                 <div className="flex min-h-screen flex-col">
                   <NavHeaderUI {...navData} />
@@ -163,11 +164,11 @@ export default async function RootLayout({
                   <Footer />
                 </div>
               ) : (
-                <>
+                <Suspense>
                   <NavBar />
                   <div className="pb-16">{children}</div>
                   <Footer />
-                </>
+                </Suspense>
               )}
             </ToastProvider>
           </LocaleProvider>
