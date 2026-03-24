@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -292,13 +292,17 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
         <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10">
 
-          {/* 1. Eyebrow + Headline */}
+          {/* 1. Switcher + Eyebrow + Headline */}
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="visible"
             className="order-1 flex flex-col"
           >
+            <motion.div variants={fadeUp} className="mb-4 lg:mb-5">
+              <ModeSwitcher />
+            </motion.div>
+
             <motion.div variants={fadeUp} className="mb-4 flex items-center gap-3">
               <div className="h-[1.5px] w-5 shrink-0" style={{ background: accentColor }} />
               <span

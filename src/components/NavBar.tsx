@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { ModeSwitcher } from "@/components/landing/ModeSwitcher";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
@@ -140,15 +139,7 @@ export function NavBar() {
             <span className="text-bronze">a</span>
           </Link>
 
-          {/* Desktop center: switcher (only lg+, inside row 1) */}
-          <SignedOut>
-            <div className="hidden flex-1 items-center justify-center lg:flex">
-              <ModeSwitcher />
-            </div>
-          </SignedOut>
-          <SignedIn>
-            <div className="flex-1" />
-          </SignedIn>
+          <div className="flex-1" />
 
           {/* Right side */}
           <div className="flex items-center gap-1">
@@ -205,13 +196,6 @@ export function NavBar() {
           </SignedIn>
         </div>{/* end right side */}
         </div>{/* end row 1 */}
-
-        {/* Row 2: switcher — mobile only, SignedOut */}
-        <SignedOut>
-          <div className="flex justify-center pb-2 lg:hidden">
-            <ModeSwitcher />
-          </div>
-        </SignedOut>
 
         <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
       </div>
