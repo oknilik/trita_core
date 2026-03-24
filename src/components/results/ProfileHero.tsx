@@ -19,6 +19,8 @@ interface ProfileHeroProps {
   accessLevel?: AccessLevel;
   onDownloadPdf?: () => void;
   pdfLoading?: boolean;
+  onShare?: () => void;
+  shareLoading?: boolean;
 }
 
 export function ProfileHero({
@@ -30,6 +32,8 @@ export function ProfileHero({
   accessLevel = "start",
   onDownloadPdf,
   pdfLoading,
+  onShare,
+  shareLoading,
 }: ProfileHeroProps) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
@@ -84,9 +88,11 @@ export function ProfileHero({
         <div className="mt-[18px] flex gap-2">
           <button
             type="button"
-            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+            onClick={onShare}
+            disabled={shareLoading}
+            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12] disabled:opacity-50"
           >
-            📤 {isHu ? "Megosztás" : "Share"}
+            📤 {shareLoading ? "..." : isHu ? "Megosztás" : "Share"}
           </button>
           <button
             type="button"

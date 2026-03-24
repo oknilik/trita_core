@@ -298,6 +298,7 @@ export function ProfileTabs({
   const isPlus = accessLevel !== "start";
   const isReflect = accessLevel === "reflect";
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
 
   const handleTabChange = useCallback(
     (tab: TabId) => {
@@ -371,6 +372,23 @@ export function ProfileTabs({
         percentile={percentile ?? ""}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
+        onShare={async () => {
+          setShareLoading(true);
+          try {
+            const res = await fetch("/api/profile/share", { method: "POST" });
+            const data = await res.json();
+            if (data.token) {
+              const url = `${window.location.origin}/share/${data.token}`;
+              await navigator.clipboard.writeText(url);
+              alert(isHu ? "Link másolva a vágólapra!" : "Link copied to clipboard!");
+            }
+          } catch {
+            alert(isHu ? "Hiba történt" : "An error occurred");
+          } finally {
+            setShareLoading(false);
+          }
+        }}
+        shareLoading={shareLoading}
         onDownloadPdf={async () => {
           setPdfLoading(true);
           try {
