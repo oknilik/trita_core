@@ -134,6 +134,9 @@ model AssessmentResult {
   testType         TestType?
   isSelfAssessment Boolean   @default(true)
 
+  // Public share
+  shareToken       String?   @unique
+
   userProfile       UserProfile?        @relation(fields: [userProfileId], references: [id])
   dimensionFeedback DimensionFeedback[]
 

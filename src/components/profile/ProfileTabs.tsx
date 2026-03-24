@@ -297,6 +297,7 @@ export function ProfileTabs({
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
   const isReflect = accessLevel === "reflect";
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const handleTabChange = useCallback(
     (tab: TabId) => {
@@ -370,6 +371,75 @@ export function ProfileTabs({
         percentile={percentile ?? ""}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
+        onDownloadPdf={async () => {
+          setPdfLoading(true);
+          try {
+            const { downloadPdf } = await import("@/components/pdf/TritaPdf");
+            const mainDims = dimensions.filter((d) => d.code !== "I");
+            await downloadPdf({
+              userName: name,
+              completedAt: new Date(assessmentDate).toLocaleDateString(
+                isHu ? "hu-HU" : "en-GB",
+                { year: "numeric", month: "long", day: "numeric" },
+              ),
+              personalityType: personalityType ?? "",
+              percentile: percentile ?? "",
+              heroInsight: heroInsight ?? "",
+              plan: accessLevel,
+              strengths: strengths ?? "",
+              watchAreas: watchAreas ?? "",
+              dimensions: mainDims.map((d) => ({
+                name: d.label,
+                shortName: d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label,
+                value: d.score,
+                description: d.insight,
+              })),
+              belbinRoles: (() => {
+                try {
+                  // eslint-disable-next-line @typescript-eslint/no-require-imports
+                  const { estimateBelbinFromHexaco } = require("@/lib/belbin-estimate");
+                  // eslint-disable-next-line @typescript-eslint/no-require-imports
+                  const { BELBIN_ROLES, getTopRoles } = require("@/lib/belbin-scoring");
+                  const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
+                  if (!("H" in hexScores) || !("X" in hexScores)) return [];
+                  const estimated = estimateBelbinFromHexaco(hexScores);
+                  const top3 = getTopRoles(estimated, 3);
+                  return top3.map((r: { role: string; score: number }, i: number) => ({
+                    name: isHu ? BELBIN_ROLES[r.role].hu : BELBIN_ROLES[r.role].en,
+                    subtitle: "",
+                    score: r.score,
+                    rank: i,
+                  }));
+                } catch { return []; }
+              })(),
+              plusContent: plusContent ? {
+                howYouWork: plusContent.howYouWork,
+                roleFit: plusContent.roleFit,
+                takeaways: plusContent.takeaways,
+                closingText: plusContent.closingText,
+              } : undefined,
+              facetDimensions: isPlus ? mainDims.map((d) => ({
+                name: d.label,
+                value: d.score,
+                insight: d.insight,
+                description: d.description,
+                facets: d.facets,
+              })) : undefined,
+              observerData: hasObserverData && isReflect ? {
+                count: observerCount,
+                dimensions: mainDims.map((d) => ({
+                  name: d.label,
+                  self: d.score,
+                  observer: d.observerScore ?? d.score,
+                })),
+                summaryPoints: [],
+              } : undefined,
+            });
+          } finally {
+            setPdfLoading(false);
+          }
+        }}
+        pdfLoading={pdfLoading}
       />
 
       {/* Progress bar */}

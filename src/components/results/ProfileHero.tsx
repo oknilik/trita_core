@@ -17,6 +17,8 @@ interface ProfileHeroProps {
   percentile: string;
   insight: string;
   accessLevel?: AccessLevel;
+  onDownloadPdf?: () => void;
+  pdfLoading?: boolean;
 }
 
 export function ProfileHero({
@@ -26,6 +28,8 @@ export function ProfileHero({
   percentile,
   insight,
   accessLevel = "start",
+  onDownloadPdf,
+  pdfLoading,
 }: ProfileHeroProps) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
@@ -86,9 +90,11 @@ export function ProfileHero({
           </button>
           <button
             type="button"
-            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-[#c17f4a] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110"
+            onClick={onDownloadPdf}
+            disabled={pdfLoading}
+            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-[#c17f4a] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110 disabled:opacity-50"
           >
-            📄 {isHu ? "PDF letöltés" : "Download PDF"}
+            📄 {pdfLoading ? "..." : isHu ? "PDF letöltés" : "Download PDF"}
           </button>
         </div>
       </div>
