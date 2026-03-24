@@ -8,10 +8,18 @@ import { getSelfAccessLevel } from "@/lib/access";
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import type { AccessLevel } from "@/lib/access";
+import { runProfileEngine } from "@/lib/profile-engine";
+import {
+  BLOCK1, BLOCK8,
+  RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
+  SOLO_DIM_NARRATIVES,
+  ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
+  getEnvRows,
+} from "@/lib/profile-content";
+import type { Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
-import { RetakeButton } from "@/components/dashboard/RetakeButton";
 
 export const dynamic = "force-dynamic";
 
@@ -266,6 +274,202 @@ export default async function ProfileResultsPage({
   const displayName =
     profile.username ?? profile.email ?? (locale === "hu" ? "Felhasználó" : "User");
 
+  // ── Hero data ──────────────────────────────────────────────────────────────
+  const isHu = locale === "hu";
+  const highDims = mainDimensions.filter((d) => d.score >= 70);
+  const lowDims = mainDimensions.filter((d) => d.score < 40);
+
+  // Personality type label from top dimensions
+  const personalityType = (() => {
+    const topTwo = [...mainDimensions].sort((a, b) => b.score - a.score).slice(0, 2);
+    if (topTwo.length < 2) return isHu ? "Egyedi profil" : "Unique profile";
+    const labels: Record<string, { hu: string; en: string }> = {
+      H: { hu: "Elvi", en: "Principled" },
+      E: { hu: "Érzékeny", en: "Sensitive" },
+      X: { hu: "Energikus", en: "Energetic" },
+      A: { hu: "Együttműködő", en: "Cooperative" },
+      C: { hu: "Rendszerező", en: "Systematic" },
+      O: { hu: "Innovátor", en: "Innovator" },
+    };
+    const a = labels[topTwo[0].code]?.[isHu ? "hu" : "en"] ?? topTwo[0].label;
+    const b = labels[topTwo[1].code]?.[isHu ? "hu" : "en"] ?? topTwo[1].label;
+    return `${a} ${b}`;
+  })();
+
+  // Percentile (approximate from average score)
+  const avgScore = Math.round(
+    mainDimensions.reduce((s, d) => s + d.score, 0) / (mainDimensions.length || 1),
+  );
+  const percentile = avgScore >= 70 ? "Top 10%" : avgScore >= 60 ? "Top 25%" : "";
+
+  // Hero insight — one sentence from strongest and weakest
+  const heroInsight = (() => {
+    const strongest = [...mainDimensions].sort((a, b) => b.score - a.score)[0];
+    const weakest = [...mainDimensions].sort((a, b) => a.score - b.score)[0];
+    if (!strongest || !weakest) return "";
+    return isHu
+      ? `${strongest.label} a legfőbb erősséged — ${weakest.label.toLowerCase()} területen nyílhat tér a fejlődésre.`
+      : `${strongest.label} is your core strength — ${weakest.label.toLowerCase()} is where growth potential lies.`;
+  })();
+
+  // InsightPair
+  const strengths = highDims.length > 0
+    ? highDims.map((d) => d.label.toLowerCase()).join(", ") + (isHu ? " — ezek az erősségeid." : " — these are your strengths.")
+    : isHu ? "Kiegyensúlyozott profil, nincs kiugró erősség." : "Balanced profile, no standout strength.";
+
+  const watchAreas = lowDims.length > 0
+    ? (isHu ? "Alacsony " : "Low ") + lowDims.map((d) => d.label.toLowerCase()).join(", ") + (isHu ? " — ezekre érdemes figyelni." : " — worth paying attention to.")
+    : isHu ? "Nincs kritikusan alacsony dimenzió." : "No critically low dimension.";
+
+  // ── Plus content (profile engine narratives) ──────────────────────────────
+  const lang = (locale === "en" ? "en" : "hu") as Locale;
+  const dimScores = Object.fromEntries(mainDimensions.map((d) => [d.code, d.score]));
+  const engine = runProfileEngine(dimScores, testType);
+
+  // "Ahogy működsz" narratives
+  const howYouWork: string[] = [];
+  // Add tension pair narratives (block 6)
+  for (const pair of engine.block6Pairs) {
+    const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[lang];
+    if (narrative) howYouWork.push(narrative);
+  }
+  // Add solo dim narratives if no tension pairs
+  if (howYouWork.length === 0) {
+    for (const sd of engine.topSoloDims) {
+      const key = `${sd.dim}_${sd.level}`;
+      const text = SOLO_DIM_NARRATIVES[key]?.[lang];
+      if (text) howYouWork.push(text);
+    }
+  }
+  // Add risk texts (block 7)
+  for (const pair of engine.block7Pairs) {
+    const summary = BLOCK3_SUMMARIES[pair.contentKey]?.[lang];
+    if (summary) howYouWork.push(summary);
+  }
+
+  // Role fit texts
+  const roleFitSource = engine.block6Pairs[0]?.contentKey
+    ?? (engine.topSoloDims[0] ? `${engine.topSoloDims[0].dim}_${engine.topSoloDims[0].level}` : null);
+  const roleTexts = roleFitSource
+    ? (ROLE_TEXTS[roleFitSource]?.[lang] ?? SOLO_DIM_ROLE_TEXTS[roleFitSource]?.[lang])
+    : null;
+
+  // Environment rows
+  const envRows = getEnvRows(engine.categories).map((r) => ({
+    label: r.label[lang],
+    value: r.value[lang],
+  }));
+
+  // Takeaways (block 6 summaries)
+  const takeaways: string[] = [];
+  for (const pair of engine.block6Pairs) {
+    const text = BLOCK3_SUMMARIES[pair.contentKey]?.[lang];
+    if (text) takeaways.push(text);
+  }
+  if (takeaways.length === 0) {
+    for (const sd of engine.topSoloDims) {
+      const key = `${sd.dim}_${sd.level}`;
+      const text = SOLO_DIM_NARRATIVES[key]?.[lang];
+      if (text) takeaways.push(text);
+    }
+  }
+
+  // Role tags — concrete position names per content key
+  const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
+    hu: {
+      resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszú egyéni fókusz", "Izolált munkakörök"] },
+      calmExecution: { strong: ["Programvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szabályozás", "Szakértői szerep"], prep: ["Kreatív brainstorm", "Gyors pivot"] },
+      exploratoryAnalyst: { strong: ["Kutató", "Stratégiai elemző", "Innovátor"], might: ["Tanácsadás", "Termékstratégia"], prep: ["Értékesítés", "Nagyforgalmú ügyfélmunka"] },
+      organizedLeader: { strong: ["Projektvezetés", "Csapatvezetés", "Operatív irányítás"], might: ["Értékesítés", "Ügyfélmunka"], prep: ["Kreatív felfedező", "Kutatás"] },
+      harmoniousConnector: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség", "Tárgyalás"], prep: ["Egyéni döntéshozatal", "Konfliktusos közeg"] },
+      ethicalLeader: { strong: ["Compliance", "Etikai tanácsadás", "Nonprofit"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzleti közeg"] },
+      principledConfronter: { strong: ["Szabályozás", "Auditálás", "Mediáció"], might: ["Partnerség", "Tárgyalás"], prep: ["Diplomatikus közeg"] },
+      structuredInnovator: { strong: ["R&D", "Terméktervezés", "Rendszertervezés"], might: ["Tanácsadás", "Stratégia"], prep: ["Ad hoc projektek", "Improvizáció"] },
+      performanceDriver: { strong: ["Értékesítés", "Üzletfejlesztés", "Growth"], might: ["Stratégia", "Vállalkozás"], prep: ["Csapatépítés", "Coaching"] },
+      disruptiveInnovator: { strong: ["Innovációs vezető", "Vállalkozó", "Stratégiai tanácsadó"], might: ["Kutatás", "Szakértő"], prep: ["Harmonikus csapat", "Bürokrácia"] },
+      structuredCompetitor: { strong: ["Értékesítés", "Üzletfejlesztés", "Növekedés"], might: ["Projektvezetés", "Tanácsadás"], prep: ["Konszenzusos kultúra"] },
+      supportedVisibility: { strong: ["Ügyfélkapcsolat", "Training", "HR"], might: ["Prezentáció", "Facilitáció"], prep: ["Izolált munka", "Magas nyomás"] },
+      structuredStability: { strong: ["Minőségbiztosítás", "Adminisztráció", "Compliance"], might: ["Projektvezetés", "Tanácsadás"], prep: ["Startup", "Változékony közeg"] },
+      safeExperimentation: { strong: ["Design thinking", "Prototípus-fejlesztés", "Innováció"], might: ["Tanácsadás", "Stratégia"], prep: ["Határidő-kritikus végrehajtás"] },
+      deepCollaboration: { strong: ["Kiscsapat kutatás", "Mentoring", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Nagyvállalati hálózat", "Networking"] },
+      solitaryInnovator: { strong: ["Kutató", "Elemző", "Architekt"], might: ["Tanácsadás", "Tervezés"], prep: ["Csapatmunka", "Gyakori meeting"] },
+      facilitatedInnovation: { strong: ["Workshopvezetés", "Design thinking", "Változásmenedzsment"], might: ["Projektvezetés", "Oktatás"], prep: ["Top-down döntéshozatal"] },
+      responsibleInnovator: { strong: ["Fenntarthatóság", "R&D", "Társadalmi innováció"], might: ["Stratégia", "Termékfejlesztés"], prep: ["Gyors kompromisszum"] },
+    },
+    en: {
+      resilientLeader: { strong: ["Leader", "Sales Director", "Crisis Coordinator", "Change Management"], might: ["Project Management", "Client Relations"], prep: ["Isolated long-focus roles"] },
+      calmExecution: { strong: ["Program Management", "Quality Assurance", "Operations"], might: ["Compliance", "Regulatory", "Expert roles"], prep: ["Creative brainstorm", "Rapid pivot"] },
+      exploratoryAnalyst: { strong: ["Researcher", "Strategic Analyst", "Innovator"], might: ["Consulting", "Product Strategy"], prep: ["Sales", "High-volume client work"] },
+      organizedLeader: { strong: ["Project Management", "Team Leadership", "Operations"], might: ["Sales", "Client work"], prep: ["Exploration", "Research"] },
+      harmoniousConnector: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership", "Negotiation"], prep: ["Solo decision-making", "Conflict-heavy"] },
+      ethicalLeader: { strong: ["Compliance", "Ethics Advisory", "Nonprofit"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
+      principledConfronter: { strong: ["Regulatory", "Audit", "Mediation"], might: ["Partnership", "Negotiation"], prep: ["Diplomatic contexts"] },
+      structuredInnovator: { strong: ["R&D", "Product Design", "Systems Architecture"], might: ["Consulting", "Strategy"], prep: ["Ad hoc projects"] },
+      performanceDriver: { strong: ["Sales", "Business Development", "Growth"], might: ["Strategy", "Entrepreneurship"], prep: ["Team building", "Coaching"] },
+      disruptiveInnovator: { strong: ["Innovation Lead", "Entrepreneur", "Strategic Advisor"], might: ["Research", "Expert"], prep: ["Harmonious team", "Bureaucracy"] },
+      structuredCompetitor: { strong: ["Sales", "Business Development", "Growth"], might: ["Project Management", "Consulting"], prep: ["Consensus culture"] },
+      supportedVisibility: { strong: ["Client Relations", "Training", "HR"], might: ["Presenting", "Facilitation"], prep: ["Isolated work", "High pressure"] },
+      structuredStability: { strong: ["Quality Assurance", "Admin", "Compliance"], might: ["Project Management", "Consulting"], prep: ["Startup", "Volatile environment"] },
+      safeExperimentation: { strong: ["Design Thinking", "Prototyping", "Innovation"], might: ["Consulting", "Strategy"], prep: ["Deadline-critical execution"] },
+      deepCollaboration: { strong: ["Small-team Research", "Mentoring", "Pair work"], might: ["Consulting", "Expert"], prep: ["Corporate networking"] },
+      solitaryInnovator: { strong: ["Researcher", "Analyst", "Architect"], might: ["Consulting", "Design"], prep: ["Teamwork", "Frequent meetings"] },
+      facilitatedInnovation: { strong: ["Workshop Facilitation", "Design Thinking", "Change Management"], might: ["Project Management", "Education"], prep: ["Top-down decision-making"] },
+      responsibleInnovator: { strong: ["Sustainability", "R&D", "Social Innovation"], might: ["Strategy", "Product Development"], prep: ["Quick compromise"] },
+    },
+  };
+
+  // Solo dim role tags fallback
+  const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
+    hu: {
+      H_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
+      H_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
+      E_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
+      E_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Empatikus közeg"] },
+      X_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
+      X_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
+      A_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
+      A_low: { strong: ["Tárgyalás", "Stratégia", "Döntéshozatal"], might: ["Kutatás", "Elemzés"], prep: ["Harmonikus csapat"] },
+      C_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szakértő"], prep: ["Improvizáció"] },
+      C_low: { strong: ["Innováció", "Startup", "Design"], might: ["Tanácsadás", "Stratégia"], prep: ["Strukturált végrehajtás"] },
+      O_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Design"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutin feladatok"] },
+      O_low: { strong: ["Végrehajtás", "Adminisztráció", "Műveletek"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
+    },
+    en: {
+      H_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
+      H_low: { strong: ["Business Development", "Sales", "Growth", "Entrepreneurship"], might: ["Leadership", "Strategy"], prep: ["Team building"] },
+      E_high: { strong: ["HR", "Coaching", "Healthcare", "CX"], might: ["Education", "Negotiation"], prep: ["High pressure", "Crisis"] },
+      E_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Empathetic context"] },
+      X_high: { strong: ["Sales", "Team Leadership", "PR", "Facilitation"], might: ["Project Management", "Education"], prep: ["Deep solo work"] },
+      X_low: { strong: ["Research", "Analysis", "Design", "Writing"], might: ["Consulting", "Expert"], prep: ["Networking", "Presentations"] },
+      A_high: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership"], prep: ["Conflict-heavy"] },
+      A_low: { strong: ["Negotiation", "Strategy", "Decision-making"], might: ["Research", "Analysis"], prep: ["Harmonious team"] },
+      C_high: { strong: ["Project Management", "QA", "Operations"], might: ["Compliance", "Expert"], prep: ["Improvisation"] },
+      C_low: { strong: ["Innovation", "Startup", "Design"], might: ["Consulting", "Strategy"], prep: ["Structured execution"] },
+      O_high: { strong: ["Research", "Innovation", "Strategy", "Design"], might: ["Consulting", "Education"], prep: ["Routine tasks"] },
+      O_low: { strong: ["Execution", "Administration", "Operations"], might: ["Leadership", "PM"], prep: ["Experimentation"] },
+    },
+  };
+
+  const roleTags = roleFitSource
+    ? (ROLE_TAGS[lang]?.[roleFitSource] ?? SOLO_ROLE_TAGS[lang]?.[roleFitSource])
+    : null;
+
+  const plusContent = accessLevel !== "start" ? {
+    introText: BLOCK1[lang],
+    howYouWork,
+    envItems: envRows,
+    roleFit: {
+      strong: roleTexts?.strong ?? "",
+      might: roleTexts?.medium ?? "",
+      prep: roleTexts?.watchOut ?? "",
+      strongRoles: roleTags?.strong,
+      mightRoles: roleTags?.might,
+      prepRoles: roleTags?.prep,
+    },
+    takeaways,
+    closingText: BLOCK8[lang],
+  } : undefined;
+
   return (
     <main className="min-h-dvh bg-cream">
       <DashboardAutoRefresh
@@ -273,10 +477,6 @@ export default async function ProfileResultsPage({
         completedObserver={completedObservers.length}
       />
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-10 md:gap-14">
-
-        <div className="flex justify-end">
-          <RetakeButton />
-        </div>
 
         <ProfileTabs
           name={displayName}
@@ -296,6 +496,12 @@ export default async function ProfileResultsPage({
           draftAnsweredCount={draftAnsweredCount}
           draftTotalQuestions={draftTotalQuestions}
           pendingInvitesCount={pendingInvitesCount}
+          personalityType={personalityType}
+          percentile={percentile}
+          heroInsight={heroInsight}
+          strengths={strengths}
+          watchAreas={watchAreas}
+          plusContent={plusContent}
         />
 
       </div>
