@@ -1,3 +1,5 @@
+import { useLocale } from "@/components/LocaleProvider";
+
 interface RoleFitSectionProps {
   strongFit: string;
   mightWork: string;
@@ -11,7 +13,7 @@ interface RoleFitSectionProps {
 const TIERS = [
   {
     key: "strong" as const,
-    label: "Erős illeszkedés",
+    label: { hu: "Erős illeszkedés", en: "Strong fit" },
     bg: "bg-[#e8f2f0]",
     borderColor: "#3d6b5e",
     labelColor: "text-[#1e3d34]",
@@ -19,7 +21,7 @@ const TIERS = [
   },
   {
     key: "might" as const,
-    label: "Működhet, ha készülsz",
+    label: { hu: "Működhet, ha készülsz", en: "May work with preparation" },
     bg: "bg-[#fdf5ee]",
     borderColor: "#c17f4a",
     labelColor: "text-[#8a5530]",
@@ -27,7 +29,7 @@ const TIERS = [
   },
   {
     key: "prep" as const,
-    label: "Ahol segít a felkészülés",
+    label: { hu: "Ahol segít a felkészülés", en: "Where preparation helps" },
     bg: "bg-[#f2ede6]",
     borderColor: "#8a8a9a",
     labelColor: "text-[#8a8a9a]",
@@ -44,6 +46,9 @@ export function RoleFitSection({
   prepRoles,
   isUnlocked,
 }: RoleFitSectionProps) {
+  const { locale } = useLocale();
+  const isHu = locale === "hu";
+
   if (!isUnlocked) return null;
 
   const texts = { strong: strongFit, might: mightWork, prep: needsPrep };
@@ -58,7 +63,7 @@ export function RoleFitSection({
       <div className="mb-4 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
         <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-          Szerepkör-illeszkedés
+          {isHu ? "Szerepkör-illeszkedés" : "Role fit"}
         </p>
       </div>
 
@@ -77,7 +82,7 @@ export function RoleFitSection({
               <p
                 className={`mb-1 text-[9px] font-bold uppercase tracking-wide ${tier.labelColor}`}
               >
-                {tier.label}
+                {isHu ? tier.label.hu : tier.label.en}
               </p>
               <p className="mb-2.5 text-[13px] leading-relaxed text-[#4a4a5e]">
                 {text}

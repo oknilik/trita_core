@@ -1,3 +1,5 @@
+import { useLocale } from "@/components/LocaleProvider";
+
 interface EnvItem {
   label: string;
   value: string;
@@ -51,6 +53,9 @@ function getDescription(value: string): string {
 }
 
 export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentSectionProps) {
+  const { locale } = useLocale();
+  const isHu = locale === "hu";
+
   if (!isUnlocked || items.length === 0) return null;
 
   return (
@@ -58,7 +63,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
       <div className="mb-4 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
         <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-          Ideális környezet
+          {isHu ? "Ideális környezet" : "Ideal environment"}
         </p>
       </div>
 

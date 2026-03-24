@@ -7,8 +7,6 @@ import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
 import { ProgressBar } from "@/components/results/ProgressBar";
 import { InsightPair } from "@/components/results/InsightPair";
-import { ObserverComparison } from "./ObserverComparison";
-import { BlindSpotAnalysis } from "./BlindSpotAnalysis";
 import { UpgradeButton } from "./UpgradeButton";
 import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
 import { DimensionStrip } from "@/components/results/DimensionStrip";
@@ -21,6 +19,7 @@ import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSe
 import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
+import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 
 type ProfileLevel = "start" | "plus" | "reflect";
 type TabId = "results" | "comparison" | "invites";
@@ -261,72 +260,6 @@ function ResultsTab({
   );
 }
 
-interface ComparisonTabProps {
-  dimensions: SerializedDimension[];
-  hasObserverData: boolean;
-  observerCount: number;
-  isReflect: boolean;
-  isHu: boolean;
-  locale: string;
-}
-
-function ComparisonTab({
-  dimensions,
-  hasObserverData,
-  observerCount,
-  isReflect,
-  isHu,
-  locale,
-}: ComparisonTabProps) {
-  if (!isReflect) {
-    return (
-      <TabPaywall
-        tier="self_reflect"
-        tierLabel="Self Reflect"
-        price="€12"
-        isHu={isHu}
-        teaser={
-          isHu
-            ? "Az observer összehasonlítás megmutatja, hogyan látnak mások — és hol tér el az önképed a külső visszajelzésektől."
-            : "Observer comparison shows how others see you — and where your self-image diverges from external feedback."
-        }
-      />
-    );
-  }
-
-  const mainDims = dimensions.filter((d) => d.code !== "I");
-  const observerDims = mainDims.map((d) => ({
-    code: d.code,
-    label: d.label,
-    color: d.color,
-    selfScore: d.score,
-    observerScore: d.observerScore,
-  }));
-
-  return (
-    <div className="flex flex-col gap-10 md:gap-14">
-      <ObserverComparison
-        dimensions={observerDims}
-        observerCount={observerCount}
-        hasObserverData={hasObserverData}
-        locale={locale as Locale}
-      />
-      <div>
-        <h2 className="mb-6 font-fraunces text-2xl text-ink">
-          {isHu ? "Vakfolt-elemzés" : "Blind spot analysis"}
-        </h2>
-        <BlindSpotAnalysis
-          dimensions={observerDims.map((d) => ({
-            ...d,
-            observerScore: d.observerScore ?? d.selfScore,
-          }))}
-          hasObserverData={hasObserverData}
-          locale={locale as Locale}
-        />
-      </div>
-    </div>
-  );
-}
 
 // ─── Main component ─────────────────────────────────────────────────────────
 
@@ -447,6 +380,7 @@ export function ProfileTabs({
         observersCompleted={hasObserverData}
         sentCount={sentInvitations.length}
         receivedCount={observerCount}
+        onNavigateToComparison={() => handleTabChange("comparison")}
       />
 
       {/* Insight pair */}
@@ -507,14 +441,25 @@ export function ProfileTabs({
           />
         )}
         {activeTab === "comparison" && (
-          <ComparisonTab
-            dimensions={dimensions}
-            hasObserverData={hasObserverData}
-            observerCount={observerCount}
-            isReflect={isReflect}
-            isHu={isHu}
-            locale={locale}
-          />
+          isReflect ? (
+            <ComparisonTabNew
+              dimensions={dimensions}
+              hasObserverData={hasObserverData}
+              observerCount={observerCount}
+            />
+          ) : (
+            <TabPaywall
+              tier="self_reflect"
+              tierLabel="Self Reflect"
+              price="€12"
+              isHu={isHu}
+              teaser={
+                isHu
+                  ? "Az observer összehasonlítás megmutatja, hogyan látnak mások — és hol tér el az önképed a külső visszajelzésektől."
+                  : "Observer comparison shows how others see you — and where your self-image diverges from external feedback."
+              }
+            />
+          )
         )}
         {activeTab === "invites" && (
           <InvitationsTab

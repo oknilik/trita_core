@@ -1,4 +1,7 @@
+"use client";
+
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface Dimension {
   name: string;
@@ -7,8 +10,10 @@ interface Dimension {
 }
 
 export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
+  const { locale } = useLocale();
+
   return (
-    <div className="w-full border-b border-[#e8e0d3] bg-white rounded-xl overflow-hidden">
+    <div className="w-full overflow-hidden rounded-xl border-b border-[#e8e0d3] bg-white">
       <div className="grid grid-cols-6">
         {dimensions.map((dim, i) => {
           const tier = getDimensionTier(dim.value);
@@ -31,7 +36,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
               <span
                 className={`inline-block rounded px-[7px] py-[2px] text-[8px] font-semibold ${colors.tagBg} ${colors.tagText}`}
               >
-                {getDimensionLabel(dim.value)}
+                {getDimensionLabel(dim.value, locale)}
               </span>
               <div className="mx-auto mt-2 h-[3px] w-4/5 overflow-hidden rounded-sm bg-[#e8e0d3]">
                 <div

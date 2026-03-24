@@ -1,3 +1,7 @@
+"use client";
+
+import { useLocale } from "@/components/LocaleProvider";
+
 interface KeyTakeawaysSectionProps {
   paragraphs: string[];
   closingText: string;
@@ -7,13 +11,16 @@ interface KeyTakeawaysSectionProps {
 export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: KeyTakeawaysSectionProps) {
   if (!isUnlocked || paragraphs.length === 0) return null;
 
+  const { locale } = useLocale();
+  const isHu = locale === "hu";
+
   return (
     <div
       className="mt-6 rounded-2xl p-6 px-7"
       style={{ background: "linear-gradient(135deg, #1a1a2e, #2a2740)" }}
     >
-      <p className="mb-3 text-[9px] uppercase tracking-widest text-[#e8a96a]">
-        A legfontosabbak
+      <p className="mb-3 text-[9px] uppercase tracking-widest" style={{ color: "#e8a96a" }}>
+        {isHu ? "A legfontosabbak" : "Key takeaways"}
       </p>
       <div className="flex flex-col gap-3">
         {paragraphs.map((t, i) => (

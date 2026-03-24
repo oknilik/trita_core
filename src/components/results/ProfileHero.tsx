@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/components/LocaleProvider";
+
 type AccessLevel = "start" | "plus" | "reflect";
 
 const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: string }> = {
@@ -25,6 +27,8 @@ export function ProfileHero({
   insight,
   accessLevel = "start",
 }: ProfileHeroProps) {
+  const { locale } = useLocale();
+  const isHu = locale === "hu";
   const level = LEVEL_CONFIG[accessLevel];
 
   return (
@@ -36,12 +40,11 @@ export function ProfileHero({
       }}
     >
       <div className="mx-auto max-w-4xl px-9 pb-8 pt-10">
-        {/* Dekoratív kör */}
         <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
 
         <div className="mb-2 flex items-center gap-2.5">
           <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-            A te profilod
+            {isHu ? "A te profilod" : "Your profile"}
           </p>
           <span
             className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
@@ -54,34 +57,38 @@ export function ProfileHero({
           {userName}
         </h1>
         <p className="mb-4 text-[11px] text-white/[0.25]">
-          Felmérés: {completedAt}
+          {isHu ? "Felmérés:" : "Assessment:"} {completedAt}
         </p>
 
         <div className="mb-2.5 flex items-center gap-2.5">
           <span className="font-fraunces text-[22px] italic text-[#e8a96a]">
             {personalityType}
           </span>
-          <span className="rounded-md bg-white/10 px-2.5 py-0.5 text-[9px] text-white/[0.45]">
-            {percentile}
-          </span>
+          {percentile && (
+            <span className="rounded-md bg-white/10 px-2.5 py-0.5 text-[9px] text-white/[0.45]">
+              {percentile}
+            </span>
+          )}
         </div>
 
-        <p className="max-w-[480px] text-[14px] leading-relaxed text-white/[0.42]">
-          {insight}
-        </p>
+        {insight && (
+          <p className="max-w-[480px] text-[14px] leading-relaxed text-white/[0.42]">
+            {insight}
+          </p>
+        )}
 
         <div className="mt-[18px] flex gap-2">
           <button
             type="button"
             className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
           >
-            📤 Megosztás
+            📤 {isHu ? "Megosztás" : "Share"}
           </button>
           <button
             type="button"
             className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-[#c17f4a] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110"
           >
-            📄 PDF letöltés
+            📄 {isHu ? "PDF letöltés" : "Download PDF"}
           </button>
         </div>
       </div>

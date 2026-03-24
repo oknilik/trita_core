@@ -12,6 +12,7 @@ interface ProgressBarProps {
   observersCompleted: boolean;
   sentCount: number;
   receivedCount: number;
+  onNavigateToComparison?: () => void;
 }
 
 // ─── Package card ────────────────────────────────────────────────────────────
@@ -123,6 +124,7 @@ export function ProgressBar({
   observersCompleted,
   sentCount,
   receivedCount,
+  onNavigateToComparison,
 }: ProgressBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale } = useLocale();
@@ -401,6 +403,7 @@ export function ProgressBar({
                 {observersCompleted && (
                   <button
                     type="button"
+                    onClick={onNavigateToComparison}
                     className="min-h-[44px] shrink-0 rounded-lg bg-[#3d6b5e] px-3.5 py-1.5 text-[11px] font-semibold text-white"
                   >
                     {isHu ? "Megnézem →" : "View →"}

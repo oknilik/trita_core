@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getDimensionTier, tierColors, dimensionFacets } from "@/lib/dimension-utils";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface FacetEntry {
   code: string;
@@ -34,6 +35,7 @@ function AccordionItem({
   isOpen,
   onToggle,
   showUpsell,
+  isHu,
 }: {
   code: string;
   name: string;
@@ -44,6 +46,7 @@ function AccordionItem({
   isOpen: boolean;
   onToggle: () => void;
   showUpsell: boolean;
+  isHu: boolean;
 }) {
   const tier = getDimensionTier(value);
   const colors = tierColors[tier];
@@ -144,7 +147,7 @@ function AccordionItem({
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-semibold text-white">
-                      {facetNames.length} alskála részletesen
+                      {facetNames.length} {isHu ? "alskála részletesen" : "subscales in detail"}
                     </p>
                     <p className="truncate text-[10px] text-white/[0.35]">
                       {facetNames.join(" · ")}
@@ -154,7 +157,7 @@ function AccordionItem({
                     type="button"
                     className="shrink-0 rounded-lg bg-[#c17f4a] px-4 py-[7px] text-[10px] font-semibold text-white transition hover:-translate-y-px hover:brightness-110"
                   >
-                    Feloldom — €7
+                    {isHu ? "Feloldom — €7" : "Unlock — €7"}
                   </button>
                 </div>
               )}
@@ -171,18 +174,21 @@ export function DimensionAccordion({
   showUpsell = false,
 }: DimensionAccordionProps) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const { locale } = useLocale();
+  const isHu = locale === "hu";
 
   return (
     <section>
       <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-        Dimenziók
+        {isHu ? "Dimenziók" : "Dimensions"}
       </p>
       <h2 className="mt-1.5 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
-        Így működsz a fő dimenziók mentén
+        {isHu ? "Így működsz a fő dimenziók mentén" : "How you work across key dimensions"}
       </h2>
       <p className="mb-6 mt-2 max-w-[540px] text-[13px] leading-relaxed text-[#8a8a9a]">
-        A dimenziók nem skatulyák, hanem mintázatok: megmutatják, mi mozgat, mi
-        ad stabilitást, és hol jöhet feszültség.
+        {isHu
+          ? "A dimenziók nem skatulyák, hanem mintázatok: megmutatják, mi mozgat, mi ad stabilitást, és hol jöhet feszültség."
+          : "Dimensions aren't boxes — they're patterns that show what drives you, what keeps you steady, and where tension may arise."}
       </p>
 
       {dimensions.map((dim, i) => (
@@ -197,6 +203,7 @@ export function DimensionAccordion({
           isOpen={openIdx === i}
           onToggle={() => setOpenIdx(openIdx === i ? null : i)}
           showUpsell={showUpsell}
+          isHu={isHu}
         />
       ))}
     </section>

@@ -53,7 +53,7 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
   return (
     <section>
       <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-        Csapatszerepek (Belbin)
+        {isHu ? "Csapatszerepek (Belbin)" : "Team roles (Belbin)"}
       </p>
       <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
         {isHu ? "Így jelenhetsz meg csapatban" : "How you show up in a team"}
