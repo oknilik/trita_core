@@ -121,7 +121,34 @@ export default async function ProfileResultsPage({
     }),
   ]);
 
-  if (!latestResult) redirect("/assessment");
+  if (!latestResult) {
+    // If there's a draft in progress, show a "continue" page instead of redirecting
+    // This prevents a redirect loop when user clicks "Continue later"
+    const hasDraft = Boolean(draft);
+    if (hasDraft) {
+      const isHu = locale === "hu";
+      return (
+        <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+          <p className="mb-2 text-3xl">📝</p>
+          <h1 className="font-fraunces text-2xl text-[#1a1a2e]">
+            {isHu ? "A teszted folyamatban van" : "Your assessment is in progress"}
+          </h1>
+          <p className="mt-2 max-w-md text-sm text-[#8a8a9a]">
+            {isHu
+              ? "Mentettük a haladásodat — ott folytathatod, ahol abbahagytad."
+              : "We saved your progress — you can continue where you left off."}
+          </p>
+          <a
+            href="/assessment"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-lg bg-[#3d6b5e] px-6 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-[1.06]"
+          >
+            {isHu ? "Folytatom a tesztet →" : "Continue assessment →"}
+          </a>
+        </main>
+      );
+    }
+    redirect("/assessment");
+  }
 
   const scores = latestResult.scores as ScoreResult;
   if (scores.type !== "likert") redirect("/assessment");

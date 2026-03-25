@@ -35,6 +35,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     return DEFAULT_AVATAR;
   });
   const [orgRole, setOrgRole] = useState<string | null>(null);
+  const [accessLevel, setAccessLevel] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -52,6 +53,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           window.localStorage.setItem("trita_avatar", data.avatarUrl);
         }
         setOrgRole(data.orgMemberships?.[0]?.role ?? null);
+        setAccessLevel(data.accessLevel ?? null);
       } catch {
         // noop
       }
@@ -157,12 +159,16 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                     </p>
                     <p className="mt-1 inline-flex rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-semibold text-ink-body">
                       {orgRole === "ORG_ADMIN"
-                        ? "org admin"
+                        ? "Org Admin"
                         : orgRole === "ORG_MANAGER"
-                        ? "menedzser"
+                        ? "Manager"
                         : orgRole === "ORG_MEMBER"
-                        ? "org tag"
-                        : t("userMenu.participant", locale)}
+                        ? "Team"
+                        : accessLevel === "self_reflect"
+                        ? "Self Reflect"
+                        : accessLevel === "self_plus"
+                        ? "Self Plus"
+                        : "Self Start"}
                     </p>
                   </div>
                 </div>

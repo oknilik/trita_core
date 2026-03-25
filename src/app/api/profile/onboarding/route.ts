@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getSelfAccessLevel } from "@/lib/access";
 
 const currentYear = new Date().getFullYear();
 
@@ -23,6 +24,7 @@ export async function GET() {
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: {
+      id: true,
       email: true,
       username: true,
       birthYear: true,
@@ -44,7 +46,13 @@ export async function GET() {
     },
   });
 
-  return NextResponse.json(profile ?? {});
+  if (!profile) return NextResponse.json({});
+
+  const accessLevel = await getSelfAccessLevel(profile.id);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _id, ...rest } = profile;
+
+  return NextResponse.json({ ...rest, accessLevel });
 }
 
 export async function POST(req: Request) {
