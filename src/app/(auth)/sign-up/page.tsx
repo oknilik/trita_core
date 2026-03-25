@@ -187,7 +187,7 @@ function SignUpContent() {
             <Link href="/" className="font-fraunces mb-6 inline-block text-2xl font-black tracking-[-0.03em] text-ink">
               {"trit"}<span className="text-bronze">a</span>
             </Link>
-            <h1 className="mb-1 text-xl font-semibold text-ink">
+            <h1 className="mb-1 font-fraunces text-xl text-ink">
               {t("auth.verifyTitle", locale)}
             </h1>
             <p className="mb-6 text-sm text-ink-body">
@@ -270,12 +270,19 @@ function SignUpContent() {
             {"trit"}<span className="text-bronze">a</span>
           </Link>
 
-          <h1 className="mb-1 text-xl font-semibold text-ink">
+          <h1 className="mb-1 font-fraunces text-xl text-ink">
             {t("auth.signUpTitle", locale)}
           </h1>
-          <p className="mb-6 text-sm text-ink-body">
+          <p className="mb-5 text-sm text-ink-body">
             {t("auth.signUpSubtitle", locale)}
           </p>
+
+          <div className="mb-6">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[1px] text-[#8a8a9a]">
+              {locale === "hu" ? "Mire használod a triát?" : "What will you use trita for?"}
+            </p>
+            <IntentSelector value={intent} onChange={setIntent} />
+          </div>
 
           {observeToken && (
             <div className="mb-5 rounded border border-sand bg-[#fdf5f0] px-4 py-3 text-sm text-ink-body">
@@ -335,13 +342,6 @@ function SignUpContent() {
               {isSubmitting ? t("auth.submitSendCodeLoading", locale) : t("auth.submitSendCode", locale)}
             </button>
           </form>
-
-          <div className="mb-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[1px] text-ink-body">
-              Mire használod a triát?
-            </p>
-            <IntentSelector value={intent} onChange={setIntent} />
-          </div>
 
           <p className="text-center text-sm text-ink-body">
             {t("auth.hasAccount", locale)}{" "}

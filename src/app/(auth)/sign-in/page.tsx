@@ -194,7 +194,7 @@ function SignInContent() {
             <Link href="/" className="font-fraunces mb-6 inline-block text-2xl font-black tracking-[-0.03em] text-ink">
               {"trit"}<span className="text-bronze">a</span>
             </Link>
-            <h1 className="mb-1 text-xl font-semibold text-ink">
+            <h1 className="mb-1 font-fraunces text-xl text-ink">
               {t("auth.verifyTitle", locale)}
             </h1>
             <p className="mb-6 text-sm text-ink-body">
@@ -278,7 +278,7 @@ function SignInContent() {
             {"trit"}<span className="text-bronze">a</span>
           </Link>
 
-          <h1 className="mb-1 text-xl font-semibold text-ink">
+          <h1 className="mb-1 font-fraunces text-xl text-ink">
             {t("auth.signInTitle", locale)}
           </h1>
           <p className="mb-6 text-sm text-ink-body">

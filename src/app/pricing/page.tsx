@@ -76,7 +76,7 @@ export default async function PricingPage() {
 
       {/* Bottom CTA */}
       <section className="mx-5 mb-8 mt-12 lg:mx-14">
-        <div className="mx-auto max-w-5xl rounded-[18px] bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-8 lg:p-12">
+        <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-8 lg:p-12">
           <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
             <div className="flex-1">
               <h2 className="font-fraunces text-2xl text-white lg:text-3xl">{bottom.heading}</h2>

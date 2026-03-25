@@ -55,7 +55,7 @@ function AccordionItem({
 
   return (
     <div
-      className={`mb-2.5 overflow-hidden rounded-[14px] border-[1.5px] transition-shadow hover:shadow-[0_2px_12px_rgba(26,26,46,0.04)] ${colors.border}`}
+      className={`mb-2.5 overflow-hidden rounded-xl border-[1.5px] shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] ${colors.border}`}
     >
       {/* HEADER */}
       <button
@@ -95,7 +95,7 @@ function AccordionItem({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-[#e8e0d3] bg-[#f2ede6] p-[18px] pb-5">
+            <div className="border-t border-[#ddd5c8] bg-[#f2ede6] p-[18px] pb-5">
               {/* 1. Mit jelent ez rólad? */}
               <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
                 {isHu ? "Mit jelent ez rólad?" : "What this means for you"}
@@ -132,7 +132,7 @@ function AccordionItem({
                         return (
                           <div
                             key={f.code}
-                            className="flex items-center gap-2.5 rounded-[10px] border border-[#e8e0d3] bg-white px-3.5 py-3"
+                            className="flex items-center gap-2.5 rounded-[10px] border border-[#ddd5c8] bg-white px-3.5 py-3"
                           >
                             <span className="flex-1 text-xs font-medium text-[#1a1a2e]">
                               {f.label}

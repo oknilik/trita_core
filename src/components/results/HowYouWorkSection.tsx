@@ -30,7 +30,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
       </h3>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="rounded-[14px] border-[1.5px] border-[#3d6b5e]/20 bg-[#e8f2f0] p-[18px]">
+        <div className="rounded-xl border-[1.5px] border-[#3d6b5e]/20 bg-[#e8f2f0] p-[18px]">
           <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1e3d34]">
             {isHu ? "Fő mintázat" : "Key pattern"}
           </p>
@@ -40,7 +40,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
         </div>
 
         {watchArea && (
-          <div className="rounded-[14px] border-[1.5px] border-[#c17f4a]/20 bg-[#fdf5ee] p-[18px]">
+          <div className="rounded-xl border-[1.5px] border-[#c17f4a]/20 bg-[#fdf5ee] p-[18px]">
             <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#8a5530]">
               {isHu ? "Figyelendő" : "Watch area"}
             </p>
@@ -51,7 +51,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
         )}
 
         {context && (
-          <div className="col-span-1 rounded-[14px] md:col-span-2 border-[1.5px] border-[#e8e0d3] bg-white p-[18px]">
+          <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[#ddd5c8] bg-white p-[18px]">
             <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
               {isHu ? "Kontextus" : "Context"}
             </p>

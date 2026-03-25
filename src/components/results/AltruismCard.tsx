@@ -17,7 +17,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
   return (
     <div className="mt-6">
       {/* Info banner */}
-      <div className="mb-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[#e8e0d3] bg-[#f2ede6] p-4">
+      <div className="mb-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] p-4">
         <span className="mt-0.5 shrink-0 text-sm text-[#8a8a9a]">ℹ</span>
         <div>
           <p className="text-xs font-semibold text-[#1a1a2e]">
@@ -32,7 +32,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
       </div>
 
       {/* Altruism card */}
-      <div className={`overflow-hidden rounded-[14px] border-[1.5px] p-4 px-[18px] ${colors.border} ${colors.cardBg}`}>
+      <div className={`overflow-hidden rounded-xl border-[1.5px] p-4 px-[18px] ${colors.border} ${colors.cardBg}`}>
         <div className="flex items-center gap-3">
           <div className={`h-2 w-2 shrink-0 rounded-full ${colors.dot}`} />
           <span className="flex-1 text-sm font-medium text-[#1a1a2e]">

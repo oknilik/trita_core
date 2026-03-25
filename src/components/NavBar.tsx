@@ -176,7 +176,7 @@ export function NavBar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#e8e0d3] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[#ddd5c8] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
 
           {/* ═══ LOGO ═══ */}

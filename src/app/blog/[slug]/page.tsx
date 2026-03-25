@@ -243,7 +243,7 @@ export default async function BlogPostPage({
         </h1>
 
         {/* Description */}
-        <p className="mb-2.5 text-sm leading-relaxed text-[#8a8a9a]">
+        <p className="mb-2.5 text-sm leading-relaxed text-[#4a4a5e]">
           {post.description}
         </p>
 
@@ -301,7 +301,7 @@ export default async function BlogPostPage({
         )}
 
         {/* CTA block */}
-        <div className="mt-7 flex flex-col items-center gap-5 rounded-[14px] bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
+        <div className="mt-7 flex flex-col items-center gap-5 rounded-xl bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           <div className="flex-1 text-center sm:text-left">
             <p className="mb-1 text-[8px] uppercase tracking-[1.5px] text-[#e8a96a]">
               {isHu ? "Próbáld ki" : "Try it"}

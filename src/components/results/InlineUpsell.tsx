@@ -12,7 +12,7 @@ export function InlineUpsell() {
 
   return (
     <div
-      className="mt-8 flex flex-col items-center gap-6 rounded-[18px] px-8 py-7 sm:flex-row"
+      className="mt-8 flex flex-col items-center gap-6 rounded-2xl px-8 py-7 sm:flex-row"
       style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2a2740 100%)" }}
     >
       <div className="flex-1">

@@ -2,14 +2,19 @@ import type { Locale } from "@/lib/i18n";
 import { getSelfPricingPlans } from "@/lib/pricing";
 import { TierCard } from "./TierCard";
 
-const ctaLabels: Record<Locale, { free: string; solo: string }> = {
-  hu: { free: "Kezdem ingyen", solo: "Kipróbálom ingyen" },
-  en: { free: "Start for free", solo: "Try for free" },
+const introText: Record<Locale, string> = {
+  hu: "Ismerd meg magad mélyebben — egyszeri vásárlások, a saját ritmusodban.",
+  en: "Get to know yourself deeper — one-time purchases, at your own pace.",
 };
 
-const introText: Record<Locale, string> = {
-  hu: "Személyes fejlődéshez — facet szintű részletességgel, observer visszajelzéssel.",
-  en: "For personal development — facet-level depth, with observer feedback.",
+const eyebrows: Record<Locale, { free: string; paid: string }> = {
+  hu: { free: "self · ingyenes", paid: "self · egyszeri" },
+  en: { free: "self · free", paid: "self · one-time" },
+};
+
+const ctaLabels: Record<Locale, { free: string; paid: string }> = {
+  hu: { free: "Kezdem ingyen", paid: "Megveszem" },
+  en: { free: "Start free", paid: "Buy now" },
 };
 
 export function SelfTierPanel({
@@ -21,31 +26,32 @@ export function SelfTierPanel({
 }) {
   const plans = getSelfPricingPlans(locale);
   const labels = ctaLabels[locale] ?? ctaLabels.hu;
+  const eb = eyebrows[locale] ?? eyebrows.hu;
 
   return (
     <div>
-      <p className="mb-6 text-sm text-ink-body">{introText[locale] ?? introText.hu}</p>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        {plans.map((plan) => (
-          <TierCard
-            key={plan.id}
-            eyebrow={
-              plan.id === "free"
-                ? locale === "hu" ? "egyéni · ingyenes" : "individual · free"
-                : locale === "hu" ? "egyéni · előfizetés" : "individual · subscription"
-            }
-            name={plan.name}
-            badge={plan.badge}
-            price={plan.price}
-            priceSub={plan.perMonth}
-            description={plan.description}
-            features={plan.features}
-            ctaLabel={plan.id === "solo" ? labels.solo : labels.free}
-            ctaHref={isLoggedIn ? "/dashboard" : plan.ctaHref}
-            ctaVariant={plan.id === "solo" ? "primary" : "outline"}
-            highlighted={plan.id === "solo"}
-          />
-        ))}
+      <p className="mb-6 text-sm text-[#4a4a5e]">{introText[locale] ?? introText.hu}</p>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        {plans.map((plan) => {
+          const isFree = plan.id === "self_start";
+          const isFeatured = plan.id === "self_plus";
+          return (
+            <TierCard
+              key={plan.id}
+              eyebrow={isFree ? eb.free : eb.paid}
+              name={plan.name}
+              badge={plan.badge}
+              price={plan.price}
+              priceSub={plan.seats}
+              description={plan.description}
+              features={plan.features}
+              ctaLabel={isFree ? labels.free : labels.paid}
+              ctaHref={isLoggedIn ? "/profile/results" : plan.ctaHref}
+              ctaVariant={isFeatured ? "primary" : "outline"}
+              highlighted={isFeatured}
+            />
+          );
+        })}
       </div>
     </div>
   );

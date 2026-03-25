@@ -45,7 +45,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
         <Link
           href={ctaHref}
           className={[
-            "inline-flex min-h-[54px] items-center justify-center rounded-[14px] px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
+            "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
             isSelf ? "bg-[#c17f4a] hover:bg-[#9a6538]" : "bg-[#3d6b5e] hover:bg-[#2d5a4e]",
           ].join(" ")}
         >

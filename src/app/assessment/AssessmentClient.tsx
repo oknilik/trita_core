@@ -53,22 +53,28 @@ export function AssessmentClient({
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
   const [autoAdvance, setAutoAdvance] = useState(true)
   const [checkpoint, setCheckpoint] = useState<number | null>(null)
-  const [showIntro, setShowIntro] = useState(() => {
+  // null = not yet determined (avoid flash), true = show intro, false = skip
+  const [showIntro, setShowIntro] = useState<boolean | null>(() => {
     const hasServerDraft = initialDraft && Object.keys(initialDraft.answers ?? {}).length > 0
-    return !hasServerDraft
+    if (hasServerDraft) return false
+    return null // will resolve in useEffect after hydration
   })
 
-  // After hydration, check localStorage for guest draft and skip intro if found
+  // After hydration, check localStorage for guest draft and resolve showIntro
   useEffect(() => {
-    if (!showIntro) return
+    if (showIntro !== null) return
     try {
       const saved = localStorage.getItem(`trita_draft_${testType}`)
       if (saved) {
         const parsed = JSON.parse(saved)
         const draftAnswers = parsed?.answers ?? parsed
-        if (draftAnswers && Object.keys(draftAnswers).length > 0) setShowIntro(false)
+        if (draftAnswers && Object.keys(draftAnswers).length > 0) {
+          setShowIntro(false)
+          return
+        }
       }
     } catch { /* ignore */ }
+    setShowIntro(true)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
@@ -356,6 +362,11 @@ export function AssessmentClient({
 
   if (isSubmitting) {
     return <EvaluatingScreen progress={evaluationProgress} />
+  }
+
+  // Still resolving localStorage — show blank screen to avoid intro flash
+  if (showIntro === null) {
+    return <div className="min-h-dvh bg-[#f7f4ef]" />;
   }
 
   if (showIntro) {

@@ -13,7 +13,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
   const { locale } = useLocale();
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border-b border-[#e8e0d3] bg-white">
+    <div className="w-full overflow-hidden rounded-xl border border-[#ddd5c8] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
       <div className="grid grid-cols-3 md:grid-cols-6">
         {dimensions.map((dim, i) => {
           const tier = getDimensionTier(dim.value);
@@ -22,7 +22,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
             <div
               key={dim.name}
               className={`px-2.5 py-4 text-center transition-colors hover:bg-[#f2ede6] ${
-                i < dimensions.length - 1 ? "border-r border-[#e8e0d3]" : ""
+                i < dimensions.length - 1 ? "border-r border-[#ddd5c8]" : ""
               }`}
             >
               <p className="mb-1.5 text-[10px] text-[#8a8a9a]">

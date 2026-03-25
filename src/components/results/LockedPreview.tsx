@@ -13,7 +13,7 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
   return (
     <div className="mt-[18px] flex flex-col gap-2">
       {!isPlus && (
-        <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[#e8e0d3] bg-[#f2ede6] px-5 py-3.5 transition-colors hover:bg-[#e8e0d3]">
+        <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] px-5 py-3.5 transition-colors hover:bg-[#e8e0d3]">
           <span className="shrink-0 text-[15px] opacity-25">🔒</span>
           <span className="flex-1 text-xs leading-relaxed text-[#8a8a9a]">
             {isHu
@@ -25,7 +25,7 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
           </span>
         </div>
       )}
-      <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[#e8e0d3] bg-[#f2ede6] px-5 py-3.5 transition-colors hover:bg-[#e8e0d3]">
+      <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] px-5 py-3.5 transition-colors hover:bg-[#e8e0d3]">
         <span className="shrink-0 text-[15px] opacity-25">🔒</span>
         <span className="flex-1 text-xs leading-relaxed text-[#8a8a9a]">
           {isHu

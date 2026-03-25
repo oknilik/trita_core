@@ -15,7 +15,7 @@ export function WorkStyleSection({ introText, dimensions, isUnlocked }: WorkStyl
   if (!isUnlocked) return null;
 
   return (
-    <div className="border-t border-[#e8e0d3] py-8">
+    <div className="border-t border-[#ddd5c8] py-8">
       {/* Intro banner */}
       <div className="mb-6 rounded-xl border-[1.5px] border-[#c17f4a]/20 bg-[#fdf5ee] p-5">
         <p className="font-fraunces text-sm italic leading-relaxed text-[#4a4a5e]">

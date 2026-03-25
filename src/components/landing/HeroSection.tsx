@@ -190,7 +190,7 @@ function TeamPanel() {
   return (
     <>
       {/* Member list card */}
-      <div className="overflow-hidden rounded-[14px] border border-white/7 bg-white/4">
+      <div className="overflow-hidden rounded-xl border border-white/7 bg-white/4">
         <div className="flex items-center justify-between border-b border-white/6 p-3 px-4">
           <span className="font-dm-sans text-[10px] uppercase tracking-wide text-white/30">
             {t("landing.teamPanelHeader", locale)}

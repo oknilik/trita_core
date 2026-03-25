@@ -215,8 +215,8 @@ export function PricingSection({ locale }: { locale: Locale }) {
                   features={plan.features}
                   badge={plan.badge}
                   ctaHref={plan.ctaHref}
-                  ctaLabel={plan.id === "solo" ? c.startSolo : c.startFree}
-                  featured={plan.id === "solo"}
+                  ctaLabel={plan.id === "self_plus" ? c.startSolo : c.startFree}
+                  featured={plan.id === "self_plus"}
                 />
               ))}
             </div>

@@ -105,7 +105,7 @@ export function ComparisonTab({
 
   if (!hasObserverData) {
     return (
-      <div className="rounded-2xl border-[1.5px] border-[#e8e0d3] bg-[#f2ede6] p-8 text-center">
+      <div className="rounded-2xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] p-8 text-center">
         <span className="mb-2.5 inline-block text-[32px] opacity-20">📊</span>
         <h3 className="mb-1.5 font-fraunces text-[18px] text-[#1a1a2e]">
           {isHu ? "Összehasonlítás" : "Comparison"}
@@ -143,7 +143,7 @@ export function ComparisonTab({
       </div>
 
       {/* 2. Overview card */}
-      <div className="rounded-[14px] border-[1.5px] border-[#e8e0d3] bg-white p-5">
+      <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-5">
         <div className="mb-4 flex items-center gap-3">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg"
@@ -277,7 +277,7 @@ export function ComparisonTab({
             const dir = bs.observer > bs.self;
             const insight = getInsight(bs.code, bs.self, bs.observer);
             return (
-              <div key={bs.code} className="rounded-[14px] border-l-4 bg-[#fdf5ee] p-4 px-[18px]" style={{ borderLeftColor: "#c17f4a" }}>
+              <div key={bs.code} className="rounded-xl border-l-4 bg-[#fdf5ee] p-4 px-[18px]" style={{ borderLeftColor: "#c17f4a" }}>
                 <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a5530]">
                   {isHu ? "Lehetséges vakfolt" : "Possible blind spot"}
                 </p>
@@ -304,7 +304,7 @@ export function ComparisonTab({
           })}
 
           {noBlindspotDims.length > 0 && (
-            <div className="rounded-[14px] border-l-4 bg-[#e8f2f0] p-4 px-[18px]" style={{ borderLeftColor: "#3d6b5e" }}>
+            <div className="rounded-xl border-l-4 bg-[#e8f2f0] p-4 px-[18px]" style={{ borderLeftColor: "#3d6b5e" }}>
               <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#1e3d34]">
                 {isHu ? "Nincs vakfolt" : "No blind spot"}
               </p>

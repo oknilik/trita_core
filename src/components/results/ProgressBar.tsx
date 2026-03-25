@@ -47,7 +47,7 @@ function PackageCard({
         "flex flex-1 flex-col rounded-xl border-[1.5px] p-3.5 transition-all",
         owned && "border-[#3d6b5e] bg-[#e8f2f0] opacity-70",
         recommended && !owned && "border-[#c17f4a] bg-[#fdf5ee]",
-        !owned && !recommended && "border-[#e8e0d3] hover:-translate-y-px hover:border-[#3d6b5e]",
+        !owned && !recommended && "border-[#ddd5c8] hover:-translate-y-px hover:border-[#3d6b5e]",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -103,7 +103,7 @@ function PackageCard({
           buttonStyle === "bronze" &&
             "bg-[#c17f4a] text-white hover:brightness-110",
           buttonStyle === "ghost" &&
-            "border border-[#e8e0d3] bg-transparent text-[#8a8a9a] hover:bg-[#f2ede6]",
+            "border border-[#ddd5c8] bg-transparent text-[#8a8a9a] hover:bg-[#f2ede6]",
           buttonStyle === "done" &&
             "cursor-default bg-[#e8f2f0] text-[#1e3d34]",
         ]
@@ -196,7 +196,7 @@ export function ProgressBar({
       : (isHu ? "€5 kedvezmény, mert van Plus-od" : "€5 discount because you have Plus");
 
   return (
-    <div className="overflow-hidden rounded-[14px] border-[1.5px] border-[#e8e0d3] bg-white">
+    <div className="overflow-hidden rounded-xl border-[1.5px] border-[#ddd5c8] bg-white">
       {/* Header */}
       <button
         type="button"
@@ -248,12 +248,12 @@ export function ProgressBar({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-[#e8e0d3]">
+            <div className="border-t border-[#ddd5c8]">
               {/* Completed steps */}
               {completedSteps.map((step) => (
                 <div
                   key={step.name}
-                  className="flex items-center gap-3 border-b border-[#e8e0d3] px-5 py-3 opacity-65"
+                  className="flex items-center gap-3 border-b border-[#ddd5c8] px-5 py-3 opacity-65"
                 >
                   <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3d6b5e] text-[10px] text-white">
                     ✓
@@ -271,7 +271,7 @@ export function ProgressBar({
               ))}
 
               {/* Divider */}
-              <div className="flex items-center gap-2.5 border-b border-[#e8e0d3] px-5 py-2">
+              <div className="flex items-center gap-2.5 border-b border-[#ddd5c8] px-5 py-2">
                 <div className="h-px flex-1 bg-[#e8e0d3]" />
                 <span className="text-[9px] uppercase tracking-widest text-[#8a8a9a]">
                   {isHu ? "Mélyíts a profilodon" : "Deepen your profile"}
@@ -280,7 +280,7 @@ export function ProgressBar({
               </div>
 
               {/* Package cards */}
-              <div className="flex gap-2.5 border-b border-[#e8e0d3] px-5 py-3">
+              <div className="flex gap-2.5 border-b border-[#ddd5c8] px-5 py-3">
                 <PackageCard
                   name="Self Plus"
                   price={hasSelfPlus ? null : "€7"}
@@ -314,7 +314,7 @@ export function ProgressBar({
 
               {/* Observer step: send invitations */}
               <div
-                className={`flex items-center gap-3 border-b border-[#e8e0d3] px-5 py-3 ${!hasSelfReflect ? "opacity-45" : ""}`}
+                className={`flex items-center gap-3 border-b border-[#ddd5c8] px-5 py-3 ${!hasSelfReflect ? "opacity-45" : ""}`}
               >
                 <div
                   className={[
@@ -323,7 +323,7 @@ export function ProgressBar({
                       ? "bg-[#3d6b5e] text-[10px] text-white"
                       : hasSelfReflect
                         ? "border-2 border-[#c17f4a]"
-                        : "border-[1.5px] border-dashed border-[#e8e0d3]",
+                        : "border-[1.5px] border-dashed border-[#ddd5c8]",
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -377,7 +377,7 @@ export function ProgressBar({
                       ? "bg-[#3d6b5e] text-[10px] text-white"
                       : observersSent
                         ? "border-2 border-[#c17f4a]"
-                        : "border-[1.5px] border-dashed border-[#e8e0d3]",
+                        : "border-[1.5px] border-dashed border-[#ddd5c8]",
                   ]
                     .filter(Boolean)
                     .join(" ")}

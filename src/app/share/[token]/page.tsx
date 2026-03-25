@@ -170,7 +170,7 @@ export default async function SharedProfilePage({
             return (
               <div
                 key={dim.code}
-                className="rounded-[14px] p-4 px-[18px]"
+                className="rounded-xl p-4 px-[18px]"
                 style={{ backgroundColor: cardBg, border: `1.5px solid ${borderColor}` }}
               >
                 <div className="mb-2 flex items-center justify-between">
@@ -199,7 +199,7 @@ export default async function SharedProfilePage({
                 return (
                   <div
                     key={role}
-                    className={`flex flex-col rounded-[14px] ${
+                    className={`flex flex-col rounded-xl ${
                       isPrimary
                         ? "border-2 border-[#3d6b5e] bg-[#e8f2f0] p-[22px]"
                         : "border-[1.5px] border-[#e8e0d3] bg-white p-[18px]"

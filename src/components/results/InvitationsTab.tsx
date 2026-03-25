@@ -46,7 +46,7 @@ function LockedInvitations({ hasSelfPlus }: { hasSelfPlus: boolean }) {
   const price = hasSelfPlus ? "€7" : "€12";
 
   return (
-    <div className="rounded-2xl border-[1.5px] border-[#e8e0d3] bg-[#f2ede6] p-8 text-center">
+    <div className="rounded-2xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] p-8 text-center">
       <span className="mb-2.5 inline-block text-[32px] opacity-20">🔒</span>
       <h3 className="mb-1.5 font-fraunces text-[18px] text-[#1a1a2e]">
         {isHu ? "Visszajelzési meghívók" : "Feedback invitations"}
@@ -191,19 +191,19 @@ export function InvitationsTab({
 
       {/* 2. Stat cells */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="rounded-xl border-[1.5px] border-[#e8e0d3] bg-white p-3.5 text-center">
+        <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: completed.length > 0 ? "#3d6b5e" : "#1a1a2e" }}>
             {completed.length}
           </p>
           <p className="text-[10px] text-[#8a8a9a]">{isHu ? "beérkezett" : "received"}</p>
         </div>
-        <div className="rounded-xl border-[1.5px] border-[#e8e0d3] bg-white p-3.5 text-center">
+        <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: pending.length > 0 ? "#c17f4a" : "#1a1a2e" }}>
             {pending.length}
           </p>
           <p className="text-[10px] text-[#8a8a9a]">{isHu ? "függőben" : "pending"}</p>
         </div>
-        <div className="rounded-xl border-[1.5px] border-[#e8e0d3] bg-white p-3.5 text-center">
+        <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl text-[#1a1a2e]">{active.length}/5</p>
           <p className="text-[10px] text-[#8a8a9a]">{isHu ? "meghívó elküldve" : "invitations sent"}</p>
         </div>
@@ -226,7 +226,7 @@ export function InvitationsTab({
       </div>
 
       {/* 4. Create form */}
-      <div className="rounded-[14px] border-[1.5px] border-[#e8e0d3] bg-white p-[18px] px-5">
+      <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-[18px] px-5">
         <p className="mb-3 text-[13px] font-semibold text-[#1a1a2e]">
           + {isHu ? "Új meghívó létrehozása" : "Create new invitation"}
         </p>
@@ -240,7 +240,7 @@ export function InvitationsTab({
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 placeholder={isHu ? "Email cím (opcionális)" : "Email address (optional)"}
-                className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[#e8e0d3] bg-[#f7f4ef] px-3.5 py-2.5 text-[13px] text-[#1a1a2e] placeholder:text-[#8a8a9a] transition focus:border-[#3d6b5e] focus:outline-none"
+                className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[#ddd5c8] bg-[#f7f4ef] px-3.5 py-2.5 text-[13px] text-[#1a1a2e] placeholder:text-[#8a8a9a] transition focus:border-[#3d6b5e] focus:outline-none"
               />
               <button
                 type="button"
@@ -272,7 +272,7 @@ export function InvitationsTab({
 
       {/* 5. Invitation list or empty state */}
       {active.length === 0 ? (
-        <div className="rounded-[14px] border-[1.5px] border-dashed border-[#e8e0d3] bg-[#f2ede6] p-9 text-center">
+        <div className="rounded-xl border-[1.5px] border-dashed border-[#ddd5c8] bg-[#f2ede6] p-9 text-center">
           <span className="mb-2 inline-block text-[28px] opacity-25" style={{ color: "#8a8a9a" }}>👥</span>
           <p className="text-sm font-medium text-[#4a4a5e]">
             {isHu ? "Még nincs meghívód" : "No invitations yet"}
@@ -290,7 +290,7 @@ export function InvitationsTab({
                 {isHu ? `Beérkezett (${completed.length})` : `Received (${completed.length})`}
               </p>
               {completed.map((inv) => (
-                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#e8e0d3] bg-white px-4 py-3.5 transition-all hover:border-[#3d6b5e]/30 hover:shadow-sm">
+                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-white px-4 py-3.5 transition-all hover:border-[#3d6b5e]/30 hover:shadow-sm">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "#e8f2f0", color: "#3d6b5e" }}>✓</div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium text-[#1a1a2e]">
@@ -316,7 +316,7 @@ export function InvitationsTab({
                 {isHu ? `Függőben (${pending.length})` : `Pending (${pending.length})`}
               </p>
               {pending.map((inv) => (
-                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#e8e0d3] bg-white px-4 py-3.5 transition-all hover:border-[#c17f4a]/30 hover:shadow-sm">
+                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-white px-4 py-3.5 transition-all hover:border-[#c17f4a]/30 hover:shadow-sm">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail ? "#fdf5ee" : "#f2ede6", color: inv.observerEmail ? "#c17f4a" : "#8a8a9a" }}>
                     {inv.observerEmail ? "⏳" : "🔗"}
                   </div>
@@ -336,7 +336,7 @@ export function InvitationsTab({
                     <button
                       type="button"
                       onClick={() => handleCopy(inv.token)}
-                      className="min-h-[32px] rounded-lg border border-[#e8e0d3] bg-white px-2.5 py-1 text-[11px] font-medium text-[#8a8a9a] transition hover:bg-[#f2ede6]"
+                      className="min-h-[32px] rounded-lg border border-[#ddd5c8] bg-white px-2.5 py-1 text-[11px] font-medium text-[#8a8a9a] transition hover:bg-[#f2ede6]"
                     >
                       {copiedToken === inv.token ? (isHu ? "Másolva!" : "Copied!") : (isHu ? "Link" : "Link")}
                     </button>
@@ -344,7 +344,7 @@ export function InvitationsTab({
                       type="button"
                       onClick={() => handleDelete(inv.id)}
                       disabled={deletingId === inv.id}
-                      className="min-h-[32px] rounded-lg border border-[#e8e0d3] bg-white px-2.5 py-1 text-[11px] font-medium text-[#8a8a9a] transition hover:bg-[#f2ede6] disabled:opacity-50"
+                      className="min-h-[32px] rounded-lg border border-[#ddd5c8] bg-white px-2.5 py-1 text-[11px] font-medium text-[#8a8a9a] transition hover:bg-[#f2ede6] disabled:opacity-50"
                     >
                       {deletingId === inv.id ? "..." : "✕"}
                     </button>
@@ -358,7 +358,7 @@ export function InvitationsTab({
 
       {/* 6. Received invitations (where others invited this user) */}
       {receivedInvitations.length > 0 && (
-        <div className="border-t border-[#e8e0d3] pt-5">
+        <div className="border-t border-[#ddd5c8] pt-5">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-[#8a8a9a]">
             {isHu ? "Beérkező meghívók" : "Received invitations"}
           </p>
@@ -369,7 +369,7 @@ export function InvitationsTab({
             const isDone = inv.status === "COMPLETED";
 
             return (
-              <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#e8e0d3] bg-white px-4 py-3.5">
+              <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-white px-4 py-3.5">
                 <div
                   className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm"
                   style={{ backgroundColor: isDone ? "#e8f2f0" : "#f2ede6", color: isDone ? "#3d6b5e" : "#8a8a9a" }}

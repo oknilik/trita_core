@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 export type AuthIntent = "explore" | "team";
 
 interface IntentSelectorProps {
@@ -7,20 +9,23 @@ interface IntentSelectorProps {
   onChange: (intent: AuthIntent) => void;
 }
 
-const OPTIONS: { value: AuthIntent; icon: string; label: string; blurb: string }[] = [
-  {
-    value: "explore",
-    icon: "🪞",
-    label: "Önismeret",
-    blurb: "Töltsd ki a személyiségtesztet és nézd meg, hogyan látnak mások.",
-  },
-  {
-    value: "team",
-    icon: "👥",
-    label: "Csapatfejlesztés",
-    blurb: "Hívd meg a csapatodat, és elemezd a dinamikát heatmappal.",
-  },
+const OPTIONS: { value: AuthIntent; label: string }[] = [
+  { value: "explore", label: "Önismeret" },
+  { value: "team", label: "Csapatfejlesztés" },
 ];
+
+const ICONS: Record<AuthIntent, (active: boolean) => React.ReactNode> = {
+  explore: (active) => (
+    <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5 shrink-0" stroke={active ? "#3d6b5e" : "#8a8a9a"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="5" r="3" /><path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
+    </svg>
+  ),
+  team: (active) => (
+    <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5 shrink-0" stroke={active ? "#3d6b5e" : "#8a8a9a"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="5" r="2.5" /><circle cx="11" cy="5" r="2.5" /><path d="M1 14c0-2.5 2-4.5 5-4.5 1 0 1.8.2 2.5.6M8.5 14c0-2.5 2-4.5 5-4.5" />
+    </svg>
+  ),
+};
 
 export default function IntentSelector({ value, onChange }: IntentSelectorProps) {
   return (
@@ -40,7 +45,7 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
                   : "border-gray-100 bg-gray-50 hover:border-gray-200 hover:bg-white",
               ].join(" ")}
             >
-              <span className="mb-1 text-xl">{opt.icon}</span>
+              <span className="mb-1">{ICONS[opt.value](active)}</span>
               <span
                 className={[
                   "text-sm font-semibold",
@@ -53,9 +58,6 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
           );
         })}
       </div>
-      <p className="text-xs text-gray-500">
-        {OPTIONS.find((o) => o.value === value)?.blurb}
-      </p>
     </div>
   );
 }

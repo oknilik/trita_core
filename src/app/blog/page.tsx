@@ -75,7 +75,7 @@ export default async function BlogListPage() {
               {featured && (
                 <Link
                   href={`/blog/${featured.slug}`}
-                  className="group mb-7 grid grid-cols-1 overflow-hidden rounded-[14px] border-[1.5px] border-[#e8e0d3] transition-shadow hover:shadow-lg hover:shadow-black/[0.03] lg:grid-cols-[1fr_1.3fr]"
+                  className="group mb-7 grid grid-cols-1 overflow-hidden rounded-xl border-[1.5px] border-[#e8e0d3] transition-shadow hover:shadow-lg hover:shadow-black/[0.03] lg:grid-cols-[1fr_1.3fr]"
                 >
                   {/* Left: bronze visual with key stat */}
                   <div className="relative flex min-h-[160px] flex-col items-center justify-center bg-gradient-to-br from-[#c17f4a] via-[#a86b3d] to-[#8a5530] p-8 lg:min-h-[200px]">
@@ -114,7 +114,7 @@ export default async function BlogListPage() {
                     <h2 className="mb-1.5 font-fraunces text-xl leading-[1.2] text-[#1a1a2e]">
                       {featured.title}
                     </h2>
-                    <p className="mb-2.5 text-[13px] leading-relaxed text-[#8a8a9a]">
+                    <p className="mb-2.5 text-[13px] leading-relaxed text-[#4a4a5e]">
                       {featured.description}
                     </p>
                     <div className="flex items-center gap-2 text-[11px] text-[#8a8a9a]">
@@ -153,7 +153,7 @@ export default async function BlogListPage() {
                   <h2 className="mb-1 font-fraunces text-lg leading-[1.25] text-[#1a1a2e]">
                     {post.title}
                   </h2>
-                  <p className="max-w-[640px] text-[13px] leading-relaxed text-[#8a8a9a]">
+                  <p className="max-w-[640px] text-[13px] leading-relaxed text-[#4a4a5e]">
                     {post.description}
                   </p>
                   <div className="mt-2 flex items-center gap-3">

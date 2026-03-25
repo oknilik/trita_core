@@ -58,7 +58,7 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
       <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
         {isHu ? "Így jelenhetsz meg csapatban" : "How you show up in a team"}
       </h2>
-      <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[#8a8a9a]">
+      <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[#4a4a5e]">
         {isHu
           ? "A HEXACO mintázataid alapján ezek a csapatszerepek illenek hozzád."
           : "Based on your HEXACO patterns, these team roles suit you."}
@@ -75,10 +75,10 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
           return (
             <div
               key={role}
-              className={`flex cursor-pointer flex-col rounded-[14px] transition-all hover:-translate-y-0.5 hover:shadow-md ${
+              className={`flex cursor-pointer flex-col rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md ${
                 isPrimary
                   ? "border-2 border-[#3d6b5e] bg-[#e8f2f0] p-[22px]"
-                  : "border-[1.5px] border-[#e8e0d3] bg-white p-[18px]"
+                  : "border-[1.5px] border-[#ddd5c8] bg-white p-[18px]"
               }`}
             >
               {/* Badge */}
