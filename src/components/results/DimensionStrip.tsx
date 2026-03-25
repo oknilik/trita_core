@@ -14,7 +14,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
 
   return (
     <div className="w-full overflow-hidden rounded-xl border-b border-[#e8e0d3] bg-white">
-      <div className="grid grid-cols-6">
+      <div className="grid grid-cols-3 md:grid-cols-6">
         {dimensions.map((dim, i) => {
           const tier = getDimensionTier(dim.value);
           const colors = tierColors[tier];
