@@ -3,45 +3,73 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
-import { MobileDrawer } from "@/components/MobileDrawer";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 
-function GlobeButton() {
+// ─── Language switcher ────────────────────────────────────────────────────────
+
+function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" }) {
   const { locale, setLocale } = useLocale();
   const [open, setOpen] = useState(false);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest("[data-globe-menu]")) setOpen(false);
+      if (!target.closest("[data-lang-menu]")) setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  // Pill toggle variant (for mobile menu)
+  if (variant === "pills") {
+    return (
+      <div className="flex gap-2">
+        {SUPPORTED_LOCALES.map((loc) => (
+          <button
+            key={loc}
+            type="button"
+            onClick={() => setLocale(loc as Locale)}
+            className={[
+              "rounded-full px-4 py-1.5 text-[12px] font-medium transition-all",
+              loc === locale
+                ? "bg-[#3d6b5e] text-white"
+                : "bg-[#f2ede6] text-[#8a8a9a] hover:bg-[#e8e0d3]",
+            ].join(" ")}
+          >
+            {t(`locale.${loc}` as const, locale)}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // Dropdown variant (for desktop navbar)
   return (
-    <div className="relative" data-globe-menu>
+    <div className="relative" data-lang-menu>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={t("locale.label", locale)}
         aria-expanded={open}
-        className="flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 transition"
-        style={{ color: "#4a4a5e" }}
+        className={[
+          "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] text-[#8a8a9a] transition-all",
+          "hover:bg-[#f2ede6] hover:text-[#4a4a5e]",
+          open ? "bg-[#f2ede6] text-[#4a4a5e]" : "",
+        ].join(" ")}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M2 12h20" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
         </svg>
-        <span className="text-[11px] font-semibold uppercase tracking-wide">{locale.toUpperCase()}</span>
+        <span className="font-semibold uppercase tracking-wide">{locale.toUpperCase()}</span>
       </button>
-
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 min-w-[120px] overflow-hidden rounded-xl border border-[#e8e0d3] bg-[#faf9f6] py-1 shadow-[0_8px_24px_rgba(26,26,46,0.10)]">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[#e8e0d3] bg-white py-1 shadow-lg shadow-black/[0.04]">
           {SUPPORTED_LOCALES.map((loc) => {
             const isActive = loc === locale;
             return (
@@ -49,17 +77,17 @@ function GlobeButton() {
                 key={loc}
                 type="button"
                 onClick={() => { setLocale(loc as Locale); setOpen(false); }}
-                className="flex w-full items-center justify-between px-4 py-2.5 text-left text-[13px] transition-colors"
-                style={{
-                  color: isActive ? "#c17f4a" : "#4a4a5e",
-                  background: isActive ? "rgba(193,127,74,0.06)" : "transparent",
-                  fontWeight: isActive ? 600 : 400,
-                }}
+                className={[
+                  "flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[13px] transition-colors",
+                  isActive
+                    ? "bg-[#e8f2f0] font-medium text-[#3d6b5e]"
+                    : "text-[#4a4a5e] hover:bg-[#f2ede6]",
+                ].join(" ")}
               >
                 <span>{t(`locale.${loc}` as const, locale)}</span>
                 {isActive && (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 shrink-0" style={{ color: "#c17f4a" }}>
-                    <path fillRule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#3d6b5e]">
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                 )}
               </button>
@@ -71,139 +99,248 @@ function GlobeButton() {
   );
 }
 
-function NavCTAInner() {
-  const searchParams = useSearchParams();
-  const { locale } = useLocale();
-  const mode = searchParams.get("mode") ?? "self";
-  const isTeam = mode === "team";
+// ─── Active link helper ───────────────────────────────────────────────────────
+
+function isLinkActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname.startsWith(href);
+}
+
+// ─── Nav link ─────────────────────────────────────────────────────────────────
+
+function NavLink({ href, label, active }: { href: string; label: string; active: boolean }) {
   return (
     <Link
-      href={isTeam ? "/sign-up?type=team" : "/sign-up"}
+      href={href}
       className={[
-        "inline-flex min-h-[44px] items-center rounded-lg px-5 text-sm font-semibold text-white transition-colors",
-        isTeam ? "bg-[#3d6b5e] hover:bg-[#2d5a4e]" : "bg-[#c17f4a] hover:bg-[#9a6538]",
+        "relative py-4 text-[13px] transition-colors",
+        active ? "font-medium text-[#1a1a2e]" : "text-[#8a8a9a] hover:text-[#4a4a5e]",
       ].join(" ")}
     >
-      {isTeam ? t("nav.ctaTeam", locale) : t("nav.ctaSelf", locale)}
+      {label}
+      {active && (
+        <span className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-[#3d6b5e]" />
+      )}
     </Link>
   );
 }
 
-function NavCTA() {
-  const { locale } = useLocale();
-  return (
-    <Suspense
-      fallback={
-        <Link
-          href="/sign-up"
-          className="inline-flex min-h-[44px] items-center rounded-lg bg-[#c17f4a] px-5 text-sm font-semibold text-white"
-        >
-          {t("nav.ctaSelf", locale)}
-        </Link>
-      }
-    >
-      <NavCTAInner />
-    </Suspense>
-  );
-}
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
 
 export function NavBar() {
-  const { locale } = useLocale();
+  const { locale, setLocale } = useLocale();
   const { isSignedIn } = useAuth();
+  const { signOut } = useClerk();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [hasDraft, setHasDraft] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) setDrawerOpen(false);
   }, [isSignedIn]);
 
+  // Detect localStorage draft for guest CTA text
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    try {
+      const saved = localStorage.getItem("trita_draft_HEXACO");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const answers = parsed?.answers ?? parsed;
+        if (answers && Object.keys(answers).length > 0) setHasDraft(true);
+      }
+    } catch { /* ignore */ }
   }, []);
 
-  // Hide navbar on assessment/try pages (they have their own minimal nav)
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = drawerOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [drawerOpen]);
+
+  // Hide on assessment/try pages (they have their own minimal nav)
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
-  return (
-    <header className="sticky top-0 z-40 w-full bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
-      <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-10 lg:px-16">
+  const publicLinks = [
+    { href: "/", label: t("nav.home", locale) },
+    { href: "/blog", label: t("nav.blog", locale) },
+    { href: "/pricing", label: t("nav.pricing", locale) },
+    { href: "/founding", label: t("footer.navFounding", locale) },
+    { href: "/contact", label: t("footer.contact", locale) },
+  ];
 
-        {/* Row 1: logo + right side (always) */}
-        <div className="flex items-center justify-between py-3">
-          {/* Logo — signed-in users go to profile, signed-out to landing */}
+  const authLinks = [
+    { href: "/profile/results", label: t("nav.profile", locale) },
+    { href: "/blog", label: t("nav.blog", locale) },
+    { href: "/pricing", label: t("nav.pricing", locale) },
+    { href: "/founding", label: t("footer.navFounding", locale) },
+    { href: "/contact", label: t("footer.contact", locale) },
+  ];
+
+  const links = isSignedIn ? authLinks : publicLinks;
+
+  return (
+    <>
+      <header className="sticky top-0 z-40 border-b border-[#e8e0d3] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
+
+          {/* ═══ LOGO ═══ */}
           <Link
             href={isSignedIn ? "/profile/results" : "/"}
             aria-label="trita"
-            className="font-fraunces inline-flex items-baseline text-2xl font-black tracking-[-0.03em] text-ink"
+            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
           >
-            <span style={{ color: "#3d6b5e" }}>t</span>{"rit"}
-            <span className="text-bronze">a</span>
+            <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
           </Link>
 
-          <div className="flex-1" />
+          {/* ═══ CENTER LINKS — desktop only ═══ */}
+          <nav className="hidden items-center gap-6 lg:flex">
+            {links.map((link) => (
+              <NavLink
+                key={link.href}
+                href={link.href}
+                label={link.label}
+                active={isLinkActive(currentPath, link.href)}
+              />
+            ))}
+          </nav>
 
-          {/* Right side */}
-          <div className="flex items-center gap-1">
-          {/* Desktop nav — only lg+, fades on scroll */}
-          <nav
-            className={[
-              "hidden items-center gap-6 lg:flex transition-all duration-300",
-              scrolled ? "opacity-0 pointer-events-none" : "opacity-100",
-            ].join(" ")}
-          >
+          {/* ═══ RIGHT SIDE ═══ */}
+          <div className="flex items-center gap-2">
             <SignedOut>
-              <Link href="/blog" className="text-sm font-medium text-ink-body/60 transition-colors hover:text-ink-body">
-                {t("nav.blog", locale)}
-              </Link>
-              <Link href="/pricing" className="text-sm font-medium text-ink-body/60 transition-colors hover:text-ink-body">
-                {t("nav.pricing", locale)}
-              </Link>
-              <div className="h-4 w-px bg-ink-body/15" />
-              <Link href="/sign-in" className="text-sm font-medium text-ink-body transition-colors hover:text-bronze">
+              {/* Sign in — desktop only */}
+              <Link
+                href="/sign-in"
+                className="hidden rounded-lg border border-[#e8e0d3] bg-white px-4 py-[7px] text-[13px] text-[#4a4a5e] transition-all hover:border-[#8a8a9a] hover:bg-[#f2ede6] lg:inline-flex"
+              >
                 {t("nav.signIn", locale)}
               </Link>
-              <NavCTA />
+              {/* CTA — always visible */}
+              <Link
+                href="/try"
+                className="rounded-lg bg-[#c17f4a] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-[13px]"
+              >
+                {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+              </Link>
             </SignedOut>
+
             <SignedIn>
               <UserMenu />
             </SignedIn>
-          </nav>
 
-          {/* Globe — always visible, no auth gate to avoid hydration layout shift */}
-          <GlobeButton />
+            {/* Separator + Language — always visible */}
+            <div className="hidden h-5 w-px bg-[#e8e0d3] lg:block" />
+            <LanguageSwitcher />
 
-          {/* Hamburger — SignedIn, mobile only */}
-          <SignedIn>
+            {/* Hamburger — mobile */}
             <button
               type="button"
-              onClick={() => setDrawerOpen(true)}
+              onClick={() => setDrawerOpen((v) => !v)}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:bg-[#f5efe6] hover:text-ink lg:hidden"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#8a8a9a] lg:hidden"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                className="h-6 w-6"
-              >
-                <path d="M3 5 C6 3.8, 10 6.2, 13 5 C15 4.2, 16.5 4.8, 17 5" />
-                <path d="M3 10 C6 11.2, 10 8.8, 13 10 C15 10.8, 16.5 9.5, 17 10" />
-                <path d="M3 15 C6 13.8, 10 16.2, 13 15 C15 14.2, 16.5 14.8, 17 15" />
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
+                {drawerOpen ? (
+                  <><path d="M4 4l12 12" /><path d="M16 4L4 16" /></>
+                ) : (
+                  <><path d="M3 5h14" /><path d="M3 10h14" /><path d="M3 15h14" /></>
+                )}
               </svg>
             </button>
-          </SignedIn>
-        </div>{/* end right side */}
-        </div>{/* end row 1 */}
+          </div>
+        </div>
+      </header>
 
-        <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-      </div>
+      {/* ═══ MOBILE MENU — full screen ═══ */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden"
+          style={{ animation: "fade-in 150ms ease-out" }}
+        >
+          {/* Top bar — matches main navbar exactly */}
+          <div className="flex h-14 shrink-0 items-center justify-between border-b border-[#e8e0d3] bg-[rgba(250,249,246,0.95)] px-5">
+            <Link
+              href={isSignedIn ? "/profile/results" : "/"}
+              onClick={() => setDrawerOpen(false)}
+              className="font-fraunces text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
+            >
+              <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <SignedOut>
+                <Link
+                  href="/try"
+                  onClick={() => setDrawerOpen(false)}
+                  className="rounded-lg bg-[#c17f4a] px-4 py-[7px] text-[12px] font-semibold text-white"
+                >
+                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+                </Link>
+              </SignedOut>
+              <LanguageSwitcher />
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                className="flex h-8 w-8 items-center justify-center text-lg text-[#8a8a9a]"
+              >
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
+                  <path d="M4 4l12 12" /><path d="M16 4L4 16" />
+                </svg>
+              </button>
+            </div>
+          </div>
 
-    </header>
+          {/* Center links */}
+          <div className="flex flex-1 flex-col items-center justify-center gap-1 px-8">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setDrawerOpen(false)}
+                className={[
+                  "py-5 text-center font-fraunces text-xl transition-colors",
+                  isLinkActive(currentPath, link.href)
+                    ? "text-[#3d6b5e]"
+                    : "text-[#4a4a5e]",
+                ].join(" ")}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+          </div>
+
+          {/* Bottom buttons */}
+          <div className="shrink-0 px-5 pb-8 pt-4">
+            <SignedOut>
+              <div className="flex gap-3">
+                <Link
+                  href="/sign-in"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex flex-1 items-center justify-center rounded-xl border border-[#e8e0d3] bg-white py-3.5 text-[14px] font-medium text-[#4a4a5e]"
+                >
+                  {t("nav.signIn", locale)}
+                </Link>
+                <Link
+                  href="/try"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex flex-1 items-center justify-center rounded-xl bg-[#c17f4a] py-3.5 text-[14px] font-semibold text-white"
+                >
+                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+                </Link>
+              </div>
+            </SignedOut>
+            <SignedIn>
+              <button
+                type="button"
+                onClick={() => { signOut(); setDrawerOpen(false); }}
+                className="w-full rounded-xl border border-[#e8e0d3] py-3.5 text-center text-[14px] text-[#8a8a9a]"
+              >
+                {t("nav.signOut", locale)}
+              </button>
+            </SignedIn>
+          </div>
+        </div>
+      )}
+
+    </>
   );
 }

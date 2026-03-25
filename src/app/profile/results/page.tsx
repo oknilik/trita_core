@@ -128,22 +128,28 @@ export default async function ProfileResultsPage({
     if (hasDraft) {
       const isHu = locale === "hu";
       return (
-        <main className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-          <p className="mb-2 text-3xl">📝</p>
-          <h1 className="font-fraunces text-2xl text-[#1a1a2e]">
-            {isHu ? "A teszted folyamatban van" : "Your assessment is in progress"}
-          </h1>
-          <p className="mt-2 max-w-md text-sm text-[#8a8a9a]">
-            {isHu
-              ? "Mentettük a haladásodat — ott folytathatod, ahol abbahagytad."
-              : "We saved your progress — you can continue where you left off."}
-          </p>
-          <a
-            href="/assessment"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-lg bg-[#3d6b5e] px-6 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-[1.06]"
-          >
-            {isHu ? "Folytatom a tesztet →" : "Continue assessment →"}
-          </a>
+        <main className="-mx-4 -my-8 flex min-h-[80dvh] flex-col items-center justify-center bg-[#f7f4ef] px-6 py-16 text-center">
+          <div className="w-full max-w-sm">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e8f2f0]">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3d6b5e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+            </div>
+            <h1 className="font-fraunces text-2xl tracking-tight text-[#1a1a2e] md:text-3xl">
+              {isHu ? "A teszted folyamatban van" : "Your assessment is in progress"}
+            </h1>
+            <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[#8a8a9a]">
+              {isHu
+                ? "Mentettük a haladásodat — ott folytathatod, ahol abbahagytad."
+                : "We saved your progress — you can continue where you left off."}
+            </p>
+            <a
+              href="/assessment"
+              className="mt-8 inline-flex min-h-[52px] items-center rounded-xl bg-[#3d6b5e] px-8 text-[15px] font-semibold text-white shadow-md shadow-[#3d6b5e]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            >
+              {isHu ? "Folytatom a tesztet →" : "Continue assessment →"}
+            </a>
+          </div>
         </main>
       );
     }
