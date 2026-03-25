@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-
-const DEFAULT_AVATAR = "/avatars/avatar-1.png";
 import { usePathname } from "next/navigation";
 import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { createPortal } from "react-dom";
@@ -28,12 +25,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     }
     return null;
   });
-  const [avatarSrc, setAvatarSrc] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
-    }
-    return DEFAULT_AVATAR;
-  });
   const [orgRole, setOrgRole] = useState<string | null>(null);
   const [accessLevel, setAccessLevel] = useState<string | null>(null);
 
@@ -47,10 +38,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         if (data.username) {
           setProfileName(data.username);
           window.localStorage.setItem("trita_username", data.username);
-        }
-        if (data.avatarUrl) {
-          setAvatarSrc(data.avatarUrl);
-          window.localStorage.setItem("trita_avatar", data.avatarUrl);
         }
         setOrgRole(data.orgMemberships?.[0]?.role ?? null);
         setAccessLevel(data.accessLevel ?? null);
@@ -141,14 +128,9 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             <SignedIn>
               <div className="border-b border-sand px-5 py-5">
                 <div className="flex items-start gap-3">
-                  <Image
-                    src={avatarSrc}
-                    alt="Avatar"
-                    width={48}
-                    height={48}
-                    unoptimized
-                    className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
-                  />
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3d6b5e] to-[#2a5244] font-fraunces text-lg font-medium text-white">
+                    {initials}
+                  </div>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-ink">
                       {t("userMenu.greetingPrefix", locale)}

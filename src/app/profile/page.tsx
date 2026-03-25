@@ -1,95 +1,58 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-
-import { AVATAR_OPTIONS, DEFAULT_AVATAR, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
-
-
-import { useUser } from "@clerk/nextjs";
-import { AnimatePresence, motion } from "framer-motion";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { ConfirmModal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { FadeIn } from "@/components/landing/FadeIn";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, type Locale } from "@/lib/i18n";
-import { SUPPORTED_LOCALES } from "@/lib/i18n";
+import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
-import {
-  GENDER_OPTIONS,
-} from "@/lib/onboarding-options";
+import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 
-const LOCALE_META: Record<Locale, { flag: string; label: string }> = {
-  hu: { flag: "🇭🇺", label: "HU" },
-  en: { flag: "🇬🇧", label: "EN" },
-};
-
-type FormSnapshot = {
-  username: string;
-  birthYear: string;
-  gender: string;
-  country: string;
-};
-
+type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type SaveState = "idle" | "saving" | "saved" | "error";
-type InvalidField =
-  | "username"
-  | "birthYear"
-  | "gender"
-  | "country";
+type InvalidField = "username" | "birthYear" | "gender" | "country";
+
 const DELETE_GOODBYE_MS = 1300;
 
 export default function ProfilePage() {
   const router = useRouter();
   const { isLoaded, isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
   const { locale, setLocale } = useLocale();
   const { showToast } = useToast();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [email, setEmail] = useState<string | null>(null);
-  const [org, setOrg] = useState<{ id: string; name: string; role: string } | null>(null);
-  const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
-
-  const [avatarSrc, setAvatarSrc] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return window.localStorage.getItem("trita_avatar") ?? DEFAULT_AVATAR;
-    }
-    return DEFAULT_AVATAR;
-  });
-  const [pendingAvatarUrl, setPendingAvatarUrl] = useState<string>(avatarSrc);
-  const [avatarsExpanded, setAvatarsExpanded] = useState(false);
+  const [accessLevel, setAccessLevel] = useState<string | null>(null);
+  const [lastAssessment, setLastAssessment] = useState<string | null>(null);
 
   // Demographics
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
+  const [initialSnapshot, setInitialSnapshot] = useState<FormSnapshot | null>(null);
   const [isSavingDemo, setIsSavingDemo] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
-  const [initialSnapshot, setInitialSnapshot] = useState<FormSnapshot | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [selectedLocale, setSelectedLocale] = useState<Locale>(locale);
   const [savedLocale, setSavedLocale] = useState<Locale>(locale);
   const [invalidFieldFlash, setInvalidFieldFlash] = useState<InvalidField | null>(null);
   const invalidFlashTimerRef = useRef<number | null>(null);
-
+  const [usernameTouched, setUsernameTouched] = useState(false);
+  const [birthYearTouched, setBirthYearTouched] = useState(false);
   const usernameInputRef = useRef<HTMLInputElement>(null);
   const birthYearInputRef = useRef<HTMLInputElement>(null);
   const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
   const countryFieldRef = useRef<HTMLDivElement>(null);
 
-  // Touch state for blur validation
-  const [usernameTouched, setUsernameTouched] = useState(false);
-  const [birthYearTouched, setBirthYearTouched] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
-  const countryLabel = useMemo(
-    () => countryOptions.find((c) => c.value === country)?.label,
-    [country, countryOptions],
-  );
+  const countryLabel = useMemo(() => countryOptions.find((c) => c.value === country)?.label, [country, countryOptions]);
 
   const loadDemographics = useCallback(async () => {
     try {
@@ -97,38 +60,22 @@ export default function ProfilePage() {
       if (!res.ok) return;
       const data = await res.json();
       setEmail(data.email ?? null);
-      if (data.orgMemberships?.length > 0) {
-        const m = data.orgMemberships[0];
-        setOrg({ id: m.org.id, name: m.org.name, role: m.role });
-      }
-      if (data.teamMemberships?.length > 0) {
-        setTeams(data.teamMemberships.map((tm: { team: { id: string; name: string } }) => tm.team));
-      }
-      const snapshot: FormSnapshot = {
+      setAccessLevel(data.accessLevel ?? null);
+      const snap: FormSnapshot = {
         username: data.username ?? "",
         birthYear: data.birthYear ? String(data.birthYear) : "",
         gender: data.gender ?? "",
         country: data.country ?? "",
       };
-      setUsername(snapshot.username);
-      setBirthYear(snapshot.birthYear);
-      setGender(snapshot.gender);
-      setCountry(snapshot.country);
-      setInitialSnapshot(snapshot);
-      if (data.avatarUrl) {
-        setAvatarSrc(data.avatarUrl);
-        setPendingAvatarUrl(data.avatarUrl);
-        window.localStorage.setItem("trita_avatar", data.avatarUrl);
-      }
-    } catch {
-      // silent — non-critical
-    }
+      setUsername(snap.username);
+      setBirthYear(snap.birthYear);
+      setGender(snap.gender);
+      setCountry(snap.country);
+      setInitialSnapshot(snap);
+    } catch { /* silent */ }
   }, []);
 
-  useEffect(() => {
-    if (!isSignedIn) return;
-    loadDemographics();
-  }, [isSignedIn, loadDemographics]);
+  useEffect(() => { if (isSignedIn) loadDemographics(); }, [isSignedIn, loadDemographics]);
 
   useEffect(() => {
     if (saveState !== "saved" && saveState !== "error") return;
@@ -136,584 +83,267 @@ export default function ProfilePage() {
     return () => window.clearTimeout(timer);
   }, [saveState]);
 
-  useEffect(() => {
-    return () => {
-      if (invalidFlashTimerRef.current !== null) {
-        window.clearTimeout(invalidFlashTimerRef.current);
-      }
-    };
-  }, []);
+  useEffect(() => { return () => { if (invalidFlashTimerRef.current !== null) window.clearTimeout(invalidFlashTimerRef.current); }; }, []);
 
   useEffect(() => {
-    setSavedLocale((prevSaved) => {
-      setSelectedLocale((current) => (current === prevSaved ? locale : current));
-      return locale;
-    });
+    setSavedLocale((prev) => { setSelectedLocale((cur) => (cur === prev ? locale : cur)); return locale; });
   }, [locale]);
 
   if (!isLoaded) {
     return (
-      <div className="min-h-dvh bg-cream">
-        <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
-          <div className="animate-pulse rounded border border-sand bg-warm-mid p-6">
+      <div className="min-h-dvh bg-[#f7f4ef]">
+        <div className="mx-auto max-w-[640px] px-5 py-10">
+          <div className="animate-pulse">
             <div className="flex items-center gap-4">
-              <div className="h-11 w-11 rounded-full bg-sand" />
-              <div>
-                <div className="h-5 w-40 rounded bg-sand" />
-                <div className="mt-2 h-3.5 w-52 rounded bg-sand" />
-              </div>
+              <div className="h-14 w-14 rounded-full bg-[#e8e0d3]" />
+              <div><div className="h-5 w-40 rounded bg-[#e8e0d3]" /><div className="mt-2 h-3 w-52 rounded bg-[#e8e0d3]" /></div>
             </div>
+            <div className="mt-8 h-60 rounded-xl bg-[#e8e0d3]" />
           </div>
-          <div className="animate-pulse rounded border border-sand bg-white p-6">
-            <div className="h-5 w-48 rounded bg-sand" />
-            <div className="mt-4 h-4 w-72 rounded bg-sand" />
-            <div className="mt-6 flex flex-col gap-4">
-              <div className="h-11 rounded bg-sand" />
-              <div className="h-11 rounded bg-sand" />
-              <div className="h-20 rounded bg-sand" />
-            </div>
-          </div>
-        </main>
+        </div>
       </div>
     );
   }
 
-  if (!isSignedIn) {
-    router.push("/sign-in");
-    return null;
-  }
+  if (!isSignedIn) { router.push("/sign-in"); return null; }
 
-  const initials =
-    (username.trim() || user?.username || user?.primaryEmailAddress?.emailAddress || "?")
-      .slice(0, 1)
-      .toUpperCase();
-  const displayName =
-    username.trim() ||
-    user?.username ||
-    user?.firstName ||
-    t("common.userFallback", locale);
+  const initials = (username.trim() || user?.primaryEmailAddress?.emailAddress || "?").slice(0, 1).toUpperCase();
+  const displayName = username.trim() || user?.username || user?.firstName || t("common.userFallback", locale);
 
-  // Dynamic validation based on current year
   const currentYear = new Date().getFullYear();
   const minBirthYear = currentYear - 100;
   const maxBirthYear = currentYear - 16;
-
-  const usernameValid =
-    username.trim().length >= 2 && username.trim().length <= 20;
-
+  const usernameValid = username.trim().length >= 2 && username.trim().length <= 20;
   const birthYearNum = Number(birthYear);
-  const birthYearValid =
-    birthYear !== "" &&
-    birthYear.length === 4 &&
-    Number.isInteger(birthYearNum) &&
-    birthYearNum >= minBirthYear &&
-    birthYearNum <= maxBirthYear;
+  const birthYearValid = birthYear !== "" && birthYear.length === 4 && Number.isInteger(birthYearNum) && birthYearNum >= minBirthYear && birthYearNum <= maxBirthYear;
+  const canSaveDemo = usernameValid && birthYearValid && gender !== "" && country !== "";
 
-  const canSaveDemo =
-    usernameValid &&
-    birthYearValid &&
-    gender !== "" &&
-    country !== "";
-
-  const isDemographicsDirty =
-    initialSnapshot != null &&
-    (username.trim() !== initialSnapshot.username ||
-      birthYear !== initialSnapshot.birthYear ||
-      gender !== initialSnapshot.gender ||
-      country !== initialSnapshot.country);
+  const isDemographicsDirty = initialSnapshot != null && (username.trim() !== initialSnapshot.username || birthYear !== initialSnapshot.birthYear || gender !== initialSnapshot.gender || country !== initialSnapshot.country);
   const isLocaleDirty = selectedLocale !== savedLocale;
-  const isAvatarDirty = pendingAvatarUrl !== avatarSrc;
-  const isDirty = isDemographicsDirty || isLocaleDirty || isAvatarDirty;
+  const isDirty = isDemographicsDirty || isLocaleDirty;
   const canSubmitDemo = !isSavingDemo && isDirty && (!isDemographicsDirty || canSaveDemo);
-  const showSaveBar = isDirty || saveState !== "idle";
 
   const flashInvalidField = (field: InvalidField) => {
     setInvalidFieldFlash(field);
-    if (invalidFlashTimerRef.current !== null) {
-      window.clearTimeout(invalidFlashTimerRef.current);
-    }
-    invalidFlashTimerRef.current = window.setTimeout(() => {
-      setInvalidFieldFlash(null);
-      invalidFlashTimerRef.current = null;
-    }, 1200);
+    if (invalidFlashTimerRef.current !== null) window.clearTimeout(invalidFlashTimerRef.current);
+    invalidFlashTimerRef.current = window.setTimeout(() => { setInvalidFieldFlash(null); invalidFlashTimerRef.current = null; }, 1200);
   };
-
-  const focusAndFlashInvalidField = (field: InvalidField) => {
+  const focusAndFlash = (field: InvalidField) => {
     flashInvalidField(field);
     window.setTimeout(() => {
       if (field === "username") usernameInputRef.current?.focus();
       if (field === "birthYear") birthYearInputRef.current?.focus();
       if (field === "gender") genderFirstButtonRef.current?.focus();
-      if (field === "country") {
-        countryFieldRef.current?.querySelector("button")?.focus();
-      }
+      if (field === "country") countryFieldRef.current?.querySelector("button")?.focus();
     }, 20);
   };
-
-  const focusFirstInvalidField = () => {
-    if (!usernameValid) { focusAndFlashInvalidField("username"); return; }
-    if (!birthYearValid) { focusAndFlashInvalidField("birthYear"); return; }
-    if (gender === "") { focusAndFlashInvalidField("gender"); return; }
-    if (country === "") { focusAndFlashInvalidField("country"); }
+  const focusFirstInvalid = () => {
+    if (!usernameValid) { focusAndFlash("username"); return; }
+    if (!birthYearValid) { focusAndFlash("birthYear"); return; }
+    if (gender === "") { focusAndFlash("gender"); return; }
+    if (country === "") { focusAndFlash("country"); }
   };
 
-  const handleSaveDemographics = async () => {
+  const handleSave = async () => {
     if (isSavingDemo) return;
-    if (isDemographicsDirty && !canSaveDemo) {
-      setUsernameTouched(true);
-      setBirthYearTouched(true);
-      focusFirstInvalidField();
-      return;
-    }
+    if (isDemographicsDirty && !canSaveDemo) { setUsernameTouched(true); setBirthYearTouched(true); focusFirstInvalid(); return; }
     if (!isDirty) return;
-    setSaveState("saving");
-    setIsSavingDemo(true);
+    setSaveState("saving"); setIsSavingDemo(true);
     try {
-      if (isDemographicsDirty || isAvatarDirty) {
-        const res = await fetch("/api/profile/onboarding", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username.trim(),
-            birthYear: Number(birthYear),
-            gender,
-            country,
-            ...(isAvatarDirty && { avatarUrl: pendingAvatarUrl }),
-          }),
-        });
+      if (isDemographicsDirty) {
+        const res = await fetch("/api/profile/onboarding", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: username.trim(), birthYear: Number(birthYear), gender, country }) });
         if (!res.ok) throw new Error("Save failed");
-        setInitialSnapshot({
-          username: username.trim(),
-          birthYear,
-          gender,
-          country,
-        });
-        if (isAvatarDirty) {
-          setAvatarSrc(pendingAvatarUrl);
-          window.localStorage.setItem("trita_avatar", pendingAvatarUrl);
-        }
+        setInitialSnapshot({ username: username.trim(), birthYear, gender, country });
       }
-      if (isLocaleDirty) {
-        setLocale(selectedLocale);
-        setSavedLocale(selectedLocale);
-      }
+      if (isLocaleDirty) { setLocale(selectedLocale); setSavedLocale(selectedLocale); }
       setSaveState("saved");
-
-      // Notify UserMenu to refresh profile name
       window.dispatchEvent(new CustomEvent("profile-updated"));
-    } catch {
-      setSaveState("error");
-    } finally {
-      setIsSavingDemo(false);
-    }
+    } catch { setSaveState("error"); } finally { setIsSavingDemo(false); }
   };
 
   const handleDeleteConfirm = async () => {
     if (isDeleting) return;
-    let deleted = false;
-    setIsDeleting(true);
+    let deleted = false; setIsDeleting(true);
     try {
-      const response = await fetch("/api/profile/delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ confirm: "DELETE" }),
-      });
-      if (!response.ok) {
-        throw new Error("Delete failed");
-      }
+      const res = await fetch("/api/profile/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm: "DELETE" }) });
+      if (!res.ok) throw new Error("Delete failed");
       deleted = true;
-      // Clear all trita-related localStorage data so old drafts don't survive re-registration
-      try {
-        for (const key of Object.keys(localStorage)) {
-          if (key.startsWith("trita_")) localStorage.removeItem(key);
-        }
-      } catch {}
-      await new Promise((resolve) => window.setTimeout(resolve, DELETE_GOODBYE_MS));
-      setShowDeleteModal(false);
-      window.location.href = "/";
-    } catch (error) {
-      console.error(error);
-      showToast(t("profile.deleteError", locale), "error");
-      setShowDeleteModal(false);
-    } finally {
-      if (!deleted) {
-        setIsDeleting(false);
-      }
-    }
+      try { for (const key of Object.keys(localStorage)) { if (key.startsWith("trita_")) localStorage.removeItem(key); } } catch {}
+      await new Promise((r) => window.setTimeout(r, DELETE_GOODBYE_MS));
+      setShowDeleteModal(false); window.location.href = "/";
+    } catch (e) { console.error(e); showToast(t("profile.deleteError", locale), "error"); setShowDeleteModal(false); } finally { if (!deleted) setIsDeleting(false); }
   };
 
-  const toggleClass = (isActive: boolean) =>
-    `min-h-[44px] rounded-full border px-4 py-1.5 text-[12px] font-medium transition-colors ${
-      isActive
-        ? "border-sage bg-[#fce7d6] font-semibold text-bronze"
-        : "border-sand bg-white text-ink-body hover:border-sage hover:text-bronze"
+  const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>
+    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-[13px] text-[#1a1a2e] outline-none transition-all ${
+      touched && value !== "" && !valid
+        ? "border-rose-300 bg-rose-50/50"
+        : "border-[#e8e0d3] bg-white focus:border-[#3d6b5e] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+    } ${invalidFieldFlash === field ? "ring-2 ring-rose-300" : ""}`;
+
+  const pillClass = (active: boolean) =>
+    `min-h-[44px] rounded-full border-[1.5px] px-[18px] py-2 text-xs transition-all ${
+      active
+        ? "border-[#3d6b5e] bg-[#3d6b5e] text-white shadow-md shadow-[#3d6b5e]/15"
+        : "border-[#e8e0d3] bg-[#f2ede6] text-[#8a8a9a] hover:border-[#5a8f7f] hover:bg-[#e8f2f0] hover:text-[#3d6b5e]"
     }`;
 
-  const roleLabel =
-    org?.role === "ORG_ADMIN"
-      ? "Admin"
-      : org?.role === "ORG_MANAGER"
-      ? (locale === "en" ? "Manager" : "Menedzser")
-      : org?.role
-      ? (locale === "en" ? "Member" : "Tag")
-      : "";
-  const metaParts = [org?.name, teams.map((tm) => tm.name).join(", ") || null, roleLabel || null].filter(Boolean);
+  const planLabel = accessLevel === "self_reflect" ? "Self Reflect" : accessLevel === "self_plus" ? "Self Plus" : "Self Start";
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pt-8 pb-20">
+    <div className="min-h-dvh bg-[#f7f4ef]">
+      <div className="mx-auto max-w-[640px] px-5 pb-12 lg:px-0">
 
-        {/* ── Profile header ── */}
-        <FadeIn delay={0}>
-          <section className="rounded-xl bg-ink px-6 py-5">
-            <div className="flex items-center gap-4">
-              <Image
-                src={avatarSrc}
-                alt="Avatar"
-                width={48}
-                height={48}
-                unoptimized
-                className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#2a2824]"
+        {/* ═══ HERO ═══ */}
+        <div className="border-b border-[#e8e0d3] py-7">
+          <div className="mb-2.5 flex items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3d6b5e] to-[#2a5244] font-fraunces text-[22px] font-medium text-white shadow-md shadow-[#3d6b5e]/15">
+              {initials}
+            </div>
+            <div className="min-w-0">
+              <h1 className="truncate font-fraunces text-xl text-[#1a1a2e]">{displayName}</h1>
+              <p className="text-xs text-[#8a8a9a]">{email}</p>
+            </div>
+          </div>
+          <p className="text-xs leading-relaxed text-[#8a8a9a]">
+            {t("profile.heroSubtitle", locale)}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-4">
+            <span className="flex items-center gap-[5px] text-[11px] text-[#8a8a9a]">
+              <span className="h-[5px] w-[5px] rounded-full bg-[#3d6b5e]" />
+              {planLabel}
+            </span>
+            <span className="flex items-center gap-[5px] text-[11px] text-[#8a8a9a]">
+              <span className="h-[5px] w-[5px] rounded-full bg-[#c17f4a]" />
+              {locale === "hu" ? "Magyar" : "English"}
+            </span>
+          </div>
+        </div>
+
+        {/* ═══ RÓLAD ═══ */}
+        <div className="border-b border-[#e8e0d3] py-6">
+          <h2 className="text-sm font-semibold text-[#1a1a2e]">{t("profile.sectionAbout", locale)}</h2>
+          <p className="mb-4 text-xs text-[#8a8a9a]">{t("profile.sectionAboutSub", locale)}</p>
+
+          <div className="mb-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-[#4a4a5e]">
+              {t("onboarding.usernameLabel", locale)}
+              <input
+                ref={usernameInputRef}
+                type="text" value={username} onChange={(e) => setUsername(e.target.value)} onBlur={() => setUsernameTouched(true)}
+                placeholder={t("onboarding.usernamePlaceholder", locale)} minLength={2} maxLength={20}
+                className={inputClass("username", usernameTouched, usernameValid, username)}
               />
-              <div className="min-w-0">
-                <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.14em] text-bronze">
-                  // profil
-                </p>
-                <p className="truncate font-fraunces text-[22px] font-black leading-tight tracking-tight text-white">
-                  {displayName}
-                </p>
-                {metaParts.length > 0 && (
-                  <p className="mt-1 text-[12px] text-ink-warm">
-                    {metaParts.join(" · ")}
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-        </FadeIn>
+              <span className="text-[9px] text-[#8a8a9a]">{t("onboarding.usernameHint", locale)}</span>
+            </label>
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-[#4a4a5e]">
+              {t("onboarding.birthYearLabel", locale)}
+              <input
+                ref={birthYearInputRef}
+                type="number" inputMode="numeric" value={birthYear}
+                onChange={(e) => { if (e.target.value.length <= 4) setBirthYear(e.target.value); }}
+                onBlur={() => setBirthYearTouched(true)}
+                placeholder={t("onboarding.birthYearPlaceholder", locale)} min={minBirthYear} max={maxBirthYear}
+                className={`${inputClass("birthYear", birthYearTouched, birthYearValid, birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+              />
+              <span className="text-[9px] text-[#8a8a9a]">{minBirthYear}–{maxBirthYear}</span>
+            </label>
+          </div>
 
-        {/* ── Demographics ── */}
-        <FadeIn delay={0.05}>
-          <section className="overflow-hidden rounded-xl border border-sand bg-white">
-            <div className="border-b border-warm-mid px-5 py-4">
-              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-bronze">
-                // személyes adatok
-              </p>
-              <h2 className="text-[15px] font-bold text-ink">
-                {t("profile.demographicsTitle", locale)}
-              </h2>
-              <p className="mt-0.5 text-[12px] text-muted">
-                {t("profile.demographicsBody", locale)}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-5 px-5 py-5">
-              <div className="grid grid-cols-2 gap-4">
-                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-ink-body">
-                  {t("onboarding.usernameLabel", locale)}
-                  <input
-                    ref={usernameInputRef}
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    onBlur={() => setUsernameTouched(true)}
-                    placeholder={t("onboarding.usernamePlaceholder", locale)}
-                    minLength={2}
-                    maxLength={20}
-                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-ink focus:outline-none ${
-                      usernameTouched && username.trim() !== "" && !usernameValid
-                        ? "border-orange-400 bg-orange-50"
-                        : "border-sand bg-white focus:border-sage/50"
-                    } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
-                  />
-                  {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                    <span className="pl-1 text-[11px] italic text-orange-700">
-                      {t("onboarding.usernameError", locale)}
-                    </span>
-                  ) : (
-                    <span className="pl-1 text-[11px] text-muted">
-                      {t("onboarding.usernameHint", locale)}
-                    </span>
-                  )}
-                </label>
-
-                <label className="flex flex-col gap-1.5 text-[12px] font-semibold text-ink-body">
-                  {t("onboarding.birthYearLabel", locale)}
-                  <input
-                    ref={birthYearInputRef}
-                    type="number"
-                    inputMode="numeric"
-                    value={birthYear}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value.length <= 4) setBirthYear(value);
-                    }}
-                    onBlur={() => setBirthYearTouched(true)}
-                    placeholder={t("onboarding.birthYearPlaceholder", locale)}
-                    min={minBirthYear}
-                    max={maxBirthYear}
-                    maxLength={4}
-                    className={`min-h-[44px] rounded-lg border px-3 text-[13px] text-ink focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
-                      birthYearTouched && birthYear !== "" && !birthYearValid
-                        ? "border-orange-400 bg-orange-50"
-                        : "border-sand bg-white focus:border-sage/50"
-                    } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
-                  />
-                  {birthYearTouched && birthYear !== "" && !birthYearValid ? (
-                    <span className="pl-1 text-[11px] italic text-orange-700">
-                      {minBirthYear}–{maxBirthYear}
-                    </span>
-                  ) : (
-                    <span className="pl-1 text-[11px] text-muted">
-                      {minBirthYear}–{maxBirthYear}
-                    </span>
-                  )}
-                </label>
-              </div>
-
-              <div className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-orange-50/60 ring-2 ring-orange-300" : ""}`}>
-                <span className="text-[12px] font-semibold text-ink-body">
-                  {t("onboarding.genderLabel", locale)}
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {GENDER_OPTIONS.map((opt, idx) => (
-                    <button
-                      key={opt.value}
-                      ref={idx === 0 ? genderFirstButtonRef : undefined}
-                      type="button"
-                      onClick={() => setGender(opt.value)}
-                      className={toggleClass(gender === opt.value)}
-                    >
-                      {t(opt.labelKey, locale)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div
-                ref={countryFieldRef}
-                className={`rounded-lg transition ${invalidFieldFlash === "country" ? "bg-orange-50/60 p-1 ring-2 ring-orange-300" : ""}`}
-              >
-                <PickerTrigger
-                  label={t("onboarding.countryLabel", locale)}
-                  value={countryLabel}
-                  placeholder={t("onboarding.countryPlaceholder", locale)}
-                  onClick={() => setCountryPickerOpen(true)}
-                />
-              </div>
-            </div>
-          </section>
-        </FadeIn>
-
-        {/* ── Avatar ── */}
-        <FadeIn delay={0.08}>
-          <section className="overflow-hidden rounded-xl border border-sand bg-white">
-            <div className="border-b border-warm-mid px-5 py-4">
-              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-bronze">
-                // avatar
-              </p>
-              <h2 className="text-[15px] font-bold text-ink">
-                {locale === "hu" ? "Avatar" : "Avatar"}
-              </h2>
-              <p className="mt-0.5 text-[12px] text-muted">
-                {locale === "hu" ? "Válaszd ki a profilképedet." : "Choose your profile picture."}
-              </p>
-            </div>
-            <div className="px-5 py-5">
-              <div className="grid grid-cols-5 gap-3">
-                {AVATAR_OPTIONS.slice(0, avatarsExpanded ? AVATAR_OPTIONS.length : AVATARS_INITIAL_COUNT).map((src) => (
-                  <button
-                    key={src}
-                    type="button"
-                    onClick={() => setPendingAvatarUrl(src)}
-                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
-                      pendingAvatarUrl === src
-                        ? "border-sage ring-2 ring-sage/30"
-                        : "border-sand hover:border-sage/40"
-                    }`}
-                  >
-                    <Image
-                      src={src}
-                      alt="avatar option"
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-              {AVATAR_OPTIONS.length > AVATARS_INITIAL_COUNT && (
-                <button
-                  type="button"
-                  onClick={() => setAvatarsExpanded((v) => !v)}
-                  className="mt-3 text-[12px] font-medium text-bronze hover:underline"
-                >
-                  {avatarsExpanded
-                    ? (locale === "hu" ? "− Kevesebb" : "− Show less")
-                    : (locale === "hu"
-                        ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
-                        : `+ Show all (${AVATAR_OPTIONS.length})`)}
-                </button>
-              )}
-            </div>
-          </section>
-        </FadeIn>
-
-        {/* ── Locale ── */}
-        <FadeIn delay={0.1}>
-          <section className="overflow-hidden rounded-xl border border-sand bg-white">
-            <div className="border-b border-warm-mid px-5 py-4">
-              <p className="mb-0.5 font-mono text-[9px] uppercase tracking-[.12em] text-bronze">
-                // nyelv
-              </p>
-              <h2 className="text-[15px] font-bold text-ink">{t("profile.localeTitle", locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-muted">
-                {t("profile.localeBody", locale)}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2 px-5 py-4">
-              {SUPPORTED_LOCALES.map((loc) => (
-                <button
-                  key={loc}
-                  type="button"
-                  onClick={() => setSelectedLocale(loc)}
-                  className={`flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-[12px] font-medium transition-colors ${
-                    selectedLocale === loc
-                      ? "border-sage bg-[#fce7d6] font-semibold text-bronze"
-                      : "border-sand bg-white text-ink-body hover:border-sage hover:text-bronze"
-                  }`}
-                >
-                  <span className="text-base leading-none">{LOCALE_META[loc].flag}</span>
-                  {t(`locale.${loc}` as const, loc)}
+          <div className={`mt-5 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-rose-50/60 ring-2 ring-rose-300" : ""}`}>
+            <span className="text-[11px] font-medium text-[#4a4a5e]">{t("onboarding.genderLabel", locale)}</span>
+            <div className="mt-1 flex flex-wrap gap-[5px]">
+              {GENDER_OPTIONS.map((opt, idx) => (
+                <button key={opt.value} ref={idx === 0 ? genderFirstButtonRef : undefined} type="button" onClick={() => setGender(opt.value)} className={pillClass(gender === opt.value)}>
+                  {t(opt.labelKey, locale)}
                 </button>
               ))}
             </div>
+          </div>
 
-            <div className="min-h-[20px] px-5 pb-3">
-              {selectedLocale !== savedLocale ? (
-                <p className="text-[11px] text-amber-700">{t("profile.localePending", locale)}</p>
-              ) : saveState === "saved" ? (
-                <p className="inline-flex items-center gap-1 text-[11px] text-emerald-700">
-                  <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4.5 10.5l3.2 3.2L15.5 6.3" />
-                  </svg>
-                  {t("profile.localeSaved", locale)}
-                </p>
-              ) : null}
-            </div>
-          </section>
-        </FadeIn>
+          <div ref={countryFieldRef} className={`mt-5 rounded-lg transition ${invalidFieldFlash === "country" ? "bg-rose-50/60 p-1 ring-2 ring-rose-300" : ""}`}>
+            <PickerTrigger label={t("onboarding.countryLabel", locale)} value={countryLabel} placeholder={t("onboarding.countryPlaceholder", locale)} onClick={() => setCountryPickerOpen(true)} />
+          </div>
+        </div>
 
-        {/* ── Delete zone ── */}
-        <FadeIn delay={0.15}>
-          <section className="flex items-center justify-between gap-4 rounded-xl border border-[#f5c4b3] bg-white px-5 py-4">
-            <div>
-              <p className="text-[13px] font-semibold text-bronze">{t("profile.deleteTitle", locale)}</p>
-              <p className="mt-0.5 text-[12px] text-muted">
-                {t("profile.deleteBody", locale)}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowDeleteModal(true)}
-              disabled={isDeleting}
-              className="min-h-[44px] shrink-0 rounded-lg border border-[#f5c4b3] bg-white px-4 py-2 text-[12px] font-semibold text-bronze transition hover:bg-[#fce7d6] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
-            </button>
-          </section>
-        </FadeIn>
+        {/* ═══ MEGJELENÉS ÉS NYELV ═══ */}
+        <div className="border-b border-[#e8e0d3] py-6">
+          <h2 className="text-sm font-semibold text-[#1a1a2e]">{t("profile.sectionLanguage", locale)}</h2>
+          <p className="mb-4 text-xs text-[#8a8a9a]">{t("profile.sectionLanguageSub", locale)}</p>
+          <div className="flex gap-[5px]">
+            {SUPPORTED_LOCALES.map((loc) => (
+              <button key={loc} type="button" onClick={() => setSelectedLocale(loc)} className={pillClass(selectedLocale === loc)}>
+                {t(`locale.${loc}` as const, loc)}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* ── Save bar ── */}
-        {showSaveBar && (
-          <div className="sticky bottom-4 z-30 mt-2">
-            <div className="flex items-center justify-between gap-3 rounded border border-sand bg-white/95 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur">
-              <div className="min-w-0">
-                <p className="font-dm-sans text-[10px] uppercase tracking-[2px] text-bronze">
-                  {t("profile.saveBarLabel", locale)}
-                </p>
-                <p className="truncate text-sm font-medium text-ink">
-                  {isDirty || saveState === "saving"
-                    ? t("profile.saveBarUnsaved", locale)
-                    : saveState === "saved"
-                      ? t("profile.saveBarSaved", locale)
-                      : saveState === "error"
-                        ? t("profile.saveError", locale)
-                        : t("profile.saveBarUnsaved", locale)}
-                </p>
+        {/* ═══ SAVE ROW ═══ */}
+        <div className="flex items-center justify-between border-b border-[#e8e0d3] py-4">
+          <div className="flex items-center gap-[5px] text-[11px] text-[#8a8a9a]">
+            <span className={`h-1.5 w-1.5 rounded-full ${isDirty ? "bg-[#c17f4a]" : "bg-[#3d6b5e]"}`} />
+            {isDirty
+              ? t("profile.saveUnsaved", locale)
+              : saveState === "saved"
+                ? t("profile.saveSaved", locale)
+                : t("profile.saveNoChanges", locale)}
+          </div>
+          <button
+            type="button" onClick={handleSave} disabled={!canSubmitDemo}
+            className={`rounded-lg bg-[#3d6b5e] px-6 py-2.5 text-[13px] font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
+          >
+            {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
+          </button>
+        </div>
+
+        {/* ═══ DANGER BOX ═══ */}
+        <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
+          <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-[9px] text-[#c0392b]">!</div>
+            <span className="text-xs font-semibold text-[#a93226]">{t("profile.sectionAccount", locale)}</span>
+          </div>
+          <div className="bg-white p-[18px]">
+            {/* Sign out */}
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[13px] text-[#4a4a5e]">{t("profile.logoutTitle", locale)}</p>
+                <p className="text-[10px] text-[#8a8a9a]">{t("profile.logoutSub", locale)}</p>
               </div>
-              <AnimatePresence mode="wait">
-                {saveState === "saved" && (
-                  <motion.div
-                    key="saved"
-                    initial={{ opacity: 0, scale: 0.7 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.7 }}
-                    transition={{ type: "spring", stiffness: 280, damping: 20 }}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
-                    aria-live="polite"
-                  >
-                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4.5 10.5l3.2 3.2L15.5 6.3" />
-                    </svg>
-                  </motion.div>
-                )}
-                {saveState === "error" && (
-                  <motion.div
-                    key="error"
-                    initial={{ opacity: 0, scale: 0.7 }}
-                    animate={{ opacity: 1, scale: 1, x: [0, -3, 3, -2, 2, 0] }}
-                    exit={{ opacity: 0, scale: 0.7 }}
-                    transition={{ duration: 0.35 }}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-100 text-rose-600"
-                    aria-live="polite"
-                  >
-                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" />
-                    </svg>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <button
-                type="button"
-                onClick={handleSaveDemographics}
-                disabled={!canSubmitDemo}
-                className="min-h-[44px] shrink-0 rounded bg-sage px-5 text-sm font-medium text-white transition hover:-translate-y-px hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-muted-warm disabled:hover:translate-y-0"
+              <button type="button" onClick={() => signOut()} className="shrink-0 rounded-lg border border-[#e8e0d3] bg-white px-[18px] py-[7px] text-xs text-[#8a8a9a] transition-all hover:bg-[#f2ede6] hover:text-[#4a4a5e]">
+                {t("profile.logoutButton", locale)}
+              </button>
+            </div>
+            <div className="my-2.5 h-px bg-[#f0e0e0]" />
+            {/* Delete */}
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[13px] text-[#a93226]">{t("profile.deleteTitle", locale)}</p>
+                <p className="text-[10px] text-[#8a8a9a]">{t("profile.deleteBody", locale)}</p>
+              </div>
+              <button type="button" onClick={() => setShowDeleteModal(true)} disabled={isDeleting}
+                className="shrink-0 rounded-lg border border-[#e8b4b4] bg-[#fdf0f0] px-[18px] py-[7px] text-xs text-[#c0392b] transition-all hover:border-[#d4a0a0] hover:bg-[#f5dede] disabled:opacity-50"
               >
-                {isSavingDemo ? t("actions.save", locale) : t("profile.saveChanges", locale)}
+                {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
               </button>
             </div>
           </div>
-        )}
+        </div>
 
-        <ConfirmModal
-          isOpen={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleDeleteConfirm}
-          title={t("profile.confirmTitle", locale)}
-          description={t("profile.confirmBody", locale)}
-          confirmText={t("profile.modalConfirm", locale)}
-          cancelText={t("profile.modalCancel", locale)}
-          loadingText={t("actions.deleting", locale)}
-          loadingNote={t("profile.deleteLoadingNote", locale)}
-          loadingDurationMs={DELETE_GOODBYE_MS}
-          variant="danger"
-          isLoading={isDeleting}
-        />
+      </div>
 
-        {/* Country picker */}
-        <Picker
-          isOpen={countryPickerOpen}
-          onClose={() => setCountryPickerOpen(false)}
-          onSelect={setCountry}
-          options={countryOptions}
-          selectedValue={country}
-          title={t("onboarding.countryLabel", locale)}
-          searchable
-          searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
-        />
-      </main>
+      <ConfirmModal
+        isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} onConfirm={handleDeleteConfirm}
+        title={t("profile.confirmTitle", locale)} description={t("profile.confirmBody", locale)}
+        confirmText={t("profile.modalConfirm", locale)} cancelText={t("profile.modalCancel", locale)}
+        loadingText={t("actions.deleting", locale)} loadingNote={t("profile.deleteLoadingNote", locale)}
+        loadingDurationMs={DELETE_GOODBYE_MS} variant="danger" isLoading={isDeleting}
+      />
+
+      <Picker isOpen={countryPickerOpen} onClose={() => setCountryPickerOpen(false)} onSelect={setCountry}
+        options={countryOptions} selectedValue={country} title={t("onboarding.countryLabel", locale)}
+        searchable searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
+      />
     </div>
   );
 }
