@@ -10,7 +10,7 @@ const copy: Record<
   }
 > = {
   hu: {
-    eyebrow: "// add-onok",
+    eyebrow: "Kiegészítők",
     heading: "Csak amit valóban használsz.",
     sub: "Jelöltértékelés és extra kreditek — fizetsz érte, amikor ténylegesen futtatod.",
     items: [
@@ -32,7 +32,7 @@ const copy: Record<
     ],
   },
   en: {
-    eyebrow: "// add-ons",
+    eyebrow: "Add-ons",
     heading: "Only what you actually use.",
     sub: "Candidate assessments and extra credits — pay when you actually run them.",
     items: [
@@ -61,9 +61,10 @@ export function AddOns({ locale }: { locale: Locale }) {
   return (
     <section className="border-t border-sand bg-cream px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-5xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {c.eyebrow}
-        </p>
+        <div className="mb-2.5 flex items-center gap-2">
+          <div className="h-px w-4 bg-[#c17f4a]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">{c.eyebrow}</span>
+        </div>
         <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {c.heading}
         </h2>

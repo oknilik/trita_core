@@ -62,14 +62,15 @@ export function PricingFAQ({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState<number | null>(null);
   const items = faqs[locale] ?? faqs.hu;
   const heading = locale === "hu" ? "Gyakori kérdések" : "Frequently asked questions";
-  const eyebrow = locale === "hu" ? "// faq" : "// faq";
+  const eyebrow = "FAQ";
 
   return (
-    <section className="border-t border-sand px-6 py-12 lg:px-16 lg:py-14">
+    <section className="border-t border-[#e8e0d3] px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-3xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {eyebrow}
-        </p>
+        <div className="mb-2.5 flex items-center gap-2">
+          <div className="h-px w-4 bg-[#c17f4a]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">{eyebrow}</span>
+        </div>
         <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {heading}
         </h2>

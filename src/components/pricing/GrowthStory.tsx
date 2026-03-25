@@ -10,7 +10,7 @@ const copy: Record<
   }
 > = {
   hu: {
-    eyebrow: "// növekedési út",
+    eyebrow: "Növekedési út",
     heading: "Mindenki ugyanonnan indul.",
     sub: "Kezdd önismerettel, folytasd csapatszinten — ha és amikor valóban szükséged van rá.",
     steps: [
@@ -53,7 +53,7 @@ const copy: Record<
     ],
   },
   en: {
-    eyebrow: "// growth path",
+    eyebrow: "Growth path",
     heading: "Everyone starts from the same place.",
     sub: "Begin with self-awareness, grow to team level — if and when you truly need it.",
     steps: [
@@ -109,9 +109,10 @@ export function GrowthStory({ locale }: { locale: Locale }) {
   return (
     <section className="border-t border-sand px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-5xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {c.eyebrow}
-        </p>
+        <div className="mb-2.5 flex items-center gap-2">
+          <div className="h-px w-4 bg-[#c17f4a]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">{c.eyebrow}</span>
+        </div>
         <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {c.heading}
         </h2>

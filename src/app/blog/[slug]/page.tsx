@@ -133,10 +133,10 @@ function CompareTable({
 function KeyInsight({ children }: { children: React.ReactNode }) {
   return (
     <div className="my-8 rounded-[10px] bg-[#1a1a2e] px-6 py-5">
-      <p className="font-dm-sans mb-2 text-[8px] uppercase tracking-[1.5px] text-[#e8a96a]">
+      <div className="font-dm-sans mb-2 text-[8px] uppercase tracking-[1.5px] text-[#e8a96a]">
         {"//"} kulcsgondolat
-      </p>
-      <p className="text-[15px] leading-[1.75] text-white/85">{children}</p>
+      </div>
+      <div className="text-[15px] leading-[1.75] text-white/85">{children}</div>
     </div>
   );
 }

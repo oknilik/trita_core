@@ -164,16 +164,12 @@ export function NavBar() {
     { href: "/", label: t("nav.home", locale) },
     { href: "/blog", label: t("nav.blog", locale) },
     { href: "/pricing", label: t("nav.pricing", locale) },
-    { href: "/founding", label: t("footer.navFounding", locale) },
-    { href: "/contact", label: t("footer.contact", locale) },
   ];
 
   const authLinks = [
     { href: "/profile/results", label: t("nav.profile", locale) },
     { href: "/blog", label: t("nav.blog", locale) },
     { href: "/pricing", label: t("nav.pricing", locale) },
-    { href: "/founding", label: t("footer.navFounding", locale) },
-    { href: "/contact", label: t("footer.contact", locale) },
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;

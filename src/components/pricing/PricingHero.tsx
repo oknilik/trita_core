@@ -1,42 +1,36 @@
 import type { Locale } from "@/lib/i18n";
 
-const copy: Record<Locale, { eyebrow: string; heading: string; sub: string }> = {
+const copy: Record<Locale, { eyebrow: string; heading: string; headingEm: string; sub: string }> = {
   hu: {
-    eyebrow: "// árazás",
-    heading: "Válaszd azt a szintet,\namely most valóban hasznos.",
+    eyebrow: "Árazás",
+    heading: "Válaszd azt a szintet, amely most valóban ",
+    headingEm: "hasznos.",
     sub: "Egyszeri vásárlások és előfizetések — a saját ritmusodban, elköteleződés nélkül.",
   },
   en: {
-    eyebrow: "// pricing",
-    heading: "Choose the level\nthat's actually useful right now.",
+    eyebrow: "Pricing",
+    heading: "Choose the level that's actually useful ",
+    headingEm: "right now.",
     sub: "One-time purchases and subscriptions — at your own pace, no long-term commitment.",
   },
 };
 
 export function PricingHero({ locale }: { locale: Locale }) {
   const c = copy[locale] ?? copy.hu;
-  const [line1, line2] = c.heading.split("\n");
 
   return (
-    <section className="relative overflow-hidden border-b border-sand bg-ink px-6 py-16 lg:px-16 lg:py-20">
-      <div
-        className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-sage/15 blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-sage/8 blur-3xl"
-        aria-hidden="true"
-      />
+    <section className="px-5 pb-8 pt-10 lg:px-14 lg:pt-12">
       <div className="mx-auto max-w-5xl">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {c.eyebrow}
-        </p>
-        <h1 className="mt-4 font-fraunces text-4xl leading-tight text-cream lg:text-[52px]">
-          {line1}
-          <br />
-          {line2}
+        <div className="mb-2.5 flex items-center gap-2">
+          <div className="h-px w-4 bg-[#c17f4a]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
+            {c.eyebrow}
+          </span>
+        </div>
+        <h1 className="mb-2 font-fraunces text-[24px] leading-[1.12] tracking-tight text-[#1a1a2e] lg:text-[34px]">
+          {c.heading}<em className="not-italic text-[#c17f4a]">{c.headingEm}</em>
         </h1>
-        <p className="mt-5 max-w-lg text-[15px] leading-[1.75] text-cream/65">
+        <p className="max-w-lg text-sm leading-relaxed text-[#8a8a9a]">
           {c.sub}
         </p>
       </div>

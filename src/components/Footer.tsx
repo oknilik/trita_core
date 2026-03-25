@@ -2,15 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 
 export function Footer() {
   const { locale } = useLocale();
   const currentPath = usePathname();
+  const { isSignedIn } = useAuth();
 
   // Hide footer on assessment/try pages
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
+
+  const accountLinks = isSignedIn
+    ? [
+        { label: t("nav.profile", locale), href: "/profile/results" },
+        { label: t("profile.sectionAbout", locale), href: "/profile" },
+      ]
+    : [
+        { label: t("footer.signIn", locale), href: "/sign-in" },
+        { label: t("footer.signUp", locale), href: "/sign-up" },
+      ];
 
   const columns = [
     {
@@ -23,10 +35,7 @@ export function Footer() {
     },
     {
       heading: t("footer.colAccount", locale),
-      links: [
-        { label: t("footer.signIn", locale), href: "/sign-in" },
-        { label: t("footer.signUp", locale), href: "/sign-up" },
-      ],
+      links: accountLinks,
     },
     {
       heading: t("footer.colLegal", locale),

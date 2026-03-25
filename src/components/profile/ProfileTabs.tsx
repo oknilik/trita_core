@@ -461,7 +461,10 @@ export function ProfileTabs({
                   const desc = strengthDescs[d.code]?.[lang];
                   return desc ? `${d.label} — ${desc}` : d.label;
                 })
-              : [isHu ? "kiegyensúlyozott profil" : "balanced profile"];
+              : sortedDims.slice(0, 2).map((d) => {
+                  const desc = strengthDescs[d.code]?.[lang];
+                  return desc ? `${d.label} — ${desc}` : d.label;
+                });
             const watchBullets = lowDims.length > 0
               ? lowDims.map((d) => {
                   const desc = watchDescs[d.code]?.[lang];
@@ -578,7 +581,10 @@ export function ProfileTabs({
           strengths={(() => {
             const mainDims = dimensions.filter((d) => d.code !== "I");
             const high = mainDims.filter((d) => d.score >= 70);
-            if (high.length === 0) return [{ text: isHu ? "kiegyensúlyozott profil" : "balanced profile" }];
+            if (high.length === 0) {
+              const top2 = [...mainDims].sort((a, b) => b.score - a.score).slice(0, 2);
+              return top2.map((d) => ({ dimension: d.label, text: d.insight }));
+            }
             return high.map((d) => ({ dimension: d.label, text: d.insight }));
           })()}
           watchAreas={(() => {
