@@ -1,34 +1,36 @@
 export default function ProfileLoading() {
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-6 bg-cream px-4 py-10">
-      <div className="animate-pulse rounded-2xl bg-gradient-to-br from-sage to-sage-deep p-6 pb-14 md:p-8 md:pb-16">
-        <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-full bg-white/25" />
-          <div>
-            <div className="h-7 w-40 rounded bg-white/25" />
-            <div className="mt-2 h-4 w-52 rounded bg-white/15" />
+    <div className="min-h-dvh bg-[#f7f4ef]">
+      <div className="mx-auto max-w-[640px] px-5 py-10">
+        <div className="animate-pulse">
+          <div className="flex items-center gap-4 pb-7">
+            <div className="h-14 w-14 rounded-full bg-[#e8e0d3]" />
+            <div>
+              <div className="h-5 w-32 rounded bg-[#e8e0d3]" />
+              <div className="mt-2 h-3 w-44 rounded bg-[#e8e0d3]" />
+            </div>
+          </div>
+          <div className="border-t border-[#e8e0d3] py-6">
+            <div className="h-4 w-16 rounded bg-[#e8e0d3]" />
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="h-11 rounded-lg border border-[#e8e0d3] bg-white" />
+              <div className="h-11 rounded-lg border border-[#e8e0d3] bg-white" />
+            </div>
+            <div className="mt-4 flex gap-2">
+              <div className="h-10 w-20 rounded-full bg-[#e8e0d3]" />
+              <div className="h-10 w-16 rounded-full bg-[#e8e0d3]" />
+              <div className="h-10 w-20 rounded-full bg-[#e8e0d3]" />
+            </div>
+          </div>
+          <div className="border-t border-[#e8e0d3] py-6">
+            <div className="h-4 w-32 rounded bg-[#e8e0d3]" />
+            <div className="mt-4 flex gap-2">
+              <div className="h-10 w-24 rounded-full bg-[#e8e0d3]" />
+              <div className="h-10 w-24 rounded-full bg-[#e8e0d3]" />
+            </div>
           </div>
         </div>
       </div>
-      <div className="animate-pulse rounded-2xl border border-sand bg-white p-6">
-        <div className="h-5 w-48 rounded bg-sand" />
-        <div className="mt-4 h-4 w-72 rounded bg-warm" />
-        <div className="mt-6 flex flex-col gap-4">
-          <div className="h-11 rounded-lg bg-warm" />
-          <div className="h-11 rounded-lg bg-warm" />
-          <div className="h-20 rounded-lg bg-warm" />
-          <div className="h-20 rounded-lg bg-warm" />
-          <div className="h-11 rounded-lg bg-warm" />
-        </div>
-      </div>
-      <div className="animate-pulse rounded-2xl border border-sand bg-white p-6">
-        <div className="h-5 w-32 rounded bg-sand" />
-        <div className="mt-4 flex gap-2">
-          <div className="h-11 w-24 rounded-lg bg-warm" />
-          <div className="h-11 w-24 rounded-lg bg-warm" />
-          <div className="h-11 w-24 rounded-lg bg-warm" />
-        </div>
-      </div>
-    </main>
+    </div>
   );
 }
