@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
@@ -287,6 +288,19 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const isSelf = mode === "self";
   const accentColor = isSelf ? "#c17f4a" : "#3d6b5e";
 
+  // Detect existing localStorage draft for guest users
+  const [hasDraft, setHasDraft] = useState(false);
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("trita_draft_HEXACO");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const answers = parsed?.answers ?? parsed;
+        if (answers && Object.keys(answers).length > 0) setHasDraft(true);
+      }
+    } catch { /* ignore */ }
+  }, []);
+
   return (
     <section className="bg-cream">
       <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
@@ -364,7 +378,9 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   boxShadow: `0 4px 14px ${isSelf ? "rgba(193,127,74,0.25)" : "rgba(61,107,94,0.25)"}`,
                 }}
               >
-                {isSelf ? t("landing.selfCta", locale) : t("landing.teamCta", locale)}
+                {isSelf
+                  ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
+                  : t("landing.teamCta", locale)}
               </Link>
             </motion.div>
 

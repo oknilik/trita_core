@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { MobileDrawer } from "@/components/MobileDrawer";
@@ -110,6 +110,7 @@ function NavCTA() {
 export function NavBar() {
   const { locale } = useLocale();
   const { isSignedIn } = useAuth();
+  const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -122,6 +123,9 @@ export function NavBar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Hide navbar on assessment/try pages (they have their own minimal nav)
+  if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">

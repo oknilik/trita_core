@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 
 export function Footer() {
   const { locale } = useLocale();
+  const currentPath = usePathname();
+
+  // Hide footer on assessment/try pages
+  if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
   const columns = [
     {

@@ -74,6 +74,9 @@ export function NavHeaderUI({
     setAvatarOpen(false);
   }, [pathname]);
 
+  // Hide on assessment/try pages (they have their own minimal nav)
+  if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) return null;
+
   const pillBase =
     "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors cursor-pointer select-none";
   const pillActive = `${pillBase} bg-ink text-white`;
