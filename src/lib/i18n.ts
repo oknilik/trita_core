@@ -475,8 +475,8 @@ const translations = {
   auth: {
     signInTitle: { hu: "Bejelentkezés", en: "Sign in" },
     signInSubtitle: { hu: "Küldünk egy egyszeri kódot az emailedre", en: "We'll send a one-time code to your email" },
-    signUpTitle: { hu: "Fiók létrehozása", en: "Create account" },
-    signUpSubtitle: { hu: "Küldünk egy megerősítő kódot az emailedre", en: "We'll send a verification code to your email" },
+    signUpTitle: { hu: "Hozd létre a fiókodat", en: "Create your account" },
+    signUpSubtitle: { hu: "Add meg az email címed, és küldünk egy kódot a folytatáshoz.", en: "Enter your email and we'll send you a code to continue." },
     observeTokenHint: {
       hu: "A kitöltött visszajelzésed automatikusan a fiókodhoz kapcsolódik.",
       en: "Your completed assessment will be automatically linked to your account.",
@@ -527,7 +527,7 @@ const translations = {
     errorSecondFactorRequired: { hu: "Második faktor szükséges. Jelentkezz be a megfelelő módon.", en: "Second factor required. Please complete 2FA." },
     submitSendLink: { hu: "Link küldése", en: "Send link" },
     submitSendLinkLoading: { hu: "Küldés...", en: "Sending..." },
-    submitSendCode: { hu: "Kód küldése", en: "Send code" },
+    submitSendCode: { hu: "Kód küldése és folytatás", en: "Send code & continue" },
     submitSendCodeLoading: { hu: "Küldés...", en: "Sending..." },
     magicLinkSentTitle: { hu: "Ellenőrizd az emailedet!", en: "Check your email!" },
     magicLinkSentBody: {

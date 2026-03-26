@@ -5,127 +5,164 @@ export type AuthLeftPanelContext =
   | "team"
   | "observer"
   | "signin"
-  | "verify";
+  | "verify"
+  | null;
 
 interface AuthLeftPanelProps {
   context: AuthLeftPanelContext;
 }
 
 const CONTENT: Record<
-  AuthLeftPanelContext,
+  NonNullable<AuthLeftPanelContext>,
   {
     tag: string;
     title: React.ReactNode;
-    quote: string;
-    quoteAuthor: string;
+    valueItems?: string[];
+    valueLabel?: string;
+    subtitle?: string;
     stats?: { value: string; label: string }[];
   }
 > = {
   explore: {
-    tag: "// önismeret",
+    tag: "önismeret",
     title: (
       <>
-        Ismerd meg magad –{" "}
-        <span className="text-bronze">tudományos alapon.</span>
+        Lásd tisztábban,{" "}
+        <span className="text-[#e8a96a]">hogyan működsz.</span>
       </>
     ),
-    quote:
-      "Hat dimenzión keresztül láthatóvá válik, hogyan gondolkodsz, hogyan viszonyulsz másokhoz – és mi mozgat belülről.",
-    quoteAuthor: "trita",
+    subtitle: "Hat dimenzión keresztül, tudományos alapokon.",
+    valueLabel: "Mit fogsz látni a végén?",
+    valueItems: [
+      "6 dimenziós személyiségprofil",
+      "Erősségek és figyelendő területek",
+      "Illeszkedő szerepkörök és karrierkép",
+    ],
     stats: [
-      { value: "6", label: "személyiségdimenzió" },
-      { value: "~15", label: "perces teszt" },
+      { value: "6", label: "dimenzió" },
+      { value: "~15", label: "perc" },
     ],
   },
   team: {
-    tag: "// csapatfejlesztés",
+    tag: "csapatfejlesztés",
     title: (
       <>
-        Értsd meg a csapatod –{" "}
-        <span className="text-bronze">adatvezérelt módon.</span>
+        Értsd meg a csapatod{" "}
+        <span className="text-[#e8a96a]">dinamikáját.</span>
       </>
     ),
-    quote:
-      "Heatmap, dinamika-elemzés, observer összehasonlítás – minden ami kell ahhoz, hogy a csapatod valóban együttműködjön.",
-    quoteAuthor: "trita",
+    subtitle: "Adatvezérelt csapatépítés, személyiségprofil alapján.",
+    valueLabel: "Mit kapsz?",
+    valueItems: [
+      "Csapat heatmap és dinamika",
+      "Observer összehasonlítás",
+      "Szerepillesztés és vakfoltok",
+    ],
     stats: [
-      { value: "14", label: "napos ingyenes trial" },
-      { value: "0", label: "kártyaadat szükséges" },
+      { value: "14", label: "napos trial" },
+      { value: "0", label: "kártyaadat" },
     ],
   },
   observer: {
-    tag: "// observer visszajelzés",
+    tag: "observer visszajelzés",
     title: (
       <>
-        Adj visszajelzést –{" "}
-        <span className="text-bronze">névtelenül és őszintén.</span>
+        Adj visszajelzést —{" "}
+        <span className="text-[#e8a96a]">névtelenül, őszintén.</span>
       </>
     ),
-    quote:
-      "Az observer értékelés segít a meghívónak megismerni, hogyan látják mások – nem ítélet, hanem tükör.",
-    quoteAuthor: "trita",
+    subtitle: "Az observer értékelés segít a meghívónak megismerni, hogyan látják mások.",
   },
   signin: {
-    tag: "// üdv vissza",
+    tag: "üdv vissza",
     title: (
       <>
         Folytasd ott,{" "}
-        <span className="text-bronze">ahol abbahagytad.</span>
+        <span className="text-[#e8a96a]">ahol abbahagytad.</span>
       </>
     ),
-    quote:
-      "A trita megjegyzi az eredményeidet, az observer visszajelzéseidet és a csapatod állapotát.",
-    quoteAuthor: "trita",
+    subtitle: "Az eredményeid, visszajelzéseid és csapatod állapota várja.",
   },
   verify: {
-    tag: "// megerősítés",
+    tag: "megerősítés",
     title: (
       <>
         Már majdnem{" "}
-        <span className="text-bronze">kész vagy.</span>
+        <span className="text-[#e8a96a]">kész vagy.</span>
       </>
     ),
-    quote: "Ellenőrizd az e-mail fiókodat és add meg a kódot a folytatáshoz.",
-    quoteAuthor: "trita",
+    subtitle: "Ellenőrizd az e-mail fiókodat és add meg a kódot.",
   },
 };
 
 export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
-  const content = CONTENT[context];
+  const c = context ? CONTENT[context] : null;
 
   return (
-    <div className="hidden w-[260px] shrink-0 flex-col justify-between bg-ink px-8 py-10 lg:flex">
+    <div className="hidden w-[280px] shrink-0 flex-col justify-between bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] px-8 py-10 lg:flex">
       <div>
-        <p className="font-dm-sans mb-6 text-[10px] uppercase tracking-[2px] text-bronze">
-          trita
-        </p>
+        {c ? (
+          <>
+            {/* Tag */}
+            <p className="mb-3 text-[9px] font-medium uppercase tracking-[2px] text-[#e8a96a]">
+              {c.tag}
+            </p>
 
-        <p className="font-dm-sans mb-3 text-[10px] uppercase tracking-[1.5px] text-cream/40">
-          {content.tag}
-        </p>
+            {/* Headline */}
+            <h2 className="mb-2 font-fraunces text-[22px] leading-snug text-white">
+              {c.title}
+            </h2>
 
-        <h2 className="font-fraunces mb-6 text-[22px] leading-snug text-cream">
-          {content.title}
-        </h2>
+            {/* Subtitle */}
+            {c.subtitle && (
+              <p className="mb-6 text-[13px] leading-relaxed text-white/40">
+                {c.subtitle}
+              </p>
+            )}
 
-        <div className="rounded-lg border border-cream/10 bg-cream/5 px-4 py-3">
-          <p className="text-[13px] leading-[1.7] text-cream/70">
-            &ldquo;{content.quote}&rdquo;
-          </p>
-          <p className="mt-2 font-dm-sans text-[10px] uppercase tracking-[1px] text-cream/30">
-            — {content.quoteAuthor}
-          </p>
-        </div>
+            {/* Value preview */}
+            {c.valueLabel && c.valueItems && (
+              <div className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3.5">
+                <p className="mb-2.5 text-[9px] font-semibold uppercase tracking-[1.5px] text-white/30">
+                  {c.valueLabel}
+                </p>
+                <ul className="space-y-2">
+                  {c.valueItems.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-[12px] leading-snug text-white/60">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#e8a96a]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        ) : (
+          /* No intent selected yet */
+          <>
+            <p className="mb-3 text-[9px] font-medium uppercase tracking-[2px] text-white/20">
+              első lépés
+            </p>
+            <h2 className="mb-2 font-fraunces text-[22px] leading-snug text-white">
+              Válaszd ki, mire{" "}
+              <span className="text-[#e8a96a]">használnád.</span>
+            </h2>
+            <p className="text-[13px] leading-relaxed text-white/40">
+              A választásod alapján személyre szabjuk a regisztrációt és az első lépéseket.
+            </p>
+          </>
+        )}
       </div>
 
-      {content.stats && (
-        <div className="flex gap-4">
-          {content.stats.map((s) => (
+      {/* Bottom stats */}
+      {c?.stats && (
+        <div className="mt-8 flex gap-5 border-t border-white/[0.06] pt-5">
+          {c.stats.map((s) => (
             <div key={s.label} className="flex flex-col">
-              <span className="font-fraunces text-2xl font-black text-bronze">
+              <span className="font-fraunces text-2xl font-black text-[#e8a96a]">
                 {s.value}
               </span>
-              <span className="text-[11px] leading-snug text-cream/40">
+              <span className="text-[11px] leading-snug text-white/30">
                 {s.label}
               </span>
             </div>
