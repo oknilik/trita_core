@@ -10,6 +10,7 @@ import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getTeamPageData } from "@/lib/team-stats";
 import { StatStrip } from "@/components/org/StatStrip";
 import { getDimensionInsight } from "@/lib/team-insights";
+import { t } from "@/lib/i18n";
 import { TeamPageShell } from "@/components/team/TeamPageShell";
 
 export const dynamic = "force-dynamic";
@@ -90,35 +91,29 @@ export default async function TeamDetailPage({
 
   const statCells = [
     {
-      label: isHu ? "Tagok" : "Members",
+      label: t("team.statMembers", locale),
       value: teamData.memberCount,
       sub:
         teamData.completedCount > 0
-          ? `${teamData.completedCount}/${teamData.memberCount} ${isHu ? "kitöltötte" : "completed"}`
+          ? `${teamData.completedCount}/${teamData.memberCount} ${t("team.statCompleted", locale)}`
           : undefined,
       accentColor: "#6366F1",
     },
     {
-      label: isHu ? "Observer lefedettség" : "Observer coverage",
+      label: t("team.statObserverCoverage", locale),
       value: teamData.activeCampaign
         ? `${teamData.activeCampaign.teamObserverDoneCount}/${teamData.activeCampaign.teamParticipantCount}`
         : "—",
       sub: teamData.activeCampaign
         ? undefined
-        : isHu
-        ? "nincs aktív kampány"
-        : "no active campaign",
+        : t("team.statNoCampaign", locale),
       insight: teamData.activeCampaign
-        ? isHu
-          ? `${teamData.activeCampaign.daysActive} napja aktív`
-          : `Active for ${teamData.activeCampaign.daysActive} days`
-        : isHu
-        ? "Indíts 360° kampányt az összehasonlításhoz"
-        : "Start a 360° campaign to compare",
+        ? t("team.statCampaignDaysActive", locale).replace("{days}", String(teamData.activeCampaign.daysActive))
+        : t("team.statStartCampaign", locale),
       accentColor: "#10B981",
     },
     {
-      label: isHu ? "Csapat erőssége" : "Team strength",
+      label: t("team.statTeamStrength", locale),
       value: teamData.topDim
         ? `${teamData.topDim.code} · ${teamData.topDim.value}%`
         : "—",
@@ -129,7 +124,7 @@ export default async function TeamDetailPage({
       accentColor: "#F59E0B",
     },
     {
-      label: isHu ? "Fejlesztési terület" : "Growth area",
+      label: t("team.statGrowthArea", locale),
       value: teamData.bottomDim
         ? `${teamData.bottomDim.code} · ${teamData.bottomDim.value}%`
         : "—",
@@ -140,11 +135,11 @@ export default async function TeamDetailPage({
       accentColor: "#3d6b5e",
     },
     {
-      label: isHu ? "Aktív kampány" : "Active campaign",
+      label: t("team.statActiveCampaign", locale),
       value: teamData.activeCampaign ? "1" : "—",
       sub: teamData.activeCampaign ? teamData.activeCampaign.name : undefined,
       insight: teamData.activeCampaign
-        ? isHu ? "folyamatban" : "in progress"
+        ? t("team.statInProgress", locale)
         : undefined,
       accentColor: "#8B5CF6",
     },
@@ -160,33 +155,25 @@ export default async function TeamDetailPage({
           <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
             <div className="min-w-0 flex-1">
               <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-                {isHu
-                  ? `// csapat · ${teamData.orgName ?? ""}`
-                  : `// team · ${teamData.orgName ?? ""}`}
+                {`${t("team.detailEyebrowPrefix", locale)} · ${teamData.orgName ?? ""}`}
               </p>
               <h1 className="font-fraunces text-3xl text-ink mt-1 md:text-4xl">
                 {teamData.teamName}
               </h1>
               <p className="mt-1 text-xs text-ink-body/60">
-                {isHu ? "Létrehozva: " : "Created "}
+                {t("team.createdPrefix", locale)}
                 {new Date(teamData.teamCreatedAt).toLocaleDateString(
                   dateLocale
                 )}
                 {" · "}
                 {teamData.memberCount}{" "}
-                {isHu
-                  ? "tag"
-                  : teamData.memberCount === 1
-                  ? "member"
-                  : "members"}
+                {teamData.memberCount === 1
+                  ? t("team.memberTag", locale)
+                  : t("team.membersTag", locale)}
                 {" · "}
                 {isOrgManager
-                  ? isHu
-                    ? "Menedzser"
-                    : "Manager"
-                  : isHu
-                  ? "Tag"
-                  : "Member"}
+                  ? t("team.roleManager", locale)
+                  : t("team.roleMember", locale)}
               </p>
             </div>
 
@@ -196,7 +183,7 @@ export default async function TeamDetailPage({
                   href={`/org/${teamData.orgId}?tab=campaigns`}
                   className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
                 >
-                  + {isHu ? "Kampány" : "Campaign"}
+                  + {t("team.campaignButton", locale)}
                 </Link>
               </div>
             )}

@@ -12,6 +12,7 @@ import {
   RESOLUTION_NARRATIVES,
 } from "@/lib/profile-content";
 import type { Locale } from "@/lib/profile-content";
+import { t } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 
 export const dynamic = "force-dynamic";
@@ -238,7 +239,7 @@ export default async function CandidateResultPage({
     : null;
 
   const displayName =
-    invite.name ?? invite.email ?? (isHu ? "Névtelen jelölt" : "Unnamed candidate");
+    invite.name ?? invite.email ?? t("hiring.unnamedCandidateFull", locale);
 
   return (
     <div className="min-h-dvh bg-cream">
@@ -251,13 +252,13 @@ export default async function CandidateResultPage({
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {isHu ? "Vissza · Felvétel" : "Back · Hiring"}
+          {t("hiring.backHiring", locale)}
         </Link>
 
         {/* Header */}
         <div className="mb-6">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// jelölt eredménye" : "// candidate result"}
+            {t("hiring.candidateResultEyebrow", locale)}
           </p>
           <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {displayName}
@@ -268,7 +269,7 @@ export default async function CandidateResultPage({
             )}
             {invite.team && (
               <span className="text-xs text-muted">
-                {isHu ? "Hozzárendelt csapat: " : "Assigned team: "}{invite.team.name}
+                {t("hiring.assignedTeam", locale)}{invite.team.name}
               </span>
             )}
           </div>
@@ -278,7 +279,7 @@ export default async function CandidateResultPage({
         {orgTeams.length > 0 && (
           <div className="mb-8">
             <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
-              {isHu ? "Összehasonlítás csapattal" : "Compare with team"}
+              {t("hiring.compareWithTeam", locale)}
             </p>
             <div className="flex flex-wrap gap-2">
               {orgTeams.map((team) => {
@@ -306,9 +307,7 @@ export default async function CandidateResultPage({
             </div>
             {selectedTeam && !teamAvg && (
               <p className="mt-2 text-xs text-muted">
-                {isHu
-                  ? `A(z) ${selectedTeam.name} csapatnak nincs befejezett értékelése.`
-                  : `${selectedTeam.name} has no completed assessments.`}
+                {t("hiring.noAssessments", locale).replace("{name}", selectedTeam.name)}
               </p>
             )}
           </div>
@@ -317,17 +316,17 @@ export default async function CandidateResultPage({
         {/* ① VEZETŐI ÖSSZEFOGLALÓ */}
         <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// vezetői összefoglaló" : "// manager summary"}
+            {t("hiring.managerSummaryEyebrow", locale)}
           </p>
           <h2 className="mb-4 font-fraunces text-xl text-ink">
-            {isHu ? "Gyors áttekintés" : "Quick overview"}
+            {t("hiring.quickOverview", locale)}
           </h2>
 
           <div className="grid gap-4 md:grid-cols-3">
             {/* Erősségek */}
             <div className="rounded-xl bg-[rgba(26,92,58,0.06)] p-4">
               <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-sage">
-                {isHu ? "// erősségek" : "// strengths"}
+                {t("hiring.strengthsEyebrow", locale)}
               </p>
               <div className="space-y-1.5">
                 {highDims.length > 0 ? (
@@ -341,9 +340,7 @@ export default async function CandidateResultPage({
                   ))
                 ) : (
                   <p className="text-xs text-muted">
-                    {isHu
-                      ? "Kiegyensúlyozott profil, nincs kiemelkedő dimenzió"
-                      : "Balanced profile, no standout dimension"}
+                    {t("hiring.balancedProfile", locale)}
                   </p>
                 )}
               </div>
@@ -352,7 +349,7 @@ export default async function CandidateResultPage({
             {/* Figyelendő területek */}
             <div className="rounded-xl bg-[rgba(200,65,10,0.06)] p-4">
               <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
-                {isHu ? "// figyelendő" : "// watch areas"}
+                {t("hiring.watchAreasEyebrow", locale)}
               </p>
               <div className="space-y-1.5">
                 {lowDims.length > 0 ? (
@@ -366,9 +363,7 @@ export default async function CandidateResultPage({
                   ))
                 ) : (
                   <p className="text-xs text-muted">
-                    {isHu
-                      ? "Nincs kritikusan alacsony terület"
-                      : "No critically low area"}
+                    {t("hiring.noLowArea", locale)}
                   </p>
                 )}
               </div>
@@ -377,7 +372,7 @@ export default async function CandidateResultPage({
             {/* Team Fit */}
             <div className="rounded-xl bg-[rgba(99,102,241,0.06)] p-4">
               <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#6366F1]">
-                {isHu ? "// csapat illeszkedés" : "// team fit"}
+                {t("hiring.teamFitEyebrow", locale)}
               </p>
               {gapAnalysis ? (() => {
                 const avgAbsGap = Math.round(
@@ -398,24 +393,20 @@ export default async function CandidateResultPage({
                       {isHu ? fit.hu : fit.en}
                     </p>
                     <p className="mt-1 text-xs text-ink-body">
-                      {isHu
-                        ? `Átlagos eltérés: ±${avgAbsGap} pont`
-                        : `Average deviation: ±${avgAbsGap} points`}
+                      {t("hiring.avgDeviation", locale).replace("{points}", String(avgAbsGap))}
                     </p>
                     {topGap && Math.abs(topGap.gap) > 15 && (
                       <p className="mt-1 text-xs text-muted">
-                        {isHu
-                          ? `Legnagyobb: ${topGap.label} (${topGap.gap > 0 ? "+" : ""}${topGap.gap})`
-                          : `Largest: ${topGap.label} (${topGap.gap > 0 ? "+" : ""}${topGap.gap})`}
+                        {t("hiring.largestGap", locale)
+                          .replace("{label}", topGap.label)
+                          .replace("{gap}", `${topGap.gap > 0 ? "+" : ""}${topGap.gap}`)}
                       </p>
                     )}
                   </>
                 );
               })() : (
                 <p className="text-xs text-muted">
-                  {isHu
-                    ? "Csapat összehasonlítás nem elérhető"
-                    : "Team comparison not available"}
+                  {t("hiring.teamComparisonNA", locale)}
                 </p>
               )}
             </div>
@@ -425,10 +416,10 @@ export default async function CandidateResultPage({
         {/* ② HEXACO PROFIL + ÉRTELMEZÉS */}
         <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// hexaco profil" : "// hexaco profile"}
+            {t("hiring.hexacoProfileEyebrow", locale)}
           </p>
           <h2 className="mb-6 font-fraunces text-xl text-ink">
-            {isHu ? "Személyiségprofil" : "Personality profile"}
+            {t("hiring.personalityProfile", locale)}
           </h2>
 
           <div className="flex flex-col gap-4">
@@ -477,7 +468,7 @@ export default async function CandidateResultPage({
                       <div
                         className="absolute top-0 h-3 w-0.5 rounded-full bg-ink-body/40"
                         style={{ left: `${teamVal}%` }}
-                        title={`${isHu ? "Csapatátlag" : "Team avg"}: ${teamVal}%`}
+                        title={`${t("hiring.teamAvgTooltip", locale)}: ${teamVal}%`}
                       />
                     )}
                   </div>
@@ -496,10 +487,10 @@ export default async function CandidateResultPage({
         {teamAvg && gapAnalysis && (
           <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// csapat illeszkedés" : "// team fit"}
+              {t("hiring.teamFitEyebrow", locale)}
             </p>
             <h2 className="mb-6 font-fraunces text-xl text-ink">
-              {isHu ? "Jelölt a csapatban" : "Candidate in the team"}
+              {t("hiring.candidateInTeam", locale)}
             </h2>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -516,7 +507,7 @@ export default async function CandidateResultPage({
                     }))}
                     showObserver={true}
                     selfLabel={displayName}
-                    observerLabel={selectedTeam ? selectedTeam.name : (isHu ? "Csapatátlag" : "Team avg")}
+                    observerLabel={selectedTeam ? selectedTeam.name : t("hiring.teamAvgTooltip", locale)}
                   />
                 </div>
               </div>
@@ -524,7 +515,7 @@ export default async function CandidateResultPage({
               {/* Gap analysis */}
               <div>
                 <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-ink-body">
-                  {isHu ? "Eltérések a csapatátlagtól" : "Deviations from team average"}
+                  {t("hiring.deviationsFromTeam", locale)}
                 </p>
                 <div className="space-y-2">
                   {gapAnalysis.map((g) => (
@@ -570,9 +561,7 @@ export default async function CandidateResultPage({
                 </div>
 
                 <p className="mt-4 text-[11px] leading-relaxed text-muted">
-                  {isHu
-                    ? "A pozitív eltérés azt jelenti, hogy a jelölt erősebb ebben a dimenzióban. A negatív eltérés fejlesztési lehetőséget jelez."
-                    : "Positive deviation means the candidate scores higher. Negative deviation suggests a growth area."}
+                  {t("hiring.deviationExplanation", locale)}
                 </p>
               </div>
             </div>
@@ -583,10 +572,10 @@ export default async function CandidateResultPage({
         {(profileOutput.showBlock6 || profileOutput.showBlock7) && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// működési minták" : "// behavioral patterns"}
+              {t("hiring.behavioralPatternsEyebrow", locale)}
             </p>
             <h2 className="mb-5 font-fraunces text-xl text-ink">
-              {isHu ? "Jellemző működési dinamikák" : "Characteristic dynamics"}
+              {t("hiring.characteristicDynamics", locale)}
             </h2>
 
             <div className="space-y-3">
@@ -615,7 +604,7 @@ export default async function CandidateResultPage({
                         </span>
                       </div>
                       <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-[10px] font-semibold text-sage">
-                        {isHu ? "Erősség" : "Strength"}
+                        {t("hiring.strengthBadge", locale)}
                       </span>
                     </div>
                     {narrative && (
@@ -650,7 +639,7 @@ export default async function CandidateResultPage({
                         </span>
                       </div>
                       <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-[10px] font-semibold text-bronze">
-                        {isHu ? "Figyelendő" : "Watch area"}
+                        {t("hiring.watchAreaBadge", locale)}
                       </span>
                     </div>
                     {narrative && (

@@ -1,4 +1,6 @@
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface EnvItem {
   label: string;
@@ -28,15 +30,15 @@ const POLES: Record<string, { low: string; high: string }> = {
   Culture: { low: "pragmatic", high: "values-driven" },
 };
 
-function getShortLabel(value: string, isHu: boolean): string {
+function getShortLabel(value: string, locale: Locale): string {
   const v = value.toLowerCase();
-  if (v.startsWith("magas") || v.startsWith("high")) return isHu ? "Magas" : "High";
-  if (v.startsWith("alacsony") || v.startsWith("low")) return isHu ? "Alacsony" : "Low";
-  if (v.startsWith("közepes") || v.startsWith("medium")) return isHu ? "Közepes" : "Medium";
-  if (v.startsWith("rövid") || v.startsWith("short")) return isHu ? "Rövid" : "Short";
-  if (v.startsWith("hosszú") || v.startsWith("long")) return isHu ? "Hosszú" : "Long";
-  if (v.startsWith("gyors") || v.startsWith("fast")) return isHu ? "Gyors" : "Fast";
-  return isHu ? "Közepes" : "Medium";
+  if (v.startsWith("magas") || v.startsWith("high")) return t("content.envLabelHigh", locale);
+  if (v.startsWith("alacsony") || v.startsWith("low")) return t("content.envLabelLow", locale);
+  if (v.startsWith("közepes") || v.startsWith("medium")) return t("content.envLabelMedium", locale);
+  if (v.startsWith("rövid") || v.startsWith("short")) return t("content.envLabelShort", locale);
+  if (v.startsWith("hosszú") || v.startsWith("long")) return t("content.envLabelLong", locale);
+  if (v.startsWith("gyors") || v.startsWith("fast")) return t("content.envLabelFast", locale);
+  return t("content.envLabelMedium", locale);
 }
 
 function getPosition(value: string): number {
@@ -65,7 +67,6 @@ function getDescription(value: string): string {
 
 export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentSectionProps) {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
   if (!isUnlocked || items.length === 0) return null;
 
@@ -74,7 +75,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
       <div className="mb-4 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
         <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-          {isHu ? "Ideális környezet" : "Ideal environment"}
+          {t("results.envEyebrow", locale)}
         </p>
       </div>
 
@@ -113,7 +114,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
                 </div>
               </div>
               <span className="text-[11px] text-[#8a8a9a] sm:w-[180px] sm:shrink-0 sm:text-right">
-                <strong className="text-[#1a1a2e]">{getShortLabel(item.value, isHu)}</strong> — {desc}
+                <strong className="text-[#1a1a2e]">{getShortLabel(item.value, locale)}</strong> — {desc}
               </span>
             </div>
           );

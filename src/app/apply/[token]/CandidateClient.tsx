@@ -7,6 +7,7 @@ import { QuestionCard } from "@/components/assessment/QuestionCard";
 import { useToast } from "@/components/ui/Toast";
 import type { Question } from "@/lib/questions";
 import { isLikertQuestion } from "@/lib/questions";
+import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 const QUESTIONS_PER_PAGE = 10;
@@ -53,7 +54,6 @@ export function CandidateClient({
   locale,
 }: CandidateClientProps) {
   const { showToast } = useToast();
-  const isHu = locale !== "en";
 
   const DRAFT_KEY = `trita_candidate_draft_${token}`;
 
@@ -262,7 +262,7 @@ export function CandidateClient({
       initializedFocusPage.current = null;
       setHighlightQuestionId(missing.id);
       window.setTimeout(() => setHighlightQuestionId((c) => (c === missing.id ? null : c)), 1200);
-      showToast(isHu ? "Kérjük, válaszolj minden kérdésre." : "Please answer all questions.", "error");
+      showToast(t("candidate.answerAllError", locale), "error");
       return;
     }
 
@@ -291,12 +291,7 @@ export function CandidateClient({
       setPhase("done");
     } catch (err) {
       console.error(err);
-      showToast(
-        isHu
-          ? "Hiba történt a beküldés során. Kérjük, próbáld újra."
-          : "An error occurred while submitting. Please try again.",
-        "error",
-      );
+      showToast(t("candidate.submitError", locale), "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -309,37 +304,31 @@ export function CandidateClient({
         <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
           <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// személyiségfelmérés" : "// personality assessment"}
+              {t("candidate.introEyebrow", locale)}
             </p>
             <h1 className="mt-3 font-fraunces text-2xl text-ink md:text-3xl">
               {position
-                ? (isHu ? `${position} pozíció` : `${position} position`)
-                : (isHu ? "Személyiségfelmérés" : "Personality Assessment")}
+                ? tf("candidate.introTitlePosition", locale, { position })
+                : t("candidate.introTitleGeneric", locale)}
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-ink-body">
-              {isHu
-                ? `Ez a felmérés ${totalQuestions} kérdésből áll, és körülbelül 15–20 percet vesz igénybe. Kérjük, válaszolj őszintén, az első benyomásod alapján.`
-                : `This assessment contains ${totalQuestions} questions and takes approximately 15–20 minutes. Please answer honestly based on your first impression.`}
+              {tf("candidate.introBody", locale, { count: totalQuestions })}
             </p>
             <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
-              {isHu
-                ? "A válaszaidat automatikusan mentjük — ha megszakad a kitöltés, onnan folytathatod, ahol abbahagytad."
-                : "Your answers are saved automatically — if you stop and return, you can continue where you left off."}
+              {t("candidate.introAutoSave", locale)}
             </div>
             <div className="mt-6 flex flex-col gap-3 rounded-xl border border-sand bg-cream p-4 text-sm text-ink-body">
               <div className="flex items-center gap-2">
                 <span className="text-bronze">✓</span>
-                {isHu ? "Regisztráció nem szükséges" : "No registration required"}
+                {t("candidate.introNoReg", locale)}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-bronze">✓</span>
-                {isHu
-                  ? `${totalQuestions} kérdés, 1–5-ös skálán`
-                  : `${totalQuestions} questions, rated on a 1–5 scale`}
+                {tf("candidate.introScale", locale, { count: totalQuestions })}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-bronze">✓</span>
-                {isHu ? "Bizalmas adatkezelés" : "Confidential data handling"}
+                {t("candidate.introConfidential", locale)}
               </div>
             </div>
             <button
@@ -347,7 +336,7 @@ export function CandidateClient({
               onClick={() => setPhase("assessment")}
               className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
-              {isHu ? "Felmérés megkezdése" : "Start assessment"}
+              {t("candidate.introStartCta", locale)}
             </button>
           </div>
         </div>
@@ -363,12 +352,10 @@ export function CandidateClient({
           <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
             <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {isHu ? "Köszönjük a kitöltést!" : "Thank you for completing the assessment!"}
+              {t("candidate.doneTitle", locale)}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {isHu
-                ? "A válaszaid sikeresen beküldtük. A szervező hamarosan értesítést kap az eredményekről."
-                : "Your answers have been successfully submitted. The organiser will be notified of the results shortly."}
+              {t("candidate.doneBody", locale)}
             </p>
           </div>
         </div>
@@ -384,12 +371,10 @@ export function CandidateClient({
           <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🔒</div>
             <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {isHu ? "A meghívó visszavonva" : "Invitation revoked"}
+              {t("candidate.revokedTitle", locale)}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {isHu
-                ? "Ezt a meghívót visszavonták. Ha kérdésed van, vedd fel a kapcsolatot a szervezővel."
-                : "This invitation has been revoked. Please contact the organiser if you have any questions."}
+              {t("candidate.revokedBody", locale)}
             </p>
           </div>
         </div>
@@ -411,7 +396,7 @@ export function CandidateClient({
           <ProgressBar current={answeredCount} total={totalQuestions} />
           <div className="mt-2 flex items-center gap-2 text-xs text-muted">
             <span className="rounded-md bg-warm-mid px-2 py-1 whitespace-nowrap">
-              {isHu ? `~${etaMinutes} perc hátra` : `~${etaMinutes} min remaining`}
+              {tf("candidate.etaRemaining", locale, { minutes: etaMinutes })}
             </span>
             {position && (
               <span className="hidden truncate sm:block">
@@ -422,9 +407,7 @@ export function CandidateClient({
         </div>
 
         <div className="mb-4 rounded-xl border border-sand bg-cream px-4 py-2.5 text-center text-sm text-ink-body">
-          {isHu
-            ? "Válaszolj úgy, ahogy általában gondolkodsz és viselkedsz."
-            : "Answer based on how you generally think and behave."}
+          {t("candidate.answerHint", locale)}
         </div>
 
         {/* Auto-advance toggle */}
@@ -436,7 +419,7 @@ export function CandidateClient({
               onChange={(e) => setAutoAdvance(e.target.checked)}
               className="h-4 w-4 rounded border-sand"
             />
-            {isHu ? "Automatikus továbblépés" : "Auto-advance"}
+            {t("candidate.autoAdvance", locale)}
           </label>
         </div>
 
@@ -481,7 +464,7 @@ export function CandidateClient({
             whileHover={canGoPrev ? { scale: 1.02 } : {}}
             whileTap={canGoPrev ? { scale: 0.98 } : {}}
           >
-            {isHu ? "Vissza" : "Back"}
+            {t("candidate.back", locale)}
           </motion.button>
 
           {isLastPage && canGoNext ? (
@@ -497,8 +480,8 @@ export function CandidateClient({
               whileTap={!isSubmitting ? { scale: 0.98 } : {}}
             >
               {isSubmitting
-                ? (isHu ? "Beküldés..." : "Submitting...")
-                : (isHu ? "Beküldés" : "Submit")}
+                ? t("candidate.submitting", locale)
+                : t("candidate.submit", locale)}
             </motion.button>
           ) : (
             <motion.button
@@ -513,15 +496,13 @@ export function CandidateClient({
               whileHover={currentQuestionAnswered && !isSubmitting ? { scale: 1.02 } : {}}
               whileTap={currentQuestionAnswered && !isSubmitting ? { scale: 0.98 } : {}}
             >
-              {isHu ? "Tovább" : "Next"}
+              {t("candidate.next", locale)}
             </motion.button>
           )}
         </div>
 
         <p className="mt-6 text-center text-sm text-muted">
-          {isHu
-            ? "Az 1–5 skálán: 1 = Egyáltalán nem értek egyet, 5 = Teljes mértékben egyetértek"
-            : "On the 1–5 scale: 1 = Strongly disagree, 5 = Strongly agree"}
+          {t("candidate.scaleHint", locale)}
         </p>
       </div>
     </div>

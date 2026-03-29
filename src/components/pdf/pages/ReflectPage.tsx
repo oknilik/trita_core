@@ -59,7 +59,7 @@ export function ReflectPage({ data, pageNum, totalPages }: Props) {
       <View style={{ padding: "10 32 0", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderBottom: `1 solid ${colors.cream500}`, paddingBottom: 5, marginBottom: 4 }}>
         <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: "rgba(26,26,46,0.2)" }}>tri<Text style={{ color: "rgba(193,127,74,0.5)" }}>ta</Text></Text>
         <Text style={{ fontSize: 6, color: colors.ink300 }}>
-          {data.userName} · {isHu ? "Személyiségprofil" : "Personality profile"} · Self Reflect · {data.completedAt}
+          {data.userName} · {isHu ? "Személyiségprofil" : "Personality profile"} · Plus · {data.completedAt}
         </Text>
       </View>
 

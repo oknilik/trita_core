@@ -1,3 +1,4 @@
+import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import Link from "next/link";
@@ -46,20 +47,16 @@ export function ObserverComparison({
           </svg>
         </div>
         <h3 className="font-fraunces text-xl text-ink">
-          {isHu
-            ? "Hívj meg 2-5 embert observer-ként"
-            : "Invite 2–5 people as observers"}
+          {t("content.observerInviteTitle", locale)}
         </h3>
         <p className="mt-2 mx-auto max-w-sm text-sm text-ink-body">
-          {isHu
-            ? "Az összehasonlítás csak akkor jelenik meg, ha legalább 2 kitöltött observer visszajelzés beérkezett."
-            : "The comparison appears once at least 2 completed observer assessments have been received."}
+          {t("content.observerInviteBody", locale)}
         </p>
         <Link
           href="/dashboard?tab=invites"
           className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage px-6 text-sm font-semibold text-bronze transition hover:bg-sage-ghost"
         >
-          {isHu ? "Meghívók kezelése →" : "Manage invitations →"}
+          {t("content.observerManageInvites", locale)}
         </Link>
       </div>
     );
@@ -85,9 +82,7 @@ export function ObserverComparison({
     <div className="space-y-6">
       {/* Count badge */}
       <p className="text-sm text-ink-body">
-        {isHu
-          ? `${observerCount} observer visszajelzés átlaga alapján`
-          : `Based on ${observerCount} observer assessments`}
+        {tf("content.observerCountBasis", locale, { count: observerCount })}
       </p>
 
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
@@ -105,9 +100,7 @@ export function ObserverComparison({
           {gaps.length === 0 ? (
             <div className="rounded-xl border border-sand bg-cream px-5 py-4">
               <p className="text-sm text-ink-body">
-                {isHu
-                  ? "Jó egyezés — az önképed és az observer visszajelzések közel azonosak."
-                  : "Good alignment — your self-image and observer feedback are closely matched."}
+                {t("content.observerGoodAlignment", locale)}
               </p>
             </div>
           ) : (
@@ -139,13 +132,9 @@ export function ObserverComparison({
                     </span>
                   </div>
                   <p className="text-xs text-ink-body">
-                    {isHu
-                      ? higherSelf
-                        ? "Te magasabbra értékeled magadat, mint ahogy mások látnak."
-                        : "Mások magasabbra értékelnek téged, mint te saját magad."
-                      : higherSelf
-                      ? "You rate yourself higher than observers do."
-                      : "Observers rate you higher than you rate yourself."}
+                    {higherSelf
+                      ? t("content.observerSelfHigher", locale)
+                      : t("content.observerObsHigher", locale)}
                   </p>
                 </div>
               );

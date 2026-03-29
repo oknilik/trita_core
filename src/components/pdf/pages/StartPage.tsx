@@ -16,7 +16,7 @@ interface Props {
 }
 
 export function StartPage({ data, pageNum, totalPages }: Props) {
-  const hasPlus = data.plan === "plus" || data.plan === "reflect";
+  const hasPlus = data.plan === "plus";
   const isHu = true; // TODO: pass locale
 
   return (
@@ -76,23 +76,13 @@ export function StartPage({ data, pageNum, totalPages }: Props) {
               <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: colors.ink, marginBottom: 3 }}>
                 {isHu ? "Mélyebbre mennél?" : "Want to go deeper?"}
               </Text>
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 6, fontWeight: 600, color: colors.bronze, marginBottom: 2 }}>Self Plus · €7</Text>
-                  <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.4 }}>
-                    {isHu
-                      ? "Értsd meg, mi van a fő dimenzióid mögött — mely minták mozgatnak, milyen szerepkörök illenek hozzád."
-                      : "Understand what's behind your dimensions — patterns, matching roles."}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 6, fontWeight: 600, color: colors.sage, marginBottom: 2 }}>Self Reflect · €12</Text>
-                  <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.4 }}>
-                    {isHu
-                      ? "Lásd, hogyan látnak mások — és hol tér el az önképed a visszajelzésektől."
-                      : "See how others see you — and where your self-image diverges."}
-                  </Text>
-                </View>
+              <View>
+                <Text style={{ fontSize: 6, fontWeight: 600, color: colors.bronze, marginBottom: 2 }}>Plus · €9</Text>
+                <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.4 }}>
+                  {isHu
+                    ? "Értsd meg, mi van a fő dimenzióid mögött — alskálák, observer visszajelzés, vakfolt-elemzés, karrierillesztés."
+                    : "Understand what's behind your dimensions — subscales, observer feedback, blind spot analysis, career fit."}
+                </Text>
               </View>
               <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 3 }}>trita.io/profile → {isHu ? "feloldás" : "unlock"}</Text>
             </View>

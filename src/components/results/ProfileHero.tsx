@@ -1,13 +1,13 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
-type AccessLevel = "start" | "plus" | "reflect";
+type AccessLevel = "start" | "plus";
 
 const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: string }> = {
-  start:   { label: "Self Start",   bg: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" },
-  plus:    { label: "Self Plus",    bg: "rgba(193,127,74,0.2)",   color: "#e8a96a" },
-  reflect: { label: "Self Reflect", bg: "rgba(90,143,127,0.2)",   color: "#8fd4be" },
+  start: { label: "Free",  bg: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" },
+  plus:  { label: "Plus",  bg: "rgba(193,127,74,0.2)",   color: "#e8a96a" },
 };
 
 interface ProfileHeroProps {
@@ -40,7 +40,6 @@ export function ProfileHero({
   watchDimensions = [],
 }: ProfileHeroProps) {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
   const level = LEVEL_CONFIG[accessLevel];
 
   return (
@@ -56,7 +55,7 @@ export function ProfileHero({
 
         <div className="mb-2 flex items-center gap-2.5">
           <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-            {isHu ? "A te profilod" : "Your profile"}
+            {t("results.heroEyebrow", locale)}
           </p>
           <span
             className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
@@ -69,7 +68,7 @@ export function ProfileHero({
           {userName}
         </h1>
         <p className="mb-4 text-[11px] text-white/[0.25]">
-          {isHu ? "Felmérés:" : "Assessment:"} {completedAt}
+          {t("results.heroAssessment", locale)} {completedAt}
         </p>
 
         <div className="mb-2.5 flex items-start justify-between gap-3">
@@ -95,7 +94,7 @@ export function ProfileHero({
             {topDimensions.length > 0 && (
               <>
                 <span className="text-[9px] uppercase tracking-wide text-white/[0.25]">
-                  {isHu ? "Legerősebb:" : "Top:"}
+                  {t("content.heroTopDims", locale)}:
                 </span>
                 {topDimensions.map((d) => (
                   <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(61,107,94,0.3)", color: "#e8f2f0" }}>
@@ -107,7 +106,7 @@ export function ProfileHero({
             {watchDimensions.length > 0 && (
               <>
                 <span className="ml-2 text-[9px] uppercase tracking-wide text-white/[0.25]">
-                  {isHu ? "Figyelendő:" : "Watch:"}
+                  {t("content.heroWatchDims", locale)}:
                 </span>
                 {watchDimensions.map((d) => (
                   <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(193,127,74,0.2)", color: "#e8a96a" }}>
@@ -126,7 +125,7 @@ export function ProfileHero({
             disabled={shareLoading}
             className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12] disabled:opacity-50"
           >
-            📤 {shareLoading ? "..." : isHu ? "Megosztás" : "Share"}
+            📤 {shareLoading ? "..." : t("results.heroShare", locale)}
           </button>
           <button
             type="button"
@@ -134,7 +133,7 @@ export function ProfileHero({
             disabled={pdfLoading}
             className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-[#c17f4a] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110 disabled:opacity-50"
           >
-            📄 {pdfLoading ? "..." : isHu ? "PDF letöltés" : "Download PDF"}
+            📄 {pdfLoading ? "..." : t("results.heroPdf", locale)}
           </button>
         </div>
       </div>

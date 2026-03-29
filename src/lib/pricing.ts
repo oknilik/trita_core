@@ -1,7 +1,7 @@
 import type { Locale } from "@/lib/i18n";
 
 export interface SelfPricingPlan {
-  id: "self_start" | "self_plus" | "self_reflect";
+  id: "self_start" | "self_plus";
   name: string;
   description: string;
   price: string;
@@ -438,7 +438,7 @@ const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
   hu: [
     {
       id: "self_start",
-      name: "Self Start",
+      name: "Free",
       description: "Ismerd meg magad — az alapok, ingyenesen.",
       price: "Ingyenes",
       perMonth: "",
@@ -454,42 +454,26 @@ const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
     },
     {
       id: "self_plus",
-      name: "Self Plus",
-      description: "Nézz a fő dimenziók mögé.",
-      price: "€7",
+      name: "Plus",
+      description: "Teljes személyiségkép — alskálák, observer visszajelzés, vakfolt-elemzés.",
+      price: "€9",
       perMonth: "",
       seats: "egyszeri vásárlás",
       features: [
-        "Minden Self Start funkció",
+        "Minden Free funkció",
         "25 alskála részletesen",
-        "Fejlődési fókusz és vakfoltok",
-        "Karrierillesztés és szerepkör-javaslatok",
+        "Korlátlan observer + vakfolt-elemzés",
+        "Fejlődési fókusz és karrierillesztés",
         "PDF eredményexport",
       ],
       badge: "Legnépszerűbb",
-      ctaHref: "/try",
-    },
-    {
-      id: "self_reflect",
-      name: "Self Reflect",
-      description: "Hogyan látnak mások? Observer visszajelzés elemzés.",
-      price: "€12",
-      perMonth: "",
-      seats: "egyszeri vásárlás",
-      features: [
-        "Minden Self Plus funkció",
-        "Korlátlan observer meghívás",
-        "Önkép vs. observer összehasonlítás (részletes)",
-        "Vakfolt-elemzés",
-        "Observer visszajelzés riport",
-      ],
       ctaHref: "/try",
     },
   ],
   en: [
     {
       id: "self_start",
-      name: "Self Start",
+      name: "Free",
       description: "Get to know yourself — the basics, free.",
       price: "Free",
       perMonth: "",
@@ -505,35 +489,19 @@ const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
     },
     {
       id: "self_plus",
-      name: "Self Plus",
-      description: "Look beyond the main dimensions.",
-      price: "€7",
+      name: "Plus",
+      description: "Full personality profile — subscales, observer feedback, blind spot analysis.",
+      price: "€9",
       perMonth: "",
       seats: "one-time purchase",
       features: [
-        "Everything in Self Start",
+        "Everything in Free",
         "25 subscales in detail",
-        "Growth focus and blind spots",
-        "Career fit and role suggestions",
+        "Unlimited observers + blind spot analysis",
+        "Growth focus and career fit",
         "PDF results export",
       ],
       badge: "Most popular",
-      ctaHref: "/try",
-    },
-    {
-      id: "self_reflect",
-      name: "Self Reflect",
-      description: "How do others see you? Observer feedback analysis.",
-      price: "€12",
-      perMonth: "",
-      seats: "one-time purchase",
-      features: [
-        "Everything in Self Plus",
-        "Unlimited observer invites",
-        "Self vs. observer comparison (detailed)",
-        "Blind spot analysis",
-        "Observer feedback report",
-      ],
       ctaHref: "/try",
     },
   ],

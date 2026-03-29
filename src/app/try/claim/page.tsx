@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 const DRAFT_KEY = "trita_draft_HEXACO";
 
@@ -11,7 +12,6 @@ export default function TryClaimPage() {
   const router = useRouter();
   const { isSignedIn, isLoaded } = useAuth();
   const { locale } = useLocale();
-  const isHu = locale === "hu";
   const [error, setError] = useState<string | null>(null);
   const claimed = useRef(false);
 
@@ -68,13 +68,9 @@ export default function TryClaimPage() {
       })
       .catch((err) => {
         console.error("[claim] error:", err);
-        setError(
-          isHu
-            ? "Hiba történt az eredmények mentésekor. Kérjük, próbáld újra."
-            : "An error occurred while saving your results. Please try again.",
-        );
+        setError(t("tryClaim.error", locale));
       });
-  }, [isLoaded, isSignedIn, router, isHu]);
+  }, [isLoaded, isSignedIn, router, locale]);
 
   if (error) {
     return (
@@ -88,7 +84,7 @@ export default function TryClaimPage() {
           }}
           className="rounded-lg bg-[#c17f4a] px-6 py-3 text-sm font-semibold text-white"
         >
-          {isHu ? "Újrapróbálom" : "Try again"}
+          {t("tryClaim.retryCta", locale)}
         </button>
       </div>
     );
@@ -98,7 +94,7 @@ export default function TryClaimPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-cream">
       <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#c17f4a] border-t-transparent" />
       <p className="mt-4 text-sm text-[#8a8a9a]">
-        {isHu ? "Eredmények betöltése..." : "Loading your results..."}
+        {t("tryClaim.loading", locale)}
       </p>
     </div>
   );

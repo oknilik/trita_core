@@ -188,7 +188,7 @@ export default function ProfilePage() {
         : "border-[#e8e0d3] bg-[#f2ede6] text-[#8a8a9a] hover:border-[#5a8f7f] hover:bg-[#e8f2f0] hover:text-[#3d6b5e]"
     }`;
 
-  const planLabel = accessLevel === "self_reflect" ? "Self Reflect" : accessLevel === "self_plus" ? "Self Plus" : "Self Start";
+  const planLabel = accessLevel === "self_plus" ? "Plus" : "Free";
 
   return (
     <div className="min-h-dvh bg-[#f7f4ef]">

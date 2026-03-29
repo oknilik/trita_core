@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 interface HowYouWorkSectionProps {
   paragraphs: string[];
@@ -11,7 +12,6 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
   if (!isUnlocked || paragraphs.length === 0) return null;
 
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
   const mainPattern = paragraphs[0] ?? "";
   const watchArea = paragraphs[1] ?? "";
@@ -22,17 +22,17 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
       <div className="mb-1.5 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
         <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-          {isHu ? "Ahogy működsz" : "How you operate"}
+          {t("results.howYouWorkEyebrow", locale)}
         </p>
       </div>
       <h3 className="mb-5 font-fraunces text-lg text-[#1a1a2e]">
-        {isHu ? "Milyen környezetben működsz jól — és hol jöhetnek súrlódások" : "Where you thrive — and where friction may arise"}
+        {t("content.howYouWorkSub", locale)}
       </h3>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div className="rounded-xl border-[1.5px] border-[#3d6b5e]/20 bg-[#e8f2f0] p-[18px]">
           <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1e3d34]">
-            {isHu ? "Fő mintázat" : "Key pattern"}
+            {t("results.howYouWorkMain", locale)}
           </p>
           <p className="text-[13px] leading-[1.7] text-[#1e3d34]">
             {mainPattern}
@@ -42,7 +42,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
         {watchArea && (
           <div className="rounded-xl border-[1.5px] border-[#c17f4a]/20 bg-[#fdf5ee] p-[18px]">
             <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#8a5530]">
-              {isHu ? "Figyelendő" : "Watch area"}
+              {t("results.howYouWorkWatch", locale)}
             </p>
             <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
               {watchArea}
@@ -53,7 +53,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
         {context && (
           <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[#ddd5c8] bg-white p-[18px]">
             <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
-              {isHu ? "Kontextus" : "Context"}
+              {t("results.howYouWorkContext", locale)}
             </p>
             <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
               {context}

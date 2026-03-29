@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 interface InsightBullet {
   dimension?: string;
@@ -14,13 +15,12 @@ interface InsightPairProps {
 
 export function InsightPair({ strengths, watchAreas }: InsightPairProps) {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
   return (
     <div className="grid grid-cols-1 gap-2.5 py-5 md:grid-cols-2">
       <div className="rounded-xl border-[1.5px] border-[#3d6b5e]/[0.18] bg-[#e8f2f0] p-4 px-[18px]">
         <p className="mb-2 text-[9px] font-semibold uppercase tracking-widest text-[#1e3d34]">
-          {isHu ? "Erősségeid" : "Your strengths"}
+          {t("results.insightStrengths", locale)}
         </p>
         <div className="flex flex-col gap-1.5">
           {strengths.map((s, i) => (
@@ -39,7 +39,7 @@ export function InsightPair({ strengths, watchAreas }: InsightPairProps) {
       </div>
       <div className="rounded-xl border-[1.5px] border-[#c17f4a]/[0.18] bg-[#fdf5ee] p-4 px-[18px]">
         <p className="mb-2 text-[9px] font-semibold uppercase tracking-widest text-[#8a5530]">
-          {isHu ? "Figyelendő" : "Watch areas"}
+          {t("results.insightWatch", locale)}
         </p>
         <div className="flex flex-col gap-1.5">
           {watchAreas.map((w, i) => (

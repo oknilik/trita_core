@@ -13,7 +13,7 @@ export interface PdfData {
   personalityType: string;
   percentile: string;
   heroInsight: string;
-  plan: "start" | "plus" | "reflect";
+  plan: "start" | "plus";
   // Bullet-based insights
   strengthBullets: string[];
   watchBullets: string[];
@@ -59,10 +59,10 @@ export interface PdfData {
 // ─── Document ────────────────────────────────────────────────────────────────
 
 function TritaDocument({ data }: { data: PdfData }) {
-  const hasPlus = data.plan === "plus" || data.plan === "reflect";
-  const hasObservers = data.plan === "reflect" && data.observerData && data.observerData.count > 0;
+  const hasPlus = data.plan === "plus";
+  const hasObservers = hasPlus && data.observerData && data.observerData.count > 0;
 
-  // Start: 1, Plus: 3 (start + facets + workstyle), Reflect: 3 or 4
+  // Start: 1, Plus: 3 (start + facets + workstyle), Plus with observers: 4
   const totalPages = hasObservers ? 4 : hasPlus ? 3 : 1;
 
   return (

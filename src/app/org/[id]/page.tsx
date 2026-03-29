@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getOrgPageData } from "@/lib/org-stats";
@@ -96,28 +97,28 @@ export default async function OrgDetailPage({
   // Build stat strip
   const statCells = [
     {
-      label: isHu ? "Tagok" : "Members",
+      label: t("org.membersLabel", locale),
       value: pageData.memberCount,
       sub: pageData.pendingCount > 0
-        ? `+${pageData.pendingCount} ${isHu ? "függőben" : "pending"}`
+        ? `+${pageData.pendingCount} ${t("org.pendingSuffix", locale)}`
         : undefined,
       accentColor: "#3d6b5e",
     },
     {
-      label: isHu ? "Csapatok" : "Teams",
+      label: t("org.teamsLabel", locale),
       value: pageData.teamCount,
       accentColor: "#6366F1",
     },
     {
-      label: isHu ? "Aktív kampány" : "Active campaigns",
+      label: t("org.activeCampaigns", locale),
       value: pageData.activeCampaignCount,
       sub: pageData.closedCampaignCount > 0
-        ? `${pageData.closedCampaignCount} ${isHu ? "lezárt" : "closed"}`
+        ? `${pageData.closedCampaignCount} ${t("org.closedSuffix", locale)}`
         : undefined,
       accentColor: "#059669",
     },
     {
-      label: isHu ? "Befejezési arány" : "Completion rate",
+      label: t("org.completionRate", locale),
       value: pageData.activeTotalParticipants > 0
         ? `${Math.round((pageData.activeSelfDone / pageData.activeTotalParticipants) * 100)}%`
         : "—",
@@ -136,14 +137,14 @@ export default async function OrgDetailPage({
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// szervezet" : "// organization"}
+              {t("org.eyebrow", locale)}
             </p>
             <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
               {org.name}
             </h1>
             {org.status === "PENDING_SETUP" && (
               <span className="mt-2 inline-block rounded-full bg-amber-100 px-3 py-0.5 text-xs font-semibold text-amber-700">
-                {isHu ? "Beállítás folyamatban" : "Setup pending"}
+                {t("org.setupPending", locale)}
               </span>
             )}
           </div>
@@ -164,7 +165,7 @@ export default async function OrgDetailPage({
                 <circle cx="8" cy="8" r="2" />
                 <path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" />
               </svg>
-              {isHu ? "Beállítások" : "Settings"}
+              {t("org.settingsLink", locale)}
             </Link>
           )}
         </div>

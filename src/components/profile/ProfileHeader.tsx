@@ -1,22 +1,18 @@
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
-type ProfileLevel = "start" | "plus" | "reflect";
+type ProfileLevel = "start" | "plus";
 
 const BADGE: Record<ProfileLevel, { label: string; labelEn: string; classes: string }> = {
   start: {
-    label: "Self Start",
-    labelEn: "Self Start",
+    label: "Free",
+    labelEn: "Free",
     classes: "bg-[#f5f5f4] text-muted",
   },
   plus: {
-    label: "Self Plus",
-    labelEn: "Self Plus",
+    label: "Plus",
+    labelEn: "Plus",
     classes: "bg-sage-ghost text-bronze",
-  },
-  reflect: {
-    label: "Self Reflect",
-    labelEn: "Self Reflect",
-    classes: "bg-[#f0fdf4] text-sage",
   },
 };
 
@@ -50,7 +46,7 @@ export function ProfileHeader({
         <div className="min-w-0">
           <h1 className="font-fraunces text-3xl text-ink md:text-4xl">{name}</h1>
           <p className="mt-1.5 text-sm text-ink-body">
-            {isHu ? "Felmérés dátuma:" : "Assessment date:"}{" "}
+            {t("profile.assessmentDateLabel", locale)}{" "}
             <span className="text-ink-body">{formattedDate}</span>
           </p>
         </div>

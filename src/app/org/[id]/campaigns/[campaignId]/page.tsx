@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
@@ -31,28 +32,19 @@ const HEXACO_COLORS: Record<string, string> = {
   O: "#EF4444",
 };
 
-const HEXACO_LABELS_HU: Record<string, string> = {
-  H: "Önzetlenség",
-  E: "Érzelmi stabilitás",
-  X: "Extraverzió",
-  A: "Barátságosság",
-  C: "Lelkiismeretesség",
-  O: "Nyitottság",
+const HEXACO_LABEL_KEYS: Record<string, string> = {
+  H: "org.campaign.hexacoH",
+  E: "org.campaign.hexacoE",
+  X: "org.campaign.hexacoX",
+  A: "org.campaign.hexacoA",
+  C: "org.campaign.hexacoC",
+  O: "org.campaign.hexacoO",
 };
 
-const HEXACO_LABELS_EN: Record<string, string> = {
-  H: "Honesty-Humility",
-  E: "Emotionality",
-  X: "eXtraversion",
-  A: "Agreeableness",
-  C: "Conscientiousness",
-  O: "Openness",
-};
-
-function statusLabel(status: string, isHu: boolean) {
-  if (status === "ACTIVE") return isHu ? "Aktív" : "Active";
-  if (status === "CLOSED") return isHu ? "Lezárva" : "Closed";
-  return isHu ? "Vázlat" : "Draft";
+function statusLabel(status: string, locale: "hu" | "en") {
+  if (status === "ACTIVE") return t("org.campaign.statusActive", locale);
+  if (status === "CLOSED") return t("org.campaign.statusClosed", locale);
+  return t("org.campaign.statusDraft", locale);
 }
 
 function statusBadgeClass(status: string) {
@@ -61,16 +53,16 @@ function statusBadgeClass(status: string) {
   return "bg-amber-50 text-amber-700";
 }
 
-function nextStatusLabel(status: string, isHu: boolean) {
-  if (status === "ACTIVE") return isHu ? "Kampány aktiválása" : "Activate campaign";
-  if (status === "CLOSED") return isHu ? "Kampány lezárása" : "Close campaign";
+function nextStatusLabel(status: string, locale: "hu" | "en") {
+  if (status === "ACTIVE") return t("org.campaign.activateCampaign", locale);
+  if (status === "CLOSED") return t("org.campaign.closeCampaign", locale);
   return "";
 }
 
-function eyebrowLabel(status: string, isHu: boolean) {
-  if (status === "ACTIVE") return isHu ? "// aktív kampány" : "// active campaign";
-  if (status === "CLOSED") return isHu ? "// lezárt kampány" : "// closed campaign";
-  return isHu ? "// kampány – tervezés alatt" : "// campaign – draft";
+function eyebrowLabel(status: string, locale: "hu" | "en") {
+  if (status === "ACTIVE") return t("org.campaign.eyebrowActive", locale);
+  if (status === "CLOSED") return t("org.campaign.eyebrowClosed", locale);
+  return t("org.campaign.eyebrowDraft", locale);
 }
 
 function computeAvgScores(
@@ -262,13 +254,13 @@ export default async function CampaignDetailPage({
           >
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {isHu ? "Vissza a szervezethez" : "Back to organization"}
+          {t("org.backToOrg", locale)}
         </Link>
 
         {/* Header */}
         <div>
           <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {eyebrowLabel(campaign.status, isHu)}
+            {eyebrowLabel(campaign.status, locale)}
           </p>
           <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {campaign.name}
@@ -280,29 +272,27 @@ export default async function CampaignDetailPage({
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadgeClass(campaign.status)}`}
             >
-              {statusLabel(campaign.status, isHu)}
+              {statusLabel(campaign.status, locale)}
             </span>
             <span className="text-xs text-ink-body/50">
-              {isHu ? "Létrehozva:" : "Created:"}{" "}
+              {t("org.campaign.createdAt", locale)}{" "}
               {campaign.createdAt.toLocaleDateString(dateLocale)}
             </span>
             {campaign.closedAt && (
               <span className="text-xs text-ink-body/50">
-                {isHu ? "Lezárva:" : "Closed:"}{" "}
+                {t("org.campaign.closedAt", locale)}{" "}
                 {campaign.closedAt.toLocaleDateString(dateLocale)}
               </span>
             )}
             <span className="text-xs text-ink-body/50">
               {totalCount}{" "}
-              {isHu
-                ? "résztvevő"
-                : totalCount === 1
-                  ? "participant"
-                  : "participants"}
+              {totalCount === 1
+                ? t("org.campaign.participant", locale)
+                : t("org.campaign.participants", locale)}
             </span>
             {totalCount > 0 && (
               <span className="text-xs text-ink-body/50">
-                {completionPct}% {isHu ? "kitöltve" : "complete"}
+                {completionPct}% {t("org.campaign.complete", locale)}
               </span>
             )}
           </div>
@@ -321,7 +311,7 @@ export default async function CampaignDetailPage({
                 className="font-mono text-[10px] uppercase tracking-widest"
                 style={{ color: "var(--color-muted)" }}
               >
-                {isHu ? "Önértékelés" : "Self-assessment"}
+                {t("org.campaign.selfAssessment", locale)}
               </p>
               <p className="mt-1 font-fraunces text-3xl text-ink">
                 {selfDoneCount}
@@ -331,7 +321,7 @@ export default async function CampaignDetailPage({
               </p>
               <p className="mt-1 text-xs text-ink-body">
                 {Math.round((selfDoneCount / totalCount) * 100)}%{" "}
-                {isHu ? "befejezett" : "completed"}
+                {t("org.campaign.completed", locale)}
               </p>
             </div>
 
@@ -345,7 +335,7 @@ export default async function CampaignDetailPage({
                 className="font-mono text-[10px] uppercase tracking-widest"
                 style={{ color: "var(--color-muted)" }}
               >
-                {isHu ? "Observer kész" : "Observer done"}
+                {t("org.campaign.observerDone", locale)}
               </p>
               <p className="mt-1 font-fraunces text-3xl text-ink">
                 {observerDoneCount}
@@ -355,7 +345,7 @@ export default async function CampaignDetailPage({
               </p>
               <p className="mt-1 text-xs text-ink-body">
                 {Math.round((observerDoneCount / totalCount) * 100)}%{" "}
-                {isHu ? "kapott visszajelzést" : "received feedback"}
+                {t("org.campaign.receivedFeedback", locale)}
               </p>
             </div>
 
@@ -369,7 +359,7 @@ export default async function CampaignDetailPage({
                 className="font-mono text-[10px] uppercase tracking-widest"
                 style={{ color: "var(--color-muted)" }}
               >
-                {isHu ? "Teljes befejezés" : "Fully complete"}
+                {t("org.campaign.fullyComplete", locale)}
               </p>
               <p className="mt-1 font-fraunces text-3xl text-ink">
                 {fullyDoneCount}
@@ -379,7 +369,7 @@ export default async function CampaignDetailPage({
               </p>
               <p className="mt-1 text-xs text-ink-body">
                 {Math.round((fullyDoneCount / totalCount) * 100)}%{" "}
-                {isHu ? "mindkettő kész" : "both done"}
+                {t("org.campaign.bothDone", locale)}
               </p>
             </div>
           </div>
@@ -392,22 +382,20 @@ export default async function CampaignDetailPage({
           previousCampaignName && (
             <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
               <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                {isHu ? "// fejlődési ív" : "// development arc"}
+                {t("org.campaign.devArcEyebrow", locale)}
               </p>
               <h2 className="mb-1 font-fraunces text-xl text-ink">
-                {isHu ? "Fejlődési ív" : "Development arc"}
+                {t("org.campaign.devArcTitle", locale)}
               </h2>
               <p className="mb-5 text-xs text-ink-body">
-                {isHu
-                  ? `Összehasonlítás: "${previousCampaignName}" kampányhoz képest`
-                  : `Compared to: "${previousCampaignName}" campaign`}
+                {tf("org.campaign.devArcCompare", locale, { name: previousCampaignName! })}
               </p>
               <div className="flex flex-col gap-3">
                 {HEXACO_DIMS.map((d) => {
                   const curr = currentAvgScores![d] ?? 0;
                   const prev = previousAvgScores![d] ?? 0;
                   const delta = curr - prev;
-                  const label = isHu ? HEXACO_LABELS_HU[d] : HEXACO_LABELS_EN[d];
+                  const label = t(HEXACO_LABEL_KEYS[d], locale);
                   return (
                     <div key={d} className="flex items-center gap-3">
                       <span className="w-36 shrink-0 text-xs text-ink-body truncate">
@@ -446,10 +434,10 @@ export default async function CampaignDetailPage({
         {/* Participants */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// résztvevők" : "// participants"}
+            {t("org.campaign.participantsEyebrow", locale)}
           </p>
           <h2 className="mb-5 font-fraunces text-xl text-ink">
-            {isHu ? "Résztvevők" : "Participants"}{" "}
+            {t("org.campaign.participantsTitle", locale)}{" "}
             <span className="font-sans text-sm font-normal text-ink-body/50">
               ({totalCount})
             </span>
@@ -457,7 +445,7 @@ export default async function CampaignDetailPage({
 
           {totalCount === 0 ? (
             <p className="py-6 text-center text-sm text-ink-body/50">
-              {isHu ? "Még nincs résztvevő." : "No participants yet."}
+              {t("org.campaign.noParticipants", locale)}
             </p>
           ) : (
             <div className="flex flex-col divide-y divide-sand">
@@ -479,15 +467,15 @@ export default async function CampaignDetailPage({
                     <div className="flex shrink-0 items-center gap-2">
                       {isFullyDone ? (
                         <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                          {isHu ? "Kész" : "Done"}
+                          {t("org.campaign.participantDone", locale)}
                         </span>
                       ) : isSelfDone ? (
                         <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
-                          {isHu ? "Önért. kész" : "Self done"}
+                          {t("org.campaign.participantSelfDone", locale)}
                         </span>
                       ) : (
                         <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
-                          {isHu ? "Nem kezdte" : "Not started"}
+                          {t("org.campaign.participantNotStarted", locale)}
                         </span>
                       )}
                       {obsCount > 0 && (
@@ -521,25 +509,21 @@ export default async function CampaignDetailPage({
         {isManager && nextStatus && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// státusz" : "// status"}
+              {t("org.campaign.statusEyebrow", locale)}
             </p>
             <h2 className="mb-3 text-sm font-semibold text-ink">
-              {isHu ? "Kampány kezelése" : "Campaign management"}
+              {t("org.campaign.managementTitle", locale)}
             </h2>
             <p className="mb-4 text-xs text-ink-body/60">
               {campaign.status === "DRAFT"
-                ? isHu
-                  ? "Az aktiválás után a résztvevők értesítést kapnak és megkezdhetik az értékeléseket."
-                  : "After activation, participants will be notified and can begin evaluations."
-                : isHu
-                  ? "A lezárás végleges — az értékelések leállnak és az eredmények rögzülnek."
-                  : "Closing is permanent — evaluations stop and results are recorded."}
+                ? t("org.campaign.activateDescription", locale)
+                : t("org.campaign.closeDescription", locale)}
             </p>
             <CampaignStatusButton
               orgId={orgId}
               campaignId={campaign.id}
               nextStatus={nextStatus}
-              label={nextStatusLabel(nextStatus, isHu)}
+              label={nextStatusLabel(nextStatus, locale)}
               isDanger={nextStatus === "CLOSED"}
             />
           </section>

@@ -11,7 +11,6 @@ interface InvitationsTabProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   isPlus: boolean;
-  isReflect: boolean;
 }
 
 // ─── Clipboard helper ────────────────────────────────────────────────────────
@@ -40,33 +39,24 @@ async function copyText(text: string): Promise<boolean> {
 
 // ─── Locked ──────────────────────────────────────────────────────────────────
 
-function LockedInvitations({ hasSelfPlus }: { hasSelfPlus: boolean }) {
+function LockedInvitations() {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
-  const price = hasSelfPlus ? "€7" : "€12";
 
   return (
     <div className="rounded-2xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] p-8 text-center">
       <span className="mb-2.5 inline-block text-[32px] opacity-20">🔒</span>
       <h3 className="mb-1.5 font-fraunces text-[18px] text-[#1a1a2e]">
-        {isHu ? "Visszajelzési meghívók" : "Feedback invitations"}
+        {t("invitations.lockedTitle", locale)}
       </h3>
       <p className="mx-auto mb-4 max-w-[380px] text-[13px] leading-relaxed text-[#8a8a9a]">
-        {isHu
-          ? "Kérd meg kollégáidat, barátaidat vagy családtagjaidat, hogy értékeljenek téged — és nézd meg, hogyan viszonyul az önképed mások visszajelzéséhez."
-          : "Ask your colleagues, friends, or family to rate you — and see how your self-image compares to others' feedback."}
+        {t("invitations.lockedSub", locale)}
       </p>
       <button
         type="button"
         className="min-h-[44px] rounded-[10px] bg-[#c17f4a] px-6 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-110"
       >
-        {isHu ? `Self Reflect feloldás → ${price}` : `Unlock Self Reflect → ${price}`}
+        {t("invitations.lockedCta", locale)}
       </button>
-      {!hasSelfPlus && (
-        <p className="mt-2 text-[11px] text-[#8a8a9a]">
-          {isHu ? "Tartalmazza a Self Plus tartalmakat is" : "Includes Self Plus content"}
-        </p>
-      )}
     </div>
   );
 }
@@ -77,15 +67,13 @@ export function InvitationsTab({
   sentInvitations,
   receivedInvitations,
   isPlus,
-  isReflect,
 }: InvitationsTabProps) {
   const { locale } = useLocale();
   const { showToast } = useToast();
-  const isHu = locale === "hu";
 
   // A) LOCKED
-  if (!isReflect) {
-    return <LockedInvitations hasSelfPlus={isPlus} />;
+  if (!isPlus) {
+    return <LockedInvitations />;
   }
 
   // ─── State & logic (create / copy / delete) ────────────────────────────────
@@ -121,7 +109,7 @@ export function InvitationsTab({
       if (!res.ok) {
         const code = data.error ?? "";
         const loc = t(`error.${code}`, locale);
-        setCreateError(loc !== `error.${code}` ? loc : (isHu ? "Hiba történt" : "An error occurred"));
+        setCreateError(loc !== `error.${code}` ? loc : t("invitations.errorGeneric", locale));
         return;
       }
       setInvitations((prev) => [{
@@ -134,7 +122,7 @@ export function InvitationsTab({
       }
       setEmail("");
     } catch {
-      setCreateError(isHu ? "Hiba történt" : "An error occurred");
+      setCreateError(t("invitations.errorGeneric", locale));
     } finally {
       setIsCreating(false);
     }
@@ -143,7 +131,7 @@ export function InvitationsTab({
   const handleCopy = async (token: string) => {
     const link = `${window.location.origin}/observe/${token}`;
     const ok = await copyText(link);
-    if (!ok) { showToast(isHu ? "Másolás sikertelen" : "Copy failed", "error"); return; }
+    if (!ok) { showToast(t("invitations.copyFailed", locale), "error"); return; }
     setCopiedToken(token);
     setTimeout(() => setCopiedToken(null), 2000);
   };
@@ -155,7 +143,7 @@ export function InvitationsTab({
       if (!res.ok) throw new Error();
       setInvitations((prev) => prev.filter((inv) => inv.id !== id));
     } catch {
-      showToast(isHu ? "Törlés sikertelen" : "Delete failed", "error");
+      showToast(t("invitations.deleteFailed", locale), "error");
     } finally {
       setDeletingId(null);
     }
@@ -167,7 +155,7 @@ export function InvitationsTab({
   const canCreate = active.length < 5;
 
   const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(isHu ? "hu-HU" : "en-GB", { year: "numeric", month: "short", day: "numeric" });
+    new Date(iso).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { year: "numeric", month: "short", day: "numeric" });
 
   return (
     <div className="flex flex-col gap-5">
@@ -176,16 +164,14 @@ export function InvitationsTab({
         <div className="mb-1.5 flex items-center gap-2">
           <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
           <span className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-            {isHu ? "Visszajelzési meghívók" : "Feedback invitations"}
+            {t("invitations.eyebrow", locale)}
           </span>
         </div>
         <h2 className="font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
-          {isHu ? "Kérd ki mások véleményét" : "Get others' perspective"}
+          {t("invitations.title", locale)}
         </h2>
         <p className="mt-1 max-w-[480px] text-[13px] leading-relaxed text-[#8a8a9a]">
-          {isHu
-            ? "Hívd meg kollégáidat, barátaidat vagy családtagjaidat egy rövid értékelésre. A visszajelzések név nélkül jelennek meg."
-            : "Invite your colleagues, friends, or family to a short assessment. Feedback is shown anonymously."}
+          {t("invitations.sub", locale)}
         </p>
       </div>
 
@@ -195,17 +181,17 @@ export function InvitationsTab({
           <p className="font-fraunces text-2xl" style={{ color: completed.length > 0 ? "#3d6b5e" : "#1a1a2e" }}>
             {completed.length}
           </p>
-          <p className="text-[10px] text-[#8a8a9a]">{isHu ? "beérkezett" : "received"}</p>
+          <p className="text-[10px] text-[#8a8a9a]">{t("invitations.statReceived", locale)}</p>
         </div>
         <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: pending.length > 0 ? "#c17f4a" : "#1a1a2e" }}>
             {pending.length}
           </p>
-          <p className="text-[10px] text-[#8a8a9a]">{isHu ? "függőben" : "pending"}</p>
+          <p className="text-[10px] text-[#8a8a9a]">{t("invitations.statPending", locale)}</p>
         </div>
         <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl text-[#1a1a2e]">{active.length}/5</p>
-          <p className="text-[10px] text-[#8a8a9a]">{isHu ? "meghívó elküldve" : "invitations sent"}</p>
+          <p className="text-[10px] text-[#8a8a9a]">{t("invitations.statSent", locale)}</p>
         </div>
       </div>
 
@@ -216,19 +202,15 @@ export function InvitationsTab({
         </span>
         <p className="text-xs leading-relaxed" style={{ color: "#1e3d34" }}>
           {completed.length >= 2
-            ? (isHu
-                ? `${completed.length} visszajelzés beérkezett — az összehasonlítás elérhető az Összehasonlítás tabon.`
-                : `${completed.length} responses received — comparison available on the Compare tab.`)
-            : (isHu
-                ? "Az összehasonlításhoz legalább 2 visszajelzés kell. A visszajelzések név nélkül jelennek meg — csak összesített átlagokat mutatunk."
-                : "You need at least 2 responses for comparison. Feedback is anonymous — we only show aggregated averages.")}
+            ? `${completed.length} ${t("invitations.infoReady", locale)}`
+            : t("invitations.infoNeeded", locale)}
         </p>
       </div>
 
       {/* 4. Create form */}
       <div className="rounded-xl border-[1.5px] border-[#ddd5c8] bg-white p-[18px] px-5">
         <p className="mb-3 text-[13px] font-semibold text-[#1a1a2e]">
-          + {isHu ? "Új meghívó létrehozása" : "Create new invitation"}
+          + {t("invitations.formTitle", locale)}
         </p>
 
         {canCreate ? (
@@ -239,7 +221,7 @@ export function InvitationsTab({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-                placeholder={isHu ? "Email cím (opcionális)" : "Email address (optional)"}
+                placeholder={t("invitations.formPlaceholder", locale)}
                 className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[#ddd5c8] bg-[#f7f4ef] px-3.5 py-2.5 text-[13px] text-[#1a1a2e] placeholder:text-[#8a8a9a] transition focus:border-[#3d6b5e] focus:outline-none"
               />
               <button
@@ -248,7 +230,7 @@ export function InvitationsTab({
                 disabled={isCreating}
                 className="min-h-[44px] shrink-0 rounded-[10px] bg-[#3d6b5e] px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#2d5a4e] disabled:opacity-50"
               >
-                {isCreating ? "..." : (isHu ? "Létrehozás" : "Create")}
+                {isCreating ? "..." : t("invitations.formSubmit", locale)}
               </button>
             </div>
             {createError && (
@@ -256,16 +238,16 @@ export function InvitationsTab({
             )}
             <div className="mt-2.5 flex flex-col gap-1">
               <span className="text-[11px] text-[#8a8a9a]">
-                🔗 {isHu ? "Egy link — egy kitöltő. Email nélkül te osztod meg a linket." : "One link — one respondent. Without email you share the link yourself."}
+                🔗 {t("invitations.formHintLink", locale)}
               </span>
               <span className="text-[11px] text-[#8a8a9a]">
-                📧 {isHu ? "Email cím megadásával mi küldjük ki a meghívót." : "With an email we'll send the invitation."}
+                📧 {t("invitations.formHintEmail", locale)}
               </span>
             </div>
           </>
         ) : (
           <p className="text-[13px] text-[#8a8a9a]">
-            {isHu ? "Elérted az 5 meghívó limitet." : "You've reached the 5 invitation limit."}
+            {t("invitations.limitReached", locale)}
           </p>
         )}
       </div>
@@ -275,10 +257,10 @@ export function InvitationsTab({
         <div className="rounded-xl border-[1.5px] border-dashed border-[#ddd5c8] bg-[#f2ede6] p-9 text-center">
           <span className="mb-2 inline-block text-[28px] opacity-25" style={{ color: "#8a8a9a" }}>👥</span>
           <p className="text-sm font-medium text-[#4a4a5e]">
-            {isHu ? "Még nincs meghívód" : "No invitations yet"}
+            {t("invitations.emptyTitle", locale)}
           </p>
           <p className="text-xs text-[#8a8a9a]">
-            {isHu ? "Hozz létre egyet a fenti űrlappal" : "Create one with the form above"}
+            {t("invitations.emptySub", locale)}
           </p>
         </div>
       ) : (
@@ -287,22 +269,22 @@ export function InvitationsTab({
           {completed.length > 0 && (
             <div>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#8a8a9a]">
-                {isHu ? `Beérkezett (${completed.length})` : `Received (${completed.length})`}
+                {`${t("invitations.groupReceived", locale)} (${completed.length})`}
               </p>
               {completed.map((inv) => (
                 <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-white px-4 py-3.5 transition-all hover:border-[#3d6b5e]/30 hover:shadow-sm">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "#e8f2f0", color: "#3d6b5e" }}>✓</div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium text-[#1a1a2e]">
-                      {inv.observerEmail ?? (isHu ? "Link meghívó" : "Link invitation")}
+                      {inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
                     <p className="text-[11px] text-[#8a8a9a]">
-                      {isHu ? "Beérkezett" : "Received"}: {formatDate(inv.completedAt ?? inv.createdAt)}
-                      {" · "}{inv.observerEmail ? (isHu ? "Email meghívó" : "Email invitation") : (isHu ? "Link meghívó" : "Link invitation")}
+                      {t("invitations.receivedLabel", locale)}: {formatDate(inv.completedAt ?? inv.createdAt)}
+                      {" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}
                     </p>
                   </div>
                   <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "#e8f2f0", color: "#1e3d34" }}>
-                    {isHu ? "Kitöltve" : "Completed"}
+                    {t("invitations.statusCompleted", locale)}
                   </span>
                 </div>
               ))}
@@ -313,7 +295,7 @@ export function InvitationsTab({
           {pending.length > 0 && (
             <div>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#8a8a9a]">
-                {isHu ? `Függőben (${pending.length})` : `Pending (${pending.length})`}
+                {`${t("invitations.groupPending", locale)} (${pending.length})`}
               </p>
               {pending.map((inv) => (
                 <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-white px-4 py-3.5 transition-all hover:border-[#c17f4a]/30 hover:shadow-sm">
@@ -322,23 +304,23 @@ export function InvitationsTab({
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium text-[#1a1a2e]">
-                      {inv.observerEmail ?? (isHu ? "Link meghívó" : "Link invitation")}
+                      {inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
                     <p className="text-[11px] text-[#8a8a9a]">
-                      {isHu ? "Elküldve" : "Sent"}: {formatDate(inv.createdAt)}
-                      {" · "}{inv.observerEmail ? (isHu ? "Email meghívó" : "Email invitation") : (isHu ? "Link meghívó" : "Link invitation")}
+                      {t("invitations.sentLabel", locale)}: {formatDate(inv.createdAt)}
+                      {" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "#fdf5ee", color: "#8a5530" }}>
-                      {isHu ? "Várakozik" : "Waiting"}
+                      {t("invitations.statusPending", locale)}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleCopy(inv.token)}
                       className="min-h-[32px] rounded-lg border border-[#ddd5c8] bg-white px-2.5 py-1 text-[11px] font-medium text-[#8a8a9a] transition hover:bg-[#f2ede6]"
                     >
-                      {copiedToken === inv.token ? (isHu ? "Másolva!" : "Copied!") : (isHu ? "Link" : "Link")}
+                      {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
                     </button>
                     <button
                       type="button"
@@ -360,10 +342,10 @@ export function InvitationsTab({
       {receivedInvitations.length > 0 && (
         <div className="border-t border-[#ddd5c8] pt-5">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-[#8a8a9a]">
-            {isHu ? "Beérkező meghívók" : "Received invitations"}
+            {t("invitations.receivedSection", locale)}
           </p>
           {receivedInvitations.map((inv) => {
-            const name = inv.inviterUsername ?? (isHu ? "Névtelen" : "Anonymous");
+            const name = inv.inviterUsername ?? t("invitations.anonymous", locale);
             const isPending = inv.status === "PENDING";
             const isExpired = new Date(inv.expiresAt) < new Date();
             const isDone = inv.status === "COMPLETED";
@@ -380,17 +362,17 @@ export function InvitationsTab({
                   <p className="text-[13px] font-medium text-[#1a1a2e]">{name}</p>
                   <p className="text-[11px] text-[#8a8a9a]">
                     {isDone
-                      ? (isHu ? "Kitöltve" : "Completed")
+                      ? t("invitations.statusCompleted", locale)
                       : inv.status === "CANCELED"
-                        ? (isHu ? "Visszavonva" : "Canceled")
+                        ? t("invitations.statusCanceled", locale)
                         : isExpired
-                          ? (isHu ? "Lejárt" : "Expired")
-                          : (isHu ? "Függőben" : "Pending")}
+                          ? t("invitations.statusExpired", locale)
+                          : t("invitations.statusPendingLower", locale)}
                   </p>
                 </div>
                 {isPending && !isExpired && (
                   <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[#3d6b5e] px-4 py-2 text-[11px] font-semibold text-white">
-                    {isHu ? "Kitöltöm →" : "Fill in →"}
+                    {t("invitations.fillIn", locale)}
                   </Link>
                 )}
               </div>

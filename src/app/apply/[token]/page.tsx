@@ -4,11 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { CandidateClient } from "./CandidateClient";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
   return {
-    title: "Personality Assessment | Trita",
+    title: t("candidate.metaTitle", locale),
     robots: {
       index: false,
       follow: false,
@@ -42,8 +44,6 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     notFound();
   }
 
-  const isHu = locale !== "en";
-
   if (invite.status === "COMPLETED") {
     return (
       <div className="min-h-dvh bg-cream">
@@ -51,12 +51,10 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
           <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🎉</div>
             <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {isHu ? "Már kitöltötted!" : "Already completed!"}
+              {t("candidate.pageCompletedTitle", locale)}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {isHu
-                ? "Ezt a felmérést már korábban sikeresen beküldted. Köszönjük a részvételt!"
-                : "You have already submitted this assessment. Thank you for your participation!"}
+              {t("candidate.pageCompletedBody", locale)}
             </p>
           </div>
         </div>
@@ -71,12 +69,10 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
           <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🔒</div>
             <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {isHu ? "A meghívó visszavonva" : "Invitation revoked"}
+              {t("candidate.pageCanceledTitle", locale)}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {isHu
-                ? "Ezt a meghívót visszavonták. Ha kérdésed van, vedd fel a kapcsolatot a szervezővel."
-                : "This invitation has been revoked. Please contact the organiser if you have any questions."}
+              {t("candidate.pageCanceledBody", locale)}
             </p>
           </div>
         </div>
@@ -91,12 +87,10 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
           <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">⏰</div>
             <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {isHu ? "A meghívó lejárt" : "Invitation expired"}
+              {t("candidate.pageExpiredTitle", locale)}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {isHu
-                ? "Ez a meghívó link sajnos már nem érvényes. Kérj új linket a szervezőtől."
-                : "This invitation link is no longer valid. Please request a new link from the organiser."}
+              {t("candidate.pageExpiredBody", locale)}
             </p>
           </div>
         </div>

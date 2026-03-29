@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { getAllPosts } from "@/lib/blog";
 
 export const dynamic = "force-static";
@@ -34,7 +35,6 @@ function getTagStyle(tag: string): string {
 export default async function BlogListPage() {
   const locale = await getServerLocale();
   const posts = getAllPosts(locale as "hu" | "en");
-  const isHu = locale !== "en";
   const featured = posts[0];
   const rest = posts.slice(1);
 
@@ -50,15 +50,13 @@ export default async function BlogListPage() {
             </span>
           </div>
           <h1 className="mb-2 font-fraunces text-[24px] leading-[1.12] tracking-tight text-[#1a1a2e] lg:text-[34px]">
-            {isHu ? "Csapatintelligencia. Pszichológia. " : "Team intelligence. Psychology. "}
+            {t("blog.heroTitle", locale)}
             <em className="not-italic text-[#c17f4a]">
-              {isHu ? "Döntések." : "Decisions."}
+              {t("blog.heroTitleEm", locale)}
             </em>
           </h1>
           <p className="max-w-[540px] text-sm leading-relaxed text-[#8a8a9a]">
-            {isHu
-              ? "Gyakorlati cikkek arról, hogyan tehető láthatóvá a csapatdinamika — és hogyan lehet jobb döntéseket hozni emberekről."
-              : "Practical articles on how to make team dynamics visible — and how to make better decisions about people."}
+            {t("blog.heroSub", locale)}
           </p>
         </div>
       </section>
@@ -67,7 +65,7 @@ export default async function BlogListPage() {
         <div className="mx-auto max-w-4xl">
           {posts.length === 0 ? (
             <p className="text-sm text-[#8a8a9a]">
-              {isHu ? "Hamarosan..." : "Coming soon..."}
+              {t("blog.empty", locale)}
             </p>
           ) : (
             <>
@@ -81,13 +79,13 @@ export default async function BlogListPage() {
                   <div className="relative flex min-h-[160px] flex-col items-center justify-center bg-gradient-to-br from-[#c17f4a] via-[#a86b3d] to-[#8a5530] p-8 lg:min-h-[200px]">
                     <div className="pointer-events-none absolute -right-10 -top-10 h-[120px] w-[120px] rounded-full bg-white/[0.04]" />
                     <span className="mb-4 inline-flex rounded-full bg-[#3d6b5e]/30 px-2.5 py-[3px] text-[7px] font-semibold uppercase tracking-[1px] text-[#c8e8de]">
-                      {isHu ? "Kiemelt cikk" : "Featured"}
+                      {t("blog.featured", locale)}
                     </span>
                     <p className="font-fraunces text-[40px] leading-none text-white/80">
                       {featured.readingTime.replace(/[^\d]/g, "")}
                     </p>
                     <p className="mt-1 text-[11px] text-white/40">
-                      {isHu ? "perc olvasás" : "min read"}
+                      {t("blog.minRead", locale)}
                     </p>
                     {featured.tags[0] && (
                       <p className="mt-3 text-[10px] font-medium uppercase tracking-[1px] text-white/30">
@@ -165,7 +163,7 @@ export default async function BlogListPage() {
                       · {post.readingTime}
                     </span>
                     <span className="text-[11px] font-medium text-[#3d6b5e] opacity-0 transition-opacity group-hover:opacity-100">
-                      {isHu ? "Olvasom →" : "Read →"}
+                      {t("blog.readCta", locale)}
                     </span>
                   </div>
                 </Link>

@@ -1,15 +1,14 @@
 import { UpgradeButton } from "./UpgradeButton";
 
-type ProfileLevel = "start" | "plus" | "reflect";
+type ProfileLevel = "start" | "plus";
 
-const LEVEL_RANK: Record<ProfileLevel, number> = { start: 0, plus: 1, reflect: 2 };
-const TIER_MAP: Record<"plus" | "reflect", string> = {
+const LEVEL_RANK: Record<ProfileLevel, number> = { start: 0, plus: 1 };
+const TIER_MAP: Record<"plus", string> = {
   plus: "self_plus",
-  reflect: "self_reflect",
 };
 
 interface LockedSectionProps {
-  requiredLevel: "plus" | "reflect";
+  requiredLevel: "plus";
   currentLevel: ProfileLevel;
   title: string;
   teaser: string;

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { t, type Locale } from "@/lib/i18n";
 import { CandidateInviteForm } from "@/components/manager/CandidateInviteForm";
 import { CandidateRevokeButton } from "@/components/manager/CandidateRevokeButton";
 import { RequestCreditsButton } from "@/components/hiring/RequestCreditsButton";
@@ -47,8 +48,7 @@ interface HiringDashboardProps {
   orgName: string;
   teams: Team[];
   invites: SerializedInvite[];
-  isHu: boolean;
-  locale: string;
+  locale: Locale;
   planTier: string;
   creditBalance: CreditBalance | null;
   creditHistory: CreditHistoryEntry[] | null;
@@ -56,14 +56,14 @@ interface HiringDashboardProps {
   isAdmin: boolean;
 }
 
-function statusLabel(status: string, isExpired: boolean, isHu: boolean, draftAnsweredCount?: number): string {
-  if (isExpired) return isHu ? "Lejárt" : "Expired";
+function statusLabel(status: string, isExpired: boolean, locale: Locale, draftAnsweredCount?: number): string {
+  if (isExpired) return t("hiring.statusExpired", locale);
   switch (status) {
-    case "COMPLETED": return isHu ? "✓ kész" : "✓ done";
-    case "CANCELED": return isHu ? "Visszavonva" : "Revoked";
+    case "COMPLETED": return t("hiring.statusCompleted", locale);
+    case "CANCELED": return t("hiring.statusCanceled", locale);
     default:
-      if ((draftAnsweredCount ?? 0) > 0) return isHu ? "Kitöltés alatt" : "In progress";
-      return isHu ? "Elküldve" : "Sent";
+      if ((draftAnsweredCount ?? 0) > 0) return t("hiring.statusInProgress", locale);
+      return t("hiring.statusSent", locale);
   }
 }
 
@@ -77,12 +77,12 @@ function statusClass(status: string, isExpired: boolean): string {
 function CandidateRow({
   invite,
   orgId,
-  isHu,
+  locale,
   dateLocale,
 }: {
   invite: SerializedInvite;
   orgId: string;
-  isHu: boolean;
+  locale: Locale;
   dateLocale: string;
 }) {
   const [resendState, setResendState] = useState<"idle" | "loading" | "sent">("idle");
@@ -91,7 +91,7 @@ function CandidateRow({
     invite.status === "PENDING" && new Date(invite.expiresAt) < new Date();
 
   const displayName =
-    invite.name ?? invite.email ?? (isHu ? "Névtelen jelölt" : "Unnamed candidate");
+    invite.name ?? invite.email ?? t("hiring.unnamedCandidate", locale);
   const initial = displayName[0]?.toUpperCase() ?? "?";
 
   async function handleResend() {
@@ -145,7 +145,7 @@ function CandidateRow({
           statusClass(invite.status, isExpired),
         ].join(" ")}
       >
-        {statusLabel(invite.status, isExpired, isHu, invite.draftAnsweredCount)}
+        {statusLabel(invite.status, isExpired, locale, invite.draftAnsweredCount)}
       </span>
 
       {/* Actions */}
@@ -155,7 +155,7 @@ function CandidateRow({
             href={`/hiring/${orgId}/candidates/${invite.id}`}
             className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-[11px] font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
           >
-            {isHu ? "Eredmény →" : "Results →"}
+            {t("hiring.resultsLink", locale)}
           </Link>
         )}
         {invite.status === "PENDING" && !isExpired && !!invite.email && (
@@ -172,12 +172,12 @@ function CandidateRow({
             {resendState === "loading"
               ? "…"
               : resendState === "sent"
-              ? (isHu ? "✓ Elküldve" : "✓ Sent")
-              : (isHu ? "Újraküldés" : "Resend")}
+              ? t("hiring.resendSent", locale)
+              : t("hiring.resendButton", locale)}
           </button>
         )}
         {invite.status === "PENDING" && !isExpired && (
-          <CandidateRevokeButton inviteId={invite.id} isHu={isHu} />
+          <CandidateRevokeButton inviteId={invite.id} isHu={locale !== "en"} />
         )}
       </div>
     </div>
@@ -189,7 +189,6 @@ export function HiringDashboard({
   orgName,
   teams,
   invites,
-  isHu,
   locale,
   planTier,
   creditBalance,
@@ -222,17 +221,17 @@ export function HiringDashboard({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? `// felvétel · ${orgName}` : `// hiring · ${orgName}`}
+            {`${t("hiring.eyebrow", locale)} · ${orgName}`}
           </p>
           <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
-            trita {isHu ? "Felvétel" : "Hiring"}
+            trita {t("hiring.title", locale)}
           </h1>
           <p className="mt-1 text-xs text-muted">
-            {invites.length} {isHu ? "jelölt összesen" : "candidates total"}
+            {invites.length} {t("hiring.candidatesTotal", locale)}
             {" · "}
-            {completed.length} {isHu ? "befejezett" : "completed"}
+            {completed.length} {t("hiring.completedLabel", locale)}
             {" · "}
-            {pending.length} {isHu ? "folyamatban" : "in progress"}
+            {pending.length} {t("hiring.inProgressLabel", locale)}
           </p>
         </div>
         {canInviteNew ? (
@@ -242,8 +241,8 @@ export function HiringDashboard({
             className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
           >
             {showForm
-              ? isHu ? "✕ Mégse" : "✕ Cancel"
-              : isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
+              ? t("hiring.cancelButton", locale)
+              : t("hiring.inviteCandidate", locale)}
           </button>
         ) : (
           <button
@@ -251,7 +250,7 @@ export function HiringDashboard({
             disabled
             className="min-h-[44px] rounded-lg bg-sand px-5 text-sm font-semibold text-muted cursor-not-allowed"
           >
-            {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
+            {t("hiring.inviteCandidate", locale)}
           </button>
         )}
       </div>
@@ -262,19 +261,17 @@ export function HiringDashboard({
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                {isHu ? "// jelölt kreditek" : "// candidate credits"}
+                {t("hiring.creditEyebrow", locale)}
               </p>
               <p className="mt-1 text-sm text-ink-body">
                 <span className="font-fraunces text-2xl text-ink">
                   {creditBalance.available}
                 </span>
                 {" "}
-                {isHu ? "elérhető kredit" : "credits available"}
+                {t("hiring.creditsAvailable", locale)}
               </p>
               <p className="text-[11px] text-muted mt-0.5">
-                {isHu
-                  ? `${creditBalance.totalPurchased} vásárolt · ${creditBalance.totalUsed} felhasznált`
-                  : `${creditBalance.totalPurchased} purchased · ${creditBalance.totalUsed} used`}
+                {`${creditBalance.totalPurchased} ${t("hiring.creditsPurchased", locale)} · ${creditBalance.totalUsed} ${t("hiring.creditsUsed", locale)}`}
               </p>
             </div>
 
@@ -340,7 +337,7 @@ export function HiringDashboard({
                 </div>
               </div>
             ) : creditBalance.available === 0 ? (
-              <RequestCreditsButton orgId={orgId} isHu={isHu} />
+              <RequestCreditsButton orgId={orgId} isHu={locale !== "en"} />
             ) : null}
           </div>
 
@@ -360,9 +357,7 @@ export function HiringDashboard({
       {/* No-credits warning banner for managers */}
       {!canInviteNew && creditBalance !== null && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm text-amber-800">
-          {isHu
-            ? "Nincs elérhető kredit. Kérd az admint a pool feltöltésére, vagy váltson Org csomagra a korlátlan hozzáférésért."
-            : "No credits available. Ask your admin to top up, or upgrade to Org for unlimited access."}
+          {t("hiring.noCreditsWarning", locale)}
         </div>
       )}
 
@@ -371,7 +366,7 @@ export function HiringDashboard({
         <div className="overflow-hidden rounded-2xl border border-sand bg-white shadow-sm">
           <div className="border-b border-sand px-6 py-4">
             <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// új jelölt meghívása" : "// invite new candidate"}
+              {t("hiring.inviteFormEyebrow", locale)}
             </p>
           </div>
           <div className="p-6">
@@ -386,9 +381,9 @@ export function HiringDashboard({
       {/* Stat strip */}
       <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-sand bg-white shadow-sm">
         {[
-          { label: isHu ? "Folyamatban" : "In progress", value: pending.length, color: "var(--color-bronze)" },
-          { label: isHu ? "Befejezett" : "Completed", value: completed.length, color: "#10B981" },
-          { label: isHu ? "Lejárt" : "Expired", value: expired.length, color: "var(--color-muted)" },
+          { label: t("hiring.statInProgress", locale), value: pending.length, color: "var(--color-bronze)" },
+          { label: t("hiring.statCompleted", locale), value: completed.length, color: "#10B981" },
+          { label: t("hiring.statExpired", locale), value: expired.length, color: "var(--color-muted)" },
         ].map((s, i) => (
           <div
             key={s.label}
@@ -413,9 +408,7 @@ export function HiringDashboard({
       {inProgressInvites.length > 0 && (
         <div>
           <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-bronze">
-            {isHu
-              ? `// kitöltés alatt · ${inProgressInvites.length} jelölt`
-              : `// in progress · ${inProgressInvites.length} candidate${inProgressInvites.length !== 1 ? "s" : ""}`}
+            {`${t("hiring.sectionInProgress", locale)} · ${inProgressInvites.length} ${inProgressInvites.length !== 1 ? t("hiring.candidatesSuffix", locale) : t("hiring.candidateSuffix", locale)}`}
           </p>
           <div className="flex flex-col gap-2">
             {inProgressInvites.map((inv) => (
@@ -423,7 +416,7 @@ export function HiringDashboard({
                 key={inv.id}
                 invite={inv}
                 orgId={orgId}
-                isHu={isHu}
+                locale={locale}
                 dateLocale={dateLocale}
               />
             ))}
@@ -435,9 +428,7 @@ export function HiringDashboard({
       {sentInvites.length > 0 && (
         <div>
           <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-muted">
-            {isHu
-              ? `// elküldve · ${sentInvites.length} jelölt`
-              : `// sent · ${sentInvites.length} candidate${sentInvites.length !== 1 ? "s" : ""}`}
+            {`${t("hiring.sectionSent", locale)} · ${sentInvites.length} ${sentInvites.length !== 1 ? t("hiring.candidatesSuffix", locale) : t("hiring.candidateSuffix", locale)}`}
           </p>
           <div className="flex flex-col gap-2">
             {sentInvites.map((inv) => (
@@ -445,7 +436,7 @@ export function HiringDashboard({
                 key={inv.id}
                 invite={inv}
                 orgId={orgId}
-                isHu={isHu}
+                locale={locale}
                 dateLocale={dateLocale}
               />
             ))}
@@ -457,7 +448,7 @@ export function HiringDashboard({
       {completed.length > 0 && (
         <div>
           <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-muted">
-            {isHu ? `// befejezett · ${completed.length} jelölt` : `// completed · ${completed.length}`}
+            {`${t("hiring.sectionCompleted", locale)} · ${completed.length} ${completed.length !== 1 ? t("hiring.candidatesSuffix", locale) : t("hiring.candidateSuffix", locale)}`}
           </p>
           <div className="flex flex-col gap-2">
             {completed.map((inv) => (
@@ -465,7 +456,7 @@ export function HiringDashboard({
                 key={inv.id}
                 invite={inv}
                 orgId={orgId}
-                isHu={isHu}
+                locale={locale}
                 dateLocale={dateLocale}
               />
             ))}
@@ -477,7 +468,7 @@ export function HiringDashboard({
       {isAdmin && creditHistory && creditHistory.length > 0 && (
         <div className="rounded-xl border border-sand bg-white p-5">
           <p className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-3">
-            {isHu ? "// kredit napló" : "// credit log"}
+            {t("hiring.creditLogEyebrow", locale)}
           </p>
           <div className="divide-y divide-sand">
             {creditHistory.map((entry) => (
@@ -485,8 +476,8 @@ export function HiringDashboard({
                 <div className="min-w-0">
                   <p className="text-xs text-ink-body truncate">
                     {entry.note ?? (entry.type === "purchase"
-                      ? (isHu ? "Vásárlás" : "Purchase")
-                      : (isHu ? "Felhasználás" : "Usage"))}
+                      ? t("hiring.creditPurchase", locale)
+                      : t("hiring.creditUsage", locale))}
                   </p>
                   <p className="text-[10px] text-muted">
                     {new Date(entry.createdAt).toLocaleDateString(
@@ -517,12 +508,10 @@ export function HiringDashboard({
       {invites.length === 0 && !showForm && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-sand bg-white py-16 text-center">
           <p className="mb-1 text-sm font-semibold text-ink">
-            {isHu ? "Még nincs jelölt" : "No candidates yet"}
+            {t("hiring.noCandidatesTitle", locale)}
           </p>
           <p className="mb-4 text-xs text-muted">
-            {isHu
-              ? "Hívj meg jelölteket HEXACO felmérésre az alábbi gombbal"
-              : "Invite candidates to a HEXACO assessment"}
+            {t("hiring.noCandidatesDesc", locale)}
           </p>
           {canInviteNew && (
             <button
@@ -530,7 +519,7 @@ export function HiringDashboard({
               onClick={() => setShowForm(true)}
               className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
-              {isHu ? "+ Jelölt meghívása" : "+ Invite candidate"}
+              {t("hiring.inviteCandidate", locale)}
             </button>
           )}
         </div>

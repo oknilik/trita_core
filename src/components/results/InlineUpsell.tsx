@@ -1,14 +1,17 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 export function InlineUpsell() {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
-  const features = isHu
-    ? ["25 alskála", "Fejlődési fókusz", "Karrierillesztés"]
-    : ["25 subscales", "Growth focus", "Career fit"];
+  const features = [
+    t("results.upsellFeature1", locale),
+    t("results.upsellFeature2", locale),
+    t("results.upsellFeature3", locale),
+    t("results.upsellFeature4", locale),
+  ];
 
   return (
     <div
@@ -17,15 +20,13 @@ export function InlineUpsell() {
     >
       <div className="flex-1">
         <p className="mb-1.5 text-[9px] uppercase tracking-widest text-[#e8a96a]">
-          Self Plus
+          Plus
         </p>
         <h3 className="mb-1.5 font-fraunces text-xl leading-tight text-white">
-          {isHu ? "Nézz a fő dimenziók mögé." : "Look behind the key dimensions."}
+          {t("results.upsellTitle", locale)}
         </h3>
         <p className="mb-3 text-[13px] leading-relaxed text-white/[0.38]">
-          {isHu
-            ? "Menj mélyebbre: alskálák, vakfoltok, illeszkedő szerepkörök — értsd meg, mi mozgat valójában."
-            : "Go deeper: subscales, blind spots, fitting roles — understand what really drives you."}
+          {t("results.upsellDesc", locale)}
         </p>
         <div className="flex flex-wrap gap-4">
           {features.map((f) => (
@@ -36,15 +37,15 @@ export function InlineUpsell() {
         </div>
       </div>
       <div className="flex shrink-0 flex-col items-center gap-2">
-        <span className="font-fraunces text-[32px] tracking-tight text-white">€7</span>
+        <span className="font-fraunces text-[32px] tracking-tight text-white">€9</span>
         <span className="text-[10px] text-white/[0.25]">
-          {isHu ? "egyszeri vásárlás" : "one-time purchase"}
+          {t("results.upsellOnetime", locale)}
         </span>
         <button
           type="button"
           className="min-h-[44px] rounded-[11px] bg-[#c17f4a] px-7 py-[13px] text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-110"
         >
-          {isHu ? "Megveszem →" : "Buy now →"}
+          {t("results.upsellBuy", locale)}
         </button>
       </div>
     </div>

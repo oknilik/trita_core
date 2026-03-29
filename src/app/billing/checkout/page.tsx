@@ -4,12 +4,14 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { EmbeddedCheckoutClient } from "./EmbeddedCheckoutClient";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Előfizetés | Trita", robots: { index: false } };
+  const locale = await getServerLocale();
+  return { title: t("billing.checkoutMetaTitle", locale), robots: { index: false } };
 }
 
 export default async function CheckoutPage({
@@ -39,7 +41,6 @@ export default async function CheckoutPage({
     redirect("/dashboard");
   }
 
-  const isHu = locale !== "en";
   const priceKey = plan ?? "org_monthly";
   const quantity = qty ? Math.max(1, parseInt(qty, 10) || 1) : undefined;
 
@@ -47,15 +48,13 @@ export default async function CheckoutPage({
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-3xl px-4 py-10">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          // előfizetés
+          // {t("billing.checkoutEyebrow", locale)}
         </p>
         <h1 className="mt-1 font-fraunces text-3xl text-ink mb-2">
-          {isHu ? "Előfizetés aktiválása" : "Activate subscription"}
+          {t("billing.checkoutTitle", locale)}
         </h1>
         <p className="text-sm text-ink-warm mb-8">
-          {isHu
-            ? "A fizetés biztonságos — a Stripe kezeli az adataidat."
-            : "Payment is secure — handled by Stripe."}
+          {t("billing.checkoutSubtitle", locale)}
         </p>
 
         <EmbeddedCheckoutClient priceKey={priceKey} quantity={quantity} />

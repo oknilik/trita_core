@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
@@ -63,16 +64,16 @@ export default async function NewCampaignPage({
           >
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {isHu ? `Vissza · ${org.name}` : `Back · ${org.name}`}
+          {tf("org.campaign.backWithName", locale, { orgName: org.name })}
         </Link>
 
         {/* Header */}
         <div className="mb-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// új kampány" : "// new campaign"}
+            {t("org.campaign.newEyebrow", locale)}
           </p>
           <h1 className="mt-1 font-fraunces text-3xl text-ink">
-            {isHu ? "Kampány létrehozása" : "Create campaign"}
+            {t("org.campaign.newTitle", locale)}
           </h1>
         </div>
 

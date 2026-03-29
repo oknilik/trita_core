@@ -10,16 +10,13 @@ export const metadata: Metadata = {
 
 const REDIRECT_MAP: Record<string, string> = {
   self_plus:      "/profile/results",
-  self_reflect:   "/profile/results",
   team_scan:      "/dashboard",
   team_deep_dive: "/dashboard",
 };
 
 const MESSAGES: Record<string, string> = {
   self_plus:
-    "Self Plus profilod aktiválva. Teljes személyiségprofil, munkastílus elemzés és fejlődési fókuszok várnak.",
-  self_reflect:
-    "Self Reflect csomagod aktiválva. Observer meghívókkal és fejlődési check-in-nel.",
+    "Plus csomagod aktiválva. Teljes személyiségprofil, observer visszajelzés, vakfolt-elemzés és fejlődési fókuszok várnak.",
   team_scan:
     "Team Scan aktiválva. A csapatod mintázata, heatmap-je és vezetői összefoglalója elérhető.",
   team_deep_dive:

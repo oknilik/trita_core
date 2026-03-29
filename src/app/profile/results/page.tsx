@@ -16,7 +16,7 @@ import {
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
 } from "@/lib/profile-content";
-import type { Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
@@ -28,10 +28,9 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-type ProfileLevel = "start" | "plus" | "reflect";
+type ProfileLevel = "start" | "plus";
 
 function toProfileLevel(level: AccessLevel): ProfileLevel {
-  if (level === "self_reflect") return "reflect";
   if (level === "self_plus") return "plus";
   return "start";
 }
@@ -126,7 +125,6 @@ export default async function ProfileResultsPage({
     // This prevents a redirect loop when user clicks "Continue later"
     const hasDraft = Boolean(draft);
     if (hasDraft) {
-      const isHu = locale === "hu";
       return (
         <main className="-mx-4 -my-8 flex min-h-[80dvh] flex-col items-center justify-center bg-[#f7f4ef] px-6 py-16 text-center">
           <div className="w-full max-w-sm">
@@ -136,18 +134,16 @@ export default async function ProfileResultsPage({
               </svg>
             </div>
             <h1 className="font-fraunces text-2xl tracking-tight text-[#1a1a2e] md:text-3xl">
-              {isHu ? "A teszted folyamatban van" : "Your assessment is in progress"}
+              {t("results.draftInProgressTitle", locale)}
             </h1>
             <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[#8a8a9a]">
-              {isHu
-                ? "Mentettük a haladásodat — ott folytathatod, ahol abbahagytad."
-                : "We saved your progress — you can continue where you left off."}
+              {t("results.draftInProgressBody", locale)}
             </p>
             <a
               href="/assessment"
               className="mt-8 inline-flex min-h-[52px] items-center rounded-xl bg-[#3d6b5e] px-8 text-[15px] font-semibold text-white shadow-md shadow-[#3d6b5e]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
             >
-              {isHu ? "Folytatom a tesztet →" : "Continue assessment →"}
+              {t("results.draftInProgressCta", locale)}
             </a>
           </div>
         </main>
@@ -305,7 +301,7 @@ export default async function ProfileResultsPage({
     "results";
 
   const displayName =
-    profile.username ?? profile.email ?? (locale === "hu" ? "Felhasználó" : "User");
+    profile.username ?? profile.email ?? t("common.userFallback", locale);
 
   // ── Hero data ──────────────────────────────────────────────────────────────
   const isHu = locale === "hu";
@@ -315,7 +311,7 @@ export default async function ProfileResultsPage({
   // Personality type label from top dimensions
   const personalityType = (() => {
     const topTwo = [...mainDimensions].sort((a, b) => b.score - a.score).slice(0, 2);
-    if (topTwo.length < 2) return isHu ? "Egyedi profil" : "Unique profile";
+    if (topTwo.length < 2) return t("results.uniqueProfile", locale);
     const labels: Record<string, { hu: string; en: string }> = {
       H: { hu: "Elvi", en: "Principled" },
       E: { hu: "Érzékeny", en: "Sensitive" },
@@ -368,12 +364,12 @@ export default async function ProfileResultsPage({
 
   // InsightPair
   const strengths = highDims.length > 0
-    ? highDims.map((d) => d.label.toLowerCase()).join(", ") + (isHu ? " — ezek az erősségeid." : " — these are your strengths.")
-    : isHu ? "Kiegyensúlyozott profil, nincs kiugró erősség." : "Balanced profile, no standout strength.";
+    ? highDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.strengthsSuffix", locale)
+    : t("results.balancedProfile", locale);
 
   const watchAreas = lowDims.length > 0
-    ? (isHu ? "Alacsony " : "Low ") + lowDims.map((d) => d.label.toLowerCase()).join(", ") + (isHu ? " — ezekre érdemes figyelni." : " — worth paying attention to.")
-    : isHu ? "Nincs kritikusan alacsony dimenzió." : "No critically low dimension.";
+    ? t("results.watchPrefix", locale) + lowDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.watchSuffix", locale)
+    : t("results.noLowDim", locale);
 
   // ── Plus content (profile engine narratives) ──────────────────────────────
   const lang = (locale === "en" ? "en" : "hu") as Locale;

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
@@ -22,7 +23,7 @@ import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 
-type ProfileLevel = "start" | "plus" | "reflect";
+type ProfileLevel = "start" | "plus";
 type TabId = "results" | "comparison" | "invites";
 
 // ─── Serialized prop types ──────────────────────────────────────────────────
@@ -143,7 +144,7 @@ function TabPaywall({ tier, tierLabel, price, teaser, isHu }: {
       </div>
       <UpgradeButton
         tier={tier}
-        label={isHu ? `Feloldás — ${price}` : `Unlock — ${price}`}
+        label={tf("content.paywallUnlock", isHu ? "hu" : "en", { price })}
       />
     </div>
   );
@@ -160,11 +161,10 @@ interface ResultsTabProps {
   growthFocusItems: SerializedGrowthItem[];
   assessmentResultId: string;
   isPlus: boolean;
-  isReflect: boolean;
   hasObserverData: boolean;
   observerCount: number;
   isHu: boolean;
-  locale: string;
+  locale: Locale;
   plusContent?: ProfileTabsProps["plusContent"];
 }
 
@@ -173,7 +173,6 @@ function ResultsTab({
   growthFocusItems,
   assessmentResultId,
   isPlus,
-  isReflect,
   hasObserverData,
   observerCount,
   isHu,
@@ -181,7 +180,7 @@ function ResultsTab({
   plusContent,
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
-  const showObserver = hasObserverData && isReflect;
+  const showObserver = hasObserverData && isPlus;
 
   const observerDims = mainDims.map((d) => ({
     code: d.code,
@@ -211,7 +210,7 @@ function ResultsTab({
       {/* 1. Dimension strip — 6 column overview */}
       <div>
         <p className="mb-1.5 text-[11px] font-medium text-[#8a8a9a]">
-          {isHu ? "Gyors áttekintés — a 6 fő dimenzió mentén" : "Quick overview — across the 6 key dimensions"}
+          {t("content.stripLabel", locale)}
         </p>
         <DimensionStrip dimensions={stripDims} />
       </div>
@@ -241,7 +240,7 @@ function ResultsTab({
           style={{ background: "linear-gradient(135deg, #1a1a2e, #2a2740)" }}
         >
           <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "#e8a96a" }}>
-            {isHu ? "Profil összefoglaló" : "Profile summary"}
+            {t("content.profileSummary", locale)}
           </p>
           <div className="flex flex-col gap-2">
             {plusContent.takeaways.slice(0, 2).map((t, i) => (
@@ -291,8 +290,8 @@ function ResultsTab({
       {/* 4. Inline upsell — after Belbin, before locked sections */}
       {!isPlus && <InlineUpsell />}
 
-      {/* 5. Locked content preview — 2 compact rows */}
-      {!isReflect && <LockedPreview isPlus={isPlus} />}
+      {/* 5. Locked content preview */}
+      {!isPlus && <LockedPreview isPlus={false} />}
 
     </div>
   );
@@ -326,7 +325,8 @@ export function ProfileTabs({
   watchAreas,
   plusContent,
 }: ProfileTabsProps) {
-  const { locale } = useLocale();
+  const { locale: rawLocale } = useLocale();
+  const locale = rawLocale as Locale;
   const router = useRouter();
   const tabBarRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
@@ -334,7 +334,6 @@ export function ProfileTabs({
 
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
-  const isReflect = accessLevel === "reflect";
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
 
@@ -354,7 +353,7 @@ export function ProfileTabs({
   const TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
     {
       id: "results",
-      label: isHu ? "Eredmények" : "Results",
+      label: t("results.tabResults", locale),
       locked: false,
       icon: (
         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -366,8 +365,8 @@ export function ProfileTabs({
     },
     {
       id: "comparison",
-      label: isHu ? "Összehasonlítás" : "Comparison",
-      locked: !isReflect,
+      label: t("results.tabComparison", locale),
+      locked: !isPlus,
       icon: (
         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 10h14M3 5h7M3 15h7M13 5l4 5-4 5" />
@@ -376,8 +375,8 @@ export function ProfileTabs({
     },
     {
       id: "invites",
-      label: isHu ? "Meghívók" : "Invites",
-      locked: !isReflect,
+      label: t("results.tabInvites", locale),
+      locked: !isPlus,
       icon: (
         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="7" cy="7" r="3" />
@@ -406,7 +405,7 @@ export function ProfileTabs({
           isHu ? "hu-HU" : "en-GB",
           { year: "numeric", month: "long", day: "numeric" },
         )}
-        personalityType={personalityType ?? (isHu ? "Személyiségprofil" : "Personality profile")}
+        personalityType={personalityType ?? t("content.personalityProfileFallback", locale)}
         percentile={percentile ?? ""}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
@@ -420,10 +419,10 @@ export function ProfileTabs({
             if (data.token) {
               const url = `${window.location.origin}/share/${data.token}`;
               await navigator.clipboard.writeText(url);
-              alert(isHu ? "Link másolva a vágólapra!" : "Link copied to clipboard!");
+              alert(t("content.shareLinkCopied", locale));
             }
           } catch {
-            alert(isHu ? "Hiba történt" : "An error occurred");
+            alert(t("content.shareError", locale));
           } finally {
             setShareLoading(false);
           }
@@ -470,7 +469,7 @@ export function ProfileTabs({
                   const desc = watchDescs[d.code]?.[lang];
                   return desc ? `${d.label} — ${desc}` : d.label;
                 })
-              : [isHu ? "nincs kritikusan alacsony dimenzió" : "no critically low dimension"];
+              : [t("content.noLowDimension", locale)];
 
             // Profile character
             const profileCharacter = (() => {
@@ -546,7 +545,7 @@ export function ProfileTabs({
                 description: d.description,
                 facets: d.facets,
               })) : undefined,
-              observerData: hasObserverData && isReflect ? {
+              observerData: hasObserverData && isPlus ? {
                 count: observerCount,
                 dimensions: mainDims.map((d) => ({
                   name: d.label,
@@ -566,7 +565,6 @@ export function ProfileTabs({
       {/* Progress bar */}
       <ProgressBar
         hasSelfPlus={isPlus}
-        hasSelfReflect={isReflect}
         observersSent={sentInvitations.length > 0}
         observersCompleted={hasObserverData}
         sentCount={sentInvitations.length}
@@ -590,7 +588,7 @@ export function ProfileTabs({
           watchAreas={(() => {
             const mainDims = dimensions.filter((d) => d.code !== "I");
             const low = mainDims.filter((d) => d.score < 40);
-            if (low.length === 0) return [{ text: isHu ? "nincs kritikusan alacsony dimenzió" : "no critically low dimension" }];
+            if (low.length === 0) return [{ text: t("content.noLowDimension", locale) }];
             return low.map((d) => ({ dimension: d.label, text: d.insight }));
           })()}
         />
@@ -640,7 +638,6 @@ export function ProfileTabs({
             growthFocusItems={growthFocusItems}
             assessmentResultId={assessmentResultId}
             isPlus={isPlus}
-            isReflect={isReflect}
             hasObserverData={hasObserverData}
             observerCount={observerCount}
             isHu={isHu}
@@ -649,7 +646,7 @@ export function ProfileTabs({
           />
         )}
         {activeTab === "comparison" && (
-          isReflect ? (
+          isPlus ? (
             <ComparisonTabNew
               dimensions={dimensions}
               hasObserverData={hasObserverData}
@@ -657,15 +654,11 @@ export function ProfileTabs({
             />
           ) : (
             <TabPaywall
-              tier="self_reflect"
-              tierLabel="Self Reflect"
-              price="€12"
+              tier="self_plus"
+              tierLabel="Plus"
+              price="€9"
               isHu={isHu}
-              teaser={
-                isHu
-                  ? "Az observer összehasonlítás megmutatja, hogyan látnak mások — és hol tér el az önképed a külső visszajelzésektől."
-                  : "Observer comparison shows how others see you — and where your self-image diverges from external feedback."
-              }
+              teaser={t("content.paywallComparisonTeaser", locale)}
             />
           )
         )}
@@ -674,7 +667,6 @@ export function ProfileTabs({
             sentInvitations={sentInvitations}
             receivedInvitations={receivedInvitations}
             isPlus={isPlus}
-            isReflect={isReflect}
           />
         )}
       </div>

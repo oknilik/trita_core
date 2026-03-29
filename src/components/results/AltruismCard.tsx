@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
 
 interface AltruismCardProps {
@@ -10,7 +11,6 @@ interface AltruismCardProps {
 
 export function AltruismCard({ value, description }: AltruismCardProps) {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
   const tier = getDimensionTier(value);
   const colors = tierColors[tier];
 
@@ -21,12 +21,10 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
         <span className="mt-0.5 shrink-0 text-sm text-[#8a8a9a]">ℹ</span>
         <div>
           <p className="text-xs font-semibold text-[#1a1a2e]">
-            {isHu ? "Altruizmus (kiegészítő skála)" : "Altruism (supplementary scale)"}
+            {t("content.altruismName", locale)} ({t("content.altruismTitle", locale)})
           </p>
           <p className="mt-0.5 text-[11px] leading-relaxed text-[#8a8a9a]">
-            {isHu
-              ? "Több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni."
-              : "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score."}
+            {t("content.altruismInfo", locale)}
           </p>
         </div>
       </div>
@@ -36,7 +34,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
         <div className="flex items-center gap-3">
           <div className={`h-2 w-2 shrink-0 rounded-full ${colors.dot}`} />
           <span className="flex-1 text-sm font-medium text-[#1a1a2e]">
-            {isHu ? "Altruizmus" : "Altruism"}
+            {t("content.altruismName", locale)}
           </span>
           <div className="h-1 w-[120px] shrink-0 overflow-hidden rounded-sm bg-[#e8e0d3]">
             <div className={`h-full rounded-sm ${colors.fill}`} style={{ width: `${value}%` }} />

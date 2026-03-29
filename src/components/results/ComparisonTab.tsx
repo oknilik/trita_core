@@ -1,6 +1,8 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
 interface ComparisonTabProps {
@@ -30,7 +32,7 @@ const GAP_INSIGHTS: Record<string, { hu: string; en: string }> = {
 
 function getSummaryPoints(
   dims: { name: string; self: number; observer: number }[],
-  isHu: boolean,
+  locale: Locale,
 ): string[] {
   const points: string[] = [];
   const matching = dims.filter((d) => Math.abs(d.self - d.observer) < 10);
@@ -38,27 +40,19 @@ function getSummaryPoints(
 
   if (matching.length >= 4) {
     points.push(
-      isHu
-        ? `${matching.length} dimenzióban az önképed és mások visszajelzése szinte azonos — reálisan látod magad.`
-        : `In ${matching.length} dimensions your self-image and others' feedback are nearly identical — you see yourself realistically.`,
+      tf("comparison.summaryMatchMany", locale, { count: matching.length }),
     );
   }
 
   for (const d of differing) {
-    const dir = d.observer > d.self ? (isHu ? "erősebbnek" : "stronger") : (isHu ? "gyengébbnek" : "weaker");
+    const key = d.observer > d.self ? "comparison.summaryDiffStronger" : "comparison.summaryDiffWeaker";
     points.push(
-      isHu
-        ? `${d.name}: mások ${dir} látnak (±${Math.abs(d.self - d.observer)} pont eltérés).`
-        : `${d.name}: others see you as ${dir} (±${Math.abs(d.self - d.observer)} point gap).`,
+      tf(key, locale, { name: d.name, gap: Math.abs(d.self - d.observer) }),
     );
   }
 
   if (differing.length === 0) {
-    points.push(
-      isHu
-        ? "Ritka és értékes: az önképed szinte teljesen egyezik mások értékelésével."
-        : "Rare and valuable: your self-image almost perfectly matches others' assessment.",
-    );
+    points.push(t("comparison.summaryPerfectMatch", locale));
   }
 
   return points;
@@ -72,7 +66,6 @@ export function ComparisonTab({
   observerCount,
 }: ComparisonTabProps) {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
@@ -93,14 +86,15 @@ export function ComparisonTab({
   const blindspots = dimData.filter((d) => Math.abs(d.self - d.observer) >= 10);
   const noBlindspotDims = dimData.filter((d) => Math.abs(d.self - d.observer) < 10).map((d) => d.name);
 
-  const summaryPoints = getSummaryPoints(dimData, isHu);
+  const summaryPoints = getSummaryPoints(dimData, locale);
 
   const getInsight = (code: string, self: number, observer: number): string | null => {
     const gap = Math.abs(self - observer);
     if (gap < 10) return null;
     const dir = observer > self ? "higher" : "lower";
     const key = `${code}_${dir}`;
-    return GAP_INSIGHTS[key]?.[isHu ? "hu" : "en"] ?? null;
+    const lang = locale === "hu" ? "hu" : "en";
+    return GAP_INSIGHTS[key]?.[lang] ?? null;
   };
 
   if (!hasObserverData) {
@@ -108,12 +102,10 @@ export function ComparisonTab({
       <div className="rounded-2xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] p-8 text-center">
         <span className="mb-2.5 inline-block text-[32px] opacity-20">📊</span>
         <h3 className="mb-1.5 font-fraunces text-[18px] text-[#1a1a2e]">
-          {isHu ? "Összehasonlítás" : "Comparison"}
+          {t("comparison.noDataTitle", locale)}
         </h3>
         <p className="mx-auto max-w-[380px] text-[13px] leading-relaxed text-[#8a8a9a]">
-          {isHu
-            ? "Legalább 2 observer visszajelzés szükséges az összehasonlításhoz. Küldj meghívókat a Meghívók tabon."
-            : "At least 2 observer responses are needed for comparison. Send invitations on the Invitations tab."}
+          {t("comparison.noDataBody", locale)}
         </p>
       </div>
     );
@@ -126,19 +118,17 @@ export function ComparisonTab({
         <div className="mb-1.5 flex items-center gap-2">
           <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
           <span className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-            {isHu ? "Önkép vs. Visszajelzés" : "Self vs. Feedback"}
+            {t("comparison.headerEyebrow", locale)}
           </span>
         </div>
         <h2 className="font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
-          {isHu ? "Hogyan látnak mások?" : "How do others see you?"}
+          {t("comparison.headerTitle", locale)}
         </h2>
         <p className="mt-1 text-[13px] leading-relaxed text-[#8a8a9a]">
-          {isHu
-            ? "Az önértékelésed összehasonlítása a visszajelzésekkel — dimenzióról dimenzióra."
-            : "Comparing your self-assessment with feedback — dimension by dimension."}
+          {t("comparison.headerBody", locale)}
         </p>
         <span className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-[#e8f2f0] px-2.5 py-0.5 text-[11px] font-medium text-[#1e3d34]">
-          {observerCount} {isHu ? "observer visszajelzés alapján" : "observer responses"}
+          {tf("comparison.observerBadge", locale, { count: observerCount })}
         </span>
       </div>
 
@@ -157,32 +147,28 @@ export function ComparisonTab({
           <div>
             <p className="font-fraunces text-base text-[#1a1a2e]">
               {isGoodMatch
-                ? (isHu ? "Összességében jó egyezés" : "Overall good match")
-                : (isHu ? "Vegyes kép — van mit felfedezni" : "Mixed picture — worth exploring")}
+                ? t("comparison.overviewGoodMatch", locale)
+                : t("comparison.overviewMixed", locale)}
             </p>
             <p className="text-xs leading-relaxed text-[#8a8a9a]">
               {isGoodMatch
-                ? (isHu
-                    ? "Az önképed és az observer visszajelzések a legtöbb dimenzióban közel azonosak. Ez ritka és értékes — azt jelenti, hogy reálisan látod magad."
-                    : "Your self-image and observer feedback are close in most dimensions. This is rare and valuable — it means you see yourself realistically.")
-                : (isHu
-                    ? "Néhány dimenzióban jelentős eltérés van az önképed és mások visszajelzése között. Ez nem probléma — hanem lehetőség a mélyebb önismeretre."
-                    : "There are significant differences in some dimensions. This isn't a problem — it's an opportunity for deeper self-awareness.")}
+                ? t("comparison.overviewGoodMatchBody", locale)
+                : t("comparison.overviewMixedBody", locale)}
             </p>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-2.5">
           <div className="rounded-[10px] bg-[#f2ede6] p-3 text-center">
             <p className="font-fraunces text-[22px] leading-none" style={{ color: "#3d6b5e" }}>{matchingCount}</p>
-            <p className="mt-1 text-[10px] text-[#8a8a9a]">{isHu ? "egyező dimenzió" : "matching dims"}</p>
+            <p className="mt-1 text-[10px] text-[#8a8a9a]">{t("comparison.matchingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[#f2ede6] p-3 text-center">
             <p className="font-fraunces text-[22px] leading-none" style={{ color: "#c17f4a" }}>{differingCount}</p>
-            <p className="mt-1 text-[10px] text-[#8a8a9a]">{isHu ? "eltérő dimenzió" : "differing dims"}</p>
+            <p className="mt-1 text-[10px] text-[#8a8a9a]">{t("comparison.differingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[#f2ede6] p-3 text-center">
             <p className="font-fraunces text-[22px] leading-none text-[#1a1a2e]">{avgGapPct}%</p>
-            <p className="mt-1 text-[10px] text-[#8a8a9a]">{isHu ? "átlagos eltérés" : "avg. gap"}</p>
+            <p className="mt-1 text-[10px] text-[#8a8a9a]">{t("comparison.avgGap", locale)}</p>
           </div>
         </div>
       </div>
@@ -192,11 +178,11 @@ export function ComparisonTab({
         <div className="mb-4 flex gap-4">
           <span className="flex items-center gap-1.5 text-[11px] text-[#8a8a9a]">
             <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
-            {isHu ? "Önértékelés (Te)" : "Self-assessment (You)"}
+            {t("comparison.legendSelf", locale)}
           </span>
           <span className="flex items-center gap-1.5 text-[11px] text-[#8a8a9a]">
             <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#e8a96a" }} />
-            {isHu ? "Observer átlag (Mások)" : "Observer avg. (Others)"}
+            {t("comparison.legendObserver", locale)}
           </span>
         </div>
 
@@ -222,20 +208,20 @@ export function ComparisonTab({
                       color: gap < 10 ? "#1e3d34" : gap < 15 ? "#8a5530" : "#991b1b",
                     }}
                   >
-                    ±{gap} {isHu ? "pont" : "pts"} — {gap < 10 ? (isHu ? "egyezik" : "match") : (isHu ? "eltérés" : "gap")}
+                    ±{gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-[50px] shrink-0 text-[10px] text-[#8a8a9a]">{isHu ? "Te" : "You"}</span>
+                    <span className="w-[50px] shrink-0 text-[10px] text-[#8a8a9a]">{t("comparison.self", locale)}</span>
                     <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[#e8e0d3]">
                       <div className="h-full rounded-sm" style={{ width: `${dim.self}%`, backgroundColor: "#3d6b5e" }} />
                     </div>
                     <span className="w-7 shrink-0 text-right text-[10px] font-semibold" style={{ color: "#3d6b5e" }}>{dim.self}</span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <span className="w-[50px] shrink-0 text-[10px] text-[#8a8a9a]">{isHu ? "Mások" : "Others"}</span>
+                    <span className="w-[50px] shrink-0 text-[10px] text-[#8a8a9a]">{t("comparison.others", locale)}</span>
                     <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[#e8e0d3]">
                       <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "#e8a96a" }} />
                     </div>
@@ -260,16 +246,14 @@ export function ComparisonTab({
         <div className="mb-1.5 flex items-center gap-2">
           <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
           <span className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-            {isHu ? "Vakfolt-elemzés" : "Blind spot analysis"}
+            {t("comparison.blindSpotEyebrow", locale)}
           </span>
         </div>
         <h3 className="font-fraunces text-lg text-[#1a1a2e]">
-          {isHu ? "Amit mások másképp látnak" : "What others see differently"}
+          {t("comparison.blindSpotTitle", locale)}
         </h3>
         <p className="mb-3 mt-1 text-[13px] leading-relaxed text-[#8a8a9a]">
-          {isHu
-            ? "Olyan területek, ahol az önképed és mások visszajelzése között érdemi különbség van."
-            : "Areas where your self-image and others' feedback differ meaningfully."}
+          {t("comparison.blindSpotBody", locale)}
         </p>
 
         <div className="flex flex-col gap-2.5">
@@ -279,12 +263,12 @@ export function ComparisonTab({
             return (
               <div key={bs.code} className="rounded-xl border-l-4 bg-[#fdf5ee] p-4 px-[18px]" style={{ borderLeftColor: "#c17f4a" }}>
                 <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a5530]">
-                  {isHu ? "Lehetséges vakfolt" : "Possible blind spot"}
+                  {t("comparison.possibleBlindSpot", locale)}
                 </p>
                 <p className="font-fraunces text-[15px] text-[#1a1a2e]">
                   {bs.name} — {dir
-                    ? (isHu ? "mások erősebbnek látnak" : "others see you as stronger")
-                    : (isHu ? "mások gyengébbnek látnak" : "others see you as weaker")}
+                    ? t("comparison.blindSpotStronger", locale)
+                    : t("comparison.blindSpotWeaker", locale)}
                 </p>
                 {insight && (
                   <p className="mt-1 text-xs leading-relaxed text-[#4a4a5e]">{insight}</p>
@@ -292,7 +276,7 @@ export function ComparisonTab({
                 <div className="mt-2 flex gap-3">
                   <span className="flex items-center gap-1 text-[11px] text-[#8a8a9a]">
                     <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
-                    {isHu ? "Önértékelés" : "Self"}: {bs.self}
+                    {t("comparison.selfAssessment", locale)}: {bs.self}
                   </span>
                   <span className="flex items-center gap-1 text-[11px] text-[#8a8a9a]">
                     <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#e8a96a" }} />
@@ -306,15 +290,13 @@ export function ComparisonTab({
           {noBlindspotDims.length > 0 && (
             <div className="rounded-xl border-l-4 bg-[#e8f2f0] p-4 px-[18px]" style={{ borderLeftColor: "#3d6b5e" }}>
               <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#1e3d34]">
-                {isHu ? "Nincs vakfolt" : "No blind spot"}
+                {t("comparison.noBlindSpot", locale)}
               </p>
               <p className="font-fraunces text-[15px] text-[#1a1a2e]">
                 {noBlindspotDims.join(", ")}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-[#1e3d34]">
-                {isHu
-                  ? "Ezekben a dimenziókban az önképed és mások visszajelzése közel azonos — reálisan látod magad."
-                  : "In these dimensions your self-image and others' feedback are nearly identical — you see yourself realistically."}
+                {t("comparison.noBlindSpotBody", locale)}
               </p>
             </div>
           )}
@@ -327,10 +309,10 @@ export function ComparisonTab({
         style={{ background: "linear-gradient(135deg, #1a1a2e, #2a2740)" }}
       >
         <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "#e8a96a" }}>
-          {isHu ? "Összefoglaló" : "Summary"}
+          {t("comparison.summaryEyebrow", locale)}
         </p>
         <p className="mb-3 font-fraunces text-lg text-white">
-          {isHu ? "Amit érdemes megjegyezni" : "Worth noting"}
+          {t("comparison.summaryTitle", locale)}
         </p>
         <div className="flex flex-col gap-2">
           {summaryPoints.map((point, i) => (

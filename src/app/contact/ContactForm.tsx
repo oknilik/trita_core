@@ -2,70 +2,18 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 
 type Topic = "demo" | "pricing" | "support" | "partnership" | "other";
 
-const copyByLocale: Record<Locale, {
-  name: string;
-  email: string;
-  company: string;
-  topic: string;
-  message: string;
-  submit: string;
-  submitting: string;
-  requiredHint: string;
-  successTitle: string;
-  successBody: string;
-  sendAnother: string;
-  errorGeneric: string;
-  topicOptions: Array<{ value: Topic; label: string }>;
-}> = {
-  hu: {
-    name: "Név",
-    email: "Email",
-    company: "Cég (opcionális)",
-    topic: "Téma",
-    message: "Üzenet",
-    submit: "Üzenet küldése →",
-    submitting: "Küldés...",
-    requiredHint: "* kötelező mező",
-    successTitle: "Megkaptuk az üzeneted.",
-    successBody: "1 munkanapon belül visszajelzünk a megadott email címen.",
-    sendAnother: "Új üzenet írása",
-    errorGeneric: "Nem sikerült elküldeni az üzenetet. Kérlek próbáld újra.",
-    topicOptions: [
-      { value: "demo", label: "Demó igény" },
-      { value: "pricing", label: "Árazás" },
-      { value: "support", label: "Terméktámogatás" },
-      { value: "partnership", label: "Partnerség" },
-      { value: "other", label: "Egyéb" },
-    ],
-  },
-  en: {
-    name: "Name",
-    email: "Email",
-    company: "Company (optional)",
-    topic: "Topic",
-    message: "Message",
-    submit: "Send message →",
-    submitting: "Sending...",
-    requiredHint: "* required field",
-    successTitle: "We received your message.",
-    successBody: "We will get back to you within 1 business day.",
-    sendAnother: "Send another message",
-    errorGeneric: "We could not send your message. Please try again.",
-    topicOptions: [
-      { value: "demo", label: "Demo request" },
-      { value: "pricing", label: "Pricing" },
-      { value: "support", label: "Product support" },
-      { value: "partnership", label: "Partnership" },
-      { value: "other", label: "Other" },
-    ],
-  },
-};
-
 export function ContactForm({ locale }: { locale: Locale }) {
-  const copy = useMemo(() => copyByLocale[locale] ?? copyByLocale.hu, [locale]);
+  const topicOptions: Array<{ value: Topic; label: string }> = useMemo(() => [
+    { value: "demo", label: t("contact.topicDemo", locale) },
+    { value: "pricing", label: t("contact.topicPricing", locale) },
+    { value: "support", label: t("contact.topicSupport", locale) },
+    { value: "partnership", label: t("contact.topicPartnership", locale) },
+    { value: "other", label: t("contact.topicOther", locale) },
+  ], [locale]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
@@ -107,7 +55,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       setMessage("");
       setWebsite("");
     } catch {
-      setError(copy.errorGeneric);
+      setError(t("contact.errorGeneric", locale));
     } finally {
       setLoading(false);
     }
@@ -116,14 +64,14 @@ export function ContactForm({ locale }: { locale: Locale }) {
   if (success) {
     return (
       <div className="rounded border border-[#d7ebde] bg-sage-soft p-6">
-        <h3 className="font-fraunces text-2xl text-ink">{copy.successTitle}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-ink-body">{copy.successBody}</p>
+        <h3 className="font-fraunces text-2xl text-ink">{t("contact.successTitle", locale)}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-body">{t("contact.successBody", locale)}</p>
         <button
           type="button"
           onClick={() => setSuccess(false)}
           className="mt-5 inline-flex min-h-[44px] items-center rounded bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
         >
-          {copy.sendAnother}
+          {t("contact.sendAnother", locale)}
         </button>
       </div>
     );
@@ -136,7 +84,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
-          {copy.name} *
+          {t("contact.name", locale)} *
           <input
             required
             minLength={2}
@@ -149,7 +97,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         </label>
 
         <label className={labelClass}>
-          {copy.email} *
+          {t("contact.email", locale)} *
           <input
             required
             type="email"
@@ -162,7 +110,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
-          {copy.company}
+          {t("contact.company", locale)}
           <input
             maxLength={120}
             type="text"
@@ -173,14 +121,14 @@ export function ContactForm({ locale }: { locale: Locale }) {
         </label>
 
         <label className={labelClass}>
-          {copy.topic} *
+          {t("contact.topic", locale)} *
           <select
             required
             value={topic}
             onChange={(e) => setTopic(e.target.value as Topic)}
             className={inputClass}
           >
-            {copy.topicOptions.map((option) => (
+            {topicOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -190,7 +138,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       </div>
 
       <label className={labelClass}>
-        {copy.message} *
+        {t("contact.message", locale)} *
         <textarea
           required
           minLength={20}
@@ -220,14 +168,14 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
       <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="font-dm-sans text-[11px] uppercase tracking-[1px] text-ink-body">
-          {copy.requiredHint}
+          {t("contact.requiredHint", locale)}
         </p>
         <button
           type="submit"
           disabled={loading}
           className="inline-flex min-h-[46px] items-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sage-soft"
         >
-          {loading ? copy.submitting : copy.submit}
+          {loading ? t("contact.submitting", locale) : t("contact.submit", locale)}
         </button>
       </div>
     </form>

@@ -171,7 +171,7 @@ export function OnboardingClient() {
 
   const stepLabels = [
     t("onboarding.step1Label", locale),
-    locale === "hu" ? "Avatar" : "Avatar",
+    t("onboarding.avatarTitle", locale),
     t("onboarding.step2Label", locale),
   ];
   const progress = ((step - 1) / 2) * 100;
@@ -367,10 +367,10 @@ export function OnboardingClient() {
               <div>
                 <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 02</p>
                 <p className="font-fraunces text-xl text-ink">
-                  {locale === "hu" ? "Válassz avatart" : "Choose an avatar"}
+                  {t("onboarding.avatarTitle", locale)}
                 </p>
                 <p className="text-xs text-muted mt-0.5">
-                  {locale === "hu" ? "Ez jelenik meg a profilodban." : "This will appear on your profile."}
+                  {t("onboarding.avatarSub", locale)}
                 </p>
               </div>
 
@@ -402,9 +402,7 @@ export function OnboardingClient() {
                   onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
                   className="text-xs font-medium text-bronze hover:underline self-start"
                 >
-                  {locale === "hu"
-                    ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
-                    : `+ Show all (${AVATAR_OPTIONS.length})`}
+                  {t("onboarding.avatarShowAll", locale).replace("{count}", String(AVATAR_OPTIONS.length))}
                 </button>
               )}
 

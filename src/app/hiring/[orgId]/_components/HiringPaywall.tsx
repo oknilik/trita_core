@@ -1,35 +1,30 @@
 import Link from "next/link";
+import { t, type Locale } from "@/lib/i18n";
 
 interface HiringPaywallProps {
   orgId: string;
-  isHu: boolean;
+  locale: Locale;
   variant: "no-subscription" | "addon";
   planTier?: string;
   isAdmin?: boolean;
 }
 
-export function HiringPaywall({ isHu, variant, isAdmin = false }: HiringPaywallProps) {
+export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywallProps) {
   const features = [
     {
       icon: "📧",
-      title: isHu ? "Email meghívó" : "Email invite",
-      desc: isHu
-        ? "Jelölt kap egyedi linket a kitöltéshez"
-        : "Candidate gets a unique link for the assessment",
+      title: t("hiring.featureEmailTitle", locale),
+      desc: t("hiring.featureEmailDesc", locale),
     },
     {
       icon: "📊",
-      title: isHu ? "HEXACO összehasonlítás" : "HEXACO comparison",
-      desc: isHu
-        ? "Jelölt profilja a csapat mellé"
-        : "Candidate profile alongside the team",
+      title: t("hiring.featureComparisonTitle", locale),
+      desc: t("hiring.featureComparisonDesc", locale),
     },
     {
       icon: "🎯",
-      title: isHu ? "Role Fit elemzés" : "Role Fit analysis",
-      desc: isHu
-        ? "Melyik szerepet töltené be a csapatban"
-        : "Which role the candidate would fill in the team",
+      title: t("hiring.featureRoleFitTitle", locale),
+      desc: t("hiring.featureRoleFitDesc", locale),
     },
   ];
 
@@ -44,7 +39,7 @@ export function HiringPaywall({ isHu, variant, isAdmin = false }: HiringPaywallP
       <p className="mb-2 font-mono text-xs uppercase tracking-widest text-bronze">
         {isAddon
           ? "// add-on"
-          : isHu ? "// prémium funkció" : "// premium feature"}
+          : t("hiring.premiumFeature", locale)}
       </p>
 
       <h1 className="mb-3 font-fraunces text-3xl text-ink">
@@ -52,19 +47,13 @@ export function HiringPaywall({ isHu, variant, isAdmin = false }: HiringPaywallP
       </h1>
 
       <p className="mb-2 max-w-md text-sm text-ink-body leading-relaxed">
-        {isHu
-          ? "Jelölteket hívhatsz meg HEXACO felmérésre, és összehasonlíthatod a profiljukat a meglévő csapatod személyiségtérképével."
-          : "Invite candidates to a HEXACO assessment and compare their profile with your existing team's personality map."}
+        {t("hiring.paywallDesc", locale)}
       </p>
 
       <p className="mb-8 text-xs text-muted">
         {isAddon
-          ? isHu
-            ? "A Team csomaghoz add-onként elérhető · €39 / jelölt értékelés"
-            : "Available as Team add-on · €39 / candidate assessment"
-          : isHu
-            ? "Elérhető: trita Org csomag vagy Team add-on"
-            : "Available: trita Org plan or Team add-on"}
+          ? t("hiring.addonPricing", locale)
+          : t("hiring.noSubPricing", locale)}
       </p>
 
       <div className="mb-8 grid w-full max-w-lg grid-cols-1 gap-3 text-left md:grid-cols-3">
@@ -88,27 +77,21 @@ export function HiringPaywall({ isHu, variant, isAdmin = false }: HiringPaywallP
                 href="/billing/checkout?plan=candidate_addon"
                 className="min-h-[44px] inline-flex items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
               >
-                {isHu
-                  ? "Jelölt értékelés aktiválása · €39"
-                  : "Activate candidate assessment · €39"}
+                {t("hiring.activateAddon", locale)}
               </a>
               <p className="text-xs text-muted">
-                {isHu
-                  ? "Vagy frissíts Org csomagra a korlátlan hozzáférésért"
-                  : "Or upgrade to Org plan for unlimited access"}
+                {t("hiring.upgradeToOrg", locale)}
               </p>
               <Link
                 href="/billing/checkout?plan=org_monthly"
                 className="text-xs font-semibold text-bronze underline decoration-bronze/30 hover:decoration-bronze"
               >
-                {isHu ? "Org csomag részletei →" : "Org plan details →"}
+                {t("hiring.orgPlanDetails", locale)}
               </Link>
             </>
           ) : (
             <p className="max-w-sm text-center text-sm text-ink-body">
-              {isHu
-                ? "Az add-on aktiválásához adminisztrátori jogosultság szükséges. Kérj meg egy adminisztrátort."
-                : "Admin permissions are required to activate this add-on. Ask your organization admin."}
+              {t("hiring.addonAdminRequired", locale)}
             </p>
           )
         ) : isAdmin ? (
@@ -116,13 +99,11 @@ export function HiringPaywall({ isHu, variant, isAdmin = false }: HiringPaywallP
             href="/billing/checkout?plan=org_monthly"
             className="min-h-[44px] inline-flex items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
           >
-            {isHu ? "Előfizetés aktiválása →" : "Activate subscription →"}
+            {t("hiring.activateSubscription", locale)}
           </Link>
         ) : (
           <p className="max-w-sm text-center text-sm text-ink-body">
-            {isHu
-              ? "Az előfizetés aktiválásához adminisztrátori jogosultság szükséges."
-              : "Admin permissions are required to activate the subscription."}
+            {t("hiring.subscriptionAdminRequired", locale)}
           </p>
         )}
       </div>

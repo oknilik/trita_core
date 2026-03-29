@@ -7,7 +7,6 @@ import { t } from "@/lib/i18n";
 
 interface ProgressBarProps {
   hasSelfPlus: boolean;
-  hasSelfReflect: boolean;
   observersSent: boolean;
   observersCompleted: boolean;
   sentCount: number;
@@ -28,6 +27,7 @@ interface PackageCardProps {
   features: string[];
   buttonLabel: string;
   buttonStyle: "ghost" | "bronze" | "done";
+  locale: "hu" | "en";
 }
 
 function PackageCard({
@@ -40,6 +40,7 @@ function PackageCard({
   features,
   buttonLabel,
   buttonStyle,
+  locale,
 }: PackageCardProps) {
   return (
     <div
@@ -54,12 +55,12 @@ function PackageCard({
     >
       {owned && (
         <span className="mb-1.5 inline-flex self-start rounded bg-[#3d6b5e] px-[7px] py-[2px] text-[8px] font-bold uppercase tracking-wide text-white">
-          {t("progress.active", "hu")}
+          {t("progress.active", locale)}
         </span>
       )}
       {recommended && !owned && (
         <span className="mb-1.5 inline-flex self-start rounded bg-[#c17f4a] px-[7px] py-[2px] text-[8px] font-bold uppercase tracking-wide text-white">
-          {t("progress.recommended", "hu")}
+          {t("progress.recommended", locale)}
         </span>
       )}
 
@@ -77,7 +78,7 @@ function PackageCard({
       )}
       {owned && (
         <p className="font-fraunces text-sm text-[#8a8a9a]">
-          {t("progress.owned", "hu")}
+          {t("progress.owned", locale)}
         </p>
       )}
 
@@ -120,7 +121,6 @@ function PackageCard({
 
 export function ProgressBar({
   hasSelfPlus,
-  hasSelfReflect,
   observersSent,
   observersCompleted,
   sentCount,
@@ -130,70 +130,48 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
   const steps = [
     { key: "test", done: true },
     { key: "results", done: true },
-    { key: "package", done: hasSelfPlus || hasSelfReflect },
-    { key: "observers", done: hasSelfReflect && observersSent },
-    { key: "feedback", done: hasSelfReflect && observersCompleted },
+    { key: "package", done: hasSelfPlus },
+    { key: "observers", done: hasSelfPlus && observersSent },
+    { key: "feedback", done: hasSelfPlus && observersCompleted },
   ];
   const completed = steps.filter((s) => s.done).length;
   const total = steps.length;
   const pct = Math.round((completed / total) * 100);
 
-  const nextStepText = isHu ? "Következő" : "Next";
+  const nextStepText = t("progress.next", locale);
   const nextStepName = (() => {
-    if (!hasSelfPlus && !hasSelfReflect)
-      return isHu ? "válassz csomagot" : "choose a plan";
-    if (!hasSelfReflect)
-      return isHu
-        ? "Self Reflect feloldás — csak €7"
-        : "Unlock Self Reflect — only €7";
+    if (!hasSelfPlus)
+      return t("progress.choosePlan", locale);
     if (!observersSent)
-      return isHu
-        ? "visszajelzési meghívók küldése"
-        : "send feedback invitations";
+      return t("progress.sendFeedback", locale);
     if (!observersCompleted)
-      return isHu
-        ? "visszajelzések beérkezése"
-        : "waiting for feedback";
-    return isHu ? "profilod kész!" : "profile complete!";
+      return t("progress.waitFeedback", locale);
+    return t("progress.profileDone", locale);
   })();
 
   const completedSteps = [
     {
-      name: isHu ? "Teszt kitöltése" : "Complete the assessment",
-      desc: isHu ? "A személyiségteszted eredménye elkészült" : "Your personality assessment results are ready",
+      name: t("progress.stepTest", locale),
+      desc: t("progress.stepTestDesc", locale),
     },
     {
-      name: isHu ? "Eredmény megtekintése" : "View results",
-      desc: isHu ? "Áttekinted a fő dimenziókat" : "You reviewed the key dimensions",
+      name: t("progress.stepResults", locale),
+      desc: t("progress.stepResultsDesc", locale),
     },
   ];
 
   // Plus features
-  const plusFeatures = isHu
-    ? ["25 alskála részletesen", "Karrierillesztés", "Fejlődési fókusz"]
-    : ["25 facets in detail", "Career fit", "Growth focus"];
-  const reflectFeatures = isHu
-    ? ["Observer visszajelzés", "Vakfolt elemzés", "Önkép vs. mások képe"]
-    : ["Observer feedback", "Blind spot analysis", "Self-image vs. others"];
-
-  // Reflect pricing logic
-  const reflectPrice = hasSelfReflect
-    ? null
-    : hasSelfPlus
-      ? "€7"
-      : "€12";
-  const reflectOldPrice =
-    hasSelfPlus && !hasSelfReflect ? "€12" : null;
-  const reflectIncludes = hasSelfReflect
-    ? null
-    : !hasSelfPlus
-      ? (isHu ? "Tartalmazza a Self Plus-t is" : "Includes Self Plus")
-      : (isHu ? "€5 kedvezmény, mert van Plus-od" : "€5 discount because you have Plus");
+  const plusFeatures = [
+    t("progress.plusFeature1", locale),
+    t("progress.plusFeature2", locale),
+    t("progress.plusFeature3", locale),
+    t("progress.plusFeature4", locale),
+    t("progress.plusFeature5", locale),
+  ];
 
   return (
     <div className="overflow-hidden rounded-xl border-[1.5px] border-[#ddd5c8] bg-white">
@@ -206,10 +184,10 @@ export function ProgressBar({
         <div className="flex-1">
           <div className="mb-1.5 flex justify-between">
             <span className="text-xs font-semibold text-[#1a1a2e]">
-              {isHu ? "Profilod készülőben" : "Your profile is in progress"}
+              {t("progress.title", locale)}
             </span>
             <span className="text-[11px] text-[#8a8a9a]">
-              {completed} / {total} {isHu ? "kész" : "done"}
+              {completed} / {total} {t("progress.done", locale)}
             </span>
           </div>
           <div className="h-1 w-full overflow-hidden rounded-sm bg-[#e8e0d3]">
@@ -265,7 +243,7 @@ export function ProgressBar({
                     <p className="text-[11px] text-[#8a8a9a]">{step.desc}</p>
                   </div>
                   <span className="rounded bg-[#e8f2f0] px-2 py-0.5 text-[9px] font-semibold text-[#1e3d34]">
-                    {isHu ? "Kész" : "Done"}
+                    {t("progress.stepDone", locale)}
                   </span>
                 </div>
               ))}
@@ -274,54 +252,39 @@ export function ProgressBar({
               <div className="flex items-center gap-2.5 border-b border-[#ddd5c8] px-5 py-2">
                 <div className="h-px flex-1 bg-[#e8e0d3]" />
                 <span className="text-[9px] uppercase tracking-widest text-[#8a8a9a]">
-                  {isHu ? "Mélyíts a profilodon" : "Deepen your profile"}
+                  {t("progress.deepenDivider", locale)}
                 </span>
                 <div className="h-px flex-1 bg-[#e8e0d3]" />
               </div>
 
-              {/* Package cards */}
+              {/* Package card */}
               <div className="flex gap-2.5 border-b border-[#ddd5c8] px-5 py-3">
                 <PackageCard
-                  name="Self Plus"
-                  price={hasSelfPlus ? null : "€7"}
+                  name="Plus"
+                  price={hasSelfPlus ? null : "€9"}
                   owned={hasSelfPlus}
+                  recommended={!hasSelfPlus}
                   features={plusFeatures}
                   buttonLabel={
                     hasSelfPlus
-                      ? (isHu ? "Aktív" : "Active")
-                      : (isHu ? "Feloldom — €7" : "Unlock — €7")
+                      ? t("progress.buttonActive", locale)
+                      : t("progress.buttonUnlock", locale)
                   }
-                  buttonStyle={hasSelfPlus ? "done" : "ghost"}
-                />
-                <PackageCard
-                  name="Self Reflect"
-                  price={reflectPrice}
-                  oldPrice={reflectOldPrice}
-                  owned={hasSelfReflect}
-                  recommended={!hasSelfReflect}
-                  includes={reflectIncludes}
-                  features={reflectFeatures}
-                  buttonLabel={
-                    hasSelfReflect
-                      ? (isHu ? "Aktív" : "Active")
-                      : hasSelfPlus
-                        ? (isHu ? "Feloldom — €7" : "Unlock — €7")
-                        : (isHu ? "Feloldom — €12" : "Unlock — €12")
-                  }
-                  buttonStyle={hasSelfReflect ? "done" : "bronze"}
+                  buttonStyle={hasSelfPlus ? "done" : "bronze"}
+                  locale={locale}
                 />
               </div>
 
               {/* Observer step: send invitations */}
               <div
-                className={`flex items-center gap-3 border-b border-[#ddd5c8] px-5 py-3 ${!hasSelfReflect ? "opacity-45" : ""}`}
+                className={`flex items-center gap-3 border-b border-[#ddd5c8] px-5 py-3 ${!hasSelfPlus ? "opacity-45" : ""}`}
               >
                 <div
                   className={[
                     "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                     observersSent
                       ? "bg-[#3d6b5e] text-[10px] text-white"
-                      : hasSelfReflect
+                      : hasSelfPlus
                         ? "border-2 border-[#c17f4a]"
                         : "border-[1.5px] border-dashed border-[#ddd5c8]",
                   ]
@@ -332,36 +295,30 @@ export function ProgressBar({
                 </div>
                 <div className="flex-1">
                   <p className="text-[13px] font-medium text-[#1a1a2e]">
-                    {isHu
-                      ? "Visszajelzési meghívók küldése"
-                      : "Send feedback invitations"}
+                    {t("progress.sendInvitations", locale)}
                   </p>
                   <p className="text-[11px] text-[#8a8a9a]">
-                    {hasSelfReflect
-                      ? (isHu
-                          ? "Kérd meg 2-3 kollégádat, hogy adjanak visszajelzést rólad"
-                          : "Ask 2-3 colleagues to give feedback about you")
-                      : (isHu
-                          ? "Self Reflect feloldása után érhető el"
-                          : "Available after unlocking Self Reflect")}
+                    {hasSelfPlus
+                      ? t("progress.sendInvitationsDesc", locale)
+                      : t("progress.afterPlus", locale)}
                   </p>
                 </div>
-                {hasSelfReflect && !observersSent && (
+                {hasSelfPlus && !observersSent && (
                   <button
                     type="button"
                     onClick={onNavigateToInvites}
                     className="min-h-[44px] shrink-0 rounded-lg bg-[#3d6b5e] px-3.5 py-1.5 text-[11px] font-semibold text-white"
                   >
-                    {isHu ? "Meghívó küldése →" : "Send invitation →"}
+                    {t("progress.sendInvitationCta", locale)}
                   </button>
                 )}
-                {!hasSelfReflect && (
+                {!hasSelfPlus && (
                   <button
                     type="button"
                     disabled
                     className="shrink-0 rounded-lg bg-[#e8e0d3] px-3.5 py-1.5 text-[11px] font-semibold text-[#8a8a9a]"
                   >
-                    {isHu ? "Elérhető Reflect után" : "Available after Reflect"}
+                    {t("progress.availableAfterPlus", locale)}
                   </button>
                 )}
               </div>
@@ -386,21 +343,17 @@ export function ProgressBar({
                 </div>
                 <div className="flex-1">
                   <p className="text-[13px] font-medium text-[#1a1a2e]">
-                    {isHu
-                      ? "Visszajelzések beérkezése és értelmezése"
-                      : "Receive and interpret feedback"}
+                    {t("progress.receiveFeedback", locale)}
                   </p>
                   <p className="text-[11px] text-[#8a8a9a]">
                     {observersSent
-                      ? `${receivedCount} / ${sentCount} ${isHu ? "visszajelzés érkezett" : "feedback received"}`
-                      : (isHu
-                          ? "Meghívók küldése után elérhető"
-                          : "Available after sending invitations")}
+                      ? `${receivedCount} / ${sentCount} ${t("progress.feedbackReceived", locale)}`
+                      : t("progress.afterSending", locale)}
                   </p>
                 </div>
                 {observersSent && !observersCompleted && (
                   <span className="text-[11px] font-medium text-[#c17f4a]">
-                    {isHu ? "Várakozás..." : "Waiting..."}
+                    {t("progress.waiting", locale)}
                   </span>
                 )}
                 {observersCompleted && (
@@ -409,7 +362,7 @@ export function ProgressBar({
                     onClick={onNavigateToComparison}
                     className="min-h-[44px] shrink-0 rounded-lg bg-[#3d6b5e] px-3.5 py-1.5 text-[11px] font-semibold text-white"
                   >
-                    {isHu ? "Megnézem →" : "View →"}
+                    {t("progress.viewResults", locale)}
                   </button>
                 )}
               </div>

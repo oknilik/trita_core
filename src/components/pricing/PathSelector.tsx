@@ -2,24 +2,12 @@
 
 import { useState } from "react";
 import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { SelfTierPanel } from "./SelfTierPanel";
 import { TeamTierPanel } from "./TeamTierPanel";
 import { OrgTierPanel } from "./OrgTierPanel";
 
 type Path = "self" | "team" | "org";
-
-const tabs: Record<Locale, { id: Path; label: string; sub: string }[]> = {
-  hu: [
-    { id: "self", label: "Egyéni", sub: "önismeret és fejlődés" },
-    { id: "team", label: "Csapat", sub: "egyszeri felmérés" },
-    { id: "org", label: "Szervezet", sub: "előfizetés" },
-  ],
-  en: [
-    { id: "self", label: "Individual", sub: "self-awareness & growth" },
-    { id: "team", label: "Team", sub: "one-time assessment" },
-    { id: "org", label: "Organization", sub: "subscription" },
-  ],
-};
 
 export function PathSelector({
   locale,
@@ -29,7 +17,11 @@ export function PathSelector({
   isLoggedIn: boolean;
 }) {
   const [active, setActive] = useState<Path>("team");
-  const tabList = tabs[locale] ?? tabs.hu;
+  const tabList: { id: Path; label: string; sub: string }[] = [
+    { id: "self", label: t("pricing.tabSelfLabel", locale), sub: t("pricing.tabSelfSub", locale) },
+    { id: "team", label: t("pricing.tabTeamLabel", locale), sub: t("pricing.tabTeamSub", locale) },
+    { id: "org", label: t("pricing.tabOrgLabel", locale), sub: t("pricing.tabOrgSub", locale) },
+  ];
 
   return (
     <section className="px-6 py-12 lg:px-16 lg:py-14">

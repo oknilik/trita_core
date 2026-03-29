@@ -42,7 +42,6 @@ export const TRIAL_DAYS = 14;
 // ── One-time purchase prices ──────────────────────────────────
 export const STRIPE_ONE_TIME_PRICES = {
   self_plus:       process.env.STRIPE_PRICE_SELF_PLUS ?? "",
-  self_reflect:    process.env.STRIPE_PRICE_SELF_REFLECT ?? "",
   team_scan:       process.env.STRIPE_PRICE_TEAM_SCAN ?? "",
   team_deep_dive:  process.env.STRIPE_PRICE_TEAM_DEEP_DIVE ?? "",
 } as const;
@@ -66,16 +65,8 @@ export const TIER_CONFIG: Record<string, {
   level: "self" | "team" | "org";
 }> = {
   self_plus: {
-    name: "Self Plus",
-    price: 49,
-    isOneTime: true,
-    includesAdvisory: false,
-    includedCredits: 0,
-    level: "self",
-  },
-  self_reflect: {
-    name: "Self Reflect",
-    price: 89,
+    name: "Plus",
+    price: 9,
     isOneTime: true,
     includesAdvisory: false,
     includedCredits: 0,

@@ -8,6 +8,7 @@ import type { TestType } from "@prisma/client";
 import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
+import { t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function SharedProfilePage({
 
   const testType = result.testType as TestType;
   const config = getTestConfig(testType, locale);
-  const displayName = result.userProfile?.username ?? (isHu ? "Felhasználó" : "User");
+  const displayName = result.userProfile?.username ?? t("common.userFallback", locale);
 
   const dimensions = config.dimensions
     .filter((d) => d.code !== "I")
@@ -114,13 +115,13 @@ export default async function SharedProfilePage({
           <div className="px-9 pb-7 pt-8">
             <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
             <p className="mb-1.5 text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-              {isHu ? "Megosztott profil" : "Shared profile"}
+              {t("results.sharedProfileLabel", locale)}
             </p>
             <h1 className="mb-0.5 font-fraunces text-[28px] tracking-tight text-white">
               {displayName}
             </h1>
             <p className="mb-3 text-[11px] text-white/[0.25]">
-              {isHu ? "Felmérés:" : "Assessment:"} {formattedDate}
+              {t("results.heroAssessment", locale)} {formattedDate}
             </p>
             {personalityType && (
               <p className="font-fraunces text-[18px] italic text-[#e8a96a]">
@@ -190,7 +191,7 @@ export default async function SharedProfilePage({
         {belbinTop3.length > 0 && (
           <div>
             <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-              {isHu ? "Csapatszerepek (Belbin)" : "Team roles (Belbin)"}
+              {t("results.belbinHeading", locale)}
             </p>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
               {belbinTop3.map(({ role, score }, idx) => {
@@ -232,7 +233,7 @@ export default async function SharedProfilePage({
             <span style={{ color: "#3d6b5e" }}>t</span>rit<span style={{ color: "#c17f4a" }}>a</span>
           </p>
           <p className="mt-1 text-[11px] text-[#8a8a9a]">
-            {isHu ? "Személyiség és csapatintelligencia platform" : "Personality and team intelligence platform"}
+            {t("results.platformTagline", locale)}
           </p>
         </div>
       </div>

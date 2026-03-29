@@ -3,13 +3,15 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 import { addCredits } from "@/lib/candidate-credits";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Fizetés eredménye | Trita", robots: { index: false } };
+  const locale = await getServerLocale();
+  return { title: t("billing.returnMetaTitle", locale), robots: { index: false } };
 }
 
 const CREDIT_LABELS: Record<number, string> = {
@@ -26,7 +28,6 @@ export default async function ReturnPage({
   const [locale, params] = await Promise.all([getServerLocale(), searchParams]);
   const sessionId = params.session_id;
   const addon = params.addon;
-  const isHu = locale !== "en";
 
   if (!sessionId) redirect("/dashboard");
 
@@ -79,21 +80,19 @@ export default async function ReturnPage({
               <span className="text-3xl text-sage">✓</span>
             </div>
             <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
-              // siker
+              // {t("billing.returnSuccessEyebrow", locale)}
             </p>
             <h1 className="font-fraunces text-2xl text-ink mb-3">
-              {isHu ? "Köszönjük!" : "Thank you!"}
+              {t("billing.returnSuccessTitle", locale)}
             </h1>
             <p className="text-sm text-ink-warm mb-6">
-              {isHu
-                ? "A jelölt kreditek sikeresen hozzáadva. Most már meghívhatod a következő jelölteket."
-                : "Candidate credits have been added. You can now invite new candidates."}
+              {t("billing.returnCandidateBody", locale)}
             </p>
             <Link
               href={`/hiring/${orgId}`}
               className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
             >
-              {isHu ? "Vissza a felvételhez →" : "Back to hiring →"}
+              {t("billing.returnCandidateCta", locale)}
             </Link>
           </div>
         </div>
@@ -107,21 +106,19 @@ export default async function ReturnPage({
             <span className="text-3xl text-sage">✓</span>
           </div>
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
-            // siker
+            // {t("billing.returnSuccessEyebrow", locale)}
           </p>
           <h1 className="font-fraunces text-2xl text-ink mb-3">
-            {isHu ? "Köszönjük!" : "Thank you!"}
+            {t("billing.returnSuccessTitle", locale)}
           </h1>
           <p className="text-sm text-ink-warm mb-6">
-            {isHu
-              ? "Az előfizetés aktiválva. A csapatod most már hozzáfér az összes funkcióhoz."
-              : "Your subscription is now active. Your team has access to all features."}
+            {t("billing.returnSubBody", locale)}
           </p>
           <Link
             href="/profile/results"
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
           >
-            {isHu ? "Vissza a vezérlőpulthoz →" : "Go to dashboard →"}
+            {t("billing.returnSubCta", locale)}
           </Link>
         </div>
       </div>
@@ -133,18 +130,16 @@ export default async function ReturnPage({
     <div className="min-h-dvh bg-cream flex items-center justify-center">
       <div className="max-w-md text-center px-6">
         <h1 className="font-fraunces text-2xl text-ink mb-3">
-          {isHu ? "A munkamenet lejárt" : "Session expired"}
+          {t("billing.returnExpiredTitle", locale)}
         </h1>
         <p className="text-sm text-ink-warm mb-6">
-          {isHu
-            ? "Kérjük, próbáld újra az előfizetés aktiválását."
-            : "Please try activating your subscription again."}
+          {t("billing.returnExpiredBody", locale)}
         </p>
         <Link
           href="/billing/checkout"
           className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
         >
-          {isHu ? "Újrapróbálás" : "Try again"}
+          {t("billing.returnExpiredCta", locale)}
         </Link>
       </div>
     </div>

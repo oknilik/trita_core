@@ -18,8 +18,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
   if (!pc) return null;
   const isHu = true; // TODO: pass locale
 
-  const hasReflect = data.plan === "reflect";
-  const planLabel = hasReflect ? "Self Reflect" : "Self Plus";
+  const planLabel = "Plus";
 
   return (
     <Page size="A4" style={s.page}>
@@ -69,7 +68,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
         <View wrap={false}>
           <PdfNextStep
             text={
-              hasReflect
+              data.observerData
                 ? (isHu
                     ? `Nézd meg az observer visszajelzéseket a ${pageNum + 1}. oldalon.`
                     : `See the observer feedback on page ${pageNum + 1}.`)

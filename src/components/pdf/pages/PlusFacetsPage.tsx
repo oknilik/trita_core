@@ -13,8 +13,7 @@ interface Props {
 
 export function PlusFacetsPage({ data, pageNum, totalPages }: Props) {
   const facetDims = data.facetDimensions ?? [];
-  const hasReflect = data.plan === "reflect";
-  const planLabel = hasReflect ? "Self Reflect" : "Self Plus";
+  const planLabel = "Plus";
   const isHu = true; // TODO: pass locale
 
   // Collect all facets across dimensions for the highlight callout

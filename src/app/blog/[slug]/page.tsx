@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
@@ -199,7 +200,6 @@ export default async function BlogPostPage({
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const isHu = locale !== "en";
 
   // Related posts (same tags, excluding current)
   const allPosts = getAllPosts(locale as "hu" | "en");
@@ -218,7 +218,7 @@ export default async function BlogPostPage({
           <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {isHu ? "Vissza a blogra" : "Back to blog"}
+          {t("blog.backToBlog", locale)}
         </Link>
       </div>
 
@@ -266,7 +266,7 @@ export default async function BlogPostPage({
         {relatedPosts.length > 0 && (
           <div className="mt-8 border-t border-[#e8e0d3] pt-6">
             <p className="mb-3 text-[9px] font-semibold uppercase tracking-[1.5px] text-[#8a8a9a]">
-              {isHu ? "Ezt olvasd tovább" : "Read next"}
+              {t("blog.readNext", locale)}
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {relatedPosts.map((rel) => (
@@ -304,22 +304,20 @@ export default async function BlogPostPage({
         <div className="mt-7 flex flex-col items-center gap-5 rounded-xl bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           <div className="flex-1 text-center sm:text-left">
             <p className="mb-1 text-[8px] uppercase tracking-[1.5px] text-[#e8a96a]">
-              {isHu ? "Próbáld ki" : "Try it"}
+              {t("blog.tryEyebrow", locale)}
             </p>
             <h3 className="mb-1 font-fraunces text-lg leading-snug text-white">
-              {isHu ? "Nézd meg, milyen eredményt kapsz." : "See what your results look like."}
+              {t("blog.tryTitle", locale)}
             </h3>
             <p className="text-xs leading-relaxed text-white/[0.35]">
-              {isHu
-                ? "~15 perc, és megkapod az első karrierképedet — ingyenesen."
-                : "~15 minutes to your first career profile — for free."}
+              {t("blog.trySub", locale)}
             </p>
           </div>
           <Link
             href="/try"
             className="shrink-0 rounded-[10px] bg-[#c17f4a] px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
           >
-            {isHu ? "Teszt indítása →" : "Start assessment →"}
+            {t("blog.tryCta", locale)}
           </Link>
         </div>
       </article>

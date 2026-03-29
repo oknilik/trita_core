@@ -146,11 +146,9 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                         ? "Manager"
                         : orgRole === "ORG_MEMBER"
                         ? "Team"
-                        : accessLevel === "self_reflect"
-                        ? "Self Reflect"
                         : accessLevel === "self_plus"
-                        ? "Self Plus"
-                        : "Self Start"}
+                        ? "Plus"
+                        : "Free"}
                     </p>
                   </div>
                 </div>
@@ -191,7 +189,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                         <path d="M6 7V5.5a4 4 0 0 1 8 0V7" />
                         <path d="M10 11v3M8 13h4" />
                       </svg>
-                      {locale === "hu" ? "Szervezetek" : "Organizations"}
+                      {t("nav.organizations", locale)}
                     </Link>
                   </>
                 )}

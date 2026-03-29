@@ -7,16 +7,15 @@ interface PdfHeaderProps {
   type: string;
   percentile: string;
   insight: string;
-  plan: "start" | "plus" | "reflect";
+  plan: "start" | "plus";
   locale?: string;
   topDimensions?: string[];
   watchDimensions?: string[];
 }
 
 const PLAN_LABELS: Record<string, string> = {
-  start: "Self Start",
-  plus: "Self Plus",
-  reflect: "Self Reflect",
+  start: "Free",
+  plus: "Plus",
 };
 
 export function PdfHeader({ name, date, type, percentile, insight, plan, locale = "hu", topDimensions = [], watchDimensions = [] }: PdfHeaderProps) {

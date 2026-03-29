@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t, tf } from "@/lib/i18n";
 import { requireOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import {
@@ -67,12 +68,12 @@ export default async function OrgSettingsPage({
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 3L5 8l5 5" />
             </svg>
-            {isHu ? "Vissza a szervezethez" : "Back to organization"}
+            {t("org.backToOrg", locale)}
           </Link>
 
           <div className="flex flex-col gap-1">
             <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-              {isHu ? "// beállítások" : "// settings"}
+              {t("org.settings.eyebrow", locale)}
             </p>
             <h1 className="font-fraunces text-3xl text-ink md:text-4xl">
               {org.name}
@@ -83,10 +84,10 @@ export default async function OrgSettingsPage({
         {/* Org name */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// szervezet neve" : "// organization name"}
+            {t("org.settings.orgNameEyebrow", locale)}
           </p>
           <h2 className="font-fraunces text-xl text-ink mb-5">
-            {isHu ? "Szervezet neve" : "Organization name"}
+            {t("org.settings.orgNameTitle", locale)}
           </h2>
           <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
         </section>
@@ -94,10 +95,10 @@ export default async function OrgSettingsPage({
         {/* Előfizetés */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// előfizetés" : "// subscription"}
+            {t("org.settings.subscriptionEyebrow", locale)}
           </p>
           <h2 className="font-fraunces text-xl text-ink mb-5">
-            {isHu ? "Előfizetés" : "Subscription"}
+            {t("org.settings.subscriptionTitle", locale)}
           </h2>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -113,39 +114,29 @@ export default async function OrgSettingsPage({
                   }`}
                 >
                   {subStatus === "active"
-                    ? isHu ? "Aktív" : "Active"
+                    ? t("org.settings.statusActive", locale)
                     : subStatus === "trialing"
                     ? "Trial"
                     : subStatus === "past_due"
-                    ? isHu ? "Fizetési hiba" : "Past due"
+                    ? t("org.settings.statusPastDue", locale)
                     : subStatus === "canceled"
-                    ? isHu ? "Lemondva" : "Canceled"
-                    : isHu ? "Nincs előfizetés" : "No subscription"}
+                    ? t("org.settings.statusCanceled", locale)
+                    : t("org.settings.statusNone", locale)}
                 </span>
                 {subStatus === "trialing" && trialEnd && (
                   <span className="text-xs text-ink-warm">
                     {daysLeft !== null && daysLeft > 0
-                      ? isHu
-                        ? `${daysLeft} nap van hátra`
-                        : `${daysLeft} days left`
-                      : isHu
-                      ? "Ma jár le"
-                      : "Expires today"}
+                      ? tf("org.settings.trialDaysLeft", locale, { days: daysLeft })
+                      : t("org.settings.trialExpiresToday", locale)}
                   </span>
                 )}
               </div>
               <p className="text-xs text-muted">
                 {subStatus === "active"
-                  ? isHu
-                    ? "A hozzáférés aktív."
-                    : "Access is active."
+                  ? t("org.settings.accessActive", locale)
                   : subStatus === "trialing"
-                  ? isHu
-                    ? "14 napos próbaidőszak – kártyaadat nélkül."
-                    : "14-day trial – no credit card required."
-                  : isHu
-                  ? "Az előfizetés aktiválásához kattints az alábbi gombra."
-                  : "Activate your subscription using the button below."}
+                  ? t("org.settings.trialInfo", locale)
+                  : t("org.settings.activatePrompt", locale)}
               </p>
             </div>
 
@@ -155,7 +146,7 @@ export default async function OrgSettingsPage({
                   href="/billing/checkout?plan=org_monthly"
                   className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white hover:bg-sage-dark transition-colors"
                 >
-                  {isHu ? "Aktiválás →" : "Activate →"}
+                  {t("org.settings.activateBtn", locale)}
                 </a>
               )}
               {(subStatus === "active" || subStatus === "past_due") && (
@@ -166,7 +157,7 @@ export default async function OrgSettingsPage({
                   href="/billing/checkout?plan=org_monthly"
                   className="inline-flex min-h-[40px] items-center rounded-lg border border-sage px-4 text-xs font-semibold text-bronze hover:bg-sage-soft transition-colors"
                 >
-                  {isHu ? "Újraaktiválás" : "Reactivate"}
+                  {t("org.settings.reactivateBtn", locale)}
                 </a>
               )}
             </div>
@@ -177,10 +168,10 @@ export default async function OrgSettingsPage({
         {tier !== "scale" && tier !== "none" && includedSeats !== Infinity && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-              {isHu ? "// létszám" : "// seats"}
+              {t("org.settings.seatsEyebrow", locale)}
             </p>
             <h2 className="font-fraunces text-xl text-ink mb-5">
-              {isHu ? "Aktív helyek" : "Active seats"}
+              {t("org.settings.seatsTitle", locale)}
             </h2>
 
             <div className="flex items-start justify-between gap-6">
@@ -190,7 +181,7 @@ export default async function OrgSettingsPage({
                     {memberCount}
                   </span>
                   <span className="text-sm text-ink-body">
-                    / {includedSeats} {isHu ? "alap hely" : "included seats"}
+                    / {includedSeats} {t("org.settings.includedSeats", locale)}
                   </span>
                 </div>
 
@@ -207,23 +198,17 @@ export default async function OrgSettingsPage({
 
                 {extraSeats > 0 ? (
                   <p className="text-sm text-bronze">
-                    {isHu
-                      ? `+${extraSeats} extra hely · ${extraSeats} × €19/hó a következő számlán`
-                      : `+${extraSeats} extra seat${extraSeats !== 1 ? "s" : ""} · ${extraSeats} × €19/mo on next invoice`}
+                    {tf("org.settings.extraSeatsInfo", locale, { extra: extraSeats, plural: extraSeats !== 1 && locale === "en" ? "s" : "" })}
                   </p>
                 ) : (
                   <p className="text-sm text-ink-body">
-                    {isHu
-                      ? `${includedSeats - memberCount} hely elérhető`
-                      : `${includedSeats - memberCount} seat${includedSeats - memberCount !== 1 ? "s" : ""} available`}
+                    {tf("org.settings.seatsAvailable", locale, { available: includedSeats - memberCount, plural: (includedSeats - memberCount) !== 1 && locale === "en" ? "s" : "" })}
                   </p>
                 )}
 
                 {pendingCount > 0 && (
                   <p className="text-xs text-muted mt-1">
-                    {isHu
-                      ? `+${pendingCount} meghívás függőben`
-                      : `+${pendingCount} invitation${pendingCount !== 1 ? "s" : ""} pending`}
+                    {tf("org.settings.pendingInvites", locale, { count: pendingCount, plural: pendingCount !== 1 && locale === "en" ? "s" : "" })}
                   </p>
                 )}
               </div>
@@ -232,18 +217,16 @@ export default async function OrgSettingsPage({
               {tier === "team" && memberCount >= includedSeats - 2 && (
                 <div className="shrink-0 rounded-xl border border-sand bg-cream p-4 text-xs max-w-[200px]">
                   <p className="font-semibold text-ink mb-1">
-                    {isHu ? "Több hely kell?" : "Need more seats?"}
+                    {t("org.settings.needMoreSeats", locale)}
                   </p>
                   <p className="text-ink-body mb-2">
-                    {isHu
-                      ? "Az Org csomag 40 helyet tartalmaz €149/hó áron."
-                      : "The Org plan includes 40 seats for €149/mo."}
+                    {t("org.settings.upgradeHint", locale)}
                   </p>
                   <a
                     href="/billing/checkout?plan=org_monthly"
                     className="font-semibold text-bronze hover:underline"
                   >
-                    {isHu ? "Upgrade →" : "Upgrade →"}
+                    {t("org.settings.upgradeLink", locale)}
                   </a>
                 </div>
               )}
@@ -254,10 +237,10 @@ export default async function OrgSettingsPage({
         {/* Member roles */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// szerepkörök" : "// roles"}
+            {t("org.settings.rolesEyebrow", locale)}
           </p>
           <h2 className="font-fraunces text-xl text-ink mb-5">
-            {isHu ? "Tagok szerepkörei" : "Member roles"}
+            {t("org.settings.rolesTitle", locale)}
           </h2>
           <div className="flex flex-col divide-y divide-sand">
             {members.map((m) => (
@@ -285,19 +268,17 @@ export default async function OrgSettingsPage({
         {/* Danger zone */}
         <section className="rounded-2xl border border-rose-200 bg-rose-50 p-6 md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-rose-600 mb-1">
-            {isHu ? "// veszélyes zóna" : "// danger zone"}
+            {t("org.settings.dangerEyebrow", locale)}
           </p>
           <h2 className="font-fraunces text-xl text-rose-900 mb-4">
-            {isHu ? "Veszélyes zóna" : "Danger zone"}
+            {t("org.settings.dangerTitle", locale)}
           </h2>
           <p className="mb-4 text-sm text-rose-700">
-            {isHu
-              ? "A szervezet deaktiválása után tagjai nem tudnak bejelentkezni az org-hoz kötött felületekre."
-              : "Deactivating the organization will block members from accessing org-scoped pages."}
+            {t("org.settings.dangerDescription", locale)}
           </p>
           {org.status === "INACTIVE" ? (
             <p className="text-sm font-semibold text-rose-800">
-              {isHu ? "A szervezet már inaktív." : "Organization is already inactive."}
+              {t("org.settings.alreadyInactive", locale)}
             </p>
           ) : (
             <OrgDeactivateButton orgId={orgId} locale={locale} />

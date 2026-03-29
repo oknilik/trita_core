@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PATTERN_NAMES } from "@/lib/team-pattern";
+import { t, tf, type Locale } from "@/lib/i18n";
 
 // Tier mapping from getPlanTier() in src/lib/subscription.ts:
 //   none / trialing  → "trial"      (no or trial subscription)
@@ -37,6 +38,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
   const [requestSent, setRequestSent] = useState(false);
   const [requestLoading, setRequestLoading] = useState(false);
 
+  const locale: Locale = isHu ? "hu" : "en";
   const firstName = userName.split(/[\s@]/)[0] ?? userName;
 
   const isAdvisory = tier === "advisory" || tier === "custom";
@@ -48,14 +50,14 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       return;
     }
     Promise.all(
-      teams.map((t) =>
-        fetch(`/api/team/${t.id}/pattern`)
+      teams.map((tm) =>
+        fetch(`/api/team/${tm.id}/pattern`)
           .then((r) => r.json())
           .then((data) => {
             const pr = data.patternResult;
             if (!pr) return null;
             return {
-              teamId: t.id,
+              teamId: tm.id,
               patternCode: pr.patternCode,
               patternName: pr.patternName,
               diversitySuffix: pr.diversitySuffix,
@@ -77,7 +79,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teams: patterns.map((p) => ({
-            name: teams.find((t) => t.id === p.teamId)?.name ?? "",
+            name: teams.find((tm) => tm.id === p.teamId)?.name ?? "",
             pattern: p.patternName,
           })),
         }),
@@ -92,30 +94,46 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
   const secondPattern = patterns[1];
   const firstContent = firstPattern ? PATTERN_NAMES[firstPattern.patternCode] : null;
 
+  const steps = [
+    { n: "1", title: t("advisory.step1Title", locale), body: t("advisory.step1Body", locale) },
+    { n: "2", title: t("advisory.step2Title", locale), body: t("advisory.step2Body", locale) },
+    { n: "3", title: t("advisory.step3Title", locale), body: t("advisory.step3Body", locale) },
+  ];
+
+  const upgradeFeatures = [
+    t("advisory.upgradeFeature1", locale),
+    t("advisory.upgradeFeature2", locale),
+    t("advisory.upgradeFeature3", locale),
+    t("advisory.upgradeFeature4", locale),
+    t("advisory.upgradeFeature5", locale),
+    t("advisory.upgradeFeature6", locale),
+  ];
+
+  const faqItems = [
+    [t("advisory.faqQ1", locale), t("advisory.faqA1", locale)],
+    [t("advisory.faqQ2", locale), t("advisory.faqA2", locale)],
+    [t("advisory.faqQ3", locale), t("advisory.faqA3", locale)],
+    [t("advisory.faqQ4", locale), t("advisory.faqA4", locale)],
+    [t("advisory.faqQ5", locale), t("advisory.faqA5", locale)],
+    [t("advisory.faqQ6", locale), t("advisory.faqA6", locale)],
+  ];
+
   return (
     <div>
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="mb-10">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          // {isHu ? "tanácsadói konzultáció" : "advisory consultation"}
+          // {t("advisory.eyebrow", locale)}
         </p>
         <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
           {isAdvisory
-            ? isHu
-              ? `${firstName}, a csapataid készen állnak a következő lépésre.`
-              : `${firstName}, your teams are ready for the next step.`
-            : isHu
-            ? "Lásd, amit az adatok nem mondanak el."
-            : "See what the data doesn't tell you."}
+            ? `${firstName}${t("advisory.headingAdvisory", locale)}`
+            : t("advisory.headingUpgrade", locale)}
         </h1>
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-body">
           {isAdvisory
-            ? isHu
-              ? "A negyedéves tanácsadói konzultáción személyesen értelmezzük a csapataid mintázatait, és konkrét akcióterveket dolgozunk ki."
-              : "In the quarterly advisory consultation we personally interpret your team patterns and develop concrete action plans."
-            : isHu
-            ? "A személyiségmérési adatok mutatják a mintázatot. A tanácsadói konzultáción megértjük, miért — és megtervezzük, mit lépj."
-            : "The personality assessment data shows the pattern. The advisory consultation helps you understand why — and plan what to do next."}
+            ? t("advisory.subtitleAdvisory", locale)
+            : t("advisory.subtitleUpgrade", locale)}
         </p>
       </div>
 
@@ -123,11 +141,11 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {!loadingPatterns && patterns.length > 0 && (
         <div className="mb-10">
           <h2 className="mb-4 font-fraunces text-xl text-ink">
-            {isHu ? "A te csapataid most" : "Your teams right now"}
+            {t("advisory.teamsNow", locale)}
           </h2>
           <div className="flex flex-col gap-3">
             {patterns.map((p) => {
-              const team = teams.find((t) => t.id === p.teamId);
+              const team = teams.find((tm) => tm.id === p.teamId);
               return (
                 <div
                   key={p.teamId}
@@ -139,14 +157,14 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
                       {p.patternName}
                       {p.diversitySuffix ? ` — ${p.diversitySuffix}` : ""}
                       <span className="mx-2 text-sand">·</span>
-                      {team?.memberCount} {isHu ? "fő" : "members"}
+                      {team?.memberCount} {t("advisory.members", locale)}
                     </p>
                   </div>
                   <a
                     href={`/team/${p.teamId}`}
                     className="shrink-0 text-sm font-semibold text-bronze transition-colors hover:text-bronze-dark"
                   >
-                    {isHu ? "Részletek →" : "Details →"}
+                    {t("advisory.details", locale)}
                   </a>
                 </div>
               );
@@ -158,72 +176,49 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {/* ── Mit kapsz a konzultáción ──────────────────────── */}
       <div className="mb-10">
         <h2 className="mb-2 font-fraunces text-xl text-ink">
-          {isHu
-            ? "Mit kapsz a tanácsadói konzultáción"
-            : "What you get in the advisory consultation"}
+          {t("advisory.whatYouGet", locale)}
         </h2>
         <p className="mb-6 text-sm text-ink-body">
-          {isHu
-            ? "A konzultáció szervezeti szintű — nem egy csapatról szól, hanem arról, hogyan működnek a csapataid együtt és külön-külön."
-            : "The consultation is org-level — not about one team, but how your teams work together and individually."}
+          {t("advisory.whatYouGetSubtitle", locale)}
         </p>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <ConsultationFeature
             number="01"
-            title={isHu ? "Szervezeti hőtérkép" : "Organisational heat map"}
-            description={
-              isHu
-                ? "Átnézzük az összes csapatod mintázatát együtt: hol van összhang a csapatok között, hol vannak szervezeti szintű feszültségek, és melyik csapat mintázata jelent kockázatot a stratégiátok szempontjából."
-                : "We review all your team patterns together: where there is alignment, where there are org-level tensions, and which pattern poses a strategic risk."
-            }
+            title={t("advisory.feature1Title", locale)}
+            description={t("advisory.feature1Desc", locale)}
             example={
               secondPattern
-                ? isHu
-                  ? `Például: a \u201E${firstPattern!.patternName}\u201D és a \u201E${secondPattern.patternName}\u201D csapatok közötti dinamika értelmezése.`
-                  : `E.g.: interpreting the dynamics between the \u201C${firstPattern!.patternName}\u201D and \u201C${secondPattern.patternName}\u201D teams.`
+                ? tf("advisory.feature1ExampleTwo", locale, {
+                    first: firstPattern!.patternName,
+                    second: secondPattern.patternName,
+                  })
                 : firstPattern
-                ? isHu
-                  ? `Például: a \u201E${firstPattern.patternName}\u201D mintázat szervezeti hatásai és rejtett kockázatai.`
-                  : `E.g.: the organisational impact and hidden risks of the \u201C${firstPattern.patternName}\u201D pattern.`
+                ? tf("advisory.feature1ExampleOne", locale, {
+                    pattern: firstPattern.patternName,
+                  })
                 : undefined
             }
           />
           <ConsultationFeature
             number="02"
-            title={isHu ? "Cross-team feszültségek" : "Cross-team tensions"}
-            description={
-              isHu
-                ? "Azonosítjuk, hol ütköznek a csapatok működési mintázatai — és hol éppen a különbözőség az erő. Ez az, amit a platform önmagában nem tud megmutatni."
-                : "We identify where team operating patterns clash — and where the difference is actually a strength. This is what the platform alone can't show."
-            }
-            example={
-              isHu
-                ? "Például: miért kommunikál nehezen a sales és a product csapat, és mit léphetsz vezetőként."
-                : "E.g.: why the sales and product teams struggle to communicate, and what you can do as a leader."
-            }
+            title={t("advisory.feature2Title", locale)}
+            description={t("advisory.feature2Desc", locale)}
+            example={t("advisory.feature2Example", locale)}
           />
           <ConsultationFeature
             number="03"
-            title={isHu ? "Szervezeti akcióterv" : "Organisational action plan"}
-            description={
-              isHu
-                ? "3-5 konkrét, végrehajtható lépés a következő negyedévre — nem csapatszintű tippek, hanem szervezeti döntések: kit hova rendelj, hol változtass folyamatot, hol avatkozz be személyesen."
-                : "3-5 concrete, executable steps for the next quarter — not team-level tips, but organisational decisions: who goes where, where to change process, where to intervene personally."
-            }
+            title={t("advisory.feature3Title", locale)}
+            description={t("advisory.feature3Desc", locale)}
             example={
               firstContent?.leaderActions?.[0]
-                ? `${isHu ? "Például" : "E.g."}: \u201E${firstContent.leaderActions[0]}\u201D`
+                ? `${t("advisory.feature3ExamplePrefix", locale)}: \u201E${firstContent.leaderActions[0]}\u201D`
                 : undefined
             }
           />
           <ConsultationFeature
             number="04"
-            title={isHu ? "Írásos összefoglaló + csapat-riportok" : "Written summary + team reports"}
-            description={
-              isHu
-                ? "48 órán belül kapsz egy PDF-et: szervezeti hőtérkép vizualizáció, csapatonkénti 2-3 soros értékelés, a megbeszélt akciók listája felelőssel és határidővel, és a következő mérési pont javaslat."
-                : "Within 48 hours you receive a PDF: org heat map visualisation, 2-3 sentence team-by-team evaluation, action list with owners and deadlines, and next measurement point recommendation."
-            }
+            title={t("advisory.feature4Title", locale)}
+            description={t("advisory.feature4Desc", locale)}
           />
         </div>
       </div>
@@ -231,49 +226,12 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {/* ── Hogyan működik a negyedéves konzultáció ──────── */}
       <div className="mb-10 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
         <h2 className="mb-6 font-fraunces text-xl text-ink">
-          {isHu
-            ? "Hogyan működik a negyedéves konzultáció"
-            : "How the quarterly consultation works"}
+          {t("advisory.howItWorks", locale)}
         </h2>
 
         {/* 3 fázis */}
         <div className="mb-8 space-y-6">
-          {(isHu
-            ? [
-                {
-                  n: "1",
-                  title: "Előkészítés (aszinkron)",
-                  body: "Átnézzük a szervezeted összes csapatának mintázatát, a cross-team feszültségeket, és a változásokat az előző negyedévhez képest. Ebből készül a szervezeti hőtérkép, ami a konzultáció kiindulópontja.",
-                },
-                {
-                  n: "2",
-                  title: "Stratégiai session (90 perc, online)",
-                  body: "Személyes videóhívás veled (vezető / HR). Szervezeti szintű mintázat-értelmezés, cross-team dinamikák, feszültségpontok okai, 3-5 konkrét akció a következő negyedévre. Ha van konkrét kérdésed — arra mélyen válaszolunk.",
-                },
-                {
-                  n: "3",
-                  title: "Írásos összefoglaló (48 órán belül)",
-                  body: "PDF dokumentum: szervezeti hőtérkép, csapatonkénti rövid értékelés, a megbeszélt akciók listája felelőssel és határidővel, következő mérési pont javaslat. Azonnal továbbítható a menedzsment meetingre.",
-                },
-              ]
-            : [
-                {
-                  n: "1",
-                  title: "Preparation (async)",
-                  body: "We review all your org's team patterns, cross-team tensions, and changes since the last quarter. This produces the org heat map that serves as the consultation's starting point.",
-                },
-                {
-                  n: "2",
-                  title: "Strategy session (90 min, online)",
-                  body: "Personal video call with you (leader / HR). Org-level pattern interpretation, cross-team dynamics, root causes of tension points, 3-5 concrete actions for the next quarter. If you have a specific question — we go deep.",
-                },
-                {
-                  n: "3",
-                  title: "Written summary (within 48 hours)",
-                  body: "PDF document: org heat map, short team-by-team evaluation, action list with owners and deadlines, next measurement point recommendation. Ready to share in your next management meeting.",
-                },
-              ]
-          ).map(({ n, title, body }) => (
+          {steps.map(({ n, title, body }) => (
             <div key={n} className="flex items-start gap-4">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage/10 font-fraunces text-sm font-medium text-bronze">
                 {n}
@@ -291,16 +249,14 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div>
               <p className="text-sm font-semibold text-ink">
-                {isHu ? "Csapat deep-dive session" : "Team deep-dive session"}
+                {t("advisory.deepDiveTitle", locale)}
               </p>
               <p className="text-xs text-muted">
-                {isHu
-                  ? "Ha egy konkrét csapat mélyebb elemzést igényel — személyre szabott 60 perces session a csapatmenedzserrel."
-                  : "If a specific team needs deeper analysis — a personalised 60-minute session with the team manager."}
+                {t("advisory.deepDiveDesc", locale)}
               </p>
             </div>
             <span className="shrink-0 text-sm font-semibold text-ink">
-              + €200 / {isHu ? "alkalom" : "session"}
+              + €200 / {t("advisory.deepDivePrice", locale)}
             </span>
           </div>
         </div>
@@ -311,22 +267,18 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
         <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
           <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
             // {tier === "custom"
-              ? isHu ? "egyedi program" : "custom programme"
-              : isHu ? "advisory csomag" : "advisory plan"}
+              ? t("advisory.ctaCustomEyebrow", locale)
+              : t("advisory.ctaAdvisoryEyebrow", locale)}
           </p>
           <h2 className="mb-3 font-fraunces text-2xl text-ink">
             {tier === "custom"
-              ? isHu ? "Egyeztessünk időpontot" : "Let's schedule a session"
-              : isHu ? "Kérd a következő negyedéves konzultációt" : "Request your next quarterly consultation"}
+              ? t("advisory.ctaCustomHeading", locale)
+              : t("advisory.ctaAdvisoryHeading", locale)}
           </h2>
           <p className="mx-auto mb-6 max-w-lg text-sm text-ink-body">
             {tier === "custom"
-              ? isHu
-                ? "Az egyedi programod keretében személyre szabott ütemtervet dolgozunk ki — kattints, és koordinálunk."
-                : "Within your custom programme we create a bespoke schedule — click and we'll coordinate."
-              : isHu
-              ? "Az Advisory csomagod tartalmazza a negyedéves szervezeti szintű tanácsadói konzultációt. Kattints az alábbi gombra, és 24 órán belül egyeztetünk időpontot. A csapataid adatai automatikusan rendelkezésre állnak — nem kell semmit előkészítened."
-              : "Your Advisory plan includes the quarterly org-level consultation. Click and we'll confirm a time within 24 hours. Your team data is automatically available — no preparation needed."}
+              ? t("advisory.ctaCustomBody", locale)
+              : t("advisory.ctaAdvisoryBody", locale)}
           </p>
           <button
             onClick={handleRequestConsultation}
@@ -334,8 +286,8 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             {requestLoading
-              ? isHu ? "Küldés..." : "Sending..."
-              : isHu ? "Konzultációt kérek →" : "Request consultation →"}
+              ? t("advisory.sending", locale)
+              : t("advisory.requestConsultation", locale)}
           </button>
         </div>
       )}
@@ -344,12 +296,10 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
         <div className="mb-10 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
           <p className="mb-3 font-fraunces text-3xl text-bronze">✦</p>
           <h2 className="mb-2 font-fraunces text-2xl text-ink">
-            {isHu ? "Megkaptuk a kérésed!" : "We received your request!"}
+            {t("advisory.requestReceived", locale)}
           </h2>
           <p className="text-sm text-ink-body">
-            {isHu
-              ? "24 órán belül személyesen kereslek az időpont-egyeztetéssel."
-              : "We'll reach out within 24 hours to schedule a time."}
+            {t("advisory.requestFollowUp", locale)}
           </p>
         </div>
       )}
@@ -366,29 +316,10 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
                 Trita Advisory
               </h2>
               <p className="mb-5 text-sm leading-relaxed text-ink-body">
-                {isHu
-                  ? "Negyedéves személyes tanácsadói konzultáció + teljes platform hozzáférés. A csapatod adataiból konkrét, végrehajtható akcióterveket készítünk együtt."
-                  : "Quarterly personal advisory consultation + full platform access. We build concrete, executable action plans from your team data together."}
+                {t("advisory.upgradeDesc", locale)}
               </p>
               <ul className="mb-6 space-y-2 text-sm text-ink-body">
-                {(isHu
-                  ? [
-                      "Negyedéves 90 perces szervezeti szintű tanácsadói konzultáció",
-                      "Szervezeti hőtérkép + csapatonkénti írásos értékelés (PDF)",
-                      "Cross-team dinamikák és feszültségpontok elemzése",
-                      "3-5 konkrét szervezeti szintű akcióterv negyedévenként",
-                      "Teljes platform hozzáférés (heatmap, mintázat, tension pair)",
-                      "Opcionális csapat deep-dive session (+€200/alkalom)",
-                    ]
-                  : [
-                      "Quarterly 90-minute org-level advisory consultation",
-                      "Org heat map + written team-by-team evaluation (PDF)",
-                      "Cross-team dynamics and tension point analysis",
-                      "3-5 concrete org-level action plans per quarter",
-                      "Full platform access (heatmap, pattern, tension pair)",
-                      "Optional team deep-dive session (+€200/session)",
-                    ]
-                ).map((item) => (
+                {upgradeFeatures.map((item) => (
                   <li key={item} className="flex gap-2">
                     <span className="shrink-0 text-bronze">✓</span>
                     {item}
@@ -398,32 +329,28 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
               <div className="mb-4 flex items-baseline gap-2">
                 <span className="font-fraunces text-3xl text-ink">€149</span>
                 <span className="text-sm text-ink-body">
-                  {isHu ? "/hó + €400/negyedév" : "/mo + €400/quarter"}
+                  {t("advisory.pricePerMonth", locale)}
                 </span>
               </div>
               {tier === "trial" && (
                 <p className="mb-4 text-xs font-semibold text-bronze">
-                  {isHu
-                    ? "Founding customer? Az első 10 ügyfélnek €99/hó, örökre."
-                    : "Founding customer? €99/mo forever for the first 10 clients."}
+                  {t("advisory.foundingCustomer", locale)}
                 </p>
               )}
               <a
                 href="/billing/upgrade"
                 className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
               >
-                {isHu ? "Váltás Advisory-ra →" : "Upgrade to Advisory →"}
+                {t("advisory.upgradeButton", locale)}
               </a>
             </div>
             <div className="hidden md:block">
               <div className="rounded-xl border border-sand bg-cream p-6 text-center">
                 <p className="text-sm italic leading-relaxed text-ink-body">
-                  {isHu
-                    ? "\u201EA konzultáción végre megértettem, miért van feszültség a sales és a product csapat között — és kaptam 3 konkrét lépést, amit azonnal elkezdtünk.\u201D"
-                    : "\u201CAt the consultation I finally understood why there was tension between the sales and product teams — and I got 3 concrete steps we started immediately.\u201D"}
+                  {t("advisory.testimonial", locale)}
                 </p>
                 <p className="mt-3 text-xs text-muted">
-                  {isHu ? "— Egy jövőbeli founding customer" : "— A future founding customer"}
+                  {t("advisory.testimonialAuthor", locale)}
                 </p>
               </div>
             </div>
@@ -434,63 +361,10 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {/* ── FAQ ──────────────────────────────────────────── */}
       <div className="mt-4 border-t border-sand pt-10">
         <h2 className="mb-6 font-fraunces text-xl text-ink">
-          {isHu ? "Gyakori kérdések" : "Frequently asked questions"}
+          {t("advisory.faqTitle", locale)}
         </h2>
         <div className="space-y-3">
-          {(isHu
-            ? [
-                [
-                  "Kell valamit előkészítenem a konzultáció előtt?",
-                  "Nem — a szervezeted összes csapatának mérési adatai, mintázatai és tension pair-jei automatikusan rendelkezésre állnak. Ha van konkrét kérdésed vagy helyzeted, azt előre jelezheted, de nem kötelező.",
-                ],
-                [
-                  "A konzultáció az egész szervezetről szól, vagy egy csapatról?",
-                  "A negyedéves konzultáció szervezeti szintű: az összes csapat mintázatát áttekintjük, a cross-team dinamikákat, és szervezeti szintű akcióterveket készítünk. Ha egy konkrét csapat mélyebb elemzést igényel, ahhoz csapat deep-dive session foglalható (+€200/alkalom).",
-                ],
-                [
-                  "Ki vesz részt a konzultáción?",
-                  "Általában te (vezető, HR, vagy az ügyvezető) és a Trita tanácsadó. A csapatmenedzsereket nem kell bevonni — ők a platformon kapják meg a saját csapatuk insight-jait.",
-                ],
-                [
-                  "Mit kapok a konzultáció után?",
-                  "48 órán belül egy írásos összefoglalót és akciótervet küldünk PDF-ben: szervezeti hőtérkép, csapatonkénti rövid értékelés, a megbeszélt akciók felelőssel és határidővel, és a következő mérési pont javaslat. Azonnal továbbítható a menedzsment meetingre.",
-                ],
-                [
-                  "Milyen gyakran van konzultáció?",
-                  "Az Advisory csomagban negyedévente 1 szervezeti szintű session. Ezen felül csapat deep-dive session-ök és extra szervezeti session-ök igény szerint foglalhatók.",
-                ],
-                [
-                  "Mi történik, ha az Essentials csomagom van?",
-                  "Az Essentials csomag a platform teljes hozzáférését adja — csapatminta, heatmap, tension pair —, de nem tartalmaz személyes tanácsadói konzultációt. Az Advisory csomagra bármikor válthatál, a különbözet prorated.",
-                ],
-              ]
-            : [
-                [
-                  "Do I need to prepare anything?",
-                  "No — all your org's teams' assessment data, patterns and tension pairs are automatically available. If you have a specific question or situation, you can flag it in advance, but it's not required.",
-                ],
-                [
-                  "Is the consultation about the whole org or one team?",
-                  "The quarterly consultation is org-level: we review all team patterns, cross-team dynamics, and create org-level action plans. If a specific team needs deeper analysis, a team deep-dive session can be booked (+€200/session).",
-                ],
-                [
-                  "Who participates in the consultation?",
-                  "Usually you (leader, HR, or CEO) and the Trita advisor. Team managers don't need to join — they receive their team's insights directly through the platform.",
-                ],
-                [
-                  "What do I receive after the consultation?",
-                  "Within 48 hours we send a written summary and action plan PDF: org heat map, short team-by-team evaluation, action list with owners and deadlines, and next measurement point recommendation. Ready to share in your next management meeting.",
-                ],
-                [
-                  "How often is the consultation?",
-                  "The Advisory plan includes one org-level session per quarter. Additional team deep-dive and extra org sessions can be booked on request.",
-                ],
-                [
-                  "What if I'm on the Essentials plan?",
-                  "The Essentials plan gives full platform access — team pattern, heatmap, tension pair — but doesn't include personal advisory consultations. You can upgrade to Advisory at any time, billed prorated.",
-                ],
-              ]
-          ).map(([q, a]) => (
+          {faqItems.map(([q, a]) => (
             <FaqItem key={q} q={q} a={a} />
           ))}
         </div>

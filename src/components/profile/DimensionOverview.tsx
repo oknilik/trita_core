@@ -1,3 +1,4 @@
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { BLOCK1 } from "@/lib/profile-content";
@@ -26,10 +27,10 @@ export function DimensionOverview({
   return (
     <section>
       <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-        {isHu ? "// áttekintés" : "// overview"}
+        {t("content.overviewEyebrow", locale)}
       </p>
       <h2 className="mt-2 font-fraunces text-2xl text-ink">
-        {isHu ? "Személyiségprofilod" : "Your personality profile"}
+        {t("content.overviewTitle", locale)}
       </h2>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-body">
         {BLOCK1[locale] ?? BLOCK1.hu}

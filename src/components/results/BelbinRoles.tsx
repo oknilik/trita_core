@@ -3,10 +3,12 @@
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import type { BelbinRoleCode } from "@/lib/belbin-scoring";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface BelbinRolesProps {
   hexacoScores: Record<string, number>;
-  locale: string;
+  locale: Locale;
 }
 
 const ROLE_SUBTITLES: Record<BelbinRoleCode, { hu: string; en: string }> = {
@@ -40,7 +42,7 @@ const RANK_LABELS = [
 ];
 
 export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
-  const isHu = locale === "hu";
+  const lang = locale === "hu" ? "hu" : "en";
 
   const hasHexacoDims = "H" in hexacoScores && "X" in hexacoScores;
   if (!hasHexacoDims) return null;
@@ -53,15 +55,13 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
   return (
     <section>
       <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-        {isHu ? "Csapatszerepek (Belbin)" : "Team roles (Belbin)"}
+        {t("results.belbinEyebrow", locale)}
       </p>
       <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
-        {isHu ? "Így jelenhetsz meg csapatban" : "How you show up in a team"}
+        {t("results.belbinTitle", locale)}
       </h2>
       <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[#4a4a5e]">
-        {isHu
-          ? "A HEXACO mintázataid alapján ezek a csapatszerepek illenek hozzád."
-          : "Based on your HEXACO patterns, these team roles suit you."}
+        {t("content.belbinSub", locale)}
       </p>
 
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
@@ -91,7 +91,7 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
                       : "bg-[#f2ede6] text-[#8a8a9a]"
                 }`}
               >
-                {isHu ? rank.hu : rank.en} · {score}%
+                {rank[lang]} · {score}%
               </span>
 
               {/* Name */}
@@ -100,17 +100,17 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
                   isPrimary ? "text-[19px]" : "text-[17px]"
                 }`}
               >
-                {isHu ? roleMeta.hu : roleMeta.en}
+                {roleMeta[lang]}
               </p>
 
               {/* Subtitle */}
               <p className="mb-1.5 text-[11px] italic text-[#8a8a9a]">
-                {isHu ? subtitle.hu : subtitle.en}
+                {subtitle[lang]}
               </p>
 
               {/* Description */}
               <p className="text-xs leading-relaxed text-[#4a4a5e]">
-                {isHu ? desc.hu : desc.en}
+                {desc[lang]}
               </p>
             </div>
           );

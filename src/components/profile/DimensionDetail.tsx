@@ -1,3 +1,4 @@
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 interface DimDetailEntry {
@@ -30,10 +31,10 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
   return (
     <section>
       <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-        {isHu ? "// dimenziók" : "// dimensions"}
+        {t("content.detailEyebrow", locale)}
       </p>
       <h2 className="mt-2 mb-6 font-fraunces text-2xl text-ink">
-        {isHu ? "A 6 dimenzió részletesen" : "6 dimensions in detail"}
+        {t("content.detailTitle", locale)}
       </h2>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

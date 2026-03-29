@@ -1,3 +1,4 @@
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 interface CareerFitProps {
@@ -153,14 +154,14 @@ export function CareerFit({ dimensions, locale }: CareerFitProps) {
           >
             <div className="flex items-start justify-between gap-3 mb-3">
               <h3 className="text-sm font-semibold text-ink">
-                {isHu ? role.hu : role.en}
+                {locale === "hu" ? role.hu : role.en}
               </h3>
               <span className="shrink-0 rounded-full bg-sage-ghost px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-bronze">
                 #{idx + 1}
               </span>
             </div>
             <p className="text-xs leading-relaxed text-ink-body mb-3">
-              {isHu ? role.descHu : role.descEn}
+              {locale === "hu" ? role.descHu : role.descEn}
             </p>
             {/* Fit bar */}
             <div className="flex items-center gap-2">
@@ -171,7 +172,7 @@ export function CareerFit({ dimensions, locale }: CareerFitProps) {
                 />
               </div>
               <span className="shrink-0 font-mono text-[10px] text-muted">
-                {isHu ? "Illeszkedés" : "Fit"}
+                {t("content.careerFitLabel", locale)}
               </span>
             </div>
           </div>

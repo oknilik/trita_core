@@ -4,6 +4,7 @@ import Link from "next/link";
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import type { BelbinRoleCode } from "@/lib/belbin-scoring";
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 interface BelbinTeaserProps {
@@ -26,6 +27,7 @@ const ROLE_DESCRIPTIONS: Record<BelbinRoleCode, { hu: string; en: string }> = {
 
 export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
   const isHu = locale === "hu";
+  const loc = isHu ? "hu" as const : "en" as const;
 
   // Only meaningful for HEXACO-coded dimensions (H, E, X, A, C, O)
   const hasHexacoDims = "H" in hexacoScores && "X" in hexacoScores;
@@ -40,20 +42,18 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
     <section>
       <div className="mb-6 flex items-center gap-2.5">
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// csapatszerepek (belbin)" : "// team roles (belbin)"}
+          {t("content.belbinTeaserEyebrow", loc)}
         </p>
         <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-muted">
-          {isHu ? "becslés" : "estimate"}
+          {t("content.belbinTeaserEstimate", loc)}
         </span>
       </div>
 
       <h2 className="mb-2 font-fraunces text-2xl text-ink">
-        {isHu ? "Valószínű csapatszerepeid" : "Your likely team roles"}
+        {t("content.belbinTeaserTitle", loc)}
       </h2>
       <p className="mb-6 max-w-lg text-sm leading-relaxed text-ink-body">
-        {isHu
-          ? "Személyiségprofilod alapján ezek a Belbin-csapatszerepek illenek hozzád leginkább. A pontos méréshez töltsd ki a Belbin kérdőívet."
-          : "Based on your personality profile, these Belbin team roles fit you best. Complete the Belbin questionnaire for an exact measurement."}
+        {t("content.belbinTeaserDesc", loc)}
       </p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -61,10 +61,10 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
           const roleMeta = BELBIN_ROLES[role];
           const desc = ROLE_DESCRIPTIONS[role];
           const rankLabel = idx === 0
-            ? (isHu ? "Elsődleges" : "Primary")
+            ? t("content.belbinTeaserPrimary", loc)
             : idx === 1
-              ? (isHu ? "Másodlagos" : "Secondary")
-              : (isHu ? "Kiegészítő" : "Supporting");
+              ? t("content.belbinTeaserSecondary", loc)
+              : t("content.belbinTeaserSupporting", loc);
           const rankColor = idx === 0
             ? "bg-sage text-white"
             : "bg-warm-mid text-ink-body";
@@ -84,10 +84,10 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
               </div>
               <div>
                 <p className="font-fraunces text-lg leading-snug text-ink">
-                  {isHu ? roleMeta.hu : roleMeta.en}
+                  {roleMeta[loc]}
                 </p>
                 <p className="mt-1 text-[12px] leading-relaxed text-ink-body">
-                  {isHu ? desc.hu : desc.en}
+                  {desc[loc]}
                 </p>
               </div>
             </div>
@@ -98,15 +98,13 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
       {/* Info note + CTA */}
       <div className="mt-5 flex flex-col gap-3 rounded-xl border border-sand bg-cream px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[12px] leading-relaxed text-ink-body">
-          {isHu
-            ? "Ez egy becslés a személyiségprofilodból. A pontos Belbin-kérdőív kitöltésével csapatszintű összehasonlítás is elérhetővé válik."
-            : "This is an estimate from your personality profile. Completing the full Belbin questionnaire unlocks team-level comparison."}
+          {t("content.belbinTeaserInfoNote", loc)}
         </p>
         <Link
           href="/sign-up?intent=team"
           className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg border border-sand bg-white px-4 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
         >
-          {isHu ? "Csapatba lépés →" : "Join a team →"}
+          {t("content.belbinTeaserJoinTeam", loc)}
         </Link>
       </div>
     </section>

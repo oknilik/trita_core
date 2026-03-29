@@ -489,7 +489,7 @@ model Purchase {
   orgId                   String?
   teamId                  String?
 
-  // "self_plus" | "self_reflect" | "team_scan" | "team_deep_dive"
+  // "self_plus" | "team_scan" | "team_deep_dive"
   tier                    String
 
   stripePaymentIntentId   String?

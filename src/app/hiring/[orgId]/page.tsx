@@ -8,6 +8,7 @@ import { getManageableTeamIds } from "@/lib/team-auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getOrgSubscription, hasAccess, getPlanTier } from "@/lib/subscription";
 import { getCreditBalance, getCreditHistory } from "@/lib/candidate-credits";
+import { t } from "@/lib/i18n";
 import { HiringPaywall } from "./_components/HiringPaywall";
 import { HiringDashboard } from "./_components/HiringDashboard";
 
@@ -31,7 +32,6 @@ export default async function HiringPage({
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   if (!isManager) notFound();
 
-  const isHu = locale !== "en";
   const isAdmin = hasOrgRole(memberRole, "ORG_ADMIN");
 
   const sub = await getOrgSubscription(orgId);
@@ -44,7 +44,7 @@ export default async function HiringPage({
       <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M10 3L5 8l5 5" />
       </svg>
-      {isHu ? `Vissza · ${org.name}` : `Back · ${org.name}`}
+      {`${t("hiring.back", locale)} · ${org.name}`}
     </Link>
   );
 
@@ -53,7 +53,7 @@ export default async function HiringPage({
       <div className="min-h-dvh bg-cream">
         <main className="mx-auto w-full max-w-5xl px-4 py-10">
           {backLink}
-          <HiringPaywall orgId={orgId} isHu={isHu} variant="no-subscription" isAdmin={isAdmin} />
+          <HiringPaywall orgId={orgId} locale={locale} variant="no-subscription" isAdmin={isAdmin} />
         </main>
       </div>
     );
@@ -79,7 +79,7 @@ export default async function HiringPage({
           <div className="min-h-dvh bg-cream">
             <main className="mx-auto w-full max-w-5xl px-4 py-10">
               {backLink}
-              <HiringPaywall orgId={orgId} isHu={isHu} variant="addon" planTier={tier} isAdmin={isAdmin} />
+              <HiringPaywall orgId={orgId} locale={locale} variant="addon" planTier={tier} isAdmin={isAdmin} />
             </main>
           </div>
         );
@@ -168,7 +168,7 @@ export default async function HiringPage({
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {isHu ? `Vissza · ${org.name}` : `Back · ${org.name}`}
+          {`${t("hiring.back", locale)} · ${org.name}`}
         </Link>
 
         <HiringDashboard
@@ -176,7 +176,6 @@ export default async function HiringPage({
           orgName={org.name}
           teams={isAdmin ? teams : teams.filter((t) => managerTeamIds?.includes(t.id) ?? false)}
           invites={invites}
-          isHu={isHu}
           locale={locale}
           planTier={tier}
           creditBalance={creditBalance}

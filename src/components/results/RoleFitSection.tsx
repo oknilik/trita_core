@@ -1,4 +1,5 @@
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 interface RoleFitSectionProps {
   strongFit: string;
@@ -13,7 +14,7 @@ interface RoleFitSectionProps {
 const TIERS = [
   {
     key: "strong" as const,
-    label: { hu: "Jól illeszkedsz ide", en: "You fit well here" },
+    i18nKey: "content.roleFitStrong",
     bg: "bg-[#e8f2f0]",
     borderColor: "#3d6b5e",
     labelColor: "text-[#1e3d34]",
@@ -21,7 +22,7 @@ const TIERS = [
   },
   {
     key: "might" as const,
-    label: { hu: "Itt jöhet súrlódás", en: "Friction may arise here" },
+    i18nKey: "content.roleFitMaybe",
     bg: "bg-[#fdf5ee]",
     borderColor: "#c17f4a",
     labelColor: "text-[#8a5530]",
@@ -29,7 +30,7 @@ const TIERS = [
   },
   {
     key: "prep" as const,
-    label: { hu: "Felkészüléssel működhet", en: "Works with preparation" },
+    i18nKey: "content.roleFitPrep",
     bg: "bg-[#f2ede6]",
     borderColor: "#8a8a9a",
     labelColor: "text-[#8a8a9a]",
@@ -47,7 +48,6 @@ export function RoleFitSection({
   isUnlocked,
 }: RoleFitSectionProps) {
   const { locale } = useLocale();
-  const isHu = locale === "hu";
 
   if (!isUnlocked) return null;
 
@@ -63,7 +63,7 @@ export function RoleFitSection({
       <div className="mb-4 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
         <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
-          {isHu ? "Szerepkör-illeszkedés" : "Role fit"}
+          {t("results.roleFitEyebrow", locale)}
         </p>
       </div>
 
@@ -82,7 +82,7 @@ export function RoleFitSection({
               <p
                 className={`mb-1 text-[9px] font-bold uppercase tracking-wide ${tier.labelColor}`}
               >
-                {isHu ? tier.label.hu : tier.label.en}
+                {t(tier.i18nKey, locale)}
               </p>
               <p className="mb-2.5 text-[13px] leading-relaxed text-[#4a4a5e]">
                 {text}

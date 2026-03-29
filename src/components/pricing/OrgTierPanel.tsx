@@ -1,21 +1,7 @@
 import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { getOrgPricingPlans } from "@/lib/pricing";
 import { TierCard } from "./TierCard";
-
-const introText: Record<Locale, string> = {
-  hu: "Előfizetéses hozzáférés szervezeti szinten — több csapat, szerepkörök, candidate flow.",
-  en: "Subscription access at the organizational level — multiple teams, roles, candidate flow.",
-};
-
-const trialNote: Record<Locale, string> = {
-  hu: "Éves számlázásnál kedvezőbb havi díj. 14 napos próba kártyaadat nélkül.",
-  en: "Annual billing offers a lower monthly rate. 14-day trial, no card required.",
-};
-
-const ctaLabels: Record<Locale, { org: string; scale: string }> = {
-  hu: { org: "Elindítom", scale: "Kapcsolatfelvétel" },
-  en: { org: "Get started", scale: "Get in touch" },
-};
 
 export function OrgTierPanel({
   locale,
@@ -25,19 +11,18 @@ export function OrgTierPanel({
   isLoggedIn: boolean;
 }) {
   const plans = getOrgPricingPlans(locale);
-  const labels = ctaLabels[locale] ?? ctaLabels.hu;
 
   return (
     <div>
-      <p className="mb-6 text-sm text-ink-body">{introText[locale] ?? introText.hu}</p>
+      <p className="mb-6 text-sm text-ink-body">{t("pricing.orgIntro", locale)}</p>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {plans.map((plan) => (
           <TierCard
             key={plan.id}
             eyebrow={
               plan.isCustom
-                ? locale === "hu" ? "szervezet · egyedi" : "organization · custom"
-                : locale === "hu" ? "szervezet · előfizetés" : "organization · subscription"
+                ? t("pricing.orgEyebrowCustom", locale)
+                : t("pricing.orgEyebrowSub", locale)
             }
             name={plan.name}
             badge={plan.badge}
@@ -45,7 +30,7 @@ export function OrgTierPanel({
             priceSub={plan.perMonth}
             description={plan.description}
             features={plan.features}
-            ctaLabel={plan.isCustom ? labels.scale : labels.org}
+            ctaLabel={plan.isCustom ? t("pricing.orgCtaScale", locale) : t("pricing.orgCtaOrg", locale)}
             ctaHref={
               plan.isCustom
                 ? plan.ctaHref
@@ -58,7 +43,7 @@ export function OrgTierPanel({
           />
         ))}
       </div>
-      <p className="mt-4 text-xs text-muted">{trialNote[locale] ?? trialNote.hu}</p>
+      <p className="mt-4 text-xs text-muted">{t("pricing.orgTrialNote", locale)}</p>
     </div>
   );
 }

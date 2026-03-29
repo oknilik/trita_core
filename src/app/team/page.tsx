@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 
@@ -55,12 +56,12 @@ export default async function TeamListPage() {
             <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-gradient-to-tr from-purple-500/20 via-indigo-500/10 to-pink-500/10 blur-3xl" aria-hidden="true" />
             <div className="relative z-10">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
-                {isHu ? "HR & Csapat" : "HR & Team"}
+                {t("team.eyebrow", locale)}
               </p>
               <div className="mt-3 flex items-center gap-3">
                 <div className="h-1 w-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent md:text-4xl">
-                  {isHu ? "Csapataim" : "My Teams"}
+                  {t("team.title", locale)}
                 </h1>
               </div>
               <p className="mt-3 text-sm text-gray-600">
@@ -76,12 +77,10 @@ export default async function TeamListPage() {
         <FadeIn delay={0.05}>
           <section className="rounded-xl border border-gray-100 bg-white p-6 md:p-8">
             <h2 className="mb-1 text-lg font-semibold text-gray-900">
-              {isHu ? "Új csapat létrehozása" : "Create a new team"}
+              {t("team.createNew", locale)}
             </h2>
             <p className="mb-5 text-sm text-gray-500">
-              {isHu
-                ? "Adj nevet a csapatnak, majd add hozzá a tagokat emailcím alapján."
-                : "Give your team a name, then add members by their email address."}
+              {t("team.createNewDesc", locale)}
             </p>
             <TeamCreateForm locale={locale} />
           </section>
@@ -93,7 +92,7 @@ export default async function TeamListPage() {
             <div className="flex items-center gap-3">
               <div className="h-1 w-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
               <h2 className="text-lg font-semibold text-gray-900">
-                {isHu ? "Csapatok" : "Teams"}{" "}
+                {t("team.teamsLabel", locale)}{" "}
                 <span className="text-sm font-normal text-gray-400">({teams.length})</span>
               </h2>
             </div>
@@ -101,9 +100,7 @@ export default async function TeamListPage() {
             {teams.length === 0 && (
               <div className="rounded-xl border border-gray-100 bg-gray-50 p-10 text-center">
                 <p className="text-sm text-gray-400">
-                  {isHu
-                    ? "Még nincs csapatod. Hozz létre egyet fentebb!"
-                    : "No teams yet. Create one above!"}
+                  {t("team.noTeams", locale)}
                 </p>
               </div>
             )}
@@ -120,15 +117,15 @@ export default async function TeamListPage() {
                       {team.name}
                     </p>
                     <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600">
-                      {team._count.members} {isHu ? "tag" : team._count.members === 1 ? "member" : "members"}
+                      {team._count.members} {team._count.members === 1 ? t("team.memberTag", locale) : t("team.membersTag", locale)}
                     </span>
                   </div>
                   <div className="mt-3 flex items-center justify-between">
                     <p className="text-xs text-gray-400">
-                      {isHu ? "Létrehozva: " : "Created "}{team.createdAt.toLocaleDateString(dateLocale)}
+                      {t("team.createdPrefix", locale)}{team.createdAt.toLocaleDateString(dateLocale)}
                     </p>
                     <span className="text-xs font-semibold text-indigo-500 opacity-0 transition-opacity group-hover:opacity-100">
-                      {isHu ? "Megnyitás →" : "Open →"}
+                      {t("team.open", locale)}
                     </span>
                   </div>
                 </Link>

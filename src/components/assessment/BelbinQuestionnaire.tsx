@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { Locale } from "@/lib/i18n";
+import { t, tf, type Locale } from "@/lib/i18n";
 import { BELBIN_SECTIONS } from "@/lib/belbin-questions";
 import { calculateBelbinScores, getTopRoles } from "@/lib/belbin-scoring";
 import type { BelbinAnswers } from "@/lib/belbin-scoring";
@@ -18,28 +18,29 @@ function PointsRow({
   statement,
   points,
   remaining,
-  isHu,
+  locale,
   onChange,
 }: {
   statement: { index: number; hu: string; en: string };
   points: number;
   remaining: number;
-  isHu: boolean;
+  locale: Locale | string;
   onChange: (idx: number, val: number) => void;
 }) {
   const canIncrement = remaining > 0 || points > 0;
+  const resolvedLocale = (locale === "hu" ? "hu" : "en") as Locale;
 
   return (
     <div className="flex items-center gap-3 py-2">
       <div className="flex-1 text-sm leading-relaxed text-ink-body">
-        {isHu ? statement.hu : statement.en}
+        {locale === "hu" ? statement.hu : statement.en}
       </div>
       <div className="flex shrink-0 items-center gap-1.5">
         <button
           type="button"
           onClick={() => onChange(statement.index, Math.max(0, points - 1))}
           disabled={points === 0}
-          aria-label={isHu ? "Csökkent" : "Decrease"}
+          aria-label={t("belbin.decrease", resolvedLocale)}
           className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -57,7 +58,7 @@ function PointsRow({
           type="button"
           onClick={() => onChange(statement.index, points + 1)}
           disabled={remaining === 0}
-          aria-label={isHu ? "Növel" : "Increase"}
+          aria-label={t("belbin.increase", resolvedLocale)}
           className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -74,7 +75,7 @@ export function BelbinQuestionnaire({
   onComplete,
   onSkip,
 }: BelbinQuestionnaireProps) {
-  const isHu = locale === "hu";
+  const resolvedLocale = (locale === "hu" ? "hu" : "en") as Locale;
   const [currentGroup, setCurrentGroup] = useState(0);
   const [answers, setAnswers] = useState<BelbinAnswers>(() =>
     Object.fromEntries(
@@ -120,21 +121,17 @@ export function BelbinQuestionnaire({
     return (
       <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// belbin csapatszerep kérdőív" : "// belbin team role questionnaire"}
+          {t("belbin.eyebrow", resolvedLocale)}
         </p>
         <div>
           <h2 className="font-fraunces text-2xl text-ink">
-            {isHu ? "Ismerd meg csapatszerepeidet" : "Discover your team roles"}
+            {t("belbin.introTitle", resolvedLocale)}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-body">
-            {isHu
-              ? "Ez a kérdőív 7 szakaszból áll. Minden szakaszban 10 pontot kell elosztanod 8 állítás között — abból, hogy mennyi igaz rád a csapatmunkában."
-              : "This questionnaire has 7 sections. In each section, distribute 10 points across 8 statements — based on how much each applies to you in team work."}
+            {t("belbin.introBody1", resolvedLocale)}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ink-body">
-            {isHu
-              ? "Egy állítás kaphat 0-10 pontot. Minden szakasz összes pontja egyenlő 10-zel."
-              : "A statement can receive 0–10 points. All points in each section must add up to 10."}
+            {t("belbin.introBody2", resolvedLocale)}
           </p>
         </div>
         <div className="flex gap-3">
@@ -143,7 +140,7 @@ export function BelbinQuestionnaire({
             onClick={() => setShowIntro(false)}
             className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
           >
-            {isHu ? "Elkezdem →" : "Start →"}
+            {t("belbin.start", resolvedLocale)}
           </button>
           {onSkip && (
             <button
@@ -151,7 +148,7 @@ export function BelbinQuestionnaire({
               onClick={onSkip}
               className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
-              {isHu ? "Kihagyom" : "Skip"}
+              {t("belbin.skip", resolvedLocale)}
             </button>
           )}
         </div>
@@ -177,10 +174,10 @@ export function BelbinQuestionnaire({
       {/* Heading */}
       <div>
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? `${currentGroup + 1}. szakasz` : `Section ${currentGroup + 1}`}
+          {tf("belbin.sectionLabel", resolvedLocale, { n: currentGroup + 1 })}
         </p>
         <h3 className="mt-1 font-fraunces text-xl text-ink">
-          {isHu ? section.heading.hu : section.heading.en}
+          {locale === "hu" ? section.heading.hu : section.heading.en}
         </h3>
       </div>
 
@@ -197,12 +194,12 @@ export function BelbinQuestionnaire({
             <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 8l3.5 3.5L13 5" />
             </svg>
-            {isHu ? "Minden pont elosztva" : "All points distributed"}
+            {t("belbin.allDistributed", resolvedLocale)}
           </>
         ) : (
-          isHu
-            ? `${remaining} pont maradt a elosztáshoz`
-            : `${remaining} point${remaining !== 1 ? "s" : ""} remaining`
+          remaining === 1
+            ? t("belbin.pointRemainingOne", resolvedLocale)
+            : tf("belbin.pointsRemaining", resolvedLocale, { n: remaining })
         )}
       </div>
 
@@ -214,7 +211,7 @@ export function BelbinQuestionnaire({
             statement={stmt}
             points={groupAnswers[stmt.index] ?? 0}
             remaining={remaining}
-            isHu={isHu}
+            locale={locale}
             onChange={handleChange}
           />
         ))}
@@ -231,7 +228,7 @@ export function BelbinQuestionnaire({
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {isHu ? "Vissza" : "Back"}
+          {t("belbin.back", resolvedLocale)}
         </button>
 
         <button
@@ -241,8 +238,8 @@ export function BelbinQuestionnaire({
           className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
         >
           {currentGroup < BELBIN_SECTIONS.length - 1
-            ? (isHu ? "Következő →" : "Next →")
-            : (isHu ? "Befejezem ✓" : "Finish ✓")}
+            ? t("belbin.next", resolvedLocale)
+            : t("belbin.finish", resolvedLocale)}
         </button>
       </div>
     </div>

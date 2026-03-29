@@ -270,7 +270,7 @@ function SignUpContent() {
           {/* Intent selector */}
           <div className="mb-5">
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[1px] text-[#8a8a9a]">
-              {locale === "hu" ? "Mire használod a triát?" : "What will you use trita for?"}
+              {t("auth.intentQuestion", locale)}
             </p>
             <IntentSelector value={intent} onChange={setIntent} />
           </div>
