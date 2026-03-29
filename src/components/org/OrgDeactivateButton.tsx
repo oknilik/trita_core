@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface OrgDeactivateButtonProps {
   orgId: string;
@@ -10,7 +12,7 @@ interface OrgDeactivateButtonProps {
 
 export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps) {
   const router = useRouter();
-  const isHu = locale !== "en";
+  const loc = locale as Locale;
   const [confirm, setConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,12 +27,12 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
         body: JSON.stringify({ status: "INACTIVE" }),
       });
       if (!res.ok) {
-        setError(isHu ? "Hiba történt." : "Something went wrong.");
+        setError(t("org.actions.deactivateError", loc));
         return;
       }
       router.push("/org/suspended");
     } catch {
-      setError(isHu ? "Hálózati hiba." : "Network error.");
+      setError(t("org.actions.deactivateNetworkError", loc));
     } finally {
       setLoading(false);
     }
@@ -43,7 +45,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
         onClick={() => setConfirm(true)}
         className="min-h-[44px] rounded-lg border border-rose-300 bg-white px-5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
       >
-        {isHu ? "Szervezet deaktiválása" : "Deactivate organization"}
+        {t("org.actions.deactivateButton", loc)}
       </button>
     );
   }
@@ -51,7 +53,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm font-semibold text-rose-800">
-        {isHu ? "Biztosan deaktiválod a szervezetet?" : "Are you sure you want to deactivate?"}
+        {t("org.actions.deactivateConfirm", loc)}
       </p>
       <div className="flex gap-2">
         <button
@@ -60,14 +62,14 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
           disabled={loading}
           className="min-h-[44px] rounded-lg bg-rose-600 px-5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
         >
-          {loading ? "..." : isHu ? "Igen, deaktiválás" : "Yes, deactivate"}
+          {loading ? "..." : t("org.actions.deactivateYes", loc)}
         </button>
         <button
           type="button"
           onClick={() => setConfirm(false)}
           className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
         >
-          {isHu ? "Mégse" : "Cancel"}
+          {t("org.actions.deactivateCancel", loc)}
         </button>
       </div>
       {error && <p className="text-xs text-rose-600">{error}</p>}

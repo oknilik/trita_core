@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface NextStepBannerProps {
   orgId: string;
@@ -73,6 +75,7 @@ export function NextStepBanner({
   hexacoAvg,
   isHu,
 }: NextStepBannerProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   const state = getStepState({
     orgId,
     memberCount,
@@ -86,35 +89,23 @@ export function NextStepBanner({
 
   const cfg = STEP_CONFIG[state];
 
-  const title = isHu
-    ? {
-        invite_members: "Hívj meg legalább 3 tagot a szervezetbe",
-        create_campaign: "Hozz létre egy kampányt",
-        await_completions: `Várakozás kitöltésekre · ${completedMemberCount}/3`,
-      }[state]
-    : {
-        invite_members: "Invite at least 3 members to your org",
-        create_campaign: "Create your first campaign",
-        await_completions: `Waiting for completions · ${completedMemberCount}/3`,
-      }[state];
+  const title = {
+    invite_members: t("org.nextStep.inviteTitle", loc),
+    create_campaign: t("org.nextStep.campaignTitle", loc),
+    await_completions: tf("org.nextStep.awaitTitle", loc, { completed: completedMemberCount }),
+  }[state];
 
-  const sub = isHu
-    ? {
-        invite_members: "Minimum 3 kitöltés szükséges a szervezeti profil megjelenítéséhez.",
-        create_campaign: "Indíts egy 360° kampányt, hogy a tagok megkezdhessék a kitöltést.",
-        await_completions: "A szervezeti profil 3 befejezett értékelés után jelenik meg.",
-      }[state]
-    : {
-        invite_members: "At least 3 completions are needed to display the org personality profile.",
-        create_campaign: "Start a 360° campaign so members can begin their assessments.",
-        await_completions: "The org personality profile appears after 3 completed assessments.",
-      }[state];
+  const sub = {
+    invite_members: t("org.nextStep.inviteSub", loc),
+    create_campaign: t("org.nextStep.campaignSub", loc),
+    await_completions: t("org.nextStep.awaitSub", loc),
+  }[state];
 
   const cta =
     state === "invite_members"
-      ? { label: isHu ? "Tagok →" : "Members →", href: `/org/${orgId}?tab=members` }
+      ? { label: t("org.nextStep.inviteCta", loc), href: `/org/${orgId}?tab=members` }
       : state === "create_campaign"
-      ? { label: isHu ? "Kampány →" : "Campaign →", href: `/org/${orgId}/campaigns/new` }
+      ? { label: t("org.nextStep.campaignCta", loc), href: `/org/${orgId}/campaigns/new` }
       : null;
 
   return (

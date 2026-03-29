@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
@@ -54,12 +56,19 @@ interface DynamicsDetailPanelProps {
   member: IntelligenceMember;
   edges: DynamicsEdge[];
   members: IntelligenceMember[];
+  loc: Locale;
 }
 
-function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProps) {
+function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPanelProps) {
   const memberMap = Object.fromEntries(members.map((m) => [m.id, m]));
   const outgoing = edges.filter((e) => e.from === member.id);
   const incoming = edges.filter((e) => e.to === member.id);
+
+  const edgeLabelKey: Record<DynamicsEdge["type"], string> = {
+    good: "teamComp.edgeGood",
+    tension: "teamComp.edgeTension",
+    neutral: "teamComp.edgeNeutral",
+  };
 
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
@@ -78,7 +87,7 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
       {outgoing.length > 0 && (
         <div>
           <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-bronze">
-            // kapcsolatok
+            {t("teamComp.connectionsEyebrow", loc)}
           </p>
           <div className="flex flex-col gap-1">
             {outgoing.map((e, i) => {
@@ -92,11 +101,7 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
                   />
                   <span className="text-[11px] text-ink-body">{target.name}</span>
                   <span className="ml-auto text-[10px] text-muted">
-                    {e.type === "good"
-                      ? "jó együttmű."
-                      : e.type === "tension"
-                      ? "feszültség"
-                      : "semleges"}
+                    {t(edgeLabelKey[e.type], loc)}
                   </span>
                 </div>
               );
@@ -106,7 +111,7 @@ function DynamicsDetailPanel({ member, edges, members }: DynamicsDetailPanelProp
       )}
 
       <div className="border-t border-sand pt-2 text-[11px] text-ink-body">
-        <span className="font-semibold text-ink">{incoming.length}</span> bejövő kapcsolat
+        <span className="font-semibold text-ink">{incoming.length}</span> {t("teamComp.incomingConnections", loc)}
       </div>
     </div>
   );
@@ -120,17 +125,16 @@ interface DynamicsMapProps {
 
 export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   const [selected, setSelected] = useState<string | null>(null);
+  const loc: Locale = isHu ? "hu" : "en";
 
   if (edges.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sand bg-[#f8f7f4] py-16 text-center">
         <p className="text-[14px] font-semibold text-ink">
-          {isHu ? "Még nincs kapcsolati adat" : "No dynamics data yet"}
+          {t("teamComp.noDynamicsTitle", loc)}
         </p>
         <p className="mt-1 text-[12px] text-muted">
-          {isHu
-            ? "Indíts szakmai visszajelzési kört a dynamics map feltöltéséhez"
-            : "Run a peer feedback round to populate the dynamics map"}
+          {t("teamComp.noDynamicsDesc", loc)}
         </p>
       </div>
     );
@@ -225,17 +229,20 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
         {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-4">
-          {(["good", "neutral", "tension"] as DynamicsEdge["type"][]).map((t) => (
-            <div key={t} className="flex items-center gap-2">
-              <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[t] }} />
-              <span className="text-[11px] text-ink-body">
-                {t === "good" ? "Jó együttmű." : t === "neutral" ? "Semleges" : "Feszültség"}
-              </span>
-            </div>
-          ))}
+          {(["good", "neutral", "tension"] as DynamicsEdge["type"][]).map((edgeType) => {
+            const legendKey = edgeType === "good" ? "teamComp.legendGood" : edgeType === "neutral" ? "teamComp.legendNeutral" : "teamComp.legendTension";
+            return (
+              <div key={edgeType} className="flex items-center gap-2">
+                <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[edgeType] }} />
+                <span className="text-[11px] text-ink-body">
+                  {t(legendKey, loc)}
+                </span>
+              </div>
+            );
+          })}
           <div className="ml-auto flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-[#fce7d6] ring-1 ring-sage" />
-            <span className="text-[11px] text-ink-body">Hub személy</span>
+            <span className="text-[11px] text-ink-body">{t("teamComp.hubPerson", loc)}</span>
           </div>
         </div>
       </div>
@@ -247,12 +254,13 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             member={members.find((m) => m.id === selected)!}
             edges={edges}
             members={members}
+            loc={loc}
           />
         ) : (
           <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
             <p className="text-[12px] text-muted">
-              Kattints egy személyre
-              <br />a kapcsolatai megtekintéséhez
+              {t("teamComp.clickPerson", loc)}
+              <br />{t("teamComp.clickPersonConnections", loc)}
             </p>
           </div>
         )}

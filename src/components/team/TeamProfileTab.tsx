@@ -1,5 +1,7 @@
 "use client";
 
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { TeamHeatmap } from "@/components/manager/TeamHeatmap";
 import { TeamInsights } from "@/components/manager/TeamInsights";
 import type { TeamPageData } from "@/lib/team-stats";
@@ -17,6 +19,7 @@ export function TeamProfileTab({
   locale,
   isHu,
 }: TeamProfileTabProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   const hasData =
     heatmapRows.length > 0 &&
     heatmapRows.some((r) =>
@@ -29,12 +32,8 @@ export function TeamProfileTab({
         <div className="rounded-2xl border border-sand bg-white p-10 text-center shadow-sm">
           <p className="text-sm text-ink-body">
             {heatmapRows.length === 0
-              ? isHu
-                ? "Még nincs csapattag. Hívj meg valakit a Tagok fülön!"
-                : "No team members yet. Invite someone on the Members tab!"
-              : isHu
-              ? "Még egyik csapattag sem töltötte ki az assessmentet."
-              : "No team members have completed an assessment yet."}
+              ? t("teamComp.noMembersProfile", loc)
+              : t("teamComp.noAssessmentProfile", loc)}
           </p>
         </div>
       </div>
@@ -52,15 +51,13 @@ export function TeamProfileTab({
       {/* Heatmap */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8 overflow-x-auto">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-          {isHu ? "// személyiségprofil" : "// personality profile"}
+          {t("teamComp.personalityProfileEyebrow", loc)}
         </p>
         <h2 className="font-fraunces text-xl text-ink mb-1">
-          {isHu ? "Csapat személyiségprofil" : "Team Personality Heatmap"}
+          {t("teamComp.teamHeatmapTitle", loc)}
         </h2>
         <p className="mb-6 text-sm text-ink-body/70">
-          {isHu
-            ? "Minden oszlop egy HEXACO személyiségdimenziót mutat — minél mélyebb a szín, annál magasabb a pontszám."
-            : "Each column represents a HEXACO personality dimension — deeper color means a higher score."}
+          {t("teamComp.heatmapDesc", loc)}
         </p>
         <TeamHeatmap rows={heatmapRows} dims={dims} isHu={isHu} />
       </section>
@@ -71,10 +68,10 @@ export function TeamProfileTab({
       ) && (
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// elemzés" : "// analysis"}
+            {t("teamComp.analysisEyebrow", loc)}
           </p>
           <h2 className="font-fraunces text-xl text-ink mb-5">
-            {isHu ? "Csapatelemzés" : "Team Analysis"}
+            {t("teamComp.teamAnalysis", loc)}
           </h2>
           <TeamInsights rows={heatmapRows} dims={dims} isHu={isHu} />
         </section>

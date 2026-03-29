@@ -8,6 +8,8 @@ function memberAvatar(_seed: string) {
   return "/avatars/avatar-1.png";
 }
 import { useRouter } from "next/navigation";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
 
 interface CampaignCardProps {
@@ -61,6 +63,7 @@ export function CampaignCard({
   variant,
 }: CampaignCardProps) {
   const router = useRouter();
+  const loc: Locale = isHu ? "hu" : "en";
   const [reminding, setReminding] = useState(false);
   const [remindResult, setRemindResult] = useState<string | null>(null);
 
@@ -86,16 +89,20 @@ export function CampaignCard({
       if (res.ok) {
         const data = await res.json();
         setRemindResult(
-          isHu
-            ? `${data.remindedCount} személynek küldtünk emlékeztetőt`
-            : `Reminded ${data.remindedCount} participant${data.remindedCount !== 1 ? "s" : ""}`
+          tf(
+            data.remindedCount !== 1
+              ? "org.card.remindedResultPlural"
+              : "org.card.remindedResult",
+            loc,
+            { count: data.remindedCount }
+          )
         );
         router.refresh();
       } else {
-        setRemindResult(isHu ? "Hiba történt" : "Something went wrong");
+        setRemindResult(t("org.card.remindError", loc));
       }
     } catch {
-      setRemindResult(isHu ? "Hálózati hiba" : "Network error");
+      setRemindResult(t("org.card.remindNetworkError", loc));
     } finally {
       setReminding(false);
     }
@@ -113,7 +120,7 @@ export function CampaignCard({
       <div className="flex items-center justify-between gap-3 py-3 border-b border-sand last:border-0">
         <div className="min-w-0 flex items-center gap-2 flex-1">
           <span className="shrink-0 rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
-            {isHu ? "Lezárt" : "Closed"}
+            {t("org.card.closed", loc)}
           </span>
           <p className="truncate text-sm font-semibold text-ink">
             {campaign.name}
@@ -121,13 +128,13 @@ export function CampaignCard({
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <span className="text-xs text-muted tabular-nums">
-            {completionPct}% {isHu ? "teljes" : "complete"}
+            {completionPct}% {t("org.card.complete", loc)}
           </span>
           <Link
             href={`/org/${orgId}/campaigns/${campaign.id}`}
             className="text-xs font-semibold text-bronze hover:underline whitespace-nowrap"
           >
-            {isHu ? "Összesítő →" : "Summary →"}
+            {t("org.card.summaryLink", loc)}
           </Link>
         </div>
       </div>
@@ -144,7 +151,7 @@ export function CampaignCard({
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
-                {isHu ? "Vázlat" : "Draft"}
+                {t("org.card.draft", loc)}
               </span>
             </div>
             <p className="font-semibold text-ink text-sm">{campaign.name}</p>
@@ -157,17 +164,13 @@ export function CampaignCard({
         </div>
         <p className="mb-3 text-xs text-muted">
           {campaign.totalCount}{" "}
-          {isHu
-            ? "résztvevő hozzáadva"
-            : campaign.totalCount === 1
-              ? "participant added"
-              : "participants added"}
+          {t(campaign.totalCount === 1 ? "org.card.participantsAdded" : "org.card.participantsAddedPlural", loc)}
         </p>
         <Link
           href={`/org/${orgId}/campaigns/${campaign.id}`}
           className="text-xs font-semibold text-bronze hover:underline"
         >
-          {isHu ? "Szerkesztés →" : "Edit →"}
+          {t("org.card.editLink", loc)}
         </Link>
       </div>
     );
@@ -188,7 +191,7 @@ export function CampaignCard({
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
             <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-              {isHu ? "Aktív" : "Active"}
+              {t("org.card.active", loc)}
             </span>
           </div>
           <Link
@@ -209,33 +212,29 @@ export function CampaignCard({
 
       {/* Meta line */}
       <p className="mb-4 text-xs text-muted">
-        {isHu ? "Indítva:" : "Started:"} {dateStr}
+        {t("org.card.started", loc)} {dateStr}
         {" · "}
         {campaign.totalCount}{" "}
-        {isHu
-          ? "résztvevő"
-          : campaign.totalCount === 1
-            ? "participant"
-            : "participants"}
+        {t(campaign.totalCount === 1 ? "org.card.participantSingular" : "org.card.participantPlural", loc)}
       </p>
 
       {/* Progress bars */}
       {campaign.totalCount > 0 && (
         <div className="mb-5 flex flex-col gap-2.5">
           <ProgressBar
-            label={isHu ? "Önértékelés kész" : "Self-assessment done"}
+            label={t("org.card.selfDone", loc)}
             count={campaign.selfDoneCount}
             total={campaign.totalCount}
             fillColor="#3d6b5e"
           />
           <ProgressBar
-            label={isHu ? "Observer kész" : "Observer done"}
+            label={t("org.card.observerDone", loc)}
             count={campaign.observerDoneCount}
             total={campaign.totalCount}
             fillColor="#059669"
           />
           <ProgressBar
-            label={isHu ? "Teljes befejezés" : "Fully complete"}
+            label={t("org.card.fullyComplete", loc)}
             count={fullyDoneCount}
             total={campaign.totalCount}
             fillColor="#6366F1"
@@ -275,9 +274,9 @@ export function CampaignCard({
             </div>
           </div>
           <p className="text-xs text-muted">
-            {fullyDoneCount} {isHu ? "teljes" : "complete"} ·{" "}
-            {inProgressCount} {isHu ? "folyamatban" : "in progress"} ·{" "}
-            {notStartedCount} {isHu ? "nem kezdte" : "not started"}
+            {fullyDoneCount} {t("org.card.fullyDoneLabel", loc)} ·{" "}
+            {inProgressCount} {t("org.card.inProgress", loc)} ·{" "}
+            {notStartedCount} {t("org.card.notStarted", loc)}
           </p>
         </div>
       )}
@@ -288,7 +287,7 @@ export function CampaignCard({
           href={`/org/${orgId}/campaigns/${campaign.id}`}
           className="text-sm font-semibold text-bronze hover:underline"
         >
-          {isHu ? "Kampány nézete →" : "View campaign →"}
+          {t("org.card.viewLink", loc)}
         </Link>
 
         {isManager && notStartedCount > 0 && (
@@ -299,10 +298,8 @@ export function CampaignCard({
             className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
           >
             {reminding
-              ? isHu ? "Küldés…" : "Sending…"
-              : isHu
-                ? `Emlékeztető (${notStartedCount})`
-                : `Remind (${notStartedCount})`}
+              ? t("org.card.sending", loc)
+              : tf("org.card.remindButton", loc, { count: notStartedCount })}
           </button>
         )}
 

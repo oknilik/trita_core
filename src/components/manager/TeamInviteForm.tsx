@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
 
 interface TeamInviteFormProps {
   teamId: string;
@@ -10,7 +10,6 @@ interface TeamInviteFormProps {
 }
 
 export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
-  const isHu = locale !== "en";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,16 +32,16 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
       if (!res.ok) {
         const code = data.error ?? "ERROR";
         const messages: Record<string, string> = {
-          ALREADY_MEMBER: isHu ? "Ez a személy már tagja a csapatnak (vagy meghívó küldve)." : "This person is already a member or has a pending invite.",
+          ALREADY_MEMBER: t("manager.teamInvite.alreadyMember", locale),
         };
-        setError(messages[code] ?? (isHu ? "Hiba. Próbáld újra." : "Something went wrong."));
+        setError(messages[code] ?? t("manager.teamInvite.error", locale));
         return;
       }
       setSuccess(data.pending ? "pending" : "added");
       setEmail("");
       router.refresh();
     } catch {
-      setError(isHu ? "Hiba. Próbáld újra." : "Something went wrong.");
+      setError(t("manager.teamInvite.error", locale));
     } finally {
       setLoading(false);
     }
@@ -53,13 +52,13 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
         <div className="flex flex-1 flex-col gap-2">
           <label className="text-sm font-semibold text-ink">
-            {isHu ? "Emailcím" : "Email address"}
+            {t("manager.teamInvite.emailLabel", locale)}
           </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={isHu ? "kolléga@cég.hu" : "colleague@company.com"}
+            placeholder={t("manager.teamInvite.emailPlaceholder", locale)}
             className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             disabled={loading}
           />
@@ -70,21 +69,19 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
           className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
         >
           {loading
-            ? isHu ? "Hozzáadás…" : "Adding…"
-            : isHu ? "Hozzáadás" : "Add member"}
+            ? t("manager.teamInvite.adding", locale)
+            : t("manager.teamInvite.add", locale)}
         </button>
       </div>
       {error && <p className="text-xs text-rose-600">{error}</p>}
       {success === "added" && (
         <p className="text-xs text-green-600">
-          {isHu ? "Tag sikeresen hozzáadva." : "Member added successfully."}
+          {t("manager.teamInvite.memberAdded", locale)}
         </p>
       )}
       {success === "pending" && (
         <p className="text-xs text-amber-600">
-          {isHu
-            ? "Meghívó elküldve. Automatikusan csatlakozik, ha regisztrál."
-            : "Invite sent. They'll join automatically once they register."}
+          {t("manager.teamInvite.inviteSent", locale)}
         </p>
       )}
     </form>

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 const ROLES = ["ORG_ADMIN", "ORG_MANAGER", "ORG_MEMBER"] as const;
 type OrgRole = typeof ROLES[number];
@@ -14,10 +16,10 @@ interface OrgMemberRoleEditorProps {
   locale: string;
 }
 
-function roleLabel(role: string, isHu: boolean): string {
-  if (role === "ORG_ADMIN") return "Admin";
-  if (role === "ORG_MANAGER") return isHu ? "Menedzser" : "Manager";
-  return isHu ? "Tag" : "Member";
+function roleLabel(role: string, loc: Locale): string {
+  if (role === "ORG_ADMIN") return t("org.members.roleAdmin", loc);
+  if (role === "ORG_MANAGER") return t("org.members.roleManager", loc);
+  return t("org.members.roleMember", loc);
 }
 
 export function OrgMemberRoleEditor({
@@ -28,7 +30,7 @@ export function OrgMemberRoleEditor({
   locale,
 }: OrgMemberRoleEditorProps) {
   const router = useRouter();
-  const isHu = locale !== "en";
+  const loc = locale as Locale;
   const [role, setRole] = useState<OrgRole>(
     ROLES.includes(currentRole as OrgRole) ? (currentRole as OrgRole) : "ORG_MEMBER"
   );
@@ -48,16 +50,16 @@ export function OrgMemberRoleEditor({
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         if (data.error === "LAST_ADMIN") {
-          setError(isHu ? "Nem módosítható — utolsó admin." : "Cannot change — last admin.");
+          setError(t("org.forms.lastAdminError", loc));
         } else {
-          setError(isHu ? "Hiba történt." : "Something went wrong.");
+          setError(t("org.forms.roleChangeError", loc));
         }
         return;
       }
       setRole(newRole);
       router.refresh();
     } catch {
-      setError(isHu ? "Hálózati hiba." : "Network error.");
+      setError(t("org.forms.roleNetworkError", loc));
     } finally {
       setLoading(false);
     }
@@ -70,7 +72,7 @@ export function OrgMemberRoleEditor({
         role === "ORG_MANAGER" ? "bg-ink/10 text-ink" :
         "bg-sand text-ink-body"
       }`}>
-        {roleLabel(role, isHu)}
+        {roleLabel(role, loc)}
       </span>
     );
   }
@@ -84,14 +86,12 @@ export function OrgMemberRoleEditor({
         className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
       >
         {ROLES.map((r) => (
-          <option key={r} value={r}>{roleLabel(r, isHu)}</option>
+          <option key={r} value={r}>{roleLabel(r, loc)}</option>
         ))}
       </select>
       {role === "ORG_MANAGER" && (
         <p className="text-[10px] text-muted">
-          {isHu
-            ? "Csapat jogosultságok külön állíthatók."
-            : "Team permissions set per team."}
+          {t("org.forms.teamPermissionsHint", loc)}
         </p>
       )}
       {error && <p className="text-xs text-rose-600">{error}</p>}

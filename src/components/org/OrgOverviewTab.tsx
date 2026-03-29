@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { SerializedTeam, CampaignWithStats } from "@/lib/org-stats";
 import { NextStepBanner } from "./NextStepBanner";
 import { RemindPendingButton } from "./RemindPendingButton";
@@ -56,6 +58,7 @@ export function OrgOverviewTab({
   isHu,
   isManager,
 }: OrgOverviewTabProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   const activeCampaigns = campaigns.filter((c) => c.status === "ACTIVE");
   const dims = ["H", "E", "X", "A", "C", "O"];
 
@@ -98,17 +101,13 @@ export function OrgOverviewTab({
               <div>
                 <p className="text-sm font-semibold text-emerald-800">
                   {activeCampaigns.length === 1
-                    ? isHu
-                      ? `Aktív kampány: ${activeCampaigns[0].name}`
-                      : `Active campaign: ${activeCampaigns[0].name}`
-                    : isHu
-                      ? `${activeCampaigns.length} aktív kampány folyamatban`
-                      : `${activeCampaigns.length} active campaigns in progress`}
+                    ? tf("org.overview.activeCampaignSingle", loc, { name: activeCampaigns[0].name })
+                    : tf("org.overview.activeCampaignMultiple", loc, { count: activeCampaigns.length })}
                 </p>
                 {activeCampaigns.length === 1 && (
                   <p className="mt-0.5 text-xs text-emerald-700">
                     {activeCampaigns[0].selfDoneCount}/{activeCampaigns[0].totalCount}{" "}
-                    {isHu ? "önértékelés kész" : "self-assessments done"}
+                    {t("org.overview.selfAssessmentsDone", loc)}
                   </p>
                 )}
               </div>
@@ -117,7 +116,7 @@ export function OrgOverviewTab({
               href={`/org/${orgId}?tab=campaigns`}
               className="shrink-0 text-xs font-semibold text-emerald-700 hover:underline whitespace-nowrap"
             >
-              {isHu ? "Kampányok →" : "Campaigns →"}
+              {t("org.overview.campaignsLink", loc)}
             </Link>
           </div>
         </div>
@@ -128,10 +127,10 @@ export function OrgOverviewTab({
         {/* Left: Szervezeti személyiség */}
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// szervezeti profil" : "// org profile"}
+            {t("org.overview.profileEyebrow", loc)}
           </p>
           <h3 className="mb-4 font-fraunces text-xl text-ink">
-            {isHu ? "Szervezeti személyiség" : "Org personality"}
+            {t("org.overview.profileTitle", loc)}
           </h3>
 
           {!hexacoAvg ? (
@@ -139,9 +138,7 @@ export function OrgOverviewTab({
               <div>
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <p className="text-[13px] font-semibold text-ink">
-                    {isHu
-                      ? `${completedMemberCount} / 3 kitöltés`
-                      : `${completedMemberCount} / 3 completions`}
+                    {tf("org.overview.completionProgress", loc, { count: completedMemberCount })}
                   </p>
                   <span className="font-mono text-[10px] text-muted">
                     {Math.round((completedMemberCount / 3) * 100)}%
@@ -154,9 +151,7 @@ export function OrgOverviewTab({
                   />
                 </div>
                 <p className="mt-2 text-[11px] text-ink-body">
-                  {isHu
-                    ? "A szervezeti személyiségprofil 3 befejezett értékelés után jelenik meg."
-                    : "The org personality profile appears after 3 completed assessments."}
+                  {t("org.overview.profileHint", loc)}
                 </p>
               </div>
               {isManager && (
@@ -208,10 +203,10 @@ export function OrgOverviewTab({
         {/* Right: Csapatok */}
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// csapatok" : "// teams"}
+            {t("org.overview.teamsEyebrow", loc)}
           </p>
           <h3 className="mb-4 font-fraunces text-xl text-ink">
-            {isHu ? "Csapatok" : "Teams"}
+            {t("org.overview.teamsTitle", loc)}
             {teams.length > 0 && (
               <span className="ml-2 font-sans text-sm font-normal text-ink-body/50">
                 ({teams.length})
@@ -222,9 +217,7 @@ export function OrgOverviewTab({
           {teams.length === 0 ? (
             <div className="rounded-xl border border-sand bg-cream p-6 text-center">
               <p className="text-sm text-ink-body/60">
-                {isHu
-                  ? "Még nincs csapat. Hozz létre egyet a Csapatok fülön!"
-                  : "No teams yet. Create one in the Teams tab!"}
+                {t("org.overview.noTeams", loc)}
               </p>
             </div>
           ) : (
@@ -241,7 +234,7 @@ export function OrgOverviewTab({
                     </p>
                     <p className="text-xs text-ink-body/60">
                       {team._count.members}{" "}
-                      {isHu ? "tag" : team._count.members === 1 ? "member" : "members"}
+                      {t(team._count.members === 1 ? "org.overview.teamMemberCount" : "org.overview.teamMembersCount", loc)}
                     </p>
                   </div>
                   <span className="font-mono text-xs text-bronze opacity-0 transition-opacity group-hover:opacity-100">

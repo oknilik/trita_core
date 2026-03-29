@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 type OrgRole = "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER";
 
@@ -13,7 +15,7 @@ interface OrgInviteFormProps {
 
 export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgInviteFormProps) {
   const router = useRouter();
-  const isHu = locale !== "en";
+  const loc = locale as Locale;
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<OrgRole>("ORG_MEMBER");
   const [loading, setLoading] = useState(false);
@@ -37,13 +39,13 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
 
       if (!res.ok) {
         if (data.error === "ALREADY_MEMBER") {
-          setError(isHu ? "Ez az emailcím már tag." : "This email is already a member.");
+          setError(t("org.forms.alreadyMember", loc));
         } else if (data.error === "ALREADY_IN_ORG") {
-          setError(isHu ? "Ez a felhasználó már tagja egy szervezetnek." : "This user already belongs to an organization.");
+          setError(t("org.forms.alreadyInOrgInvite", loc));
         } else if (data.error === "SELF_INVITE") {
-          setError(isHu ? "Saját magadat nem hívhatod meg." : "You cannot invite yourself.");
+          setError(t("org.forms.selfInvite", loc));
         } else {
-          setError(isHu ? "Hiba történt. Próbáld újra." : "Something went wrong. Please try again.");
+          setError(t("org.forms.inviteGenericError", loc));
         }
         return;
       }
@@ -52,7 +54,7 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
       setEmail("");
       router.refresh();
     } catch {
-      setError(isHu ? "Hálózati hiba. Próbáld újra." : "Network error. Please try again.");
+      setError(t("org.forms.inviteNetworkError", loc));
     } finally {
       setLoading(false);
     }
@@ -62,26 +64,26 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
     <div className="flex flex-col gap-3">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <label className="flex flex-1 flex-col gap-2 text-sm font-semibold text-ink">
-          {isHu ? "Email cím" : "Email address"}
+          {t("org.forms.emailLabel", loc)}
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={isHu ? "kolléga@cég.hu" : "colleague@company.com"}
+            placeholder={t("org.forms.emailPlaceholder", loc)}
             required
             className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
           />
         </label>
         {canInviteManager && (
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            {isHu ? "Szerepkör" : "Role"}
+            {t("org.forms.roleLabel", loc)}
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as OrgRole)}
               className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink focus:border-sage focus:outline-none"
             >
-              <option value="ORG_MEMBER">{isHu ? "Tag" : "Member"}</option>
-              <option value="ORG_MANAGER">{isHu ? "Menedzser" : "Manager"}</option>
+              <option value="ORG_MEMBER">{t("org.forms.roleMember", loc)}</option>
+              <option value="ORG_MANAGER">{t("org.forms.roleManager", loc)}</option>
               <option value="ORG_ADMIN">Admin</option>
             </select>
           </label>
@@ -92,21 +94,19 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
           className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
         >
           {loading
-            ? isHu ? "Meghívás..." : "Inviting..."
-            : isHu ? "Meghívás" : "Invite"}
+            ? t("org.forms.inviteLoading", loc)
+            : t("org.forms.inviteButton", loc)}
         </button>
       </form>
 
       {result === "success" && (
         <p className="text-sm text-green-600">
-          {isHu ? "Tag hozzáadva!" : "Member added!"}
+          {t("org.forms.memberAdded", loc)}
         </p>
       )}
       {result === "pending" && (
         <p className="text-sm text-amber-600">
-          {isHu
-            ? "Meghívó elküldve — amint regisztrálnak, automatikusan csatlakoznak."
-            : "Invite sent — they'll join automatically once they register."}
+          {t("org.forms.inviteSent", loc)}
         </p>
       )}
       {error && <p className="text-sm text-rose-600">{error}</p>}

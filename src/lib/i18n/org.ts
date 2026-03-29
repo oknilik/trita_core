@@ -389,6 +389,235 @@ export const orgTranslations = {
       hexacoC: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
       hexacoO: { hu: "Nyitottság", en: "Openness" },
     },
+
+    // ── Shell / tabs ───────────────────────────────────────────────────────
+    shell: {
+      tabOverview: { hu: "Áttekintés", en: "Overview" },
+      tabCampaigns: { hu: "Kampányok", en: "Campaigns" },
+      tabTeams: { hu: "Csapatok", en: "Teams" },
+      tabMembers: { hu: "Tagok", en: "Members" },
+    },
+
+    // ── Overview tab ─────────────────────────────────────────────────────
+    overview: {
+      activeCampaignSingle: { hu: "Aktív kampány: {name}", en: "Active campaign: {name}" },
+      activeCampaignMultiple: { hu: "{count} aktív kampány folyamatban", en: "{count} active campaigns in progress" },
+      selfAssessmentsDone: { hu: "önértékelés kész", en: "self-assessments done" },
+      campaignsLink: { hu: "Kampányok →", en: "Campaigns →" },
+      profileEyebrow: { hu: "// szervezeti profil", en: "// org profile" },
+      profileTitle: { hu: "Szervezeti személyiség", en: "Org personality" },
+      completionProgress: { hu: "{count} / 3 kitöltés", en: "{count} / 3 completions" },
+      profileHint: { hu: "A szervezeti személyiségprofil 3 befejezett értékelés után jelenik meg.", en: "The org personality profile appears after 3 completed assessments." },
+      teamsEyebrow: { hu: "// csapatok", en: "// teams" },
+      teamsTitle: { hu: "Csapatok", en: "Teams" },
+      noTeams: { hu: "Még nincs csapat. Hozz létre egyet a Csapatok fülön!", en: "No teams yet. Create one in the Teams tab!" },
+      teamMemberCount: { hu: "tag", en: "member" },
+      teamMembersCount: { hu: "tag", en: "members" },
+    },
+
+    // ── Members tab ──────────────────────────────────────────────────────
+    members: {
+      eyebrow: { hu: "// tagok", en: "// members" },
+      title: { hu: "Tagok", en: "Members" },
+      invitePending: { hu: "Meghívó függőben", en: "Invite pending" },
+      pendingBadge: { hu: "Függőben", en: "Pending" },
+      noMembers: { hu: "Még nincs tag.", en: "No members yet." },
+      inviteEyebrow: { hu: "// meghívás", en: "// invite" },
+      inviteTitle: { hu: "Tag meghívása", en: "Invite a member" },
+      inviteDescription: { hu: "Add meg a tag emailcímét. Ha már regisztrált a Tritán, azonnal csatlakozik.", en: "Enter the member's email. If they're already on Trita, they'll join immediately." },
+      roleAdmin: { hu: "Admin", en: "Admin" },
+      roleManager: { hu: "Menedzser", en: "Manager" },
+      roleMember: { hu: "Tag", en: "Member" },
+    },
+
+    // ── Teams tab ────────────────────────────────────────────────────────
+    teams: {
+      noTeams: { hu: "Még nincs csapat. Hozz létre egyet lentebb!", en: "No teams yet. Create one below!" },
+      memberCount: { hu: "tag", en: "member" },
+      membersCount: { hu: "tag", en: "members" },
+      newEyebrow: { hu: "// új csapat", en: "// new team" },
+      newTitle: { hu: "Új csapat létrehozása", en: "Create a new team" },
+    },
+
+    // ── Campaigns tab ────────────────────────────────────────────────────
+    campaigns: {
+      activeEyebrow: { hu: "// aktív körök", en: "// active rounds" },
+      activeTitle: { hu: "Aktív kampányok", en: "Active campaigns" },
+      noActive: { hu: "Nincs aktív kampány. Indíts egy vázlatból, vagy hozz létre újat!", en: "No active campaigns. Activate a draft or create a new one!" },
+      draftsDivider: { hu: "vázlatok", en: "drafts" },
+      closedDivider: { hu: "lezárt körök", en: "closed rounds" },
+      newCta: { hu: "Új 360° kampány", en: "New 360° campaign" },
+      newCtaDesc: { hu: "Szervezett 360° visszajelzési kör indítása a csapatban", en: "Launch a structured 360° feedback round for your team" },
+      createLink: { hu: "Létrehozás →", en: "Create →" },
+      newEyebrow: { hu: "// új kampány", en: "// new campaign" },
+      createTitle: { hu: "Kampány létrehozása", en: "Create campaign" },
+      nameLabel: { hu: "Kampány neve", en: "Campaign name" },
+      namePlaceholder: { hu: "pl. Q1 2026 értékelés", en: "e.g. Q1 2026 review" },
+      descLabel: { hu: "Leírás (opcionális)", en: "Description (optional)" },
+      descPlaceholder: { hu: "Rövid leírás a kampányról…", en: "Brief description…" },
+      creating: { hu: "Létrehozás…", en: "Creating…" },
+      createButton: { hu: "Kampány létrehozása", en: "Create campaign" },
+      cancel: { hu: "Mégse", en: "Cancel" },
+      networkError: { hu: "Hálózati hiba. Próbáld újra.", en: "Network error. Please try again." },
+    },
+
+    // ── Campaign card ────────────────────────────────────────────────────
+    card: {
+      closed: { hu: "Lezárt", en: "Closed" },
+      complete: { hu: "teljes", en: "complete" },
+      summaryLink: { hu: "Összesítő →", en: "Summary →" },
+      draft: { hu: "Vázlat", en: "Draft" },
+      participantsAdded: { hu: "résztvevő hozzáadva", en: "participant added" },
+      participantsAddedPlural: { hu: "résztvevő hozzáadva", en: "participants added" },
+      editLink: { hu: "Szerkesztés →", en: "Edit →" },
+      active: { hu: "Aktív", en: "Active" },
+      started: { hu: "Indítva:", en: "Started:" },
+      participantSingular: { hu: "résztvevő", en: "participant" },
+      participantPlural: { hu: "résztvevő", en: "participants" },
+      selfDone: { hu: "Önértékelés kész", en: "Self-assessment done" },
+      observerDone: { hu: "Observer kész", en: "Observer done" },
+      fullyComplete: { hu: "Teljes befejezés", en: "Fully complete" },
+      fullyDoneLabel: { hu: "teljes", en: "complete" },
+      inProgress: { hu: "folyamatban", en: "in progress" },
+      notStarted: { hu: "nem kezdte", en: "not started" },
+      viewLink: { hu: "Kampány nézete →", en: "View campaign →" },
+      sending: { hu: "Küldés…", en: "Sending…" },
+      remindButton: { hu: "Emlékeztető ({count})", en: "Remind ({count})" },
+      remindedResult: { hu: "{count} személynek küldtünk emlékeztetőt", en: "Reminded {count} participant" },
+      remindedResultPlural: { hu: "{count} személynek küldtünk emlékeztetőt", en: "Reminded {count} participants" },
+      remindError: { hu: "Hiba történt", en: "Something went wrong" },
+      remindNetworkError: { hu: "Hálózati hiba", en: "Network error" },
+    },
+
+    // ── Campaign list (legacy) ───────────────────────────────────────────
+    list: {
+      noCampaigns: { hu: "Még nincs 360° kampány. Hozz létre egyet lentebb!", en: "No 360° campaigns yet. Create one below!" },
+      participantCount: { hu: "résztvevő", en: "participant" },
+      participantsCount: { hu: "résztvevő", en: "participants" },
+      manageTitle: { hu: "Résztvevők kezelése", en: "Manage participants" },
+      addEyebrow: { hu: "// résztvevők hozzáadása", en: "// add participants" },
+      noMembers: { hu: "Nincsenek tagok.", en: "No members." },
+      adding: { hu: "Hozzáadás…", en: "Adding…" },
+      addButton: { hu: "Hozzáadás ({count})", en: "Add ({count})" },
+      cancel: { hu: "Mégse", en: "Cancel" },
+      newEyebrow: { hu: "// új kampány", en: "// new campaign" },
+      newTitle: { hu: "Új 360° kampány", en: "New 360° campaign" },
+      namePlaceholder: { hu: "Kampány neve", en: "Campaign name" },
+      descPlaceholder: { hu: "Leírás (opcionális)", en: "Description (optional)" },
+      creating: { hu: "Létrehozás…", en: "Creating…" },
+      createButton: { hu: "Kampány létrehozása", en: "Create campaign" },
+      statusActive: { hu: "Aktív", en: "Active" },
+      statusClosed: { hu: "Lezárva", en: "Closed" },
+      statusDraft: { hu: "Vázlat", en: "Draft" },
+    },
+
+    // ── Setup wizard ─────────────────────────────────────────────────────
+    setup: {
+      step1Eyebrow: { hu: "// 1. lépés", en: "// step 1" },
+      step1Title: { hu: "Szervezet neve", en: "Organization name" },
+      step1Subtitle: { hu: "Erősítsd meg vagy módosítsd a szervezet nevét.", en: "Confirm or update your organization name." },
+      nameLabel: { hu: "Szervezet neve", en: "Name" },
+      nameSaveError: { hu: "Hiba a névmentésnél.", en: "Failed to save name." },
+      next: { hu: "Tovább", en: "Next" },
+      step2Eyebrow: { hu: "// 2. lépés", en: "// step 2" },
+      step2Title: { hu: "Válassz avatart", en: "Choose an avatar" },
+      step2Subtitle: { hu: "Ez jelenik meg a profilodban.", en: "This will appear on your profile." },
+      showAll: { hu: "+ Összes megjelenítése ({count})", en: "+ Show all ({count})" },
+      avatarSaveError: { hu: "Hiba az avatar mentésekor.", en: "Failed to save avatar." },
+      back: { hu: "Vissza", en: "Back" },
+      step3Eyebrow: { hu: "// 3. lépés", en: "// step 3" },
+      step3Title: { hu: "Tagok meghívása", en: "Invite members" },
+      step3Subtitle: { hu: "Hívj meg tagokat az induláshoz (opcionális). Emailcímek, akik még nem regisztráltak, meghívót kapnak.", en: "Invite members to get started (optional). Unregistered emails will receive an invite." },
+      finish: { hu: "Befejezés", en: "Finish setup" },
+      networkError: { hu: "Hálózati hiba.", en: "Network error." },
+    },
+
+    // ── Forms ────────────────────────────────────────────────────────────
+    forms: {
+      // OrgCreateForm
+      createOrgName: { hu: "Szervezet neve", en: "Organization name" },
+      createPlaceholder: { hu: "pl. Trita Kft.", en: "e.g. Acme Corp" },
+      createLoading: { hu: "Létrehozás...", en: "Creating..." },
+      createButton: { hu: "Létrehozás", en: "Create" },
+      alreadyInOrg: { hu: "Már tagja vagy egy szervezetnek.", en: "You already belong to an organization." },
+      createGenericError: { hu: "Hiba történt. Próbáld újra.", en: "Something went wrong. Please try again." },
+      createNetworkError: { hu: "Hálózati hiba. Próbáld újra.", en: "Network error. Please try again." },
+
+      // OrgInviteForm
+      emailLabel: { hu: "Email cím", en: "Email address" },
+      emailPlaceholder: { hu: "kolléga@cég.hu", en: "colleague@company.com" },
+      roleLabel: { hu: "Szerepkör", en: "Role" },
+      roleMember: { hu: "Tag", en: "Member" },
+      roleManager: { hu: "Menedzser", en: "Manager" },
+      inviteLoading: { hu: "Meghívás...", en: "Inviting..." },
+      inviteButton: { hu: "Meghívás", en: "Invite" },
+      memberAdded: { hu: "Tag hozzáadva!", en: "Member added!" },
+      inviteSent: { hu: "Meghívó elküldve — amint regisztrálnak, automatikusan csatlakoznak.", en: "Invite sent — they'll join automatically once they register." },
+      alreadyMember: { hu: "Ez az emailcím már tag.", en: "This email is already a member." },
+      alreadyInOrgInvite: { hu: "Ez a felhasználó már tagja egy szervezetnek.", en: "This user already belongs to an organization." },
+      selfInvite: { hu: "Saját magadat nem hívhatod meg.", en: "You cannot invite yourself." },
+      inviteGenericError: { hu: "Hiba történt. Próbáld újra.", en: "Something went wrong. Please try again." },
+      inviteNetworkError: { hu: "Hálózati hiba. Próbáld újra.", en: "Network error. Please try again." },
+
+      // OrgRenameForm
+      renameLabel: { hu: "Szervezet neve", en: "Organization name" },
+      save: { hu: "Mentés", en: "Save" },
+      saved: { hu: "Mentve.", en: "Saved." },
+      renameError: { hu: "Hiba történt.", en: "Something went wrong." },
+      renameNetworkError: { hu: "Hálózati hiba.", en: "Network error." },
+
+      // OrgMemberRoleEditor
+      lastAdminError: { hu: "Nem módosítható — utolsó admin.", en: "Cannot change — last admin." },
+      roleChangeError: { hu: "Hiba történt.", en: "Something went wrong." },
+      roleNetworkError: { hu: "Hálózati hiba.", en: "Network error." },
+      teamPermissionsHint: { hu: "Csapat jogosultságok külön állíthatók.", en: "Team permissions set per team." },
+    },
+
+    // ── Action buttons ───────────────────────────────────────────────────
+    actions: {
+      // OrgRemoveMemberButton
+      removeButton: { hu: "Eltávolít", en: "Remove" },
+      removeLastAdmin: { hu: "Nem távolítható el — utolsó admin.", en: "Cannot remove — last admin." },
+      removeError: { hu: "Hiba történt.", en: "Something went wrong." },
+      removeNetworkError: { hu: "Hálózati hiba.", en: "Network error." },
+
+      // OrgDeactivateButton
+      deactivateButton: { hu: "Szervezet deaktiválása", en: "Deactivate organization" },
+      deactivateConfirm: { hu: "Biztosan deaktiválod a szervezetet?", en: "Are you sure you want to deactivate?" },
+      deactivateYes: { hu: "Igen, deaktiválás", en: "Yes, deactivate" },
+      deactivateCancel: { hu: "Mégse", en: "Cancel" },
+      deactivateError: { hu: "Hiba történt.", en: "Something went wrong." },
+      deactivateNetworkError: { hu: "Hálózati hiba.", en: "Network error." },
+
+      // OrgPendingInviteCancelButton
+      cancelInviteYes: { hu: "Igen", en: "Yes" },
+      cancelInviteNo: { hu: "Nem", en: "No" },
+      cancelInviteButton: { hu: "Törlés", en: "Cancel" },
+
+      // RemindPendingButton
+      reminderSent: { hu: "Emlékeztető elküldve", en: "Reminders sent" },
+      reminderSending: { hu: "Küldés...", en: "Sending..." },
+      reminderButton: { hu: "Emlékeztető küldése", en: "Send reminders" },
+
+      // AddParticipantButton
+      addParticipants: { hu: "+ Résztvevők hozzáadása", en: "+ Add participants" },
+      selectEyebrow: { hu: "// résztvevők kiválasztása", en: "// select participants" },
+      addingParticipants: { hu: "Hozzáadás…", en: "Adding…" },
+      addCount: { hu: "Hozzáadás ({count})", en: "Add ({count})" },
+      addCancel: { hu: "Mégse", en: "Cancel" },
+    },
+
+    // ── NextStepBanner ───────────────────────────────────────────────────
+    nextStep: {
+      inviteTitle: { hu: "Hívj meg legalább 3 tagot a szervezetbe", en: "Invite at least 3 members to your org" },
+      inviteSub: { hu: "Minimum 3 kitöltés szükséges a szervezeti profil megjelenítéséhez.", en: "At least 3 completions are needed to display the org personality profile." },
+      inviteCta: { hu: "Tagok →", en: "Members →" },
+      campaignTitle: { hu: "Hozz létre egy kampányt", en: "Create your first campaign" },
+      campaignSub: { hu: "Indíts egy 360° kampányt, hogy a tagok megkezdhessék a kitöltést.", en: "Start a 360° campaign so members can begin their assessments." },
+      campaignCta: { hu: "Kampány →", en: "Campaign →" },
+      awaitTitle: { hu: "Várakozás kitöltésekre · {completed}/3", en: "Waiting for completions · {completed}/3" },
+      awaitSub: { hu: "A szervezeti profil 3 befejezett értékelés után jelenik meg.", en: "The org personality profile appears after 3 completed assessments." },
+    },
   },
   billing: {
     checkoutMetaTitle: { hu: "Előfizetés | Trita", en: "Subscription | Trita" },
@@ -485,6 +714,36 @@ export const orgTranslations = {
       hu: "Ez a meghívó link sajnos már nem érvényes. Kérj új linket a szervezőtől.",
       en: "This invitation link is no longer valid. Please request a new link from the organiser.",
     },
+  },
+
+  // ── Campaign Wizard ─────────────────────────────────────────────────────
+  campaignWiz: {
+    stepDetails: { hu: "Részletek", en: "Details" },
+    stepMembers: { hu: "Tagok", en: "Members" },
+    stepConfirm: { hu: "Megerősítés", en: "Confirm" },
+    unknownError: { hu: "Ismeretlen hiba", en: "Unknown error" },
+    detailsTitle: { hu: "Kampány adatai", en: "Campaign details" },
+    nameLabel: { hu: "Kampány neve", en: "Campaign name" },
+    namePlaceholder: { hu: "pl. Q2 360° visszajelzés", en: "e.g. Q2 360° feedback" },
+    descLabel: { hu: "Leírás", en: "Description" },
+    optional: { hu: "(opcionális)", en: "(optional)" },
+    descPlaceholder: { hu: "Rövid leírás a kampányról...", en: "Brief description..." },
+    next: { hu: "Tovább →", en: "Next →" },
+    selectParticipants: { hu: "Résztvevők kiválasztása", en: "Select participants" },
+    deselectAll: { hu: "Mind törlése", en: "Deselect all" },
+    selectAll: { hu: "Mindenki", en: "Select all" },
+    noMembers: { hu: "Nincsenek tagok a szervezetben.", en: "No members in this organization." },
+    back: { hu: "Vissza", en: "Back" },
+    summary: { hu: "Összefoglalás", en: "Summary" },
+    campaignNameLabel: { hu: "// kampány neve", en: "// campaign name" },
+    participantsLabel: { hu: "// résztvevők · {count} fő", en: "// participants · {count}" },
+    noneSelected: { hu: "Nincs kiválasztva — később is hozzáadhatók.", en: "None selected — can be added later." },
+    draftNote: {
+      hu: "A kampány DRAFT státuszban jön létre. Az aktiválást a kampány oldalán végezheted el.",
+      en: "Campaign is created in DRAFT status. You can activate it from the campaign page.",
+    },
+    creating: { hu: "Létrehozás...", en: "Creating..." },
+    createCampaign: { hu: "Kampány létrehozása", en: "Create campaign" },
   },
 
   // ── Hiring ───────────────────────────────────────────────────────────────
@@ -642,6 +901,334 @@ export const orgTranslations = {
       hu: "Az előfizetés aktiválásához keresd a szervezeted adminisztrátorát.",
       en: "Contact your organisation admin to activate a subscription.",
     },
+
+    // RequestCreditsButton
+    requestSent: { hu: "✓ Kérés elküldve", en: "✓ Request sent" },
+    requestCredits: { hu: "Kredit igénylése az admintól", en: "Request credits from admin" },
+  },
+
+  // ── Manager components (/components/manager/) ─────────────────────────
+  manager: {
+    // TeamCreateForm
+    teamCreate: {
+      teamName: { hu: "Csapat neve", en: "Team name" },
+      placeholder: { hu: "pl. Marketing csapat", en: "e.g. Marketing team" },
+      error: { hu: "Hiba. Próbáld újra.", en: "Something went wrong. Please try again." },
+      creating: { hu: "Létrehozás…", en: "Creating…" },
+      create: { hu: "Létrehozás", en: "Create team" },
+    },
+
+    // TeamInviteForm
+    teamInvite: {
+      alreadyMember: { hu: "Ez a személy már tagja a csapatnak (vagy meghívó küldve).", en: "This person is already a member or has a pending invite." },
+      error: { hu: "Hiba. Próbáld újra.", en: "Something went wrong." },
+      emailLabel: { hu: "Emailcím", en: "Email address" },
+      emailPlaceholder: { hu: "kolléga@cég.hu", en: "colleague@company.com" },
+      adding: { hu: "Hozzáadás…", en: "Adding…" },
+      add: { hu: "Hozzáadás", en: "Add member" },
+      memberAdded: { hu: "Tag sikeresen hozzáadva.", en: "Member added successfully." },
+      inviteSent: { hu: "Meghívó elküldve. Automatikusan csatlakozik, ha regisztrál.", en: "Invite sent. They'll join automatically once they register." },
+    },
+
+    // TeamInsights
+    teamInsights: {
+      avgByDimension: { hu: "Csapatátlag dimenzióként", en: "Team average by dimension" },
+      stdDevHint: { hu: "±: szórás a csapaton belül", en: "±: standard deviation within the team" },
+      teamDynamics: { hu: "Csapatdinamika", en: "Team dynamics" },
+      teamStrength: { hu: "Csapat erőssége", en: "Team strength" },
+      growthArea: { hu: "Fejlesztési terület", en: "Growth area" },
+      mostDiverse: { hu: "Legnagyobb sokszínűség", en: "Most diverse" },
+      diversityDesc: { hu: "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre — ez gazdag vita- és kreatív potenciált jelent.", en: "Team members bring diverse approaches and perspectives to this area — this represents rich discussion and creative potential." },
+      analysisBasis: { hu: "Az elemzés {scored} kitöltött teszten alapul ({remaining} tag még nem töltötte ki).", en: "Analysis based on {scored} completed assessments ({remaining} members haven't completed yet)." },
+    },
+
+    // TeamHeatmap
+    teamHeatmap: {
+      member: { hu: "Csapattag", en: "Member" },
+      notCompleted: { hu: "Nincs kitöltve", en: "Not completed" },
+      scoreHigh: { hu: "Magas", en: "High" },
+      scoreMid: { hu: "Közép", en: "Mid" },
+      scoreLow: { hu: "Alacsony", en: "Low" },
+      legendRange: { hu: "Alacsony → Magas pontszám", en: "Low → High score" },
+      legendNoAssessment: { hu: "Nincs kitöltött teszt", en: "No assessment yet" },
+      dimensionGuide: { hu: "Dimenziók magyarázata", en: "Dimension guide" },
+    },
+
+    // CandidateInviteForm
+    candidateInvite: {
+      emailLabel: { hu: "Email cím (opcionális)", en: "Email address (optional)" },
+      emailPlaceholder: { hu: "jelolt@pelda.hu", en: "candidate@example.com" },
+      nameLabel: { hu: "Jelölt neve", en: "Candidate name" },
+      namePlaceholder: { hu: "Kovács Anna", en: "Jane Smith" },
+      nameRequired: { hu: "A jelölt neve kötelező.", en: "Candidate name is required." },
+      positionLabel: { hu: "Pozíció (opcionális)", en: "Position (optional)" },
+      positionPlaceholder: { hu: "pl. Frontend fejlesztő, CTO, Sales manager", en: "e.g. Frontend dev, CTO, Sales manager" },
+      teamLabel: { hu: "Csapat (opcionális)", en: "Team (optional)" },
+      noTeam: { hu: "— Nincs csapat —", en: "— No team —" },
+      emailLang: { hu: "Email nyelve", en: "Email language" },
+      createError: { hu: "Hiba történt a meghívó létrehozása során.", en: "An error occurred while creating the invite." },
+      genericError: { hu: "Hiba történt. Kérlek próbáld újra.", en: "An error occurred. Please try again." },
+      creating: { hu: "Létrehozás…", en: "Creating…" },
+      createInvite: { hu: "Meghívó létrehozása", en: "Create invite" },
+      inviteCreated: { hu: "Meghívó létrehozva!", en: "Invite created!" },
+      copyInstruction: { hu: "Másold ki az alábbi linket és küldd el a jelöltnek:", en: "Copy the link below and send it to the candidate:" },
+      copied: { hu: "Másolva!", en: "Copied!" },
+      copy: { hu: "Másolás", en: "Copy" },
+    },
+
+    // CandidateTeamPicker
+    candidateTeamPicker: {
+      noTeam: { hu: "— Nincs csapat —", en: "— No team —" },
+      saving: { hu: "Mentés…", en: "Saving…" },
+      save: { hu: "Mentés", en: "Save" },
+      saved: { hu: "Mentve!", en: "Saved!" },
+      error: { hu: "Hiba történt. Próbáld újra.", en: "Something went wrong. Please try again." },
+    },
+
+    // CandidateRevokeButton
+    candidateRevoke: {
+      revoke: { hu: "Visszavon", en: "Revoke" },
+      revokeTitle: { hu: "Meghívó visszavonása", en: "Revoke invite" },
+      revokeDescription: { hu: "A meghívólink érvénytelenné válik, a jelölt nem tudja majd kitölteni a felmérést. Ez a művelet nem visszavonható.", en: "The invite link will become invalid and the candidate will no longer be able to complete the assessment. This cannot be undone." },
+      cancel: { hu: "Mégsem", en: "Cancel" },
+      revoking: { hu: "Visszavonás…", en: "Revoking…" },
+    },
+
+    // TeamMemberRemoveButton
+    teamMemberRemove: {
+      remove: { hu: "Eltávolítás", en: "Remove" },
+      confirmYes: { hu: "Igen", en: "Yes" },
+      confirmNo: { hu: "Nem", en: "No" },
+    },
+
+    // PendingInviteResendButton
+    pendingInviteResend: {
+      sent: { hu: "Elküldve ✓", en: "Sent ✓" },
+      errorRetry: { hu: "Hiba – újra?", en: "Error – retry?" },
+      sending: { hu: "Küldés…", en: "Sending…" },
+      resend: { hu: "Újraküld", en: "Resend" },
+    },
+
+    // PendingInviteCancelButton
+    pendingInviteCancel: {
+      cancelInvite: { hu: "Törlés", en: "Cancel" },
+      confirmYes: { hu: "Igen", en: "Yes" },
+      confirmNo: { hu: "Nem", en: "No" },
+    },
+  },
+
+  // ── Team components (src/components/team/) ──────────────────────────────
+  teamComp: {
+    // TeamPageShell — tabs
+    tabOverview: { hu: "Áttekintés", en: "Overview" },
+    tabIntelligence: { hu: "Csapatintelligencia", en: "Team Intelligence" },
+    tabIntelligenceShort: { hu: "Intelligencia", en: "Intelligence" },
+    tabProfile: { hu: "Személyiségprofil", en: "Personality" },
+    tabMembers: { hu: "Tagok", en: "Members" },
+    noDataZone: { hu: "Nincs adat", en: "No data" },
+
+    // TeamOverviewTab — campaign banner
+    activeBadge: { hu: "Aktív", en: "Active" },
+    selfAssessmentLabel: { hu: "önértékelés", en: "self-assessment" },
+    observerLabel: { hu: "observer", en: "observer" },
+    daysLabel: { hu: "nap", en: "days" },
+    viewCampaign: { hu: "Kampány nézete →", en: "View campaign →" },
+
+    // TeamOverviewTab — empty state
+    noDataEyebrow: { hu: "nincs adat", en: "no data yet" },
+    noAssessmentsTitle: { hu: "Még nincs kitöltött értékelés", en: "No completed assessments yet" },
+    noAssessmentsDesc: {
+      hu: "Indíts egy 360° kampányt, hogy a csapattagok megkezdhessék az értékeléseket.",
+      en: "Start a 360° campaign so team members can begin their assessments.",
+    },
+    startCampaign: { hu: "Kampány indítása", en: "Start a campaign" },
+
+    // TeamOverviewTab — HEXACO profile card
+    teamAvgSelfEyebrow: { hu: "csapat átlag · önkép", en: "team avg · self" },
+    hexacoProfile: { hu: "profil", en: "profile" },
+    membersSelf: { hu: "fő · önértékelés", en: "members · self" },
+    noAssessmentsProfile: {
+      hu: "Még nincs kitöltött assessment. A profilok megjelenítéséhez legalább 1 tag töltse ki.",
+      en: "No completed assessments yet.",
+    },
+
+    // TeamOverviewTab — dynamics card
+    teamDynamicsEyebrow: { hu: "csapatdinamika", en: "team dynamics" },
+    keyCharacteristics: { hu: "Kulcs jellemzők", en: "Key characteristics" },
+    notEnoughData: { hu: "Nincs elég adat az elemzéshez.", en: "Not enough data for analysis." },
+    teamStrengthEyebrow: { hu: "csapat erőssége", en: "team strength" },
+    growthAreaEyebrow: { hu: "fejlesztési terület", en: "growth area" },
+    mostDiverseEyebrow: { hu: "legnagyobb sokszínűség", en: "most diverse" },
+    diversePerspectives: {
+      hu: "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre.",
+      en: "Team members bring diverse perspectives to this area.",
+    },
+
+    // TeamOverviewTab — members mini list
+    membersEyebrow: { hu: "tagok", en: "members" },
+    teamMembersTitle: { hu: "Csapattagok", en: "Members" },
+    noMembersYet: { hu: "Még nincsenek tagok.", en: "No members yet." },
+    doneBadge: { hu: "✓ Kész", en: "✓ Done" },
+    pendingBadge: { hu: "◌ Függőben", en: "◌ Pending" },
+
+    // TeamPatternCard
+    teamPatternEyebrow: { hu: "csapatminta", en: "team pattern" },
+    dominantPattern: { hu: "Domináns működési mintázat", en: "Dominant operating pattern" },
+    patternRequiresData: {
+      hu: "A mintázat kiszámításához legalább 3 kitöltött értékelés szükséges. Jelenleg: {total} tagból {completed} töltötte ki.",
+      en: "Pattern calculation requires at least 3 completed assessments.",
+    },
+    sampleLabel: { hu: "Minta", en: "Sample" },
+    stabilityLabel: { hu: "Stabilitás", en: "Stability" },
+    patternClarityLabel: { hu: "Mintázat-tisztaság", en: "Pattern clarity" },
+    confidenceLabel: { hu: "pontosság", en: "confidence" },
+    strengthsEyebrow: { hu: "erősségek", en: "strengths" },
+    blindSpotsEyebrow: { hu: "vakfoltok", en: "blind spots" },
+    nextStepsEyebrow: { hu: "ajánlott következő lépések", en: "recommended next steps" },
+    thisWeek: { hu: "Ezen a héten", en: "This week" },
+    thisMonth: { hu: "Ezen a hónapban", en: "This month" },
+    ongoing: { hu: "Rendszeresen", en: "Ongoing" },
+    explorePattern: { hu: "Megnézem a csapatmintát →", en: "Explore team pattern →" },
+    alternativePattern: { hu: "Közeli alternatív mintázat:", en: "Closest alternative pattern:" },
+    memberAssessments: { hu: "tag értékelése alapján", en: "member assessments" },
+    missingData: { hu: "hiányzó adat", en: "missing" },
+    framingNote: {
+      hu: "A csapat jelenlegi önértékelés-alapú működési mintázatának értelmezése. Nem diagnózis, nem teljesítménycímke — idővel változhat.",
+      en: "This is an interpretation of the team's current self-assessment-based operating pattern. Not a diagnosis or performance label — it can change over time.",
+    },
+
+    // TeamBelbinSection
+    estimatedRolesEyebrow: { hu: "csapatszerepek becslése", en: "estimated team roles" },
+    belbinTitle: { hu: "Belbin csapatszerep-elemzés", en: "Belbin team role analysis" },
+    belbinDesc: {
+      hu: "A személyiségprofilok alapján becsült Belbin-szerepkörök. A pontos méréshez minden tagnak ki kell töltenie a Belbin kérdőívet.",
+      en: "Belbin roles estimated from personality profiles. For exact measurements, all members should complete the Belbin questionnaire.",
+    },
+    profileStatus: { hu: "Személyiségprofil státusz", en: "Personality profile status" },
+    profileStatusDesc: {
+      hu: "{done} / {total} tagnak van HEXACO adata — a Belbin-becslések erre épülnek",
+      en: "{done} / {total} members have HEXACO data — Belbin estimates are derived from this",
+    },
+    roleDistributionEyebrow: { hu: "szerepkör-eloszlás", en: "role distribution" },
+    roleCompositionTitle: { hu: "Csapatszerepek megoszlása", en: "Team role composition" },
+    noRoleData: { hu: "Nincs elég adat a csapatszerep-eloszláshoz.", en: "Not enough data for role distribution." },
+    balanceAlertsEyebrow: { hu: "egyensúly-figyelmeztetések", en: "balance alerts" },
+    wellDiversified: {
+      hu: "A csapat jól diverzifikált — minden fő szerepkör képviselt.",
+      en: "The team is well-diversified — all key roles are represented.",
+    },
+    missingRoles: { hu: "Hiányzó szerepkörök", en: "Missing roles" },
+    overrepresentedRoles: { hu: "Túlreprezentált szerepkörök", en: "Overrepresented roles" },
+    categoryAnalysisEyebrow: { hu: "kategória-elemzés", en: "category analysis" },
+    categoryAnalysisDesc: {
+      hu: "A csapat tagjai hogyan oszlanak meg a három fő szerepkategória között.",
+      en: "How team members distribute across the three core role categories.",
+    },
+    actionOriented: { hu: "Cselekvő", en: "Action-oriented" },
+    peopleOriented: { hu: "Kapcsolati", en: "People-oriented" },
+    thoughtOriented: { hu: "Gondolkodó", en: "Thought-oriented" },
+    individualRolesEyebrow: { hu: "egyéni szerepkörök", en: "individual roles" },
+    memberRoleProfiles: { hu: "Tagok szerep-profilja", en: "Member role profiles" },
+    thMember: { hu: "Tag", en: "Member" },
+    thPrimary: { hu: "Elsődleges", en: "Primary" },
+    thSecondary: { hu: "Másodlagos", en: "Secondary" },
+    thSupporting: { hu: "Kiegészítő", en: "Supporting" },
+    noData: { hu: "Nincs adat", en: "No data" },
+
+    // TeamMembersTab
+    membersTabEyebrow: { hu: "// tagok", en: "// members" },
+    membersTabTitle: { hu: "Tagok", en: "Members" },
+    doneTest: { hu: "Kész", en: "Done" },
+    noTest: { hu: "Nincs teszt", en: "No test" },
+    inviteSent: { hu: "Meghívó elküldve", en: "Invite sent" },
+    pendingStatus: { hu: "Függőben", en: "Pending" },
+    noMembersInvite: {
+      hu: "Még nincs csapattag. Hívj meg valakit lentebb!",
+      en: "No team members yet. Invite someone below!",
+    },
+    addMember: { hu: "Tag hozzáadása", en: "Add a member" },
+    addMemberDesc: {
+      hu: "Add meg a csapattag emailcímét. A felhasználónak regisztrálva kell lennie.",
+      en: "Enter the member's email. They must already be registered on Trita.",
+    },
+
+    // TeamMemberRoleEditor
+    roleManagerLabel: { hu: "Menedzser", en: "Manager" },
+    roleMemberLabel: { hu: "Tag", en: "Member" },
+    cannotChangeSelf: { hu: "Saját role nem módosítható.", en: "Cannot change own role." },
+    somethingWentWrong: { hu: "Hiba történt.", en: "Something went wrong." },
+    networkError: { hu: "Hálózati hiba.", en: "Network error." },
+
+    // TeamProfileTab
+    personalityProfileEyebrow: { hu: "// személyiségprofil", en: "// personality profile" },
+    teamHeatmapTitle: { hu: "Csapat személyiségprofil", en: "Team Personality Heatmap" },
+    heatmapDesc: {
+      hu: "Minden oszlop egy HEXACO személyiségdimenziót mutat — minél mélyebb a szín, annál magasabb a pontszám.",
+      en: "Each column represents a HEXACO personality dimension — deeper color means a higher score.",
+    },
+    analysisEyebrow: { hu: "// elemzés", en: "// analysis" },
+    teamAnalysis: { hu: "Csapatelemzés", en: "Team Analysis" },
+    noMembersProfile: {
+      hu: "Még nincs csapattag. Hívj meg valakit a Tagok fülön!",
+      en: "No team members yet. Invite someone on the Members tab!",
+    },
+    noAssessmentProfile: {
+      hu: "Még egyik csapattag sem töltötte ki az assessmentet.",
+      en: "No team members have completed an assessment yet.",
+    },
+
+    // TeamMap
+    clickAvatar: { hu: "Kattints egy avatárra", en: "Click on an avatar" },
+    clickAvatarDesc: { hu: "a részletes profil megtekintéséhez", en: "to view detailed profile" },
+    estimationNote: {
+      hu: "Az átlátszó avatárok pozíciója HEXACO-adatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.",
+      en: "Transparent avatars are positioned based on HEXACO data (C → skill level, (O+X)/2 → potential). Final placement can be manually adjusted by the team leader.",
+    },
+    growthPotentialAxis: { hu: "← fejlődési potenciál →", en: "← growth potential →" },
+    yAxisLabel: { hu: "magas → alacsony", en: "high → low" },
+    xLow: { hu: "alacsony", en: "low" },
+    xMid: { hu: "közép", en: "mid" },
+    xHigh: { hu: "magas", en: "high" },
+    skillLevelAxis: { hu: "← szakmai szint →", en: "← skill level →" },
+    estimatedTag: { hu: "becsült", en: "estimated" },
+
+    // DynamicsMap
+    noDynamicsTitle: { hu: "Még nincs kapcsolati adat", en: "No dynamics data yet" },
+    noDynamicsDesc: {
+      hu: "Indíts szakmai visszajelzési kört a dynamics map feltöltéséhez",
+      en: "Run a peer feedback round to populate the dynamics map",
+    },
+    connectionsEyebrow: { hu: "// kapcsolatok", en: "// connections" },
+    edgeGood: { hu: "jó együttmű.", en: "good collab." },
+    edgeTension: { hu: "feszültség", en: "tension" },
+    edgeNeutral: { hu: "semleges", en: "neutral" },
+    incomingConnections: { hu: "bejövő kapcsolat", en: "incoming connections" },
+    legendGood: { hu: "Jó együttmű.", en: "Good collab." },
+    legendNeutral: { hu: "Semleges", en: "Neutral" },
+    legendTension: { hu: "Feszültség", en: "Tension" },
+    hubPerson: { hu: "Hub személy", en: "Hub person" },
+    clickPerson: { hu: "Kattints egy személyre", en: "Click on a person" },
+    clickPersonConnections: { hu: "a kapcsolatai megtekintéséhez", en: "to view their connections" },
+
+    // RoleFitMap
+    dominantDimsEyebrow: { hu: "// domináns dimenziók", en: "// dominant dimensions" },
+    missingRoleLabel: { hu: "Hiányzó szerep:", en: "Missing role:" },
+    missingRoleTag: { hu: "⚠ hiányzik", en: "⚠ missing" },
+    clickPersonRole: { hu: "Kattints egy személyre", en: "Click on a person" },
+    clickPersonRoleDesc: { hu: "a szerepe megtekintéséhez", en: "to view their role" },
+
+    // RoleFitMap — zone labels
+    zoneMediatorLabel: { hu: "Mediátor", en: "Mediator" },
+    zoneInnovatorLabel: { hu: "Innovátor", en: "Innovator" },
+    zoneExecutorLabel: { hu: "Kivitelező", en: "Executor" },
+    zoneAnalyzerLabel: { hu: "Analizátor", en: "Analyzer" },
+    zoneEnergizerLabel: { hu: "Energizáló", en: "Energizer" },
+    zoneStrategistLabel: { hu: "Stratégista", en: "Strategist" },
+
+    // TeamIntelligence — sub-tab labels
+    subMap: { hu: "① Csapattérkép", en: "① Team Map" },
+    subDynamics: { hu: "② Dinamika", en: "② Dynamics Map" },
+    subRoles: { hu: "③ Szerep illeszkedés", en: "③ Role Fit" },
   },
 
   // ── Team pages (/team, /team/[id]) ──────────────────────────────────────

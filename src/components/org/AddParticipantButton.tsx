@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface Member {
   userId: string;
@@ -23,6 +25,7 @@ export function AddParticipantButton({
   isHu,
 }: AddParticipantButtonProps) {
   const router = useRouter();
+  const loc: Locale = isHu ? "hu" : "en";
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
@@ -72,7 +75,7 @@ export function AddParticipantButton({
           onClick={() => setOpen(true)}
           className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
         >
-          {isHu ? "+ Résztvevők hozzáadása" : "+ Add participants"}
+          {t("org.actions.addParticipants", loc)}
         </button>
       ) : (
         <form
@@ -80,7 +83,7 @@ export function AddParticipantButton({
           className="rounded-xl border border-sand bg-cream p-4"
         >
           <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
-            {isHu ? "// résztvevők kiválasztása" : "// select participants"}
+            {t("org.actions.selectEyebrow", loc)}
           </p>
           <div className="mb-4 max-h-56 overflow-y-auto space-y-1">
             {members.map((m) => (
@@ -113,17 +116,15 @@ export function AddParticipantButton({
               className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
-                ? isHu ? "Hozzáadás…" : "Adding…"
-                : isHu
-                  ? `Hozzáadás (${selected.size})`
-                  : `Add (${selected.size})`}
+                ? t("org.actions.addingParticipants", loc)
+                : tf("org.actions.addCount", loc, { count: selected.size })}
             </button>
             <button
               type="button"
               onClick={() => { setOpen(false); setSelected(new Set()); setError(null); }}
               className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-sand"
             >
-              {isHu ? "Mégse" : "Cancel"}
+              {t("org.actions.addCancel", loc)}
             </button>
           </div>
         </form>

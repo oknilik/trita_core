@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 export function RequestCreditsButton({
   orgId,
-  isHu,
+  locale,
 }: {
   orgId: string;
-  isHu: boolean;
+  locale: Locale;
 }) {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ export function RequestCreditsButton({
   if (sent) {
     return (
       <span className="min-h-[36px] inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 text-[11px] font-semibold text-emerald-700">
-        {isHu ? "✓ Kérés elküldve" : "✓ Request sent"}
+        {t("hiring.requestSent", locale)}
       </span>
     );
   }
@@ -46,9 +48,7 @@ export function RequestCreditsButton({
     >
       {loading
         ? "…"
-        : isHu
-          ? "Kredit igénylése az admintól"
-          : "Request credits from admin"}
+        : t("hiring.requestCredits", locale)}
     </button>
   );
 }

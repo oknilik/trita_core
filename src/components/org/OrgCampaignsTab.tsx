@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
 import { CampaignCard } from "./CampaignCard";
 
@@ -19,6 +21,7 @@ export function OrgCampaignsTab({
   isHu,
 }: OrgCampaignsTabProps) {
   const router = useRouter();
+  const loc: Locale = isHu ? "hu" : "en";
   const [campaigns, setCampaigns] = useState<CampaignWithStats[]>(initialCampaigns);
   const [showNewForm, setShowNewForm] = useState(false);
   const [name, setName] = useState("");
@@ -69,7 +72,7 @@ export function OrgCampaignsTab({
       setShowNewForm(false);
       router.refresh();
     } catch {
-      setError(isHu ? "Hálózati hiba. Próbáld újra." : "Network error. Please try again.");
+      setError(t("org.campaigns.networkError", loc));
     } finally {
       setLoading(false);
     }
@@ -80,10 +83,10 @@ export function OrgCampaignsTab({
       {/* Active campaigns */}
       <section>
         <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-          {isHu ? "// aktív körök" : "// active rounds"}
+          {t("org.campaigns.activeEyebrow", loc)}
         </p>
         <h2 className="mb-5 font-fraunces text-xl text-ink">
-          {isHu ? "Aktív kampányok" : "Active campaigns"}
+          {t("org.campaigns.activeTitle", loc)}
           {activeCampaigns.length > 0 && (
             <span className="ml-2 font-sans text-sm font-normal text-ink-body/50">
               ({activeCampaigns.length})
@@ -94,9 +97,7 @@ export function OrgCampaignsTab({
         {activeCampaigns.length === 0 ? (
           <div className="rounded-xl border border-sand bg-cream p-8 text-center">
             <p className="text-sm text-ink-body/60">
-              {isHu
-                ? "Nincs aktív kampány. Indíts egy vázlatból, vagy hozz létre újat!"
-                : "No active campaigns. Activate a draft or create a new one!"}
+              {t("org.campaigns.noActive", loc)}
             </p>
           </div>
         ) : (
@@ -121,7 +122,7 @@ export function OrgCampaignsTab({
           <div className="mb-5 flex items-center gap-3">
             <div className="flex-1 border-t border-sand" />
             <span className="font-mono text-xs uppercase tracking-widest text-muted">
-              {isHu ? "vázlatok" : "drafts"}
+              {t("org.campaigns.draftsDivider", loc)}
             </span>
             <div className="flex-1 border-t border-sand" />
           </div>
@@ -165,37 +166,35 @@ export function OrgCampaignsTab({
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">
-                    {isHu ? "Új 360° kampány" : "New 360° campaign"}
+                    {t("org.campaigns.newCta", loc)}
                   </p>
                   <p className="mt-0.5 text-xs text-ink-body">
-                    {isHu
-                      ? "Szervezett 360° visszajelzési kör indítása a csapatban"
-                      : "Launch a structured 360° feedback round for your team"}
+                    {t("org.campaigns.newCtaDesc", loc)}
                   </p>
                 </div>
                 <span className="text-xs font-semibold text-bronze">
-                  {isHu ? "Létrehozás →" : "Create →"}
+                  {t("org.campaigns.createLink", loc)}
                 </span>
               </div>
             </button>
           ) : (
             <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
               <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                {isHu ? "// új kampány" : "// new campaign"}
+                {t("org.campaigns.newEyebrow", loc)}
               </p>
               <h2 className="mb-5 font-fraunces text-xl text-ink">
-                {isHu ? "Kampány létrehozása" : "Create campaign"}
+                {t("org.campaigns.createTitle", loc)}
               </h2>
               <form onSubmit={handleCreate} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-semibold text-ink">
-                    {isHu ? "Kampány neve" : "Campaign name"}
+                    {t("org.campaigns.nameLabel", loc)}
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={isHu ? "pl. Q1 2026 értékelés" : "e.g. Q1 2026 review"}
+                    placeholder={t("org.campaigns.namePlaceholder", loc)}
                     maxLength={100}
                     required
                     disabled={loading}
@@ -204,13 +203,13 @@ export function OrgCampaignsTab({
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-semibold text-ink">
-                    {isHu ? "Leírás (opcionális)" : "Description (optional)"}
+                    {t("org.campaigns.descLabel", loc)}
                   </label>
                   <input
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder={isHu ? "Rövid leírás a kampányról…" : "Brief description…"}
+                    placeholder={t("org.campaigns.descPlaceholder", loc)}
                     maxLength={500}
                     disabled={loading}
                     className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-muted focus:border-sage/40 focus:outline-none"
@@ -228,8 +227,8 @@ export function OrgCampaignsTab({
                     className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {loading
-                      ? isHu ? "Létrehozás…" : "Creating…"
-                      : isHu ? "Kampány létrehozása" : "Create campaign"}
+                      ? t("org.campaigns.creating", loc)
+                      : t("org.campaigns.createButton", loc)}
                   </button>
                   <button
                     type="button"
@@ -242,7 +241,7 @@ export function OrgCampaignsTab({
                     disabled={loading}
                     className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
                   >
-                    {isHu ? "Mégse" : "Cancel"}
+                    {t("org.campaigns.cancel", loc)}
                   </button>
                 </div>
               </form>
@@ -257,7 +256,7 @@ export function OrgCampaignsTab({
           <div className="mb-5 flex items-center gap-3">
             <div className="flex-1 border-t border-sand" />
             <span className="font-mono text-xs uppercase tracking-widest text-muted">
-              {isHu ? "lezárt körök" : "closed rounds"}
+              {t("org.campaigns.closedDivider", loc)}
             </span>
             <div className="flex-1 border-t border-sand" />
           </div>

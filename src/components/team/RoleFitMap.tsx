@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { IntelligenceMember } from "./TeamIntelligence";
 
 interface RoleZone {
   id: string;
-  label: string;
+  labelKey: string;
   x: number;
   y: number;
   r: number;
@@ -17,12 +19,12 @@ interface RoleZone {
 }
 
 const ROLE_ZONES: RoleZone[] = [
-  { id: "med", label: "Mediátor",    x: 215, y: 80,  r: 55, bg: "#e8f7f1", stroke: "#6ee7b7", tc: "#085041", dims: ["A"] },
-  { id: "inn", label: "Innovátor",   x: 360, y: 185, r: 55, bg: "#e0f2fe", stroke: "#7dd3fc", tc: "#075985", dims: ["O", "X"] },
-  { id: "exe", label: "Kivitelező",  x: 300, y: 285, r: 50, bg: "#ede9fe", stroke: "#c4b5fd", tc: "#4c1d95", dims: ["C"] },
-  { id: "ana", label: "Analizátor",  x: 130, y: 285, r: 50, bg: "#fef9c3", stroke: "#fcd34d", tc: "#713f12", dims: ["H", "C"] },
-  { id: "ene", label: "Energizáló",  x: 70,  y: 185, r: 55, bg: "#fce7f3", stroke: "#f9a8d4", tc: "#831843", dims: ["E", "X"] },
-  { id: "str", label: "Stratégista", x: 215, y: 210, r: 42, bg: "#f5f3ef", stroke: "#e8e0d3", tc: "#8a8a9a", dims: [], missing: true },
+  { id: "med", labelKey: "teamComp.zoneMediatorLabel",   x: 215, y: 80,  r: 55, bg: "#e8f7f1", stroke: "#6ee7b7", tc: "#085041", dims: ["A"] },
+  { id: "inn", labelKey: "teamComp.zoneInnovatorLabel",  x: 360, y: 185, r: 55, bg: "#e0f2fe", stroke: "#7dd3fc", tc: "#075985", dims: ["O", "X"] },
+  { id: "exe", labelKey: "teamComp.zoneExecutorLabel",   x: 300, y: 285, r: 50, bg: "#ede9fe", stroke: "#c4b5fd", tc: "#4c1d95", dims: ["C"] },
+  { id: "ana", labelKey: "teamComp.zoneAnalyzerLabel",   x: 130, y: 285, r: 50, bg: "#fef9c3", stroke: "#fcd34d", tc: "#713f12", dims: ["H", "C"] },
+  { id: "ene", labelKey: "teamComp.zoneEnergizerLabel",  x: 70,  y: 185, r: 55, bg: "#fce7f3", stroke: "#f9a8d4", tc: "#831843", dims: ["E", "X"] },
+  { id: "str", labelKey: "teamComp.zoneStrategistLabel", x: 215, y: 210, r: 42, bg: "#f5f3ef", stroke: "#e8e0d3", tc: "#8a8a9a", dims: [], missing: true },
 ];
 
 function getZoneForMember(hexaco: IntelligenceMember["hexaco"]): string {
@@ -48,9 +50,10 @@ const DIM_COLORS: Record<string, string> = {
 interface RoleDetailPanelProps {
   member: IntelligenceMember;
   zone: RoleZone;
+  loc: Locale;
 }
 
-function RoleDetailPanel({ member, zone }: RoleDetailPanelProps) {
+function RoleDetailPanel({ member, zone, loc }: RoleDetailPanelProps) {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
       <div className="flex items-center gap-3">
@@ -66,14 +69,14 @@ function RoleDetailPanel({ member, zone }: RoleDetailPanelProps) {
             className="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
             style={{ background: zone.bg, color: zone.tc, border: `1px solid ${zone.stroke}` }}
           >
-            {zone.label}
+            {t(zone.labelKey, loc)}
           </span>
         </div>
       </div>
 
       <div>
         <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-bronze">
-          // domináns dimenziók
+          {t("teamComp.dominantDimsEyebrow", loc)}
         </p>
         <div className="flex flex-col gap-1.5">
           {Object.entries(member.hexaco)
@@ -109,6 +112,7 @@ interface RoleFitMapProps {
 
 export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
   const [selected, setSelected] = useState<string | null>(null);
+  const loc: Locale = isHu ? "hu" : "en";
 
   const zoneMembers: Record<string, IntelligenceMember[]> = {};
   members.forEach((m) => {
@@ -154,7 +158,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                 fontWeight={700}
                 fill={z.missing ? "#b0ada6" : z.tc}
               >
-                {z.label}
+                {t(z.labelKey, loc)}
               </text>
               {z.missing && (
                 <text
@@ -164,7 +168,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                   fontSize={8}
                   fill="#b0ada6"
                 >
-                  ⚠ hiányzik
+                  {t("teamComp.missingRoleTag", loc)}
                 </text>
               )}
             </g>
@@ -219,13 +223,13 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                 className="h-3 w-3 rounded"
                 style={{ background: z.bg, border: `1px solid ${z.stroke}` }}
               />
-              <span className="text-[10px] text-ink-body">{z.label}</span>
+              <span className="text-[10px] text-ink-body">{t(z.labelKey, loc)}</span>
             </div>
           ))}
           {missingZones.length > 0 && (
             <div className="ml-auto text-[10px] text-muted">
-              ⚠ {isHu ? "Hiányzó szerep:" : "Missing role:"}{" "}
-              {missingZones.map((z) => z.label).join(", ")}
+              {t("teamComp.missingRoleLabel", loc)}{" "}
+              {missingZones.map((z) => t(z.labelKey, loc)).join(", ")}
             </div>
           )}
         </div>
@@ -234,12 +238,12 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
       {/* Detail panel */}
       <div className="w-full flex-shrink-0 md:w-[240px]">
         {selectedMember && selectedZone ? (
-          <RoleDetailPanel member={selectedMember} zone={selectedZone} />
+          <RoleDetailPanel member={selectedMember} zone={selectedZone} loc={loc} />
         ) : (
           <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
             <p className="text-[12px] text-muted">
-              Kattints egy személyre
-              <br />a szerepe megtekintéséhez
+              {t("teamComp.clickPersonRole", loc)}
+              <br />{t("teamComp.clickPersonRoleDesc", loc)}
             </p>
           </div>
         )}

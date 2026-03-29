@@ -2,6 +2,8 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState, useCallback } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { PrimaryTabs } from "@/components/org/PrimaryTabs";
 import { TeamOverviewTab } from "./TeamOverviewTab";
 import { TeamProfileTab } from "./TeamProfileTab";
@@ -70,6 +72,7 @@ export function TeamPageShell({
   );
 
   const isHu = locale !== "en";
+  const loc = (locale === "en" ? "en" : "hu") as Locale;
 
   const handleTabChange = useCallback((key: string) => {
     setActiveTab(key);
@@ -81,22 +84,22 @@ export function TeamPageShell({
   const tabs = [
     {
       key: "overview",
-      label: isHu ? "Áttekintés" : "Overview",
+      label: t("teamComp.tabOverview", loc),
     },
     {
       key: "intelligence",
-      label: isHu ? "Csapatintelligencia" : "Team Intelligence",
-      shortLabel: isHu ? "Intelligencia" : "Intelligence",
+      label: t("teamComp.tabIntelligence", loc),
+      shortLabel: t("teamComp.tabIntelligenceShort", loc),
     },
     {
       key: "profile",
-      label: isHu ? "Személyiségprofil" : "Personality",
+      label: t("teamComp.tabProfile", loc),
       badge:
         data.completedCount > 0 ? data.completedCount : undefined,
     },
     {
       key: "members",
-      label: isHu ? "Tagok" : "Members",
+      label: t("teamComp.tabMembers", loc),
       badge: data.memberCount + data.pendingInvites.length,
     },
     {
@@ -138,7 +141,7 @@ export function TeamPageShell({
       hexaco,
       skillLevel: 2,
       growthPotential: 2,
-      zone: !m.scores ? (isHu ? "Nincs adat" : "No data") : zoneName,
+      zone: !m.scores ? t("teamComp.noDataZone", loc) : zoneName,
       color,
       textColor: "#ffffff",
     };

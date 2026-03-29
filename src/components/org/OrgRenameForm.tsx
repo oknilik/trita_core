@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface OrgRenameFormProps {
   orgId: string;
@@ -11,7 +13,7 @@ interface OrgRenameFormProps {
 
 export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps) {
   const router = useRouter();
-  const isHu = locale !== "en";
+  const loc = locale as Locale;
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,13 +32,13 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
         body: JSON.stringify({ name: name.trim() }),
       });
       if (!res.ok) {
-        setError(isHu ? "Hiba történt." : "Something went wrong.");
+        setError(t("org.forms.renameError", loc));
         return;
       }
       setSaved(true);
       router.refresh();
     } catch {
-      setError(isHu ? "Hálózati hiba." : "Network error.");
+      setError(t("org.forms.renameNetworkError", loc));
     } finally {
       setLoading(false);
     }
@@ -46,7 +48,7 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
     <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
       <div className="flex-1">
         <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-          {isHu ? "Szervezet neve" : "Organization name"}
+          {t("org.forms.renameLabel", loc)}
           <input
             type="text"
             value={name}
@@ -62,10 +64,10 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
         disabled={loading || name.trim() === currentName}
         className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
       >
-        {loading ? "..." : isHu ? "Mentés" : "Save"}
+        {loading ? "..." : t("org.forms.save", loc)}
       </button>
       {saved && (
-        <p className="text-xs text-green-600">{isHu ? "Mentve." : "Saved."}</p>
+        <p className="text-xs text-green-600">{t("org.forms.saved", loc)}</p>
       )}
       {error && (
         <p className="text-xs text-rose-600">{error}</p>

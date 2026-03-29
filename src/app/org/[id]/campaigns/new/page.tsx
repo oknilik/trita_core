@@ -29,7 +29,7 @@ export default async function NewCampaignPage({
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   if (!isManager) notFound();
 
-  const isHu = locale !== "en";
+  const isHu = locale !== "en"; // kept for server-rendered text on this page
 
   const members = await prisma.organizationMember.findMany({
     where: { orgId },
@@ -80,7 +80,7 @@ export default async function NewCampaignPage({
         <CampaignWizard
           orgId={orgId}
           members={serializedMembers}
-          isHu={isHu}
+          locale={locale}
         />
       </main>
     </div>

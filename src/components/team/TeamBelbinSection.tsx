@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import type { BelbinRoleCode, BelbinScores } from "@/lib/belbin-scoring";
@@ -73,12 +75,10 @@ function BelbinCompletionStatus({
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-ink">
-            {isHu ? "Személyiségprofil státusz" : "Personality profile status"}
+            {t("teamComp.profileStatus", isHu ? "hu" : "en")}
           </p>
           <p className="mt-0.5 text-xs text-ink-body">
-            {isHu
-              ? `${withScores} / ${total} tagnak van HEXACO adata — a Belbin-becslések erre épülnek`
-              : `${withScores} / ${total} members have HEXACO data — Belbin estimates are derived from this`}
+            {t("teamComp.profileStatusDesc", isHu ? "hu" : "en").replace("{done}", String(withScores)).replace("{total}", String(total))}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
@@ -123,7 +123,7 @@ function RoleComposition({
   if (withData === 0) {
     return (
       <p className="text-sm text-muted">
-        {isHu ? "Nincs elég adat a csapatszerep-eloszláshoz." : "Not enough data for role distribution."}
+        {t("teamComp.noRoleData", isHu ? "hu" : "en")}
       </p>
     );
   }
@@ -188,9 +188,7 @@ function RoleAlerts({
           <path d="M3 10l5 5 9-9" />
         </svg>
         <p className="text-sm text-emerald-700">
-          {isHu
-            ? "A csapat jól diverzifikált — minden fő szerepkör képviselt."
-            : "The team is well-diversified — all key roles are represented."}
+          {t("teamComp.wellDiversified", isHu ? "hu" : "en")}
         </p>
       </div>
     );
@@ -201,7 +199,7 @@ function RoleAlerts({
       {missing.length > 0 && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
           <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">
-            {isHu ? "Hiányzó szerepkörök" : "Missing roles"}
+            {t("teamComp.missingRoles", isHu ? "hu" : "en")}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {missing.map((r) => (
@@ -213,7 +211,7 @@ function RoleAlerts({
       {overrepresented.length > 0 && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
           <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-blue-700">
-            {isHu ? "Túlreprezentált szerepkörök" : "Overrepresented roles"}
+            {t("teamComp.overrepresentedRoles", isHu ? "hu" : "en")}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {overrepresented.map((r) => (
@@ -241,16 +239,16 @@ function IndividualBelbinTable({
         <thead>
           <tr className="border-b border-sand bg-cream">
             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body">
-              {isHu ? "Tag" : "Member"}
+              {t("teamComp.thMember", isHu ? "hu" : "en")}
             </th>
             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body">
-              {isHu ? "Elsődleges" : "Primary"}
+              {t("teamComp.thPrimary", isHu ? "hu" : "en")}
             </th>
             <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body sm:table-cell">
-              {isHu ? "Másodlagos" : "Secondary"}
+              {t("teamComp.thSecondary", isHu ? "hu" : "en")}
             </th>
             <th className="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-body md:table-cell">
-              {isHu ? "Kiegészítő" : "Supporting"}
+              {t("teamComp.thSupporting", isHu ? "hu" : "en")}
             </th>
           </tr>
         </thead>
@@ -267,7 +265,7 @@ function IndividualBelbinTable({
                   <RoleChip role={m.top3[0].role} isHu={isHu} size="xs" />
                 ) : (
                   <span className="text-xs text-muted">
-                    {isHu ? "Nincs adat" : "No data"}
+                    {t("teamComp.noData", isHu ? "hu" : "en")}
                   </span>
                 )}
               </td>
@@ -319,25 +317,23 @@ function CrossAnalysis({
   }
   const total = withData.length;
 
+  const loc: Locale = isHu ? "hu" : "en";
   const categories = [
     {
       key: "action" as const,
-      labelHu: "Cselekvő",
-      labelEn: "Action-oriented",
+      labelKey: "teamComp.actionOriented",
       roles: ["SH", "IM", "CF"] as BelbinRoleCode[],
       color: "#f59e0b",
     },
     {
       key: "people" as const,
-      labelHu: "Kapcsolati",
-      labelEn: "People-oriented",
+      labelKey: "teamComp.peopleOriented",
       roles: ["CO", "TW", "RI"] as BelbinRoleCode[],
       color: "#10b981",
     },
     {
       key: "thought" as const,
-      labelHu: "Gondolkodó",
-      labelEn: "Thought-oriented",
+      labelKey: "teamComp.thoughtOriented",
       roles: ["PL", "ME", "SP"] as BelbinRoleCode[],
       color: "#6366f1",
     },
@@ -355,7 +351,7 @@ function CrossAnalysis({
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-ink">
-                {isHu ? cat.labelHu : cat.labelEn}
+                {t(cat.labelKey, loc)}
               </span>
               <span className="font-mono text-xs text-ink-body">{pct}%</span>
             </div>
@@ -385,6 +381,7 @@ interface TeamBelbinSectionProps {
 }
 
 export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   const membersWithBelbin = useMemo<MemberWithBelbin[]>(() => {
     return members.map((m) => {
       if (!m.scores) {
@@ -431,15 +428,13 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
     <div className="flex flex-col gap-8 py-6">
       <div>
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// csapatszerepek becslése" : "// estimated team roles"}
+          // {t("teamComp.estimatedRolesEyebrow", loc)}
         </p>
         <h2 className="mt-1 font-fraunces text-2xl text-ink">
-          {isHu ? "Belbin csapatszerep-elemzés" : "Belbin team role analysis"}
+          {t("teamComp.belbinTitle", loc)}
         </h2>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink-body">
-          {isHu
-            ? "A személyiségprofilok alapján becsült Belbin-szerepkörök. A pontos méréshez minden tagnak ki kell töltenie a Belbin kérdőívet."
-            : "Belbin roles estimated from personality profiles. For exact measurements, all members should complete the Belbin questionnaire."}
+          {t("teamComp.belbinDesc", loc)}
         </p>
       </div>
 
@@ -449,10 +444,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
       {/* Role composition */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
         <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// szerepkör-eloszlás" : "// role distribution"}
+          // {t("teamComp.roleDistributionEyebrow", loc)}
         </h3>
         <h4 className="mb-5 font-fraunces text-xl text-ink">
-          {isHu ? "Csapatszerepek megoszlása" : "Team role composition"}
+          {t("teamComp.roleCompositionTitle", loc)}
         </h4>
         <RoleComposition members={membersWithBelbin} isHu={isHu} />
       </section>
@@ -460,7 +455,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
       {/* Alerts */}
       <section>
         <h3 className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// egyensúly-figyelmeztetések" : "// balance alerts"}
+          // {t("teamComp.balanceAlertsEyebrow", loc)}
         </h3>
         <RoleAlerts members={membersWithBelbin} isHu={isHu} />
       </section>
@@ -468,12 +463,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
       {/* Cross-analysis */}
       <section>
         <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// kategória-elemzés" : "// category analysis"}
+          // {t("teamComp.categoryAnalysisEyebrow", loc)}
         </h3>
         <p className="mb-4 text-sm text-ink-body">
-          {isHu
-            ? "A csapat tagjai hogyan oszlanak meg a három fő szerepkategória között."
-            : "How team members distribute across the three core role categories."}
+          {t("teamComp.categoryAnalysisDesc", loc)}
         </p>
         <CrossAnalysis members={membersWithBelbin} isHu={isHu} />
       </section>
@@ -481,10 +474,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
       {/* Individual table */}
       <section>
         <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {isHu ? "// egyéni szerepkörök" : "// individual roles"}
+          // {t("teamComp.individualRolesEyebrow", loc)}
         </h3>
         <h4 className="mb-4 font-fraunces text-xl text-ink">
-          {isHu ? "Tagok szerep-profilja" : "Member role profiles"}
+          {t("teamComp.memberRoleProfiles", loc)}
         </h4>
         <IndividualBelbinTable members={membersWithBelbin} isHu={isHu} />
       </section>

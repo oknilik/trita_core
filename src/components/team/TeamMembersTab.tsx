@@ -1,5 +1,7 @@
 "use client";
 
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
 import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCancelButton";
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
@@ -45,15 +47,16 @@ export function TeamMembersTab({
   locale,
   dateLocale,
 }: TeamMembersTabProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   return (
     <div className="flex flex-col gap-8 pt-6">
       {/* Members section */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-          {isHu ? "// tagok" : "// members"}
+          {t("teamComp.membersTabEyebrow", loc)}
         </p>
         <h2 className="font-fraunces text-xl text-ink mb-0.5">
-          {isHu ? "Tagok" : "Members"}{" "}
+          {t("teamComp.membersTabTitle", loc)}{" "}
           <span className="font-sans text-sm font-normal text-ink-body/50">
             ({members.length})
           </span>
@@ -87,11 +90,11 @@ export function TeamMembersTab({
                   />
                   {m.hasAssessment ? (
                     <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                      {m.testType ?? (isHu ? "Kész" : "Done")}
+                      {m.testType ?? t("teamComp.doneTest", loc)}
                     </span>
                   ) : (
                     <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs text-ink-body/60">
-                      {isHu ? "Nincs teszt" : "No test"}
+                      {t("teamComp.noTest", loc)}
                     </span>
                   )}
                   <span className="text-xs text-ink-body/50">
@@ -118,12 +121,12 @@ export function TeamMembersTab({
                     {inv.email}
                   </p>
                   <p className="text-xs text-ink-body/60">
-                    {isHu ? "Meghívó elküldve" : "Invite sent"}
+                    {t("teamComp.inviteSent", loc)}
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
-                    {isHu ? "Függőben" : "Pending"}
+                    {t("teamComp.pendingStatus", loc)}
                   </span>
                   {isOrgManager && (
                     <PendingInviteCancelButton inviteId={inv.id} isHu={isHu} />
@@ -136,21 +139,17 @@ export function TeamMembersTab({
 
         {members.length === 0 && pendingInvites.length === 0 && (
           <p className="mt-4 text-sm text-ink-body">
-            {isHu
-              ? "Még nincs csapattag. Hívj meg valakit lentebb!"
-              : "No team members yet. Invite someone below!"}
+            {t("teamComp.noMembersInvite", loc)}
           </p>
         )}
 
         {isOrgManager && (
           <div className="border-t border-sand mt-5 pt-5">
             <h3 className="mb-3 text-sm font-semibold text-ink">
-              {isHu ? "Tag hozzáadása" : "Add a member"}
+              {t("teamComp.addMember", loc)}
             </h3>
             <p className="mb-4 text-xs text-ink-body/60">
-              {isHu
-                ? "Add meg a csapattag emailcímét. A felhasználónak regisztrálva kell lennie."
-                : "Enter the member's email. They must already be registered on Trita."}
+              {t("teamComp.addMemberDesc", loc)}
             </p>
             <TeamInviteForm teamId={teamId} locale={locale as "hu" | "en"} />
           </div>

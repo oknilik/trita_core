@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { IntelligenceMember } from "./TeamIntelligence";
 
 const ZONE_LABELS_EN: Record<string, string> = {
@@ -69,9 +71,10 @@ interface PlacedMember extends IntelligenceMember {
 
 interface MemberDetailPanelProps {
   member: PlacedMember;
+  loc: Locale;
 }
 
-function MemberDetailPanel({ member }: MemberDetailPanelProps) {
+function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
       {/* Header */}
@@ -90,7 +93,7 @@ function MemberDetailPanel({ member }: MemberDetailPanelProps) {
             </span>
             {member.isEstimated && (
               <span className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
-                becsült
+                {t("teamComp.estimatedTag", loc)}
               </span>
             )}
           </div>
@@ -171,6 +174,7 @@ interface TeamMapProps {
 
 export function TeamMap({ members, isHu = true }: TeamMapProps) {
   const ZONE_LABELS = isHu ? ZONE_LABELS_HU : ZONE_LABELS_EN;
+  const loc: Locale = isHu ? "hu" : "en";
   const [selected, setSelected] = useState<string | null>(null);
 
   const placedMembers: PlacedMember[] = members.map((m) => {
@@ -198,7 +202,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
         <div className="flex-1">
           <div className="mb-1 text-center">
             <span className="font-mono text-[9px] uppercase tracking-widest text-muted">
-              ← fejlődési potenciál →
+              {t("teamComp.growthPotentialAxis", loc)}
             </span>
           </div>
 
@@ -209,7 +213,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                 className="font-mono text-[8px] uppercase tracking-widest text-muted"
                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
               >
-                magas → alacsony
+                {t("teamComp.yAxisLabel", loc)}
               </span>
             </div>
 
@@ -262,15 +266,15 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
 
               {/* X-axis labels */}
               <div className="mt-1.5 grid grid-cols-3 gap-1.5">
-                {["alacsony", "közép", "magas"].map((l) => (
-                  <div key={l} className="text-center font-mono text-[8px] text-muted">
-                    {l}
+                {(["xLow", "xMid", "xHigh"] as const).map((k) => (
+                  <div key={k} className="text-center font-mono text-[8px] text-muted">
+                    {t(`teamComp.${k}`, loc)}
                   </div>
                 ))}
               </div>
               <div className="mt-0.5 text-center">
                 <span className="font-mono text-[9px] uppercase tracking-widest text-muted">
-                  ← szakmai szint →
+                  {t("teamComp.skillLevelAxis", loc)}
                 </span>
               </div>
             </div>
@@ -280,7 +284,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
         {/* Right: detail panel */}
         <div className="w-full flex-shrink-0 md:w-[260px]">
           {selectedMember ? (
-            <MemberDetailPanel member={selectedMember} />
+            <MemberDetailPanel member={selectedMember} loc={loc} />
           ) : (
             <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-sand">
@@ -289,10 +293,10 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                 </svg>
               </div>
               <p className="text-[12px] font-medium text-ink-body">
-                {isHu ? "Kattints egy avatárra" : "Click on an avatar"}
+                {t("teamComp.clickAvatar", loc)}
               </p>
               <p className="mt-1 text-[11px] text-muted">
-                {isHu ? "a részletes profil megtekintéséhez" : "to view detailed profile"}
+                {t("teamComp.clickAvatarDesc", loc)}
               </p>
             </div>
           )}
@@ -315,7 +319,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
             <path d="M8 5v3.5M8 11v.5" />
           </svg>
           <p className="text-[11px] text-amber-800">
-            Az átlátszó avatárok pozíciója HEXACO-adatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.
+            {t("teamComp.estimationNote", loc)}
           </p>
         </div>
       )}

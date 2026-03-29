@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t, type Locale } from "@/lib/i18n";
 
 interface Team {
   id: string;
@@ -23,7 +24,7 @@ interface CreatedInvite {
 }
 
 export function CandidateInviteForm({ locale, teams, preselectedTeamId }: CandidateInviteFormProps) {
-  const isHu = locale !== "en";
+  const loc: Locale = locale === "en" ? "en" : "hu";
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
     setError(null);
     setCreatedInvite(null);
     if (!name.trim()) {
-      setError(isHu ? "A jelölt neve kötelező." : "Candidate name is required.");
+      setError(t("manager.candidateInvite.nameRequired", loc));
       return;
     }
     setLoading(true);
@@ -65,11 +66,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
       });
       const data = await res.json() as { invite?: CreatedInvite; error?: string };
       if (!res.ok) {
-        setError(
-          isHu
-            ? "Hiba történt a meghívó létrehozása során."
-            : "An error occurred while creating the invite.",
-        );
+        setError(t("manager.candidateInvite.createError", loc));
         return;
       }
       if (data.invite) {
@@ -81,7 +78,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
         router.refresh();
       }
     } catch {
-      setError(isHu ? "Hiba történt. Kérlek próbáld újra." : "An error occurred. Please try again.");
+      setError(t("manager.candidateInvite.genericError", loc));
     } finally {
       setLoading(false);
     }
@@ -101,22 +98,22 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            {isHu ? "Email cím (opcionális)" : "Email address (optional)"}
+            {t("manager.candidateInvite.emailLabel", loc)}
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={isHu ? "jelolt@pelda.hu" : "candidate@example.com"}
+              placeholder={t("manager.candidateInvite.emailPlaceholder", loc)}
               className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            {isHu ? "Jelölt neve" : "Candidate name"}
+            {t("manager.candidateInvite.nameLabel", loc)}
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={isHu ? "Kovács Anna" : "Jane Smith"}
+              placeholder={t("manager.candidateInvite.namePlaceholder", loc)}
               required
               className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             />
@@ -124,26 +121,26 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            {isHu ? "Pozíció (opcionális)" : "Position (optional)"}
+            {t("manager.candidateInvite.positionLabel", loc)}
             <input
               type="text"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
-              placeholder={isHu ? "pl. Frontend fejlesztő, CTO, Sales manager" : "e.g. Frontend dev, CTO, Sales manager"}
+              placeholder={t("manager.candidateInvite.positionPlaceholder", loc)}
               className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
             />
           </label>
           {teams.length > 0 && (
             <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-              {isHu ? "Csapat (opcionális)" : "Team (optional)"}
+              {t("manager.candidateInvite.teamLabel", loc)}
               <select
                 value={teamId}
                 onChange={(e) => setTeamId(e.target.value)}
                 className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
               >
-                <option value="">{isHu ? "— Nincs csapat —" : "— No team —"}</option>
-                {teams.map((t) => (
-                  <option key={t.id} value={t.id}>{t.name}</option>
+                <option value="">{t("manager.candidateInvite.noTeam", loc)}</option>
+                {teams.map((tm) => (
+                  <option key={tm.id} value={tm.id}>{tm.name}</option>
                 ))}
               </select>
             </label>
@@ -151,7 +148,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            {isHu ? "Email nyelve" : "Email language"}
+            {t("manager.candidateInvite.emailLang", loc)}
             <select
               value={inviteLocale}
               onChange={(e) => setInviteLocale(e.target.value as "hu" | "en")}
@@ -175,20 +172,18 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
           className="min-h-[44px] self-start rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
         >
           {loading
-            ? (isHu ? "Létrehozás…" : "Creating…")
-            : (isHu ? "Meghívó létrehozása" : "Create invite")}
+            ? t("manager.candidateInvite.creating", loc)
+            : t("manager.candidateInvite.createInvite", loc)}
         </button>
       </form>
 
       {createdInvite && (
         <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
           <p className="mb-2 text-sm font-semibold text-emerald-800">
-            {isHu ? "Meghívó létrehozva!" : "Invite created!"}
+            {t("manager.candidateInvite.inviteCreated", loc)}
           </p>
           <p className="mb-3 text-xs text-emerald-700">
-            {isHu
-              ? "Másold ki az alábbi linket és küldd el a jelöltnek:"
-              : "Copy the link below and send it to the candidate:"}
+            {t("manager.candidateInvite.copyInstruction", loc)}
           </p>
           <div className="flex items-center gap-2">
             <code className="flex-1 truncate rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs text-gray-700">
@@ -199,7 +194,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
               onClick={handleCopy}
               className="min-h-[44px] shrink-0 rounded-lg border border-emerald-300 bg-white px-4 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
             >
-              {copied ? (isHu ? "Másolva!" : "Copied!") : (isHu ? "Másolás" : "Copy")}
+              {copied ? t("manager.candidateInvite.copied", loc) : t("manager.candidateInvite.copy", loc)}
             </button>
           </div>
         </div>

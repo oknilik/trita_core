@@ -337,7 +337,7 @@ export function HiringDashboard({
                 </div>
               </div>
             ) : creditBalance.available === 0 ? (
-              <RequestCreditsButton orgId={orgId} isHu={locale !== "en"} />
+              <RequestCreditsButton orgId={orgId} locale={locale} />
             ) : null}
           </div>
 

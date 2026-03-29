@@ -29,11 +29,13 @@ function scoreToAlpha(score: number | null): number {
   return 0.1 + (score / 100) * 0.78;
 }
 
-function scoreZone(score: number | null, isHu: boolean): { label: string; textClass: string } {
+import { t, type Locale } from "@/lib/i18n";
+
+function scoreZone(score: number | null, locale: Locale): { label: string; textClass: string } {
   if (score == null) return { label: "–", textClass: "text-gray-400" };
-  if (score >= 70) return { label: isHu ? "Magas" : "High", textClass: "text-gray-800" };
-  if (score >= 40) return { label: isHu ? "Közép" : "Mid", textClass: "text-gray-700" };
-  return { label: isHu ? "Alacsony" : "Low", textClass: "text-gray-700" };
+  if (score >= 70) return { label: t("manager.teamHeatmap.scoreHigh", locale), textClass: "text-gray-800" };
+  if (score >= 40) return { label: t("manager.teamHeatmap.scoreMid", locale), textClass: "text-gray-700" };
+  return { label: t("manager.teamHeatmap.scoreLow", locale), textClass: "text-gray-700" };
 }
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
@@ -69,7 +71,7 @@ const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
 
 export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
   const maxNameLen = 16;
-  const locale = isHu ? "hu" : "en";
+  const locale: Locale = isHu ? "hu" : "en";
 
   return (
     <div className="flex flex-col gap-8">
@@ -79,7 +81,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
           <thead>
             <tr>
               <th className="pb-4 pr-6 text-left text-xs font-semibold text-gray-400 min-w-[130px]">
-                {isHu ? "Csapattag" : "Member"}
+                {t("manager.teamHeatmap.member", locale)}
               </th>
               {dims.map((dim) => (
                 <th key={dim.code} className="pb-4 px-2 text-center min-w-[80px]">
@@ -117,7 +119,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                 {dims.map((dim) => {
                   const score = row.scores[dim.code];
                   const alpha = scoreToAlpha(score);
-                  const { textClass } = scoreZone(score, isHu);
+                  const { textClass } = scoreZone(score, locale);
 
                   return (
                     <td key={dim.code} className="px-2 py-2">
@@ -134,9 +136,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                         title={
                           score != null
                             ? `${dim.label}: ${score}%`
-                            : isHu
-                            ? "Nincs kitöltve"
-                            : "Not completed"
+                            : t("manager.teamHeatmap.notCompleted", locale)
                         }
                       >
                         {score != null ? (
@@ -146,7 +146,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                               <span className="text-[10px] font-semibold opacity-70">%</span>
                             </span>
                             <span className={`text-[9px] font-semibold uppercase tracking-wide ${textClass} opacity-70`}>
-                              {scoreZone(score, isHu).label}
+                              {scoreZone(score, locale).label}
                             </span>
                           </>
                         ) : (
@@ -170,18 +170,18 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
             <div className="h-4 w-10 rounded-md bg-indigo-300" />
             <div className="h-4 w-10 rounded-md bg-indigo-500" />
           </div>
-          <span>{isHu ? "Alacsony → Magas pontszám" : "Low → High score"}</span>
+          <span>{t("manager.teamHeatmap.legendRange", locale)}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="h-4 w-10 rounded-md border border-gray-200 bg-gray-50" />
-          <span>{isHu ? "Nincs kitöltött teszt" : "No assessment yet"}</span>
+          <span>{t("manager.teamHeatmap.legendNoAssessment", locale)}</span>
         </div>
       </div>
 
       {/* Dimension descriptions */}
       <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
-          {isHu ? "Dimenziók magyarázata" : "Dimension guide"}
+          {t("manager.teamHeatmap.dimensionGuide", locale)}
         </p>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
           {dims.map((dim) => {

@@ -1,5 +1,7 @@
 "use client";
 
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import type { TeamPatternResult, AxisDetail } from "@/lib/team-pattern";
 import { AXIS_LABELS, PATTERN_NAMES } from "@/lib/team-pattern";
 
@@ -101,23 +103,22 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
 // ── Main component ──────────────────────────────────────────
 
 export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: TeamPatternCardProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   // Not enough data
   if (!data) {
     return (
       <div className="rounded-2xl border border-sand bg-white shadow-sm">
         <div className="border-b border-warm-mid px-6 py-4">
           <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-            // {isHu ? "csapatminta" : "team pattern"}
+            // {t("teamComp.teamPatternEyebrow", loc)}
           </p>
           <h2 className="mt-0.5 font-fraunces text-xl text-ink">
-            {isHu ? "Domináns működési mintázat" : "Dominant operating pattern"}
+            {t("teamComp.dominantPattern", loc)}
           </h2>
         </div>
         <div className="p-6">
           <p className="text-sm text-ink-body">
-            {isHu
-              ? `A mintázat kiszámításához legalább 3 kitöltött értékelés szükséges. Jelenleg: ${totalMembers} tagból ${0} töltötte ki.`
-              : `Pattern calculation requires at least 3 completed assessments.`}
+            {t("teamComp.patternRequiresData", loc).replace("{total}", String(totalMembers)).replace("{completed}", "0")}
           </p>
         </div>
       </div>
@@ -132,7 +133,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
       {/* Header */}
       <div className="border-b border-warm-mid px-6 py-4">
         <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-          // {isHu ? "csapatminta" : "team pattern"}
+          // {t("teamComp.teamPatternEyebrow", loc)}
         </p>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-2">
           <h2 className="font-fraunces text-3xl text-ink md:text-4xl">
@@ -144,9 +145,9 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
           {/* Confidence badge */}
           <span
             className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${confColors.bg} ${confColors.text} ${confColors.border}`}
-            title={`${isHu ? "Minta" : "Sample"}: ${data.confidenceFactors.sampleSize} · ${isHu ? "Stabilitás" : "Stability"}: ${data.confidenceFactors.thresholdProximity} · ${isHu ? "Mintázat-tisztaság" : "Pattern clarity"}: ${data.confidenceFactors.patternClarity}`}
+            title={`${t("teamComp.sampleLabel", loc)}: ${data.confidenceFactors.sampleSize} · ${t("teamComp.stabilityLabel", loc)}: ${data.confidenceFactors.thresholdProximity} · ${t("teamComp.patternClarityLabel", loc)}: ${data.confidenceFactors.patternClarity}`}
           >
-            {data.confidence} {isHu ? "pontosság" : "confidence"}
+            {data.confidence} {t("teamComp.confidenceLabel", loc)}
           </span>
         </div>
         {content && (
@@ -181,7 +182,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
           <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-xl bg-[#f0fdf4] border border-[#a0d8c4] p-4">
               <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#059669]">
-                // {isHu ? "erősségek" : "strengths"}
+                // {t("teamComp.strengthsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
                 {content.strengths.map((s, i) => (
@@ -194,7 +195,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             </div>
             <div className="rounded-xl bg-[#fff8ee] border border-[#f5d99a] p-4">
               <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#b45309]">
-                // {isHu ? "vakfoltok" : "blind spots"}
+                // {t("teamComp.blindSpotsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
                 {content.blindSpots.map((s, i) => (
@@ -212,13 +213,13 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {content && content.leaderActions.length >= 3 && (
           <div className="mb-5">
             <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-bronze">
-              // {isHu ? "ajánlott következő lépések" : "recommended next steps"}
+              // {t("teamComp.nextStepsEyebrow", loc)}
             </p>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {[
-                { timing: isHu ? "Ezen a héten" : "This week",    action: content.leaderActions[0], accent: "#3d6b5e" },
-                { timing: isHu ? "Ezen a hónapban" : "This month", action: content.leaderActions[1], accent: "#8B5CF6" },
-                { timing: isHu ? "Rendszeresen" : "Ongoing",       action: content.leaderActions[2], accent: "#10B981" },
+                { timing: t("teamComp.thisWeek", loc),  action: content.leaderActions[0], accent: "#3d6b5e" },
+                { timing: t("teamComp.thisMonth", loc), action: content.leaderActions[1], accent: "#8B5CF6" },
+                { timing: t("teamComp.ongoing", loc),   action: content.leaderActions[2], accent: "#10B981" },
               ].map(({ timing, action, accent }) => (
                 <div
                   key={timing}
@@ -239,7 +240,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
               href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
               className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-white px-5 text-sm font-semibold text-bronze transition hover:bg-sage hover:text-white"
             >
-              {isHu ? "Megnézem a csapatmintát →" : "Explore team pattern →"}
+              {t("teamComp.explorePattern", loc)}
             </a>
           </div>
         )}
@@ -247,7 +248,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {/* Alternative pattern */}
         {data.alternativeName && (
           <p className="mb-4 text-sm text-ink-body">
-            {isHu ? "Közeli alternatív mintázat:" : "Closest alternative pattern:"}{" "}
+            {t("teamComp.alternativePattern", loc)}{" "}
             <span className="font-semibold text-ink">{data.alternativeName}</span>
           </p>
         )}
@@ -255,17 +256,15 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {/* Meta */}
         <p className="mb-4 font-mono text-[10px] text-muted">
           {data.membersWithAssessment}/{data.memberCount}{" "}
-          {isHu ? "tag értékelése alapján" : "member assessments"}
+          {t("teamComp.memberAssessments", loc)}
           {data.missingMembers > 0 && (
-            <> · {data.missingMembers} {isHu ? "hiányzó adat" : "missing"}</>
+            <> · {data.missingMembers} {t("teamComp.missingData", loc)}</>
           )}
         </p>
 
         {/* Framing note */}
         <p className="border-t border-sand pt-4 text-xs italic text-muted">
-          {isHu
-            ? "A csapat jelenlegi önértékelés-alapú működési mintázatának értelmezése. Nem diagnózis, nem teljesítménycímke — idővel változhat."
-            : "This is an interpretation of the team's current self-assessment-based operating pattern. Not a diagnosis or performance label — it can change over time."}
+          {t("teamComp.framingNote", loc)}
         </p>
       </div>
     </div>

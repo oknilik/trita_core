@@ -2,6 +2,8 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState, useCallback } from "react";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { PrimaryTabs } from "./PrimaryTabs";
 import { OrgCampaignsTab } from "./OrgCampaignsTab";
 import { OrgOverviewTab } from "./OrgOverviewTab";
@@ -57,21 +59,23 @@ export function OrgPageShell({
 
   const activeCampaignCount = pageData.activeCampaignCount;
 
+  const loc = locale as Locale;
+
   const tabs = [
-    { key: "overview", label: isHu ? "Áttekintés" : "Overview" },
+    { key: "overview", label: t("org.shell.tabOverview", loc) },
     {
       key: "campaigns",
-      label: isHu ? "Kampányok" : "Campaigns",
+      label: t("org.shell.tabCampaigns", loc),
       badge: activeCampaignCount > 0 ? activeCampaignCount : undefined,
     },
     {
       key: "teams",
-      label: isHu ? "Csapatok" : "Teams",
+      label: t("org.shell.tabTeams", loc),
       badge: teams.length > 0 ? teams.length : undefined,
     },
     {
       key: "members",
-      label: isHu ? "Tagok" : "Members",
+      label: t("org.shell.tabMembers", loc),
       badge: members.length + pendingInvites.length,
     },
   ];

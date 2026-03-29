@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface Campaign {
   id: string;
@@ -28,22 +30,22 @@ interface CampaignListProps {
   isHu: boolean;
 }
 
-function statusBadge(status: string, isHu: boolean) {
+function statusBadge(status: string, loc: Locale) {
   if (status === "ACTIVE")
     return (
       <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-        {isHu ? "Aktív" : "Active"}
+        {t("org.list.statusActive", loc)}
       </span>
     );
   if (status === "CLOSED")
     return (
       <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
-        {isHu ? "Lezárva" : "Closed"}
+        {t("org.list.statusClosed", loc)}
       </span>
     );
   return (
     <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
-      {isHu ? "Vázlat" : "Draft"}
+      {t("org.list.statusDraft", loc)}
     </span>
   );
 }
@@ -52,14 +54,14 @@ function AddMembersPanel({
   orgId,
   campaignId,
   members,
-  isHu,
+  loc,
   onAdded,
   onClose,
 }: {
   orgId: string;
   campaignId: string;
   members: OrgMember[];
-  isHu: boolean;
+  loc: Locale;
   onAdded: (count: number) => void;
   onClose: () => void;
 }) {
@@ -108,11 +110,11 @@ function AddMembersPanel({
       className="mt-2 rounded-lg border border-sand bg-cream p-3"
     >
       <p className="mb-2 font-mono text-xs uppercase tracking-widest text-muted">
-        {isHu ? "// résztvevők hozzáadása" : "// add participants"}
+        {t("org.list.addEyebrow", loc)}
       </p>
       {members.length === 0 ? (
         <p className="text-xs text-muted">
-          {isHu ? "Nincsenek tagok." : "No members."}
+          {t("org.list.noMembers", loc)}
         </p>
       ) : (
         <div className="mb-3 max-h-40 overflow-y-auto space-y-1">
@@ -142,15 +144,15 @@ function AddMembersPanel({
           className="min-h-[36px] rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading
-            ? isHu ? "Hozzáadás…" : "Adding…"
-            : isHu ? `Hozzáadás (${selected.size})` : `Add (${selected.size})`}
+            ? t("org.list.adding", loc)
+            : tf("org.list.addButton", loc, { count: selected.size })}
         </button>
         <button
           type="button"
           onClick={onClose}
           className="min-h-[36px] rounded-lg border border-sand px-4 text-xs font-semibold text-ink-body transition hover:bg-sand"
         >
-          {isHu ? "Mégse" : "Cancel"}
+          {t("org.list.cancel", loc)}
         </button>
       </div>
     </form>
@@ -164,6 +166,7 @@ export function CampaignList({
   canManage,
   isHu,
 }: CampaignListProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   const [campaigns, setCampaigns] = useState(initialCampaigns);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -210,9 +213,7 @@ export function CampaignList({
       {campaigns.length === 0 ? (
         <div className="mb-6 rounded-xl border border-sand bg-cream p-8 text-center">
           <p className="text-sm text-ink-body/60">
-            {isHu
-              ? "Még nincs 360° kampány. Hozz létre egyet lentebb!"
-              : "No 360° campaigns yet. Create one below!"}
+            {t("org.list.noCampaigns", loc)}
           </p>
         </div>
       ) : (
@@ -234,16 +235,16 @@ export function CampaignList({
                   )}
                   <p className="mt-0.5 text-xs text-ink-body/50">
                     {c._count.participants}{" "}
-                    {isHu ? "résztvevő" : c._count.participants === 1 ? "participant" : "participants"}
+                    {t(c._count.participants === 1 ? "org.list.participantCount" : "org.list.participantsCount", loc)}
                   </p>
                 </Link>
                 <div className="flex shrink-0 items-center gap-2">
-                  {statusBadge(c.status, isHu)}
+                  {statusBadge(c.status, loc)}
                   {canManage && c.status !== "CLOSED" && (
                     <button
                       onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
                       className="min-h-[32px] rounded-lg border border-sand px-2.5 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
-                      title={isHu ? "Résztvevők kezelése" : "Manage participants"}
+                      title={t("org.list.manageTitle", loc)}
                     >
                       +
                     </button>
@@ -255,7 +256,7 @@ export function CampaignList({
                   orgId={orgId}
                   campaignId={c.id}
                   members={members}
-                  isHu={isHu}
+                  loc={loc}
                   onAdded={(count) => {
                     setCampaigns((prev) =>
                       prev.map((x) =>
@@ -276,17 +277,17 @@ export function CampaignList({
       {canManage && (
         <div className="border-t border-sand pt-5">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// új kampány" : "// new campaign"}
+            {t("org.list.newEyebrow", loc)}
           </p>
           <h3 className="mb-3 text-sm font-semibold text-ink">
-            {isHu ? "Új 360° kampány" : "New 360° campaign"}
+            {t("org.list.newTitle", loc)}
           </h3>
           <form onSubmit={handleCreate} className="flex flex-col gap-3">
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={isHu ? "Kampány neve" : "Campaign name"}
+              placeholder={t("org.list.namePlaceholder", loc)}
               maxLength={100}
               required
               className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
@@ -295,7 +296,7 @@ export function CampaignList({
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder={isHu ? "Leírás (opcionális)" : "Description (optional)"}
+              placeholder={t("org.list.descPlaceholder", loc)}
               maxLength={500}
               className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
             />
@@ -308,8 +309,8 @@ export function CampaignList({
               className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
-                ? isHu ? "Létrehozás…" : "Creating…"
-                : isHu ? "Kampány létrehozása" : "Create campaign"}
+                ? t("org.list.creating", loc)
+                : t("org.list.createButton", loc)}
             </button>
           </form>
         </div>

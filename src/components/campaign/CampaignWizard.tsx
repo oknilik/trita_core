@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface Member {
   userId: string;
@@ -11,12 +13,12 @@ interface Member {
 interface CampaignWizardProps {
   orgId: string;
   members: Member[];
-  isHu: boolean;
+  locale: Locale;
 }
 
 type Step = 1 | 2 | 3;
 
-export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
+export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) {
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [name, setName] = useState("");
@@ -26,9 +28,9 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
   const [error, setError] = useState<string | null>(null);
 
   const STEP_LABELS: Record<Step, string> = {
-    1: isHu ? "Részletek" : "Details",
-    2: isHu ? "Tagok" : "Members",
-    3: isHu ? "Megerősítés" : "Confirm",
+    1: t("campaignWiz.stepDetails", locale),
+    2: t("campaignWiz.stepMembers", locale),
+    3: t("campaignWiz.stepConfirm", locale),
   };
 
   function toggleMember(userId: string) {
@@ -87,7 +89,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
       router.refresh();
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : isHu ? "Ismeretlen hiba" : "Unknown error"
+        err instanceof Error ? err.message : t("campaignWiz.unknownError", locale)
       );
       setLoading(false);
     }
@@ -140,12 +142,12 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
       {step === 1 && (
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <h2 className="mb-5 font-fraunces text-xl text-ink">
-            {isHu ? "Kampány adatai" : "Campaign details"}
+            {t("campaignWiz.detailsTitle", locale)}
           </h2>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-[13px] font-semibold text-ink">
-                {isHu ? "Kampány neve" : "Campaign name"}
+                {t("campaignWiz.nameLabel", locale)}
                 <span className="ml-1 text-bronze">*</span>
               </label>
               <input
@@ -153,15 +155,15 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
-                placeholder={isHu ? "pl. Q2 360° visszajelzés" : "e.g. Q2 360° feedback"}
+                placeholder={t("campaignWiz.namePlaceholder", locale)}
                 className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-sage/50 focus:outline-none"
               />
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-[13px] font-semibold text-ink">
-                {isHu ? "Leírás" : "Description"}
+                {t("campaignWiz.descLabel", locale)}
                 <span className="ml-1.5 text-[11px] font-normal text-muted">
-                  {isHu ? "(opcionális)" : "(optional)"}
+                  {t("campaignWiz.optional", locale)}
                 </span>
               </label>
               <textarea
@@ -169,7 +171,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 onChange={(e) => setDescription(e.target.value)}
                 maxLength={500}
                 rows={3}
-                placeholder={isHu ? "Rövid leírás a kampányról..." : "Brief description..."}
+                placeholder={t("campaignWiz.descPlaceholder", locale)}
                 className="w-full resize-none rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-sage/50 focus:outline-none"
               />
               <p className="text-right font-mono text-[10px] text-muted">
@@ -184,7 +186,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               onClick={() => setStep(2)}
               className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isHu ? "Tovább →" : "Next →"}
+              {t("campaignWiz.next", locale)}
             </button>
           </div>
         </div>
@@ -195,7 +197,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="font-fraunces text-xl text-ink">
-              {isHu ? "Résztvevők kiválasztása" : "Select participants"}
+              {t("campaignWiz.selectParticipants", locale)}
             </h2>
             {members.length > 0 && (
               <button
@@ -204,15 +206,15 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 className="text-[12px] font-semibold text-bronze hover:underline"
               >
                 {selectedIds.size === members.length
-                  ? isHu ? "Mind törlése" : "Deselect all"
-                  : isHu ? "Mindenki" : "Select all"}
+                  ? t("campaignWiz.deselectAll", locale)
+                  : t("campaignWiz.selectAll", locale)}
               </button>
             )}
           </div>
 
           {members.length === 0 ? (
             <p className="text-sm text-muted">
-              {isHu ? "Nincsenek tagok a szervezetben." : "No members in this organization."}
+              {t("campaignWiz.noMembers", locale)}
             </p>
           ) : (
             <div className="flex flex-col divide-y divide-sand">
@@ -242,14 +244,14 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               onClick={() => setStep(1)}
               className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
-              ← {isHu ? "Vissza" : "Back"}
+              ← {t("campaignWiz.back", locale)}
             </button>
             <button
               type="button"
               onClick={() => setStep(3)}
               className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
-              {isHu ? "Tovább →" : "Next →"}
+              {t("campaignWiz.next", locale)}
             </button>
           </div>
         </div>
@@ -259,14 +261,14 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
       {step === 3 && (
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <h2 className="mb-5 font-fraunces text-xl text-ink">
-            {isHu ? "Összefoglalás" : "Summary"}
+            {t("campaignWiz.summary", locale)}
           </h2>
 
           <div className="flex flex-col gap-4">
             {/* Campaign details */}
             <div className="rounded-xl border border-sand bg-cream p-4">
               <p className="mb-1 font-mono text-[9px] uppercase tracking-widest text-muted">
-                {isHu ? "// kampány neve" : "// campaign name"}
+                {t("campaignWiz.campaignNameLabel", locale)}
               </p>
               <p className="text-[15px] font-semibold text-ink">{name}</p>
               {description && (
@@ -277,15 +279,11 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
             {/* Participants */}
             <div className="rounded-xl border border-sand bg-cream p-4">
               <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-muted">
-                {isHu
-                  ? `// résztvevők · ${selectedIds.size} fő`
-                  : `// participants · ${selectedIds.size}`}
+                {tf("campaignWiz.participantsLabel", locale, { count: selectedIds.size })}
               </p>
               {selectedIds.size === 0 ? (
                 <p className="text-sm text-muted">
-                  {isHu
-                    ? "Nincs kiválasztva — később is hozzáadhatók."
-                    : "None selected — can be added later."}
+                  {t("campaignWiz.noneSelected", locale)}
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-1.5">
@@ -310,9 +308,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
                 </svg>
               </span>
               <p className="text-[11px] text-amber-800">
-                {isHu
-                  ? "A kampány DRAFT státuszban jön létre. Az aktiválást a kampány oldalán végezheted el."
-                  : "Campaign is created in DRAFT status. You can activate it from the campaign page."}
+                {t("campaignWiz.draftNote", locale)}
               </p>
             </div>
           </div>
@@ -330,7 +326,7 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               disabled={loading}
               className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
             >
-              ← {isHu ? "Vissza" : "Back"}
+              ← {t("campaignWiz.back", locale)}
             </button>
             <button
               type="button"
@@ -339,8 +335,8 @@ export function CampaignWizard({ orgId, members, isHu }: CampaignWizardProps) {
               className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
-                ? isHu ? "Létrehozás..." : "Creating..."
-                : isHu ? "Kampány létrehozása" : "Create campaign"}
+                ? t("campaignWiz.creating", locale)
+                : t("campaignWiz.createCampaign", locale)}
             </button>
           </div>
         </div>

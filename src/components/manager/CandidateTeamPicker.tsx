@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { t, type Locale } from "@/lib/i18n";
 
 type Team = { id: string; name: string };
 
@@ -21,6 +22,7 @@ export function CandidateTeamPicker({
   const [selected, setSelected] = useState<string>(currentTeamId ?? "");
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const locale: Locale = isHu ? "hu" : "en";
 
   const isDirty = selected !== (currentTeamId ?? "");
 
@@ -33,7 +35,7 @@ export function CandidateTeamPicker({
       body: JSON.stringify({ teamId: selected || null }),
     });
     if (!res.ok) {
-      setError(isHu ? "Hiba történt. Próbáld újra." : "Something went wrong. Please try again.");
+      setError(t("manager.candidateTeamPicker.error", locale));
       return;
     }
     setSaved(true);
@@ -47,9 +49,9 @@ export function CandidateTeamPicker({
         onChange={(e) => { setSelected(e.target.value); setSaved(false); }}
         className="flex-1 min-w-[180px] rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
       >
-        <option value="">{isHu ? "— Nincs csapat —" : "— No team —"}</option>
-        {teams.map((t) => (
-          <option key={t.id} value={t.id}>{t.name}</option>
+        <option value="">{t("manager.candidateTeamPicker.noTeam", locale)}</option>
+        {teams.map((tm) => (
+          <option key={tm.id} value={tm.id}>{tm.name}</option>
         ))}
       </select>
       <button
@@ -57,11 +59,11 @@ export function CandidateTeamPicker({
         disabled={!isDirty || isPending}
         className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-40"
       >
-        {isPending ? (isHu ? "Mentés…" : "Saving…") : (isHu ? "Mentés" : "Save")}
+        {isPending ? t("manager.candidateTeamPicker.saving", locale) : t("manager.candidateTeamPicker.save", locale)}
       </button>
       {saved && !isDirty && (
         <span className="text-xs font-medium text-emerald-600">
-          {isHu ? "Mentve!" : "Saved!"}
+          {t("manager.candidateTeamPicker.saved", locale)}
         </span>
       )}
       {error && (

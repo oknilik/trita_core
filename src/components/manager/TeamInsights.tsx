@@ -11,6 +11,8 @@ interface HeatmapRow {
   testType: string | null;
 }
 
+import { t, tf, type Locale } from "@/lib/i18n";
+
 interface TeamInsightsProps {
   rows: HeatmapRow[];
   dims: DimInfo[];
@@ -195,13 +197,14 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
     : null;
 
   const lang = isHu ? "hu" : "en";
+  const locale: Locale = lang;
 
   return (
     <div className="flex flex-col gap-6">
       {/* Average profile bars */}
       <div>
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
-          {isHu ? "Csapatátlag dimenzióként" : "Team average by dimension"}
+          {t("manager.teamInsights.avgByDimension", locale)}
         </p>
         <div className="flex flex-col gap-3">
           {dims.map((dim) => {
@@ -255,7 +258,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
         </div>
         {scored.length > 1 && (
           <p className="mt-2 text-[10px] text-gray-400">
-            {isHu ? "±: szórás a csapaton belül" : "±: standard deviation within the team"}
+            {t("manager.teamInsights.stdDevHint", locale)}
           </p>
         )}
       </div>
@@ -264,7 +267,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
       {rankedDims.length >= 2 && (
         <div>
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
-            {isHu ? "Csapatdinamika" : "Team dynamics"}
+            {t("manager.teamInsights.teamDynamics", locale)}
           </p>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {/* Strength */}
@@ -273,7 +276,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 <div className="flex items-center gap-2 text-green-700">
                   <StrengthIcon />
                   <span className="text-xs font-semibold uppercase tracking-[0.1em]">
-                    {isHu ? "Csapat erőssége" : "Team strength"}
+                    {t("manager.teamInsights.teamStrength", locale)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -302,7 +305,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 <div className="flex items-center gap-2 text-amber-700">
                   <GapIcon />
                   <span className="text-xs font-semibold uppercase tracking-[0.1em]">
-                    {isHu ? "Fejlesztési terület" : "Growth area"}
+                    {t("manager.teamInsights.growthArea", locale)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -331,7 +334,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 <div className="flex items-center gap-2 text-indigo-700">
                   <DiversityIcon />
                   <span className="text-xs font-semibold uppercase tracking-[0.1em]">
-                    {isHu ? "Legnagyobb sokszínűség" : "Most diverse"}
+                    {t("manager.teamInsights.mostDiverse", locale)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -349,9 +352,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-gray-600">
-                  {isHu
-                    ? "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre — ez gazdag vita- és kreatív potenciált jelent."
-                    : "Team members bring diverse approaches and perspectives to this area — this represents rich discussion and creative potential."}
+                  {t("manager.teamInsights.diversityDesc", locale)}
                 </p>
               </div>
             )}
@@ -361,9 +362,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
 
       {scored.length < rows.length && (
         <p className="text-xs text-gray-400">
-          {isHu
-            ? `Az elemzés ${scored.length} kitöltött teszten alapul (${rows.length - scored.length} tag még nem töltötte ki).`
-            : `Analysis based on ${scored.length} completed assessments (${rows.length - scored.length} member${rows.length - scored.length !== 1 ? "s" : ""} haven't completed yet).`}
+          {tf("manager.teamInsights.analysisBasis", locale, { scored: scored.length, remaining: rows.length - scored.length })}
         </p>
       )}
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { t, type Locale } from "@/lib/i18n";
 
 interface Props {
   inviteId: string;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function PendingInviteResendButton({ inviteId, isHu }: Props) {
+  const locale: Locale = isHu ? "hu" : "en";
   const [state, setState] = useState<"idle" | "loading" | "sent" | "error">("idle");
 
   async function handleResend() {
@@ -27,7 +29,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
   if (state === "sent") {
     return (
       <span className="text-xs font-semibold text-emerald-600">
-        {isHu ? "Elküldve ✓" : "Sent ✓"}
+        {t("manager.pendingInviteResend.sent", locale)}
       </span>
     );
   }
@@ -39,7 +41,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
         onClick={handleResend}
         className="text-xs font-semibold text-rose-600 hover:text-rose-700"
       >
-        {isHu ? "Hiba – újra?" : "Error – retry?"}
+        {t("manager.pendingInviteResend.errorRetry", locale)}
       </button>
     );
   }
@@ -52,8 +54,8 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
       className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-50"
     >
       {state === "loading"
-        ? (isHu ? "Küldés…" : "Sending…")
-        : (isHu ? "Újraküld" : "Resend")}
+        ? t("manager.pendingInviteResend.sending", locale)
+        : t("manager.pendingInviteResend.resend", locale)}
     </button>
   );
 }

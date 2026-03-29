@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
 
 interface OrgSetupWizardProps {
@@ -15,7 +17,7 @@ type Step = "name" | "avatar" | "invite";
 
 export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) {
   const router = useRouter();
-  const isHu = locale !== "en";
+  const loc = locale as Locale;
   const [step, setStep] = useState<Step>("name");
   const [name, setName] = useState(orgName);
   const [avatarUrl, setAvatarUrl] = useState<string>(AVATAR_OPTIONS[0] ?? "");
@@ -37,7 +39,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
           body: JSON.stringify({ name: name.trim() }),
         });
         if (!res.ok) {
-          setError(isHu ? "Hiba a névmentésnél." : "Failed to save name.");
+          setError(t("org.setup.nameSaveError", loc));
           return;
         }
       }
@@ -59,7 +61,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       window.dispatchEvent(new CustomEvent("profile-updated"));
       setStep("invite");
     } catch {
-      setError(isHu ? "Hiba az avatar mentésekor." : "Failed to save avatar.");
+      setError(t("org.setup.avatarSaveError", loc));
     } finally {
       setLoading(false);
     }
@@ -91,7 +93,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       router.push(`/org/${orgId}`);
       router.refresh();
     } catch {
-      setError(isHu ? "Hálózati hiba." : "Network error.");
+      setError(t("org.setup.networkError", loc));
     } finally {
       setLoading(false);
     }
@@ -121,17 +123,17 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       {step === "name" && (
         <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// 1. lépés" : "// step 1"}
+            {t("org.setup.step1Eyebrow", loc)}
           </p>
           <h1 className="font-fraunces text-xl text-ink mb-2">
-            {isHu ? "Szervezet neve" : "Organization name"}
+            {t("org.setup.step1Title", loc)}
           </h1>
           <p className="text-sm text-ink-body/70 mb-6">
-            {isHu ? "Erősítsd meg vagy módosítsd a szervezet nevét." : "Confirm or update your organization name."}
+            {t("org.setup.step1Subtitle", loc)}
           </p>
           <form onSubmit={handleNameNext} className="flex flex-col gap-4">
             <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-              {isHu ? "Szervezet neve" : "Name"}
+              {t("org.setup.nameLabel", loc)}
               <input
                 type="text"
                 value={name}
@@ -147,7 +149,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               disabled={loading || !name.trim()}
               className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
-              {loading ? "..." : isHu ? "Tovább" : "Next"}
+              {loading ? "..." : t("org.setup.next", loc)}
             </button>
           </form>
         </div>
@@ -156,13 +158,13 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       {step === "avatar" && (
         <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// 2. lépés" : "// step 2"}
+            {t("org.setup.step2Eyebrow", loc)}
           </p>
           <h1 className="font-fraunces text-xl text-ink mb-2">
-            {isHu ? "Válassz avatart" : "Choose an avatar"}
+            {t("org.setup.step2Title", loc)}
           </h1>
           <p className="text-sm text-ink-body/70 mb-6">
-            {isHu ? "Ez jelenik meg a profilodban." : "This will appear on your profile."}
+            {t("org.setup.step2Subtitle", loc)}
           </p>
           <div className="grid grid-cols-4 gap-2 mb-4">
             {AVATAR_OPTIONS.slice(0, avatarsShown).map((src) => (
@@ -192,9 +194,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
               className="mb-6 text-xs font-medium text-bronze hover:underline"
             >
-              {isHu
-                ? `+ Összes megjelenítése (${AVATAR_OPTIONS.length})`
-                : `+ Show all (${AVATAR_OPTIONS.length})`}
+              {tf("org.setup.showAll", loc, { count: AVATAR_OPTIONS.length })}
             </button>
           )}
           {error && <p className="mb-3 text-xs text-rose-600">{error}</p>}
@@ -204,7 +204,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               onClick={() => setStep("name")}
               className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
             >
-              {isHu ? "Vissza" : "Back"}
+              {t("org.setup.back", loc)}
             </button>
             <button
               type="button"
@@ -212,7 +212,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               disabled={loading}
               className="flex-1 min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
-              {loading ? "..." : isHu ? "Tovább" : "Next"}
+              {loading ? "..." : t("org.setup.next", loc)}
             </button>
           </div>
         </div>
@@ -221,15 +221,13 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       {step === "invite" && (
         <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
-            {isHu ? "// 3. lépés" : "// step 3"}
+            {t("org.setup.step3Eyebrow", loc)}
           </p>
           <h1 className="font-fraunces text-xl text-ink mb-2">
-            {isHu ? "Tagok meghívása" : "Invite members"}
+            {t("org.setup.step3Title", loc)}
           </h1>
           <p className="text-sm text-ink-body/70 mb-6">
-            {isHu
-              ? "Hívj meg tagokat az induláshoz (opcionális). Emailcímek, akik még nem regisztráltak, meghívót kapnak."
-              : "Invite members to get started (optional). Unregistered emails will receive an invite."}
+            {t("org.setup.step3Subtitle", loc)}
           </p>
           <div className="flex flex-col gap-3 mb-6">
             {inviteEmails.map((email, i) => (
@@ -242,7 +240,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                   next[i] = e.target.value;
                   setInviteEmails(next);
                 }}
-                placeholder={`${isHu ? "Email" : "Email"} ${i + 1}`}
+                placeholder={`Email ${i + 1}`}
                 className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
               />
             ))}
@@ -254,7 +252,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               onClick={() => setStep("avatar")}
               className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
             >
-              {isHu ? "Vissza" : "Back"}
+              {t("org.setup.back", loc)}
             </button>
             <button
               type="button"
@@ -262,7 +260,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               disabled={loading}
               className="flex-1 min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
             >
-              {loading ? "..." : isHu ? "Befejezés" : "Finish setup"}
+              {loading ? "..." : t("org.setup.finish", loc)}
             </button>
           </div>
         </div>

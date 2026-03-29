@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { TeamPatternCard } from "./TeamPatternCard";
 import {
   generateTeamSummary,
@@ -90,6 +92,7 @@ export function TeamOverviewTab({
   dateLocale,
   locale,
 }: TeamOverviewTabProps) {
+  const loc: Locale = isHu ? "hu" : "en";
   const strengthInsights = isHu ? STRENGTH_INSIGHTS_HU : STRENGTH_INSIGHTS_EN;
   const growthInsights = isHu ? GROWTH_INSIGHTS_HU : GROWTH_INSIGHTS_EN;
 
@@ -145,17 +148,17 @@ export function TeamOverviewTab({
                   {activeCampaign.name}
                 </p>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                  {isHu ? "Aktív" : "Active"}
+                  {t("teamComp.activeBadge", loc)}
                 </span>
               </div>
               <p className="mt-0.5 text-xs text-ink-body">
                 {activeCampaign.teamSelfDoneCount}/
                 {activeCampaign.teamParticipantCount}{" "}
-                {isHu ? "önértékelés" : "self-assessment"} ·{" "}
+                {t("teamComp.selfAssessmentLabel", loc)} ·{" "}
                 {activeCampaign.teamObserverDoneCount}/
                 {activeCampaign.teamParticipantCount}{" "}
-                {isHu ? "observer" : "observer"} ·{" "}
-                {activeCampaign.daysActive} {isHu ? "nap" : "days"}
+                {t("teamComp.observerLabel", loc)} ·{" "}
+                {activeCampaign.daysActive} {t("teamComp.daysLabel", loc)}
               </p>
             </div>
           </div>
@@ -163,7 +166,7 @@ export function TeamOverviewTab({
             href={`/org/${activeCampaign.orgId}/campaigns/${activeCampaign.id}`}
             className="min-h-[36px] self-start md:self-auto inline-flex items-center rounded-lg bg-[#1D9E75] px-4 text-xs font-semibold text-white transition hover:bg-[#158c66] whitespace-nowrap shrink-0"
           >
-            {isHu ? "Kampány nézete →" : "View campaign →"}
+            {t("teamComp.viewCampaign", loc)}
           </Link>
         </div>
       )}
@@ -172,24 +175,20 @@ export function TeamOverviewTab({
       {data.completedCount === 0 && (
         <div className="rounded-2xl border-2 border-dashed border-sand bg-white p-8 text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            // {isHu ? "nincs adat" : "no data yet"}
+            // {t("teamComp.noDataEyebrow", loc)}
           </p>
           <p className="mt-3 font-fraunces text-xl text-ink">
-            {isHu
-              ? "Még nincs kitöltött értékelés"
-              : "No completed assessments yet"}
+            {t("teamComp.noAssessmentsTitle", loc)}
           </p>
           <p className="mt-2 text-sm text-ink-body">
-            {isHu
-              ? "Indíts egy 360° kampányt, hogy a csapattagok megkezdhessék az értékeléseket."
-              : "Start a 360° campaign so team members can begin their assessments."}
+            {t("teamComp.noAssessmentsDesc", loc)}
           </p>
           {data.orgId && (
             <a
               href={`/org/${data.orgId}?tab=campaigns`}
               className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
             >
-              {isHu ? "Kampány indítása" : "Start a campaign"}
+              {t("teamComp.startCampaign", loc)}
             </a>
           )}
         </div>
@@ -202,23 +201,21 @@ export function TeamOverviewTab({
           <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                // {isHu ? "csapat átlag · önkép" : "team avg · self"}
+                // {t("teamComp.teamAvgSelfEyebrow", loc)}
               </p>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
-                HEXACO {isHu ? "profil" : "profile"}
+                HEXACO {t("teamComp.hexacoProfile", loc)}
               </h2>
             </div>
             <p className="text-xs text-muted shrink-0">
-              {data.completedCount} {isHu ? "fő · önértékelés" : "members · self"}
+              {data.completedCount} {t("teamComp.membersSelf", loc)}
             </p>
           </div>
           <div className="p-6">
             {data.dimAvg === null ? (
               <div className="rounded-xl bg-cream border border-sand p-6 text-center">
                 <p className="text-sm text-ink-body">
-                  {isHu
-                    ? "Még nincs kitöltött assessment. A profilok megjelenítéséhez legalább 1 tag töltse ki."
-                    : "No completed assessments yet."}
+                  {t("teamComp.noAssessmentsProfile", loc)}
                 </p>
               </div>
             ) : (
@@ -283,18 +280,16 @@ export function TeamOverviewTab({
           <div className="rounded-2xl border border-sand bg-white shadow-sm">
             <div className="px-6 py-4 border-b border-warm-mid">
               <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                // {isHu ? "csapatdinamika" : "team dynamics"}
+                // {t("teamComp.teamDynamicsEyebrow", loc)}
               </p>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
-                {isHu ? "Kulcs jellemzők" : "Key characteristics"}
+                {t("teamComp.keyCharacteristics", loc)}
               </h2>
             </div>
             <div className="p-6">
               {!data.dimAvg ? (
                 <p className="text-sm text-ink-body">
-                  {isHu
-                    ? "Nincs elég adat az elemzéshez."
-                    : "Not enough data for analysis."}
+                  {t("teamComp.notEnoughData", loc)}
                 </p>
               ) : (
                 <div className="flex flex-col gap-3">
@@ -302,7 +297,7 @@ export function TeamOverviewTab({
                   {topDimConfig && data.topDim && (
                     <div className="bg-[#e8f7f1] border border-[#a0d8c4] rounded-xl p-4">
                       <p className="font-mono text-[9px] uppercase tracking-widest text-[#059669] mb-1">
-                        // {isHu ? "csapat erőssége" : "team strength"}
+                        // {t("teamComp.teamStrengthEyebrow", loc)}
                       </p>
                       <p className="text-sm font-semibold text-ink">
                         {topDimConfig.code} · {topDimConfig.label}
@@ -323,7 +318,7 @@ export function TeamOverviewTab({
                     data.bottomDim.code !== data.topDim?.code && (
                       <div className="bg-[#fff8ee] border border-[#f5d99a] rounded-xl p-4">
                         <p className="font-mono text-[9px] uppercase tracking-widest text-[#b45309] mb-1">
-                          // {isHu ? "fejlesztési terület" : "growth area"}
+                          // {t("teamComp.growthAreaEyebrow", loc)}
                         </p>
                         <p className="text-sm font-semibold text-ink">
                           {bottomDimConfig.code} · {bottomDimConfig.label}
@@ -342,16 +337,14 @@ export function TeamOverviewTab({
                   {diverseDimConfig && diverseStdDev >= 8 && (
                     <div className="bg-[#eee9fc] border border-[#c8bef5] rounded-xl p-4">
                       <p className="font-mono text-[9px] uppercase tracking-widest text-[#7c3aed] mb-1">
-                        // {isHu ? "legnagyobb sokszínűség" : "most diverse"}
+                        // {t("teamComp.mostDiverseEyebrow", loc)}
                       </p>
                       <p className="text-sm font-semibold text-ink">
                         {diverseDimConfig.code} · {diverseDimConfig.label}
                       </p>
                       <p className="text-xs text-ink-body/70 mt-1">
                         ±{diverseStdDev} —{" "}
-                        {isHu
-                          ? "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre."
-                          : "Team members bring diverse perspectives to this area."}
+                        {t("teamComp.diversePerspectives", loc)}
                       </p>
                       <p className="mt-2 text-xs font-medium text-[#7c3aed]">
                         → {getDiversityInsight(diverseDimConfig.code)}
@@ -368,17 +361,17 @@ export function TeamOverviewTab({
             <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                  // {isHu ? "tagok" : "members"}
+                  // {t("teamComp.membersEyebrow", loc)}
                 </p>
                 <h2 className="font-fraunces text-xl text-ink mt-0.5">
-                  {isHu ? `Csapattagok (${data.memberCount})` : `Members (${data.memberCount})`}
+                  {t("teamComp.teamMembersTitle", loc)} ({data.memberCount})
                 </h2>
               </div>
             </div>
             <div className="p-4 max-h-60 overflow-y-auto">
               {data.members.length === 0 ? (
                 <p className="text-xs text-muted text-center py-4">
-                  {isHu ? "Még nincsenek tagok." : "No members yet."}
+                  {t("teamComp.noMembersYet", loc)}
                 </p>
               ) : (
                 <div className="flex flex-col divide-y divide-warm-mid">
@@ -418,11 +411,11 @@ export function TeamOverviewTab({
                         <div className="shrink-0">
                           {selfDone ? (
                             <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                              {isHu ? "✓ Kész" : "✓ Done"}
+                              {t("teamComp.doneBadge", loc)}
                             </span>
                           ) : (
                             <span className="rounded-full bg-sand px-2 py-0.5 text-[10px] text-muted">
-                              {isHu ? "◌ Függőben" : "◌ Pending"}
+                              {t("teamComp.pendingBadge", loc)}
                             </span>
                           )}
                         </div>

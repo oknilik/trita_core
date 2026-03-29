@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface OrgCreateFormProps {
   locale: string;
@@ -9,7 +11,7 @@ interface OrgCreateFormProps {
 
 export function OrgCreateForm({ locale }: OrgCreateFormProps) {
   const router = useRouter();
-  const isHu = locale !== "en";
+  const loc = locale as Locale;
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,16 +31,16 @@ export function OrgCreateForm({ locale }: OrgCreateFormProps) {
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "ALREADY_IN_ORG") {
-          setError(isHu ? "Már tagja vagy egy szervezetnek." : "You already belong to an organization.");
+          setError(t("org.forms.alreadyInOrg", loc));
         } else {
-          setError(isHu ? "Hiba történt. Próbáld újra." : "Something went wrong. Please try again.");
+          setError(t("org.forms.createGenericError", loc));
         }
         return;
       }
       // New orgs start in PENDING_SETUP — go to wizard
       router.push(`/org/${data.org.id}/setup`);
     } catch {
-      setError(isHu ? "Hálózati hiba. Próbáld újra." : "Network error. Please try again.");
+      setError(t("org.forms.createNetworkError", loc));
     } finally {
       setLoading(false);
     }
@@ -47,12 +49,12 @@ export function OrgCreateForm({ locale }: OrgCreateFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:flex-row sm:items-end">
       <label className="flex flex-1 flex-col gap-2 text-sm font-semibold text-ink">
-        {isHu ? "Szervezet neve" : "Organization name"}
+        {t("org.forms.createOrgName", loc)}
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder={isHu ? "pl. Trita Kft." : "e.g. Acme Corp"}
+          placeholder={t("org.forms.createPlaceholder", loc)}
           maxLength={100}
           required
           className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
@@ -64,8 +66,8 @@ export function OrgCreateForm({ locale }: OrgCreateFormProps) {
         className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
       >
         {loading
-          ? isHu ? "Létrehozás..." : "Creating..."
-          : isHu ? "Létrehozás" : "Create"}
+          ? t("org.forms.createLoading", loc)
+          : t("org.forms.createButton", loc)}
       </button>
       {error && (
         <p className="w-full text-sm text-rose-600">{error}</p>
