@@ -26,8 +26,7 @@ const ROLE_DESCRIPTIONS: Record<BelbinRoleCode, { hu: string; en: string }> = {
 };
 
 export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
-  const isHu = locale === "hu";
-  const loc = isHu ? "hu" as const : "en" as const;
+  const loc = (locale === "hu" ? "hu" : "en") as Locale;
 
   // Only meaningful for HEXACO-coded dimensions (H, E, X, A, C, O)
   const hasHexacoDims = "H" in hexacoScores && "X" in hexacoScores;

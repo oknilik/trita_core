@@ -14,6 +14,7 @@ export interface PdfData {
   percentile: string;
   heroInsight: string;
   plan: "start" | "plus";
+  locale?: "hu" | "en";
   // Bullet-based insights
   strengthBullets: string[];
   watchBullets: string[];
@@ -61,16 +62,17 @@ export interface PdfData {
 function TritaDocument({ data }: { data: PdfData }) {
   const hasPlus = data.plan === "plus";
   const hasObservers = hasPlus && data.observerData && data.observerData.count > 0;
+  const locale = data.locale ?? "hu";
 
   // Start: 1, Plus: 3 (start + facets + workstyle), Plus with observers: 4
   const totalPages = hasObservers ? 4 : hasPlus ? 3 : 1;
 
   return (
     <Document>
-      <StartPage data={data} pageNum={1} totalPages={totalPages} />
-      {hasPlus && <PlusFacetsPage data={data} pageNum={2} totalPages={totalPages} />}
-      {hasPlus && <PlusWorkStylePage data={data} pageNum={3} totalPages={totalPages} />}
-      {hasObservers && <ReflectPage data={data} pageNum={4} totalPages={totalPages} />}
+      <StartPage data={data} pageNum={1} totalPages={totalPages} locale={locale} />
+      {hasPlus && <PlusFacetsPage data={data} pageNum={2} totalPages={totalPages} locale={locale} />}
+      {hasPlus && <PlusWorkStylePage data={data} pageNum={3} totalPages={totalPages} locale={locale} />}
+      {hasObservers && <ReflectPage data={data} pageNum={4} totalPages={totalPages} locale={locale} />}
     </Document>
   );
 }

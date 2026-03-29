@@ -7,10 +7,13 @@ export function getDimensionTier(value: number): DimensionTier {
 }
 
 export function getDimensionLabel(value: number, locale: string = "hu"): string {
-  const isHu = locale === "hu";
-  if (value >= 70) return isHu ? "erősség" : "strength";
-  if (value >= 40) return isHu ? "mérsékelt" : "moderate";
-  return isHu ? "figyelendő" : "watch";
+  const labels: Record<string, Record<string, string>> = {
+    high: { hu: "erősség", en: "strength" },
+    mid: { hu: "mérsékelt", en: "moderate" },
+    low: { hu: "figyelendő", en: "watch" },
+  };
+  const tier = getDimensionTier(value);
+  return labels[tier]?.[locale] ?? labels[tier]?.hu ?? "";
 }
 
 // Tailwind classok tier-enként

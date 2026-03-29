@@ -576,4 +576,142 @@ export const resultsTranslations = {
     statusExpired: { hu: "Lejárt", en: "Expired" },
     statusPendingLower: { hu: "Függőben", en: "Pending" },
   },
+  pdf: {
+    // ── StartPage ──────────────────────────────────────────────────────────
+    overview: { hu: "Áttekintés", en: "Overview" },
+    personalityDimensions: { hu: "Személyiség dimenziók", en: "Personality dimensions" },
+    keyProfileCharacter: { hu: "Fő profil karakter", en: "Key profile character" },
+    dimensionsInDetail: { hu: "Dimenziók részletesen", en: "Dimensions in detail" },
+    teamRoles: { hu: "Csapatszerepek", en: "Team roles" },
+    wantToGoDeeper: { hu: "Mélyebbre mennél?", en: "Want to go deeper?" },
+    upsellDescription: {
+      hu: "Értsd meg, mi van a fő dimenzióid mögött — alskálák, observer visszajelzés, vakfolt-elemzés, karrierillesztés.",
+      en: "Understand what's behind your dimensions — subscales, observer feedback, blind spot analysis, career fit.",
+    },
+    upsellUnlock: { hu: "feloldás", en: "unlock" },
+    // ── PlusWorkStylePage ──────────────────────────────────────────────────
+    personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
+    howYouWork: { hu: "Ahogy működsz", en: "How you work" },
+    roleFit: { hu: "Szerepkör-illeszkedés", en: "Role fit" },
+    // ── PlusWorkStylePage next step texts ──────────────────────────────────
+    nextStepObserverPage: {
+      hu: "Nézd meg az observer visszajelzéseket a {page}. oldalon.",
+      en: "See the observer feedback on page {page}.",
+    },
+    nextStepSendInvite: {
+      hu: "Küldj observer meghívót a Meghívók tabon, hogy lásd hogyan látnak mások.",
+      en: "Send an observer invite from the Invites tab to see how others see you.",
+    },
+    // ── ReflectPage ────────────────────────────────────────────────────────
+    selfVsFeedback: { hu: "Önkép vs. Visszajelzés", en: "Self-image vs. Feedback" },
+    howDoOthersSeeYou: { hu: "Hogyan látnak mások?", en: "How do others see you?" },
+    whatToDoWithThis: { hu: "Mit kezdj ezzel?", en: "What to do with this?" },
+    whatToDoDescription: {
+      hu: "Az eltérések nem hibák, hanem jelzések: ott érdemes mélyebbre menni, ahol te mást érzel magadról, mint amit mások rendszeresen látnak. Figyelj rá a következő hetekben, és kérdezd meg a visszajelzőidet, mire gondoltak konkrétan.",
+      en: "Differences aren't mistakes — they're signals. It's worth going deeper where your self-perception differs from what others consistently see. Pay attention in the coming weeks and ask your observers what they had in mind specifically.",
+    },
+    // ── ReflectPage topline summaries ──────────────────────────────────────
+    toplineAligned: {
+      hu: "Az önképed és mások visszajelzése a legtöbb dimenzióban közel azonos — reálisan látod magad.",
+      en: "Your self-image and others' feedback align closely in most dimensions — you see yourself realistically.",
+    },
+    toplineGapPrefix: {
+      hu: "A legnagyobb eltérés a(z) {names} területén látszik. Érdemes ezekre különösen odafigyelni.",
+      en: "The biggest gaps appear in {names}. These are worth paying close attention to.",
+    },
+    summaryGoodMatch: {
+      hu: "Összességében reálisan látod magad — a legtöbb dimenzióban az önképed és mások visszajelzése közel azonos.",
+      en: "Overall, you see yourself realistically — your self-image and others' feedback are closely aligned in most dimensions.",
+    },
+    summaryGoodMatchDeeper: {
+      hu: " A(z) {name} területén érdemes mélyebbre nézni.",
+      en: " It's worth looking deeper at {name}.",
+    },
+    summaryMixed: {
+      hu: "Néhány dimenzióban jelentős eltérés van az önképed és mások visszajelzése között. Ez nem probléma — hanem lehetőség a mélyebb önismeretre.",
+      en: "There are significant gaps in some dimensions between your self-image and others' feedback. This isn't a problem — it's an opportunity for deeper self-awareness.",
+    },
+    // ── PlusFacetsPage ─────────────────────────────────────────────────────
+    subscalesInDetail: { hu: "Alskálák részletesen", en: "Subscales in detail" },
+    topSubscales: { hu: "Kiemelkedő alskálák", en: "Top subscales" },
+    facetStandout: {
+      hu: "Kiemelkedő: {topNames}.",
+      en: "Standout: {topNames}.",
+    },
+    facetGrowth: {
+      hu: " Az alacsonyabb {bottomName} nem hiányosság — inkább azt jelzi, merre van még tér a fejlődésre.",
+      en: " Lower {bottomName} isn't a weakness — it signals where there's room for growth.",
+    },
+    whatDoesThisMeanOverall: { hu: "Mit jelent ez összességében?", en: "What does this mean overall?" },
+    facetBalanced: {
+      hu: "Kiegyensúlyozott profil — nincs szélsőségesen magas vagy alacsony dimenzió. Ez rugalmasságot jelent, de kevesebb természetes szupererőt.",
+      en: "Balanced profile — no extremely high or low dimensions. This means flexibility, but fewer natural 'superpowers'.",
+    },
+    facetHighAndLow: {
+      hu: "Profilod erőssége a(z) {highNames} területén koncentrálódik. A(z) {lowNames} alacsonyabb szintje nem probléma — inkább azt jelzi, hol érdemes tudatosabban működnöd.",
+      en: "Your profile's strength is concentrated in {highNames}. Lower {lowNames} isn't a problem — it signals where to operate more consciously.",
+    },
+    facetHighOnly: {
+      hu: "Erős, karakteres profil — a(z) {highNames} kiemelkedő, és nincs kritikusan alacsony dimenzió.",
+      en: "Strong, distinctive profile — {highNames} stands out, with no critically low dimensions.",
+    },
+    facetLowOnly: {
+      hu: "A(z) {lowNames} alacsonyabb szintje tudatos figyelmet érdemel — ezek a területek fejlődési lehetőséget rejtenek.",
+      en: "Lower {lowNames} deserves conscious attention — these areas hold growth potential.",
+    },
+    // ── PdfHeader ──────────────────────────────────────────────────────────
+    headerAssessment: { hu: "Felmérés:", en: "Assessment:" },
+    headerTop: { hu: "Legerősebb:", en: "Top:" },
+    headerWatch: { hu: "Figyelendő:", en: "Watch:" },
+    // ── PdfComparison ──────────────────────────────────────────────────────
+    overallGoodMatch: { hu: "Összességében jó egyezés", en: "Overall good match" },
+    mixedPicture: { hu: "Vegyes kép — van mit felfedezni", en: "Mixed picture — worth exploring" },
+    observerResponses: { hu: "observer visszajelzés alapján", en: "observer responses" },
+    matching: { hu: "egyező", en: "matching" },
+    different: { hu: "eltérő", en: "different" },
+    avgGap: { hu: "átl. eltérés", en: "avg. gap" },
+    you: { hu: "Te", en: "You" },
+    others: { hu: "Mások", en: "Others" },
+    blindspotSignificantSelfHigher: {
+      hu: "Jelentős eltérés — te erősebbnek látod magad",
+      en: "Significant gap — you rate yourself higher",
+    },
+    blindspotSignificantObsHigher: {
+      hu: "Jelentős eltérés — mások erősebbnek látnak",
+      en: "Significant gap — others rate you higher",
+    },
+    blindspotModSelfHigher: {
+      hu: "Mások máshogy érzékelik",
+      en: "Others perceive it differently",
+    },
+    blindspotModObsHigher: {
+      hu: "Érdemes utánanézni",
+      en: "Worth investigating",
+    },
+    blindspotSlight: { hu: "Enyhe eltérés", en: "Slight difference" },
+    othersRateHigher: { hu: "mások erősebbnek látnak", en: "others rate you higher" },
+    othersRateLower: { hu: "mások gyengébbnek látnak", en: "others rate you lower" },
+    selfAssessment: { hu: "Önértékelés", en: "Self" },
+    noBlindSpots: { hu: "Nincs vakfolt", en: "No blind spots" },
+    noBlindSpotsDesc: {
+      hu: "Ezekben a dimenziókban reálisan látod magad.",
+      en: "You see yourself realistically in these dimensions.",
+    },
+    // ── PdfHowYouWork ──────────────────────────────────────────────────────
+    keyPattern: { hu: "Fő mintázat", en: "Key pattern" },
+    watchArea: { hu: "Figyelendő", en: "Watch area" },
+    context: { hu: "Kontextus", en: "Context" },
+    // ── PdfInsightPair ─────────────────────────────────────────────────────
+    yourStrengths: { hu: "Erősségeid", en: "Your strengths" },
+    watchAreas: { hu: "Figyelendő", en: "Watch areas" },
+    // ── PdfAltruism ────────────────────────────────────────────────────────
+    supplementaryScale: { hu: "Kiegészítő skála", en: "Supplementary scale" },
+    altruism: { hu: "Altruizmus", en: "Altruism" },
+    // ── PdfTakeaways ───────────────────────────────────────────────────────
+    keyTakeaways: { hu: "A legfontosabbak", en: "Key takeaways" },
+    // ── PdfFooter ──────────────────────────────────────────────────────────
+    footerTagline: { hu: "Személyiség és csapatintelligencia", en: "Personality and team intelligence" },
+    // ── PdfNextStep ────────────────────────────────────────────────────────
+    nextStep: { hu: "Következő lépés", en: "Next step" },
+  },
 } as const;

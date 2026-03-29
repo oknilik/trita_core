@@ -88,7 +88,7 @@ export default async function SharedProfilePage({
     O: { hu: "Innovátor", en: "Innovator" },
   };
   const personalityType = topTwo.length >= 2
-    ? `${typeLabels[topTwo[0].code]?.[isHu ? "hu" : "en"] ?? ""} ${typeLabels[topTwo[1].code]?.[isHu ? "hu" : "en"] ?? ""}`
+    ? `${typeLabels[topTwo[0].code]?.[locale] ?? ""} ${typeLabels[topTwo[1].code]?.[locale] ?? ""}`
     : "";
 
   // Belbin
@@ -215,10 +215,10 @@ export default async function SharedProfilePage({
                             : "bg-[#f2ede6] text-[#8a8a9a]"
                       }`}
                     >
-                      {isHu ? rankLabels[idx].hu : rankLabels[idx].en} · {score}%
+                      {rankLabels[idx][locale]} · {score}%
                     </span>
                     <p className={`font-fraunces text-[#1a1a2e] ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
-                      {isHu ? roleMeta.hu : roleMeta.en}
+                      {roleMeta[locale]}
                     </p>
                   </div>
                 );

@@ -1,5 +1,7 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface CompDim {
   name: string;
@@ -9,7 +11,7 @@ interface CompDim {
 
 // ─── Delta indicator ──────────────────────────────────────────────────────────
 
-function DeltaIndicator({ selfValue, observerValue, isHu = true }: { selfValue: number; observerValue: number; isHu?: boolean }) {
+function DeltaIndicator({ selfValue, observerValue }: { selfValue: number; observerValue: number }) {
   const gap = Math.abs(selfValue - observerValue);
   const selfHigher = selfValue > observerValue;
   const direction = selfHigher ? "↓" : "↑";
@@ -47,7 +49,7 @@ export function PdfComparisonOverview({
   avgGap,
   observerCount,
   toplineSummary,
-  isHu = true,
+  locale = "hu",
 }: {
   isGoodMatch: boolean;
   matchCount: number;
@@ -55,7 +57,7 @@ export function PdfComparisonOverview({
   avgGap: number;
   observerCount: number;
   toplineSummary?: string;
-  isHu?: boolean;
+  locale?: Locale;
 }) {
   return (
     <View style={{ borderRadius: 5, border: `1 solid ${colors.cream500}`, padding: 8, marginBottom: 8 }}>
@@ -77,11 +79,11 @@ export function PdfComparisonOverview({
         <View style={{ flex: 1 }}>
           <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: colors.ink }}>
             {isGoodMatch
-              ? (isHu ? "Összességében jó egyezés" : "Overall good match")
-              : (isHu ? "Vegyes kép — van mit felfedezni" : "Mixed picture — worth exploring")}
+              ? t("pdf.overallGoodMatch", locale)
+              : t("pdf.mixedPicture", locale)}
           </Text>
           <Text style={{ fontSize: 6, color: colors.ink300, lineHeight: 1.3, marginTop: 1 }}>
-            {observerCount} {isHu ? "observer visszajelzés alapján" : "observer responses"}
+            {observerCount} {t("pdf.observerResponses", locale)}
           </Text>
         </View>
       </View>
@@ -93,15 +95,15 @@ export function PdfComparisonOverview({
       <View style={{ flexDirection: "row", gap: 4 }}>
         <View style={{ flex: 1, backgroundColor: colors.cream300, borderRadius: 4, padding: "4 0", alignItems: "center" }}>
           <Text style={{ fontFamily: "Fraunces", fontSize: 12, color: colors.sage }}>{matchCount}</Text>
-          <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 1 }}>{isHu ? "egyező" : "matching"}</Text>
+          <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 1 }}>{t("pdf.matching", locale)}</Text>
         </View>
         <View style={{ flex: 1, backgroundColor: colors.cream300, borderRadius: 4, padding: "4 0", alignItems: "center" }}>
           <Text style={{ fontFamily: "Fraunces", fontSize: 12, color: colors.bronze }}>{diffCount}</Text>
-          <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 1 }}>{isHu ? "eltérő" : "different"}</Text>
+          <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 1 }}>{t("pdf.different", locale)}</Text>
         </View>
         <View style={{ flex: 1, backgroundColor: colors.cream300, borderRadius: 4, padding: "4 0", alignItems: "center" }}>
           <Text style={{ fontFamily: "Fraunces", fontSize: 12, color: colors.ink }}>{avgGap}%</Text>
-          <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 1 }}>{isHu ? "átl. eltérés" : "avg. gap"}</Text>
+          <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 1 }}>{t("pdf.avgGap", locale)}</Text>
         </View>
       </View>
     </View>
@@ -110,7 +112,7 @@ export function PdfComparisonOverview({
 
 // ─── Comparison bars — sorted by gap, with delta indicator ────────────────────
 
-export function PdfComparisonBars({ dimensions, isHu = true }: { dimensions: CompDim[]; isHu?: boolean }) {
+export function PdfComparisonBars({ dimensions, locale = "hu" }: { dimensions: CompDim[]; locale?: Locale }) {
   // Sort by largest gap first
   const sorted = [...dimensions].sort((a, b) => Math.abs(b.self - b.observer) - Math.abs(a.self - a.observer));
 
@@ -119,11 +121,11 @@ export function PdfComparisonBars({ dimensions, isHu = true }: { dimensions: Com
       <View style={{ flexDirection: "row", gap: 8, marginBottom: 4 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: colors.sage }} />
-          <Text style={{ fontSize: 5, color: colors.ink300 }}>{isHu ? "Te" : "You"}</Text>
+          <Text style={{ fontSize: 5, color: colors.ink300 }}>{t("pdf.you", locale)}</Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: colors.bronzeLight }} />
-          <Text style={{ fontSize: 5, color: colors.ink300 }}>{isHu ? "Mások" : "Others"}</Text>
+          <Text style={{ fontSize: 5, color: colors.ink300 }}>{t("pdf.others", locale)}</Text>
         </View>
       </View>
 
@@ -152,14 +154,14 @@ export function PdfComparisonBars({ dimensions, isHu = true }: { dimensions: Com
             {/* Paired bars */}
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 3, marginBottom: 2 }}>
-                <Text style={{ fontSize: 5, color: colors.ink300, width: 24 }}>{isHu ? "Te" : "You"}</Text>
+                <Text style={{ fontSize: 5, color: colors.ink300, width: 24 }}>{t("pdf.you", locale)}</Text>
                 <View style={{ flex: 1, height: 3.5, backgroundColor: colors.cream500, borderRadius: 2, overflow: "hidden" }}>
                   <View style={{ width: `${dim.self}%`, height: 3.5, backgroundColor: colors.sage, borderRadius: 2 }} />
                 </View>
                 <Text style={{ width: 14, textAlign: "right", fontSize: 6, fontWeight: 600, color: colors.sage }}>{dim.self}</Text>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-                <Text style={{ fontSize: 5, color: colors.ink300, width: 24 }}>{isHu ? "Mások" : "Others"}</Text>
+                <Text style={{ fontSize: 5, color: colors.ink300, width: 24 }}>{t("pdf.others", locale)}</Text>
                 <View style={{ flex: 1, height: 3.5, backgroundColor: colors.cream500, borderRadius: 2, overflow: "hidden" }}>
                   <View style={{ width: `${dim.observer}%`, height: 3.5, backgroundColor: colors.bronzeLight, borderRadius: 2 }} />
                 </View>
@@ -168,7 +170,7 @@ export function PdfComparisonBars({ dimensions, isHu = true }: { dimensions: Com
             </View>
 
             {/* Delta indicator */}
-            <DeltaIndicator selfValue={dim.self} observerValue={dim.observer} isHu={isHu} />
+            <DeltaIndicator selfValue={dim.self} observerValue={dim.observer} />
           </View>
         );
       })}
@@ -178,30 +180,30 @@ export function PdfComparisonBars({ dimensions, isHu = true }: { dimensions: Com
 
 // ─── Blindspot labels ─────────────────────────────────────────────────────────
 
-function getBlindspotLabel(self: number, observer: number, isHu: boolean): string {
+function getBlindspotLabel(self: number, observer: number, locale: Locale): string {
   const gap = Math.abs(self - observer);
   const selfHigher = self > observer;
   if (gap >= 20) {
     return selfHigher
-      ? (isHu ? "Jelentős eltérés — te erősebbnek látod magad" : "Significant gap — you rate yourself higher")
-      : (isHu ? "Jelentős eltérés — mások erősebbnek látnak" : "Significant gap — others rate you higher");
+      ? t("pdf.blindspotSignificantSelfHigher", locale)
+      : t("pdf.blindspotSignificantObsHigher", locale);
   }
   if (gap >= 15) {
     return selfHigher
-      ? (isHu ? "Mások máshogy érzékelik" : "Others perceive it differently")
-      : (isHu ? "Érdemes utánanézni" : "Worth investigating");
+      ? t("pdf.blindspotModSelfHigher", locale)
+      : t("pdf.blindspotModObsHigher", locale);
   }
-  return isHu ? "Enyhe eltérés" : "Slight difference";
+  return t("pdf.blindspotSlight", locale);
 }
 
 export function PdfBlindspots({
   blindspots,
   noBlindspots,
-  isHu = true,
+  locale = "hu",
 }: {
   blindspots: { name: string; self: number; observer: number }[];
   noBlindspots: string[];
-  isHu?: boolean;
+  locale?: Locale;
 }) {
   return (
     <View style={{ marginBottom: 8 }}>
@@ -217,15 +219,15 @@ export function PdfBlindspots({
           }}
         >
           <Text style={{ fontSize: 5, fontWeight: 600, textTransform: "uppercase", color: colors.bronzeDark, marginBottom: 1 }}>
-            {getBlindspotLabel(bs.self, bs.observer, isHu)}
+            {getBlindspotLabel(bs.self, bs.observer, locale)}
           </Text>
           <Text style={{ fontFamily: "Fraunces", fontSize: 8, color: colors.ink }}>
             {bs.name} — {bs.observer > bs.self
-              ? (isHu ? "mások erősebbnek látnak" : "others rate you higher")
-              : (isHu ? "mások gyengébbnek látnak" : "others rate you lower")}
+              ? t("pdf.othersRateHigher", locale)
+              : t("pdf.othersRateLower", locale)}
           </Text>
           <View style={{ flexDirection: "row", gap: 6, marginTop: 1 }}>
-            <Text style={{ fontSize: 5, color: colors.ink300 }}>{isHu ? "Önértékelés" : "Self"}: {bs.self}</Text>
+            <Text style={{ fontSize: 5, color: colors.ink300 }}>{t("pdf.selfAssessment", locale)}: {bs.self}</Text>
             <Text style={{ fontSize: 5, color: colors.ink300 }}>Observer: {bs.observer}</Text>
           </View>
         </View>
@@ -240,11 +242,11 @@ export function PdfBlindspots({
           }}
         >
           <Text style={{ fontSize: 5, fontWeight: 600, textTransform: "uppercase", color: colors.sageDark, marginBottom: 1 }}>
-            {isHu ? "Nincs vakfolt" : "No blind spots"}
+            {t("pdf.noBlindSpots", locale)}
           </Text>
           <Text style={{ fontSize: 7, color: colors.ink }}>{noBlindspots.join(", ")}</Text>
           <Text style={{ fontSize: 6, color: colors.sageDark, marginTop: 1 }}>
-            {isHu ? "Ezekben a dimenziókban reálisan látod magad." : "You see yourself realistically in these dimensions."}
+            {t("pdf.noBlindSpotsDesc", locale)}
           </Text>
         </View>
       )}

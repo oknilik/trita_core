@@ -1,14 +1,14 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 interface PdfNextStepProps {
   text: string;
-  locale?: string;
+  locale?: Locale;
 }
 
 export function PdfNextStep({ text, locale = "hu" }: PdfNextStepProps) {
-  const isHu = locale === "hu";
-
   return (
     <View style={{ borderTop: `1 solid ${colors.cream500}`, paddingTop: 6, marginTop: 10 }}>
       <Text
@@ -21,7 +21,7 @@ export function PdfNextStep({ text, locale = "hu" }: PdfNextStepProps) {
           marginBottom: 2,
         }}
       >
-        {isHu ? "Következő lépés" : "Next step"}
+        {t("pdf.nextStep", locale)}
       </Text>
       <Text style={{ fontSize: 7, color: colors.sage, lineHeight: 1.4 }}>→ {text}</Text>
     </View>

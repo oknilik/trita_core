@@ -1,5 +1,6 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
+import { t } from "@/lib/i18n";
 
 interface PdfHeaderProps {
   name: string;
@@ -8,7 +9,7 @@ interface PdfHeaderProps {
   percentile: string;
   insight: string;
   plan: "start" | "plus";
-  locale?: string;
+  locale?: "hu" | "en";
   topDimensions?: string[];
   watchDimensions?: string[];
 }
@@ -19,21 +20,19 @@ const PLAN_LABELS: Record<string, string> = {
 };
 
 export function PdfHeader({ name, date, type, percentile, insight, plan, locale = "hu", topDimensions = [], watchDimensions = [] }: PdfHeaderProps) {
-  const isHu = locale === "hu";
-
   return (
     <View style={{ backgroundColor: colors.sageDark, padding: "24 32 16 32" }}>
       <Text style={{ fontFamily: "Fraunces", fontSize: 11, color: "rgba(255,255,255,0.22)", marginBottom: 10 }}>
         tri<Text style={{ color: "rgba(193,127,74,0.35)" }}>ta</Text>
       </Text>
       <Text style={{ fontSize: 6, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.18)", marginBottom: 3 }}>
-        {isHu ? "Személyiségprofil" : "Personality profile"}
+        {t("pdf.personalityProfile", locale)}
       </Text>
       <Text style={{ fontFamily: "Fraunces", fontSize: 20, color: colors.white, marginBottom: 1 }}>
         {name}
       </Text>
       <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.15)", marginBottom: 6 }}>
-        {isHu ? "Felmérés:" : "Assessment:"} {date}
+        {t("pdf.headerAssessment", locale)} {date}
       </Text>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 2 }}>
@@ -59,7 +58,7 @@ export function PdfHeader({ name, date, type, percentile, insight, plan, locale 
           {topDimensions.length > 0 && (
             <>
               <Text style={{ fontSize: 5, textTransform: "uppercase", letterSpacing: 0.8, color: "rgba(255,255,255,0.2)" }}>
-                {isHu ? "Legerősebb:" : "Top:"}
+                {t("pdf.headerTop", locale)}
               </Text>
               {topDimensions.map((d) => (
                 <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(61,107,94,0.3)", color: "#c8e8de" }}>
@@ -71,7 +70,7 @@ export function PdfHeader({ name, date, type, percentile, insight, plan, locale 
           {watchDimensions.length > 0 && (
             <>
               <Text style={{ fontSize: 5, textTransform: "uppercase", letterSpacing: 0.8, color: "rgba(255,255,255,0.2)", marginLeft: 4 }}>
-                {isHu ? "Figyelendő:" : "Watch:"}
+                {t("pdf.headerWatch", locale)}
               </Text>
               {watchDimensions.map((d) => (
                 <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(193,127,74,0.2)", color: "#e8a96a" }}>

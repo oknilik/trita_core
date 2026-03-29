@@ -124,12 +124,12 @@ function LockIcon() {
   );
 }
 
-function TabPaywall({ tier, tierLabel, price, teaser, isHu }: {
+function TabPaywall({ tier, tierLabel, price, teaser, locale }: {
   tier: string;
   tierLabel: string;
   price: string;
   teaser: string;
-  isHu: boolean;
+  locale: Locale;
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-sand bg-white px-6 py-20 text-center">
@@ -144,7 +144,7 @@ function TabPaywall({ tier, tierLabel, price, teaser, isHu }: {
       </div>
       <UpgradeButton
         tier={tier}
-        label={tf("content.paywallUnlock", isHu ? "hu" : "en", { price })}
+        label={tf("content.paywallUnlock", locale, { price })}
       />
     </div>
   );
@@ -163,7 +163,6 @@ interface ResultsTabProps {
   isPlus: boolean;
   hasObserverData: boolean;
   observerCount: number;
-  isHu: boolean;
   locale: Locale;
   plusContent?: ProfileTabsProps["plusContent"];
 }
@@ -175,7 +174,6 @@ function ResultsTab({
   isPlus,
   hasObserverData,
   observerCount,
-  isHu,
   locale,
   plusContent,
 }: ResultsTabProps) {
@@ -454,7 +452,7 @@ export function ProfileTabs({
               "C": { hu: "kevésbé szervezett, rugalmasabb", en: "less organized, more flexible" },
               "O": { hu: "bevált módszereket preferálja", en: "prefers established methods" },
             };
-            const lang = isHu ? "hu" : "en";
+            const lang = locale;
             const strengthBullets = highDims.length > 0
               ? highDims.map((d) => {
                   const desc = strengthDescs[d.code]?.[lang];
@@ -486,6 +484,7 @@ export function ProfileTabs({
             const riskInsight = plusContent?.howYouWork[1] ?? "";
 
             await downloadPdf({
+              locale,
               userName: name,
               completedAt: new Date(assessmentDate).toLocaleDateString(
                 isHu ? "hu-HU" : "en-GB",
@@ -525,7 +524,7 @@ export function ProfileTabs({
                   const estimated = estimateBelbinFromHexaco(hexScores);
                   const top3 = getTopRoles(estimated, 3);
                   return top3.map((r: { role: string; score: number }, i: number) => ({
-                    name: isHu ? BELBIN_ROLES[r.role].hu : BELBIN_ROLES[r.role].en,
+                    name: BELBIN_ROLES[r.role][locale === "hu" ? "hu" : "en"],
                     subtitle: "",
                     score: r.score,
                     rank: i,
@@ -640,7 +639,6 @@ export function ProfileTabs({
             isPlus={isPlus}
             hasObserverData={hasObserverData}
             observerCount={observerCount}
-            isHu={isHu}
             locale={locale}
             plusContent={plusContent}
           />
@@ -657,7 +655,7 @@ export function ProfileTabs({
               tier="self_plus"
               tierLabel="Plus"
               price="€9"
-              isHu={isHu}
+              locale={locale}
               teaser={t("content.paywallComparisonTeaser", locale)}
             />
           )

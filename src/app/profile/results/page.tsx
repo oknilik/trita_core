@@ -320,8 +320,8 @@ export default async function ProfileResultsPage({
       C: { hu: "Rendszerező", en: "Systematic" },
       O: { hu: "Innovátor", en: "Innovator" },
     };
-    const a = labels[topTwo[0].code]?.[isHu ? "hu" : "en"] ?? topTwo[0].label;
-    const b = labels[topTwo[1].code]?.[isHu ? "hu" : "en"] ?? topTwo[1].label;
+    const a = labels[topTwo[0].code]?.[locale] ?? topTwo[0].label;
+    const b = labels[topTwo[1].code]?.[locale] ?? topTwo[1].label;
     return `${a} ${b}`;
   })();
 
@@ -355,8 +355,8 @@ export default async function ProfileResultsPage({
       O: { hu: "a bevált módszereket részesíted előnyben", en: "you prefer established methods" },
     };
 
-    const s = strengthVerbs[strongest.code]?.[isHu ? "hu" : "en"] ?? strongest.label;
-    const w = weakVerbs[weakest.code]?.[isHu ? "hu" : "en"] ?? weakest.label.toLowerCase();
+    const s = strengthVerbs[strongest.code]?.[locale] ?? strongest.label;
+    const w = weakVerbs[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
     return isHu
       ? `${s} — ${w}.`
       : `${s} — ${w}.`;

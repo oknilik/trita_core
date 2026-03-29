@@ -3,18 +3,19 @@ import { s, colors } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
 import { PdfFacets } from "../components/PdfFacets";
 import { PdfAltruism } from "../components/PdfAltruism";
+import { t, tf } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
   data: PdfData;
   pageNum: number;
   totalPages: number;
+  locale: "hu" | "en";
 }
 
-export function PlusFacetsPage({ data, pageNum, totalPages }: Props) {
+export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
   const facetDims = data.facetDimensions ?? [];
   const planLabel = "Plus";
-  const isHu = true; // TODO: pass locale
 
   // Collect all facets across dimensions for the highlight callout
   const allFacets = facetDims.flatMap((d) =>
@@ -29,9 +30,7 @@ export function PlusFacetsPage({ data, pageNum, totalPages }: Props) {
     const topNames = topFacets.slice(0, 3).map((f) => f.name.toLowerCase()).join(", ");
     const bottomName = bottomFacets[0]?.name.toLowerCase() ?? "";
     if (!topNames) return "";
-    return isHu
-      ? `Kiemelkedő: ${topNames}. ${bottomName ? `Az alacsonyabb ${bottomName} nem hiányosság — inkább azt jelzi, merre van még tér a fejlődésre.` : ""}`
-      : `Standout: ${topNames}. ${bottomName ? `Lower ${bottomName} isn't a weakness — it signals where there's room for growth.` : ""}`;
+    return tf("pdf.facetStandout", locale, { topNames }) + (bottomName ? tf("pdf.facetGrowth", locale, { bottomName }) : "");
   })();
 
   // Overall summary for the dark box at the bottom
@@ -39,25 +38,17 @@ export function PlusFacetsPage({ data, pageNum, totalPages }: Props) {
     const highDims = facetDims.filter((d) => d.value >= 70);
     const lowDims = facetDims.filter((d) => d.value < 40);
     if (highDims.length === 0 && lowDims.length === 0) {
-      return isHu
-        ? "Kiegyensúlyozott profil — nincs szélsőségesen magas vagy alacsony dimenzió. Ez rugalmasságot jelent, de kevesebb természetes szupererőt."
-        : "Balanced profile — no extremely high or low dimensions. This means flexibility, but fewer natural 'superpowers'.";
+      return t("pdf.facetBalanced", locale);
     }
     const highNames = highDims.map((d) => d.name.toLowerCase()).join(", ");
     const lowNames = lowDims.map((d) => d.name.toLowerCase()).join(", ");
     if (highDims.length > 0 && lowDims.length > 0) {
-      return isHu
-        ? `Profilod erőssége a(z) ${highNames} területén koncentrálódik. A(z) ${lowNames} alacsonyabb szintje nem probléma — inkább azt jelzi, hol érdemes tudatosabban működnöd.`
-        : `Your profile's strength is concentrated in ${highNames}. Lower ${lowNames} isn't a problem — it signals where to operate more consciously.`;
+      return tf("pdf.facetHighAndLow", locale, { highNames, lowNames });
     }
     if (highDims.length > 0) {
-      return isHu
-        ? `Erős, karakteres profil — a(z) ${highNames} kiemelkedő, és nincs kritikusan alacsony dimenzió.`
-        : `Strong, distinctive profile — ${highNames} stands out, with no critically low dimensions.`;
+      return tf("pdf.facetHighOnly", locale, { highNames });
     }
-    return isHu
-      ? `A(z) ${lowNames} alacsonyabb szintje tudatos figyelmet érdemel — ezek a területek fejlődési lehetőséget rejtenek.`
-      : `Lower ${lowNames} deserves conscious attention — these areas hold growth potential.`;
+    return tf("pdf.facetLowOnly", locale, { lowNames });
   })();
 
   return (
@@ -68,21 +59,21 @@ export function PlusFacetsPage({ data, pageNum, totalPages }: Props) {
           tri<Text style={{ color: "rgba(193,127,74,0.5)" }}>ta</Text>
         </Text>
         <Text style={{ fontSize: 6, color: colors.ink300 }}>
-          {data.userName} · {isHu ? "Személyiségprofil" : "Personality profile"} · {planLabel} · {data.completedAt}
+          {data.userName} · {t("pdf.personalityProfile", locale)} · {planLabel} · {data.completedAt}
         </Text>
       </View>
 
       <View style={{ flex: 1, padding: "0 32 12" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, marginTop: 6 }}>
           <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage }} />
-          <Text style={s.sectionEyebrowFirst}>{isHu ? "Alskálák részletesen" : "Subscales in detail"}</Text>
+          <Text style={s.sectionEyebrowFirst}>{t("pdf.subscalesInDetail", locale)}</Text>
         </View>
 
         {/* Top facet highlight callout */}
         {allFacets.length > 0 && (
           <View style={{ backgroundColor: colors.sage100, borderLeft: `2 solid ${colors.sage}`, borderTopRightRadius: 5, borderBottomRightRadius: 5, padding: "6 8", marginBottom: 8 }}>
             <Text style={{ fontSize: 5.5, letterSpacing: 0.6, textTransform: "uppercase", fontWeight: 700, color: colors.sageDark, marginBottom: 4 }}>
-              {isHu ? "Kiemelkedő alskálák" : "Top subscales"}
+              {t("pdf.topSubscales", locale)}
             </Text>
             {/* High facets — sage pills */}
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 3, marginBottom: 3 }}>
@@ -114,21 +105,21 @@ export function PlusFacetsPage({ data, pageNum, totalPages }: Props) {
         {/* Altruism supplementary scale — after all facets, visually separated */}
         {data.altruism && (
           <View style={{ marginTop: 10 }}>
-            <PdfAltruism value={data.altruism.value} description={data.altruism.description} />
+            <PdfAltruism value={data.altruism.value} description={data.altruism.description} locale={locale} />
           </View>
         )}
 
         {/* Overall summary dark box */}
         <View style={{ backgroundColor: colors.ink, borderRadius: 5, padding: "8 10", marginTop: 6 }}>
           <Text style={{ fontSize: 5, letterSpacing: 1, textTransform: "uppercase", color: colors.bronzeLight, marginBottom: 3 }}>
-            {isHu ? "Mit jelent ez összességében?" : "What does this mean overall?"}
+            {t("pdf.whatDoesThisMeanOverall", locale)}
           </Text>
           <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.45)", lineHeight: 1.35 }}>
             {overallSummary}
           </Text>
         </View>
       </View>
-      <PdfFooter pageNum={pageNum} totalPages={totalPages} />
+      <PdfFooter pageNum={pageNum} totalPages={totalPages} locale={locale} />
     </Page>
   );
 }

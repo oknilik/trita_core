@@ -5,18 +5,19 @@ import { PdfHowYouWork } from "../components/PdfHowYouWork";
 import { PdfRoleFit } from "../components/PdfRoleFit";
 import { PdfTakeaways } from "../components/PdfTakeaways";
 import { PdfNextStep } from "../components/PdfNextStep";
+import { t, tf } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
   data: PdfData;
   pageNum: number;
   totalPages: number;
+  locale: "hu" | "en";
 }
 
-export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
+export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) {
   const pc = data.plusContent;
   if (!pc) return null;
-  const isHu = true; // TODO: pass locale
 
   const planLabel = "Plus";
 
@@ -28,7 +29,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
           tri<Text style={{ color: "rgba(193,127,74,0.5)" }}>ta</Text>
         </Text>
         <Text style={{ fontSize: 6, color: colors.ink300 }}>
-          {data.userName} · {isHu ? "Személyiségprofil" : "Personality profile"} · {planLabel} · {data.completedAt}
+          {data.userName} · {t("pdf.personalityProfile", locale)} · {planLabel} · {data.completedAt}
         </Text>
       </View>
 
@@ -37,16 +38,16 @@ export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
         <View style={s.sectionDivider} />
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4 }}>
           <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage }} />
-          <Text style={s.sectionEyebrowFirst}>{isHu ? "Ahogy működsz" : "How you work"}</Text>
+          <Text style={s.sectionEyebrowFirst}>{t("pdf.howYouWork", locale)}</Text>
         </View>
-        <PdfHowYouWork paragraphs={pc.howYouWork} />
+        <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
 
         {/* Role fit */}
         <View style={s.sectionDivider} />
         <View wrap={false}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4 }}>
             <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage }} />
-            <Text style={s.sectionEyebrowFirst}>{isHu ? "Szerepkör-illeszkedés" : "Role fit"}</Text>
+            <Text style={s.sectionEyebrowFirst}>{t("pdf.roleFit", locale)}</Text>
           </View>
           <PdfRoleFit
             strong={pc.roleFit.strong}
@@ -61,7 +62,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
         {/* Takeaways */}
         <View wrap={false}>
           <View style={s.sectionDivider} />
-          <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} />
+          <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
         </View>
 
         {/* Next step */}
@@ -69,17 +70,14 @@ export function PlusWorkStylePage({ data, pageNum, totalPages }: Props) {
           <PdfNextStep
             text={
               data.observerData
-                ? (isHu
-                    ? `Nézd meg az observer visszajelzéseket a ${pageNum + 1}. oldalon.`
-                    : `See the observer feedback on page ${pageNum + 1}.`)
-                : (isHu
-                    ? "Küldj observer meghívót a Meghívók tabon, hogy lásd hogyan látnak mások."
-                    : "Send an observer invite from the Invites tab to see how others see you.")
+                ? tf("pdf.nextStepObserverPage", locale, { page: String(pageNum + 1) })
+                : t("pdf.nextStepSendInvite", locale)
             }
+            locale={locale}
           />
         </View>
       </View>
-      <PdfFooter pageNum={pageNum} totalPages={totalPages} />
+      <PdfFooter pageNum={pageNum} totalPages={totalPages} locale={locale} />
     </Page>
   );
 }
