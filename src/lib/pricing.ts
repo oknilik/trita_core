@@ -13,15 +13,17 @@ export interface SelfPricingPlan {
 }
 
 export interface TeamPricingPlan {
-  id: "starter" | "team";
+  id: "snapshot" | "team";
   name: string;
   description: string;
   price: string;
+  monthlyPrice?: string;
   perMonth: string;
   seats: string;
   features: string[];
   badge?: string;
   ctaHref: string;
+  ctaLabel?: string;
 }
 
 export interface OrgPricingPlan {
@@ -29,6 +31,7 @@ export interface OrgPricingPlan {
   name: string;
   description: string;
   price: string;
+  monthlyPrice?: string;
   perMonth: string;
   seats: string;
   features: string[];
@@ -510,34 +513,36 @@ const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
 const teamPricingPlansData: Record<Locale, TeamPricingPlan[]> = {
   hu: [
     {
-      id: "starter",
-      name: "Starter",
-      description: "Kis csapatoknak, gyors indulással.",
-      price: "€29",
-      perMonth: "/hó",
-      seats: "5 főig · éves számlázás",
+      id: "snapshot",
+      name: "Team Snapshot",
+      description: "Egyszeri csapatdiagnózis — nézd meg, hol tartotok.",
+      price: "€99",
+      perMonth: "",
+      seats: "egyszeri vásárlás · 1 csapat",
       features: [
         "Self-assessment minden tagnak",
-        "Observer visszajelzés (max 3/fő)",
-        "Csapat RadarChart dashboard",
-        "Önkép vs. observer összehasonlítás",
-        "Manager nézet és meghívások",
+        "Observer visszajelzés",
+        "Csapat dashboard és heatmap",
+        "Önkép vs. observer összevetés",
+        "1 összefoglaló riport",
       ],
       ctaHref: "/sign-up",
+      ctaLabel: "Csapatdiagnózis indítása",
     },
     {
       id: "team",
       name: "Team",
-      description: "Növekvő csapatoknak, teljes funkcionalitással.",
+      description: "Folyamatos csapatműködési platform.",
       price: "€49",
+      monthlyPrice: "€59",
       perMonth: "/hó",
-      seats: "10 főig · éves számlázás",
+      seats: "10 főig · éves előfizetés",
       features: [
-        "Minden Starter funkció",
-        "Korlátlan observer meghívás",
-        "Csapatdinamika elemzés és riportok",
+        "Minden Snapshot funkció",
+        "Folyamatos hozzáférés és újramérés",
+        "Trendek és history",
+        "Korlátlan observer körök",
         "Jelölt értékelés (add-on)",
-        "Priority email support",
       ],
       badge: "Legnépszerűbb",
       ctaHref: "/sign-up",
@@ -545,34 +550,36 @@ const teamPricingPlansData: Record<Locale, TeamPricingPlan[]> = {
   ],
   en: [
     {
-      id: "starter",
-      name: "Starter",
-      description: "For small teams, quick to launch.",
-      price: "€29",
-      perMonth: "/mo",
-      seats: "up to 5 members · annual billing",
+      id: "snapshot",
+      name: "Team Snapshot",
+      description: "One-time team diagnosis — see where you stand.",
+      price: "€99",
+      perMonth: "",
+      seats: "one-time purchase · 1 team",
       features: [
         "Self-assessment for every member",
-        "Observer feedback (max 3/person)",
-        "Team RadarChart dashboard",
+        "Observer feedback",
+        "Team dashboard and heatmap",
         "Self vs. observer comparison",
-        "Manager view and invitations",
+        "1 summary report",
       ],
       ctaHref: "/sign-up",
+      ctaLabel: "Start team diagnosis",
     },
     {
       id: "team",
       name: "Team",
-      description: "For growing teams, with full feature access.",
+      description: "Continuous team operations platform.",
       price: "€49",
+      monthlyPrice: "€59",
       perMonth: "/mo",
-      seats: "up to 10 members · annual billing",
+      seats: "up to 10 members · annual plan",
       features: [
-        "Everything in Starter",
-        "Unlimited observer invitations",
-        "Team dynamics analysis and reports",
+        "Everything in Snapshot",
+        "Continuous access and re-assessment",
+        "Trends and history",
+        "Unlimited observer rounds",
         "Candidate assessment (add-on)",
-        "Priority email support",
       ],
       badge: "Most popular",
       ctaHref: "/sign-up",
@@ -587,8 +594,9 @@ const orgPricingPlansData: Record<Locale, OrgPricingPlan[]> = {
       name: "Org",
       description: "Növekvő szervezeteknek, több csapattal.",
       price: "€149",
+      monthlyPrice: "€179",
       perMonth: "/hó",
-      seats: "40 főig · éves számlázás",
+      seats: "40 főig · éves előfizetés",
       features: [
         "Minden Team funkció",
         "Több csapat kezelése egy szervezetben",
@@ -623,8 +631,9 @@ const orgPricingPlansData: Record<Locale, OrgPricingPlan[]> = {
       name: "Org",
       description: "For growing organizations with multiple teams.",
       price: "€149",
+      monthlyPrice: "€179",
       perMonth: "/mo",
-      seats: "up to 40 members · annual billing",
+      seats: "up to 40 members · annual plan",
       features: [
         "Everything in Team",
         "Multiple teams in one organization",

@@ -15,7 +15,7 @@ export const CANDIDATE_PACKAGES: Record<
   { unitAmount: number; credits: number; label: string }
 > = {
   candidate_1:  { unitAmount: 3900,  credits: 1,  label: "1× Candidate Assessment" },
-  candidate_5:  { unitAmount: 17500, credits: 5,  label: "5× Candidate Assessments" },
+  candidate_5:  { unitAmount: 16900, credits: 5,  label: "5× Candidate Assessments" },
   candidate_10: { unitAmount: 29900, credits: 10, label: "10× Candidate Assessments" },
 };
 
@@ -42,7 +42,7 @@ export const TRIAL_DAYS = 14;
 // ── One-time purchase prices ──────────────────────────────────
 export const STRIPE_ONE_TIME_PRICES = {
   self_plus:       process.env.STRIPE_PRICE_SELF_PLUS ?? "",
-  team_scan:       process.env.STRIPE_PRICE_TEAM_SCAN ?? "",
+  team_snapshot:   process.env.STRIPE_PRICE_TEAM_SNAPSHOT ?? "",
   team_deep_dive:  process.env.STRIPE_PRICE_TEAM_DEEP_DIVE ?? "",
 } as const;
 
@@ -72,9 +72,9 @@ export const TIER_CONFIG: Record<string, {
     includedCredits: 0,
     level: "self",
   },
-  team_scan: {
-    name: "Team Scan",
-    price: 490,
+  team_snapshot: {
+    name: "Team Snapshot",
+    price: 99,
     isOneTime: true,
     includesAdvisory: false,
     includedCredits: 0,

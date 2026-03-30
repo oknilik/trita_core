@@ -9,7 +9,7 @@ export type AccessLevel =
   | "none"
   | "self_start"
   | "self_plus"
-  | "team_scan"
+  | "team_snapshot"
   | "team_deep_dive"
   | "team_pulse"       // Fázis 2
   | "org_insight"      // Fázis 3
@@ -18,7 +18,7 @@ export type AccessLevel =
 
 const ACCESS_HIERARCHY: AccessLevel[] = [
   "none", "self_start", "self_plus",
-  "team_scan", "team_deep_dive", "team_pulse",
+  "team_snapshot", "team_deep_dive", "team_pulse",
   "org_insight", "org_growth", "org_partner",
 ];
 
@@ -45,7 +45,7 @@ export async function getSelfAccessLevel(userProfileId: string): Promise<AccessL
     where: {
       userProfileId,
       status: "completed",
-      tier: { in: ["team_scan", "team_deep_dive"] },
+      tier: { in: ["team_snapshot", "team_deep_dive"] },
     },
   });
 
@@ -83,7 +83,7 @@ export async function getTeamAccessLevel(userProfileId: string, teamId: string):
     where: {
       teamId,
       status: "completed",
-      tier: { in: ["team_scan", "team_deep_dive"] },
+      tier: { in: ["team_snapshot", "team_deep_dive"] },
     },
   });
 
@@ -149,8 +149,8 @@ export function getNextUpgrade(current: AccessLevel): { tier: string; label: str
     case "self_start":
       return { tier: "self_plus", label: "Plus (€9)" };
     case "self_plus":
-      return { tier: "team_scan", label: "Team Scan (€490)" };
-    case "team_scan":
+      return { tier: "team_snapshot", label: "Team Snapshot (€99)" };
+    case "team_snapshot":
       return { tier: "team_deep_dive", label: "Team Deep Dive (€990)" };
     case "team_deep_dive":
       return { tier: "team_pulse", label: "Team Pulse (€149/hó)" };

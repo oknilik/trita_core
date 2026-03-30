@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { stripe, isOneTimeTier, getOneTimePriceId, TIER_CONFIG } from "@/lib/stripe";
 
-const TEAM_TIERS = ["team_scan", "team_deep_dive"] as const;
+const TEAM_TIERS = ["team_snapshot", "team_deep_dive"] as const;
 
 const schema = z.object({
   tier: z.string(),

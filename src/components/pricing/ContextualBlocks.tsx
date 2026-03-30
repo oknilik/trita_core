@@ -39,12 +39,38 @@ function BlockSection({
 
 // ── Card variants ───────────────────────────────────────────────────────────
 
+function splitPricingDesc(desc: string) {
+  const parts = desc.split("·").map((part) => part.trim()).filter(Boolean);
+  const promo = parts.find((part) => /%|kedvezmény|savings|discount/i.test(part)) ?? null;
+
+  if (!promo) {
+    return { primary: desc, promo: null as string | null };
+  }
+
+  const primary = parts.filter((part) => part !== promo).join(" · ");
+  return { primary, promo };
+}
+
 function PricingCard({ name, desc, price }: { name: string; desc: string; price: string }) {
+  const { primary, promo } = splitPricingDesc(desc);
+  const isPromoCard = promo !== null;
+
   return (
-    <div className="rounded-xl border border-sand bg-white p-5">
+    <div
+      className={`rounded-[22px] border p-5 transition-shadow ${
+        isPromoCard
+          ? "border-[#ead8c9] bg-[linear-gradient(180deg,#fffdfb_0%,#fff6ef_100%)] shadow-[0_14px_34px_rgba(193,127,74,0.08)]"
+          : "border-sand bg-white"
+      }`}
+    >
       <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{name}</p>
       <p className="mt-2 font-fraunces text-3xl text-ink">{price}</p>
-      <p className="mt-1.5 text-sm text-ink-body">{desc}</p>
+      <p className="mt-1.5 text-sm text-ink-body">{primary}</p>
+      {promo ? (
+        <div className="mt-3 inline-flex items-center rounded-full border border-[#e8c7b8] bg-[#fff1e7] px-3 py-1 text-[11px] font-semibold tracking-[0.01em] text-[#9a6538]">
+          {promo}
+        </div>
+      ) : null}
     </div>
   );
 }

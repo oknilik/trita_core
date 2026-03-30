@@ -10,15 +10,15 @@ export const metadata: Metadata = {
 
 const REDIRECT_MAP: Record<string, string> = {
   self_plus:      "/profile/results",
-  team_scan:      "/dashboard",
+  team_snapshot:      "/dashboard",
   team_deep_dive: "/dashboard",
 };
 
 const MESSAGES: Record<string, string> = {
   self_plus:
     "Plus csomagod aktiválva. Teljes személyiségprofil, observer visszajelzés, vakfolt-elemzés és fejlődési fókuszok várnak.",
-  team_scan:
-    "Team Scan aktiválva. A csapatod mintázata, heatmap-je és vezetői összefoglalója elérhető.",
+  team_snapshot:
+    "Team Snapshot aktiválva. A csapatod diagnózisa, heatmap-je és összefoglalója elérhető.",
   team_deep_dive:
     "Team Deep Dive aktiválva. A csapatod mély elemzése és 1 db beépített tanácsadói konzultáció vár rád.",
 };
@@ -46,7 +46,7 @@ export default async function BillingSuccessPage({
   }
 
   const targetUrl =
-    (tier === "team_scan" || tier === "team_deep_dive") && teamId
+    (tier === "team_snapshot" || tier === "team_deep_dive") && teamId
       ? `/team/${teamId}`
       : (REDIRECT_MAP[tier] ?? "/dashboard");
 
