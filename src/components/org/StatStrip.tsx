@@ -12,63 +12,34 @@ interface StatStripProps {
 
 export function StatStrip({ cells }: StatStripProps) {
   return (
-    <div className="flex items-stretch divide-x divide-sand overflow-x-auto overflow-y-hidden rounded-2xl border border-sand bg-white shadow-sm [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="grid auto-cols-fr grid-flow-col gap-3">
       {cells.map((cell, i) => (
         <div
           key={i}
-          className="relative flex min-w-[140px] flex-shrink-0 flex-1 flex-col gap-1 px-5 py-4"
+          className="relative overflow-hidden rounded-2xl border border-sand bg-white px-5 pb-4 pt-5"
         >
-          {/* Top accent bar */}
+          {/* Top accent line */}
           <div
-            className="absolute left-0 right-0 top-0 h-[3px]"
+            className="absolute inset-x-0 top-0 h-[3px]"
             style={{ backgroundColor: cell.accentColor ?? "#3d6b5e" }}
           />
-          {/* Label */}
-          <p
-            style={{
-              fontFamily: "var(--font-geist-mono, monospace)",
-              fontSize: "10px",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              color: "var(--color-muted)",
-              lineHeight: 1.4,
-            }}
-          >
+
+          <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted">
             {cell.label}
           </p>
-          {/* Value */}
-          <p
-            style={{
-              fontFamily: "var(--font-fraunces, serif)",
-              fontSize: "22px",
-              color: "var(--color-ink)",
-              lineHeight: 1.2,
-              fontWeight: 400,
-            }}
-          >
+
+          <p className="mt-1.5 font-fraunces text-[28px] leading-none tracking-tight text-ink">
             {cell.value}
           </p>
-          {/* Sub */}
+
           {cell.sub && (
-            <p
-              style={{
-                fontSize: "10px",
-                color: "var(--color-ink-body)",
-                lineHeight: 1.4,
-              }}
-            >
+            <p className="mt-1.5 text-[11px] leading-snug text-ink-body">
               {cell.sub}
             </p>
           )}
+
           {cell.insight && (
-            <p
-              style={{
-                fontSize: "10px",
-                color: "var(--color-muted)",
-                lineHeight: 1.4,
-                fontStyle: "italic",
-              }}
-            >
+            <p className="mt-1 text-[10px] italic leading-snug text-muted">
               {cell.insight}
             </p>
           )}

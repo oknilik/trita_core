@@ -1,12 +1,126 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const DEFAULT_AVATAR = "/avatars/avatar-1.png";
+// ── Avatar colors ───────────────────────────────────────────────────────────
+
+const AVATAR_COLORS = [
+  ["#2a5244", "#1e3d34"],
+  ["#8a5530", "#6b3f22"],
+  ["#4a4a5e", "#33334a"],
+  ["#6366F1", "#4F46E5"],
+  ["#0E7490", "#0C5E75"],
+  ["#9333EA", "#7C22CB"],
+] as const;
+
+function getAvatarColor(name: string): readonly [string, string] {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+// ── Icons (14×14, stroke currentColor) ──────────────────────────────────────
+
+function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3">
+      <rect x="1" y="1" width="6" height="6" rx="1.5" />
+      <rect x="9" y="1" width="6" height="6" rx="1.5" />
+      <rect x="1" y="9" width="6" height="6" rx="1.5" />
+      <rect x="9" y="9" width="6" height="6" rx="1.5" />
+    </svg>
+  );
+}
+
+function TeamIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="5" r="2.5" />
+      <path d="M1.5 14a4.5 4.5 0 0 1 9 0" />
+      <circle cx="11.5" cy="6" r="2" />
+      <path d="M11.5 10.5a3.5 3.5 0 0 1 3 3.5" />
+    </svg>
+  );
+}
+
+function CandidateIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="7" cy="5" r="3" />
+      <path d="M2 14a5 5 0 0 1 10 0" />
+      <path d="M12 5l1.5 1.5L16 4" />
+    </svg>
+  );
+}
+
+function OrgIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="1" width="14" height="14" rx="2" />
+      <path d="M1 5h14M5 1v14M10 1v14M1 10h14" />
+    </svg>
+  );
+}
+
+function BellIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" className="text-[#4a4a5e]">
+      <path d="M8 2a5 5 0 0 1 5 5v2l1.5 2H1.5L3 9V7a5 5 0 0 1 5-5z" />
+      <path d="M6.5 13a1.5 1.5 0 0 0 3 0" />
+    </svg>
+  );
+}
+
+function ChevronDown() {
+  return (
+    <svg className="ml-0.5 h-2.5 w-2.5 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <path d="M2 4l4 4 4-4" />
+    </svg>
+  );
+}
+
+// ── Mega-dropdown item ──────────────────────────────────────────────────────
+
+function MegaItem({
+  href,
+  icon,
+  title,
+  desc,
+  onClick,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  onClick: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[#f7f4ef]"
+    >
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f7f4ef] text-[#8a8a9a] transition-colors group-hover:bg-[#e8e0d3] group-hover:text-[#4a4a5e]">
+        {icon}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13px] font-semibold text-[#1a1a2e]">{title}</p>
+        <p className="text-[11px] leading-snug text-[#8a8a9a]">{desc}</p>
+      </div>
+      <svg className="h-3.5 w-3.5 shrink-0 text-[#ddd5c8] transition-colors group-hover:text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <path d="M4 2l4 4-4 4" />
+      </svg>
+    </Link>
+  );
+}
+
+// ── Props ───────────────────────────────────────────────────────────────────
 
 interface NavHeaderUIProps {
   user: { username: string | null; email: string | null };
@@ -19,10 +133,7 @@ interface NavHeaderUIProps {
   hasHiringAccess: boolean;
 }
 
-function getInitials(name: string): string {
-  const first = name.split(/[\s@.]/)[0] ?? "";
-  return first.slice(0, 2).toUpperCase() || "?";
-}
+// ── Component ───────────────────────────────────────────────────────────────
 
 export function NavHeaderUI({
   user,
@@ -36,18 +147,11 @@ export function NavHeaderUI({
   const pathname = usePathname();
   const { signOut } = useClerk();
 
-  const [teamOpen, setTeamOpen] = useState(false);
-  const [orgOpen, setOrgOpen] = useState(false);
-  const [avatarOpen, setAvatarOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [avatarSrc, setAvatarSrc] = useState<string>(DEFAULT_AVATAR);
+  type DropdownKey = "teams" | "candidates" | "org" | null;
+  const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
+  type MobileMenuState = "closed" | "quickview" | "expanded";
+  const [mobileMenu, setMobileMenu] = useState<MobileMenuState>("closed");
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem("trita_avatar");
-    if (stored) setAvatarSrc(stored);
-  }, []);
-
-  // Use first accessible team for display; all for dropdown
   const team = teams[0] ?? null;
   const isOrgUser = isManager || isAdmin;
   const dashboardHref = isOrgUser ? "/dashboard" : "/profile/results";
@@ -58,245 +162,205 @@ export function NavHeaderUI({
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
 
   const displayName = user.username ?? user.email ?? "?";
-  const userInitials = getInitials(displayName);
+  const initial = displayName[0]?.toUpperCase() ?? "?";
+  const [avatarFrom, avatarTo] = getAvatarColor(displayName);
+  const roleLabel = isAdmin ? "Admin" : "Manager";
 
-  const closeAll = () => {
-    setTeamOpen(false);
-    setOrgOpen(false);
-    setAvatarOpen(false);
-  };
+  const closeAll = useCallback(() => setOpenDropdown(null), []);
 
-  // Close all dropdowns and mobile drawer on route change
+  const toggle = useCallback((key: DropdownKey) => {
+    setOpenDropdown((prev) => (prev === key ? null : key));
+  }, []);
+
+  // Close on route change
   useEffect(() => {
-    setMobileOpen(false);
-    setTeamOpen(false);
-    setOrgOpen(false);
-    setAvatarOpen(false);
+    setMobileMenu("closed");
+    setOpenDropdown(null);
   }, [pathname]);
 
-  // Hide on assessment/try pages (they have their own minimal nav)
+  // Close on ESC
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeAll(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [closeAll]);
+
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) return null;
 
-  const pillBase =
-    "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors cursor-pointer select-none";
-  const pillActive = `${pillBase} bg-ink text-white`;
-  const pillInactive = `${pillBase} text-ink-body hover:bg-warm-mid`;
+  // ── Nav item styles ───────────────────────────────────────────────────────
 
-  const anyOpen = teamOpen || orgOpen || avatarOpen;
+  const navItemBase = "inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium transition-all cursor-pointer select-none rounded-lg";
+  const navItemActive = `${navItemBase} bg-[#f2ede6] text-[#c17f4a] font-semibold`;
+  const navItemInactive = `${navItemBase} text-[#4a4a5e] hover:text-[#1a1a2e] hover:bg-[#f7f4ef]`;
+
+  // ── Mega-dropdown wrapper ─────────────────────────────────────────────────
+
+  function MegaDropdown({ children, isOpen }: { children: React.ReactNode; isOpen: boolean }) {
+    if (!isOpen) return null;
+    return (
+      <div
+        className="absolute left-0 top-[calc(100%+4px)] z-50 w-[380px] overflow-hidden rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] p-1.5 shadow-lg shadow-black/[0.04]"
+        style={{ animation: "fade-in 150ms ease-out" }}
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <>
-      {anyOpen && (
-        <div
-          className="fixed inset-0 z-30"
-          onClick={closeAll}
-        />
+      {/* Backdrop for closing dropdowns */}
+      {openDropdown && (
+        <div className="fixed inset-0 z-30" onClick={closeAll} />
       )}
-      <header className="sticky top-0 z-40 h-[52px] w-full border-b border-sand bg-cream lg:h-[64px]">
-        <div className="mx-auto flex h-full w-full max-w-5xl items-center gap-3 px-4">
+
+      <header className="sticky top-0 z-40 border-b border-[#ddd5c8] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
+
           {/* Logo */}
           <Link
             href={dashboardHref}
-            className="font-fraunces mr-2 inline-flex flex-shrink-0 items-baseline text-[18px] font-black tracking-tight text-ink lg:text-[22px]"
+            aria-label="trita"
+            className="font-fraunces mr-3 text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
           >
-            trit<span className="text-bronze">a</span>
+            <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
           </Link>
 
-          {/* Desktop center nav */}
-          <nav className="hidden flex-1 items-center gap-1 lg:flex">
-            <Link href={dashboardHref} className={onDashboard ? pillActive : pillInactive}>
+          {/* ── Desktop nav ──────────────────────────────────────────────── */}
+          <nav className="hidden items-center gap-1 lg:flex">
+
+            {/* Vezérlő */}
+            <Link
+              href={dashboardHref}
+              className={`${onDashboard ? "rounded-lg bg-[#1a1a2e] text-white px-4 py-1.5 text-[13px] font-medium inline-flex items-center gap-2" : navItemInactive}`}
+            >
+              <GridIcon className="h-3.5 w-3.5" />
               {dashboardLabel}
             </Link>
 
+            {/* Csapatok dropdown */}
             {team && (
               <div className="relative">
                 <button
                   type="button"
-                  className={onTeam ? pillActive : pillInactive}
-                  onClick={() => {
-                    setTeamOpen((p) => !p);
-                    setOrgOpen(false);
-                    setAvatarOpen(false);
-                  }}
+                  className={onTeam || openDropdown === "teams" ? navItemActive : navItemInactive}
+                  onClick={() => toggle("teams")}
                 >
+                  <TeamIcon />
                   {teams.length === 1 ? team.name : "Csapatok"}
-                  <svg
-                    className="h-3 w-3"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  >
-                    <path d="M2 4l4 4 4-4" />
-                  </svg>
+                  <ChevronDown />
                 </button>
-                {teamOpen && (
-                  <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-sand bg-white p-1.5 shadow-lg">
-                    {teams.length === 1 ? (
-                      <>
-                        <DropItem
-                          href={`/team/${team.id}`}
-                          label="Áttekintés"
-                          active={pathname === `/team/${team.id}`}
-                        />
-                        <DropItem href={`/team/${team.id}?tab=profile`} label="Személyiségprofil" />
-                        <DropItem href={`/team/${team.id}?tab=members`} label="Tagok" />
-                      </>
-                    ) : (
-                      teams.map((t) => (
-                        <DropItem
-                          key={t.id}
-                          href={`/team/${t.id}`}
-                          label={t.name}
-                          active={pathname.startsWith(`/team/${t.id}`)}
-                        />
-                      ))
-                    )}
-                  </div>
-                )}
+                <MegaDropdown isOpen={openDropdown === "teams"}>
+                  {teams.length === 1 ? (
+                    <>
+                      <MegaItem href={`/team/${team.id}`} icon={<TeamIcon />} title="Csapat áttekintése" desc="Eredmények és aktivitás" onClick={closeAll} />
+                      <MegaItem href={`/team/${team.id}?tab=members`} icon={<TeamIcon />} title="Tagok és szerepkörök" desc="Meglévő tagok kezelése" onClick={closeAll} />
+                      <MegaItem href={`/team/${team.id}?tab=profile`} icon={<OrgIcon />} title="Személyiségprofil" desc="HEXACO csapatprofil" onClick={closeAll} />
+                    </>
+                  ) : (
+                    <>
+                      {teams.map((tm) => (
+                        <MegaItem key={tm.id} href={`/team/${tm.id}`} icon={<TeamIcon />} title={tm.name} desc="Csapat áttekintése" onClick={closeAll} />
+                      ))}
+                    </>
+                  )}
+                </MegaDropdown>
               </div>
             )}
 
+            {/* Jelöltek dropdown */}
+            {org && hasHiringAccess && (
+              <div className="relative">
+                <button
+                  type="button"
+                  className={onHiring || openDropdown === "candidates" ? navItemActive : navItemInactive}
+                  onClick={() => toggle("candidates")}
+                >
+                  <CandidateIcon />
+                  Jelöltek
+                  <ChevronDown />
+                </button>
+                <MegaDropdown isOpen={openDropdown === "candidates"}>
+                  <MegaItem href={`/hiring/${org.id}`} icon={<CandidateIcon />} title="Jelöltfolyamat" desc="Aktív és archív jelöltek" onClick={closeAll} />
+                  <MegaItem href={`/hiring/${org.id}?invite=true`} icon={<CandidateIcon />} title="Új jelölt hozzáadása" desc="Értékelés indítása" onClick={closeAll} />
+                  <MegaItem href="/billing" icon={<OrgIcon />} title="Csomagok és kreditek" desc="Candidate add-on kezelése" onClick={closeAll} />
+                </MegaDropdown>
+              </div>
+            )}
+
+            {/* Separator */}
+            {org && isAdmin && <div className="mx-2 h-5 w-px bg-[#ddd5c8]" />}
+
+            {/* Szervezet dropdown (admin only) */}
             {org && isAdmin && (
               <div className="relative">
                 <button
                   type="button"
-                  className={onOrg ? pillActive : pillInactive}
-                  onClick={() => {
-                    setOrgOpen((p) => !p);
-                    setTeamOpen(false);
-                    setAvatarOpen(false);
-                  }}
+                  className={onOrg || openDropdown === "org" ? navItemActive : navItemInactive}
+                  onClick={() => toggle("org")}
                 >
+                  <OrgIcon />
                   {org.name}
                   {activeCampaignCount > 0 && (
-                    <span className="ml-0.5 rounded-full bg-sage px-1.5 py-[1px] font-mono text-[9px] text-white">
+                    <span className="ml-0.5 rounded-full bg-[#1a1a2e] px-1.5 py-[1px] font-mono text-[9px] text-white">
                       {activeCampaignCount}
                     </span>
                   )}
-                  <svg
-                    className="h-3 w-3"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  >
-                    <path d="M2 4l4 4 4-4" />
-                  </svg>
+                  <ChevronDown />
                 </button>
-                {orgOpen && (
-                  <div className="absolute left-0 top-[calc(100%+6px)] w-52 rounded-xl border border-sand bg-white p-1.5 shadow-lg">
-                    <DropItem
-                      href={`/org/${org.id}`}
-                      label="Áttekintés"
-                      active={onOrg && !pathname.includes("?")}
-                    />
-                    <DropItem
-                      href={`/org/${org.id}?tab=campaigns`}
-                      label="Kampányok"
-                      badge={activeCampaignCount > 0 ? activeCampaignCount : undefined}
-                    />
-                    <DropItem href={`/org/${org.id}?tab=teams`} label="Csapatok" />
-                    <DropItem href={`/org/${org.id}?tab=members`} label="Tagok" />
-                  </div>
-                )}
+                <MegaDropdown isOpen={openDropdown === "org"}>
+                  <MegaItem href={`/org/${org.id}`} icon={<OrgIcon />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={closeAll} />
+                  <MegaItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={closeAll} />
+                  <MegaItem href={`/org/${org.id}?tab=campaigns`} icon={<GridIcon />} title="Kampányok" desc={activeCampaignCount > 0 ? `${activeCampaignCount} aktív` : "Kampánykezelés"} onClick={closeAll} />
+                  <MegaItem href="/billing" icon={<OrgIcon />} title="Beállítások" desc="Számlázás, csomagok" onClick={closeAll} />
+                </MegaDropdown>
               </div>
-            )}
-
-            {org && isManager && hasHiringAccess && (
-              <Link href={`/hiring/${org.id}`} className={onHiring ? pillActive : pillInactive}>
-                Felvétel
-              </Link>
             )}
           </nav>
 
-          {/* Desktop right: avatar pill */}
-          <div className="ml-auto hidden lg:block">
-            <div className="relative">
-              <button
-                type="button"
-                className="flex min-h-[32px] cursor-pointer items-center gap-2 rounded-full border border-sand bg-white px-2.5 py-1 text-[13px] font-medium text-ink-body transition hover:bg-warm-mid"
-                onClick={() => {
-                  setAvatarOpen((p) => !p);
-                  setTeamOpen(false);
-                  setOrgOpen(false);
-                }}
+          {/* ── Desktop right side ───────────────────────────────────────── */}
+          <div className="hidden items-center gap-2 lg:flex">
+            {/* Bell */}
+            <button type="button" className="relative flex h-9 w-9 items-center justify-center rounded-lg transition-opacity hover:opacity-70">
+              <BellIcon />
+            </button>
+
+            {/* Separator + Language */}
+            <div className="h-5 w-px bg-[#e8e0d3]" />
+            <LanguageSwitcher />
+
+            {/* Profile */}
+            <Link
+              href="/profile"
+              className="flex items-center gap-1.5 rounded-full border border-[#e8e0d3] bg-white pl-1 pr-2.5 py-0.5 transition hover:border-[#8a8a9a]"
+            >
+              <div
+                className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
               >
-                <Image
-                  src={avatarSrc}
-                  alt="Avatar"
-                  width={40}
-                  height={40}
-                  unoptimized
-                  className="h-8 w-8 flex-shrink-0 rounded-full object-cover lg:h-10 lg:w-10"
-                />
-                <span className="max-w-[120px] truncate">{displayName}</span>
-                <svg
-                  className="h-3 w-3 text-muted"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                >
-                  <path d="M2 4l4 4 4-4" />
-                </svg>
-              </button>
-              {avatarOpen && (
-                <div className="absolute right-0 top-[calc(100%+6px)] w-48 rounded-xl border border-sand bg-white p-1.5 shadow-lg">
-                  <DropItem href="/profile" label="Profil" />
-                  <DropItem href="/billing" label="Számlázás" />
-                  <div className="my-1 border-t border-sand" />
-                  <button
-                    type="button"
-                    onClick={() => signOut({ redirectUrl: "/" })}
-                    className="w-full rounded-lg px-3 py-2 text-left text-[13px] font-medium text-rose-600 transition hover:bg-rose-50"
-                  >
-                    Kilépés
-                  </button>
-                </div>
-              )}
-            </div>
+                {initial}
+              </div>
+              <span className="max-w-[90px] truncate text-[12px] font-medium text-[#4a4a5e]">{displayName}</span>
+            </Link>
           </div>
 
-          {/* Mobile: avatar chip + hamburger */}
-          <div className="ml-auto flex items-center gap-2 lg:hidden">
-            <Image
-              src={avatarSrc}
-              alt="Avatar"
-              width={36}
-              height={36}
-              unoptimized
-              className="h-9 w-9 rounded-full object-cover"
-            />
+          {/* ── Mobile: hamburger + bell ────────────────────────────────── */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <button type="button" className="relative flex h-9 w-9 items-center justify-center rounded-lg transition-opacity hover:opacity-70">
+              <BellIcon />
+            </button>
             <button
               type="button"
-              onClick={() => setMobileOpen((p) => !p)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:bg-warm-mid"
+              onClick={() => setMobileMenu((s) => s === "closed" ? "quickview" : "closed")}
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#1a1a2e]"
             >
-              {mobileOpen ? (
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  className="h-5 w-5"
-                >
+              {mobileMenu !== "closed" ? (
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
                   <path d="M4 4l12 12M16 4L4 16" />
                 </svg>
               ) : (
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M3 5h14M3 10h14M3 15h14" />
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" className="h-5 w-5">
+                  <path d="M2 4h12M2 8h12M2 12h12" />
                 </svg>
               )}
             </button>
@@ -304,245 +368,238 @@ export function NavHeaderUI({
         </div>
       </header>
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" onClick={() => setMobileOpen(false)}>
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+      {/* ── Mobile panel ────────────────────────────────────────────────── */}
+      {mobileMenu !== "closed" && (
+        <>
+          {/* Overlay */}
           <div
-            className="absolute right-0 top-0 flex h-full w-[280px] flex-col bg-white shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-30 bg-black/20 lg:hidden"
+            onClick={() => setMobileMenu("closed")}
+            style={{ animation: "fade-in 150ms ease-out" }}
+          />
+
+          <div
+            className="fixed inset-x-0 top-14 z-40 lg:hidden"
+            style={{ animation: "fade-in 200ms ease-out" }}
           >
-            {/* Drawer header */}
-            <div className="flex items-center justify-between border-b border-sand px-5 py-4">
-              <Link
-                href={dashboardHref}
-                className="font-fraunces text-[18px] font-black tracking-tight text-ink"
-                onClick={() => setMobileOpen(false)}
-              >
-                trit<span className="text-bronze">a</span>
-              </Link>
-              <button
-                type="button"
-                onClick={() => setMobileOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand text-ink-body"
-              >
-                <svg
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  className="h-4 w-4"
-                >
-                  <path d="M3 3l10 10M13 3L3 13" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Drawer nav */}
-            <nav className="flex-1 overflow-y-auto px-3 py-4">
-              <MobileNavSection>
-                <MobileNavItem
+            {mobileMenu === "quickview" ? (
+              /* ── Quickview panel ──────────────────────────────────────── */
+              <div className="mx-4 mt-2 rounded-2xl border border-[#ddd5c8] bg-white p-4 shadow-[0_4px_16px_rgba(26,46,34,0.06)]">
+                {/* Vezérlő pill */}
+                <Link
                   href={dashboardHref}
-                  label={dashboardLabel}
-                  active={onDashboard}
-                  onClose={() => setMobileOpen(false)}
-                />
-              </MobileNavSection>
+                  onClick={() => setMobileMenu("closed")}
+                  className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-[13px] font-medium text-white"
+                >
+                  <GridIcon className="h-3.5 w-3.5" />
+                  {dashboardLabel}
+                </Link>
 
-              {teams.length > 0 && (
-                teams.length === 1 ? (
-                  <MobileNavSection label={team!.name}>
-                    <MobileNavItem
-                      href={`/team/${team!.id}`}
-                      label="Áttekintés"
-                      active={pathname === `/team/${team!.id}`}
-                      onClose={() => setMobileOpen(false)}
-                    />
-                    <MobileNavItem
-                      href={`/team/${team!.id}?tab=profile`}
-                      label="Személyiségprofil"
-                      onClose={() => setMobileOpen(false)}
-                    />
-                    <MobileNavItem
-                      href={`/team/${team!.id}?tab=members`}
-                      label="Tagok"
-                      onClose={() => setMobileOpen(false)}
-                    />
-                  </MobileNavSection>
-                ) : (
-                  <MobileNavSection label="Csapatok">
-                    {teams.map((t) => (
-                      <MobileNavItem
-                        key={t.id}
-                        href={`/team/${t.id}`}
-                        label={t.name}
-                        active={pathname.startsWith(`/team/${t.id}`)}
-                        onClose={() => setMobileOpen(false)}
-                      />
-                    ))}
-                  </MobileNavSection>
-                )
-              )}
+                {/* Menu items */}
+                <div className="flex flex-col">
+                  {teams.map((tm) => (
+                    <Link
+                      key={tm.id}
+                      href={`/team/${tm.id}`}
+                      onClick={() => setMobileMenu("closed")}
+                      className="flex items-center gap-3 border-b border-[#e8e0d3] py-3 text-[14px] font-medium text-[#1a1a2e]"
+                    >
+                      <TeamIcon className="h-4 w-4" />
+                      {teams.length === 1 ? (isAdmin ? "Csapatom" : "Csapatom") : tm.name}
+                    </Link>
+                  ))}
 
-              {org && isAdmin && (
-                <MobileNavSection label={org.name}>
-                  <MobileNavItem
-                    href={`/org/${org.id}`}
-                    label="Áttekintés"
-                    active={onOrg && !pathname.includes("?")}
-                    onClose={() => setMobileOpen(false)}
-                  />
-                  <MobileNavItem
-                    href={`/org/${org.id}?tab=campaigns`}
-                    label="Kampányok"
-                    badge={activeCampaignCount > 0 ? activeCampaignCount : undefined}
-                    onClose={() => setMobileOpen(false)}
-                  />
-                  <MobileNavItem
-                    href={`/org/${org.id}?tab=teams`}
-                    label="Csapatok"
-                    onClose={() => setMobileOpen(false)}
-                  />
-                  <MobileNavItem
-                    href={`/org/${org.id}?tab=members`}
-                    label="Tagok"
-                    onClose={() => setMobileOpen(false)}
-                  />
-                </MobileNavSection>
-              )}
+                  {org && hasHiringAccess && (
+                    <Link
+                      href={`/hiring/${org.id}`}
+                      onClick={() => setMobileMenu("closed")}
+                      className="flex items-center gap-3 border-b border-[#e8e0d3] py-3 text-[14px] font-medium text-[#1a1a2e]"
+                    >
+                      <CandidateIcon className="h-4 w-4" />
+                      Jelöltek
+                    </Link>
+                  )}
 
-              {org && isManager && hasHiringAccess && (
-                <MobileNavSection label="Felvétel">
-                  <MobileNavItem
-                    href={`/hiring/${org.id}`}
-                    label="Jelöltek"
-                    active={onHiring}
-                    onClose={() => setMobileOpen(false)}
-                  />
-                </MobileNavSection>
-              )}
+                  {org && isAdmin && (
+                    <Link
+                      href={`/org/${org.id}`}
+                      onClick={() => setMobileMenu("closed")}
+                      className="flex items-center gap-3 border-b border-[#e8e0d3] py-3 text-[14px] font-medium text-[#1a1a2e]"
+                    >
+                      <OrgIcon className="h-4 w-4" />
+                      {org.name}
+                    </Link>
+                  )}
 
-              <MobileNavSection label="Fiók">
-                <MobileNavItem
+                  {/* Expand to full menu */}
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenu("expanded")}
+                    className="flex items-center gap-3 py-3 text-[14px] font-medium text-[#8a8a9a]"
+                  >
+                    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="1" y="2" width="14" height="12" rx="2" />
+                      <path d="M1 6h14" />
+                    </svg>
+                    Menu
+                    <ChevronDown />
+                  </button>
+                </div>
+
+                {/* Profile row */}
+                <Link
                   href="/profile"
-                  label="Profil"
-                  onClose={() => setMobileOpen(false)}
-                />
-                <MobileNavItem
-                  href="/billing"
-                  label="Számlázás"
-                  onClose={() => setMobileOpen(false)}
-                />
-              </MobileNavSection>
-            </nav>
-
-            {/* Drawer footer */}
-            <div className="border-t border-sand p-4">
-              <div className="mb-3 flex items-center gap-2.5 px-1">
-                <Image
-                  src={avatarSrc}
-                  alt="Avatar"
-                  width={40}
-                  height={40}
-                  unoptimized
-                  className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
-                />
-                <p className="min-w-0 truncate text-[13px] font-medium text-ink">
-                  {displayName}
-                </p>
+                  onClick={() => setMobileMenu("closed")}
+                  className="mt-1 flex items-center gap-3 border-t border-[#ddd5c8] pt-3"
+                >
+                  <div
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[14px] font-medium text-white"
+                    style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+                  >
+                    {initial}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName}</p>
+                    <p className="text-[11px] text-[#8a8a9a]">{roleLabel}</p>
+                  </div>
+                  <svg className="h-4 w-4 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M4 2l4 4-4 4" />
+                  </svg>
+                </Link>
               </div>
-              <button
-                type="button"
-                onClick={() => signOut({ redirectUrl: "/" })}
-                className="w-full rounded-lg border border-rose-200 py-2.5 text-[13px] font-semibold text-rose-600 transition hover:bg-rose-50"
-              >
-                Kilépés
-              </button>
-            </div>
+            ) : (
+              /* ── Expanded panel ──────────────────────────────────────── */
+              <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[#ddd5c8] bg-white shadow-[0_4px_16px_rgba(26,46,34,0.06)]">
+                {/* Header: pill + collapse */}
+                <div className="flex items-center gap-3 border-b border-[#e8e0d3] px-4 py-3">
+                  <Link
+                    href={dashboardHref}
+                    onClick={() => setMobileMenu("closed")}
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-[13px] font-medium text-white"
+                  >
+                    <GridIcon className="h-3.5 w-3.5" />
+                    {dashboardLabel}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenu("quickview")}
+                    className="flex items-center gap-1.5 text-[13px] text-[#8a8a9a]"
+                  >
+                    Bezárás
+                    <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                      <path d="M2 8l4-4 4 4" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Profile card */}
+                <div className="mx-4 mt-3 flex items-center gap-3 rounded-xl bg-[#f2ede6] px-4 py-3">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[15px] font-medium text-white"
+                    style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+                  >
+                    {initial}
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName}</p>
+                    <p className="text-[12px] text-[#8a8a9a]">{roleLabel}</p>
+                  </div>
+                </div>
+
+                {/* ── Csapatok section ── */}
+                <div className="mt-3">
+                  <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                    {isAdmin ? "Csapatok" : "Csapatom"}
+                  </p>
+                  {teams.length === 1 && team ? (
+                    <>
+                      <MobileMenuItem href={`/team/${team.id}`} icon={<TeamIcon className="h-4 w-4" />} title="Csapat áttekintése" desc="Eredmények és aktivitás" onClick={() => setMobileMenu("closed")} />
+                      <MobileMenuItem href={`/team/${team.id}?tab=members`} icon={<TeamIcon className="h-4 w-4" />} title="Tagok és szerepkörök" desc="Meglévő tagok kezelése" onClick={() => setMobileMenu("closed")} />
+                      <MobileMenuItem href={`/team/${team.id}?tab=profile`} icon={<OrgIcon className="h-4 w-4" />} title="Személyiségprofil" desc="HEXACO csapatprofil" onClick={() => setMobileMenu("closed")} />
+                    </>
+                  ) : (
+                    teams.map((tm) => (
+                      <MobileMenuItem key={tm.id} href={`/team/${tm.id}`} icon={<TeamIcon className="h-4 w-4" />} title={tm.name} desc="Csapat áttekintése" onClick={() => setMobileMenu("closed")} />
+                    ))
+                  )}
+                </div>
+
+                {/* ── Jelöltek section ── */}
+                {org && hasHiringAccess && (
+                  <div className="mt-2 border-t border-[#e8e0d3] pt-2">
+                    <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                      Jelöltek
+                    </p>
+                    <MobileMenuItem href={`/hiring/${org.id}`} icon={<CandidateIcon className="h-4 w-4" />} title="Jelöltfolyamat" desc="Aktív és archív jelöltek" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href={`/hiring/${org.id}?invite=true`} icon={<CandidateIcon className="h-4 w-4" />} title="Új jelölt hozzáadása" desc="Értékelés indítása" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href="/billing" icon={<OrgIcon className="h-4 w-4" />} title="Csomagok és kreditek" desc="Candidate add-on kezelése" onClick={() => setMobileMenu("closed")} />
+                  </div>
+                )}
+
+                {/* ── Szervezet section (admin only) ── */}
+                {org && isAdmin && (
+                  <div className="mt-2 border-t border-[#e8e0d3] pt-2">
+                    <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                      {org.name}
+                    </p>
+                    <MobileMenuItem href={`/org/${org.id}`} icon={<OrgIcon className="h-4 w-4" />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon className="h-4 w-4" />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href={`/org/${org.id}?tab=campaigns`} icon={<GridIcon className="h-4 w-4" />} title="Kampányok" desc="Kampánykezelés" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href="/billing" icon={<OrgIcon className="h-4 w-4" />} title="Beállítások" desc="Számlázás, csomagok" onClick={() => setMobileMenu("closed")} />
+                  </div>
+                )}
+
+                {/* ── Footer ── */}
+                <div className="mt-4 border-t border-[#ddd5c8] px-4 pb-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => { signOut({ redirectUrl: "/" }); setMobileMenu("closed"); }}
+                    className="flex items-center gap-2 text-[13px] text-[#8a8a9a]"
+                  >
+                    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
+                    </svg>
+                    Kijelentkezés
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        </>
       )}
     </>
   );
 }
 
-function DropItem({
+// ── Mobile menu item ────────────────────────────────────────────────────────
+
+function MobileMenuItem({
   href,
-  label,
-  active,
-  badge,
+  icon,
+  title,
+  desc,
+  onClick,
 }: {
   href: string;
-  label: string;
-  active?: boolean;
-  badge?: number;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  onClick: () => void;
 }) {
   return (
     <Link
       href={href}
-      className={`flex items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium transition-colors ${
-        active
-          ? "bg-[#f5ede8] text-bronze"
-          : "text-ink-body hover:bg-[#f5ede8] hover:text-ink"
-      }`}
+      onClick={onClick}
+      className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[#f2ede6]"
     >
-      {label}
-      {badge != null && (
-        <span className="rounded-full bg-sage px-1.5 py-[1px] font-mono text-[9px] text-white">
-          {badge}
-        </span>
-      )}
-    </Link>
-  );
-}
-
-function MobileNavSection({
-  label,
-  children,
-}: {
-  label?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="mb-4">
-      {label && (
-        <p className="mb-1 px-2 font-mono text-[9px] uppercase tracking-[.14em] text-muted">
-          {label}
-        </p>
-      )}
-      <div className="flex flex-col gap-0.5">{children}</div>
-    </div>
-  );
-}
-
-function MobileNavItem({
-  href,
-  label,
-  active,
-  badge,
-  onClose,
-}: {
-  href: string;
-  label: string;
-  active?: boolean;
-  badge?: number;
-  onClose: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={onClose}
-      className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors ${
-        active ? "bg-ink text-white" : "text-ink-body hover:bg-warm-mid"
-      }`}
-    >
-      {label}
-      {badge != null && (
-        <span className="rounded-full bg-sage px-1.5 py-[1px] font-mono text-[9px] text-white">
-          {badge}
-        </span>
-      )}
+      <span className="shrink-0 text-[#1a1a2e]">{icon}</span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[14px] font-medium text-[#1a1a2e]">{title}</p>
+        <p className="truncate text-[12px] text-[#8a8a9a]">{desc}</p>
+      </div>
+      <svg className="h-4 w-4 shrink-0 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <path d="M4 2l4 4-4 4" />
+      </svg>
     </Link>
   );
 }

@@ -11,6 +11,23 @@ import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 
+const AVATAR_COLORS = [
+  ["#2a5244", "#1e3d34"],
+  ["#8a5530", "#6b3f22"],
+  ["#4a4a5e", "#33334a"],
+  ["#6366F1", "#4F46E5"],
+  ["#0E7490", "#0C5E75"],
+  ["#9333EA", "#7C22CB"],
+] as const;
+
+function getAvatarColor(name: string): readonly [string, string] {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type SaveState = "idle" | "saving" | "saved" | "error";
 type InvalidField = "username" | "birthYear" | "gender" | "country";
@@ -109,6 +126,8 @@ export default function ProfilePage() {
 
   const initials = (username.trim() || user?.primaryEmailAddress?.emailAddress || "?").slice(0, 1).toUpperCase();
   const displayName = username.trim() || user?.username || user?.firstName || t("common.userFallback", locale);
+  const avatarColorName = username.trim() || user?.username || user?.primaryEmailAddress?.emailAddress || "";
+  const [avatarFrom, avatarTo] = getAvatarColor(avatarColorName);
 
   const currentYear = new Date().getFullYear();
   const minBirthYear = currentYear - 100;
@@ -197,7 +216,10 @@ export default function ProfilePage() {
         {/* ═══ HERO ═══ */}
         <div className="border-b border-[#e8e0d3] py-7">
           <div className="mb-2.5 flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3d6b5e] to-[#2a5244] font-fraunces text-[22px] font-medium text-white shadow-md shadow-[#3d6b5e]/15">
+            <div
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-fraunces text-[22px] font-medium text-white shadow-md"
+              style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+            >
               {initials}
             </div>
             <div className="min-w-0">

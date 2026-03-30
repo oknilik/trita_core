@@ -133,41 +133,68 @@ export default async function OrgDetailPage({
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
 
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-              {t("org.eyebrow", locale)}
-            </p>
-            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
+        {/* Hero */}
+        <div
+          className="relative overflow-hidden rounded-2xl"
+          style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2a2740 60%, #1e1b2e 100%)" }}
+        >
+          <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
+          <div className="px-7 pb-7 pt-8 md:px-9 md:pb-8 md:pt-10">
+            <div className="mb-2 flex items-center gap-2.5">
+              <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+                {t("org.eyebrow", locale)}
+              </p>
+              {org.status === "PENDING_SETUP" && (
+                <span className="rounded-md bg-amber-500/20 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-300">
+                  {t("org.setupPending", locale)}
+                </span>
+              )}
+            </div>
+
+            <h1 className="mb-0.5 font-fraunces text-[34px] tracking-tight text-white">
               {org.name}
             </h1>
-            {org.status === "PENDING_SETUP" && (
-              <span className="mt-2 inline-block rounded-full bg-amber-100 px-3 py-0.5 text-xs font-semibold text-amber-700">
-                {t("org.setupPending", locale)}
+
+            <p className="mb-4 text-[11px] text-white/[0.25]">
+              {pageData.memberCount} {t("org.membersLabel", locale)}
+              {" · "}
+              {pageData.teamCount} {t("org.teamsLabel", locale)}
+              {pageData.activeCampaignCount > 0 && (
+                <> · {pageData.activeCampaignCount} {t("org.activeCampaigns", locale)}</>
+              )}
+            </p>
+
+            {/* Summary chips */}
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(61,107,94,0.3)", color: "#c8e8de" }}>
+                {pageData.memberCount} {t("org.membersLabel", locale)}
               </span>
-            )}
+              <span className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(99,102,241,0.2)", color: "#a5b4fc" }}>
+                {pageData.teamCount} {t("org.teamsLabel", locale)}
+              </span>
+              {pageData.activeCampaignCount > 0 && (
+                <span className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(16,185,129,0.2)", color: "#6ee7b7" }}>
+                  {pageData.activeCampaignCount} {t("org.activeCampaigns", locale)}
+                </span>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              {isAdmin && (
+                <Link
+                  href={`/org/${orgId}/settings`}
+                  className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+                >
+                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="8" cy="8" r="2" />
+                    <path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" />
+                  </svg>
+                  {t("org.settingsLink", locale)}
+                </Link>
+              )}
+            </div>
           </div>
-          {isAdmin && (
-            <Link
-              href={`/org/${orgId}/settings`}
-              className="shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                className="h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="8" cy="8" r="2" />
-                <path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" />
-              </svg>
-              {t("org.settingsLink", locale)}
-            </Link>
-          )}
         </div>
 
         {/* Stat strip */}

@@ -15,7 +15,7 @@ interface PrimaryTabsProps {
 
 export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) {
   return (
-    <div className="flex items-end gap-0 overflow-x-auto border-b border-sand [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex gap-1 overflow-x-auto rounded-xl border border-sand bg-white p-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
@@ -24,10 +24,10 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             type="button"
             onClick={() => onTabChange(tab.key)}
             className={[
-              "inline-flex min-h-[44px] items-center px-[18px] py-[10px] text-[13px] border-b-2 transition-colors whitespace-nowrap",
+              "inline-flex min-h-[40px] flex-1 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all",
               isActive
-                ? "border-sage text-ink font-semibold"
-                : "border-transparent text-muted font-normal hover:text-ink-body",
+                ? "bg-ink text-white shadow-sm"
+                : "text-muted hover:bg-cream hover:text-ink-body",
             ].join(" ")}
           >
             {tab.shortLabel ? (
@@ -39,7 +39,14 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
               tab.label
             )}
             {tab.badge !== undefined && tab.badge !== null && (
-              <span className="ml-1.5 rounded-full bg-sand px-[5px] py-px text-[9px] font-semibold text-ink-warm leading-none">
+              <span
+                className={[
+                  "rounded-full px-[6px] py-px text-[9px] font-semibold leading-none",
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-sand text-ink-body",
+                ].join(" ")}
+              >
                 {tab.badge}
               </span>
             )}

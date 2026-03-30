@@ -9,6 +9,23 @@ import { useLocale } from "@/components/LocaleProvider";
 import { SUPPORTED_LOCALES, t, type Locale } from "@/lib/i18n";
 import { TritaLogo } from "@/components/TritaLogo";
 
+const AVATAR_COLORS = [
+  ["#2a5244", "#1e3d34"],
+  ["#8a5530", "#6b3f22"],
+  ["#4a4a5e", "#33334a"],
+  ["#6366F1", "#4F46E5"],
+  ["#0E7490", "#0C5E75"],
+  ["#9333EA", "#7C22CB"],
+] as const;
+
+function getAvatarColor(name: string): readonly [string, string] {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
 interface MobileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -75,12 +92,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     [profileName, user],
   );
 
-  const initials =
-    profileName?.[0] ??
-    user?.username?.[0] ??
-    user?.primaryEmailAddress?.emailAddress?.[0] ??
-    "U";
-
   const itemClass = (active: boolean) =>
     `flex min-h-[46px] items-center gap-3 rounded-lg px-3.5 text-sm font-semibold transition ${
       active
@@ -126,33 +137,33 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             </div>
 
             <SignedIn>
-              <div className="border-b border-sand px-5 py-5">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3d6b5e] to-[#2a5244] font-fraunces text-lg font-medium text-white">
-                    {initials}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-ink">
-                      {t("userMenu.greetingPrefix", locale)}
-                      {displayName ?? t("userMenu.profileFallback", locale)}
-                    </p>
-                    <p className="truncate text-xs text-ink-body">
-                      {user?.primaryEmailAddress?.emailAddress}
-                    </p>
-                    <p className="mt-1 inline-flex rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-semibold text-ink-body">
-                      {orgRole === "ORG_ADMIN"
-                        ? "Org Admin"
-                        : orgRole === "ORG_MANAGER"
-                        ? "Manager"
-                        : orgRole === "ORG_MEMBER"
-                        ? "Team"
-                        : accessLevel === "self_plus"
-                        ? "Plus"
-                        : "Free"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              {(() => {
+                const name = displayName ?? "";
+                const initial = name[0]?.toUpperCase() ?? "?";
+                const [from, to] = getAvatarColor(name);
+                return (
+                  <Link
+                    href="/profile"
+                    onClick={onClose}
+                    className="flex items-center gap-3 border-b border-sand px-5 py-5 transition hover:bg-white"
+                  >
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                      style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+                    >
+                      {initial}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-ink">
+                        {displayName ?? t("userMenu.profileFallback", locale)}
+                      </p>
+                      <p className="truncate text-xs text-ink-body">
+                        {user?.primaryEmailAddress?.emailAddress}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })()}
 
               <div className="flex-1 space-y-5 px-4 py-4">
                 <Link

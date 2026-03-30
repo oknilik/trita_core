@@ -5,6 +5,23 @@ import { t } from "@/lib/i18n";
 
 type AccessLevel = "start" | "plus";
 
+const AVATAR_COLORS = [
+  ["#2a5244", "#1e3d34"],
+  ["#8a5530", "#6b3f22"],
+  ["#4a4a5e", "#33334a"],
+  ["#6366F1", "#4F46E5"],
+  ["#0E7490", "#0C5E75"],
+  ["#9333EA", "#7C22CB"],
+] as const;
+
+function getAvatarColor(name: string): readonly [string, string] {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
 const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: string }> = {
   start: { label: "Free",  bg: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" },
   plus:  { label: "Plus",  bg: "rgba(193,127,74,0.2)",   color: "#e8a96a" },
@@ -41,6 +58,8 @@ export function ProfileHero({
 }: ProfileHeroProps) {
   const { locale } = useLocale();
   const level = LEVEL_CONFIG[accessLevel];
+  const initial = userName[0]?.toUpperCase() ?? "?";
+  const [avatarFrom, avatarTo] = getAvatarColor(userName);
 
   return (
     <div
@@ -64,9 +83,17 @@ export function ProfileHero({
             {level.label}
           </span>
         </div>
-        <h1 className="mb-0.5 font-fraunces text-[34px] tracking-tight text-white">
-          {userName}
-        </h1>
+        <div className="mb-0.5 flex items-center gap-3">
+          <div
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
+            style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+          >
+            {initial}
+          </div>
+          <h1 className="font-fraunces text-[34px] tracking-tight text-white">
+            {userName}
+          </h1>
+        </div>
         <p className="mb-4 text-[11px] text-white/[0.25]">
           {t("results.heroAssessment", locale)} {completedAt}
         </p>

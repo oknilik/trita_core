@@ -147,50 +147,88 @@ export default async function TeamDetailPage({
 
   return (
     <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
-        <StatStrip cells={statCells} />
-        {/* Header */}
-        <div className="mb-8">
-          {/* Hero */}
-          <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
-            <div className="min-w-0 flex-1">
-              <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-                {`${t("team.detailEyebrowPrefix", locale)} · ${teamData.orgName ?? ""}`}
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
+        {/* Hero */}
+        <div
+          className="relative overflow-hidden rounded-2xl"
+          style={{ background: "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)" }}
+        >
+          <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
+          <div className="px-7 pb-7 pt-8 md:px-9 md:pb-8 md:pt-10">
+            <div className="mb-2 flex items-center gap-2.5">
+              <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+                {t("team.detailEyebrowPrefix", locale)} · {teamData.orgName ?? ""}
               </p>
-              <h1 className="font-fraunces text-3xl text-ink mt-1 md:text-4xl">
-                {teamData.teamName}
-              </h1>
-              <p className="mt-1 text-xs text-ink-body/60">
-                {t("team.createdPrefix", locale)}
-                {new Date(teamData.teamCreatedAt).toLocaleDateString(
-                  dateLocale
-                )}
-                {" · "}
-                {teamData.memberCount}{" "}
-                {teamData.memberCount === 1
-                  ? t("team.memberTag", locale)
-                  : t("team.membersTag", locale)}
-                {" · "}
-                {isOrgManager
-                  ? t("team.roleManager", locale)
-                  : t("team.roleMember", locale)}
-              </p>
+              <span
+                className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+                style={{ backgroundColor: "rgba(61,107,94,0.25)", color: "#8fd4be" }}
+              >
+                {teamData.memberCount} {teamData.memberCount === 1 ? t("team.memberTag", locale) : t("team.membersTag", locale)}
+              </span>
             </div>
 
-            {isOrgManager && teamData.orgId && (
-              <div className="flex shrink-0 items-center gap-2">
+            <h1 className="mb-0.5 font-fraunces text-[34px] tracking-tight text-white">
+              {teamData.teamName}
+            </h1>
+
+            <p className="mb-4 text-[11px] text-white/[0.25]">
+              {t("team.createdPrefix", locale)}
+              {new Date(teamData.teamCreatedAt).toLocaleDateString(dateLocale)}
+              {" · "}
+              {isOrgManager ? t("team.roleManager", locale) : t("team.roleMember", locale)}
+            </p>
+
+            {/* Top dim + growth area chips */}
+            {(teamData.topDim || teamData.bottomDim) && (
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                {teamData.topDim && (
+                  <>
+                    <span className="text-[9px] uppercase tracking-wide text-white/[0.25]">
+                      {t("team.statTeamStrength", locale)}:
+                    </span>
+                    <span className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(61,107,94,0.3)", color: "#c8e8de" }}>
+                      {dimLabels[teamData.topDim.code]} · {teamData.topDim.value}%
+                    </span>
+                  </>
+                )}
+                {teamData.bottomDim && (
+                  <>
+                    <span className="ml-1 text-[9px] uppercase tracking-wide text-white/[0.25]">
+                      {t("team.statGrowthArea", locale)}:
+                    </span>
+                    <span className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(193,127,74,0.2)", color: "#e8a96a" }}>
+                      {dimLabels[teamData.bottomDim.code]} · {teamData.bottomDim.value}%
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              {isOrgManager && teamData.orgId && (
                 <Link
                   href={`/org/${teamData.orgId}?tab=campaigns`}
-                  className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+                  className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-[#c17f4a] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110"
                 >
                   + {t("team.campaignButton", locale)}
                 </Link>
-              </div>
-            )}
+              )}
+              <Link
+                href={`/org/${teamData.orgId}`}
+                className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+              >
+                ← {t("org.backToOrg", locale)}
+              </Link>
+            </div>
           </div>
         </div>
 
-        <Suspense fallback={null}>
+        {/* Stat strip */}
+        <StatStrip cells={statCells} />
+
+        {/* Tabs */}
+        <Suspense fallback={<div className="h-10 rounded-lg bg-sand/40 animate-pulse" />}>
           <TeamPageShell
             data={teamData}
             isOrgManager={isOrgManager}
