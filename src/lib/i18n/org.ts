@@ -304,6 +304,41 @@ export const orgTranslations = {
     closedSuffix: { hu: "lezárt", en: "closed" },
     completionRate: { hu: "Befejezési arány", en: "Completion rate" },
 
+    // ── Org story dashboard ──────────────────────────────────────────────
+    heroSub: { hu: "A szervezeted pillanatképe", en: "Your organization at a glance" },
+    heroCta1: { hu: "Új értékelés indítása", en: "Start new assessment" },
+    heroCta2: { hu: "Csapatok áttekintése", en: "View teams" },
+
+    insightEyebrow: { hu: "Most érdemes figyelni", en: "Worth your attention" },
+    insightActivityTitle: { hu: "Legfrissebb aktivitás", en: "Latest activity" },
+    insightActivityNone: { hu: "Még nincs rögzített aktivitás", en: "No recorded activity yet" },
+    insightFeedbackTitle: { hu: "Visszajelzési körök", en: "Feedback rounds" },
+    insightFeedbackActive: { hu: "{count} aktív visszajelzési kör fut", en: "{count} active feedback round(s) running" },
+    insightFeedbackNone: { hu: "Nincs futó visszajelzési kör — érdemes újat indítani", en: "No active feedback round — consider starting one" },
+    insightActionTitle: { hu: "Következő lépés", en: "Next step" },
+    insightActionInvite: { hu: "Meghívóra váró tagok: {count}", en: "Members awaiting invitation: {count}" },
+    insightActionStart: { hu: "Indíts új kampányt vagy hívj meg tagokat", en: "Start a new campaign or invite members" },
+
+    stateEyebrow: { hu: "Szervezeti állapot", en: "Organization status" },
+    stateMembersTitle: { hu: "Aktív tagok", en: "Active members" },
+    stateMembersSub: { hu: "{count} tag a szervezetben", en: "{count} members in the organization" },
+    stateTeamsTitle: { hu: "Csapatok", en: "Teams" },
+    stateTeamsSub: { hu: "{count} csapat regisztrálva", en: "{count} teams registered" },
+    stateCompletionTitle: { hu: "Kitöltöttség", en: "Completion" },
+    stateCompletionSub: { hu: "{done}/{total} tag fejezte be az értékelést", en: "{done}/{total} members completed their assessment" },
+    stateCampaignsTitle: { hu: "Kampányok", en: "Campaigns" },
+    stateCampaignsSub: { hu: "{active} aktív, {closed} lezárt", en: "{active} active, {closed} closed" },
+
+    teamsEyebrow: { hu: "Csapatok áttekintése", en: "Teams overview" },
+    teamCardMembers: { hu: "{count} tag", en: "{count} members" },
+    teamCardOpen: { hu: "Megnyitás →", en: "Open →" },
+    teamCardNoTeams: { hu: "Még nincs csapat — hozz létre egyet a csapat oldalon.", en: "No teams yet — create one on the teams page." },
+
+    ctaBandTitle: { hu: "Készen álltok a következő körre?", en: "Ready for the next round?" },
+    ctaBandSub: { hu: "Indíts új visszajelzési kört vagy adj hozzá új csapatot.", en: "Start a new feedback round or add a new team." },
+    ctaBandCta1: { hu: "Új kör indítása", en: "Start new round" },
+    ctaBandCta2: { hu: "Új csapat", en: "New team" },
+
     // ── Org settings page (/org/[id]/settings) ────────────────────────────
     backToOrg: { hu: "Vissza a szervezethez", en: "Back to organization" },
     settings: {
