@@ -24,16 +24,13 @@ function getAvatarColor(name: string): readonly [string, string] {
 }
 
 export function UserMenu() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const { locale } = useLocale();
-  const [profileName, setProfileName] = useState<string | null>(() => {
-    if (typeof window !== "undefined") {
-      return window.localStorage.getItem("trita_username");
-    }
-    return null;
-  });
+  const [profileName, setProfileName] = useState<string | null>(null);
+  const [hasFetchedProfile, setHasFetchedProfile] = useState(false);
 
-  const fetchProfile = useCallback(async () => {
+  const refreshProfile = useCallback(async () => {
+    setHasFetchedProfile(false);
     try {
       const res = await fetch("/api/profile/onboarding");
       if (res.ok) {
@@ -47,38 +44,57 @@ export function UserMenu() {
         }
       }
     } catch { /* silent */ }
+    finally {
+      setHasFetchedProfile(true);
+    }
   }, []);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => fetchProfile(), 0);
+    if (!isLoaded) return;
+    const timer = window.setTimeout(async () => {
+      await refreshProfile();
+    }, 0);
     return () => window.clearTimeout(timer);
-  }, [fetchProfile]);
+  }, [isLoaded, refreshProfile]);
 
   useEffect(() => {
-    const handler = () => fetchProfile();
+    if (!isLoaded) return;
+    const handler = async () => {
+      await refreshProfile();
+    };
     window.addEventListener("profile-updated", handler);
     return () => window.removeEventListener("profile-updated", handler);
-  }, [fetchProfile]);
+  }, [isLoaded, refreshProfile]);
 
   const email = user?.primaryEmailAddress?.emailAddress;
-  const displayName = profileName || user?.username || email;
-  const initial = displayName?.[0]?.toUpperCase() ?? "?";
-  const [from, to] = getAvatarColor(displayName ?? "");
+  const resolvedName = profileName || user?.username || user?.firstName || null;
+  const displayName = resolvedName || email;
+  const showIdentityLoader = !isLoaded || !hasFetchedProfile;
+  const avatarInitial = displayName?.[0]?.toUpperCase() ?? "·";
+  const [from, to] = getAvatarColor(user?.id ?? displayName ?? "trita");
 
   return (
     <Link
       href="/profile"
       className="flex min-h-[44px] items-center gap-2 rounded-full border border-[#e8e0d3] bg-white px-2 py-1 text-sm font-semibold text-[#4a4a5e] shadow-sm transition hover:border-[#8a8a9a] hover:text-[#1a1a2e]"
     >
-      <div
-        className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
-        style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
-      >
-        {initial}
-      </div>
-      <span className="hidden max-w-[120px] truncate text-sm text-[#4a4a5e] lg:block">
-        {displayName ?? t("userMenu.profileFallback", locale)}
-      </span>
+      {showIdentityLoader ? (
+        <div className="h-8 w-8 animate-pulse rounded-full bg-[#f2ede6]" />
+      ) : (
+        <div
+          className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
+          style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+        >
+          {avatarInitial}
+        </div>
+      )}
+      {showIdentityLoader ? (
+        <span className="hidden h-3 w-20 animate-pulse rounded-full bg-[#f2ede6] lg:block" />
+      ) : (
+        <span className="hidden max-w-[120px] truncate text-sm text-[#4a4a5e] lg:block">
+          {displayName ?? t("userMenu.profile", locale)}
+        </span>
+      )}
     </Link>
   );
 }

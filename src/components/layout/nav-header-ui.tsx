@@ -151,6 +151,15 @@ export function NavHeaderUI({
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
   type MobileMenuState = "closed" | "quickview" | "expanded";
   const [mobileMenu, setMobileMenu] = useState<MobileMenuState>("closed");
+  const [resolvedUsername, setResolvedUsername] = useState<string | null>(
+    user.username ?? null,
+  );
+  const [resolvedEmail, setResolvedEmail] = useState<string | null>(
+    user.email ?? null,
+  );
+  const [identityReady, setIdentityReady] = useState<boolean>(
+    () => Boolean(user.username || user.email),
+  );
 
   const team = teams[0] ?? null;
   const isOrgUser = isManager || isAdmin;
@@ -161,9 +170,25 @@ export function NavHeaderUI({
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
 
-  const displayName = user.username ?? user.email ?? "?";
-  const initial = displayName[0]?.toUpperCase() ?? "?";
-  const [avatarFrom, avatarTo] = getAvatarColor(displayName);
+  const refreshIdentity = useCallback(async () => {
+    setIdentityReady(false);
+    try {
+      const res = await fetch("/api/profile/onboarding");
+      if (!res.ok) return;
+      const data = await res.json();
+      setResolvedUsername(data?.username ?? null);
+      setResolvedEmail(data?.email ?? user.email ?? null);
+    } catch {
+      // noop: keep existing identity
+    } finally {
+      setIdentityReady(true);
+    }
+  }, [user.email]);
+
+  const displayName = resolvedUsername || resolvedEmail || null;
+  const showIdentityLoader = !identityReady;
+  const initial = displayName?.[0]?.toUpperCase() ?? "P";
+  const [avatarFrom, avatarTo] = getAvatarColor(displayName ?? "trita");
   const roleLabel = isAdmin ? "Admin" : "Manager";
 
   const closeAll = useCallback(() => setOpenDropdown(null), []);
@@ -184,6 +209,22 @@ export function NavHeaderUI({
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [closeAll]);
+
+  useEffect(() => {
+    if (identityReady) return;
+    const timer = window.setTimeout(() => {
+      void refreshIdentity();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [identityReady, refreshIdentity]);
+
+  useEffect(() => {
+    const handler = () => {
+      void refreshIdentity();
+    };
+    window.addEventListener("profile-updated", handler);
+    return () => window.removeEventListener("profile-updated", handler);
+  }, [refreshIdentity]);
 
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) return null;
 
@@ -333,18 +374,27 @@ export function NavHeaderUI({
               href="/profile"
               className="flex items-center gap-1.5 rounded-full border border-[#e8e0d3] bg-white pl-1 pr-2.5 py-0.5 transition hover:border-[#8a8a9a]"
             >
-              <div
-                className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-              >
-                {initial}
-              </div>
-              <span className="max-w-[90px] truncate text-[12px] font-medium text-[#4a4a5e]">{displayName}</span>
+              {showIdentityLoader ? (
+                <div className="h-7 w-7 animate-pulse rounded-full bg-[#f2ede6]" />
+              ) : (
+                <div
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                  style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+                >
+                  {initial}
+                </div>
+              )}
+              {showIdentityLoader ? (
+                <span className="h-2.5 w-20 animate-pulse rounded-full bg-[#f2ede6]" />
+              ) : (
+                <span className="max-w-[90px] truncate text-[12px] font-medium text-[#4a4a5e]">{displayName ?? "Profil"}</span>
+              )}
             </Link>
           </div>
 
-          {/* ── Mobile: hamburger + bell ────────────────────────────────── */}
+          {/* ── Mobile: language + bell + hamburger ─────────────────────── */}
           <div className="flex items-center gap-2 lg:hidden">
+            <LanguageSwitcher />
             <button type="button" className="relative flex h-9 w-9 items-center justify-center rounded-lg transition-opacity hover:opacity-70">
               <BellIcon />
             </button>
@@ -459,16 +509,27 @@ export function NavHeaderUI({
                   onClick={() => setMobileMenu("closed")}
                   className="mt-2 flex items-center gap-3 rounded-lg border-t border-[#e8e0d3] px-2 pt-3 transition-colors hover:bg-[#f2ede6]"
                 >
-                  <div
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[14px] font-medium text-white"
-                    style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-                  >
-                    {initial}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName}</p>
-                    <p className="text-[11px] text-[#8a8a9a]">{roleLabel}</p>
-                  </div>
+                  {showIdentityLoader ? (
+                    <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-[#f2ede6]" />
+                  ) : (
+                    <div
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[14px] font-medium text-white"
+                      style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+                    >
+                      {initial}
+                    </div>
+                  )}
+                  {showIdentityLoader ? (
+                    <div className="flex-1 space-y-1.5">
+                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-[#f2ede6]" />
+                      <div className="h-2 w-14 animate-pulse rounded-full bg-[#f2ede6]" />
+                    </div>
+                  ) : (
+                    <div className="flex-1">
+                      <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName ?? "Profil"}</p>
+                      <p className="text-[11px] text-[#8a8a9a]">{roleLabel}</p>
+                    </div>
+                  )}
                   <svg className="h-4 w-4 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <path d="M4 2l4 4-4 4" />
                   </svg>
@@ -501,16 +562,27 @@ export function NavHeaderUI({
 
                 {/* Profile card */}
                 <div className="mx-4 mt-3 flex items-center gap-3 rounded-xl bg-[#f2ede6] px-4 py-3">
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[15px] font-medium text-white"
-                    style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-                  >
-                    {initial}
-                  </div>
-                  <div>
-                    <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName}</p>
-                    <p className="text-[12px] text-[#8a8a9a]">{roleLabel}</p>
-                  </div>
+                  {showIdentityLoader ? (
+                    <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-white/70" />
+                  ) : (
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[15px] font-medium text-white"
+                      style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+                    >
+                      {initial}
+                    </div>
+                  )}
+                  {showIdentityLoader ? (
+                    <div className="space-y-1.5">
+                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-white/70" />
+                      <div className="h-2 w-14 animate-pulse rounded-full bg-white/70" />
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName ?? "Profil"}</p>
+                      <p className="text-[12px] text-[#8a8a9a]">{roleLabel}</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* ── Csapatok section ── */}

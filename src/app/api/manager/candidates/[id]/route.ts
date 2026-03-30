@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { hasOrgRole } from "@/lib/auth";
+import { canManageTeam } from "@/lib/team-auth";
 import { getOrgSubscription, getPlanTier } from "@/lib/subscription";
 import { addCredits } from "@/lib/candidate-credits";
 
@@ -25,6 +27,7 @@ export async function DELETE(
     select: {
       id: true,
       managerId: true,
+      teamId: true,
       status: true,
       name: true,
       email: true,
@@ -34,7 +37,20 @@ export async function DELETE(
   });
 
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
-  if (invite.managerId !== profile.id) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+
+  let canRevoke = invite.managerId === profile.id;
+  if (!canRevoke && invite.teamId && invite.team?.orgId) {
+    const orgMembership = await prisma.organizationMember.findFirst({
+      where: { userId: profile.id, orgId: invite.team.orgId },
+      select: { role: true },
+    });
+    if (orgMembership) {
+      canRevoke = hasOrgRole(orgMembership.role, "ORG_ADMIN")
+        || await canManageTeam(profile.id, invite.teamId, orgMembership.role);
+    }
+  }
+  if (!canRevoke) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+
   if (invite.status !== "PENDING") return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
 
   // Determine orgId: via team, or via manager's org membership

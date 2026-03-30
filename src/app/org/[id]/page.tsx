@@ -9,6 +9,11 @@ import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
+import {
+  DashboardMetricCard,
+  DashboardPanel,
+  DashboardSectionHeader,
+} from "@/components/dashboard/DashboardPrimitives";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +30,13 @@ const AVATAR_COLORS = [
   ["#0E7490", "#0C5E75"],
   ["#9333EA", "#7C22CB"],
 ] as const;
+
+const ORG_HERO_GRADIENT =
+  "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)";
+const ORG_HERO_PRIMARY = "#d2a36a";
+const ORG_HERO_BADGE_BG = "rgba(210,163,106,0.22)";
+const ORG_HERO_BADGE_TEXT = "#f4c792";
+
 function getAvatarColor(name: string): readonly [string, string] {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -85,6 +97,11 @@ export default async function OrgDetailPage({
   const completionPct = pageData.activeTotalParticipants > 0
     ? Math.round((pageData.activeSelfDone / pageData.activeTotalParticipants) * 100)
     : 0;
+  const orgCompletionPct = pageData.memberCount > 0
+    ? Math.round((pageData.completedMemberCount / pageData.memberCount) * 100)
+    : 0;
+  const orgRemainingCount = Math.max(pageData.memberCount - pageData.completedMemberCount, 0);
+  const activeRemainingCount = Math.max(pageData.activeTotalParticipants - pageData.activeSelfDone, 0);
 
   // Build narrative hero subtitle
   const heroSubParts: string[] = [];
@@ -94,6 +111,13 @@ export default async function OrgDetailPage({
     heroSubParts.push(`${pageData.activeCampaignCount} ${t("org.activeCampaigns", locale).toLowerCase()}`);
   }
   const heroSub = `${t("org.heroSub", locale)} — ${heroSubParts.join(", ")}.`;
+  const heroChips = [
+    `${pageData.memberCount} ${t("org.membersLabel", locale).toLowerCase()}`,
+    `${pageData.teamCount} ${t("org.teamsLabel", locale).toLowerCase()}`,
+    pageData.activeCampaignCount > 0
+      ? `${pageData.activeCampaignCount} ${t("org.activeCampaigns", locale).toLowerCase()}`
+      : (isHu ? "nincs aktív kör" : "no active rounds"),
+  ];
 
   return (
     <div className="min-h-dvh bg-cream">
@@ -102,73 +126,139 @@ export default async function OrgDetailPage({
         {/* ═══ 1. ORG HERO ═══ */}
         <div
           className="relative overflow-hidden rounded-2xl"
-          style={{ background: "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)" }}
+          style={{ background: ORG_HERO_GRADIENT }}
         >
           <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
-          <div className="px-7 pb-8 pt-9 md:px-9 md:pb-9 md:pt-11">
-            <p className="mb-3 text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-              {t("org.eyebrow", locale)}
-            </p>
+          <div className="px-7 py-7 md:px-9 md:py-8">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+              <div>
+                <p className="mb-3 text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+                  {t("org.eyebrow", locale)}
+                </p>
 
-            <h1 className="font-fraunces text-[36px] tracking-tight text-white md:text-[42px]">
-              {org.name}
-            </h1>
+                <h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">
+                  {org.name}
+                </h1>
 
-            <p className="mt-2 max-w-[520px] text-[14px] leading-relaxed text-white/[0.4]">
-              {heroSub}
-            </p>
+                <p className="mt-2 max-w-[560px] text-[14px] leading-relaxed text-white/[0.4]">
+                  {heroSub}
+                </p>
 
-            {/* Status chips */}
-            {org.status === "PENDING_SETUP" && (
-              <span className="mt-3 inline-block rounded-md bg-amber-500/20 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-300">
-                {t("org.setupPending", locale)}
-              </span>
-            )}
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {heroChips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                  {org.status === "PENDING_SETUP" && (
+                    <span
+                      className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
+                      style={{ backgroundColor: ORG_HERO_BADGE_BG, color: ORG_HERO_BADGE_TEXT }}
+                    >
+                      {t("org.setupPending", locale)}
+                    </span>
+                  )}
+                </div>
 
-            {/* CTAs */}
-            <div className="mt-6 flex flex-wrap gap-2">
-              <Link
-                href={`/org/${orgId}?tab=campaigns`}
-                className="flex min-h-[44px] items-center rounded-[9px] bg-[#c17f4a] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
-              >
-                {t("org.heroCta1", locale)}
-              </Link>
-              <Link
-                href={`/org/${orgId}?tab=teams`}
-                className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
-              >
-                {t("org.heroCta2", locale)}
-              </Link>
-              {isAdmin && (
-                <Link
-                  href={`/org/${orgId}/settings`}
-                  className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-4 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
-                >
-                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="8" cy="8" r="2" />
-                    <path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" />
-                  </svg>
-                  {t("org.settingsLink", locale)}
-                </Link>
-              )}
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <Link
+                    href={`/org/${orgId}?tab=campaigns`}
+                    className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                    style={{ backgroundColor: ORG_HERO_PRIMARY }}
+                  >
+                    {t("org.heroCta1", locale)}
+                  </Link>
+                  <Link
+                    href={`/org/${orgId}?tab=teams`}
+                    className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+                  >
+                    {t("org.heroCta2", locale)}
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      href={`/org/${orgId}/settings`}
+                      className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-4 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+                    >
+                      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="8" cy="8" r="2" />
+                        <path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" />
+                      </svg>
+                      {t("org.settingsLink", locale)}
+                    </Link>
+                  )}
+                </div>
+              </div>
+
+              <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
+                <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
+                  {isHu ? "Live snapshot" : "Live snapshot"}
+                </p>
+
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Tag" : "Members"}</p>
+                    <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.memberCount}</p>
+                  </div>
+                  <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Csapat" : "Teams"}</p>
+                    <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.teamCount}</p>
+                  </div>
+                  <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Aktív kör" : "Active"}</p>
+                    <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.activeCampaignCount}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
+                      <span>{isHu ? "Szervezeti kitöltés" : "Org completion"}</span>
+                      <span className="font-semibold text-white/[0.7]">{orgCompletionPct}%</span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${orgCompletionPct}%`, backgroundColor: "#8ad0b4" }}
+                      />
+                    </div>
+                    <p className="mt-1.5 text-[10px] text-white/[0.45]">
+                      {pageData.completedMemberCount} {isHu ? "kész" : "done"} · {orgRemainingCount} {isHu ? "hátra" : "remaining"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
+                      <span>{isHu ? "Aktív kampány kitöltés" : "Active campaign completion"}</span>
+                      <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${completionPct}%`, backgroundColor: ORG_HERO_PRIMARY }}
+                      />
+                    </div>
+                    <p className="mt-1.5 text-[10px] text-white/[0.45]">
+                      {pageData.activeSelfDone} {isHu ? "kész" : "done"} · {activeRemainingCount} {isHu ? "hátra" : "remaining"}
+                    </p>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
         </div>
 
         {/* ═══ 2. INSIGHT CARDS ("Most érdemes figyelni") ═══ */}
         <section>
-          <div className="mb-5 flex items-center gap-2">
-            <div className="h-px w-4 bg-[#c17f4a]" />
-            <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
-              {t("org.insightEyebrow", locale)}
-            </span>
-          </div>
+          <DashboardSectionHeader label={t("org.insightEyebrow", locale)} className="mb-5" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Activity */}
-            <div className="rounded-2xl border border-sand bg-white p-5">
+            <DashboardPanel className="p-5">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#3d6b5e]" />
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#3d6b5e]">
+                <div className="h-2 w-2 rounded-full bg-sage" />
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-sage-dark">
                   {t("org.insightActivityTitle", locale)}
                 </p>
               </div>
@@ -177,12 +267,12 @@ export default async function OrgDetailPage({
                   ? tf("org.insightFeedbackActive", locale, { count: String(pageData.activeCampaignCount) })
                   : t("org.insightActivityNone", locale)}
               </p>
-            </div>
+            </DashboardPanel>
             {/* Feedback */}
-            <div className="rounded-2xl border border-sand bg-white p-5">
+            <DashboardPanel className="p-5">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#b45309]">
+                <div className="h-2 w-2 rounded-full bg-bronze" />
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-bronze-dark">
                   {t("org.insightFeedbackTitle", locale)}
                 </p>
               </div>
@@ -191,12 +281,12 @@ export default async function OrgDetailPage({
                   ? tf("org.insightFeedbackActive", locale, { count: String(pageData.activeCampaignCount) })
                   : t("org.insightFeedbackNone", locale)}
               </p>
-            </div>
+            </DashboardPanel>
             {/* Action */}
-            <div className="rounded-2xl border border-sand bg-white p-5">
+            <DashboardPanel className="p-5">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#6366F1]" />
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6366F1]">
+                <div className="h-2 w-2 rounded-full bg-[#6f7d75]" />
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#5c665f]">
                   {t("org.insightActionTitle", locale)}
                 </p>
               </div>
@@ -205,39 +295,34 @@ export default async function OrgDetailPage({
                   ? tf("org.insightActionInvite", locale, { count: String(pageData.pendingCount) })
                   : t("org.insightActionStart", locale)}
               </p>
-            </div>
+            </DashboardPanel>
           </div>
         </section>
 
         {/* ═══ 3. STATE CARDS ═══ */}
         <section>
-          <div className="mb-5 flex items-center gap-2">
-            <div className="h-px w-4 bg-[#c17f4a]" />
-            <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
-              {t("org.stateEyebrow", locale)}
-            </span>
-          </div>
+          <DashboardSectionHeader label={t("org.stateEyebrow", locale)} className="mb-5" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StateCard
+            <DashboardMetricCard
               accent="#3d6b5e"
               title={t("org.stateMembersTitle", locale)}
               value={String(pageData.memberCount)}
               sub={tf("org.stateMembersSub", locale, { count: String(pageData.memberCount) })}
             />
-            <StateCard
-              accent="#6366F1"
+            <DashboardMetricCard
+              accent="#c17f4a"
               title={t("org.stateTeamsTitle", locale)}
               value={String(pageData.teamCount)}
               sub={tf("org.stateTeamsSub", locale, { count: String(pageData.teamCount) })}
             />
-            <StateCard
-              accent="#F59E0B"
+            <DashboardMetricCard
+              accent="#d4a15a"
               title={t("org.stateCompletionTitle", locale)}
               value={`${completionPct}%`}
               sub={tf("org.stateCompletionSub", locale, { done: String(pageData.activeSelfDone), total: String(pageData.activeTotalParticipants || pageData.memberCount) })}
             />
-            <StateCard
-              accent="#059669"
+            <DashboardMetricCard
+              accent="#74877d"
               title={t("org.stateCampaignsTitle", locale)}
               value={String(pageData.activeCampaignCount)}
               sub={tf("org.stateCampaignsSub", locale, { active: String(pageData.activeCampaignCount), closed: String(pageData.closedCampaignCount) })}
@@ -247,16 +332,11 @@ export default async function OrgDetailPage({
 
         {/* ═══ 4. TEAM SUMMARY CARDS ═══ */}
         <section>
-          <div className="mb-5 flex items-center gap-2">
-            <div className="h-px w-4 bg-[#c17f4a]" />
-            <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
-              {t("org.teamsEyebrow", locale)}
-            </span>
-          </div>
+          <DashboardSectionHeader label={t("org.teamsEyebrow", locale)} className="mb-5" />
           {teams.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-sand bg-white p-10 text-center">
+            <DashboardPanel className="rounded-2xl border-dashed p-10 text-center">
               <p className="text-sm text-muted">{t("org.teamCardNoTeams", locale)}</p>
-            </div>
+            </DashboardPanel>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {teams.map((tm) => {
@@ -281,7 +361,7 @@ export default async function OrgDetailPage({
                         {tf("org.teamCardMembers", locale, { count: String(tm._count.members) })}
                       </p>
                     </div>
-                    <span className="text-xs font-semibold text-sage opacity-0 transition-opacity group-hover:opacity-100">
+                    <span className="text-xs font-semibold text-bronze opacity-0 transition-opacity group-hover:opacity-100">
                       {t("org.teamCardOpen", locale)}
                     </span>
                   </Link>
@@ -292,7 +372,13 @@ export default async function OrgDetailPage({
         </section>
 
         {/* ═══ 5. BOTTOM CTA BAND ═══ */}
-        <section className="rounded-2xl bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-8 md:p-12">
+        <section
+          className="rounded-[28px] p-8 md:p-12"
+          style={{
+            background:
+              "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)",
+          }}
+        >
           <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
             <div className="flex-1">
               <h2 className="font-fraunces text-2xl text-white lg:text-3xl">
@@ -338,29 +424,6 @@ export default async function OrgDetailPage({
         </Suspense>
 
       </main>
-    </div>
-  );
-}
-
-// ── State card component ────────────────────────────────────────────────────
-
-function StateCard({
-  accent,
-  title,
-  value,
-  sub,
-}: {
-  accent: string;
-  title: string;
-  value: string;
-  sub: string;
-}) {
-  return (
-    <div className="relative overflow-hidden rounded-2xl border border-sand bg-white px-5 pb-4 pt-5">
-      <div className="absolute inset-x-0 top-0 h-[3px]" style={{ backgroundColor: accent }} />
-      <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted">{title}</p>
-      <p className="mt-1.5 font-fraunces text-[28px] leading-none tracking-tight text-ink">{value}</p>
-      <p className="mt-1.5 text-[11px] leading-snug text-ink-body">{sub}</p>
     </div>
   );
 }

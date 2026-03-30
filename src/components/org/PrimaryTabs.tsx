@@ -15,7 +15,8 @@ interface PrimaryTabsProps {
 
 export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) {
   return (
-    <div className="flex gap-1 overflow-x-auto rounded-xl border border-sand bg-white p-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
@@ -24,10 +25,10 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             type="button"
             onClick={() => onTabChange(tab.key)}
             className={[
-              "inline-flex min-h-[40px] flex-1 items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-medium whitespace-nowrap transition-all",
+              "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] whitespace-nowrap transition-all",
               isActive
-                ? "bg-ink text-white shadow-sm"
-                : "text-muted hover:bg-cream hover:text-ink-body",
+                ? "bg-sage-soft text-ink font-semibold shadow-[inset_0_0_0_1px_rgba(61,107,94,0.12)]"
+                : "text-muted font-medium hover:bg-cream hover:text-ink-body",
             ].join(" ")}
           >
             {tab.shortLabel ? (
@@ -41,10 +42,10 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             {tab.badge !== undefined && tab.badge !== null && (
               <span
                 className={[
-                  "rounded-full px-[6px] py-px text-[9px] font-semibold leading-none",
+                  "rounded-full px-2 py-0.5 text-[9px] font-semibold leading-none",
                   isActive
-                    ? "bg-white/20 text-white"
-                    : "bg-sand text-ink-body",
+                    ? "bg-white text-sage-dark shadow-[0_1px_2px_rgba(26,26,46,0.06)]"
+                    : "bg-warm text-bronze-dark",
                 ].join(" ")}
               >
                 {tab.badge}
@@ -53,6 +54,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
           </button>
         );
       })}
+      </div>
     </div>
   );
 }

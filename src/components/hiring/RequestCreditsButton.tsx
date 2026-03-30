@@ -33,7 +33,7 @@ export function RequestCreditsButton({
 
   if (sent) {
     return (
-      <span className="min-h-[36px] inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 text-[11px] font-semibold text-emerald-700">
+      <span className="min-h-[42px] inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 text-[11px] font-semibold text-emerald-700">
         {t("hiring.requestSent", locale)}
       </span>
     );
@@ -44,7 +44,7 @@ export function RequestCreditsButton({
       type="button"
       onClick={() => void handleRequest()}
       disabled={loading}
-      className="min-h-[36px] inline-flex items-center rounded-lg border border-sage bg-white px-4 text-[11px] font-semibold text-bronze transition hover:bg-sage-ghost disabled:opacity-50"
+      className="min-h-[42px] inline-flex items-center rounded-xl border border-sage/35 bg-white px-4 text-[11px] font-semibold text-sage-dark transition hover:border-sage/55 hover:bg-sage-soft disabled:opacity-50"
     >
       {loading
         ? "…"

@@ -27,6 +27,12 @@ const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: stri
   plus:  { label: "Plus",  bg: "rgba(193,127,74,0.2)",   color: "#e8a96a" },
 };
 
+const SELF_HERO_GRADIENT =
+  "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)";
+const SELF_HERO_PRIMARY = "#c17f4a";
+const SELF_TOP_DIM_BG = "rgba(61,107,94,0.3)";
+const SELF_TOP_DIM_TEXT = "#e8f2f0";
+
 interface ProfileHeroProps {
   userName: string;
   completedAt: string;
@@ -65,8 +71,7 @@ export function ProfileHero({
     <div
       className="relative overflow-hidden rounded-2xl"
       style={{
-        background:
-          "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)",
+        background: SELF_HERO_GRADIENT,
       }}
     >
       <div className="mx-auto max-w-4xl px-9 pb-8 pt-10">
@@ -124,7 +129,7 @@ export function ProfileHero({
                   {t("content.heroTopDims", locale)}:
                 </span>
                 {topDimensions.map((d) => (
-                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(61,107,94,0.3)", color: "#e8f2f0" }}>
+                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: SELF_TOP_DIM_BG, color: SELF_TOP_DIM_TEXT }}>
                     {d}
                   </span>
                 ))}
@@ -158,7 +163,8 @@ export function ProfileHero({
             type="button"
             onClick={onDownloadPdf}
             disabled={pdfLoading}
-            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-[#c17f4a] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110 disabled:opacity-50"
+            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110 disabled:opacity-50"
+            style={{ backgroundColor: SELF_HERO_PRIMARY }}
           >
             📄 {pdfLoading ? "..." : t("results.heroPdf", locale)}
           </button>

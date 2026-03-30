@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -8,7 +7,6 @@ import { getManageableTeamIds } from "@/lib/team-auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getOrgSubscription, hasAccess, getPlanTier } from "@/lib/subscription";
 import { getCreditBalance, getCreditHistory } from "@/lib/candidate-credits";
-import { t } from "@/lib/i18n";
 import { HiringPaywall } from "./_components/HiringPaywall";
 import { HiringDashboard } from "./_components/HiringDashboard";
 
@@ -36,23 +34,10 @@ export default async function HiringPage({
 
   const sub = await getOrgSubscription(orgId);
 
-  const backLink = (
-    <Link
-      href={`/org/${orgId}`}
-      className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
-    >
-      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10 3L5 8l5 5" />
-      </svg>
-      {`${t("hiring.back", locale)} · ${org.name}`}
-    </Link>
-  );
-
   if (!hasAccess(sub)) {
     return (
       <div className="min-h-dvh bg-cream">
         <main className="mx-auto w-full max-w-5xl px-4 py-10">
-          {backLink}
           <HiringPaywall orgId={orgId} locale={locale} variant="no-subscription" isAdmin={isAdmin} />
         </main>
       </div>
@@ -78,7 +63,6 @@ export default async function HiringPage({
         return (
           <div className="min-h-dvh bg-cream">
             <main className="mx-auto w-full max-w-5xl px-4 py-10">
-              {backLink}
               <HiringPaywall orgId={orgId} locale={locale} variant="addon" planTier={tier} isAdmin={isAdmin} />
             </main>
           </div>
@@ -161,16 +145,6 @@ export default async function HiringPage({
   return (
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-5xl px-4 py-10">
-        <Link
-          href={`/org/${orgId}`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
-        >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10 3L5 8l5 5" />
-          </svg>
-          {`${t("hiring.back", locale)} · ${org.name}`}
-        </Link>
-
         <HiringDashboard
           orgId={orgId}
           orgName={org.name}

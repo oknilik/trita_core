@@ -12,34 +12,33 @@ interface StatStripProps {
 
 export function StatStrip({ cells }: StatStripProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-flow-col lg:auto-cols-fr">
+    <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
       {cells.map((cell, i) => (
         <div
           key={i}
-          className="relative overflow-hidden rounded-2xl border border-sand bg-white px-5 pb-4 pt-5"
+          className="relative overflow-hidden rounded-[22px] border border-sand bg-white px-5 py-5 shadow-[0_12px_30px_rgba(26,26,46,0.04)]"
         >
-          {/* Top accent line */}
           <div
-            className="absolute inset-x-0 top-0 h-[3px]"
+            className="absolute left-5 right-5 top-0 h-[3px] rounded-b-full"
             style={{ backgroundColor: cell.accentColor ?? "#3d6b5e" }}
           />
 
-          <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted">
+          <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
             {cell.label}
           </p>
 
-          <p className="mt-1.5 font-fraunces text-[28px] leading-none tracking-tight text-ink">
+          <p className="mt-2 font-fraunces text-[30px] leading-none tracking-tight text-ink">
             {cell.value}
           </p>
 
           {cell.sub && (
-            <p className="mt-1.5 text-[11px] leading-snug text-ink-body">
+            <p className="mt-2 text-[11px] leading-[1.45] text-ink-body">
               {cell.sub}
             </p>
           )}
 
           {cell.insight && (
-            <p className="mt-1 text-[10px] italic leading-snug text-muted">
+            <p className="mt-2 text-[11px] italic leading-[1.5] text-muted">
               {cell.insight}
             </p>
           )}

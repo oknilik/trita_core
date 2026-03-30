@@ -26,8 +26,7 @@ export default async function DashboardPage({
     });
 
     if (orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
-      const isAdmin = hasOrgRole(orgMembership.role, "ORG_ADMIN");
-      return <AdminDashboard isAdmin={isAdmin} />;
+      return <AdminDashboard />;
     }
   }
 

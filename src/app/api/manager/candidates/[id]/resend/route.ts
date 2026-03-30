@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { hasOrgRole } from "@/lib/auth";
+import { canManageTeam } from "@/lib/team-auth";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
@@ -25,16 +27,31 @@ export async function POST(
     select: {
       id: true,
       managerId: true,
+      teamId: true,
       status: true,
       expiresAt: true,
       email: true,
       token: true,
       position: true,
+      team: { select: { orgId: true } },
     },
   });
 
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
-  if (invite.managerId !== profile.id) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+
+  let canResend = invite.managerId === profile.id;
+  if (!canResend && invite.teamId && invite.team?.orgId) {
+    const orgMembership = await prisma.organizationMember.findFirst({
+      where: { userId: profile.id, orgId: invite.team.orgId },
+      select: { role: true },
+    });
+    if (orgMembership) {
+      canResend = hasOrgRole(orgMembership.role, "ORG_ADMIN")
+        || await canManageTeam(profile.id, invite.teamId, orgMembership.role);
+    }
+  }
+  if (!canResend) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+
   if (invite.status !== "PENDING") return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   if (!invite.email) return NextResponse.json({ error: "NO_EMAIL" }, { status: 400 });
   if (invite.expiresAt < new Date()) return NextResponse.json({ error: "EXPIRED" }, { status: 409 });

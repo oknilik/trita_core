@@ -44,6 +44,7 @@ export default function ProfilePage() {
   const [email, setEmail] = useState<string | null>(null);
   const [accessLevel, setAccessLevel] = useState<string | null>(null);
   const [lastAssessment, setLastAssessment] = useState<string | null>(null);
+  const [hasLoadedDemographics, setHasLoadedDemographics] = useState(false);
 
   // Demographics
   const [username, setUsername] = useState("");
@@ -72,6 +73,7 @@ export default function ProfilePage() {
   const countryLabel = useMemo(() => countryOptions.find((c) => c.value === country)?.label, [country, countryOptions]);
 
   const loadDemographics = useCallback(async () => {
+    setHasLoadedDemographics(false);
     try {
       const res = await fetch("/api/profile/onboarding");
       if (!res.ok) return;
@@ -90,9 +92,18 @@ export default function ProfilePage() {
       setCountry(snap.country);
       setInitialSnapshot(snap);
     } catch { /* silent */ }
+    finally {
+      setHasLoadedDemographics(true);
+    }
   }, []);
 
-  useEffect(() => { if (isSignedIn) loadDemographics(); }, [isSignedIn, loadDemographics]);
+  useEffect(() => {
+    if (isSignedIn) {
+      void loadDemographics();
+      return;
+    }
+    setHasLoadedDemographics(false);
+  }, [isSignedIn, loadDemographics]);
 
   useEffect(() => {
     if (saveState !== "saved" && saveState !== "error") return;
@@ -106,7 +117,7 @@ export default function ProfilePage() {
     setSavedLocale((prev) => { setSelectedLocale((cur) => (cur === prev ? locale : cur)); return locale; });
   }, [locale]);
 
-  if (!isLoaded) {
+  if (!isLoaded || (isSignedIn && !hasLoadedDemographics)) {
     return (
       <div className="min-h-dvh bg-[#f7f4ef]">
         <div className="mx-auto max-w-[640px] px-5 py-10">
