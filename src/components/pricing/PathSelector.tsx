@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { SelfTierPanel } from "./SelfTierPanel";
 import { TeamTierPanel } from "./TeamTierPanel";
 import { OrgTierPanel } from "./OrgTierPanel";
+import { ContextualBlocks } from "./ContextualBlocks";
 
 type Path = "self" | "team" | "org";
 
@@ -62,6 +63,9 @@ export function PathSelector({
           <OrgTierPanel locale={locale} isLoggedIn={isLoggedIn} />
         )}
       </div>
+
+      {/* Tab-dependent contextual blocks */}
+      <ContextualBlocks activeTab={active} locale={locale} />
     </section>
   );
 }

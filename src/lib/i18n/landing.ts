@@ -515,4 +515,256 @@ export const landingTranslations = {
       en: "For questions, contact info@trita.io.",
     },
   },
+
+  // ── Contextual pricing blocks (tab-dependent) ────────────────────────────
+  pricingBlocks: {
+    // ── SELF tab ──
+    selfBlock1Label: { hu: "Következő lépés", en: "Next step" },
+    selfBlock1Title: { hu: "Ha nem csak magadra vagy kíváncsi", en: "If you're curious about more than just yourself" },
+    selfBlock1Sub: { hu: "Nézd meg, hogyan lát téged a csapatod — vagy indíts közös felmérést.", en: "See how your team sees you — or start a shared assessment." },
+    selfBlock1Item1Name: { hu: "Team Snapshot", en: "Team Snapshot" },
+    selfBlock1Item1Desc: { hu: "Egyszeri csapatkép, összehasonlítás", en: "One-time team picture, comparison" },
+    selfBlock1Item1Price: { hu: "€490", en: "€490" },
+    selfBlock1Item2Name: { hu: "Team Deep Dive", en: "Team Deep Dive" },
+    selfBlock1Item2Desc: { hu: "Mély elemzés + tanácsadói konzultáció", en: "Deep analysis + advisory consultation" },
+    selfBlock1Item2Price: { hu: "€990", en: "€990" },
+    selfBlock1Item3Name: { hu: "Org előfizetés", en: "Org subscription" },
+    selfBlock1Item3Desc: { hu: "Folyamatos szervezeti láthatóság", en: "Continuous organizational visibility" },
+    selfBlock1Item3Price: { hu: "€49/hó", en: "€49/mo" },
+
+    selfBlock2Label: { hu: "Így működik", en: "How it works" },
+    selfBlock2Title: { hu: "Mi történik az első teszt után?", en: "What happens after your first test?" },
+    selfBlock2Sub: { hu: "Lépésről lépésre építheted az önismeretedet.", en: "Build your self-awareness step by step." },
+    selfBlock2Step1: { hu: "Töltsd ki a HEXACO személyiségtesztet (~15 perc)", en: "Complete the HEXACO personality test (~15 min)" },
+    selfBlock2Step2: { hu: "Kapj dimenzió szintű eredményeket azonnal", en: "Get dimension-level results instantly" },
+    selfBlock2Step3: { hu: "Hívj meg observereket — nézd meg, hogyan látnak mások", en: "Invite observers — see how others see you" },
+    selfBlock2Step4: { hu: "Hasonlítsd össze az önképedet a külső visszajelzésekkel", en: "Compare your self-image with external feedback" },
+
+    // ── TEAM tab ──
+    teamBlock1Label: { hu: "Hogyan válassz?", en: "How to choose?" },
+    teamBlock1Title: { hu: "Mikor melyiket válaszd?", en: "When to pick which?" },
+    teamBlock1Sub: { hu: "Nem kell túltervezned — válaszd azt, ami most illik.", en: "No need to overthink — pick what fits now." },
+    teamBlock1Item1Name: { hu: "Starter", en: "Starter" },
+    teamBlock1Item1Desc: { hu: "Ha most először néznéd meg a csapatot", en: "If you're looking at your team for the first time" },
+    teamBlock1Item1Price: { hu: "€29/hó", en: "€29/mo" },
+    teamBlock1Item2Name: { hu: "Team", en: "Team" },
+    teamBlock1Item2Desc: { hu: "Ha folyamatosan követnétek a dinamikát", en: "If you want to track dynamics continuously" },
+    teamBlock1Item2Price: { hu: "€49/hó", en: "€49/mo" },
+    teamBlock1Item3Name: { hu: "Org", en: "Org" },
+    teamBlock1Item3Desc: { hu: "Ha több csapatot kezelsz", en: "If you manage multiple teams" },
+    teamBlock1Item3Price: { hu: "€149/hó", en: "€149/mo" },
+
+    teamBlock2Label: { hu: "Kiegészítők", en: "Add-ons" },
+    teamBlock2Title: { hu: "Külön kérhető bővítmények", en: "Optional extras" },
+    teamBlock2Sub: { hu: "Jelöltértékelés és extra kreditek — csak amikor tényleg szükséged van rájuk.", en: "Candidate assessments and extra credits — only when you actually need them." },
+    teamBlock2Item1Name: { hu: "1× Jelölt értékelés", en: "1× Candidate assessment" },
+    teamBlock2Item1Desc: { hu: "Egyetlen jelölt HEXACO felmérése", en: "Single candidate HEXACO assessment" },
+    teamBlock2Item1Price: { hu: "€39", en: "€39" },
+    teamBlock2Item2Name: { hu: "5× Jelölt csomag", en: "5× Candidate pack" },
+    teamBlock2Item2Desc: { hu: "5 jelölt értékelés, kedvezményes áron", en: "5 candidate assessments at a discount" },
+    teamBlock2Item2Price: { hu: "€175", en: "€175" },
+    teamBlock2Item3Name: { hu: "10× Jelölt csomag", en: "10× Candidate pack" },
+    teamBlock2Item3Desc: { hu: "10 jelölt értékelés, a legjobb áron", en: "10 candidate assessments at the best price" },
+    teamBlock2Item3Price: { hu: "€299", en: "€299" },
+
+    // ── ORG tab ──
+    orgBlock1Label: { hu: "Miért Org?", en: "Why Org?" },
+    orgBlock1Title: { hu: "Amikor kinövitek az egycsapatos működést", en: "When you outgrow single-team mode" },
+    orgBlock1Sub: { hu: "Több csapat, szerepkörök, összehasonlítás — egy helyen.", en: "Multiple teams, roles, comparison — in one place." },
+    orgBlock1Item1Name: { hu: "Több csapat", en: "Multiple teams" },
+    orgBlock1Item1Desc: { hu: "Kezeld az összes csapatot egyetlen szervezetben", en: "Manage all teams in a single organization" },
+    orgBlock1Item2Name: { hu: "Szerepkörök", en: "Roles" },
+    orgBlock1Item2Desc: { hu: "Admin, manager, member jogosultságok", en: "Admin, manager, member permissions" },
+    orgBlock1Item3Name: { hu: "Összehasonlítás", en: "Comparison" },
+    orgBlock1Item3Desc: { hu: "Csapatok közötti mintázat- és dimenzió-összehasonlítás", en: "Cross-team pattern and dimension comparison" },
+    orgBlock1Item4Name: { hu: "Candidate flow", en: "Candidate flow" },
+    orgBlock1Item4Desc: { hu: "Jelöltértékelés manager jogosultsággal", en: "Candidate assessment with manager permissions" },
+
+    orgBlock2Label: { hu: "Skálázás", en: "Scaling" },
+    orgBlock2Title: { hu: "Rugalmas bővítmények", en: "Flexible add-ons" },
+    orgBlock2Sub: { hu: "Az alapcsomag mellé külön kérhető minden, ami nem mindenkinek kell.", en: "Everything that not everyone needs can be added separately." },
+    orgBlock2Item1Name: { hu: "Jelölt csomag", en: "Candidate pack" },
+    orgBlock2Item1Desc: { hu: "1×, 5× vagy 10× értékelési kredit", en: "1×, 5× or 10× assessment credits" },
+    orgBlock2Item1Price: { hu: "€39-tól", en: "From €39" },
+    orgBlock2Item2Name: { hu: "Extra csapat", en: "Extra team" },
+    orgBlock2Item2Desc: { hu: "További csapatok hozzáadása", en: "Add more teams" },
+    orgBlock2Item2Price: { hu: "egyedi", en: "custom" },
+    orgBlock2Item3Name: { hu: "Onboarding support", en: "Onboarding support" },
+    orgBlock2Item3Desc: { hu: "Dedikált bevezetési támogatás", en: "Dedicated implementation support" },
+    orgBlock2Item3Price: { hu: "egyedi", en: "custom" },
+    orgBlock2Item4Name: { hu: "Priority support", en: "Priority support" },
+    orgBlock2Item4Desc: { hu: "Elsőbbségi email támogatás", en: "Priority email support" },
+    orgBlock2Item4Price: { hu: "egyedi", en: "custom" },
+  },
+  founding: {
+    // Hero
+    eyebrow: { hu: "Founding program", en: "Founding program" },
+    badge: { hu: "10 hely · Alapító ügyfél program", en: "10 spots · Founding client program" },
+    heroTitle: { hu: "Tedd láthatóvá, hogyan ", en: "Make visible how your " },
+    heroTitleEm: { hu: "működik a csapatod.", en: "team really works." },
+    heroBody: {
+      hu: "A trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban validált személyiséglélektani adatok alapján. Az első 10 ügyfélnek különleges feltételekkel.",
+      en: "The trita team diagnostics platform helps you uncover hidden patterns, tensions, and potential within your team using validated personality psychology data. Special conditions for the first 10 clients.",
+    },
+    heroCta: { hu: "Jelentkezem a programba", en: "Apply for the program" },
+    heroCtaSecondary: { hu: "Mit kapsz pontosan?", en: "What do you get exactly?" },
+    metaChip1: { hu: "90 nap teljes hozzáférés", en: "90 days full access" },
+    metaChip2: { hu: "Örökös EUR99/hó ár", en: "Permanent EUR99/mo price" },
+    metaChip3: { hu: "Személyes onboarding", en: "Personal onboarding" },
+
+    // Aside — "Miért most"
+    asideEyebrow: { hu: "Miért most", en: "Why now" },
+    asideTitle: {
+      hu: "Nem még egy kérdőív, hanem egy közös pilot a csapatműködésre.",
+      en: "Not just another survey — a joint pilot for team collaboration.",
+    },
+    asideBody: {
+      hu: "Olyan cégeket keresek, akik nemcsak kipróbálni akarják a platformot, hanem tényleg szeretnék érteni, mi zajlik a csapatukban.",
+      en: "I'm looking for companies that don't just want to try the platform, but genuinely want to understand what's happening within their team.",
+    },
+
+    // Signals
+    signal1Value: { hu: "10", en: "10" },
+    signal1Label: { hu: "nyitott hely", en: "open spots" },
+    signal2Value: { hu: "90", en: "90" },
+    signal2Label: { hu: "nap közös munka", en: "days of collaboration" },
+    signal3Value: { hu: "24h", en: "24h" },
+    signal3Label: { hu: "válaszidő", en: "response time" },
+
+    // Aside — "Mire jó ez a 90 nap"
+    aside90Eyebrow: { hu: "Mire jó ez a 90 nap", en: "What the 90 days are for" },
+    aside90Body: {
+      hu: "Látni fogjátok, hogy milyen mintázatok támogatják a csapatot, hol vannak a súrlódások, és hogyan lehet ezt a hiringben vagy a mindennapi együttműködésben is használni.",
+      en: "You'll see which patterns support the team, where the friction points are, and how to use this in hiring or day-to-day collaboration.",
+    },
+
+    // Benefits section
+    benefitsEyebrow: { hu: "Mit kapsz", en: "What you get" },
+    benefitsTitle: { hu: "90 nap teljes hozzáféréssel, személyes támogatással.", en: "90 days of full access with personal support." },
+    benefit1Title: { hu: "Org csomag - EUR99/hó", en: "Org plan — EUR99/mo" },
+    benefit1Desc: {
+      hu: "Az Org csomag normál ára EUR149/hó. Alapító ügyfélként ezt örökre EUR99/hó áron kapod: korlátlan csapat, szervezeti szerepkörök, teljes platform-hozzáférés.",
+      en: "The Org plan normally costs EUR149/mo. As a founding client, you lock in EUR99/mo forever: unlimited teams, organizational roles, full platform access.",
+    },
+    benefit2Title: { hu: "Ingyenes onboarding session", en: "Free onboarding session" },
+    benefit2Desc: {
+      hu: "Egy 60 perces közös workshop, ahol értelmezzük a csapatprofilotokat, azonosítjuk a feszültségpontokat, és konkrét következő lépéseket rakunk össze.",
+      en: "A 60-minute joint workshop where we interpret your team profiles, identify tension points, and outline concrete next steps.",
+    },
+    benefit3Title: { hu: "3 hiring kredit ajándékba", en: "3 hiring credits included" },
+    benefit3Desc: {
+      hu: "Kockázat nélkül kipróbálhatod, hogyan illeszkednek a jelöltek a meglévő csapatmintázatokhoz, még azelőtt, hogy döntést hoznál.",
+      en: "Try risk-free how candidates fit into your existing team patterns before making a hiring decision.",
+    },
+    benefit4Title: { hu: "Prioritás a roadmapben", en: "Roadmap priority" },
+    benefit4Desc: {
+      hu: "Az alapító ügyfelek visszajelzése közvetlenül alakítja a termék irányát. Amit valóban használnátok, annak nagyobb esélye van gyorsan elkészülni.",
+      en: "Founding clients' feedback directly shapes the product direction. Features you actually need are more likely to ship fast.",
+    },
+    benefit5Title: { hu: "Korai hozzáférés", en: "Early access" },
+    benefit5Desc: {
+      hu: "Az olyan funkciókhoz, mint a tension pair elemzés, a team heatmap vagy az AI-értelmezés, ti fértek hozzá elsőként.",
+      en: "Features like tension pair analysis, team heatmap, and AI interpretation — you get access first.",
+    },
+    benefit6Title: { hu: "Founding member státusz", en: "Founding member status" },
+    benefit6Desc: {
+      hu: "Az alapító kedvezmény és a státusz megmarad, amíg előfizetők vagytok. Ez nem időszakos promóció, hanem belépés a legkorábbi körbe.",
+      en: "The founding discount and status remain as long as you stay subscribed. This is not a temporary promo — it's entry into the earliest cohort.",
+    },
+
+    // Steps section
+    stepsEyebrow: { hu: "Hogyan működik", en: "How it works" },
+    stepsTitle: { hu: "Három lépés a jobb csapatdöntésekig.", en: "Three steps to better team decisions." },
+    step1Title: { hu: "Felmérés", en: "Assessment" },
+    step1Desc: {
+      hu: "A csapattagok online kitöltik a tudományosan validált személyiségtesztet, nagyjából 15 perc alatt. Opcionálisan observer visszajelzés is kérhető.",
+      en: "Team members complete the scientifically validated personality assessment online in about 15 minutes. Observer feedback is optionally available.",
+    },
+    step2Title: { hu: "Mintázat", en: "Pattern" },
+    step2Desc: {
+      hu: "A platform megmutatja a csapat heatmapjét, radar chartjait és az együttműködési összképet, így gyorsan láthatóvá válik, hol van összhang és hol csúszik a működés.",
+      en: "The platform shows your team's heatmap, radar charts, and collaboration overview, making it easy to spot where things align and where they don't.",
+    },
+    step3Title: { hu: "Akció", en: "Action" },
+    step3Desc: {
+      hu: "Az onboarding session és a dashboard alapján közösen kijelöljük a kritikus feszültségeket, majd akciótervet építünk rájuk a következő 90 napra.",
+      en: "Based on the onboarding session and dashboard, we identify the critical tensions together and build an action plan for the next 90 days.",
+    },
+
+    // Commitments section
+    commitmentsEyebrow: { hu: "Mit kérünk cserébe", en: "What we ask in return" },
+    commitmentsTitle: { hu: "Őszinte visszajelzést, valódi használat mellett.", en: "Honest feedback with genuine usage." },
+    commitmentLabel: { hu: "Elvárás", en: "Expectation" },
+    commitment1Title: { hu: "Aktív használat", en: "Active usage" },
+    commitment1Desc: {
+      hu: "A csapatod kitölti a felmérést, te pedig a 90 nap alatt ténylegesen használod a platformot döntéselőkészítésre és csapatfejlesztésre.",
+      en: "Your team completes the assessment, and you actively use the platform for decision-making and team development over the 90 days.",
+    },
+    commitment2Title: { hu: "Két feedback beszélgetés", en: "Two feedback conversations" },
+    commitment2Desc: {
+      hu: "A 30. és 60. napon egy-egy 20-30 perces beszélgetésben átmegyünk azon, mi működött, mi akadt el, és mit érdemes fejlesztenünk.",
+      en: "On days 30 and 60, a brief 20–30 minute conversation to review what worked, what got stuck, and what we should improve.",
+    },
+    commitment3Title: { hu: "Testimonial és referral", en: "Testimonial and referral" },
+    commitment3Desc: {
+      hu: "Ha valódi értéket adtunk, egy rövid ajánlást és 1-2 releváns bemutatást kérünk hasonló cégek felé.",
+      en: "If we delivered real value, we ask for a short testimonial and 1–2 relevant introductions to similar companies.",
+    },
+
+    // Application form section
+    formEyebrow: { hu: "Jelentkezés", en: "Apply" },
+    formTitle: { hu: "Foglald le a helyed a korai körben.", en: "Reserve your spot in the early cohort." },
+    formBody: {
+      hu: "Töltsd ki az alábbi formot, és 24 órán belül visszajelzek. Egy rövid beszélgetéssel kezdünk, kötelezettség nélkül.",
+      en: "Fill out the form below and I'll get back to you within 24 hours. We start with a short conversation, no strings attached.",
+    },
+    fitEyebrow: { hu: "Jó fit akkor, ha", en: "Good fit if" },
+    fitBody: {
+      hu: "van legalább egy kisebb csapatod, nyitott vagy a viselkedésminták feltárására, és érdekel, hogyan lehet ezt felvételben vagy fejlesztésben használni.",
+      en: "you have at least a small team, you're open to exploring behavioral patterns, and you're interested in using this for hiring or development.",
+    },
+
+    // Form fields
+    formHeading: { hu: "Rövid jelentkezés", en: "Quick application" },
+    formSubheading: {
+      hu: "2 perc alatt kitölthető, és elég egy mondat is, ha most ennyi fér bele.",
+      en: "Takes 2 minutes, and a single sentence is enough if that's all you have time for.",
+    },
+    formSpotsLabel: { hu: "10 helyből indulunk", en: "Starting with 10 spots" },
+    labelName: { hu: "Név", en: "Name" },
+    placeholderName: { hu: "Vezetéknév Keresztnév", en: "Full name" },
+    labelEmail: { hu: "Email", en: "Email" },
+    placeholderEmail: { hu: "nev@ceg.hu", en: "name@company.com" },
+    labelCompany: { hu: "Cég neve", en: "Company name" },
+    placeholderCompany: { hu: "Pl. Innovate Kft.", en: "e.g. Innovate Ltd." },
+    labelSize: { hu: "Csapatméret", en: "Team size" },
+    sizeOption0: { hu: "Válassz...", en: "Select..." },
+    sizeOption1: { hu: "5-10 fő", en: "5–10 people" },
+    sizeOption2: { hu: "11-25 fő", en: "11–25 people" },
+    sizeOption3: { hu: "26-50 fő", en: "26–50 people" },
+    sizeOption4: { hu: "51-80 fő", en: "51–80 people" },
+    sizeOption5: { hu: "80+ fő", en: "80+ people" },
+    labelQuestion: {
+      hu: "Mi a legfontosabb kérdésed a csapatoddal kapcsolatban?",
+      en: "What's the most important question about your team?",
+    },
+    placeholderQuestion: {
+      hu: "Opcionális, de sokat segít az első beszélgetéshez.",
+      en: "Optional, but it helps a lot for the first conversation.",
+    },
+    submitSending: { hu: "Küldés...", en: "Sending..." },
+    submitDefault: { hu: "Jelentkezem az alapító programba", en: "Apply to the founding program" },
+    preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
+    errorMessage: {
+      hu: "Hiba történt. Kérlek próbáld újra, vagy írj közvetlenül a hello@trita.io címre.",
+      en: "Something went wrong. Please try again, or email us directly at hello@trita.io.",
+    },
+
+    // Success state
+    successTitle: { hu: "Köszönöm a jelentkezést.", en: "Thank you for applying." },
+    successBody: {
+      hu: "24 órán belül személyesen kereslek az általad megadott email címen.",
+      en: "I'll personally reach out to you within 24 hours at the email address you provided.",
+    },
+  },
 } as const;

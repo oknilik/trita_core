@@ -6,8 +6,6 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { PricingHero } from "@/components/pricing/PricingHero";
 import { PathSelector } from "@/components/pricing/PathSelector";
-import { GrowthStory } from "@/components/pricing/GrowthStory";
-import { AddOns } from "@/components/pricing/AddOns";
 import { PricingFAQ } from "@/components/pricing/PricingFAQ";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -46,8 +44,6 @@ export default async function PricingPage() {
     <main className="min-h-dvh bg-[#f7f4ef]">
       <PricingHero locale={locale} />
       <PathSelector locale={locale} isLoggedIn={isLoggedIn} />
-      <GrowthStory locale={locale} />
-      <AddOns locale={locale} />
       <PricingFAQ locale={locale} />
 
       {/* Bottom CTA */}
