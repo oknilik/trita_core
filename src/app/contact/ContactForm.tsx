@@ -1,19 +1,23 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
 
 type Topic = "demo" | "pricing" | "support" | "partnership" | "other";
 
 export function ContactForm({ locale }: { locale: Locale }) {
-  const topicOptions: Array<{ value: Topic; label: string }> = useMemo(() => [
-    { value: "demo", label: t("contact.topicDemo", locale) },
-    { value: "pricing", label: t("contact.topicPricing", locale) },
-    { value: "support", label: t("contact.topicSupport", locale) },
-    { value: "partnership", label: t("contact.topicPartnership", locale) },
-    { value: "other", label: t("contact.topicOther", locale) },
-  ], [locale]);
+  const topicOptions: Array<{ value: Topic; label: string }> = useMemo(
+    () => [
+      { value: "demo", label: t("contact.topicDemo", locale) },
+      { value: "pricing", label: t("contact.topicPricing", locale) },
+      { value: "support", label: t("contact.topicSupport", locale) },
+      { value: "partnership", label: t("contact.topicPartnership", locale) },
+      { value: "other", label: t("contact.topicOther", locale) },
+    ],
+    [locale],
+  );
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
@@ -43,9 +47,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("request_failed");
-      }
+      if (!res.ok) throw new Error("request_failed");
 
       setSuccess(true);
       setName("");
@@ -63,13 +65,17 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
   if (success) {
     return (
-      <div className="rounded border border-[#d7ebde] bg-sage-soft p-6">
-        <h3 className="font-fraunces text-2xl text-ink">{t("contact.successTitle", locale)}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-ink-body">{t("contact.successBody", locale)}</p>
+      <div className="rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-8">
+        <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+          {t("contact.successTitle", locale)}
+        </p>
+        <h3 className="mt-3 font-fraunces text-[32px] leading-tight text-ink">
+          {t("contact.successBody", locale)}
+        </h3>
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-5 inline-flex min-h-[44px] items-center rounded bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
+          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
         >
           {t("contact.sendAnother", locale)}
         </button>
@@ -77,14 +83,17 @@ export function ContactForm({ locale }: { locale: Locale }) {
     );
   }
 
-  const inputClass = "min-h-[46px] w-full rounded border border-sand bg-cream px-3 text-sm text-ink outline-none transition-colors focus:border-sage";
-  const labelClass = "flex flex-col gap-1.5 text-sm font-medium text-ink";
+  const inputClass =
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-[15px] focus:border-bronze/40 focus:bg-white focus:ring-2 focus:ring-bronze/12";
+  const labelClass = "block text-sm font-medium text-ink";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="grid gap-5">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
-          {t("contact.name", locale)} *
+          <span className="mb-2 block">
+            {t("contact.name", locale)} <span className="text-bronze">*</span>
+          </span>
           <input
             required
             minLength={2}
@@ -97,7 +106,9 @@ export function ContactForm({ locale }: { locale: Locale }) {
         </label>
 
         <label className={labelClass}>
-          {t("contact.email", locale)} *
+          <span className="mb-2 block">
+            {t("contact.email", locale)} <span className="text-bronze">*</span>
+          </span>
           <input
             required
             type="email"
@@ -110,7 +121,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
-          {t("contact.company", locale)}
+          <span className="mb-2 block">{t("contact.company", locale)}</span>
           <input
             maxLength={120}
             type="text"
@@ -121,7 +132,9 @@ export function ContactForm({ locale }: { locale: Locale }) {
         </label>
 
         <label className={labelClass}>
-          {t("contact.topic", locale)} *
+          <span className="mb-2 block">
+            {t("contact.topic", locale)} <span className="text-bronze">*</span>
+          </span>
           <select
             required
             value={topic}
@@ -138,7 +151,9 @@ export function ContactForm({ locale }: { locale: Locale }) {
       </div>
 
       <label className={labelClass}>
-        {t("contact.message", locale)} *
+        <span className="mb-2 block">
+          {t("contact.message", locale)} <span className="text-bronze">*</span>
+        </span>
         <textarea
           required
           minLength={20}
@@ -146,7 +161,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
           rows={7}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className={`${inputClass} resize-y py-2.5 leading-relaxed`}
+          className={`${inputClass} min-h-[180px] resize-y py-3.5 leading-relaxed`}
         />
       </label>
 
@@ -161,19 +176,19 @@ export function ContactForm({ locale }: { locale: Locale }) {
       />
 
       {error ? (
-        <p className="rounded border border-sage-ring bg-sage-soft px-4 py-3 text-sm text-bronze-dark">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </p>
       ) : null}
 
-      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-t border-sand pt-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="font-dm-sans text-[11px] uppercase tracking-[1px] text-ink-body">
           {t("contact.requiredHint", locale)}
         </p>
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-[46px] items-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sage-soft"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? t("contact.submitting", locale) : t("contact.submit", locale)}
         </button>

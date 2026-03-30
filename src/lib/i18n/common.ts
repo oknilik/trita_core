@@ -259,6 +259,35 @@ export const commonTranslations = {
     },
   },
   contact: {
+    // Page
+    metaTitle: { hu: "Kapcsolat | trita", en: "Contact | trita" },
+    metaDescription: { hu: "Kapcsolatfelvétel a trita csapatával.", en: "Get in touch with the trita team." },
+    eyebrow: { hu: "Kapcsolat", en: "Contact" },
+    title: { hu: "Beszéljünk arról, miben tud segíteni a trita.", en: "Let's talk about how trita can help." },
+    subtitle: {
+      hu: "Demo, árazás, partneri együttműködés vagy support — írj nekünk itt, és egy munkanapon belül válaszolunk.",
+      en: "Demo, pricing, partnerships, or support — send us a note and we'll reply within one business day.",
+    },
+    heroCta: { hu: "Írok nektek", en: "Send a message" },
+    chipResponseTime: { hu: "24h válaszidő", en: "24h response time" },
+
+    // Form section
+    sectionEyebrow: { hu: "Kapcsolatfelvétel", en: "Get in touch" },
+    sectionTitle: { hu: "Miben segíthetünk?", en: "How can we help?" },
+    sectionLead: {
+      hu: "Pár mondat is elég. Ha tudjuk a témát, gyorsabban tudunk segíteni.",
+      en: "A few sentences are enough. Knowing the topic helps us respond faster.",
+    },
+
+    // Info cards
+    infoTitle: { hu: "Mi történik beküldés után?", en: "What happens next?" },
+    infoBody: { hu: "Az üzeneted közvetlenül a csapathoz érkezik, a válasz emailben jön.", en: "Your message goes to the team directly. We reply by email." },
+    responseTitle: { hu: "Válaszidő", en: "Response time" },
+    responseBody: { hu: "Munkanapokon jellemzően 24 órán belül.", en: "Usually within 24 hours on business days." },
+    legalTitle: { hu: "Adatkezelés", en: "Data handling" },
+    legalBody: { hu: "A megadott adatokat kizárólag a megkeresésed megválaszolásához használjuk.", en: "We only use the submitted data to respond to your message." },
+
+    // Form fields
     name: { hu: "Név", en: "Name" },
     email: { hu: "Email", en: "Email" },
     company: { hu: "Cég (opcionális)", en: "Company (optional)" },

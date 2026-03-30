@@ -1,145 +1,147 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getLanguageAlternates } from "@/lib/seo";
-import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { ContactForm } from "./ContactForm";
-
-const pageCopy: Record<Locale, {
-  title: string;
-  subtitle: string;
-  eyebrow: string;
-  metaTitle: string;
-  metaDescription: string;
-  formTitle: string;
-  formLead: string;
-  infoTitle: string;
-  infoBody: string;
-  responseTitle: string;
-  responseBody: string;
-  legalTitle: string;
-  legalBody: string;
-}> = {
-  hu: {
-    title: "Kapcsolat",
-    subtitle: "Írj nekünk, és 1 munkanapon belül válaszolunk.",
-    eyebrow: "// kapcsolat",
-    metaTitle: "Kapcsolat | trita",
-    metaDescription: "Kapcsolatfelvétel a trita csapatával online űrlapon keresztül.",
-    formTitle: "Miben segíthetünk?",
-    formLead: "Nem nyílik levelezőapp. Itt, az oldalon tudsz írni nekünk.",
-    infoTitle: "Mi történik beküldés után?",
-    infoBody: "Az üzeneted közvetlenül a trita csapathoz érkezik. A válasz emailben jön a megadott címedre.",
-    responseTitle: "Átlagos válaszidő",
-    responseBody: "Munkanapokon jellemzően 24 órán belül.",
-    legalTitle: "Adatkezelés",
-    legalBody: "A megadott adatokat kizárólag az üzeneted megválaszolásához használjuk.",
-  },
-  en: {
-    title: "Contact",
-    subtitle: "Send us a message and we will reply within 1 business day.",
-    eyebrow: "// contact",
-    metaTitle: "Contact | trita",
-    metaDescription: "Get in touch with the trita team via a built-in contact form.",
-    formTitle: "How can we help?",
-    formLead: "No email app opens. You can contact us directly here.",
-    infoTitle: "What happens after submission?",
-    infoBody: "Your message goes directly to the trita team. We reply to the email address you provide.",
-    responseTitle: "Typical response time",
-    responseBody: "Usually within 24 hours on business days.",
-    legalTitle: "Data handling",
-    legalBody: "We only use the submitted data to respond to your message.",
-  },
-};
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-  const copy = pageCopy[locale] ?? pageCopy.hu;
+
+  const title = t("contact.metaTitle", locale);
+  const description = t("contact.metaDescription", locale);
 
   return {
-    title: copy.metaTitle,
-    description: copy.metaDescription,
+    title,
+    description,
     alternates: {
       canonical: "/contact",
       languages: getLanguageAlternates("/contact"),
     },
-    openGraph: {
-      title: copy.metaTitle,
-      description: copy.metaDescription,
-      url: "/contact",
-      type: "website",
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: copy.metaTitle,
-      description: copy.metaDescription,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    openGraph: { title, description, url: "/contact", type: "website", siteName: "trita" },
+    twitter: { card: "summary_large_image", title, description },
+    robots: { index: true, follow: true },
   };
 }
 
 export default async function ContactPage() {
   const locale = await getServerLocale();
-  const copy = pageCopy[locale] ?? pageCopy.hu;
 
   return (
-    <main className="min-h-dvh bg-cream">
-      <section className="border-b border-sand bg-ink px-6 py-14 lg:px-16 lg:py-16">
-        <div className="mx-auto max-w-6xl">
-          <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-[2px] text-bronze">
-            {copy.eyebrow}
-          </p>
-          <h1 className="font-fraunces text-4xl leading-tight text-cream lg:text-[52px]">
-            {copy.title}
+    <main className="min-h-dvh bg-cream text-ink">
+      {/* ── Hero ────────────────────────────────────────────────────────── */}
+      <section className="border-b border-sand">
+        <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="h-px w-8 bg-bronze" />
+            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+              {t("contact.eyebrow", locale)}
+            </span>
+          </div>
+
+          <h1 className="max-w-[14ch] font-fraunces text-[clamp(2.6rem,6vw,4.4rem)] leading-[1.02] tracking-tight text-ink">
+            {t("contact.title", locale)}
           </h1>
-          <p className="mt-4 max-w-2xl text-[15px] leading-[1.75] text-cream/75">
-            {copy.subtitle}
+
+          <p className="mt-5 max-w-[580px] text-lg leading-[1.8] text-ink-body">
+            {t("contact.subtitle", locale)}
           </p>
+
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a
+              href="#contact-form"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg"
+            >
+              {t("contact.heroCta", locale)}
+            </a>
+            <a
+              href="mailto:hello@trita.io"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl border border-sand bg-white px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
+            >
+              hello@trita.io
+            </a>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            <MetaChip>{t("contact.chipResponseTime", locale)}</MetaChip>
+            <MetaChip>hello@trita.io</MetaChip>
+          </div>
         </div>
       </section>
 
-      <section className="px-6 py-10 lg:px-16 lg:py-14">
-        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8">
-          <div className="rounded border border-sand bg-white p-5 md:p-7">
-            <h2 className="font-fraunces text-3xl leading-tight text-ink">
-              {copy.formTitle}
-            </h2>
-            <p className="mt-2 mb-6 text-[15px] leading-[1.75] text-ink-body">
-              {copy.formLead}
+      {/* ── Form + info cards ───────────────────────────────────────────── */}
+      <section id="contact-form" className="border-t border-sand">
+        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
+          {/* Left label */}
+          <div>
+            <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+              {t("contact.sectionEyebrow", locale)}
             </p>
-            <ContactForm locale={locale} />
+            <h2 className="mt-3 max-w-[12ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
+              {t("contact.sectionTitle", locale)}
+            </h2>
+            <p className="mt-4 max-w-[24rem] text-sm leading-7 text-ink-body">
+              {t("contact.sectionLead", locale)}
+            </p>
           </div>
 
-          <div className="space-y-4">
-            <article className="rounded border border-sand bg-white p-5 md:p-6">
-              <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
-                01
-              </p>
-              <h3 className="font-fraunces text-2xl text-ink">{copy.infoTitle}</h3>
-              <p className="mt-2 text-[15px] leading-[1.75] text-ink-body">{copy.infoBody}</p>
-            </article>
+          {/* Right: form + cards */}
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_260px]">
+            <div className="rounded-[24px] border border-sand bg-white p-6 shadow-[0_24px_60px_rgba(26,26,46,0.04)] md:p-8">
+              <ContactForm locale={locale} />
+            </div>
 
-            <article className="rounded border border-sand bg-white p-5 md:p-6">
-              <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
-                02
-              </p>
-              <h3 className="font-fraunces text-2xl text-ink">{copy.responseTitle}</h3>
-              <p className="mt-2 text-[15px] leading-[1.75] text-ink-body">{copy.responseBody}</p>
-            </article>
-
-            <article className="rounded border border-sand bg-sage-soft p-5 md:p-6">
-              <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
-                03
-              </p>
-              <h3 className="font-fraunces text-2xl text-ink">{copy.legalTitle}</h3>
-              <p className="mt-2 text-[15px] leading-[1.75] text-ink-body">{copy.legalBody}</p>
-            </article>
+            <div className="grid gap-4 self-start">
+              <InfoCard
+                number="01"
+                title={t("contact.infoTitle", locale)}
+                body={t("contact.infoBody", locale)}
+              />
+              <InfoCard
+                number="02"
+                title={t("contact.responseTitle", locale)}
+                body={t("contact.responseBody", locale)}
+              />
+              <InfoCard
+                number="03"
+                title={t("contact.legalTitle", locale)}
+                body={t("contact.legalBody", locale)}
+                tone="warm"
+              />
+            </div>
           </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function MetaChip({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-sand bg-white px-3 py-1.5 text-sm text-ink-body">
+      {children}
+    </span>
+  );
+}
+
+function InfoCard({
+  number,
+  title,
+  body,
+  tone = "default",
+}: {
+  number: string;
+  title: string;
+  body: string;
+  tone?: "default" | "warm";
+}) {
+  return (
+    <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-white"}`}>
+      <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-bronze/80">
+        {number}
+      </p>
+      <h3 className="mt-2 font-fraunces text-xl leading-tight text-ink">{title}</h3>
+      <p className="mt-2 text-sm leading-7 text-ink-body">{body}</p>
+    </article>
   );
 }
