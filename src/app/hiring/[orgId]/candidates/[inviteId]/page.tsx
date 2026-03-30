@@ -413,7 +413,7 @@ export default async function CandidateResultPage({
           </div>
         </section>
 
-        {/* ② HEXACO PROFIL + ÉRTELMEZÉS */}
+        {/* ② SZEMÉLYISÉGPROFIL + ÉRTELMEZÉS */}
         <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("hiring.hexacoProfileEyebrow", locale)}

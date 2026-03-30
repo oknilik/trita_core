@@ -255,7 +255,7 @@ export function NavHeaderUI({
                     <>
                       <MegaItem href={`/team/${team.id}`} icon={<TeamIcon />} title="Csapat áttekintése" desc="Eredmények és aktivitás" onClick={closeAll} />
                       <MegaItem href={`/team/${team.id}?tab=members`} icon={<TeamIcon />} title="Tagok és szerepkörök" desc="Meglévő tagok kezelése" onClick={closeAll} />
-                      <MegaItem href={`/team/${team.id}?tab=profile`} icon={<OrgIcon />} title="Személyiségprofil" desc="HEXACO csapatprofil" onClick={closeAll} />
+                      <MegaItem href={`/team/${team.id}?tab=profile`} icon={<OrgIcon />} title="Személyiségprofil" desc="Személyiségprofil áttekintése" onClick={closeAll} />
                     </>
                   ) : (
                     <>
@@ -384,7 +384,7 @@ export function NavHeaderUI({
           >
             {mobileMenu === "quickview" ? (
               /* ── Quickview panel ──────────────────────────────────────── */
-              <div className="mx-4 mt-2 rounded-2xl border border-[#ddd5c8] bg-white p-4 shadow-[0_4px_16px_rgba(26,46,34,0.06)]">
+              <div className="mx-4 mt-2 rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] p-4 shadow-lg shadow-black/[0.04]">
                 {/* Vezérlő pill */}
                 <Link
                   href={dashboardHref}
@@ -396,16 +396,18 @@ export function NavHeaderUI({
                 </Link>
 
                 {/* Menu items */}
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-0.5">
                   {teams.map((tm) => (
                     <Link
                       key={tm.id}
                       href={`/team/${tm.id}`}
                       onClick={() => setMobileMenu("closed")}
-                      className="flex items-center gap-3 border-b border-[#e8e0d3] py-3 text-[14px] font-medium text-[#1a1a2e]"
+                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
                     >
-                      <TeamIcon className="h-4 w-4" />
-                      {teams.length === 1 ? (isAdmin ? "Csapatom" : "Csapatom") : tm.name}
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                        <TeamIcon className="h-3.5 w-3.5" />
+                      </span>
+                      {teams.length === 1 ? "Csapatom" : tm.name}
                     </Link>
                   ))}
 
@@ -413,9 +415,11 @@ export function NavHeaderUI({
                     <Link
                       href={`/hiring/${org.id}`}
                       onClick={() => setMobileMenu("closed")}
-                      className="flex items-center gap-3 border-b border-[#e8e0d3] py-3 text-[14px] font-medium text-[#1a1a2e]"
+                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
                     >
-                      <CandidateIcon className="h-4 w-4" />
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                        <CandidateIcon className="h-3.5 w-3.5" />
+                      </span>
                       Jelöltek
                     </Link>
                   )}
@@ -424,9 +428,11 @@ export function NavHeaderUI({
                     <Link
                       href={`/org/${org.id}`}
                       onClick={() => setMobileMenu("closed")}
-                      className="flex items-center gap-3 border-b border-[#e8e0d3] py-3 text-[14px] font-medium text-[#1a1a2e]"
+                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
                     >
-                      <OrgIcon className="h-4 w-4" />
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                        <OrgIcon className="h-3.5 w-3.5" />
+                      </span>
                       {org.name}
                     </Link>
                   )}
@@ -435,12 +441,14 @@ export function NavHeaderUI({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("expanded")}
-                    className="flex items-center gap-3 py-3 text-[14px] font-medium text-[#8a8a9a]"
+                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#8a8a9a] transition-colors hover:bg-[#f2ede6]"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="1" y="2" width="14" height="12" rx="2" />
-                      <path d="M1 6h14" />
-                    </svg>
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="1" y="2" width="14" height="12" rx="2" />
+                        <path d="M1 6h14" />
+                      </svg>
+                    </span>
                     Menu
                     <ChevronDown />
                   </button>
@@ -450,7 +458,7 @@ export function NavHeaderUI({
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenu("closed")}
-                  className="mt-1 flex items-center gap-3 border-t border-[#ddd5c8] pt-3"
+                  className="mt-2 flex items-center gap-3 rounded-lg border-t border-[#e8e0d3] px-2 pt-3 transition-colors hover:bg-[#f2ede6]"
                 >
                   <div
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[14px] font-medium text-white"
@@ -469,7 +477,7 @@ export function NavHeaderUI({
               </div>
             ) : (
               /* ── Expanded panel ──────────────────────────────────────── */
-              <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[#ddd5c8] bg-white shadow-[0_4px_16px_rgba(26,46,34,0.06)]">
+              <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] shadow-lg shadow-black/[0.04]">
                 {/* Header: pill + collapse */}
                 <div className="flex items-center gap-3 border-b border-[#e8e0d3] px-4 py-3">
                   <Link
@@ -515,7 +523,7 @@ export function NavHeaderUI({
                     <>
                       <MobileMenuItem href={`/team/${team.id}`} icon={<TeamIcon className="h-4 w-4" />} title="Csapat áttekintése" desc="Eredmények és aktivitás" onClick={() => setMobileMenu("closed")} />
                       <MobileMenuItem href={`/team/${team.id}?tab=members`} icon={<TeamIcon className="h-4 w-4" />} title="Tagok és szerepkörök" desc="Meglévő tagok kezelése" onClick={() => setMobileMenu("closed")} />
-                      <MobileMenuItem href={`/team/${team.id}?tab=profile`} icon={<OrgIcon className="h-4 w-4" />} title="Személyiségprofil" desc="HEXACO csapatprofil" onClick={() => setMobileMenu("closed")} />
+                      <MobileMenuItem href={`/team/${team.id}?tab=profile`} icon={<OrgIcon className="h-4 w-4" />} title="Személyiségprofil" desc="Személyiségprofil áttekintése" onClick={() => setMobileMenu("closed")} />
                     </>
                   ) : (
                     teams.map((tm) => (
@@ -590,14 +598,16 @@ function MobileMenuItem({
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[#f2ede6]"
+      className="group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-[#f2ede6]"
     >
-      <span className="shrink-0 text-[#1a1a2e]">{icon}</span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f7f4ef] text-[#8a8a9a] transition-colors group-hover:bg-[#e8e0d3] group-hover:text-[#4a4a5e]">
+        {icon}
+      </span>
       <div className="min-w-0 flex-1">
         <p className="text-[14px] font-medium text-[#1a1a2e]">{title}</p>
         <p className="truncate text-[12px] text-[#8a8a9a]">{desc}</p>
       </div>
-      <svg className="h-4 w-4 shrink-0 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg className="h-3.5 w-3.5 shrink-0 text-[#ddd5c8] transition-colors group-hover:text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M4 2l4 4-4 4" />
       </svg>
     </Link>

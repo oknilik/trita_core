@@ -204,7 +204,7 @@ export function TeamOverviewTab({
                 // {t("teamComp.teamAvgSelfEyebrow", loc)}
               </p>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
-                HEXACO {t("teamComp.hexacoProfile", loc)}
+                {t("teamComp.hexacoProfile", loc)}
               </h2>
             </div>
             <p className="text-xs text-muted shrink-0">

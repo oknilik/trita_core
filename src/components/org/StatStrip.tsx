@@ -12,7 +12,7 @@ interface StatStripProps {
 
 export function StatStrip({ cells }: StatStripProps) {
   return (
-    <div className="grid auto-cols-fr grid-flow-col gap-3">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-flow-col lg:auto-cols-fr">
       {cells.map((cell, i) => (
         <div
           key={i}

@@ -163,7 +163,7 @@ export default async function OrgDetailPage({
               {t("org.insightEyebrow", locale)}
             </span>
           </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Activity */}
             <div className="rounded-2xl border border-sand bg-white p-5">
               <div className="mb-2 flex items-center gap-2">
@@ -217,7 +217,7 @@ export default async function OrgDetailPage({
               {t("org.stateEyebrow", locale)}
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StateCard
               accent="#3d6b5e"
               title={t("org.stateMembersTitle", locale)}

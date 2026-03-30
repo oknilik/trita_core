@@ -918,7 +918,7 @@ export const orgTranslations = {
     },
     avgDeviation: { hu: "Átlagos eltérés: ±{points} pont", en: "Average deviation: ±{points} points" },
     largestGap: { hu: "Legnagyobb: {label} ({gap})", en: "Largest: {label} ({gap})" },
-    hexacoProfileEyebrow: { hu: "// hexaco profil", en: "// hexaco profile" },
+    hexacoProfileEyebrow: { hu: "// személyiségprofil", en: "// personality profile" },
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     teamAvgTooltip: { hu: "Csapatátlag", en: "Team avg" },
     candidateInTeam: { hu: "Jelölt a csapatban", en: "Candidate in the team" },
@@ -1080,7 +1080,7 @@ export const orgTranslations = {
 
     // TeamOverviewTab — HEXACO profile card
     teamAvgSelfEyebrow: { hu: "csapat átlag · önkép", en: "team avg · self" },
-    hexacoProfile: { hu: "profil", en: "profile" },
+    hexacoProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     membersSelf: { hu: "fő · önértékelés", en: "members · self" },
     noAssessmentsProfile: {
       hu: "Még nincs kitöltött assessment. A profilok megjelenítéséhez legalább 1 tag töltse ki.",
@@ -1141,8 +1141,8 @@ export const orgTranslations = {
     },
     profileStatus: { hu: "Személyiségprofil státusz", en: "Personality profile status" },
     profileStatusDesc: {
-      hu: "{done} / {total} tagnak van HEXACO adata — a Belbin-becslések erre épülnek",
-      en: "{done} / {total} members have HEXACO data — Belbin estimates are derived from this",
+      hu: "{done} / {total} tagnak van személyiségprofilja — a Belbin-becslések erre épülnek",
+      en: "{done} / {total} members have personality data — Belbin estimates are derived from this",
     },
     roleDistributionEyebrow: { hu: "szerepkör-eloszlás", en: "role distribution" },
     roleCompositionTitle: { hu: "Csapatszerepek megoszlása", en: "Team role composition" },
@@ -1198,8 +1198,8 @@ export const orgTranslations = {
     personalityProfileEyebrow: { hu: "// személyiségprofil", en: "// personality profile" },
     teamHeatmapTitle: { hu: "Csapat személyiségprofil", en: "Team Personality Heatmap" },
     heatmapDesc: {
-      hu: "Minden oszlop egy HEXACO személyiségdimenziót mutat — minél mélyebb a szín, annál magasabb a pontszám.",
-      en: "Each column represents a HEXACO personality dimension — deeper color means a higher score.",
+      hu: "Minden oszlop egy személyiségdimenziót mutat — minél mélyebb a szín, annál magasabb a pontszám.",
+      en: "Each column represents a personality dimension — deeper color means a higher score.",
     },
     analysisEyebrow: { hu: "// elemzés", en: "// analysis" },
     teamAnalysis: { hu: "Csapatelemzés", en: "Team Analysis" },
@@ -1216,8 +1216,8 @@ export const orgTranslations = {
     clickAvatar: { hu: "Kattints egy avatárra", en: "Click on an avatar" },
     clickAvatarDesc: { hu: "a részletes profil megtekintéséhez", en: "to view detailed profile" },
     estimationNote: {
-      hu: "Az átlátszó avatárok pozíciója HEXACO-adatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.",
-      en: "Transparent avatars are positioned based on HEXACO data (C → skill level, (O+X)/2 → potential). Final placement can be manually adjusted by the team leader.",
+      hu: "Az átlátszó avatárok pozíciója személyiségadatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.",
+      en: "Transparent avatars are positioned based on personality data (C → skill level, (O+X)/2 → potential). Final placement can be manually adjusted by the team leader.",
     },
     growthPotentialAxis: { hu: "← fejlődési potenciál →", en: "← growth potential →" },
     yAxisLabel: { hu: "magas → alacsony", en: "high → low" },

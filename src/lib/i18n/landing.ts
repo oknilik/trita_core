@@ -542,7 +542,7 @@ export const landingTranslations = {
     selfBlock2Label: { hu: "Így működik", en: "How it works" },
     selfBlock2Title: { hu: "Mi történik az első teszt után?", en: "What happens after your first test?" },
     selfBlock2Sub: { hu: "Lépésről lépésre építheted az önismeretedet.", en: "Build your self-awareness step by step." },
-    selfBlock2Step1: { hu: "Töltsd ki a HEXACO személyiségtesztet (~15 perc)", en: "Complete the HEXACO personality test (~15 min)" },
+    selfBlock2Step1: { hu: "Töltsd ki a személyiségtesztet (~15 perc)", en: "Complete the personality test (~15 min)" },
     selfBlock2Step2: { hu: "Kapj dimenzió szintű eredményeket azonnal", en: "Get dimension-level results instantly" },
     selfBlock2Step3: { hu: "Hívj meg observereket — nézd meg, hogyan látnak mások", en: "Invite observers — see how others see you" },
     selfBlock2Step4: { hu: "Hasonlítsd össze az önképedet a külső visszajelzésekkel", en: "Compare your self-image with external feedback" },
