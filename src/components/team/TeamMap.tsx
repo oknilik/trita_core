@@ -100,10 +100,10 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
         </div>
       </div>
 
-      {/* HEXACO bars */}
+      {/* Personality dimension bars */}
       <div>
         <p className="mb-2 font-mono text-[8px] uppercase tracking-widest text-bronze">
-          // hexaco profil
+          // személyiségprofil
         </p>
         <div className="flex flex-col gap-1.5">
           {(Object.keys(DIM_COLORS) as Array<keyof typeof DIM_COLORS>).map((k) => (

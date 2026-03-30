@@ -416,7 +416,7 @@ export const orgTranslations = {
       activateCampaign: { hu: "Kampány aktiválása", en: "Activate campaign" },
       closeCampaign: { hu: "Kampány lezárása", en: "Close campaign" },
 
-      // HEXACO dimension labels (campaign detail)
+      // Personality dimension labels (campaign detail)
       hexacoH: { hu: "Önzetlenség", en: "Honesty-Humility" },
       hexacoE: { hu: "Érzelmi stabilitás", en: "Emotionality" },
       hexacoX: { hu: "Extraverzió", en: "eXtraversion" },
@@ -1078,7 +1078,7 @@ export const orgTranslations = {
     },
     startCampaign: { hu: "Kampány indítása", en: "Start a campaign" },
 
-    // TeamOverviewTab — HEXACO profile card
+    // TeamOverviewTab — personality profile card
     teamAvgSelfEyebrow: { hu: "csapat átlag · önkép", en: "team avg · self" },
     hexacoProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     membersSelf: { hu: "fő · önértékelés", en: "members · self" },

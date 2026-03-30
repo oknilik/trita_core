@@ -196,7 +196,7 @@ export function TeamOverviewTab({
 
       {/* 2-column grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* Left: HEXACO profile card */}
+        {/* Left: Personality profile card */}
         <div className="rounded-2xl border border-sand bg-white shadow-sm">
           <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
             <div>

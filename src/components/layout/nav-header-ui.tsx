@@ -311,7 +311,6 @@ export function NavHeaderUI({
                 <MegaDropdown isOpen={openDropdown === "org"}>
                   <MegaItem href={`/org/${org.id}`} icon={<OrgIcon />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={closeAll} />
                   <MegaItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={closeAll} />
-                  <MegaItem href={`/org/${org.id}?tab=campaigns`} icon={<GridIcon />} title="Kampányok" desc={activeCampaignCount > 0 ? `${activeCampaignCount} aktív` : "Kampánykezelés"} onClick={closeAll} />
                   <MegaItem href="/billing" icon={<OrgIcon />} title="Beállítások" desc="Számlázás, csomagok" onClick={closeAll} />
                 </MegaDropdown>
               </div>
@@ -552,7 +551,6 @@ export function NavHeaderUI({
                     </p>
                     <MobileMenuItem href={`/org/${org.id}`} icon={<OrgIcon className="h-4 w-4" />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={() => setMobileMenu("closed")} />
                     <MobileMenuItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon className="h-4 w-4" />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={() => setMobileMenu("closed")} />
-                    <MobileMenuItem href={`/org/${org.id}?tab=campaigns`} icon={<GridIcon className="h-4 w-4" />} title="Kampányok" desc="Kampánykezelés" onClick={() => setMobileMenu("closed")} />
                     <MobileMenuItem href="/billing" icon={<OrgIcon className="h-4 w-4" />} title="Beállítások" desc="Számlázás, csomagok" onClick={() => setMobileMenu("closed")} />
                   </div>
                 )}
