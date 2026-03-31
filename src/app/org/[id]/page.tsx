@@ -6,11 +6,12 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
-import { requireActiveSubscription } from "@/lib/require-active-subscription";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { getOrgPageData } from "@/lib/org-stats";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import {
   DashboardMetricCard,
   DashboardPanel,
@@ -59,15 +60,85 @@ export default async function OrgDetailPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
-  await requireActiveSubscription();
-
   if (!org) notFound();
   if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect("/dashboard");
 
+  const subscription = await getOrgSubscription(orgId);
+  const subscriptionState = getSubscriptionState(subscription);
+  if (subscriptionState === "none") redirect("/billing/upgrade");
+
   const isAdmin = hasOrgRole(memberRole, "ORG_ADMIN");
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
+  const isRestricted = subscriptionState === "restricted";
+  const isFrozen = subscriptionState === "frozen";
+  const canManageOrgActions = subscriptionState === "active";
+  const isAdminForActions = isAdmin && canManageOrgActions;
+  const isManagerForActions = isManager && canManageOrgActions;
   const isHu = locale !== "en";
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
+
+  if (isFrozen) {
+    const [memberCount, teamCount, activeCampaignCount, latestTeam, latestCampaign] = await Promise.all([
+      prisma.organizationMember.count({ where: { orgId, leftAt: null } }),
+      prisma.team.count({ where: { orgId } }),
+      prisma.campaign.count({ where: { orgId, status: "ACTIVE" } }),
+      prisma.team.findFirst({
+        where: { orgId },
+        orderBy: { createdAt: "desc" },
+        select: { createdAt: true },
+      }),
+      prisma.campaign.findFirst({
+        where: { orgId },
+        orderBy: { createdAt: "desc" },
+        select: { createdAt: true },
+      }),
+    ]);
+
+    const latestActivity = [latestTeam?.createdAt, latestCampaign?.createdAt]
+      .filter((value): value is Date => Boolean(value))
+      .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
+
+    return (
+      <PlatformPageShell
+        surface="org"
+        contentClassName="max-w-4xl gap-6 px-4 py-10"
+      >
+        <OrgSubscriptionBanner state="frozen" locale={locale} />
+        <DashboardPanel className="p-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">
+            {isHu ? "Szervezeti összegző" : "Organization summary"}
+          </p>
+          <h1 className="mt-2 font-fraunces text-3xl text-ink">{org.name}</h1>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <DashboardMetricCard
+              accent="#3d6b5e"
+              title={isHu ? "Tagok" : "Members"}
+              value={String(memberCount)}
+              sub={isHu ? "Aktív szervezeti tagságok" : "Active org memberships"}
+            />
+            <DashboardMetricCard
+              accent="#c17f4a"
+              title={isHu ? "Csapatok" : "Teams"}
+              value={String(teamCount)}
+              sub={isHu ? "Szervezethez tartozó csapatok" : "Teams in this organization"}
+            />
+            <DashboardMetricCard
+              accent="#74877d"
+              title={isHu ? "Aktív kampány" : "Active campaigns"}
+              value={String(activeCampaignCount)}
+              sub={isHu ? "Futó observer körök" : "Running observer rounds"}
+            />
+          </div>
+          <p className="mt-4 text-xs text-muted">
+            {isHu ? "Utolsó aktivitás:" : "Last activity:"}{" "}
+            {latestActivity
+              ? latestActivity.toLocaleDateString(dateLocale)
+              : (isHu ? "nincs adat" : "no activity yet")}
+          </p>
+        </DashboardPanel>
+      </PlatformPageShell>
+    );
+  }
 
   const [pageData, members, pendingInvites, teams] = await Promise.all([
     getOrgPageData(orgId),
@@ -251,21 +322,34 @@ export default async function OrgDetailPage({
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-2">
-                  <Link
-                    href={orgDashboardVm.recommendedAction.primary.href}
-                    className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
-                    style={{ backgroundColor: ORG_HERO_PRIMARY }}
-                  >
-                    {orgDashboardVm.recommendedAction.primary.label}
-                  </Link>
-                  <Link
-                    href={orgDashboardVm.recommendedAction.secondary?.href ?? `/org/${orgId}?tab=teams`}
-                    className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
-                  >
-                    {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
-                  </Link>
+                  {canManageOrgActions ? (
+                    <>
+                      <Link
+                        href={orgDashboardVm.recommendedAction.primary.href}
+                        className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                        style={{ backgroundColor: ORG_HERO_PRIMARY }}
+                      >
+                        {orgDashboardVm.recommendedAction.primary.label}
+                      </Link>
+                      <Link
+                        href={orgDashboardVm.recommendedAction.secondary?.href ?? `/org/${orgId}?tab=teams`}
+                        className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+                      >
+                        {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <span className="flex min-h-[44px] cursor-not-allowed items-center rounded-[9px] bg-white/[0.12] px-5 py-2 text-[12px] font-semibold text-white/55">
+                        {orgDashboardVm.recommendedAction.primary.label}
+                      </span>
+                      <span className="flex min-h-[44px] cursor-not-allowed items-center rounded-[9px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.45]">
+                        {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
+                      </span>
+                    </>
+                  )}
                 </div>
-                {isAdmin ? (
+                {isAdminForActions ? (
                   <Link
                     href={`/org/${orgId}/settings`}
                     className="mt-3 inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
@@ -332,6 +416,10 @@ export default async function OrgDetailPage({
             </div>
           </div>
         </div>
+
+        {isRestricted ? (
+          <OrgSubscriptionBanner state="restricted" locale={locale} />
+        ) : null}
 
         {/* ═══ 2. INSIGHT CARDS ("Most érdemes figyelni") ═══ */}
         <section>
@@ -518,18 +606,31 @@ export default async function OrgDetailPage({
               </p>
             </div>
             <div className="flex shrink-0 gap-2">
-              <Link
-                href={`/org/${orgId}?tab=campaigns`}
-                className="rounded-[10px] bg-[#c17f4a] px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
-              >
-                {t("org.ctaBandCta1", locale)}
-              </Link>
-              <Link
-                href={`/org/${orgId}?tab=teams`}
-                className="rounded-[10px] border border-white/20 px-6 py-3 text-sm font-semibold text-white/60 transition-all hover:bg-white/5"
-              >
-                {t("org.ctaBandCta2", locale)}
-              </Link>
+              {canManageOrgActions ? (
+                <>
+                  <Link
+                    href={`/org/${orgId}?tab=campaigns`}
+                    className="rounded-[10px] bg-[#c17f4a] px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+                  >
+                    {t("org.ctaBandCta1", locale)}
+                  </Link>
+                  <Link
+                    href={`/org/${orgId}?tab=teams`}
+                    className="rounded-[10px] border border-white/20 px-6 py-3 text-sm font-semibold text-white/60 transition-all hover:bg-white/5"
+                  >
+                    {t("org.ctaBandCta2", locale)}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span className="cursor-not-allowed rounded-[10px] bg-white/15 px-6 py-3 text-sm font-semibold text-white/50">
+                    {t("org.ctaBandCta1", locale)}
+                  </span>
+                  <span className="cursor-not-allowed rounded-[10px] border border-white/15 px-6 py-3 text-sm font-semibold text-white/45">
+                    {t("org.ctaBandCta2", locale)}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </section>
@@ -540,8 +641,8 @@ export default async function OrgDetailPage({
             orgId={orgId}
             orgName={org.name}
             profileId={profileId}
-            isAdmin={isAdmin}
-            isManager={isManager}
+            isAdmin={isAdminForActions}
+            isManager={isManagerForActions}
             isHu={isHu}
             locale={locale}
             dateLocale={dateLocale}

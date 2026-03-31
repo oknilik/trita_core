@@ -4,9 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgRole } from "@/lib/auth";
-import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import {
   getOrgSubscription,
+  getSubscriptionState,
   trialDaysLeft as calcTrialDaysLeft,
   getPlanTier,
   PLAN_SEAT_LIMITS,
@@ -16,6 +16,7 @@ import { OrgRenameForm } from "@/components/org/OrgRenameForm";
 import { OrgDeactivateButton } from "@/components/org/OrgDeactivateButton";
 import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
 import { BillingPortalButton } from "@/components/org/BillingPortalButton";
+import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +32,6 @@ export default async function OrgSettingsPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { profileId, org } = await requireOrgRole(orgId, "ORG_ADMIN");
-  await requireActiveSubscription();
   const isHu = locale !== "en";
 
   const [members, sub, memberCount, pendingCount] = await Promise.all([
@@ -51,6 +51,8 @@ export default async function OrgSettingsPage({
 
   const daysLeft = calcTrialDaysLeft(sub);
   const subStatus = sub?.status ?? "none";
+  const subscriptionState = getSubscriptionState(sub);
+  const isReadOnly = subscriptionState === "restricted" || subscriptionState === "frozen";
   const tier = getPlanTier(sub);
   const includedSeats = PLAN_SEAT_LIMITS[tier];
   const extraSeats = calculateExtraSeats(sub, memberCount);
@@ -81,6 +83,13 @@ export default async function OrgSettingsPage({
           </div>
         </div>
 
+        {(subscriptionState === "restricted" || subscriptionState === "frozen") ? (
+          <OrgSubscriptionBanner
+            state={subscriptionState === "frozen" ? "frozen" : "restricted"}
+            locale={locale}
+          />
+        ) : null}
+
         {/* Org name */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
@@ -89,7 +98,15 @@ export default async function OrgSettingsPage({
           <h2 className="font-fraunces text-xl text-ink mb-5">
             {t("org.settings.orgNameTitle", locale)}
           </h2>
-          <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
+          {isReadOnly ? (
+            <p className="rounded-lg border border-sand bg-cream px-4 py-3 text-sm text-ink-body">
+              {isHu
+                ? "Read-only módban a szervezet neve nem módosítható."
+                : "Organization name changes are disabled in read-only mode."}
+            </p>
+          ) : (
+            <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
+          )}
         </section>
 
         {/* Előfizetés */}
@@ -253,13 +270,19 @@ export default async function OrgSettingsPage({
                     <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
                   )}
                 </div>
-                <OrgMemberRoleEditor
-                  orgId={orgId}
-                  userId={m.userId}
-                  currentRole={m.role}
-                  isSelf={m.userId === profileId}
-                  locale={locale}
-                />
+                {isReadOnly ? (
+                  <span className="rounded-full bg-sand px-2.5 py-1 text-[11px] font-semibold text-muted">
+                    {m.role}
+                  </span>
+                ) : (
+                  <OrgMemberRoleEditor
+                    orgId={orgId}
+                    userId={m.userId}
+                    currentRole={m.role}
+                    isSelf={m.userId === profileId}
+                    locale={locale}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -276,7 +299,13 @@ export default async function OrgSettingsPage({
           <p className="mb-4 text-sm text-rose-700">
             {t("org.settings.dangerDescription", locale)}
           </p>
-          {org.status === "INACTIVE" ? (
+          {isReadOnly ? (
+            <p className="text-sm font-semibold text-rose-800">
+              {isHu
+                ? "Read-only módban a szervezet státusza nem módosítható."
+                : "Organization status changes are disabled in read-only mode."}
+            </p>
+          ) : org.status === "INACTIVE" ? (
             <p className="text-sm font-semibold text-rose-800">
               {t("org.settings.alreadyInactive", locale)}
             </p>

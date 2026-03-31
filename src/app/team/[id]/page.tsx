@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
-import { requireActiveSubscription } from "@/lib/require-active-subscription";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { getTeamPageData } from "@/lib/team-stats";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
@@ -19,6 +19,7 @@ import {
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
+import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -83,9 +84,51 @@ export default async function TeamDetailPage({
   const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
   if (!hasTeamAccess) redirect("/dashboard");
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
-  await requireActiveSubscription();
-
   const isHu = locale !== "en";
+  const subscription = team.orgId ? await getOrgSubscription(team.orgId) : null;
+  const subscriptionState = getSubscriptionState(subscription);
+  if (subscriptionState === "none") redirect("/billing/upgrade");
+
+  const isRestricted = subscriptionState === "restricted";
+  const isFrozen = subscriptionState === "frozen";
+  const canManageTeamActions = isOrgManager && subscriptionState === "active";
+
+  if (isFrozen) {
+    const [memberCount, pendingInviteCount] = await Promise.all([
+      prisma.teamMember.count({ where: { teamId } }),
+      prisma.teamPendingInvite.count({ where: { teamId } }),
+    ]);
+
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-4xl gap-6 px-4 py-10"
+      >
+        <OrgSubscriptionBanner state="frozen" locale={locale} />
+        <DashboardPanel className="p-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-muted">
+            {isHu ? "Csapat összegző" : "Team summary"}
+          </p>
+          <h1 className="mt-2 font-fraunces text-3xl text-ink">{team.name}</h1>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <DashboardMetricCard
+              accent="#66455d"
+              title={isHu ? "Tagok" : "Members"}
+              value={String(memberCount)}
+              sub={isHu ? "Aktív csapattagok" : "Active team members"}
+            />
+            <DashboardMetricCard
+              accent="#a66a8c"
+              title={isHu ? "Függő meghívók" : "Pending invites"}
+              value={String(pendingInviteCount)}
+              sub={isHu ? "Még el nem fogadott meghívások" : "Invites waiting for acceptance"}
+            />
+          </div>
+        </DashboardPanel>
+      </PlatformPageShell>
+    );
+  }
+
   const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
   if (!teamData) notFound();
 
@@ -124,7 +167,7 @@ export default async function TeamDetailPage({
           target: patternTarget,
         });
   const recommendedAction = (() => {
-    if (isOrgManager && teamData.orgId) {
+    if (canManageTeamActions && teamData.orgId) {
       return {
         title: t("teamDetail.nextStep", locale),
         description: hasObserver
@@ -298,7 +341,7 @@ export default async function TeamDetailPage({
                       {t("teamDetail.heroViewPattern", locale)}
                     </Link>
                   )}
-                  {isOrgManager && teamData.orgId && (
+                  {canManageTeamActions && teamData.orgId && (
                     <Link
                       href={`/org/${teamData.orgId}?tab=campaigns`}
                       className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
@@ -368,6 +411,10 @@ export default async function TeamDetailPage({
             </div>
           </div>
         </section>
+
+        {isRestricted ? (
+          <OrgSubscriptionBanner state="restricted" locale={locale} />
+        ) : null}
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>

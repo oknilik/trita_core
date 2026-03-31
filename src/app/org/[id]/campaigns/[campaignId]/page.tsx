@@ -1,13 +1,14 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
-import { requireActiveSubscription } from "@/lib/require-active-subscription";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
+import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -99,10 +100,14 @@ export default async function CampaignDetailPage({
   ]);
 
   const { role: memberRole } = await requireOrgContext(orgId);
-  await requireActiveSubscription();
-
-  const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   const isHu = locale !== "en";
+  const subscription = await getOrgSubscription(orgId);
+  const subscriptionState = getSubscriptionState(subscription);
+  if (subscriptionState === "none") redirect("/billing/upgrade");
+  const isFrozen = subscriptionState === "frozen";
+  const isRestricted = subscriptionState === "restricted";
+  const canManageCampaign =
+    hasOrgRole(memberRole, "ORG_MANAGER") && subscriptionState === "active";
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
   const [campaign, orgMembers] = await Promise.all([
@@ -137,6 +142,43 @@ export default async function CampaignDetailPage({
   ]);
 
   if (!campaign) notFound();
+
+  if (isFrozen) {
+    return (
+      <div className="min-h-dvh bg-cream">
+        <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
+          <OrgSubscriptionBanner state="frozen" locale={locale} />
+          <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              {isHu ? "Kampány összegző" : "Campaign summary"}
+            </p>
+            <h1 className="mt-2 font-fraunces text-3xl text-ink">{campaign.name}</h1>
+            <p className="mt-2 text-sm text-ink-body">
+              {campaign.description ?? (isHu ? "Nincs leírás." : "No description.")}
+            </p>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-sand bg-cream px-4 py-3">
+                <p className="text-xs text-muted">{isHu ? "Állapot" : "Status"}</p>
+                <p className="mt-1 text-sm font-semibold text-ink">
+                  {statusLabel(campaign.status, locale)}
+                </p>
+              </div>
+              <div className="rounded-xl border border-sand bg-cream px-4 py-3">
+                <p className="text-xs text-muted">{isHu ? "Résztvevők" : "Participants"}</p>
+                <p className="mt-1 text-sm font-semibold text-ink">{campaign.participants.length}</p>
+              </div>
+              <div className="rounded-xl border border-sand bg-cream px-4 py-3">
+                <p className="text-xs text-muted">{isHu ? "Létrehozva" : "Created"}</p>
+                <p className="mt-1 text-sm font-semibold text-ink">
+                  {campaign.createdAt.toLocaleDateString(dateLocale)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const participantUserIds = campaign.participants.map((p) => p.userId);
 
@@ -237,6 +279,9 @@ export default async function CampaignDetailPage({
   return (
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
+        {isRestricted ? (
+          <OrgSubscriptionBanner state="restricted" locale={locale} />
+        ) : null}
 
         {/* Back link */}
         <Link
@@ -493,7 +538,7 @@ export default async function CampaignDetailPage({
             </div>
           )}
 
-          {isManager && campaign.status !== "CLOSED" && availableMembers.length > 0 && (
+          {canManageCampaign && campaign.status !== "CLOSED" && availableMembers.length > 0 && (
             <div className="mt-5 border-t border-sand pt-5">
               <AddParticipantButton
                 orgId={orgId}
@@ -506,7 +551,7 @@ export default async function CampaignDetailPage({
         </section>
 
         {/* Status transition */}
-        {isManager && nextStatus && (
+        {canManageCampaign && nextStatus && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {t("org.campaign.statusEyebrow", locale)}

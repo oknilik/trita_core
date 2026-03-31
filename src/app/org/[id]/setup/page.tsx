@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireOrgRole } from "@/lib/auth";
-import { requireActiveSubscription } from "@/lib/require-active-subscription";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { getServerLocale } from "@/lib/i18n-server";
 import { OrgSetupWizard } from "@/components/org/OrgSetupWizard";
+import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -19,11 +20,37 @@ export default async function OrgSetupPage({
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
   const { org } = await requireOrgRole(orgId, "ORG_ADMIN");
-  await requireActiveSubscription();
+  const subscription = await getOrgSubscription(orgId);
+  const subscriptionState = getSubscriptionState(subscription);
+  if (subscriptionState === "none") redirect("/billing/upgrade");
 
   // If already active, redirect to org detail
   if (org.status === "ACTIVE") {
     redirect(`/org/${orgId}`);
+  }
+
+  if (subscriptionState === "restricted" || subscriptionState === "frozen") {
+    const isHu = locale !== "en";
+    return (
+      <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-2xl space-y-5">
+          <OrgSubscriptionBanner
+            state={subscriptionState === "frozen" ? "frozen" : "restricted"}
+            locale={locale}
+          />
+          <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+            <h1 className="font-fraunces text-2xl text-ink">
+              {isHu ? "A setup ideiglenesen szünetel" : "Setup is temporarily paused"}
+            </h1>
+            <p className="mt-2 text-sm text-ink-body">
+              {isHu
+                ? "Az org aktiválási lépések reaktiválás után folytathatók."
+                : "Organization activation steps can continue after subscription reactivation."}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
