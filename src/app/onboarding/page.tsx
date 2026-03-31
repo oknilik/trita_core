@@ -2,9 +2,9 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { getActiveOrgMembership } from "@/lib/org-context";
 import { getServerLocale } from "@/lib/i18n-server";
 import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
+import { resolveJourney } from "@/lib/journey/engine";
 import { OrgOnboardingWizard } from "./OrgOnboardingWizard";
 import { OnboardingClient } from "./OnboardingClient";
 
@@ -69,12 +69,16 @@ export default async function OnboardingPage({
     await setJourneyIntentForProfile(profile.id, explicitIntent);
   }
 
-  // Már van org tagság → wizard kész
-  const orgMembership = await getActiveOrgMembership(profile.id);
-  if (orgMembership) redirect("/dashboard");
-
-  // Personal onboarding kész, nincs org kontextus → explicit personal home
-  if (profile.onboardedAt) redirect("/profile/results");
+  const journey = await resolveJourney(profile.id, {
+    entryIntent: explicitIntent ?? undefined,
+  });
+  if (
+    profile.onboardedAt ||
+    journey.currentContext !== "self-only" ||
+    journey.home.reason === "pending_join"
+  ) {
+    redirect(journey.home.destination);
+  }
 
   return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;
 }

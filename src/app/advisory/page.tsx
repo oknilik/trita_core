@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getPlanTier } from "@/lib/subscription";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { AdvisoryPageClient, type AdvisoryTier } from "./AdvisoryPageClient";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +23,7 @@ export default async function AdvisoryPage() {
     where: { clerkId: userId },
     select: { id: true, username: true, email: true },
   });
-  if (!profile) redirect("/dashboard");
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const activeMembership = await getActiveOrgMembership(profile.id);
   const membership = activeMembership

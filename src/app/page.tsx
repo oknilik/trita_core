@@ -9,6 +9,7 @@ import { ProofSection } from "@/components/landing/ProofSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { getSiteUrl } from "@/lib/seo";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ export default async function Home({
   searchParams: Promise<{ mode?: string }>;
 }) {
   const { userId } = await auth();
-  if (userId) redirect("/dashboard");
+  if (userId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const params = await searchParams;
   const mode: SiteMode = params.mode === "team" ? "team" : "self";

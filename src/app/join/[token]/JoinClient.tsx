@@ -7,6 +7,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import {
   getBirthYearBounds,
   getMembershipGenderOptions,
@@ -292,7 +293,7 @@ export function JoinClient({
                 </button>
                 <button
                   type="button"
-                  onClick={() => router.push("/dashboard")}
+                  onClick={() => router.push(JOURNEY_HOME_HANDOFF_PATH)}
                   className="min-h-[44px] w-full rounded-lg border border-sand text-sm font-medium text-ink-body hover:bg-cream"
                 >
                   {copy.switchSecondary}

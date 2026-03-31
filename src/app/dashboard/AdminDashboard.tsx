@@ -222,6 +222,9 @@ export function AdminDashboard() {
   const conscientiousnessDim =
     localizedHexacoDims.find((dim) => dim.key === "C") ?? localizedHexacoDims[4];
 
+  // TODO(journey-guardrail): remove this fallback once `/api/admin/org-status`
+  // always guarantees `journey.nextBestAction`.
+  // Reason: we keep a resilient UI-only fallback temporarily for partial API states.
   const fallbackRecommendedAction = (() => {
     const teamWithReminder = teams.find((t) => t.members.some((m) => !m.assessmentDone));
     if (teamWithReminder) {

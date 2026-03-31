@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 interface TopbarProps {
   orgId?: string;
@@ -20,7 +21,7 @@ export function Topbar({ orgId, orgName, teamId, teamName }: TopbarProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
 
-  const crumbs: Crumb[] = [{ label: "Dashboard", href: "/dashboard" }];
+  const crumbs: Crumb[] = [{ label: "Kezdőlap", href: JOURNEY_HOME_HANDOFF_PATH }];
 
   if (teamId && pathname.startsWith(`/team/${teamId}`)) {
     crumbs.push({ label: teamName ?? "Csapat", href: `/team/${teamId}` });

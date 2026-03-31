@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { BelbinQuestionnaire } from "@/components/assessment/BelbinQuestionnaire";
 import type { BelbinAnswers } from "@/lib/belbin-scoring";
 import type { Locale } from "@/lib/i18n";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 interface BelbinClientProps {
   locale: Locale;
@@ -24,13 +25,13 @@ export function BelbinClient({ locale }: BelbinClientProps) {
       } catch {
         // Non-critical: redirect regardless
       }
-      router.push("/dashboard");
+      router.push(JOURNEY_HOME_HANDOFF_PATH);
     },
     [router],
   );
 
   const handleSkip = useCallback(() => {
-    router.push("/dashboard");
+    router.push(JOURNEY_HOME_HANDOFF_PATH);
   }, [router]);
 
   return (

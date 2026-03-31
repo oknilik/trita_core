@@ -176,7 +176,10 @@ export function NavHeaderUI({
   const homePath = homeHref.split("?")[0] ?? homeHref;
   const homeLabel = "Kezdőlap";
   const onSelfResults = pathname.startsWith("/profile/results");
-  const onHome = homePath === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(homePath);
+  const onHome =
+    homePath === "/dashboard" || homePath === "/platform/home"
+      ? pathname === "/dashboard" || pathname === "/platform/home"
+      : pathname.startsWith(homePath);
   const onTeam = teams.some((t) => pathname.startsWith(`/team/${t.id}`));
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;

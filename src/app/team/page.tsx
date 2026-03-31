@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ export default async function TeamListPage() {
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/dashboard");
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const memberships = await prisma.organizationMember.findMany({
     where: { userId: profile.id, leftAt: null },

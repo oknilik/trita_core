@@ -20,6 +20,7 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +66,7 @@ export default async function TeamDetailPage({
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId }, select: { id: true },
   });
-  if (!profile) redirect("/dashboard");
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const team = await prisma.team.findUnique({
     where: { id: teamId }, select: { id: true, name: true, orgId: true },
@@ -79,10 +80,10 @@ export default async function TeamDetailPage({
       })
     : null;
   const orgMemberRole = orgMembership?.role ?? null;
-  if (!orgMemberRole) redirect("/dashboard");
+  if (!orgMemberRole) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
-  if (!hasTeamAccess) redirect("/dashboard");
+  if (!hasTeamAccess) redirect(JOURNEY_HOME_HANDOFF_PATH);
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
   const subscription = team.orgId ? await getOrgSubscription(team.orgId) : null;

@@ -19,6 +19,7 @@ import { getOrgSubscription, hasAccess } from "@/lib/subscription";
 import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourney } from "@/lib/journey/engine";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getMetadataBase } from "@/lib/seo";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import "./globals.css";
@@ -79,7 +80,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   type NavData = React.ComponentProps<typeof NavHeaderUI>;
   let navData: NavData | null = null;
-  let signedInHomeHref: string = "/dashboard";
+  let signedInHomeHref: string = JOURNEY_HOME_HANDOFF_PATH;
   let signedInExperienceHints: JourneyExperienceHints | null = null;
   const locale = await getServerLocale();
   const headersList = await headers();
@@ -151,7 +152,7 @@ export default async function RootLayout({
     <html lang={DEFAULT_LOCALE}>
       <body className={bodyClasses}>
         <ClerkProvider
-          signInFallbackRedirectUrl="/dashboard"
+          signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
           signUpFallbackRedirectUrl="/onboarding"
         >
           <LocaleProvider initialLocale={locale}>

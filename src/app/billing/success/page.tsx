@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { stripe } from "@/lib/stripe";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const metadata: Metadata = {
   title: "Sikeres vásárlás | Trita",
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
 
 const REDIRECT_MAP: Record<string, string> = {
   self_plus:      "/profile/results",
-  team_snapshot:      "/dashboard",
-  team_deep_dive: "/dashboard",
+  team_snapshot: JOURNEY_HOME_HANDOFF_PATH,
+  team_deep_dive: JOURNEY_HOME_HANDOFF_PATH,
 };
 
 const MESSAGES: Record<string, string> = {
@@ -32,7 +33,7 @@ export default async function BillingSuccessPage({
   if (!userId) redirect("/sign-in");
 
   const { session_id: sessionId } = await searchParams;
-  if (!sessionId) redirect("/dashboard");
+  if (!sessionId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   let tier = "unknown";
   let teamId: string | undefined;
@@ -42,13 +43,13 @@ export default async function BillingSuccessPage({
     tier = session.metadata?.tier ?? "unknown";
     teamId = session.metadata?.teamId || undefined;
   } catch {
-    redirect("/dashboard");
+    redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
   const targetUrl =
     (tier === "team_snapshot" || tier === "team_deep_dive") && teamId
       ? `/team/${teamId}`
-      : (REDIRECT_MAP[tier] ?? "/dashboard");
+      : (REDIRECT_MAP[tier] ?? JOURNEY_HOME_HANDOFF_PATH);
 
   const message = MESSAGES[tier] ?? "Vásárlásod sikeresen feldolgozva.";
 

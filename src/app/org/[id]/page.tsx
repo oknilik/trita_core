@@ -19,6 +19,7 @@ import {
   DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
 import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/dashboard/ia-contract";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,7 @@ export default async function OrgDetailPage({
 
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
-  if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect("/dashboard");
+  if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const subscription = await getOrgSubscription(orgId);
   const subscriptionState = getSubscriptionState(subscription);

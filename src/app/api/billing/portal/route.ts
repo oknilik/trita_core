@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -38,7 +39,7 @@ export async function POST() {
   const session = await stripe.billingPortal.sessions.create({
     customer: sub.stripeCustomerId,
     locale: stripeLocale,
-    return_url: `${APP_URL}/dashboard?portal=updated`,
+    return_url: `${APP_URL}${JOURNEY_HOME_HANDOFF_PATH}?portal=updated`,
   });
 
   return NextResponse.json({ url: session.url });

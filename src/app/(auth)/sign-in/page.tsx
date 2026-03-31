@@ -6,6 +6,7 @@ import { useSignIn } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import Link from "next/link";
 import AuthLeftPanel from "@/components/auth/AuthLeftPanel";
 
@@ -154,7 +155,7 @@ function SignInContent() {
             body: JSON.stringify({ token: observeToken }),
           }).catch(() => null);
         }
-        router.push(safeRedirectUrl ?? "/dashboard");
+        router.push(safeRedirectUrl ?? JOURNEY_HOME_HANDOFF_PATH);
       } else {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
@@ -177,7 +178,7 @@ function SignInContent() {
         redirectUrl: "/sign-in/sso-callback",
         redirectUrlComplete: observeToken
           ? `/observe/${observeToken}`
-          : safeRedirectUrl ?? "/dashboard",
+          : safeRedirectUrl ?? JOURNEY_HOME_HANDOFF_PATH,
       });
     } catch {
       setError(t("auth.errorGoogleSignIn", locale));

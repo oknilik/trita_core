@@ -9,6 +9,7 @@ import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
 import { getCountryOptions } from "@/lib/countries";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -247,7 +248,7 @@ export function OrgOnboardingWizard() {
         }),
       });
       if (!res.ok) throw new Error("Save failed");
-      router.push("/dashboard");
+      router.push(JOURNEY_HOME_HANDOFF_PATH);
     } catch {
       setErrors((prev) => ({
         ...prev,

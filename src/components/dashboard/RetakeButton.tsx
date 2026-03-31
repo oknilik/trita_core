@@ -21,7 +21,7 @@ export function RetakeButton() {
     const url = new URL(window.location.href);
     url.searchParams.delete("retake");
     const nextPath = `${url.pathname}${url.search}${url.hash}`;
-    window.history.replaceState({}, "", nextPath || "/dashboard");
+    window.history.replaceState({}, "", nextPath || "/profile/results");
     cleanedUrl.current = true;
   }, [shouldAutoOpen]);
 

@@ -6,6 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 import { addCredits } from "@/lib/candidate-credits";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -29,13 +30,13 @@ export default async function ReturnPage({
   const sessionId = params.session_id;
   const addon = params.addon;
 
-  if (!sessionId) redirect("/dashboard");
+  if (!sessionId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   let session;
   try {
     session = await stripe.checkout.sessions.retrieve(sessionId);
   } catch {
-    redirect("/dashboard");
+    redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
   if (session.status === "open") {
@@ -80,7 +81,8 @@ export default async function ReturnPage({
               <span className="text-3xl text-sage">✓</span>
             </div>
             <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
-              // {t("billing.returnSuccessEyebrow", locale)}
+              {"// "}
+              {t("billing.returnSuccessEyebrow", locale)}
             </p>
             <h1 className="font-fraunces text-2xl text-ink mb-3">
               {t("billing.returnSuccessTitle", locale)}
@@ -106,7 +108,8 @@ export default async function ReturnPage({
             <span className="text-3xl text-sage">✓</span>
           </div>
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
-            // {t("billing.returnSuccessEyebrow", locale)}
+            {"// "}
+            {t("billing.returnSuccessEyebrow", locale)}
           </p>
           <h1 className="font-fraunces text-2xl text-ink mb-3">
             {t("billing.returnSuccessTitle", locale)}

@@ -6,6 +6,7 @@ import { hasOrgRole } from "@/lib/auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { EmbeddedCheckoutClient } from "./EmbeddedCheckoutClient";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +37,7 @@ export default async function CheckoutPage({
 
   const membership = await getActiveOrgMembership(profile.id);
   if (!membership || !hasOrgRole(membership.role, "ORG_ADMIN")) {
-    redirect("/dashboard");
+    redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
   const priceKey = plan ?? "org_monthly";
