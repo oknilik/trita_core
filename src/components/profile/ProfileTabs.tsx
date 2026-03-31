@@ -25,6 +25,7 @@ import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import type { ProductLayerStatus } from "@/lib/domain/layers-4plus2";
+import type { JourneyExperienceHints } from "@/lib/journey/types";
 
 type ProfileLevel = "start" | "plus";
 type TabId = "results" | "comparison" | "invites";
@@ -126,6 +127,8 @@ export interface ProfileTabsProps {
   bridgeNextStep?: BridgeNextStep;
   hasTeamOrOrgMembership?: boolean;
   layerStatuses?: ProductLayerStatus[];
+  experienceHints?: JourneyExperienceHints;
+  experienceHintDestination?: string;
 }
 
 // ─── Shared paywall components ──────────────────────────────────────────────
@@ -344,6 +347,8 @@ export function ProfileTabs({
   bridgeNextStep,
   hasTeamOrOrgMembership = false,
   layerStatuses,
+  experienceHints,
+  experienceHintDestination,
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
@@ -378,6 +383,11 @@ export function ProfileTabs({
     ? !hasTeamOrOrgMembership &&
       (bridgeNextStep.stage === "SELF_COMPLETED" || bridgeNextStep.stage === "OBSERVER_PENDING")
     : false;
+  const shouldShowOrgExpansionPrompt = Boolean(experienceHints?.showOrgExpansionPrompt);
+  const shouldShowTeamCreationBanner = Boolean(
+    experienceHints?.showTeamCreationBanner && !hasTeamOrOrgMembership,
+  );
+  const shouldShowAssessmentContinuation = Boolean(experienceHints?.showAssessmentContinuation);
 
   const handleTabChange = useCallback(
     (tab: TabId) => {
@@ -684,6 +694,54 @@ export function ProfileTabs({
                   className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
                 >
                   {t("content.bridgeOptionalTeamCta", locale)} →
+                </Link>
+              </p>
+            </div>
+          ) : null}
+
+          {shouldShowOrgExpansionPrompt ? (
+            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+              <p className="text-[12px] leading-relaxed text-ink-body">
+                {locale === "hu"
+                  ? "Van függő szervezeti meghívásod. Ha szeretnéd, most kiterjesztheted a személyes utadat csapat- és szervezeti nézetre."
+                  : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
+                <Link
+                  href={experienceHintDestination ?? "/profile/results"}
+                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                >
+                  {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
+                </Link>
+              </p>
+            </div>
+          ) : null}
+
+          {shouldShowTeamCreationBanner ? (
+            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+              <p className="text-[12px] leading-relaxed text-ink-body">
+                {locale === "hu"
+                  ? "Team fókuszt választottál. Ha szeretnéd, indítsd el most az első csapatod."
+                  : "You selected a team-focused path. If you want, start your first team now."}{" "}
+                <Link
+                  href="/onboarding?intent=team"
+                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                >
+                  {locale === "hu" ? "Csapat létrehozása" : "Create a team"} →
+                </Link>
+              </p>
+            </div>
+          ) : null}
+
+          {shouldShowAssessmentContinuation ? (
+            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+              <p className="text-[12px] leading-relaxed text-ink-body">
+                {locale === "hu"
+                  ? "A self assessmented még folyamatban van. Folytasd ott, ahol abbahagytad."
+                  : "Your self assessment is still in progress. Continue where you left off."}{" "}
+                <Link
+                  href="/assessment"
+                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                >
+                  {locale === "hu" ? "Folytatás" : "Continue"} →
                 </Link>
               </p>
             </div>

@@ -618,6 +618,8 @@ export default async function ProfileResultsPage({
             journeySnapshot.state.completionSummary.team.joined ||
             journeySnapshot.state.completionSummary.org.joined
           }
+          experienceHints={journeySnapshot.resolution.experienceHints}
+          experienceHintDestination={journeySnapshot.resolution.home.destination}
           layerStatuses={layerStatuses}
         />
 

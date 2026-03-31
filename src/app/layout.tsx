@@ -20,6 +20,7 @@ import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourney } from "@/lib/journey/engine";
 import { getMetadataBase } from "@/lib/seo";
+import type { JourneyExperienceHints } from "@/lib/journey/types";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -79,6 +80,7 @@ export default async function RootLayout({
   type NavData = React.ComponentProps<typeof NavHeaderUI>;
   let navData: NavData | null = null;
   let signedInHomeHref: string = "/dashboard";
+  let signedInExperienceHints: JourneyExperienceHints | null = null;
   const locale = await getServerLocale();
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
@@ -94,6 +96,7 @@ export default async function RootLayout({
       if (profile) {
         const journey = await resolveJourney(profile.id, { locale });
         signedInHomeHref = journey.home.destination;
+        signedInExperienceHints = journey.experienceHints;
 
         const membership = await getActiveOrgMembership(profile.id);
         if (membership) {
@@ -155,7 +158,10 @@ export default async function RootLayout({
             <ToastProvider>
               {isNoShell ? (
                 <Suspense>
-                  <NavBar signedInHomeHref={signedInHomeHref} />
+                  <NavBar
+                    signedInHomeHref={signedInHomeHref}
+                    signedInExperienceHints={signedInExperienceHints}
+                  />
                   <div className="pb-16">{children}</div>
                   <Footer />
                 </Suspense>
@@ -168,7 +174,10 @@ export default async function RootLayout({
 
               ) : (
                 <Suspense>
-                  <NavBar signedInHomeHref={signedInHomeHref} />
+                  <NavBar
+                    signedInHomeHref={signedInHomeHref}
+                    signedInExperienceHints={signedInExperienceHints}
+                  />
                   <div className="pb-16">{children}</div>
                   <Footer />
                 </Suspense>

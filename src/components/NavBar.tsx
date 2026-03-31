@@ -8,6 +8,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+import type { JourneyExperienceHints } from "@/lib/journey/types";
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 
@@ -39,9 +40,13 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
 
 interface NavBarProps {
   signedInHomeHref?: string;
+  signedInExperienceHints?: JourneyExperienceHints | null;
 }
 
-export function NavBar({ signedInHomeHref = "/profile/results" }: NavBarProps) {
+export function NavBar({
+  signedInHomeHref = "/profile/results",
+  signedInExperienceHints = null,
+}: NavBarProps) {
   const { locale, setLocale } = useLocale();
   const { isSignedIn } = useAuth();
   const { signOut } = useClerk();
@@ -87,6 +92,41 @@ export function NavBar({ signedInHomeHref = "/profile/results" }: NavBarProps) {
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;
+  const shouldShowSignedInHint = Boolean(
+    isSignedIn &&
+      signedInExperienceHints &&
+      (signedInExperienceHints.showOrgExpansionPrompt ||
+        signedInExperienceHints.showTeamCreationBanner ||
+        signedInExperienceHints.showAssessmentContinuation),
+  );
+
+  const signedInHint = !signedInExperienceHints
+    ? null
+    : signedInExperienceHints.showOrgExpansionPrompt
+      ? {
+          body: locale === "hu"
+            ? "Új szervezeti meghívásod érkezett. Csatlakozz, ha szeretnéd kiterjeszteni a saját insightodat csapat- és org-szintre."
+            : "You have a new organization invite. Join to extend your self insights to team and org levels.",
+          ctaLabel: locale === "hu" ? "Meghívás megnyitása" : "Open invite",
+          ctaHref: signedInHomeHref,
+        }
+      : signedInExperienceHints.showTeamCreationBanner
+        ? {
+            body: locale === "hu"
+              ? "Team fókuszt választottál. Hozd létre az első csapatodat, és építs közös képet a self eredményekből."
+              : "You selected a team-focused path. Create your first team to build shared insights from self results.",
+            ctaLabel: locale === "hu" ? "Csapat létrehozása" : "Create a team",
+            ctaHref: "/onboarding?intent=team",
+          }
+        : signedInExperienceHints.showAssessmentContinuation
+          ? {
+              body: locale === "hu"
+                ? "Félbehagytad a self assessmentet. Folytasd onnan, ahol abbahagytad."
+                : "Your self assessment is in progress. Continue where you left off.",
+              ctaLabel: locale === "hu" ? "Assessment folytatása" : "Continue assessment",
+              ctaHref: "/assessment",
+            }
+          : null;
 
   return (
     <>
@@ -159,6 +199,20 @@ export function NavBar({ signedInHomeHref = "/profile/results" }: NavBarProps) {
           </div>
         </div>
       </header>
+
+      {shouldShowSignedInHint && signedInHint ? (
+        <div className="border-b border-[#e8e0d3] bg-[#f7f4ef]">
+          <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-5 py-2.5 lg:px-8">
+            <p className="text-[12px] leading-relaxed text-[#4a4a5e]">{signedInHint.body}</p>
+            <Link
+              href={signedInHint.ctaHref}
+              className="shrink-0 rounded-md border border-[#ddd5c8] bg-white px-3 py-1.5 text-[11px] font-semibold text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+            >
+              {signedInHint.ctaLabel}
+            </Link>
+          </div>
+        </div>
+      ) : null}
 
       {/* ═══ MOBILE MENU — full screen ═══ */}
       {drawerOpen && (
