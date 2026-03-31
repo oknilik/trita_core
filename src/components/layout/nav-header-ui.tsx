@@ -49,6 +49,15 @@ function TeamIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+function SelfIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="5.5" r="2.8" />
+      <path d="M2.5 13.5a5.5 5.5 0 0 1 11 0" />
+    </svg>
+  );
+}
+
 function CandidateIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -165,7 +174,8 @@ export function NavHeaderUI({
   const isOrgUser = isManager || isAdmin;
   const dashboardHref = isOrgUser ? "/dashboard" : "/profile/results";
   const dashboardLabel = isOrgUser ? "Vezérlő" : "Profilom";
-  const onDashboard = pathname === "/dashboard" || pathname === "/profile/results";
+  const onSelfResults = pathname.startsWith("/profile/results");
+  const onDashboard = isOrgUser ? pathname === "/dashboard" : onSelfResults;
   const onTeam = teams.some((t) => pathname.startsWith(`/team/${t.id}`));
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
@@ -278,6 +288,16 @@ export function NavHeaderUI({
               <GridIcon className="h-3.5 w-3.5" />
               {dashboardLabel}
             </Link>
+
+            {isOrgUser && (
+              <Link
+                href="/profile/results"
+                className={onSelfResults ? navItemActive : navItemInactive}
+              >
+                <SelfIcon />
+                Saját profil
+              </Link>
+            )}
 
             {/* Csapatok dropdown */}
             {team && (
@@ -446,6 +466,17 @@ export function NavHeaderUI({
 
                 {/* Menu items */}
                 <div className="flex flex-col gap-0.5">
+                  <Link
+                    href="/profile/results"
+                    onClick={() => setMobileMenu("closed")}
+                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+                  >
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                      <SelfIcon className="h-3.5 w-3.5" />
+                    </span>
+                    Saját profil
+                  </Link>
+
                   {teams.map((tm) => (
                     <Link
                       key={tm.id}
@@ -587,6 +618,17 @@ export function NavHeaderUI({
 
                 {/* ── Csapatok section ── */}
                 <div className="mt-3">
+                  <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                    Saját nézet
+                  </p>
+                  <MobileMenuItem
+                    href="/profile/results"
+                    icon={<SelfIcon className="h-4 w-4" />}
+                    title="Saját profil"
+                    desc="Személyes eredmények és insightok"
+                    onClick={() => setMobileMenu("closed")}
+                  />
+
                   <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
                     {isAdmin ? "Csapatok" : "Csapatom"}
                   </p>

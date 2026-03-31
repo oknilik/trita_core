@@ -30,16 +30,29 @@ function higherAccess(a: AccessLevel, b: AccessLevel): AccessLevel {
  * User egyéni hozzáférési szintje.
  */
 export async function getSelfAccessLevel(userProfileId: string): Promise<AccessLevel> {
-  const selfPurchase = await prisma.purchase.findFirst({
-    where: {
-      userProfileId,
-      status: "completed",
-      tier: { in: ["self_plus"] },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const [selfPurchase, orgMembership, teamMembership] = await Promise.all([
+    prisma.purchase.findFirst({
+      where: {
+        userProfileId,
+        status: "completed",
+        tier: { in: ["self_plus"] },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.organizationMember.findFirst({
+      where: { userId: userProfileId, leftAt: null },
+      select: { id: true },
+    }),
+    prisma.teamMember.findFirst({
+      where: { userId: userProfileId },
+      select: { id: true },
+    }),
+  ]);
 
   if (selfPurchase) return selfPurchase.tier as AccessLevel;
+
+  // Team/org context includes self plus-level access for personal profile surfaces.
+  if (orgMembership || teamMembership) return "self_plus";
 
   const teamPurchase = await prisma.purchase.findFirst({
     where: {
