@@ -10,9 +10,14 @@ export interface ActiveOrgMembership {
 
 function isActiveOrgFieldCompatibilityError(error: unknown): boolean {
   if (!(error instanceof Error)) return false;
+  const maybePrismaError = error as Error & { code?: string };
   return (
-    error.name === "PrismaClientValidationError" &&
-    error.message.includes("activeOrgId")
+    // Client schema expects `activeOrgId`, but runtime DB may not have the column yet.
+    ((error.name === "PrismaClientValidationError" &&
+      error.message.includes("activeOrgId")) ||
+      (error.name === "PrismaClientKnownRequestError" &&
+        maybePrismaError.code === "P2022" &&
+        error.message.includes("activeOrgId")))
   );
 }
 
