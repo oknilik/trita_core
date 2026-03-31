@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getTeamPageData } from "@/lib/team-stats";
@@ -24,7 +25,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: locale === "hu" ? "Csapat | trita" : "Team | trita",
+    title: t("teamDetail.metaTitle", locale),
     robots: { index: false },
   };
 }
@@ -108,36 +109,38 @@ export default async function TeamDetailPage({
         )
       : 0;
   const secondaryLabel = hasObserver
-    ? (isHu ? "Visszajelzési kör" : "Feedback round")
-    : (isHu ? "Csapatkép készültség" : "Pattern readiness");
+    ? t("teamDetail.secondaryFeedbackRound", locale)
+    : t("teamDetail.secondaryPatternReadiness", locale);
   const secondaryPct = hasObserver ? observerCoveragePct : patternProgressPct;
   const secondaryText = hasObserver
-    ? isHu
-      ? `${teamData.activeCampaign!.teamObserverDoneCount} kész · ${Math.max(teamData.activeCampaign!.teamParticipantCount - teamData.activeCampaign!.teamObserverDoneCount, 0)} hátra`
-      : `${teamData.activeCampaign!.teamObserverDoneCount} done · ${Math.max(teamData.activeCampaign!.teamParticipantCount - teamData.activeCampaign!.teamObserverDoneCount, 0)} remaining`
+    ? tf("teamDetail.secondaryObserverProgress", locale, {
+        done: teamData.activeCampaign!.teamObserverDoneCount,
+        remaining: Math.max(teamData.activeCampaign!.teamParticipantCount - teamData.activeCampaign!.teamObserverDoneCount, 0),
+      })
     : hasPattern
-      ? (isHu ? "A csapatkép elérhető" : "Team pattern is available")
-      : isHu
-        ? `${Math.min(completedCount, patternTarget)}/${patternTarget} kész`
-        : `${Math.min(completedCount, patternTarget)}/${patternTarget} done`;
+      ? t("teamDetail.secondaryPatternAvailable", locale)
+      : tf("teamDetail.secondaryPatternProgress", locale, {
+          done: Math.min(completedCount, patternTarget),
+          target: patternTarget,
+        });
   const recommendedAction = (() => {
     if (isOrgManager && teamData.orgId) {
       return {
-        title: isHu ? "Következő lépés" : "Next step",
+        title: t("teamDetail.nextStep", locale),
         description: hasObserver
-          ? (isHu ? "A visszajelzési kör fut, kövesd és zárd le a hiányzó visszajelzéseket." : "The feedback round is active. Track and close remaining feedback.")
+          ? t("teamDetail.actionObserverActive", locale)
           : hasPattern
-            ? (isHu ? "A csapatkép kész, most érdemes elindítani a visszajelzési kört." : "Team pattern is ready. Launch the feedback round now.")
-            : (isHu ? "Előbb zárjátok le a hiányzó kitöltéseket, utána indítsatok kört." : "Close missing assessments first, then launch the round."),
+            ? t("teamDetail.actionPatternReady", locale)
+            : t("teamDetail.actionCloseMissing", locale),
         primary: {
           label: hasObserver
-            ? (isHu ? "Kör kezelése" : "Manage round")
-            : (isHu ? "Kör indítása" : "Start round"),
+            ? t("teamDetail.actionManageRound", locale)
+            : t("teamDetail.actionStartRound", locale),
           href: `/org/${teamData.orgId}?tab=campaigns`,
         },
         secondary: hasPattern
           ? {
-              label: isHu ? "Csapatkép megnyitása" : "View team pattern",
+              label: t("teamDetail.actionViewPattern", locale),
               href: `/team/${teamId}?tab=profile`,
             }
           : null,
@@ -145,14 +148,14 @@ export default async function TeamDetailPage({
     }
 
     return {
-      title: isHu ? "Következő lépés" : "Next step",
+      title: t("teamDetail.nextStep", locale),
       description: hasPattern
-        ? (isHu ? "A csapatkép már elérhető, nézd át a mintázatokat a következő döntés előtt." : "Team pattern is available. Review it before your next decision.")
-        : (isHu ? "A csapatkép feloldásához még kitöltések szükségesek." : "More completed assessments are needed to unlock team pattern."),
+        ? t("teamDetail.actionPatternAvailable", locale)
+        : t("teamDetail.actionNeedMore", locale),
       primary: {
         label: hasPattern
-          ? (isHu ? "Csapatkép megtekintése" : "View team pattern")
-          : (isHu ? "Tagok megnyitása" : "Open members"),
+          ? t("teamDetail.actionViewPatternAlt", locale)
+          : t("teamDetail.actionOpenMembers", locale),
         href: hasPattern ? `/team/${teamId}?tab=profile` : `/team/${teamId}?tab=members`,
       },
       secondary: null,
@@ -196,43 +199,39 @@ export default async function TeamDetailPage({
   const teamChecklistItems = [
     {
       id: "team-membership",
-      title: isHu ? "Magcsapat kialakítása" : "Core team in place",
-      detail: isHu
-        ? `${teamData.memberCount} tag aktív a csapatban`
-        : `${teamData.memberCount} active members in the team`,
+      title: t("teamDetail.checkCoreTeam", locale),
+      detail: tf("teamDetail.checkCoreTeamDetail", locale, { count: teamData.memberCount }),
       done: teamData.memberCount >= 3,
       cta: teamData.memberCount >= 3
         ? undefined
         : {
-            label: isHu ? "Tagok kezelése" : "Manage members",
+            label: t("teamDetail.checkCoreTeamCta", locale),
             href: `/team/${teamId}?tab=members`,
           },
     },
     {
       id: "team-assessment",
-      title: isHu ? "Kitöltések lezárása" : "Assessments completed",
-      detail: isHu
-        ? `${completedCount}/3 szükséges az első csapatképhez`
-        : `${completedCount}/3 needed for first team pattern`,
+      title: t("teamDetail.checkAssessments", locale),
+      detail: tf("teamDetail.checkAssessmentsDetail", locale, { done: completedCount }),
       done: completedCount >= 3,
       cta: completedCount >= 3
         ? undefined
         : {
-            label: isHu ? "Hiányzók követése" : "Track missing members",
+            label: t("teamDetail.checkAssessmentsCta", locale),
             href: `/team/${teamId}?tab=members`,
           },
     },
     {
       id: "team-feedback-round",
-      title: isHu ? "Visszajelzési kör" : "Feedback round",
+      title: t("teamDetail.checkFeedbackRound", locale),
       detail: hasObserver
-        ? (isHu ? "Aktív kör fut a csapaton." : "An active round is running.")
-        : (isHu ? "Még nincs aktív observer kör." : "No active observer round yet."),
+        ? t("teamDetail.checkFeedbackActive", locale)
+        : t("teamDetail.checkFeedbackNone", locale),
       done: hasObserver,
       cta: hasObserver || !teamData.orgId
         ? undefined
         : {
-            label: isHu ? "Kör indítása" : "Start round",
+            label: t("teamDetail.checkFeedbackCta", locale),
             href: `/org/${teamData.orgId}?tab=campaigns`,
           },
     },
@@ -258,14 +257,14 @@ export default async function TeamDetailPage({
               <div>
                 <div className="flex flex-wrap items-center gap-2.5">
                   <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-                    {isHu ? "Csapatnézet" : "Team view"}
+                    {t("teamDetail.heroEyebrow", locale)}
                   </p>
                   {hasPattern && (
                     <span
                       className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
                       style={{ backgroundColor: TEAM_HERO_BADGE_BG, color: TEAM_HERO_BADGE_TEXT }}
                     >
-                      {isHu ? "Csapatkép elérhető" : "Pattern ready"}
+                      {t("teamDetail.heroPatternReady", locale)}
                     </span>
                   )}
                 </div>
@@ -296,7 +295,7 @@ export default async function TeamDetailPage({
                       className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
                       style={{ backgroundColor: TEAM_HERO_PRIMARY }}
                     >
-                      {isHu ? "Csapatkép megtekintése" : "View team pattern"}
+                      {t("teamDetail.heroViewPattern", locale)}
                     </Link>
                   )}
                   {isOrgManager && teamData.orgId && (
@@ -305,8 +304,8 @@ export default async function TeamDetailPage({
                       className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
                     >
                       {hasObserver
-                        ? (isHu ? "Visszajelzési kör kezelése" : "Manage feedback round")
-                        : (isHu ? "Kör indítása" : "Start round")}
+                        ? t("teamDetail.heroManageRound", locale)
+                        : t("teamDetail.heroStartRound", locale)}
                     </Link>
                   )}
                 </div>
@@ -314,20 +313,20 @@ export default async function TeamDetailPage({
 
               <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
                 <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
-                  {isHu ? "Élő pillanatkép" : "Live snapshot"}
+                  {t("teamDetail.snapshotLabel", locale)}
                 </p>
 
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Tag" : "Members"}</p>
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
                     <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{teamData.memberCount}</p>
                   </div>
                   <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Kész" : "Done"}</p>
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
                     <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{completedCount}</p>
                   </div>
                   <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Vár" : "Wait"}</p>
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
                     <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{waitingCount}</p>
                   </div>
                 </div>
@@ -335,7 +334,7 @@ export default async function TeamDetailPage({
                 <div className="mt-4 space-y-3">
                   <div>
                     <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                      <span>{isHu ? "Kitöltési arány" : "Completion rate"}</span>
+                      <span>{t("teamDetail.snapshotCompletionRate", locale)}</span>
                       <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
@@ -345,7 +344,7 @@ export default async function TeamDetailPage({
                       />
                     </div>
                     <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                      {completedCount} {isHu ? "kész" : "done"} · {inProgressCount} {isHu ? "folyamatban" : "in progress"}
+                      {tf("teamDetail.snapshotDoneInProgress", locale, { done: completedCount, inProgress: inProgressCount })}
                     </p>
                   </div>
 
@@ -372,17 +371,17 @@ export default async function TeamDetailPage({
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
-          <DashboardSectionHeader label={isHu ? "Állapotkép" : "Snapshot"} className="mb-4" />
+          <DashboardSectionHeader label={t("teamDetail.sectionSnapshot", locale)} className="mb-4" />
           <p className="mb-3 text-[10px] font-medium uppercase tracking-[1px] text-ink-body">
-            {isHu ? "ÖSSZEFOGLALÓ" : "SUMMARY"}
+            {t("teamDetail.summaryLabel", locale)}
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {/* Kitöltési arány */}
             <DashboardMetricCard
               accent="#3d6b5e"
-              title={isHu ? "KITÖLTÉSI ARÁNY" : "COMPLETION RATE"}
+              title={t("teamDetail.completionRateTitle", locale)}
               value={`${completionPct}%`}
-              sub={`${completedCount} ${isHu ? "kész" : "done"} · ${inProgressCount} ${isHu ? "folyamatban" : "in progress"} · ${waitingCount} ${isHu ? "várakozik" : "waiting"}`}
+              sub={tf("teamDetail.completionRateSub", locale, { done: completedCount, inProgress: inProgressCount, waiting: waitingCount })}
             >
               <div className="flex gap-1.5">
                 {completedCount > 0 && <div className="h-1.5 rounded-full bg-sage" style={{ flex: completedCount }} />}
@@ -394,20 +393,18 @@ export default async function TeamDetailPage({
             {/* Csapatmintázat */}
             <DashboardMetricCard
               accent="#c17f4a"
-              title={isHu ? "CSAPATMINTÁZAT" : "TEAM PATTERN"}
-              value={hasPattern ? (isHu ? "Elérhető" : "Available") : (isHu ? "Még nem" : "Not yet")}
+              title={t("teamDetail.teamPatternTitle", locale)}
+              value={hasPattern ? t("teamDetail.teamPatternAvailable", locale) : t("teamDetail.teamPatternNotYet", locale)}
               sub={hasPattern
                 ? teamData.patternResult?.fullLabel
-                : isHu
-                ? `A kitöltések ${completionPct}%-ánál tart. Minimum 3 kitöltés szükséges.`
-                : `${completionPct}% complete. Minimum 3 assessments required.`}
+                : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })}
             >
               {hasPattern ? (
                 <Link
                   href={`/team/${teamId}?tab=profile`}
                   className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
                 >
-                  {isHu ? "Csapatkép megtekintése →" : "View team pattern →"}
+                  {t("teamDetail.teamPatternViewCta", locale)}
                 </Link>
               ) : null}
             </DashboardMetricCard>
@@ -415,27 +412,25 @@ export default async function TeamDetailPage({
         </section>
 
         <section>
-          <DashboardSectionHeader label={isHu ? "Journey checklist" : "Journey checklist"} className="mb-4" />
+          <DashboardSectionHeader label={t("teamDetail.sectionJourney", locale)} className="mb-4" />
           <ProgressChecklist
-            eyebrow={isHu ? "haladás" : "progress"}
-            title={isHu ? "Csapatút követése" : "Track team journey"}
-            description={isHu
-              ? "Ugyanarra a journey logikára építve látod, hol tart a csapat és mi hiányzik a következő szinthez."
-              : "Built on the same journey logic, this shows where the team stands and what is missing for the next level."}
+            eyebrow={t("teamDetail.journeyProgress", locale)}
+            title={t("teamDetail.journeyTitle", locale)}
+            description={t("teamDetail.journeyDescription", locale)}
             items={teamChecklistItems}
-            nextStepLabel={isHu ? "Következő lépés" : "Next step"}
+            nextStepLabel={t("teamDetail.journeyNextStep", locale)}
           />
         </section>
 
         <section>
-          <DashboardSectionHeader label={isHu ? "4+2 rétegkészültség" : "4+2 layer readiness"} className="mb-4" />
+          <DashboardSectionHeader label={t("teamDetail.sectionLayers", locale)} className="mb-4" />
           <DashboardPanel className="p-5">
             <div className="flex items-center justify-between gap-3">
               <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                {isHu ? "Csapatszintű rétegek" : "Team-level layers"}
+                {t("teamDetail.layersLabel", locale)}
               </p>
               <DashboardStatusChip
-                label={`${teamLayerCompletedCount}/${teamLayerStatuses.length} ${isHu ? "kész" : "done"}`}
+                label={`${teamLayerCompletedCount}/${teamLayerStatuses.length} ${t("teamDetail.layersDoneSuffix", locale)}`}
                 tone="sage"
               />
             </div>
@@ -450,12 +445,12 @@ export default async function TeamDetailPage({
                         ? "warm"
                         : "muted";
                 const statusLabel = layer.status === "COMPLETED"
-                  ? (isHu ? "Kész" : "Completed")
+                  ? t("teamDetail.statusCompleted", locale)
                   : layer.status === "IN_PROGRESS"
-                    ? (isHu ? "Folyamatban" : "In progress")
+                    ? t("teamDetail.statusInProgress", locale)
                     : layer.status === "AVAILABLE"
-                      ? (isHu ? "Elérhető" : "Available")
-                      : (isHu ? "Zárolt" : "Locked");
+                      ? t("teamDetail.statusAvailable", locale)
+                      : t("teamDetail.statusLocked", locale);
 
                 return (
                   <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">
@@ -475,9 +470,9 @@ export default async function TeamDetailPage({
 
         {/* ═══ TAGOK ═══ */}
         <section>
-          <DashboardSectionHeader label={isHu ? "Emberek" : "People"} className="mb-4" />
+          <DashboardSectionHeader label={t("teamDetail.sectionPeople", locale)} className="mb-4" />
           <p className="mb-2 text-[10px] font-medium uppercase tracking-[1px] text-ink-body">
-            {isHu ? "TAGOK" : "MEMBERS"}
+            {t("teamDetail.membersLabel", locale)}
           </p>
           <div className="divide-y divide-[#e8e0d3] rounded-[24px] border border-sand bg-white shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
             {teamData.members.map((member) => {
@@ -502,11 +497,11 @@ export default async function TeamDetailPage({
                   </div>
                   {/* Status badge */}
                   {isDone ? (
-                    <DashboardStatusChip label={isHu ? "Kész" : "Done"} tone="sage" />
+                    <DashboardStatusChip label={t("teamDetail.memberDone", locale)} tone="sage" />
                   ) : member.joinedAt ? (
-                    <DashboardStatusChip label={isHu ? "Folyamatban" : "In progress"} tone="warm" />
+                    <DashboardStatusChip label={t("teamDetail.memberInProgress", locale)} tone="warm" />
                   ) : (
-                    <DashboardStatusChip label={isHu ? "Várakozik" : "Waiting"} tone="bronze" />
+                    <DashboardStatusChip label={t("teamDetail.memberWaiting", locale)} tone="bronze" />
                   )}
                   {/* Score */}
                   <span className="w-8 text-right text-[11px] font-medium text-ink">
@@ -515,11 +510,11 @@ export default async function TeamDetailPage({
                   {/* CTA */}
                   {isDone ? (
                     <span className="text-[11px] font-semibold text-sage">
-                      {isHu ? "Profil →" : "Profile →"}
+                      {t("teamDetail.memberProfileCta", locale)}
                     </span>
                   ) : (
                     <span className="cursor-pointer text-[11px] font-semibold text-bronze">
-                      {isHu ? "Eml. →" : "Remind →"}
+                      {t("teamDetail.memberRemindCta", locale)}
                     </span>
                   )}
                 </div>
@@ -530,12 +525,12 @@ export default async function TeamDetailPage({
 
         {/* ═══ VISSZAJELZÉSI KÖR ═══ */}
         <section>
-          <DashboardSectionHeader label={isHu ? "Következő lépés" : "Next step"} className="mb-4" />
+          <DashboardSectionHeader label={t("teamDetail.sectionNextStep", locale)} className="mb-4" />
           <JourneyNextStepCard
             eyebrow={teamDashboardVm.recommendedAction.title}
             title={hasObserver
-              ? (isHu ? `${teamData.activeCampaign!.teamObserverDoneCount} aktív visszajelzés` : `${teamData.activeCampaign!.teamObserverDoneCount} active feedback`)
-              : (isHu ? "Fókuszban a csapatkép" : "Focus on team insight")}
+              ? tf("teamDetail.nextStepActiveFeedback", locale, { count: teamData.activeCampaign!.teamObserverDoneCount })
+              : t("teamDetail.nextStepFocusInsight", locale)}
             description={teamDashboardVm.recommendedAction.description}
             primary={teamDashboardVm.recommendedAction.primary}
             secondary={teamDashboardVm.recommendedAction.secondary}

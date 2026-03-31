@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { inputBase, toggleBtn } from "@/lib/onboarding-styles";
 import {
   getBirthYearBounds,
@@ -34,8 +36,8 @@ export function JoinOrgClient({
   existingProfile,
 }: JoinOrgClientProps) {
   const router = useRouter();
-  const { locale } = useLocale();
-  const isHu = locale !== "en";
+  const { locale: rawLocale } = useLocale();
+  const locale = rawLocale as Locale;
   const requiresProfileOnboarding =
     inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE";
 
@@ -50,39 +52,27 @@ export function JoinOrgClient({
   const { minBirthYear, maxBirthYear } = getBirthYearBounds(currentYear);
   const genderOptions = getMembershipGenderOptions(locale);
   const copy = {
-    inviteEyebrow: isHu ? "// meghívó" : "// invite",
-    pageTitle: isHu ? "Csatlakozz a szervezethez" : "Join organization",
-    profileEyebrow: isHu ? "// 01" : "// 01",
-    profileTitle: isHu ? "Néhány alap adat" : "A few basic details",
-    profileSub: isHu
-      ? "Ezek szükségesek a személyre szabott csapatképhez."
-      : "These details are required for personalized team insight.",
-    usernameLabel: isHu ? "Megjelenítési név" : "Display name",
-    usernamePlaceholder: isHu ? "pl. Kovács Péter" : "e.g. Alex Walker",
-    genderLabel: isHu ? "Nem" : "Gender",
-    birthYearLabel: isHu ? "Születési év" : "Birth year",
-    birthYearPlaceholder: isHu ? `pl. ${currentYear - 30}` : `e.g. ${currentYear - 30}`,
-    birthYearHint: isHu
-      ? `${minBirthYear}–${maxBirthYear} között`
-      : `Between ${minBirthYear} and ${maxBirthYear}`,
-    consentPrefix: isHu
-      ? "Hozzájárulok adataim kezeléséhez a"
-      : "I consent to the processing of my data according to the",
-    privacyLabel: isHu ? "Adatvédelmi tájékoztató" : "Privacy Policy",
-    consentSuffix: isHu ? "alapján." : ".",
-    joinEyebrow: isHu ? "// csatlakozás" : "// join",
-    welcome: isHu ? "Üdv" : "Welcome",
-    readyText: isHu
-      ? `Készen állsz csatlakozni a ${orgName} szervezethez. A meglévő személyes eredményeid megmaradnak.`
-      : `You're ready to join ${orgName}. Your existing personal results remain available.`,
-    submitting: isHu ? "Csatlakozás..." : "Joining...",
-    submitNew: isHu
-      ? "Csatlakozás és felmérés indítása →"
-      : "Join and start assessment →",
-    submitExisting: isHu ? "Csatlakozás →" : "Join →",
-    profileHint: isHu
-      ? "Ezeket az adatokat bármikor módosíthatod a profil oldalon."
-      : "You can edit these details anytime on your profile page.",
+    inviteEyebrow: t("join.inviteEyebrow", locale),
+    pageTitle: t("join.orgTitle", locale),
+    profileEyebrow: t("join.profileEyebrow", locale),
+    profileTitle: t("join.profileTitle", locale),
+    profileSub: t("join.profileSub", locale),
+    usernameLabel: t("join.usernameLabel", locale),
+    usernamePlaceholder: t("join.usernamePlaceholder", locale),
+    genderLabel: t("join.genderLabel", locale),
+    birthYearLabel: t("join.birthYearLabel", locale),
+    birthYearPlaceholder: tf("join.birthYearPlaceholder", locale, { example: currentYear - 30 }),
+    birthYearHint: tf("join.birthYearHint", locale, { min: minBirthYear, max: maxBirthYear }),
+    consentPrefix: t("join.consentText", locale),
+    privacyLabel: t("join.privacyLabel", locale),
+    consentSuffix: t("join.consentSuffix", locale),
+    joinEyebrow: t("join.joinEyebrow", locale),
+    welcome: t("join.welcomePrefix", locale),
+    readyText: tf("join.readyText", locale, { orgName }),
+    submitting: t("join.submitting", locale),
+    submitNew: t("join.submitNew", locale),
+    submitExisting: t("join.submitExisting", locale),
+    profileHint: t("join.profileHint", locale),
   };
 
   const validate = () => {

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { PRODUCT_LAYERS_4_PLUS_2 } from "@/lib/domain/layers-4plus2";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 
@@ -16,8 +18,9 @@ export default async function AssessmentLayerDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const [locale, { slug }] = await Promise.all([getServerLocale(), params]);
-  const isHu = locale !== "en";
+  const [rawLocale, { slug }] = await Promise.all([getServerLocale(), params]);
+  const locale = rawLocale as Locale;
+  const langKey = locale === "hu" ? "hu" : "en";
 
   const layer = PRODUCT_LAYERS_4_PLUS_2.find((item) => item.slug === slug);
   if (!layer) notFound();
@@ -30,25 +33,25 @@ export default async function AssessmentLayerDetailPage({
       <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
           {"// "}
-          {isHu ? "Layer részlet" : "Layer detail"}
+          {t("assessmentLayers.detailEyebrow", locale)}
         </p>
         <h1 className="mt-2 font-fraunces text-3xl tracking-tight text-ink">
-          {layer.label[isHu ? "hu" : "en"]}
+          {layer.label[langKey]}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {layer.description[isHu ? "hu" : "en"]}
+          {layer.description[langKey]}
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-sand bg-cream p-4">
             <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
-              {isHu ? "Típus" : "Type"}
+              {t("assessmentLayers.type", locale)}
             </p>
             <p className="mt-1 text-sm font-semibold text-ink">{layer.type}</p>
           </div>
           <div className="rounded-xl border border-sand bg-cream p-4">
             <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
-              {isHu ? "Sorrend" : "Order"}
+              {t("assessmentLayers.order", locale)}
             </p>
             <p className="mt-1 text-sm font-semibold text-ink">{layer.order}</p>
           </div>
@@ -56,11 +59,11 @@ export default async function AssessmentLayerDetailPage({
 
         <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
           <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
-            {isHu ? "Függőségek" : "Dependencies"}
+            {t("assessmentLayers.dependencies", locale)}
           </p>
           {layer.dependencies.length === 0 ? (
             <p className="mt-1 text-sm text-ink-body">
-              {isHu ? "Nincs függőség." : "No dependencies."}
+              {t("assessmentLayers.noDependencies", locale)}
             </p>
           ) : (
             <p className="mt-1 text-sm text-ink-body">{layer.dependencies.join(", ")}</p>
@@ -69,7 +72,7 @@ export default async function AssessmentLayerDetailPage({
 
         <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
           <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
-            {isHu ? "Render célpontok" : "Render targets"}
+            {t("assessmentLayers.renderTargets", locale)}
           </p>
           <p className="mt-1 text-sm text-ink-body">
             results/{layer.renderingMap.results.surface} → {layer.renderingMap.results.sectionKey}
@@ -84,7 +87,7 @@ export default async function AssessmentLayerDetailPage({
             href="/assessment-layers"
             className="inline-flex min-h-[42px] items-center rounded-lg bg-ink px-4 text-[13px] font-semibold text-white"
           >
-            {isHu ? "Vissza a rétegekhez" : "Back to layers"}
+            {t("assessmentLayers.backToLayers", locale)}
           </Link>
         </div>
       </section>

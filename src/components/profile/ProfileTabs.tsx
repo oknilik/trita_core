@@ -354,21 +354,22 @@ export function ProfileTabs({
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
 
-  const stageLabelByLocale: Record<string, { hu: string; en: string }> = {
-    SELF_COMPLETED: { hu: "Self kész", en: "Self completed" },
-    OBSERVER_PENDING: { hu: "Observer folyamatban", en: "Observer in progress" },
-    TEAM_NOT_JOINED: { hu: "Nincs csapat", en: "No team yet" },
-    TEAM_PENDING_MEMBERS: { hu: "Tagokra vár", en: "Waiting for members" },
-    TEAM_PARTIAL: { hu: "Csapat részben kész", en: "Team partially ready" },
-    TEAM_READY: { hu: "Csapat kész", en: "Team ready" },
-    ORG_PARTIAL: { hu: "Szervezet részben kész", en: "Org partially ready" },
-    ORG_READY: { hu: "Szervezet kész", en: "Org ready" },
-    SELF_NOT_STARTED: { hu: "Self még nem indult", en: "Self not started" },
-    SELF_IN_PROGRESS: { hu: "Self folyamatban", en: "Self in progress" },
+  const stageKeyMap: Record<string, string> = {
+    SELF_COMPLETED: "content.stageSelfCompleted",
+    OBSERVER_PENDING: "content.stageObserverPending",
+    TEAM_NOT_JOINED: "content.stageTeamNotJoined",
+    TEAM_PENDING_MEMBERS: "content.stageTeamPendingMembers",
+    TEAM_PARTIAL: "content.stageTeamPartial",
+    TEAM_READY: "content.stageTeamReady",
+    ORG_PARTIAL: "content.stageOrgPartial",
+    ORG_READY: "content.stageOrgReady",
+    SELF_NOT_STARTED: "content.stageSelfNotStarted",
+    SELF_IN_PROGRESS: "content.stageSelfInProgress",
   };
   const bridgeStageLabel = bridgeNextStep
-    ? (stageLabelByLocale[bridgeNextStep.stage]?.[locale] ??
-      (isHu ? "Következő lépés" : "Next step"))
+    ? (stageKeyMap[bridgeNextStep.stage]
+        ? t(stageKeyMap[bridgeNextStep.stage], locale)
+        : t("content.bridgeFallbackStage", locale))
     : null;
 
   const handleTabChange = useCallback(
@@ -510,9 +511,14 @@ export function ProfileTabs({
               const top2 = sortedDims.slice(0, 2);
               const bottom = sortedDims[sortedDims.length - 1];
               if (!top2[0] || !bottom) return "";
-              return isHu
-                ? `A profilod fő karaktere: magas ${top2[0].label.toLowerCase()}${top2[1] ? `, magas ${top2[1].label.toLowerCase()}` : ""}. ${bottom.label} területen nyílhat tér a fejlődésre.`
-                : `Your profile character: high ${top2[0].label.toLowerCase()}${top2[1] ? `, high ${top2[1].label.toLowerCase()}` : ""}. ${bottom.label} is where growth potential lies.`;
+              const top2Suffix = top2[1]
+                ? tf("content.profileCharacterTop2Suffix", locale, { label: top2[1].label.toLowerCase() })
+                : "";
+              return tf("content.profileCharacterHu", locale, {
+                top1: top2[0].label.toLowerCase(),
+                top2Suffix,
+                bottom: bottom.label,
+              });
             })();
 
             // Workplace / risk insights for Plus callouts
@@ -611,26 +617,18 @@ export function ProfileTabs({
       {layerStatuses && layerStatuses.length > 0 ? (
         <section className="rounded-2xl border border-sand bg-white p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {isHu ? "4+2 modell állapota" : "4+2 model status"}
+            {t("content.layerStatusEyebrow", locale)}
           </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {layerStatuses.map((layer) => {
               const statusLabel =
                 layer.status === "COMPLETED"
-                  ? isHu
-                    ? "Kész"
-                    : "Completed"
+                  ? t("content.layerStatusCompleted", locale)
                   : layer.status === "IN_PROGRESS"
-                    ? isHu
-                      ? "Folyamatban"
-                      : "In progress"
+                    ? t("content.layerStatusInProgress", locale)
                   : layer.status === "AVAILABLE"
-                    ? isHu
-                      ? "Elérhető"
-                      : "Available"
-                    : isHu
-                      ? "Zárolt"
-                      : "Locked";
+                    ? t("content.layerStatusAvailable", locale)
+                    : t("content.layerStatusLocked", locale);
 
               const statusClass =
                 layer.status === "COMPLETED"
@@ -660,12 +658,10 @@ export function ProfileTabs({
       {/* Journey bridge CTA — single primary direction after self insight */}
       {bridgeNextStep ? (
         <JourneyNextStepCard
-          eyebrow={isHu ? "Következő lépés" : "Next best action"}
+          eyebrow={t("content.bridgeEyebrow", locale)}
           title={bridgeStageLabel
-            ? `${isHu ? "A te utad" : "Your journey"} · ${bridgeStageLabel}`
-            : isHu
-              ? "A te utad"
-              : "Your journey"}
+            ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
+            : t("content.bridgeJourney", locale)}
           description={bridgeNextStep.explanation}
           primary={bridgeNextStep.primary}
           secondary={bridgeNextStep.secondary}

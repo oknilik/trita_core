@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
+import { t, tf } from "@/lib/i18n";
 import {
   DashboardActionCard,
   DashboardMetricCard,
@@ -139,7 +140,7 @@ export function AdminDashboard() {
       <div className="flex flex-col items-center gap-3">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-sand border-t-sage" />
         <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
-          {isHu ? "Betöltés..." : "Loading..."}
+          {t("dashboard.loading", localeTag)}
         </p>
       </div>
     </div>
@@ -148,10 +149,10 @@ export function AdminDashboard() {
   if (!data) return (
     <main className="mx-auto flex min-h-dvh max-w-4xl flex-col items-center justify-center gap-4 bg-cream px-4">
       <p className="text-[13px] text-ink-body">
-        {isHu ? "Nem sikerült betölteni az adatokat." : "Could not load data."}
+        {t("dashboard.loadError", localeTag)}
       </p>
       <button onClick={fetchStatus} className="rounded-[10px] bg-ink px-4 py-2 text-[13px] font-semibold text-cream">
-        {isHu ? "Újrapróbálás" : "Retry"}
+        {t("dashboard.retry", localeTag)}
       </button>
     </main>
   );
@@ -171,10 +172,10 @@ export function AdminDashboard() {
   if (missingCount > 0) {
     todos.push({
       severity: "red",
-      title: isHu ? "Hiányzó kitöltések" : "Missing assessments",
+      title: t("dashboard.missingAssessments", localeTag),
       desc: missingMembers.slice(0, 3).map((m) => m.username).join(" · "),
       cta: {
-        label: isHu ? "Emlékeztető küldése" : "Send reminder",
+        label: t("dashboard.sendReminder", localeTag),
         href: `/org/${org.id}?tab=members`,
       },
     });
@@ -182,31 +183,29 @@ export function AdminDashboard() {
   if (!stats.teamMapUnlocked) {
     todos.push({
       severity: "amber",
-      title: isHu ? "Visszajelzési kör nem indult" : "Feedback round not started",
-      desc: isHu ? "Csapatkép után indítható" : "Available after team pattern unlock",
+      title: t("dashboard.feedbackNotStarted", localeTag),
+      desc: t("dashboard.feedbackNotStartedDesc", localeTag),
     });
   }
   if (teamsWithSnapshot > 0) {
     todos.push({
       severity: "green",
-      title: isHu ? "Csapatkép megtekinthető" : "Team pattern available",
-      desc: isHu
-        ? `${teamsWithSnapshot} csapatnál elérhető`
-        : `Available for ${teamsWithSnapshot} team(s)`,
+      title: t("dashboard.teamPatternAvailable", localeTag),
+      desc: tf("dashboard.teamPatternAvailableCount", localeTag, { count: String(teamsWithSnapshot) }),
       cta: {
-        label: isHu ? "Megtekintés" : "Open",
+        label: t("dashboard.teamPatternView", localeTag),
         href: `/team/${teams[0]?.id ?? ""}`,
       },
     });
   }
 
   // Activity
-  const activities = teams.flatMap((t) => t.members.filter((m) => m.assessmentAt || m.joinedAt).map((m) => ({
-    name: m.username, teamName: t.name, date: m.assessmentAt ?? m.joinedAt ?? "",
+  const activities = teams.flatMap((tm) => tm.members.filter((m) => m.assessmentAt || m.joinedAt).map((m) => ({
+    name: m.username, teamName: tm.name, date: m.assessmentAt ?? m.joinedAt ?? "",
     type: m.assessmentDone ? "completed" as const : "joined" as const,
     desc: m.assessmentDone
-      ? (isHu ? "kitöltötte a személyiségtesztet" : "completed the assessment")
-      : (isHu ? "csatlakozott" : "joined"),
+      ? t("dashboard.activityCompleted", localeTag)
+      : t("dashboard.activityJoined", localeTag),
   }))).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
 
   // Insight
@@ -227,12 +226,10 @@ export function AdminDashboard() {
     const teamWithReminder = teams.find((t) => t.members.some((m) => !m.assessmentDone));
     if (teamWithReminder) {
       return {
-        title: isHu ? "Ma innen érdemes továbbmenni" : "Best next step today",
-        description: isHu
-          ? `Küldd el az emlékeztetőt a ${teamWithReminder.name} csapat hiányzó tagjainak, hogy a csapatkép ezen a héten elkészülhessen.`
-          : `Send reminders to missing members in ${teamWithReminder.name} so the team pattern can unlock this week.`,
+        title: t("dashboard.bestNextStep", localeTag),
+        description: tf("dashboard.reminderFallbackDesc", localeTag, { teamName: teamWithReminder.name }),
         primary: {
-          label: isHu ? "Emlékeztető küldése" : "Send reminder",
+          label: t("dashboard.reminderFallbackPrimary", localeTag),
           href: `/org/${org.id}?tab=members`,
         },
         secondary: null,
@@ -240,24 +237,20 @@ export function AdminDashboard() {
     }
     if (teamsWithSnapshot > 0) {
       return {
-        title: isHu ? "Ma innen érdemes továbbmenni" : "Best next step today",
-        description: isHu
-          ? "A csapatkép elérhető — érdemes most megnézni és megosztani a csapattal."
-          : "Team pattern is available — review and share it with the team.",
+        title: t("dashboard.bestNextStep", localeTag),
+        description: t("dashboard.snapshotFallbackDesc", localeTag),
         primary: {
-          label: isHu ? "Csapatkép megtekintése" : "Open team pattern",
+          label: t("dashboard.snapshotFallbackPrimary", localeTag),
           href: `/team/${teams[0]?.id ?? ""}`,
         },
         secondary: null,
       };
     }
     return {
-      title: isHu ? "Ma innen érdemes továbbmenni" : "Best next step today",
-      description: isHu
-        ? "Indíts el egy visszajelzési kört — a 360°-os visszajelzés elérhető."
-        : "Start a feedback round — 360 feedback is available.",
+      title: t("dashboard.bestNextStep", localeTag),
+      description: t("dashboard.campaignFallbackDesc", localeTag),
       primary: {
-        label: isHu ? "Visszajelzési kör indítása" : "Start feedback round",
+        label: t("dashboard.campaignFallbackPrimary", localeTag),
         href: `/org/${org.id}?tab=campaigns`,
       },
       secondary: null,
@@ -275,7 +268,7 @@ export function AdminDashboard() {
   }));
   const recommendedAction = data.journey?.nextBestAction
     ? {
-        title: isHu ? "Ajánlott következő lépés" : "Recommended next step",
+        title: t("dashboard.recommendedNextStep", localeTag),
         description: data.journey.nextBestAction.explanation,
         primary: data.journey.nextBestAction.primary,
         secondary: data.journey.nextBestAction.secondary ?? null,
@@ -320,49 +313,47 @@ export function AdminDashboard() {
   }, "dashboard", "org");
   const heroChips = dashboardVm.heroSummary.chips;
   const secondaryFocusAction = dashboardVm.recommendedAction.secondary ?? {
-    label: isHu ? "Szervezeti cockpit megnyitása" : "Open organization cockpit",
+    label: t("dashboard.openOrgCockpit", localeTag),
     href: `/org/${org.id}`,
   };
 
   const showOnboarding = teams.length === 1 && !stats.teamMapUnlocked;
   const onboardingSteps = [
     {
-      title: isHu ? "Első csapat létrehozva" : "First team created",
+      title: t("dashboard.firstTeamCreated", localeTag),
       done: teams.length > 0,
       detail: teams[0]
-        ? (isHu ? `${teams[0].name} létrehozva` : `${teams[0].name} created`)
-        : (isHu ? "Csapat létrehozása szükséges" : "Create your first team"),
+        ? tf("dashboard.teamCreatedDetail", localeTag, { name: teams[0].name })
+        : t("dashboard.teamCreateNeeded", localeTag),
       href: teams[0] ? `/team/${teams[0].id}` : `/org/${org.id}?tab=teams`,
       cta: teams[0]
-        ? (isHu ? "Csapat megnyitása" : "Open team")
-        : (isHu ? "Csapat létrehozása" : "Create team"),
+        ? t("dashboard.openTeam", localeTag)
+        : t("dashboard.createTeam", localeTag),
     },
     {
-      title: isHu ? "Saját profil kitöltése" : "Complete your profile",
+      title: t("dashboard.completeProfile", localeTag),
       done: stats.adminHasAssessment,
       detail: stats.adminHasAssessment
-        ? (isHu ? "Kész" : "Done")
-        : (isHu ? "A vezetői profil még hiányzik" : "Leader profile is still missing"),
+        ? t("dashboard.profileDone", localeTag)
+        : t("dashboard.profileMissing", localeTag),
       href: "/assessment",
       cta: stats.adminHasAssessment
-        ? (isHu ? "Megtekintés" : "View")
-        : (isHu ? "Kitöltés indítása" : "Start assessment"),
+        ? t("dashboard.viewProfile", localeTag)
+        : t("dashboard.startAssessment", localeTag),
     },
     {
-      title: isHu ? "Tagok meghívása" : "Invite members",
+      title: t("dashboard.inviteMembers", localeTag),
       done: stats.totalMembers >= 3,
-      detail: isHu
-        ? `Jelenleg ${stats.totalMembers} aktív tag`
-        : `Currently ${stats.totalMembers} active members`,
+      detail: tf("dashboard.activeMembersCount", localeTag, { count: String(stats.totalMembers) }),
       href: `/org/${org.id}?tab=members`,
-      cta: isHu ? "Tagok kezelése" : "Manage members",
+      cta: t("dashboard.manageMembers", localeTag),
     },
     {
-      title: isHu ? "Első csapatkép feloldása" : "Unlock first team pattern",
+      title: t("dashboard.unlockTeamPattern", localeTag),
       done: stats.completedCount >= 3,
-      detail: isHu ? `${stats.completedCount}/3 kitöltés` : `${stats.completedCount}/3 completed`,
+      detail: tf("dashboard.completionCount", localeTag, { count: String(stats.completedCount) }),
       href: `/org/${org.id}?tab=members`,
-      cta: isHu ? "Haladás követése" : "Track progress",
+      cta: t("dashboard.trackProgress", localeTag),
     },
   ];
   // ── Render ───────────────────────────────────────────────────────────────
@@ -388,7 +379,7 @@ export function AdminDashboard() {
                       {dashboardVm.heroSummary.eyebrow}
                     </p>
                     <span className="rounded-md bg-white/[0.08] px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white/[0.55]">
-                      {isHu ? "Frissítve" : "Updated"} {dashboardVm.heroSummary.updatedAtLabel ?? lastUpdated}
+                      {t("dashboard.updated", localeTag)} {dashboardVm.heroSummary.updatedAtLabel ?? lastUpdated}
                     </span>
                   </div>
 
@@ -414,8 +405,7 @@ export function AdminDashboard() {
                         className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
                         style={{ backgroundColor: ORG_HERO_BADGE_BG, color: ORG_HERO_BADGE_TEXT }}
                       >
-                        {dashboardVm.riskAttentionPanel.items.length}{" "}
-                        {isHu ? "nyitott figyelmi pont" : "open attention point(s)"}
+                        {tf("dashboard.openAttentionPoints", localeTag, { count: String(dashboardVm.riskAttentionPanel.items.length) })}
                       </span>
                     )}
                   </div>
@@ -426,40 +416,38 @@ export function AdminDashboard() {
                       className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white no-underline transition hover:brightness-110"
                       style={{ backgroundColor: ORG_HERO_PRIMARY }}
                     >
-                      {isHu
-                        ? "Tagok meghívása a csapatképhez"
-                        : "Invite members for team pattern"}
+                      {t("dashboard.inviteMembersForPattern", localeTag)}
                     </Link>
                     <Link
                       href={`/org/${org.id}`}
                       className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] no-underline transition hover:bg-white/[0.12]"
                     >
-                      {isHu ? "Szervezeti riport megnyitása" : "Open organization report"}
+                      {t("dashboard.openOrgReport", localeTag)}
                     </Link>
                   </div>
                 </div>
 
                 <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
                   <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
-                    {isHu ? "Élő pillanatkép" : "Live snapshot"}
+                    {t("dashboard.liveSnapshot", localeTag)}
                   </p>
 
                   <div className="mt-3 grid grid-cols-3 gap-2">
                     <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                       <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">
-                        {isHu ? "Tag" : "Members"}
+                        {t("dashboard.membersLabel", localeTag)}
                       </p>
                       <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{stats.totalMembers}</p>
                     </div>
                     <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                       <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">
-                        {isHu ? "Csapat" : "Teams"}
+                        {t("dashboard.teamsLabel", localeTag)}
                       </p>
                       <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{teams.length}</p>
                     </div>
                     <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                       <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">
-                        {isHu ? "Kész" : "Done"}
+                        {t("dashboard.doneLabel", localeTag)}
                       </p>
                       <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{stats.completedCount}</p>
                     </div>
@@ -468,7 +456,7 @@ export function AdminDashboard() {
                   <div className="mt-4 space-y-3">
                     <div>
                       <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                        <span>{isHu ? "Szervezeti kitöltés" : "Org completion"}</span>
+                        <span>{t("dashboard.orgCompletion", localeTag)}</span>
                         <span className="font-semibold text-white/[0.7]">{orgCompletionCard.progressPct ?? 0}%</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
@@ -484,7 +472,7 @@ export function AdminDashboard() {
 
                     <div>
                       <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                        <span>{isHu ? "Csapatkép készültség" : "Team pattern readiness"}</span>
+                        <span>{t("dashboard.teamPatternReadiness", localeTag)}</span>
                         <span className="font-semibold text-white/[0.7]">{teamReadinessCard.progressPct ?? 0}%</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
@@ -507,11 +495,9 @@ export function AdminDashboard() {
         {showOnboarding && (
           <section className="mb-8">
             <ProgressChecklist
-              eyebrow={isHu ? "onboarding" : "onboarding"}
-              title={isHu ? "Első csapat indulása" : "First team kickoff"}
-              description={isHu
-                ? "Az első csapat már létrejött. Ezen a checklisten végigmenve gyorsan eljuttok az első értelmezhető csapatképig."
-                : "Your first team is already created. Follow this checklist to quickly unlock the first meaningful team pattern."}
+              eyebrow={t("dashboard.onboardingEyebrow", localeTag)}
+              title={t("dashboard.firstTeamKickoff", localeTag)}
+              description={t("dashboard.onboardingDesc", localeTag)}
               items={onboardingSteps.map((step, index) => ({
                 id: `onboarding-step-${index}`,
                 title: step.title,
@@ -524,7 +510,7 @@ export function AdminDashboard() {
                       href: step.href,
                     },
               }))}
-              nextStepLabel={isHu ? "Következő lépés" : "Next step"}
+              nextStepLabel={t("dashboard.nextStep", localeTag)}
             />
           </section>
         )}
@@ -532,7 +518,7 @@ export function AdminDashboard() {
         {showOnboarding ? (
           <section className="mb-8">
             <DashboardSectionHeader
-              label={isHu ? "Következő modulok (hamarosan)" : "Upcoming modules (soon)"}
+              label={t("dashboard.upcomingModules", localeTag)}
               className="mb-4"
             />
             <div className="relative overflow-hidden rounded-[24px] border border-sand bg-white">
@@ -567,12 +553,10 @@ export function AdminDashboard() {
               <div className="absolute inset-0 flex items-center justify-center bg-white/35 px-4">
                 <div className="max-w-md rounded-2xl border border-sand bg-white px-5 py-4 text-center shadow-[0_12px_32px_rgba(26,26,46,0.08)]">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bronze/80">
-                    {isHu ? "onboarding fókusz" : "onboarding focus"}
+                    {t("dashboard.onboardingFocus", localeTag)}
                   </p>
                   <p className="mt-2 text-[13px] leading-[1.65] text-ink-body">
-                    {isHu
-                      ? "Amíg az induló onboarding lépések nincsenek kész, a többi dashboard modul előnézet módban marad."
-                      : "Until the starter onboarding steps are done, the remaining dashboard modules stay in preview mode."}
+                    {t("dashboard.onboardingFocusDesc", localeTag)}
                   </p>
                 </div>
               </div>
@@ -582,7 +566,7 @@ export function AdminDashboard() {
           <>
             <section className="mb-8 grid gap-4 lg:grid-cols-2">
               <JourneyNextStepCard
-                eyebrow={isHu ? "Ajánlott következő lépés" : "Recommended next step"}
+                eyebrow={t("dashboard.recommendedStep", localeTag)}
                 title={dashboardVm.recommendedAction.title}
                 description={dashboardVm.recommendedAction.description}
                 primary={dashboardVm.recommendedAction.primary}
@@ -591,7 +575,7 @@ export function AdminDashboard() {
 
               <DashboardPanel tone="warm" className="p-5">
                 <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-sage-dark/70">
-                  {isHu ? "Másodlagos lépés" : "Secondary step"}
+                  {t("dashboard.secondaryStep", localeTag)}
                 </p>
                 <div className="mt-4 space-y-3">
                   <Link
@@ -604,7 +588,7 @@ export function AdminDashboard() {
                     href={`/org/${org.id}`}
                     className="inline-flex text-[12px] font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
                   >
-                    {isHu ? "További műveletek a szervezeti oldalon →" : "More actions on organization page →"}
+                    {t("dashboard.moreActionsOrg", localeTag)}
                   </Link>
                 </div>
               </DashboardPanel>
@@ -623,12 +607,12 @@ export function AdminDashboard() {
               />
               <DashboardMetricCard
                 accent="#1D9E75"
-                title={isHu ? "Aktív tagok" : "Active members"}
+                title={t("dashboard.activeMembersTitle", localeTag)}
                 value={`${stats.completedCount}`}
                 suffix={`/${stats.totalMembers}`}
-                sub={`${notStarted > 0
-                  ? (isHu ? `${notStarted} fő még nem kezdte el` : `${notStarted} members have not started`)
-                  : (isHu ? "Mindenki elindult" : "Everyone has started")}`}
+                sub={notStarted > 0
+                  ? tf("dashboard.notStartedCount", localeTag, { count: String(notStarted) })
+                  : t("dashboard.everyoneStarted", localeTag)}
                 progressPct={stats.totalMembers > 0 ? (stats.completedCount / stats.totalMembers) * 100 : 0}
                 progressColor="#1D9E75"
               />
@@ -656,10 +640,10 @@ export function AdminDashboard() {
               <DashboardPanel className="p-5">
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                    {isHu ? "4+2 rétegkészültség" : "4+2 layer readiness"}
+                    {t("dashboard.layerReadiness", localeTag)}
                   </p>
                   <DashboardStatusChip
-                    label={`${layerStatuses.filter((layer) => layer.status === "COMPLETED").length}/6 ${isHu ? "kész" : "done"}`}
+                    label={`${layerStatuses.filter((layer) => layer.status === "COMPLETED").length}/6 ${t("orgHero.done", localeTag)}`}
                     tone="sage"
                   />
                 </div>
@@ -675,12 +659,12 @@ export function AdminDashboard() {
                           : "muted";
                     const statusLabel =
                       layer.status === "COMPLETED"
-                        ? (isHu ? "Kész" : "Completed")
+                        ? t("dashboard.layerStatusCompleted", localeTag)
                         : layer.status === "IN_PROGRESS"
-                          ? (isHu ? "Folyamatban" : "In progress")
+                          ? t("dashboard.layerStatusInProgress", localeTag)
                           : layer.status === "AVAILABLE"
-                          ? (isHu ? "Elérhető" : "Available")
-                          : (isHu ? "Zárolt" : "Locked");
+                          ? t("dashboard.layerStatusAvailable", localeTag)
+                          : t("dashboard.layerStatusLocked", localeTag);
 
                     return (
                       <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">
@@ -698,7 +682,7 @@ export function AdminDashboard() {
               </DashboardPanel>
             </section>
 
-            <DashboardSectionHeader label={isHu ? "Vezetői fókusz" : "Leadership focus"} className="mb-4" />
+            <DashboardSectionHeader label={t("dashboard.leadershipFocus", localeTag)} className="mb-4" />
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
 
               <div className="flex flex-col gap-5">
@@ -706,16 +690,14 @@ export function AdminDashboard() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
-                        {isHu ? "Szervezeti személyiségprofil" : "Organization personality profile"}
+                        {t("dashboard.orgPersonalityProfile", localeTag)}
                       </p>
                       <p className="mt-2 text-[11px] leading-[1.5] text-ink-body">
-                        {isHu
-                          ? `${stats.completedCount} értékelt tag · szervezeti átlag`
-                          : `${stats.completedCount} assessed members · organization average`}
+                        {tf("dashboard.assessedMembersAvg", localeTag, { count: String(stats.completedCount) })}
                       </p>
                     </div>
                     <Link href={`/org/${org.id}`} className="text-[12px] font-semibold text-bronze no-underline">
-                      {isHu ? "Részletes nézet →" : "Detailed view →"}
+                      {t("dashboard.detailedView", localeTag)}
                     </Link>
                   </div>
                   <div className="my-4 border-t border-sand" />
@@ -725,19 +707,17 @@ export function AdminDashboard() {
                     ))}
                   </div>
                   <DashboardActionCard
-                    eyebrow={isHu ? "Domináns csapatminta" : "Dominant team pattern"}
-                    title={isHu ? "Strukturált Innovátor" : "Structured Innovator"}
+                    eyebrow={t("dashboard.dominantPattern", localeTag)}
+                    title={t("dashboard.structuredInnovator", localeTag)}
                     tone="warm"
                     body={
                       <>
-                        {isHu
-                          ? `Nyitott, de keretek között működő csapat. Magas ${topDim.name.toLowerCase()} és ${conscientiousnessDim.name.toLowerCase()}, alacsonyabb ${lowDim.name.toLowerCase()}.`
-                          : `An open but structured team dynamic. Higher ${topDim.name.toLowerCase()} and ${conscientiousnessDim.name.toLowerCase()}, with lower ${lowDim.name.toLowerCase()}.`}
+                        {tf("dashboard.patternDesc", localeTag, { top: topDim.name.toLowerCase(), conscientiousness: conscientiousnessDim.name.toLowerCase(), low: lowDim.name.toLowerCase() })}
                       </>
                     }
                     cta={{
                       href: `/org/${org.id}`,
-                      label: isHu ? "Csapatkép megnyitása" : "Open team pattern",
+                      label: t("dashboard.openTeamPattern", localeTag),
                       tone: "link",
                     }}
                   />
@@ -752,27 +732,23 @@ export function AdminDashboard() {
                   }}
                 >
                   <p className="mb-2 text-[10px] uppercase tracking-[0.9px] text-white/[0.32]">
-                    {isHu ? "Most érdemes figyelni" : "Watch now"}
+                    {t("dashboard.watchNow", localeTag)}
                   </p>
                   <h3 className="mb-2 font-fraunces text-[24px] leading-[1.05] tracking-tight text-white">
-                    {isHu
-                      ? `Magas ${topDim.name.toLowerCase()}, alacsony ${lowDim.name.toLowerCase()}`
-                      : `Higher ${topDim.name.toLowerCase()}, lower ${lowDim.name.toLowerCase()}`}
+                    {tf("dashboard.highLow", localeTag, { top: topDim.name.toLowerCase(), low: lowDim.name.toLowerCase() })}
                   </h3>
                   <p className="text-[12.5px] leading-[1.7] text-white/[0.68]">
-                    {isHu
-                      ? `A szervezet kreatív lendülettel dolgozik, de az alacsony ${lowDim.name.toLowerCase()} (${DUMMY_HEXACO[lowDim.key]}%) növelheti a belső zajt csapatközi helyzetekben.`
-                      : `The organization works with strong creative momentum, but lower ${lowDim.name.toLowerCase()} (${DUMMY_HEXACO[lowDim.key]}%) may increase friction in cross-team situations.`}
+                    {tf("dashboard.frictionDesc", localeTag, { low: lowDim.name.toLowerCase(), pct: String(DUMMY_HEXACO[lowDim.key]) })}
                   </p>
                   <Link href={`/org/${org.id}`} className="mt-4 inline-flex text-[12px] font-semibold text-[#e8a96a] no-underline">
-                    {isHu ? "Részletes elemzés →" : "Detailed analysis →"}
+                    {t("dashboard.detailedAnalysis", localeTag)}
                   </Link>
                 </div>
 
                 <DashboardPanel className="px-5 py-[18px]">
                   <div className="mb-3.5 flex items-center justify-between">
                     <span className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                      {isHu ? "Figyelmet kér" : "Needs attention"}
+                      {t("dashboard.needsAttention", localeTag)}
                     </span>
                     {dashboardVm.riskAttentionPanel.items.length > 0 && (
                       <DashboardStatusChip label={String(dashboardVm.riskAttentionPanel.items.length)} tone="bronze" />
@@ -780,7 +756,7 @@ export function AdminDashboard() {
                   </div>
                   {dashboardVm.riskAttentionPanel.items.length === 0 ? (
                     <p className="text-[13px] text-muted">
-                      {isHu ? "Nincs nyitott teendő!" : "No open actions."}
+                      {t("dashboard.noOpenActions", localeTag)}
                     </p>
                   ) : (
                     <div className="flex flex-col gap-2">
@@ -813,22 +789,20 @@ export function AdminDashboard() {
               </div>
             </div>
 
-            <DashboardSectionHeader label={isHu ? "Csapatmozgás" : "Team movement"} className="mb-4 mt-8" />
+            <DashboardSectionHeader label={t("dashboard.teamMovement", localeTag)} className="mb-4 mt-8" />
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
               <DashboardPanel className="px-5 py-5 sm:px-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
-                      {isHu ? "Csapatok állapota" : "Team status"}
+                      {t("dashboard.teamStatus", localeTag)}
                     </p>
                     <p className="mt-2 text-[11px] leading-[1.5] text-ink-body">
-                      {isHu
-                        ? "Melyik csapat hol tart most a közös képen"
-                        : "See where each team currently stands in the shared journey"}
+                      {t("dashboard.teamStatusDesc", localeTag)}
                     </p>
                   </div>
                   <Link href="/team" className="text-[12px] font-semibold text-bronze no-underline">
-                    {isHu ? "Összes csapat →" : "All teams →"}
+                    {t("dashboard.allTeams", localeTag)}
                   </Link>
                 </div>
                 <div className="mt-4 flex flex-col gap-3">
@@ -841,22 +815,16 @@ export function AdminDashboard() {
                     const [from, to] = getAvatarColor(team.name);
 
                     const insight = rem > 0 && snap
-                      ? (isHu
-                        ? `A csapatkép majdnem kész — ${rem} emlékeztető még szükséges a befejezéshez.`
-                        : `Team pattern is almost ready — ${rem} reminder(s) are still needed to complete it.`)
+                      ? tf("dashboard.insightAlmostReady", localeTag, { count: String(rem) })
                       : snap
-                      ? (isHu
-                        ? "Csapatkép elérhető — minden tag teljesítette a kitöltést."
-                        : "Team pattern is available — every member has completed assessment.")
-                      : (isHu
-                        ? `${rem} kitöltés szükséges a csapatképhez.`
-                        : `${rem} completion(s) needed for team pattern.`);
+                      ? t("dashboard.insightReady", localeTag)
+                      : tf("dashboard.insightNeeded", localeTag, { count: String(rem) });
 
                     const statusLabel = snap
-                      ? (isHu ? "Csapatkép kész" : "Pattern ready")
+                      ? t("dashboard.patternReady", localeTag)
                       : pct >= 50
-                        ? (isHu ? "Csapatkép épül" : "Pattern building")
-                        : (isHu ? "Függőben" : "Pending");
+                        ? t("dashboard.patternBuilding", localeTag)
+                        : t("dashboard.pending", localeTag);
                     const statusTone = snap ? "sage" : pct >= 50 ? "warm" : "rose";
 
                     return (
@@ -869,7 +837,7 @@ export function AdminDashboard() {
                             <div>
                               <p className="text-[13px] font-semibold text-ink">{team.name}</p>
                               <p className="mt-0.5 text-[11px] text-muted">
-                                {isHu ? `${total} tag` : `${total} members`}
+                                {tf("dashboard.teamMemberCount", localeTag, { count: String(total) })}
                               </p>
                             </div>
                           </div>
@@ -881,7 +849,7 @@ export function AdminDashboard() {
                         <div className="flex items-center justify-between">
                           <p className="flex-1 pr-3 text-[12px] leading-[1.55] text-ink-body">{insight}</p>
                           <span className="shrink-0 text-[12px] font-semibold text-bronze">
-                            {isHu ? "Megnyitás →" : "Open →"}
+                            {t("dashboard.open", localeTag)}
                           </span>
                         </div>
                       </Link>
@@ -894,16 +862,16 @@ export function AdminDashboard() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
-                      {isHu ? "Legutóbbi aktivitás" : "Recent activity"}
+                      {t("dashboard.recentActivity", localeTag)}
                     </p>
                     <p className="mt-2 text-[11px] leading-[1.5] text-ink-body">
-                      {isHu ? "Elmúlt 2 hét" : "Last 2 weeks"}
+                      {t("dashboard.last2Weeks", localeTag)}
                     </p>
                   </div>
                 </div>
                 {dashboardVm.recentActivity.length === 0 ? (
                   <p className="mt-4 text-[13px] text-muted">
-                    {isHu ? "Még nincs aktivitás." : "No activity yet."}
+                    {t("dashboard.noActivity", localeTag)}
                   </p>
                 ) : (
                   <div className="mt-4 flex flex-col gap-2.5">

@@ -486,6 +486,30 @@ export const resultsTranslations = {
     envLabelShort: { hu: "Rövid", en: "Short" },
     envLabelLong: { hu: "Hosszú", en: "Long" },
     envLabelFast: { hu: "Gyors", en: "Fast" },
+    // ProfileTabs — layer status section
+    layerStatusEyebrow: { hu: "4+2 modell állapota", en: "4+2 model status" },
+    layerStatusCompleted: { hu: "Kész", en: "Completed" },
+    layerStatusInProgress: { hu: "Folyamatban", en: "In progress" },
+    layerStatusAvailable: { hu: "Elérhető", en: "Available" },
+    layerStatusLocked: { hu: "Zárolt", en: "Locked" },
+    // ProfileTabs — bridge / journey
+    bridgeEyebrow: { hu: "Következő lépés", en: "Next best action" },
+    bridgeJourney: { hu: "A te utad", en: "Your journey" },
+    bridgeFallbackStage: { hu: "Következő lépés", en: "Next step" },
+    // ProfileTabs — stage labels
+    stageSelfCompleted: { hu: "Self kész", en: "Self completed" },
+    stageObserverPending: { hu: "Observer folyamatban", en: "Observer in progress" },
+    stageTeamNotJoined: { hu: "Nincs csapat", en: "No team yet" },
+    stageTeamPendingMembers: { hu: "Tagokra vár", en: "Waiting for members" },
+    stageTeamPartial: { hu: "Csapat részben kész", en: "Team partially ready" },
+    stageTeamReady: { hu: "Csapat kész", en: "Team ready" },
+    stageOrgPartial: { hu: "Szervezet részben kész", en: "Org partially ready" },
+    stageOrgReady: { hu: "Szervezet kész", en: "Org ready" },
+    stageSelfNotStarted: { hu: "Self még nem indult", en: "Self not started" },
+    stageSelfInProgress: { hu: "Self folyamatban", en: "Self in progress" },
+    // ProfileTabs — PDF profile character
+    profileCharacterHu: { hu: "A profilod fő karaktere: magas {top1}{top2Suffix}. {bottom} területen nyílhat tér a fejlődésre.", en: "Your profile character: high {top1}{top2Suffix}. {bottom} is where growth potential lies." },
+    profileCharacterTop2Suffix: { hu: ", magas {label}", en: ", high {label}" },
     // ProfileTabs
     paywallUnlock: { hu: "Feloldás — {price}", en: "Unlock — {price}" },
     paywallComparisonTeaser: {

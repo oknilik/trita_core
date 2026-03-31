@@ -116,12 +116,10 @@ export default async function OrgDetailPage({
     orgRiskItems.push({
       id: "pending-members",
       severity: "high",
-      title: isHu ? "Függő meghívások" : "Pending invites",
-      description: isHu
-        ? `${pageData.pendingCount} meghívás még visszaigazolásra vár.`
-        : `${pageData.pendingCount} invites are still awaiting acceptance.`,
+      title: t("orgRisk.pendingTitle", locale),
+      description: tf("orgRisk.pendingDesc", locale, { count: String(pageData.pendingCount) }),
       cta: {
-        label: isHu ? "Tagok kezelése" : "Manage members",
+        label: t("orgRisk.pendingCta", locale),
         href: `/org/${orgId}?tab=members`,
       },
     });
@@ -130,12 +128,10 @@ export default async function OrgDetailPage({
     orgRiskItems.push({
       id: "no-active-campaign",
       severity: "medium",
-      title: isHu ? "Nincs aktív kör" : "No active round",
-      description: isHu
-        ? "A szervezeti trendekhez érdemes aktív visszajelzési kört futtatni."
-        : "Run an active feedback round to track org-level trends.",
+      title: t("orgRisk.noActiveTitle", locale),
+      description: t("orgRisk.noActiveDesc", locale),
       cta: {
-        label: isHu ? "Kör indítása" : "Start round",
+        label: t("orgRisk.noActiveCta", locale),
         href: `/org/${orgId}?tab=campaigns`,
       },
     });
@@ -173,30 +169,26 @@ export default async function OrgDetailPage({
     activeCampaignCount: pageData.activeCampaignCount,
     recommendedAction: pageData.pendingCount > 0
       ? {
-          title: isHu ? "Ajánlott következő lépés" : "Recommended next step",
-          description: isHu
-            ? "Zárd le a függő meghívásokat, hogy stabilabb legyen a szervezeti kép."
-            : "Close pending invites to improve org-level signal quality.",
+          title: t("orgRisk.recommendedTitle", locale),
+          description: t("orgRisk.recommendedPendingDesc", locale),
           primary: {
-            label: isHu ? "Tagok kezelése" : "Manage members",
+            label: t("orgRisk.recommendedPendingPrimary", locale),
             href: `/org/${orgId}?tab=members`,
           },
           secondary: {
-            label: isHu ? "Csapatok áttekintése" : "Review teams",
+            label: t("orgRisk.recommendedPendingSecondary", locale),
             href: `/org/${orgId}?tab=teams`,
           },
         }
       : {
-          title: isHu ? "Ajánlott következő lépés" : "Recommended next step",
-          description: isHu
-            ? "A következő szervezeti insight körhöz indíts új kampányt."
-            : "Launch a new campaign for the next org insight cycle.",
+          title: t("orgRisk.recommendedTitle", locale),
+          description: t("orgRisk.recommendedCampaignDesc", locale),
           primary: {
-            label: isHu ? "Új kampány indítása" : "Start new campaign",
+            label: t("orgRisk.recommendedCampaignPrimary", locale),
             href: `/org/${orgId}?tab=campaigns`,
           },
           secondary: {
-            label: isHu ? "Csapatok áttekintése" : "Review teams",
+            label: t("orgRisk.recommendedCampaignSecondary", locale),
             href: `/org/${orgId}?tab=teams`,
           },
         },
@@ -204,8 +196,8 @@ export default async function OrgDetailPage({
     recentActivity: teams.slice(0, 3).map((teamItem, index) => ({
       id: `team-activity-${index}`,
       kind: "system",
-      title: isHu ? `Csapat frissítve: ${teamItem.name}` : `Team updated: ${teamItem.name}`,
-      meta: `${teamItem._count.members} ${isHu ? "tag" : "members"}`,
+      title: tf("orgRisk.teamUpdated", locale, { name: teamItem.name }),
+      meta: tf("orgRisk.teamMembersMeta", locale, { count: String(teamItem._count.members) }),
       timestampLabel: teamItem.createdAt.toISOString(),
     })),
   });
@@ -285,20 +277,20 @@ export default async function OrgDetailPage({
 
               <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
                 <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
-                  {isHu ? "Élő pillanatkép" : "Live snapshot"}
+                  {t("orgHero.liveSnapshot", locale)}
                 </p>
 
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Tag" : "Members"}</p>
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.membersLabel", locale)}</p>
                     <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.memberCount}</p>
                   </div>
                   <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Csapat" : "Teams"}</p>
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.teamsLabel", locale)}</p>
                     <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.teamCount}</p>
                   </div>
                   <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Aktív kör" : "Active"}</p>
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.activeLabel", locale)}</p>
                     <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.activeCampaignCount}</p>
                   </div>
                 </div>
@@ -306,7 +298,7 @@ export default async function OrgDetailPage({
                 <div className="mt-4 space-y-3">
                   <div>
                     <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                      <span>{isHu ? "Szervezeti kitöltés" : "Org completion"}</span>
+                      <span>{t("orgHero.orgCompletion", locale)}</span>
                       <span className="font-semibold text-white/[0.7]">{orgCompletionPct}%</span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
@@ -316,13 +308,13 @@ export default async function OrgDetailPage({
                       />
                     </div>
                     <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                      {pageData.completedMemberCount} {isHu ? "kész" : "done"} · {orgRemainingCount} {isHu ? "hátra" : "remaining"}
+                      {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
                     </p>
                   </div>
 
                   <div>
                     <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                      <span>{isHu ? "Aktív kampány kitöltés" : "Active campaign completion"}</span>
+                      <span>{t("orgHero.activeCampaignCompletion", locale)}</span>
                       <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
@@ -332,7 +324,7 @@ export default async function OrgDetailPage({
                       />
                     </div>
                     <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                      {pageData.activeSelfDone} {isHu ? "kész" : "done"} · {activeRemainingCount} {isHu ? "hátra" : "remaining"}
+                      {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
                     </p>
                   </div>
                 </div>
@@ -422,14 +414,14 @@ export default async function OrgDetailPage({
         </section>
 
         <section>
-          <DashboardSectionHeader label={isHu ? "4+2 rétegkészültség" : "4+2 layer readiness"} className="mb-5" />
+          <DashboardSectionHeader label={t("orgLayers.eyebrow", locale)} className="mb-5" />
           <DashboardPanel className="p-5">
             <div className="flex items-center justify-between gap-3">
               <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                {isHu ? "Szervezeti mélyítő rétegek" : "Org deepening layers"}
+                {t("orgLayers.layersTitle", locale)}
               </p>
               <DashboardStatusChip
-                label={`${orgLayerCompletedCount}/${orgLayerStatuses.length} ${isHu ? "kész" : "done"}`}
+                label={`${orgLayerCompletedCount}/${orgLayerStatuses.length} ${t("orgHero.done", locale)}`}
                 tone="sage"
               />
             </div>
@@ -444,12 +436,12 @@ export default async function OrgDetailPage({
                         ? "warm"
                         : "muted";
                 const statusLabel = layer.status === "COMPLETED"
-                  ? (isHu ? "Kész" : "Completed")
+                  ? t("orgLayers.statusCompleted", locale)
                   : layer.status === "IN_PROGRESS"
-                    ? (isHu ? "Folyamatban" : "In progress")
+                    ? t("orgLayers.statusInProgress", locale)
                     : layer.status === "AVAILABLE"
-                      ? (isHu ? "Elérhető" : "Available")
-                      : (isHu ? "Zárolt" : "Locked");
+                      ? t("orgLayers.statusAvailable", locale)
+                      : t("orgLayers.statusLocked", locale);
 
                 return (
                   <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">

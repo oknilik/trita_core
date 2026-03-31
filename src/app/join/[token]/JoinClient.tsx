@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
 import {
   getBirthYearBounds,
@@ -45,71 +47,50 @@ export function JoinClient({
   existingOrg,
 }: JoinClientProps) {
   const router = useRouter();
-  const { locale } = useLocale();
-  const isHu = locale !== "en";
+  const { locale: rawLocale } = useLocale();
+  const locale = rawLocale as Locale;
   const currentYear = new Date().getFullYear();
   const { minBirthYear, maxBirthYear } = getBirthYearBounds(currentYear);
-  const STEP_LABELS = isHu ? ["Profil", "Kész"] : ["Profile", "Done"];
+  const STEP_LABELS = [t("join.stepProfile", locale), t("join.stepDone", locale)];
   const genderOptions = getMembershipGenderOptions(locale);
   const copy = {
-    inviteEyebrow: isHu ? "// meghívó" : "// invite",
-    title: isHu ? "Csatlakozz a csapathoz" : "Join the team",
-    switchEyebrow: isHu ? "// szervezetváltás" : "// switch context",
-    switchTitle: isHu
-      ? "Már tartozol egy szervezethez"
-      : "You already belong to an organization",
-    switchDescription: isHu
-      ? `Jelenleg a ${existingOrg?.orgName ?? ""} az aktív szervezeti kontextusod. Ha csatlakozol a ${orgName} szervezethez, a korábbi tagságod megmarad, csak az aktív kontextus vált át.`
-      : `Your active org context is ${existingOrg?.orgName ?? ""}. If you join ${orgName}, your previous memberships remain intact and only your active context changes.`,
-    switchPrimaryLoading: isHu ? "Váltás..." : "Switching...",
-    switchPrimary: isHu
-      ? `Átváltás a(z) ${orgName} szervezetbe →`
-      : `Switch to ${orgName} →`,
-    switchSecondary: isHu
-      ? "Maradok a jelenlegi szervezetben"
-      : "Stay in current organization",
-    joinEyebrow: isHu ? "// csatlakozás" : "// join",
-    welcomePrefix: isHu ? "Üdv" : "Welcome",
-    readySameOrg: isHu
-      ? `Csatlakozol a ${teamName} csapathoz a meglévő szervezeti tagságoddal.`
-      : `You are joining ${teamName} with your existing organization membership.`,
-    readyNewOrg: isHu
-      ? `Csatlakozol a ${orgName} szervezethez és a ${teamName} csapathoz. A meglévő eredményeid megmaradnak.`
-      : `You are joining ${orgName} and the ${teamName} team. Your existing results stay with you.`,
-    joinLoading: isHu ? "Csatlakozás..." : "Joining...",
-    joinCta: isHu ? "Csatlakozás →" : "Join →",
-    step1Eyebrow: isHu ? "// 01" : "// 01",
-    step1Title: isHu ? "Személyes adatok" : "Basic profile",
-    step1Sub: isHu
-      ? "Ezek szükségesek a személyre szabott csapatképhez."
-      : "These details are required for personalized team insight.",
-    usernameLabel: isHu ? "Megjelenítési név" : "Display name",
-    usernamePlaceholder: isHu ? "pl. Kovács Péter" : "e.g. Alex Walker",
-    birthYearLabel: isHu ? "Születési év" : "Birth year",
-    genderLabel: isHu ? "Nem" : "Gender",
-    birthYearPlaceholder: isHu ? `pl. ${currentYear - 30}` : `e.g. ${currentYear - 30}`,
-    birthYearHint: isHu
-      ? `${minBirthYear}–${maxBirthYear} között`
-      : `Between ${minBirthYear} and ${maxBirthYear}`,
-    continueCta: isHu ? "Tovább →" : "Continue →",
-    step2Eyebrow: isHu ? "// 02" : "// 02",
-    step2Title: isHu ? "Egy utolsó lépés" : "One final step",
-    consentText: isHu
-      ? "Hozzájárulok adataim kezeléséhez a"
-      : "I consent to the processing of my data according to the",
-    privacyLabel: isHu ? "Adatvédelmi tájékoztató" : "Privacy Policy",
-    consentSuffix: isHu ? "alapján." : ".",
-    backCta: isHu ? "← Vissza" : "← Back",
-    joinAndStartLoading: isHu ? "Csatlakozás..." : "Joining...",
-    joinAndStart: isHu
-      ? "Csatlakozás és felmérés indítása →"
-      : "Join and start assessment →",
-    profileHint: isHu
-      ? "Ezeket az adatokat bármikor módosíthatod a profil oldalon."
-      : "You can edit these details anytime on your profile page.",
-    submitErrorGeneric: isHu
-      ? "Hiba történt, kérjük próbáld újra."
-      : "Something went wrong. Please try again.",
+    inviteEyebrow: t("join.inviteEyebrow", locale),
+    title: t("join.teamTitle", locale),
+    switchEyebrow: t("join.switchEyebrow", locale),
+    switchTitle: t("join.switchTitle", locale),
+    switchDescription: tf("join.switchDescription", locale, {
+      existingOrg: existingOrg?.orgName ?? "",
+      orgName,
+    }),
+    switchPrimaryLoading: t("join.switchPrimaryLoading", locale),
+    switchPrimary: tf("join.switchPrimary", locale, { orgName }),
+    switchSecondary: t("join.switchSecondary", locale),
+    joinEyebrow: t("join.joinEyebrow", locale),
+    welcomePrefix: t("join.welcomePrefix", locale),
+    readySameOrg: tf("join.readySameOrg", locale, { teamName }),
+    readyNewOrg: tf("join.readyNewOrg", locale, { orgName, teamName }),
+    joinLoading: t("join.joinLoading", locale),
+    joinCta: t("join.joinCta", locale),
+    step1Eyebrow: t("join.step1Eyebrow", locale),
+    step1Title: t("join.step1Title", locale),
+    step1Sub: t("join.step1Sub", locale),
+    usernameLabel: t("join.usernameLabel", locale),
+    usernamePlaceholder: t("join.usernamePlaceholder", locale),
+    birthYearLabel: t("join.birthYearLabel", locale),
+    genderLabel: t("join.genderLabel", locale),
+    birthYearPlaceholder: tf("join.birthYearPlaceholder", locale, { example: currentYear - 30 }),
+    birthYearHint: tf("join.birthYearHint", locale, { min: minBirthYear, max: maxBirthYear }),
+    continueCta: t("join.continueCta", locale),
+    step2Eyebrow: t("join.step2Eyebrow", locale),
+    step2Title: t("join.step2Title", locale),
+    consentText: t("join.consentText", locale),
+    privacyLabel: t("join.privacyLabel", locale),
+    consentSuffix: t("join.consentSuffix", locale),
+    backCta: t("join.backCta", locale),
+    joinAndStartLoading: t("join.submitting", locale),
+    joinAndStart: t("join.submitNew", locale),
+    profileHint: t("join.profileHint", locale),
+    submitErrorGeneric: t("join.submitErrorGeneric", locale),
   };
 
   const isNewUser = inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE";

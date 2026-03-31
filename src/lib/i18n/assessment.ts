@@ -187,4 +187,21 @@ export const assessmentTranslations = {
     },
     privacyLink: { hu: "Részletek", en: "Details" },
   },
+
+  // ── Assessment layers (/assessment-layers) ────────────────────────────
+  assessmentLayers: {
+    eyebrow: { hu: "Assessment layers", en: "Assessment layers" },
+    title: { hu: "4+2 rétegstruktúra", en: "4+2 layer structure" },
+    description: {
+      hu: "Ez a célroute a layer-alapú journey felépítését készíti elő. A meglévő self/team/org felületek már ugyanebből a domain modellből számolhatnak.",
+      en: "This target route prepares the layer-based journey structure. Existing self/team/org screens can already resolve from the same domain model.",
+    },
+    order: { hu: "Sorrend", en: "Order" },
+    detailEyebrow: { hu: "Layer részlet", en: "Layer detail" },
+    type: { hu: "Típus", en: "Type" },
+    dependencies: { hu: "Függőségek", en: "Dependencies" },
+    noDependencies: { hu: "Nincs függőség.", en: "No dependencies." },
+    renderTargets: { hu: "Render célpontok", en: "Render targets" },
+    backToLayers: { hu: "Vissza a rétegekhez", en: "Back to layers" },
+  },
 } as const;

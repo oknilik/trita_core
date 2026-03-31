@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
+import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
 import { getCountryOptions } from "@/lib/countries";
@@ -108,9 +109,9 @@ export function OrgOnboardingWizard() {
     const e: FieldError = {};
     const u = state.username.trim();
     if (u.length < 2) {
-      e.username = isHu ? "Legalább 2 karakter szükséges" : "At least 2 characters are required";
+      e.username = t("orgOnboarding.valMinChars", locale);
     } else if (u.length > 20) {
-      e.username = isHu ? "Maximum 20 karakter" : "Maximum 20 characters";
+      e.username = t("orgOnboarding.valMaxChars20", locale);
     }
     const yr = Number(state.birthYear);
     if (
@@ -120,12 +121,10 @@ export function OrgOnboardingWizard() {
       yr < minBirthYear ||
       yr > maxBirthYear
     ) {
-      e.birthYear = isHu
-        ? `${minBirthYear}–${maxBirthYear} között`
-        : `Between ${minBirthYear} and ${maxBirthYear}`;
+      e.birthYear = tf("orgOnboarding.birthYearRange", locale, { min: minBirthYear, max: maxBirthYear });
     }
-    if (!state.gender) e.gender = isHu ? "Kérjük válassz" : "Please choose one";
-    if (!state.country) e.country = isHu ? "Kérjük válassz" : "Please choose one";
+    if (!state.gender) e.gender = t("orgOnboarding.valPleaseChoose", locale);
+    if (!state.country) e.country = t("orgOnboarding.valPleaseChoose", locale);
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -133,8 +132,8 @@ export function OrgOnboardingWizard() {
   const validateStep2 = () => {
     const e: FieldError = {};
     const n = state.orgName.trim();
-    if (!n) e.orgName = isHu ? "A cég neve kötelező" : "Company name is required";
-    else if (n.length > 100) e.orgName = isHu ? "Maximum 100 karakter" : "Maximum 100 characters";
+    if (!n) e.orgName = t("orgOnboarding.valOrgNameRequired", locale);
+    else if (n.length > 100) e.orgName = t("orgOnboarding.valMaxChars100", locale);
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -142,8 +141,8 @@ export function OrgOnboardingWizard() {
   const validateStep3 = () => {
     const e: FieldError = {};
     const n = state.teamName.trim();
-    if (!n) e.teamName = isHu ? "A csapat neve kötelező" : "Team name is required";
-    else if (n.length > 60) e.teamName = isHu ? "Maximum 60 karakter" : "Maximum 60 characters";
+    if (!n) e.teamName = t("orgOnboarding.valTeamNameRequired", locale);
+    else if (n.length > 60) e.teamName = t("orgOnboarding.valMaxChars60", locale);
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -184,13 +183,13 @@ export function OrgOnboardingWizard() {
       } else {
         setErrors((prev) => ({
           ...prev,
-          orgName: isHu ? "Hiba történt, próbáld újra" : "Something went wrong. Please try again.",
+          orgName: t("orgOnboarding.valGenericError", locale),
         }));
       }
     } catch {
       setErrors((prev) => ({
         ...prev,
-        orgName: isHu ? "Hiba történt, próbáld újra" : "Something went wrong. Please try again.",
+        orgName: t("orgOnboarding.valGenericError", locale),
       }));
     } finally {
       setIsSubmitting(false);
@@ -204,7 +203,7 @@ export function OrgOnboardingWizard() {
     }
     setIsSubmitting(true);
     const teamName = skip
-      ? (isHu ? "Első csapatom" : "My first team")
+      ? t("orgOnboarding.defaultTeamName", locale)
       : state.teamName.trim();
     try {
       const res = await fetch("/api/team", {
@@ -252,7 +251,7 @@ export function OrgOnboardingWizard() {
     } catch {
       setErrors((prev) => ({
         ...prev,
-        consent: isHu ? "Hiba történt, kérjük próbáld újra." : "Something went wrong. Please try again.",
+        consent: t("orgOnboarding.valConsentError", locale),
       }));
     } finally {
       setIsSubmitting(false);
@@ -268,9 +267,12 @@ export function OrgOnboardingWizard() {
 
   // ── Progress ──────────────────────────────────────────────────────────────
 
-  const stepLabels = isHu
-    ? ["Profil", "Cég", "Csapat", "Kész"]
-    : ["Profile", "Company", "Team", "Done"];
+  const stepLabels = [
+    t("orgOnboarding.stepProfile", locale),
+    t("orgOnboarding.stepCompany", locale),
+    t("orgOnboarding.stepTeam", locale),
+    t("orgOnboarding.stepDone", locale),
+  ];
   const progress = ((step - 1) / 3) * 100;
   const hasProfileStarted = Boolean(
     state.username.trim() ||
@@ -305,12 +307,10 @@ export function OrgOnboardingWizard() {
           <TritaLogo size={40} showText={false} />
           <div className="text-center">
             <h1 className="font-fraunces text-3xl text-ink">
-              {isHu ? "Üdvözlünk a tritán." : "Welcome to trita."}
+              {t("orgOnboarding.welcomeTitle", locale)}
             </h1>
             <p className="mt-2 text-sm text-ink-body/70">
-              {isHu
-                ? "3 perc és látod az első csapatképet."
-                : "In 3 minutes you'll unlock your first team snapshot."}
+              {t("orgOnboarding.welcomeSubtitle", locale)}
             </p>
           </div>
         </div>
@@ -351,17 +351,17 @@ export function OrgOnboardingWizard() {
 
         <div className="mb-6 rounded-xl border border-sand bg-white/70 p-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
-            {isHu ? "Layer útiterv" : "Layer roadmap"}
+            {t("orgOnboarding.layerRoadmap", locale)}
           </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {onboardingLayerStatuses.map((layer) => {
               const statusLabel = layer.status === "COMPLETED"
-                ? (isHu ? "Kész" : "Completed")
+                ? t("orgOnboarding.statusCompleted", locale)
                 : layer.status === "IN_PROGRESS"
-                  ? (isHu ? "Folyamatban" : "In progress")
+                  ? t("orgOnboarding.statusInProgress", locale)
                   : layer.status === "AVAILABLE"
-                    ? (isHu ? "Elérhető" : "Available")
-                    : (isHu ? "Zárolt" : "Locked");
+                    ? t("orgOnboarding.statusAvailable", locale)
+                    : t("orgOnboarding.statusLocked", locale);
               const statusClasses = layer.status === "COMPLETED"
                 ? "bg-sage/15 text-sage-dark"
                 : layer.status === "IN_PROGRESS"
@@ -381,9 +381,7 @@ export function OrgOnboardingWizard() {
             })}
           </div>
           <p className="mt-2 text-[11px] text-ink-body">
-            {isHu
-              ? "A +2 réteg opcionális mélyítésként jelenik meg, amikor az alap self és team rétegek készen állnak."
-              : "The +2 layers appear as optional deepening once the core self and team layers are ready."}
+            {t("orgOnboarding.layerPlusNote", locale)}
           </p>
         </div>
 
@@ -395,29 +393,27 @@ export function OrgOnboardingWizard() {
             <div className="flex flex-col gap-6">
               <div>
                 <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                  {isHu ? "Lépés 01" : "Step 01"}
+                  {t("orgOnboarding.step01", locale)}
                 </p>
                 <h2 className="font-fraunces text-2xl text-ink">
-                  {isHu ? "Személyes adatok" : "Personal details"}
+                  {t("orgOnboarding.step01Title", locale)}
                 </h2>
                 <p className="mt-1 text-sm text-ink-body/70">
-                  {isHu
-                    ? "Ezek szükségesek a személyre szabott csapatképhez."
-                    : "These details are required for personalized team insight."}
+                  {t("orgOnboarding.step01Subtitle", locale)}
                 </p>
               </div>
 
               {/* Username */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
-                  {isHu ? "Megjelenítési név" : "Display name"}
+                  {t("orgOnboarding.displayName", locale)}
                 </label>
                 <input
                   type="text"
                   value={state.username}
                   onChange={(e) => set("username")(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleStep1Next()}
-                  placeholder={isHu ? "pl. Kovács Péter" : "e.g. Alex Walker"}
+                  placeholder={t("orgOnboarding.displayNamePlaceholder", locale)}
                   maxLength={20}
                   className={inputBase(!!errors.username)}
                   autoFocus
@@ -430,7 +426,7 @@ export function OrgOnboardingWizard() {
               {/* Birth year */}
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
-                  {isHu ? "Születési év" : "Birth year"}
+                  {t("orgOnboarding.birthYear", locale)}
                 </label>
                 <input
                   type="number"
@@ -439,22 +435,20 @@ export function OrgOnboardingWizard() {
                   onChange={(e) => {
                     if (e.target.value.length <= 4) set("birthYear")(e.target.value);
                   }}
-                  placeholder={isHu ? `pl. ${currentYear - 30}` : `e.g. ${currentYear - 30}`}
+                  placeholder={tf("orgOnboarding.birthYearPlaceholder", locale, { year: currentYear - 30 })}
                   min={minBirthYear}
                   max={maxBirthYear}
                   className={`${inputBase(!!errors.birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
                 />
                 <span className={`pl-1 text-xs ${errors.birthYear ? "text-bronze" : "text-muted"}`}>
                   {errors.birthYear ||
-                    (isHu
-                      ? `${minBirthYear}–${maxBirthYear} között`
-                      : `Between ${minBirthYear} and ${maxBirthYear}`)}
+                    tf("orgOnboarding.birthYearRange", locale, { min: minBirthYear, max: maxBirthYear })}
                 </span>
               </div>
 
               {/* Gender */}
               <div className="flex flex-col gap-2">
-                <span className="text-sm font-semibold text-ink">{isHu ? "Nem" : "Gender"}</span>
+                <span className="text-sm font-semibold text-ink">{t("orgOnboarding.gender", locale)}</span>
                 <div className="grid grid-cols-2 gap-2">
                   {GENDER_OPTIONS.map((opt) => (
                     <button
@@ -475,9 +469,9 @@ export function OrgOnboardingWizard() {
               {/* Country */}
               <div className="flex flex-col gap-2">
                 <PickerTrigger
-                  label={isHu ? "Ország" : "Country"}
+                  label={t("orgOnboarding.country", locale)}
                   value={countryLabel}
-                  placeholder={isHu ? "Válassz országot" : "Select country"}
+                  placeholder={t("orgOnboarding.countryPlaceholder", locale)}
                   onClick={() => setCountryPickerOpen(true)}
                 />
                 {errors.country && (
@@ -490,7 +484,7 @@ export function OrgOnboardingWizard() {
                 onClick={handleStep1Next}
                 className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
-                {isHu ? "Tovább →" : "Continue →"}
+                {t("orgOnboarding.continueBtn", locale)}
               </button>
             </div>
           )}
@@ -500,23 +494,21 @@ export function OrgOnboardingWizard() {
             <div className="flex flex-col gap-6">
               <div>
                 <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                  {isHu ? "Lépés 02" : "Step 02"}
+                  {t("orgOnboarding.step02", locale)}
                 </p>
                 <h2 className="font-fraunces text-2xl text-ink">
-                  {isHu ? "A céged" : "Your company"}
+                  {t("orgOnboarding.step02Title", locale)}
                 </h2>
                 <p className="mt-1 text-sm text-ink-body/70">
-                  {isHu
-                    ? "Ezek az adatok segítenek személyre szabni a csapatképet."
-                    : "These details help us tailor the team insight."}
+                  {t("orgOnboarding.step02Subtitle", locale)}
                 </p>
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
-                  {isHu ? "Mi a szerepköröd?" : "What is your role?"}{" "}
+                  {t("orgOnboarding.roleLabel", locale)}{" "}
                   <span className="font-normal text-muted">
-                    {isHu ? "(opcionális)" : "(optional)"}
+                    {t("orgOnboarding.optional", locale)}
                   </span>
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -535,14 +527,14 @@ export function OrgOnboardingWizard() {
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
-                  {isHu ? "Cég neve" : "Company name"} <span className="text-bronze">*</span>
+                  {t("orgOnboarding.companyName", locale)} <span className="text-bronze">*</span>
                 </label>
                 <input
                   type="text"
                   value={state.orgName}
                   onChange={(e) => set("orgName")(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleStep2Next()}
-                  placeholder={isHu ? "pl. Kovács és Társa Kft." : "e.g. Acme Inc."}
+                  placeholder={t("orgOnboarding.companyNamePlaceholder", locale)}
                   maxLength={100}
                   className={inputBase(!!errors.orgName)}
                   autoFocus
@@ -554,9 +546,9 @@ export function OrgOnboardingWizard() {
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
-                  {isHu ? "Iparág" : "Industry"}{" "}
+                  {t("orgOnboarding.industryLabel", locale)}{" "}
                   <span className="font-normal text-muted">
-                    {isHu ? "(opcionális)" : "(optional)"}
+                    {t("orgOnboarding.optional", locale)}
                   </span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -577,9 +569,9 @@ export function OrgOnboardingWizard() {
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
-                  {isHu ? "Csapat mérete" : "Team size"}{" "}
+                  {t("orgOnboarding.teamSizeLabel", locale)}{" "}
                   <span className="font-normal text-muted">
-                    {isHu ? "(opcionális)" : "(optional)"}
+                    {t("orgOnboarding.optional", locale)}
                   </span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -602,7 +594,7 @@ export function OrgOnboardingWizard() {
                   onClick={() => setStep(1)}
                   className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
-                  {isHu ? "← Vissza" : "← Back"}
+                  {t("orgOnboarding.backBtn", locale)}
                 </button>
                 <button
                   type="button"
@@ -611,8 +603,8 @@ export function OrgOnboardingWizard() {
                   className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting
-                    ? (isHu ? "Létrehozás..." : "Creating...")
-                    : (isHu ? "Tovább →" : "Continue →")}
+                    ? t("orgOnboarding.creatingBtn", locale)
+                    : t("orgOnboarding.continueBtn", locale)}
                 </button>
               </div>
             </div>
@@ -623,15 +615,13 @@ export function OrgOnboardingWizard() {
             <div className="flex flex-col gap-6">
               <div>
                 <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                  {isHu ? "Lépés 03" : "Step 03"}
+                  {t("orgOnboarding.step03", locale)}
                 </p>
                 <h2 className="font-fraunces text-2xl text-ink">
-                  {isHu ? "Az első csapatod" : "Your first team"}
+                  {t("orgOnboarding.step03Title", locale)}
                 </h2>
                 <p className="mt-1 text-sm text-ink-body/70">
-                  {isHu
-                    ? "Adj nevet a csapatnak, majd oszd meg a meghívó linket a tagokkal."
-                    : "Name your team, then share the invite link with members."}
+                  {t("orgOnboarding.step03Subtitle", locale)}
                 </p>
               </div>
 
@@ -639,14 +629,14 @@ export function OrgOnboardingWizard() {
                 <>
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold text-ink">
-                      {isHu ? "Csapat neve" : "Team name"} <span className="text-bronze">*</span>
+                      {t("orgOnboarding.teamName", locale)} <span className="text-bronze">*</span>
                     </label>
                     <input
                       type="text"
                       value={state.teamName}
                       onChange={(e) => set("teamName")(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleStep3Finish(false)}
-                      placeholder={isHu ? "pl. Értékesítési csapat" : "e.g. Sales Team"}
+                      placeholder={t("orgOnboarding.teamNamePlaceholder", locale)}
                       maxLength={60}
                       className={inputBase(!!errors.teamName)}
                       autoFocus
@@ -662,7 +652,7 @@ export function OrgOnboardingWizard() {
                       onClick={() => setStep(2)}
                       className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                     >
-                      {isHu ? "← Vissza" : "← Back"}
+                      {t("orgOnboarding.backBtn", locale)}
                     </button>
                     <button
                       type="button"
@@ -671,8 +661,8 @@ export function OrgOnboardingWizard() {
                       className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
                     >
                       {isSubmitting
-                        ? (isHu ? "Létrehozás..." : "Creating...")
-                        : (isHu ? "Csapat létrehozása →" : "Create team →")}
+                        ? t("orgOnboarding.creatingBtn", locale)
+                        : t("orgOnboarding.createTeamBtn", locale)}
                     </button>
                   </div>
 
@@ -681,7 +671,7 @@ export function OrgOnboardingWizard() {
                     onClick={() => setStep(4)}
                     className="text-center text-xs text-muted underline underline-offset-2 transition-colors hover:text-ink-body"
                   >
-                    {isHu ? "Kihagyom most, beállítom később" : "Skip for now, set up later"}
+                    {t("orgOnboarding.skipForNow", locale)}
                   </button>
                 </>
               ) : (
@@ -689,7 +679,7 @@ export function OrgOnboardingWizard() {
                 <div className="flex flex-col gap-5">
                   <div className="rounded-xl border border-sand bg-cream p-4">
                     <p className="mb-2 font-mono text-xs uppercase tracking-wider text-muted">
-                      {isHu ? "Meghívó link" : "Invite link"}
+                      {t("orgOnboarding.inviteLinkLabel", locale)}
                     </p>
                     <div className="flex items-center gap-2">
                       <code className="flex-1 truncate rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink">
@@ -705,16 +695,14 @@ export function OrgOnboardingWizard() {
                         }`}
                       >
                         {copied
-                          ? (isHu ? "✓ Másolva!" : "✓ Copied!")
-                          : (isHu ? "Másolás" : "Copy")}
+                          ? t("orgOnboarding.copiedBtn", locale)
+                          : t("orgOnboarding.copyBtn", locale)}
                       </button>
                     </div>
                   </div>
 
                   <p className="text-sm text-ink-body/70">
-                    {isHu
-                      ? "Küldd el ezt a linket a csapattagjaidnak. Regisztráció után automatikusan csatlakoznak a csapathoz és elkezdhetik a felmérést."
-                      : "Share this link with your teammates. After registration they will join the team automatically and can start the assessment."}
+                    {t("orgOnboarding.inviteLinkDescription", locale)}
                   </p>
 
                   <button
@@ -722,7 +710,7 @@ export function OrgOnboardingWizard() {
                     onClick={() => setStep(4)}
                     className="min-h-[48px] w-full rounded-lg bg-ink text-sm font-semibold text-white transition-colors hover:bg-ink-body"
                   >
-                    {isHu ? "Megyek a dashboardra →" : "Go to dashboard →"}
+                    {t("orgOnboarding.goToDashboard", locale)}
                   </button>
                 </div>
               )}
@@ -734,10 +722,10 @@ export function OrgOnboardingWizard() {
             <div className="flex flex-col gap-6">
               <div>
                 <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                  {isHu ? "Lépés 04" : "Step 04"}
+                  {t("orgOnboarding.step04", locale)}
                 </p>
                 <h2 className="font-fraunces text-2xl text-ink">
-                  {isHu ? "Egy utolsó lépés" : "One final step"}
+                  {t("orgOnboarding.step04Title", locale)}
                 </h2>
               </div>
 
@@ -752,18 +740,16 @@ export function OrgOnboardingWizard() {
                   className="mt-0.5 h-5 w-5 shrink-0 rounded border-sand accent-sage focus:ring-sage/30"
                 />
                 <span className="text-sm text-ink-body">
-                  {isHu
-                    ? "Hozzájárulok adataim kezeléséhez az"
-                    : "I consent to the processing of my data according to the"}{" "}
+                  {t("orgOnboarding.consentPrefix", locale)}{" "}
                   <a
                     href="/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-medium text-bronze underline hover:text-bronze-dark"
                   >
-                    {isHu ? "Adatvédelmi tájékoztató" : "Privacy Policy"}
+                    {t("orgOnboarding.privacyPolicy", locale)}
                   </a>{" "}
-                  {isHu ? "alapján." : "."}
+                  {t("orgOnboarding.consentSuffix", locale)}
                 </span>
               </label>
 
@@ -778,8 +764,8 @@ export function OrgOnboardingWizard() {
                 className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {isSubmitting
-                  ? (isHu ? "Mentés..." : "Saving...")
-                  : (isHu ? "Beállítások mentése és tovább →" : "Save settings and continue →")}
+                  ? t("orgOnboarding.savingBtn", locale)
+                  : t("orgOnboarding.saveAndContinueBtn", locale)}
               </button>
             </div>
           )}
@@ -787,9 +773,7 @@ export function OrgOnboardingWizard() {
         </div>
 
         <p className="mt-6 text-center text-xs text-muted">
-          {isHu
-            ? "Bármikor módosíthatod ezeket a beállításokat a profil oldalon."
-            : "You can update these settings anytime on your profile page."}
+          {t("orgOnboarding.footerNote", locale)}
         </p>
       </div>
 
@@ -801,8 +785,8 @@ export function OrgOnboardingWizard() {
         options={countryOptions}
         selectedValue={state.country}
         searchable
-        title={isHu ? "Ország" : "Country"}
-        searchPlaceholder={isHu ? "Keresés..." : "Search..."}
+        title={t("orgOnboarding.countryPickerTitle", locale)}
+        searchPlaceholder={t("orgOnboarding.countryPickerSearch", locale)}
       />
     </div>
   );
