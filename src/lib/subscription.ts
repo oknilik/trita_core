@@ -9,7 +9,9 @@ export type SubscriptionStatus =
   | "unpaid"
   | "none";
 
-const PAST_DUE_GRACE_DAYS = 5;
+export type SubscriptionState = "none" | "active" | "restricted" | "frozen";
+
+const RESTRICTED_TO_FROZEN_DAYS = 30;
 
 export async function getOrgSubscription(orgId: string) {
   return prisma.subscription.findUnique({
@@ -25,6 +27,47 @@ export async function getOrgSubscription(orgId: string) {
       candidateCredits: true,
     },
   });
+}
+
+type SubscriptionRecord = NonNullable<Awaited<ReturnType<typeof getOrgSubscription>>>;
+
+function toFrozenThreshold(currentPeriodEnd: Date): Date {
+  return new Date(
+    currentPeriodEnd.getTime() + RESTRICTED_TO_FROZEN_DAYS * 24 * 60 * 60 * 1000,
+  );
+}
+
+/**
+ * 3-szintű előfizetés-állapot a journey/access döntésekhez.
+ *
+ * ACTIVE:
+ * - status: active
+ * - status: trialing && trialEndsAt > now
+ *
+ * RESTRICTED:
+ * - status: past_due
+ * - status: unpaid
+ * - status: canceled és currentPeriodEnd >= now - 30d
+ * - minden egyéb nem-active, nem-frozen eset
+ *
+ * FROZEN:
+ * - status: canceled és currentPeriodEnd < now - 30d
+ */
+export function getSubscriptionState(
+  sub: Pick<SubscriptionRecord, "status" | "trialEndsAt" | "currentPeriodEnd"> | null,
+  now = new Date(),
+): SubscriptionState {
+  if (!sub || sub.status === "none") return "none";
+
+  if (sub.status === "active") return "active";
+  if (sub.status === "trialing" && sub.trialEndsAt && sub.trialEndsAt > now) return "active";
+
+  if (sub.status === "canceled" && sub.currentPeriodEnd) {
+    const frozenThreshold = toFrozenThreshold(sub.currentPeriodEnd);
+    if (now >= frozenThreshold) return "frozen";
+  }
+
+  return "restricted";
 }
 
 export type PlanTier = "team" | "org" | "scale" | "none";
@@ -57,16 +100,7 @@ export async function getCandidateCredits(orgId: string): Promise<number> {
 }
 
 export function hasAccess(sub: Awaited<ReturnType<typeof getOrgSubscription>>): boolean {
-  if (!sub) return false;
-  if (sub.status === "active") return true;
-  if (sub.status === "trialing" && sub.trialEndsAt && sub.trialEndsAt > new Date()) return true;
-  if (sub.status === "past_due" && sub.currentPeriodEnd) {
-    const graceCutoff = new Date(
-      sub.currentPeriodEnd.getTime() + PAST_DUE_GRACE_DAYS * 24 * 60 * 60 * 1000
-    );
-    if (graceCutoff > new Date()) return true;
-  }
-  return false;
+  return getSubscriptionState(sub) === "active";
 }
 
 export function isPastDue(sub: Awaited<ReturnType<typeof getOrgSubscription>>): boolean {

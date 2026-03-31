@@ -3,7 +3,7 @@ import "server-only";
 import { InvitationStatus, UserRole } from "@prisma/client";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { prisma } from "@/lib/prisma";
-import { getOrgSubscription, hasAccess } from "@/lib/subscription";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { JOURNEY_TEAM_INTENT_FEATURE_KEY } from "@/lib/journey/intent";
 import type {
   ActiveSurface,
@@ -13,14 +13,11 @@ import type {
   JourneyEntryIntent,
   JourneyOrgMembershipSnapshot,
   JourneyPendingJoinInviteSnapshot,
-  JourneySubscriptionState,
   JourneyTeamMembershipSnapshot,
 } from "@/lib/journey/types";
 
 const MIN_MEMBERS_FOR_TEAM_INSIGHTS = 3;
 const MIN_MEMBERS_FOR_ORG_INSIGHTS = 3;
-const RESTRICTED_TO_FROZEN_DAYS = 30;
-
 export interface ResolveJourneyContextOptions {
   teamId?: string | null;
   orgId?: string | null;
@@ -76,29 +73,6 @@ export function deriveJourneyEntryIntent(
 ): JourneyEntryIntent {
   if (overrideIntent) return overrideIntent;
   return explicitTeamIntent ? "team" : "explore";
-}
-
-export function deriveJourneySubscriptionState(
-  subscription:
-    | {
-        status: string;
-        hasAccess: boolean;
-        currentPeriodEnd: Date | null;
-      }
-    | null,
-  now = new Date(),
-): JourneySubscriptionState {
-  if (!subscription) return "none";
-  if (subscription.hasAccess) return "active";
-
-  if (subscription.status === "canceled" && subscription.currentPeriodEnd) {
-    const frozenThreshold = new Date(
-      subscription.currentPeriodEnd.getTime() + RESTRICTED_TO_FROZEN_DAYS * 24 * 60 * 60 * 1000,
-    );
-    if (now >= frozenThreshold) return "frozen";
-  }
-
-  return "restricted";
 }
 
 function deriveActiveSurface(params: {
@@ -461,17 +435,8 @@ export async function resolveJourneyContext(
   };
 
   const subscriptionRecord = orgId ? await getOrgSubscription(orgId) : null;
-  const subscriptionHasAccess = Boolean(subscriptionRecord && hasAccess(subscriptionRecord));
-  const subscriptionState = deriveJourneySubscriptionState(
-    subscriptionRecord
-      ? {
-          status: subscriptionRecord.status,
-          hasAccess: subscriptionHasAccess,
-          currentPeriodEnd: subscriptionRecord.currentPeriodEnd,
-        }
-      : null,
-    now,
-  );
+  const subscriptionState = getSubscriptionState(subscriptionRecord, now);
+  const subscriptionHasAccess = subscriptionState === "active";
 
   const pendingJoinInvite = pickPendingJoinInvite(pendingTeamInvite, pendingOrgInvite);
   const currentContext = deriveJourneyCurrentContext(normalizedOrgMembership?.role ?? null);
