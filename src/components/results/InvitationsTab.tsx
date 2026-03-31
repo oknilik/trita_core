@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
-import { t, type Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
 interface InvitationsTabProps {
@@ -70,11 +70,6 @@ export function InvitationsTab({
 }: InvitationsTabProps) {
   const { locale } = useLocale();
   const { showToast } = useToast();
-
-  // A) LOCKED
-  if (!isPlus) {
-    return <LockedInvitations />;
-  }
 
   // ─── State & logic (create / copy / delete) ────────────────────────────────
   const [invitations, setInvitations] = useState(sentInvitations);
@@ -148,6 +143,11 @@ export function InvitationsTab({
       setDeletingId(null);
     }
   };
+
+  // A) LOCKED
+  if (!isPlus) {
+    return <LockedInvitations />;
+  }
 
   const active = invitations.filter((i) => i.status !== "CANCELED");
   const completed = active.filter((i) => i.status === "COMPLETED");
@@ -262,6 +262,19 @@ export function InvitationsTab({
           <p className="text-xs text-[#8a8a9a]">
             {t("invitations.emptySub", locale)}
           </p>
+          <p className="mx-auto mt-2 max-w-[420px] text-[11px] leading-relaxed text-[#7a6f63]">
+            {locale === "hu"
+              ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
+              : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
+          </p>
+          <div className="mt-3">
+            <Link
+              href="/onboarding?intent=team"
+              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[#dcccb5] bg-white px-4 text-[11px] font-semibold text-[#7d5a40] transition hover:bg-[#fff7ec]"
+            >
+              {locale === "hu" ? "Csapat út megnyitása" : "Open team path"}
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col gap-4">

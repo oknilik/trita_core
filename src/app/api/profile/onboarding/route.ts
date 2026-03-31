@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSelfAccessLevel } from "@/lib/access";
+import { getActiveOrgMembership } from "@/lib/org-context";
 
 const currentYear = new Date().getFullYear();
 
@@ -33,6 +34,8 @@ export async function GET() {
       avatarUrl: true,
       role: true,
       orgMemberships: {
+        where: { leftAt: null },
+        orderBy: { joinedAt: "desc" },
         select: {
           role: true,
           org: { select: { id: true, name: true } },
@@ -49,10 +52,15 @@ export async function GET() {
   if (!profile) return NextResponse.json({});
 
   const accessLevel = await getSelfAccessLevel(profile.id);
+  const activeMembership = await getActiveOrgMembership(profile.id);
+  const activeOrgMembership =
+    profile.orgMemberships.find((m) => m.org.id === activeMembership?.orgId) ??
+    profile.orgMemberships[0] ??
+    null;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id: _id, ...rest } = profile;
 
-  return NextResponse.json({ ...rest, accessLevel });
+  return NextResponse.json({ ...rest, activeOrgMembership, accessLevel });
 }
 
 export async function POST(req: Request) {

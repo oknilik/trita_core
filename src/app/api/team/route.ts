@@ -59,7 +59,7 @@ export async function GET() {
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const memberships = await prisma.organizationMember.findMany({
-    where: { userId: profile.id },
+    where: { userId: profile.id, leftAt: null },
     select: { orgId: true },
   });
 

@@ -17,6 +17,7 @@ import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { getOrgSubscription, hasAccess } from "@/lib/subscription";
 import { getAccessibleTeamIds } from "@/lib/team-auth";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
@@ -89,10 +90,7 @@ export default async function RootLayout({
         select: { id: true, username: true, email: true },
       });
       if (profile) {
-        const membership = await prisma.organizationMember.findUnique({
-          where: { userId: profile.id },
-          select: { role: true, orgId: true },
-        });
+        const membership = await getActiveOrgMembership(profile.id);
         if (membership) {
           const isAdmin = hasOrgRole(membership.role, "ORG_ADMIN");
           const isManager = hasOrgRole(membership.role, "ORG_MANAGER");

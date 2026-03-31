@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -107,6 +108,19 @@ export function ComparisonTab({
         <p className="mx-auto max-w-[380px] text-[13px] leading-relaxed text-[#8a8a9a]">
           {t("comparison.noDataBody", locale)}
         </p>
+        <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-relaxed text-[#7a6f63]">
+          {locale === "hu"
+            ? "Következő lépés: kérj observer visszajelzést, vagy kapcsolódj csapathoz a közös kép felépítéséhez."
+            : "Next step: request observer feedback or connect to a team to build a shared picture."}
+        </p>
+        <div className="mt-4 flex justify-center">
+          <Link
+            href="/profile/results?tab=invites"
+            className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[#3d6b5e] px-5 text-[12px] font-semibold text-white transition hover:brightness-110"
+          >
+            {locale === "hu" ? "Observer meghívása" : "Invite observers"}
+          </Link>
+        </div>
       </div>
     );
   }

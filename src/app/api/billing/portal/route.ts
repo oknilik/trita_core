@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -19,10 +20,7 @@ export async function POST() {
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const membership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { role: true, orgId: true },
-  });
+  const membership = await getActiveOrgMembership(profile.id);
   if (!membership || membership.role !== "ORG_ADMIN") {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

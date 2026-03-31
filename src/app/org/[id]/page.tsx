@@ -8,17 +8,25 @@ import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getOrgPageData } from "@/lib/org-stats";
+import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import {
   DashboardMetricCard,
   DashboardPanel,
   DashboardSectionHeader,
+  DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
+import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/dashboard/ia-contract";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Szervezet | Trita", robots: { index: false } };
+  const locale = await getServerLocale();
+  return {
+    title: locale === "hu" ? "Szervezet | trita" : "Organization | trita",
+    robots: { index: false },
+  };
 }
 
 // ── Avatar color (shared with UserMenu) ─────────────────────────────────────
@@ -103,25 +111,112 @@ export default async function OrgDetailPage({
   const orgRemainingCount = Math.max(pageData.memberCount - pageData.completedMemberCount, 0);
   const activeRemainingCount = Math.max(pageData.activeTotalParticipants - pageData.activeSelfDone, 0);
 
-  // Build narrative hero subtitle
-  const heroSubParts: string[] = [];
-  heroSubParts.push(`${pageData.teamCount} ${t("org.teamsLabel", locale)}`);
-  heroSubParts.push(`${pageData.memberCount} ${t("org.membersLabel", locale)}`);
-  if (pageData.activeCampaignCount > 0) {
-    heroSubParts.push(`${pageData.activeCampaignCount} ${t("org.activeCampaigns", locale).toLowerCase()}`);
+  const orgRiskItems: DashboardRiskAttentionItem[] = [];
+  if (pageData.pendingCount > 0) {
+    orgRiskItems.push({
+      id: "pending-members",
+      severity: "high",
+      title: isHu ? "Függő meghívások" : "Pending invites",
+      description: isHu
+        ? `${pageData.pendingCount} meghívás még visszaigazolásra vár.`
+        : `${pageData.pendingCount} invites are still awaiting acceptance.`,
+      cta: {
+        label: isHu ? "Tagok kezelése" : "Manage members",
+        href: `/org/${orgId}?tab=members`,
+      },
+    });
   }
-  const heroSub = `${t("org.heroSub", locale)} — ${heroSubParts.join(", ")}.`;
-  const heroChips = [
-    `${pageData.memberCount} ${t("org.membersLabel", locale).toLowerCase()}`,
-    `${pageData.teamCount} ${t("org.teamsLabel", locale).toLowerCase()}`,
-    pageData.activeCampaignCount > 0
-      ? `${pageData.activeCampaignCount} ${t("org.activeCampaigns", locale).toLowerCase()}`
-      : (isHu ? "nincs aktív kör" : "no active rounds"),
-  ];
+  if (pageData.activeCampaignCount === 0) {
+    orgRiskItems.push({
+      id: "no-active-campaign",
+      severity: "medium",
+      title: isHu ? "Nincs aktív kör" : "No active round",
+      description: isHu
+        ? "A szervezeti trendekhez érdemes aktív visszajelzési kört futtatni."
+        : "Run an active feedback round to track org-level trends.",
+      cta: {
+        label: isHu ? "Kör indítása" : "Start round",
+        href: `/org/${orgId}?tab=campaigns`,
+      },
+    });
+  }
+  const teamsReadyCount = teams.filter((teamItem) => teamItem._count.members >= 3).length;
+  const hasObserverFeedback = pageData.campaigns.some(
+    (campaign) => campaign.observerDoneCount > 0,
+  );
+  const orgLayerStatuses = evaluateProductLayersForScope(locale === "en" ? "en" : "hu", {
+    hasSelfAssessmentStarted: pageData.memberCount > 0,
+    hasSelfAssessment: pageData.completedMemberCount > 0,
+    hasBelbinStarted: pageData.completedMemberCount > 0,
+    hasBelbin: teamsReadyCount > 0,
+    hasStrengthProfile: pageData.completedMemberCount > 0,
+    hasObserverFeedback,
+    hasTeamInsights: teamsReadyCount > 0,
+    hasOrgCampaign: pageData.activeCampaignCount > 0,
+    hasValuesLayerStarted: false,
+    hasValuesLayer: false,
+    hasConflictLayerStarted: false,
+    hasConflictLayer: false,
+    hasPlusAccess: true,
+  }, "dashboard", "org");
+  const orgLayerCompletedCount = orgLayerStatuses.filter(
+    (layer) => layer.status === "COMPLETED",
+  ).length;
+  const orgDashboardVm = createOrgDashboardIA({
+    locale: isHu ? "hu" : "en",
+    orgName: org.name,
+    totalMembers: pageData.memberCount,
+    completedMembers: pageData.completedMemberCount,
+    teamCount: pageData.teamCount,
+    teamsReadyCount,
+    pendingAttentionCount: orgRiskItems.length,
+    activeCampaignCount: pageData.activeCampaignCount,
+    recommendedAction: pageData.pendingCount > 0
+      ? {
+          title: isHu ? "Ajánlott következő lépés" : "Recommended next step",
+          description: isHu
+            ? "Zárd le a függő meghívásokat, hogy stabilabb legyen a szervezeti kép."
+            : "Close pending invites to improve org-level signal quality.",
+          primary: {
+            label: isHu ? "Tagok kezelése" : "Manage members",
+            href: `/org/${orgId}?tab=members`,
+          },
+          secondary: {
+            label: isHu ? "Csapatok áttekintése" : "Review teams",
+            href: `/org/${orgId}?tab=teams`,
+          },
+        }
+      : {
+          title: isHu ? "Ajánlott következő lépés" : "Recommended next step",
+          description: isHu
+            ? "A következő szervezeti insight körhöz indíts új kampányt."
+            : "Launch a new campaign for the next org insight cycle.",
+          primary: {
+            label: isHu ? "Új kampány indítása" : "Start new campaign",
+            href: `/org/${orgId}?tab=campaigns`,
+          },
+          secondary: {
+            label: isHu ? "Csapatok áttekintése" : "Review teams",
+            href: `/org/${orgId}?tab=teams`,
+          },
+        },
+    riskItems: orgRiskItems,
+    recentActivity: teams.slice(0, 3).map((teamItem, index) => ({
+      id: `team-activity-${index}`,
+      kind: "system",
+      title: isHu ? `Csapat frissítve: ${teamItem.name}` : `Team updated: ${teamItem.name}`,
+      meta: `${teamItem._count.members} ${isHu ? "tag" : "members"}`,
+      timestampLabel: teamItem.createdAt.toISOString(),
+    })),
+  });
+  const heroSub = orgDashboardVm.heroSummary.summary;
+  const heroChips = orgDashboardVm.heroSummary.chips;
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-10 md:gap-14">
+    <PlatformPageShell
+      surface="org"
+      contentClassName="max-w-5xl gap-10 px-4 py-10 md:gap-14"
+    >
 
         {/* ═══ 1. ORG HERO ═══ */}
         <div
@@ -165,36 +260,32 @@ export default async function OrgDetailPage({
 
                 <div className="mt-6 flex flex-wrap gap-2">
                   <Link
-                    href={`/org/${orgId}?tab=campaigns`}
+                    href={orgDashboardVm.recommendedAction.primary.href}
                     className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
                     style={{ backgroundColor: ORG_HERO_PRIMARY }}
                   >
-                    {t("org.heroCta1", locale)}
+                    {orgDashboardVm.recommendedAction.primary.label}
                   </Link>
                   <Link
-                    href={`/org/${orgId}?tab=teams`}
+                    href={orgDashboardVm.recommendedAction.secondary?.href ?? `/org/${orgId}?tab=teams`}
                     className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
                   >
-                    {t("org.heroCta2", locale)}
+                    {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
                   </Link>
-                  {isAdmin && (
-                    <Link
-                      href={`/org/${orgId}/settings`}
-                      className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-4 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
-                    >
-                      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="8" cy="8" r="2" />
-                        <path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M3.5 12.5l.7-.7M11.8 4.2l.7-.7" />
-                      </svg>
-                      {t("org.settingsLink", locale)}
-                    </Link>
-                  )}
                 </div>
+                {isAdmin ? (
+                  <Link
+                    href={`/org/${orgId}/settings`}
+                    className="mt-3 inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
+                  >
+                    {t("org.settingsLink", locale)} →
+                  </Link>
+                ) : null}
               </div>
 
               <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
                 <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
-                  {isHu ? "Live snapshot" : "Live snapshot"}
+                  {isHu ? "Élő pillanatkép" : "Live snapshot"}
                 </p>
 
                 <div className="mt-3 grid grid-cols-3 gap-2">
@@ -330,6 +421,52 @@ export default async function OrgDetailPage({
           </div>
         </section>
 
+        <section>
+          <DashboardSectionHeader label={isHu ? "4+2 rétegkészültség" : "4+2 layer readiness"} className="mb-5" />
+          <DashboardPanel className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+                {isHu ? "Szervezeti mélyítő rétegek" : "Org deepening layers"}
+              </p>
+              <DashboardStatusChip
+                label={`${orgLayerCompletedCount}/${orgLayerStatuses.length} ${isHu ? "kész" : "done"}`}
+                tone="sage"
+              />
+            </div>
+            <div className="mt-4 grid gap-2 md:grid-cols-2">
+              {orgLayerStatuses.map((layer) => {
+                const tone =
+                  layer.status === "COMPLETED"
+                    ? "sage"
+                    : layer.status === "IN_PROGRESS"
+                      ? "bronze"
+                      : layer.status === "AVAILABLE"
+                        ? "warm"
+                        : "muted";
+                const statusLabel = layer.status === "COMPLETED"
+                  ? (isHu ? "Kész" : "Completed")
+                  : layer.status === "IN_PROGRESS"
+                    ? (isHu ? "Folyamatban" : "In progress")
+                    : layer.status === "AVAILABLE"
+                      ? (isHu ? "Elérhető" : "Available")
+                      : (isHu ? "Zárolt" : "Locked");
+
+                return (
+                  <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[12px] font-semibold text-ink">{layer.label}</p>
+                      <DashboardStatusChip label={statusLabel} tone={tone} />
+                    </div>
+                    <p className="mt-1 text-[11px] leading-relaxed text-ink-body">
+                      {layer.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </DashboardPanel>
+        </section>
+
         {/* ═══ 4. TEAM SUMMARY CARDS ═══ */}
         <section>
           <DashboardSectionHeader label={t("org.teamsEyebrow", locale)} className="mb-5" />
@@ -423,7 +560,6 @@ export default async function OrgDetailPage({
           />
         </Suspense>
 
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

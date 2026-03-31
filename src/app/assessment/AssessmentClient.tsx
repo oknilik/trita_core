@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { useToast } from '@/components/ui/Toast'
@@ -89,6 +90,7 @@ export function AssessmentClient({
   const remainingQuestions = Math.max(totalQuestions - answeredCount, 0)
   const etaMinutes = Math.max(1, Math.ceil((remainingQuestions * 15) / 60))
   const activeQuestion = questions[questionIndex] ?? null
+  const questionIdSet = new Set(questions.map((q) => q.id))
   const isLastQuestion = questionIndex === totalQuestions - 1
   const canGoPrev = questionIndex > 0
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined
@@ -126,8 +128,14 @@ export function AssessmentClient({
         const draftAnswers = parsed?.answers ?? (typeof parsed === 'object' ? parsed : {})
         if (draftAnswers && Object.keys(draftAnswers).length > 0) {
           const numericAnswers: Record<number, number> = {}
-          for (const [k, v] of Object.entries(draftAnswers)) numericAnswers[Number(k)] = v as number
+          for (const [k, v] of Object.entries(draftAnswers)) {
+            const numericId = Number(k)
+            if (!questionIdSet.has(numericId)) continue
+            if (typeof v !== 'number' || ![1, 2, 3, 4, 5].includes(v)) continue
+            numericAnswers[numericId] = v
+          }
           setAnswers(numericAnswers)
+          latestAnswersRef.current = numericAnswers
           // Jump to first unanswered question
           // Jump to the last answered question so the user sees where they left off
           let lastAnswered = 0
@@ -144,7 +152,7 @@ export function AssessmentClient({
     } catch {
       // ignore
     }
-  }, [draftKey, initialDraft?.answers, clearDraft]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [draftKey, initialDraft?.answers, clearDraft, questions, totalQuestions]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save draft to localStorage on every answer change
   useEffect(() => {
@@ -176,7 +184,7 @@ export function AssessmentClient({
     return () => {
       if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
     }
-  }, [answers])
+  }, [answers, guestMode])
 
   // No beforeunload warning — answers are auto-saved to localStorage
 
@@ -209,10 +217,9 @@ export function AssessmentClient({
     }
 
     const currentAnswers = latestAnswersRef.current
-    if (Object.keys(currentAnswers).length < totalQuestions) {
-      // Find first unanswered and go there
-      const firstUnanswered = questions.findIndex((q) => currentAnswers[q.id] === undefined)
-      if (firstUnanswered !== -1) setQuestionIndex(firstUnanswered)
+    const firstUnanswered = questions.findIndex((q) => currentAnswers[q.id] === undefined)
+    if (firstUnanswered !== -1) {
+      setQuestionIndex(firstUnanswered)
       return
     }
     if (isSubmitting) return
@@ -284,11 +291,13 @@ export function AssessmentClient({
       console.error(error)
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [questions, isSubmitting, totalQuestions, testType, locale, draftKey, router, showToast])
+  }, [questions, isSubmitting, totalQuestions, testType, locale, draftKey, router, showToast, guestMode])
 
   const handleAnswer = useCallback((questionId: number, value: number) => {
     const updatedAnswers = { ...answers, [questionId]: value }
     const wasUnanswered = answers[questionId] === undefined
+    // Keep ref in sync immediately; finish can be triggered before React commits state.
+    latestAnswersRef.current = updatedAnswers
     setAnswers(updatedAnswers)
 
     if (!autoAdvance || !activeQuestion || activeQuestion.id !== questionId) return
@@ -384,9 +393,9 @@ export function AssessmentClient({
       <div className="min-h-dvh bg-[#f7f4ef]">
         {/* Minimal nav */}
         <nav className="flex items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-          <a href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[#1a1a2e]">
+          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[#1a1a2e]">
             <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
-          </a>
+          </Link>
         </nav>
 
         {/* Two-column hero */}
@@ -469,9 +478,9 @@ export function AssessmentClient({
     <div className="flex min-h-dvh flex-col bg-[#f7f4ef]">
       {/* ═══ MINIMAL NAV ═══ */}
       <nav className="flex shrink-0 items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-        <a href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[#1a1a2e]">
+        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[#1a1a2e]">
           <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
-        </a>
+        </Link>
         <div className="flex items-center gap-3">
           <span className="text-[10px] text-[#3d6b5e]">
             ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}

@@ -56,7 +56,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           setProfileName(data.username);
           window.localStorage.setItem("trita_username", data.username);
         }
-        setOrgRole(data.orgMemberships?.[0]?.role ?? null);
+        setOrgRole(data.activeOrgMembership?.role ?? data.orgMemberships?.[0]?.role ?? null);
         setAccessLevel(data.accessLevel ?? null);
       } catch {
         // noop

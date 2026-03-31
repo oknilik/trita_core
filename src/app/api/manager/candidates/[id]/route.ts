@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageTeam } from "@/lib/team-auth";
 import { getOrgSubscription, getPlanTier } from "@/lib/subscription";
@@ -56,12 +57,7 @@ export async function DELETE(
   // Determine orgId: via team, or via manager's org membership
   const orgId =
     invite.team?.orgId ??
-    (
-      await prisma.organizationMember.findUnique({
-        where: { userId: profile.id },
-        select: { orgId: true },
-      })
-    )?.orgId ??
+    (await getActiveOrgMembership(profile.id))?.orgId ??
     null;
 
   await prisma.candidateInvite.update({

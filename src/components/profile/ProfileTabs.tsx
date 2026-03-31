@@ -22,6 +22,8 @@ import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
+import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
+import type { ProductLayerStatus } from "@/lib/domain/layers-4plus2";
 
 type ProfileLevel = "start" | "plus";
 type TabId = "results" | "comparison" | "invites";
@@ -73,6 +75,19 @@ export interface SerializedReceivedInvitation {
   inviterUsername: string | null;
 }
 
+export interface BridgeNextStep {
+  stage: string;
+  explanation: string;
+  primary: {
+    label: string;
+    href: string;
+  };
+  secondary?: {
+    label: string;
+    href: string;
+  } | null;
+}
+
 export interface ProfileTabsProps {
   name: string;
   assessmentDate: string;
@@ -107,6 +122,8 @@ export interface ProfileTabsProps {
     takeaways: string[];
     closingText: string;
   };
+  bridgeNextStep?: BridgeNextStep;
+  layerStatuses?: ProductLayerStatus[];
 }
 
 // ─── Shared paywall components ──────────────────────────────────────────────
@@ -322,6 +339,8 @@ export function ProfileTabs({
   strengths,
   watchAreas,
   plusContent,
+  bridgeNextStep,
+  layerStatuses,
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
@@ -334,6 +353,23 @@ export function ProfileTabs({
   const isPlus = accessLevel !== "start";
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
+
+  const stageLabelByLocale: Record<string, { hu: string; en: string }> = {
+    SELF_COMPLETED: { hu: "Self kész", en: "Self completed" },
+    OBSERVER_PENDING: { hu: "Observer folyamatban", en: "Observer in progress" },
+    TEAM_NOT_JOINED: { hu: "Nincs csapat", en: "No team yet" },
+    TEAM_PENDING_MEMBERS: { hu: "Tagokra vár", en: "Waiting for members" },
+    TEAM_PARTIAL: { hu: "Csapat részben kész", en: "Team partially ready" },
+    TEAM_READY: { hu: "Csapat kész", en: "Team ready" },
+    ORG_PARTIAL: { hu: "Szervezet részben kész", en: "Org partially ready" },
+    ORG_READY: { hu: "Szervezet kész", en: "Org ready" },
+    SELF_NOT_STARTED: { hu: "Self még nem indult", en: "Self not started" },
+    SELF_IN_PROGRESS: { hu: "Self folyamatban", en: "Self in progress" },
+  };
+  const bridgeStageLabel = bridgeNextStep
+    ? (stageLabelByLocale[bridgeNextStep.stage]?.[locale] ??
+      (isHu ? "Következő lépés" : "Next step"))
+    : null;
 
   const handleTabChange = useCallback(
     (tab: TabId) => {
@@ -571,6 +607,70 @@ export function ProfileTabs({
         onNavigateToComparison={() => handleTabChange("comparison")}
         onNavigateToInvites={() => handleTabChange("invites")}
       />
+
+      {layerStatuses && layerStatuses.length > 0 ? (
+        <section className="rounded-2xl border border-sand bg-white p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+            {isHu ? "4+2 modell állapota" : "4+2 model status"}
+          </p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {layerStatuses.map((layer) => {
+              const statusLabel =
+                layer.status === "COMPLETED"
+                  ? isHu
+                    ? "Kész"
+                    : "Completed"
+                  : layer.status === "IN_PROGRESS"
+                    ? isHu
+                      ? "Folyamatban"
+                      : "In progress"
+                  : layer.status === "AVAILABLE"
+                    ? isHu
+                      ? "Elérhető"
+                      : "Available"
+                    : isHu
+                      ? "Zárolt"
+                      : "Locked";
+
+              const statusClass =
+                layer.status === "COMPLETED"
+                  ? "bg-sage-soft text-sage-dark"
+                  : layer.status === "IN_PROGRESS"
+                    ? "bg-[#e9f3ff] text-[#2f5d87]"
+                  : layer.status === "AVAILABLE"
+                    ? "bg-[#f6ead6] text-[#8a5530]"
+                    : "bg-cream text-ink-body";
+
+              return (
+                <div key={layer.id} className="rounded-xl border border-sand bg-cream px-3 py-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[12px] font-semibold text-ink">{layer.label}</p>
+                    <span className={`rounded-full px-2 py-[2px] text-[10px] font-semibold ${statusClass}`}>
+                      {statusLabel}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[11px] leading-relaxed text-ink-body">{layer.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Journey bridge CTA — single primary direction after self insight */}
+      {bridgeNextStep ? (
+        <JourneyNextStepCard
+          eyebrow={isHu ? "Következő lépés" : "Next best action"}
+          title={bridgeStageLabel
+            ? `${isHu ? "A te utad" : "Your journey"} · ${bridgeStageLabel}`
+            : isHu
+              ? "A te utad"
+              : "Your journey"}
+          description={bridgeNextStep.explanation}
+          primary={bridgeNextStep.primary}
+          secondary={bridgeNextStep.secondary}
+        />
+      ) : null}
 
       {/* Insight pair */}
       {strengths && watchAreas && (

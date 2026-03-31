@@ -2,12 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { getManageableTeamIds } from "@/lib/team-auth";
+import { getJourneySnapshotForProfileId, serializeJourneySnapshot } from "@/lib/journey/service";
 
 // GET /api/admin/org-status
 // Returns org, team, member, and assessment status for the admin dashboard.
 // Only accessible by ORG_ADMIN or ORG_MANAGER.
-export async function GET() {
+export async function GET(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -18,10 +20,7 @@ export async function GET() {
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   // Must be org member with manager+ role
-  const orgMembership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { orgId: true, role: true },
-  });
+  const orgMembership = await getActiveOrgMembership(profile.id);
   if (!orgMembership || !hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
@@ -155,6 +154,11 @@ export async function GET() {
     ? `${baseUrl}/join/${inviteByTeamId.get(firstTeam.id)}`
     : null;
 
+  const url = new URL(req.url);
+  const locale = url.searchParams.get("locale") === "hu" ? "hu" : "en";
+  const journeySnapshot = await getJourneySnapshotForProfileId(profile.id, { orgId, locale });
+  const journey = serializeJourneySnapshot(journeySnapshot);
+
   return NextResponse.json({
     org: {
       id: org.id,
@@ -171,5 +175,6 @@ export async function GET() {
       adminHasAssessment,
       firstTeamInviteUrl,
     },
+    journey,
   });
 }

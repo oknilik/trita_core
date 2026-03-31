@@ -313,7 +313,7 @@ Opciók:
 
       // Org membership
       const hasOrgMembership = await prisma.organizationMember.findUnique({
-        where: { userId: userProfile.id },
+        where: { orgId_userId: { orgId: org.id, userId: userProfile.id } },
       });
       if (!hasOrgMembership) {
         await prisma.organizationMember.create({

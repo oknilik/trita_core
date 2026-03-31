@@ -6,11 +6,16 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "HR & Team | Trita", robots: { index: false } };
+  const locale = await getServerLocale();
+  return {
+    title: locale === "hu" ? "Csapatok | trita" : "Teams | trita",
+    robots: { index: false },
+  };
 }
 
 export default async function TeamListPage() {
@@ -24,7 +29,7 @@ export default async function TeamListPage() {
   if (!profile) redirect("/dashboard");
 
   const memberships = await prisma.organizationMember.findMany({
-    where: { userId: profile.id },
+    where: { userId: profile.id, leftAt: null },
     select: { orgId: true },
   });
   if (memberships.length === 0) redirect("/org");
@@ -44,13 +49,16 @@ export default async function TeamListPage() {
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-12">
+    <PlatformPageShell
+      surface="team"
+      contentClassName="max-w-5xl gap-8 px-4 py-10 md:gap-12"
+    >
 
         {/* Header */}
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
-            // {t("team.eyebrow", locale)}
+            {"// "}
+            {t("team.eyebrow", locale)}
           </p>
           <h1 className="mt-2 font-fraunces text-3xl tracking-tight text-ink md:text-4xl">
             {t("team.title", locale)}
@@ -63,7 +71,8 @@ export default async function TeamListPage() {
         {/* Create new team */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bronze">
-            // {t("team.createNew", locale)}
+            {"// "}
+            {t("team.createNew", locale)}
           </p>
           <h2 className="mb-1 font-fraunces text-xl text-ink">
             {t("team.createNew", locale)}
@@ -119,7 +128,6 @@ export default async function TeamListPage() {
           </div>
         </section>
 
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

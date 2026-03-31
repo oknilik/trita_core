@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe, STRIPE_PRICES, TRIAL_DAYS, CANDIDATE_PACKAGES, type PriceKey, type CandidatePackageKey } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -30,10 +31,7 @@ export async function POST(req: Request) {
   const rateLimitResponse = await checkRateLimit("billing", profile.id);
   if (rateLimitResponse) return rateLimitResponse;
 
-  const membership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { role: true, orgId: true },
-  });
+  const membership = await getActiveOrgMembership(profile.id);
   if (!membership || membership.role !== "ORG_ADMIN") {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
@@ -45,7 +43,7 @@ export async function POST(req: Request) {
   const isCustomAddon = body.data.priceKey === "candidate_custom";
   const priceId = isCandidateAddon ? null : STRIPE_PRICES[body.data.priceKey as PriceKey];
 
-  let sub = await prisma.subscription.findUnique({
+  const sub = await prisma.subscription.findUnique({
     where: { orgId: membership.orgId },
     select: { stripeCustomerId: true, status: true },
   });

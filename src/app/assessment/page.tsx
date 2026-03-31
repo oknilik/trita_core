@@ -6,6 +6,7 @@ import { assignTestType } from "@/lib/assignTestType";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { AssessmentClient } from "./AssessmentClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -54,9 +55,7 @@ export default async function AssessmentPage({
   // Redirect to onboarding if demographics not yet collected
   // Org-flow users don't have onboardedAt — check org membership before redirecting
   if (!profile.onboardedAt) {
-    const orgMembership = await prisma.organizationMember.findUnique({
-      where: { userId: profile.id },
-    });
+    const orgMembership = await getActiveOrgMembership(profile.id);
     if (!orgMembership) redirect("/onboarding");
   }
 

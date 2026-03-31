@@ -2,12 +2,15 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
+import { getServerLocale } from "@/lib/i18n-server";
 import { OrgOnboardingWizard } from "./OrgOnboardingWizard";
 import { OnboardingClient } from "./OnboardingClient";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
   return {
-    title: "Beállítás | trita",
+    title: locale === "hu" ? "Beállítás | trita" : "Setup | trita",
     robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false, noimageindex: true } },
   };
 }
@@ -54,9 +57,7 @@ export default async function OnboardingPage({
   }
 
   // Már van org tagság → wizard kész
-  const orgMembership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-  });
+  const orgMembership = await getActiveOrgMembership(profile.id);
   if (orgMembership) redirect("/dashboard");
 
   // Régi flow (personal onboarding kész, nincs org) → dashboard

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { getActiveOrgMembership } from "@/lib/org-context";
 
 // POST /api/assessment/skip
 // Marks the assessment as skipped for org managers/admins.
@@ -16,10 +17,7 @@ export async function POST() {
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const orgMembership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { role: true },
-  });
+  const orgMembership = await getActiveOrgMembership(profile.id);
   if (!orgMembership || !hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }

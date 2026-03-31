@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -16,10 +17,15 @@ export async function POST(req: NextRequest) {
   });
   if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
-  const membership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { org: { select: { name: true } } },
-  });
+  const activeMembership = await getActiveOrgMembership(profile.id);
+  const membership = activeMembership
+    ? await prisma.organizationMember.findUnique({
+        where: {
+          orgId_userId: { orgId: activeMembership.orgId, userId: profile.id },
+        },
+        select: { org: { select: { name: true } } },
+      })
+    : null;
 
   const body = await req.json().catch(() => ({}));
   const teamsSummary: Array<{ name: string; pattern: string }> =

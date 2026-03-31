@@ -60,6 +60,7 @@ model UserProfile {
   clerkId   String?  @unique
   email     String?
   username  String?
+  activeOrgId String?
   deleted   Boolean  @default(false)
   locale    String?
   createdAt DateTime @default(now())
@@ -96,6 +97,7 @@ model UserProfile {
   // Organization layer (KKV)
   ownedOrgs      Organization[]       @relation("OrgOwner")
   orgMemberships OrganizationMember[]
+  activeOrg      Organization?        @relation("ActiveOrgContext", fields: [activeOrgId], references: [id], onDelete: SetNull)
 
   // Campaign layer (360°)
   createdCampaigns       Campaign[]            @relation("CampaignCreator")
@@ -110,6 +112,8 @@ model UserProfile {
   // Belbin layer
   belbinAnswer BelbinAnswer?
   belbinScore  BelbinScore?
+
+  @@index([activeOrgId])
 }
 
 model AssessmentDraft {
@@ -364,6 +368,7 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   owner            UserProfile                @relation("OrgOwner", fields: [ownerId], references: [id])
+  activeUsers      UserProfile[]              @relation("ActiveOrgContext")
   members          OrganizationMember[]
   pendingInvites   OrganizationPendingInvite[]
   teams            Team[]
@@ -423,9 +428,9 @@ model OrganizationMember {
   user UserProfile  @relation(fields: [userId], references: [id])
 
   @@unique([orgId, userId])
-  @@unique([userId])
   @@index([orgId])
   @@index([userId])
+  @@index([userId, leftAt])
 }
 
 model OrganizationPendingInvite {

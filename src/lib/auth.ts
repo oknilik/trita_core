@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
+import { getActiveOrgMembership } from "@/lib/org-context";
 
 export type { UserRole };
 
@@ -113,10 +114,9 @@ export async function getUserOrgMembership(profileId: string): Promise<{
   orgId: string;
   role: string;
 } | null> {
-  return prisma.organizationMember.findUnique({
-    where: { userId: profileId },
-    select: { orgId: true, role: true },
-  });
+  const membership = await getActiveOrgMembership(profileId);
+  if (!membership) return null;
+  return { orgId: membership.orgId, role: membership.role };
 }
 
 // @deprecated — use requireOrgContext or requireOrgRole instead

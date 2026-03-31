@@ -160,9 +160,9 @@ async function main() {
         profile = await prisma.userProfile.create({ data: profileData, select: { id: true } });
       }
 
-      // Org membership (@@unique[userId] — csak ha még nincs)
+      // Org membership — csak ha még nincs tagság ebben a szervezetben
       const hasMembership = await prisma.organizationMember.findUnique({
-        where: { userId: profile.id },
+        where: { orgId_userId: { orgId: org.id, userId: profile.id } },
       });
       if (!hasMembership) {
         await prisma.organizationMember.create({

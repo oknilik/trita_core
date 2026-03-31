@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { AdminDashboard } from "./AdminDashboard";
 
 export const dynamic = "force-dynamic";
@@ -18,16 +20,23 @@ export default async function DashboardPage({
     where: { clerkId: userId },
     select: { id: true },
   });
+  if (!profile) redirect("/sign-in");
 
-  if (profile) {
-    const orgMembership = await prisma.organizationMember.findUnique({
-      where: { userId: profile.id },
-      select: { role: true },
-    });
+  const [orgMembership, journeySnapshot] = await Promise.all([
+    getActiveOrgMembership(profile.id),
+    getJourneySnapshotForProfileId(profile.id),
+  ]);
 
-    if (orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
-      return <AdminDashboard />;
-    }
+  if (orgMembership && hasOrgRole(orgMembership.role, "ORG_MANAGER")) {
+    return <AdminDashboard />;
+  }
+
+  const journey = journeySnapshot.state;
+  if (
+    journey.currentStage === "SELF_NOT_STARTED" ||
+    journey.currentStage === "SELF_IN_PROGRESS"
+  ) {
+    redirect("/assessment");
   }
 
   const params = await searchParams;

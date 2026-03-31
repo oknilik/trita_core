@@ -1,7 +1,11 @@
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+
 export default function OrgLoading() {
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-10 md:gap-14">
+    <PlatformPageShell
+      surface="org"
+      contentClassName="max-w-5xl gap-10 px-4 py-10 md:gap-14"
+    >
         <section className="relative overflow-hidden rounded-2xl bg-[#22374d] animate-pulse">
           <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.05]" />
           <div className="px-7 py-7 md:px-9 md:py-8">
@@ -83,7 +87,6 @@ export default function OrgLoading() {
           <div className="h-10 w-full rounded-lg bg-sand/50" />
           <div className="mt-4 h-[320px] w-full rounded-2xl bg-sand/30" />
         </section>
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { EmbeddedCheckoutClient } from "./EmbeddedCheckoutClient";
@@ -33,10 +34,7 @@ export default async function CheckoutPage({
   });
   if (!profile) redirect("/sign-in");
 
-  const membership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { role: true },
-  });
+  const membership = await getActiveOrgMembership(profile.id);
   if (!membership || !hasOrgRole(membership.role, "ORG_ADMIN")) {
     redirect("/dashboard");
   }
@@ -48,7 +46,8 @@ export default async function CheckoutPage({
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-3xl px-4 py-10">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          // {t("billing.checkoutEyebrow", locale)}
+          {"// "}
+          {t("billing.checkoutEyebrow", locale)}
         </p>
         <h1 className="mt-1 font-fraunces text-3xl text-ink mb-2">
           {t("billing.checkoutTitle", locale)}

@@ -88,13 +88,10 @@ export async function POST(
     return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
   }
 
-  // Check org membership — 1-org constraint
-  const existingOrgMembership = await prisma.organizationMember.findUnique({
-    where: { userId: targetUser.id },
+  const existingOrgMembership = await prisma.organizationMember.findFirst({
+    where: { userId: targetUser.id, orgId: team.orgId, leftAt: null },
+    select: { id: true },
   });
-  if (existingOrgMembership && existingOrgMembership.orgId !== team.orgId) {
-    return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
-  }
 
   const [member] = await prisma.$transaction([
     prisma.teamMember.create({

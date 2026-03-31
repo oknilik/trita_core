@@ -110,9 +110,9 @@ async function main() {
         console.log(`   ℹ️   Már létezik: ${fake.username}`);
       }
 
-      // Org membership (only if not already in an org)
+      // Org membership (only if not already in this org)
       const hasOrg = await prisma.organizationMember.findUnique({
-        where: { userId: profile.id },
+        where: { orgId_userId: { orgId: team.orgId!, userId: profile.id } },
       });
       if (!hasOrg) {
         await prisma.organizationMember.create({

@@ -2,7 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { stripe, isOneTimeTier, getOneTimePriceId, TIER_CONFIG } from "@/lib/stripe";
+import { getActiveOrgMembership } from "@/lib/org-context";
+import { stripe, isOneTimeTier, getOneTimePriceId } from "@/lib/stripe";
 
 const TEAM_TIERS = ["team_snapshot", "team_deep_dive"] as const;
 
@@ -52,8 +53,8 @@ export async function POST(req: Request) {
     let isOrgManager = false;
 
     if (!isTeamOwner && team.orgId) {
-      const membership = await prisma.organizationMember.findUnique({
-        where: { userId: profile.id },
+      const membership = await prisma.organizationMember.findFirst({
+        where: { userId: profile.id, orgId: team.orgId, leftAt: null },
         select: { role: true, orgId: true },
       });
       isOrgManager =
@@ -69,10 +70,7 @@ export async function POST(req: Request) {
   // Stripe customer keresése/létrehozása
   let customerId: string | null = null;
 
-  const membership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { orgId: true },
-  });
+  const membership = await getActiveOrgMembership(profile.id);
 
   if (membership?.orgId) {
     const sub = await prisma.subscription.findUnique({
@@ -90,7 +88,6 @@ export async function POST(req: Request) {
     customerId = customer.id;
   }
 
-  const config = TIER_CONFIG[tier];
   const stripeLocale = profile.locale === "hu" ? "hu" : "en";
 
   const session = await stripe.checkout.sessions.create({

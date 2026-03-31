@@ -2,8 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { getOrgSubscription, getPlanTier, hasAccess } from "@/lib/subscription";
+import { getPlanTier } from "@/lib/subscription";
 import { getServerLocale } from "@/lib/i18n-server";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { AdvisoryPageClient, type AdvisoryTier } from "./AdvisoryPageClient";
 
 export const dynamic = "force-dynamic";
@@ -23,40 +24,48 @@ export default async function AdvisoryPage() {
   });
   if (!profile) redirect("/dashboard");
 
-  const membership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: {
-      role: true,
-      org: {
-        select: {
-          id: true,
-          name: true,
-          subscription: {
-            select: {
-              status: true,
-              trialEndsAt: true,
-              currentPeriodEnd: true,
-              cancelAtPeriodEnd: true,
-              stripeCustomerId: true,
-              stripeSubscriptionId: true,
-              stripePriceId: true,
-              candidateCredits: true,
-            },
+  const activeMembership = await getActiveOrgMembership(profile.id);
+  const membership = activeMembership
+    ? await prisma.organizationMember.findUnique({
+        where: {
+          orgId_userId: {
+            orgId: activeMembership.orgId,
+            userId: profile.id,
           },
-          teams: {
-            where: {
-              members: { some: { userId: profile.id } },
-            },
+        },
+        select: {
+          role: true,
+          org: {
             select: {
               id: true,
               name: true,
-              _count: { select: { members: true } },
+              subscription: {
+                select: {
+                  status: true,
+                  trialEndsAt: true,
+                  currentPeriodEnd: true,
+                  cancelAtPeriodEnd: true,
+                  stripeCustomerId: true,
+                  stripeSubscriptionId: true,
+                  stripePriceId: true,
+                  candidateCredits: true,
+                },
+              },
+              teams: {
+                where: {
+                  members: { some: { userId: profile.id } },
+                },
+                select: {
+                  id: true,
+                  name: true,
+                  _count: { select: { members: true } },
+                },
+              },
             },
           },
         },
-      },
-    },
-  });
+      })
+    : null;
 
   // Determine tier — maps getPlanTier() to advisory page tiers:
   //   none/trialing → "trial"  (trial CTA + founding offer)

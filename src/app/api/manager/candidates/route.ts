@@ -2,10 +2,11 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 import { canManageTeam, getManageableTeamIds } from "@/lib/team-auth";
 import { getOrgSubscription, getPlanTier, hasCandidateAccess } from "@/lib/subscription";
-import { useCredit } from "@/lib/candidate-credits";
+import { useCredit as consumeCredit } from "@/lib/candidate-credits";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -45,10 +46,7 @@ export async function POST(req: Request) {
     if (!allowed) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
     orgId = orgMembership.orgId;
   } else {
-    const orgMembership = await prisma.organizationMember.findUnique({
-      where: { userId: profile.id },
-      select: { orgId: true, role: true },
-    });
+    const orgMembership = await getActiveOrgMembership(profile.id);
     if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
     // Must manage at least one team in the org (team-level role check)
     const manageableIds = await getManageableTeamIds(profile.id, orgMembership.orgId, orgMembership.role);
@@ -68,7 +66,7 @@ export async function POST(req: Request) {
     const isUnlimited = tier === "org" || tier === "scale";
     if (!isUnlimited) {
       const candidateLabel = name ?? email ?? "unknown";
-      const newBalance = await useCredit({
+      const newBalance = await consumeCredit({
         orgId,
         actorId: profile.id,
         note: `Jelölt: ${candidateLabel}${position ? ` (${position})` : ""}`,

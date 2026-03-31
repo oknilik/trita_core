@@ -5,12 +5,13 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { TRIAL_DAYS } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
 });
 
-// POST /api/org — create a new organization (any authed user, 1-org limit)
+// POST /api/org — create a new organization (multi-org membership supported)
 export async function POST(req: Request) {
   const rateLimitResponse = await checkRateLimit("api");
   if (rateLimitResponse) return rateLimitResponse;
@@ -24,25 +25,11 @@ export async function POST(req: Request) {
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  // 1-org enforcement: user may only belong to one organization
-  const existingMembership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-  });
-  if (existingMembership) {
-    return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
-  }
-
   const body = createSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
   try {
     const org = await prisma.$transaction(async (tx) => {
-      // Double-check membership inside transaction to prevent race conditions
-      const existing = await tx.organizationMember.findUnique({
-        where: { userId: profile.id },
-      });
-      if (existing) throw new Error("ALREADY_IN_ORG");
-
       const newOrg = await tx.organization.create({
         data: {
           name: body.data.name,
@@ -69,14 +56,12 @@ export async function POST(req: Request) {
       console.log(`[Org] Created org ${newOrg.id} with trialing subscription (ends ${trialEndsAt.toISOString()})`);
       return newOrg;
     });
+    await setActiveOrgContext(profile.id, org.id);
 
     return NextResponse.json({ org }, { status: 201 });
   } catch (err) {
-    if (err instanceof Error && err.message === "ALREADY_IN_ORG") {
-      return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
-    }
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-      return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
+      return NextResponse.json({ error: "CONFLICT" }, { status: 409 });
     }
     throw err;
   }
@@ -92,11 +77,13 @@ export async function GET() {
     select: { id: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  const activeMembership = await getActiveOrgMembership(profile.id);
 
   const memberships = await prisma.organizationMember.findMany({
-    where: { userId: profile.id },
+    where: { userId: profile.id, leftAt: null },
     orderBy: { joinedAt: "desc" },
     select: {
+      orgId: true,
       role: true,
       joinedAt: true,
       org: {
@@ -115,6 +102,7 @@ export async function GET() {
     ...m.org,
     myRole: m.role,
     joinedAt: m.joinedAt,
+    isActiveContext: activeMembership?.orgId === m.orgId,
   }));
 
   return NextResponse.json({ orgs });

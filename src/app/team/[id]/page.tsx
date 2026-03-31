@@ -7,17 +7,26 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
 import { requireActiveSubscription } from "@/lib/require-active-subscription";
 import { getTeamPageData } from "@/lib/team-stats";
+import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
+import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import {
-  DashboardActionCard,
   DashboardMetricCard,
+  DashboardPanel,
   DashboardSectionHeader,
   DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
+import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Team | Trita", robots: { index: false } };
+  const locale = await getServerLocale();
+  return {
+    title: locale === "hu" ? "Csapat | trita" : "Team | trita",
+    robots: { index: false },
+  };
 }
 
 const AVATAR_COLORS = [
@@ -111,26 +120,129 @@ export default async function TeamDetailPage({
       : isHu
         ? `${Math.min(completedCount, patternTarget)}/${patternTarget} kész`
         : `${Math.min(completedCount, patternTarget)}/${patternTarget} done`;
+  const recommendedAction = (() => {
+    if (isOrgManager && teamData.orgId) {
+      return {
+        title: isHu ? "Következő lépés" : "Next step",
+        description: hasObserver
+          ? (isHu ? "A visszajelzési kör fut, kövesd és zárd le a hiányzó visszajelzéseket." : "The feedback round is active. Track and close remaining feedback.")
+          : hasPattern
+            ? (isHu ? "A csapatkép kész, most érdemes elindítani a visszajelzési kört." : "Team pattern is ready. Launch the feedback round now.")
+            : (isHu ? "Előbb zárjátok le a hiányzó kitöltéseket, utána indítsatok kört." : "Close missing assessments first, then launch the round."),
+        primary: {
+          label: hasObserver
+            ? (isHu ? "Kör kezelése" : "Manage round")
+            : (isHu ? "Kör indítása" : "Start round"),
+          href: `/org/${teamData.orgId}?tab=campaigns`,
+        },
+        secondary: hasPattern
+          ? {
+              label: isHu ? "Csapatkép megnyitása" : "View team pattern",
+              href: `/team/${teamId}?tab=profile`,
+            }
+          : null,
+      };
+    }
 
-  const statusLine = [
-    `${teamData.memberCount} ${isHu ? "tag" : "members"}`,
-    `${completedCount} ${isHu ? "kész" : "done"}`,
-    hasPattern
-      ? (isHu ? "csapatkép elérhető" : "team pattern available")
-      : `${completionPct}% ${isHu ? "kitöltve" : "completed"}`,
-  ].join(" · ");
-
-  const heroChips = [
-    `${teamData.memberCount} ${isHu ? "tag" : "members"}`,
-    `${completionPct}% ${isHu ? "kitöltve" : "completed"}`,
-    hasObserver
-      ? (isHu ? "aktív visszajelzési kör" : "active feedback round")
-      : (isHu ? "nincs aktív kör" : "no active round"),
+    return {
+      title: isHu ? "Következő lépés" : "Next step",
+      description: hasPattern
+        ? (isHu ? "A csapatkép már elérhető, nézd át a mintázatokat a következő döntés előtt." : "Team pattern is available. Review it before your next decision.")
+        : (isHu ? "A csapatkép feloldásához még kitöltések szükségesek." : "More completed assessments are needed to unlock team pattern."),
+      primary: {
+        label: hasPattern
+          ? (isHu ? "Csapatkép megtekintése" : "View team pattern")
+          : (isHu ? "Tagok megnyitása" : "Open members"),
+        href: hasPattern ? `/team/${teamId}?tab=profile` : `/team/${teamId}?tab=members`,
+      },
+      secondary: null,
+    };
+  })();
+  const teamDashboardVm = createTeamDashboardIA({
+    locale: isHu ? "hu" : "en",
+    teamName: teamData.teamName,
+    memberCount: teamData.memberCount,
+    completedCount,
+    inProgressCount,
+    waitingCount,
+    hasPattern,
+    hasActiveObserverRound: hasObserver,
+    observerDoneCount: teamData.activeCampaign?.teamObserverDoneCount,
+    observerParticipantCount: teamData.activeCampaign?.teamParticipantCount,
+    pendingInviteCount: teamData.pendingInvites.length,
+    recommendedAction,
+  });
+  const teamLayerStatuses = evaluateProductLayersForScope(isHu ? "hu" : "en", {
+    hasSelfAssessmentStarted: teamData.memberCount > 0,
+    hasSelfAssessment: completedCount > 0,
+    hasBelbinStarted: completedCount > 0,
+    hasBelbin: hasPattern,
+    hasStrengthProfile: completedCount > 0,
+    hasObserverFeedback:
+      hasObserver && teamData.activeCampaign!.teamObserverDoneCount > 0,
+    hasTeamInsights: hasPattern,
+    hasOrgCampaign: hasObserver,
+    hasValuesLayerStarted: false,
+    hasValuesLayer: false,
+    hasConflictLayerStarted: false,
+    hasConflictLayer: false,
+    hasPlusAccess: true,
+  }, "dashboard", "team");
+  const teamLayerCompletedCount = teamLayerStatuses.filter(
+    (layer) => layer.status === "COMPLETED",
+  ).length;
+  const statusLine = teamDashboardVm.heroSummary.summary;
+  const heroChips = teamDashboardVm.heroSummary.chips;
+  const teamChecklistItems = [
+    {
+      id: "team-membership",
+      title: isHu ? "Magcsapat kialakítása" : "Core team in place",
+      detail: isHu
+        ? `${teamData.memberCount} tag aktív a csapatban`
+        : `${teamData.memberCount} active members in the team`,
+      done: teamData.memberCount >= 3,
+      cta: teamData.memberCount >= 3
+        ? undefined
+        : {
+            label: isHu ? "Tagok kezelése" : "Manage members",
+            href: `/team/${teamId}?tab=members`,
+          },
+    },
+    {
+      id: "team-assessment",
+      title: isHu ? "Kitöltések lezárása" : "Assessments completed",
+      detail: isHu
+        ? `${completedCount}/3 szükséges az első csapatképhez`
+        : `${completedCount}/3 needed for first team pattern`,
+      done: completedCount >= 3,
+      cta: completedCount >= 3
+        ? undefined
+        : {
+            label: isHu ? "Hiányzók követése" : "Track missing members",
+            href: `/team/${teamId}?tab=members`,
+          },
+    },
+    {
+      id: "team-feedback-round",
+      title: isHu ? "Visszajelzési kör" : "Feedback round",
+      detail: hasObserver
+        ? (isHu ? "Aktív kör fut a csapaton." : "An active round is running.")
+        : (isHu ? "Még nincs aktív observer kör." : "No active observer round yet."),
+      done: hasObserver,
+      cta: hasObserver || !teamData.orgId
+        ? undefined
+        : {
+            label: isHu ? "Kör indítása" : "Start round",
+            href: `/org/${teamData.orgId}?tab=campaigns`,
+          },
+    },
   ];
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 md:gap-10 md:px-6">
+    <PlatformPageShell
+      surface="team"
+      contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+    >
         {/* ═══ HERO ═══ */}
         <section
           className="relative overflow-hidden rounded-[28px]"
@@ -202,7 +314,7 @@ export default async function TeamDetailPage({
 
               <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
                 <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
-                  Live snapshot
+                  {isHu ? "Élő pillanatkép" : "Live snapshot"}
                 </p>
 
                 <div className="mt-3 grid grid-cols-3 gap-2">
@@ -302,6 +414,65 @@ export default async function TeamDetailPage({
           </div>
         </section>
 
+        <section>
+          <DashboardSectionHeader label={isHu ? "Journey checklist" : "Journey checklist"} className="mb-4" />
+          <ProgressChecklist
+            eyebrow={isHu ? "haladás" : "progress"}
+            title={isHu ? "Csapatút követése" : "Track team journey"}
+            description={isHu
+              ? "Ugyanarra a journey logikára építve látod, hol tart a csapat és mi hiányzik a következő szinthez."
+              : "Built on the same journey logic, this shows where the team stands and what is missing for the next level."}
+            items={teamChecklistItems}
+            nextStepLabel={isHu ? "Következő lépés" : "Next step"}
+          />
+        </section>
+
+        <section>
+          <DashboardSectionHeader label={isHu ? "4+2 rétegkészültség" : "4+2 layer readiness"} className="mb-4" />
+          <DashboardPanel className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+                {isHu ? "Csapatszintű rétegek" : "Team-level layers"}
+              </p>
+              <DashboardStatusChip
+                label={`${teamLayerCompletedCount}/${teamLayerStatuses.length} ${isHu ? "kész" : "done"}`}
+                tone="sage"
+              />
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {teamLayerStatuses.map((layer) => {
+                const tone =
+                  layer.status === "COMPLETED"
+                    ? "sage"
+                    : layer.status === "IN_PROGRESS"
+                      ? "bronze"
+                      : layer.status === "AVAILABLE"
+                        ? "warm"
+                        : "muted";
+                const statusLabel = layer.status === "COMPLETED"
+                  ? (isHu ? "Kész" : "Completed")
+                  : layer.status === "IN_PROGRESS"
+                    ? (isHu ? "Folyamatban" : "In progress")
+                    : layer.status === "AVAILABLE"
+                      ? (isHu ? "Elérhető" : "Available")
+                      : (isHu ? "Zárolt" : "Locked");
+
+                return (
+                  <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[12px] font-semibold text-ink">{layer.label}</p>
+                      <DashboardStatusChip label={statusLabel} tone={tone} />
+                    </div>
+                    <p className="mt-1 text-[11px] leading-relaxed text-ink-body">
+                      {layer.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </DashboardPanel>
+        </section>
+
         {/* ═══ TAGOK ═══ */}
         <section>
           <DashboardSectionHeader label={isHu ? "Emberek" : "People"} className="mb-4" />
@@ -360,25 +531,17 @@ export default async function TeamDetailPage({
         {/* ═══ VISSZAJELZÉSI KÖR ═══ */}
         <section>
           <DashboardSectionHeader label={isHu ? "Következő lépés" : "Next step"} className="mb-4" />
-          <DashboardActionCard
-            eyebrow={isHu ? "Visszajelzési kör" : "Feedback round"}
+          <JourneyNextStepCard
+            eyebrow={teamDashboardVm.recommendedAction.title}
             title={hasObserver
               ? (isHu ? `${teamData.activeCampaign!.teamObserverDoneCount} aktív visszajelzés` : `${teamData.activeCampaign!.teamObserverDoneCount} active feedback`)
-              : (isHu ? "Még nincs aktív kör" : "No active round yet")}
-            body={hasObserver
-              ? (isHu ? "Visszajelzések gyűjtése folyamatban." : "Collecting feedback right now.")
-              : (isHu ? "A kör a csapatkép után indítható." : "Available right after the team pattern is ready.")}
-            cta={isOrgManager && teamData.orgId ? {
-              href: `/org/${teamData.orgId}?tab=campaigns`,
-              label: hasObserver
-                ? (isHu ? "Kör kezelése" : "Manage round")
-                : (isHu ? "Kör indítása" : "Start round"),
-              tone: "solid",
-            } : undefined}
+              : (isHu ? "Fókuszban a csapatkép" : "Focus on team insight")}
+            description={teamDashboardVm.recommendedAction.description}
+            primary={teamDashboardVm.recommendedAction.primary}
+            secondary={teamDashboardVm.recommendedAction.secondary}
           />
         </section>
 
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

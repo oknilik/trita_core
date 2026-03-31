@@ -1,7 +1,11 @@
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+
 export default function TeamLoading() {
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 md:gap-10 md:px-6">
+    <PlatformPageShell
+      surface="team"
+      contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+    >
         <div className="animate-pulse">
           <div className="h-3 w-44 rounded bg-sand/70" />
         </div>
@@ -79,7 +83,6 @@ export default function TeamLoading() {
           <div className="mb-4 h-3 w-32 rounded bg-sand/70" />
           <div className="h-[168px] rounded-[24px] border border-sand bg-white" />
         </section>
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

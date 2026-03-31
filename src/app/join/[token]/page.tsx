@@ -1,14 +1,18 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import {
+  resolveMembershipInviteResolution,
+} from "@/lib/membership-onboarding/server";
+import { getServerLocale } from "@/lib/i18n-server";
 import { JoinClient } from "./JoinClient";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
   return {
-    title: "Csatlakozás a csapathoz | trita",
+    title: locale === "hu" ? "Csatlakozás a csapathoz | trita" : "Join team | trita",
     robots: { index: false, follow: false, nocache: true },
   };
 }
@@ -20,77 +24,46 @@ export default async function JoinPage({
 }) {
   const { token } = await params;
 
-  // token === TeamPendingInvite.id (cuid)
-  const invite = await prisma.teamPendingInvite.findUnique({
-    where: { id: token },
-    select: {
-      id: true,
-      teamId: true,
-      team: {
-        select: {
-          id: true,
-          name: true,
-          orgId: true,
-          org: { select: { id: true, name: true } },
-        },
-      },
-    },
-  });
-
-  if (!invite || !invite.team.orgId) notFound();
-
   const clerkUser = await currentUser();
-
-  if (!clerkUser) {
-    redirect(`/sign-up?redirect_url=/join/${token}`);
-  }
-
-  // Ensure profile exists (Clerk webhook may lag)
-  let profile = await prisma.userProfile.findUnique({
-    where: { clerkId: clerkUser.id },
-    select: { id: true, username: true, onboardedAt: true },
+  const resolution = await resolveMembershipInviteResolution({
+    kind: "team",
+    inviteId: token,
+    clerkId: clerkUser?.id ?? null,
   });
 
-  if (!profile) {
-    const created = await prisma.userProfile.upsert({
-      where: { clerkId: clerkUser.id },
-      create: { clerkId: clerkUser.id },
-      update: {},
-      select: { id: true, username: true, onboardedAt: true },
-    });
-    profile = created;
+  if (resolution.inviteState === "INVITE_NOT_FOUND" || !resolution.invite) notFound();
+  if (resolution.inviteState === "INVITED_UNAUTHENTICATED") {
+    redirect(resolution.signUpRedirectUrl ?? `/sign-up?redirect_url=/join/${token}`);
   }
-
-  if (!profile) notFound();
-
-  // Check existing org membership
-  const existingOrgMembership = await prisma.organizationMember.findUnique({
-    where: { userId: profile.id },
-    select: { leftAt: true, orgId: true, org: { select: { name: true } } },
-  });
-
-  // Already in the same org (e.g. the admin who created it) → go straight to dashboard
-  const alreadyInSameOrg =
-    existingOrgMembership &&
-    !existingOrgMembership.leftAt &&
-    existingOrgMembership.orgId === invite.team.orgId;
-  if (alreadyInSameOrg && profile.onboardedAt) redirect("/dashboard");
+  if (resolution.redirectTo) {
+    redirect(resolution.redirectTo);
+  }
+  if (!resolution.actor || resolution.invite.kind !== "team") notFound();
+  if (
+    resolution.inviteState !== "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE" &&
+    resolution.inviteState !== "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED" &&
+    resolution.inviteState !== "INVITED_READY_TO_JOIN"
+  ) {
+    notFound();
+  }
 
   const existingOrg =
-    existingOrgMembership && !existingOrgMembership.leftAt && existingOrgMembership.orgId !== invite.team.orgId
-      ? { orgId: existingOrgMembership.orgId, orgName: existingOrgMembership.org.name }
+    resolution.inviteState === "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"
+      ? resolution.actor.activeOrgMembership
       : null;
-
-  const existingProfile = profile.onboardedAt
-    ? { username: profile.username ?? null, onboardedAt: profile.onboardedAt.toISOString() }
-    : null;
+  const alreadyInTargetOrg = resolution.actor.activeOrgMembership?.orgId === resolution.invite.orgId;
+  const existingProfile =
+    resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
+      ? null
+      : { username: resolution.actor.username };
 
   return (
     <JoinClient
-      inviteId={invite.id}
-      teamId={invite.teamId}
-      teamName={invite.team.name}
-      orgName={invite.team.org?.name ?? ""}
+      inviteState={resolution.inviteState}
+      inviteId={resolution.invite.inviteId}
+      teamName={resolution.invite.teamName}
+      orgName={resolution.invite.orgName}
+      alreadyInTargetOrg={Boolean(alreadyInTargetOrg)}
       existingProfile={existingProfile}
       existingOrg={existingOrg}
     />

@@ -88,12 +88,11 @@ export async function POST(
     return NextResponse.json({ pending: true, emailSent }, { status: 201 });
   }
 
-  // 1-org enforcement: check if target user already belongs to an org
   const targetExistingMembership = await prisma.organizationMember.findUnique({
-    where: { userId: targetUser.id },
+    where: { orgId_userId: { orgId, userId: targetUser.id } },
   });
   if (targetExistingMembership) {
-    return NextResponse.json({ error: "ALREADY_IN_ORG" }, { status: 409 });
+    return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
   }
 
   const member = await prisma.organizationMember.create({

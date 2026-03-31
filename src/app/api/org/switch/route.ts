@@ -2,12 +2,13 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { setActiveOrgContext } from "@/lib/org-context";
 
 const schema = z.object({
   inviteId: z.string().min(1),
 });
 
-// POST /api/org/switch — leave current org and join a new one via pending invite
+// POST /api/org/switch — non-destructive org context switch via team invite
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
@@ -38,14 +39,11 @@ export async function POST(req: Request) {
   const orgId = invite.team.orgId;
   const isEmailInvite = invite.email !== "__open__";
 
-  // Delete old membership (@@unique([userId]) prevents soft-delete for now)
-  // and create the new one in a transaction
   await prisma.$transaction([
-    prisma.organizationMember.deleteMany({
-      where: { userId: profile.id },
-    }),
-    prisma.organizationMember.create({
-      data: { orgId, userId: profile.id, role: "ORG_MEMBER" },
+    prisma.organizationMember.upsert({
+      where: { orgId_userId: { orgId, userId: profile.id } },
+      create: { orgId, userId: profile.id, role: "ORG_MEMBER" },
+      update: { leftAt: null },
     }),
     prisma.teamMember.upsert({
       where: { teamId_userId: { teamId, userId: profile.id } },
@@ -56,6 +54,7 @@ export async function POST(req: Request) {
       ? [prisma.teamPendingInvite.delete({ where: { id: invite.id } })]
       : []),
   ]);
+  await setActiveOrgContext(profile.id, orgId);
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, nextPath: "/dashboard" });
 }

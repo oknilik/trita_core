@@ -9,6 +9,9 @@ import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import type { AccessLevel } from "@/lib/access";
 import { runProfileEngine } from "@/lib/profile-engine";
+import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
+import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
+import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import {
   BLOCK1, BLOCK8,
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
@@ -20,13 +23,17 @@ import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Profilod | trita",
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  return {
+    title: locale === "hu" ? "Profilod | trita" : "Your profile | trita",
+    robots: { index: false },
+  };
+}
 
 type ProfileLevel = "start" | "plus";
 
@@ -67,6 +74,9 @@ export default async function ProfileResultsPage({
     receivedInvitationsRaw,
     draft,
     researchSurveyRecord,
+    journeySnapshot,
+    belbinAnswerRecord,
+    belbinScoreRecord,
   ] = await Promise.all([
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
@@ -118,12 +128,21 @@ export default async function ProfileResultsPage({
       where: { userProfileId: profile.id },
       select: { id: true },
     }),
+    getJourneySnapshotForProfileId(profile.id, { locale }),
+    prisma.belbinAnswer.findUnique({
+      where: { userProfileId: profile.id },
+      select: { id: true },
+    }),
+    prisma.belbinScore.findUnique({
+      where: { userProfileId: profile.id },
+      select: { id: true },
+    }),
   ]);
 
   if (!latestResult) {
     // If there's a draft in progress, show a "continue" page instead of redirecting
     // This prevents a redirect loop when user clicks "Continue later"
-    const hasDraft = Boolean(draft);
+    const hasDraft = journeySnapshot.state.completionSummary.self.hasDraft || Boolean(draft);
     if (hasDraft) {
       return (
         <main className="-mx-4 -my-8 flex min-h-[80dvh] flex-col items-center justify-center bg-[#f7f4ef] px-6 py-16 text-center">
@@ -138,6 +157,11 @@ export default async function ProfileResultsPage({
             </h1>
             <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[#8a8a9a]">
               {t("results.draftInProgressBody", locale)}
+            </p>
+            <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[#8a8a9a]">
+              {locale === "hu"
+                ? "A saját profilodból később observer visszajelzést és csapatképet is építhetsz."
+                : "From your self profile, you can later build observer feedback and team insights."}
             </p>
             <a
               href="/assessment"
@@ -165,15 +189,37 @@ export default async function ProfileResultsPage({
     : 0;
   const draftTotalQuestions = config.questions.length;
   const hasResearchSurvey = Boolean(researchSurveyRecord);
-  const pendingInvitesCount = sentInvitationsRaw.filter(
-    (inv) => inv.status === "PENDING",
-  ).length;
+  const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
+  const selfDashboardVm = createSelfDashboardIA({
+    locale,
+    displayName: profile.username ?? profile.email ?? "You",
+    currentStage: journeySnapshot.state.currentStage,
+    completionSummary: journeySnapshot.state.completionSummary,
+    nextBestAction: journeySnapshot.nextBestAction,
+    blockingReasons: journeySnapshot.state.blockingReasons,
+    generatedAt: journeySnapshot.generatedAt,
+  });
 
   // ── Build serialized dimensions ────────────────────────────────────────────
   const completedObservers = completedObserverAssessments.map(
     (e) => e.scores as ScoreResult,
   );
   const hasObserverData = completedObservers.length >= 2;
+  const layerStatuses = evaluateProductLayersForScope(locale, {
+    hasSelfAssessmentStarted: journeySnapshot.state.completionSummary.self.started,
+    hasSelfAssessment: journeySnapshot.state.completionSummary.self.completed,
+    hasBelbinStarted: Boolean(belbinAnswerRecord),
+    hasBelbin: Boolean(belbinScoreRecord),
+    hasStrengthProfile: Boolean(latestResult),
+    hasObserverFeedback: completedObservers.length > 0,
+    hasTeamInsights: journeySnapshot.state.completionSummary.team.ready,
+    hasOrgCampaign: journeySnapshot.state.completionSummary.org.activeCampaignCount > 0,
+    hasValuesLayerStarted: false,
+    hasValuesLayer: false,
+    hasConflictLayerStarted: false,
+    hasConflictLayer: false,
+    hasPlusAccess: accessLevelRaw === "self_plus",
+  }, "results", "self");
 
   const mainDimCodes = config.dimensions
     .filter((d) => d.code !== "I")
@@ -521,13 +567,15 @@ export default async function ProfileResultsPage({
   } : undefined;
 
   return (
-    <main className="min-h-dvh bg-cream">
+    <PlatformPageShell
+      surface="self"
+      contentClassName="max-w-4xl gap-10 px-4 py-10 md:gap-14"
+    >
       <DashboardAutoRefresh
         pendingInvites={pendingInvitesCount}
         completedObserver={completedObservers.length}
       />
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 py-10 md:gap-14">
-
+      <div>
         <ProfileTabs
           name={displayName}
           assessmentDate={latestResult.createdAt.toISOString()}
@@ -552,9 +600,24 @@ export default async function ProfileResultsPage({
           strengths={strengths}
           watchAreas={watchAreas}
           plusContent={plusContent}
+          bridgeNextStep={{
+            stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
+            explanation: selfDashboardVm.recommendedAction.description,
+            primary: {
+              label: selfDashboardVm.recommendedAction.primary.label,
+              href: selfDashboardVm.recommendedAction.primary.href,
+            },
+            secondary: selfDashboardVm.recommendedAction.secondary
+              ? {
+                  label: selfDashboardVm.recommendedAction.secondary.label,
+                  href: selfDashboardVm.recommendedAction.secondary.href,
+                }
+              : null,
+          }}
+          layerStatuses={layerStatuses}
         />
 
       </div>
-    </main>
+    </PlatformPageShell>
   );
 }
