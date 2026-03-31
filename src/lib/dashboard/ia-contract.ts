@@ -204,8 +204,8 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       title: displayName,
       summary: txt(
         locale,
-        "A saját képed készen áll, innen épül tovább a csapat- és szervezeti nézet.",
-        "Your self insight is ready. Team and org views are built from this layer.",
+        "A saját képed készen áll. Innen mélyítheted observer visszajelzéssel, és ha szeretnéd, csapat- vagy szervezeti nézetbe is továbbviheted.",
+        "Your self insight is ready. You can deepen it with observer feedback, and optionally expand to team or org views.",
       ),
       chips: [
         `${completionSummary.self.completedObservers} ${txt(locale, "observer kész", "observer done")}`,

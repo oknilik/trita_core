@@ -496,6 +496,14 @@ export const resultsTranslations = {
     bridgeEyebrow: { hu: "Következő lépés", en: "Next best action" },
     bridgeJourney: { hu: "A te utad", en: "Your journey" },
     bridgeFallbackStage: { hu: "Következő lépés", en: "Next step" },
+    bridgeOptionalTeamHint: {
+      hu: "Ha szeretnél csapat- vagy szervezeti nézetre váltani, ezt bármikor megteheted.",
+      en: "If you want to switch to team or org mode, you can do it anytime.",
+    },
+    bridgeOptionalTeamCta: {
+      hu: "Csapat/szervezet indítása",
+      en: "Start team/org setup",
+    },
     // ProfileTabs — stage labels
     stageSelfCompleted: { hu: "Self kész", en: "Self completed" },
     stageObserverPending: { hu: "Observer folyamatban", en: "Observer in progress" },

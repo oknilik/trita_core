@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -123,6 +124,7 @@ export interface ProfileTabsProps {
     closingText: string;
   };
   bridgeNextStep?: BridgeNextStep;
+  hasTeamOrOrgMembership?: boolean;
   layerStatuses?: ProductLayerStatus[];
 }
 
@@ -340,6 +342,7 @@ export function ProfileTabs({
   watchAreas,
   plusContent,
   bridgeNextStep,
+  hasTeamOrOrgMembership = false,
   layerStatuses,
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
@@ -371,6 +374,10 @@ export function ProfileTabs({
         ? t(stageKeyMap[bridgeNextStep.stage], locale)
         : t("content.bridgeFallbackStage", locale))
     : null;
+  const shouldShowTeamShortcut = bridgeNextStep
+    ? !hasTeamOrOrgMembership &&
+      (bridgeNextStep.stage === "SELF_COMPLETED" || bridgeNextStep.stage === "OBSERVER_PENDING")
+    : false;
 
   const handleTabChange = useCallback(
     (tab: TabId) => {
@@ -657,15 +664,31 @@ export function ProfileTabs({
 
       {/* Journey bridge CTA — single primary direction after self insight */}
       {bridgeNextStep ? (
-        <JourneyNextStepCard
-          eyebrow={t("content.bridgeEyebrow", locale)}
-          title={bridgeStageLabel
-            ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
-            : t("content.bridgeJourney", locale)}
-          description={bridgeNextStep.explanation}
-          primary={bridgeNextStep.primary}
-          secondary={bridgeNextStep.secondary}
-        />
+        <div className="space-y-3">
+          <JourneyNextStepCard
+            eyebrow={t("content.bridgeEyebrow", locale)}
+            title={bridgeStageLabel
+              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
+              : t("content.bridgeJourney", locale)}
+            description={bridgeNextStep.explanation}
+            primary={bridgeNextStep.primary}
+            secondary={bridgeNextStep.secondary}
+          />
+
+          {shouldShowTeamShortcut ? (
+            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+              <p className="text-[12px] leading-relaxed text-ink-body">
+                {t("content.bridgeOptionalTeamHint", locale)}{" "}
+                <Link
+                  href="/onboarding?intent=team"
+                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                >
+                  {t("content.bridgeOptionalTeamCta", locale)} →
+                </Link>
+              </p>
+            </div>
+          ) : null}
+        </div>
       ) : null}
 
       {/* Insight pair */}

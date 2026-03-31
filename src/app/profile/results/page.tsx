@@ -160,8 +160,8 @@ export default async function ProfileResultsPage({
             </p>
             <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[#8a8a9a]">
               {locale === "hu"
-                ? "A saját profilodból később observer visszajelzést és csapatképet is építhetsz."
-                : "From your self profile, you can later build observer feedback and team insights."}
+                ? "A saját profilodból később kérhetsz observer visszajelzést, és ha szeretnéd, csapatképet is építhetsz."
+                : "From your self profile, you can later collect observer feedback and optionally build team insights."}
             </p>
             <a
               href="/assessment"
@@ -614,6 +614,10 @@ export default async function ProfileResultsPage({
                 }
               : null,
           }}
+          hasTeamOrOrgMembership={
+            journeySnapshot.state.completionSummary.team.joined ||
+            journeySnapshot.state.completionSummary.org.joined
+          }
           layerStatuses={layerStatuses}
         />
 

@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationCodeEmail, sendMagicLinkEmail } from "@/lib/emails";
 import { clerkClient } from "@clerk/nextjs/server";
+import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -18,6 +19,7 @@ const clerkUserSchema = z.object({
     .optional(),
   primary_email_address_id: z.string().optional().nullable(),
   username: z.string().optional().nullable(),
+  unsafe_metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 const clerkEmailSchema = z.object({
@@ -80,7 +82,7 @@ export async function POST(req: Request) {
     const fallbackEmail = user.email_addresses?.[0]?.email_address;
     const email = primaryEmail ?? fallbackEmail ?? null;
 
-    await prisma.userProfile.upsert({
+    const upsertedProfile = await prisma.userProfile.upsert({
       where: { clerkId: user.id },
       create: {
         clerkId: user.id,
@@ -93,6 +95,11 @@ export async function POST(req: Request) {
       },
       select: { id: true },
     });
+
+    const intent = normalizeJourneyIntent(user.unsafe_metadata?.intent);
+    if (intent) {
+      await setJourneyIntentForProfile(upsertedProfile.id, intent);
+    }
 
     // Note: org invites are fulfilled via the /join/org/[inviteId] page, not here,
     // so that profile data (username, gender, etc.) gets collected first.

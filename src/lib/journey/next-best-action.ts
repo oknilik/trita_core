@@ -106,6 +106,22 @@ function txt(locale: JourneyResolverLocale, hu: string, en: string): string {
   return locale === "hu" ? hu : en;
 }
 
+function pendingMembershipInvites(state: JourneyState): number {
+  return (
+    state.completionSummary.self.pendingTeamInvites +
+    state.completionSummary.self.pendingOrgInvites
+  );
+}
+
+function hasTeamRelevantContext(state: JourneyState): boolean {
+  return (
+    state.completionSummary.self.explicitTeamIntent ||
+    pendingMembershipInvites(state) > 0 ||
+    state.completionSummary.team.joined ||
+    state.completionSummary.org.joined
+  );
+}
+
 function resolveCtaIdsWithLocale(
   state: JourneyState,
   locale: JourneyResolverLocale,
@@ -116,6 +132,8 @@ function resolveCtaIdsWithLocale(
 } {
   const { currentStage, completionSummary } = state;
   const { self, team, org } = completionSummary;
+  const pendingMembershipInviteCount = pendingMembershipInvites(state);
+  const teamRelevantContext = hasTeamRelevantContext(state);
 
   switch (currentStage) {
     case "SELF_NOT_STARTED":
@@ -139,33 +157,99 @@ function resolveCtaIdsWithLocale(
         ),
       };
     case "SELF_COMPLETED":
+      if (pendingMembershipInviteCount > 0) {
+        return {
+          primary: "JOIN_TEAM",
+          secondary: "INVITE_OBSERVERS",
+          explanation: txt(
+            locale,
+            "A saját profilod elkészült, és van függő csatlakozási meghívásod. Elsőként érdemes ezt elfogadni.",
+            "Your self profile is complete and you have a pending membership invite. Accepting it is the clearest next step.",
+          ),
+        };
+      }
+      if (self.explicitTeamIntent) {
+        return {
+          primary: "CREATE_TEAM",
+          secondary: "INVITE_OBSERVERS",
+          explanation: txt(
+            locale,
+            "A saját insight elkészült. Ha csapatfókusszal indultál, most érdemes létrehozni az első csapatot.",
+            "Your self insight is ready. If you started with team intent, creating your first team is the right next step.",
+          ),
+        };
+      }
       return {
         primary: "INVITE_OBSERVERS",
-        secondary: "CREATE_TEAM",
+        secondary: "REVIEW_SELF_RESULTS",
         explanation: txt(
           locale,
-          "Megvan az első self insight, a következő érték a külső visszajelzés és a team kontextus felépítése.",
-          "Your self insight is ready. The next value comes from observer feedback and building team context.",
+          "Megvan az első self insight. Következő lépésként kérj visszajelzést vagy mélyítsd a saját eredményeidet.",
+          "Your self insight is ready. Next, collect observer feedback or deepen your personal insights.",
         ),
       };
     case "OBSERVER_PENDING":
+      if (pendingMembershipInviteCount > 0) {
+        return {
+          primary: "MANAGE_OBSERVER_INVITES",
+          secondary: "JOIN_TEAM",
+          explanation: txt(
+            locale,
+            "Az observer kör még fut, közben a függő csatlakozási meghívásodat is lezárhatod.",
+            "Observer feedback is still in progress; meanwhile, you can also complete your pending membership invite.",
+          ),
+        };
+      }
+      if (self.explicitTeamIntent) {
+        return {
+          primary: "MANAGE_OBSERVER_INVITES",
+          secondary: "CREATE_TEAM",
+          explanation: txt(
+            locale,
+            "Az observer kör fut. Team fókusznál közben előkészítheted az első csapatot is.",
+            "Observer feedback is in progress. With team intent, you can also prepare your first team.",
+          ),
+        };
+      }
       return {
         primary: "MANAGE_OBSERVER_INVITES",
-        secondary: "CREATE_TEAM",
+        secondary: "REVIEW_SELF_RESULTS",
         explanation: txt(
           locale,
-          "A visszajelzési kör fut, közben érdemes előkészíteni a csapatszintet a következő lépéshez.",
-          "Observer feedback is in progress. In parallel, prepare your team layer for the next step.",
+          "A visszajelzési kör még nyitott. Most a saját köröd lezárása és az eredmények követése a fókusz.",
+          "Observer feedback is still open. Focus on closing this round and reviewing your own insight quality.",
         ),
       };
     case "TEAM_NOT_JOINED":
+      if (pendingMembershipInviteCount > 0) {
+        return {
+          primary: "JOIN_TEAM",
+          secondary: "REVIEW_SELF_RESULTS",
+          explanation: txt(
+            locale,
+            "Van csatlakozási meghívásod, így a következő lépés ennek elfogadása.",
+            "You have a pending membership invite, so accepting it is the next best action.",
+          ),
+        };
+      }
+      if (self.explicitTeamIntent || teamRelevantContext) {
+        return {
+          primary: "CREATE_TEAM",
+          secondary: "JOIN_TEAM",
+          explanation: txt(
+            locale,
+            "Van releváns csapatkontextus, ezért most a csapatréteg felépítése a legjobb következő lépés.",
+            "You have relevant team context, so building your team layer is the best next step.",
+          ),
+        };
+      }
       return {
-        primary: "CREATE_TEAM",
-        secondary: "JOIN_TEAM",
+        primary: "INVITE_OBSERVERS",
+        secondary: "REVIEW_SELF_RESULTS",
         explanation: txt(
           locale,
-          "A self eredmény után a csapatkontextus adja a következő szintű insightot.",
-          "After self insights, team context unlocks the next level of understanding.",
+          "A self journey önmagában is teljes. Ha szeretnéd, innen tudsz továbbmenni observer vagy team irányba.",
+          "The self journey is complete on its own. From here, you can optionally continue with observers or team context.",
         ),
       };
     case "TEAM_PENDING_MEMBERS":
