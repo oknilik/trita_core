@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 import { syncSeatBilling } from "@/lib/seat-billing";
+import { resolveJourney } from "@/lib/journey/engine";
 
 export type MembershipJoinKind = "team" | "org";
 
@@ -91,7 +92,7 @@ export class MembershipOnboardingError extends Error {
 export interface MembershipJoinResult {
   ok: true;
   inviteState: "INVITE_ACCEPTED";
-  nextPath: "/assessment" | "/dashboard";
+  nextPath: string;
 }
 
 export interface MembershipInviteResolution {
@@ -225,25 +226,6 @@ export async function resolveOrgJoinInviteContext(
   };
 }
 
-async function hasAnySelfAssessmentProgress(profileId: string): Promise<boolean> {
-  const [result, draft, skipped] = await Promise.all([
-    prisma.assessmentResult.findFirst({
-      where: { userProfileId: profileId, isSelfAssessment: true },
-      select: { id: true },
-    }),
-    prisma.assessmentDraft.findUnique({
-      where: { userProfileId: profileId },
-      select: { id: true },
-    }),
-    prisma.userProfile.findUnique({
-      where: { id: profileId },
-      select: { assessmentSkippedAt: true },
-    }),
-  ]);
-
-  return Boolean(result || draft || skipped?.assessmentSkippedAt);
-}
-
 function normalizeJoinError(error: unknown): MembershipOnboardingError {
   if (error instanceof MembershipOnboardingError) return error;
 
@@ -304,9 +286,9 @@ async function runJoinTransaction(
   void syncSeatBilling(invite.orgId);
 }
 
-async function resolveJoinNextPath(profileId: string): Promise<"/assessment" | "/dashboard"> {
-  const hasProgress = await hasAnySelfAssessmentProgress(profileId);
-  return hasProgress ? "/dashboard" : "/assessment";
+async function resolveJoinNextPath(profileId: string): Promise<string> {
+  const resolution = await resolveJourney(profileId);
+  return resolution.home.destination;
 }
 
 export async function joinMembershipFromInvite(params: {
@@ -335,7 +317,7 @@ export async function joinMembershipFromInvite(params: {
     return {
       ok: true,
       inviteState: "INVITE_ACCEPTED",
-      nextPath: "/dashboard",
+      nextPath: await resolveJoinNextPath(resolution.actor.profileId),
     };
   }
 
@@ -421,7 +403,7 @@ export async function resolveMembershipInviteResolution(params: {
           invite: teamInvite,
           actor,
           signUpRedirectUrl: null,
-          redirectTo: "/dashboard",
+          redirectTo: await resolveJoinNextPath(actor.profileId),
         };
       }
     }
@@ -442,7 +424,10 @@ export async function resolveMembershipInviteResolution(params: {
       invite,
       actor,
       signUpRedirectUrl: null,
-      redirectTo: inviteState === "INVITE_ACCEPTED" && activeOrgId === invite.orgId ? "/dashboard" : null,
+      redirectTo:
+        inviteState === "INVITE_ACCEPTED" && activeOrgId === invite.orgId
+          ? await resolveJoinNextPath(actor.profileId)
+          : null,
     };
   }
 

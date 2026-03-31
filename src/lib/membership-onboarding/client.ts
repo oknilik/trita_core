@@ -156,9 +156,17 @@ export async function submitMembershipJoin(
     };
   }
 
+  if (!payload?.nextPath) {
+    return {
+      ok: false,
+      error: "JOIN_NEXT_PATH_MISSING",
+      details: payload?.details,
+    };
+  }
+
   return {
     ok: true,
-    nextPath: payload?.nextPath || "/dashboard",
+    nextPath: payload.nextPath,
   };
 }
 

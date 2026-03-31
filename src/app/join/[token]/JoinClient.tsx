@@ -189,7 +189,9 @@ export function JoinClient({
         body: JSON.stringify({ inviteId }),
       });
       if (!switchRes.ok) throw new Error("switch_failed");
-      router.push("/dashboard");
+      const payload = (await switchRes.json()) as { nextPath?: string };
+      if (!payload.nextPath) throw new Error("switch_next_path_missing");
+      router.push(payload.nextPath);
     } catch {
       setErrors((prev) => ({ ...prev, submit: copy.submitErrorGeneric }));
     } finally {

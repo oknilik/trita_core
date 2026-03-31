@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { setActiveOrgContext } from "@/lib/org-context";
+import { resolveJourney } from "@/lib/journey/engine";
 
 const schema = z.object({
   inviteId: z.string().min(1),
@@ -56,5 +57,6 @@ export async function POST(req: Request) {
   ]);
   await setActiveOrgContext(profile.id, orgId);
 
-  return NextResponse.json({ ok: true, nextPath: "/dashboard" });
+  const journey = await resolveJourney(profile.id);
+  return NextResponse.json({ ok: true, nextPath: journey.home.destination });
 }
