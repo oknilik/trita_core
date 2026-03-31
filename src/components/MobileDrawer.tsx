@@ -174,7 +174,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   <svg viewBox="0 0 20 20" className="h-4 w-4 text-bronze" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3.5 10.2 10 4.5l6.5 5.7v6a1 1 0 0 1-1 1h-3.7v-4h-3.6v4H4.5a1 1 0 0 1-1-1v-6Z" />
                   </svg>
-                  {t("nav.dashboard", locale)}
+                  {t("nav.profile", locale)}
                 </Link>
                 <Link
                   href="/profile"

@@ -73,7 +73,7 @@ export function BillingUpgradeClient({ isAdmin, subscriptionStatus, trialEndsAt,
                 href="/profile/results"
                 className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark"
               >
-                Vissza a dashboardra →
+                Vissza a profilomhoz →
               </Link>
               <button
                 onClick={async () => {

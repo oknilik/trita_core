@@ -53,7 +53,7 @@ export function ObserverComparison({
           {t("content.observerInviteBody", locale)}
         </p>
         <Link
-          href="/dashboard?tab=invites"
+          href="/profile/results?tab=invites"
           className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage px-6 text-sm font-semibold text-bronze transition hover:bg-sage-ghost"
         >
           {t("content.observerManageInvites", locale)}

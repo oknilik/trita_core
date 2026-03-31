@@ -158,11 +158,11 @@ export const assessmentTranslations = {
     },
     doneTitle: { hu: "Köszönjük a részvételt!", en: "Thank you for participating!" },
     doneBody: { hu: "A válaszaid sikeresen elmentésre kerültek.", en: "Your answers were saved successfully." },
-    doneSignedInHint: { hu: "A meghívóid és eredményeid a dashboardon elérhetőek.", en: "Your invites and results are available on your dashboard." },
+    doneSignedInHint: { hu: "A meghívóid és eredményeid a profiloldaladon elérhetőek.", en: "Your invites and results are available on your profile home." },
     doneSignedOutHint: { hu: "Szeretnél te is részt venni a kutatásban? Regisztrálj, vagy jelentkezz be, ha már van fiókod.", en: "Want to take the test yourself? Sign up, or sign in if you already have an account." },
     signInCta: { hu: "Bejelentkezés", en: "Sign in" },
     signUpCta: { hu: "Regisztráció", en: "Sign up" },
-    goDashboard: { hu: "Ugrás a dashboardra", en: "Go to dashboard" },
+    goDashboard: { hu: "Ugrás a profilomhoz", en: "Go to my profile" },
     selectBothFields: { hu: "Kérjük, válassz kapcsolatot és időtartamot a folytatáshoz.", en: "Please select a relationship and duration to continue." },
   },
   tryClaim: {

@@ -1,7 +1,7 @@
 export const resultsTranslations = {
   dashboard: {
-    metadataTitle: { hu: "Dashboard | Trita", en: "Dashboard | Trita" },
-    personalTag: { hu: "Személyes Dashboard", en: "Personal Dashboard" },
+    metadataTitle: { hu: "Profilom | Trita", en: "My profile | Trita" },
+    personalTag: { hu: "Személyes profil", en: "Personal profile" },
     continueDraftTitle: { hu: "Félbehagyott teszt", en: "Unfinished test" },
     continueDraftBody: { hu: "Folytasd onnan, ahol abbahagytad ({answered}/{total} kérdés kész).", en: "Continue where you left off ({answered}/{total} questions done)." },
     noResultTitle: { hu: "Még nincs kiértékelésed", en: "No results yet" },
@@ -244,8 +244,8 @@ export const resultsTranslations = {
       en: "Retake the test?",
     },
     retakeConfirmBody: {
-      hu: "Az új eredmény felülírja a korábbit a dashboardon. A régi eredmény az adatbázisban megmarad.",
-      en: "The new result will replace the current one on your dashboard. The old result is kept in the database.",
+      hu: "Az új eredmény felülírja a korábbit a profiloldaladon. A régi eredmény az adatbázisban megmarad.",
+      en: "The new result will replace the current one on your profile home. The old result is kept in the database.",
     },
     retakeConfirm: { hu: "Újra kitöltöm", en: "Retake" },
     retakeCancel: { hu: "Mégse", en: "Cancel" },

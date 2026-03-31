@@ -71,7 +71,7 @@ export default async function AssessmentPage({
     !draft &&
     params.confirmed !== "true"
   ) {
-    redirect("/dashboard?retake=true");
+    redirect("/profile/results?retake=true");
   }
 
   // Assign test type if not assigned yet

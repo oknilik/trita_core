@@ -73,8 +73,8 @@ export default async function OnboardingPage({
   const orgMembership = await getActiveOrgMembership(profile.id);
   if (orgMembership) redirect("/dashboard");
 
-  // Régi flow (personal onboarding kész, nincs org) → dashboard
-  if (profile.onboardedAt) redirect("/dashboard");
+  // Personal onboarding kész, nincs org kontextus → explicit personal home
+  if (profile.onboardedAt) redirect("/profile/results");
 
   return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;
 }
