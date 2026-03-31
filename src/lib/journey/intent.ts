@@ -1,10 +1,10 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import type { JourneyEntryIntent } from "@/lib/journey/types";
+export type { JourneyEntryIntent } from "@/lib/journey/types";
 
 export const JOURNEY_TEAM_INTENT_FEATURE_KEY = "journey_intent_team";
-
-export type JourneyEntryIntent = "explore" | "team";
 
 export function normalizeJourneyIntent(raw: unknown): JourneyEntryIntent | null {
   if (typeof raw !== "string") return null;
@@ -41,4 +41,3 @@ export async function setJourneyIntentForProfile(
     },
   });
 }
-

@@ -1,117 +1,32 @@
 import "server-only";
 
-import { InvitationStatus, UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getActiveOrgMembership } from "@/lib/org-context";
-import { JOURNEY_TEAM_INTENT_FEATURE_KEY } from "@/lib/journey/intent";
+import { resolveJourneyContext } from "@/lib/journey/context";
+import type {
+  JourneyAction,
+  JourneyActionId,
+  JourneyBlockingReason,
+  JourneyContextSnapshot,
+  JourneyStage,
+  JourneyState,
+} from "@/lib/journey/types";
+export { JOURNEY_STAGES } from "@/lib/journey/types";
+export type {
+  JourneyAction,
+  JourneyActionId,
+  JourneyBlockingReason,
+  JourneyBlockingReasonCode,
+  JourneyCompletionSummary,
+  JourneyStage,
+  JourneyState,
+} from "@/lib/journey/types";
 
 const MIN_MEMBERS_FOR_TEAM_INSIGHTS = 3;
 const MIN_MEMBERS_FOR_ORG_INSIGHTS = 3;
 
-export const JOURNEY_STAGES = [
-  "SELF_NOT_STARTED",
-  "SELF_IN_PROGRESS",
-  "SELF_COMPLETED",
-  "OBSERVER_PENDING",
-  "TEAM_NOT_JOINED",
-  "TEAM_PENDING_MEMBERS",
-  "TEAM_PARTIAL",
-  "TEAM_READY",
-  "ORG_PARTIAL",
-  "ORG_READY",
-] as const;
-
-export type JourneyStage = (typeof JOURNEY_STAGES)[number];
-
-export type JourneyActionId =
-  | "START_SELF_ASSESSMENT"
-  | "CONTINUE_SELF_ASSESSMENT"
-  | "REVIEW_SELF_RESULTS"
-  | "INVITE_OBSERVERS"
-  | "MANAGE_OBSERVER_INVITES"
-  | "CREATE_TEAM"
-  | "JOIN_TEAM"
-  | "INVITE_TEAM_MEMBERS"
-  | "COMPLETE_TEAM_ASSESSMENTS"
-  | "VIEW_TEAM_INSIGHTS"
-  | "CREATE_ORG_TEAM"
-  | "INVITE_ORG_MEMBERS"
-  | "LAUNCH_ORG_CAMPAIGN"
-  | "VIEW_ORG_INSIGHTS";
-
-export type JourneyBlockingReasonCode =
-  | "SELF_ASSESSMENT_MISSING"
-  | "SELF_ASSESSMENT_INCOMPLETE"
-  | "OBSERVER_RESPONSES_PENDING"
-  | "TEAM_MEMBERSHIP_MISSING"
-  | "MIN_TEAM_SIZE_NOT_MET"
-  | "TEAM_MEMBER_INVITES_PENDING"
-  | "TEAM_MEMBER_ASSESSMENTS_PENDING"
-  | "ORG_TEAM_MISSING"
-  | "ORG_MEMBER_ASSESSMENTS_PENDING"
-  | "ORG_CAMPAIGN_MISSING";
-
-export interface JourneyAction {
-  id: JourneyActionId;
-  href: string;
-  scope: "self" | "team" | "org";
-}
-
-export interface JourneyBlockingReason {
-  code: JourneyBlockingReasonCode;
-  detail?: string;
-}
-
-export interface JourneyCompletionSummary {
-  self: {
-    started: boolean;
-    completed: boolean;
-    skipped: boolean;
-    hasDraft: boolean;
-    sentInvites: number;
-    pendingInvites: number;
-    completedObservers: number;
-    pendingTeamInvites: number;
-    pendingOrgInvites: number;
-    explicitTeamIntent: boolean;
-  };
-  team: {
-    joined: boolean;
-    teamId: string | null;
-    memberCount: number;
-    completedMemberCount: number;
-    pendingInviteCount: number;
-    ready: boolean;
-  };
-  org: {
-    joined: boolean;
-    orgId: string | null;
-    teamCount: number;
-    memberCount: number;
-    completedMemberCount: number;
-    pendingInviteCount: number;
-    activeCampaignCount: number;
-    ready: boolean;
-  };
-}
-
-export interface JourneyState {
-  currentStage: JourneyStage;
-  recommendedNextAction: JourneyAction | null;
-  availableNextActions: JourneyAction[];
-  blockingReasons: JourneyBlockingReason[];
-  completionSummary: JourneyCompletionSummary;
-}
-
 interface JourneyContextOptions {
   teamId?: string | null;
   orgId?: string | null;
-}
-
-interface JourneyComputationContext {
-  self: JourneyCompletionSummary["self"];
-  team: JourneyCompletionSummary["team"];
-  org: JourneyCompletionSummary["org"];
 }
 
 function uniqueActions(actions: JourneyAction[]): JourneyAction[] {
@@ -123,13 +38,13 @@ function uniqueActions(actions: JourneyAction[]): JourneyAction[] {
   });
 }
 
-function buildActionMap(ctx: JourneyComputationContext): Record<JourneyActionId, JourneyAction> {
-  const teamHref = ctx.team.teamId ? `/team/${ctx.team.teamId}` : "/team";
-  const teamMembersHref = ctx.team.teamId ? `/team/${ctx.team.teamId}?tab=members` : "/team";
-  const orgHref = ctx.org.orgId ? `/org/${ctx.org.orgId}` : "/org";
-  const orgTeamsHref = ctx.org.orgId ? `/org/${ctx.org.orgId}?tab=teams` : "/org";
-  const orgMembersHref = ctx.org.orgId ? `/org/${ctx.org.orgId}?tab=members` : "/org";
-  const orgCampaignHref = ctx.org.orgId ? `/org/${ctx.org.orgId}/campaigns/new` : "/org";
+function buildActionMap(context: JourneyContextSnapshot): Record<JourneyActionId, JourneyAction> {
+  const teamHref = context.teamId ? `/team/${context.teamId}` : "/team";
+  const teamMembersHref = context.teamId ? `/team/${context.teamId}?tab=members` : "/team";
+  const orgHref = context.orgId ? `/org/${context.orgId}` : "/org";
+  const orgTeamsHref = context.orgId ? `/org/${context.orgId}?tab=teams` : "/org";
+  const orgMembersHref = context.orgId ? `/org/${context.orgId}?tab=members` : "/org";
+  const orgCampaignHref = context.orgId ? `/org/${context.orgId}/campaigns/new` : "/org";
 
   return {
     START_SELF_ASSESSMENT: { id: "START_SELF_ASSESSMENT", href: "/assessment", scope: "self" },
@@ -161,39 +76,42 @@ function buildActionMap(ctx: JourneyComputationContext): Record<JourneyActionId,
   };
 }
 
-function computeStage(ctx: JourneyComputationContext): JourneyStage {
+function computeStage(context: JourneyContextSnapshot): JourneyStage {
+  const { self, team, org } = context.completionSummary;
   const hasTeamRelevantContext =
-    ctx.self.explicitTeamIntent ||
-    ctx.self.pendingTeamInvites > 0 ||
-    ctx.self.pendingOrgInvites > 0 ||
-    ctx.team.joined ||
-    ctx.org.joined;
+    context.explicitTeamIntent ||
+    context.pendingInviteCounts.team > 0 ||
+    context.pendingInviteCounts.org > 0 ||
+    team.joined ||
+    org.joined;
 
-  if (!ctx.self.started) return "SELF_NOT_STARTED";
-  if (!ctx.self.completed) return "SELF_IN_PROGRESS";
+  // Current obligation first: assessment progress always wins over later scopes.
+  if (!context.assessment.started) return "SELF_NOT_STARTED";
+  if (!context.assessment.completed) return "SELF_IN_PROGRESS";
 
-  if (ctx.org.joined) {
-    if (ctx.org.ready) return "ORG_READY";
+  if (org.joined) {
+    if (org.ready) return "ORG_READY";
     return "ORG_PARTIAL";
   }
 
-  if (ctx.team.joined) {
-    if (ctx.team.memberCount < MIN_MEMBERS_FOR_TEAM_INSIGHTS || ctx.team.pendingInviteCount > 0) {
+  if (team.joined) {
+    if (team.memberCount < MIN_MEMBERS_FOR_TEAM_INSIGHTS || team.pendingInviteCount > 0) {
       return "TEAM_PENDING_MEMBERS";
     }
-    if (!ctx.team.ready) return "TEAM_PARTIAL";
+    if (!team.ready) return "TEAM_PARTIAL";
     return "TEAM_READY";
   }
 
-  if (ctx.self.pendingInvites > 0) return "OBSERVER_PENDING";
+  if (self.pendingInvites > 0) return "OBSERVER_PENDING";
   if (hasTeamRelevantContext) return "TEAM_NOT_JOINED";
   return "SELF_COMPLETED";
 }
 
 function computeBlockingReasons(
   stage: JourneyStage,
-  ctx: JourneyComputationContext,
+  context: JourneyContextSnapshot,
 ): JourneyBlockingReason[] {
+  const { self, team, org } = context.completionSummary;
   const reasons: JourneyBlockingReason[] = [];
 
   if (stage === "SELF_NOT_STARTED") {
@@ -202,55 +120,55 @@ function computeBlockingReasons(
   if (stage === "SELF_IN_PROGRESS") {
     reasons.push({ code: "SELF_ASSESSMENT_INCOMPLETE" });
   }
-  if (stage === "OBSERVER_PENDING" && ctx.self.pendingInvites > 0) {
+  if (stage === "OBSERVER_PENDING" && self.pendingInvites > 0) {
     reasons.push({
       code: "OBSERVER_RESPONSES_PENDING",
-      detail: `${ctx.self.pendingInvites} observer invite(s) are still pending.`,
+      detail: `${self.pendingInvites} observer invite(s) are still pending.`,
     });
   }
   if (stage === "TEAM_NOT_JOINED") {
-    const pendingMembershipInvites = ctx.self.pendingTeamInvites + ctx.self.pendingOrgInvites;
+    const pendingMembershipInvites = self.pendingTeamInvites + self.pendingOrgInvites;
     reasons.push({
       code: "TEAM_MEMBERSHIP_MISSING",
       detail:
         pendingMembershipInvites > 0
           ? `${pendingMembershipInvites} membership invite(s) are waiting for acceptance.`
-          : ctx.self.explicitTeamIntent
+          : self.explicitTeamIntent
             ? "Team workspace is not set up yet."
             : undefined,
     });
   }
   if (stage === "TEAM_PENDING_MEMBERS") {
-    if (ctx.team.memberCount < MIN_MEMBERS_FOR_TEAM_INSIGHTS) {
+    if (team.memberCount < MIN_MEMBERS_FOR_TEAM_INSIGHTS) {
       reasons.push({
         code: "MIN_TEAM_SIZE_NOT_MET",
         detail: `Need at least ${MIN_MEMBERS_FOR_TEAM_INSIGHTS} team members.`,
       });
     }
-    if (ctx.team.pendingInviteCount > 0) {
+    if (team.pendingInviteCount > 0) {
       reasons.push({
         code: "TEAM_MEMBER_INVITES_PENDING",
-        detail: `${ctx.team.pendingInviteCount} invite(s) pending.`,
+        detail: `${team.pendingInviteCount} invite(s) pending.`,
       });
     }
   }
   if (stage === "TEAM_PARTIAL") {
     reasons.push({
       code: "TEAM_MEMBER_ASSESSMENTS_PENDING",
-      detail: `${ctx.team.completedMemberCount}/${MIN_MEMBERS_FOR_TEAM_INSIGHTS} completed for team insight.`,
+      detail: `${team.completedMemberCount}/${MIN_MEMBERS_FOR_TEAM_INSIGHTS} completed for team insight.`,
     });
   }
   if (stage === "ORG_PARTIAL") {
-    if (ctx.org.teamCount === 0) {
+    if (org.teamCount === 0) {
       reasons.push({ code: "ORG_TEAM_MISSING" });
     }
-    if (ctx.org.completedMemberCount < MIN_MEMBERS_FOR_ORG_INSIGHTS) {
+    if (org.completedMemberCount < MIN_MEMBERS_FOR_ORG_INSIGHTS) {
       reasons.push({
         code: "ORG_MEMBER_ASSESSMENTS_PENDING",
-        detail: `${ctx.org.completedMemberCount}/${MIN_MEMBERS_FOR_ORG_INSIGHTS} completed for org insight.`,
+        detail: `${org.completedMemberCount}/${MIN_MEMBERS_FOR_ORG_INSIGHTS} completed for org insight.`,
       });
     }
-    if (ctx.org.activeCampaignCount === 0) {
+    if (org.activeCampaignCount === 0) {
       reasons.push({ code: "ORG_CAMPAIGN_MISSING" });
     }
   }
@@ -258,16 +176,17 @@ function computeBlockingReasons(
   return reasons;
 }
 
-function computeActions(stage: JourneyStage, ctx: JourneyComputationContext): JourneyAction[] {
-  const actionMap = buildActionMap(ctx);
-  const hasPendingMembershipInvite = ctx.self.pendingTeamInvites > 0 || ctx.self.pendingOrgInvites > 0;
+function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): JourneyAction[] {
+  const { self, team, org } = context.completionSummary;
+  const actionMap = buildActionMap(context);
+  const hasPendingMembershipInvite = self.pendingTeamInvites > 0 || self.pendingOrgInvites > 0;
   const hasTeamRelevantContext =
-    ctx.self.explicitTeamIntent || hasPendingMembershipInvite || ctx.team.joined || ctx.org.joined;
+    self.explicitTeamIntent || hasPendingMembershipInvite || team.joined || org.joined;
   const teamBridgeActions: JourneyActionId[] = [];
   if (hasPendingMembershipInvite) {
     teamBridgeActions.push("JOIN_TEAM");
   }
-  if (ctx.self.explicitTeamIntent || !hasPendingMembershipInvite) {
+  if (self.explicitTeamIntent || !hasPendingMembershipInvite) {
     teamBridgeActions.push("CREATE_TEAM");
   }
 
@@ -294,264 +213,16 @@ function computeActions(stage: JourneyStage, ctx: JourneyComputationContext): Jo
   return uniqueActions(ids.map((id) => actionMap[id]));
 }
 
-function computeJourneyStateFromContext(ctx: JourneyComputationContext): JourneyState {
-  const currentStage = computeStage(ctx);
-  const availableNextActions = computeActions(currentStage, ctx);
+export function computeJourneyState(context: JourneyContextSnapshot): JourneyState {
+  const currentStage = computeStage(context);
+  const availableNextActions = computeActions(currentStage, context);
 
   return {
     currentStage,
     recommendedNextAction: availableNextActions[0] ?? null,
     availableNextActions,
-    blockingReasons: computeBlockingReasons(currentStage, ctx),
-    completionSummary: {
-      self: ctx.self,
-      team: ctx.team,
-      org: ctx.org,
-    },
-  };
-}
-
-async function buildJourneyContext(
-  profileId: string,
-  options: JourneyContextOptions = {},
-): Promise<JourneyComputationContext> {
-  const now = new Date();
-
-  const [profile, selfResult, draft, sentInvites, pendingInvites, completedObservers, orgMembership, teamIntentFlag] =
-    await Promise.all([
-      prisma.userProfile.findUnique({
-        where: { id: profileId },
-        select: { id: true, assessmentSkippedAt: true, email: true, role: true },
-      }),
-      prisma.assessmentResult.findFirst({
-        where: { userProfileId: profileId, isSelfAssessment: true },
-        select: { id: true },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.assessmentDraft.findUnique({
-        where: { userProfileId: profileId },
-        select: { id: true },
-      }),
-      prisma.observerInvitation.count({
-        where: { inviterId: profileId },
-      }),
-      prisma.observerInvitation.count({
-        where: {
-          inviterId: profileId,
-          status: InvitationStatus.PENDING,
-          expiresAt: { gt: now },
-        },
-      }),
-      prisma.observerAssessment.count({
-        where: {
-          invitation: {
-            inviterId: profileId,
-            status: InvitationStatus.COMPLETED,
-          },
-        },
-      }),
-      options.orgId
-        ? prisma.organizationMember.findUnique({
-            where: { orgId_userId: { orgId: options.orgId, userId: profileId } },
-            select: { orgId: true },
-          })
-        : getActiveOrgMembership(profileId),
-      prisma.featureInterest.findUnique({
-        where: {
-          userProfileId_featureKey: {
-            userProfileId: profileId,
-            featureKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
-          },
-        },
-        select: { userProfileId: true },
-      }),
-    ]);
-
-  let pendingTeamInvites = 0;
-  let pendingOrgInvites = 0;
-  if (profile?.email) {
-    const normalizedEmail = profile.email.trim();
-    if (normalizedEmail.length > 0) {
-      [pendingTeamInvites, pendingOrgInvites] = await Promise.all([
-        prisma.teamPendingInvite.count({
-          where: {
-            email: { equals: normalizedEmail, mode: "insensitive" },
-          },
-        }),
-        prisma.organizationPendingInvite.count({
-          where: {
-            email: { equals: normalizedEmail, mode: "insensitive" },
-          },
-        }),
-      ]);
-    }
-  }
-
-  if (!profile) {
-    return {
-      self: {
-        started: false,
-        completed: false,
-        skipped: false,
-        hasDraft: false,
-        sentInvites: 0,
-        pendingInvites: 0,
-        completedObservers: 0,
-        pendingTeamInvites: 0,
-        pendingOrgInvites: 0,
-        explicitTeamIntent: false,
-      },
-      team: {
-        joined: false,
-        teamId: null,
-        memberCount: 0,
-        completedMemberCount: 0,
-        pendingInviteCount: 0,
-        ready: false,
-      },
-      org: {
-        joined: false,
-        orgId: null,
-        teamCount: 0,
-        memberCount: 0,
-        completedMemberCount: 0,
-        pendingInviteCount: 0,
-        activeCampaignCount: 0,
-        ready: false,
-      },
-    };
-  }
-
-  const teamMembership = options.teamId
-    ? await prisma.teamMember.findUnique({
-        where: { teamId_userId: { teamId: options.teamId, userId: profileId } },
-        select: { teamId: true },
-      })
-    : await prisma.teamMember.findFirst({
-        where: orgMembership?.orgId
-          ? {
-              userId: profileId,
-              team: { orgId: orgMembership.orgId },
-            }
-          : { userId: profileId },
-        orderBy: { joinedAt: "asc" },
-        select: { teamId: true },
-      });
-
-  const teamId = teamMembership?.teamId ?? null;
-  const orgId = orgMembership?.orgId ?? null;
-
-  let teamSummary: JourneyCompletionSummary["team"] = {
-    joined: false,
-    teamId: null,
-    memberCount: 0,
-    completedMemberCount: 0,
-    pendingInviteCount: 0,
-    ready: false,
-  };
-
-  if (teamId) {
-    const [teamMemberRows, pendingInviteCount] = await Promise.all([
-      prisma.teamMember.findMany({
-        where: { teamId },
-        select: { userId: true },
-      }),
-      prisma.teamPendingInvite.count({ where: { teamId } }),
-    ]);
-
-    const memberUserIds = teamMemberRows.map((row) => row.userId);
-    const teamCompletedRows =
-      memberUserIds.length > 0
-        ? await prisma.assessmentResult.findMany({
-            where: {
-              userProfileId: { in: memberUserIds },
-              isSelfAssessment: true,
-            },
-            select: { userProfileId: true },
-            distinct: ["userProfileId"],
-          })
-        : [];
-
-    const completedMemberCount = teamCompletedRows.length;
-
-    teamSummary = {
-      joined: true,
-      teamId,
-      memberCount: memberUserIds.length,
-      completedMemberCount,
-      pendingInviteCount,
-      ready: completedMemberCount >= MIN_MEMBERS_FOR_TEAM_INSIGHTS,
-    };
-  }
-
-  let orgSummary: JourneyCompletionSummary["org"] = {
-    joined: false,
-    orgId: null,
-    teamCount: 0,
-    memberCount: 0,
-    completedMemberCount: 0,
-    pendingInviteCount: 0,
-    activeCampaignCount: 0,
-    ready: false,
-  };
-
-  if (orgId) {
-    const [orgMemberRows, teamCount, pendingInviteCount, activeCampaignCount] = await Promise.all([
-      prisma.organizationMember.findMany({
-        where: { orgId, leftAt: null },
-        select: { userId: true },
-      }),
-      prisma.team.count({ where: { orgId } }),
-      prisma.organizationPendingInvite.count({ where: { orgId } }),
-      prisma.campaign.count({ where: { orgId, status: "ACTIVE" } }),
-    ]);
-
-    const orgMemberUserIds = orgMemberRows.map((row) => row.userId);
-    const orgCompletedRows =
-      orgMemberUserIds.length > 0
-        ? await prisma.assessmentResult.findMany({
-            where: {
-              userProfileId: { in: orgMemberUserIds },
-              isSelfAssessment: true,
-            },
-            select: { userProfileId: true },
-            distinct: ["userProfileId"],
-          })
-        : [];
-
-    const completedMemberCount = orgCompletedRows.length;
-
-    orgSummary = {
-      joined: true,
-      orgId,
-      teamCount,
-      memberCount: orgMemberUserIds.length,
-      completedMemberCount,
-      pendingInviteCount,
-      activeCampaignCount,
-      ready:
-        teamCount > 0 &&
-        completedMemberCount >= MIN_MEMBERS_FOR_ORG_INSIGHTS &&
-        activeCampaignCount > 0,
-    };
-  }
-
-  return {
-    self: {
-      started: Boolean(selfResult || draft),
-      completed: Boolean(selfResult || profile.assessmentSkippedAt),
-      skipped: Boolean(profile.assessmentSkippedAt),
-      hasDraft: Boolean(draft),
-      sentInvites,
-      pendingInvites,
-      completedObservers,
-      pendingTeamInvites,
-      pendingOrgInvites,
-      explicitTeamIntent:
-        Boolean(teamIntentFlag) || profile.role !== UserRole.INDIVIDUAL,
-    },
-    team: teamSummary,
-    org: orgSummary,
+    blockingReasons: computeBlockingReasons(currentStage, context),
+    completionSummary: context.completionSummary,
   };
 }
 
@@ -559,8 +230,8 @@ export async function getJourneyStateForProfileId(
   profileId: string,
   options: JourneyContextOptions = {},
 ): Promise<JourneyState> {
-  const context = await buildJourneyContext(profileId, options);
-  return computeJourneyStateFromContext(context);
+  const context = await resolveJourneyContext(profileId, options);
+  return computeJourneyState(context);
 }
 
 export async function getJourneyStateForClerkId(

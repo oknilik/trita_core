@@ -1,21 +1,14 @@
 import "server-only";
 
-import type { JourneyActionId, JourneyStage, JourneyState } from "./state";
+import type {
+  JourneyActionId,
+  JourneyNextBestAction,
+  JourneyResolvedCta,
+  JourneyState,
+} from "./types";
 
 export type JourneyResolverLocale = "hu" | "en";
-
-export interface ResolvedJourneyCta {
-  id: JourneyActionId;
-  label: string;
-  href: string;
-}
-
-export interface JourneyNextBestAction {
-  stage: JourneyStage;
-  primary: ResolvedJourneyCta;
-  secondary: ResolvedJourneyCta | null;
-  explanation: string;
-}
+export type { JourneyNextBestAction, JourneyResolvedCta as ResolvedJourneyCta } from "./types";
 
 const LABELS: Record<JourneyResolverLocale, Record<JourneyActionId, string>> = {
   hu: {
@@ -94,7 +87,7 @@ function toCta(
   state: JourneyState,
   locale: JourneyResolverLocale,
   actionId: JourneyActionId,
-): ResolvedJourneyCta {
+): JourneyResolvedCta {
   return {
     id: actionId,
     label: LABELS[locale][actionId],

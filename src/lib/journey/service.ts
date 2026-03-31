@@ -1,9 +1,8 @@
 import "server-only";
 
 import type { JourneyNextBestAction, JourneyResolverLocale } from "./next-best-action";
-import { resolveNextBestAction } from "./next-best-action";
-import type { JourneyState } from "./state";
-import { getJourneyStateForClerkId, getJourneyStateForProfileId } from "./state";
+import { resolveJourney, resolveJourneyForClerkId } from "./engine";
+import type { JourneyResolution, JourneyScopeProgress, JourneyState } from "./types";
 
 export interface JourneySnapshotOptions {
   teamId?: string | null;
@@ -16,7 +15,9 @@ export interface JourneySnapshotOptions {
  * `state` is the full journey truth, `nextBestAction` is the CTA decision output.
  */
 export interface JourneySnapshot {
+  resolution: JourneyResolution;
   state: JourneyState;
+  scopeProgress: JourneyScopeProgress;
   nextBestAction: JourneyNextBestAction;
   generatedAt: string;
 }
@@ -25,6 +26,8 @@ export interface JourneySnapshot {
  * Flat API response variant (easy to consume in UI clients).
  */
 export type JourneyApiResponse = JourneyState & {
+  resolution: JourneyResolution;
+  scopeProgress: JourneyScopeProgress;
   nextBestAction: JourneyNextBestAction;
   generatedAt: string;
 };
@@ -32,6 +35,8 @@ export type JourneyApiResponse = JourneyState & {
 function toApiResponse(snapshot: JourneySnapshot): JourneyApiResponse {
   return {
     ...snapshot.state,
+    resolution: snapshot.resolution,
+    scopeProgress: snapshot.scopeProgress,
     nextBestAction: snapshot.nextBestAction,
     generatedAt: snapshot.generatedAt,
   };
@@ -45,14 +50,17 @@ export async function getJourneySnapshotForProfileId(
   profileId: string,
   options: JourneySnapshotOptions = {},
 ): Promise<JourneySnapshot> {
-  const locale = options.locale === "hu" ? "hu" : "en";
-  const state = await getJourneyStateForProfileId(profileId, {
+  const resolution = await resolveJourney(profileId, {
     teamId: options.teamId,
     orgId: options.orgId,
+    locale: options.locale,
   });
+
   return {
-    state,
-    nextBestAction: resolveNextBestAction(state, locale),
+    resolution,
+    state: resolution.state,
+    scopeProgress: resolution.scopeProgress,
+    nextBestAction: resolution.nextBestAction,
     generatedAt: new Date().toISOString(),
   };
 }
@@ -61,17 +69,18 @@ export async function getJourneySnapshotForClerkId(
   clerkId: string,
   options: JourneySnapshotOptions = {},
 ): Promise<JourneySnapshot | null> {
-  const locale = options.locale === "hu" ? "hu" : "en";
-  const state = await getJourneyStateForClerkId(clerkId, {
+  const resolution = await resolveJourneyForClerkId(clerkId, {
     teamId: options.teamId,
     orgId: options.orgId,
+    locale: options.locale,
   });
-  if (!state) return null;
+  if (!resolution) return null;
 
   return {
-    state,
-    nextBestAction: resolveNextBestAction(state, locale),
+    resolution,
+    state: resolution.state,
+    scopeProgress: resolution.scopeProgress,
+    nextBestAction: resolution.nextBestAction,
     generatedAt: new Date().toISOString(),
   };
 }
-
