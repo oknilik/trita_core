@@ -8,6 +8,9 @@ export interface ActiveOrgMembership {
   joinedAt: Date;
 }
 
+type ColumnExistsRow = { exists: boolean };
+let activeOrgIdColumnState: "unknown" | "present" | "absent" = "unknown";
+
 function isActiveOrgFieldCompatibilityError(error: unknown): boolean {
   if (!(error instanceof Error)) return false;
   const maybePrismaError = error as Error & { code?: string };
@@ -21,9 +24,36 @@ function isActiveOrgFieldCompatibilityError(error: unknown): boolean {
   );
 }
 
+async function hasActiveOrgIdColumn(): Promise<boolean> {
+  if (activeOrgIdColumnState === "present") return true;
+  if (activeOrgIdColumnState === "absent") return false;
+
+  const rows = await prisma.$queryRaw<ColumnExistsRow[]>`
+    SELECT EXISTS (
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = current_schema()
+        AND table_name = 'UserProfile'
+        AND column_name = 'activeOrgId'
+    ) AS "exists"
+  `;
+
+  const exists = rows[0]?.exists === true;
+  activeOrgIdColumnState = exists ? "present" : "absent";
+  return exists;
+}
+
 async function readProfileActiveOrgId(
   profileId: string,
 ): Promise<{ exists: boolean; activeOrgId: string | null }> {
+  if (!(await hasActiveOrgIdColumn())) {
+    const profile = await prisma.userProfile.findUnique({
+      where: { id: profileId },
+      select: { id: true },
+    });
+    return { exists: Boolean(profile), activeOrgId: null };
+  }
+
   try {
     const profile = await prisma.userProfile.findUnique({
       where: { id: profileId },
@@ -32,6 +62,7 @@ async function readProfileActiveOrgId(
     return { exists: Boolean(profile), activeOrgId: profile?.activeOrgId ?? null };
   } catch (error) {
     if (!isActiveOrgFieldCompatibilityError(error)) throw error;
+    activeOrgIdColumnState = "absent";
 
     const profile = await prisma.userProfile.findUnique({
       where: { id: profileId },
@@ -45,6 +76,8 @@ export async function setProfileActiveOrgId(
   profileId: string,
   orgId: string | null,
 ): Promise<void> {
+  if (!(await hasActiveOrgIdColumn())) return;
+
   try {
     await prisma.userProfile.update({
       where: { id: profileId },
@@ -52,6 +85,7 @@ export async function setProfileActiveOrgId(
     });
   } catch (error) {
     if (!isActiveOrgFieldCompatibilityError(error)) throw error;
+    activeOrgIdColumnState = "absent";
   }
 }
 
