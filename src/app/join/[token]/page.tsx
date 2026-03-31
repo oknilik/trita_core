@@ -2,7 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  resolveMembershipInviteResolution,
+  resolveMembershipJoinPageAccess,
 } from "@/lib/membership-onboarding/server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { JoinClient } from "./JoinClient";
@@ -25,27 +25,22 @@ export default async function JoinPage({
   const { token } = await params;
 
   const clerkUser = await currentUser();
-  const resolution = await resolveMembershipInviteResolution({
+  const access = await resolveMembershipJoinPageAccess({
     kind: "team",
     inviteId: token,
     clerkId: clerkUser?.id ?? null,
+    allowedStates: [
+      "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE",
+      "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED",
+      "INVITED_READY_TO_JOIN",
+    ],
   });
 
-  if (resolution.inviteState === "INVITE_NOT_FOUND" || !resolution.invite) notFound();
-  if (resolution.inviteState === "INVITED_UNAUTHENTICATED") {
-    redirect(resolution.signUpRedirectUrl ?? `/sign-up?redirect_url=/join/${token}`);
-  }
-  if (resolution.redirectTo) {
-    redirect(resolution.redirectTo);
-  }
-  if (!resolution.actor || resolution.invite.kind !== "team") notFound();
-  if (
-    resolution.inviteState !== "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE" &&
-    resolution.inviteState !== "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED" &&
-    resolution.inviteState !== "INVITED_READY_TO_JOIN"
-  ) {
-    notFound();
-  }
+  if (access.type === "not_found") notFound();
+  if (access.type === "redirect") redirect(access.href);
+
+  const { resolution } = access;
+  if (resolution.invite.kind !== "team") notFound();
 
   const existingOrg =
     resolution.inviteState === "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"

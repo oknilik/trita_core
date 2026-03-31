@@ -105,6 +105,21 @@ export interface MembershipInviteResolution {
   redirectTo: string | null;
 }
 
+type ReadyMembershipInviteResolution = MembershipInviteResolution & {
+  invite: MembershipJoinInviteContext;
+  actor: MembershipJoinActor;
+};
+
+type ReadyMembershipInviteResolutionForState<TAllowed extends MembershipInviteState> =
+  Omit<ReadyMembershipInviteResolution, "inviteState"> & {
+    inviteState: TAllowed;
+  };
+
+export type MembershipJoinPageAccessResult<TAllowed extends MembershipInviteState> =
+  | { type: "not_found" }
+  | { type: "redirect"; href: string }
+  | { type: "ready"; resolution: ReadyMembershipInviteResolutionForState<TAllowed> };
+
 function buildJoinPath(kind: MembershipJoinKind, inviteId: string): string {
   return kind === "team" ? `/join/${inviteId}` : `/join/org/${inviteId}`;
 }
@@ -291,6 +306,49 @@ async function resolveJoinNextPath(profileId: string): Promise<string> {
   return resolution.home.destination;
 }
 
+export async function resolveMembershipJoinPageAccess<const TAllowed extends MembershipInviteState>(
+  params: {
+  kind: MembershipJoinKind;
+  inviteId: string;
+  clerkId?: string | null;
+  allowedStates: readonly TAllowed[];
+}): Promise<MembershipJoinPageAccessResult<TAllowed>> {
+  const isAllowedState = (state: MembershipInviteState): state is TAllowed =>
+    (params.allowedStates as readonly MembershipInviteState[]).includes(state);
+
+  const resolution = await resolveMembershipInviteResolution({
+    kind: params.kind,
+    inviteId: params.inviteId,
+    clerkId: params.clerkId,
+  });
+
+  if (resolution.inviteState === "INVITE_NOT_FOUND" || !resolution.invite) {
+    return { type: "not_found" };
+  }
+
+  if (resolution.inviteState === "INVITED_UNAUTHENTICATED") {
+    return {
+      type: "redirect",
+      href:
+        resolution.signUpRedirectUrl ??
+        buildSignUpRedirectUrl(params.kind, params.inviteId),
+    };
+  }
+
+  if (resolution.redirectTo) {
+    return { type: "redirect", href: resolution.redirectTo };
+  }
+
+  if (!resolution.actor || !isAllowedState(resolution.inviteState)) {
+    return { type: "not_found" };
+  }
+
+  return {
+    type: "ready",
+    resolution: resolution as ReadyMembershipInviteResolutionForState<TAllowed>,
+  };
+}
+
 export async function joinMembershipFromInvite(params: {
   clerkId: string;
   kind: MembershipJoinKind;
@@ -334,6 +392,48 @@ export async function joinMembershipFromInvite(params: {
   return {
     ok: true,
     inviteState: "INVITE_ACCEPTED",
+    nextPath: await resolveJoinNextPath(resolution.actor.profileId),
+  };
+}
+
+export async function switchMembershipContextFromInvite(params: {
+  clerkId: string;
+  inviteId: string;
+}): Promise<{ ok: true; nextPath: string }> {
+  const resolution = await resolveMembershipInviteResolution({
+    kind: "team",
+    inviteId: params.inviteId,
+    clerkId: params.clerkId,
+  });
+
+  if (resolution.inviteState === "INVITE_NOT_FOUND" || !resolution.invite) {
+    throw new MembershipOnboardingError("INVITE_NOT_FOUND", 404);
+  }
+  if (resolution.inviteState === "INVITED_UNAUTHENTICATED") {
+    throw new MembershipOnboardingError("UNAUTHORIZED", 401);
+  }
+  if (resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE" || !resolution.actor) {
+    throw new MembershipOnboardingError("PROFILE_INCOMPLETE", 409, {
+      missingFields: resolution.actor?.profileStatus.missingFields ?? [],
+    });
+  }
+  if (
+    resolution.inviteState !== "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED" ||
+    resolution.invite.kind !== "team"
+  ) {
+    throw new MembershipOnboardingError("INVALID_INPUT", 400);
+  }
+
+  try {
+    await runJoinTransaction(resolution.actor, resolution.invite, {
+      skipOrgMembershipCreate: false,
+    });
+  } catch (error) {
+    throw normalizeJoinError(error);
+  }
+
+  return {
+    ok: true,
     nextPath: await resolveJoinNextPath(resolution.actor.profileId),
   };
 }
