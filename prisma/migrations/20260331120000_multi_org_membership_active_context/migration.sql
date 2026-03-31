@@ -13,7 +13,8 @@ WHERE om."userId" = up."id"
   AND om."leftAt" IS NULL;
 
 -- Drop one-org-per-user hard constraint to allow multi-org memberships.
-DROP INDEX IF EXISTS "OrganizationMember_userId_key";
+ALTER TABLE "OrganizationMember"
+DROP CONSTRAINT IF EXISTS "OrganizationMember_userId_key";
 
 -- Add indexes for active context and active membership lookups.
 CREATE INDEX IF NOT EXISTS "UserProfile_activeOrgId_idx"
