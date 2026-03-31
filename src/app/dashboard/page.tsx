@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { resolveHomeForProfileId } from "@/lib/journey/home.server";
+import { resolveJourney } from "@/lib/journey/engine";
 import { AdminDashboard } from "./AdminDashboard";
 
 export const dynamic = "force-dynamic";
@@ -20,12 +20,12 @@ export default async function DashboardPage({
   });
   if (!profile) redirect("/sign-in");
 
-  const homeDecision = await resolveHomeForProfileId(profile.id);
-  if (homeDecision.home.destination === "/dashboard") {
+  const journey = await resolveJourney(profile.id);
+  if (journey.home.destination === "/dashboard") {
     return <AdminDashboard />;
   }
 
-  let destination = homeDecision.home.destination;
+  let destination = journey.home.destination;
   if (destination.startsWith("/profile/results")) {
     const params = await searchParams;
     const query = new URLSearchParams();
