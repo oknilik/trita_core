@@ -37,7 +37,11 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
 
 // ─── Main Navbar ──────────────────────────────────────────────────────────────
 
-export function NavBar() {
+interface NavBarProps {
+  signedInHomeHref?: string;
+}
+
+export function NavBar({ signedInHomeHref = "/profile/results" }: NavBarProps) {
   const { locale, setLocale } = useLocale();
   const { isSignedIn } = useAuth();
   const { signOut } = useClerk();
@@ -91,7 +95,7 @@ export function NavBar() {
 
           {/* ═══ LOGO ═══ */}
           <Link
-            href={isSignedIn ? "/profile/results" : "/"}
+            href={isSignedIn ? signedInHomeHref : "/"}
             aria-label="trita"
             className="font-fraunces text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
           >
@@ -165,7 +169,7 @@ export function NavBar() {
           {/* Top bar — matches main navbar exactly */}
           <div className="flex h-14 shrink-0 items-center justify-between border-b border-[#e8e0d3] bg-[rgba(250,249,246,0.95)] px-5">
             <Link
-              href={isSignedIn ? "/profile/results" : "/"}
+              href={isSignedIn ? signedInHomeHref : "/"}
               onClick={() => setDrawerOpen(false)}
               className="font-fraunces text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
             >

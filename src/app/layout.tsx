@@ -18,6 +18,7 @@ import { hasOrgRole } from "@/lib/auth";
 import { getOrgSubscription, hasAccess } from "@/lib/subscription";
 import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { resolveJourney } from "@/lib/journey/engine";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
@@ -77,6 +78,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   type NavData = React.ComponentProps<typeof NavHeaderUI>;
   let navData: NavData | null = null;
+  let signedInHomeHref: string = "/dashboard";
   const locale = await getServerLocale();
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
@@ -90,6 +92,9 @@ export default async function RootLayout({
         select: { id: true, username: true, email: true },
       });
       if (profile) {
+        const journey = await resolveJourney(profile.id, { locale });
+        signedInHomeHref = journey.home.destination;
+
         const membership = await getActiveOrgMembership(profile.id);
         if (membership) {
           const isAdmin = hasOrgRole(membership.role, "ORG_ADMIN");
@@ -123,6 +128,7 @@ export default async function RootLayout({
             },
             org: org ?? null,
             teams,
+            homeHref: signedInHomeHref,
             role: membership.role,
             activeCampaignCount,
             isAdmin,
@@ -149,7 +155,7 @@ export default async function RootLayout({
             <ToastProvider>
               {isNoShell ? (
                 <Suspense>
-                  <NavBar />
+                  <NavBar signedInHomeHref={signedInHomeHref} />
                   <div className="pb-16">{children}</div>
                   <Footer />
                 </Suspense>
@@ -162,7 +168,7 @@ export default async function RootLayout({
 
               ) : (
                 <Suspense>
-                  <NavBar />
+                  <NavBar signedInHomeHref={signedInHomeHref} />
                   <div className="pb-16">{children}</div>
                   <Footer />
                 </Suspense>

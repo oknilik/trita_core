@@ -135,6 +135,7 @@ interface NavHeaderUIProps {
   user: { username: string | null; email: string | null };
   org: { id: string; name: string } | null;
   teams: Array<{ id: string; name: string }>;
+  homeHref: string;
   role: string;
   activeCampaignCount: number;
   isAdmin: boolean;
@@ -148,6 +149,7 @@ export function NavHeaderUI({
   user,
   org,
   teams,
+  homeHref,
   activeCampaignCount,
   isAdmin,
   isManager,
@@ -171,11 +173,10 @@ export function NavHeaderUI({
   );
 
   const team = teams[0] ?? null;
-  const isOrgUser = isManager || isAdmin;
-  const dashboardHref = isOrgUser ? "/dashboard" : "/profile/results";
-  const dashboardLabel = isOrgUser ? "Vezérlő" : "Profilom";
+  const homePath = homeHref.split("?")[0] ?? homeHref;
+  const homeLabel = "Kezdőlap";
   const onSelfResults = pathname.startsWith("/profile/results");
-  const onDashboard = isOrgUser ? pathname === "/dashboard" : onSelfResults;
+  const onHome = homePath === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(homePath);
   const onTeam = teams.some((t) => pathname.startsWith(`/team/${t.id}`));
   const onOrg = org ? pathname.startsWith(`/org/${org.id}`) : false;
   const onHiring = org ? pathname.startsWith(`/hiring/${org.id}`) : false;
@@ -270,7 +271,7 @@ export function NavHeaderUI({
 
           {/* Logo */}
           <Link
-            href={dashboardHref}
+            href={homeHref}
             aria-label="trita"
             className="font-fraunces mr-3 text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
           >
@@ -282,22 +283,20 @@ export function NavHeaderUI({
 
             {/* Vezérlő */}
             <Link
-              href={dashboardHref}
-              className={`${onDashboard ? "rounded-lg bg-[#1a1a2e] text-white px-4 py-1.5 text-[13px] font-medium inline-flex items-center gap-2" : navItemInactive}`}
+              href={homeHref}
+              className={`${onHome ? "rounded-lg bg-[#1a1a2e] text-white px-4 py-1.5 text-[13px] font-medium inline-flex items-center gap-2" : navItemInactive}`}
             >
               <GridIcon className="h-3.5 w-3.5" />
-              {dashboardLabel}
+              {homeLabel}
             </Link>
 
-            {isOrgUser && (
-              <Link
-                href="/profile/results"
-                className={onSelfResults ? navItemActive : navItemInactive}
-              >
-                <SelfIcon />
-                Saját profil
-              </Link>
-            )}
+            <Link
+              href="/profile/results"
+              className={onSelfResults ? navItemActive : navItemInactive}
+            >
+              <SelfIcon />
+              Saját profil
+            </Link>
 
             {/* Csapatok dropdown */}
             {team && (
@@ -456,12 +455,12 @@ export function NavHeaderUI({
               <div className="mx-4 mt-2 rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] p-4 shadow-lg shadow-black/[0.04]">
                 {/* Vezérlő pill */}
                 <Link
-                  href={dashboardHref}
+                  href={homeHref}
                   onClick={() => setMobileMenu("closed")}
                   className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-[13px] font-medium text-white"
                 >
                   <GridIcon className="h-3.5 w-3.5" />
-                  {dashboardLabel}
+                  {homeLabel}
                 </Link>
 
                 {/* Menu items */}
@@ -572,12 +571,12 @@ export function NavHeaderUI({
                 {/* Header: pill + collapse */}
                 <div className="flex items-center gap-3 border-b border-[#e8e0d3] px-4 py-3">
                   <Link
-                    href={dashboardHref}
+                    href={homeHref}
                     onClick={() => setMobileMenu("closed")}
                     className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-[13px] font-medium text-white"
                   >
                     <GridIcon className="h-3.5 w-3.5" />
-                    {dashboardLabel}
+                    {homeLabel}
                   </Link>
                   <button
                     type="button"
