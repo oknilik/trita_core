@@ -27,6 +27,8 @@ export default async function DashboardPage({
 
   let destination = journey.home.destination;
   if (destination.startsWith("/profile/results")) {
+    // Legacy `/dashboard?...` entrypoints may still carry self-profile params.
+    // Keep forwarding these to avoid breaking retake modal/deep-link flows.
     const params = await searchParams;
     const query = new URLSearchParams();
     if (params?.tab) query.set("tab", String(params.tab));

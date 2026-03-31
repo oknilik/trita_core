@@ -75,7 +75,7 @@ export function deriveJourneyEntryIntent(
   return explicitTeamIntent ? "team" : "explore";
 }
 
-function deriveActiveSurface(params: {
+export function deriveJourneyActiveSurface(params: {
   hasPendingJoinInvite: boolean;
   currentContext: JourneyCurrentContext;
   teamMembership: JourneyTeamMembershipSnapshot | null;
@@ -440,7 +440,7 @@ export async function resolveJourneyContext(
 
   const pendingJoinInvite = pickPendingJoinInvite(pendingTeamInvite, pendingOrgInvite);
   const currentContext = deriveJourneyCurrentContext(normalizedOrgMembership?.role ?? null);
-  const activeSurface = deriveActiveSurface({
+  const activeSurface = deriveJourneyActiveSurface({
     hasPendingJoinInvite: Boolean(pendingJoinInvite),
     currentContext,
     teamMembership: normalizedTeamMembership,

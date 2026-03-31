@@ -249,6 +249,10 @@ export const resultsTranslations = {
     },
     retakeConfirm: { hu: "Újra kitöltöm", en: "Retake" },
     retakeCancel: { hu: "Mégse", en: "Cancel" },
+    draftInProgressHint: {
+      hu: "A saját profilodból később kérhetsz observer visszajelzést, és ha szeretnéd, csapatképet is építhetsz.",
+      en: "From your self profile, you can later collect observer feedback and optionally build team insights.",
+    },
     discardDraft: { hu: "Félkész teszt elvetése", en: "Discard draft" },
     discardDraftConfirmTitle: { hu: "Elveted a félkész tesztet?", en: "Discard this draft?" },
     discardDraftConfirmBody: {

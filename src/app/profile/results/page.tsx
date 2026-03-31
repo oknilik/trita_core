@@ -159,9 +159,7 @@ export default async function ProfileResultsPage({
               {t("results.draftInProgressBody", locale)}
             </p>
             <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[#8a8a9a]">
-              {locale === "hu"
-                ? "A saját profilodból később kérhetsz observer visszajelzést, és ha szeretnéd, csapatképet is építhetsz."
-                : "From your self profile, you can later collect observer feedback and optionally build team insights."}
+              {t("results.draftInProgressHint", locale)}
             </p>
             <a
               href="/assessment"
