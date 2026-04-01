@@ -4,6 +4,8 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { SerializedMember, SerializedPendingInvite } from "@/lib/org-stats";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 import { OrgInviteForm } from "./OrgInviteForm";
 import { OrgRemoveMemberButton } from "./OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
@@ -58,15 +60,15 @@ export function OrgMembersTab({
     <div className="flex flex-col gap-6">
       {/* Members list */}
       <Card spacing="lg" className="md:p-8">
-        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+        <SectionEyebrow className="mb-1">
           {t("org.members.eyebrow", loc)}
-        </p>
-        <h2 className="mb-5 font-fraunces text-xl text-ink">
+        </SectionEyebrow>
+        <SectionHeading className="mb-5">
           {t("org.members.title", loc)}{" "}
           <span className="font-sans text-sm font-normal text-ink-body/50">
             ({members.length + pendingInvites.length})
           </span>
-        </h2>
+        </SectionHeading>
 
         <div className="flex flex-col divide-y divide-sand">
           {members.map((m) => (
@@ -125,9 +127,9 @@ export function OrgMembersTab({
       {/* Invite form */}
       {isManager && canInviteMembers && (
         <Card spacing="lg" className="md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.members.inviteEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-3 text-sm font-semibold text-ink">
             {t("org.members.inviteTitle", loc)}
           </h3>
@@ -140,9 +142,9 @@ export function OrgMembersTab({
 
       {isManager && !canInviteMembers && actionGateCopy && (
         <Card spacing="lg" className="md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.members.inviteEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-2 text-sm font-semibold text-ink">
             {actionGateCopy.title}
           </h3>

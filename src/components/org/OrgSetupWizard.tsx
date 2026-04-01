@@ -7,6 +7,8 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
 import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 
 interface OrgSetupWizardProps {
   orgId: string;
@@ -123,12 +125,12 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
 
       {step === "name" && (
         <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("org.setup.step1Eyebrow", loc)}
-          </p>
-          <h1 className="font-fraunces text-xl text-ink mb-2">
+          </SectionEyebrow>
+          <SectionHeading as="h1" className="mb-2">
             {t("org.setup.step1Title", loc)}
-          </h1>
+          </SectionHeading>
           <p className="text-sm text-ink-body/70 mb-6">
             {t("org.setup.step1Subtitle", loc)}
           </p>
@@ -159,12 +161,12 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
 
       {step === "avatar" && (
         <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("org.setup.step2Eyebrow", loc)}
-          </p>
-          <h1 className="font-fraunces text-xl text-ink mb-2">
+          </SectionEyebrow>
+          <SectionHeading as="h1" className="mb-2">
             {t("org.setup.step2Title", loc)}
-          </h1>
+          </SectionHeading>
           <p className="text-sm text-ink-body/70 mb-6">
             {t("org.setup.step2Subtitle", loc)}
           </p>
@@ -223,12 +225,12 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
 
       {step === "invite" && (
         <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("org.setup.step3Eyebrow", loc)}
-          </p>
-          <h1 className="font-fraunces text-xl text-ink mb-2">
+          </SectionEyebrow>
+          <SectionHeading as="h1" className="mb-2">
             {t("org.setup.step3Title", loc)}
-          </h1>
+          </SectionHeading>
           <p className="text-sm text-ink-body/70 mb-6">
             {t("org.setup.step3Subtitle", loc)}
           </p>

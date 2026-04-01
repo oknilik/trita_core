@@ -8,6 +8,8 @@ import type { CampaignWithStats } from "@/lib/org-stats";
 import { Card } from "@/components/ui/primitives/Card";
 import { CampaignCard } from "./CampaignCard";
 import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 
 interface OrgCampaignsTabProps {
   orgId: string;
@@ -93,17 +95,17 @@ export function OrgCampaignsTab({
     <div className="flex flex-col gap-8">
       {/* Active campaigns */}
       <section>
-        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+        <SectionEyebrow className="mb-1">
           {t("org.campaigns.activeEyebrow", loc)}
-        </p>
-        <h2 className="mb-5 font-fraunces text-xl text-ink">
+        </SectionEyebrow>
+        <SectionHeading className="mb-5">
           {t("org.campaigns.activeTitle", loc)}
           {activeCampaigns.length > 0 && (
             <span className="ml-2 font-sans text-sm font-normal text-ink-body/50">
               ({activeCampaigns.length})
             </span>
           )}
-        </h2>
+        </SectionHeading>
 
         {activeCampaigns.length === 0 ? (
           <div className="rounded-xl border border-sand bg-cream p-8 text-center">
@@ -132,9 +134,9 @@ export function OrgCampaignsTab({
         <section>
           <div className="mb-5 flex items-center gap-3">
             <div className="flex-1 border-t border-sand" />
-            <span className="font-mono text-xs uppercase tracking-widest text-muted">
+            <SectionEyebrow as="span" tone="muted">
               {t("org.campaigns.draftsDivider", loc)}
-            </span>
+            </SectionEyebrow>
             <div className="flex-1 border-t border-sand" />
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -190,12 +192,12 @@ export function OrgCampaignsTab({
             </button>
           ) : (
             <Card spacing="lg" className="md:p-8">
-              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              <SectionEyebrow className="mb-1">
                 {t("org.campaigns.newEyebrow", loc)}
-              </p>
-              <h2 className="mb-5 font-fraunces text-xl text-ink">
+              </SectionEyebrow>
+              <SectionHeading className="mb-5">
                 {t("org.campaigns.createTitle", loc)}
-              </h2>
+              </SectionHeading>
               <form onSubmit={handleCreate} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-semibold text-ink">
@@ -265,10 +267,10 @@ export function OrgCampaignsTab({
       {isManager && !canManageCampaigns && actionGateCopy && (
         <section>
           <Card spacing="lg" className="md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {isHu ? "Kampány akciók" : "Campaign actions"}
-            </p>
-            <h2 className="font-fraunces text-xl text-ink">{actionGateCopy.title}</h2>
+            </SectionEyebrow>
+            <SectionHeading>{actionGateCopy.title}</SectionHeading>
             <p className="mt-2 text-sm text-ink-body">{actionGateCopy.description}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-lg bg-sand px-5 text-sm font-semibold text-muted">
@@ -290,9 +292,9 @@ export function OrgCampaignsTab({
         <section>
           <div className="mb-5 flex items-center gap-3">
             <div className="flex-1 border-t border-sand" />
-            <span className="font-mono text-xs uppercase tracking-widest text-muted">
+            <SectionEyebrow as="span" tone="muted">
               {t("org.campaigns.closedDivider", loc)}
-            </span>
+            </SectionEyebrow>
             <div className="flex-1 border-t border-sand" />
           </div>
           <div className="rounded-2xl border border-sand bg-white shadow-sm overflow-hidden">
