@@ -233,6 +233,45 @@ export interface AcceptanceResult {
   errorState: AcceptanceErrorState | null;
 }
 
+export interface TeamJoinPagePayload {
+  inviteState:
+    | "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
+    | "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"
+    | "INVITED_READY_TO_JOIN";
+  inviteId: string;
+  teamName: string;
+  orgName: string;
+  alreadyInTargetOrg: boolean;
+  existingProfile: { username: string | null } | null;
+  existingOrg: { orgId: string; orgName: string } | null;
+}
+
+export type TeamJoinPageModel =
+  | { view: "not_found" }
+  | { view: "redirect"; href: string }
+  | { view: "ready"; payload: TeamJoinPagePayload };
+
+export interface OrgJoinPagePayload {
+  inviteState:
+    | "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
+    | "INVITED_READY_TO_JOIN";
+  inviteId: string;
+  orgName: string;
+  existingProfile: { username: string | null } | null;
+}
+
+export type OrgJoinPageModel =
+  | { view: "not_found" }
+  | { view: "redirect"; href: string }
+  | { view: "ready"; payload: OrgJoinPagePayload };
+
+export type CandidateApplyPageModel =
+  | { view: "not_found" }
+  | { view: "completed"; invite: CandidateInviteContext }
+  | { view: "canceled"; invite: CandidateInviteContext }
+  | { view: "expired"; invite: CandidateInviteContext }
+  | { view: "ready"; invite: CandidateInviteContext };
+
 function buildJoinPath(kind: MembershipJoinKind, inviteId: string): string {
   return kind === "team" ? `/join/${inviteId}` : `/join/org/${inviteId}`;
 }
@@ -991,6 +1030,111 @@ export async function resolveMembershipJoinPageAccess<const TAllowed extends Mem
     type: "ready",
     resolution: resolution as ReadyMembershipInviteResolutionForState<TAllowed>,
   };
+}
+
+export async function resolveTeamJoinPageModel(params: {
+  inviteId: string;
+  clerkId?: string | null;
+}): Promise<TeamJoinPageModel> {
+  const access = await resolveMembershipJoinPageAccess({
+    kind: "team",
+    inviteId: params.inviteId,
+    clerkId: params.clerkId,
+    allowedStates: [
+      "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE",
+      "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED",
+      "INVITED_READY_TO_JOIN",
+    ],
+  });
+
+  if (access.type === "not_found") return { view: "not_found" };
+  if (access.type === "redirect") return { view: "redirect", href: access.href };
+
+  const { resolution } = access;
+  if (resolution.invite.kind !== "team") return { view: "not_found" };
+
+  const existingOrg =
+    resolution.inviteState === "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"
+      ? resolution.actor.activeOrgMembership
+      : null;
+  const alreadyInTargetOrg = resolution.actor.activeOrgMembership?.orgId === resolution.invite.orgId;
+  const existingProfile =
+    resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
+      ? null
+      : { username: resolution.actor.username };
+
+  return {
+    view: "ready",
+    payload: {
+      inviteState: resolution.inviteState,
+      inviteId: resolution.invite.inviteId,
+      teamName: resolution.invite.teamName,
+      orgName: resolution.invite.orgName,
+      alreadyInTargetOrg: Boolean(alreadyInTargetOrg),
+      existingProfile,
+      existingOrg,
+    },
+  };
+}
+
+export async function resolveOrgJoinPageModel(params: {
+  inviteId: string;
+  clerkId?: string | null;
+}): Promise<OrgJoinPageModel> {
+  const access = await resolveMembershipJoinPageAccess({
+    kind: "org",
+    inviteId: params.inviteId,
+    clerkId: params.clerkId,
+    allowedStates: [
+      "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE",
+      "INVITED_READY_TO_JOIN",
+    ],
+  });
+
+  if (access.type === "not_found") return { view: "not_found" };
+  if (access.type === "redirect") return { view: "redirect", href: access.href };
+
+  const { resolution } = access;
+  if (resolution.invite.kind !== "org") return { view: "not_found" };
+
+  return {
+    view: "ready",
+    payload: {
+      inviteState: resolution.inviteState,
+      inviteId: resolution.invite.inviteId,
+      orgName: resolution.invite.orgName,
+      existingProfile:
+        resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
+          ? null
+          : { username: resolution.actor.username },
+    },
+  };
+}
+
+export async function resolveCandidateApplyPageModel(params: {
+  token: string;
+}): Promise<CandidateApplyPageModel> {
+  const acceptance = await resolveAcceptance({
+    token: params.token,
+    routeSource: "apply.page",
+    targetContext: { kind: "candidate" },
+  });
+  const invite = acceptance.candidateContext;
+
+  if (!invite || acceptance.acceptanceState === "APPLY_NOT_FOUND") {
+    return { view: "not_found" };
+  }
+  if (acceptance.acceptanceState === "APPLY_COMPLETED") {
+    return { view: "completed", invite };
+  }
+  if (acceptance.acceptanceState === "APPLY_CANCELED") {
+    return { view: "canceled", invite };
+  }
+  if (acceptance.acceptanceState === "APPLY_EXPIRED") {
+    return { view: "expired", invite };
+  }
+
+  return { view: "ready", invite };
 }
 
 export async function joinMembershipFromInvite(params: {

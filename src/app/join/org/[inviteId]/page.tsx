@@ -2,8 +2,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  resolveMembershipJoinPageAccess,
-} from "@/lib/membership-onboarding/server";
+  resolveOrgJoinPageModel,
+} from "@/lib/acceptance/service";
 import { getServerLocale } from "@/lib/i18n-server";
 import { JoinOrgClient } from "./JoinOrgClient";
 
@@ -25,32 +25,21 @@ export default async function JoinOrgPage({
   const { inviteId } = await params;
 
   const clerkUser = await currentUser();
-  const access = await resolveMembershipJoinPageAccess({
-    kind: "org",
+  const model = await resolveOrgJoinPageModel({
     inviteId,
     clerkId: clerkUser?.id ?? null,
-    allowedStates: [
-      "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE",
-      "INVITED_READY_TO_JOIN",
-    ],
   });
 
-  if (access.type === "not_found") notFound();
-  if (access.type === "redirect") redirect(access.href);
+  if (model.view === "not_found") notFound();
+  if (model.view === "redirect") redirect(model.href);
 
-  const { resolution } = access;
-  if (resolution.invite.kind !== "org") notFound();
-
+  const { payload } = model;
   return (
     <JoinOrgClient
-      inviteState={resolution.inviteState}
-      inviteId={resolution.invite.inviteId}
-      orgName={resolution.invite.orgName}
-      existingProfile={
-        resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
-          ? null
-          : { username: resolution.actor.username }
-      }
+      inviteState={payload.inviteState}
+      inviteId={payload.inviteId}
+      orgName={payload.orgName}
+      existingProfile={payload.existingProfile}
     />
   );
 }

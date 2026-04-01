@@ -4,7 +4,7 @@ import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
-import { resolveAcceptance } from "@/lib/acceptance/service";
+import { resolveCandidateApplyPageModel } from "@/lib/acceptance/service";
 import { CandidateClient } from "./CandidateClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,18 +28,13 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
   const { token } = await params;
   const locale = await getServerLocale();
 
-  const acceptance = await resolveAcceptance({
-    token,
-    routeSource: "apply.page",
-    targetContext: { kind: "candidate" },
-  });
-  const invite = acceptance.candidateContext;
-
-  if (!invite || acceptance.acceptanceState === "APPLY_NOT_FOUND") {
+  const model = await resolveCandidateApplyPageModel({ token });
+  if (model.view === "not_found") {
     notFound();
   }
+  const invite = model.invite;
 
-  if (acceptance.acceptanceState === "APPLY_COMPLETED") {
+  if (model.view === "completed") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -57,7 +52,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
-  if (acceptance.acceptanceState === "APPLY_CANCELED") {
+  if (model.view === "canceled") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -75,7 +70,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
-  if (acceptance.acceptanceState === "APPLY_EXPIRED") {
+  if (model.view === "expired") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
