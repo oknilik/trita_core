@@ -1,25 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 
 export function CtaSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
-  const [hasDraft, setHasDraft] = useState(false);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("trita_draft_HEXACO");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const answers = parsed?.answers ?? parsed;
-        if (answers && Object.keys(answers).length > 0) setHasDraft(true);
-      }
-    } catch { /* ignore */ }
-  }, []);
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
 
   const headlineBefore = isSelf
     ? t("landing.ctaSelfHeadlineBefore", locale)

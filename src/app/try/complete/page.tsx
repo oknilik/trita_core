@@ -6,35 +6,24 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-
-const DRAFT_KEY = "trita_draft_HEXACO";
+import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 
 export default function TryCompletePage() {
   const router = useRouter();
   const { isSignedIn } = useAuth();
   const { locale } = useLocale();
-  const [hasDraft, setHasDraft] = useState<boolean | null>(null);
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
 
   useEffect(() => {
-    const stored = localStorage.getItem(DRAFT_KEY);
-    if (!stored) {
-      router.replace("/try");
-      return;
-    }
-    try {
-      const draft = JSON.parse(stored);
-      setHasDraft(Object.keys(draft.answers ?? {}).length > 0);
-    } catch {
-      router.replace("/try");
-    }
-  }, [router]);
+    if (!hasDraft) router.replace("/try");
+  }, [hasDraft, router]);
 
   // If already signed in, go claim the results
   useEffect(() => {
     if (isSignedIn) router.replace("/try/claim");
   }, [isSignedIn, router]);
 
-  if (hasDraft === null) {
+  if (!hasDraft) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-cream">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#c17f4a] border-t-transparent" />

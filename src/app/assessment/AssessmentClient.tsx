@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -9,6 +9,13 @@ import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
+import {
+  clearAssessmentDraftFromStorage,
+  getResumeQuestionIndex,
+  readAssessmentDraftFromStorage,
+  toAssessmentAnswerPayload,
+  writeAssessmentDraftToStorage,
+} from '@/lib/assessment-draft'
 import type { TestType } from '@prisma/client'
 type AssessmentQuestion = { id: number; text: string }
 
@@ -35,13 +42,22 @@ export function AssessmentClient({
   const router = useRouter()
   const { showToast } = useToast()
   const { locale } = useLocale()
-  const draftKey = `trita_draft_${testType}`
+  const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
+  const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
+  const maxQuestionIndex = Math.max(totalQuestions - 1, 0)
+  const clampQuestionIndex = useCallback(
+    (value: number) => Math.min(Math.max(value, 0), maxQuestionIndex),
+    [maxQuestionIndex],
+  )
 
   const [answers, setAnswers] = useState<Record<number, number>>(() => {
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
       const parsed: Record<number, number> = {}
       for (const [k, v] of Object.entries(initialDraft.answers)) {
-        parsed[Number(k)] = v
+        const questionId = Number(k)
+        if (!Number.isInteger(questionId)) continue
+        if (!Number.isInteger(v) || v < 1 || v > 5) continue
+        parsed[questionId] = v
       }
       return parsed
     }
@@ -60,27 +76,27 @@ export function AssessmentClient({
     if (hasServerDraft) return false
     return null // will resolve in useEffect after hydration
   })
+  const answersRef = useRef(answers)
+  const questionIndexRef = useRef(questionIndex)
+  const checkpointRef = useRef<number | null>(checkpoint)
+  const isSubmittingRef = useRef(isSubmitting)
+  const localDraftRevisionRef = useRef(0)
+  const autoAdvanceTimerRef = useRef<number | null>(null)
+  const stepTransitionLockRef = useRef(false)
 
   // After hydration, check localStorage for guest draft and resolve showIntro
   useEffect(() => {
     if (showIntro !== null) return
-    try {
-      const saved = localStorage.getItem(`trita_draft_${testType}`)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        const draftAnswers = parsed?.answers ?? parsed
-        if (draftAnswers && Object.keys(draftAnswers).length > 0) {
-          setShowIntro(false)
-          return
-        }
-      }
-    } catch { /* ignore */ }
+    if (readAssessmentDraftFromStorage({ testType })) {
+      setShowIntro(false)
+      return
+    }
     setShowIntro(true)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [showIntro, testType])
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
       ? ([25, 50, 75] as const).filter(
-          (m) => (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >= m,
+        (m) => (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >= m,
         )
       : [],
   ))
@@ -90,8 +106,6 @@ export function AssessmentClient({
   const remainingQuestions = Math.max(totalQuestions - answeredCount, 0)
   const etaMinutes = Math.max(1, Math.ceil((remainingQuestions * 15) / 60))
   const activeQuestion = questions[questionIndex] ?? null
-  const questionIdSet = new Set(questions.map((q) => q.id))
-  const isLastQuestion = questionIndex === totalQuestions - 1
   const canGoPrev = questionIndex > 0
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined
   const checkpointActive = checkpoint !== null
@@ -100,93 +114,142 @@ export function AssessmentClient({
 
   // Refs to always have the latest values in async callbacks
   const latestAnswersRef = useRef(answers)
-  useEffect(() => { latestAnswersRef.current = answers }, [answers])
+  useEffect(() => {
+    latestAnswersRef.current = answers
+    answersRef.current = answers
+  }, [answers])
+  useEffect(() => {
+    questionIndexRef.current = questionIndex
+  }, [questionIndex])
+  useEffect(() => {
+    checkpointRef.current = checkpoint
+  }, [checkpoint])
+  useEffect(() => {
+    isSubmittingRef.current = isSubmitting
+  }, [isSubmitting])
 
   const questionAreaRef = useRef<HTMLDivElement>(null)
+
+  const setQuestionIndexSafe = useCallback(
+    (updater: number | ((current: number) => number)) => {
+      setQuestionIndex((current) => {
+        const rawNext = typeof updater === 'function' ? updater(current) : updater
+        return clampQuestionIndex(rawNext)
+      })
+    },
+    [clampQuestionIndex],
+  )
 
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
   useEffect(() => {
     if (clearDraft) {
-      localStorage.removeItem(draftKey)
+      clearAssessmentDraftFromStorage(testType)
       return
     }
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
-      localStorage.removeItem(draftKey)
-      // Jump to last answered question from server draft
-      const answeredIds = new Set(Object.keys(initialDraft.answers).map(Number))
-      let lastAnswered = 0
-      for (let i = questions.length - 1; i >= 0; i--) {
-        if (answeredIds.has(questions[i].id)) { lastAnswered = i; break }
+      clearAssessmentDraftFromStorage(testType)
+      const parsedAnswers: Record<number, number> = {}
+      for (const [key, rawValue] of Object.entries(initialDraft.answers)) {
+        const questionId = Number(key)
+        const value = Number(rawValue)
+        if (!questionIdSet.has(questionId)) continue
+        if (!Number.isInteger(value) || value < 1 || value > 5) continue
+        parsedAnswers[questionId] = value
       }
-      setQuestionIndex(lastAnswered)
+      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, parsedAnswers)
+      setQuestionIndexSafe(resumeIndex)
       return
     }
-    try {
-      const saved = localStorage.getItem(draftKey)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        const draftAnswers = parsed?.answers ?? (typeof parsed === 'object' ? parsed : {})
-        if (draftAnswers && Object.keys(draftAnswers).length > 0) {
-          const numericAnswers: Record<number, number> = {}
-          for (const [k, v] of Object.entries(draftAnswers)) {
-            const numericId = Number(k)
-            if (!questionIdSet.has(numericId)) continue
-            if (typeof v !== 'number' || ![1, 2, 3, 4, 5].includes(v)) continue
-            numericAnswers[numericId] = v
-          }
-          setAnswers(numericAnswers)
-          latestAnswersRef.current = numericAnswers
-          // Jump to first unanswered question
-          // Jump to the last answered question so the user sees where they left off
-          let lastAnswered = 0
-          for (let i = questions.length - 1; i >= 0; i--) {
-            if (numericAnswers[questions[i].id] !== undefined) { lastAnswered = i; break }
-          }
-          setQuestionIndex(lastAnswered)
-          const pct = (Object.keys(numericAnswers).length / totalQuestions) * 100
-          for (const m of [25, 50, 75] as const) {
-            if (pct >= m) reachedCheckpoints.current.add(m)
-          }
-        }
-      }
-    } catch {
-      // ignore
-    }
-  }, [draftKey, initialDraft?.answers, clearDraft, questions, totalQuestions]) // eslint-disable-line react-hooks/exhaustive-deps
+    const localDraft = readAssessmentDraftFromStorage({
+      testType,
+      questionIds: questionIdSet,
+      totalQuestions,
+    })
+    if (!localDraft) return
 
-  // Save draft to localStorage on every answer change
+    setAnswers(localDraft.answers)
+    latestAnswersRef.current = localDraft.answers
+    answersRef.current = localDraft.answers
+    const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, localDraft.answers)
+    setQuestionIndexSafe(resumeIndex)
+    const pct = (Object.keys(localDraft.answers).length / totalQuestions) * 100
+    for (const checkpointMark of [25, 50, 75] as const) {
+      if (pct >= checkpointMark) reachedCheckpoints.current.add(checkpointMark)
+    }
+  }, [
+    clearDraft,
+    initialDraft?.answers,
+    orderedQuestionIds,
+    questionIdSet,
+    setQuestionIndexSafe,
+    testType,
+    totalQuestions,
+  ])
+
+  // Save draft to localStorage on every meaningful change.
   useEffect(() => {
-    if (Object.keys(answers).length > 0) {
-      localStorage.setItem(draftKey, JSON.stringify({ answers, questionIndex }))
+    if (answeredCount === 0) {
+      clearAssessmentDraftFromStorage(testType)
+      return
     }
-  }, [answers, questionIndex, draftKey])
+    localDraftRevisionRef.current += 1
+    writeAssessmentDraftToStorage({
+      testType,
+      answers,
+      questionIndex,
+      questionIds: questionIdSet,
+      totalQuestions,
+      revision: localDraftRevisionRef.current,
+    })
+  }, [answers, answeredCount, questionIdSet, questionIndex, testType, totalQuestions])
 
-  // Debounced server save (2 s) — skip for guest users
+  // Debounced server save (2 s) — skip for guest users.
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const serverSaveAbortRef = useRef<AbortController | null>(null)
   useEffect(() => {
-    if (guestMode) return
-    if (Object.keys(answers).length === 0) return
+    if (guestMode || answeredCount === 0) return
     if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
     serverSaveDebounce.current = setTimeout(async () => {
+      serverSaveAbortRef.current?.abort()
+      const abortController = new AbortController()
+      serverSaveAbortRef.current = abortController
+      setIsSavingDraft(true)
       try {
         await fetch('/api/assessment/draft', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             answers: latestAnswersRef.current,
-            currentPage: 0,
+            currentPage: questionIndexRef.current,
           }),
+          signal: abortController.signal,
         })
       } catch {
         // Silent fail
+      } finally {
+        if (serverSaveAbortRef.current === abortController) {
+          serverSaveAbortRef.current = null
+          setIsSavingDraft(false)
+        }
       }
     }, 2000)
     return () => {
       if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
+      serverSaveDebounce.current = null
+      serverSaveAbortRef.current?.abort()
+      serverSaveAbortRef.current = null
+      setIsSavingDraft(false)
     }
-  }, [answers, guestMode])
+  }, [answeredCount, guestMode, questionIndex, setIsSavingDraft])
 
-  // No beforeunload warning — answers are auto-saved to localStorage
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimerRef.current) {
+        clearTimeout(autoAdvanceTimerRef.current)
+        autoAdvanceTimerRef.current = null
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const marks = [25, 50, 75]
@@ -215,21 +278,25 @@ export function AssessmentClient({
       clearTimeout(serverSaveDebounce.current)
       serverSaveDebounce.current = null
     }
+    serverSaveAbortRef.current?.abort()
+    serverSaveAbortRef.current = null
+    setIsSavingDraft(false)
 
     const currentAnswers = latestAnswersRef.current
     const firstUnanswered = questions.findIndex((q) => currentAnswers[q.id] === undefined)
     if (firstUnanswered !== -1) {
-      setQuestionIndex(firstUnanswered)
+      setQuestionIndexSafe(firstUnanswered)
       return
     }
-    if (isSubmitting) return
+    if (isSubmittingRef.current) return
+    isSubmittingRef.current = true
     setIsSubmitting(true)
     setEvaluationProgress(0)
 
     const progressInterval = setInterval(() => {
       setEvaluationProgress((prev) => {
         if (prev >= 70) return prev
-        return prev + Math.random() * 4 + 1
+        return Math.min(prev + Math.random() * 4 + 1, 70)
       })
     }, 300)
 
@@ -240,7 +307,7 @@ export function AssessmentClient({
         const rampInterval = setInterval(() => {
           setEvaluationProgress((prev) => {
             if (prev >= 100) { clearInterval(rampInterval); return 100 }
-            return prev + Math.random() * 4 + 2
+            return Math.min(prev + Math.random() * 4 + 2, 100)
           })
         }, 200)
         await new Promise((resolve) => setTimeout(resolve, 2500))
@@ -253,10 +320,7 @@ export function AssessmentClient({
 
       const payload = {
         testType,
-        answers: Object.entries(currentAnswers).map(([questionId, value]) => ({
-          questionId: Number(questionId),
-          value,
-        })),
+        answers: toAssessmentAnswerPayload(currentAnswers),
       }
       const response = await fetch('/api/assessment/submit', {
         method: 'POST',
@@ -270,12 +334,12 @@ export function AssessmentClient({
       }
 
       clearInterval(progressInterval)
-      localStorage.removeItem(draftKey)
+      clearAssessmentDraftFromStorage(testType)
 
       const rampInterval = setInterval(() => {
         setEvaluationProgress((prev) => {
           if (prev >= 100) { clearInterval(rampInterval); return 100 }
-          return prev + Math.random() * 3 + 1
+          return Math.min(prev + Math.random() * 3 + 1, 100)
         })
       }, 200)
 
@@ -286,67 +350,102 @@ export function AssessmentClient({
       router.push('/assessment/belbin')
     } catch (error) {
       clearInterval(progressInterval)
+      isSubmittingRef.current = false
       setIsSubmitting(false)
       setEvaluationProgress(0)
       console.error(error)
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [questions, isSubmitting, totalQuestions, testType, locale, draftKey, router, showToast, guestMode])
+  }, [questions, setQuestionIndexSafe, testType, locale, router, showToast, guestMode])
 
-  const handleAnswer = useCallback((questionId: number, value: number) => {
-    const updatedAnswers = { ...answers, [questionId]: value }
-    const wasUnanswered = answers[questionId] === undefined
-    // Keep ref in sync immediately; finish can be triggered before React commits state.
-    latestAnswersRef.current = updatedAnswers
-    setAnswers(updatedAnswers)
+  const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current)
+      autoAdvanceTimerRef.current = null
+    }
+    autoAdvanceTimerRef.current = window.setTimeout(() => {
+      const liveQuestion = questions[questionIndexRef.current]
+      if (!liveQuestion || liveQuestion.id !== questionId) return
 
-    if (!autoAdvance || !activeQuestion || activeQuestion.id !== questionId) return
+      const nextProgress = (nextAnsweredCount / totalQuestions) * 100
+      const willTriggerCheckpoint = [25, 50, 75].some(
+        (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
+      )
+      if (willTriggerCheckpoint || checkpointRef.current !== null) return
 
-    const nextAnsweredCount = wasUnanswered ? answeredCount + 1 : answeredCount
-    const nextProgress = (nextAnsweredCount / totalQuestions) * 100
-    const willTriggerCheckpoint = [25, 50, 75].some(
-      (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
-    )
-
-    window.setTimeout(() => {
-      if (willTriggerCheckpoint) return
-
-      if (questionIndex < totalQuestions - 1) {
-        setQuestionIndex((idx) => idx + 1)
+      if (questionIndexRef.current < totalQuestions - 1) {
+        setQuestionIndexSafe((current) => current + 1)
       } else {
         void handleFinish()
       }
     }, 130)
-  }, [answers, autoAdvance, activeQuestion, answeredCount, totalQuestions, questionIndex, handleFinish])
+  }, [handleFinish, questions, setQuestionIndexSafe, totalQuestions])
+
+  const handleAnswer = useCallback((questionId: number, value: number) => {
+    if (isSubmittingRef.current) return
+    if (questions[questionIndexRef.current]?.id !== questionId) return
+
+    let nextAnsweredCount = 0
+    setAnswers((current) => {
+      const next = { ...current, [questionId]: value }
+      latestAnswersRef.current = next
+      answersRef.current = next
+      nextAnsweredCount = Object.keys(next).length
+      return next
+    })
+
+    if (!autoAdvance) return
+    scheduleAutoAdvance(questionId, nextAnsweredCount)
+  }, [autoAdvance, questions, scheduleAutoAdvance])
+
+  const runStepTransition = useCallback((action: () => void) => {
+    if (stepTransitionLockRef.current) return
+    stepTransitionLockRef.current = true
+    action()
+    window.setTimeout(() => {
+      stepTransitionLockRef.current = false
+    }, 120)
+  }, [])
 
   const handlePrevStep = useCallback(() => {
-    if (checkpointActive) {
+    if (checkpointRef.current !== null) {
       setCheckpoint(null)
       return
     }
-    if (questionIndex > 0) {
-      setQuestionIndex((idx) => idx - 1)
+    if (questionIndexRef.current > 0) {
+      runStepTransition(() => {
+        setQuestionIndexSafe((current) => current - 1)
+      })
     }
-  }, [checkpointActive, questionIndex])
+  }, [runStepTransition, setQuestionIndexSafe])
 
   const handleNextStep = useCallback(async () => {
-    if (checkpointActive) {
+    if (checkpointRef.current !== null) {
       setCheckpoint(null)
-      if (questionIndex < totalQuestions - 1) {
-        setQuestionIndex((idx) => idx + 1)
+      if (questionIndexRef.current < totalQuestions - 1) {
+        runStepTransition(() => {
+          setQuestionIndexSafe((current) => current + 1)
+        })
       }
       return
     }
-    if (activeQuestion && answers[activeQuestion.id] === undefined) {
-      highlightMissing(activeQuestion.id)
+    const liveQuestion = questions[questionIndexRef.current]
+    const liveAnswers = answersRef.current
+    if (liveQuestion && liveAnswers[liveQuestion.id] === undefined) {
+      highlightMissing(liveQuestion.id)
       return
     }
-    if (questionIndex < totalQuestions - 1) {
-      setQuestionIndex((idx) => idx + 1)
-    } else {
-      await handleFinish()
+
+    if (questionIndexRef.current < totalQuestions - 1) {
+      runStepTransition(() => {
+        setQuestionIndexSafe((current) => current + 1)
+      })
+      return
     }
-  }, [checkpointActive, activeQuestion, answers, highlightMissing, questionIndex, totalQuestions, handleFinish])
+
+    if (isSubmittingRef.current) return
+    await handleFinish()
+  }, [highlightMissing, handleFinish, questions, runStepTransition, setQuestionIndexSafe, totalQuestions])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

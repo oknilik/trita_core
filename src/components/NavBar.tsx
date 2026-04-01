@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
+import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 
@@ -47,28 +48,12 @@ export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
 }: NavBarProps) {
-  const { locale, setLocale } = useLocale();
+  const { locale } = useLocale();
   const { isSignedIn } = useAuth();
   const { signOut } = useClerk();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [hasDraft, setHasDraft] = useState(false);
-
-  useEffect(() => {
-    if (!isSignedIn) setDrawerOpen(false);
-  }, [isSignedIn]);
-
-  // Detect localStorage draft for guest CTA text
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("trita_draft_HEXACO");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const answers = parsed?.answers ?? parsed;
-        if (answers && Object.keys(answers).length > 0) setHasDraft(true);
-      }
-    } catch { /* ignore */ }
-  }, []);
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -184,7 +169,13 @@ export function NavBar({
             {/* Hamburger — mobile */}
             <button
               type="button"
-              onClick={() => setDrawerOpen((v) => !v)}
+              onClick={() => {
+                if (!isSignedIn) {
+                  setDrawerOpen(false);
+                  return;
+                }
+                setDrawerOpen((v) => !v);
+              }}
               aria-label={t("nav.menu", locale)}
               className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#8a8a9a] lg:hidden"
             >

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 
 const copy = {
   hu: {
@@ -27,18 +27,7 @@ const copy = {
 export function BottomCTA() {
   const { locale } = useLocale();
   const c = copy[locale] ?? copy.hu;
-  const [hasDraft, setHasDraft] = useState(false);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("trita_draft_HEXACO");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const answers = parsed?.answers ?? parsed;
-        if (answers && Object.keys(answers).length > 0) setHasDraft(true);
-      }
-    } catch { /* ignore */ }
-  }, []);
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
 
   return (
     <section className="-mb-16 grid grid-cols-1 items-center gap-6 bg-sage-deep px-6 py-16 md:grid-cols-[1fr_auto] md:gap-[60px] md:px-16 md:py-[100px]">

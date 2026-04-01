@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-
-const DRAFT_KEY = "trita_draft_HEXACO";
+import {
+  clearAssessmentDraftFromStorage,
+  readAssessmentDraftFromStorage,
+  toAssessmentAnswerPayload,
+} from "@/lib/assessment-draft";
 
 export default function TryClaimPage() {
   const router = useRouter();
@@ -24,17 +27,9 @@ export default function TryClaimPage() {
     if (claimed.current) return;
     claimed.current = true;
 
-    const stored = localStorage.getItem(DRAFT_KEY);
-    if (!stored) {
+    const draft = readAssessmentDraftFromStorage({ testType: "HEXACO" });
+    if (!draft) {
       // No draft — user might have already claimed or never took the test
-      router.replace("/profile/results");
-      return;
-    }
-
-    let draft: { answers?: Record<string, number> };
-    try {
-      draft = JSON.parse(stored);
-    } catch {
       router.replace("/profile/results");
       return;
     }
@@ -47,10 +42,7 @@ export default function TryClaimPage() {
 
     // Submit answers to the claim endpoint
     const payload = {
-      answers: Object.entries(answers).map(([questionId, value]) => ({
-        questionId: Number(questionId),
-        value,
-      })),
+      answers: toAssessmentAnswerPayload(answers),
     };
 
     fetch("/api/assessment/claim-guest", {
@@ -63,7 +55,7 @@ export default function TryClaimPage() {
           const body = await res.json().catch(() => null);
           throw new Error(body?.error ?? "Claim failed");
         }
-        localStorage.removeItem(DRAFT_KEY);
+        clearAssessmentDraftFromStorage("HEXACO");
         router.replace("/profile/results");
       })
       .catch((err) => {
