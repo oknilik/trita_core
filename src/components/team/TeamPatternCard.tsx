@@ -43,10 +43,10 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
   // Dot color by grade
   const dotColor =
     axis.grade === "balanced"
-      ? "#8a8a9a"
+      ? "var(--color-text-muted)"
       : axis.grade === "strong_high" || axis.grade === "slight_high"
-      ? "#3d6b5e"
-      : "#4a4a5e";
+      ? "var(--color-action-primary-bg)"
+      : "var(--color-text-secondary)";
 
   const diversityColors = {
     homogén: "text-emerald-600",
@@ -217,9 +217,9 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             </p>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {[
-                { timing: t("teamComp.thisWeek", loc),  action: content.leaderActions[0], accent: "#3d6b5e" },
-                { timing: t("teamComp.thisMonth", loc), action: content.leaderActions[1], accent: "#8B5CF6" },
-                { timing: t("teamComp.ongoing", loc),   action: content.leaderActions[2], accent: "#10B981" },
+                { timing: t("teamComp.thisWeek", loc),  action: content.leaderActions[0], accent: "var(--color-action-primary-bg)" },
+                { timing: t("teamComp.thisMonth", loc), action: content.leaderActions[1], accent: "var(--color-visual-gradient-violet)" },
+                { timing: t("teamComp.ongoing", loc),   action: content.leaderActions[2], accent: "var(--color-state-success-strong)" },
               ].map(({ timing, action, accent }) => (
                 <div
                   key={timing}

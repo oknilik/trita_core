@@ -102,7 +102,7 @@ export function Modal({
                 "h-1 w-full",
                 variant === "danger"
                   ? (isBrand
-                    ? "bg-[#c17f4a]"
+                    ? "bg-[var(--color-accent-primary)]"
                     : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
                   : (isBrand
                     ? "bg-sage"

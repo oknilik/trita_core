@@ -173,11 +173,11 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
                   {BLOCK5_TITLE[l]}
                 </h3>
                 <div className="space-y-3">
-                  <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "#10b981" }}>
+                  <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "var(--color-state-success-strong)" }}>
                     <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1.5">{BLOCK5_STRONG[l]}</p>
                     <p className="text-sm text-gray-700 leading-relaxed">{roleData.strong}</p>
                   </div>
-                  <div className="rounded-xl border border-amber-100 bg-amber-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "#f59e0b" }}>
+                  <div className="rounded-xl border border-amber-100 bg-amber-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "var(--color-state-warning-strong)" }}>
                     <p className="text-[11px] font-semibold text-amber-600 uppercase tracking-wide mb-1.5">{BLOCK5_MEDIUM[l]}</p>
                     <p className="text-sm text-gray-700 leading-relaxed">{roleData.medium}</p>
                   </div>

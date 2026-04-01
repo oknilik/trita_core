@@ -19,11 +19,11 @@ interface MemberWithBelbin {
 }
 
 const ROLE_COLORS: Record<BelbinRoleCode, string> = {
-  PL: "#6366f1",
+  PL: "var(--color-visual-gradient-indigo)",
   RI: "#0ea5e9",
-  CO: "#10b981",
-  SH: "#f59e0b",
-  ME: "#8b5cf6",
+  CO: "var(--color-state-success-strong)",
+  SH: "var(--color-state-warning-strong)",
+  ME: "var(--color-visual-gradient-violet)",
   TW: "#ec4899",
   IM: "#14b8a6",
   CF: "#f97316",
@@ -323,19 +323,19 @@ function CrossAnalysis({
       key: "action" as const,
       labelKey: "teamComp.actionOriented",
       roles: ["SH", "IM", "CF"] as BelbinRoleCode[],
-      color: "#f59e0b",
+      color: "var(--color-state-warning-strong)",
     },
     {
       key: "people" as const,
       labelKey: "teamComp.peopleOriented",
       roles: ["CO", "TW", "RI"] as BelbinRoleCode[],
-      color: "#10b981",
+      color: "var(--color-state-success-strong)",
     },
     {
       key: "thought" as const,
       labelKey: "teamComp.thoughtOriented",
       roles: ["PL", "ME", "SP"] as BelbinRoleCode[],
-      color: "#6366f1",
+      color: "var(--color-visual-gradient-indigo)",
     },
   ];
 

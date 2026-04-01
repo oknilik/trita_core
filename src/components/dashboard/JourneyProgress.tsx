@@ -163,7 +163,7 @@ export function JourneyProgress({
           style={{
             width: `${progressPct}%`,
             background: feedbackPartial
-              ? "linear-gradient(90deg, #6366f1 0%, #6366f1 50%, #f59e0b 50%, #f59e0b 100%)"
+              ? "linear-gradient(90deg, var(--color-visual-gradient-indigo) 0%, var(--color-visual-gradient-indigo) 50%, var(--color-state-warning-strong) 50%, var(--color-state-warning-strong) 100%)"
               : undefined,
           }}
         />

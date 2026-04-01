@@ -22,8 +22,8 @@ function BlockSection({
     <section className={`border-t border-sand px-6 py-12 lg:px-16 lg:py-14 ${bg}`}>
       <div className="mx-auto max-w-5xl">
         <div className="mb-2.5 flex items-center gap-2">
-          <div className="h-px w-4 bg-[#c17f4a]" />
-          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
+          <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
             {label}
           </span>
         </div>
@@ -67,7 +67,7 @@ function PricingCard({ name, desc, price }: { name: string; desc: string; price:
       <p className="mt-2 font-fraunces text-3xl text-ink">{price}</p>
       <p className="mt-1.5 text-sm text-ink-body">{primary}</p>
       {promo ? (
-        <div className="mt-3 inline-flex items-center rounded-full border border-[#e8c7b8] bg-[#fff1e7] px-3 py-1 text-[11px] font-semibold tracking-[0.01em] text-[#9a6538]">
+        <div className="mt-3 inline-flex items-center rounded-full border border-[var(--color-bronze-edge)] bg-[var(--color-surface-warm-tint)] px-3 py-1 text-[11px] font-semibold tracking-[0.01em] text-[var(--color-bronze-dark)]">
           {promo}
         </div>
       ) : null}
@@ -89,7 +89,7 @@ function StepList({ steps }: { steps: string[] }) {
     <div className="flex flex-col gap-3">
       {steps.map((step, i) => (
         <div key={i} className="flex items-start gap-3.5 rounded-xl border border-sand bg-white px-5 py-4">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#3d6b5e] font-mono text-xs font-bold text-white">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-mono text-xs font-bold text-white">
             {i + 1}
           </span>
           <p className="pt-0.5 text-sm leading-relaxed text-ink-body">{step}</p>

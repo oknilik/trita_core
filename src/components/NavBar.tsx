@@ -26,12 +26,12 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
       href={href}
       className={[
         "relative py-4 text-[13px] transition-colors",
-        active ? "font-medium text-[#1a1a2e]" : "text-[#8a8a9a] hover:text-[#4a4a5e]",
+        active ? "font-medium text-[var(--color-text-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]",
       ].join(" ")}
     >
       {label}
       {active && (
-        <span className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-[#3d6b5e]" />
+        <span className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-[var(--color-action-primary-bg)]" />
       )}
     </Link>
   );
@@ -116,16 +116,16 @@ export function NavBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#ddd5c8] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
 
           {/* ═══ LOGO ═══ */}
           <Link
             href={isSignedIn ? signedInHomeHref : "/"}
             aria-label="trita"
-            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
+            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
           >
-            <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
           </Link>
 
           {/* ═══ CENTER LINKS — desktop only ═══ */}
@@ -146,14 +146,14 @@ export function NavBar({
               {/* Sign in — desktop only */}
               <Link
                 href="/sign-in"
-                className="hidden rounded-lg border border-[#e8e0d3] bg-white px-4 py-[7px] text-[13px] text-[#4a4a5e] transition-all hover:border-[#8a8a9a] hover:bg-[#f2ede6] lg:inline-flex"
+                className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-[13px] text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
               >
                 {t("nav.signIn", locale)}
               </Link>
               {/* CTA — always visible */}
               <Link
                 href="/try"
-                className="rounded-lg bg-[#c17f4a] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-[13px]"
+                className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-[13px]"
               >
                 {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
               </Link>
@@ -164,7 +164,7 @@ export function NavBar({
             </SignedIn>
 
             {/* Separator + Language — always visible */}
-            <div className="hidden h-5 w-px bg-[#e8e0d3] lg:block" />
+            <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
             <LanguageSwitcher />
 
             {/* Hamburger — mobile */}
@@ -178,7 +178,7 @@ export function NavBar({
                 setDrawerOpen((v) => !v);
               }}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#8a8a9a] lg:hidden"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-muted)] lg:hidden"
             >
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
                 {drawerOpen ? (
@@ -193,12 +193,12 @@ export function NavBar({
       </header>
 
       {shouldShowSignedInHint && signedInHint ? (
-        <div className="border-b border-[#e8e0d3] bg-[#f7f4ef]">
+        <div className="border-b border-[var(--color-border-default)] bg-[var(--color-surface-canvas)]">
           <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-5 py-2.5 lg:px-8">
-            <p className="text-[12px] leading-relaxed text-[#4a4a5e]">{signedInHint.body}</p>
+            <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
-              className="shrink-0 rounded-md border border-[#ddd5c8] bg-white px-3 py-1.5 text-[11px] font-semibold text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-white px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               {signedInHint.ctaLabel}
             </Link>
@@ -213,20 +213,20 @@ export function NavBar({
           style={{ animation: "fade-in 150ms ease-out" }}
         >
           {/* Top bar — matches main navbar exactly */}
-          <div className="flex h-14 shrink-0 items-center justify-between border-b border-[#e8e0d3] bg-[rgba(250,249,246,0.95)] px-5">
+          <div className="flex h-14 shrink-0 items-center justify-between border-b border-[var(--color-border-default)] bg-[rgba(250,249,246,0.95)] px-5">
             <Link
               href={isSignedIn ? signedInHomeHref : "/"}
               onClick={() => setDrawerOpen(false)}
-              className="font-fraunces text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
+              className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
             >
-              <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
+              <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
             </Link>
             <div className="flex items-center gap-3">
               <SignedOut>
                 <Link
                   href="/try"
                   onClick={() => setDrawerOpen(false)}
-                  className="rounded-lg bg-[#c17f4a] px-4 py-[7px] text-[12px] font-semibold text-white"
+                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white"
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
@@ -235,7 +235,7 @@ export function NavBar({
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
-                className="flex h-8 w-8 items-center justify-center text-lg text-[#8a8a9a]"
+                className="flex h-8 w-8 items-center justify-center text-lg text-[var(--color-text-muted)]"
               >
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
                   <path d="M4 4l12 12" /><path d="M16 4L4 16" />
@@ -254,8 +254,8 @@ export function NavBar({
                 className={[
                   "py-5 text-center font-fraunces text-xl transition-colors",
                   isLinkActive(currentPath, link.href)
-                    ? "text-[#3d6b5e]"
-                    : "text-[#4a4a5e]",
+                    ? "text-[var(--color-action-primary-bg)]"
+                    : "text-[var(--color-text-secondary)]",
                 ].join(" ")}
               >
                 {link.label}
@@ -271,14 +271,14 @@ export function NavBar({
                 <Link
                   href="/sign-in"
                   onClick={() => setDrawerOpen(false)}
-                  className="flex flex-1 items-center justify-center rounded-xl border border-[#e8e0d3] bg-white py-3.5 text-[14px] font-medium text-[#4a4a5e]"
+                  className="flex flex-1 items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white py-3.5 text-[14px] font-medium text-[var(--color-text-secondary)]"
                 >
                   {t("nav.signIn", locale)}
                 </Link>
                 <Link
                   href="/try"
                   onClick={() => setDrawerOpen(false)}
-                  className="flex flex-1 items-center justify-center rounded-xl bg-[#c17f4a] py-3.5 text-[14px] font-semibold text-white"
+                  className="flex flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] py-3.5 text-[14px] font-semibold text-white"
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
@@ -288,7 +288,7 @@ export function NavBar({
               <button
                 type="button"
                 onClick={() => { signOut(); setDrawerOpen(false); }}
-                className="w-full rounded-xl border border-[#e8e0d3] py-3.5 text-center text-[14px] text-[#8a8a9a]"
+                className="w-full rounded-xl border border-[var(--color-border-default)] py-3.5 text-center text-[14px] text-[var(--color-text-muted)]"
               >
                 {t("nav.signOut", locale)}
               </button>

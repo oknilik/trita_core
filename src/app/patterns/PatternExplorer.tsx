@@ -20,7 +20,7 @@ const T = {
   muted: "#5C4F45",
   heading: "#1a1410",
   border: "#E8E0D4",
-  accent: "#3d6b5e",
+  accent: "var(--color-action-primary-bg)",
   accentHover: "#a83508",
 };
 
@@ -282,7 +282,7 @@ const QUADRANTS = [
     label: "Energikus + Összetartó",
     desc: "Magas hajtóerő, erős kohézió",
     codes: ["1111", "1110", "1101", "1100"],
-    accent: "#3d6b5e",
+    accent: "var(--color-action-primary-bg)",
   },
   {
     label: "Energikus + Versengő",

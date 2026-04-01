@@ -69,8 +69,8 @@ export function Footer() {
               aria-label="trita"
               className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-cream"
             >
-              <span style={{ color: "#5a8f7f" }}>t</span>{"rit"}
-              <span style={{ color: "#c17f4a" }}>a</span>
+              <span style={{ color: "var(--color-accent-self)" }}>t</span>{"rit"}
+              <span style={{ color: "var(--color-accent-primary)" }}>a</span>
             </Link>
             <p className="mt-2 max-w-[180px] text-[13px] leading-relaxed text-cream/70">
               {t("footer.tagline", locale)}

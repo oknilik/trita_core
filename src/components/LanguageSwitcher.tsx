@@ -29,8 +29,8 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
             className={[
               "rounded-full px-4 py-1.5 text-[12px] font-medium transition-all",
               loc === locale
-                ? "bg-[#3d6b5e] text-white"
-                : "bg-[#f2ede6] text-[#8a8a9a] hover:bg-[#e8e0d3]",
+                ? "bg-[var(--color-action-primary-bg)] text-white"
+                : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:bg-[var(--color-border-default)]",
             ].join(" ")}
           >
             {t(`locale.${loc}` as const, locale)}
@@ -48,9 +48,9 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         aria-label={t("locale.label", locale)}
         aria-expanded={open}
         className={[
-          "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] text-[#8a8a9a] transition-all",
-          "hover:bg-[#f2ede6] hover:text-[#4a4a5e]",
-          open ? "bg-[#f2ede6] text-[#4a4a5e]" : "",
+          "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] text-[var(--color-text-muted)] transition-all",
+          "hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]",
+          open ? "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]" : "",
         ].join(" ")}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
@@ -61,7 +61,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         <span className="font-semibold uppercase tracking-wide">{locale.toUpperCase()}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[#e8e0d3] bg-white py-1 shadow-lg shadow-black/[0.04]">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-white py-1 shadow-lg shadow-black/[0.04]">
           {SUPPORTED_LOCALES.map((loc) => {
             const isActive = loc === locale;
             return (
@@ -72,13 +72,13 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
                 className={[
                   "flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[13px] transition-colors",
                   isActive
-                    ? "bg-[#e8f2f0] font-medium text-[#3d6b5e]"
-                    : "text-[#4a4a5e] hover:bg-[#f2ede6]",
+                    ? "bg-[var(--color-surface-self-accent-soft)] font-medium text-[var(--color-action-primary-bg)]"
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]",
                 ].join(" ")}
               >
                 <span>{t(`locale.${loc}` as const, locale)}</span>
                 {isActive && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#3d6b5e]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-action-primary-bg)]">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 )}

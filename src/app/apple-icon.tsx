@@ -20,7 +20,7 @@ export default function AppleIcon() {
           </linearGradient>
           <linearGradient id="shineGradient" x1="22%" y1="18%" x2="78%" y2="82%">
             <stop offset="0%" stopColor="#F7EFE3" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            <stop offset="100%" stopColor="var(--color-neutral-white)" stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -36,16 +36,16 @@ export default function AppleIcon() {
         <polygon
           points="50,18 77.7,34 77.7,66 50,82 22.3,66 22.3,34"
           fill="none"
-          stroke="#F8F1E8"
+          stroke="var(--color-surface-soft-warm)"
           strokeWidth="2.8"
           strokeOpacity="0.72"
         />
 
         <circle cx="50" cy="50" r="9.2" fill="#F5EEE3" />
         <circle cx="50" cy="50" r="4.6" fill="#B85A34" />
-        <circle cx="50" cy="16" r="2.1" fill="#F8F1E8" fillOpacity="0.86" />
-        <circle cx="81" cy="34.5" r="1.8" fill="#F8F1E8" fillOpacity="0.72" />
-        <circle cx="19" cy="34.5" r="1.8" fill="#F8F1E8" fillOpacity="0.72" />
+        <circle cx="50" cy="16" r="2.1" fill="var(--color-surface-soft-warm)" fillOpacity="0.86" />
+        <circle cx="81" cy="34.5" r="1.8" fill="var(--color-surface-soft-warm)" fillOpacity="0.72" />
+        <circle cx="19" cy="34.5" r="1.8" fill="var(--color-surface-soft-warm)" fillOpacity="0.72" />
       </svg>
     ),
     {

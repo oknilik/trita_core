@@ -39,12 +39,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"],
-  ["#8a5530", "#6b3f22"],
-  ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"],
-  ["#0E7490", "#0C5E75"],
-  ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 const TEAM_HERO_GRADIENT =
@@ -464,7 +464,7 @@ export default async function TeamDetailPage({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {/* Kitöltési arány */}
             <DashboardMetricCard
-              accent="#3d6b5e"
+              accent="var(--color-action-primary-bg)"
               title={t("teamDetail.completionRateTitle", locale)}
               value={`${completionPct}%`}
               sub={tf("teamDetail.completionRateSub", locale, { done: completedCount, inProgress: inProgressCount, waiting: waitingCount })}
@@ -478,7 +478,7 @@ export default async function TeamDetailPage({
 
             {/* Csapatmintázat */}
             <DashboardMetricCard
-              accent="#c17f4a"
+              accent="var(--color-accent-primary)"
               title={t("teamDetail.teamPatternTitle", locale)}
               value={hasPattern ? t("teamDetail.teamPatternAvailable", locale) : t("teamDetail.teamPatternNotYet", locale)}
               sub={hasPattern
@@ -560,7 +560,7 @@ export default async function TeamDetailPage({
           <p className="mb-2 text-[10px] font-medium uppercase tracking-[1px] text-ink-body">
             {t("teamDetail.membersLabel", locale)}
           </p>
-          <div className="divide-y divide-[#e8e0d3] rounded-[24px] border border-sand bg-white shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
+          <div className="divide-y divide-[var(--color-border-default)] rounded-[24px] border border-sand bg-white shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
             {teamData.members.map((member) => {
               const isDone = member.scores !== null;
               const avgScore = isDone && member.scores

@@ -568,7 +568,7 @@ export function HiringDashboard({
           {
             label: t("hiring.statCompleted", locale),
             value: completed.length,
-            color: "#10B981",
+            color: "var(--color-state-success-strong)",
             body: isHu ? "Elkészült kitöltések" : "Completed assessments",
           },
           {
@@ -611,7 +611,7 @@ export function HiringDashboard({
                   : "These candidates have already started their assessment."}
               </p>
             </div>
-            <span className="rounded-full bg-[#f3e7d5] px-2.5 py-1 text-[10px] font-semibold text-[#8a5530]">
+            <span className="rounded-full bg-[var(--color-surface-chip-warm)] px-2.5 py-1 text-[10px] font-semibold text-[var(--color-accent-primary-strong)]">
               {inProgressInvites.length}
             </span>
           </div>

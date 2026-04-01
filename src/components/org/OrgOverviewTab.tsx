@@ -8,11 +8,11 @@ import { NextStepBanner } from "./NextStepBanner";
 import { RemindPendingButton } from "./RemindPendingButton";
 
 const HEXACO_COLORS: Record<string, string> = {
-  H: "#6366F1",
-  E: "#8B5CF6",
+  H: "var(--color-visual-gradient-indigo)",
+  E: "var(--color-visual-gradient-violet)",
   X: "#06B6D4",
-  A: "#10B981",
-  C: "#F59E0B",
+  A: "var(--color-state-success-strong)",
+  C: "var(--color-state-warning-strong)",
   O: "#EF4444",
 };
 

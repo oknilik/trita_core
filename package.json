@@ -22,6 +22,7 @@
     "test:e2e:ui": "node scripts/run-tests.mjs e2e --ui",
     "test:quality-gate": "node scripts/quality-gate-check.mjs",
     "test:quality-gate:staged": "node scripts/quality-gate-check.mjs --staged",
+    "lint:ui:hex:new": "node scripts/check-no-new-ui-hex.mjs",
     "test:blocks": "node scripts/run-test-blocks.mjs --layers=unit",
     "test:blocks:all": "node scripts/run-test-blocks.mjs --layers=unit,integration,client",
     "test:blocks:full": "node scripts/run-test-blocks.mjs --layers=unit,integration,client,e2e",

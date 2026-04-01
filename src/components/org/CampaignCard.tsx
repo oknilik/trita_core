@@ -226,7 +226,7 @@ export function CampaignCard({
             label={t("org.card.selfDone", loc)}
             count={campaign.selfDoneCount}
             total={campaign.totalCount}
-            fillColor="#3d6b5e"
+            fillColor="var(--color-action-primary-bg)"
           />
           <ProgressBar
             label={t("org.card.observerDone", loc)}
@@ -238,7 +238,7 @@ export function CampaignCard({
             label={t("org.card.fullyComplete", loc)}
             count={fullyDoneCount}
             total={campaign.totalCount}
-            fillColor="#6366F1"
+            fillColor="var(--color-visual-gradient-indigo)"
           />
         </div>
       )}

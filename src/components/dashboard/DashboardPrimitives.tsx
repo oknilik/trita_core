@@ -122,7 +122,7 @@ export function DashboardStatusChip({
   const toneConfig = {
     sage: { variant: "info", className: "bg-sage-soft text-sage-dark" },
     bronze: { variant: "warning", className: "bg-bronze/10 text-bronze-dark" },
-    warm: { variant: "warning", className: "bg-[#f6ead6] text-[#8a5530]" },
+    warm: { variant: "warning", className: "bg-[var(--color-surface-chip-warm-soft)] text-[var(--color-accent-primary-strong)]" },
     rose: { variant: "error", className: "bg-[#f3e4dd] text-[#8c4a31]" },
     muted: { variant: "neutral", className: "bg-cream text-ink-body" },
   } as const;
@@ -167,7 +167,7 @@ export function DashboardActionCard({
           href={cta.href}
           className={cn(
             "mt-4 inline-flex min-h-[42px] items-center rounded-[10px] px-4 py-2 text-[12px] font-semibold no-underline transition",
-            cta.tone === "solid" && "bg-[#c17f4a] text-white hover:brightness-110",
+            cta.tone === "solid" && "bg-[var(--color-accent-primary)] text-white hover:brightness-110",
             cta.tone === "link" && "px-0 py-0 text-bronze hover:text-bronze-dark",
             (!cta.tone || cta.tone === "soft") &&
               "bg-sage-soft text-sage-dark hover:bg-[#dfeae5]",

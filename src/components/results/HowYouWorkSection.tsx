@@ -20,42 +20,42 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
   return (
     <div className="py-8">
       <div className="mb-1.5 flex items-center gap-2.5">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
-        <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
+        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+        <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
           {t("results.howYouWorkEyebrow", locale)}
         </p>
       </div>
-      <h3 className="mb-5 font-fraunces text-lg text-[#1a1a2e]">
+      <h3 className="mb-5 font-fraunces text-lg text-[var(--color-text-primary)]">
         {t("content.howYouWorkSub", locale)}
       </h3>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="rounded-xl border-[1.5px] border-[#3d6b5e]/20 bg-[#e8f2f0] p-[18px]">
-          <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#1e3d34]">
+        <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)] p-[18px]">
+          <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
             {t("results.howYouWorkMain", locale)}
           </p>
-          <p className="text-[13px] leading-[1.7] text-[#1e3d34]">
+          <p className="text-[13px] leading-[1.7] text-[var(--color-accent-self-deep)]">
             {mainPattern}
           </p>
         </div>
 
         {watchArea && (
-          <div className="rounded-xl border-[1.5px] border-[#c17f4a]/20 bg-[#fdf5ee] p-[18px]">
-            <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#8a5530]">
+          <div className="rounded-xl border-[1.5px] border-[var(--color-accent-primary)]/20 bg-[var(--color-surface-highlight-warm)] p-[18px]">
+            <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
               {t("results.howYouWorkWatch", locale)}
             </p>
-            <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
+            <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
               {watchArea}
             </p>
           </div>
         )}
 
         {context && (
-          <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[#ddd5c8] bg-white p-[18px]">
-            <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+          <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]">
+            <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
               {t("results.howYouWorkContext", locale)}
             </p>
-            <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
+            <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
               {context}
             </p>
           </div>

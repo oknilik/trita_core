@@ -34,11 +34,11 @@ const STATUS_TRANSITIONS: Record<string, string | null> = {
 const HEXACO_DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 
 const HEXACO_COLORS: Record<string, string> = {
-  H: "#6366F1",
-  E: "#8B5CF6",
+  H: "var(--color-visual-gradient-indigo)",
+  E: "var(--color-visual-gradient-violet)",
   X: "#06B6D4",
-  A: "#10B981",
-  C: "#F59E0B",
+  A: "var(--color-state-success-strong)",
+  C: "var(--color-state-warning-strong)",
   O: "#EF4444",
 };
 
@@ -424,7 +424,7 @@ export default async function CampaignDetailPage({
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "#6366F1" }}
+                style={{ backgroundColor: "var(--color-visual-gradient-indigo)" }}
               />
               <p
                 className="font-mono text-[10px] uppercase tracking-widest"

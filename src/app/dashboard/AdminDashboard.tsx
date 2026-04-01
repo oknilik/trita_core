@@ -71,8 +71,8 @@ interface OrgStatusResponse {
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"], ["#8a5530", "#6b3f22"], ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"], ["#0E7490", "#0C5E75"], ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"], ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"], ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"], ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"], ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 function getAvatarColor(name: string): readonly [string, string] {
@@ -372,7 +372,7 @@ export function AdminDashboard() {
             style={{ background: ORG_HERO_GRADIENT }}
           >
             <div className="pointer-events-none absolute -right-20 -top-20 h-[260px] w-[260px] rounded-full bg-white/[0.03]" />
-            <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[#c17f4a]/10" />
+            <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[var(--color-accent-primary)]/10" />
 
             <div className="relative px-6 py-7 md:px-8 md:py-8">
               <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
@@ -600,13 +600,13 @@ export function AdminDashboard() {
             {/* ═══ KPI ROW ═══ */}
             <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
               <DashboardMetricCard
-                accent="#c17f4a"
+                accent="var(--color-accent-primary)"
                 title={orgCompletionCard.label}
                 value={orgCompletionCard.value.replace("%", "")}
                 suffix="%"
                 sub={orgCompletionCard.sub}
                 progressPct={orgCompletionCard.progressPct}
-                progressColor="#c17f4a"
+                progressColor="var(--color-accent-primary)"
               />
               <DashboardMetricCard
                 accent="#1D9E75"
@@ -620,13 +620,13 @@ export function AdminDashboard() {
                 progressColor="#1D9E75"
               />
               <DashboardMetricCard
-                accent="#c17f4a"
+                accent="var(--color-accent-primary)"
                 title={attentionCard.label}
                 value={attentionCard.value}
                 sub={attentionCard.sub}
-                valueColor={Number(attentionCard.value) > 0 ? "#c17f4a" : undefined}
+                valueColor={Number(attentionCard.value) > 0 ? "var(--color-accent-primary)" : undefined}
                 progressPct={attentionCard.progressPct}
-                progressColor="#c17f4a"
+                progressColor="var(--color-accent-primary)"
               />
               <DashboardMetricCard
                 accent="#0F6E56"
@@ -743,7 +743,7 @@ export function AdminDashboard() {
                   <p className="text-[12.5px] leading-[1.7] text-white/[0.68]">
                     {tf("dashboard.frictionDesc", localeTag, { low: lowDim.name.toLowerCase(), pct: String(DUMMY_HEXACO[lowDim.key]) })}
                   </p>
-                  <Link href={`/org/${org.id}`} className="mt-4 inline-flex text-[12px] font-semibold text-[#e8a96a] no-underline">
+                  <Link href={`/org/${org.id}`} className="mt-4 inline-flex text-[12px] font-semibold text-[var(--color-accent-primary-soft)] no-underline">
                     {t("dashboard.detailedAnalysis", localeTag)}
                   </Link>
                 </div>
@@ -770,10 +770,10 @@ export function AdminDashboard() {
                           style={{
                             borderLeft: `2px solid ${
                               item.severity === "high"
-                                ? "#c17f4a"
+                                ? "var(--color-accent-primary)"
                                 : item.severity === "medium"
                                   ? "#d4a15a"
-                                  : "#3d6b5e"
+                                  : "var(--color-action-primary-bg)"
                             }`,
                           }}
                         >

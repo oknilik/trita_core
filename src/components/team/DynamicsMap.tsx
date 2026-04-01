@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
-  good: "#10B981",
+  good: "var(--color-state-success-strong)",
   neutral: "#d3cfc6",
   tension: "#f87171",
 };
@@ -189,7 +189,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                     cy={pos.y}
                     r={r + 5}
                     fill="none"
-                    stroke="#c17f4a"
+                    stroke="var(--color-accent-primary)"
                     strokeWidth={1}
                     opacity={0.35}
                   />
@@ -199,7 +199,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                   cy={pos.y}
                   r={r}
                   fill={m.color}
-                  stroke={selected === m.id ? "#3d6b5e" : "white"}
+                  stroke={selected === m.id ? "var(--color-action-primary-bg)" : "white"}
                   strokeWidth={selected === m.id ? 2.5 : 2}
                 />
                 <text
@@ -218,7 +218,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                   y={pos.y + r + 11}
                   textAnchor="middle"
                   fontSize={9}
-                  fill="#4a4a5e"
+                  fill="var(--color-text-secondary)"
                 >
                   {m.name.split(" ")[0]}
                 </text>

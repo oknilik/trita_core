@@ -7,12 +7,12 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"], // sage
-  ["#8a5530", "#6b3f22"], // bronze
-  ["#4a4a5e", "#33334a"], // ink
-  ["#6366F1", "#4F46E5"], // indigo
-  ["#0E7490", "#0C5E75"], // teal
-  ["#9333EA", "#7C22CB"], // purple
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"], // sage
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"], // bronze
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"], // ink
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"], // indigo
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"], // teal
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"], // purple
 ] as const;
 
 function getAvatarColor(name: string): readonly [string, string] {
@@ -76,10 +76,10 @@ export function UserMenu() {
   return (
     <Link
       href="/profile"
-      className="flex min-h-[44px] items-center gap-2 rounded-full border border-[#e8e0d3] bg-white px-2 py-1 text-sm font-semibold text-[#4a4a5e] shadow-sm transition hover:border-[#8a8a9a] hover:text-[#1a1a2e]"
+      className="flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-white px-2 py-1 text-sm font-semibold text-[var(--color-text-secondary)] shadow-sm transition hover:border-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
     >
       {showIdentityLoader ? (
-        <div className="h-8 w-8 animate-pulse rounded-full bg-[#f2ede6]" />
+        <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
       ) : (
         <div
           className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
@@ -89,9 +89,9 @@ export function UserMenu() {
         </div>
       )}
       {showIdentityLoader ? (
-        <span className="hidden h-3 w-20 animate-pulse rounded-full bg-[#f2ede6] lg:block" />
+        <span className="hidden h-3 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)] lg:block" />
       ) : (
-        <span className="hidden max-w-[120px] truncate text-sm text-[#4a4a5e] lg:block">
+        <span className="hidden max-w-[120px] truncate text-sm text-[var(--color-text-secondary)] lg:block">
           {displayName ?? t("userMenu.profile", locale)}
         </span>
       )}

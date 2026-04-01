@@ -23,21 +23,21 @@ Font.register({
 // ─── Colors ──────────────────────────────────────────────────────────────────
 
 export const colors = {
-  sage: "#3d6b5e",
-  sageDark: "#1e3d34",
-  sageLight: "#5a8f7f",
-  sage100: "#e8f2f0",
-  bronze: "#c17f4a",
-  bronzeLight: "#e8a96a",
-  bronze100: "#fdf5ee",
-  bronzeDark: "#8a5530",
-  ink: "#1a1a2e",
-  ink500: "#4a4a5e",
-  ink300: "#8a8a9a",
-  cream: "#f7f4ef",
-  cream500: "#e8e0d3",
-  cream300: "#f2ede6",
-  white: "#ffffff",
+  sage: "var(--color-action-primary-bg)",
+  sageDark: "var(--color-accent-self-deep)",
+  sageLight: "var(--color-accent-self)",
+  sage100: "var(--color-surface-self-accent-soft)",
+  bronze: "var(--color-accent-primary)",
+  bronzeLight: "var(--color-accent-primary-soft)",
+  bronze100: "var(--color-surface-highlight-warm)",
+  bronzeDark: "var(--color-accent-primary-strong)",
+  ink: "var(--color-text-primary)",
+  ink500: "var(--color-text-secondary)",
+  ink300: "var(--color-text-muted)",
+  cream: "var(--color-surface-canvas)",
+  cream500: "var(--color-border-default)",
+  cream300: "var(--color-surface-subtle)",
+  white: "var(--color-neutral-white)",
 };
 
 // ─── Shared styles ───────────────────────────────────────────────────────────

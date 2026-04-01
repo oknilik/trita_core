@@ -54,13 +54,13 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
 
   return (
     <section>
-      <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
+      <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
         {t("results.belbinEyebrow", locale)}
       </p>
-      <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
+      <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
         {t("results.belbinTitle", locale)}
       </h2>
-      <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[#4a4a5e]">
+      <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
         {t("content.belbinSub", locale)}
       </p>
 
@@ -77,18 +77,18 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
               key={role}
               className={`flex cursor-pointer flex-col rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md ${
                 isPrimary
-                  ? "border-2 border-[#3d6b5e] bg-[#e8f2f0] p-[22px]"
-                  : "border-[1.5px] border-[#ddd5c8] bg-white p-[18px]"
+                  ? "border-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] p-[22px]"
+                  : "border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]"
               }`}
             >
               {/* Badge */}
               <span
                 className={`mb-2 self-start rounded px-[9px] py-[3px] text-[8px] font-bold uppercase tracking-wide ${
                   isPrimary
-                    ? "bg-[#3d6b5e] text-white"
+                    ? "bg-[var(--color-action-primary-bg)] text-white"
                     : idx === 1
-                      ? "bg-[#fdf5ee] text-[#8a5530]"
-                      : "bg-[#f2ede6] text-[#8a8a9a]"
+                      ? "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]"
+                      : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
                 }`}
               >
                 {rank[lang]} · {score}%
@@ -96,7 +96,7 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
 
               {/* Name */}
               <p
-                className={`mb-0.5 font-fraunces text-[#1a1a2e] ${
+                className={`mb-0.5 font-fraunces text-[var(--color-text-primary)] ${
                   isPrimary ? "text-[19px]" : "text-[17px]"
                 }`}
               >
@@ -104,12 +104,12 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
               </p>
 
               {/* Subtitle */}
-              <p className="mb-1.5 text-[11px] italic text-[#8a8a9a]">
+              <p className="mb-1.5 text-[11px] italic text-[var(--color-text-muted)]">
                 {subtitle[lang]}
               </p>
 
               {/* Description */}
-              <p className="text-xs leading-relaxed text-[#4a4a5e]">
+              <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 {desc[lang]}
               </p>
             </div>

@@ -21,7 +21,7 @@ export default function DashboardError({
         </p>
         <button
           onClick={reset}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-[#c17f4a] px-6 text-[12px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 text-[12px] font-semibold text-white transition hover:brightness-110"
         >
           Újrapróbálás
         </button>

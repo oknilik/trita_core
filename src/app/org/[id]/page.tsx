@@ -38,12 +38,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // ── Avatar color (shared with UserMenu) ─────────────────────────────────────
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"],
-  ["#8a5530", "#6b3f22"],
-  ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"],
-  ["#0E7490", "#0C5E75"],
-  ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 const ORG_HERO_GRADIENT =
@@ -146,13 +146,13 @@ export default async function OrgDetailPage({
           <h1 className="mt-2 font-fraunces text-3xl text-ink">{org.name}</h1>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <DashboardMetricCard
-              accent="#3d6b5e"
+              accent="var(--color-action-primary-bg)"
               title={isHu ? "Tagok" : "Members"}
               value={String(memberCount)}
               sub={isHu ? "Aktív szervezeti tagságok" : "Active org memberships"}
             />
             <DashboardMetricCard
-              accent="#c17f4a"
+              accent="var(--color-accent-primary)"
               title={isHu ? "Csapatok" : "Teams"}
               value={String(teamCount)}
               sub={isHu ? "Szervezethez tartozó csapatok" : "Teams in this organization"}
@@ -513,13 +513,13 @@ export default async function OrgDetailPage({
           <DashboardSectionHeader label={t("org.stateEyebrow", locale)} className="mb-5" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <DashboardMetricCard
-              accent="#3d6b5e"
+              accent="var(--color-action-primary-bg)"
               title={t("org.stateMembersTitle", locale)}
               value={String(pageData.memberCount)}
               sub={tf("org.stateMembersSub", locale, { count: String(pageData.memberCount) })}
             />
             <DashboardMetricCard
-              accent="#c17f4a"
+              accent="var(--color-accent-primary)"
               title={t("org.stateTeamsTitle", locale)}
               value={String(pageData.teamCount)}
               sub={tf("org.stateTeamsSub", locale, { count: String(pageData.teamCount) })}
@@ -631,7 +631,7 @@ export default async function OrgDetailPage({
           className="rounded-[28px] p-8 md:p-12"
           style={{
             background:
-              "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)",
+              "linear-gradient(135deg, var(--color-accent-self-strong) 0%, var(--color-accent-self-deep) 60%, var(--color-accent-self-deeper) 100%)",
           }}
         >
           <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
@@ -648,7 +648,7 @@ export default async function OrgDetailPage({
                 <>
                   <Link
                     href={`/org/${orgId}?tab=campaigns`}
-                    className="rounded-[10px] bg-[#c17f4a] px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+                    className="rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
                   >
                     {t("org.ctaBandCta1", locale)}
                   </Link>

@@ -9,12 +9,12 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 // ── Avatar colors ───────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"],
-  ["#8a5530", "#6b3f22"],
-  ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"],
-  ["#0E7490", "#0C5E75"],
-  ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 function getAvatarColor(name: string): readonly [string, string] {
@@ -79,7 +79,7 @@ function OrgIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
 
 function BellIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" className="text-[#4a4a5e]">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" className="text-[var(--color-text-secondary)]">
       <path d="M8 2a5 5 0 0 1 5 5v2l1.5 2H1.5L3 9V7a5 5 0 0 1 5-5z" />
       <path d="M6.5 13a1.5 1.5 0 0 0 3 0" />
     </svg>
@@ -88,7 +88,7 @@ function BellIcon() {
 
 function ChevronDown() {
   return (
-    <svg className="ml-0.5 h-2.5 w-2.5 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <svg className="ml-0.5 h-2.5 w-2.5 text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
       <path d="M2 4l4 4 4-4" />
     </svg>
   );
@@ -113,16 +113,16 @@ function MegaItem({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[#f7f4ef]"
+      className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[var(--color-surface-canvas)]"
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f7f4ef] text-[#8a8a9a] transition-colors group-hover:bg-[#e8e0d3] group-hover:text-[#4a4a5e]">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold text-[#1a1a2e]">{title}</p>
-        <p className="text-[11px] leading-snug text-[#8a8a9a]">{desc}</p>
+        <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">{title}</p>
+        <p className="text-[11px] leading-snug text-[var(--color-text-muted)]">{desc}</p>
       </div>
-      <svg className="h-3.5 w-3.5 shrink-0 text-[#ddd5c8] transition-colors group-hover:text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M4 2l4 4-4 4" />
       </svg>
     </Link>
@@ -245,8 +245,8 @@ export function NavHeaderUI({
   // ── Nav item styles ───────────────────────────────────────────────────────
 
   const navItemBase = "inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium transition-all cursor-pointer select-none rounded-lg";
-  const navItemActive = `${navItemBase} bg-[#f2ede6] text-[#c17f4a] font-semibold`;
-  const navItemInactive = `${navItemBase} text-[#4a4a5e] hover:text-[#1a1a2e] hover:bg-[#f7f4ef]`;
+  const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary)] font-semibold`;
+  const navItemInactive = `${navItemBase} text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-canvas)]`;
 
   // ── Mega-dropdown wrapper ─────────────────────────────────────────────────
 
@@ -254,7 +254,7 @@ export function NavHeaderUI({
     if (!isOpen) return null;
     return (
       <div
-        className="absolute left-0 top-[calc(100%+4px)] z-50 w-[380px] overflow-hidden rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] p-1.5 shadow-lg shadow-black/[0.04]"
+        className="absolute left-0 top-[calc(100%+4px)] z-50 w-[380px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
         style={{ animation: "fade-in 150ms ease-out" }}
       >
         {children}
@@ -269,16 +269,16 @@ export function NavHeaderUI({
         <div className="fixed inset-0 z-30" onClick={closeAll} />
       )}
 
-      <header className="sticky top-0 z-40 border-b border-[#ddd5c8] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
 
           {/* Logo */}
           <Link
             href={homeHref}
             aria-label="trita"
-            className="font-fraunces mr-3 text-lg font-black tracking-[-0.03em] text-[#1a1a2e]"
+            className="font-fraunces mr-3 text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
           >
-            <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
           </Link>
 
           {/* ── Desktop nav ──────────────────────────────────────────────── */}
@@ -287,7 +287,7 @@ export function NavHeaderUI({
             {/* Vezérlő */}
             <Link
               href={homeHref}
-              className={`${onHome ? "rounded-lg bg-[#1a1a2e] text-white px-4 py-1.5 text-[13px] font-medium inline-flex items-center gap-2" : navItemInactive}`}
+              className={`${onHome ? "rounded-lg bg-[var(--color-text-primary)] text-white px-4 py-1.5 text-[13px] font-medium inline-flex items-center gap-2" : navItemInactive}`}
             >
               <GridIcon className="h-3.5 w-3.5" />
               {homeLabel}
@@ -352,7 +352,7 @@ export function NavHeaderUI({
             )}
 
             {/* Separator */}
-            {org && isAdmin && <div className="mx-2 h-5 w-px bg-[#ddd5c8]" />}
+            {org && isAdmin && <div className="mx-2 h-5 w-px bg-[var(--color-border-soft)]" />}
 
             {/* Szervezet dropdown (admin only) */}
             {org && isAdmin && (
@@ -365,7 +365,7 @@ export function NavHeaderUI({
                   <OrgIcon />
                   {org.name}
                   {activeCampaignCount > 0 && (
-                    <span className="ml-0.5 rounded-full bg-[#1a1a2e] px-1.5 py-[1px] font-mono text-[9px] text-white">
+                    <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[9px] text-white">
                       {activeCampaignCount}
                     </span>
                   )}
@@ -388,16 +388,16 @@ export function NavHeaderUI({
             </button>
 
             {/* Separator + Language */}
-            <div className="h-5 w-px bg-[#e8e0d3]" />
+            <div className="h-5 w-px bg-[var(--color-border-default)]" />
             <LanguageSwitcher />
 
             {/* Profile */}
             <Link
               href="/profile"
-              className="flex items-center gap-1.5 rounded-full border border-[#e8e0d3] bg-white pl-1 pr-2.5 py-0.5 transition hover:border-[#8a8a9a]"
+              className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white pl-1 pr-2.5 py-0.5 transition hover:border-[var(--color-text-muted)]"
             >
               {showIdentityLoader ? (
-                <div className="h-7 w-7 animate-pulse rounded-full bg-[#f2ede6]" />
+                <div className="h-7 w-7 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
               ) : (
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
@@ -407,9 +407,9 @@ export function NavHeaderUI({
                 </div>
               )}
               {showIdentityLoader ? (
-                <span className="h-2.5 w-20 animate-pulse rounded-full bg-[#f2ede6]" />
+                <span className="h-2.5 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
               ) : (
-                <span className="max-w-[90px] truncate text-[12px] font-medium text-[#4a4a5e]">{displayName ?? "Profil"}</span>
+                <span className="max-w-[90px] truncate text-[12px] font-medium text-[var(--color-text-secondary)]">{displayName ?? "Profil"}</span>
               )}
             </Link>
           </div>
@@ -423,7 +423,7 @@ export function NavHeaderUI({
             <button
               type="button"
               onClick={() => setMobileMenu((s) => s === "closed" ? "quickview" : "closed")}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#1a1a2e]"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-primary)]"
             >
               {mobileMenu !== "closed" ? (
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
@@ -455,12 +455,12 @@ export function NavHeaderUI({
           >
             {mobileMenu === "quickview" ? (
               /* ── Quickview panel ──────────────────────────────────────── */
-              <div className="mx-4 mt-2 rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] p-4 shadow-lg shadow-black/[0.04]">
+              <div className="mx-4 mt-2 rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-4 shadow-lg shadow-black/[0.04]">
                 {/* Vezérlő pill */}
                 <Link
                   href={homeHref}
                   onClick={() => setMobileMenu("closed")}
-                  className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-[13px] font-medium text-white"
+                  className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-medium text-white"
                 >
                   <GridIcon className="h-3.5 w-3.5" />
                   {homeLabel}
@@ -471,9 +471,9 @@ export function NavHeaderUI({
                   <Link
                     href="/profile/results"
                     onClick={() => setMobileMenu("closed")}
-                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                       <SelfIcon className="h-3.5 w-3.5" />
                     </span>
                     Saját profil
@@ -484,9 +484,9 @@ export function NavHeaderUI({
                       key={tm.id}
                       href={`/team/${tm.id}`}
                       onClick={() => setMobileMenu("closed")}
-                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                         <TeamIcon className="h-3.5 w-3.5" />
                       </span>
                       {teams.length === 1 ? "Csapatom" : tm.name}
@@ -497,9 +497,9 @@ export function NavHeaderUI({
                     <Link
                       href={`/hiring/${org.id}`}
                       onClick={() => setMobileMenu("closed")}
-                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                         <CandidateIcon className="h-3.5 w-3.5" />
                       </span>
                       Jelöltek
@@ -510,9 +510,9 @@ export function NavHeaderUI({
                     <Link
                       href={`/org/${org.id}`}
                       onClick={() => setMobileMenu("closed")}
-                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#1a1a2e] transition-colors hover:bg-[#f2ede6]"
+                      className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                         <OrgIcon className="h-3.5 w-3.5" />
                       </span>
                       {org.name}
@@ -523,9 +523,9 @@ export function NavHeaderUI({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("expanded")}
-                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[#8a8a9a] transition-colors hover:bg-[#f2ede6]"
+                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f7f4ef] text-[#8a8a9a]">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                       <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="1" y="2" width="14" height="12" rx="2" />
                         <path d="M1 6h14" />
@@ -540,13 +540,13 @@ export function NavHeaderUI({
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenu("closed")}
-                  className="mt-2 flex items-center gap-3 rounded-lg border-t border-[#e8e0d3] px-2 pt-3 transition-colors hover:bg-[#f2ede6]"
+                  className="mt-2 flex items-center gap-3 rounded-lg border-t border-[var(--color-border-default)] px-2 pt-3 transition-colors hover:bg-[var(--color-surface-subtle)]"
                 >
                   {showIdentityLoader ? (
-                    <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-[#f2ede6]" />
+                    <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
                   ) : (
                     <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[14px] font-medium text-white"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-[14px] font-medium text-white"
                       style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
                     >
                       {initial}
@@ -554,29 +554,29 @@ export function NavHeaderUI({
                   )}
                   {showIdentityLoader ? (
                     <div className="flex-1 space-y-1.5">
-                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-[#f2ede6]" />
-                      <div className="h-2 w-14 animate-pulse rounded-full bg-[#f2ede6]" />
+                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
+                      <div className="h-2 w-14 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
                     </div>
                   ) : (
                     <div className="flex-1">
-                      <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName ?? "Profil"}</p>
-                      <p className="text-[11px] text-[#8a8a9a]">{roleLabel}</p>
+                      <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{displayName ?? "Profil"}</p>
+                      <p className="text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
                     </div>
                   )}
-                  <svg className="h-4 w-4 text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <svg className="h-4 w-4 text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <path d="M4 2l4 4-4 4" />
                   </svg>
                 </Link>
               </div>
             ) : (
               /* ── Expanded panel ──────────────────────────────────────── */
-              <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[#e8e0d3] bg-[#fdfcfa] shadow-lg shadow-black/[0.04]">
+              <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.04]">
                 {/* Header: pill + collapse */}
-                <div className="flex items-center gap-3 border-b border-[#e8e0d3] px-4 py-3">
+                <div className="flex items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-3">
                   <Link
                     href={homeHref}
                     onClick={() => setMobileMenu("closed")}
-                    className="inline-flex items-center gap-2 rounded-lg bg-[#1a1a2e] px-4 py-2 text-[13px] font-medium text-white"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-medium text-white"
                   >
                     <GridIcon className="h-3.5 w-3.5" />
                     {homeLabel}
@@ -584,7 +584,7 @@ export function NavHeaderUI({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("quickview")}
-                    className="flex items-center gap-1.5 text-[13px] text-[#8a8a9a]"
+                    className="flex items-center gap-1.5 text-[13px] text-[var(--color-text-muted)]"
                   >
                     Bezárás
                     <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -594,12 +594,12 @@ export function NavHeaderUI({
                 </div>
 
                 {/* Profile card */}
-                <div className="mx-4 mt-3 flex items-center gap-3 rounded-xl bg-[#f2ede6] px-4 py-3">
+                <div className="mx-4 mt-3 flex items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3">
                   {showIdentityLoader ? (
                     <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-white/70" />
                   ) : (
                     <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#ddd5c8] text-[15px] font-medium text-white"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-[15px] font-medium text-white"
                       style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
                     >
                       {initial}
@@ -612,15 +612,15 @@ export function NavHeaderUI({
                     </div>
                   ) : (
                     <div>
-                      <p className="text-[14px] font-medium text-[#1a1a2e]">{displayName ?? "Profil"}</p>
-                      <p className="text-[12px] text-[#8a8a9a]">{roleLabel}</p>
+                      <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{displayName ?? "Profil"}</p>
+                      <p className="text-[12px] text-[var(--color-text-muted)]">{roleLabel}</p>
                     </div>
                   )}
                 </div>
 
                 {/* ── Csapatok section ── */}
                 <div className="mt-3">
-                  <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                  <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                     Saját nézet
                   </p>
                   <MobileMenuItem
@@ -631,7 +631,7 @@ export function NavHeaderUI({
                     onClick={() => setMobileMenu("closed")}
                   />
 
-                  <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                  <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                     {isAdmin ? "Csapatok" : "Csapatom"}
                   </p>
                   {teams.length === 1 && team ? (
@@ -649,8 +649,8 @@ export function NavHeaderUI({
 
                 {/* ── Jelöltek section ── */}
                 {org && hasHiringAccess && (
-                  <div className="mt-2 border-t border-[#e8e0d3] pt-2">
-                    <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                  <div className="mt-2 border-t border-[var(--color-border-default)] pt-2">
+                    <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                       Jelöltek
                     </p>
                     <MobileMenuItem href={`/hiring/${org.id}`} icon={<CandidateIcon className="h-4 w-4" />} title="Jelöltfolyamat" desc="Aktív és archív jelöltek" onClick={() => setMobileMenu("closed")} />
@@ -661,8 +661,8 @@ export function NavHeaderUI({
 
                 {/* ── Szervezet section (admin only) ── */}
                 {org && isAdmin && (
-                  <div className="mt-2 border-t border-[#e8e0d3] pt-2">
-                    <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[#8a8a9a]">
+                  <div className="mt-2 border-t border-[var(--color-border-default)] pt-2">
+                    <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                       {org.name}
                     </p>
                     <MobileMenuItem href={`/org/${org.id}`} icon={<OrgIcon className="h-4 w-4" />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={() => setMobileMenu("closed")} />
@@ -672,11 +672,11 @@ export function NavHeaderUI({
                 )}
 
                 {/* ── Footer ── */}
-                <div className="mt-4 border-t border-[#ddd5c8] px-4 pb-4 pt-4">
+                <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-4 pt-4">
                   <button
                     type="button"
                     onClick={() => { signOut({ redirectUrl: "/" }); setMobileMenu("closed"); }}
-                    className="flex items-center gap-2 text-[13px] text-[#8a8a9a]"
+                    className="flex items-center gap-2 text-[13px] text-[var(--color-text-muted)]"
                   >
                     <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
@@ -712,16 +712,16 @@ function MobileMenuItem({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-[#f2ede6]"
+      className="group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-[var(--color-surface-subtle)]"
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f7f4ef] text-[#8a8a9a] transition-colors group-hover:bg-[#e8e0d3] group-hover:text-[#4a4a5e]">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[14px] font-medium text-[#1a1a2e]">{title}</p>
-        <p className="truncate text-[12px] text-[#8a8a9a]">{desc}</p>
+        <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{title}</p>
+        <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
       </div>
-      <svg className="h-3.5 w-3.5 shrink-0 text-[#ddd5c8] transition-colors group-hover:text-[#8a8a9a]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+      <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M4 2l4 4-4 4" />
       </svg>
     </Link>

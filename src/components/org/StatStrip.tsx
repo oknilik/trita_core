@@ -20,7 +20,7 @@ export function StatStrip({ cells }: StatStripProps) {
         >
           <div
             className="absolute left-5 right-5 top-0 h-[3px] rounded-b-full"
-            style={{ backgroundColor: cell.accentColor ?? "#3d6b5e" }}
+            style={{ backgroundColor: cell.accentColor ?? "var(--color-action-primary-bg)" }}
           />
 
           <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">

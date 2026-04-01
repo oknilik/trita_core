@@ -30,9 +30,9 @@ function SelfPanel() {
   ];
 
   const tierStyle = {
-    high:     { text: "text-[#3d6b5e]", bg: "bg-[#e8f2f0]", tagText: "text-[#1e3d34]" },
-    moderate: { text: "text-[#c17f4a]", bg: "bg-[#fdf5ee]", tagText: "text-[#8a5530]" },
-    low:      { text: "text-[#8a8a9a]", bg: "bg-[#f2ede6]", tagText: "text-[#8a8a9a]" },
+    high:     { text: "text-[var(--color-action-primary-bg)]", bg: "bg-[var(--color-surface-self-accent-soft)]", tagText: "text-[var(--color-accent-self-deep)]" },
+    moderate: { text: "text-[var(--color-accent-primary)]", bg: "bg-[var(--color-surface-highlight-warm)]", tagText: "text-[var(--color-accent-primary-strong)]" },
+    low:      { text: "text-[var(--color-text-muted)]", bg: "bg-[var(--color-surface-subtle)]", tagText: "text-[var(--color-text-muted)]" },
   };
 
   const tierLabel = {
@@ -44,7 +44,7 @@ function SelfPanel() {
   return (
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
-      <div className="relative bg-gradient-to-br from-[#2a5244] via-[#1e3d34] to-[#1a2e28] px-6 pb-5 pt-6">
+      <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-5 pt-6">
         <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/[0.015]" />
         <p className="text-[8px] uppercase tracking-[1.5px] text-white/20">
           {t("landing.selfPanelEyebrow", locale)}
@@ -53,7 +53,7 @@ function SelfPanel() {
           {t("landing.selfPanelName", locale)}
         </p>
         <div className="mt-0.5 flex items-center gap-2.5">
-          <p className="font-fraunces text-xl font-medium italic text-[#e8a96a]">
+          <p className="font-fraunces text-xl font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
           <span className="rounded-md bg-white/[0.08] px-2 py-0.5 text-[8px] font-medium text-white/[0.35]">
@@ -72,10 +72,10 @@ function SelfPanel() {
           {dims.map((d) => {
             const c = tierStyle[d.tier];
             return (
-              <div key={d.name} className="rounded-lg bg-[#f2ede6] px-1.5 py-2.5 text-center">
-                <p className="text-[9px] font-medium text-[#8a8a9a]">{d.name}</p>
+              <div key={d.name} className="rounded-lg bg-[var(--color-surface-subtle)] px-1.5 py-2.5 text-center">
+                <p className="text-[9px] font-medium text-[var(--color-text-muted)]">{d.name}</p>
                 <p className={`font-fraunces text-2xl leading-none ${c.text}`}>{d.val}</p>
-                <span className={`mt-1 inline-block rounded-sm px-1.5 py-0.5 text-[7px] font-semibold ${c.bg} ${c.tagText}${d.tier === "low" ? " border border-[#e8e0d3]/60" : ""}`}>
+                <span className={`mt-1 inline-block rounded-sm px-1.5 py-0.5 text-[7px] font-semibold ${c.bg} ${c.tagText}${d.tier === "low" ? " border border-[var(--color-border-default)]/60" : ""}`}>
                   {tierLabel[d.tier]}
                 </span>
               </div>
@@ -85,30 +85,30 @@ function SelfPanel() {
 
         {/* Erősségeid / Figyelendő */}
         <div className="mb-3 grid grid-cols-2 gap-1.5">
-          <div className="rounded-lg border border-[#3d6b5e]/10 bg-[#e8f2f0] px-3 py-2.5">
-            <p className="mb-1 text-[8px] font-semibold uppercase tracking-wide text-[#1e3d34]/60">
+          <div className="rounded-lg border border-[var(--color-action-primary-bg)]/10 bg-[var(--color-surface-self-accent-soft)] px-3 py-2.5">
+            <p className="mb-1 text-[8px] font-semibold uppercase tracking-wide text-[var(--color-accent-self-deep)]/60">
               {t("landing.selfStrLabel", locale)}
             </p>
-            <p className="text-[9px] leading-[1.4] text-[#4a4a5e]">
-              <span className="text-[#3d6b5e]">• </span>
-              <span className="font-medium text-[#1e3d34]">{t("landing.selfStr1Dim", locale)}</span>
+            <p className="text-[9px] leading-[1.4] text-[var(--color-text-secondary)]">
+              <span className="text-[var(--color-action-primary-bg)]">• </span>
+              <span className="font-medium text-[var(--color-accent-self-deep)]">{t("landing.selfStr1Dim", locale)}</span>
               {" "}{t("landing.selfStr1Desc", locale)}
             </p>
-            <p className="mt-0.5 text-[9px] leading-[1.4] text-[#4a4a5e]">
-              <span className="text-[#3d6b5e]">• </span>
-              <span className="font-medium text-[#1e3d34]">{t("landing.selfStr2Dim", locale)}</span>
+            <p className="mt-0.5 text-[9px] leading-[1.4] text-[var(--color-text-secondary)]">
+              <span className="text-[var(--color-action-primary-bg)]">• </span>
+              <span className="font-medium text-[var(--color-accent-self-deep)]">{t("landing.selfStr2Dim", locale)}</span>
               {" "}{t("landing.selfStr2Desc", locale)}
             </p>
           </div>
-          <div className="rounded-lg border border-[#c17f4a]/10 bg-[#fdf5ee] px-3 py-2.5">
-            <p className="mb-1 text-[8px] font-semibold uppercase tracking-wide text-[#8a5530]/60">
+          <div className="rounded-lg border border-[var(--color-accent-primary)]/10 bg-[var(--color-surface-highlight-warm)] px-3 py-2.5">
+            <p className="mb-1 text-[8px] font-semibold uppercase tracking-wide text-[var(--color-accent-primary-strong)]/60">
               {t("landing.selfWatchLabel", locale)}
             </p>
-            <p className="text-[9px] leading-[1.4] text-[#4a4a5e]">
-              <span className="text-[#c17f4a]">• </span>
-              <span className="font-medium text-[#8a5530]">{t("landing.selfWatch1Dim", locale)}</span>
+            <p className="text-[9px] leading-[1.4] text-[var(--color-text-secondary)]">
+              <span className="text-[var(--color-accent-primary)]">• </span>
+              <span className="font-medium text-[var(--color-accent-primary-strong)]">{t("landing.selfWatch1Dim", locale)}</span>
             </p>
-            <p className="mt-0.5 pl-2.5 text-[9px] leading-[1.4] text-[#4a4a5e]">
+            <p className="mt-0.5 pl-2.5 text-[9px] leading-[1.4] text-[var(--color-text-secondary)]">
               {t("landing.selfWatch1Desc", locale)}
             </p>
           </div>
@@ -116,33 +116,33 @@ function SelfPanel() {
 
         {/* Belbin teaser */}
         <div className="flex gap-1.5">
-          <div className="flex-[1.2] rounded-lg border border-[#3d6b5e]/30 bg-[#e8f2f0] px-2.5 py-2">
-            <span className="inline-flex rounded-sm bg-[#3d6b5e] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-white">
+          <div className="flex-[1.2] rounded-lg border border-[var(--color-action-primary-bg)]/30 bg-[var(--color-surface-self-accent-soft)] px-2.5 py-2">
+            <span className="inline-flex rounded-sm bg-[var(--color-action-primary-bg)] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-white">
               {t("landing.selfBelbinPrimary", locale)}
             </span>
-            <p className="mt-0.5 text-[11px] font-semibold text-[#1a1a2e]">{t("landing.selfBelbin1Name", locale)}</p>
-            <p className="text-[8px] text-[#4a4a5e]">{t("landing.selfBelbin1Desc", locale)}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfBelbin1Name", locale)}</p>
+            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfBelbin1Desc", locale)}</p>
           </div>
-          <div className="flex-1 rounded-lg border border-[#e8e0d3] px-2.5 py-2">
-            <span className="inline-flex rounded-sm bg-[#fdf5ee] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[#8a5530]">
+          <div className="flex-1 rounded-lg border border-[var(--color-border-default)] px-2.5 py-2">
+            <span className="inline-flex rounded-sm bg-[var(--color-surface-highlight-warm)] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
               {t("landing.selfBelbinSecondary", locale)}
             </span>
-            <p className="mt-0.5 text-[11px] font-semibold text-[#1a1a2e]">{t("landing.selfBelbin2Name", locale)}</p>
-            <p className="text-[8px] text-[#4a4a5e]">{t("landing.selfBelbin2Desc", locale)}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfBelbin2Name", locale)}</p>
+            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfBelbin2Desc", locale)}</p>
           </div>
-          <div className="flex-1 rounded-lg border border-[#e8e0d3] px-2.5 py-2">
-            <span className="inline-flex rounded-sm bg-[#f2ede6] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[#8a8a9a]">
+          <div className="flex-1 rounded-lg border border-[var(--color-border-default)] px-2.5 py-2">
+            <span className="inline-flex rounded-sm bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
               {t("landing.selfBelbinTertiary", locale)}
             </span>
-            <p className="mt-0.5 text-[11px] font-semibold text-[#1a1a2e]">{t("landing.selfBelbin3Name", locale)}</p>
-            <p className="text-[8px] text-[#4a4a5e]">{t("landing.selfBelbin3Desc", locale)}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfBelbin3Name", locale)}</p>
+            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfBelbin3Desc", locale)}</p>
           </div>
         </div>
       </div>
 
       {/* ═══ FADE-OUT CTA ═══ */}
-      <div className="flex h-10 items-center justify-center rounded-b-2xl bg-gradient-to-b from-white to-[#f2ede6]">
-        <span className="text-[11px] font-medium text-[#3d6b5e]">
+      <div className="flex h-10 items-center justify-center rounded-b-2xl bg-gradient-to-b from-white to-[var(--color-surface-subtle)]">
+        <span className="text-[11px] font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
       </div>
@@ -160,7 +160,7 @@ function TeamPanel() {
       initials: "KA",
       name: "Kovács Anna",
       role: "Sales Lead",
-      avatarBg: "#3d6b5e",
+      avatarBg: "var(--color-action-primary-bg)",
       badge: t("landing.teamMember1Badge", locale),
       badgeBg: "rgba(61,107,94,0.25)",
       badgeColor: "#7aaa9a",
@@ -170,17 +170,17 @@ function TeamPanel() {
       initials: "NP",
       name: "Nagy Péter",
       role: "Account Exec",
-      avatarBg: "#8a5530",
+      avatarBg: "var(--color-accent-primary-strong)",
       badge: t("landing.teamMember2Badge", locale),
       badgeBg: "rgba(193,127,74,0.2)",
-      badgeColor: "#e8a96a",
+      badgeColor: "var(--color-accent-primary-soft)",
       bars: [true, true, false, true, false],
     },
     {
       initials: "SZ",
       name: "Szabó Zsófia",
       role: "BDR",
-      avatarBg: "#4a4a5e",
+      avatarBg: "var(--color-text-secondary)",
       badge: t("landing.teamMember3Badge", locale),
       badgeBg: "rgba(255,255,255,0.07)",
       badgeColor: "rgba(255,255,255,0.4)",
@@ -199,7 +199,7 @@ function TeamPanel() {
           <div className="flex gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
             <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
-            <span className="h-1.5 w-1.5 rounded-full opacity-70" style={{ background: "#c17f4a" }} />
+            <span className="h-1.5 w-1.5 rounded-full opacity-70" style={{ background: "var(--color-accent-primary)" }} />
           </div>
         </div>
         <div className="p-2.5">
@@ -225,7 +225,7 @@ function TeamPanel() {
                       className="h-[3px] w-4 rounded-sm"
                       style={{
                         background: active
-                          ? i % 2 === 0 ? "#5a8f7f" : "#c17f4a"
+                          ? i % 2 === 0 ? "var(--color-accent-self)" : "var(--color-accent-primary)"
                           : "rgba(255,255,255,0.08)",
                       }}
                     />
@@ -253,7 +253,7 @@ function TeamPanel() {
         </p>
         <span
           className="mt-2 inline-block rounded px-2 py-0.5 text-[10px] font-semibold"
-          style={{ background: "rgba(193,127,74,0.15)", color: "#e8a96a" }}
+          style={{ background: "rgba(193,127,74,0.15)", color: "var(--color-accent-primary-soft)" }}
         >
           {t("landing.teamInsightBadge", locale)}
         </span>
@@ -265,7 +265,7 @@ function TeamPanel() {
         style={{ background: "rgba(193,127,74,0.08)", border: "1px solid rgba(193,127,74,0.18)" }}
       >
         <div>
-          <p className="font-dm-sans text-[10px] uppercase tracking-wide" style={{ color: "#c17f4a" }}>
+          <p className="font-dm-sans text-[10px] uppercase tracking-wide" style={{ color: "var(--color-accent-primary)" }}>
             {t("landing.teamFoundingLabel", locale)}
           </p>
           <p className="text-[13px] font-semibold text-white/75">{t("landing.teamFoundingTitle", locale)}</p>
@@ -273,7 +273,7 @@ function TeamPanel() {
         </div>
         <span
           className="animate-pulse shrink-0 rounded-full px-3 py-1.5 text-[10px] font-semibold text-white"
-          style={{ background: "#c17f4a" }}
+          style={{ background: "var(--color-accent-primary)" }}
         >
           {t("landing.teamFoundingCta", locale)}
         </span>
@@ -287,7 +287,7 @@ function TeamPanel() {
 export function HeroSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
-  const accentColor = isSelf ? "#c17f4a" : "#3d6b5e";
+  const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
 
   // Detect existing localStorage draft for guest users.
   // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
@@ -342,7 +342,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
           ) : (
             <div
               className="order-2 flex flex-col gap-4 overflow-hidden rounded-[20px] p-6 md:col-start-2 md:row-span-2 md:row-start-1 md:p-7 lg:p-9"
-              style={{ background: "#1a1a2e", minHeight: 420 }}
+              style={{ background: "var(--color-text-primary)", minHeight: 420 }}
             >
               <TeamPanel />
             </div>
@@ -385,14 +385,14 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { icon: "⚡", text: t("landing.selfMetaInstant", locale) },
                   { icon: "🆓", text: t("landing.selfMetaFree", locale) },
                 ].map((m) => (
-                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e0d3] bg-white/60 px-3 py-1.5 text-[11px] text-[#4a4a5e]">
+                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
                     <span className="text-[10px]">{m.icon}</span>
                     {m.text}
                   </span>
                 ))}
               </motion.div>
             ) : (
-              <motion.p variants={fadeUp} className="text-center text-[13px] text-[#8a8a9a] sm:text-left">
+              <motion.p variants={fadeUp} className="text-center text-[13px] text-[var(--color-text-muted)] sm:text-left">
                 {t("landing.teamMicrocopy", locale)}
               </motion.p>
             )}

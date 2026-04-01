@@ -55,7 +55,7 @@ export function FacetBreakdown({ dimensions, locale }: FacetBreakdownProps) {
                 <div
                   key={facet.code}
                   className={`flex items-center gap-4 px-5 py-3.5 ${
-                    idx < dim.facets.length - 1 ? "border-b border-[#f5f3ef]" : ""
+                    idx < dim.facets.length - 1 ? "border-b border-[var(--color-surface-chip-neutral)]" : ""
                   }`}
                 >
                   <span className="w-36 shrink-0 text-sm text-ink-body">{facet.label}</span>

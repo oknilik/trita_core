@@ -51,16 +51,16 @@ export async function generateMetadata({
 function getTagStyle(tag: string): string {
   const sage = ["Bevezetés", "Csapatdinamika", "Önértékelés", "Fluktuáció", "Introduction", "Team dynamics"];
   const bronze = ["Change management", "HEXACO", "Toborzás", "Recruitment"];
-  if (sage.includes(tag)) return "bg-[#e8f2f0] text-[#1e3d34]";
-  if (bronze.includes(tag)) return "bg-[#fdf5ee] text-[#8a5530]";
-  return "bg-[#f2ede6] text-[#8a8a9a]";
+  if (sage.includes(tag)) return "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]";
+  if (bronze.includes(tag)) return "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]";
+  return "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]";
 }
 
 // ─── Custom MDX Components ────────────────────────────────────────────────────
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-7 rounded-r-lg border-l-[3px] border-[#3d6b5e] bg-[#e8f2f0] px-5 py-4 font-fraunces text-[17px] italic leading-[1.7] text-[#1e3d34]">
+    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-5 py-4 font-fraunces text-[17px] italic leading-[1.7] text-[var(--color-accent-self-deep)]">
       {children}
     </div>
   );
@@ -68,9 +68,9 @@ function Callout({ children }: { children: React.ReactNode }) {
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[#e8e0d3] bg-white px-6 py-5 text-center">
-      <span className="font-fraunces text-[22px] leading-none text-[#3d6b5e]">{value}</span>
-      <span className="mt-1.5 text-[11px] leading-[1.4] text-[#8a8a9a]">{label}</span>
+    <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[var(--color-border-default)] bg-white px-6 py-5 text-center">
+      <span className="font-fraunces text-[22px] leading-none text-[var(--color-action-primary-bg)]">{value}</span>
+      <span className="mt-1.5 text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{label}</span>
     </div>
   );
 }
@@ -80,17 +80,17 @@ function StatRow({ children }: { children: React.ReactNode }) {
 }
 
 const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  H: { bg: "#e8f2f0", text: "#1e3d34", border: "#3d6b5e" },
+  H: { bg: "var(--color-surface-self-accent-soft)", text: "var(--color-accent-self-deep)", border: "var(--color-action-primary-bg)" },
   E: { bg: "#f5f3ff", text: "#5b21b6", border: "#ddd6fe" },
   X: { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
   A: { bg: "#f0fdf4", text: "#166534", border: "#bbf7d0" },
-  C: { bg: "#fdf5ee", text: "#8a5530", border: "#c17f4a" },
+  C: { bg: "var(--color-surface-highlight-warm)", text: "var(--color-accent-primary-strong)", border: "var(--color-accent-primary)" },
   O: { bg: "#fdf2f8", text: "#86198f", border: "#f5d0fe" },
   N: { bg: "#fff1f2", text: "#9f1239", border: "#fecdd3" },
 };
 
 function DimBadge({ code, label }: { code: string; label: string }) {
-  const colors = DIM_COLORS[code] ?? { bg: "#f2ede6", text: "#4a4a5e", border: "#e8e0d3" };
+  const colors = DIM_COLORS[code] ?? { bg: "var(--color-surface-subtle)", text: "var(--color-text-secondary)", border: "var(--color-border-default)" };
   return (
     <span
       style={{ backgroundColor: colors.bg, color: colors.text, borderColor: colors.border }}
@@ -112,19 +112,19 @@ function CompareTable({
   rows?: [string, string][];
 }) {
   return (
-    <div className="my-8 overflow-hidden rounded-[10px] border border-[#e8e0d3]">
+    <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
       <div className="grid grid-cols-2">
-        <div className="bg-white px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.5px] text-[#4a4a5e]">
+        <div className="bg-white px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.5px] text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
-        <div className="bg-[#1a1a2e] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.5px] text-white/60">
+        <div className="bg-[var(--color-text-primary)] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.5px] text-white/60">
           {rightLabel}
         </div>
       </div>
       {rows.map(([left, right], i) => (
-        <div key={i} className="grid grid-cols-2 border-t border-[#e8e0d3]">
-          <div className="bg-white px-5 py-3 text-[13px] text-[#4a4a5e]">{left}</div>
-          <div className="bg-[#1a1a2e] px-5 py-3 text-[13px] text-white/80">{right}</div>
+        <div key={i} className="grid grid-cols-2 border-t border-[var(--color-border-default)]">
+          <div className="bg-white px-5 py-3 text-[13px] text-[var(--color-text-secondary)]">{left}</div>
+          <div className="bg-[var(--color-text-primary)] px-5 py-3 text-[13px] text-white/80">{right}</div>
         </div>
       ))}
     </div>
@@ -133,8 +133,8 @@ function CompareTable({
 
 function KeyInsight({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-8 rounded-[10px] bg-[#1a1a2e] px-6 py-5">
-      <div className="font-dm-sans mb-2 text-[8px] uppercase tracking-[1.5px] text-[#e8a96a]">
+    <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
+      <div className="font-dm-sans mb-2 text-[8px] uppercase tracking-[1.5px] text-[var(--color-accent-primary-soft)]">
         {"//"} kulcsgondolat
       </div>
       <div className="text-[15px] leading-[1.75] text-white/85">{children}</div>
@@ -146,16 +146,16 @@ function KeyInsight({ children }: { children: React.ReactNode }) {
 
 const components = {
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="mb-5 mt-14 font-fraunces text-[24px] leading-[1.3] text-[#1a1a2e]" {...props} />
+    <h1 className="mb-5 mt-14 font-fraunces text-[24px] leading-[1.3] text-[var(--color-text-primary)]" {...props} />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="mb-4 mt-12 font-fraunces text-[20px] leading-[1.3] text-[#1a1a2e]" {...props} />
+    <h2 className="mb-4 mt-12 font-fraunces text-[20px] leading-[1.3] text-[var(--color-text-primary)]" {...props} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="mb-3 mt-10 text-lg font-semibold text-[#1a1a2e]" {...props} />
+    <h3 className="mb-3 mt-10 text-lg font-semibold text-[var(--color-text-primary)]" {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="mb-6 text-[15px] leading-[1.85] text-[#4a4a5e]" {...props} />
+    <p className="mb-6 text-[15px] leading-[1.85] text-[var(--color-text-secondary)]" {...props} />
   ),
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
     <ul className="mb-6 space-y-2 pl-5" {...props} />
@@ -165,22 +165,22 @@ const components = {
   ),
   li: (props: React.HTMLAttributes<HTMLLIElement>) => (
     <li
-      className="relative pl-2 text-[15px] leading-[1.85] text-[#4a4a5e] before:absolute before:-left-3 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[#c17f4a] [ol>&]:before:content-none"
+      className="relative pl-2 text-[15px] leading-[1.85] text-[var(--color-text-secondary)] before:absolute before:-left-3 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[var(--color-accent-primary)] [ol>&]:before:content-none"
       {...props}
     />
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
-      className="my-8 rounded-r-[10px] border-l-[2.5px] border-[#3d6b5e] bg-[#e8f2f0] py-4 pl-6 pr-5 italic text-[#1e3d34]"
+      className="my-8 rounded-r-[10px] border-l-[2.5px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-4 pl-6 pr-5 italic text-[var(--color-accent-self-deep)]"
       {...props}
     />
   ),
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
-    <strong className="font-semibold text-[#1a1a2e]" {...props} />
+    <strong className="font-semibold text-[var(--color-text-primary)]" {...props} />
   ),
-  hr: () => <hr className="my-10 border-[#e8e0d3]" />,
+  hr: () => <hr className="my-10 border-[var(--color-border-default)]" />,
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a className="text-[#3d6b5e] underline underline-offset-2 hover:text-[#1e3d34]" {...props} />
+    <a className="text-[var(--color-action-primary-bg)] underline underline-offset-2 hover:text-[var(--color-accent-self-deep)]" {...props} />
   ),
   Callout,
   StatCard,
@@ -208,12 +208,12 @@ export default async function BlogPostPage({
     .slice(0, 2);
 
   return (
-    <main className="min-h-dvh bg-[#f7f4ef]">
+    <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
       {/* Header */}
       <div className="mx-auto max-w-[720px] px-5 pb-0 pt-5 lg:px-14">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1 text-xs text-[#3d6b5e] hover:text-[#1e3d34]"
+          className="inline-flex items-center gap-1 text-xs text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
         >
           <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -238,24 +238,24 @@ export default async function BlogPostPage({
         )}
 
         {/* Title */}
-        <h1 className="mb-2 font-fraunces text-[26px] leading-[1.18] tracking-tight text-[#1a1a2e] lg:text-[30px]">
+        <h1 className="mb-2 font-fraunces text-[26px] leading-[1.18] tracking-tight text-[var(--color-text-primary)] lg:text-[30px]">
           {post.title}
         </h1>
 
         {/* Description */}
-        <p className="mb-2.5 text-sm leading-relaxed text-[#4a4a5e]">
+        <p className="mb-2.5 text-sm leading-relaxed text-[var(--color-text-secondary)]">
           {post.description}
         </p>
 
         {/* Meta */}
-        <div className="mb-8 flex items-center gap-2 border-b border-[#e8e0d3] pb-4 text-[11px] text-[#8a8a9a]">
+        <div className="mb-8 flex items-center gap-2 border-b border-[var(--color-border-default)] pb-4 text-[11px] text-[var(--color-text-muted)]">
           <span>
             {new Date(post.publishedAt).toLocaleDateString(
               locale === "en" ? "en-GB" : "hu-HU",
               { year: "numeric", month: "long", day: "numeric" },
             )}
           </span>
-          <span className="h-[3px] w-[3px] rounded-full bg-[#e8e0d3]" />
+          <span className="h-[3px] w-[3px] rounded-full bg-[var(--color-border-default)]" />
           <span>{post.readingTime}</span>
         </div>
 
@@ -264,8 +264,8 @@ export default async function BlogPostPage({
 
         {/* Related posts */}
         {relatedPosts.length > 0 && (
-          <div className="mt-8 border-t border-[#e8e0d3] pt-6">
-            <p className="mb-3 text-[9px] font-semibold uppercase tracking-[1.5px] text-[#8a8a9a]">
+          <div className="mt-8 border-t border-[var(--color-border-default)] pt-6">
+            <p className="mb-3 text-[9px] font-semibold uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
               {t("blog.readNext", locale)}
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -273,21 +273,21 @@ export default async function BlogPostPage({
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="rounded-[10px] border border-[#e8e0d3] bg-white p-4 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.03]"
+                  className="rounded-[10px] border border-[var(--color-border-default)] bg-white p-4 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.03]"
                 >
                   {rel.tags.length > 0 && (
                     <div className="mb-1 flex flex-wrap gap-[3px]">
                       {rel.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="rounded-full bg-[#f2ede6] px-[5px] py-px text-[6px] uppercase tracking-wide text-[#8a8a9a]">
+                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-[5px] py-px text-[6px] uppercase tracking-wide text-[var(--color-text-muted)]">
                           {tag}
                         </span>
                       ))}
                     </div>
                   )}
-                  <h3 className="mb-[3px] font-fraunces text-sm leading-[1.2] text-[#1a1a2e]">
+                  <h3 className="mb-[3px] font-fraunces text-sm leading-[1.2] text-[var(--color-text-primary)]">
                     {rel.title}
                   </h3>
-                  <span className="text-[9px] text-[#8a8a9a]">
+                  <span className="text-[9px] text-[var(--color-text-muted)]">
                     {new Date(rel.publishedAt).toLocaleDateString(
                       locale === "en" ? "en-GB" : "hu-HU",
                       { year: "numeric", month: "long", day: "numeric" },
@@ -301,9 +301,9 @@ export default async function BlogPostPage({
         )}
 
         {/* CTA block */}
-        <div className="mt-7 flex flex-col items-center gap-5 rounded-xl bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
+        <div className="mt-7 flex flex-col items-center gap-5 rounded-xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           <div className="flex-1 text-center sm:text-left">
-            <p className="mb-1 text-[8px] uppercase tracking-[1.5px] text-[#e8a96a]">
+            <p className="mb-1 text-[8px] uppercase tracking-[1.5px] text-[var(--color-accent-primary-soft)]">
               {t("blog.tryEyebrow", locale)}
             </p>
             <h3 className="mb-1 font-fraunces text-lg leading-snug text-white">
@@ -315,7 +315,7 @@ export default async function BlogPostPage({
           </div>
           <Link
             href="/try"
-            className="shrink-0 rounded-[10px] bg-[#c17f4a] px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            className="shrink-0 rounded-[10px] bg-[var(--color-accent-primary)] px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
           >
             {t("blog.tryCta", locale)}
           </Link>

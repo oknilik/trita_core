@@ -137,7 +137,7 @@ function LockIcon() {
   return (
     <svg
       width="20" height="20" viewBox="0 0 20 20"
-      fill="none" stroke="#c17f4a" strokeWidth="1.5"
+      fill="none" stroke="var(--color-accent-primary)" strokeWidth="1.5"
       strokeLinecap="round" strokeLinejoin="round"
     >
       <rect x="3" y="9" width="14" height="10" rx="2" />
@@ -229,7 +229,7 @@ function ResultsTab({
     <div className="flex flex-col gap-10 md:gap-14">
       {/* 1. Dimension strip — 6 column overview */}
       <div>
-        <p className="mb-1.5 text-[11px] font-medium text-[#8a8a9a]">
+        <p className="mb-1.5 text-[11px] font-medium text-[var(--color-text-muted)]">
           {t("content.stripLabel", locale)}
         </p>
         <DimensionStrip dimensions={stripDims} />
@@ -257,15 +257,15 @@ function ResultsTab({
       {isPlus && plusContent && plusContent.takeaways.length > 0 && (
         <div
           className="rounded-2xl p-5 px-6"
-          style={{ background: "linear-gradient(135deg, #1a1a2e, #2a2740)" }}
+          style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
         >
-          <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "#e8a96a" }}>
+          <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
             {t("content.profileSummary", locale)}
           </p>
           <div className="flex flex-col gap-2">
             {plusContent.takeaways.slice(0, 2).map((t, i) => (
               <div key={i} className="flex items-start gap-2.5">
-                <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
+                <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
                 <p className="text-[13px] leading-[1.6] text-white/[0.55]">{t}</p>
               </div>
             ))}
@@ -653,7 +653,7 @@ export function ProfileTabs({
                   : layer.status === "IN_PROGRESS"
                     ? "bg-[#e9f3ff] text-[#2f5d87]"
                   : layer.status === "AVAILABLE"
-                    ? "bg-[#f6ead6] text-[#8a5530]"
+                    ? "bg-[var(--color-surface-chip-warm-soft)] text-[var(--color-accent-primary-strong)]"
                     : "bg-cream text-ink-body";
 
               return (
@@ -773,7 +773,7 @@ export function ProfileTabs({
       {/* Tab bar — pill style */}
       <div
         ref={tabBarRef}
-        className="scroll-mt-24 flex overflow-hidden rounded-xl border-[1.5px] border-[#e8e0d3] bg-white"
+        className="scroll-mt-24 flex overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-white"
         role="tablist"
         aria-label="Profile navigation"
       >
@@ -785,10 +785,10 @@ export function ProfileTabs({
             onClick={() => handleTabChange(tab.id)}
             className={[
               "flex min-h-[48px] flex-1 items-center justify-center gap-1.5 py-3 text-center text-xs font-medium transition-all",
-              i < TABS.length - 1 && "border-r border-[#e8e0d3]",
+              i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
               activeTab === tab.id
-                ? "bg-[#3d6b5e] text-white"
-                : "bg-white text-[#8a8a9a] hover:bg-[#f2ede6]",
+                ? "bg-[var(--color-action-primary-bg)] text-white"
+                : "bg-white text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
             ].filter(Boolean).join(" ")}
           >
             {tab.locked ? (

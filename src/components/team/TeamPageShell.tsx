@@ -14,11 +14,11 @@ import type { TeamPageData } from "@/lib/team-stats";
 import { TeamBelbinSection } from "./TeamBelbinSection";
 
 const AVATAR_COLORS = [
-  "#6366F1",
+  "var(--color-visual-gradient-indigo)",
   "#EC4899",
-  "#10B981",
-  "#F59E0B",
-  "#8B5CF6",
+  "var(--color-state-success-strong)",
+  "var(--color-state-warning-strong)",
+  "var(--color-visual-gradient-violet)",
   "#06B6D4",
 ];
 
@@ -143,7 +143,7 @@ export function TeamPageShell({
       growthPotential: 2,
       zone: !m.scores ? t("teamComp.noDataZone", loc) : zoneName,
       color,
-      textColor: "#ffffff",
+      textColor: "var(--color-neutral-white)",
     };
   });
 

@@ -343,7 +343,7 @@ export const DimensionCard = memo(function DimensionCard({
 
                             {/* Lock CTA */}
                             <div className="mt-5 flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-6 text-center">
-                              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#c17f4a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--color-accent-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="3" y="9" width="14" height="10" rx="2" />
                                 <path d="M7 9V6a3 3 0 0 1 6 0v3" />
                               </svg>

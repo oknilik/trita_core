@@ -152,11 +152,11 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
           <svg viewBox="0 0 300 300" className="h-full w-full">
             <defs>
               <linearGradient id="evalFill" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#c17f4a" stopOpacity="0.2" />
+                <stop offset="0%" stopColor="var(--color-accent-primary)" stopOpacity="0.2" />
                 <stop offset="100%" stopColor="#8b2f09" stopOpacity="0.1" />
               </linearGradient>
               <linearGradient id="evalStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#c17f4a" />
+                <stop offset="0%" stopColor="var(--color-accent-primary)" />
                 <stop offset="100%" stopColor="#8b2f09" />
               </linearGradient>
             </defs>
@@ -167,7 +167,7 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
                 key={ring}
                 d={wobblyRingPath(MAX_R * ring, ri * 31)}
                 fill="none"
-                stroke={ring === 1 ? "#d9cfc1" : "#e8e0d3"}
+                stroke={ring === 1 ? "var(--color-warm-dark)" : "var(--color-border-default)"}
                 strokeWidth={ring === 1 ? "1.2" : "0.7"}
                 strokeLinecap="round"
                 opacity="0.5"
@@ -180,7 +180,7 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
                 key={i}
                 d={wobblyAxisPath(i, 42)}
                 fill="none"
-                stroke="#e8e0d3"
+                stroke="var(--color-border-default)"
                 strokeWidth="0.7"
                 strokeLinecap="round"
                 opacity="0.5"

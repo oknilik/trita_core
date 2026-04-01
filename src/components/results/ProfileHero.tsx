@@ -6,12 +6,12 @@ import { t } from "@/lib/i18n";
 type AccessLevel = "start" | "plus";
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"],
-  ["#8a5530", "#6b3f22"],
-  ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"],
-  ["#0E7490", "#0C5E75"],
-  ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 function getAvatarColor(name: string): readonly [string, string] {
@@ -24,14 +24,14 @@ function getAvatarColor(name: string): readonly [string, string] {
 
 const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: string }> = {
   start: { label: "Free",  bg: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" },
-  plus:  { label: "Plus",  bg: "rgba(193,127,74,0.2)",   color: "#e8a96a" },
+  plus:  { label: "Plus",  bg: "rgba(193,127,74,0.2)",   color: "var(--color-accent-primary-soft)" },
 };
 
 const SELF_HERO_GRADIENT =
-  "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)";
-const SELF_HERO_PRIMARY = "#c17f4a";
+  "linear-gradient(135deg, var(--color-accent-self-strong) 0%, var(--color-accent-self-deep) 60%, var(--color-accent-self-deeper) 100%)";
+const SELF_HERO_PRIMARY = "var(--color-accent-primary)";
 const SELF_TOP_DIM_BG = "rgba(61,107,94,0.3)";
-const SELF_TOP_DIM_TEXT = "#e8f2f0";
+const SELF_TOP_DIM_TEXT = "var(--color-surface-self-accent-soft)";
 
 interface ProfileHeroProps {
   userName: string;
@@ -104,7 +104,7 @@ export function ProfileHero({
         </p>
 
         <div className="mb-2.5 flex items-start justify-between gap-3">
-          <span className="font-fraunces text-[22px] italic text-[#e8a96a]">
+          <span className="font-fraunces text-[22px] italic text-[var(--color-accent-primary-soft)]">
             {personalityType}
           </span>
           {percentile && (
@@ -141,7 +141,7 @@ export function ProfileHero({
                   {t("content.heroWatchDims", locale)}:
                 </span>
                 {watchDimensions.map((d) => (
-                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(193,127,74,0.2)", color: "#e8a96a" }}>
+                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(193,127,74,0.2)", color: "var(--color-accent-primary-soft)" }}>
                     {d}
                   </span>
                 ))}

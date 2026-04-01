@@ -15,26 +15,26 @@ const TIERS = [
   {
     key: "strong" as const,
     i18nKey: "content.roleFitStrong",
-    bg: "bg-[#e8f2f0]",
-    borderColor: "#3d6b5e",
-    labelColor: "text-[#1e3d34]",
-    pillClass: "bg-[#3d6b5e]/[0.15] text-[#3d6b5e]",
+    bg: "bg-[var(--color-surface-self-accent-soft)]",
+    borderColor: "var(--color-action-primary-bg)",
+    labelColor: "text-[var(--color-accent-self-deep)]",
+    pillClass: "bg-[var(--color-action-primary-bg)]/[0.15] text-[var(--color-action-primary-bg)]",
   },
   {
     key: "might" as const,
     i18nKey: "content.roleFitMaybe",
-    bg: "bg-[#fdf5ee]",
-    borderColor: "#c17f4a",
-    labelColor: "text-[#8a5530]",
-    pillClass: "bg-[#c17f4a]/[0.12] text-[#8a5530]",
+    bg: "bg-[var(--color-surface-highlight-warm)]",
+    borderColor: "var(--color-accent-primary)",
+    labelColor: "text-[var(--color-accent-primary-strong)]",
+    pillClass: "bg-[var(--color-accent-primary)]/[0.12] text-[var(--color-accent-primary-strong)]",
   },
   {
     key: "prep" as const,
     i18nKey: "content.roleFitPrep",
-    bg: "bg-[#f2ede6]",
-    borderColor: "#8a8a9a",
-    labelColor: "text-[#8a8a9a]",
-    pillClass: "bg-[#8a8a9a]/[0.1] text-[#8a8a9a]",
+    bg: "bg-[var(--color-surface-subtle)]",
+    borderColor: "var(--color-text-muted)",
+    labelColor: "text-[var(--color-text-muted)]",
+    pillClass: "bg-[var(--color-text-muted)]/[0.1] text-[var(--color-text-muted)]",
   },
 ];
 
@@ -61,8 +61,8 @@ export function RoleFitSection({
   return (
     <div className="py-8">
       <div className="mb-4 flex items-center gap-2.5">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
-        <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
+        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+        <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
           {t("results.roleFitEyebrow", locale)}
         </p>
       </div>
@@ -84,7 +84,7 @@ export function RoleFitSection({
               >
                 {t(tier.i18nKey, locale)}
               </p>
-              <p className="mb-2.5 text-[13px] leading-relaxed text-[#4a4a5e]">
+              <p className="mb-2.5 text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
                 {text}
               </p>
               {tierRoles.length > 0 && (

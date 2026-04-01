@@ -30,14 +30,14 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
           {headlineBefore}
-          <em className="not-italic italic text-[#5a8f7f]">{headlineEm}</em>
+          <em className="not-italic italic text-[var(--color-accent-self)]">{headlineEm}</em>
         </h2>
         <p className="mb-9 text-base leading-relaxed text-ink-body">{sub}</p>
         <Link
           href={ctaHref}
           className={[
             "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
-            isSelf ? "bg-[#c17f4a] hover:bg-[#9a6538]" : "bg-[#3d6b5e] hover:bg-[#2d5a4e]",
+            isSelf ? "bg-[var(--color-accent-primary)] hover:bg-[var(--color-bronze-dark)]" : "bg-[var(--color-action-primary-bg)] hover:bg-[var(--color-sage-dark)]",
           ].join(" ")}
         >
           {cta}

@@ -30,11 +30,11 @@ const ZONE_LABELS_HU: Record<string, string> = {
 };
 
 const DIM_COLORS: Record<string, string> = {
-  H: "#6366F1",
+  H: "var(--color-visual-gradient-indigo)",
   E: "#EC4899",
-  X: "#F59E0B",
-  A: "#10B981",
-  C: "#8B5CF6",
+  X: "var(--color-state-warning-strong)",
+  A: "var(--color-state-success-strong)",
+  C: "var(--color-visual-gradient-violet)",
   O: "#06B6D4",
 };
 
@@ -142,7 +142,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
                 key={v}
                 className="h-2 w-2 rounded-full"
                 style={{
-                  background: v <= member.skillLevel ? "#3d6b5e" : "#e8e0d3",
+                  background: v <= member.skillLevel ? "var(--color-action-primary-bg)" : "var(--color-border-default)",
                 }}
               />
             ))}
@@ -156,7 +156,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
                 key={v}
                 className="h-2 w-2 rounded-full"
                 style={{
-                  background: v <= member.growthPotential ? "#10B981" : "#e8e0d3",
+                  background: v <= member.growthPotential ? "var(--color-state-success-strong)" : "var(--color-border-default)",
                 }}
               />
             ))}

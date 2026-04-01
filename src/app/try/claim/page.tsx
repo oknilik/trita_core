@@ -75,7 +75,7 @@ export default function TryClaimPage() {
             setError(null);
             claimed.current = false;
           }}
-          className="rounded-lg bg-[#c17f4a] px-6 py-3 text-sm font-semibold text-white"
+          className="rounded-lg bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-white"
         >
           {t("tryClaim.retryCta", locale)}
         </button>
@@ -85,8 +85,8 @@ export default function TryClaimPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-cream">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#c17f4a] border-t-transparent" />
-      <p className="mt-4 text-sm text-[#8a8a9a]">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent-primary)] border-t-transparent" />
+      <p className="mt-4 text-sm text-[var(--color-text-muted)]">
         {t("tryClaim.loading", locale)}
       </p>
     </div>

@@ -28,12 +28,12 @@ const OPTIONS: { value: AuthIntent; label: string; labelEn: string; desc: string
 
 const ICONS: Record<AuthIntent, (active: boolean) => React.ReactNode> = {
   explore: (active) => (
-    <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5 shrink-0" stroke={active ? "#3d6b5e" : "#8a8a9a"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5 shrink-0" stroke={active ? "var(--color-action-primary-bg)" : "var(--color-text-muted)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="8" cy="5" r="3" /><path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
     </svg>
   ),
   team: (active) => (
-    <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5 shrink-0" stroke={active ? "#3d6b5e" : "#8a8a9a"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 16 16" fill="none" className="h-5 w-5 shrink-0" stroke={active ? "var(--color-action-primary-bg)" : "var(--color-text-muted)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="6" cy="5" r="2.5" /><circle cx="11" cy="5" r="2.5" /><path d="M1 14c0-2.5 2-4.5 5-4.5 1 0 1.8.2 2.5.6M8.5 14c0-2.5 2-4.5 5-4.5" />
     </svg>
   ),
@@ -52,20 +52,20 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
             className={[
               "flex flex-col items-start rounded-xl border-[1.5px] px-4 py-3 text-left transition-all",
               active
-                ? "border-[#3d6b5e]/30 bg-[#e8f2f0]/40 shadow-sm"
-                : "border-[#e8e0d3] bg-white hover:border-[#ddd5c8] hover:bg-[#f2ede6]",
+                ? "border-[var(--color-action-primary-bg)]/30 bg-[var(--color-surface-self-accent-soft)]/40 shadow-sm"
+                : "border-[var(--color-border-default)] bg-white hover:border-[var(--color-border-soft)] hover:bg-[var(--color-surface-subtle)]",
             ].join(" ")}
           >
             <span className="mb-1.5">{ICONS[opt.value](active)}</span>
             <span
               className={[
                 "text-sm font-semibold",
-                active ? "text-[#3d6b5e]" : "text-[#4a4a5e]",
+                active ? "text-[var(--color-action-primary-bg)]" : "text-[var(--color-text-secondary)]",
               ].join(" ")}
             >
               {opt.label}
             </span>
-            <span className="mt-0.5 text-[11px] leading-snug text-[#8a8a9a]">
+            <span className="mt-0.5 text-[11px] leading-snug text-[var(--color-text-muted)]">
               {opt.desc}
             </span>
           </button>

@@ -110,7 +110,7 @@ export default async function SharedProfilePage({
         {/* Header */}
         <div
           className="relative overflow-hidden rounded-2xl"
-          style={{ background: "linear-gradient(135deg, #2a5244 0%, #1e3d34 60%, #1a2e28 100%)" }}
+          style={{ background: "linear-gradient(135deg, var(--color-accent-self-strong) 0%, var(--color-accent-self-deep) 60%, var(--color-accent-self-deeper) 100%)" }}
         >
           <div className="px-9 pb-7 pt-8">
             <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
@@ -124,7 +124,7 @@ export default async function SharedProfilePage({
               {t("results.heroAssessment", locale)} {formattedDate}
             </p>
             {personalityType && (
-              <p className="font-fraunces text-[18px] italic text-[#e8a96a]">
+              <p className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)]">
                 {personalityType}
               </p>
             )}
@@ -132,18 +132,18 @@ export default async function SharedProfilePage({
         </div>
 
         {/* Dimension strip */}
-        <div className="w-full overflow-hidden rounded-xl border border-[#e8e0d3] bg-white">
+        <div className="w-full overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-white">
           <div className="grid grid-cols-6">
             {dimensions.map((dim, i) => {
               const tier = getDimensionTier(dim.score);
-              const tierColor = tier === "high" ? "#3d6b5e" : tier === "mid" ? "#c17f4a" : "#8a8a9a";
-              const tierBg = tier === "high" ? "#e8f2f0" : tier === "mid" ? "#fdf5ee" : "#f2ede6";
+              const tierColor = tier === "high" ? "var(--color-action-primary-bg)" : tier === "mid" ? "var(--color-accent-primary)" : "var(--color-text-muted)";
+              const tierBg = tier === "high" ? "var(--color-surface-self-accent-soft)" : tier === "mid" ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)";
               return (
                 <div
                   key={dim.code}
-                  className={`px-2.5 py-4 text-center ${i < dimensions.length - 1 ? "border-r border-[#e8e0d3]" : ""}`}
+                  className={`px-2.5 py-4 text-center ${i < dimensions.length - 1 ? "border-r border-[var(--color-border-default)]" : ""}`}
                 >
-                  <p className="mb-1.5 text-[10px] text-[#8a8a9a]">
+                  <p className="mb-1.5 text-[10px] text-[var(--color-text-muted)]">
                     {dim.label.length > 10 ? dim.label.slice(0, 10) + "." : dim.label}
                   </p>
                   <p className="mb-1.5 font-fraunces text-[22px] leading-none" style={{ color: tierColor }}>
@@ -165,9 +165,9 @@ export default async function SharedProfilePage({
         <div className="flex flex-col gap-3">
           {dimensions.map((dim) => {
             const tier = getDimensionTier(dim.score);
-            const tierColor = tier === "high" ? "#3d6b5e" : tier === "mid" ? "#c17f4a" : "#8a8a9a";
-            const cardBg = tier === "high" ? "#e8f2f0" : tier === "mid" ? "#fdf5ee" : "white";
-            const borderColor = tier === "high" ? "rgba(61,107,94,0.22)" : tier === "mid" ? "rgba(193,127,74,0.18)" : "#e8e0d3";
+            const tierColor = tier === "high" ? "var(--color-action-primary-bg)" : tier === "mid" ? "var(--color-accent-primary)" : "var(--color-text-muted)";
+            const cardBg = tier === "high" ? "var(--color-surface-self-accent-soft)" : tier === "mid" ? "var(--color-surface-highlight-warm)" : "white";
+            const borderColor = tier === "high" ? "rgba(61,107,94,0.22)" : tier === "mid" ? "rgba(193,127,74,0.18)" : "var(--color-border-default)";
             return (
               <div
                 key={dim.code}
@@ -177,11 +177,11 @@ export default async function SharedProfilePage({
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: tierColor }} />
-                    <span className="text-sm font-medium text-[#1a1a2e]">{dim.label}</span>
+                    <span className="text-sm font-medium text-[var(--color-text-primary)]">{dim.label}</span>
                   </div>
                   <span className="font-fraunces text-base" style={{ color: tierColor }}>{dim.score}%</span>
                 </div>
-                <p className="text-[13px] font-medium leading-[1.7] text-[#1a1a2e]">{dim.insight}</p>
+                <p className="text-[13px] font-medium leading-[1.7] text-[var(--color-text-primary)]">{dim.insight}</p>
               </div>
             );
           })}
@@ -190,7 +190,7 @@ export default async function SharedProfilePage({
         {/* Belbin */}
         {belbinTop3.length > 0 && (
           <div>
-            <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[#8a8a9a]">
+            <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
               {t("results.belbinHeading", locale)}
             </p>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
@@ -202,22 +202,22 @@ export default async function SharedProfilePage({
                     key={role}
                     className={`flex flex-col rounded-xl ${
                       isPrimary
-                        ? "border-2 border-[#3d6b5e] bg-[#e8f2f0] p-[22px]"
-                        : "border-[1.5px] border-[#e8e0d3] bg-white p-[18px]"
+                        ? "border-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] p-[22px]"
+                        : "border-[1.5px] border-[var(--color-border-default)] bg-white p-[18px]"
                     }`}
                   >
                     <span
                       className={`mb-2 self-start rounded px-[9px] py-[3px] text-[8px] font-bold uppercase tracking-wide ${
                         isPrimary
-                          ? "bg-[#3d6b5e] text-white"
+                          ? "bg-[var(--color-action-primary-bg)] text-white"
                           : idx === 1
-                            ? "bg-[#fdf5ee] text-[#8a5530]"
-                            : "bg-[#f2ede6] text-[#8a8a9a]"
+                            ? "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]"
+                            : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
                       }`}
                     >
                       {rankLabels[idx][locale]} · {score}%
                     </span>
-                    <p className={`font-fraunces text-[#1a1a2e] ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
+                    <p className={`font-fraunces text-[var(--color-text-primary)] ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
                       {roleMeta[locale]}
                     </p>
                   </div>
@@ -229,10 +229,10 @@ export default async function SharedProfilePage({
 
         {/* Footer */}
         <div className="text-center">
-          <p className="font-fraunces text-sm text-[#8a8a9a]">
-            <span style={{ color: "#3d6b5e" }}>t</span>rit<span style={{ color: "#c17f4a" }}>a</span>
+          <p className="font-fraunces text-sm text-[var(--color-text-muted)]">
+            <span style={{ color: "var(--color-action-primary-bg)" }}>t</span>rit<span style={{ color: "var(--color-accent-primary)" }}>a</span>
           </p>
-          <p className="mt-1 text-[11px] text-[#8a8a9a]">
+          <p className="mt-1 text-[11px] text-[var(--color-text-muted)]">
             {t("results.platformTagline", locale)}
           </p>
         </div>

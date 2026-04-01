@@ -509,14 +509,14 @@ export function AssessmentClient({
 
   // Still resolving localStorage — show blank screen to avoid intro flash
   if (showIntro === null) {
-    return <div className="min-h-dvh bg-[#f7f4ef]" />;
+    return <div className="min-h-dvh bg-[var(--color-surface-canvas)]" />;
   }
 
   if (showIntro) {
     const steps = [
-      { num: 1, style: "bg-[#3d6b5e] text-white", title: t("assessment.introStep1", locale), sub: t("assessment.introStep1Sub", locale) },
-      { num: 2, style: "bg-[#fdf5ee] text-[#8a5530]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
-      { num: 3, style: "bg-[#f2ede6] text-[#8a8a9a]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
+      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-white", title: t("assessment.introStep1", locale), sub: t("assessment.introStep1Sub", locale) },
+      { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
+      { num: 3, style: "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
     ]
     const previewDims = [
       { name: t("landing.selfDim1", locale), val: 79 },
@@ -524,11 +524,11 @@ export function AssessmentClient({
       { name: t("landing.selfDim3", locale), val: 34 },
     ]
     return (
-      <div className="min-h-dvh bg-[#f7f4ef]">
+      <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
         {/* Minimal nav */}
         <nav className="flex items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[#1a1a2e]">
-            <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
+          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
           </Link>
         </nav>
 
@@ -539,31 +539,31 @@ export function AssessmentClient({
             {/* Left column */}
             <div>
               <div className="mb-2.5 flex items-center gap-2">
-                <div className="h-px w-4 bg-[#c17f4a]" />
-                <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
+                <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
+                <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
-              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-[#1a1a2e] lg:text-[28px]">
+              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-[var(--color-text-primary)] lg:text-[28px]">
                 {t("assessment.introHeadline1", locale)}
-                <em className="not-italic text-[#c17f4a]">{t("assessment.introHeadlineEm", locale)}</em>
+                <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
-              <p className="mb-5 max-w-[360px] text-sm leading-relaxed text-[#8a8a9a]">
+              <p className="mb-5 max-w-[360px] text-sm leading-relaxed text-[var(--color-text-muted)]">
                 {t("assessment.introSub", locale)}
               </p>
-              <div className="mb-5 rounded-r-lg border-l-2 border-[#3d6b5e] bg-[#e8f2f0] px-3.5 py-3">
-                <p className="text-xs leading-relaxed text-[#1e3d34]">
+              <div className="mb-5 rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-3.5 py-3">
+                <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)]">
                   {t("assessment.introInfo", locale)}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[10px] bg-[#3d6b5e] px-8 py-3.5 text-[15px] font-semibold text-white shadow-md shadow-[#3d6b5e]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-[15px] font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
               >
                 {t("assessment.introStart", locale)}
               </button>
-              <p className="mt-2.5 text-center text-[11px] text-[#8a8a9a] lg:text-left">
+              <p className="mt-2.5 text-center text-[11px] text-[var(--color-text-muted)] lg:text-left">
                 {t("assessment.introMeta", locale)}
               </p>
             </div>
@@ -571,21 +571,21 @@ export function AssessmentClient({
             {/* Right column */}
             <div className="flex flex-col gap-2.5">
               {steps.map((s) => (
-                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[#e8e0d3] bg-white p-3 px-3.5">
+                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-white p-3 px-3.5">
                   <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-[13px] font-medium ${s.style}`}>
                     {s.num}
                   </div>
                   <div>
-                    <p className="text-[13px] font-semibold text-[#1a1a2e]">{s.title}</p>
-                    <p className="text-[11px] leading-[1.4] text-[#8a8a9a]">{s.sub}</p>
+                    <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">{s.title}</p>
+                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{s.sub}</p>
                   </div>
                 </div>
               ))}
-              <div className="mt-1 rounded-[10px] bg-gradient-to-br from-[#2a5244] via-[#1e3d34] to-[#1a2e28] px-4 py-3.5">
+              <div className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-4 py-3.5">
                 <p className="text-[6px] uppercase tracking-[1.5px] text-white/20">
                   {t("assessment.introPreviewEyebrow", locale)}
                 </p>
-                <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[#e8a96a]">
+                <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[var(--color-accent-primary-soft)]">
                   {t("landing.selfPanelType", locale)}
                 </p>
                 <div className="mt-2 flex gap-1.5">
@@ -609,19 +609,19 @@ export function AssessmentClient({
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[#f7f4ef]">
+    <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
       {/* ═══ MINIMAL NAV ═══ */}
       <nav className="flex shrink-0 items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[#1a1a2e]">
-          <span className="text-[#3d6b5e]">t</span>rit<span className="text-[#c17f4a]">a</span>
+        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+          <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
         <div className="flex items-center gap-3">
-          <span className="text-[10px] text-[#3d6b5e]">
+          <span className="text-[10px] text-[var(--color-action-primary-bg)]">
             ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
           </span>
           <a
             href={guestMode ? "/" : "/profile/results"}
-            className="rounded-md border border-[#e8e0d3] bg-white px-3 py-1.5 text-[11px] text-[#8a8a9a] transition-all hover:bg-[#f2ede6] hover:text-[#4a4a5e]"
+            className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
           >
             {t('assessment.continueLater', locale)}
           </a>
@@ -629,12 +629,12 @@ export function AssessmentClient({
       </nav>
 
       {/* ═══ PROGRESS BAR — single row ═══ */}
-      <div className="flex shrink-0 items-center gap-4 border-b border-[#e8e0d3] px-7 py-2.5">
+      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--color-border-default)] px-7 py-2.5">
         <div className="flex items-baseline gap-1">
-          <span className="font-fraunces text-base font-medium text-[#1a1a2e]">{questionIndex + 1}</span>
-          <span className="text-xs text-[#8a8a9a]">/ {totalQuestions}</span>
+          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
+          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
         </div>
-        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[#e8e0d3]">
+        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
           {/* Answered reach — light sage: up to last answered question position */}
           {(() => {
             let lastAnsweredIdx = -1;
@@ -644,18 +644,18 @@ export function AssessmentClient({
             const answeredReach = Math.max(lastAnsweredIdx + 1, questionIndex + 1);
             return (
               <div
-                className="absolute left-0 top-0 h-full rounded-full bg-[#3d6b5e]/30 transition-all duration-300"
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
                 style={{ width: `${(answeredReach / totalQuestions) * 100}%` }}
               />
             );
           })()}
           {/* Current position — solid sage */}
           <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[#3d6b5e] transition-all duration-300"
+            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
             style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
           />
         </div>
-        <span className="whitespace-nowrap text-[11px] text-[#8a8a9a]">
+        <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
           {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
         </span>
       </div>
@@ -679,13 +679,13 @@ export function AssessmentClient({
               {checkpointActive ? (
                 <div className="flex flex-col items-center text-center">
                   {/* Sage pill badge */}
-                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[#e8f2f0] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[1px] text-[#3d6b5e]">
-                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3d6b5e]" />
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-action-primary-bg)]">
+                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
                     {t('assessment.journeyMilestone', locale)}
                   </div>
 
                   {/* Title */}
-                  <h2 className="mb-3 font-fraunces text-[24px] leading-[1.25] text-[#1a1a2e] lg:text-[26px]">
+                  <h2 className="mb-3 font-fraunces text-[24px] leading-[1.25] text-[var(--color-text-primary)] lg:text-[26px]">
                     {t(
                       checkpoint === 25 ? 'assessment.journeyMilestone25'
                       : checkpoint === 50 ? 'assessment.journeyMilestone50'
@@ -695,7 +695,7 @@ export function AssessmentClient({
                   </h2>
 
                   {/* Subtitle */}
-                  <p className="mb-5 max-w-[400px] text-[14px] leading-relaxed text-[#8a8a9a]">
+                  <p className="mb-5 max-w-[400px] text-[14px] leading-relaxed text-[var(--color-text-muted)]">
                     {t(
                       checkpoint === 25 ? 'assessment.journeyMilestone25Sub'
                       : checkpoint === 50 ? 'assessment.journeyMilestone50Sub'
@@ -713,10 +713,10 @@ export function AssessmentClient({
                           key={i}
                           className={`h-2 flex-1 rounded-full ${
                             i < filledSegments
-                              ? "bg-[#3d6b5e]"
+                              ? "bg-[var(--color-action-primary-bg)]"
                               : i === filledSegments
-                                ? "bg-[#c17f4a]"
-                                : "bg-[#e8e0d3]"
+                                ? "bg-[var(--color-accent-primary)]"
+                                : "bg-[var(--color-border-default)]"
                           }`}
                         />
                       );
@@ -724,9 +724,9 @@ export function AssessmentClient({
                   </div>
 
                   {/* Tip callout */}
-                  <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[#e8f2f0] px-4 py-3 text-left">
+                  <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
                     <span className="mt-px shrink-0 text-sm">💡</span>
-                    <p className="text-[13px] leading-[1.45] text-[#1e3d34]">
+                    <p className="text-[13px] leading-[1.45] text-[var(--color-accent-self-deep)]">
                       {t(
                         checkpoint === 25 ? 'assessment.journeyMilestone25Hint'
                         : checkpoint === 50 ? 'assessment.journeyMilestone50Hint'
@@ -751,20 +751,20 @@ export function AssessmentClient({
         </div>
 
         {/* Hint */}
-        <p className="mt-6 text-xs italic text-[#8a8a9a]">
+        <p className="mt-6 text-xs italic text-[var(--color-text-muted)]">
           {t('assessment.helpLikert', locale)}
         </p>
       </div>
 
       {/* ═══ FOOTER BAR ═══ */}
-      <div className="flex shrink-0 items-center justify-between border-t border-[#e8e0d3] bg-white px-7 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)]">
+      <div className="flex shrink-0 items-center justify-between border-t border-[var(--color-border-default)] bg-white px-7 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)]">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
           className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-[13px] transition-all ${
             canGoPrev
-              ? "border-[#e8e0d3] bg-white text-[#4a4a5e] hover:bg-[#f2ede6]"
+              ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
           }`}
         >
@@ -774,7 +774,7 @@ export function AssessmentClient({
         <label className="flex cursor-pointer items-center gap-2">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
-              autoAdvance ? "border-[#3d6b5e] bg-[#3d6b5e]" : "border-[#e8e0d3] bg-white"
+              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
             }`}
           >
             {autoAdvance && <span className="text-[8px] leading-none text-white">✓</span>}
@@ -785,7 +785,7 @@ export function AssessmentClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          <span className="text-[11px] text-[#8a8a9a]">{t('assessment.autoAdvance', locale)}</span>
+          <span className="text-[11px] text-[var(--color-text-muted)]">{t('assessment.autoAdvance', locale)}</span>
         </label>
 
         {!showEvaluateButton ? (
@@ -795,8 +795,8 @@ export function AssessmentClient({
             disabled={!canProceed || isSavingDraft}
             className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
               canProceed && !isSavingDraft
-                ? "bg-[#3d6b5e] text-white shadow-sm shadow-[#3d6b5e]/15 hover:brightness-[1.06]"
-                : "bg-[#3d6b5e]/30 text-white/50"
+                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >
             {t('assessment.nextCta', locale)} →
@@ -808,8 +808,8 @@ export function AssessmentClient({
             disabled={isSubmitting}
             className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
               !isSubmitting
-                ? "bg-[#3d6b5e] text-white shadow-sm shadow-[#3d6b5e]/15 hover:brightness-[1.06]"
-                : "bg-[#3d6b5e]/30 text-white/50"
+                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >
             {t('assessment.evaluateCta', locale)}

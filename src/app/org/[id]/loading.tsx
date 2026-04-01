@@ -70,14 +70,14 @@ export default function OrgLoading() {
           </div>
         </section>
 
-        <section className="rounded-[28px] bg-[#1e3d34] p-8 md:p-12 animate-pulse">
+        <section className="rounded-[28px] bg-[var(--color-accent-self-deep)] p-8 md:p-12 animate-pulse">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
               <div className="h-8 w-64 rounded bg-white/20" />
               <div className="mt-3 h-4 w-full max-w-[420px] rounded bg-white/15" />
             </div>
             <div className="flex gap-2">
-              <div className="h-11 w-36 rounded-[10px] bg-[#c17f4a]/80" />
+              <div className="h-11 w-36 rounded-[10px] bg-[var(--color-accent-primary)]/80" />
               <div className="h-11 w-36 rounded-[10px] bg-white/15" />
             </div>
           </div>

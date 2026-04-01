@@ -42,7 +42,7 @@ export function BottomCTA() {
       </div>
       <Link
         href="/try"
-        className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-white px-9 text-[15px] font-bold text-[#c17f4a] shadow-md shadow-black/10 transition-all hover:-translate-y-px hover:shadow-lg"
+        className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-white px-9 text-[15px] font-bold text-[var(--color-accent-primary)] shadow-md shadow-black/10 transition-all hover:-translate-y-px hover:shadow-lg"
       >
         {hasDraft ? c.ctaContinue : c.cta}
       </Link>

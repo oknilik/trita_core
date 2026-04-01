@@ -88,7 +88,7 @@ export function TierCard({
                 <span className="block text-[12px] font-semibold">
                   {billingLabelAnnual ?? "Éves"}
                 </span>
-                <span className="mt-0.5 block text-[10px] text-[#9a6538]">
+                <span className="mt-0.5 block text-[10px] text-[var(--color-bronze-dark)]">
                   {billingHintAnnual ?? "Better value"}
                 </span>
               </button>
@@ -104,7 +104,7 @@ export function TierCard({
                 <span className="block text-[12px] font-semibold">
                   {billingLabelMonthly ?? "Havi"}
                 </span>
-                <span className="mt-0.5 block text-[10px] text-[#8a8a9a]">
+                <span className="mt-0.5 block text-[10px] text-[var(--color-text-muted)]">
                   {billingHintMonthly ?? "Flexible"}
                 </span>
               </button>
@@ -121,7 +121,7 @@ export function TierCard({
           <span className="ml-2 text-sm text-muted">{priceSub}</span>
         )}
         {billing === "monthly" && billingSavingsNote && (
-          <p className="mt-1.5 text-[11px] text-[#9a6538]">
+          <p className="mt-1.5 text-[11px] text-[var(--color-bronze-dark)]">
             {billingSavingsNote}
           </p>
         )}

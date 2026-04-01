@@ -27,9 +27,9 @@ export async function generateMetadata(): Promise<Metadata> {
 function getTagStyle(tag: string): string {
   const sage = ["Bevezetés", "Csapatdinamika", "Önértékelés", "Fluktuáció", "Introduction", "Team dynamics", "Self-assessment", "Turnover"];
   const bronze = ["Change management", "HEXACO", "Toborzás", "Recruitment", "Pszichometria", "Psychometrics"];
-  if (sage.includes(tag)) return "bg-[#e8f2f0] text-[#1e3d34]";
-  if (bronze.includes(tag)) return "bg-[#fdf5ee] text-[#8a5530]";
-  return "bg-[#f2ede6] text-[#8a8a9a]";
+  if (sage.includes(tag)) return "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]";
+  if (bronze.includes(tag)) return "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]";
+  return "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]";
 }
 
 export default async function BlogListPage() {
@@ -39,23 +39,23 @@ export default async function BlogListPage() {
   const rest = posts.slice(1);
 
   return (
-    <main className="min-h-dvh bg-[#f7f4ef]">
+    <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
       {/* Hero */}
       <section className="px-5 pb-8 pt-10 lg:px-14 lg:pt-12">
         <div className="mx-auto max-w-4xl">
           <div className="mb-2.5 flex items-center gap-2">
-            <div className="h-px w-4 bg-[#c17f4a]" />
-            <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">
+            <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
+            <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
               Blog
             </span>
           </div>
-          <h1 className="mb-2 font-fraunces text-[24px] leading-[1.12] tracking-tight text-[#1a1a2e] lg:text-[34px]">
+          <h1 className="mb-2 font-fraunces text-[24px] leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-[34px]">
             {t("blog.heroTitle", locale)}
-            <em className="not-italic text-[#c17f4a]">
+            <em className="not-italic text-[var(--color-accent-primary)]">
               {t("blog.heroTitleEm", locale)}
             </em>
           </h1>
-          <p className="max-w-[540px] text-sm leading-relaxed text-[#8a8a9a]">
+          <p className="max-w-[540px] text-sm leading-relaxed text-[var(--color-text-muted)]">
             {t("blog.heroSub", locale)}
           </p>
         </div>
@@ -64,7 +64,7 @@ export default async function BlogListPage() {
       <section className="px-5 pb-12 lg:px-14">
         <div className="mx-auto max-w-4xl">
           {posts.length === 0 ? (
-            <p className="text-sm text-[#8a8a9a]">
+            <p className="text-sm text-[var(--color-text-muted)]">
               {t("blog.empty", locale)}
             </p>
           ) : (
@@ -73,12 +73,12 @@ export default async function BlogListPage() {
               {featured && (
                 <Link
                   href={`/blog/${featured.slug}`}
-                  className="group mb-7 grid grid-cols-1 overflow-hidden rounded-xl border-[1.5px] border-[#e8e0d3] transition-shadow hover:shadow-lg hover:shadow-black/[0.03] lg:grid-cols-[1fr_1.3fr]"
+                  className="group mb-7 grid grid-cols-1 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] transition-shadow hover:shadow-lg hover:shadow-black/[0.03] lg:grid-cols-[1fr_1.3fr]"
                 >
                   {/* Left: bronze visual with key stat */}
-                  <div className="relative flex min-h-[160px] flex-col items-center justify-center bg-gradient-to-br from-[#c17f4a] via-[#a86b3d] to-[#8a5530] p-8 lg:min-h-[200px]">
+                  <div className="relative flex min-h-[160px] flex-col items-center justify-center bg-gradient-to-br from-[var(--color-accent-primary)] via-[var(--color-accent-primary-mid)] to-[var(--color-accent-primary-strong)] p-8 lg:min-h-[200px]">
                     <div className="pointer-events-none absolute -right-10 -top-10 h-[120px] w-[120px] rounded-full bg-white/[0.04]" />
-                    <span className="mb-4 inline-flex rounded-full bg-[#3d6b5e]/30 px-2.5 py-[3px] text-[7px] font-semibold uppercase tracking-[1px] text-[#c8e8de]">
+                    <span className="mb-4 inline-flex rounded-full bg-[var(--color-action-primary-bg)]/30 px-2.5 py-[3px] text-[7px] font-semibold uppercase tracking-[1px] text-[var(--color-text-success-soft)]">
                       {t("blog.featured", locale)}
                     </span>
                     <p className="font-fraunces text-[40px] leading-none text-white/80">
@@ -101,7 +101,7 @@ export default async function BlogListPage() {
                           <span
                             key={tag}
                             className={`rounded-full px-2 py-[2.5px] text-[8px] font-medium uppercase tracking-wide ${
-                              i === 0 ? "bg-[#e8f2f0] text-[#1e3d34]" : "bg-[#fdf5ee] text-[#8a5530]"
+                              i === 0 ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]" : "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]"
                             }`}
                           >
                             {tag}
@@ -109,20 +109,20 @@ export default async function BlogListPage() {
                         ))}
                       </div>
                     )}
-                    <h2 className="mb-1.5 font-fraunces text-xl leading-[1.2] text-[#1a1a2e]">
+                    <h2 className="mb-1.5 font-fraunces text-xl leading-[1.2] text-[var(--color-text-primary)]">
                       {featured.title}
                     </h2>
-                    <p className="mb-2.5 text-[13px] leading-relaxed text-[#4a4a5e]">
+                    <p className="mb-2.5 text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
                       {featured.description}
                     </p>
-                    <div className="flex items-center gap-2 text-[11px] text-[#8a8a9a]">
+                    <div className="flex items-center gap-2 text-[11px] text-[var(--color-text-muted)]">
                       <span>
                         {new Date(featured.publishedAt).toLocaleDateString(
                           locale === "en" ? "en-GB" : "hu-HU",
                           { year: "numeric", month: "long", day: "numeric" },
                         )}
                       </span>
-                      <span className="h-[3px] w-[3px] rounded-full bg-[#e8e0d3]" />
+                      <span className="h-[3px] w-[3px] rounded-full bg-[var(--color-border-default)]" />
                       <span>{featured.readingTime}</span>
                     </div>
                   </div>
@@ -134,7 +134,7 @@ export default async function BlogListPage() {
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="group block border-t border-[#e8e0d3] py-[22px] transition-all hover:pl-2"
+                  className="group block border-t border-[var(--color-border-default)] py-[22px] transition-all hover:pl-2"
                 >
                   {post.tags.length > 0 && (
                     <div className="mb-[5px] flex flex-wrap gap-1">
@@ -148,21 +148,21 @@ export default async function BlogListPage() {
                       ))}
                     </div>
                   )}
-                  <h2 className="mb-1 font-fraunces text-lg leading-[1.25] text-[#1a1a2e]">
+                  <h2 className="mb-1 font-fraunces text-lg leading-[1.25] text-[var(--color-text-primary)]">
                     {post.title}
                   </h2>
-                  <p className="max-w-[640px] text-[13px] leading-relaxed text-[#4a4a5e]">
+                  <p className="max-w-[640px] text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
                     {post.description}
                   </p>
                   <div className="mt-2 flex items-center gap-3">
-                    <span className="text-[11px] text-[#8a8a9a]">
+                    <span className="text-[11px] text-[var(--color-text-muted)]">
                       {new Date(post.publishedAt).toLocaleDateString(
                         locale === "en" ? "en-GB" : "hu-HU",
                         { year: "numeric", month: "long", day: "numeric" },
                       )}{" "}
                       · {post.readingTime}
                     </span>
-                    <span className="text-[11px] font-medium text-[#3d6b5e] opacity-0 transition-opacity group-hover:opacity-100">
+                    <span className="text-[11px] font-medium text-[var(--color-action-primary-bg)] opacity-0 transition-opacity group-hover:opacity-100">
                       {t("blog.readCta", locale)}
                     </span>
                   </div>

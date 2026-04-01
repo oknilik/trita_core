@@ -10,12 +10,12 @@ import { SUPPORTED_LOCALES, t, type Locale } from "@/lib/i18n";
 import { TritaLogo } from "@/components/TritaLogo";
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"],
-  ["#8a5530", "#6b3f22"],
-  ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"],
-  ["#0E7490", "#0C5E75"],
-  ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 function getAvatarColor(name: string): readonly [string, string] {

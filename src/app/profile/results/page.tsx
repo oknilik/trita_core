@@ -148,25 +148,25 @@ export default async function ProfileResultsPage({
     const hasDraft = journeySnapshot.state.completionSummary.self.hasDraft || Boolean(draft);
     if (hasDraft) {
       return (
-        <main className="-mx-4 -my-8 flex min-h-[80dvh] flex-col items-center justify-center bg-[#f7f4ef] px-6 py-16 text-center">
+        <main className="-mx-4 -my-8 flex min-h-[80dvh] flex-col items-center justify-center bg-[var(--color-surface-canvas)] px-6 py-16 text-center">
           <div className="w-full max-w-sm">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e8f2f0]">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3d6b5e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface-self-accent-soft)]">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-action-primary-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
               </svg>
             </div>
-            <h1 className="font-fraunces text-2xl tracking-tight text-[#1a1a2e] md:text-3xl">
+            <h1 className="font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)] md:text-3xl">
               {t("results.draftInProgressTitle", locale)}
             </h1>
-            <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[#8a8a9a]">
+            <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[var(--color-text-muted)]">
               {t("results.draftInProgressBody", locale)}
             </p>
-            <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[#8a8a9a]">
+            <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[var(--color-text-muted)]">
               {t("results.draftInProgressHint", locale)}
             </p>
             <a
               href="/assessment"
-              className="mt-8 inline-flex min-h-[52px] items-center rounded-xl bg-[#3d6b5e] px-8 text-[15px] font-semibold text-white shadow-md shadow-[#3d6b5e]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
+              className="mt-8 inline-flex min-h-[52px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 text-[15px] font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
             >
               {t("results.draftInProgressCta", locale)}
             </a>

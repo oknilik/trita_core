@@ -121,12 +121,12 @@ export function Picker({
             className="relative z-50 w-full max-w-lg overflow-hidden rounded-t-2xl bg-[#faf9f6] pb-[env(safe-area-inset-bottom)] md:mb-0 md:rounded-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#e8e0d3] px-4 py-3">
+            <div className="flex items-center justify-between border-b border-[var(--color-border-default)] px-4 py-3">
               <h3 className="font-dm-sans text-sm font-semibold text-ink">{title}</h3>
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-ink-body/40 transition hover:bg-[#f2ede6] hover:text-ink"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-ink-body/40 transition hover:bg-[var(--color-surface-subtle)] hover:text-ink"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -141,14 +141,14 @@ export function Picker({
 
             {/* Search */}
             {searchable && (
-              <div className="border-b border-[#e8e0d3] px-4 py-2">
+              <div className="border-b border-[var(--color-border-default)] px-4 py-2">
                 <input
                   ref={searchRef}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="min-h-[44px] w-full rounded-lg border border-[#e8e0d3] bg-white px-3 text-sm text-ink focus:border-[#c17f4a] focus:outline-none"
+                  className="min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-sm text-ink focus:border-[var(--color-accent-primary)] focus:outline-none"
                 />
               </div>
             )}
@@ -173,8 +173,8 @@ export function Picker({
                       onClick={() => handleSelect(option.value)}
                       className={`flex min-h-[44px] w-full items-center rounded-xl px-3 text-sm font-medium transition ${
                         isSelected
-                          ? "bg-[#c17f4a]/10 text-[#c17f4a]"
-                          : "text-ink-body hover:bg-[#f2ede6]"
+                          ? "bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)]"
+                          : "text-ink-body hover:bg-[var(--color-surface-subtle)]"
                       }`}
                     >
                       {option.label}
@@ -183,7 +183,7 @@ export function Picker({
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 20 20"
                           fill="currentColor"
-                          className="ml-auto h-5 w-5 text-[#c17f4a]"
+                          className="ml-auto h-5 w-5 text-[var(--color-accent-primary)]"
                         >
                           <path
                             fillRule="evenodd"

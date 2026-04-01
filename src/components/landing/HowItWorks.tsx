@@ -11,7 +11,7 @@ const fadeUp = {
 
 export function HowItWorks({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
-  const strokeColor = mode === "self" ? "#c17f4a" : "#3d6b5e";
+  const strokeColor = mode === "self" ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
 
   const steps = mode === "self"
     ? [
@@ -31,9 +31,9 @@ export function HowItWorks({ mode }: { mode: SiteMode }) {
         <div className="mb-8 text-center md:mb-16">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
             {mode === "self" ? (
-              <>{t("landing.howSelfTitleBefore", locale)}<em className="not-italic italic text-[#5a8f7f]">{t("landing.howSelfTitleEm", locale)}</em></>
+              <>{t("landing.howSelfTitleBefore", locale)}<em className="not-italic italic text-[var(--color-accent-self)]">{t("landing.howSelfTitleEm", locale)}</em></>
             ) : (
-              <>{t("landing.howTeamTitleBefore", locale)}<em className="not-italic italic text-[#5a8f7f]">{t("landing.howTeamTitleEm", locale)}</em></>
+              <>{t("landing.howTeamTitleBefore", locale)}<em className="not-italic italic text-[var(--color-accent-self)]">{t("landing.howTeamTitleEm", locale)}</em></>
             )}
           </h2>
         </div>

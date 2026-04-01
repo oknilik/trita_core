@@ -11,7 +11,7 @@ const fadeUp = {
 
 export function Features({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
-  const accentColor = mode === "self" ? "#c17f4a" : "#3d6b5e";
+  const accentColor = mode === "self" ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
 
   const features = mode === "self"
     ? [
@@ -31,7 +31,7 @@ export function Features({ mode }: { mode: SiteMode }) {
         <div className="mb-8 text-center md:mb-16">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
             {t("landing.featuresTitleBefore", locale)}
-            <em className="not-italic italic text-[#5a8f7f]">{t("landing.featuresTitleEm", locale)}</em>
+            <em className="not-italic italic text-[var(--color-accent-self)]">{t("landing.featuresTitleEm", locale)}</em>
           </h2>
         </div>
 
@@ -46,8 +46,8 @@ export function Features({ mode }: { mode: SiteMode }) {
               transition={{ delay: i * 0.08 } as Parameters<typeof motion.div>[0]["transition"]}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className={[
-                "flex flex-col rounded-2xl border border-[#e8e0d3] p-7 shadow-sm transition-shadow hover:shadow-[0_12px_32px_rgba(26,26,46,0.06)]",
-                f.featured ? "bg-[#f2ede6]" : "bg-white",
+                "flex flex-col rounded-2xl border border-[var(--color-border-default)] p-7 shadow-sm transition-shadow hover:shadow-[0_12px_32px_rgba(26,26,46,0.06)]",
+                f.featured ? "bg-[var(--color-surface-subtle)]" : "bg-white",
                 i === 0 ? "lg:col-span-1" : "",
               ].join(" ")}
             >

@@ -42,10 +42,10 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               className={[
                 "flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-[15px] font-medium transition-all",
                 isSelected
-                  ? "border-[#3d6b5e] bg-[#3d6b5e] text-white shadow-md shadow-[#3d6b5e]/25"
+                  ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/25"
                   : isHovered
-                    ? "border-[#5a8f7f] bg-[#e8f2f0] text-[#3d6b5e]"
-                    : "border-[#e8e0d3] bg-white text-[#8a8a9a] hover:border-[#5a8f7f] hover:bg-[#e8f2f0] hover:text-[#3d6b5e]",
+                    ? "border-[var(--color-accent-self)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
+                    : "border-[var(--color-border-default)] bg-white text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]",
               ].join(" ")}
               animate={{ scale: isSelected ? 1.08 : 1 }}
               transition={{ duration: 0.15 }}
@@ -59,9 +59,9 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
 
       {/* End labels with center dot */}
       <div className="mb-4 flex w-[320px] items-center justify-between">
-        <span className="text-xs font-medium text-[#8a8a9a]">{t('assessment.endLeft', locale)}</span>
-        <span className="text-[10px] text-[#e8e0d3]">·</span>
-        <span className="text-xs font-medium text-[#8a8a9a]">{t('assessment.endRight', locale)}</span>
+        <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endLeft', locale)}</span>
+        <span className="text-[10px] text-[var(--color-border-default)]">·</span>
+        <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endRight', locale)}</span>
       </div>
 
       {/* Hover/selected label */}
@@ -71,7 +71,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
             key={`${displayMark}-${hoveredMark !== null ? 'hover' : 'selected'}`}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center text-xs font-medium text-[#4a4a5e]"
+            className="text-center text-xs font-medium text-[var(--color-text-secondary)]"
             style={{ opacity: hoveredMark !== null && hoveredMark !== value ? 0.6 : 1 }}
           >
             {labels[displayMark - 1]}

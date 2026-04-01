@@ -28,7 +28,7 @@ const CONTENT: Record<
     title: (
       <>
         Lásd tisztábban,{" "}
-        <span className="text-[#e8a96a]">hogyan működsz.</span>
+        <span className="text-[var(--color-accent-primary-soft)]">hogyan működsz.</span>
       </>
     ),
     subtitle: "Hat dimenzión keresztül, tudományos alapokon.",
@@ -48,7 +48,7 @@ const CONTENT: Record<
     title: (
       <>
         Értsd meg a csapatod{" "}
-        <span className="text-[#e8a96a]">dinamikáját.</span>
+        <span className="text-[var(--color-accent-primary-soft)]">dinamikáját.</span>
       </>
     ),
     subtitle: "Adatvezérelt csapatépítés, személyiségprofil alapján.",
@@ -68,7 +68,7 @@ const CONTENT: Record<
     title: (
       <>
         Adj visszajelzést —{" "}
-        <span className="text-[#e8a96a]">névtelenül, őszintén.</span>
+        <span className="text-[var(--color-accent-primary-soft)]">névtelenül, őszintén.</span>
       </>
     ),
     subtitle: "Az observer értékelés segít a meghívónak megismerni, hogyan látják mások.",
@@ -78,7 +78,7 @@ const CONTENT: Record<
     title: (
       <>
         Folytasd ott,{" "}
-        <span className="text-[#e8a96a]">ahol abbahagytad.</span>
+        <span className="text-[var(--color-accent-primary-soft)]">ahol abbahagytad.</span>
       </>
     ),
     subtitle: "Az eredményeid, visszajelzéseid és csapatod állapota várja.",
@@ -88,7 +88,7 @@ const CONTENT: Record<
     title: (
       <>
         Már majdnem{" "}
-        <span className="text-[#e8a96a]">kész vagy.</span>
+        <span className="text-[var(--color-accent-primary-soft)]">kész vagy.</span>
       </>
     ),
     subtitle: "Ellenőrizd az e-mail fiókodat és add meg a kódot.",
@@ -99,12 +99,12 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
   const c = context ? CONTENT[context] : null;
 
   return (
-    <div className="hidden w-[280px] shrink-0 flex-col justify-between bg-gradient-to-br from-[#1a1a2e] to-[#2a2740] px-8 py-10 lg:flex">
+    <div className="hidden w-[280px] shrink-0 flex-col justify-between bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] px-8 py-10 lg:flex">
       <div>
         {c ? (
           <>
             {/* Tag */}
-            <p className="mb-3 text-[9px] font-medium uppercase tracking-[2px] text-[#e8a96a]">
+            <p className="mb-3 text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary-soft)]">
               {c.tag}
             </p>
 
@@ -129,7 +129,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
                 <ul className="space-y-2">
                   {c.valueItems.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-[12px] leading-snug text-white/60">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#e8a96a]" />
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent-primary-soft)]" />
                       {item}
                     </li>
                   ))}
@@ -145,7 +145,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
             </p>
             <h2 className="mb-2 font-fraunces text-[22px] leading-snug text-white">
               Válaszd ki, mire{" "}
-              <span className="text-[#e8a96a]">használnád.</span>
+              <span className="text-[var(--color-accent-primary-soft)]">használnád.</span>
             </h2>
             <p className="text-[13px] leading-relaxed text-white/40">
               A választásod alapján személyre szabjuk a regisztrációt és az első lépéseket.
@@ -159,7 +159,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
         <div className="mt-8 flex gap-5 border-t border-white/[0.06] pt-5">
           {c.stats.map((s) => (
             <div key={s.label} className="flex flex-col">
-              <span className="font-fraunces text-2xl font-black text-[#e8a96a]">
+              <span className="font-fraunces text-2xl font-black text-[var(--color-accent-primary-soft)]">
                 {s.value}
               </span>
               <span className="text-[11px] leading-snug text-white/30">

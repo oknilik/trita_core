@@ -66,10 +66,10 @@ function AccordionItem({
         className={`flex w-full items-center gap-3 px-[18px] py-3.5 text-left transition-colors ${colors.cardBg} ${colors.cardHover}`}
       >
         <div className={`h-2 w-2 shrink-0 rounded-full ${colors.dot}`} />
-        <span className="flex-1 text-sm font-medium text-[#1a1a2e]">
+        <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
           {name}
         </span>
-        <div className="h-1 w-[120px] shrink-0 overflow-hidden rounded-sm bg-[#e8e0d3]">
+        <div className="h-1 w-[120px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
           <div
             className={`h-full rounded-sm ${colors.fill}`}
             style={{ width: `${value}%` }}
@@ -81,7 +81,7 @@ function AccordionItem({
           {value}%
         </span>
         <span
-          className={`shrink-0 text-[11px] text-[#8a8a9a] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`shrink-0 text-[11px] text-[var(--color-text-muted)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         >
           ▾
         </span>
@@ -97,23 +97,23 @@ function AccordionItem({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-[#ddd5c8] bg-[#f2ede6] p-[18px] pb-5">
+            <div className="border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-[18px] pb-5">
               {/* 1. Mit jelent ez rólad? */}
-              <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+              <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                 {t("content.accPersonal", locale)}
               </p>
-              <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
+              <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
                 {insight}
               </p>
 
               {/* 2. Munkahelyi helyzetekben — csak Plus+ */}
               {!showUpsell && description && (
                 <>
-                  <div className="my-3 h-px bg-[#e8e0d3]" />
-                  <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+                  <div className="my-3 h-px bg-[var(--color-border-default)]" />
+                  <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accWorkplace", locale)}
                   </p>
-                  <p className="text-[13px] leading-[1.7] text-[#4a4a5e]">
+                  <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
                     {description}
                   </p>
                 </>
@@ -122,8 +122,8 @@ function AccordionItem({
               {/* 3. Részletes bontás — alskálák, vizuálisan leválasztva */}
               {hasFacetData && (
                 <>
-                  <div className="my-3 h-px bg-[#e8e0d3]" />
-                  <p className="mb-2 text-[9px] font-bold uppercase tracking-wide text-[#8a8a9a]">
+                  <div className="my-3 h-px bg-[var(--color-border-default)]" />
+                  <p className="mb-2 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accFacetDetail", locale)}
                   </p>
                   <div className="rounded-lg bg-white/60 p-3">
@@ -134,12 +134,12 @@ function AccordionItem({
                         return (
                           <div
                             key={f.code}
-                            className="flex items-center gap-2.5 rounded-[10px] border border-[#ddd5c8] bg-white px-3.5 py-3"
+                            className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-white px-3.5 py-3"
                           >
-                            <span className="flex-1 text-xs font-medium text-[#1a1a2e]">
+                            <span className="flex-1 text-xs font-medium text-[var(--color-text-primary)]">
                               {f.label}
                             </span>
-                            <div className="h-1 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[#e8e0d3]">
+                            <div className="h-1 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                               <div
                                 className={`h-full rounded-sm ${fColors.fill}`}
                                 style={{ width: `${f.score}%` }}
@@ -160,8 +160,8 @@ function AccordionItem({
 
               {/* Upsell teaser — Self Start only */}
               {showUpsell && facetNames.length > 0 && (
-                <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[#1a1a2e] px-4 py-3">
-                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[#c17f4a]/[0.12] font-fraunces text-sm font-medium text-[#e8a96a]">
+                <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-text-primary)] px-4 py-3">
+                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[var(--color-accent-primary)]/[0.12] font-fraunces text-sm font-medium text-[var(--color-accent-primary-soft)]">
                     +{facetNames.length}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -174,7 +174,7 @@ function AccordionItem({
                   </div>
                   <button
                     type="button"
-                    className="shrink-0 rounded-lg bg-[#c17f4a] px-4 py-[7px] text-[10px] font-semibold text-white transition hover:-translate-y-px hover:brightness-110"
+                    className="shrink-0 rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[10px] font-semibold text-white transition hover:-translate-y-px hover:brightness-110"
                   >
                     {t("results.facetUnlock", locale)}
                   </button>
@@ -197,13 +197,13 @@ export function DimensionAccordion({
 
   return (
     <section>
-      <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
+      <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
         {t("results.dimSectionEyebrow", locale)}
       </p>
-      <h2 className="mt-1.5 font-fraunces text-[22px] tracking-tight text-[#1a1a2e]">
+      <h2 className="mt-1.5 font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
         {t("results.dimSectionTitle", locale)}
       </h2>
-      <p className="mb-6 mt-2 max-w-[540px] text-[13px] leading-relaxed text-[#8a8a9a]">
+      <p className="mb-6 mt-2 max-w-[540px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
         {t("results.dimSectionDesc", locale)}
       </p>
 

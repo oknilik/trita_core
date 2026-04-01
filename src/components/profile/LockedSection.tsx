@@ -68,7 +68,7 @@ export function LockedSection({
               height="20"
               viewBox="0 0 20 20"
               fill="none"
-              stroke="#c17f4a"
+              stroke="var(--color-accent-primary)"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"

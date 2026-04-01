@@ -373,8 +373,8 @@ export default async function AdminPage({
                   rows={invitationStats.byStatus.map(
                     (item: { status: string; _count: { id: number } }) => {
                       const statusColors: Record<string, string> = {
-                        COMPLETED: "#3d6b5e",
-                        PENDING: "#c17f4a",
+                        COMPLETED: "var(--color-action-primary-bg)",
+                        PENDING: "var(--color-accent-primary)",
                       };
                       const emailCount =
                         item.status === "PENDING"
@@ -398,7 +398,7 @@ export default async function AdminPage({
                           emailCount !== null
                             ? `Email: ${emailCount} | Link: ${linkCount}`
                             : undefined,
-                        color: statusColors[item.status] ?? "#6366F1",
+                        color: statusColors[item.status] ?? "var(--color-visual-gradient-indigo)",
                       };
                     }
                   )}

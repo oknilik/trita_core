@@ -12,12 +12,12 @@ import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 
 const AVATAR_COLORS = [
-  ["#2a5244", "#1e3d34"],
-  ["#8a5530", "#6b3f22"],
-  ["#4a4a5e", "#33334a"],
-  ["#6366F1", "#4F46E5"],
-  ["#0E7490", "#0C5E75"],
-  ["#9333EA", "#7C22CB"],
+  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
+  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
+  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
+  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
+  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
+  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
 ] as const;
 
 function getAvatarColor(name: string): readonly [string, string] {
@@ -119,14 +119,14 @@ export default function ProfilePage() {
 
   if (!isLoaded || (isSignedIn && !hasLoadedDemographics)) {
     return (
-      <div className="min-h-dvh bg-[#f7f4ef]">
+      <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
         <div className="mx-auto max-w-[640px] px-5 py-10">
           <div className="animate-pulse">
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-full bg-[#e8e0d3]" />
-              <div><div className="h-5 w-40 rounded bg-[#e8e0d3]" /><div className="mt-2 h-3 w-52 rounded bg-[#e8e0d3]" /></div>
+              <div className="h-14 w-14 rounded-full bg-[var(--color-border-default)]" />
+              <div><div className="h-5 w-40 rounded bg-[var(--color-border-default)]" /><div className="mt-2 h-3 w-52 rounded bg-[var(--color-border-default)]" /></div>
             </div>
-            <div className="mt-8 h-60 rounded-xl bg-[#e8e0d3]" />
+            <div className="mt-8 h-60 rounded-xl bg-[var(--color-border-default)]" />
           </div>
         </div>
       </div>
@@ -205,27 +205,27 @@ export default function ProfilePage() {
   };
 
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>
-    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-[13px] text-[#1a1a2e] outline-none transition-all ${
+    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-[13px] text-[var(--color-text-primary)] outline-none transition-all ${
       touched && value !== "" && !valid
         ? "border-rose-300 bg-rose-50/50"
-        : "border-[#e8e0d3] bg-white focus:border-[#3d6b5e] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+        : "border-[var(--color-border-default)] bg-white focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
     } ${invalidFieldFlash === field ? "ring-2 ring-rose-300" : ""}`;
 
   const pillClass = (active: boolean) =>
     `min-h-[44px] rounded-full border-[1.5px] px-[18px] py-2 text-xs transition-all ${
       active
-        ? "border-[#3d6b5e] bg-[#3d6b5e] text-white shadow-md shadow-[#3d6b5e]/15"
-        : "border-[#e8e0d3] bg-[#f2ede6] text-[#8a8a9a] hover:border-[#5a8f7f] hover:bg-[#e8f2f0] hover:text-[#3d6b5e]"
+        ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/15"
+        : "border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]"
     }`;
 
   const planLabel = accessLevel === "self_plus" ? "Plus" : "Free";
 
   return (
-    <div className="min-h-dvh bg-[#f7f4ef]">
+    <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
       <div className="mx-auto max-w-[640px] px-5 pb-12 lg:px-0">
 
         {/* ═══ HERO ═══ */}
-        <div className="border-b border-[#e8e0d3] py-7">
+        <div className="border-b border-[var(--color-border-default)] py-7">
           <div className="mb-2.5 flex items-center gap-4">
             <div
               className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-fraunces text-[22px] font-medium text-white shadow-md"
@@ -234,32 +234,32 @@ export default function ProfilePage() {
               {initials}
             </div>
             <div className="min-w-0">
-              <h1 className="truncate font-fraunces text-xl text-[#1a1a2e]">{displayName}</h1>
-              <p className="text-xs text-[#8a8a9a]">{email}</p>
+              <h1 className="truncate font-fraunces text-xl text-[var(--color-text-primary)]">{displayName}</h1>
+              <p className="text-xs text-[var(--color-text-muted)]">{email}</p>
             </div>
           </div>
-          <p className="text-xs leading-relaxed text-[#8a8a9a]">
+          <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
             {t("profile.heroSubtitle", locale)}
           </p>
           <div className="mt-3 flex flex-wrap gap-4">
-            <span className="flex items-center gap-[5px] text-[11px] text-[#8a8a9a]">
-              <span className="h-[5px] w-[5px] rounded-full bg-[#3d6b5e]" />
+            <span className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
+              <span className="h-[5px] w-[5px] rounded-full bg-[var(--color-action-primary-bg)]" />
               {planLabel}
             </span>
-            <span className="flex items-center gap-[5px] text-[11px] text-[#8a8a9a]">
-              <span className="h-[5px] w-[5px] rounded-full bg-[#c17f4a]" />
+            <span className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
+              <span className="h-[5px] w-[5px] rounded-full bg-[var(--color-accent-primary)]" />
               {locale === "hu" ? "Magyar" : "English"}
             </span>
           </div>
         </div>
 
         {/* ═══ RÓLAD ═══ */}
-        <div className="border-b border-[#e8e0d3] py-6">
-          <h2 className="text-sm font-semibold text-[#1a1a2e]">{t("profile.sectionAbout", locale)}</h2>
-          <p className="mb-4 text-xs text-[#8a8a9a]">{t("profile.sectionAboutSub", locale)}</p>
+        <div className="border-b border-[var(--color-border-default)] py-6">
+          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.sectionAbout", locale)}</h2>
+          <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
 
           <div className="mb-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 text-[11px] font-medium text-[#4a4a5e]">
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.usernameLabel", locale)}
               <input
                 ref={usernameInputRef}
@@ -267,9 +267,9 @@ export default function ProfilePage() {
                 placeholder={t("onboarding.usernamePlaceholder", locale)} minLength={2} maxLength={20}
                 className={inputClass("username", usernameTouched, usernameValid, username)}
               />
-              <span className="text-[9px] text-[#8a8a9a]">{t("onboarding.usernameHint", locale)}</span>
+              <span className="text-[9px] text-[var(--color-text-muted)]">{t("onboarding.usernameHint", locale)}</span>
             </label>
-            <label className="flex flex-col gap-1 text-[11px] font-medium text-[#4a4a5e]">
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.birthYearLabel", locale)}
               <input
                 ref={birthYearInputRef}
@@ -279,12 +279,12 @@ export default function ProfilePage() {
                 placeholder={t("onboarding.birthYearPlaceholder", locale)} min={minBirthYear} max={maxBirthYear}
                 className={`${inputClass("birthYear", birthYearTouched, birthYearValid, birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
               />
-              <span className="text-[9px] text-[#8a8a9a]">{minBirthYear}–{maxBirthYear}</span>
+              <span className="text-[9px] text-[var(--color-text-muted)]">{minBirthYear}–{maxBirthYear}</span>
             </label>
           </div>
 
           <div className={`mt-5 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-rose-50/60 ring-2 ring-rose-300" : ""}`}>
-            <span className="text-[11px] font-medium text-[#4a4a5e]">{t("onboarding.genderLabel", locale)}</span>
+            <span className="text-[11px] font-medium text-[var(--color-text-secondary)]">{t("onboarding.genderLabel", locale)}</span>
             <div className="mt-1 flex flex-wrap gap-[5px]">
               {GENDER_OPTIONS.map((opt, idx) => (
                 <button key={opt.value} ref={idx === 0 ? genderFirstButtonRef : undefined} type="button" onClick={() => setGender(opt.value)} className={pillClass(gender === opt.value)}>
@@ -300,9 +300,9 @@ export default function ProfilePage() {
         </div>
 
         {/* ═══ MEGJELENÉS ÉS NYELV ═══ */}
-        <div className="border-b border-[#e8e0d3] py-6">
-          <h2 className="text-sm font-semibold text-[#1a1a2e]">{t("profile.sectionLanguage", locale)}</h2>
-          <p className="mb-4 text-xs text-[#8a8a9a]">{t("profile.sectionLanguageSub", locale)}</p>
+        <div className="border-b border-[var(--color-border-default)] py-6">
+          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.sectionLanguage", locale)}</h2>
+          <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionLanguageSub", locale)}</p>
           <div className="flex gap-[5px]">
             {SUPPORTED_LOCALES.map((loc) => (
               <button key={loc} type="button" onClick={() => setSelectedLocale(loc)} className={pillClass(selectedLocale === loc)}>
@@ -313,9 +313,9 @@ export default function ProfilePage() {
         </div>
 
         {/* ═══ SAVE ROW ═══ */}
-        <div className="flex items-center justify-between border-b border-[#e8e0d3] py-4">
-          <div className="flex items-center gap-[5px] text-[11px] text-[#8a8a9a]">
-            <span className={`h-1.5 w-1.5 rounded-full ${isDirty ? "bg-[#c17f4a]" : "bg-[#3d6b5e]"}`} />
+        <div className="flex items-center justify-between border-b border-[var(--color-border-default)] py-4">
+          <div className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
+            <span className={`h-1.5 w-1.5 rounded-full ${isDirty ? "bg-[var(--color-accent-primary)]" : "bg-[var(--color-action-primary-bg)]"}`} />
             {isDirty
               ? t("profile.saveUnsaved", locale)
               : saveState === "saved"
@@ -324,7 +324,7 @@ export default function ProfilePage() {
           </div>
           <button
             type="button" onClick={handleSave} disabled={!canSubmitDemo}
-            className={`rounded-lg bg-[#3d6b5e] px-6 py-2.5 text-[13px] font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
+            className={`rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-[13px] font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
           >
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </button>
@@ -340,10 +340,10 @@ export default function ProfilePage() {
             {/* Sign out */}
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[13px] text-[#4a4a5e]">{t("profile.logoutTitle", locale)}</p>
-                <p className="text-[10px] text-[#8a8a9a]">{t("profile.logoutSub", locale)}</p>
+                <p className="text-[13px] text-[var(--color-text-secondary)]">{t("profile.logoutTitle", locale)}</p>
+                <p className="text-[10px] text-[var(--color-text-muted)]">{t("profile.logoutSub", locale)}</p>
               </div>
-              <button type="button" onClick={() => signOut()} className="shrink-0 rounded-lg border border-[#e8e0d3] bg-white px-[18px] py-[7px] text-xs text-[#8a8a9a] transition-all hover:bg-[#f2ede6] hover:text-[#4a4a5e]">
+              <button type="button" onClick={() => signOut()} className="shrink-0 rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
                 {t("profile.logoutButton", locale)}
               </button>
             </div>
@@ -352,7 +352,7 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[13px] text-[#a93226]">{t("profile.deleteTitle", locale)}</p>
-                <p className="text-[10px] text-[#8a8a9a]">{t("profile.deleteBody", locale)}</p>
+                <p className="text-[10px] text-[var(--color-text-muted)]">{t("profile.deleteBody", locale)}</p>
               </div>
               <button type="button" onClick={() => setShowDeleteModal(true)} disabled={isDeleting}
                 className="shrink-0 rounded-lg border border-[#e8b4b4] bg-[#fdf0f0] px-[18px] py-[7px] text-xs text-[#c0392b] transition-all hover:border-[#d4a0a0] hover:bg-[#f5dede] disabled:opacity-50"

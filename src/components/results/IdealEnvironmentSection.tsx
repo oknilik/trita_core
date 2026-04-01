@@ -55,7 +55,7 @@ function getPosition(value: string): number {
 }
 
 function getMarkerColor(pos: number): string {
-  return pos >= 65 ? "bg-[#3d6b5e]" : pos <= 35 ? "bg-[#8a8a9a]" : "bg-[#c17f4a]";
+  return pos >= 65 ? "bg-[var(--color-action-primary-bg)]" : pos <= 35 ? "bg-[var(--color-text-muted)]" : "bg-[var(--color-accent-primary)]";
 }
 
 function getDescription(value: string): string {
@@ -73,8 +73,8 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
   return (
     <div className="py-8">
       <div className="mb-4 flex items-center gap-2.5">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#3d6b5e]" />
-        <p className="text-[10px] uppercase tracking-widest text-[#8a8a9a]">
+        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+        <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
           {t("results.envEyebrow", locale)}
         </p>
       </div>
@@ -89,32 +89,32 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
           return (
             <div
               key={item.label}
-              className="flex flex-col gap-2 rounded-[10px] border border-[#ddd5c8] bg-white px-4 py-3 sm:flex-row sm:items-center sm:gap-4"
+              className="flex flex-col gap-2 rounded-[10px] border border-[var(--color-border-soft)] bg-white px-4 py-3 sm:flex-row sm:items-center sm:gap-4"
             >
-              <span className="text-xs font-medium text-[#1a1a2e] sm:w-[130px] sm:shrink-0">
+              <span className="text-xs font-medium text-[var(--color-text-primary)] sm:w-[130px] sm:shrink-0">
                 {item.label}
               </span>
               <div className="min-w-0 flex-1">
                 {/* Track container — marker centered on track via flex */}
                 <div className="flex items-center" style={{ height: 10 }}>
-                  <div className="relative h-1 w-full rounded-sm bg-[#e8e0d3]">
+                  <div className="relative h-1 w-full rounded-sm bg-[var(--color-border-default)]">
                     <div
                       className="absolute top-1/2 h-2.5 w-2.5 rounded-full border-2 border-white shadow-sm"
                       style={{
                         left: `clamp(5px, ${pos}%, calc(100% - 5px))`,
                         transform: "translate(-50%, -50%)",
-                        backgroundColor: pos >= 65 ? "#3d6b5e" : pos <= 35 ? "#8a8a9a" : "#c17f4a",
+                        backgroundColor: pos >= 65 ? "var(--color-action-primary-bg)" : pos <= 35 ? "var(--color-text-muted)" : "var(--color-accent-primary)",
                       }}
                     />
                   </div>
                 </div>
                 <div className="mt-1 flex justify-between">
-                  <span className="text-[9px] text-[#8a8a9a]">{poles.low}</span>
-                  <span className="text-[9px] text-[#8a8a9a]">{poles.high}</span>
+                  <span className="text-[9px] text-[var(--color-text-muted)]">{poles.low}</span>
+                  <span className="text-[9px] text-[var(--color-text-muted)]">{poles.high}</span>
                 </div>
               </div>
-              <span className="text-[11px] text-[#8a8a9a] sm:w-[180px] sm:shrink-0 sm:text-right">
-                <strong className="text-[#1a1a2e]">{getShortLabel(item.value, locale)}</strong> — {desc}
+              <span className="text-[11px] text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">
+                <strong className="text-[var(--color-text-primary)]">{getShortLabel(item.value, locale)}</strong> — {desc}
               </span>
             </div>
           );

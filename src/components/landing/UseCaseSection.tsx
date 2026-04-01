@@ -12,26 +12,26 @@ interface UseCase {
 const icons: ReactNode[] = [
   (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <circle cx="16" cy="10" r="5" stroke="#c17f4a" strokeWidth="1.5" />
-      <path d="M6 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#c17f4a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M22 8l2 2 4-4" stroke="#3d6b5e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="16" cy="10" r="5" stroke="var(--color-accent-primary)" strokeWidth="1.5" />
+      <path d="M6 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="var(--color-accent-primary)" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M22 8l2 2 4-4" stroke="var(--color-action-primary-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <circle cx="10" cy="16" r="5" stroke="#c17f4a" strokeWidth="1.5" />
-      <circle cx="22" cy="16" r="5" stroke="#c17f4a" strokeWidth="1.5" />
-      <path d="M15 16h2" stroke="#c17f4a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M10 8V6M22 8V6" stroke="#3d6b5e" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="10" cy="16" r="5" stroke="var(--color-accent-primary)" strokeWidth="1.5" />
+      <circle cx="22" cy="16" r="5" stroke="var(--color-accent-primary)" strokeWidth="1.5" />
+      <path d="M15 16h2" stroke="var(--color-accent-primary)" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10 8V6M22 8V6" stroke="var(--color-action-primary-bg)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   ),
   (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="6" y="6" width="8" height="8" rx="1" stroke="#c17f4a" strokeWidth="1.5" />
-      <rect x="18" y="6" width="8" height="8" rx="1" stroke="#c17f4a" strokeWidth="1.5" />
-      <rect x="6" y="18" width="8" height="8" rx="1" stroke="#c17f4a" strokeWidth="1.5" />
-      <rect x="18" y="18" width="8" height="8" rx="1" stroke="#3d6b5e" strokeWidth="1.5" />
-      <path d="M10 14v4M22 14v4M14 10h4M14 22h4" stroke="#c17f4a" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      <rect x="6" y="6" width="8" height="8" rx="1" stroke="var(--color-accent-primary)" strokeWidth="1.5" />
+      <rect x="18" y="6" width="8" height="8" rx="1" stroke="var(--color-accent-primary)" strokeWidth="1.5" />
+      <rect x="6" y="18" width="8" height="8" rx="1" stroke="var(--color-accent-primary)" strokeWidth="1.5" />
+      <rect x="18" y="18" width="8" height="8" rx="1" stroke="var(--color-action-primary-bg)" strokeWidth="1.5" />
+      <path d="M10 14v4M22 14v4M14 10h4M14 22h4" stroke="var(--color-accent-primary)" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
     </svg>
   ),
 ];

@@ -22,11 +22,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const DIM_COLORS: Record<string, string> = {
-  H: "#6366F1",
-  E: "#8B5CF6",
+  H: "var(--color-visual-gradient-indigo)",
+  E: "var(--color-visual-gradient-violet)",
   X: "#06B6D4",
-  A: "#10B981",
-  C: "#F59E0B",
+  A: "var(--color-state-success-strong)",
+  C: "var(--color-state-warning-strong)",
   O: "#EF4444",
 };
 
@@ -371,7 +371,7 @@ export default async function CandidateResultPage({
 
             {/* Team Fit */}
             <div className="rounded-xl bg-[rgba(99,102,241,0.06)] p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#6366F1]">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[var(--color-visual-gradient-indigo)]">
                 {t("hiring.teamFitEyebrow", locale)}
               </p>
               {gapAnalysis ? (() => {
@@ -535,7 +535,7 @@ export default async function CandidateResultPage({
                           <div
                             className="absolute top-0 h-2 rounded-full transition-all"
                             style={{
-                              background: g.gap > 0 ? "#3d6b5e" : "#c17f4a",
+                              background: g.gap > 0 ? "var(--color-action-primary-bg)" : "var(--color-accent-primary)",
                               opacity: 0.7,
                               left: g.gap > 0 ? "50%" : `${50 + (g.gap / 100) * 50}%`,
                               width: `${Math.abs(g.gap) / 2}%`,

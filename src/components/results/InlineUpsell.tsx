@@ -16,10 +16,10 @@ export function InlineUpsell() {
   return (
     <div
       className="mt-8 flex flex-col items-center gap-6 rounded-2xl px-8 py-7 sm:flex-row"
-      style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2a2740 100%)" }}
+      style={{ background: "linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-strong-deep) 100%)" }}
     >
       <div className="flex-1">
-        <p className="mb-1.5 text-[9px] uppercase tracking-widest text-[#e8a96a]">
+        <p className="mb-1.5 text-[9px] uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
           Plus
         </p>
         <h3 className="mb-1.5 font-fraunces text-xl leading-tight text-white">
@@ -31,7 +31,7 @@ export function InlineUpsell() {
         <div className="flex flex-wrap gap-4">
           {features.map((f) => (
             <span key={f} className="text-[11px] text-white/[0.45]">
-              <span className="font-bold text-[#5a8f7f]">✓</span> {f}
+              <span className="font-bold text-[var(--color-accent-self)]">✓</span> {f}
             </span>
           ))}
         </div>
@@ -43,7 +43,7 @@ export function InlineUpsell() {
         </span>
         <button
           type="button"
-          className="min-h-[44px] rounded-[11px] bg-[#c17f4a] px-7 py-[13px] text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-110"
+          className="min-h-[44px] rounded-[11px] bg-[var(--color-accent-primary)] px-7 py-[13px] text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-110"
         >
           {t("results.upsellBuy", locale)}
         </button>

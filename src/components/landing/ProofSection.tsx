@@ -23,7 +23,7 @@ export function ProofSection() {
         <div className="mb-8 text-center md:mb-16">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
             {t("landing.proofTitleBefore", locale)}
-            <em className="not-italic italic text-[#5a8f7f]">{t("landing.proofTitleEm", locale)}</em>
+            <em className="not-italic italic text-[var(--color-accent-self)]">{t("landing.proofTitleEm", locale)}</em>
           </h2>
         </div>
 
@@ -36,7 +36,7 @@ export function ProofSection() {
               viewport={{ once: true, margin: "-50px" }}
               variants={fadeUp}
               transition={{ delay: i * 0.1 } as Parameters<typeof motion.div>[0]["transition"]}
-              className="rounded-2xl border border-[#e8e0d3] bg-white p-7 text-center"
+              className="rounded-2xl border border-[var(--color-border-default)] bg-white p-7 text-center"
             >
               <div className="mb-4 text-3xl">{card.icon}</div>
               <h3 className="font-fraunces mb-2 text-lg text-ink">{card.title}</h3>
@@ -46,12 +46,12 @@ export function ProofSection() {
         </div>
 
         {/* Testimonial */}
-        <div className="relative mx-auto mt-10 max-w-[560px] rounded-2xl bg-[#f2ede6] p-8">
-          <span className="font-fraunces absolute left-6 top-4 text-5xl leading-none text-[#e8e0d3]">"</span>
+        <div className="relative mx-auto mt-10 max-w-[560px] rounded-2xl bg-[var(--color-surface-subtle)] p-8">
+          <span className="font-fraunces absolute left-6 top-4 text-5xl leading-none text-[var(--color-border-default)]">"</span>
           <p className="font-fraunces relative text-base italic leading-relaxed text-ink-body">
             {t("landing.proofTestimonial", locale)}
           </p>
-          <p className="mt-4 text-[11px] uppercase tracking-wide text-[#8a8a9a]">
+          <p className="mt-4 text-[11px] uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.proofTestimonialAuthor", locale)}
           </p>
         </div>

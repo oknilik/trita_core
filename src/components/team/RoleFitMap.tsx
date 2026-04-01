@@ -24,7 +24,7 @@ const ROLE_ZONES: RoleZone[] = [
   { id: "exe", labelKey: "teamComp.zoneExecutorLabel",   x: 300, y: 285, r: 50, bg: "#ede9fe", stroke: "#c4b5fd", tc: "#4c1d95", dims: ["C"] },
   { id: "ana", labelKey: "teamComp.zoneAnalyzerLabel",   x: 130, y: 285, r: 50, bg: "#fef9c3", stroke: "#fcd34d", tc: "#713f12", dims: ["H", "C"] },
   { id: "ene", labelKey: "teamComp.zoneEnergizerLabel",  x: 70,  y: 185, r: 55, bg: "#fce7f3", stroke: "#f9a8d4", tc: "#831843", dims: ["E", "X"] },
-  { id: "str", labelKey: "teamComp.zoneStrategistLabel", x: 215, y: 210, r: 42, bg: "#f5f3ef", stroke: "#e8e0d3", tc: "#8a8a9a", dims: [], missing: true },
+  { id: "str", labelKey: "teamComp.zoneStrategistLabel", x: 215, y: 210, r: 42, bg: "var(--color-surface-chip-neutral)", stroke: "var(--color-border-default)", tc: "var(--color-text-muted)", dims: [], missing: true },
 ];
 
 function getZoneForMember(hexaco: IntelligenceMember["hexaco"]): string {
@@ -39,11 +39,11 @@ function getZoneForMember(hexaco: IntelligenceMember["hexaco"]): string {
 }
 
 const DIM_COLORS: Record<string, string> = {
-  H: "#6366F1",
+  H: "var(--color-visual-gradient-indigo)",
   E: "#EC4899",
-  X: "#F59E0B",
-  A: "#10B981",
-  C: "#8B5CF6",
+  X: "var(--color-state-warning-strong)",
+  A: "var(--color-state-success-strong)",
+  C: "var(--color-visual-gradient-violet)",
   O: "#06B6D4",
 };
 
@@ -195,7 +195,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                     cy={py}
                     r={16}
                     fill={m.color}
-                    stroke={selected === m.id ? "#3d6b5e" : "white"}
+                    stroke={selected === m.id ? "var(--color-action-primary-bg)" : "white"}
                     strokeWidth={selected === m.id ? 2.5 : 2}
                   />
                   <text

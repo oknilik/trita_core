@@ -13,7 +13,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
   const { locale } = useLocale();
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-[#ddd5c8] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+    <div className="w-full overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
       <div className="grid grid-cols-3 md:grid-cols-6">
         {dimensions.map((dim, i) => {
           const tier = getDimensionTier(dim.value);
@@ -21,11 +21,11 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
           return (
             <div
               key={dim.name}
-              className={`px-2.5 py-4 text-center transition-colors hover:bg-[#f2ede6] ${
-                i < dimensions.length - 1 ? "border-r border-[#ddd5c8]" : ""
+              className={`px-2.5 py-4 text-center transition-colors hover:bg-[var(--color-surface-subtle)] ${
+                i < dimensions.length - 1 ? "border-r border-[var(--color-border-soft)]" : ""
               }`}
             >
-              <p className="mb-1.5 text-[10px] text-[#8a8a9a]">
+              <p className="mb-1.5 text-[10px] text-[var(--color-text-muted)]">
                 {dim.shortName}
               </p>
               <p
@@ -38,7 +38,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
               >
                 {getDimensionLabel(dim.value, locale)}
               </span>
-              <div className="mx-auto mt-2 h-[3px] w-4/5 overflow-hidden rounded-sm bg-[#e8e0d3]">
+              <div className="mx-auto mt-2 h-[3px] w-4/5 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                 <div
                   className={`h-full rounded-sm ${colors.fill}`}
                   style={{ width: `${dim.value}%` }}

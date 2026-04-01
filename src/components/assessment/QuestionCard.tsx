@@ -49,14 +49,14 @@ export function QuestionCard(props: QuestionCardProps) {
       >
         {format === 'likert' ? (
           <>
-            <p className="mb-8 max-w-[500px] text-center font-fraunces text-[22px] leading-[1.3] tracking-tight text-[#1a1a2e] lg:text-[24px]">
+            <p className="mb-8 max-w-[500px] text-center font-fraunces text-[22px] leading-[1.3] tracking-tight text-[var(--color-text-primary)] lg:text-[24px]">
               {props.question}
             </p>
             <SliderSelector value={props.value} onChange={props.onChange} />
           </>
         ) : (
           <>
-            <p className="mb-6 text-center font-fraunces text-lg text-[#1a1a2e]">
+            <p className="mb-6 text-center font-fraunces text-lg text-[var(--color-text-primary)]">
               {t('assessment.helpBinary', locale)}
             </p>
             <ABSelector

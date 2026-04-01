@@ -36,7 +36,7 @@ export function ObserverComparison({
             height="22"
             viewBox="0 0 22 22"
             fill="none"
-            stroke="#c17f4a"
+            stroke="var(--color-accent-primary)"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"

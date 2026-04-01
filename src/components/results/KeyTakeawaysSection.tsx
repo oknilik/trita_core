@@ -17,15 +17,15 @@ export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: Key
   return (
     <div
       className="mt-6 rounded-2xl p-6 px-7"
-      style={{ background: "linear-gradient(135deg, #1a1a2e, #2a2740)" }}
+      style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
     >
-      <p className="mb-3 text-[9px] uppercase tracking-widest" style={{ color: "#e8a96a" }}>
+      <p className="mb-3 text-[9px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
         {t("results.takeawaysEyebrow", locale)}
       </p>
       <div className="flex flex-col gap-3">
         {paragraphs.map((para, i) => (
           <div key={i} className="flex items-start gap-3">
-            <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "#3d6b5e" }} />
+            <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
             <p className="text-[13px] leading-[1.7] text-white/[0.55]">{para}</p>
           </div>
         ))}

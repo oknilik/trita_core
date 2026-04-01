@@ -14,8 +14,8 @@ export function AddOns({ locale }: { locale: Locale }) {
     <section className="border-t border-sand bg-cream px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-5xl">
         <div className="mb-2.5 flex items-center gap-2">
-          <div className="h-px w-4 bg-[#c17f4a]" />
-          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">{t("pricing.addonsEyebrow", locale)}</span>
+          <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">{t("pricing.addonsEyebrow", locale)}</span>
         </div>
         <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {t("pricing.addonsHeading", locale)}

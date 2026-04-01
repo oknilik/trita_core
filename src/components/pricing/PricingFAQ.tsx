@@ -14,11 +14,11 @@ export function PricingFAQ({ locale }: { locale: Locale }) {
   }));
 
   return (
-    <section className="border-t border-[#e8e0d3] px-6 py-12 lg:px-16 lg:py-14">
+    <section className="border-t border-[var(--color-border-default)] px-6 py-12 lg:px-16 lg:py-14">
       <div className="mx-auto max-w-3xl">
         <div className="mb-2.5 flex items-center gap-2">
-          <div className="h-px w-4 bg-[#c17f4a]" />
-          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[#c17f4a]">{t("pricing.faqEyebrow", locale)}</span>
+          <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
+          <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">{t("pricing.faqEyebrow", locale)}</span>
         </div>
         <h2 className="mt-2 font-fraunces text-3xl text-ink md:text-4xl">
           {t("pricing.faqHeading", locale)}

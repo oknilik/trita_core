@@ -14,12 +14,12 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
 
   return (
     <div className="mt-[18px] flex flex-col gap-2">
-      <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[#ddd5c8] bg-[#f2ede6] px-5 py-3.5 transition-colors hover:bg-[#e8e0d3]">
+      <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-5 py-3.5 transition-colors hover:bg-[var(--color-border-default)]">
         <span className="shrink-0 text-[15px] opacity-25">🔒</span>
-        <span className="flex-1 text-xs leading-relaxed text-[#8a8a9a]">
+        <span className="flex-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
           {t("results.lockPreviewText", locale)}
         </span>
-        <span className="shrink-0 rounded-md bg-[#fdf5ee] px-2.5 py-[3px] text-[9px] font-semibold text-[#8a5530]">
+        <span className="shrink-0 rounded-md bg-[var(--color-surface-highlight-warm)] px-2.5 py-[3px] text-[9px] font-semibold text-[var(--color-accent-primary-strong)]">
           Plus · €9
         </span>
       </div>
