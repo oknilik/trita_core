@@ -1,4 +1,4 @@
-import type { SubscriptionState, SubscriptionStatus } from "@/lib/subscription";
+import type { SubscriptionState } from "@/lib/subscription";
 
 export const CAPABILITIES = [
   "read",
@@ -64,7 +64,7 @@ export const SUBSCRIPTION_CAPABILITY_BASE_MAP: Record<
 export interface OrgCapabilityContext {
   orgRole: string | null | undefined;
   subscriptionState?: SubscriptionState | null;
-  subscriptionStatus?: SubscriptionStatus | null;
+  subscriptionStatus?: string | null;
   capabilityPolicyState?: SubscriptionCapabilityPolicyState | null;
 }
 
@@ -109,7 +109,7 @@ function normalizeOrgRole(role: string | null | undefined): OrgRoleCapabilityCon
 export function resolveSubscriptionCapabilityPolicyState(context: {
   capabilityPolicyState?: SubscriptionCapabilityPolicyState | null;
   subscriptionState?: SubscriptionState | null;
-  subscriptionStatus?: SubscriptionStatus | null;
+  subscriptionStatus?: string | null;
 }): SubscriptionCapabilityPolicyState {
   if (context.capabilityPolicyState) return context.capabilityPolicyState;
 

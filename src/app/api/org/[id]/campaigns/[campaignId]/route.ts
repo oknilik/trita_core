@@ -2,7 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can } from "@/lib/policy-engine";
 
 const patchSchema = z.object({
   status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
@@ -32,6 +33,22 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
 
   if (!membership || !campaign) return null;
   return { profileId: profile.id, role: membership.role, campaign };
+}
+
+async function resolveManageCapabilityDecision(orgId: string, role: string) {
+  const subscription = await getOrgSubscription(orgId);
+  return can(
+    {
+      isAuthenticated: true,
+      orgRole: role,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "manage",
+    {
+      subscriptionState: getSubscriptionState(subscription),
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
 }
 
 // GET /api/org/[id]/campaigns/[campaignId] — campaign detail
@@ -83,8 +100,16 @@ export async function PATCH(
 
   const ctx = await resolveContext(orgId, campaignId, userId);
   if (!ctx) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
-  if (!hasOrgRole(ctx.role, "ORG_MANAGER")) {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  const decision = await resolveManageCapabilityDecision(orgId, ctx.role);
+  if (!decision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: decision.reason,
+        upgradeHint: decision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   const body = patchSchema.safeParse(await req.json());
@@ -114,8 +139,16 @@ export async function POST(
 
   const ctx = await resolveContext(orgId, campaignId, userId);
   if (!ctx) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
-  if (!hasOrgRole(ctx.role, "ORG_MANAGER")) {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  const decision = await resolveManageCapabilityDecision(orgId, ctx.role);
+  if (!decision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: decision.reason,
+        upgradeHint: decision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   const body = addParticipantsSchema.safeParse(await req.json());

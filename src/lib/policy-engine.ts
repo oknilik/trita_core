@@ -5,7 +5,7 @@ import {
   type Capability,
   type SubscriptionCapabilityPolicyState,
 } from "@/lib/capabilities";
-import type { SubscriptionState, SubscriptionStatus } from "@/lib/subscription";
+import type { SubscriptionState } from "@/lib/subscription";
 
 export type AccessDenialReason =
   | "AUTH_REQUIRED"
@@ -56,7 +56,7 @@ export interface AccessPolicyContext {
   activeOrgId?: string | null;
   activeTeamId?: string | null;
   subscriptionState?: SubscriptionState | null;
-  subscriptionStatus?: SubscriptionStatus | null;
+  subscriptionStatus?: string | null;
   capabilityPolicyState?: SubscriptionCapabilityPolicyState | null;
 }
 

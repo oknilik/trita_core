@@ -2,7 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can } from "@/lib/policy-engine";
 
 const createSchema = z.object({
   name: z.string().min(1).max(80),
@@ -32,8 +33,31 @@ export async function POST(req: Request) {
       where: { orgId_userId: { orgId, userId: profile.id } },
       select: { role: true },
     });
-    if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+    if (!membership) {
       return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+    }
+    const subscription = await getOrgSubscription(orgId);
+    const decision = can(
+      {
+        isAuthenticated: true,
+        orgRole: membership.role,
+        membership: { hasOrgMembership: true, orgId },
+      },
+      "create",
+      {
+        subscriptionState: getSubscriptionState(subscription),
+        subscriptionStatus: subscription?.status ?? "none",
+      },
+    );
+    if (!decision.allowed) {
+      return NextResponse.json(
+        {
+          error: "CAPABILITY_DENIED",
+          reason: decision.reason,
+          upgradeHint: decision.upgradeHint?.code ?? null,
+        },
+        { status: 403 },
+      );
     }
 
     const team = await prisma.team.create({

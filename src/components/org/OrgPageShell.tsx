@@ -22,6 +22,15 @@ interface OrgPageShellProps {
   profileId: string;
   isAdmin: boolean;
   isManager: boolean;
+  canCreateTeam: boolean;
+  canInviteMembers: boolean;
+  canManageCampaigns: boolean;
+  actionGateCopy?: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+  } | null;
   isHu: boolean;
   locale: string;
   dateLocale: string;
@@ -36,6 +45,10 @@ export function OrgPageShell({
   profileId,
   isAdmin,
   isManager,
+  canCreateTeam,
+  canInviteMembers,
+  canManageCampaigns,
+  actionGateCopy = null,
   isHu,
   locale,
   dateLocale,
@@ -105,6 +118,8 @@ export function OrgPageShell({
             orgId={orgId}
             campaigns={pageData.campaigns}
             isManager={isManager}
+            canManageCampaigns={canManageCampaigns}
+            actionGateCopy={actionGateCopy}
             isHu={isHu}
           />
         )}
@@ -115,6 +130,8 @@ export function OrgPageShell({
             orgId={orgId}
             locale={locale}
             isManager={isManager}
+            canCreateTeam={canCreateTeam}
+            actionGateCopy={actionGateCopy}
             isHu={isHu}
           />
         )}
@@ -127,6 +144,8 @@ export function OrgPageShell({
             profileId={profileId}
             isManager={isManager}
             isAdmin={isAdmin}
+            canInviteMembers={canInviteMembers}
+            actionGateCopy={actionGateCopy}
             isHu={isHu}
             locale={locale}
             dateLocale={dateLocale}

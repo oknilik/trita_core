@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { SubscriptionState } from "@/lib/subscription";
 
 interface OrgSubscriptionBannerProps {
-  state: Extract<SubscriptionState, "restricted" | "frozen">;
+  state: Extract<SubscriptionState, "none" | "restricted" | "frozen">;
   locale: string;
   className?: string;
 }
@@ -17,13 +17,20 @@ export function OrgSubscriptionBanner({
   className,
 }: OrgSubscriptionBannerProps) {
   const isHu = locale !== "en";
+  const isNone = state === "none";
   const isFrozen = state === "frozen";
 
   const eyebrow = isHu ? "Előfizetés állapot" : "Subscription state";
-  const title = isFrozen
+  const title = isNone
+    ? (isHu ? "Nincs aktív szervezeti előfizetés" : "No active organization subscription")
+    : isFrozen
     ? (isHu ? "A szervezet fiókja fagyasztva van" : "This organization is frozen")
     : (isHu ? "Lejárt előfizetés: korlátozott mód" : "Expired subscription: restricted mode");
-  const description = isFrozen
+  const description = isNone
+    ? (isHu
+      ? "A szervezeti oldalak olvashatók maradnak, de új akciók és szerkesztések előfizetés nélkül nem érhetők el."
+      : "Organization pages remain readable, but create/manage actions are unavailable without an active subscription.")
+    : isFrozen
     ? (isHu
       ? "Csak minimális összegző adatok érhetők el. Részletes insightok ideiglenesen nem böngészhetők."
       : "Only minimal summary data is available. Detailed insights are temporarily hidden.")
@@ -35,7 +42,9 @@ export function OrgSubscriptionBanner({
     <section
       className={joinClasses(
         "rounded-2xl border px-5 py-4 md:px-6",
-        isFrozen
+        isNone
+          ? "border-slate-200 bg-slate-50"
+          : isFrozen
           ? "border-amber-200 bg-amber-50"
           : "border-sky-200 bg-sky-50",
         className,
@@ -44,7 +53,11 @@ export function OrgSubscriptionBanner({
       <p
         className={joinClasses(
           "font-mono text-[10px] uppercase tracking-[0.18em]",
-          isFrozen ? "text-amber-700" : "text-sky-700",
+          isNone
+            ? "text-slate-700"
+            : isFrozen
+              ? "text-amber-700"
+              : "text-sky-700",
         )}
       >
         {eyebrow}
@@ -52,7 +65,11 @@ export function OrgSubscriptionBanner({
       <h2
         className={joinClasses(
           "mt-1 font-fraunces text-xl",
-          isFrozen ? "text-amber-900" : "text-sky-900",
+          isNone
+            ? "text-slate-900"
+            : isFrozen
+              ? "text-amber-900"
+              : "text-sky-900",
         )}
       >
         {title}
@@ -60,7 +77,11 @@ export function OrgSubscriptionBanner({
       <p
         className={joinClasses(
           "mt-2 text-sm",
-          isFrozen ? "text-amber-800" : "text-sky-800",
+          isNone
+            ? "text-slate-800"
+            : isFrozen
+              ? "text-amber-800"
+              : "text-sky-800",
         )}
       >
         {description}
@@ -70,18 +91,22 @@ export function OrgSubscriptionBanner({
           href="/billing/upgrade"
           className={joinClasses(
             "inline-flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold text-white transition",
-            isFrozen
+            isNone
+              ? "bg-slate-700 hover:bg-slate-800"
+              : isFrozen
               ? "bg-amber-700 hover:bg-amber-800"
               : "bg-sky-700 hover:bg-sky-800",
           )}
         >
-          {isHu ? "Reaktiválás" : "Reactivate"}
+          {isHu ? (isNone ? "Előfizetés aktiválása" : "Reaktiválás") : (isNone ? "Activate subscription" : "Reactivate")}
         </Link>
         <Link
           href="/billing/checkout?plan=org_monthly"
           className={joinClasses(
             "inline-flex min-h-[40px] items-center rounded-lg border px-4 text-sm font-semibold transition",
-            isFrozen
+            isNone
+              ? "border-slate-300 text-slate-900 hover:bg-slate-100"
+              : isFrozen
               ? "border-amber-300 text-amber-900 hover:bg-amber-100"
               : "border-sky-300 text-sky-900 hover:bg-sky-100",
           )}
@@ -92,4 +117,3 @@ export function OrgSubscriptionBanner({
     </section>
   );
 }
-

@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -6,6 +6,8 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can } from "@/lib/policy-engine";
+import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -103,11 +105,32 @@ export default async function CampaignDetailPage({
   const isHu = locale !== "en";
   const subscription = await getOrgSubscription(orgId);
   const subscriptionState = getSubscriptionState(subscription);
-  if (subscriptionState === "none") redirect("/billing/upgrade");
+  const isManagerRole = hasOrgRole(memberRole, "ORG_MANAGER");
+  const manageDecision = can(
+    {
+      isAuthenticated: true,
+      orgRole: memberRole,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "manage",
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
   const isFrozen = subscriptionState === "frozen";
+  const isNone = subscriptionState === "none";
   const isRestricted = subscriptionState === "restricted";
-  const canManageCampaign =
-    hasOrgRole(memberRole, "ORG_MANAGER") && subscriptionState === "active";
+  const isPastDue = subscription?.status === "past_due";
+  const canManageCampaign = isManagerRole && manageDecision.allowed;
+  const manageGateCopy =
+    isManagerRole && !canManageCampaign
+      ? getCapabilityGateCopy({
+          locale,
+          reason: manageDecision.reason,
+          upgradeHintCode: manageDecision.upgradeHint?.code,
+        })
+      : null;
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
   const [campaign, orgMembers] = await Promise.all([
@@ -279,8 +302,11 @@ export default async function CampaignDetailPage({
   return (
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
-        {isRestricted ? (
-          <OrgSubscriptionBanner state="restricted" locale={locale} />
+        {isRestricted || isPastDue || isNone ? (
+          <OrgSubscriptionBanner
+            state={isNone ? "none" : "restricted"}
+            locale={locale}
+          />
         ) : null}
 
         {/* Back link */}
@@ -548,6 +574,20 @@ export default async function CampaignDetailPage({
               />
             </div>
           )}
+          {!canManageCampaign && isManagerRole && manageGateCopy ? (
+            <div className="mt-5 border-t border-sand pt-5">
+              <div className="rounded-xl border border-sand bg-cream px-4 py-4">
+                <p className="text-sm font-semibold text-ink">{manageGateCopy.title}</p>
+                <p className="mt-1 text-xs text-ink-body">{manageGateCopy.description}</p>
+                <a
+                  href={manageGateCopy.ctaHref}
+                  className="mt-3 inline-flex min-h-[36px] items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
+                >
+                  {manageGateCopy.ctaLabel}
+                </a>
+              </div>
+            </div>
+          ) : null}
         </section>
 
         {/* Status transition */}
@@ -573,6 +613,15 @@ export default async function CampaignDetailPage({
             />
           </section>
         )}
+        {!canManageCampaign && isManagerRole && manageGateCopy ? (
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              {t("org.campaign.statusEyebrow", locale)}
+            </p>
+            <h2 className="mb-2 text-sm font-semibold text-ink">{manageGateCopy.title}</h2>
+            <p className="text-xs text-ink-body/70">{manageGateCopy.description}</p>
+          </section>
+        ) : null}
 
       </main>
     </div>

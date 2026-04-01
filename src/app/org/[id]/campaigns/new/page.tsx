@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -6,6 +6,8 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can } from "@/lib/policy-engine";
+import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 
@@ -26,11 +28,29 @@ export default async function NewCampaignPage({
   if (!org) notFound();
   const subscription = await getOrgSubscription(orgId);
   const subscriptionState = getSubscriptionState(subscription);
-  if (subscriptionState === "none") redirect("/billing/upgrade");
 
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   if (!isManager) notFound();
-  const isReadOnly = subscriptionState === "restricted" || subscriptionState === "frozen";
+  const createDecision = can(
+    {
+      isAuthenticated: true,
+      orgRole: memberRole,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "launchCampaign",
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
+  const isReadOnly = !createDecision.allowed;
+  const isFrozen = subscriptionState === "frozen";
+  const isNone = subscriptionState === "none";
+  const gateCopy = getCapabilityGateCopy({
+    locale,
+    reason: createDecision.reason,
+    upgradeHintCode: createDecision.upgradeHint?.code,
+  });
 
   const isHu = locale !== "en"; // kept for server-rendered text on this page
 
@@ -39,19 +59,21 @@ export default async function NewCampaignPage({
       <div className="min-h-dvh bg-cream">
         <main className="mx-auto w-full max-w-2xl px-4 py-10">
           <OrgSubscriptionBanner
-            state={subscriptionState === "frozen" ? "frozen" : "restricted"}
+            state={isFrozen ? "frozen" : isNone ? "none" : "restricted"}
             locale={locale}
           />
           <div className="mt-6 rounded-2xl border border-sand bg-white p-6 shadow-sm">
-            <h1 className="font-fraunces text-2xl text-ink">
-              {isHu ? "Új kampány jelenleg nem indítható" : "New campaign is currently disabled"}
-            </h1>
+            <h1 className="font-fraunces text-2xl text-ink">{gateCopy.title}</h1>
             <p className="mt-2 text-sm text-ink-body">
-              {isHu
-                ? "A kampányindítás reaktiválás után lesz újra elérhető. Addig a meglévő adatok csak olvasható módban látszanak."
-                : "Campaign creation will be available again after reactivation. Existing data remains visible in read-only mode."}
+              {gateCopy.description}
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a
+                href={gateCopy.ctaHref}
+                className="inline-flex min-h-[42px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark"
+              >
+                {gateCopy.ctaLabel}
+              </a>
               <Link
                 href={`/org/${orgId}?tab=campaigns`}
                 className="inline-flex min-h-[42px] items-center rounded-lg border border-sand px-4 text-sm font-semibold text-ink-body transition hover:bg-cream"

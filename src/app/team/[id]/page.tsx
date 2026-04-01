@@ -7,6 +7,8 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can, getAccessPolicy } from "@/lib/policy-engine";
+import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
@@ -90,11 +92,42 @@ export default async function TeamDetailPage({
   const isHu = locale !== "en";
   const subscription = team.orgId ? await getOrgSubscription(team.orgId) : null;
   const subscriptionState = getSubscriptionState(subscription);
-  if (subscriptionState === "none") redirect("/billing/upgrade");
+  const policy = getAccessPolicy(
+    {
+      isAuthenticated: true,
+      orgRole: orgMemberRole,
+      membership: { hasOrgMembership: true, orgId: team.orgId, hasTeamMembership: true, teamId },
+    },
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
+  const manageDecision = can(
+    {
+      isAuthenticated: true,
+      orgRole: orgMemberRole,
+      membership: { hasOrgMembership: true, orgId: team.orgId, hasTeamMembership: true, teamId },
+    },
+    "manage",
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
 
-  const isRestricted = subscriptionState === "restricted";
-  const isFrozen = subscriptionState === "frozen";
-  const canManageTeamActions = isOrgManager && subscriptionState === "active";
+  const isRestricted = policy.policyState === "restricted" || policy.policyState === "past_due";
+  const isNone = policy.policyState === "none";
+  const isFrozen = policy.policyState === "frozen";
+  const canManageTeamActions = isOrgManager && policy.capabilities.has("manage");
+  const manageGateCopy =
+    isOrgManager && !canManageTeamActions
+      ? getCapabilityGateCopy({
+          locale,
+          reason: manageDecision.reason,
+          upgradeHintCode: manageDecision.upgradeHint?.code,
+        })
+      : null;
 
   if (isFrozen) {
     const [memberCount, pendingInviteCount] = await Promise.all([
@@ -344,7 +377,7 @@ export default async function TeamDetailPage({
                       {t("teamDetail.heroViewPattern", locale)}
                     </Link>
                   )}
-                  {canManageTeamActions && teamData.orgId && (
+                  {canManageTeamActions && teamData.orgId ? (
                     <Link
                       href={`/org/${teamData.orgId}?tab=campaigns`}
                       className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
@@ -353,8 +386,20 @@ export default async function TeamDetailPage({
                         ? t("teamDetail.heroManageRound", locale)
                         : t("teamDetail.heroStartRound", locale)}
                     </Link>
-                  )}
+                  ) : null}
+                  {!canManageTeamActions && isOrgManager && teamData.orgId ? (
+                    <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.45]">
+                      {hasObserver
+                        ? t("teamDetail.heroManageRound", locale)
+                        : t("teamDetail.heroStartRound", locale)}
+                    </span>
+                  ) : null}
                 </div>
+                {manageGateCopy ? (
+                  <p className="mt-2 text-[12px] text-white/[0.5]">
+                    {manageGateCopy.description}
+                  </p>
+                ) : null}
               </div>
 
               <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
@@ -415,8 +460,11 @@ export default async function TeamDetailPage({
           </div>
         </section>
 
-        {isRestricted ? (
-          <OrgSubscriptionBanner state="restricted" locale={locale} />
+        {isRestricted || isNone ? (
+          <OrgSubscriptionBanner
+            state={isNone ? "none" : "restricted"}
+            locale={locale}
+          />
         ) : null}
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}

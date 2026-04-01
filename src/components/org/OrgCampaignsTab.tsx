@@ -11,6 +11,13 @@ interface OrgCampaignsTabProps {
   orgId: string;
   campaigns: CampaignWithStats[];
   isManager: boolean;
+  canManageCampaigns: boolean;
+  actionGateCopy?: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+  } | null;
   isHu: boolean;
 }
 
@@ -18,6 +25,8 @@ export function OrgCampaignsTab({
   orgId,
   campaigns: initialCampaigns,
   isManager,
+  canManageCampaigns,
+  actionGateCopy = null,
   isHu,
 }: OrgCampaignsTabProps) {
   const router = useRouter();
@@ -108,7 +117,7 @@ export function OrgCampaignsTab({
                 campaign={c}
                 orgId={orgId}
                 isHu={isHu}
-                isManager={isManager}
+                isManager={canManageCampaigns}
                 variant="active"
               />
             ))}
@@ -133,7 +142,7 @@ export function OrgCampaignsTab({
                 campaign={c}
                 orgId={orgId}
                 isHu={isHu}
-                isManager={isManager}
+                isManager={canManageCampaigns}
                 variant="draft"
               />
             ))}
@@ -142,7 +151,7 @@ export function OrgCampaignsTab({
       )}
 
       {/* New campaign CTA / Form */}
-      {isManager && (
+      {isManager && canManageCampaigns && (
         <section>
           {!showNewForm ? (
             <button
@@ -250,6 +259,29 @@ export function OrgCampaignsTab({
         </section>
       )}
 
+      {isManager && !canManageCampaigns && actionGateCopy && (
+        <section>
+          <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              {isHu ? "Kampány akciók" : "Campaign actions"}
+            </p>
+            <h2 className="font-fraunces text-xl text-ink">{actionGateCopy.title}</h2>
+            <p className="mt-2 text-sm text-ink-body">{actionGateCopy.description}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-lg bg-sand px-5 text-sm font-semibold text-muted">
+                {t("org.campaigns.newCta", loc)}
+              </span>
+              <a
+                href={actionGateCopy.ctaHref}
+                className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              >
+                {actionGateCopy.ctaLabel}
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Closed campaigns */}
       {closedCampaigns.length > 0 && (
         <section>
@@ -268,7 +300,7 @@ export function OrgCampaignsTab({
                   campaign={c}
                   orgId={orgId}
                   isHu={isHu}
-                  isManager={isManager}
+                  isManager={canManageCampaigns}
                   variant="closed"
                 />
               ))}

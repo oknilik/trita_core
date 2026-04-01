@@ -26,6 +26,13 @@ interface OrgMembersTabProps {
   profileId: string;
   isManager: boolean;
   isAdmin: boolean;
+  canInviteMembers: boolean;
+  actionGateCopy?: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+  } | null;
   isHu: boolean;
   locale: string;
   dateLocale: string;
@@ -38,6 +45,8 @@ export function OrgMembersTab({
   profileId,
   isManager,
   isAdmin,
+  canInviteMembers,
+  actionGateCopy = null,
   isHu,
   locale,
   dateLocale,
@@ -97,7 +106,7 @@ export function OrgMembersTab({
                 <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600">
                   {t("org.members.pendingBadge", loc)}
                 </span>
-                {isManager && (
+                {isManager && canInviteMembers && (
                   <OrgPendingInviteCancelButton orgId={orgId} inviteId={inv.id} isHu={isHu} />
                 )}
               </div>
@@ -113,7 +122,7 @@ export function OrgMembersTab({
       </div>
 
       {/* Invite form */}
-      {isManager && (
+      {isManager && canInviteMembers && (
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("org.members.inviteEyebrow", loc)}
@@ -125,6 +134,29 @@ export function OrgMembersTab({
             {t("org.members.inviteDescription", loc)}
           </p>
           <OrgInviteForm orgId={orgId} locale={locale} canInviteManager={isAdmin} />
+        </div>
+      )}
+
+      {isManager && !canInviteMembers && actionGateCopy && (
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            {t("org.members.inviteEyebrow", loc)}
+          </p>
+          <h3 className="mb-2 text-sm font-semibold text-ink">
+            {actionGateCopy.title}
+          </h3>
+          <p className="mb-4 text-sm text-ink-body">{actionGateCopy.description}</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-lg bg-sand px-6 text-sm font-semibold text-muted">
+              {t("org.members.inviteTitle", loc)}
+            </span>
+            <a
+              href={actionGateCopy.ctaHref}
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+            >
+              {actionGateCopy.ctaLabel}
+            </a>
+          </div>
         </div>
       )}
     </div>

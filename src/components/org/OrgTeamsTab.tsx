@@ -11,10 +11,24 @@ interface OrgTeamsTabProps {
   orgId: string;
   locale: string;
   isManager: boolean;
+  canCreateTeam: boolean;
+  actionGateCopy?: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+  } | null;
   isHu: boolean;
 }
 
-export function OrgTeamsTab({ teams, orgId, locale, isManager }: OrgTeamsTabProps) {
+export function OrgTeamsTab({
+  teams,
+  orgId,
+  locale,
+  isManager,
+  canCreateTeam,
+  actionGateCopy = null,
+}: OrgTeamsTabProps) {
   const loc = locale as Locale;
 
   return (
@@ -52,7 +66,7 @@ export function OrgTeamsTab({ teams, orgId, locale, isManager }: OrgTeamsTabProp
       )}
 
       {/* Create form for managers */}
-      {isManager && (
+      {isManager && canCreateTeam && (
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("org.teams.newEyebrow", loc)}
@@ -61,6 +75,29 @@ export function OrgTeamsTab({ teams, orgId, locale, isManager }: OrgTeamsTabProp
             {t("org.teams.newTitle", loc)}
           </h3>
           <TeamCreateForm locale={locale as import("@/lib/i18n").Locale} orgId={orgId} />
+        </div>
+      )}
+
+      {isManager && !canCreateTeam && actionGateCopy && (
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            {t("org.teams.newEyebrow", loc)}
+          </p>
+          <h3 className="mb-2 text-sm font-semibold text-ink">
+            {actionGateCopy.title}
+          </h3>
+          <p className="mb-4 text-sm text-ink-body">{actionGateCopy.description}</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-lg bg-sand px-6 text-sm font-semibold text-muted">
+              {t("org.teams.newTitle", loc)}
+            </span>
+            <a
+              href={actionGateCopy.ctaHref}
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+            >
+              {actionGateCopy.ctaLabel}
+            </a>
+          </div>
         </div>
       )}
     </div>

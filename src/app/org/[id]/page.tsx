@@ -7,6 +7,8 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can, getAccessPolicy } from "@/lib/policy-engine";
+import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
@@ -67,15 +69,75 @@ export default async function OrgDetailPage({
 
   const subscription = await getOrgSubscription(orgId);
   const subscriptionState = getSubscriptionState(subscription);
-  if (subscriptionState === "none") redirect("/billing/upgrade");
+  const policy = getAccessPolicy(
+    {
+      isAuthenticated: true,
+      orgRole: memberRole,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
+  const launchCampaignDecision = can(
+    {
+      isAuthenticated: true,
+      orgRole: memberRole,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "launchCampaign",
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
+  const createTeamDecision = can(
+    {
+      isAuthenticated: true,
+      orgRole: memberRole,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "create",
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
+  const inviteDecision = can(
+    {
+      isAuthenticated: true,
+      orgRole: memberRole,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "invite",
+    {
+      subscriptionState,
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
 
-  const isAdmin = hasOrgRole(memberRole, "ORG_ADMIN");
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
-  const isRestricted = subscriptionState === "restricted";
-  const isFrozen = subscriptionState === "frozen";
-  const canManageOrgActions = subscriptionState === "active";
-  const isAdminForActions = isAdmin && canManageOrgActions;
-  const isManagerForActions = isManager && canManageOrgActions;
+  const isRestricted = policy.policyState === "restricted" || policy.policyState === "past_due";
+  const isNone = policy.policyState === "none";
+  const isFrozen = policy.policyState === "frozen";
+  const canManageOrgActions = policy.capabilities.has("manage");
+  const canCreateTeamActions = policy.capabilities.has("create");
+  const canLaunchCampaignActions = policy.capabilities.has("launchCampaign");
+  const canInviteMemberActions = policy.capabilities.has("invite");
+  const isAdminForActions = policy.capabilities.has("orgAdminManage");
+  const isManagerForActions = canManageOrgActions;
+  const showActionGate = isManager && !canManageOrgActions;
+  const actionGateCopy = showActionGate
+    ? getCapabilityGateCopy({
+        locale,
+        reason: launchCampaignDecision.reason ?? createTeamDecision.reason ?? inviteDecision.reason,
+        upgradeHintCode:
+          launchCampaignDecision.upgradeHint?.code ??
+          createTeamDecision.upgradeHint?.code ??
+          inviteDecision.upgradeHint?.code,
+      })
+    : null;
   const isHu = locale !== "en";
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
@@ -419,8 +481,11 @@ export default async function OrgDetailPage({
           </div>
         </div>
 
-        {isRestricted ? (
-          <OrgSubscriptionBanner state="restricted" locale={locale} />
+        {isRestricted || isNone ? (
+          <OrgSubscriptionBanner
+            state={isNone ? "none" : "restricted"}
+            locale={locale}
+          />
         ) : null}
 
         {/* ═══ 2. INSIGHT CARDS ("Most érdemes figyelni") ═══ */}
@@ -645,6 +710,10 @@ export default async function OrgDetailPage({
             profileId={profileId}
             isAdmin={isAdminForActions}
             isManager={isManagerForActions}
+            canCreateTeam={canCreateTeamActions}
+            canInviteMembers={canInviteMemberActions}
+            canManageCampaigns={canLaunchCampaignActions}
+            actionGateCopy={actionGateCopy}
             isHu={isHu}
             locale={locale}
             dateLocale={dateLocale}

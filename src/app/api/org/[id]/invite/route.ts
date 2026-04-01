@@ -4,6 +4,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendOrgInviteEmail } from "@/lib/emails";
 import { hasOrgRole } from "@/lib/auth";
+import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
+import { can } from "@/lib/policy-engine";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -33,8 +35,31 @@ export async function POST(
     where: { orgId_userId: { orgId, userId: profile.id } },
     select: { role: true },
   });
-  if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+  if (!membership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const subscription = await getOrgSubscription(orgId);
+  const decision = can(
+    {
+      isAuthenticated: true,
+      orgRole: membership.role,
+      membership: { hasOrgMembership: true, orgId },
+    },
+    "invite",
+    {
+      subscriptionState: getSubscriptionState(subscription),
+      subscriptionStatus: subscription?.status ?? "none",
+    },
+  );
+  if (!decision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: decision.reason,
+        upgradeHint: decision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   // Verify org exists and is active
