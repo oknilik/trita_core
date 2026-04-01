@@ -347,11 +347,25 @@ export function resolveNextBestAction(
 ): JourneyNextBestAction {
   const safeLocale: JourneyResolverLocale = locale === "hu" ? "hu" : "en";
   const resolved = resolveCtaIdsWithLocale(state, safeLocale);
+  const availableIds = new Set(state.availableNextActions.map((action) => action.id));
+  const fallbackPrimary = state.availableNextActions[0]?.id ?? null;
+
+  const primaryId =
+    availableIds.size === 0 || availableIds.has(resolved.primary)
+      ? resolved.primary
+      : (fallbackPrimary ?? resolved.primary);
+  const fallbackSecondary =
+    state.availableNextActions.find((action) => action.id !== primaryId)?.id ?? null;
+  const secondaryId = resolved.secondary
+    ? availableIds.has(resolved.secondary) && resolved.secondary !== primaryId
+      ? resolved.secondary
+      : fallbackSecondary
+    : fallbackSecondary;
 
   return {
     stage: state.currentStage,
-    primary: toCta(state, safeLocale, resolved.primary),
-    secondary: resolved.secondary ? toCta(state, safeLocale, resolved.secondary) : null,
+    primary: toCta(state, safeLocale, primaryId),
+    secondary: secondaryId ? toCta(state, safeLocale, secondaryId) : null,
     explanation: resolved.explanation,
   };
 }

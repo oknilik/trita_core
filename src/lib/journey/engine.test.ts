@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { resolveJourneyFromContext } from "@/lib/journey/engine";
+import { resolveJourneyFromContext } from "@/lib/journey/engine-core";
 import type { JourneyContextSnapshot } from "@/lib/journey/types";
 
 type JourneyContextOverrides = Omit<

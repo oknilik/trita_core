@@ -65,6 +65,9 @@ importers:
       resend:
         specifier: ^6.9.1
         version: 6.9.1
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       stripe:
         specifier: ^20.4.1
         version: 20.4.1(@types/node@20.19.31)
