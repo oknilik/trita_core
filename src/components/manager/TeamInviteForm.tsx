@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, type Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { TextField } from "@/components/ui/primitives/TextField";
 
 interface TeamInviteFormProps {
@@ -71,16 +72,20 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
             : t("manager.teamInvite.add", locale)}
         </Button>
       </div>
-      {error && <p className="text-xs text-rose-600">{error}</p>}
+      {error ? (
+        <InlineBanner variant="error" className="text-xs">
+          {error}
+        </InlineBanner>
+      ) : null}
       {success === "added" && (
-        <p className="text-xs text-green-600">
+        <InlineBanner variant="success" className="text-xs">
           {t("manager.teamInvite.memberAdded", locale)}
-        </p>
+        </InlineBanner>
       )}
       {success === "pending" && (
-        <p className="text-xs text-amber-600">
+        <InlineBanner variant="warning" className="text-xs">
           {t("manager.teamInvite.inviteSent", locale)}
-        </p>
+        </InlineBanner>
       )}
     </form>
   );

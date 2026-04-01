@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { SelectField } from "@/components/ui/primitives/SelectField";
 import { TextField } from "@/components/ui/primitives/TextField";
 
@@ -99,16 +100,20 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
       </form>
 
       {result === "success" && (
-        <p className="text-sm text-green-600">
+        <InlineBanner variant="success">
           {t("org.forms.memberAdded", loc)}
-        </p>
+        </InlineBanner>
       )}
       {result === "pending" && (
-        <p className="text-sm text-amber-600">
+        <InlineBanner variant="warning">
           {t("org.forms.inviteSent", loc)}
-        </p>
+        </InlineBanner>
       )}
-      {error && <p className="text-sm text-rose-600">{error}</p>}
+      {error ? (
+        <InlineBanner variant="error">
+          {error}
+        </InlineBanner>
+      ) : null}
     </div>
   );
 }

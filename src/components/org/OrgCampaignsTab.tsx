@@ -8,6 +8,8 @@ import type { CampaignWithStats } from "@/lib/org-stats";
 import { Card } from "@/components/ui/primitives/Card";
 import { CampaignCard } from "./CampaignCard";
 import { Button } from "@/components/ui/primitives/Button";
+import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 
@@ -108,11 +110,10 @@ export function OrgCampaignsTab({
         </SectionHeading>
 
         {activeCampaigns.length === 0 ? (
-          <div className="rounded-xl border border-sand bg-cream p-8 text-center">
-            <p className="text-sm text-ink-body/60">
-              {t("org.campaigns.noActive", loc)}
-            </p>
-          </div>
+          <EmptyState
+            title={t("org.campaigns.noActive", loc)}
+            description={isHu ? "Indíts egy új kampányt, hogy megjelenjen itt." : "Create a new campaign and it will appear here."}
+          />
         ) : (
           <div className="flex flex-col gap-4">
             {activeCampaigns.map((c) => (
@@ -229,9 +230,9 @@ export function OrgCampaignsTab({
                   />
                 </div>
                 {error && (
-                  <p className="rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                  <InlineBanner variant="error">
                     {error}
-                  </p>
+                  </InlineBanner>
                 )}
                 <div className="flex gap-3">
                   <Button

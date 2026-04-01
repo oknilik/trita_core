@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 interface Campaign {
@@ -114,9 +116,10 @@ function AddMembersPanel({
         {t("org.list.addEyebrow", loc)}
       </p>
       {members.length === 0 ? (
-        <p className="text-xs text-muted">
-          {t("org.list.noMembers", loc)}
-        </p>
+        <EmptyState
+          className="border-none bg-transparent px-0 py-1 text-left"
+          title={t("org.list.noMembers", loc)}
+        />
       ) : (
         <div className="mb-3 max-h-40 overflow-y-auto space-y-1">
           {members.map((m) => (
@@ -137,7 +140,11 @@ function AddMembersPanel({
           ))}
         </div>
       )}
-      {error && <p className="mb-2 text-xs text-rose-600">{error}</p>}
+      {error ? (
+        <InlineBanner variant="error" className="mb-2 text-xs">
+          {error}
+        </InlineBanner>
+      ) : null}
       <div className="flex gap-2">
         <button
           type="submit"
@@ -212,11 +219,11 @@ export function CampaignList({
   return (
     <div>
       {campaigns.length === 0 ? (
-        <div className="mb-6 rounded-xl border border-sand bg-cream p-8 text-center">
-          <p className="text-sm text-ink-body/60">
-            {t("org.list.noCampaigns", loc)}
-          </p>
-        </div>
+        <EmptyState
+          className="mb-6"
+          title={t("org.list.noCampaigns", loc)}
+          description={isHu ? "Hozz létre egy új kampányt az első felméréshez." : "Create a new campaign to launch your first assessment."}
+        />
       ) : (
         <div className="mb-6 flex flex-col divide-y divide-sand">
           {campaigns.map((c) => (
@@ -301,9 +308,11 @@ export function CampaignList({
               maxLength={500}
               className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
             />
-            {error && (
-              <p className="text-xs text-rose-600">{error}</p>
-            )}
+            {error ? (
+              <InlineBanner variant="error" className="text-xs">
+                {error}
+              </InlineBanner>
+            ) : null}
             <button
               type="submit"
               disabled={loading || !name.trim()}
