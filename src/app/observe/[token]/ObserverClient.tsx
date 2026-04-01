@@ -4,14 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
-import { BackgroundDoodles } from "@/components/illustrations/BackgroundDoodles";
+import { ObserverBackdrop } from "@/components/illustrations/ObserverBackdrop";
 import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Question } from "@/lib/questions";
 import { isLikertQuestion } from "@/lib/questions";
-import { DOODLE_SOURCES, pickRandomDoodle } from "@/lib/doodles";
 
 interface ObserverDraftData {
   phase: "assessment" | "confidence";
@@ -117,7 +116,6 @@ export function ObserverClient({
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null);
   const [highlightConfidence, setHighlightConfidence] = useState(false);
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
-  const [doodleSrc, setDoodleSrc] = useState<string>(DOODLE_SOURCES[0]);
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft
       ? ([25, 50, 75] as const).filter(
@@ -141,8 +139,6 @@ export function ObserverClient({
     if (!scrollMounted.current) { scrollMounted.current = true; return; }
     questionAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [currentPage]);
-
-  useEffect(() => { setDoodleSrc(pickRandomDoodle()); }, []);
 
   useEffect(() => {
     if (initialDraft) {
@@ -369,7 +365,6 @@ export function ObserverClient({
 
   const handleNextStep = useCallback(() => {
     if (checkpointActive) {
-      setDoodleSrc((prev) => pickRandomDoodle(prev));
       setCheckpoint(null);
       const nextUnanswered = pageQuestions.findIndex(
         (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
@@ -673,7 +668,7 @@ export function ObserverClient({
 
   return (
     <div className="relative min-h-dvh bg-cream">
-      <BackgroundDoodles primarySrc={doodleSrc} />
+      <ObserverBackdrop />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
       <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
         <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sage-ring/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
