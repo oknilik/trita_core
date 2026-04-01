@@ -73,6 +73,84 @@ async function upsertSubscription(
   });
 }
 
+function extractCustomerId(
+  customer: string | Stripe.Customer | Stripe.DeletedCustomer | null | undefined,
+): string | null {
+  if (!customer) return null;
+  if (typeof customer === "string") return customer;
+  return customer.id;
+}
+
+function extractSubscriptionId(
+  subscription: string | Stripe.Subscription | null | undefined,
+): string | null {
+  if (!subscription) return null;
+  if (typeof subscription === "string") return subscription;
+  return subscription.id;
+}
+
+async function syncSubscriptionFromEventObject(
+  runtime: StripeWebhookRuntime,
+  input: {
+    eventType:
+      | "checkout.session.completed"
+      | "customer.subscription.created"
+      | "customer.subscription.updated"
+      | "customer.subscription.deleted"
+      | "invoice.paid"
+      | "invoice.payment_failed";
+    subscription: Stripe.Subscription;
+    customerId: string;
+    previousStatus?: string | null;
+  },
+): Promise<void> {
+  const orgId = input.subscription.metadata?.orgId;
+  if (!orgId) return;
+
+  const previousLocal = await runtime.prisma.subscription.findUnique({
+    where: { orgId },
+    select: { status: true },
+  });
+
+  await upsertSubscription(runtime, orgId, input.subscription, input.customerId);
+
+  if (input.eventType === "checkout.session.completed") {
+    // Activate org if it was in PENDING_SETUP
+    await runtime.prisma.organization.updateMany({
+      where: { id: orgId, status: "PENDING_SETUP" },
+      data: { status: "ACTIVE" },
+    });
+    console.log(`[Stripe] Checkout complete for org ${orgId}`);
+    return;
+  }
+
+  const transitionedFromTrialingToActive =
+    input.eventType === "customer.subscription.updated" &&
+    input.previousStatus === "trialing" &&
+    input.subscription.status === "active";
+
+  // Idempotency: duplicate webhook retries must not resend order confirmation.
+  if (transitionedFromTrialingToActive && previousLocal?.status !== "active") {
+    const org = await runtime.prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { name: true, owner: { select: { email: true } } },
+    });
+    if (org?.owner?.email) {
+      await runtime.sendOrderConfirmationEmail({
+        to: org.owner.email,
+        name: org.name,
+      });
+    }
+  }
+
+  if (input.eventType === "invoice.paid" || input.eventType === "invoice.payment_failed") {
+    console.log(`[Stripe] Invoice event ${input.eventType} synced for org ${orgId}`);
+    return;
+  }
+
+  console.log(`[Stripe] Subscription ${input.subscription.status} for org ${orgId}`);
+}
+
 export async function POST(req: Request) {
   const runtime = getStripeWebhookRuntime();
   if (!runtime.webhookSecret) {
@@ -177,55 +255,56 @@ export async function POST(req: Request) {
 
         if (session.mode !== "subscription") break;
 
-        const subscriptionId = session.subscription as string;
-        const customerId = session.customer as string;
+        const subscriptionId = extractSubscriptionId(session.subscription);
+        const customerId = extractCustomerId(session.customer);
+        if (!subscriptionId || !customerId) break;
         const subscription = await runtime.stripe.subscriptions.retrieve(subscriptionId);
 
-        await upsertSubscription(runtime, orgId, subscription, customerId);
-
-        // Activate org if it was in PENDING_SETUP
-        await runtime.prisma.organization.updateMany({
-          where: { id: orgId, status: "PENDING_SETUP" },
-          data: { status: "ACTIVE" },
+        await syncSubscriptionFromEventObject(runtime, {
+          eventType: "checkout.session.completed",
+          subscription,
+          customerId,
         });
-
-        console.log(`[Stripe] Checkout complete for org ${orgId}`);
         break;
       }
 
+      case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
-        const orgId = subscription.metadata?.orgId;
-        if (!orgId) break;
-
-        const customerId =
-          typeof subscription.customer === "string"
-            ? subscription.customer
-            : subscription.customer.id;
-
-        await upsertSubscription(runtime, orgId, subscription, customerId);
-
-        if (
+        const customerId = extractCustomerId(subscription.customer);
+        if (!customerId) break;
+        const previousStatus =
           event.type === "customer.subscription.updated" &&
           event.data.previous_attributes &&
-          "status" in event.data.previous_attributes &&
-          event.data.previous_attributes.status === "trialing" &&
-          subscription.status === "active"
-        ) {
-          const org = await runtime.prisma.organization.findUnique({
-            where: { id: orgId },
-            select: { name: true, owner: { select: { email: true } } },
-          });
-          if (org?.owner?.email) {
-            await runtime.sendOrderConfirmationEmail({
-              to: org.owner.email,
-              name: org.name,
-            });
-          }
-        }
+          "status" in event.data.previous_attributes
+            ? String(event.data.previous_attributes.status)
+            : null;
 
-        console.log(`[Stripe] Subscription ${subscription.status} for org ${orgId}`);
+        await syncSubscriptionFromEventObject(runtime, {
+          eventType: event.type,
+          subscription,
+          customerId,
+          previousStatus,
+        });
+        break;
+      }
+
+      case "invoice.paid":
+      case "invoice.payment_failed": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = extractSubscriptionId(invoice.subscription);
+        if (!subscriptionId) break;
+        const subscription = await runtime.stripe.subscriptions.retrieve(subscriptionId);
+        const customerId =
+          extractCustomerId(invoice.customer) ?? extractCustomerId(subscription.customer);
+        if (!customerId) break;
+
+        await syncSubscriptionFromEventObject(runtime, {
+          eventType: event.type,
+          subscription,
+          customerId,
+        });
         break;
       }
 

@@ -115,6 +115,7 @@ test("D2 billing transitions: trialing->active->past_due->restricted->reactivate
     },
     prisma: {
       subscription: {
+        findUnique: async () => (persisted ? { status: persisted.status } : null),
         upsert: async ({ create, update }: { create: PersistedSubscription; update: Partial<PersistedSubscription> }) => {
           if (!persisted) {
             persisted = { ...create };
@@ -246,6 +247,7 @@ test("D2 billing transitions: restricted->frozen and canceled->reactivated", asy
     },
     prisma: {
       subscription: {
+        findUnique: async () => (persisted ? { status: persisted.status } : null),
         upsert: async ({ create, update }: { create: PersistedSubscription; update: Partial<PersistedSubscription> }) => {
           if (!persisted) {
             persisted = { ...create };
