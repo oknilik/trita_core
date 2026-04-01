@@ -55,3 +55,19 @@ What happens automatically on `test:integration`:
 - seed: deterministic baseline data via `scripts/seed-test-db.ts`
 - test run
 - cleanup: schema reset after suite
+
+## CI pipeline split
+
+CI runs test layers in separate jobs:
+
+- `unit`
+- `integration`
+- `client`
+- `e2e`
+
+This keeps failures isolated by layer (flaky E2E cannot hide unit/integration/client failures).
+Artifacts are uploaded per layer:
+
+- logs for failed/successful runs
+- E2E screenshots/videos/traces and Playwright report
+- coverage directory upload (when present)
