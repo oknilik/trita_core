@@ -1,5 +1,7 @@
 class InMemoryLocalStorage implements Storage {
   private readonly store = new Map<string, string>();
+  private setItemCalls = 0;
+  private removeItemCalls = 0;
 
   constructor(initialValues?: Record<string, string>) {
     if (!initialValues) return;
@@ -26,15 +28,25 @@ class InMemoryLocalStorage implements Storage {
   }
 
   removeItem(key: string): void {
+    this.removeItemCalls += 1;
     this.store.delete(key);
   }
 
   setItem(key: string, value: string): void {
+    this.setItemCalls += 1;
     this.store.set(key, value);
   }
 
   snapshot(): Record<string, string> {
     return Object.fromEntries(this.store.entries());
+  }
+
+  getSetItemCallCount(): number {
+    return this.setItemCalls;
+  }
+
+  getRemoveItemCallCount(): number {
+    return this.removeItemCalls;
   }
 }
 
@@ -66,6 +78,39 @@ export function installLocalStorageMock(initialValues?: Record<string, string>):
       }
 
       delete (globalThis as { localStorage?: Storage }).localStorage;
+    },
+  };
+}
+
+export function installBrowserLocalStorageMock(initialValues?: Record<string, string>): {
+  localStorage: InMemoryLocalStorage;
+  restore: () => void;
+} {
+  const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+  const { localStorage, restore: restoreLocalStorage } = installLocalStorageMock(initialValues);
+
+  const windowValue: Record<string, unknown> =
+    typeof globalThis.window === "undefined"
+      ? {}
+      : (globalThis.window as unknown as Record<string, unknown>);
+  Object.defineProperty(globalThis, "window", {
+    value: {
+      ...windowValue,
+      localStorage,
+    },
+    configurable: true,
+    writable: true,
+  });
+
+  return {
+    localStorage,
+    restore: () => {
+      restoreLocalStorage();
+      if (originalWindow) {
+        Object.defineProperty(globalThis, "window", originalWindow);
+        return;
+      }
+      delete (globalThis as { window?: Window }).window;
     },
   };
 }
