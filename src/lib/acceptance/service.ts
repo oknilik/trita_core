@@ -1336,7 +1336,7 @@ export async function resolveTeamJoinPageModel(params: {
   if (acceptance.machineState === "policy_restricted") {
     return {
       state: "policy_restricted",
-      redirectTo: resolution.redirectTo ?? "/billing",
+      redirectTo: resolution.redirectTo ?? "/billing/upgrade",
     };
   }
 
@@ -1413,7 +1413,7 @@ export async function resolveOrgJoinPageModel(params: {
   if (acceptance.machineState === "policy_restricted") {
     return {
       state: "policy_restricted",
-      redirectTo: resolution.redirectTo ?? "/billing",
+      redirectTo: resolution.redirectTo ?? "/billing/upgrade",
     };
   }
 

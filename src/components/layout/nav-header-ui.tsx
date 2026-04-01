@@ -328,7 +328,7 @@ export function NavHeaderUI({
                 <MegaDropdown isOpen={openDropdown === "candidates"}>
                   <MegaItem href={`/hiring/${org.id}`} icon={<CandidateIcon />} title="Jelöltfolyamat" desc="Aktív és archív jelöltek" onClick={closeAll} />
                   <MegaItem href={`/hiring/${org.id}?invite=true`} icon={<CandidateIcon />} title="Új jelölt hozzáadása" desc="Értékelés indítása" onClick={closeAll} />
-                  <MegaItem href="/billing" icon={<OrgIcon />} title="Csomagok és kreditek" desc="Candidate add-on kezelése" onClick={closeAll} />
+                  <MegaItem href={`/org/${org.id}/settings`} icon={<OrgIcon />} title="Csomagok és kreditek" desc="Candidate add-on kezelése" onClick={closeAll} />
                 </MegaDropdown>
               </div>
             )}
@@ -356,7 +356,7 @@ export function NavHeaderUI({
                 <MegaDropdown isOpen={openDropdown === "org"}>
                   <MegaItem href={`/org/${org.id}`} icon={<OrgIcon />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={closeAll} />
                   <MegaItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={closeAll} />
-                  <MegaItem href="/billing" icon={<OrgIcon />} title="Beállítások" desc="Számlázás, csomagok" onClick={closeAll} />
+                  <MegaItem href={`/org/${org.id}/settings`} icon={<OrgIcon />} title="Beállítások" desc="Számlázás, csomagok" onClick={closeAll} />
                 </MegaDropdown>
               </div>
             )}
@@ -637,7 +637,7 @@ export function NavHeaderUI({
                     </p>
                     <MobileMenuItem href={`/hiring/${org.id}`} icon={<CandidateIcon className="h-4 w-4" />} title="Jelöltfolyamat" desc="Aktív és archív jelöltek" onClick={() => setMobileMenu("closed")} />
                     <MobileMenuItem href={`/hiring/${org.id}?invite=true`} icon={<CandidateIcon className="h-4 w-4" />} title="Új jelölt hozzáadása" desc="Értékelés indítása" onClick={() => setMobileMenu("closed")} />
-                    <MobileMenuItem href="/billing" icon={<OrgIcon className="h-4 w-4" />} title="Csomagok és kreditek" desc="Candidate add-on kezelése" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href={`/org/${org.id}/settings`} icon={<OrgIcon className="h-4 w-4" />} title="Csomagok és kreditek" desc="Candidate add-on kezelése" onClick={() => setMobileMenu("closed")} />
                   </div>
                 )}
 
@@ -649,7 +649,7 @@ export function NavHeaderUI({
                     </p>
                     <MobileMenuItem href={`/org/${org.id}`} icon={<OrgIcon className="h-4 w-4" />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={() => setMobileMenu("closed")} />
                     <MobileMenuItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon className="h-4 w-4" />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={() => setMobileMenu("closed")} />
-                    <MobileMenuItem href="/billing" icon={<OrgIcon className="h-4 w-4" />} title="Beállítások" desc="Számlázás, csomagok" onClick={() => setMobileMenu("closed")} />
+                    <MobileMenuItem href={`/org/${org.id}/settings`} icon={<OrgIcon className="h-4 w-4" />} title="Beállítások" desc="Számlázás, csomagok" onClick={() => setMobileMenu("closed")} />
                   </div>
                 )}
 
