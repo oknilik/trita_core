@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export type { UserRole };
 
@@ -89,7 +90,10 @@ export async function requireOrgContext(orgId: string): Promise<{
     },
   });
 
-  if (!membership) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (!membership) {
+    const fallback = await resolveJourneyFallbackForProfileId(profile.id);
+    redirect(fallback);
+  }
   if (membership.org.status === "INACTIVE") redirect("/org/suspended");
 
   return { profileId: profile.id, role: membership.role, org: membership.org };
@@ -106,7 +110,10 @@ export async function requireOrgRole(
   org: { id: string; name: string; status: string };
 }> {
   const ctx = await requireOrgContext(orgId);
-  if (!hasOrgRole(ctx.role, minRole)) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (!hasOrgRole(ctx.role, minRole)) {
+    const fallback = await resolveJourneyFallbackForProfileId(ctx.profileId);
+    redirect(fallback);
+  }
   return ctx;
 }
 

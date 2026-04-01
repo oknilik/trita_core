@@ -21,6 +21,7 @@ import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +68,7 @@ export default async function TeamDetailPage({
     where: { clerkId: userId }, select: { id: true },
   });
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  const deepLinkFallback = await resolveJourneyFallbackForProfileId(profile.id);
 
   const team = await prisma.team.findUnique({
     where: { id: teamId }, select: { id: true, name: true, orgId: true },
@@ -80,10 +82,10 @@ export default async function TeamDetailPage({
       })
     : null;
   const orgMemberRole = orgMembership?.role ?? null;
-  if (!orgMemberRole) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (!orgMemberRole) redirect(deepLinkFallback);
 
   const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
-  if (!hasTeamAccess) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (!hasTeamAccess) redirect(deepLinkFallback);
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
   const subscription = team.orgId ? await getOrgSubscription(team.orgId) : null;

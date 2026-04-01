@@ -19,7 +19,7 @@ import {
   DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
 import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/dashboard/ia-contract";
-import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +62,8 @@ export default async function OrgDetailPage({
 
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
-  if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  const deepLinkFallback = await resolveJourneyFallbackForProfileId(profileId);
+  if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect(deepLinkFallback);
 
   const subscription = await getOrgSubscription(orgId);
   const subscriptionState = getSubscriptionState(subscription);

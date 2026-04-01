@@ -59,6 +59,24 @@ A teljes `JourneyResolution` ezen felül tartalmazza a bővebb kontextust:
 
 Következmény: a UI ugyanabból az objektumból tud nav/home/CTA/progress döntéseket hozni.
 
+## Guardrail réteg
+
+A központi invariant enforcement a journey rétegen belül fut:
+
+- `src/lib/journey/guardrails.ts`
+  - `enforceJourneyGuardrails(...)`
+  - `assertJourneyInvariants(...)`
+- `src/lib/journey/guardrails.server.ts`
+  - central fallback helper-ek invalid deep link / protected fallback esetekre
+
+Kötelező invariánsok:
+
+- unfinished assessment => `/assessment`
+- pending join acceptance megelőzi a team/org home-ot
+- restricted/frozen állapotban create/manage jellegű journey actionök tiltása
+- self-only context nem kaphat org home-ot
+- invalid deep link fallback központi journey destination alapján történik
+
 ## Védőkorlátok (mit NEM szabad)
 
 1. Nincs duplikált home decision logika a UI-ban vagy route-ban.

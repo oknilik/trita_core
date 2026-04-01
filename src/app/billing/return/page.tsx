@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { addCredits } from "@/lib/candidate-credits";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { auth } from "@clerk/nextjs/server";
-import { resolveJourney } from "@/lib/journey/engine";
+import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
 
@@ -43,8 +43,7 @@ export default async function ReturnPage({
       select: { id: true },
     });
     if (profile) {
-      const journey = await resolveJourney(profile.id);
-      handoffDestination = journey.destination;
+      handoffDestination = await resolveJourneyFallbackForProfileId(profile.id);
     }
   }
 

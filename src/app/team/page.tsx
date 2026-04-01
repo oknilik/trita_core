@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,10 @@ export default async function TeamListPage() {
     where: { userId: profile.id, leftAt: null },
     select: { orgId: true },
   });
-  if (memberships.length === 0) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (memberships.length === 0) {
+    const fallback = await resolveJourneyFallbackForProfileId(profile.id);
+    redirect(fallback);
+  }
 
   const orgIds = memberships.map((m) => m.orgId);
   const teams = await prisma.team.findMany({

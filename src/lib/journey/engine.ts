@@ -3,6 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { resolveJourneyContext, type ResolveJourneyContextOptions } from "@/lib/journey/context";
 import { resolveHome } from "@/lib/journey/home";
+import { assertJourneyInvariants, enforceJourneyGuardrails } from "@/lib/journey/guardrails";
 import type { JourneyResolverLocale } from "@/lib/journey/next-best-action";
 import { resolveNextBestAction } from "@/lib/journey/next-best-action";
 import { computeScopeProgress } from "@/lib/journey/progress";
@@ -11,7 +12,6 @@ import type {
   JourneyContextSnapshot,
   JourneyExperienceHints,
   JourneyProgressLabel,
-  JourneyRestrictionFlags,
   JourneyResolution,
   JourneyStage,
 } from "@/lib/journey/types";
@@ -77,61 +77,57 @@ function computeExperienceHints(context: JourneyContextSnapshot, stage: JourneyS
   };
 }
 
-function computeRestrictionFlags(context: JourneyContextSnapshot): JourneyRestrictionFlags {
-  const subscriptionState = context.subscription.state;
-  const hasOrgScope =
-    context.currentContext !== "self-only" ||
-    Boolean(context.orgMembership) ||
-    Boolean(context.orgId);
-  const readOnlyOrgViews =
-    hasOrgScope &&
-    (subscriptionState === "restricted" || subscriptionState === "frozen");
-
-  return {
-    subscriptionState,
-    missingOrgSubscription: hasOrgScope && subscriptionState === "none",
-    readOnlyOrgViews,
-    disableOrgWriteActions: readOnlyOrgViews,
-    hideDetailedOrgInsights: hasOrgScope && subscriptionState === "frozen",
-    requiresSubscriptionAction:
-      hasOrgScope &&
-      (subscriptionState === "none" ||
-        subscriptionState === "restricted" ||
-        subscriptionState === "frozen"),
-  };
-}
-
 export function resolveJourneyFromContext(
   context: JourneyContextSnapshot,
   options: Pick<ResolveJourneyOptions, "locale"> = {},
 ): JourneyResolution {
   const locale: JourneyResolverLocale = options.locale === "hu" ? "hu" : "en";
-  const state = computeJourneyState(context);
-  const homeDecision = resolveHome({ context, state });
-  const scopeProgress = computeScopeProgress(context, {
-    activeSurface: homeDecision.activeSurface,
-    stage: state.currentStage,
+  const rawState = computeJourneyState(context);
+  const rawHomeDecision = resolveHome({ context, state: rawState });
+  const guardrailed = enforceJourneyGuardrails({
+    context,
+    state: rawState,
+    home: {
+      activeSurface: rawHomeDecision.activeSurface,
+      destination: rawHomeDecision.home.destination,
+      reason: rawHomeDecision.home.reason,
+    },
   });
-  const restrictionFlags = computeRestrictionFlags(context);
+  void assertJourneyInvariants({
+    context,
+    state: guardrailed.state,
+    home: guardrailed.home,
+    restrictionFlags: guardrailed.restrictionFlags,
+  });
+
+  const scopeProgress = computeScopeProgress(context, {
+    activeSurface: guardrailed.home.activeSurface,
+    stage: guardrailed.state.currentStage,
+  });
+  const nextBestAction = resolveNextBestAction(guardrailed.state, locale);
 
   return {
-    activeSurface: homeDecision.activeSurface,
+    activeSurface: guardrailed.home.activeSurface,
     entryIntent: context.entryIntent,
     currentContext: context.currentContext,
-    stage: state.currentStage,
-    destination: homeDecision.home.destination,
-    reason: homeDecision.home.reason,
+    stage: guardrailed.state.currentStage,
+    destination: guardrailed.home.destination,
+    reason: guardrailed.home.reason,
     stageDisplay: {
-      label: STAGE_LABELS[state.currentStage],
+      label: STAGE_LABELS[guardrailed.state.currentStage],
       scopeProgress: scopeProgress.scopeProgress,
       substeps: scopeProgress.substeps,
     },
-    home: homeDecision.home,
-    experienceHints: computeExperienceHints(context, state.currentStage),
-    restrictionFlags,
+    home: {
+      destination: guardrailed.home.destination,
+      reason: guardrailed.home.reason,
+      primaryAction: guardrailed.state.recommendedNextAction ?? undefined,
+    },
+    experienceHints: computeExperienceHints(context, guardrailed.state.currentStage),
+    restrictionFlags: guardrailed.restrictionFlags,
     scopeProgress,
-    nextBestAction: resolveNextBestAction(state, locale),
-    state,
+    nextBestAction,
+    state: guardrailed.state,
   };
 }
 
