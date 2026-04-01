@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { PRODUCT_LAYERS_4_PLUS_2 } from "@/lib/domain/layers-4plus2";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -23,20 +24,21 @@ export default async function AssessmentLayersPage() {
     <PlatformPageShell
       surface="self"
       contentClassName="max-w-5xl gap-8 px-4 py-10 md:gap-10"
+      chrome={{
+        breadcrumb: [
+          { label: t("nav.home", locale), href: JOURNEY_HOME_HANDOFF_PATH },
+          { label: t("assessmentLayers.title", locale) },
+        ],
+        title: t("assessmentLayers.title", locale),
+        subtitle: t("assessmentLayers.description", locale),
+        topbar: (
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+            {"// "}
+            {t("assessmentLayers.eyebrow", locale)}
+          </p>
+        ),
+      }}
     >
-      <section>
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
-          {"// "}
-          {t("assessmentLayers.eyebrow", locale)}
-        </p>
-        <h1 className="mt-2 font-fraunces text-3xl tracking-tight text-ink md:text-4xl">
-          {t("assessmentLayers.title", locale)}
-        </h1>
-        <p className="mt-2 max-w-3xl text-sm text-ink-body">
-          {t("assessmentLayers.description", locale)}
-        </p>
-      </section>
-
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {layers.map((layer) => (
           <Link

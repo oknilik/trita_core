@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { PRODUCT_LAYERS_4_PLUS_2 } from "@/lib/domain/layers-4plus2";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -29,19 +30,23 @@ export default async function AssessmentLayerDetailPage({
     <PlatformPageShell
       surface="self"
       contentClassName="max-w-4xl gap-8 px-4 py-10 md:gap-10"
+      chrome={{
+        breadcrumb: [
+          { label: t("nav.home", locale), href: JOURNEY_HOME_HANDOFF_PATH },
+          { label: t("assessmentLayers.title", locale), href: "/assessment-layers" },
+          { label: layer.label[langKey] },
+        ],
+        title: layer.label[langKey],
+        subtitle: layer.description[langKey],
+        topbar: (
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+            {"// "}
+            {t("assessmentLayers.detailEyebrow", locale)}
+          </p>
+        ),
+      }}
     >
       <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
-          {"// "}
-          {t("assessmentLayers.detailEyebrow", locale)}
-        </p>
-        <h1 className="mt-2 font-fraunces text-3xl tracking-tight text-ink">
-          {layer.label[langKey]}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {layer.description[langKey]}
-        </p>
-
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-sand bg-cream p-4">
             <p className="text-[10px] uppercase tracking-[0.16em] text-muted">

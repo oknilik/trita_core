@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
@@ -59,24 +60,27 @@ export default async function TeamListPage() {
     <PlatformPageShell
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-10 md:gap-12"
+      chrome={{
+        breadcrumb: [
+          { label: t("nav.home", locale), href: JOURNEY_HOME_HANDOFF_PATH },
+          { label: t("team.title", locale) },
+        ],
+        title: t("team.title", locale),
+        subtitle: `${teams.length} ${
+          teams.length === 1 ? t("team.memberTag", locale) : t("team.teamsLabel", locale)
+        }`,
+        actions: (
+          <Link
+            href="#create-team"
+            className={getButtonClassName({ size: "sm", variant: "secondary" })}
+          >
+            {t("team.createNew", locale)}
+          </Link>
+        ),
+      }}
     >
-
-        {/* Header */}
-        <div>
-          <SectionEyebrow className="text-[11px] tracking-[0.18em]">
-            {"// "}
-            {t("team.eyebrow", locale)}
-          </SectionEyebrow>
-          <h1 className="mt-2 font-fraunces text-3xl tracking-tight text-ink md:text-4xl">
-            {t("team.title", locale)}
-          </h1>
-          <p className="mt-2 text-sm text-ink-body">
-            {teams.length} {teams.length === 1 ? t("team.memberTag", locale) : t("team.teamsLabel", locale)}
-          </p>
-        </div>
-
         {/* Create new team */}
-        <Card as="section" spacing="lg" className="md:p-8">
+        <Card as="section" spacing="lg" className="md:p-8" id="create-team">
           <SectionEyebrow className="mb-1 text-[9px] tracking-[0.18em]">
             {"// "}
             {t("team.createNew", locale)}

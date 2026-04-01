@@ -79,16 +79,29 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   type NavData = React.ComponentProps<typeof NavHeaderUI>;
-  let navData: NavData | null = null;
+  const { userId } = await auth();
+
   let signedInHomeHref: string = JOURNEY_HOME_HANDOFF_PATH;
   let signedInExperienceHints: JourneyExperienceHints | null = null;
+  let navData: NavData | null = userId
+    ? {
+        user: { username: null, email: null },
+        org: null,
+        teams: [],
+        homeHref: signedInHomeHref,
+        role: "SELF",
+        activeCampaignCount: 0,
+        isAdmin: false,
+        isManager: false,
+        hasHiringAccess: false,
+      }
+    : null;
   const locale = await getServerLocale();
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
   const isNoShell = pathname.startsWith("/founding");
 
   try {
-    const { userId } = await auth();
     if (userId) {
       const profile = await prisma.userProfile.findUnique({
         where: { clerkId: userId },
@@ -101,6 +114,19 @@ export default async function RootLayout({
         });
         signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
+        navData = {
+          ...(navData ?? {
+            user: { username: null, email: null },
+            org: null,
+            teams: [],
+            role: "SELF",
+            activeCampaignCount: 0,
+            isAdmin: false,
+            isManager: false,
+            hasHiringAccess: false,
+          }),
+          homeHref: signedInHomeHref,
+        };
 
         const membership = await getActiveOrgMembership(profile.id);
         if (membership) {
@@ -149,7 +175,7 @@ export default async function RootLayout({
       }
     }
   } catch {
-    navData = null;
+    // Signed-in users keep the lightweight NavHeader fallback config.
   }
 
   const bodyClasses = `${fraunces.variable} ${dmSans.variable} antialiased`;
@@ -172,13 +198,12 @@ export default async function RootLayout({
                   <div className="pb-16">{children}</div>
                   <Footer />
                 </Suspense>
-              ) : navData ? (
+              ) : userId && navData ? (
                 <>
                   <NavHeaderUI {...navData} />
                   <div className="pb-16">{children}</div>
                   <Footer />
                 </>
-
               ) : (
                 <Suspense>
                   <NavBar
