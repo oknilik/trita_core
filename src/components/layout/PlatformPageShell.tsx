@@ -11,9 +11,11 @@ export interface PlatformShellBreadcrumbItem {
 
 export interface PlatformShellChrome {
   breadcrumb?: PlatformShellBreadcrumbItem[];
+  eyebrow?: ReactNode;
   title?: ReactNode;
   subtitle?: ReactNode;
   actions?: ReactNode;
+  /** @deprecated Use `eyebrow` for standardized header copy. */
   topbar?: ReactNode;
   className?: string;
 }
@@ -52,6 +54,7 @@ export function PlatformPageShell({
   contentClassName,
 }: PlatformPageShellProps) {
   const accent = SURFACE_ACCENT[surface];
+  const chromeEyebrow = chrome?.eyebrow ?? chrome?.topbar;
   const rootStyle = {
     "--platform-surface-accent": accent,
   } as CSSProperties;
@@ -72,13 +75,14 @@ export function PlatformPageShell({
         {chrome ? (
           <section
             className={cn(
-              "rounded-2xl border border-border-default bg-surface-card px-4 py-4 shadow-[0_4px_14px_rgba(15,23,42,0.04)] md:px-5",
+              "relative overflow-hidden rounded-2xl border border-border-default bg-surface-card px-4 py-4 shadow-[0_4px_14px_rgba(15,23,42,0.04)] md:px-5",
               chrome.className,
             )}
           >
-            {chrome.topbar ? (
-              <div className="mb-3">{chrome.topbar}</div>
-            ) : null}
+            <span
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-0.5 bg-[var(--platform-surface-accent)]"
+            />
 
             {chrome.breadcrumb && chrome.breadcrumb.length > 0 ? (
               <nav
@@ -106,6 +110,16 @@ export function PlatformPageShell({
                   );
                 })}
               </nav>
+            ) : null}
+
+            {chromeEyebrow ? (
+              <div className="mb-2 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-text-secondary">
+                <span
+                  aria-hidden
+                  className="h-1.5 w-1.5 rounded-full bg-[var(--platform-surface-accent)]"
+                />
+                {chromeEyebrow}
+              </div>
             ) : null}
 
             {(chrome.title || chrome.subtitle || chrome.actions) ? (

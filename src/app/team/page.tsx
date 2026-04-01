@@ -65,6 +65,7 @@ export default async function TeamListPage() {
           { label: t("nav.home", locale), href: JOURNEY_HOME_HANDOFF_PATH },
           { label: t("team.title", locale) },
         ],
+        eyebrow: t("nav.team", locale),
         title: t("team.title", locale),
         subtitle: `${teams.length} ${
           teams.length === 1 ? t("team.memberTag", locale) : t("team.teamsLabel", locale)

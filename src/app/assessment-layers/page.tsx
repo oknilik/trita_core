@@ -29,14 +29,9 @@ export default async function AssessmentLayersPage() {
           { label: t("nav.home", locale), href: JOURNEY_HOME_HANDOFF_PATH },
           { label: t("assessmentLayers.title", locale) },
         ],
+        eyebrow: t("assessmentLayers.eyebrow", locale),
         title: t("assessmentLayers.title", locale),
         subtitle: t("assessmentLayers.description", locale),
-        topbar: (
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
-            {"// "}
-            {t("assessmentLayers.eyebrow", locale)}
-          </p>
-        ),
       }}
     >
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2">

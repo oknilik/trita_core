@@ -36,14 +36,9 @@ export default async function AssessmentLayerDetailPage({
           { label: t("assessmentLayers.title", locale), href: "/assessment-layers" },
           { label: layer.label[langKey] },
         ],
+        eyebrow: t("assessmentLayers.detailEyebrow", locale),
         title: layer.label[langKey],
         subtitle: layer.description[langKey],
-        topbar: (
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
-            {"// "}
-            {t("assessmentLayers.detailEyebrow", locale)}
-          </p>
-        ),
       }}
     >
       <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
