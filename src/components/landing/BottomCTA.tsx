@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
@@ -27,7 +27,8 @@ const copy = {
 export function BottomCTA() {
   const { locale } = useLocale();
   const c = copy[locale] ?? copy.hu;
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
+  const [hasDraft, setHasDraft] = useState(false);
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
 
   return (
     <section className="-mb-16 grid grid-cols-1 items-center gap-6 bg-sage-deep px-6 py-16 md:grid-cols-[1fr_auto] md:gap-[60px] md:px-16 md:py-[100px]">

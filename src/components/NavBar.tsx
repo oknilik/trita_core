@@ -53,7 +53,8 @@ export function NavBar({
   const { signOut } = useClerk();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
+  const [hasDraft, setHasDraft] = useState(false);
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
@@ -9,7 +9,8 @@ import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 export function CtaSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
+  const [hasDraft, setHasDraft] = useState(false);
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
 
   const headlineBefore = isSelf
     ? t("landing.ctaSelfHeadlineBefore", locale)

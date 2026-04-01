@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
@@ -290,7 +290,9 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const accentColor = isSelf ? "#c17f4a" : "#3d6b5e";
 
   // Detect existing localStorage draft for guest users.
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
+  // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
+  const [hasDraft, setHasDraft] = useState(false);
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
 
   return (
     <section className="bg-cream">

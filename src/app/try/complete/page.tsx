@@ -12,10 +12,11 @@ export default function TryCompletePage() {
   const router = useRouter();
   const { isSignedIn } = useAuth();
   const { locale } = useLocale();
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
+  const [hasDraft, setHasDraft] = useState<boolean | null>(null);
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
 
   useEffect(() => {
-    if (!hasDraft) router.replace("/try");
+    if (hasDraft === false) router.replace("/try");
   }, [hasDraft, router]);
 
   // If already signed in, go claim the results
@@ -23,7 +24,7 @@ export default function TryCompletePage() {
     if (isSignedIn) router.replace("/try/claim");
   }, [isSignedIn, router]);
 
-  if (!hasDraft) {
+  if (hasDraft !== true) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-cream">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#c17f4a] border-t-transparent" />
