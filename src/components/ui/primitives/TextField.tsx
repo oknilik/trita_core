@@ -56,10 +56,10 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         className={cn(
           "min-h-[44px] w-full rounded-lg border border-border-default bg-surface-card px-3 text-sm text-text-primary placeholder:text-text-muted transition",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
-          "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted",
+          "disabled:cursor-not-allowed disabled:border-state-disabled-border disabled:bg-state-disabled-bg disabled:text-state-disabled-fg",
           hasError
             ? "border-state-error-border focus-visible:border-state-error-border focus-visible:ring-state-error-border"
-            : "focus-visible:border-action-primary-bg focus-visible:ring-focus-ring",
+            : "focus-visible:border-action-primary-bg focus-visible:ring-state-focus-ring",
           inputClassName,
         )}
         {...props}

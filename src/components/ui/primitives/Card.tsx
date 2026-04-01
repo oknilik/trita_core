@@ -18,7 +18,7 @@ const VARIANT_CLASSES: Record<CardVariant, string> = {
   default: "bg-surface-card shadow-sm",
   elevated: "bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.08)]",
   muted: "bg-surface-muted",
-  interactive: "bg-surface-card shadow-sm transition hover:border-border-strong hover:shadow-md",
+  interactive: "bg-surface-card shadow-sm transition hover:border-state-hover-border hover:bg-state-hover-bg hover:text-state-hover-fg hover:shadow-md",
 };
 
 const SPACING_CLASSES: Record<CardSpacing, string> = {

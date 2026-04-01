@@ -82,6 +82,7 @@
 
   /* Focus role */
   --color-focus-ring: var(--color-sage-ring);
+  --color-state-focus-ring: var(--color-focus-ring);
 
   /* State roles */
   --color-state-info-bg:      #eff6ff;
@@ -96,6 +97,12 @@
   --color-state-error-bg:     #fff1f2;
   --color-state-error-fg:     #be123c;
   --color-state-error-border: #fecdd3;
+  --color-state-disabled-bg:  var(--color-warm-mid);
+  --color-state-disabled-fg:  var(--color-muted-warm);
+  --color-state-disabled-border: var(--color-sand);
+  --color-state-hover-bg:     var(--color-cream-300);
+  --color-state-hover-fg:     var(--color-text-primary);
+  --color-state-hover-border: var(--color-border-strong);
 
   /* ─── Numbered aliases (design system) ────────────────────────────── */
   --color-sage-700:    #3d6b5e;

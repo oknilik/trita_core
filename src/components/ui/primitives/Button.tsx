@@ -16,8 +16,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: "bg-action-primary-bg text-action-primary-fg hover:bg-action-primary-bg-hover",
   secondary:
-    "border border-action-secondary-border bg-action-secondary-bg text-action-secondary-fg hover:border-border-strong hover:bg-surface-muted hover:text-text-primary",
-  ghost: "bg-transparent text-action-secondary-fg hover:bg-surface-muted hover:text-text-primary",
+    "border border-action-secondary-border bg-action-secondary-bg text-action-secondary-fg hover:border-state-hover-border hover:bg-state-hover-bg hover:text-state-hover-fg disabled:border-state-disabled-border",
+  ghost: "bg-transparent text-action-secondary-fg hover:bg-state-hover-bg hover:text-state-hover-fg",
   destructive: "bg-action-destructive-bg text-action-destructive-fg hover:bg-action-destructive-bg-hover",
 };
 
@@ -51,8 +51,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       aria-busy={loading || undefined}
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
-        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-state-disabled-bg disabled:text-state-disabled-fg disabled:opacity-50",
         VARIANT_CLASSES[variant],
         SIZE_CLASSES[size],
         fullWidth && "w-full",
