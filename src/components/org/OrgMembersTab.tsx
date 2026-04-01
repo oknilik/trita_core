@@ -3,6 +3,7 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { SerializedMember, SerializedPendingInvite } from "@/lib/org-stats";
+import { Card } from "@/components/ui/primitives/Card";
 import { OrgInviteForm } from "./OrgInviteForm";
 import { OrgRemoveMemberButton } from "./OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
@@ -56,7 +57,7 @@ export function OrgMembersTab({
   return (
     <div className="flex flex-col gap-6">
       {/* Members list */}
-      <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+      <Card spacing="lg" className="md:p-8">
         <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
           {t("org.members.eyebrow", loc)}
         </p>
@@ -119,11 +120,11 @@ export function OrgMembersTab({
             </p>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Invite form */}
       {isManager && canInviteMembers && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card spacing="lg" className="md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("org.members.inviteEyebrow", loc)}
           </p>
@@ -134,11 +135,11 @@ export function OrgMembersTab({
             {t("org.members.inviteDescription", loc)}
           </p>
           <OrgInviteForm orgId={orgId} locale={locale} canInviteManager={isAdmin} />
-        </div>
+        </Card>
       )}
 
       {isManager && !canInviteMembers && actionGateCopy && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card spacing="lg" className="md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("org.members.inviteEyebrow", loc)}
           </p>
@@ -157,7 +158,7 @@ export function OrgMembersTab({
               {actionGateCopy.ctaLabel}
             </a>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

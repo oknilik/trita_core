@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
+import { Card } from "@/components/ui/primitives/Card";
 import { CampaignCard } from "./CampaignCard";
 import { Button } from "@/components/ui/primitives/Button";
 
@@ -188,7 +189,7 @@ export function OrgCampaignsTab({
               </div>
             </button>
           ) : (
-            <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <Card spacing="lg" className="md:p-8">
               <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
                 {t("org.campaigns.newEyebrow", loc)}
               </p>
@@ -256,14 +257,14 @@ export function OrgCampaignsTab({
                   </Button>
                 </div>
               </form>
-            </div>
+            </Card>
           )}
         </section>
       )}
 
       {isManager && !canManageCampaigns && actionGateCopy && (
         <section>
-          <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <Card spacing="lg" className="md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "Kampány akciók" : "Campaign actions"}
             </p>
@@ -280,7 +281,7 @@ export function OrgCampaignsTab({
                 {actionGateCopy.ctaLabel}
               </a>
             </div>
-          </div>
+          </Card>
         </section>
       )}
 

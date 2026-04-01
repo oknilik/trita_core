@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { Card } from "@/components/ui/primitives/Card";
 
 interface Member {
   userId: string;
@@ -141,7 +142,7 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
 
       {/* Step 1: Details */}
       {step === 1 && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <Card spacing="lg">
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("campaignWiz.detailsTitle", locale)}
           </h2>
@@ -190,12 +191,12 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
               {t("campaignWiz.next", locale)}
             </Button>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Step 2: Members */}
       {step === 2 && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <Card spacing="lg">
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="font-fraunces text-xl text-ink">
               {t("campaignWiz.selectParticipants", locale)}
@@ -256,12 +257,12 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
               {t("campaignWiz.next", locale)}
             </Button>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Step 3: Confirm */}
       {step === 3 && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <Card spacing="lg">
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("campaignWiz.summary", locale)}
           </h2>
@@ -342,7 +343,7 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
                 : t("campaignWiz.createCampaign", locale)}
             </Button>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );
