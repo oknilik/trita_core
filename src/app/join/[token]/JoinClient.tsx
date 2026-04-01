@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
@@ -211,9 +212,9 @@ export function JoinClient({
         <div className="mb-10 flex flex-col items-center gap-4">
           <TritaLogo size={40} showText={false} />
           <div className="text-center">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {copy.inviteEyebrow}
-            </p>
+            </SectionEyebrow>
             <h1 className="font-fraunces text-3xl text-ink">
               {copy.title}
             </h1>
@@ -268,9 +269,9 @@ export function JoinClient({
           {isOrgSwitch && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {copy.switchEyebrow}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {copy.switchTitle}
                 </h2>
@@ -307,9 +308,9 @@ export function JoinClient({
           {isExistingReady && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {copy.joinEyebrow}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {copy.welcomePrefix}
                   {existingProfile?.username ? `, ${existingProfile.username}` : ""}!
@@ -344,9 +345,9 @@ export function JoinClient({
           {isNewUser && step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {copy.step1Eyebrow}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">{copy.step1Title}</h2>
                 <p className="mt-1 text-sm text-ink-body/70">
                   {copy.step1Sub}
@@ -436,9 +437,9 @@ export function JoinClient({
           {isNewUser && step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {copy.step2Eyebrow}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">{copy.step2Title}</h2>
               </div>
 

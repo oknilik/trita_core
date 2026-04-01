@@ -1,5 +1,7 @@
 "use client";
 
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+
 export default function TeamError({
   error,
   reset,
@@ -10,9 +12,7 @@ export default function TeamError({
   return (
     <div className="min-h-dvh bg-cream flex items-center justify-center">
       <div className="text-center px-6">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
-          // csapat hiba
-        </p>
+        <SectionEyebrow className="mb-2">{"// csapat hiba"}</SectionEyebrow>
         <h2 className="font-fraunces text-xl text-ink mb-3">
           Nem sikerült betölteni a csapat adatait
         </h2>

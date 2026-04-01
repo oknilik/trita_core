@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
@@ -86,9 +87,9 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
 
       {outgoing.length > 0 && (
         <div>
-          <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1.5 text-[8px]">
             {t("teamComp.connectionsEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <div className="flex flex-col gap-1">
             {outgoing.map((e, i) => {
               const target = memberMap[e.to];

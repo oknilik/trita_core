@@ -5,6 +5,7 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { SerializedTeam, CampaignWithStats } from "@/lib/org-stats";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { NextStepBanner } from "./NextStepBanner";
 import { RemindPendingButton } from "./RemindPendingButton";
 
@@ -127,9 +128,9 @@ export function OrgOverviewTab({
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left: Szervezeti személyiség */}
         <Card spacing="lg">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.overview.profileEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-4 font-fraunces text-xl text-ink">
             {t("org.overview.profileTitle", loc)}
           </h3>
@@ -203,9 +204,9 @@ export function OrgOverviewTab({
 
         {/* Right: Csapatok */}
         <Card spacing="lg">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.overview.teamsEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-4 font-fraunces text-xl text-ink">
             {t("org.overview.teamsTitle", loc)}
             {teams.length > 0 && (

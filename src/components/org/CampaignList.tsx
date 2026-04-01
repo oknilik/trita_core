@@ -6,6 +6,7 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { EmptyState } from "@/components/ui/primitives/EmptyState";
 import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 interface Campaign {
@@ -284,9 +285,9 @@ export function CampaignList({
 
       {canManage && (
         <div className="border-t border-sand pt-5">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.list.newEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-3 text-sm font-semibold text-ink">
             {t("org.list.newTitle", loc)}
           </h3>

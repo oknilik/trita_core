@@ -1,6 +1,7 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { BLOCK1 } from "@/lib/profile-content";
 
 interface DimEntry {
@@ -26,9 +27,9 @@ export function DimensionOverview({
 
   return (
     <section>
-      <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
+      <SectionEyebrow className="text-[11px] tracking-[2px]">
         {t("content.overviewEyebrow", locale)}
-      </p>
+      </SectionEyebrow>
       <h2 className="mt-2 font-fraunces text-2xl text-ink">
         {t("content.overviewTitle", locale)}
       </h2>

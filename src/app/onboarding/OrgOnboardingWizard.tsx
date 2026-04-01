@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
@@ -393,9 +394,9 @@ export function OrgOnboardingWizard() {
           {step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {t("orgOnboarding.step01", locale)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {t("orgOnboarding.step01Title", locale)}
                 </h2>
@@ -494,9 +495,9 @@ export function OrgOnboardingWizard() {
           {step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {t("orgOnboarding.step02", locale)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {t("orgOnboarding.step02Title", locale)}
                 </h2>
@@ -615,9 +616,9 @@ export function OrgOnboardingWizard() {
           {step === 3 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {t("orgOnboarding.step03", locale)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {t("orgOnboarding.step03Title", locale)}
                 </h2>
@@ -722,9 +723,9 @@ export function OrgOnboardingWizard() {
           {step === 4 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {t("orgOnboarding.step04", locale)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {t("orgOnboarding.step04Title", locale)}
                 </h2>

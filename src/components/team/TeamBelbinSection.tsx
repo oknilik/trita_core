@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import type { BelbinRoleCode, BelbinScores } from "@/lib/belbin-scoring";
@@ -427,9 +428,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
   return (
     <div className="flex flex-col gap-8 py-6">
       <div>
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          // {t("teamComp.estimatedRolesEyebrow", loc)}
-        </p>
+        <SectionEyebrow className="text-[11px] tracking-[2px]">
+          {"// "}
+          {t("teamComp.estimatedRolesEyebrow", loc)}
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-2xl text-ink">
           {t("teamComp.belbinTitle", loc)}
         </h2>
@@ -443,9 +445,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
 
       {/* Role composition */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          // {t("teamComp.roleDistributionEyebrow", loc)}
-        </h3>
+        <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-[2px]">
+          {"// "}
+          {t("teamComp.roleDistributionEyebrow", loc)}
+        </SectionEyebrow>
         <h4 className="mb-5 font-fraunces text-xl text-ink">
           {t("teamComp.roleCompositionTitle", loc)}
         </h4>
@@ -454,17 +457,19 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
 
       {/* Alerts */}
       <section>
-        <h3 className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          // {t("teamComp.balanceAlertsEyebrow", loc)}
-        </h3>
+        <SectionEyebrow as="h3" className="mb-3 text-[11px] tracking-[2px]">
+          {"// "}
+          {t("teamComp.balanceAlertsEyebrow", loc)}
+        </SectionEyebrow>
         <RoleAlerts members={membersWithBelbin} isHu={isHu} />
       </section>
 
       {/* Cross-analysis */}
       <section>
-        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          // {t("teamComp.categoryAnalysisEyebrow", loc)}
-        </h3>
+        <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-[2px]">
+          {"// "}
+          {t("teamComp.categoryAnalysisEyebrow", loc)}
+        </SectionEyebrow>
         <p className="mb-4 text-sm text-ink-body">
           {t("teamComp.categoryAnalysisDesc", loc)}
         </p>
@@ -473,9 +478,10 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
 
       {/* Individual table */}
       <section>
-        <h3 className="mb-1 font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          // {t("teamComp.individualRolesEyebrow", loc)}
-        </h3>
+        <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-[2px]">
+          {"// "}
+          {t("teamComp.individualRolesEyebrow", loc)}
+        </SectionEyebrow>
         <h4 className="mb-4 font-fraunces text-xl text-ink">
           {t("teamComp.memberRoleProfiles", loc)}
         </h4>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TeamPatternCard } from "./TeamPatternCard";
 import {
   generateTeamSummary,
@@ -178,10 +179,10 @@ export function TeamOverviewTab({
         <Card className="p-0">
           <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <SectionEyebrow className="text-[10px]">
                 {"// "}
                 {t("teamComp.teamAvgSelfEyebrow", loc)}
-              </p>
+              </SectionEyebrow>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
                 {t("teamComp.hexacoProfile", loc)}
               </h2>
@@ -258,10 +259,10 @@ export function TeamOverviewTab({
           {/* Card 1: Csapatdinamika */}
           <Card className="p-0">
             <div className="px-6 py-4 border-b border-warm-mid">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <SectionEyebrow className="text-[10px]">
                 {"// "}
                 {t("teamComp.teamDynamicsEyebrow", loc)}
-              </p>
+              </SectionEyebrow>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
                 {t("teamComp.keyCharacteristics", loc)}
               </h2>
@@ -343,10 +344,10 @@ export function TeamOverviewTab({
           <Card className="p-0">
             <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="text-[10px]">
                   {"// "}
                   {t("teamComp.membersEyebrow", loc)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-xl text-ink mt-0.5">
                   {t("teamComp.teamMembersTitle", loc)} ({data.memberCount})
                 </h2>

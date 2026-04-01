@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { IntelligenceMember } from "./TeamIntelligence";
 
 interface RoleZone {
@@ -75,9 +76,9 @@ function RoleDetailPanel({ member, zone, loc }: RoleDetailPanelProps) {
       </div>
 
       <div>
-        <p className="mb-1.5 font-mono text-[8px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow className="mb-1.5 text-[8px]">
           {t("teamComp.dominantDimsEyebrow", loc)}
-        </p>
+        </SectionEyebrow>
         <div className="flex flex-col gap-1.5">
           {Object.entries(member.hexaco)
             .sort(([, a], [, b]) => b - a)

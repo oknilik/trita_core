@@ -6,6 +6,7 @@ import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import type { BelbinRoleCode } from "@/lib/belbin-scoring";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface BelbinTeaserProps {
   /** HEXACO dimension scores (0-100) keyed by dimension code */
@@ -40,9 +41,9 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
   return (
     <section>
       <div className="mb-6 flex items-center gap-2.5">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
+        <SectionEyebrow className="text-[11px] tracking-[2px]">
           {t("content.belbinTeaserEyebrow", loc)}
-        </p>
+        </SectionEyebrow>
         <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-muted">
           {t("content.belbinTeaserEstimate", loc)}
         </span>

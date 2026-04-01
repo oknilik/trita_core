@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
@@ -237,7 +238,7 @@ export function OnboardingClient() {
           {step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 01</p>
+                <SectionEyebrow className="mb-1">{"// 01"}</SectionEyebrow>
                 <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.blockBasicsTitle", locale)}
                 </p>
@@ -366,7 +367,7 @@ export function OnboardingClient() {
           {step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 02</p>
+                <SectionEyebrow className="mb-1">{"// 02"}</SectionEyebrow>
                 <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.avatarTitle", locale)}
                 </p>
@@ -430,7 +431,7 @@ export function OnboardingClient() {
           {step === 3 && (
             <div className="flex flex-col gap-6">
               <div>
-                <p className="font-mono text-xs text-bronze tracking-widest uppercase mb-1">// 03</p>
+                <SectionEyebrow className="mb-1">{"// 03"}</SectionEyebrow>
                 <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.step2Title", locale)}
                 </p>

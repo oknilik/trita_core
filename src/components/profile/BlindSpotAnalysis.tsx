@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface DimGapEntry {
   code: string;
@@ -100,11 +101,11 @@ export function BlindSpotAnalysis({
       {/* Overestimated — self > observer */}
       {overOnly.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-3 text-[10px]">
             {isHu
               ? "// figyelmet érdemlő területek"
               : "// areas worth more attention"}
-          </p>
+          </SectionEyebrow>
           <div className="space-y-3">
             {overOnly.map((dim) => (
               <div

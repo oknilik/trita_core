@@ -8,6 +8,7 @@ import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveBut
 import { TeamMemberRoleEditor } from "@/components/team/TeamMemberRoleEditor";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface SerializedMemberRow {
   id: string;
@@ -54,9 +55,9 @@ export function TeamMembersTab({
     <div className="flex flex-col gap-8 pt-6">
       {/* Members section */}
       <Card as="section" spacing="lg" className="md:p-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+        <SectionEyebrow className="mb-1">
           {t("teamComp.membersTabEyebrow", loc)}
-        </p>
+        </SectionEyebrow>
         <h2 className="font-fraunces text-xl text-ink mb-0.5">
           {t("teamComp.membersTabTitle", loc)}{" "}
           <span className="font-sans text-sm font-normal text-ink-body/50">

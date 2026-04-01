@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { SerializedTeam } from "@/lib/org-stats";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface OrgTeamsTabProps {
   teams: SerializedTeam[];
@@ -68,9 +69,9 @@ export function OrgTeamsTab({
       {/* Create form for managers */}
       {isManager && canCreateTeam && (
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.teams.newEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-4 text-sm font-semibold text-ink">
             {t("org.teams.newTitle", loc)}
           </h3>
@@ -80,9 +81,9 @@ export function OrgTeamsTab({
 
       {isManager && !canCreateTeam && actionGateCopy && (
         <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.teams.newEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h3 className="mb-2 text-sm font-semibold text-ink">
             {actionGateCopy.title}
           </h3>

@@ -1,5 +1,6 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 type ProfileLevel = "start" | "plus";
 
@@ -39,9 +40,7 @@ export function ProfileHeader({
 
   return (
     <div>
-      <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-        // profil
-      </p>
+      <SectionEyebrow className="text-[11px] tracking-[2px]">{"// profil"}</SectionEyebrow>
       <div className="mt-3 flex flex-row items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="font-fraunces text-3xl text-ink md:text-4xl">{name}</h1>

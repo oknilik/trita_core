@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { inputBase, toggleBtn } from "@/lib/onboarding-styles";
@@ -148,9 +149,9 @@ export function JoinOrgClient({
         <div className="mb-10 flex flex-col items-center gap-4">
           <TritaLogo size={48} showText={false} />
           <div className="text-center">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {copy.inviteEyebrow}
-            </p>
+            </SectionEyebrow>
             <h1 className="font-fraunces text-3xl text-ink">
               {copy.pageTitle}
             </h1>
@@ -166,9 +167,9 @@ export function JoinOrgClient({
             {requiresProfileOnboarding ? (
               <>
                 <div>
-                  <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                  <SectionEyebrow className="mb-1">
                     {copy.profileEyebrow}
-                  </p>
+                  </SectionEyebrow>
                   <p className="font-fraunces text-xl text-ink">{copy.profileTitle}</p>
                   <p className="mt-0.5 text-xs text-muted">
                     {copy.profileSub}
@@ -275,9 +276,9 @@ export function JoinOrgClient({
               </>
             ) : (
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {copy.joinEyebrow}
-                </p>
+                </SectionEyebrow>
                 <h2 className="font-fraunces text-2xl text-ink">
                   {copy.welcome}
                   {existingProfile?.username ? `, ${existingProfile.username}` : ""}!

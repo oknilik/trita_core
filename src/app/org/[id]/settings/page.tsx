@@ -20,6 +20,7 @@ import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
 import { BillingPortalButton } from "@/components/org/BillingPortalButton";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 export const dynamic = "force-dynamic";
 
@@ -82,9 +83,9 @@ export default async function OrgSettingsPage({
           </Link>
 
           <div className="flex flex-col gap-1">
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow>
               {t("org.settings.eyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h1 className="font-fraunces text-3xl text-ink md:text-4xl">
               {org.name}
             </h1>
@@ -100,9 +101,9 @@ export default async function OrgSettingsPage({
 
         {/* Org name */}
         <Card as="section" spacing="lg" className="md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("org.settings.orgNameEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h2 className="font-fraunces text-xl text-ink mb-5">
             {t("org.settings.orgNameTitle", locale)}
           </h2>
@@ -119,9 +120,9 @@ export default async function OrgSettingsPage({
 
         {/* Előfizetés */}
         <Card as="section" spacing="lg" className="md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("org.settings.subscriptionEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h2 className="font-fraunces text-xl text-ink mb-5">
             {t("org.settings.subscriptionTitle", locale)}
           </h2>
@@ -192,9 +193,9 @@ export default async function OrgSettingsPage({
         {/* Seat info — team / org plans only */}
         {tier !== "scale" && tier !== "none" && includedSeats !== Infinity && (
           <Card as="section" spacing="lg" className="md:p-8">
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+            <SectionEyebrow className="mb-1">
               {t("org.settings.seatsEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="font-fraunces text-xl text-ink mb-5">
               {t("org.settings.seatsTitle", locale)}
             </h2>
@@ -261,9 +262,9 @@ export default async function OrgSettingsPage({
 
         {/* Member roles */}
         <Card as="section" spacing="lg" className="md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("org.settings.rolesEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h2 className="font-fraunces text-xl text-ink mb-5">
             {t("org.settings.rolesTitle", locale)}
           </h2>

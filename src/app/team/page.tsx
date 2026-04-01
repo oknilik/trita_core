@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
@@ -62,10 +63,10 @@ export default async function TeamListPage() {
 
         {/* Header */}
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+          <SectionEyebrow className="text-[11px] tracking-[0.18em]">
             {"// "}
             {t("team.eyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mt-2 font-fraunces text-3xl tracking-tight text-ink md:text-4xl">
             {t("team.title", locale)}
           </h1>
@@ -76,10 +77,10 @@ export default async function TeamListPage() {
 
         {/* Create new team */}
         <Card as="section" spacing="lg" className="md:p-8">
-          <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bronze">
+          <SectionEyebrow className="mb-1 text-[9px] tracking-[0.18em]">
             {"// "}
             {t("team.createNew", locale)}
-          </p>
+          </SectionEyebrow>
           <h2 className="mb-1 font-fraunces text-xl text-ink">
             {t("team.createNew", locale)}
           </h2>
@@ -93,9 +94,9 @@ export default async function TeamListPage() {
         <section className="flex flex-col gap-5">
           <div className="flex items-center gap-2">
             <div className="h-px w-4 bg-bronze" />
-            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-bronze">
+            <SectionEyebrow as="h2" className="text-[10px] tracking-[0.18em]">
               {t("team.teamsLabel", locale)} ({teams.length})
-            </h2>
+            </SectionEyebrow>
           </div>
 
           {teams.length === 0 && (

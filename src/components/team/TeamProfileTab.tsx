@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/i18n";
 import { TeamHeatmap } from "@/components/manager/TeamHeatmap";
 import { TeamInsights } from "@/components/manager/TeamInsights";
 import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { TeamPageData } from "@/lib/team-stats";
 
 interface TeamProfileTabProps {
@@ -51,9 +52,9 @@ export function TeamProfileTab({
     <div className="flex flex-col gap-8 pt-6">
       {/* Heatmap */}
       <Card as="section" spacing="lg" className="overflow-x-auto md:p-8">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+        <SectionEyebrow className="mb-1">
           {t("teamComp.personalityProfileEyebrow", loc)}
-        </p>
+        </SectionEyebrow>
         <h2 className="font-fraunces text-xl text-ink mb-1">
           {t("teamComp.teamHeatmapTitle", loc)}
         </h2>
@@ -68,9 +69,9 @@ export function TeamProfileTab({
         dimConfigs.some((d) => r.scores[d.code] !== null)
       ) && (
         <Card as="section" spacing="lg" className="md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
+          <SectionEyebrow className="mb-1">
             {t("teamComp.analysisEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <h2 className="font-fraunces text-xl text-ink mb-5">
             {t("teamComp.teamAnalysis", loc)}
           </h2>

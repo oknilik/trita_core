@@ -2,6 +2,7 @@
 
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { TeamPatternResult, AxisDetail } from "@/lib/team-pattern";
 import { AXIS_LABELS, PATTERN_NAMES } from "@/lib/team-pattern";
 
@@ -109,9 +110,10 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
     return (
       <div className="rounded-2xl border border-sand bg-white shadow-sm">
         <div className="border-b border-warm-mid px-6 py-4">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-            // {t("teamComp.teamPatternEyebrow", loc)}
-          </p>
+          <SectionEyebrow className="text-[10px]">
+            {"// "}
+            {t("teamComp.teamPatternEyebrow", loc)}
+          </SectionEyebrow>
           <h2 className="mt-0.5 font-fraunces text-xl text-ink">
             {t("teamComp.dominantPattern", loc)}
           </h2>
@@ -132,9 +134,10 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
     <div className="rounded-2xl border border-sand bg-white shadow-sm">
       {/* Header */}
       <div className="border-b border-warm-mid px-6 py-4">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-          // {t("teamComp.teamPatternEyebrow", loc)}
-        </p>
+        <SectionEyebrow className="text-[10px]">
+          {"// "}
+          {t("teamComp.teamPatternEyebrow", loc)}
+        </SectionEyebrow>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-2">
           <h2 className="font-fraunces text-3xl text-ink md:text-4xl">
             {data.patternName}
@@ -182,7 +185,8 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
           <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-xl bg-[#f0fdf4] border border-[#a0d8c4] p-4">
               <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#059669]">
-                // {t("teamComp.strengthsEyebrow", loc)}
+                {"// "}
+                {t("teamComp.strengthsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
                 {content.strengths.map((s, i) => (
@@ -195,7 +199,8 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             </div>
             <div className="rounded-xl bg-[#fff8ee] border border-[#f5d99a] p-4">
               <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#b45309]">
-                // {t("teamComp.blindSpotsEyebrow", loc)}
+                {"// "}
+                {t("teamComp.blindSpotsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
                 {content.blindSpots.map((s, i) => (
@@ -212,9 +217,10 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {/* Next steps — 3 timed action cards */}
         {content && content.leaderActions.length >= 3 && (
           <div className="mb-5">
-            <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-bronze">
-              // {t("teamComp.nextStepsEyebrow", loc)}
-            </p>
+            <SectionEyebrow className="mb-3 text-[9px]">
+              {"// "}
+              {t("teamComp.nextStepsEyebrow", loc)}
+            </SectionEyebrow>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {[
                 { timing: t("teamComp.thisWeek", loc),  action: content.leaderActions[0], accent: "var(--color-action-primary-bg)" },
