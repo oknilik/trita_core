@@ -13,8 +13,10 @@ const isUi = flags.has("--ui");
 
 const TEST_FILE_RE = /\.(?:test|spec)\.(?:ts|tsx)$/;
 
-const UNIT_ROOTS = ["src", "test", "tests"];
-const E2E_ROOTS = ["e2e", "tests/e2e"];
+const UNIT_ROOTS = ["tests/unit"];
+const INTEGRATION_ROOTS = ["tests/integration"];
+const CLIENT_ROOTS = ["tests/client"];
+const E2E_ROOTS = ["tests/e2e"];
 
 function mergeNodeOptions(extra) {
   const current = process.env.NODE_OPTIONS?.trim();
@@ -74,26 +76,7 @@ async function collectFiles(roots, predicate) {
     .sort();
 }
 
-function isUnitTestFile(file) {
-  return (
-    TEST_FILE_RE.test(file) &&
-    !file.includes(".integration.test.") &&
-    !file.includes(".client.test.")
-  );
-}
-
-function isIntegrationTestFile(file) {
-  return file.includes(".integration.test.") && TEST_FILE_RE.test(file);
-}
-
-function isClientTestFile(file) {
-  return (
-    TEST_FILE_RE.test(file) &&
-    (file.includes(".client.test.") || file.includes(".component.test."))
-  );
-}
-
-function isE2eTestFile(file) {
+function isTestFile(file) {
   return TEST_FILE_RE.test(file);
 }
 
@@ -160,25 +143,25 @@ async function main() {
   }
 
   if (layer === "unit") {
-    const files = await collectFiles(UNIT_ROOTS, isUnitTestFile);
+    const files = await collectFiles(UNIT_ROOTS, isTestFile);
     await runNodeTsxTests(files, "unit");
     return;
   }
 
   if (layer === "integration") {
-    const files = await collectFiles(UNIT_ROOTS, isIntegrationTestFile);
+    const files = await collectFiles(INTEGRATION_ROOTS, isTestFile);
     await runNodeTsxTests(files, "integration");
     return;
   }
 
   if (layer === "client") {
-    const files = await collectFiles(UNIT_ROOTS, isClientTestFile);
+    const files = await collectFiles(CLIENT_ROOTS, isTestFile);
     await runClientTests(files);
     return;
   }
 
   if (layer === "e2e") {
-    const files = await collectFiles(E2E_ROOTS, isE2eTestFile);
+    const files = await collectFiles(E2E_ROOTS, isTestFile);
     await runE2eTests(files);
     return;
   }
