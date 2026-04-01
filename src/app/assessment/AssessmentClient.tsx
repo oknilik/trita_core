@@ -11,6 +11,7 @@ import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
 import {
   clearAssessmentDraftFromStorage,
+  getAssessmentDraftKey,
   getResumeQuestionIndex,
   readAssessmentDraftFromStorage,
   toAssessmentAnswerPayload,
@@ -44,6 +45,7 @@ export function AssessmentClient({
   const { locale } = useLocale()
   const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
   const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
+  const draftStorageKey = useMemo(() => getAssessmentDraftKey(testType), [testType])
   const maxQuestionIndex = Math.max(totalQuestions - 1, 0)
   const clampQuestionIndex = useCallback(
     (value: number) => Math.min(Math.max(value, 0), maxQuestionIndex),
@@ -148,6 +150,7 @@ export function AssessmentClient({
     }
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
       clearAssessmentDraftFromStorage(testType)
+      localDraftRevisionRef.current = 0
       const parsedAnswers: Record<number, number> = {}
       for (const [key, rawValue] of Object.entries(initialDraft.answers)) {
         const questionId = Number(key)
@@ -170,6 +173,7 @@ export function AssessmentClient({
     setAnswers(localDraft.answers)
     latestAnswersRef.current = localDraft.answers
     answersRef.current = localDraft.answers
+    localDraftRevisionRef.current = localDraft.revision
     const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, localDraft.answers)
     setQuestionIndexSafe(resumeIndex)
     const pct = (Object.keys(localDraft.answers).length / totalQuestions) * 100
@@ -185,6 +189,37 @@ export function AssessmentClient({
     testType,
     totalQuestions,
   ])
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== draftStorageKey) return
+      if (!event.newValue) return
+
+      const nextSnapshot = readAssessmentDraftFromStorage({
+        testType,
+        questionIds: questionIdSet,
+        totalQuestions,
+      })
+      if (!nextSnapshot) return
+      if (nextSnapshot.revision < localDraftRevisionRef.current) return
+
+      localDraftRevisionRef.current = nextSnapshot.revision
+      setAnswers(nextSnapshot.answers)
+      latestAnswersRef.current = nextSnapshot.answers
+      answersRef.current = nextSnapshot.answers
+      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, nextSnapshot.answers)
+      setQuestionIndexSafe(resumeIndex)
+      setShowIntro(false)
+
+      const pct = (Object.keys(nextSnapshot.answers).length / totalQuestions) * 100
+      for (const checkpointMark of [25, 50, 75] as const) {
+        if (pct >= checkpointMark) reachedCheckpoints.current.add(checkpointMark)
+      }
+    }
+
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [draftStorageKey, orderedQuestionIds, questionIdSet, setQuestionIndexSafe, testType, totalQuestions])
 
   // Save draft to localStorage on every meaningful change.
   useEffect(() => {
