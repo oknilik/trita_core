@@ -1,14 +1,11 @@
 import Link from "next/link";
 import type { SubscriptionState } from "@/lib/subscription";
+import { cn } from "@/lib/ui/cn";
 
 interface OrgSubscriptionBannerProps {
   state: Extract<SubscriptionState, "none" | "restricted" | "frozen">;
   locale: string;
   className?: string;
-}
-
-function joinClasses(...parts: Array<string | undefined>): string {
-  return parts.filter(Boolean).join(" ");
 }
 
 export function OrgSubscriptionBanner({
@@ -40,7 +37,7 @@ export function OrgSubscriptionBanner({
 
   return (
     <section
-      className={joinClasses(
+      className={cn(
         "rounded-2xl border px-5 py-4 md:px-6",
         isNone
           ? "border-slate-200 bg-slate-50"
@@ -51,7 +48,7 @@ export function OrgSubscriptionBanner({
       )}
     >
       <p
-        className={joinClasses(
+        className={cn(
           "font-mono text-[10px] uppercase tracking-[0.18em]",
           isNone
             ? "text-slate-700"
@@ -63,7 +60,7 @@ export function OrgSubscriptionBanner({
         {eyebrow}
       </p>
       <h2
-        className={joinClasses(
+        className={cn(
           "mt-1 font-fraunces text-xl",
           isNone
             ? "text-slate-900"
@@ -75,7 +72,7 @@ export function OrgSubscriptionBanner({
         {title}
       </h2>
       <p
-        className={joinClasses(
+        className={cn(
           "mt-2 text-sm",
           isNone
             ? "text-slate-800"
@@ -89,7 +86,7 @@ export function OrgSubscriptionBanner({
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
           href="/billing/upgrade"
-          className={joinClasses(
+          className={cn(
             "inline-flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold text-white transition",
             isNone
               ? "bg-slate-700 hover:bg-slate-800"
@@ -102,7 +99,7 @@ export function OrgSubscriptionBanner({
         </Link>
         <Link
           href="/billing/checkout?plan=org_monthly"
-          className={joinClasses(
+          className={cn(
             "inline-flex min-h-[40px] items-center rounded-lg border px-4 text-sm font-semibold transition",
             isNone
               ? "border-slate-300 text-slate-900 hover:bg-slate-100"

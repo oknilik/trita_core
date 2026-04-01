@@ -1,9 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-
-function joinClasses(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
+import { cn } from "@/lib/ui/cn";
 
 type PanelTone = "white" | "warm" | "cream";
 
@@ -15,7 +12,7 @@ export function DashboardSectionHeader({
   className?: string;
 }) {
   return (
-    <div className={joinClasses("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <div className="h-px w-4 bg-bronze/70" />
       <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-bronze/90">
         {label}
@@ -35,7 +32,7 @@ export function DashboardPanel({
 }) {
   return (
     <div
-      className={joinClasses(
+      className={cn(
         "rounded-[24px] border border-sand shadow-[0_16px_40px_rgba(26,26,46,0.04)]",
         tone === "white" && "bg-white",
         tone === "warm" && "bg-warm",
@@ -72,7 +69,7 @@ export function DashboardMetricCard({
   className?: string;
 }) {
   return (
-    <DashboardPanel className={joinClasses("relative overflow-hidden px-5 pb-5 pt-5", className)}>
+    <DashboardPanel className={cn("relative overflow-hidden px-5 pb-5 pt-5", className)}>
       <div
         className="absolute left-5 right-5 top-0 h-[3px] rounded-b-full"
         style={{ background: accent }}
@@ -131,7 +128,7 @@ export function DashboardStatusChip({
 
   return (
     <span
-      className={joinClasses(
+      className={cn(
         "inline-flex shrink-0 whitespace-nowrap rounded-full px-2.5 py-[4px] text-[10px] font-semibold",
         toneClasses[tone],
         className,
@@ -158,7 +155,7 @@ export function DashboardActionCard({
   className?: string;
 }) {
   return (
-    <DashboardPanel tone={tone} className={joinClasses("p-5", className)}>
+    <DashboardPanel tone={tone} className={cn("p-5", className)}>
       <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-bronze/80">
         {eyebrow}
       </p>
@@ -169,7 +166,7 @@ export function DashboardActionCard({
       {cta ? (
         <Link
           href={cta.href}
-          className={joinClasses(
+          className={cn(
             "mt-4 inline-flex min-h-[42px] items-center rounded-[10px] px-4 py-2 text-[12px] font-semibold no-underline transition",
             cta.tone === "solid" && "bg-[#c17f4a] text-white hover:brightness-110",
             cta.tone === "link" && "px-0 py-0 text-bronze hover:text-bronze-dark",

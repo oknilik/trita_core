@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { cn } from "@/lib/ui/cn";
 
 export type PlatformSurface = "self" | "team" | "org";
 
@@ -21,10 +22,6 @@ const DEFAULT_CONTENT_CLASS: Record<PlatformSurface, string> = {
   org: "max-w-5xl px-4 py-10",
 };
 
-function mergeClasses(...parts: Array<string | undefined>): string {
-  return parts.filter(Boolean).join(" ");
-}
-
 export function PlatformPageShell({
   surface,
   children,
@@ -39,11 +36,11 @@ export function PlatformPageShell({
   return (
     <div
       data-platform-surface={surface}
-      className={mergeClasses("min-h-dvh bg-cream", className)}
+      className={cn("min-h-dvh bg-cream", className)}
       style={rootStyle}
     >
       <main
-        className={mergeClasses(
+        className={cn(
           "mx-auto flex w-full flex-col",
           DEFAULT_CONTENT_CLASS[surface],
           contentClassName,
