@@ -13,6 +13,8 @@ Nem coverage-maximalizálás, hanem regresszióvédelem:
 - assessment
 - policy
 
+Rétegfelelősségek (mit melyik teszttípus véd): `docs/test-ownership.md`
+
 ## Szabály
 
 Ha a fenti modulok valamelyike módosul:

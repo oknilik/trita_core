@@ -50,5 +50,6 @@ Ez a dokumentum rögzíti, hogy a platform fő domain döntései hol születnek 
 ## Test quality gate
 
 - No-test-no-merge policy: `docs/testing-quality-gate.md`
+- Test ownership by layer: `docs/test-ownership.md`
 - CI enforce: `.github/workflows/tests.yml` (`Quality Gate` job)
 - Lokális ellenőrzés: `pnpm test:quality-gate` / `pnpm test:quality-gate:staged`

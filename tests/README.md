@@ -2,6 +2,10 @@
 
 This project uses a layered `tests/` structure to keep test intent explicit and discoverable.
 
+Layer ownership reference:
+
+- `docs/test-ownership.md`
+
 ## Directory layout
 
 - `tests/unit/` — pure domain/module tests (fast, deterministic)
