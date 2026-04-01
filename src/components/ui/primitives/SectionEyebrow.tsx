@@ -1,7 +1,7 @@
 import type { ElementType, ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
 
-type SectionEyebrowTone = "bronze" | "muted";
+type SectionEyebrowTone = "bronze" | "muted" | "self" | "team" | "org";
 
 interface SectionEyebrowProps {
   children: ReactNode;
@@ -13,6 +13,9 @@ interface SectionEyebrowProps {
 const TONE_CLASSES: Record<SectionEyebrowTone, string> = {
   bronze: "text-bronze",
   muted: "text-muted",
+  self: "text-surface-self-accent",
+  team: "text-surface-team-accent",
+  org: "text-surface-org-accent",
 };
 
 export function SectionEyebrow({

@@ -28,9 +28,21 @@ const SPACING_CLASSES: Record<CardSpacing, string> = {
 };
 
 const SURFACE_CLASSES: Record<CardSurface, string> = {
-  self: "data-[surface=self]:bg-surface-card",
-  team: "data-[surface=team]:bg-surface-card",
-  org: "data-[surface=org]:bg-surface-card",
+  self: "data-[surface=self]:bg-surface-card data-[surface=self]:border-surface-self-border",
+  team: "data-[surface=team]:bg-surface-card data-[surface=team]:border-surface-team-border",
+  org: "data-[surface=org]:bg-surface-card data-[surface=org]:border-surface-org-border",
+};
+
+const SURFACE_MUTED_CLASSES: Record<CardSurface, string> = {
+  self: "data-[surface=self]:bg-surface-self-accent-soft",
+  team: "data-[surface=team]:bg-surface-team-accent-soft",
+  org: "data-[surface=org]:bg-surface-org-accent-soft",
+};
+
+const SURFACE_ACCENT_COLORS: Record<CardSurface, string> = {
+  self: "var(--color-surface-self-accent)",
+  team: "var(--color-surface-team-accent)",
+  org: "var(--color-surface-org-accent)",
 };
 
 export function Card({
@@ -45,6 +57,7 @@ export function Card({
   ...props
 }: CardProps) {
   const Component = as;
+  const resolvedAccent = accent ?? (surface ? SURFACE_ACCENT_COLORS[surface] : undefined);
 
   return (
     <Component
@@ -55,16 +68,17 @@ export function Card({
         VARIANT_CLASSES[variant],
         SPACING_CLASSES[spacing],
         surface && SURFACE_CLASSES[surface],
-        accent && "relative overflow-hidden",
+        variant === "muted" && surface && SURFACE_MUTED_CLASSES[surface],
+        resolvedAccent && "relative overflow-hidden",
         className,
       )}
       {...props}
     >
-      {accent ? (
+      {resolvedAccent ? (
         <span
           aria-hidden="true"
           className="absolute left-5 right-5 top-0 h-[3px] rounded-b-full"
-          style={{ background: accent }}
+          style={{ background: resolvedAccent }}
         />
       ) : null}
       {children}

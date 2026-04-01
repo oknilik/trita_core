@@ -11,9 +11,15 @@ interface PlatformPageShellProps {
 }
 
 const SURFACE_ACCENT: Record<PlatformSurface, string> = {
-  self: "#3d6b5e",
-  team: "#d48e62",
-  org: "#3f6d9a",
+  self: "var(--color-surface-self-accent)",
+  team: "var(--color-surface-team-accent)",
+  org: "var(--color-surface-org-accent)",
+};
+
+const SURFACE_ROOT_CLASS: Record<PlatformSurface, string> = {
+  self: "bg-surface-canvas",
+  team: "bg-surface-team-accent-soft",
+  org: "bg-surface-org-accent-soft",
 };
 
 const DEFAULT_CONTENT_CLASS: Record<PlatformSurface, string> = {
@@ -36,7 +42,7 @@ export function PlatformPageShell({
   return (
     <div
       data-platform-surface={surface}
-      className={cn("min-h-dvh bg-cream", className)}
+      className={cn("min-h-dvh", SURFACE_ROOT_CLASS[surface], className)}
       style={rootStyle}
     >
       <main

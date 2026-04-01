@@ -58,6 +58,15 @@
   --color-surface-canvas: var(--color-cream);
   --color-surface-card:   #ffffff;
   --color-surface-muted:  var(--color-warm);
+  --color-surface-self-accent:      var(--color-sage);
+  --color-surface-self-accent-soft: var(--color-sage-soft);
+  --color-surface-self-border:      var(--color-sage-ring);
+  --color-surface-team-accent:      #d48e62;
+  --color-surface-team-accent-soft: #f6e8dc;
+  --color-surface-team-border:      var(--color-bronze-edge);
+  --color-surface-org-accent:       #3f6d9a;
+  --color-surface-org-accent-soft:  #e8eff7;
+  --color-surface-org-border:       #bfd0e2;
 
   /* Text roles */
   --color-text-primary:   var(--color-ink);
