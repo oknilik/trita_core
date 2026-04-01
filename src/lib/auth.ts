@@ -126,16 +126,3 @@ export async function getUserOrgMembership(profileId: string): Promise<{
   if (!membership) return null;
   return { orgId: membership.orgId, role: membership.role };
 }
-
-// @deprecated — use requireOrgContext or requireOrgRole instead
-export async function requireOrgAccess(
-  orgId: string,
-  adminOnly = false
-): Promise<{ profileId: string; memberRole: string }> {
-  if (adminOnly) {
-    const ctx = await requireOrgRole(orgId, "ORG_ADMIN");
-    return { profileId: ctx.profileId, memberRole: ctx.role };
-  }
-  const ctx = await requireOrgContext(orgId);
-  return { profileId: ctx.profileId, memberRole: ctx.role };
-}
