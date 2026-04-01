@@ -4,6 +4,7 @@ import { readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
+import { resolveIntegrationTestDbEnv } from "./test-db-env.mjs";
 
 const layer = process.argv[2];
 const flags = new Set(process.argv.slice(3));
@@ -84,7 +85,7 @@ function printSkip(layerName) {
   console.log(`[test:${layerName}] no matching test files, skipping`);
 }
 
-async function runNodeTsxTests(files, layerName) {
+async function runNodeTsxTests(files, layerName, extraEnv = {}) {
   if (files.length === 0) {
     printSkip(layerName);
     return;
@@ -99,6 +100,7 @@ async function runNodeTsxTests(files, layerName) {
   await run("npx", args, {
     env: {
       ...process.env,
+      ...extraEnv,
       NODE_OPTIONS: mergeNodeOptions("--conditions=react-server"),
     },
   });
@@ -150,7 +152,28 @@ async function main() {
 
   if (layer === "integration") {
     const files = await collectFiles(INTEGRATION_ROOTS, isTestFile);
-    await runNodeTsxTests(files, "integration");
+    if (files.length === 0) {
+      printSkip("integration");
+      return;
+    }
+
+    const integrationEnv = resolveIntegrationTestDbEnv();
+    const processWithIntegrationEnv = {
+      ...process.env,
+      ...integrationEnv,
+    };
+
+    await run("node", ["scripts/test-integration-bootstrap.mjs"], {
+      env: processWithIntegrationEnv,
+    });
+
+    try {
+      await runNodeTsxTests(files, "integration", integrationEnv);
+    } finally {
+      await run("node", ["scripts/test-integration-cleanup.mjs"], {
+        env: processWithIntegrationEnv,
+      });
+    }
     return;
   }
 

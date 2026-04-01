@@ -39,3 +39,19 @@ Use the common helper layer instead of hand-crafted inline fixtures when possibl
 - New business logic should add at least:
   - 1 unit test (`tests/unit/...`)
   - 1 integration test (`tests/integration/...`) when behavior crosses boundaries.
+
+## Integration DB bootstrap
+
+Integration tests run against a dedicated test database and **must not** use the dev DB.
+
+1. Copy `.env.test.example` to `.env.test` (or `.env.test.local`).
+2. Set `TEST_DATABASE_URL` (and optionally `TEST_DIRECT_URL`) to an isolated DB.
+3. Run `pnpm test:integration`.
+
+What happens automatically on `test:integration`:
+
+- bootstrap: `prisma migrate deploy` on test DB
+- reset: truncate current schema tables (excluding `_prisma_migrations`)
+- seed: deterministic baseline data via `scripts/seed-test-db.ts`
+- test run
+- cleanup: schema reset after suite
