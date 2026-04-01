@@ -3,6 +3,7 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+import { Button } from "@/components/ui/primitives/Button";
 
 type AccessLevel = "start" | "plus";
 
@@ -135,23 +136,25 @@ export function ProfileHero({
         )}
 
         <div className="mt-[18px] flex gap-2">
-          <button
+          <Button
             type="button"
             onClick={onShare}
             disabled={shareLoading}
-            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] bg-white/[0.07] px-[18px] py-2 text-[11px] font-medium text-white/[0.55] transition hover:bg-white/[0.12] disabled:opacity-50"
+            variant="ghost"
+            className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-white/[0.55] hover:bg-white/[0.12] hover:text-white/70"
           >
             📤 {shareLoading ? "..." : t("results.heroShare", locale)}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onDownloadPdf}
             disabled={pdfLoading}
-            className="flex min-h-[44px] items-center gap-1.5 rounded-[9px] px-[18px] py-2 text-[11px] font-medium text-white transition hover:brightness-110 disabled:opacity-50"
+            variant="primary"
+            className="rounded-[9px] px-[18px] text-[11px] font-medium text-white hover:brightness-110"
             style={{ backgroundColor: SELF_HERO_PRIMARY }}
           >
             📄 {pdfLoading ? "..." : t("results.heroPdf", locale)}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

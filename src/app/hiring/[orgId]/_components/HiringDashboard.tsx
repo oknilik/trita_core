@@ -6,6 +6,7 @@ import { t, type Locale } from "@/lib/i18n";
 import { CandidateInviteForm } from "@/components/manager/CandidateInviteForm";
 import { CandidateRevokeButton } from "@/components/manager/CandidateRevokeButton";
 import { RequestCreditsButton } from "@/components/hiring/RequestCreditsButton";
+import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 
 interface Team {
   id: string;
@@ -150,7 +151,11 @@ function CandidateRow({
           {invite.status === "COMPLETED" && invite.hasResult && (
             <Link
               href={`/hiring/${orgId}/candidates/${invite.id}`}
-              className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-[11px] font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
+              className={getButtonClassName({
+                variant: "secondary",
+                size: "sm",
+                className: "px-3 text-[11px]",
+              })}
             >
               {t("hiring.resultsLink", locale)}
             </Link>
@@ -267,28 +272,30 @@ export function HiringDashboard({
 
               <div className="mt-6 flex flex-wrap items-center gap-2.5">
                 {canInviteNew ? (
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setShowForm((v) => !v)}
+                    variant="ghost"
                     className={[
-                      "min-h-[44px] rounded-[10px] px-5 text-[12px] font-semibold transition",
+                      "rounded-[10px] px-5 text-[12px]",
                       showForm
-                        ? "bg-white text-ink hover:bg-white/90"
-                        : "bg-[#d2a36a] text-[#1d2d2a] hover:brightness-110",
+                        ? "bg-white text-ink hover:bg-white/90 hover:text-ink"
+                        : "bg-[#d2a36a] text-[#1d2d2a] hover:bg-[#d2a36a] hover:text-[#1d2d2a] hover:brightness-110",
                     ].join(" ")}
                   >
                     {showForm
                       ? t("hiring.cancelButton", locale)
                       : t("hiring.inviteCandidate", locale)}
-                  </button>
+                  </Button>
                 ) : (
-                  <button
+                  <Button
                     type="button"
                     disabled
-                    className="min-h-[44px] rounded-[10px] border border-white/20 bg-white/10 px-5 text-[12px] font-semibold text-white/50"
+                    variant="ghost"
+                    className="rounded-[10px] border border-white/20 bg-white/10 px-5 text-[12px] text-white/60 hover:bg-white/10 hover:text-white/60"
                   >
                     {t("hiring.inviteCandidate", locale)}
-                  </button>
+                  </Button>
                 )}
                 {!canInviteNew && (
                   <span className="text-[11px] text-white/70">
@@ -495,12 +502,15 @@ export function HiringDashboard({
                         </p>
                       )}
                     </div>
-                    <a
+                    <Link
                       href={`/billing/checkout?plan=candidate_custom&qty=${creditQty}`}
-                      className="min-h-[40px] inline-flex items-center rounded-lg bg-sage px-4 text-[11px] font-semibold text-white transition hover:bg-sage-dark"
+                      className={getButtonClassName({
+                        size: "sm",
+                        className: "bg-sage px-4 text-[11px] text-white hover:bg-sage-dark hover:text-white",
+                      })}
                     >
                       +{creditQty}
-                    </a>
+                    </Link>
                   </div>
                 </>
               ) : creditBalance.available === 0 ? (
@@ -743,13 +753,13 @@ export function HiringDashboard({
             {t("hiring.noCandidatesDesc", locale)}
           </p>
           {canInviteNew && (
-            <button
+            <Button
               type="button"
               onClick={() => setShowForm(true)}
-              className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+              className="bg-sage px-5 text-sm text-white hover:bg-sage-dark hover:text-white"
             >
               {t("hiring.inviteCandidate", locale)}
-            </button>
+            </Button>
           )}
         </div>
       )}

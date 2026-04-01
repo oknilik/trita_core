@@ -197,15 +197,17 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
               {t("campaignWiz.selectParticipants", locale)}
             </h2>
             {members.length > 0 && (
-              <button
+              <Button
                 type="button"
                 onClick={toggleAll}
-                className="text-[12px] font-semibold text-bronze hover:underline"
+                variant="ghost"
+                size="sm"
+                className="min-h-0 px-0 text-[12px] text-bronze hover:bg-transparent hover:underline"
               >
                 {selectedIds.size === members.length
                   ? t("campaignWiz.deselectAll", locale)
                   : t("campaignWiz.selectAll", locale)}
-              </button>
+              </Button>
             )}
           </div>
 

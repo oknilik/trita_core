@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { t, type Locale } from "@/lib/i18n";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 
 interface HiringPaywallProps {
   orgId: string;
@@ -73,12 +74,14 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
         {isAddon ? (
           isAdmin ? (
             <>
-              <a
+              <Link
                 href="/billing/checkout?plan=candidate_addon"
-                className="min-h-[44px] inline-flex items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                className={getButtonClassName({
+                  className: "px-8",
+                })}
               >
                 {t("hiring.activateAddon", locale)}
-              </a>
+              </Link>
               <p className="text-xs text-muted">
                 {t("hiring.upgradeToOrg", locale)}
               </p>
@@ -97,7 +100,9 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
         ) : isAdmin ? (
           <Link
             href="/billing/checkout?plan=org_monthly"
-            className="min-h-[44px] inline-flex items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
+            className={getButtonClassName({
+              className: "px-8",
+            })}
           >
             {t("hiring.activateSubscription", locale)}
           </Link>

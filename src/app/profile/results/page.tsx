@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -24,6 +25,7 @@ import { t, type Locale } from "@/lib/i18n";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 
 export const dynamic = "force-dynamic";
 
@@ -164,12 +166,16 @@ export default async function ProfileResultsPage({
             <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[var(--color-text-muted)]">
               {t("results.draftInProgressHint", locale)}
             </p>
-            <a
+            <Link
               href="/assessment"
-              className="mt-8 inline-flex min-h-[52px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 text-[15px] font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
+              className={getButtonClassName({
+                size: "lg",
+                className:
+                  "mt-8 rounded-xl px-8 text-[15px] shadow-md shadow-[var(--color-action-primary-bg)]/20 hover:-translate-y-px hover:brightness-[1.06]",
+              })}
             >
               {t("results.draftInProgressCta", locale)}
-            </a>
+            </Link>
           </div>
         </main>
       );

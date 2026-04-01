@@ -13,6 +13,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconRight?: ReactNode;
 }
 
+interface ButtonClassNameOptions {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  fullWidth?: boolean;
+  className?: string;
+}
+
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: "bg-action-primary-bg text-action-primary-fg hover:bg-action-primary-bg-hover",
   secondary:
@@ -26,6 +33,24 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
   md: "min-h-[44px] px-[var(--ui-space-5)] text-sm",
   lg: "min-h-[48px] px-[var(--ui-space-6)] text-sm",
 };
+
+export function getButtonClassName({
+  variant = "primary",
+  size = "md",
+  fullWidth = false,
+  className,
+}: ButtonClassNameOptions = {}): string {
+  return cn(
+    "inline-flex items-center justify-center gap-[var(--ui-space-2)] rounded-[var(--ui-radius-lg)] font-semibold transition",
+    "duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-state-disabled-bg disabled:text-state-disabled-fg disabled:opacity-50",
+    VARIANT_CLASSES[variant],
+    SIZE_CLASSES[size],
+    fullWidth && "w-full",
+    className,
+  );
+}
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
@@ -49,16 +74,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       disabled={isDisabled}
       aria-busy={loading || undefined}
-      className={cn(
-        "inline-flex items-center justify-center gap-[var(--ui-space-2)] rounded-[var(--ui-radius-lg)] font-semibold transition",
-        "duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
-        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-state-disabled-bg disabled:text-state-disabled-fg disabled:opacity-50",
-        VARIANT_CLASSES[variant],
-        SIZE_CLASSES[size],
-        fullWidth && "w-full",
-        className,
-      )}
+      className={getButtonClassName({ variant, size, fullWidth, className })}
       {...props}
     >
       {loading ? (
