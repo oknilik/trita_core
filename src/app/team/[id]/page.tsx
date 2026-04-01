@@ -6,8 +6,6 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
-import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
-import { can, getAccessPolicy } from "@/lib/policy-engine";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
@@ -24,6 +22,11 @@ import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import {
+  resolveOrgCapabilityDecision,
+  resolveOrgPolicySnapshot,
+  toOrgSubscriptionBannerState,
+} from "@/lib/policy-service";
 
 export const dynamic = "force-dynamic";
 
@@ -85,39 +88,24 @@ export default async function TeamDetailPage({
     : null;
   const orgMemberRole = orgMembership?.role ?? null;
   if (!orgMemberRole) redirect(deepLinkFallback);
+  const orgId = team.orgId;
+  if (!orgId) redirect(deepLinkFallback);
 
   const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
   if (!hasTeamAccess) redirect(deepLinkFallback);
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
-  const subscription = team.orgId ? await getOrgSubscription(team.orgId) : null;
-  const subscriptionState = getSubscriptionState(subscription);
-  const policy = getAccessPolicy(
-    {
-      isAuthenticated: true,
-      orgRole: orgMemberRole,
-      membership: { hasOrgMembership: true, orgId: team.orgId, hasTeamMembership: true, teamId },
-    },
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
-  );
-  const manageDecision = can(
-    {
-      isAuthenticated: true,
-      orgRole: orgMemberRole,
-      membership: { hasOrgMembership: true, orgId: team.orgId, hasTeamMembership: true, teamId },
-    },
-    "manage",
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
-  );
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: orgMemberRole,
+    teamId,
+    hasTeamMembership: true,
+  });
+  const policy = policySnapshot.policy;
+  const manageDecision = resolveOrgCapabilityDecision(policySnapshot, "manage");
 
-  const isRestricted = policy.policyState === "restricted" || policy.policyState === "past_due";
-  const isNone = policy.policyState === "none";
+  const isRestricted = toOrgSubscriptionBannerState(policy.policyState) === "restricted";
+  const isNone = toOrgSubscriptionBannerState(policy.policyState) === "none";
   const isFrozen = policy.policyState === "frozen";
   const canManageTeamActions = isOrgManager && policy.capabilities.has("manage");
   const manageGateCopy =

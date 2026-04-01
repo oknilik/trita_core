@@ -6,14 +6,17 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
-import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
-import { can, getAccessPolicy } from "@/lib/policy-engine";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import {
+  resolveOrgCapabilityDecision,
+  resolveOrgPolicySnapshot,
+  toOrgSubscriptionBannerState,
+} from "@/lib/policy-service";
 import {
   DashboardMetricCard,
   DashboardPanel,
@@ -67,59 +70,27 @@ export default async function OrgDetailPage({
   const deepLinkFallback = await resolveJourneyFallbackForProfileId(profileId);
   if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect(deepLinkFallback);
 
-  const subscription = await getOrgSubscription(orgId);
-  const subscriptionState = getSubscriptionState(subscription);
-  const policy = getAccessPolicy(
-    {
-      isAuthenticated: true,
-      orgRole: memberRole,
-      membership: { hasOrgMembership: true, orgId },
-    },
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
-  );
-  const launchCampaignDecision = can(
-    {
-      isAuthenticated: true,
-      orgRole: memberRole,
-      membership: { hasOrgMembership: true, orgId },
-    },
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: memberRole,
+  });
+  const policy = policySnapshot.policy;
+  const launchCampaignDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
     "launchCampaign",
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
   );
-  const createTeamDecision = can(
-    {
-      isAuthenticated: true,
-      orgRole: memberRole,
-      membership: { hasOrgMembership: true, orgId },
-    },
+  const createTeamDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
     "create",
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
   );
-  const inviteDecision = can(
-    {
-      isAuthenticated: true,
-      orgRole: memberRole,
-      membership: { hasOrgMembership: true, orgId },
-    },
+  const inviteDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
     "invite",
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
   );
 
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
-  const isRestricted = policy.policyState === "restricted" || policy.policyState === "past_due";
-  const isNone = policy.policyState === "none";
+  const isRestricted = toOrgSubscriptionBannerState(policy.policyState) === "restricted";
+  const isNone = toOrgSubscriptionBannerState(policy.policyState) === "none";
   const isFrozen = policy.policyState === "frozen";
   const canManageOrgActions = policy.capabilities.has("manage");
   const canCreateTeamActions = policy.capabilities.has("create");

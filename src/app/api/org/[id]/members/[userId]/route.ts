@@ -2,8 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
 import { syncSeatBilling } from "@/lib/seat-billing";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const patchSchema = z.object({
   role: z.enum(["ORG_ADMIN", "ORG_MANAGER", "ORG_MEMBER"]),
@@ -29,8 +29,23 @@ export async function PATCH(
     where: { orgId_userId: { orgId, userId: profile.id } },
     select: { role: true },
   });
-  if (!requesterMembership || !hasOrgRole(requesterMembership.role, "ORG_ADMIN")) {
+  if (!requesterMembership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const patchPolicySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: requesterMembership.role,
+  });
+  const patchDecision = resolveOrgCapabilityDecision(patchPolicySnapshot, "orgAdminManage");
+  if (!patchDecision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: patchDecision.reason,
+        upgradeHint: patchDecision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   const body = patchSchema.safeParse(await req.json());
@@ -81,8 +96,23 @@ export async function DELETE(
     where: { orgId_userId: { orgId, userId: profile.id } },
     select: { role: true },
   });
-  if (!requesterMembership || !hasOrgRole(requesterMembership.role, "ORG_ADMIN")) {
+  if (!requesterMembership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const deletePolicySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: requesterMembership.role,
+  });
+  const deleteDecision = resolveOrgCapabilityDecision(deletePolicySnapshot, "orgAdminManage");
+  if (!deleteDecision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: deleteDecision.reason,
+        upgradeHint: deleteDecision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   const targetMembership = await prisma.organizationMember.findUnique({

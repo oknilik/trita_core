@@ -15,13 +15,13 @@ import { Footer } from "@/components/Footer";
 import { NavHeaderUI } from "@/components/layout/nav-header-ui";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
-import { getOrgSubscription, hasAccess } from "@/lib/subscription";
 import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourney } from "@/lib/journey/engine";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getMetadataBase } from "@/lib/seo";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
+import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -107,7 +107,7 @@ export default async function RootLayout({
           const isAdmin = hasOrgRole(membership.role, "ORG_ADMIN");
           const isManager = hasOrgRole(membership.role, "ORG_MANAGER");
 
-          const [org, accessibleTeamIds, activeCampaignCount, sub] = await Promise.all([
+          const [org, accessibleTeamIds, activeCampaignCount, policySnapshot] = await Promise.all([
             prisma.organization.findUnique({
               where: { id: membership.orgId },
               select: { id: true, name: true },
@@ -116,7 +116,10 @@ export default async function RootLayout({
             prisma.campaign.count({
               where: { orgId: membership.orgId, status: "ACTIVE" },
             }),
-            getOrgSubscription(membership.orgId),
+            resolveOrgPolicySnapshot({
+              orgId: membership.orgId,
+              orgRole: membership.role,
+            }),
           ]);
 
           const teams = accessibleTeamIds.length > 0
@@ -127,7 +130,7 @@ export default async function RootLayout({
               })
             : [];
 
-          const hasHiringAccess = isManager && hasAccess(sub);
+          const hasHiringAccess = policySnapshot.policy.capabilities.has("candidateEvaluate");
           navData = {
             user: {
               username: profile.username ?? null,

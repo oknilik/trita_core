@@ -5,8 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 import { canManageTeam, getManageableTeamIds } from "@/lib/team-auth";
-import { getOrgSubscription, getPlanTier, hasCandidateAccess } from "@/lib/subscription";
+import { getPlanTier } from "@/lib/subscription";
 import { useCredit as consumeCredit } from "@/lib/candidate-credits";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
 
   // Verify the caller can manage the given team
   let orgId: string | null = null;
+  let orgRole: string | null = null;
   if (teamId) {
     const orgMembership = await prisma.organizationMember.findFirst({
       where: { userId: profile.id, org: { teams: { some: { id: teamId } } } },
@@ -45,6 +47,7 @@ export async function POST(req: Request) {
     const allowed = await canManageTeam(profile.id, teamId, orgMembership.role);
     if (!allowed) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
     orgId = orgMembership.orgId;
+    orgRole = orgMembership.role;
   } else {
     const orgMembership = await getActiveOrgMembership(profile.id);
     if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
@@ -54,26 +57,46 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
     }
     orgId = orgMembership.orgId;
+    orgRole = orgMembership.role;
+  }
+
+  if (!orgId || !orgRole) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole,
+    teamId,
+    hasTeamMembership: Boolean(teamId),
+  });
+  const evaluateDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
+    "candidateEvaluate",
+  );
+  if (!evaluateDecision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: evaluateDecision.reason,
+        upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   // Credit check + atomic decrement for non-unlimited tiers
-  if (orgId) {
-    const sub = await getOrgSubscription(orgId);
-    if (!hasCandidateAccess(sub)) {
+  const sub = policySnapshot.subscription;
+  const tier = getPlanTier(sub);
+  const isUnlimited = tier === "org" || tier === "scale";
+  if (!isUnlimited) {
+    const candidateLabel = name ?? email ?? "unknown";
+    const newBalance = await consumeCredit({
+      orgId,
+      actorId: profile.id,
+      note: `Jelölt: ${candidateLabel}${position ? ` (${position})` : ""}`,
+    });
+    if (newBalance === null) {
       return NextResponse.json({ error: "NO_CANDIDATE_CREDITS" }, { status: 402 });
-    }
-    const tier = getPlanTier(sub);
-    const isUnlimited = tier === "org" || tier === "scale";
-    if (!isUnlimited) {
-      const candidateLabel = name ?? email ?? "unknown";
-      const newBalance = await consumeCredit({
-        orgId,
-        actorId: profile.id,
-        note: `Jelölt: ${candidateLabel}${position ? ` (${position})` : ""}`,
-      });
-      if (newBalance === null) {
-        return NextResponse.json({ error: "NO_CANDIDATE_CREDITS" }, { status: 402 });
-      }
     }
   }
 

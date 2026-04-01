@@ -5,11 +5,14 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
-import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
-import { can } from "@/lib/policy-engine";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import {
+  resolveOrgCapabilityDecision,
+  resolveOrgPolicySnapshot,
+  toOrgSubscriptionBannerState,
+} from "@/lib/policy-service";
 
 export const dynamic = "force-dynamic";
 
@@ -26,26 +29,19 @@ export default async function NewCampaignPage({
 
   const { role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
-  const subscription = await getOrgSubscription(orgId);
-  const subscriptionState = getSubscriptionState(subscription);
 
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   if (!isManager) notFound();
-  const createDecision = can(
-    {
-      isAuthenticated: true,
-      orgRole: memberRole,
-      membership: { hasOrgMembership: true, orgId },
-    },
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: memberRole,
+  });
+  const createDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
     "launchCampaign",
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
   );
   const isReadOnly = !createDecision.allowed;
-  const isFrozen = subscriptionState === "frozen";
-  const isNone = subscriptionState === "none";
+  const bannerState = toOrgSubscriptionBannerState(policySnapshot.policy.policyState);
   const gateCopy = getCapabilityGateCopy({
     locale,
     reason: createDecision.reason,
@@ -59,7 +55,7 @@ export default async function NewCampaignPage({
       <div className="min-h-dvh bg-cream">
         <main className="mx-auto w-full max-w-2xl px-4 py-10">
           <OrgSubscriptionBanner
-            state={isFrozen ? "frozen" : isNone ? "none" : "restricted"}
+            state={bannerState ?? "restricted"}
             locale={locale}
           />
           <div className="mt-6 rounded-2xl border border-sand bg-white p-6 shadow-sm">

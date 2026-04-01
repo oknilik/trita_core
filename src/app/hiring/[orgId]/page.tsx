@@ -4,11 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getManageableTeamIds } from "@/lib/team-auth";
-import { requireActiveSubscription } from "@/lib/require-active-subscription";
-import { getOrgSubscription, hasAccess, getPlanTier } from "@/lib/subscription";
+import { getPlanTier } from "@/lib/subscription";
 import { getCreditBalance, getCreditHistory } from "@/lib/candidate-credits";
+import {
+  resolveOrgCapabilityDecision,
+  resolveOrgPolicySnapshot,
+  toOrgSubscriptionBannerState,
+} from "@/lib/policy-service";
 import { HiringPaywall } from "./_components/HiringPaywall";
 import { HiringDashboard } from "./_components/HiringDashboard";
+import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -31,22 +36,31 @@ export default async function HiringPage({
   if (!isManager) notFound();
 
   const isAdmin = hasOrgRole(memberRole, "ORG_ADMIN");
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: memberRole,
+  });
+  const candidateEvaluateDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
+    "candidateEvaluate",
+  );
+  const bannerState = toOrgSubscriptionBannerState(policySnapshot.policy.policyState);
 
-  const sub = await getOrgSubscription(orgId);
-
-  if (!hasAccess(sub)) {
+  if (!candidateEvaluateDecision.allowed) {
     return (
       <div className="min-h-dvh bg-cream">
         <main className="mx-auto w-full max-w-5xl px-4 py-10">
+          {bannerState ? (
+            <div className="mb-5">
+              <OrgSubscriptionBanner state={bannerState} locale={locale} />
+            </div>
+          ) : null}
           <HiringPaywall orgId={orgId} locale={locale} variant="no-subscription" isAdmin={isAdmin} />
         </main>
       </div>
     );
   }
-
-  await requireActiveSubscription();
-
-  const tier = getPlanTier(sub);
+  const tier = getPlanTier(policySnapshot.subscription);
   const isOrgOrScale = tier === "org" || tier === "scale";
 
   let creditBalance: { available: number; totalPurchased: number; totalUsed: number } | null = null;

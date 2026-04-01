@@ -2,8 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
-import { can } from "@/lib/policy-engine";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
@@ -73,19 +72,11 @@ export async function POST(
   if (!membership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
-  const subscription = await getOrgSubscription(orgId);
-  const decision = can(
-    {
-      isAuthenticated: true,
-      orgRole: membership.role,
-      membership: { hasOrgMembership: true, orgId },
-    },
-    "launchCampaign",
-    {
-      subscriptionState: getSubscriptionState(subscription),
-      subscriptionStatus: subscription?.status ?? "none",
-    },
-  );
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: membership.role,
+  });
+  const decision = resolveOrgCapabilityDecision(policySnapshot, "launchCampaign");
   if (!decision.allowed) {
     return NextResponse.json(
       {

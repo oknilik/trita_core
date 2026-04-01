@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canManageTeam } from "@/lib/team-auth";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const patchSchema = z.object({
   role: z.enum(["member", "manager"]),
@@ -35,6 +36,23 @@ export async function PATCH(
     select: { role: true },
   });
   if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  const patchPolicySnapshot = await resolveOrgPolicySnapshot({
+    orgId: team.orgId,
+    orgRole: orgMembership.role,
+    teamId,
+    hasTeamMembership: true,
+  });
+  const patchDecision = resolveOrgCapabilityDecision(patchPolicySnapshot, "manage");
+  if (!patchDecision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: patchDecision.reason,
+        upgradeHint: patchDecision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
+  }
 
   const canManage = await canManageTeam(profile.id, teamId, orgMembership.role);
   if (!canManage) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
@@ -88,6 +106,23 @@ export async function DELETE(
     select: { role: true },
   });
   if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  const deletePolicySnapshot = await resolveOrgPolicySnapshot({
+    orgId: team.orgId,
+    orgRole: orgMembership.role,
+    teamId,
+    hasTeamMembership: true,
+  });
+  const deleteDecision = resolveOrgCapabilityDecision(deletePolicySnapshot, "manage");
+  if (!deleteDecision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: deleteDecision.reason,
+        upgradeHint: deleteDecision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
+  }
 
   const canManage = await canManageTeam(profile.id, teamId, orgMembership.role);
   if (!canManage) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });

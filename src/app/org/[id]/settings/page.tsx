@@ -5,13 +5,15 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgRole } from "@/lib/auth";
 import {
-  getOrgSubscription,
-  getSubscriptionState,
   trialDaysLeft as calcTrialDaysLeft,
   getPlanTier,
   PLAN_SEAT_LIMITS,
   calculateExtraSeats,
 } from "@/lib/subscription";
+import {
+  resolveOrgPolicySnapshot,
+  toOrgSubscriptionBannerState,
+} from "@/lib/policy-service";
 import { OrgRenameForm } from "@/components/org/OrgRenameForm";
 import { OrgDeactivateButton } from "@/components/org/OrgDeactivateButton";
 import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
@@ -31,10 +33,15 @@ export default async function OrgSettingsPage({
 }) {
   const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
 
-  const { profileId, org } = await requireOrgRole(orgId, "ORG_ADMIN");
+  const { profileId, role, org } = await requireOrgRole(orgId, "ORG_ADMIN");
   const isHu = locale !== "en";
 
-  const [members, sub, memberCount, pendingCount] = await Promise.all([
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: role,
+  });
+
+  const [members, memberCount, pendingCount] = await Promise.all([
     prisma.organizationMember.findMany({
       where: { orgId },
       orderBy: { joinedAt: "asc" },
@@ -44,15 +51,15 @@ export default async function OrgSettingsPage({
         user: { select: { id: true, email: true, username: true } },
       },
     }),
-    getOrgSubscription(orgId),
     prisma.organizationMember.count({ where: { orgId } }),
     prisma.organizationPendingInvite.count({ where: { orgId } }),
   ]);
 
+  const sub = policySnapshot.subscription;
   const daysLeft = calcTrialDaysLeft(sub);
   const subStatus = sub?.status ?? "none";
-  const subscriptionState = getSubscriptionState(sub);
-  const isReadOnly = subscriptionState === "restricted" || subscriptionState === "frozen";
+  const bannerState = toOrgSubscriptionBannerState(policySnapshot.policy.policyState);
+  const isReadOnly = !policySnapshot.policy.capabilities.has("orgAdminManage");
   const tier = getPlanTier(sub);
   const includedSeats = PLAN_SEAT_LIMITS[tier];
   const extraSeats = calculateExtraSeats(sub, memberCount);
@@ -83,9 +90,9 @@ export default async function OrgSettingsPage({
           </div>
         </div>
 
-        {(subscriptionState === "restricted" || subscriptionState === "frozen") ? (
+        {bannerState ? (
           <OrgSubscriptionBanner
-            state={subscriptionState === "frozen" ? "frozen" : "restricted"}
+            state={bannerState}
             locale={locale}
           />
         ) : null}

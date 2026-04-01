@@ -6,6 +6,7 @@ import { hasOrgRole } from "@/lib/auth";
 import { canManageTeam } from "@/lib/team-auth";
 import { getOrgSubscription, getPlanTier } from "@/lib/subscription";
 import { addCredits } from "@/lib/candidate-credits";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 // DELETE /api/manager/candidates/[id] — revoke a PENDING candidate invite
 export async function DELETE(
@@ -39,16 +40,40 @@ export async function DELETE(
 
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-  let canRevoke = invite.managerId === profile.id;
-  if (!canRevoke && invite.teamId && invite.team?.orgId) {
+  let orgMembershipRole: string | null = null;
+  if (invite.team?.orgId) {
     const orgMembership = await prisma.organizationMember.findFirst({
       where: { userId: profile.id, orgId: invite.team.orgId },
       select: { role: true },
     });
-    if (orgMembership) {
-      canRevoke = hasOrgRole(orgMembership.role, "ORG_ADMIN")
-        || await canManageTeam(profile.id, invite.teamId, orgMembership.role);
+    orgMembershipRole = orgMembership?.role ?? null;
+    const evaluateSnapshot = await resolveOrgPolicySnapshot({
+      orgId: invite.team.orgId,
+      orgRole: orgMembershipRole,
+      teamId: invite.teamId,
+      hasTeamMembership: Boolean(invite.teamId),
+      hasOrgMembership: Boolean(orgMembershipRole),
+    });
+    const evaluateDecision = resolveOrgCapabilityDecision(
+      evaluateSnapshot,
+      "candidateEvaluate",
+    );
+    if (!evaluateDecision.allowed) {
+      return NextResponse.json(
+        {
+          error: "CAPABILITY_DENIED",
+          reason: evaluateDecision.reason,
+          upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
+        },
+        { status: 403 },
+      );
     }
+  }
+
+  let canRevoke = invite.managerId === profile.id;
+  if (!canRevoke && invite.teamId && orgMembershipRole) {
+    canRevoke = hasOrgRole(orgMembershipRole, "ORG_ADMIN")
+      || await canManageTeam(profile.id, invite.teamId, orgMembershipRole);
   }
   if (!canRevoke) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 

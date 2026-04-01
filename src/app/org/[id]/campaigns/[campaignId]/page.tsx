@@ -5,12 +5,15 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
-import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
-import { can } from "@/lib/policy-engine";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import {
+  resolveOrgCapabilityDecision,
+  resolveOrgPolicySnapshot,
+  toOrgSubscriptionBannerState,
+} from "@/lib/policy-service";
 
 export const dynamic = "force-dynamic";
 
@@ -103,25 +106,20 @@ export default async function CampaignDetailPage({
 
   const { role: memberRole } = await requireOrgContext(orgId);
   const isHu = locale !== "en";
-  const subscription = await getOrgSubscription(orgId);
-  const subscriptionState = getSubscriptionState(subscription);
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: memberRole,
+  });
+  const bannerState = toOrgSubscriptionBannerState(policySnapshot.policy.policyState);
   const isManagerRole = hasOrgRole(memberRole, "ORG_MANAGER");
-  const manageDecision = can(
-    {
-      isAuthenticated: true,
-      orgRole: memberRole,
-      membership: { hasOrgMembership: true, orgId },
-    },
+  const manageDecision = resolveOrgCapabilityDecision(
+    policySnapshot,
     "manage",
-    {
-      subscriptionState,
-      subscriptionStatus: subscription?.status ?? "none",
-    },
   );
-  const isFrozen = subscriptionState === "frozen";
-  const isNone = subscriptionState === "none";
-  const isRestricted = subscriptionState === "restricted";
-  const isPastDue = subscription?.status === "past_due";
+  const isFrozen = policySnapshot.policy.policyState === "frozen";
+  const isNone = bannerState === "none";
+  const isRestricted = bannerState === "restricted";
+  const isPastDue = policySnapshot.policy.policyState === "past_due";
   const canManageCampaign = isManagerRole && manageDecision.allowed;
   const manageGateCopy =
     isManagerRole && !canManageCampaign

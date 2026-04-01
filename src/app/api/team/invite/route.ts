@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const schema = z.object({ teamId: z.string().min(1) });
 
@@ -36,8 +36,25 @@ export async function POST(req: Request) {
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
     select: { role: true },
   });
-  if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+  if (!membership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const policySnapshot = await resolveOrgPolicySnapshot({
+    orgId: team.orgId,
+    orgRole: membership.role,
+    teamId: team.id,
+    hasTeamMembership: true,
+  });
+  const inviteDecision = resolveOrgCapabilityDecision(policySnapshot, "invite");
+  if (!inviteDecision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: inviteDecision.reason,
+        upgradeHint: inviteDecision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
   }
 
   // Upsert: keep existing token if already generated for this team

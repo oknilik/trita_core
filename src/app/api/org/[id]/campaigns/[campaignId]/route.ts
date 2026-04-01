@@ -2,8 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
-import { can } from "@/lib/policy-engine";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const patchSchema = z.object({
   status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
@@ -36,19 +35,11 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
 }
 
 async function resolveManageCapabilityDecision(orgId: string, role: string) {
-  const subscription = await getOrgSubscription(orgId);
-  return can(
-    {
-      isAuthenticated: true,
-      orgRole: role,
-      membership: { hasOrgMembership: true, orgId },
-    },
-    "manage",
-    {
-      subscriptionState: getSubscriptionState(subscription),
-      subscriptionStatus: subscription?.status ?? "none",
-    },
-  );
+  const snapshot = await resolveOrgPolicySnapshot({
+    orgId,
+    orgRole: role,
+  });
+  return resolveOrgCapabilityDecision(snapshot, "manage");
 }
 
 // GET /api/org/[id]/campaigns/[campaignId] — campaign detail

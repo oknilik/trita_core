@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageTeam } from "@/lib/team-auth";
 import { sendCandidateInviteEmail } from "@/lib/emails";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -39,16 +40,40 @@ export async function POST(
 
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-  let canResend = invite.managerId === profile.id;
-  if (!canResend && invite.teamId && invite.team?.orgId) {
+  let orgMembershipRole: string | null = null;
+  if (invite.team?.orgId) {
     const orgMembership = await prisma.organizationMember.findFirst({
       where: { userId: profile.id, orgId: invite.team.orgId },
       select: { role: true },
     });
-    if (orgMembership) {
-      canResend = hasOrgRole(orgMembership.role, "ORG_ADMIN")
-        || await canManageTeam(profile.id, invite.teamId, orgMembership.role);
+    orgMembershipRole = orgMembership?.role ?? null;
+    const evaluateSnapshot = await resolveOrgPolicySnapshot({
+      orgId: invite.team.orgId,
+      orgRole: orgMembershipRole,
+      teamId: invite.teamId,
+      hasTeamMembership: Boolean(invite.teamId),
+      hasOrgMembership: Boolean(orgMembershipRole),
+    });
+    const evaluateDecision = resolveOrgCapabilityDecision(
+      evaluateSnapshot,
+      "candidateEvaluate",
+    );
+    if (!evaluateDecision.allowed) {
+      return NextResponse.json(
+        {
+          error: "CAPABILITY_DENIED",
+          reason: evaluateDecision.reason,
+          upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
+        },
+        { status: 403 },
+      );
     }
+  }
+
+  let canResend = invite.managerId === profile.id;
+  if (!canResend && invite.teamId && orgMembershipRole) {
+    canResend = hasOrgRole(orgMembershipRole, "ORG_ADMIN")
+      || await canManageTeam(profile.id, invite.teamId, orgMembershipRole);
   }
   if (!canResend) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
