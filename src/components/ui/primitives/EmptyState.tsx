@@ -20,7 +20,8 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border-default bg-surface-muted px-6 py-7 text-center",
+        "rounded-[var(--ui-radius-xl)] border border-border-default bg-surface-muted px-[var(--ui-space-6)] py-[var(--ui-space-7)] text-center",
+        "transition duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
         className,
       )}
       {...props}

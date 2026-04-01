@@ -40,7 +40,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(funct
   const hasError = Boolean(error);
 
   return (
-    <div className={cn("flex flex-col gap-2", containerClassName)}>
+    <div className={cn("flex flex-col gap-[var(--ui-space-field-gap)]", containerClassName)}>
       {label ? (
         <label htmlFor={fieldId} className={cn("text-sm font-semibold text-text-primary", labelClassName)}>
           {label}
@@ -55,7 +55,8 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(funct
         aria-describedby={describedBy}
         aria-invalid={hasError || ariaInvalid || undefined}
         className={cn(
-          "min-h-[44px] w-full rounded-lg border border-border-default bg-surface-card px-3 text-sm text-text-primary transition",
+          "min-h-[44px] w-full rounded-[var(--ui-radius-lg)] border border-border-default bg-surface-card px-[var(--ui-space-3)] text-sm text-text-primary transition",
+          "duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
           "disabled:cursor-not-allowed disabled:border-state-disabled-border disabled:bg-state-disabled-bg disabled:text-state-disabled-fg",
           hasError

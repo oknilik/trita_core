@@ -15,16 +15,17 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
 }
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
-  default: "bg-surface-card shadow-sm",
-  elevated: "bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.08)]",
+  default: "bg-surface-card shadow-[var(--ui-shadow-sm)]",
+  elevated: "bg-surface-card shadow-[var(--ui-shadow-lg)]",
   muted: "bg-surface-muted",
-  interactive: "bg-surface-card shadow-sm transition hover:border-state-hover-border hover:bg-state-hover-bg hover:text-state-hover-fg hover:shadow-md",
+  interactive:
+    "bg-surface-card shadow-[var(--ui-shadow-sm)] transition duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)] hover:border-state-hover-border hover:bg-state-hover-bg hover:text-state-hover-fg hover:shadow-[var(--ui-shadow-md)]",
 };
 
 const SPACING_CLASSES: Record<CardSpacing, string> = {
-  sm: "p-4",
-  md: "p-5",
-  lg: "p-6",
+  sm: "p-[var(--ui-space-card-padding-sm)]",
+  md: "p-[var(--ui-space-card-padding-md)]",
+  lg: "p-[var(--ui-space-card-padding-lg)]",
 };
 
 const SURFACE_CLASSES: Record<CardSurface, string> = {
@@ -63,7 +64,7 @@ export function Card({
     <Component
       data-surface={surface}
       className={cn(
-        "rounded-2xl",
+        "rounded-[var(--ui-radius-2xl)]",
         bordered && "border border-border-default",
         VARIANT_CLASSES[variant],
         SPACING_CLASSES[spacing],

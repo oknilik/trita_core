@@ -22,9 +22,9 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
-  sm: "min-h-[40px] px-4 text-sm",
-  md: "min-h-[44px] px-5 text-sm",
-  lg: "min-h-[48px] px-6 text-sm",
+  sm: "min-h-[40px] px-[var(--ui-space-4)] text-sm",
+  md: "min-h-[44px] px-[var(--ui-space-5)] text-sm",
+  lg: "min-h-[48px] px-[var(--ui-space-6)] text-sm",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -50,7 +50,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={isDisabled}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition",
+        "inline-flex items-center justify-center gap-[var(--ui-space-2)] rounded-[var(--ui-radius-lg)] font-semibold transition",
+        "duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-state-disabled-bg disabled:text-state-disabled-fg disabled:opacity-50",
         VARIANT_CLASSES[variant],

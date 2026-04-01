@@ -29,7 +29,7 @@ export function StatusChip({
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 whitespace-nowrap items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+        "inline-flex shrink-0 whitespace-nowrap items-center rounded-[var(--ui-radius-pill)] px-[var(--ui-space-2_5)] py-[var(--ui-space-1)] text-xs font-semibold",
         VARIANT_CLASSES[variant],
         className,
       )}

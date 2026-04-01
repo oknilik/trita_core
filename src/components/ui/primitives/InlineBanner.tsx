@@ -30,7 +30,8 @@ export function InlineBanner({
     <div
       role="status"
       className={cn(
-        "rounded-lg border px-4 py-3 text-sm",
+        "rounded-[var(--ui-radius-lg)] border px-[var(--ui-space-4)] py-[var(--ui-space-3)] text-sm",
+        "transition duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
         VARIANT_STYLES[variant],
         className,
       )}
