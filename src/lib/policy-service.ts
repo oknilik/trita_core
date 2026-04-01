@@ -12,6 +12,7 @@ import {
   getSubscriptionState,
   type SubscriptionState,
 } from "@/lib/subscription";
+import { isPolicyEngineEnforcementEnabled } from "@/lib/rollout-guards.server";
 
 export interface OrgPolicySubjectInput {
   orgId: string;
@@ -74,6 +75,9 @@ export function resolveOrgCapabilityDecision(
   snapshot: OrgPolicySnapshot,
   capability: Capability,
 ): CapabilityDecision {
+  if (!isPolicyEngineEnforcementEnabled()) {
+    return { allowed: true, capability };
+  }
   return can(snapshot.subject, capability, snapshot.context);
 }
 

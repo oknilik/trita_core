@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   createOrgPolicyInputs,
+  resolveOrgCapabilityDecision,
   isPolicyReadOnly,
   toOrgSubscriptionBannerState,
 } from "@/lib/policy-service";
@@ -64,4 +65,48 @@ test("isPolicyReadOnly is true for blocked policy states", () => {
   assert.equal(isPolicyReadOnly("frozen"), true);
   assert.equal(isPolicyReadOnly("active"), false);
   assert.equal(isPolicyReadOnly("trialing"), false);
+});
+
+test("resolveOrgCapabilityDecision can be rollout-disabled", () => {
+  const original = process.env.TRITA_POLICY_ENGINE_ENFORCEMENT;
+
+  try {
+    process.env.TRITA_POLICY_ENGINE_ENFORCEMENT = "0";
+
+    const decision = resolveOrgCapabilityDecision(
+      {
+        orgId: "org_1",
+        subscription: null,
+        subject: {
+          isAuthenticated: true,
+          orgRole: "ORG_MEMBER",
+          membership: {
+            hasOrgMembership: true,
+            orgId: "org_1",
+          },
+        },
+        context: {
+          activeOrgId: "org_1",
+          subscriptionState: "none",
+          subscriptionStatus: "none",
+        },
+        policy: {
+          capabilities: new Set(),
+          policyState: "none",
+          denialReasons: {},
+          upgradeHints: {},
+        },
+      },
+      "create",
+    );
+
+    assert.equal(decision.allowed, true);
+    assert.equal(decision.capability, "create");
+  } finally {
+    if (original === undefined) {
+      delete process.env.TRITA_POLICY_ENGINE_ENFORCEMENT;
+    } else {
+      process.env.TRITA_POLICY_ENGINE_ENFORCEMENT = original;
+    }
+  }
 });
