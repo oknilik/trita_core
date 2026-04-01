@@ -24,10 +24,10 @@ type Step = 1 | 2;
 // ── Props ──────────────────────────────────────────────────────────────────────
 
 interface JoinClientProps {
-  inviteState:
-    | "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
-    | "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"
-    | "INVITED_READY_TO_JOIN";
+  acceptanceState:
+    | "profile_completion_required"
+    | "org_mismatch"
+    | "team_assignment_pending";
   inviteId: string;
   teamName: string;
   orgName: string;
@@ -39,7 +39,7 @@ interface JoinClientProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function JoinClient({
-  inviteState,
+  acceptanceState,
   inviteId,
   teamName,
   orgName,
@@ -94,9 +94,9 @@ export function JoinClient({
     submitErrorGeneric: t("join.submitErrorGeneric", locale),
   };
 
-  const isNewUser = inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE";
-  const isOrgSwitch = inviteState === "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED";
-  const isExistingReady = inviteState === "INVITED_READY_TO_JOIN";
+  const isNewUser = acceptanceState === "profile_completion_required";
+  const isOrgSwitch = acceptanceState === "org_mismatch";
+  const isExistingReady = acceptanceState === "team_assignment_pending";
   const isAlreadyInTargetOrg = isExistingReady && alreadyInTargetOrg;
 
   const [step, setStep] = useState<Step>(1);

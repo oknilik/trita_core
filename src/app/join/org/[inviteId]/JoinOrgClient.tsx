@@ -19,9 +19,9 @@ import {
 // ── Props ──────────────────────────────────────────────────────────────────────
 
 interface JoinOrgClientProps {
-  inviteState:
-    | "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
-    | "INVITED_READY_TO_JOIN";
+  acceptanceState:
+    | "profile_completion_required"
+    | "ready";
   inviteId: string;
   orgName: string;
   existingProfile: { username: string | null } | null;
@@ -30,7 +30,7 @@ interface JoinOrgClientProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function JoinOrgClient({
-  inviteState,
+  acceptanceState,
   inviteId,
   orgName,
   existingProfile,
@@ -39,7 +39,7 @@ export function JoinOrgClient({
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
   const requiresProfileOnboarding =
-    inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE";
+    acceptanceState === "profile_completion_required";
 
   const [username, setUsername] = useState("");
   const [gender, setGender] = useState("");

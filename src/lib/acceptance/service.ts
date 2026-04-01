@@ -93,6 +93,8 @@ export type MembershipJoinPageAccessResult<TAllowed extends MembershipInviteStat
 
 export interface MembershipJoinResult {
   ok: true;
+  acceptanceState: "acceptance_success";
+  // Backward-compatible legacy field for existing client parsers.
   inviteState: "INVITE_ACCEPTED";
   nextPath: string;
 }
@@ -222,9 +224,26 @@ export interface AcceptanceMembershipMutationResult {
   teamId: string | null;
 }
 
+export const ACCEPTANCE_MACHINE_STATES = [
+  "invalid_route",
+  "invalid_token",
+  "expired_token",
+  "auth_required",
+  "already_accepted",
+  "acceptance_success",
+  "team_assignment_pending",
+  "org_mismatch",
+  "policy_restricted",
+  "profile_completion_required",
+  "ready",
+] as const;
+
+export type AcceptanceMachineState = (typeof ACCEPTANCE_MACHINE_STATES)[number];
+
 export interface AcceptanceResult {
   domain: "membership" | "candidate";
   acceptanceState: AcceptanceState;
+  machineState: AcceptanceMachineState;
   membershipResolution: MembershipInviteResolution | null;
   candidateContext: CandidateInviteContext | null;
   membershipMutationResult: AcceptanceMembershipMutationResult | null;
@@ -234,10 +253,10 @@ export interface AcceptanceResult {
 }
 
 export interface TeamJoinPagePayload {
-  inviteState:
-    | "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
-    | "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"
-    | "INVITED_READY_TO_JOIN";
+  acceptanceState:
+    | "profile_completion_required"
+    | "org_mismatch"
+    | "team_assignment_pending";
   inviteId: string;
   teamName: string;
   orgName: string;
@@ -247,30 +266,34 @@ export interface TeamJoinPagePayload {
 }
 
 export type TeamJoinPageModel =
-  | { view: "not_found" }
-  | { view: "redirect"; href: string }
-  | { view: "ready"; payload: TeamJoinPagePayload };
+  | { state: "invalid_token" }
+  | { state: "auth_required"; redirectTo: string }
+  | { state: "already_accepted"; redirectTo: string }
+  | { state: "policy_restricted"; redirectTo: string }
+  | { state: "ready"; payload: TeamJoinPagePayload };
 
 export interface OrgJoinPagePayload {
-  inviteState:
-    | "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
-    | "INVITED_READY_TO_JOIN";
+  acceptanceState:
+    | "profile_completion_required"
+    | "ready";
   inviteId: string;
   orgName: string;
   existingProfile: { username: string | null } | null;
 }
 
 export type OrgJoinPageModel =
-  | { view: "not_found" }
-  | { view: "redirect"; href: string }
-  | { view: "ready"; payload: OrgJoinPagePayload };
+  | { state: "invalid_token" }
+  | { state: "auth_required"; redirectTo: string }
+  | { state: "already_accepted"; redirectTo: string }
+  | { state: "policy_restricted"; redirectTo: string }
+  | { state: "ready"; payload: OrgJoinPagePayload };
 
 export type CandidateApplyPageModel =
-  | { view: "not_found" }
-  | { view: "completed"; invite: CandidateInviteContext }
-  | { view: "canceled"; invite: CandidateInviteContext }
-  | { view: "expired"; invite: CandidateInviteContext }
-  | { view: "ready"; invite: CandidateInviteContext };
+  | { state: "invalid_token" }
+  | { state: "already_accepted"; invite: CandidateInviteContext }
+  | { state: "policy_restricted"; invite: CandidateInviteContext }
+  | { state: "expired_token"; invite: CandidateInviteContext }
+  | { state: "ready"; invite: CandidateInviteContext };
 
 function buildJoinPath(kind: MembershipJoinKind, inviteId: string): string {
   return kind === "team" ? `/join/${inviteId}` : `/join/org/${inviteId}`;
@@ -344,6 +367,7 @@ function buildBaseResult(domain: "membership" | "candidate"): AcceptanceResult {
   return {
     domain,
     acceptanceState: "INVALID_ROUTE_SOURCE",
+    machineState: "invalid_route",
     membershipResolution: null,
     candidateContext: null,
     membershipMutationResult: null,
@@ -672,6 +696,32 @@ function mapMembershipUiState(state: MembershipInviteState): AcceptanceUiState {
   return { view: "ready" };
 }
 
+function mapMembershipMachineState(
+  resolution: MembershipInviteResolution,
+): AcceptanceMachineState {
+  if (resolution.inviteState === "INVITE_NOT_FOUND") return "invalid_token";
+  if (resolution.inviteState === "INVITED_UNAUTHENTICATED") return "auth_required";
+  if (resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE") {
+    return "profile_completion_required";
+  }
+  if (resolution.inviteState === "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED") {
+    return "org_mismatch";
+  }
+  if (resolution.inviteState === "INVITE_ACCEPTED") return "already_accepted";
+  if (resolution.inviteState === "INVITED_READY_TO_JOIN" && resolution.kind === "team") {
+    return "team_assignment_pending";
+  }
+  return "ready";
+}
+
+function mapCandidateMachineState(state: CandidateAcceptanceState): AcceptanceMachineState {
+  if (state === "APPLY_NOT_FOUND") return "invalid_token";
+  if (state === "APPLY_COMPLETED") return "already_accepted";
+  if (state === "APPLY_CANCELED") return "policy_restricted";
+  if (state === "APPLY_EXPIRED") return "expired_token";
+  return "ready";
+}
+
 function toMembershipError(result: AcceptanceResult): AcceptanceResult {
   if (result.acceptanceState === "INVITE_NOT_FOUND") {
     return {
@@ -693,6 +743,7 @@ function toInvalidRouteError(domain: "membership" | "candidate"): AcceptanceResu
   return {
     ...base,
     acceptanceState: "INVALID_ROUTE_SOURCE",
+    machineState: "invalid_route",
     errorState: { code: "INVALID_INPUT", status: 400 },
     uiState: { view: "error" },
   };
@@ -724,6 +775,7 @@ export async function resolveAcceptance(input: ResolveAcceptanceInput): Promise<
     const result: AcceptanceResult = {
       ...base,
       acceptanceState: membershipResolution.inviteState,
+      machineState: mapMembershipMachineState(membershipResolution),
       membershipResolution,
       handoffContext: {
         signUpRedirectUrl: membershipResolution.signUpRedirectUrl,
@@ -742,6 +794,7 @@ export async function resolveAcceptance(input: ResolveAcceptanceInput): Promise<
     return {
       ...base,
       acceptanceState: "APPLY_NOT_FOUND",
+      machineState: mapCandidateMachineState("APPLY_NOT_FOUND"),
       uiState: { view: "not_found" },
       errorState: { code: "INVALID_TOKEN", status: 404 },
     };
@@ -751,6 +804,7 @@ export async function resolveAcceptance(input: ResolveAcceptanceInput): Promise<
     return {
       ...base,
       acceptanceState: "APPLY_COMPLETED",
+      machineState: mapCandidateMachineState("APPLY_COMPLETED"),
       candidateContext,
       uiState: { view: "completed" },
     };
@@ -760,6 +814,7 @@ export async function resolveAcceptance(input: ResolveAcceptanceInput): Promise<
     return {
       ...base,
       acceptanceState: "APPLY_CANCELED",
+      machineState: mapCandidateMachineState("APPLY_CANCELED"),
       candidateContext,
       uiState: { view: "canceled" },
     };
@@ -769,6 +824,7 @@ export async function resolveAcceptance(input: ResolveAcceptanceInput): Promise<
     return {
       ...base,
       acceptanceState: "APPLY_EXPIRED",
+      machineState: mapCandidateMachineState("APPLY_EXPIRED"),
       candidateContext,
       uiState: { view: "expired" },
     };
@@ -777,6 +833,7 @@ export async function resolveAcceptance(input: ResolveAcceptanceInput): Promise<
   return {
     ...base,
     acceptanceState: "APPLY_READY",
+    machineState: mapCandidateMachineState("APPLY_READY"),
     candidateContext,
     uiState: { view: "ready" },
   };
@@ -857,6 +914,7 @@ export async function acceptInvitation(input: AcceptInvitationInput): Promise<Ac
     return {
       ...resolved,
       acceptanceState: "INVITE_ACCEPTED",
+      machineState: "acceptance_success",
       membershipMutationResult: mutationResult,
       handoffContext: {
         ...resolved.handoffContext,
@@ -977,6 +1035,7 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
   return {
     ...resolved,
     acceptanceState: "APPLY_COMPLETED",
+    machineState: "acceptance_success",
     uiState: { view: "completed" },
     errorState: null,
     candidateContext: {
@@ -1036,22 +1095,45 @@ export async function resolveTeamJoinPageModel(params: {
   inviteId: string;
   clerkId?: string | null;
 }): Promise<TeamJoinPageModel> {
-  const access = await resolveMembershipJoinPageAccess({
-    kind: "team",
-    inviteId: params.inviteId,
-    clerkId: params.clerkId,
-    allowedStates: [
-      "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE",
-      "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED",
-      "INVITED_READY_TO_JOIN",
-    ],
+  const acceptance = await resolveAcceptance({
+    token: params.inviteId,
+    routeSource: "join.team.page",
+    authState: { clerkId: params.clerkId ?? null },
+    targetContext: { kind: "team" },
   });
+  const resolution = acceptance.membershipResolution;
 
-  if (access.type === "not_found") return { view: "not_found" };
-  if (access.type === "redirect") return { view: "redirect", href: access.href };
+  if (!resolution || !resolution.invite || resolution.invite.kind !== "team") {
+    return { state: "invalid_token" };
+  }
+  if (acceptance.machineState === "invalid_token") {
+    return { state: "invalid_token" };
+  }
+  if (acceptance.machineState === "auth_required") {
+    return {
+      state: "auth_required",
+      redirectTo: resolution.signUpRedirectUrl ?? buildSignUpRedirectUrl("team", params.inviteId),
+    };
+  }
+  if (acceptance.machineState === "already_accepted") {
+    if (!resolution.actor) {
+      return { state: "invalid_token" };
+    }
+    return {
+      state: "already_accepted",
+      redirectTo: resolution.redirectTo ?? (await resolveJoinNextPath(resolution.actor.profileId)),
+    };
+  }
+  if (acceptance.machineState === "policy_restricted") {
+    return {
+      state: "policy_restricted",
+      redirectTo: resolution.redirectTo ?? "/billing",
+    };
+  }
 
-  const { resolution } = access;
-  if (resolution.invite.kind !== "team") return { view: "not_found" };
+  if (!resolution.actor) {
+    return { state: "invalid_token" };
+  }
 
   const existingOrg =
     resolution.inviteState === "INVITED_AUTHENTICATED_ORG_SWITCH_REQUIRED"
@@ -1064,9 +1146,14 @@ export async function resolveTeamJoinPageModel(params: {
       : { username: resolution.actor.username };
 
   return {
-    view: "ready",
+    state: "ready",
     payload: {
-      inviteState: resolution.inviteState,
+      acceptanceState:
+        acceptance.machineState === "org_mismatch"
+          ? "org_mismatch"
+          : acceptance.machineState === "profile_completion_required"
+            ? "profile_completion_required"
+            : "team_assignment_pending",
       inviteId: resolution.invite.inviteId,
       teamName: resolution.invite.teamName,
       orgName: resolution.invite.orgName,
@@ -1081,26 +1168,53 @@ export async function resolveOrgJoinPageModel(params: {
   inviteId: string;
   clerkId?: string | null;
 }): Promise<OrgJoinPageModel> {
-  const access = await resolveMembershipJoinPageAccess({
-    kind: "org",
-    inviteId: params.inviteId,
-    clerkId: params.clerkId,
-    allowedStates: [
-      "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE",
-      "INVITED_READY_TO_JOIN",
-    ],
+  const acceptance = await resolveAcceptance({
+    token: params.inviteId,
+    routeSource: "join.org.page",
+    authState: { clerkId: params.clerkId ?? null },
+    targetContext: { kind: "org" },
   });
+  const resolution = acceptance.membershipResolution;
 
-  if (access.type === "not_found") return { view: "not_found" };
-  if (access.type === "redirect") return { view: "redirect", href: access.href };
+  if (!resolution || !resolution.invite || resolution.invite.kind !== "org") {
+    return { state: "invalid_token" };
+  }
+  if (acceptance.machineState === "invalid_token") {
+    return { state: "invalid_token" };
+  }
+  if (acceptance.machineState === "auth_required") {
+    return {
+      state: "auth_required",
+      redirectTo: resolution.signUpRedirectUrl ?? buildSignUpRedirectUrl("org", params.inviteId),
+    };
+  }
+  if (acceptance.machineState === "already_accepted") {
+    if (!resolution.actor) {
+      return { state: "invalid_token" };
+    }
+    return {
+      state: "already_accepted",
+      redirectTo: resolution.redirectTo ?? (await resolveJoinNextPath(resolution.actor.profileId)),
+    };
+  }
+  if (acceptance.machineState === "policy_restricted") {
+    return {
+      state: "policy_restricted",
+      redirectTo: resolution.redirectTo ?? "/billing",
+    };
+  }
 
-  const { resolution } = access;
-  if (resolution.invite.kind !== "org") return { view: "not_found" };
+  if (!resolution.actor) {
+    return { state: "invalid_token" };
+  }
 
   return {
-    view: "ready",
+    state: "ready",
     payload: {
-      inviteState: resolution.inviteState,
+      acceptanceState:
+        acceptance.machineState === "profile_completion_required"
+          ? "profile_completion_required"
+          : "ready",
       inviteId: resolution.invite.inviteId,
       orgName: resolution.invite.orgName,
       existingProfile:
@@ -1121,20 +1235,20 @@ export async function resolveCandidateApplyPageModel(params: {
   });
   const invite = acceptance.candidateContext;
 
-  if (!invite || acceptance.acceptanceState === "APPLY_NOT_FOUND") {
-    return { view: "not_found" };
+  if (!invite || acceptance.machineState === "invalid_token") {
+    return { state: "invalid_token" };
   }
-  if (acceptance.acceptanceState === "APPLY_COMPLETED") {
-    return { view: "completed", invite };
+  if (acceptance.machineState === "already_accepted") {
+    return { state: "already_accepted", invite };
   }
-  if (acceptance.acceptanceState === "APPLY_CANCELED") {
-    return { view: "canceled", invite };
+  if (acceptance.machineState === "policy_restricted") {
+    return { state: "policy_restricted", invite };
   }
-  if (acceptance.acceptanceState === "APPLY_EXPIRED") {
-    return { view: "expired", invite };
+  if (acceptance.machineState === "expired_token") {
+    return { state: "expired_token", invite };
   }
 
-  return { view: "ready", invite };
+  return { state: "ready", invite };
 }
 
 export async function joinMembershipFromInvite(params: {
@@ -1163,6 +1277,7 @@ export async function joinMembershipFromInvite(params: {
 
   return {
     ok: true,
+    acceptanceState: "acceptance_success",
     inviteState: "INVITE_ACCEPTED",
     nextPath: result.handoffContext.nextPath ?? "/platform/home",
   };

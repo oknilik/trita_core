@@ -29,12 +29,12 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
   const locale = await getServerLocale();
 
   const model = await resolveCandidateApplyPageModel({ token });
-  if (model.view === "not_found") {
+  if (model.state === "invalid_token") {
     notFound();
   }
   const invite = model.invite;
 
-  if (model.view === "completed") {
+  if (model.state === "already_accepted") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -52,7 +52,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
-  if (model.view === "canceled") {
+  if (model.state === "policy_restricted") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -70,7 +70,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
-  if (model.view === "expired") {
+  if (model.state === "expired_token") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">

@@ -30,13 +30,15 @@ export default async function JoinPage({
     clerkId: clerkUser?.id ?? null,
   });
 
-  if (model.view === "not_found") notFound();
-  if (model.view === "redirect") redirect(model.href);
+  if (model.state === "invalid_token") notFound();
+  if (model.state === "auth_required") redirect(model.redirectTo);
+  if (model.state === "already_accepted") redirect(model.redirectTo);
+  if (model.state === "policy_restricted") redirect(model.redirectTo);
 
   const { payload } = model;
   return (
     <JoinClient
-      inviteState={payload.inviteState}
+      acceptanceState={payload.acceptanceState}
       inviteId={payload.inviteId}
       teamName={payload.teamName}
       orgName={payload.orgName}
