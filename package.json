@@ -11,6 +11,7 @@
     "check": "pnpm type-check && pnpm lint",
     "test:journey": "NODE_OPTIONS='--conditions=react-server' npx tsx --test src/lib/journey/*.test.ts",
     "test:journey:smoke": "NODE_OPTIONS='--conditions=react-server' npx tsx --test src/lib/journey/journey-contract.smoke.test.ts",
+    "test:acceptance": "NODE_OPTIONS='--conditions=react-server' npx tsx --test src/lib/acceptance/*.test.ts",
     "postinstall": "prisma generate",
     "seed:assessment": "npx tsx scripts/seed-assessment.ts",
     "seed:org-team": "npx tsx scripts/seed-org-team.ts",

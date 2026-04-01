@@ -253,6 +253,52 @@ export interface AcceptanceResult {
   errorState: AcceptanceErrorState | null;
 }
 
+interface AcceptanceRuntimeDeps {
+  getActiveOrgMembership: typeof getActiveOrgMembership;
+  setActiveOrgContext: typeof setActiveOrgContext;
+  syncSeatBilling: typeof syncSeatBilling;
+  resolveJourney: typeof resolveJourney;
+  resolveJourneyForClerkId: typeof resolveJourneyForClerkId;
+}
+
+const acceptanceRuntimeDeps: AcceptanceRuntimeDeps = {
+  getActiveOrgMembership,
+  setActiveOrgContext,
+  syncSeatBilling,
+  resolveJourney,
+  resolveJourneyForClerkId,
+};
+
+export function __setAcceptanceRuntimeForTests(
+  overrides: Partial<AcceptanceRuntimeDeps>,
+): () => void {
+  const previous: AcceptanceRuntimeDeps = { ...acceptanceRuntimeDeps };
+
+  if (overrides.getActiveOrgMembership) {
+    acceptanceRuntimeDeps.getActiveOrgMembership = overrides.getActiveOrgMembership;
+  }
+  if (overrides.setActiveOrgContext) {
+    acceptanceRuntimeDeps.setActiveOrgContext = overrides.setActiveOrgContext;
+  }
+  if (overrides.syncSeatBilling) {
+    acceptanceRuntimeDeps.syncSeatBilling = overrides.syncSeatBilling;
+  }
+  if (overrides.resolveJourney) {
+    acceptanceRuntimeDeps.resolveJourney = overrides.resolveJourney;
+  }
+  if (overrides.resolveJourneyForClerkId) {
+    acceptanceRuntimeDeps.resolveJourneyForClerkId = overrides.resolveJourneyForClerkId;
+  }
+
+  return () => {
+    acceptanceRuntimeDeps.getActiveOrgMembership = previous.getActiveOrgMembership;
+    acceptanceRuntimeDeps.setActiveOrgContext = previous.setActiveOrgContext;
+    acceptanceRuntimeDeps.syncSeatBilling = previous.syncSeatBilling;
+    acceptanceRuntimeDeps.resolveJourney = previous.resolveJourney;
+    acceptanceRuntimeDeps.resolveJourneyForClerkId = previous.resolveJourneyForClerkId;
+  };
+}
+
 export interface TeamJoinPagePayload {
   acceptanceState:
     | "profile_completion_required"
@@ -396,7 +442,7 @@ export async function resolveMembershipJoinActor(clerkId: string): Promise<Membe
       onboardedAt: true,
     },
   });
-  const activeMembership = await getActiveOrgMembership(profile.id);
+  const activeMembership = await acceptanceRuntimeDeps.getActiveOrgMembership(profile.id);
   const activeOrg = activeMembership
     ? await prisma.organization.findUnique({
         where: { id: activeMembership.orgId },
@@ -475,7 +521,7 @@ export async function resolveOrgJoinInviteContext(
 }
 
 async function resolveJoinNextPath(profileId: string): Promise<string> {
-  const resolution = await resolveJourney(profileId, {
+  const resolution = await acceptanceRuntimeDeps.resolveJourney(profileId, {
     entryPoint: "membership_join_handoff",
   });
   return resolution.destination;
@@ -484,7 +530,7 @@ async function resolveJoinNextPath(profileId: string): Promise<string> {
 async function resolveCandidateNextPath(clerkId: string | null): Promise<string | null> {
   if (!clerkId) return null;
 
-  const resolution = await resolveJourneyForClerkId(clerkId, {
+  const resolution = await acceptanceRuntimeDeps.resolveJourneyForClerkId(clerkId, {
     entryPoint: "candidate_apply_handoff",
   });
   return resolution?.destination ?? JOURNEY_HOME_HANDOFF_PATH;
@@ -518,7 +564,7 @@ async function runJoinTransaction(
       tx.push(prisma.teamPendingInvite.delete({ where: { id: invite.inviteId } }));
     }
     await prisma.$transaction(tx);
-    await setActiveOrgContext(actor.profileId, invite.orgId);
+    await acceptanceRuntimeDeps.setActiveOrgContext(actor.profileId, invite.orgId);
     return {
       changed: true,
       kind: "team",
@@ -535,8 +581,8 @@ async function runJoinTransaction(
     }),
     prisma.organizationPendingInvite.delete({ where: { id: invite.inviteId } }),
   ]);
-  await setActiveOrgContext(actor.profileId, invite.orgId);
-  void syncSeatBilling(invite.orgId);
+  await acceptanceRuntimeDeps.setActiveOrgContext(actor.profileId, invite.orgId);
+  void acceptanceRuntimeDeps.syncSeatBilling(invite.orgId);
   return {
     changed: true,
     kind: "org",
