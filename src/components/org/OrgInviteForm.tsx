@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { Button } from "@/components/ui/primitives/Button";
+import { SelectField } from "@/components/ui/primitives/SelectField";
+import { TextField } from "@/components/ui/primitives/TextField";
 
 type OrgRole = "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER";
 
@@ -63,40 +66,36 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
   return (
     <div className="flex flex-col gap-3">
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <label className="flex flex-1 flex-col gap-2 text-sm font-semibold text-ink">
-          {t("org.forms.emailLabel", loc)}
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("org.forms.emailPlaceholder", loc)}
-            required
-            className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
-          />
-        </label>
+        <TextField
+          label={t("org.forms.emailLabel", loc)}
+          containerClassName="flex-1"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("org.forms.emailPlaceholder", loc)}
+          required
+        />
         {canInviteManager && (
-          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            {t("org.forms.roleLabel", loc)}
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as OrgRole)}
-              className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink focus:border-sage focus:outline-none"
-            >
-              <option value="ORG_MEMBER">{t("org.forms.roleMember", loc)}</option>
-              <option value="ORG_MANAGER">{t("org.forms.roleManager", loc)}</option>
-              <option value="ORG_ADMIN">Admin</option>
-            </select>
-          </label>
+          <SelectField
+            label={t("org.forms.roleLabel", loc)}
+            containerClassName="w-full sm:w-[220px]"
+            value={role}
+            onChange={(e) => setRole(e.target.value as OrgRole)}
+          >
+            <option value="ORG_MEMBER">{t("org.forms.roleMember", loc)}</option>
+            <option value="ORG_MANAGER">{t("org.forms.roleManager", loc)}</option>
+            <option value="ORG_ADMIN">Admin</option>
+          </SelectField>
         )}
-        <button
+        <Button
           type="submit"
           disabled={loading || !email.trim()}
-          className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+          className="px-6"
         >
           {loading
             ? t("org.forms.inviteLoading", loc)
             : t("org.forms.inviteButton", loc)}
-        </button>
+        </Button>
       </form>
 
       {result === "success" && (

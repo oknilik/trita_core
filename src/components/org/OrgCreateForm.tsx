@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { Button } from "@/components/ui/primitives/Button";
+import { TextField } from "@/components/ui/primitives/TextField";
 
 interface OrgCreateFormProps {
   locale: string;
@@ -48,27 +50,24 @@ export function OrgCreateForm({ locale }: OrgCreateFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:flex-row sm:items-end">
-      <label className="flex flex-1 flex-col gap-2 text-sm font-semibold text-ink">
-        {t("org.forms.createOrgName", loc)}
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder={t("org.forms.createPlaceholder", loc)}
-          maxLength={100}
-          required
-          className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
-        />
-      </label>
-      <button
+      <TextField
+        label={t("org.forms.createOrgName", loc)}
+        containerClassName="flex-1"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder={t("org.forms.createPlaceholder", loc)}
+        maxLength={100}
+        required
+      />
+      <Button
         type="submit"
         disabled={loading || !name.trim()}
-        className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+        className="px-6"
       >
         {loading
           ? t("org.forms.createLoading", loc)
           : t("org.forms.createButton", loc)}
-      </button>
+      </Button>
       {error && (
         <p className="w-full text-sm text-rose-600">{error}</p>
       )}

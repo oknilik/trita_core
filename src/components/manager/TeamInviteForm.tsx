@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, type Locale } from "@/lib/i18n";
+import { Button } from "@/components/ui/primitives/Button";
+import { TextField } from "@/components/ui/primitives/TextField";
 
 interface TeamInviteFormProps {
   teamId: string;
@@ -50,28 +52,24 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-        <div className="flex flex-1 flex-col gap-2">
-          <label className="text-sm font-semibold text-ink">
-            {t("manager.teamInvite.emailLabel", locale)}
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("manager.teamInvite.emailPlaceholder", locale)}
-            className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
-            disabled={loading}
-          />
-        </div>
-        <button
+        <TextField
+          label={t("manager.teamInvite.emailLabel", locale)}
+          containerClassName="flex-1"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("manager.teamInvite.emailPlaceholder", locale)}
+          disabled={loading}
+        />
+        <Button
           type="submit"
           disabled={loading || !email.trim()}
-          className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+          className="px-5"
         >
           {loading
             ? t("manager.teamInvite.adding", locale)
             : t("manager.teamInvite.add", locale)}
-        </button>
+        </Button>
       </div>
       {error && <p className="text-xs text-rose-600">{error}</p>}
       {success === "added" && (

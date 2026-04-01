@@ -6,6 +6,8 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
+import { TextField } from "@/components/ui/primitives/TextField";
+import { TextareaField } from "@/components/ui/primitives/TextareaField";
 
 interface Member {
   userId: string;
@@ -147,39 +149,32 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
             {t("campaignWiz.detailsTitle", locale)}
           </h2>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-ink">
-                {t("campaignWiz.nameLabel", locale)}
-                <span className="ml-1 text-bronze">*</span>
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                maxLength={100}
-                placeholder={t("campaignWiz.namePlaceholder", locale)}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-sage/50 focus:outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-semibold text-ink">
-                {t("campaignWiz.descLabel", locale)}
-                <span className="ml-1.5 text-[11px] font-normal text-muted">
-                  {t("campaignWiz.optional", locale)}
-                </span>
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                maxLength={500}
-                rows={3}
-                placeholder={t("campaignWiz.descPlaceholder", locale)}
-                className="w-full resize-none rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-sage/50 focus:outline-none"
-              />
-              <p className="text-right font-mono text-[10px] text-muted">
-                {description.length}/500
-              </p>
-            </div>
+            <TextField
+              label={t("campaignWiz.nameLabel", locale)}
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={100}
+              placeholder={t("campaignWiz.namePlaceholder", locale)}
+            />
+            <TextareaField
+              label={
+                <>
+                  {t("campaignWiz.descLabel", locale)}
+                  <span className="ml-1.5 text-[11px] font-normal text-muted">
+                    {t("campaignWiz.optional", locale)}
+                  </span>
+                </>
+              }
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              maxLength={500}
+              rows={3}
+              placeholder={t("campaignWiz.descPlaceholder", locale)}
+              textareaClassName="resize-none"
+              helpText={`${description.length}/500`}
+              helpTextClassName="text-right font-mono text-[10px] text-muted"
+            />
           </div>
           <div className="mt-6 flex justify-end">
             <Button
