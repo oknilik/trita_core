@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
@@ -53,6 +54,7 @@ export function CandidateClient({
   questions,
   locale,
 }: CandidateClientProps) {
+  const router = useRouter();
   const { showToast } = useToast();
 
   const DRAFT_KEY = `trita_candidate_draft_${token}`;
@@ -279,8 +281,11 @@ export function CandidateClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      const data = (await res.json()) as {
+        error?: string;
+        nextPath?: string | null;
+      };
       if (!res.ok) {
-        const data = await res.json() as { error?: string };
         if (data.error === "ALREADY_USED") {
           setPhase("done");
           return;
@@ -288,6 +293,10 @@ export function CandidateClient({
         throw new Error(data.error ?? "SUBMIT_ERROR");
       }
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
+      if (data.nextPath) {
+        router.push(data.nextPath);
+        return;
+      }
       setPhase("done");
     } catch (err) {
       console.error(err);

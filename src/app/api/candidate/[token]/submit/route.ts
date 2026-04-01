@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { completeAcceptance } from "@/lib/acceptance/service";
@@ -17,6 +18,7 @@ export async function POST(
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
+  const { userId } = await auth();
 
   const body = submitSchema.safeParse(await req.json());
   if (!body.success) {
@@ -30,6 +32,10 @@ export async function POST(
     token,
     routeSource: "api.candidate.submit",
     targetContext: { kind: "candidate" },
+    authState: {
+      clerkId: userId ?? null,
+      authenticated: Boolean(userId),
+    },
     answers: body.data.answers,
   });
 
@@ -43,5 +49,9 @@ export async function POST(
     );
   }
 
-  return NextResponse.json({ ok: true, acceptanceState: result.acceptanceState });
+  return NextResponse.json({
+    ok: true,
+    acceptanceState: result.acceptanceState,
+    nextPath: result.handoffContext.nextPath,
+  });
 }

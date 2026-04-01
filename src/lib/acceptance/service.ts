@@ -4,7 +4,8 @@ import { Prisma, type TestType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 import { syncSeatBilling } from "@/lib/seat-billing";
-import { resolveJourney } from "@/lib/journey/engine";
+import { resolveJourney, resolveJourneyForClerkId } from "@/lib/journey/engine";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getTestConfig } from "@/lib/questions";
 import { calculateScores } from "@/lib/scoring";
 
@@ -478,6 +479,15 @@ async function resolveJoinNextPath(profileId: string): Promise<string> {
     entryPoint: "membership_join_handoff",
   });
   return resolution.destination;
+}
+
+async function resolveCandidateNextPath(clerkId: string | null): Promise<string | null> {
+  if (!clerkId) return null;
+
+  const resolution = await resolveJourneyForClerkId(clerkId, {
+    entryPoint: "candidate_apply_handoff",
+  });
+  return resolution?.destination ?? JOURNEY_HOME_HANDOFF_PATH;
 }
 
 async function runJoinTransaction(
@@ -1032,10 +1042,16 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
     };
   }
 
+  const nextPath = await resolveCandidateNextPath(resolveClerkId(input.authState));
+
   return {
     ...resolved,
     acceptanceState: "APPLY_COMPLETED",
     machineState: "acceptance_success",
+    handoffContext: {
+      ...resolved.handoffContext,
+      nextPath,
+    },
     uiState: { view: "completed" },
     errorState: null,
     candidateContext: {
@@ -1279,7 +1295,7 @@ export async function joinMembershipFromInvite(params: {
     ok: true,
     acceptanceState: "acceptance_success",
     inviteState: "INVITE_ACCEPTED",
-    nextPath: result.handoffContext.nextPath ?? "/platform/home",
+    nextPath: result.handoffContext.nextPath ?? JOURNEY_HOME_HANDOFF_PATH,
   };
 }
 
@@ -1309,6 +1325,6 @@ export async function switchMembershipContextFromInvite(params: {
 
   return {
     ok: true,
-    nextPath: result.handoffContext.nextPath ?? "/platform/home",
+    nextPath: result.handoffContext.nextPath ?? JOURNEY_HOME_HANDOFF_PATH,
   };
 }
