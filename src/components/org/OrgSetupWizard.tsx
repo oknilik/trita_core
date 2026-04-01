@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
+import { Button } from "@/components/ui/primitives/Button";
 
 interface OrgSetupWizardProps {
   orgId: string;
@@ -144,13 +145,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               />
             </label>
             {error && <p className="text-xs text-rose-600">{error}</p>}
-            <button
+            <Button
               type="submit"
-              disabled={loading || !name.trim()}
-              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              disabled={!name.trim()}
+              loading={loading}
+              variant="primary"
             >
-              {loading ? "..." : t("org.setup.next", loc)}
-            </button>
+              {t("org.setup.next", loc)}
+            </Button>
           </form>
         </div>
       )}
@@ -199,21 +201,22 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
           )}
           {error && <p className="mb-3 text-xs text-rose-600">{error}</p>}
           <div className="flex gap-3">
-            <button
+            <Button
               type="button"
               onClick={() => setStep("name")}
-              className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
+              variant="secondary"
             >
               {t("org.setup.back", loc)}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleAvatarNext}
-              disabled={loading}
-              className="flex-1 min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              loading={loading}
+              variant="primary"
+              className="flex-1"
             >
-              {loading ? "..." : t("org.setup.next", loc)}
-            </button>
+              {t("org.setup.next", loc)}
+            </Button>
           </div>
         </div>
       )}
@@ -247,21 +250,22 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
           </div>
           {error && <p className="mb-3 text-xs text-rose-600">{error}</p>}
           <div className="flex gap-3">
-            <button
+            <Button
               type="button"
               onClick={() => setStep("avatar")}
-              className="min-h-[44px] rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:bg-cream"
+              variant="secondary"
             >
               {t("org.setup.back", loc)}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleFinish}
-              disabled={loading}
-              className="flex-1 min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              loading={loading}
+              variant="primary"
+              className="flex-1"
             >
-              {loading ? "..." : t("org.setup.finish", loc)}
-            </button>
+              {t("org.setup.finish", loc)}
+            </Button>
           </div>
         </div>
       )}

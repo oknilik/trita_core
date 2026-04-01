@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { Button } from "@/components/ui/primitives/Button";
 
 interface Member {
   userId: string;
@@ -180,14 +181,14 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
             </div>
           </div>
           <div className="mt-6 flex justify-end">
-            <button
+            <Button
               type="button"
               disabled={!name.trim()}
               onClick={() => setStep(2)}
-              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
+              variant="primary"
             >
               {t("campaignWiz.next", locale)}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -239,20 +240,21 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
           )}
 
           <div className="mt-6 flex items-center justify-between gap-4">
-            <button
+            <Button
               type="button"
               onClick={() => setStep(1)}
-              className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              variant="secondary"
+              iconLeft="←"
             >
-              ← {t("campaignWiz.back", locale)}
-            </button>
-            <button
+              {t("campaignWiz.back", locale)}
+            </Button>
+            <Button
               type="button"
               onClick={() => setStep(3)}
-              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
+              variant="primary"
             >
               {t("campaignWiz.next", locale)}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -320,24 +322,25 @@ export function CampaignWizard({ orgId, members, locale }: CampaignWizardProps) 
           )}
 
           <div className="mt-6 flex items-center justify-between gap-4">
-            <button
+            <Button
               type="button"
               onClick={() => setStep(2)}
               disabled={loading}
-              className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
+              variant="secondary"
+              iconLeft="←"
             >
-              ← {t("campaignWiz.back", locale)}
-            </button>
-            <button
+              {t("campaignWiz.back", locale)}
+            </Button>
+            <Button
               type="button"
               onClick={handleSubmit}
-              disabled={loading}
-              className="min-h-[44px] rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
+              loading={loading}
+              variant="primary"
             >
               {loading
                 ? t("campaignWiz.creating", locale)
                 : t("campaignWiz.createCampaign", locale)}
-            </button>
+            </Button>
           </div>
         </div>
       )}

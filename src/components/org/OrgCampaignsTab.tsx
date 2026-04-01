@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
 import { CampaignCard } from "./CampaignCard";
+import { Button } from "@/components/ui/primitives/Button";
 
 interface OrgCampaignsTabProps {
   orgId: string;
@@ -230,16 +231,17 @@ export function OrgCampaignsTab({
                   </p>
                 )}
                 <div className="flex gap-3">
-                  <button
+                  <Button
                     type="submit"
-                    disabled={loading || !name.trim()}
-                    className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={!name.trim()}
+                    loading={loading}
+                    variant="primary"
                   >
                     {loading
                       ? t("org.campaigns.creating", loc)
                       : t("org.campaigns.createButton", loc)}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     onClick={() => {
                       setShowNewForm(false);
@@ -248,10 +250,10 @@ export function OrgCampaignsTab({
                       setError(null);
                     }}
                     disabled={loading}
-                    className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
+                    variant="secondary"
                   >
                     {t("org.campaigns.cancel", loc)}
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
