@@ -5,6 +5,10 @@ import { getTestConfig } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
+import {
+  resolveObserverTokenLifecycle,
+  toObserverTokenErrorCode,
+} from "@/lib/observer/token-validation";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -35,20 +39,10 @@ export async function POST(req: Request) {
     where: { token },
   });
 
-  if (!invitation) {
-    return NextResponse.json({ error: "INVALID_TOKEN" }, { status: 404 });
-  }
-
-  if (invitation.status === "COMPLETED") {
-    return NextResponse.json({ error: "ALREADY_USED" }, { status: 400 });
-  }
-
-  if (invitation.status === "CANCELED") {
-    return NextResponse.json({ error: "INVITE_CANCELED" }, { status: 400 });
-  }
-
-  if (invitation.expiresAt < new Date()) {
-    return NextResponse.json({ error: "INVITE_EXPIRED" }, { status: 400 });
+  const lifecycle = resolveObserverTokenLifecycle(invitation);
+  if (lifecycle !== "active") {
+    const code = toObserverTokenErrorCode(lifecycle);
+    return NextResponse.json({ error: code }, { status: code === "INVALID_TOKEN" ? 404 : 400 });
   }
 
   // Validate all questions answered

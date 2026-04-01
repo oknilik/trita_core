@@ -5,6 +5,7 @@ import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { resolveObserverTokenLifecycle } from "@/lib/observer/token-validation";
 import { ObserverClient } from "./ObserverClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -45,7 +46,9 @@ export default async function ObservePage({ params }: ObservePageProps) {
     notFound();
   }
 
-  if (invitation.status === "COMPLETED") {
+  const lifecycle = resolveObserverTokenLifecycle(invitation);
+
+  if (lifecycle === "completed") {
     return (
       <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -63,7 +66,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
-  if (invitation.status === "CANCELED") {
+  if (lifecycle === "canceled") {
     return (
       <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -81,7 +84,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
-  if (invitation.expiresAt < new Date()) {
+  if (lifecycle === "expired") {
     return (
       <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
