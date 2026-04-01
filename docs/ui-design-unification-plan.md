@@ -21,6 +21,7 @@ Gyors kódbázis-audit alapján (`src/app` + `src/components`):
 - `143` darab `min-h-[44px]` használat van `66` fájlban (gomb/CTA minta széttagolt).
 - `37` alkalommal ismétlődik a panel recept: `rounded-2xl border border-sand bg-white p-6 shadow-sm` (`19` fájlban).
 - az avatar színlogika többszörösen duplikált (`AVATAR_COLORS` + `getAvatarColor`) legalább `11` helyen.
+- doodle/avatar asset használat keveredik a felületek között (onboarding, org setup, observe), ezért az avatar UX irány nem egységes.
 - párhuzamos nav implementáció él egyszerre: `NavBar` és `NavHeaderUI`.
 
 ### Fő duplikációs hotspotok
@@ -80,7 +81,7 @@ Kötelező alapok:
 Kiegészítő:
 
 - központi `cn` helper (`src/lib/ui/cn.ts`)
-- központi avatar palette helper (`src/lib/ui/avatar.ts`)
+- központi avatar megjelenítési policy (`src/lib/ui/avatar.ts`) a doodle avatarok kivezetésével
 
 ## 3) Shell és layout konszolidáció
 
@@ -98,7 +99,7 @@ Feladatok:
 
 - `ui/primitives/Button` + `Card` + `SectionEyebrow` bevezetése.
 - `cn` helper bevezetése.
-- `avatar` helper központosítása.
+- doodle avatarok kivezetése és egységes avatar fallback (monogram + standard gradient) bevezetése.
 - token policy dokumentálás: “nincs új hex a komponensekben”.
 
 Done:
@@ -168,8 +169,8 @@ Done:
 2. Panel recipe kiváltása `Card`-ra
 - kezdés: org tabs + org settings + join oldalak.
 
-3. Avatar helper kivonás
-- érintett: `UserMenu`, `NavHeaderUI`, `MobileDrawer`, `ProfileHero`, `profile page`, `team/org/dashboard page`.
+3. Doodle avatar kivezetés + avatar helper konszolidáció
+- érintett: `onboarding`, `org setup`, `observe`, `UserMenu`, `NavHeaderUI`, `ProfileHero`, `profile page`, `team/org/dashboard page`.
 
 4. Eyebrow helper kivonás
 - ismétlődő `font-mono ... text-bronze` pattern kiváltása.
@@ -205,6 +206,7 @@ Mitigáció:
 
 - nincs új hardcoded hex komponensekben (token definíciót kivéve),
 - központi Button/Card/Section primitives használata a fő flow-kban,
+- doodle avatarok kivezetve a user-avatar flow-kból,
 - nav/shell párhuzamok megszűnnek,
 - CI quality gate mellett UI audit guardrail is aktív,
 - onboardinghoz és fejlesztéshez rövid guideline elérhető.
