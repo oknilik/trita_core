@@ -48,7 +48,7 @@ export default async function OrgDetailPage({
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
   const deepLinkFallback = await resolveJourneyFallbackForProfileId(profileId);
-  if (!hasOrgRole(memberRole, "ORG_ADMIN")) redirect(deepLinkFallback);
+  if (!hasOrgRole(memberRole, "ORG_MANAGER")) redirect(deepLinkFallback);
 
   const policySnapshot = await resolveOrgPolicySnapshot({
     orgId,
