@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { PrimaryTabs } from "./PrimaryTabs";
@@ -58,8 +58,13 @@ export function OrgPageShell({
   teams,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") ?? "overview";
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const tabFromUrl = searchParams.get("tab") ?? "overview";
+  const [activeTab, setActiveTab] = useState(tabFromUrl);
+
+  // Sync local tab state when URL search params change (e.g. link navigation)
+  useEffect(() => {
+    setActiveTab(tabFromUrl);
+  }, [tabFromUrl]);
 
   const handleTabChange = useCallback((key: string) => {
     setActiveTab(key);

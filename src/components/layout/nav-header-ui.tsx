@@ -59,14 +59,6 @@ function OrgIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
-function BellIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" className="text-[var(--color-text-secondary)]">
-      <path d="M8 2a5 5 0 0 1 5 5v2l1.5 2H1.5L3 9V7a5 5 0 0 1 5-5z" />
-      <path d="M6.5 13a1.5 1.5 0 0 0 3 0" />
-    </svg>
-  );
-}
 
 function ChevronDown() {
   return (
@@ -334,10 +326,10 @@ export function NavHeaderUI({
             )}
 
             {/* Separator */}
-            {org && isAdmin && <div className="mx-2 h-5 w-px bg-[var(--color-border-soft)]" />}
+            {org && (isAdmin || isManager) && <div className="mx-2 h-5 w-px bg-[var(--color-border-soft)]" />}
 
-            {/* Szervezet dropdown (admin only) */}
-            {org && isAdmin && (
+            {/* Szervezet dropdown (manager+) */}
+            {org && (isAdmin || isManager) && (
               <div className="relative">
                 <button
                   type="button"
@@ -356,7 +348,9 @@ export function NavHeaderUI({
                 <MegaDropdown isOpen={openDropdown === "org"}>
                   <MegaItem href={`/org/${org.id}`} icon={<OrgIcon />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={closeAll} />
                   <MegaItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={closeAll} />
-                  <MegaItem href={`/org/${org.id}/settings`} icon={<OrgIcon />} title="Beállítások" desc="Számlázás, csomagok" onClick={closeAll} />
+                  {isAdmin && (
+                    <MegaItem href={`/org/${org.id}/settings`} icon={<OrgIcon />} title="Beállítások" desc="Számlázás, csomagok" onClick={closeAll} />
+                  )}
                 </MegaDropdown>
               </div>
             )}
@@ -364,11 +358,6 @@ export function NavHeaderUI({
 
           {/* ── Desktop right side ───────────────────────────────────────── */}
           <div className="hidden items-center gap-2 lg:flex">
-            {/* Bell */}
-            <button type="button" className="relative flex h-9 w-9 items-center justify-center rounded-lg transition-opacity hover:opacity-70">
-              <BellIcon />
-            </button>
-
             {/* Separator + Language */}
             <div className="h-5 w-px bg-[var(--color-border-default)]" />
             <LanguageSwitcher />
@@ -399,9 +388,6 @@ export function NavHeaderUI({
           {/* ── Mobile: language + bell + hamburger ─────────────────────── */}
           <div className="flex items-center gap-2 lg:hidden">
             <LanguageSwitcher />
-            <button type="button" className="relative flex h-9 w-9 items-center justify-center rounded-lg transition-opacity hover:opacity-70">
-              <BellIcon />
-            </button>
             <button
               type="button"
               onClick={() => setMobileMenu((s) => s === "closed" ? "quickview" : "closed")}
@@ -641,15 +627,17 @@ export function NavHeaderUI({
                   </div>
                 )}
 
-                {/* ── Szervezet section (admin only) ── */}
-                {org && isAdmin && (
+                {/* ── Szervezet section (manager+) ── */}
+                {org && (isAdmin || isManager) && (
                   <div className="mt-2 border-t border-[var(--color-border-default)] pt-2">
                     <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                       {org.name}
                     </p>
                     <MobileMenuItem href={`/org/${org.id}`} icon={<OrgIcon className="h-4 w-4" />} title="Szervezeti áttekintés" desc="Csapatok és tagok összesítése" onClick={() => setMobileMenu("closed")} />
                     <MobileMenuItem href={`/org/${org.id}?tab=members`} icon={<TeamIcon className="h-4 w-4" />} title="Szerepkörök kezelése" desc="Admin, manager, member" onClick={() => setMobileMenu("closed")} />
-                    <MobileMenuItem href={`/org/${org.id}/settings`} icon={<OrgIcon className="h-4 w-4" />} title="Beállítások" desc="Számlázás, csomagok" onClick={() => setMobileMenu("closed")} />
+                    {isAdmin && (
+                      <MobileMenuItem href={`/org/${org.id}/settings`} icon={<OrgIcon className="h-4 w-4" />} title="Beállítások" desc="Számlázás, csomagok" onClick={() => setMobileMenu("closed")} />
+                    )}
                   </div>
                 )}
 

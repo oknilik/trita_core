@@ -30,6 +30,7 @@ import {
   toOrgSubscriptionBannerState,
 } from "@/lib/policy-service";
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
+import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 
 export const dynamic = "force-dynamic";
 
@@ -164,6 +165,55 @@ export default async function TeamDetailPage({
           dimConfigs={teamData.dimConfigs}
           locale={locale}
           isHu={isHu}
+        />
+      </PlatformPageShell>
+    );
+  }
+
+  // ── Members tab: member list + invites + invite form ────────────────────
+  if (activeTab === "members") {
+    const membersForTab = teamData.members.map((m) => ({
+      id: m.id,
+      userId: m.userId,
+      displayName: m.displayName,
+      email: m.email,
+      role: m.role,
+      joinedAt: m.joinedAt,
+      hasAssessment: m.scores !== null,
+      testType: m.testType,
+    }));
+    const pendingForTab = teamData.pendingInvites.map((inv) => ({
+      id: inv.id,
+      email: inv.email,
+      createdAt: inv.createdAt,
+    }));
+
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+      >
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/team/${teamId}`}
+            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          >
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 3L5 8l5 5" />
+            </svg>
+            {teamData.teamName}
+          </Link>
+        </div>
+        <TeamMembersTab
+          members={membersForTab}
+          pendingInvites={pendingForTab}
+          teamId={teamId}
+          teamName={teamData.teamName}
+          profileId={profile.id}
+          isOrgManager={isOrgManager}
+          isHu={isHu}
+          locale={locale}
+          dateLocale={isHu ? "hu-HU" : "en-US"}
         />
       </PlatformPageShell>
     );
@@ -593,16 +643,7 @@ export default async function TeamDetailPage({
                   <span className="w-8 text-right text-[11px] font-medium text-ink">
                     {avgScore ?? "—"}
                   </span>
-                  {/* CTA */}
-                  {isDone ? (
-                    <span className="text-[11px] font-semibold text-sage">
-                      {t("teamDetail.memberProfileCta", locale)}
-                    </span>
-                  ) : (
-                    <span className="cursor-pointer text-[11px] font-semibold text-bronze">
-                      {t("teamDetail.memberRemindCta", locale)}
-                    </span>
-                  )}
+                  {/* TODO: wire member profile link and remind action when backend supports it */}
                 </div>
               );
             })}
