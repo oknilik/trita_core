@@ -25,6 +25,7 @@
     "lint:ui:hex:new": "node scripts/check-no-new-ui-hex.mjs",
     "audit:ui": "node scripts/ui-audit.mjs",
     "audit:ui:write": "node scripts/ui-audit.mjs --write",
+    "audit:ui:guardrail": "node scripts/ui-audit-guardrail.mjs",
     "test:blocks": "node scripts/run-test-blocks.mjs --layers=unit",
     "test:blocks:all": "node scripts/run-test-blocks.mjs --layers=unit,integration,client",
     "test:blocks:full": "node scripts/run-test-blocks.mjs --layers=unit,integration,client,e2e",
