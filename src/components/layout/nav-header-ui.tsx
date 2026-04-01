@@ -5,25 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-
-// ── Avatar colors ───────────────────────────────────────────────────────────
-
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 // ── Icons (14×14, stroke currentColor) ──────────────────────────────────────
 
@@ -201,8 +183,8 @@ export function NavHeaderUI({
 
   const displayName = resolvedUsername || resolvedEmail || null;
   const showIdentityLoader = !identityReady;
-  const initial = displayName?.[0]?.toUpperCase() ?? "P";
-  const [avatarFrom, avatarTo] = getAvatarColor(displayName ?? "trita");
+  const initial = getAvatarMonogram(displayName, { length: 1, fallback: "P" });
+  const [avatarFrom, avatarTo] = getAvatarGradient(displayName ?? "trita");
   const roleLabel = isAdmin ? "Admin" : "Manager";
 
   const closeAll = useCallback(() => setOpenDropdown(null), []);

@@ -8,23 +8,7 @@ import { createPortal } from "react-dom";
 import { useLocale } from "@/components/LocaleProvider";
 import { SUPPORTED_LOCALES, t, type Locale } from "@/lib/i18n";
 import { TritaLogo } from "@/components/TritaLogo";
-
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -139,8 +123,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             <SignedIn>
               {(() => {
                 const name = displayName ?? "";
-                const initial = name[0]?.toUpperCase() ?? "?";
-                const [from, to] = getAvatarColor(name);
+                const initial = getAvatarMonogram(name, { length: 1 });
+                const [from, to] = getAvatarGradient(name);
                 return (
                   <Link
                     href="/profile"

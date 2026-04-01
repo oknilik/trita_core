@@ -62,30 +62,6 @@ const GROWTH_INSIGHTS_EN: Record<string, string> = {
   O: "Building openness to change and creative thinking can be beneficial.",
 };
 
-const AVATAR_COLORS = [
-  "var(--color-visual-gradient-indigo)",
-  "#EC4899",
-  "var(--color-state-success-strong)",
-  "var(--color-state-warning-strong)",
-  "var(--color-visual-gradient-violet)",
-  "#06B6D4",
-];
-
-function getAvatarColor(name: string): string {
-  const hash = name
-    .split("")
-    .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
-}
-
 export function TeamOverviewTab({
   data,
   isHu,
@@ -377,8 +353,6 @@ export function TeamOverviewTab({
                 <div className="flex flex-col divide-y divide-warm-mid">
                   {data.members.map((member) => {
                     const selfDone = member.scores !== null;
-                    const avatarColor = getAvatarColor(member.displayName);
-                    const initials = getInitials(member.displayName);
                     const top3Text = member.top3Dims
                       .map((d) => `${d.code}:${d.value}%`)
                       .join(" · ");

@@ -5,23 +5,7 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"], // sage
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"], // bronze
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"], // ink
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"], // indigo
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"], // teal
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"], // purple
-] as const;
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 export function UserMenu() {
   const { user, isLoaded } = useUser();
@@ -70,8 +54,8 @@ export function UserMenu() {
   const resolvedName = profileName || user?.username || user?.firstName || null;
   const displayName = resolvedName || email;
   const showIdentityLoader = !isLoaded || !hasFetchedProfile;
-  const avatarInitial = displayName?.[0]?.toUpperCase() ?? "·";
-  const [from, to] = getAvatarColor(user?.id ?? displayName ?? "trita");
+  const avatarInitial = getAvatarMonogram(displayName, { length: 1, fallback: "·" });
+  const [from, to] = getAvatarGradient(user?.id ?? displayName ?? "trita");
 
   return (
     <Link

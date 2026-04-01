@@ -12,15 +12,7 @@ import { TeamIntelligence } from "./TeamIntelligence";
 import type { IntelligenceMember } from "./TeamIntelligence";
 import type { TeamPageData } from "@/lib/team-stats";
 import { TeamBelbinSection } from "./TeamBelbinSection";
-
-const AVATAR_COLORS = [
-  "var(--color-visual-gradient-indigo)",
-  "#EC4899",
-  "var(--color-state-success-strong)",
-  "var(--color-state-warning-strong)",
-  "var(--color-visual-gradient-violet)",
-  "#06B6D4",
-];
+import { getAvatarMonogram, getAvatarSolidColor } from "@/lib/ui/avatar";
 
 const ZONE_NAMES_EN: Record<string, string> = {
   "3_1": "Emerging talent",
@@ -120,17 +112,9 @@ export function TeamPageShell({
         }
       : { H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 };
 
-    const color = AVATAR_COLORS[
-      m.displayName.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) %
-        AVATAR_COLORS.length
-    ];
-
     const name = m.displayName;
-    const parts = name.trim().split(/\s+/);
-    const initials =
-      parts.length >= 2
-        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-        : name.slice(0, 2).toUpperCase();
+    const initials = getAvatarMonogram(name, { length: 2 });
+    const color = getAvatarSolidColor(name);
 
     const zoneName = getZoneName(2, 2, isHu);
 

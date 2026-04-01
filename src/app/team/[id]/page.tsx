@@ -22,6 +22,7 @@ import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import {
   resolveOrgCapabilityDecision,
   resolveOrgPolicySnapshot,
@@ -38,26 +39,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
 const TEAM_HERO_GRADIENT =
   "linear-gradient(135deg, #66455d 0%, #4a314a 60%, #2f2035 100%)";
 const TEAM_HERO_PRIMARY = "#d48e62";
 const TEAM_HERO_BADGE_BG = "rgba(212,142,98,0.22)";
 const TEAM_HERO_BADGE_TEXT = "#f3c39d";
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
 
 export default async function TeamDetailPage({
   params,
@@ -566,8 +552,10 @@ export default async function TeamDetailPage({
               const avgScore = isDone && member.scores
                 ? Math.round(Object.values(member.scores).reduce((s, v) => s + v, 0) / Object.values(member.scores).length)
                 : null;
-              const [from, to] = getAvatarColor(member.displayName);
-              const initial = member.displayName[0]?.toUpperCase() ?? "?";
+              const [from, to] = getAvatarGradient(member.displayName);
+              const initial = getAvatarMonogram(member.displayName, {
+                length: 1,
+              });
 
               return (
                 <div key={member.id} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-cream/65">

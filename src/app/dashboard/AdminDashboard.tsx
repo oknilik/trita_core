@@ -15,6 +15,7 @@ import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/das
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
+import { getAvatarGradient } from "@/lib/ui/avatar";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -69,17 +70,6 @@ interface OrgStatusResponse {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"], ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"], ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"], ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"], ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
 
 function relativeTime(iso: string | null, locale: "hu" | "en"): string {
   if (!iso) return "";
@@ -815,7 +805,7 @@ export function AdminDashboard() {
                     const pct = total > 0 ? Math.round((done / total) * 100) : 0;
                     const rem = total - done;
                     const snap = done >= 3;
-                    const [from, to] = getAvatarColor(team.name);
+                    const [from, to] = getAvatarGradient(team.name);
 
                     const insight = rem > 0 && snap
                       ? tf("dashboard.insightAlmostReady", localeTag, { count: String(rem) })

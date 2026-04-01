@@ -25,6 +25,7 @@ import {
 } from "@/components/dashboard/DashboardPrimitives";
 import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/dashboard/ia-contract";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { getAvatarGradient } from "@/lib/ui/avatar";
 
 export const dynamic = "force-dynamic";
 
@@ -36,27 +37,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// ── Avatar color (shared with UserMenu) ─────────────────────────────────────
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
 const ORG_HERO_GRADIENT =
   "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)";
 const ORG_HERO_PRIMARY = "#d2a36a";
 const ORG_HERO_BADGE_BG = "rgba(210,163,106,0.22)";
 const ORG_HERO_BADGE_TEXT = "#f4c792";
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
 
 export default async function OrgDetailPage({
   params,
@@ -595,7 +580,7 @@ export default async function OrgDetailPage({
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {teams.map((tm) => {
-                const [from, to] = getAvatarColor(tm.name);
+                const [from, to] = getAvatarGradient(tm.name);
                 return (
                   <Link
                     key={tm.id}

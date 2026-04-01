@@ -10,23 +10,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
-
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -135,10 +119,13 @@ export default function ProfilePage() {
 
   if (!isSignedIn) { router.push("/sign-in"); return null; }
 
-  const initials = (username.trim() || user?.primaryEmailAddress?.emailAddress || "?").slice(0, 1).toUpperCase();
+  const initials = getAvatarMonogram(
+    username.trim() || user?.primaryEmailAddress?.emailAddress,
+    { length: 1 },
+  );
   const displayName = username.trim() || user?.username || user?.firstName || t("common.userFallback", locale);
   const avatarColorName = username.trim() || user?.username || user?.primaryEmailAddress?.emailAddress || "";
-  const [avatarFrom, avatarTo] = getAvatarColor(avatarColorName);
+  const [avatarFrom, avatarTo] = getAvatarGradient(avatarColorName);
 
   const currentYear = new Date().getFullYear();
   const minBirthYear = currentYear - 100;

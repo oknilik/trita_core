@@ -2,25 +2,9 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 type AccessLevel = "start" | "plus";
-
-const AVATAR_COLORS = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  ["var(--color-visual-gradient-indigo)", "var(--color-visual-gradient-indigo-deep)"],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  ["var(--color-visual-gradient-purple)", "var(--color-visual-gradient-purple-deep)"],
-] as const;
-
-function getAvatarColor(name: string): readonly [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
 
 const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: string }> = {
   start: { label: "Free",  bg: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" },
@@ -64,8 +48,8 @@ export function ProfileHero({
 }: ProfileHeroProps) {
   const { locale } = useLocale();
   const level = LEVEL_CONFIG[accessLevel];
-  const initial = userName[0]?.toUpperCase() ?? "?";
-  const [avatarFrom, avatarTo] = getAvatarColor(userName);
+  const initial = getAvatarMonogram(userName, { length: 1 });
+  const [avatarFrom, avatarTo] = getAvatarGradient(userName);
 
   return (
     <div
