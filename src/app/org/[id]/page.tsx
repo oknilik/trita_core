@@ -12,6 +12,7 @@ import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import {
   resolveOrgCapabilityDecision,
   resolveOrgPolicySnapshot,
@@ -36,12 +37,6 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: { index: false },
   };
 }
-
-const ORG_HERO_GRADIENT =
-  "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)";
-const ORG_HERO_PRIMARY = "#d2a36a";
-const ORG_HERO_BADGE_BG = "rgba(210,163,106,0.22)";
-const ORG_HERO_BADGE_TEXT = "#f4c792";
 
 export default async function OrgDetailPage({
   params,
@@ -294,6 +289,7 @@ export default async function OrgDetailPage({
   });
   const heroSub = orgDashboardVm.heroSummary.summary;
   const heroChips = orgDashboardVm.heroSummary.chips;
+  const orgHeroTheme = SURFACE_HERO_THEME.org;
 
   return (
     <PlatformPageShell
@@ -302,140 +298,133 @@ export default async function OrgDetailPage({
     >
 
         {/* ═══ 1. ORG HERO ═══ */}
-        <div
-          className="relative overflow-hidden rounded-2xl"
-          style={{ background: ORG_HERO_GRADIENT }}
-        >
-          <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
-          <div className="px-7 py-7 md:px-9 md:py-8">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-              <div>
-                <p className="mb-3 text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-                  {t("org.eyebrow", locale)}
-                </p>
-
-                <h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">
-                  {org.name}
-                </h1>
-
-                <p className="mt-2 max-w-[560px] text-[14px] leading-relaxed text-white/[0.4]">
-                  {heroSub}
-                </p>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {heroChips.map((chip) => (
-                    <span
-                      key={chip}
-                      className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]"
-                    >
-                      {chip}
-                    </span>
-                  ))}
-                  {org.status === "PENDING_SETUP" && (
-                    <span
-                      className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
-                      style={{ backgroundColor: ORG_HERO_BADGE_BG, color: ORG_HERO_BADGE_TEXT }}
-                    >
-                      {t("org.setupPending", locale)}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {canManageOrgActions ? (
-                    <>
-                      <Link
-                        href={orgDashboardVm.recommendedAction.primary.href}
-                        className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
-                        style={{ backgroundColor: ORG_HERO_PRIMARY }}
-                      >
-                        {orgDashboardVm.recommendedAction.primary.label}
-                      </Link>
-                      <Link
-                        href={orgDashboardVm.recommendedAction.secondary?.href ?? `/org/${orgId}?tab=teams`}
-                        className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
-                      >
-                        {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <span className="flex min-h-[44px] cursor-not-allowed items-center rounded-[9px] bg-white/[0.12] px-5 py-2 text-[12px] font-semibold text-white/55">
-                        {orgDashboardVm.recommendedAction.primary.label}
-                      </span>
-                      <span className="flex min-h-[44px] cursor-not-allowed items-center rounded-[9px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.45]">
-                        {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
-                      </span>
-                    </>
-                  )}
-                </div>
-                {isAdminForActions ? (
+        <SurfaceHero
+          variant="org"
+          eyebrow={(
+            <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+              {t("org.eyebrow", locale)}
+            </p>
+          )}
+          title={<h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">{org.name}</h1>}
+          summary={heroSub}
+          summaryClassName="max-w-[560px] text-white/[0.4]"
+          chips={(
+            <>
+              {heroChips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]"
+                >
+                  {chip}
+                </span>
+              ))}
+              {org.status === "PENDING_SETUP" ? (
+                <span
+                  className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
+                  style={{ backgroundColor: orgHeroTheme.badgeBg, color: orgHeroTheme.badgeText }}
+                >
+                  {t("org.setupPending", locale)}
+                </span>
+              ) : null}
+            </>
+          )}
+          actions={(
+            <>
+              {canManageOrgActions ? (
+                <>
                   <Link
-                    href={`/org/${orgId}/settings`}
-                    className="mt-3 inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
+                    href={orgDashboardVm.recommendedAction.primary.href}
+                    className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                    style={{ backgroundColor: orgHeroTheme.primary }}
                   >
-                    {t("org.settingsLink", locale)} →
+                    {orgDashboardVm.recommendedAction.primary.label}
                   </Link>
-                ) : null}
+                  <Link
+                    href={orgDashboardVm.recommendedAction.secondary?.href ?? `/org/${orgId}?tab=teams`}
+                    className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-white/[0.55] transition hover:bg-white/[0.12]"
+                  >
+                    {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span className="flex min-h-[44px] cursor-not-allowed items-center rounded-[9px] bg-white/[0.12] px-5 py-2 text-[12px] font-semibold text-white/55">
+                    {orgDashboardVm.recommendedAction.primary.label}
+                  </span>
+                  <span className="flex min-h-[44px] cursor-not-allowed items-center rounded-[9px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.45]">
+                    {orgDashboardVm.recommendedAction.secondary?.label ?? t("org.heroCta2", locale)}
+                  </span>
+                </>
+              )}
+            </>
+          )}
+          footer={
+            isAdminForActions ? (
+              <Link
+                href={`/org/${orgId}/settings`}
+                className="inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
+              >
+                {t("org.settingsLink", locale)} →
+              </Link>
+            ) : undefined
+          }
+          aside={(
+            <>
+              <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
+                {t("orgHero.liveSnapshot", locale)}
+              </p>
+
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.membersLabel", locale)}</p>
+                  <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.memberCount}</p>
+                </div>
+                <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.teamsLabel", locale)}</p>
+                  <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.teamCount}</p>
+                </div>
+                <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.activeLabel", locale)}</p>
+                  <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.activeCampaignCount}</p>
+                </div>
               </div>
 
-              <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.06] p-4 backdrop-blur-[2px] lg:block">
-                <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
-                  {t("orgHero.liveSnapshot", locale)}
-                </p>
-
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.membersLabel", locale)}</p>
-                    <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.memberCount}</p>
+              <div className="mt-4 space-y-3">
+                <div>
+                  <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
+                    <span>{t("orgHero.orgCompletion", locale)}</span>
+                    <span className="font-semibold text-white/[0.7]">{orgCompletionPct}%</span>
                   </div>
-                  <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.teamsLabel", locale)}</p>
-                    <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.teamCount}</p>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${orgCompletionPct}%`, backgroundColor: "#8ad0b4" }}
+                    />
                   </div>
-                  <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.activeLabel", locale)}</p>
-                    <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.activeCampaignCount}</p>
-                  </div>
+                  <p className="mt-1.5 text-[10px] text-white/[0.45]">
+                    {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
+                  </p>
                 </div>
 
-                <div className="mt-4 space-y-3">
-                  <div>
-                    <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                      <span>{t("orgHero.orgCompletion", locale)}</span>
-                      <span className="font-semibold text-white/[0.7]">{orgCompletionPct}%</span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
-                      <div
-                        className="h-full rounded-full"
-                        style={{ width: `${orgCompletionPct}%`, backgroundColor: "#8ad0b4" }}
-                      />
-                    </div>
-                    <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                      {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
-                    </p>
+                <div>
+                  <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
+                    <span>{t("orgHero.activeCampaignCompletion", locale)}</span>
+                    <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
                   </div>
-
-                  <div>
-                    <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                      <span>{t("orgHero.activeCampaignCompletion", locale)}</span>
-                      <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
-                      <div
-                        className="h-full rounded-full"
-                        style={{ width: `${completionPct}%`, backgroundColor: ORG_HERO_PRIMARY }}
-                      />
-                    </div>
-                    <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                      {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
-                    </p>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${completionPct}%`, backgroundColor: orgHeroTheme.primary }}
+                    />
                   </div>
+                  <p className="mt-1.5 text-[10px] text-white/[0.45]">
+                    {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
+                  </p>
                 </div>
-              </aside>
-            </div>
-          </div>
-        </div>
+              </div>
+            </>
+          )}
+        />
 
         {isRestricted || isNone ? (
           <OrgSubscriptionBanner

@@ -4,6 +4,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { Button } from "@/components/ui/primitives/Button";
+import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 
 type AccessLevel = "start" | "plus";
 
@@ -12,9 +13,6 @@ const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: stri
   plus:  { label: "Plus",  bg: "rgba(193,127,74,0.2)",   color: "var(--color-accent-primary-soft)" },
 };
 
-const SELF_HERO_GRADIENT =
-  "linear-gradient(135deg, var(--color-accent-self-strong) 0%, var(--color-accent-self-deep) 60%, var(--color-accent-self-deeper) 100%)";
-const SELF_HERO_PRIMARY = "var(--color-accent-primary)";
 const SELF_TOP_DIM_BG = "rgba(61,107,94,0.3)";
 const SELF_TOP_DIM_TEXT = "var(--color-surface-self-accent-soft)";
 
@@ -51,28 +49,26 @@ export function ProfileHero({
   const level = LEVEL_CONFIG[accessLevel];
   const initial = getAvatarMonogram(userName, { length: 1 });
   const [avatarFrom, avatarTo] = getAvatarGradient(userName);
+  const selfTheme = SURFACE_HERO_THEME.self;
 
   return (
-    <div
-      className="relative overflow-hidden rounded-2xl"
-      style={{
-        background: SELF_HERO_GRADIENT,
-      }}
-    >
-      <div className="mx-auto max-w-4xl px-9 pb-8 pt-10">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
-
-        <div className="mb-2 flex items-center gap-2.5">
-          <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-            {t("results.heroEyebrow", locale)}
-          </p>
-          <span
-            className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
-            style={{ backgroundColor: level.bg, color: level.color }}
-          >
-            {level.label}
-          </span>
-        </div>
+    <SurfaceHero
+      variant="self"
+      contentClassName="mx-auto max-w-4xl px-9 pb-8 pt-10"
+      eyebrow={
+        <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+          {t("results.heroEyebrow", locale)}
+        </p>
+      }
+      badge={
+        <span
+          className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+          style={{ backgroundColor: level.bg, color: level.color }}
+        >
+          {level.label}
+        </span>
+      }
+      title={(
         <div className="mb-0.5 flex items-center gap-3">
           <div
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
@@ -84,58 +80,68 @@ export function ProfileHero({
             {userName}
           </h1>
         </div>
-        <p className="mb-4 text-[11px] text-white/[0.25]">
+      )}
+      meta={(
+        <p className="text-[11px] text-white/[0.25]">
           {t("results.heroAssessment", locale)} {completedAt}
         </p>
-
-        <div className="mb-2.5 flex items-start justify-between gap-3">
+      )}
+      body={(
+        <div className="flex items-start justify-between gap-3">
           <span className="font-fraunces text-[22px] italic text-[var(--color-accent-primary-soft)]">
             {personalityType}
           </span>
-          {percentile && (
+          {percentile ? (
             <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[9px] text-white/[0.45]">
               {percentile}
             </span>
-          )}
+          ) : null}
         </div>
-
-        {insight && (
-          <p className="max-w-[480px] text-[14px] leading-relaxed text-white/[0.42]">
-            {insight}
-          </p>
-        )}
-
-        {/* Dimension chips */}
-        {(topDimensions.length > 0 || watchDimensions.length > 0) && (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {topDimensions.length > 0 && (
-              <>
-                <span className="text-[9px] uppercase tracking-wide text-white/[0.25]">
-                  {t("content.heroTopDims", locale)}:
-                </span>
-                {topDimensions.map((d) => (
-                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: SELF_TOP_DIM_BG, color: SELF_TOP_DIM_TEXT }}>
-                    {d}
+      )}
+      summary={insight}
+      summaryClassName="max-w-[480px] text-white/[0.42]"
+      chips={(
+        <>
+          {(topDimensions.length > 0 || watchDimensions.length > 0) ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {topDimensions.length > 0 ? (
+                <>
+                  <span className="text-[9px] uppercase tracking-wide text-white/[0.25]">
+                    {t("content.heroTopDims", locale)}:
                   </span>
-                ))}
-              </>
-            )}
-            {watchDimensions.length > 0 && (
-              <>
-                <span className="ml-2 text-[9px] uppercase tracking-wide text-white/[0.25]">
-                  {t("content.heroWatchDims", locale)}:
-                </span>
-                {watchDimensions.map((d) => (
-                  <span key={d} className="rounded px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "rgba(193,127,74,0.2)", color: "var(--color-accent-primary-soft)" }}>
-                    {d}
+                  {topDimensions.map((d) => (
+                    <span
+                      key={d}
+                      className="rounded px-2 py-0.5 text-[10px] font-medium"
+                      style={{ backgroundColor: SELF_TOP_DIM_BG, color: SELF_TOP_DIM_TEXT }}
+                    >
+                      {d}
+                    </span>
+                  ))}
+                </>
+              ) : null}
+              {watchDimensions.length > 0 ? (
+                <>
+                  <span className="ml-2 text-[9px] uppercase tracking-wide text-white/[0.25]">
+                    {t("content.heroWatchDims", locale)}:
                   </span>
-                ))}
-              </>
-            )}
-          </div>
-        )}
-
-        <div className="mt-[18px] flex gap-2">
+                  {watchDimensions.map((d) => (
+                    <span
+                      key={d}
+                      className="rounded px-2 py-0.5 text-[10px] font-medium"
+                      style={{ backgroundColor: selfTheme.badgeBg, color: "var(--color-accent-primary-soft)" }}
+                    >
+                      {d}
+                    </span>
+                  ))}
+                </>
+              ) : null}
+            </div>
+          ) : null}
+        </>
+      )}
+      actions={(
+        <div className="flex gap-2">
           <Button
             type="button"
             onClick={onShare}
@@ -151,12 +157,12 @@ export function ProfileHero({
             disabled={pdfLoading}
             variant="primary"
             className="rounded-[9px] px-[18px] text-[11px] font-medium text-white hover:brightness-110"
-            style={{ backgroundColor: SELF_HERO_PRIMARY }}
+            style={{ backgroundColor: selfTheme.primary }}
           >
             📄 {pdfLoading ? "..." : t("results.heroPdf", locale)}
           </Button>
         </div>
-      </div>
-    </div>
+      )}
+    />
   );
 }
