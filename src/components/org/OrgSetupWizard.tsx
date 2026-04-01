@@ -9,6 +9,7 @@ import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
 import { Button } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
+import { TextField } from "@/components/ui/primitives/TextField";
 
 interface OrgSetupWizardProps {
   orgId: string;
@@ -135,17 +136,14 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
             {t("org.setup.step1Subtitle", loc)}
           </p>
           <form onSubmit={handleNameNext} className="flex flex-col gap-4">
-            <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-              {t("org.setup.nameLabel", loc)}
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                maxLength={100}
-                required
-                className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
-              />
-            </label>
+            <TextField
+              label={t("org.setup.nameLabel", loc)}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={100}
+              required
+            />
             {error && <p className="text-xs text-rose-600">{error}</p>}
             <Button
               type="submit"
@@ -236,7 +234,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
           </p>
           <div className="flex flex-col gap-3 mb-6">
             {inviteEmails.map((email, i) => (
-              <input
+              <TextField
                 key={i}
                 type="email"
                 value={email}
@@ -246,7 +244,6 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
                   setInviteEmails(next);
                 }}
                 placeholder={`Email ${i + 1}`}
-                className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-normal text-ink focus:border-sage focus:outline-none"
               />
             ))}
           </div>

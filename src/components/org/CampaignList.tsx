@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/ui/primitives/EmptyState";
 import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
+import { TextField } from "@/components/ui/primitives/TextField";
 
 interface Campaign {
   id: string;
@@ -292,22 +293,22 @@ export function CampaignList({
             {t("org.list.newTitle", loc)}
           </h3>
           <form onSubmit={handleCreate} className="flex flex-col gap-3">
-            <input
+            <TextField
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("org.list.namePlaceholder", loc)}
               maxLength={100}
               required
-              className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
+              inputClassName="bg-cream placeholder:text-ink-body/40"
             />
-            <input
+            <TextField
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t("org.list.descPlaceholder", loc)}
               maxLength={500}
-              className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-ink-body/40 focus:border-sage/40 focus:outline-none"
+              inputClassName="bg-cream placeholder:text-ink-body/40"
             />
             {error ? (
               <InlineBanner variant="error" className="text-xs">

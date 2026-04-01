@@ -7,11 +7,12 @@ import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TextField } from "@/components/ui/primitives/TextField";
 import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
-import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
+import { toggleBtn } from "@/lib/onboarding-styles";
 import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
@@ -250,12 +251,10 @@ export function OnboardingClient() {
               <div className="flex flex-col gap-5">
 
                 {/* Username */}
-                <div ref={usernameFieldRef} className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-ink">
-                    {t("onboarding.usernameLabel", locale)}
-                  </label>
-                  <input
+                <div ref={usernameFieldRef}>
+                  <TextField
                     ref={usernameInputRef}
+                    label={t("onboarding.usernameLabel", locale)}
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -263,29 +262,27 @@ export function OnboardingClient() {
                     placeholder={t("onboarding.usernamePlaceholder", locale)}
                     minLength={2}
                     maxLength={20}
-                    className={inputBase(
-                      usernameTouched && username.trim() !== "" && !usernameValid,
-                      invalidFieldFlash === "username",
-                    )}
+                    error={
+                      usernameTouched && username.trim() !== "" && !usernameValid
+                        ? t("onboarding.usernameError", locale)
+                        : undefined
+                    }
+                    helpText={
+                      usernameTouched && username.trim() !== "" && !usernameValid
+                        ? undefined
+                        : t("onboarding.usernameHint", locale)
+                    }
+                    helpTextClassName="pl-1 italic text-xs text-muted"
+                    errorClassName="pl-1 italic text-xs text-bronze"
+                    inputClassName={invalidFieldFlash === "username" ? "ring-2 ring-sage/30" : undefined}
                   />
-                  {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                    <span className="text-xs text-bronze pl-1 italic">
-                      {t("onboarding.usernameError", locale)}
-                    </span>
-                  ) : (
-                    <span className="text-xs text-muted pl-1 italic">
-                      {t("onboarding.usernameHint", locale)}
-                    </span>
-                  )}
                 </div>
 
                 {/* Birth year */}
-                <div ref={birthYearFieldRef} className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-ink">
-                    {t("onboarding.birthYearLabel", locale)}
-                  </label>
-                  <input
+                <div ref={birthYearFieldRef}>
+                  <TextField
                     ref={birthYearInputRef}
+                    label={t("onboarding.birthYearLabel", locale)}
                     type="number"
                     inputMode="numeric"
                     value={birthYear}
@@ -296,18 +293,21 @@ export function OnboardingClient() {
                     placeholder={t("onboarding.birthYearPlaceholder", locale)}
                     min={minBirthYear}
                     max={maxBirthYear}
-                    className={`${inputBase(
-                      birthYearTouched && birthYear !== "" && !birthYearValid,
-                      invalidFieldFlash === "birthYear",
-                    )} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+                    error={
+                      birthYearTouched && birthYear !== "" && !birthYearValid
+                        ? t("onboarding.birthYearError", locale)
+                        : undefined
+                    }
+                    helpText={`${t("onboarding.validRangeLabel", locale)}: ${minBirthYear} – ${maxBirthYear}`}
+                    helpTextClassName={`pl-1 italic text-xs ${
+                      birthYearTouched && birthYear !== "" && !birthYearValid
+                        ? "text-bronze"
+                        : "text-muted"
+                    }`}
+                    inputClassName={`[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none${
+                      invalidFieldFlash === "birthYear" ? " ring-2 ring-sage/30" : ""
+                    }`}
                   />
-                  <span className={`text-xs pl-1 italic ${
-                    birthYearTouched && birthYear !== "" && !birthYearValid
-                      ? "text-bronze"
-                      : "text-muted"
-                  }`}>
-                    {t("onboarding.validRangeLabel", locale)}: {minBirthYear} – {maxBirthYear}
-                  </span>
                 </div>
 
                 {/* Gender */}

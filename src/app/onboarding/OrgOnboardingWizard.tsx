@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TextField } from "@/components/ui/primitives/TextField";
 import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
+import { toggleBtn } from "@/lib/onboarding-styles";
 import { getCountryOptions } from "@/lib/countries";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
@@ -406,47 +407,41 @@ export function OrgOnboardingWizard() {
               </div>
 
               {/* Username */}
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink">
-                  {t("orgOnboarding.displayName", locale)}
-                </label>
-                <input
-                  type="text"
-                  value={state.username}
-                  onChange={(e) => set("username")(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleStep1Next()}
-                  placeholder={t("orgOnboarding.displayNamePlaceholder", locale)}
-                  maxLength={20}
-                  className={inputBase(!!errors.username)}
-                  autoFocus
-                />
-                {errors.username && (
-                  <span className="pl-1 text-xs text-bronze">{errors.username}</span>
-                )}
-              </div>
+              <TextField
+                label={t("orgOnboarding.displayName", locale)}
+                type="text"
+                value={state.username}
+                onChange={(e) => set("username")(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleStep1Next()}
+                placeholder={t("orgOnboarding.displayNamePlaceholder", locale)}
+                maxLength={20}
+                error={errors.username}
+                errorClassName="pl-1 text-xs text-bronze"
+                autoFocus
+              />
 
               {/* Birth year */}
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink">
-                  {t("orgOnboarding.birthYear", locale)}
-                </label>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  value={state.birthYear}
-                  onChange={(e) => {
-                    if (e.target.value.length <= 4) set("birthYear")(e.target.value);
-                  }}
-                  placeholder={tf("orgOnboarding.birthYearPlaceholder", locale, { year: currentYear - 30 })}
-                  min={minBirthYear}
-                  max={maxBirthYear}
-                  className={`${inputBase(!!errors.birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
-                />
-                <span className={`pl-1 text-xs ${errors.birthYear ? "text-bronze" : "text-muted"}`}>
-                  {errors.birthYear ||
-                    tf("orgOnboarding.birthYearRange", locale, { min: minBirthYear, max: maxBirthYear })}
-                </span>
-              </div>
+              <TextField
+                label={t("orgOnboarding.birthYear", locale)}
+                type="number"
+                inputMode="numeric"
+                value={state.birthYear}
+                onChange={(e) => {
+                  if (e.target.value.length <= 4) set("birthYear")(e.target.value);
+                }}
+                placeholder={tf("orgOnboarding.birthYearPlaceholder", locale, { year: currentYear - 30 })}
+                min={minBirthYear}
+                max={maxBirthYear}
+                error={errors.birthYear}
+                errorClassName="pl-1 text-xs text-bronze"
+                helpText={
+                  errors.birthYear
+                    ? undefined
+                    : tf("orgOnboarding.birthYearRange", locale, { min: minBirthYear, max: maxBirthYear })
+                }
+                helpTextClassName="pl-1 text-xs text-muted"
+                inputClassName="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
 
               {/* Gender */}
               <div className="flex flex-col gap-2">
@@ -527,24 +522,19 @@ export function OrgOnboardingWizard() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink">
-                  {t("orgOnboarding.companyName", locale)} <span className="text-bronze">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={state.orgName}
-                  onChange={(e) => set("orgName")(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleStep2Next()}
-                  placeholder={t("orgOnboarding.companyNamePlaceholder", locale)}
-                  maxLength={100}
-                  className={inputBase(!!errors.orgName)}
-                  autoFocus
-                />
-                {errors.orgName && (
-                  <span className="pl-1 text-xs text-bronze">{errors.orgName}</span>
-                )}
-              </div>
+              <TextField
+                label={t("orgOnboarding.companyName", locale)}
+                required
+                type="text"
+                value={state.orgName}
+                onChange={(e) => set("orgName")(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleStep2Next()}
+                placeholder={t("orgOnboarding.companyNamePlaceholder", locale)}
+                maxLength={100}
+                error={errors.orgName}
+                errorClassName="pl-1 text-xs text-bronze"
+                autoFocus
+              />
 
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink">
@@ -629,24 +619,19 @@ export function OrgOnboardingWizard() {
 
               {!teamId ? (
                 <>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-semibold text-ink">
-                      {t("orgOnboarding.teamName", locale)} <span className="text-bronze">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={state.teamName}
-                      onChange={(e) => set("teamName")(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleStep3Finish(false)}
-                      placeholder={t("orgOnboarding.teamNamePlaceholder", locale)}
-                      maxLength={60}
-                      className={inputBase(!!errors.teamName)}
-                      autoFocus
-                    />
-                    {errors.teamName && (
-                      <span className="pl-1 text-xs text-bronze">{errors.teamName}</span>
-                    )}
-                  </div>
+                  <TextField
+                    label={t("orgOnboarding.teamName", locale)}
+                    required
+                    type="text"
+                    value={state.teamName}
+                    onChange={(e) => set("teamName")(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleStep3Finish(false)}
+                    placeholder={t("orgOnboarding.teamNamePlaceholder", locale)}
+                    maxLength={60}
+                    error={errors.teamName}
+                    errorClassName="pl-1 text-xs text-bronze"
+                    autoFocus
+                  />
 
                   <div className="mt-2 flex gap-3">
                     <button

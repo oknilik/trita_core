@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/ui/primitives/EmptyState";
 import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
+import { TextField } from "@/components/ui/primitives/TextField";
 
 interface OrgCampaignsTabProps {
   orgId: string;
@@ -201,10 +202,8 @@ export function OrgCampaignsTab({
               </SectionHeading>
               <form onSubmit={handleCreate} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-ink">
-                    {t("org.campaigns.nameLabel", loc)}
-                  </label>
-                  <input
+                  <TextField
+                    label={t("org.campaigns.nameLabel", loc)}
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -212,21 +211,19 @@ export function OrgCampaignsTab({
                     maxLength={100}
                     required
                     disabled={loading}
-                    className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-muted focus:border-sage/40 focus:outline-none"
+                    inputClassName="bg-cream placeholder:text-muted"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-ink">
-                    {t("org.campaigns.descLabel", loc)}
-                  </label>
-                  <input
+                  <TextField
+                    label={t("org.campaigns.descLabel", loc)}
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder={t("org.campaigns.descPlaceholder", loc)}
                     maxLength={500}
                     disabled={loading}
-                    className="min-h-[44px] rounded-lg border border-sand bg-cream px-3 text-sm text-ink placeholder:text-muted focus:border-sage/40 focus:outline-none"
+                    inputClassName="bg-cream placeholder:text-muted"
                   />
                 </div>
                 {error && (

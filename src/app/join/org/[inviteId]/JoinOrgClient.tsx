@@ -6,9 +6,10 @@ import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TextField } from "@/components/ui/primitives/TextField";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { inputBase, toggleBtn } from "@/lib/onboarding-styles";
+import { toggleBtn } from "@/lib/onboarding-styles";
 import {
   getBirthYearBounds,
   getMembershipGenderOptions,
@@ -177,27 +178,21 @@ export function JoinOrgClient({
                 </div>
 
                 {/* Username */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-ink">
-                    {copy.usernameLabel}
-                  </label>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                      setErrors((p) => ({ ...p, username: "" }));
-                    }}
-                    onKeyDown={(e) => e.key === "Enter" && handleSubmitWithProfile()}
-                    placeholder={copy.usernamePlaceholder}
-                    maxLength={20}
-                    className={inputBase(!!errors.username)}
-                    autoFocus
-                  />
-                  {errors.username && (
-                    <span className="pl-1 text-xs text-bronze">{errors.username}</span>
-                  )}
-                </div>
+                <TextField
+                  label={copy.usernameLabel}
+                  type="text"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setErrors((p) => ({ ...p, username: "" }));
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmitWithProfile()}
+                  placeholder={copy.usernamePlaceholder}
+                  maxLength={20}
+                  error={errors.username}
+                  errorClassName="pl-1 text-xs text-bronze"
+                  autoFocus
+                />
 
                 {/* Gender */}
                 <div className="flex flex-col gap-2">
@@ -223,25 +218,24 @@ export function JoinOrgClient({
                 </div>
 
                 {/* Birth year */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-ink">{copy.birthYearLabel}</label>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    value={birthYear}
-                    onChange={(e) => {
-                      if (e.target.value.length <= 4) {
-                        setBirthYear(e.target.value);
-                        setErrors((p) => ({ ...p, birthYear: "" }));
-                      }
-                    }}
-                    placeholder={copy.birthYearPlaceholder}
-                    className={`${inputBase(!!errors.birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
-                  />
-                  <span className={`pl-1 text-xs ${errors.birthYear ? "text-bronze" : "text-muted"}`}>
-                    {errors.birthYear || copy.birthYearHint}
-                  </span>
-                </div>
+                <TextField
+                  label={copy.birthYearLabel}
+                  type="number"
+                  inputMode="numeric"
+                  value={birthYear}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 4) {
+                      setBirthYear(e.target.value);
+                      setErrors((p) => ({ ...p, birthYear: "" }));
+                    }
+                  }}
+                  placeholder={copy.birthYearPlaceholder}
+                  error={errors.birthYear}
+                  errorClassName="pl-1 text-xs text-bronze"
+                  helpText={errors.birthYear ? undefined : copy.birthYearHint}
+                  helpTextClassName="pl-1 text-xs text-muted"
+                  inputClassName="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
 
                 {/* Divider */}
                 <div className="h-px bg-sand" />
