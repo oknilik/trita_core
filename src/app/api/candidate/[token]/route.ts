@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { resolveAcceptance } from "@/lib/acceptance/service";
 
 // GET /api/candidate/[token] — validate token and return invite info
 export async function GET(
@@ -8,28 +8,27 @@ export async function GET(
 ) {
   const { token } = await params;
 
-  const invite = await prisma.candidateInvite.findUnique({
-    where: { token },
-    select: {
-      id: true,
-      testType: true,
-      position: true,
-      name: true,
-      status: true,
-      expiresAt: true,
-    },
+  const acceptance = await resolveAcceptance({
+    token,
+    routeSource: "api.candidate.lookup",
+    targetContext: { kind: "candidate" },
   });
+  const invite = acceptance.candidateContext;
 
-  if (!invite) {
+  if (!invite || acceptance.acceptanceState === "APPLY_NOT_FOUND") {
     return NextResponse.json({ error: "INVALID_TOKEN" }, { status: 404 });
   }
 
-  if (invite.status === "COMPLETED") {
+  if (acceptance.acceptanceState === "APPLY_COMPLETED") {
     return NextResponse.json({ error: "ALREADY_USED", status: "COMPLETED" }, { status: 410 });
   }
 
-  if (invite.expiresAt < new Date()) {
+  if (acceptance.acceptanceState === "APPLY_EXPIRED") {
     return NextResponse.json({ error: "INVITE_EXPIRED", status: "EXPIRED" }, { status: 410 });
+  }
+
+  if (acceptance.acceptanceState === "APPLY_CANCELED") {
+    return NextResponse.json({ error: "INVITE_REVOKED", status: "CANCELED" }, { status: 410 });
   }
 
   return NextResponse.json({

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { resolveAcceptance } from "@/lib/acceptance/service";
 import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
@@ -18,14 +19,18 @@ export async function PATCH(
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
-  const invite = await prisma.candidateInvite.findUnique({
-    where: { token },
-    select: { id: true, status: true, expiresAt: true, draftStartedAt: true },
+  const acceptance = await resolveAcceptance({
+    token,
+    routeSource: "api.candidate.progress",
+    targetContext: { kind: "candidate" },
   });
+  const invite = acceptance.candidateContext;
 
   if (!invite) return NextResponse.json({ ok: false });
-  if (invite.status === "CANCELED") return NextResponse.json({ ok: false, revoked: true });
-  if (invite.status !== "PENDING" || invite.expiresAt < new Date()) {
+  if (acceptance.acceptanceState === "APPLY_CANCELED") {
+    return NextResponse.json({ ok: false, revoked: true });
+  }
+  if (acceptance.acceptanceState !== "APPLY_READY") {
     return NextResponse.json({ ok: false });
   }
 

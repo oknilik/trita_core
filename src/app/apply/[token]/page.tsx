@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { resolveAcceptance } from "@/lib/acceptance/service";
 import { CandidateClient } from "./CandidateClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -28,23 +28,18 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
   const { token } = await params;
   const locale = await getServerLocale();
 
-  const invite = await prisma.candidateInvite.findUnique({
-    where: { token },
-    select: {
-      id: true,
-      testType: true,
-      position: true,
-      name: true,
-      status: true,
-      expiresAt: true,
-    },
+  const acceptance = await resolveAcceptance({
+    token,
+    routeSource: "apply.page",
+    targetContext: { kind: "candidate" },
   });
+  const invite = acceptance.candidateContext;
 
-  if (!invite) {
+  if (!invite || acceptance.acceptanceState === "APPLY_NOT_FOUND") {
     notFound();
   }
 
-  if (invite.status === "COMPLETED") {
+  if (acceptance.acceptanceState === "APPLY_COMPLETED") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -62,7 +57,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
-  if (invite.status === "CANCELED") {
+  if (acceptance.acceptanceState === "APPLY_CANCELED") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -80,7 +75,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
     );
   }
 
-  if (invite.expiresAt < new Date()) {
+  if (acceptance.acceptanceState === "APPLY_EXPIRED") {
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
