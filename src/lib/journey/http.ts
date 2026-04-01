@@ -21,11 +21,15 @@ export async function handleJourneyStateRequest(req: Request) {
   const orgId = url.searchParams.get("orgId");
   const localeParam = url.searchParams.get("locale");
   const locale = localeParam === "hu" ? "hu" : "en";
+  const entryPoint = url.pathname.startsWith("/api/")
+    ? "journey_state_api"
+    : "journey_state_alias";
 
   const snapshot = await getJourneySnapshotForClerkId(userId, {
     teamId,
     orgId,
     locale,
+    entryPoint,
   });
   if (!snapshot) {
     return NextResponse.json({ error: "PROFILE_NOT_FOUND" }, { status: 404 });

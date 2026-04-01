@@ -2,6 +2,11 @@ import { resolveHome } from "@/lib/journey/home";
 import { assertJourneyInvariants, enforceJourneyGuardrails } from "@/lib/journey/guardrails";
 import type { JourneyResolverLocale } from "@/lib/journey/next-best-action";
 import { resolveNextBestAction } from "@/lib/journey/next-best-action";
+import {
+  buildJourneyObligationFlags,
+  traceJourneyDecision,
+  type JourneyDecisionEntryPoint,
+} from "@/lib/journey/observability";
 import { computeScopeProgress } from "@/lib/journey/progress";
 import { computeJourneyState } from "@/lib/journey/state";
 import type {
@@ -71,6 +76,7 @@ function computeExperienceHints(context: JourneyContextSnapshot, stage: JourneyS
 
 export interface ResolveJourneyFromContextOptions {
   locale?: JourneyResolverLocale;
+  entryPoint?: JourneyDecisionEntryPoint;
 }
 
 export function resolveJourneyFromContext(
@@ -102,7 +108,7 @@ export function resolveJourneyFromContext(
   });
   const nextBestAction = resolveNextBestAction(guardrailed.state, locale);
 
-  return {
+  const resolution: JourneyResolution = {
     activeSurface: guardrailed.home.activeSurface,
     entryIntent: context.entryIntent,
     currentContext: context.currentContext,
@@ -125,4 +131,16 @@ export function resolveJourneyFromContext(
     nextBestAction,
     state: guardrailed.state,
   };
+
+  traceJourneyDecision({
+    entryPoint: options.entryPoint ?? "resolve_journey",
+    profileId: context.profileId,
+    resolvedStage: resolution.stage,
+    resolvedSurface: resolution.activeSurface,
+    destination: resolution.destination,
+    obligationFlags: buildJourneyObligationFlags(context),
+    restrictionFlags: resolution.restrictionFlags,
+  });
+
+  return resolution;
 }

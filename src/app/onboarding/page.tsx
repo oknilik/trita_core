@@ -71,6 +71,7 @@ export default async function OnboardingPage({
 
   const journey = await resolveJourney(profile.id, {
     entryIntent: explicitIntent ?? undefined,
+    entryPoint: "onboarding_page",
   });
   if (
     profile.onboardedAt ||

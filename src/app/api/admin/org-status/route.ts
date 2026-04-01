@@ -156,7 +156,11 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const locale = url.searchParams.get("locale") === "hu" ? "hu" : "en";
-  const journeySnapshot = await getJourneySnapshotForProfileId(profile.id, { orgId, locale });
+  const journeySnapshot = await getJourneySnapshotForProfileId(profile.id, {
+    orgId,
+    locale,
+    entryPoint: "api_admin_org_status",
+  });
   const journey = serializeJourneySnapshot(journeySnapshot);
 
   return NextResponse.json({

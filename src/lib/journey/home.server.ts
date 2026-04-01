@@ -8,7 +8,10 @@ export async function resolveHomeForProfileId(
   profileId: string,
   options: Omit<ResolveJourneyOptions, "locale"> = {},
 ): Promise<JourneyHomeDecision> {
-  const resolution = await resolveJourney(profileId, options);
+  const resolution = await resolveJourney(profileId, {
+    ...options,
+    entryPoint: options.entryPoint ?? "resolve_journey",
+  });
   return {
     activeSurface: resolution.activeSurface,
     home: resolution.home,

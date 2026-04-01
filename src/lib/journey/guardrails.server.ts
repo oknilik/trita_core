@@ -8,7 +8,10 @@ export async function resolveJourneyFallbackForProfileId(
   profileId: string,
   options: ResolveJourneyOptions = {},
 ): Promise<string> {
-  const journey = await resolveJourney(profileId, options);
+  const journey = await resolveJourney(profileId, {
+    ...options,
+    entryPoint: options.entryPoint ?? "guardrails_fallback_profile",
+  });
   return journey.destination;
 }
 
@@ -21,6 +24,8 @@ export async function resolveJourneyFallbackForClerkId(
     select: { id: true },
   });
   if (!profile) return JOURNEY_HOME_HANDOFF_PATH;
-  return resolveJourneyFallbackForProfileId(profile.id, options);
+  return resolveJourneyFallbackForProfileId(profile.id, {
+    ...options,
+    entryPoint: options.entryPoint ?? "guardrails_fallback_clerk",
+  });
 }
-

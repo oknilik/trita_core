@@ -302,7 +302,9 @@ async function runJoinTransaction(
 }
 
 async function resolveJoinNextPath(profileId: string): Promise<string> {
-  const resolution = await resolveJourney(profileId);
+  const resolution = await resolveJourney(profileId, {
+    entryPoint: "membership_join_handoff",
+  });
   return resolution.destination;
 }
 

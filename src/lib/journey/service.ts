@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { JourneyNextBestAction, JourneyResolverLocale } from "./next-best-action";
+import type { JourneyDecisionEntryPoint } from "./observability";
 import { resolveJourney, resolveJourneyForClerkId } from "./engine";
 import type { JourneyResolution, JourneyScopeProgress, JourneyState } from "./types";
 
@@ -8,6 +9,7 @@ export interface JourneySnapshotOptions {
   teamId?: string | null;
   orgId?: string | null;
   locale?: JourneyResolverLocale;
+  entryPoint?: JourneyDecisionEntryPoint;
 }
 
 /**
@@ -54,6 +56,7 @@ export async function getJourneySnapshotForProfileId(
     teamId: options.teamId,
     orgId: options.orgId,
     locale: options.locale,
+    entryPoint: options.entryPoint,
   });
 
   return {
@@ -73,6 +76,7 @@ export async function getJourneySnapshotForClerkId(
     teamId: options.teamId,
     orgId: options.orgId,
     locale: options.locale,
+    entryPoint: options.entryPoint,
   });
   if (!resolution) return null;
 

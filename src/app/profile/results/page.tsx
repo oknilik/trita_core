@@ -128,7 +128,10 @@ export default async function ProfileResultsPage({
       where: { userProfileId: profile.id },
       select: { id: true },
     }),
-    getJourneySnapshotForProfileId(profile.id, { locale }),
+    getJourneySnapshotForProfileId(profile.id, {
+      locale,
+      entryPoint: "profile_results_page",
+    }),
     prisma.belbinAnswer.findUnique({
       where: { userProfileId: profile.id },
       select: { id: true },

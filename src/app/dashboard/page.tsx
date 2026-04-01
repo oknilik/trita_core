@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
@@ -11,6 +12,12 @@ export default async function DashboardPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "/dashboard";
+  const entryPoint = pathname.startsWith("/platform/home")
+    ? "platform_home_page"
+    : "dashboard_page";
+
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
@@ -20,7 +27,7 @@ export default async function DashboardPage({
   });
   if (!profile) redirect("/sign-in");
 
-  const journey = await resolveJourney(profile.id);
+  const journey = await resolveJourney(profile.id, { entryPoint });
   if (journey.destination === "/dashboard") {
     return <AdminDashboard />;
   }

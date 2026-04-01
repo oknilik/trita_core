@@ -95,7 +95,10 @@ export default async function RootLayout({
         select: { id: true, username: true, email: true },
       });
       if (profile) {
-        const journey = await resolveJourney(profile.id, { locale });
+        const journey = await resolveJourney(profile.id, {
+          locale,
+          entryPoint: "root_layout_nav",
+        });
         signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
 
