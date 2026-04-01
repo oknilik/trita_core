@@ -15,10 +15,17 @@ interface SmokeFixture {
     destination: string;
     activeSurface: JourneyContextSnapshot["activeSurface"];
     stage: string;
-    nextBestActionId: string;
+    primaryCtaId: string;
+    homePrimaryCtaId?: string;
     progressScope: "personal" | "team" | "org";
     progressValue: number;
     restrictionState?: JourneyContextSnapshot["subscription"]["state"];
+    restrictionFlags?: {
+      readOnlyOrgViews: boolean;
+      disableOrgWriteActions: boolean;
+      hideDetailedOrgInsights: boolean;
+      requiresSubscriptionAction: boolean;
+    };
     obligationPrecedence?: "assessment_over_team";
   };
 }
@@ -30,7 +37,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/assessment",
       activeSurface: "personal",
       stage: "SELF_NOT_STARTED",
-      nextBestActionId: "START_SELF_ASSESSMENT",
+      primaryCtaId: "START_SELF_ASSESSMENT",
       progressScope: "personal",
       progressValue: 0,
     },
@@ -45,7 +52,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/assessment",
       activeSurface: "continuation",
       stage: "SELF_IN_PROGRESS",
-      nextBestActionId: "CONTINUE_SELF_ASSESSMENT",
+      primaryCtaId: "CONTINUE_SELF_ASSESSMENT",
       progressScope: "personal",
       progressValue: 35,
     },
@@ -60,7 +67,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/profile/results",
       activeSurface: "personal",
       stage: "SELF_COMPLETED",
-      nextBestActionId: "INVITE_OBSERVERS",
+      primaryCtaId: "INVITE_OBSERVERS",
       progressScope: "personal",
       progressValue: 70,
     },
@@ -83,7 +90,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/profile/results",
       activeSurface: "personal",
       stage: "OBSERVER_PENDING",
-      nextBestActionId: "MANAGE_OBSERVER_INVITES",
+      primaryCtaId: "MANAGE_OBSERVER_INVITES",
       progressScope: "personal",
       progressValue: 85,
     },
@@ -112,7 +119,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/team/team_1",
       activeSurface: "team",
       stage: "TEAM_READY",
-      nextBestActionId: "VIEW_TEAM_INSIGHTS",
+      primaryCtaId: "VIEW_TEAM_INSIGHTS",
       progressScope: "team",
       progressValue: 100,
     },
@@ -141,7 +148,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/assessment",
       activeSurface: "continuation",
       stage: "SELF_IN_PROGRESS",
-      nextBestActionId: "CONTINUE_SELF_ASSESSMENT",
+      primaryCtaId: "CONTINUE_SELF_ASSESSMENT",
       progressScope: "personal",
       progressValue: 35,
       obligationPrecedence: "assessment_over_team",
@@ -170,7 +177,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/join/join_team_1",
       activeSurface: "continuation",
       stage: "TEAM_NOT_JOINED",
-      nextBestActionId: "JOIN_TEAM",
+      primaryCtaId: "JOIN_TEAM",
       progressScope: "team",
       progressValue: 0,
     },
@@ -200,7 +207,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/team/team_1",
       activeSurface: "team",
       stage: "TEAM_PARTIAL",
-      nextBestActionId: "COMPLETE_TEAM_ASSESSMENTS",
+      primaryCtaId: "COMPLETE_TEAM_ASSESSMENTS",
       progressScope: "team",
       progressValue: 44,
     },
@@ -229,7 +236,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/team/team_1",
       activeSurface: "team",
       stage: "TEAM_READY",
-      nextBestActionId: "VIEW_TEAM_INSIGHTS",
+      primaryCtaId: "VIEW_TEAM_INSIGHTS",
       progressScope: "team",
       progressValue: 100,
     },
@@ -257,7 +264,8 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/dashboard",
       activeSurface: "org",
       stage: "ORG_PARTIAL",
-      nextBestActionId: "VIEW_ORG_INSIGHTS",
+      primaryCtaId: "VIEW_ORG_INSIGHTS",
+      homePrimaryCtaId: "INVITE_ORG_MEMBERS",
       progressScope: "org",
       progressValue: 60,
     },
@@ -286,10 +294,16 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/dashboard",
       activeSurface: "org",
       stage: "ORG_READY",
-      nextBestActionId: "VIEW_ORG_INSIGHTS",
+      primaryCtaId: "VIEW_ORG_INSIGHTS",
       progressScope: "org",
       progressValue: 100,
       restrictionState: "active",
+      restrictionFlags: {
+        readOnlyOrgViews: false,
+        disableOrgWriteActions: false,
+        hideDetailedOrgInsights: false,
+        requiresSubscriptionAction: false,
+      },
     },
   },
   {
@@ -316,10 +330,16 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/dashboard",
       activeSurface: "org",
       stage: "ORG_PARTIAL",
-      nextBestActionId: "VIEW_ORG_INSIGHTS",
+      primaryCtaId: "VIEW_ORG_INSIGHTS",
       progressScope: "org",
       progressValue: 60,
       restrictionState: "restricted",
+      restrictionFlags: {
+        readOnlyOrgViews: true,
+        disableOrgWriteActions: true,
+        hideDetailedOrgInsights: false,
+        requiresSubscriptionAction: true,
+      },
     },
   },
   {
@@ -346,10 +366,16 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/dashboard",
       activeSurface: "org",
       stage: "ORG_READY",
-      nextBestActionId: "VIEW_ORG_INSIGHTS",
+      primaryCtaId: "VIEW_ORG_INSIGHTS",
       progressScope: "org",
       progressValue: 100,
       restrictionState: "frozen",
+      restrictionFlags: {
+        readOnlyOrgViews: true,
+        disableOrgWriteActions: true,
+        hideDetailedOrgInsights: true,
+        requiresSubscriptionAction: true,
+      },
     },
   },
 ];
@@ -361,7 +387,12 @@ for (const fixture of FIXTURES) {
     assert.equal(resolution.destination, fixture.expected.destination, "destination");
     assert.equal(resolution.activeSurface, fixture.expected.activeSurface, "activeSurface");
     assert.equal(resolution.stage, fixture.expected.stage, "stage");
-    assert.equal(resolution.nextBestAction.primary.id, fixture.expected.nextBestActionId, "nextBestAction.primary.id");
+    assert.equal(resolution.nextBestAction.primary.id, fixture.expected.primaryCtaId, "nextBestAction.primary.id");
+    assert.equal(
+      resolution.home.primaryAction?.id,
+      fixture.expected.homePrimaryCtaId ?? fixture.expected.primaryCtaId,
+      "home.primaryAction.id",
+    );
     assert.equal(resolution.scopeProgress.scope, fixture.expected.progressScope, "scopeProgress.scope");
     assert.equal(resolution.scopeProgress.scopeProgress, fixture.expected.progressValue, "scopeProgress.scopeProgress");
 
@@ -370,6 +401,29 @@ for (const fixture of FIXTURES) {
         resolution.restrictionFlags.subscriptionState,
         fixture.expected.restrictionState,
         "restrictionFlags.subscriptionState",
+      );
+    }
+
+    if (fixture.expected.restrictionFlags) {
+      assert.equal(
+        resolution.restrictionFlags.readOnlyOrgViews,
+        fixture.expected.restrictionFlags.readOnlyOrgViews,
+        "restrictionFlags.readOnlyOrgViews",
+      );
+      assert.equal(
+        resolution.restrictionFlags.disableOrgWriteActions,
+        fixture.expected.restrictionFlags.disableOrgWriteActions,
+        "restrictionFlags.disableOrgWriteActions",
+      );
+      assert.equal(
+        resolution.restrictionFlags.hideDetailedOrgInsights,
+        fixture.expected.restrictionFlags.hideDetailedOrgInsights,
+        "restrictionFlags.hideDetailedOrgInsights",
+      );
+      assert.equal(
+        resolution.restrictionFlags.requiresSubscriptionAction,
+        fixture.expected.restrictionFlags.requiresSubscriptionAction,
+        "restrictionFlags.requiresSubscriptionAction",
       );
     }
 
