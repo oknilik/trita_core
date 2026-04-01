@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   CAPABILITIES,
+  SUBSCRIPTION_CAPABILITY_POLICY_STATES,
   hasAnyCapability,
   hasCapability,
   resolveOrgCapabilities,
+  resolveSubscriptionCapabilityPolicyState,
   toCapabilityRecord,
 } from "@/lib/capabilities";
 
@@ -24,6 +26,53 @@ test("defines all required capability keys centrally", () => {
   ]);
 });
 
+test("defines all required capability policy states centrally", () => {
+  assert.deepEqual(SUBSCRIPTION_CAPABILITY_POLICY_STATES, [
+    "none",
+    "trialing",
+    "active",
+    "past_due",
+    "restricted",
+    "frozen",
+  ]);
+});
+
+test("maps derived state first, then raw status to capability policy state", () => {
+  assert.equal(
+    resolveSubscriptionCapabilityPolicyState({
+      subscriptionState: "frozen",
+      subscriptionStatus: "active",
+    }),
+    "frozen",
+  );
+  assert.equal(
+    resolveSubscriptionCapabilityPolicyState({
+      subscriptionStatus: "trialing",
+    }),
+    "trialing",
+  );
+  assert.equal(
+    resolveSubscriptionCapabilityPolicyState({
+      subscriptionStatus: "past_due",
+    }),
+    "past_due",
+  );
+  assert.equal(
+    resolveSubscriptionCapabilityPolicyState({
+      subscriptionStatus: "canceled",
+    }),
+    "restricted",
+  );
+  assert.equal(
+    resolveSubscriptionCapabilityPolicyState({
+      capabilityPolicyState: "restricted",
+      subscriptionState: "active",
+      subscriptionStatus: "active",
+    }),
+    "restricted",
+  );
+});
+
 test("active org member gets read/list/export + observer invite but not management", () => {
   const resolution = resolveOrgCapabilities({
     orgRole: "ORG_MEMBER",
@@ -36,6 +85,31 @@ test("active org member gets read/list/export + observer invite but not manageme
   assert.equal(hasCapability(resolution.granted, "observerInvite"), true);
   assert.equal(hasCapability(resolution.granted, "manage"), false);
   assert.equal(hasCapability(resolution.granted, "billingManage"), false);
+});
+
+test("trialing behaves active-like for manager capabilities", () => {
+  const resolution = resolveOrgCapabilities({
+    orgRole: "ORG_MANAGER",
+    subscriptionStatus: "trialing",
+  });
+
+  assert.equal(hasCapability(resolution.granted, "create"), true);
+  assert.equal(hasCapability(resolution.granted, "manage"), true);
+  assert.equal(hasCapability(resolution.granted, "launchCampaign"), true);
+  assert.equal(hasCapability(resolution.granted, "export"), true);
+});
+
+test("past_due uses transitional read/list/export policy", () => {
+  const resolution = resolveOrgCapabilities({
+    orgRole: "ORG_MANAGER",
+    subscriptionStatus: "past_due",
+  });
+
+  assert.equal(hasCapability(resolution.granted, "read"), true);
+  assert.equal(hasCapability(resolution.granted, "list"), true);
+  assert.equal(hasCapability(resolution.granted, "export"), true);
+  assert.equal(hasCapability(resolution.granted, "create"), false);
+  assert.equal(hasCapability(resolution.granted, "launchCampaign"), false);
 });
 
 test("active manager gets org write capabilities", () => {
@@ -71,20 +145,20 @@ test("restricted admin remains read-only but can manage billing", () => {
 
   assert.equal(hasCapability(resolution.granted, "read"), true);
   assert.equal(hasCapability(resolution.granted, "list"), true);
-  assert.equal(hasCapability(resolution.granted, "export"), true);
+  assert.equal(hasCapability(resolution.granted, "export"), false);
   assert.equal(hasCapability(resolution.granted, "billingManage"), true);
   assert.equal(hasCapability(resolution.granted, "create"), false);
   assert.equal(hasCapability(resolution.granted, "launchCampaign"), false);
 });
 
-test("frozen manager keeps only minimal read/list capabilities", () => {
+test("frozen manager keeps only minimal read capability", () => {
   const resolution = resolveOrgCapabilities({
     orgRole: "ORG_MANAGER",
     subscriptionState: "frozen",
   });
 
   assert.equal(hasCapability(resolution.granted, "read"), true);
-  assert.equal(hasCapability(resolution.granted, "list"), true);
+  assert.equal(hasCapability(resolution.granted, "list"), false);
   assert.equal(hasCapability(resolution.granted, "export"), false);
   assert.equal(hasCapability(resolution.granted, "manage"), false);
 });
@@ -126,4 +200,3 @@ test("can materialize capability record", () => {
   assert.equal(record.orgAdminManage, true);
   assert.equal(record.candidateEvaluate, true);
 });
-

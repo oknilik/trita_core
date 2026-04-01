@@ -1,4 +1,4 @@
-import type { SubscriptionState } from "@/lib/subscription";
+import type { SubscriptionState, SubscriptionStatus } from "@/lib/subscription";
 
 export const CAPABILITIES = [
   "read",
@@ -16,10 +16,56 @@ export const CAPABILITIES = [
 
 export type Capability = (typeof CAPABILITIES)[number];
 export type OrgRoleCapabilityContext = "ORG_MEMBER" | "ORG_MANAGER" | "ORG_ADMIN";
+export const SUBSCRIPTION_CAPABILITY_POLICY_STATES = [
+  "none",
+  "trialing",
+  "active",
+  "past_due",
+  "restricted",
+  "frozen",
+] as const;
+
+export type SubscriptionCapabilityPolicyState =
+  (typeof SUBSCRIPTION_CAPABILITY_POLICY_STATES)[number];
+
+export const SUBSCRIPTION_CAPABILITY_BASE_MAP: Record<
+  SubscriptionCapabilityPolicyState,
+  readonly Capability[]
+> = {
+  none: [],
+  trialing: [
+    "read",
+    "list",
+    "create",
+    "manage",
+    "invite",
+    "launchCampaign",
+    "candidateEvaluate",
+    "export",
+    "observerInvite",
+  ],
+  active: [
+    "read",
+    "list",
+    "create",
+    "manage",
+    "invite",
+    "launchCampaign",
+    "candidateEvaluate",
+    "export",
+    "observerInvite",
+  ],
+  // Transitional state: keep visibility while blocking write paths.
+  past_due: ["read", "list", "export"],
+  restricted: ["read", "list"],
+  frozen: ["read"],
+};
 
 export interface OrgCapabilityContext {
   orgRole: string | null | undefined;
-  subscriptionState: SubscriptionState;
+  subscriptionState?: SubscriptionState | null;
+  subscriptionStatus?: SubscriptionStatus | null;
+  capabilityPolicyState?: SubscriptionCapabilityPolicyState | null;
 }
 
 export interface OrgCapabilityResolution {
@@ -28,6 +74,17 @@ export interface OrgCapabilityResolution {
 }
 
 const MANAGER_OR_ABOVE = new Set<OrgRoleCapabilityContext>(["ORG_MANAGER", "ORG_ADMIN"]);
+const FULL_ACCESS_POLICY_STATES = new Set<SubscriptionCapabilityPolicyState>([
+  "trialing",
+  "active",
+]);
+const MANAGER_PLUS_CAPABILITIES = new Set<Capability>([
+  "create",
+  "manage",
+  "invite",
+  "launchCampaign",
+  "candidateEvaluate",
+]);
 
 function buildDeniedSet(granted: ReadonlySet<Capability>): ReadonlySet<Capability> {
   return new Set(CAPABILITIES.filter((capability) => !granted.has(capability)));
@@ -41,6 +98,35 @@ function normalizeOrgRole(role: string | null | undefined): OrgRoleCapabilityCon
 }
 
 /**
+ * Central mapping from subscription state/status to capability policy state.
+ *
+ * Priority:
+ * 1) explicit capabilityPolicyState override
+ * 2) derived subscriptionState (none/active/restricted/frozen)
+ * 3) raw subscriptionStatus (none/trialing/active/past_due)
+ * 4) fallback to restricted for unpaid/canceled/unknown non-active statuses
+ */
+export function resolveSubscriptionCapabilityPolicyState(context: {
+  capabilityPolicyState?: SubscriptionCapabilityPolicyState | null;
+  subscriptionState?: SubscriptionState | null;
+  subscriptionStatus?: SubscriptionStatus | null;
+}): SubscriptionCapabilityPolicyState {
+  if (context.capabilityPolicyState) return context.capabilityPolicyState;
+
+  if (context.subscriptionState === "none") return "none";
+  if (context.subscriptionState === "active") return "active";
+  if (context.subscriptionState === "restricted") return "restricted";
+  if (context.subscriptionState === "frozen") return "frozen";
+
+  if (context.subscriptionStatus === "none") return "none";
+  if (context.subscriptionStatus === "trialing") return "trialing";
+  if (context.subscriptionStatus === "active") return "active";
+  if (context.subscriptionStatus === "past_due") return "past_due";
+
+  return "restricted";
+}
+
+/**
  * Capability policy for organization surfaces.
  *
  * Notes:
@@ -50,58 +136,28 @@ function normalizeOrgRole(role: string | null | undefined): OrgRoleCapabilityCon
  */
 export function resolveOrgCapabilities(context: OrgCapabilityContext): OrgCapabilityResolution {
   const role = normalizeOrgRole(context.orgRole);
+  const policyState = resolveSubscriptionCapabilityPolicyState(context);
   const granted = new Set<Capability>();
 
   if (!role) {
     return { granted, denied: buildDeniedSet(granted) };
   }
 
-  if (context.subscriptionState === "none") {
-    if (role === "ORG_ADMIN") granted.add("billingManage");
-    return { granted, denied: buildDeniedSet(granted) };
+  for (const capability of SUBSCRIPTION_CAPABILITY_BASE_MAP[policyState]) {
+    granted.add(capability);
   }
 
-  // Read-only states keep visibility and explicitly block org write paths.
-  if (context.subscriptionState === "restricted") {
-    granted.add("read");
-    granted.add("list");
-    granted.add("export");
-
-    if (role === "ORG_ADMIN") {
-      granted.add("billingManage");
+  if (!MANAGER_OR_ABOVE.has(role)) {
+    for (const capability of MANAGER_PLUS_CAPABILITIES) {
+      granted.delete(capability);
     }
-
-    return { granted, denied: buildDeniedSet(granted) };
-  }
-
-  if (context.subscriptionState === "frozen") {
-    granted.add("read");
-    granted.add("list");
-
-    if (role === "ORG_ADMIN") {
-      granted.add("billingManage");
-    }
-
-    return { granted, denied: buildDeniedSet(granted) };
-  }
-
-  // Active org subscription.
-  granted.add("read");
-  granted.add("list");
-  granted.add("export");
-  granted.add("observerInvite");
-
-  if (MANAGER_OR_ABOVE.has(role)) {
-    granted.add("create");
-    granted.add("manage");
-    granted.add("invite");
-    granted.add("launchCampaign");
-    granted.add("candidateEvaluate");
   }
 
   if (role === "ORG_ADMIN") {
     granted.add("billingManage");
-    granted.add("orgAdminManage");
+    if (FULL_ACCESS_POLICY_STATES.has(policyState)) {
+      granted.add("orgAdminManage");
+    }
   }
 
   return { granted, denied: buildDeniedSet(granted) };
@@ -145,4 +201,3 @@ export function toCapabilityRecord(
     observerInvite: grantedSet.has("observerInvite"),
   };
 }
-
