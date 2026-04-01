@@ -29,6 +29,7 @@ import {
   resolveOrgPolicySnapshot,
   toOrgSubscriptionBannerState,
 } from "@/lib/policy-service";
+import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 
 export const dynamic = "force-dynamic";
 
@@ -42,12 +43,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TeamDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
-  const [locale, { userId }, { id: teamId }] = await Promise.all([
-    getServerLocale(), auth(), params,
+  const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
+    getServerLocale(), auth(), params, searchParams,
   ]);
+  const activeTab = resolvedSearchParams.tab ?? "overview";
   if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({
@@ -136,6 +140,34 @@ export default async function TeamDetailPage({
 
   const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
   if (!teamData) notFound();
+
+  // ── Profile tab: heatmap + insights ──────────────────────────────────────
+  if (activeTab === "profile") {
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+      >
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/team/${teamId}`}
+            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          >
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 3L5 8l5 5" />
+            </svg>
+            {teamData.teamName}
+          </Link>
+        </div>
+        <TeamProfileTab
+          heatmapRows={teamData.heatmapRows}
+          dimConfigs={teamData.dimConfigs}
+          locale={locale}
+          isHu={isHu}
+        />
+      </PlatformPageShell>
+    );
+  }
 
   const completedCount = teamData.completedCount;
   const inProgressCount = teamData.members.filter((m) => m.scores === null && m.joinedAt).length;
