@@ -154,6 +154,64 @@ function txt(locale: DashboardLocale, hu: string, en: string): string {
   return locale === "hu" ? hu : en;
 }
 
+const BLOCKING_CODE_LABELS: Record<string, { hu: string; en: string }> = {
+  SELF_ASSESSMENT_MISSING: { hu: "Önértékelés hiányzik", en: "Self assessment missing" },
+  SELF_ASSESSMENT_INCOMPLETE: { hu: "Önértékelés félbemaradt", en: "Self assessment incomplete" },
+  OBSERVER_RESPONSES_PENDING: { hu: "Observer válaszok függőben", en: "Observer responses pending" },
+  TEAM_MEMBERSHIP_MISSING: { hu: "Csapattagság hiányzik", en: "Team membership missing" },
+  MIN_TEAM_SIZE_NOT_MET: { hu: "Minimum csapatméret nem teljesül", en: "Minimum team size not met" },
+  TEAM_MEMBER_INVITES_PENDING: { hu: "Csapatmeghívók függőben", en: "Team invites pending" },
+  TEAM_MEMBER_ASSESSMENTS_PENDING: { hu: "Csapattagok kitöltései folyamatban", en: "Team member assessments in progress" },
+  ORG_TEAM_MISSING: { hu: "Szervezeti csapat hiányzik", en: "Org team missing" },
+  ORG_MEMBER_ASSESSMENTS_PENDING: { hu: "Szervezeti kitöltések folyamatban", en: "Org member assessments in progress" },
+  ORG_CAMPAIGN_MISSING: { hu: "Szervezeti kampány hiányzik", en: "Org campaign missing" },
+};
+
+function localizeBlockingCode(locale: DashboardLocale, code: string): string {
+  const entry = BLOCKING_CODE_LABELS[code];
+  return entry ? (locale === "hu" ? entry.hu : entry.en) : code;
+}
+
+function localizeBlockingDetail(
+  locale: DashboardLocale,
+  reason: JourneyLikeBlockingReason,
+): string | undefined {
+  if (!reason.detail) return undefined;
+  // The detail strings from state.ts contain dynamic values — localize the known patterns
+  const d = reason.detail;
+  switch (reason.code) {
+    case "OBSERVER_RESPONSES_PENDING": {
+      const m = d.match(/^(\d+)/);
+      const count = m ? m[1] : "?";
+      return txt(locale, `${count} observer meghívás még függőben.`, d);
+    }
+    case "TEAM_MEMBERSHIP_MISSING":
+      if (d.includes("waiting for acceptance")) {
+        const m = d.match(/^(\d+)/);
+        return txt(locale, `${m?.[1] ?? "?"} csatlakozási meghívó elfogadásra vár.`, d);
+      }
+      if (d.includes("not set up")) {
+        return txt(locale, "A csapatmunkaterület még nincs beállítva.", d);
+      }
+      return undefined;
+    case "MIN_TEAM_SIZE_NOT_MET": {
+      const m = d.match(/(\d+)/);
+      return txt(locale, `Legalább ${m?.[1] ?? "3"} csapattag szükséges.`, d);
+    }
+    case "TEAM_MEMBER_INVITES_PENDING": {
+      const m = d.match(/^(\d+)/);
+      return txt(locale, `${m?.[1] ?? "?"} meghívó függőben.`, d);
+    }
+    case "TEAM_MEMBER_ASSESSMENTS_PENDING":
+    case "ORG_MEMBER_ASSESSMENTS_PENDING": {
+      const m = d.match(/^(\d+)\/(\d+)/);
+      return txt(locale, `${m?.[1] ?? "?"}/${m?.[2] ?? "?"} kész az insighthoz.`, d);
+    }
+    default:
+      return reason.detail;
+  }
+}
+
 function toPct(done: number, total: number): number {
   if (total <= 0) return 0;
   return Math.round((done / total) * 100);
@@ -192,8 +250,8 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
     blockingReasons?.map((reason, index) => ({
       id: `${reason.code}-${index}`,
       severity: "medium" as const,
-      title: reason.code,
-      description: reason.detail ?? txt(locale, "Továbblépéshez szükséges feltétel.", "A condition must be met to progress."),
+      title: localizeBlockingCode(locale, reason.code),
+      description: localizeBlockingDetail(locale, reason) ?? txt(locale, "Továbblépéshez szükséges feltétel.", "A condition must be met to progress."),
     })) ?? [];
 
   return {
