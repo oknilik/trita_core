@@ -75,9 +75,9 @@ export default async function OnboardingPage({
   if (
     profile.onboardedAt ||
     journey.currentContext !== "self-only" ||
-    journey.home.reason === "pending_join"
+    journey.reason === "pending_join"
   ) {
-    redirect(journey.home.destination);
+    redirect(journey.destination);
   }
 
   return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;

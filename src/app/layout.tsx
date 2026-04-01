@@ -96,7 +96,7 @@ export default async function RootLayout({
       });
       if (profile) {
         const journey = await resolveJourney(profile.id, { locale });
-        signedInHomeHref = journey.home.destination;
+        signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
 
         const membership = await getActiveOrgMembership(profile.id);

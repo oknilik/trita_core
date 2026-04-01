@@ -21,11 +21,11 @@ export default async function DashboardPage({
   if (!profile) redirect("/sign-in");
 
   const journey = await resolveJourney(profile.id);
-  if (journey.home.destination === "/dashboard") {
+  if (journey.destination === "/dashboard") {
     return <AdminDashboard />;
   }
 
-  let destination = journey.home.destination;
+  let destination = journey.destination;
   if (destination.startsWith("/profile/results")) {
     // Legacy `/dashboard?...` entrypoints may still carry self-profile params.
     // Keep forwarding these to avoid breaking retake modal/deep-link flows.

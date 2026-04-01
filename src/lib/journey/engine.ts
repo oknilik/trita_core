@@ -11,6 +11,7 @@ import type {
   JourneyContextSnapshot,
   JourneyExperienceHints,
   JourneyProgressLabel,
+  JourneyRestrictionFlags,
   JourneyResolution,
   JourneyStage,
 } from "@/lib/journey/types";
@@ -76,6 +77,30 @@ function computeExperienceHints(context: JourneyContextSnapshot, stage: JourneyS
   };
 }
 
+function computeRestrictionFlags(context: JourneyContextSnapshot): JourneyRestrictionFlags {
+  const subscriptionState = context.subscription.state;
+  const hasOrgScope =
+    context.currentContext !== "self-only" ||
+    Boolean(context.orgMembership) ||
+    Boolean(context.orgId);
+  const readOnlyOrgViews =
+    hasOrgScope &&
+    (subscriptionState === "restricted" || subscriptionState === "frozen");
+
+  return {
+    subscriptionState,
+    missingOrgSubscription: hasOrgScope && subscriptionState === "none",
+    readOnlyOrgViews,
+    disableOrgWriteActions: readOnlyOrgViews,
+    hideDetailedOrgInsights: hasOrgScope && subscriptionState === "frozen",
+    requiresSubscriptionAction:
+      hasOrgScope &&
+      (subscriptionState === "none" ||
+        subscriptionState === "restricted" ||
+        subscriptionState === "frozen"),
+  };
+}
+
 export function resolveJourneyFromContext(
   context: JourneyContextSnapshot,
   options: Pick<ResolveJourneyOptions, "locale"> = {},
@@ -87,12 +112,15 @@ export function resolveJourneyFromContext(
     activeSurface: homeDecision.activeSurface,
     stage: state.currentStage,
   });
+  const restrictionFlags = computeRestrictionFlags(context);
 
   return {
     activeSurface: homeDecision.activeSurface,
     entryIntent: context.entryIntent,
     currentContext: context.currentContext,
     stage: state.currentStage,
+    destination: homeDecision.home.destination,
+    reason: homeDecision.home.reason,
     stageDisplay: {
       label: STAGE_LABELS[state.currentStage],
       scopeProgress: scopeProgress.scopeProgress,
@@ -100,6 +128,7 @@ export function resolveJourneyFromContext(
     },
     home: homeDecision.home,
     experienceHints: computeExperienceHints(context, state.currentStage),
+    restrictionFlags,
     scopeProgress,
     nextBestAction: resolveNextBestAction(state, locale),
     state,

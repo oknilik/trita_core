@@ -178,6 +178,15 @@ export interface JourneyExperienceHints {
   showAssessmentContinuation: boolean;
 }
 
+export interface JourneyRestrictionFlags {
+  subscriptionState: JourneySubscriptionState;
+  missingOrgSubscription: boolean;
+  readOnlyOrgViews: boolean;
+  disableOrgWriteActions: boolean;
+  hideDetailedOrgInsights: boolean;
+  requiresSubscriptionAction: boolean;
+}
+
 export type JourneySubscriptionState = "none" | "active" | "restricted" | "frozen";
 
 export interface JourneyAssessmentSnapshot {
@@ -242,15 +251,26 @@ export interface JourneyContextSnapshot {
   completionSummary: JourneyCompletionSummary;
 }
 
-export interface JourneyResolution {
+/**
+ * Stable route-agnostic handoff contract for any entrypoint.
+ * Entry surfaces (auth, onboarding, join, billing return, deep links) can use this
+ * without re-implementing page-level journey decision logic.
+ */
+export interface JourneyHandoffContract {
   activeSurface: ActiveSurface;
+  stage: JourneyStage;
+  destination: string;
+  reason: HomeReason;
+  nextBestAction: JourneyNextBestAction;
+  scopeProgress: JourneyScopeProgress;
+  experienceHints: JourneyExperienceHints;
+  restrictionFlags: JourneyRestrictionFlags;
+}
+
+export interface JourneyResolution extends JourneyHandoffContract {
   entryIntent: JourneyEntryIntent;
   currentContext: JourneyCurrentContext;
-  stage: JourneyStage;
   stageDisplay: JourneyStageDisplay;
   home: JourneyHomeResolution;
-  experienceHints: JourneyExperienceHints;
-  scopeProgress: JourneyScopeProgress;
-  nextBestAction: JourneyNextBestAction;
   state: JourneyState;
 }

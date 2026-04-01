@@ -303,7 +303,7 @@ async function runJoinTransaction(
 
 async function resolveJoinNextPath(profileId: string): Promise<string> {
   const resolution = await resolveJourney(profileId);
-  return resolution.home.destination;
+  return resolution.destination;
 }
 
 export async function resolveMembershipJoinPageAccess<const TAllowed extends MembershipInviteState>(

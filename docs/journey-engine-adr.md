@@ -35,17 +35,26 @@ Ez az aggregált input a `JourneyContextSnapshot`.
 
 ## Output contract (mi jön ki belőle)
 
-A publikus, UI-nak szánt contract: `JourneyResolution` (`src/lib/journey/types.ts`), amely tartalmazza legalább:
+A publikus, UI-nak szánt stable handoff contract: `JourneyHandoffContract`
+(`src/lib/journey/types.ts`), amelyet a `JourneyResolution` is implementál.
+
+Kötelező handoff mezők:
 
 - `activeSurface`
+- `stage`
+- `destination`
+- `reason`
+- `nextBestAction`
+- `scopeProgress`
+- `experienceHints`
+- `restrictionFlags` (subscription/read-only/frozen guardrail flags)
+
+A teljes `JourneyResolution` ezen felül tartalmazza a bővebb kontextust:
+
 - `entryIntent`
 - `currentContext`
-- `stage`
 - `stageDisplay` (`label`, `scopeProgress`, opcionális `substeps`)
-- `home` (`destination`, `reason`, opcionális `primaryAction`)
-- `experienceHints`
-- `scopeProgress`
-- `nextBestAction`
+- `home` (`destination`, `reason`, opcionális `primaryAction`) backward compatibility miatt
 - `state`
 
 Következmény: a UI ugyanabból az objektumból tud nav/home/CTA/progress döntéseket hozni.
