@@ -46,3 +46,9 @@ Ez a dokumentum rögzíti, hogy a platform fő domain döntései hol születnek 
 - Van-e párhuzamos logika a journey/acceptance/policy mellett?
 - Ugyanazt az ágat több helyen implementáljuk-e?
 - Ha átmeneti kivétel van: jelölve van-e `TODO` + indoklás + target cleanup pont?
+
+## Test quality gate
+
+- No-test-no-merge policy: `docs/testing-quality-gate.md`
+- CI enforce: `.github/workflows/tests.yml` (`Quality Gate` job)
+- Lokális ellenőrzés: `pnpm test:quality-gate` / `pnpm test:quality-gate:staged`
