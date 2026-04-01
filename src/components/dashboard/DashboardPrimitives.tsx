@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/ui/cn";
+import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 type PanelTone = "white" | "warm" | "cream";
 
@@ -118,24 +119,22 @@ export function DashboardStatusChip({
   tone?: StatusTone;
   className?: string;
 }) {
-  const toneClasses = {
-    sage: "bg-sage-soft text-sage-dark",
-    bronze: "bg-bronze/10 text-bronze-dark",
-    warm: "bg-[#f6ead6] text-[#8a5530]",
-    rose: "bg-[#f3e4dd] text-[#8c4a31]",
-    muted: "bg-cream text-ink-body",
+  const toneConfig = {
+    sage: { variant: "info", className: "bg-sage-soft text-sage-dark" },
+    bronze: { variant: "warning", className: "bg-bronze/10 text-bronze-dark" },
+    warm: { variant: "warning", className: "bg-[#f6ead6] text-[#8a5530]" },
+    rose: { variant: "error", className: "bg-[#f3e4dd] text-[#8c4a31]" },
+    muted: { variant: "neutral", className: "bg-cream text-ink-body" },
   } as const;
+  const config = toneConfig[tone];
 
   return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 whitespace-nowrap rounded-full px-2.5 py-[4px] text-[10px] font-semibold",
-        toneClasses[tone],
-        className,
-      )}
+    <StatusChip
+      variant={config.variant}
+      className={cn("px-2.5 py-[4px] text-[10px]", config.className, className)}
     >
       {label}
-    </span>
+    </StatusChip>
   );
 }
 

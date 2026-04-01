@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { StatusChip, type StatusChipVariant } from "@/components/ui/primitives/StatusChip";
 
 const ROLES = ["ORG_ADMIN", "ORG_MANAGER", "ORG_MEMBER"] as const;
 type OrgRole = typeof ROLES[number];
@@ -20,6 +21,12 @@ function roleLabel(role: string, loc: Locale): string {
   if (role === "ORG_ADMIN") return t("org.members.roleAdmin", loc);
   if (role === "ORG_MANAGER") return t("org.members.roleManager", loc);
   return t("org.members.roleMember", loc);
+}
+
+function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
+  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-bronze" };
+  if (role === "ORG_MANAGER") return { variant: "neutral", className: "bg-ink/10 text-ink" };
+  return { variant: "neutral" };
 }
 
 export function OrgMemberRoleEditor({
@@ -66,14 +73,11 @@ export function OrgMemberRoleEditor({
   }
 
   if (isSelf) {
+    const badge = roleBadgeConfig(role);
     return (
-      <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-        role === "ORG_ADMIN" ? "bg-sage/10 text-bronze" :
-        role === "ORG_MANAGER" ? "bg-ink/10 text-ink" :
-        "bg-sand text-ink-body"
-      }`}>
+      <StatusChip variant={badge.variant} className={badge.className}>
         {roleLabel(role, loc)}
-      </span>
+      </StatusChip>
     );
   }
 

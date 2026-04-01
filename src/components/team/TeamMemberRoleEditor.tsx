@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { StatusChip, type StatusChipVariant } from "@/components/ui/primitives/StatusChip";
 
 const TEAM_ROLES = ["member", "manager"] as const;
 type TeamRole = (typeof TEAM_ROLES)[number];
@@ -13,9 +14,9 @@ function roleLabel(role: string, loc: Locale): string {
   return t("teamComp.roleMemberLabel", loc);
 }
 
-function roleBadgeStyle(role: string): string {
-  if (role === "manager") return "bg-sage/10 text-bronze border-sage/20";
-  return "bg-sand text-ink-body border-sand";
+function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
+  if (role === "manager") return { variant: "info", className: "bg-sage/10 text-bronze border border-sage/20" };
+  return { variant: "neutral", className: "border border-sand" };
 }
 
 interface TeamMemberRoleEditorProps {
@@ -44,12 +45,11 @@ export function TeamMemberRoleEditor({
   const [error, setError] = useState<string | null>(null);
 
   if (!canEdit || isSelf) {
+    const badge = roleBadgeConfig(role);
     return (
-      <span
-        className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${roleBadgeStyle(role)}`}
-      >
+      <StatusChip variant={badge.variant} className={badge.className}>
         {roleLabel(role, loc)}
-      </span>
+      </StatusChip>
     );
   }
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 interface Campaign {
   id: string;
@@ -33,20 +34,20 @@ interface CampaignListProps {
 function statusBadge(status: string, loc: Locale) {
   if (status === "ACTIVE")
     return (
-      <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+      <StatusChip variant="success">
         {t("org.list.statusActive", loc)}
-      </span>
+      </StatusChip>
     );
   if (status === "CLOSED")
     return (
-      <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
+      <StatusChip variant="neutral">
         {t("org.list.statusClosed", loc)}
-      </span>
+      </StatusChip>
     );
   return (
-    <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+    <StatusChip variant="warning">
       {t("org.list.statusDraft", loc)}
-    </span>
+    </StatusChip>
   );
 }
 

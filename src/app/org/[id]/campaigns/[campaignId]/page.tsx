@@ -10,6 +10,10 @@ import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import {
+  StatusChip,
+  type StatusChipVariant,
+} from "@/components/ui/primitives/StatusChip";
+import {
   resolveOrgCapabilityDecision,
   resolveOrgPolicySnapshot,
   toOrgSubscriptionBannerState,
@@ -53,10 +57,10 @@ function statusLabel(status: string, locale: "hu" | "en") {
   return t("org.campaign.statusDraft", locale);
 }
 
-function statusBadgeClass(status: string) {
-  if (status === "ACTIVE") return "bg-emerald-50 text-emerald-700";
-  if (status === "CLOSED") return "bg-sand text-ink-body";
-  return "bg-amber-50 text-amber-700";
+function statusBadgeVariant(status: string): StatusChipVariant {
+  if (status === "ACTIVE") return "success";
+  if (status === "CLOSED") return "neutral";
+  return "warning";
 }
 
 function nextStatusLabel(status: string, locale: "hu" | "en") {
@@ -338,11 +342,9 @@ export default async function CampaignDetailPage({
             <p className="mt-1 text-sm text-ink-body">{campaign.description}</p>
           )}
           <div className="mt-3 flex flex-wrap items-center gap-3">
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadgeClass(campaign.status)}`}
-            >
+            <StatusChip variant={statusBadgeVariant(campaign.status)}>
               {statusLabel(campaign.status, locale)}
-            </span>
+            </StatusChip>
             <span className="text-xs text-ink-body/50">
               {t("org.campaign.createdAt", locale)}{" "}
               {campaign.createdAt.toLocaleDateString(dateLocale)}
@@ -535,17 +537,17 @@ export default async function CampaignDetailPage({
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
                       {isFullyDone ? (
-                        <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                        <StatusChip variant="success">
                           {t("org.campaign.participantDone", locale)}
-                        </span>
+                        </StatusChip>
                       ) : isSelfDone ? (
-                        <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+                        <StatusChip variant="info">
                           {t("org.campaign.participantSelfDone", locale)}
-                        </span>
+                        </StatusChip>
                       ) : (
-                        <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
+                        <StatusChip variant="neutral">
                           {t("org.campaign.participantNotStarted", locale)}
-                        </span>
+                        </StatusChip>
                       )}
                       {obsCount > 0 && (
                         <span className="text-xs text-muted">

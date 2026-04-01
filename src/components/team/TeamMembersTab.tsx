@@ -6,6 +6,7 @@ import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
 import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCancelButton";
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
 import { TeamMemberRoleEditor } from "@/components/team/TeamMemberRoleEditor";
+import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 interface SerializedMemberRow {
   id: string;
@@ -89,13 +90,13 @@ export function TeamMembersTab({
                     locale={locale}
                   />
                   {m.hasAssessment ? (
-                    <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                    <StatusChip variant="success">
                       {m.testType ?? t("teamComp.doneTest", loc)}
-                    </span>
+                    </StatusChip>
                   ) : (
-                    <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs text-ink-body/60">
+                    <StatusChip variant="neutral" className="text-ink-body/60">
                       {t("teamComp.noTest", loc)}
-                    </span>
+                    </StatusChip>
                   )}
                   <span className="text-xs text-ink-body/50">
                     {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
@@ -125,9 +126,9 @@ export function TeamMembersTab({
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
-                  <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                  <StatusChip variant="warning">
                     {t("teamComp.pendingStatus", loc)}
-                  </span>
+                  </StatusChip>
                   {isOrgManager && (
                     <PendingInviteCancelButton inviteId={inv.id} isHu={isHu} />
                   )}

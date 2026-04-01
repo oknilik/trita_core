@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
+import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 interface CampaignCardProps {
   campaign: CampaignWithStats;
@@ -119,9 +120,9 @@ export function CampaignCard({
     return (
       <div className="flex items-center justify-between gap-3 py-3 border-b border-sand last:border-0">
         <div className="min-w-0 flex items-center gap-2 flex-1">
-          <span className="shrink-0 rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
+          <StatusChip variant="neutral" className="shrink-0">
             {t("org.card.closed", loc)}
-          </span>
+          </StatusChip>
           <p className="truncate text-sm font-semibold text-ink">
             {campaign.name}
           </p>
@@ -150,9 +151,9 @@ export function CampaignCard({
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+              <StatusChip variant="warning">
                 {t("org.card.draft", loc)}
-              </span>
+              </StatusChip>
             </div>
             <p className="font-semibold text-ink text-sm">{campaign.name}</p>
             {campaign.description && (
@@ -190,9 +191,9 @@ export function CampaignCard({
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-            <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+            <StatusChip variant="success">
               {t("org.card.active", loc)}
-            </span>
+            </StatusChip>
           </div>
           <Link
             href={`/org/${orgId}/campaigns/${campaign.id}`}

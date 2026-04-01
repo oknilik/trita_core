@@ -6,14 +6,15 @@ import type { SerializedMember, SerializedPendingInvite } from "@/lib/org-stats"
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
+import { StatusChip, type StatusChipVariant } from "@/components/ui/primitives/StatusChip";
 import { OrgInviteForm } from "./OrgInviteForm";
 import { OrgRemoveMemberButton } from "./OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
 
-function roleBadgeClass(role: string) {
-  if (role === "ORG_ADMIN") return "bg-sage/10 text-bronze";
-  if (role === "ORG_MANAGER") return "bg-ink/10 text-ink";
-  return "bg-sand text-ink-body";
+function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
+  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-bronze" };
+  if (role === "ORG_MANAGER") return { variant: "neutral", className: "bg-ink/10 text-ink" };
+  return { variant: "neutral" };
 }
 
 function roleLabel(role: string, loc: Locale) {
@@ -71,31 +72,32 @@ export function OrgMembersTab({
         </SectionHeading>
 
         <div className="flex flex-col divide-y divide-sand">
-          {members.map((m) => (
-            <div key={m.id} className="flex items-center justify-between gap-3 py-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-ink">
-                  {m.user.username ?? m.user.email ?? "—"}
-                </p>
-                {m.user.username && (
-                  <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
-                )}
+          {members.map((m) => {
+            const badge = roleBadgeConfig(m.role);
+            return (
+              <div key={m.id} className="flex items-center justify-between gap-3 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-ink">
+                    {m.user.username ?? m.user.email ?? "—"}
+                  </p>
+                  {m.user.username && (
+                    <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
+                  )}
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <StatusChip variant={badge.variant} className={badge.className}>
+                    {roleLabel(m.role, loc)}
+                  </StatusChip>
+                  <span className="text-xs text-ink-body/50">
+                    {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
+                  </span>
+                  {isAdmin && m.userId !== profileId && (
+                    <OrgRemoveMemberButton orgId={orgId} userId={m.userId} isHu={isHu} />
+                  )}
+                </div>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${roleBadgeClass(m.role)}`}
-                >
-                  {roleLabel(m.role, loc)}
-                </span>
-                <span className="text-xs text-ink-body/50">
-                  {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
-                </span>
-                {isAdmin && m.userId !== profileId && (
-                  <OrgRemoveMemberButton orgId={orgId} userId={m.userId} isHu={isHu} />
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
 
           {pendingInvites.map((inv) => (
             <div key={inv.id} className="flex items-center justify-between gap-3 py-3">
@@ -106,9 +108,9 @@ export function OrgMembersTab({
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-600">
+                <StatusChip variant="warning" className="text-amber-600">
                   {t("org.members.pendingBadge", loc)}
-                </span>
+                </StatusChip>
                 {isManager && canInviteMembers && (
                   <OrgPendingInviteCancelButton orgId={orgId} inviteId={inv.id} isHu={isHu} />
                 )}
