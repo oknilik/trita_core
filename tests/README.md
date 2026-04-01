@@ -85,3 +85,15 @@ To see test output in domain-level blocks (for example `journey`, `assessment`, 
 - `pnpm test:blocks:full` — runs `unit + integration + client + e2e` in functional blocks
 
 Each block is printed with a dedicated header and a final PASS/FAIL summary, so it is easy to see which functional area broke.
+
+## UI migration smoke + surface guardrail
+
+For major UI refactors, run the dedicated smoke pack:
+
+- `pnpm test:ui:smoke:list` — list checks + entrypoint coverage map
+- `pnpm test:ui:smoke` — run full UI migration smoke suite
+- `pnpm test:ui:surface` — run self/team/org surface character guardrail only
+
+Related playbook:
+
+- `docs/ui-migration-regression-playbook.md`
