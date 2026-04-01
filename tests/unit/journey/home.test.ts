@@ -1,101 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { resolveHome } from "@/lib/journey/home";
-import type { JourneyContextSnapshot, JourneyStage, JourneyState } from "@/lib/journey/types";
-
-function createContext(overrides: Partial<JourneyContextSnapshot> = {}): JourneyContextSnapshot {
-  const base: JourneyContextSnapshot = {
-    profileId: "p1",
-    entryIntent: "explore",
-    currentContext: "self-only",
-    activeSurface: "personal",
-    teamId: null,
-    orgId: null,
-    hasPendingJoinInvite: false,
-    explicitTeamIntent: false,
-    assessment: {
-      started: false,
-      completed: false,
-      skipped: false,
-      hasDraft: false,
-      hasResult: false,
-    },
-    orgMembership: null,
-    teamMembership: null,
-    pendingJoinInvite: null,
-    pendingInviteCounts: {
-      team: 0,
-      org: 0,
-    },
-    subscription: {
-      state: "none",
-      orgId: null,
-      status: "none",
-      hasAccess: false,
-      trialEndsAt: null,
-      currentPeriodEnd: null,
-      cancelAtPeriodEnd: false,
-    },
-    completionSummary: {
-      self: {
-        started: false,
-        completed: false,
-        skipped: false,
-        hasDraft: false,
-        sentInvites: 0,
-        pendingInvites: 0,
-        completedObservers: 0,
-        pendingTeamInvites: 0,
-        pendingOrgInvites: 0,
-        explicitTeamIntent: false,
-      },
-      team: {
-        joined: false,
-        teamId: null,
-        memberCount: 0,
-        completedMemberCount: 0,
-        pendingInviteCount: 0,
-        ready: false,
-      },
-      org: {
-        joined: false,
-        orgId: null,
-        teamCount: 0,
-        memberCount: 0,
-        completedMemberCount: 0,
-        pendingInviteCount: 0,
-        activeCampaignCount: 0,
-        ready: false,
-      },
-    },
-  };
-
-  return {
-    ...base,
-    ...overrides,
-    assessment: { ...base.assessment, ...(overrides.assessment ?? {}) },
-    pendingInviteCounts: { ...base.pendingInviteCounts, ...(overrides.pendingInviteCounts ?? {}) },
-    subscription: { ...base.subscription, ...(overrides.subscription ?? {}) },
-    completionSummary: {
-      self: { ...base.completionSummary.self, ...(overrides.completionSummary?.self ?? {}) },
-      team: { ...base.completionSummary.team, ...(overrides.completionSummary?.team ?? {}) },
-      org: { ...base.completionSummary.org, ...(overrides.completionSummary?.org ?? {}) },
-    },
-  };
-}
-
-function createState(stage: JourneyStage): JourneyState {
-  return {
-    currentStage: stage,
-    recommendedNextAction: null,
-    availableNextActions: [],
-    blockingReasons: [],
-    completionSummary: createContext().completionSummary,
-  };
-}
+import type { JourneyStage } from "@/lib/journey/types";
+import {
+  buildJourneyContext,
+  buildJourneyState,
+} from "../../factories/journey-fixture-builder";
 
 test("pending join invite has highest priority", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     currentContext: "org-admin",
     pendingJoinInvite: {
       kind: "org",
@@ -107,7 +20,7 @@ test("pending join invite has highest priority", () => {
       createdAt: new Date(),
     },
   });
-  const state = createState("TEAM_READY");
+  const state = buildJourneyState("TEAM_READY");
 
   const result = resolveHome({ context, state });
   assert.equal(result.activeSurface, "continuation");
@@ -116,10 +29,10 @@ test("pending join invite has highest priority", () => {
 });
 
 test("self in progress goes to assessment", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     assessment: { started: true, completed: false, skipped: false, hasDraft: true, hasResult: false },
   });
-  const state = createState("SELF_IN_PROGRESS");
+  const state = buildJourneyState("SELF_IN_PROGRESS");
   const result = resolveHome({ context, state });
 
   assert.equal(result.activeSurface, "continuation");
@@ -128,11 +41,11 @@ test("self in progress goes to assessment", () => {
 });
 
 test("manager/admin goes to org cockpit", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     currentContext: "org-manager",
     assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
   });
-  const state = createState("TEAM_READY");
+  const state = buildJourneyState("TEAM_READY");
   const result = resolveHome({ context, state });
 
   assert.equal(result.activeSurface, "org");
@@ -141,11 +54,11 @@ test("manager/admin goes to org cockpit", () => {
 });
 
 test("org member without completed self is redirected to assessment", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     currentContext: "org-member",
     assessment: { started: true, completed: false, skipped: false, hasDraft: true, hasResult: false },
   });
-  const state = createState("SELF_IN_PROGRESS");
+  const state = buildJourneyState("SELF_IN_PROGRESS");
   const result = resolveHome({ context, state });
 
   assert.equal(result.activeSurface, "continuation");
@@ -153,12 +66,12 @@ test("org member without completed self is redirected to assessment", () => {
 });
 
 test("org member with completed self can land on team home", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     currentContext: "org-member",
     assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
     teamId: "team42",
   });
-  const state = createState("TEAM_NOT_JOINED");
+  const state = buildJourneyState("TEAM_NOT_JOINED");
   const result = resolveHome({ context, state });
 
   assert.equal(result.activeSurface, "team");
@@ -167,10 +80,10 @@ test("org member with completed self can land on team home", () => {
 });
 
 test("self completed goes to profile results", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
   });
-  const state = createState("SELF_COMPLETED");
+  const state = buildJourneyState("SELF_COMPLETED");
   const result = resolveHome({ context, state });
 
   assert.equal(result.activeSurface, "personal");
@@ -179,10 +92,10 @@ test("self completed goes to profile results", () => {
 });
 
 test("first start goes to assessment", () => {
-  const context = createContext({
+  const context = buildJourneyContext({
     assessment: { started: false, completed: false, skipped: false, hasDraft: false, hasResult: false },
   });
-  const state = createState("SELF_NOT_STARTED");
+  const state = buildJourneyState("SELF_NOT_STARTED");
   const result = resolveHome({ context, state });
 
   assert.equal(result.activeSurface, "personal");

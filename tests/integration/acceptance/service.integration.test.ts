@@ -9,7 +9,16 @@ import {
   resolveOrgJoinPageModel,
   resolveTeamJoinPageModel,
 } from "@/lib/acceptance/service";
-import type { JourneyResolution } from "@/lib/journey/types";
+import { buildJourneyResolution } from "../../factories/journey-fixture-builder";
+import {
+  createJourneyOrgMembership,
+  createOrgInviteRecord,
+  createTeamInviteRecord,
+} from "../../factories/org-team-factory";
+import {
+  createTestUserIdentity,
+  createTestUserProfileRecord,
+} from "../../factories/user-factory";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
 const FUTURE = new Date("2026-04-15T10:00:00.000Z");
@@ -35,88 +44,6 @@ function stubRuntime(
   restorers.push(__setAcceptanceRuntimeForTests(overrides));
 }
 
-function makeJourneyResolution(destination: string): JourneyResolution {
-  return {
-    activeSurface: "personal",
-    entryIntent: "explore",
-    currentContext: "self-only",
-    stage: "SELF_COMPLETED",
-    stageDisplay: {
-      label: { hu: "Kesz", en: "Done" },
-      scopeProgress: 100,
-    },
-    destination,
-    reason: "personal_home",
-    home: { destination, reason: "personal_home" },
-    nextBestAction: {
-      stage: "SELF_COMPLETED",
-      primary: {
-        id: "REVIEW_SELF_RESULTS",
-        label: "View results",
-        href: "/profile/results",
-      },
-      secondary: null,
-      explanation: "Continue personal journey.",
-    },
-    scopeProgress: {
-      scope: "personal",
-      label: { hu: "Kesz", en: "Done" },
-      scopeProgress: 100,
-    },
-    experienceHints: {
-      showOrgExpansionPrompt: false,
-      showTeamCreationBanner: false,
-      showAssessmentContinuation: false,
-    },
-    restrictionFlags: {
-      subscriptionState: "active",
-      missingOrgSubscription: false,
-      readOnlyOrgViews: false,
-      disableOrgWriteActions: false,
-      hideDetailedOrgInsights: false,
-      requiresSubscriptionAction: false,
-    },
-    state: {
-      currentStage: "SELF_COMPLETED",
-      recommendedNextAction: null,
-      availableNextActions: [],
-      blockingReasons: [],
-      completionSummary: {
-        self: {
-          started: true,
-          completed: true,
-          skipped: false,
-          hasDraft: false,
-          sentInvites: 0,
-          pendingInvites: 0,
-          completedObservers: 0,
-          pendingTeamInvites: 0,
-          pendingOrgInvites: 0,
-          explicitTeamIntent: false,
-        },
-        team: {
-          joined: false,
-          teamId: null,
-          memberCount: 0,
-          completedMemberCount: 0,
-          pendingInviteCount: 0,
-          ready: false,
-        },
-        org: {
-          joined: false,
-          orgId: null,
-          teamCount: 0,
-          memberCount: 0,
-          completedMemberCount: 0,
-          pendingInviteCount: 0,
-          activeCampaignCount: 0,
-          ready: false,
-        },
-      },
-    },
-  };
-}
-
 afterEach(() => {
   while (restorers.length > 0) {
     const restore = restorers.pop();
@@ -125,31 +52,39 @@ afterEach(() => {
 });
 
 test("new user invite link resolves to profile completion acceptance state", async () => {
-  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => ({
+  const user = createTestUserIdentity({
+    clerkId: "clerk-new",
+    profileId: "profile-new",
+    username: null,
+  });
+  const invite = createTeamInviteRecord({
     id: "team-invite-new",
-    email: "__open__",
     teamId: "team-1",
     team: {
       name: "Team One",
       orgId: "org-1",
       org: { name: "Org One" },
     },
-  }));
-  stubMethod((prisma as any).userProfile, "upsert", async () => ({
-    id: "profile-new",
-    username: null,
-    birthYear: null,
-    gender: null,
-    consentedAt: null,
-    onboardedAt: null,
-  }));
+  });
+
+  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
+  stubMethod((prisma as any).userProfile, "upsert", async () =>
+    createTestUserProfileRecord({
+      id: user.profileId,
+      username: null,
+      birthYear: null,
+      gender: null,
+      consentedAt: null,
+      onboardedAt: null,
+    }),
+  );
   stubRuntime({
     getActiveOrgMembership: async () => null,
   });
 
   const model = await resolveTeamJoinPageModel({
-    inviteId: "team-invite-new",
-    clerkId: "clerk-new",
+    inviteId: invite.id,
+    clerkId: user.clerkId,
   });
 
   assert.equal(model.state, "ready");
@@ -157,31 +92,39 @@ test("new user invite link resolves to profile completion acceptance state", asy
 });
 
 test("existing user invite link resolves to team assignment pending", async () => {
-  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => ({
+  const user = createTestUserIdentity({
+    clerkId: "clerk-existing",
+    profileId: "profile-existing",
+    username: "Existing User",
+  });
+  const invite = createTeamInviteRecord({
     id: "team-invite-existing",
-    email: "__open__",
     teamId: "team-2",
     team: {
       name: "Team Two",
       orgId: "org-2",
       org: { name: "Org Two" },
     },
-  }));
-  stubMethod((prisma as any).userProfile, "upsert", async () => ({
-    id: "profile-existing",
-    username: "Existing User",
-    birthYear: 1991,
-    gender: "female",
-    consentedAt: NOW,
-    onboardedAt: NOW,
-  }));
+  });
+
+  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
+  stubMethod((prisma as any).userProfile, "upsert", async () =>
+    createTestUserProfileRecord({
+      id: user.profileId,
+      username: user.username,
+      birthYear: 1991,
+      gender: "female",
+      consentedAt: NOW,
+      onboardedAt: NOW,
+    }),
+  );
   stubRuntime({
     getActiveOrgMembership: async () => null,
   });
 
   const model = await resolveTeamJoinPageModel({
-    inviteId: "team-invite-existing",
-    clerkId: "clerk-existing",
+    inviteId: invite.id,
+    clerkId: user.clerkId,
   });
 
   assert.equal(model.state, "ready");
@@ -229,20 +172,29 @@ test("duplicate accept returns already-used error", async () => {
 });
 
 test("already member invite resolves to already accepted state", async () => {
-  stubMethod((prisma as any).organizationPendingInvite, "findUnique", async () => ({
+  const user = createTestUserIdentity({
+    clerkId: "clerk-member",
+    profileId: "profile-member",
+    username: "Member User",
+  });
+  const invite = createOrgInviteRecord({
     id: "org-invite-member",
     orgId: "org-3",
     role: "ORG_MEMBER",
     org: { name: "Org Three" },
-  }));
-  stubMethod((prisma as any).userProfile, "upsert", async () => ({
-    id: "profile-member",
-    username: "Member User",
-    birthYear: 1990,
-    gender: "male",
-    consentedAt: NOW,
-    onboardedAt: NOW,
-  }));
+  });
+
+  stubMethod((prisma as any).organizationPendingInvite, "findUnique", async () => invite);
+  stubMethod((prisma as any).userProfile, "upsert", async () =>
+    createTestUserProfileRecord({
+      id: user.profileId,
+      username: user.username,
+      birthYear: 1990,
+      gender: "male",
+      consentedAt: NOW,
+      onboardedAt: NOW,
+    }),
+  );
   stubMethod((prisma as any).organization, "findUnique", async () => ({
     id: "org-3",
     name: "Org Three",
@@ -251,17 +203,21 @@ test("already member invite resolves to already accepted state", async () => {
     orgId: "org-3",
   }));
   stubRuntime({
-    getActiveOrgMembership: async () => ({
-      orgId: "org-3",
-      role: "ORG_MEMBER",
-      joinedAt: NOW,
-    }),
-    resolveJourney: async () => makeJourneyResolution("/assessment"),
+    getActiveOrgMembership: async () =>
+      createJourneyOrgMembership({
+        orgId: "org-3",
+        role: "ORG_MEMBER",
+        joinedAt: NOW,
+      }),
+    resolveJourney: async () =>
+      buildJourneyResolution("/assessment", {
+        reason: "assessment_continuation",
+      }),
   });
 
   const model = await resolveOrgJoinPageModel({
-    inviteId: "org-invite-member",
-    clerkId: "clerk-member",
+    inviteId: invite.id,
+    clerkId: user.clerkId,
   });
 
   assert.equal(model.state, "already_accepted");
@@ -269,41 +225,53 @@ test("already member invite resolves to already accepted state", async () => {
 });
 
 test("unfinished assessment after join uses journey handoff destination", async () => {
-  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => ({
+  const user = createTestUserIdentity({
+    clerkId: "clerk-join",
+    profileId: "profile-join",
+    username: "Join User",
+  });
+  const invite = createTeamInviteRecord({
     id: "team-invite-join",
-    email: "__open__",
     teamId: "team-4",
     team: {
       name: "Team Four",
       orgId: "org-4",
       org: { name: "Org Four" },
     },
-  }));
-  stubMethod((prisma as any).userProfile, "upsert", async () => ({
-    id: "profile-join",
-    username: "Join User",
-    birthYear: 1994,
-    gender: "female",
-    consentedAt: NOW,
-    onboardedAt: NOW,
-  }));
+  });
+
+  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
+  stubMethod((prisma as any).userProfile, "upsert", async () =>
+    createTestUserProfileRecord({
+      id: user.profileId,
+      username: user.username,
+      birthYear: 1994,
+      gender: "female",
+      consentedAt: NOW,
+      onboardedAt: NOW,
+    }),
+  );
   stubMethod((prisma as any).organizationMember, "upsert", async () => ({}));
   stubMethod((prisma as any).teamMember, "upsert", async () => ({}));
   stubMethod((prisma as any), "$transaction", async () => []);
   stubRuntime({
     getActiveOrgMembership: async () => null,
-    setActiveOrgContext: async () => ({
-      orgId: "org-4",
-      role: "ORG_MEMBER",
-      joinedAt: NOW,
-    }),
-    resolveJourney: async () => makeJourneyResolution("/assessment"),
+    setActiveOrgContext: async () =>
+      createJourneyOrgMembership({
+        orgId: "org-4",
+        role: "ORG_MEMBER",
+        joinedAt: NOW,
+      }),
+    resolveJourney: async () =>
+      buildJourneyResolution("/assessment", {
+        reason: "assessment_continuation",
+      }),
   });
 
   const result = await joinMembershipFromInvite({
-    clerkId: "clerk-join",
+    clerkId: user.clerkId,
     kind: "team",
-    inviteId: "team-invite-join",
+    inviteId: invite.id,
   });
 
   assert.equal(result.acceptanceState, "acceptance_success");
@@ -312,41 +280,50 @@ test("unfinished assessment after join uses journey handoff destination", async 
 
 test("restricted/frozen acceptance attempts hand off to journey destination", async () => {
   for (const destination of ["/billing/upgrade", "/billing/reactivate"]) {
-    stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => ({
+    const user = createTestUserIdentity({
+      clerkId: "clerk-restricted",
+      profileId: "profile-restricted",
+      username: "Restricted User",
+    });
+    const invite = createTeamInviteRecord({
       id: `team-invite-${destination}`,
-      email: "__open__",
       teamId: "team-5",
       team: {
         name: "Team Five",
         orgId: "org-5",
         org: { name: "Org Five" },
       },
-    }));
-    stubMethod((prisma as any).userProfile, "upsert", async () => ({
-      id: "profile-restricted",
-      username: "Restricted User",
-      birthYear: 1988,
-      gender: "male",
-      consentedAt: NOW,
-      onboardedAt: NOW,
-    }));
+    });
+
+    stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
+    stubMethod((prisma as any).userProfile, "upsert", async () =>
+      createTestUserProfileRecord({
+        id: user.profileId,
+        username: user.username,
+        birthYear: 1988,
+        gender: "male",
+        consentedAt: NOW,
+        onboardedAt: NOW,
+      }),
+    );
     stubMethod((prisma as any).organizationMember, "upsert", async () => ({}));
     stubMethod((prisma as any).teamMember, "upsert", async () => ({}));
     stubMethod((prisma as any), "$transaction", async () => []);
     stubRuntime({
       getActiveOrgMembership: async () => null,
-      setActiveOrgContext: async () => ({
-        orgId: "org-5",
-        role: "ORG_MEMBER",
-        joinedAt: NOW,
-      }),
-      resolveJourney: async () => makeJourneyResolution(destination),
+      setActiveOrgContext: async () =>
+        createJourneyOrgMembership({
+          orgId: "org-5",
+          role: "ORG_MEMBER",
+          joinedAt: NOW,
+        }),
+      resolveJourney: async () => buildJourneyResolution(destination),
     });
 
     const result = await joinMembershipFromInvite({
-      clerkId: "clerk-restricted",
+      clerkId: user.clerkId,
       kind: "team",
-      inviteId: `team-invite-${destination}`,
+      inviteId: invite.id,
     });
 
     assert.equal(result.nextPath, destination);

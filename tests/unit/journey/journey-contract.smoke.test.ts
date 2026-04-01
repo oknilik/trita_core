@@ -3,20 +3,10 @@ import test from "node:test";
 
 import { resolveJourneyFromContext } from "@/lib/journey/engine-core";
 import type { JourneyContextSnapshot } from "@/lib/journey/types";
-
-type JourneyContextOverrides = Omit<
-  Partial<JourneyContextSnapshot>,
-  "assessment" | "pendingInviteCounts" | "subscription" | "completionSummary"
-> & {
-  assessment?: Partial<JourneyContextSnapshot["assessment"]>;
-  pendingInviteCounts?: Partial<JourneyContextSnapshot["pendingInviteCounts"]>;
-  subscription?: Partial<JourneyContextSnapshot["subscription"]>;
-  completionSummary?: {
-    self?: Partial<JourneyContextSnapshot["completionSummary"]["self"]>;
-    team?: Partial<JourneyContextSnapshot["completionSummary"]["team"]>;
-    org?: Partial<JourneyContextSnapshot["completionSummary"]["org"]>;
-  };
-};
+import {
+  buildJourneyContext,
+  type JourneyContextOverrides,
+} from "../../factories/journey-fixture-builder";
 
 interface SmokeFixture {
   name: string;
@@ -30,84 +20,6 @@ interface SmokeFixture {
     progressValue: number;
     restrictionState?: JourneyContextSnapshot["subscription"]["state"];
     obligationPrecedence?: "assessment_over_team";
-  };
-}
-
-function createContext(overrides: JourneyContextOverrides = {}): JourneyContextSnapshot {
-  const base: JourneyContextSnapshot = {
-    profileId: "p1",
-    entryIntent: "explore",
-    currentContext: "self-only",
-    activeSurface: "personal",
-    teamId: null,
-    orgId: null,
-    hasPendingJoinInvite: false,
-    explicitTeamIntent: false,
-    assessment: {
-      started: false,
-      completed: false,
-      skipped: false,
-      hasDraft: false,
-      hasResult: false,
-    },
-    orgMembership: null,
-    teamMembership: null,
-    pendingJoinInvite: null,
-    pendingInviteCounts: { team: 0, org: 0 },
-    subscription: {
-      state: "none",
-      orgId: null,
-      status: "none",
-      hasAccess: false,
-      trialEndsAt: null,
-      currentPeriodEnd: null,
-      cancelAtPeriodEnd: false,
-    },
-    completionSummary: {
-      self: {
-        started: false,
-        completed: false,
-        skipped: false,
-        hasDraft: false,
-        sentInvites: 0,
-        pendingInvites: 0,
-        completedObservers: 0,
-        pendingTeamInvites: 0,
-        pendingOrgInvites: 0,
-        explicitTeamIntent: false,
-      },
-      team: {
-        joined: false,
-        teamId: null,
-        memberCount: 0,
-        completedMemberCount: 0,
-        pendingInviteCount: 0,
-        ready: false,
-      },
-      org: {
-        joined: false,
-        orgId: null,
-        teamCount: 0,
-        memberCount: 0,
-        completedMemberCount: 0,
-        pendingInviteCount: 0,
-        activeCampaignCount: 0,
-        ready: false,
-      },
-    },
-  };
-
-  return {
-    ...base,
-    ...overrides,
-    assessment: { ...base.assessment, ...(overrides.assessment ?? {}) },
-    pendingInviteCounts: { ...base.pendingInviteCounts, ...(overrides.pendingInviteCounts ?? {}) },
-    subscription: { ...base.subscription, ...(overrides.subscription ?? {}) },
-    completionSummary: {
-      self: { ...base.completionSummary.self, ...(overrides.completionSummary?.self ?? {}) },
-      team: { ...base.completionSummary.team, ...(overrides.completionSummary?.team ?? {}) },
-      org: { ...base.completionSummary.org, ...(overrides.completionSummary?.org ?? {}) },
-    },
   };
 }
 
@@ -444,7 +356,7 @@ const FIXTURES: SmokeFixture[] = [
 
 for (const fixture of FIXTURES) {
   test(`journey contract smoke: ${fixture.name}`, () => {
-    const resolution = resolveJourneyFromContext(createContext(fixture.overrides));
+    const resolution = resolveJourneyFromContext(buildJourneyContext(fixture.overrides));
 
     assert.equal(resolution.destination, fixture.expected.destination, "destination");
     assert.equal(resolution.activeSurface, fixture.expected.activeSurface, "activeSurface");
