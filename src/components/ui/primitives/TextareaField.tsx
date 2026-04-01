@@ -41,9 +41,9 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProps>
   return (
     <div className={cn("flex flex-col gap-2", containerClassName)}>
       {label ? (
-        <label htmlFor={fieldId} className={cn("text-sm font-semibold text-ink", labelClassName)}>
+        <label htmlFor={fieldId} className={cn("text-sm font-semibold text-text-primary", labelClassName)}>
           {label}
-          {required ? <span className="ml-1 text-bronze">*</span> : null}
+          {required ? <span className="ml-1 text-action-primary-bg">*</span> : null}
         </label>
       ) : null}
       <textarea
@@ -54,23 +54,23 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProps>
         aria-describedby={describedBy}
         aria-invalid={hasError || ariaInvalid || undefined}
         className={cn(
-          "min-h-[120px] w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-ink placeholder:text-muted transition",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
-          "disabled:cursor-not-allowed disabled:bg-cream disabled:text-muted",
+          "min-h-[120px] w-full rounded-lg border border-border-default bg-surface-card px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted transition",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+          "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted",
           hasError
-            ? "border-rose-300 focus-visible:border-rose-400 focus-visible:ring-rose-200"
-            : "border-sand focus-visible:border-sage/45 focus-visible:ring-sage/20",
+            ? "border-state-error-border focus-visible:border-state-error-border focus-visible:ring-state-error-border"
+            : "focus-visible:border-action-primary-bg focus-visible:ring-focus-ring",
           textareaClassName,
         )}
         {...props}
       />
       {helpText ? (
-        <p id={helpTextId} className={cn("text-xs text-ink-body/70", helpTextClassName)}>
+        <p id={helpTextId} className={cn("text-xs text-text-secondary", helpTextClassName)}>
           {helpText}
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className={cn("text-xs text-rose-600", errorClassName)}>
+        <p id={errorId} className={cn("text-xs text-state-error-fg", errorClassName)}>
           {error}
         </p>
       ) : null}

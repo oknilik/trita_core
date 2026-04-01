@@ -13,11 +13,11 @@ interface StatusChipProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const VARIANT_CLASSES: Record<StatusChipVariant, string> = {
-  info: "bg-blue-50 text-blue-700",
-  success: "bg-emerald-50 text-emerald-700",
-  warning: "bg-amber-50 text-amber-700",
-  error: "bg-rose-50 text-rose-700",
-  neutral: "bg-sand text-ink-body",
+  info: "bg-state-info-bg text-state-info-fg",
+  success: "bg-state-success-bg text-state-success-fg",
+  warning: "bg-state-warning-bg text-state-warning-fg",
+  error: "bg-state-error-bg text-state-error-fg",
+  neutral: "bg-surface-muted text-text-secondary",
 };
 
 export function StatusChip({

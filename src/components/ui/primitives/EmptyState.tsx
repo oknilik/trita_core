@@ -20,19 +20,19 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "rounded-xl border border-sand bg-cream px-6 py-7 text-center",
+        "rounded-xl border border-border-default bg-surface-muted px-6 py-7 text-center",
         className,
       )}
       {...props}
     >
       {icon ? (
-        <div className="mb-2 flex justify-center text-muted">
+        <div className="mb-2 flex justify-center text-text-muted">
           {icon}
         </div>
       ) : null}
-      <p className="text-sm font-medium text-ink">{title}</p>
+      <p className="text-sm font-medium text-text-primary">{title}</p>
       {description ? (
-        <p className="mt-1 text-xs text-ink-body/70">{description}</p>
+        <p className="mt-1 text-xs text-text-secondary">{description}</p>
       ) : null}
       {cta ? (
         <div className="mt-3 flex justify-center">{cta}</div>

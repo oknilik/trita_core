@@ -15,10 +15,10 @@ export interface CardProps extends HTMLAttributes<HTMLElement> {
 }
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
-  default: "bg-white shadow-sm",
-  elevated: "bg-white shadow-[0_16px_40px_rgba(26,26,46,0.08)]",
-  muted: "bg-cream",
-  interactive: "bg-white shadow-sm transition hover:border-sage/40 hover:shadow-md",
+  default: "bg-surface-card shadow-sm",
+  elevated: "bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.08)]",
+  muted: "bg-surface-muted",
+  interactive: "bg-surface-card shadow-sm transition hover:border-border-strong hover:shadow-md",
 };
 
 const SPACING_CLASSES: Record<CardSpacing, string> = {
@@ -28,9 +28,9 @@ const SPACING_CLASSES: Record<CardSpacing, string> = {
 };
 
 const SURFACE_CLASSES: Record<CardSurface, string> = {
-  self: "data-[surface=self]:bg-white",
-  team: "data-[surface=team]:bg-white",
-  org: "data-[surface=org]:bg-white",
+  self: "data-[surface=self]:bg-surface-card",
+  team: "data-[surface=team]:bg-surface-card",
+  org: "data-[surface=org]:bg-surface-card",
 };
 
 export function Card({
@@ -51,7 +51,7 @@ export function Card({
       data-surface={surface}
       className={cn(
         "rounded-2xl",
-        bordered && "border border-sand",
+        bordered && "border border-border-default",
         VARIANT_CLASSES[variant],
         SPACING_CLASSES[spacing],
         surface && SURFACE_CLASSES[surface],

@@ -11,10 +11,10 @@ export interface InlineBannerProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const VARIANT_STYLES: Record<InlineBannerVariant, string> = {
-  info: "border-blue-200 bg-blue-50 text-blue-800",
-  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  warning: "border-amber-200 bg-amber-50 text-amber-800",
-  error: "border-rose-200 bg-rose-50 text-rose-800",
+  info: "border-state-info-border bg-state-info-bg text-state-info-fg",
+  success: "border-state-success-border bg-state-success-bg text-state-success-fg",
+  warning: "border-state-warning-border bg-state-warning-bg text-state-warning-fg",
+  error: "border-state-error-border bg-state-error-bg text-state-error-fg",
 };
 
 export function InlineBanner({

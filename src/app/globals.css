@@ -53,6 +53,50 @@
   --color-warm-mid:     #f0ede6;
   --color-warm-dark:    #d9cfc1;
 
+  /* ─── Semantic tokens ──────────────────────────────────────────────── */
+  /* Surface roles */
+  --color-surface-canvas: var(--color-cream);
+  --color-surface-card:   #ffffff;
+  --color-surface-muted:  var(--color-warm);
+
+  /* Text roles */
+  --color-text-primary:   var(--color-ink);
+  --color-text-secondary: var(--color-ink-body);
+  --color-text-muted:     var(--color-muted);
+  --color-text-inverse:   #ffffff;
+
+  /* Border roles */
+  --color-border-default: var(--color-sand);
+  --color-border-strong:  var(--color-warm-dark);
+
+  /* Action roles */
+  --color-action-primary-bg:       var(--color-sage);
+  --color-action-primary-bg-hover: var(--color-sage-dark);
+  --color-action-primary-fg:       #ffffff;
+  --color-action-secondary-bg:     var(--color-surface-card);
+  --color-action-secondary-fg:     var(--color-text-secondary);
+  --color-action-secondary-border: var(--color-border-default);
+  --color-action-destructive-bg:   #e11d48;
+  --color-action-destructive-bg-hover: #be123c;
+  --color-action-destructive-fg:   #ffffff;
+
+  /* Focus role */
+  --color-focus-ring: var(--color-sage-ring);
+
+  /* State roles */
+  --color-state-info-bg:      #eff6ff;
+  --color-state-info-fg:      #1d4ed8;
+  --color-state-info-border:  #bfdbfe;
+  --color-state-success-bg:   #ecfdf5;
+  --color-state-success-fg:   #047857;
+  --color-state-success-border: #a7f3d0;
+  --color-state-warning-bg:   #fffbeb;
+  --color-state-warning-fg:   #b45309;
+  --color-state-warning-border: #fde68a;
+  --color-state-error-bg:     #fff1f2;
+  --color-state-error-fg:     #be123c;
+  --color-state-error-border: #fecdd3;
+
   /* ─── Numbered aliases (design system) ────────────────────────────── */
   --color-sage-700:    #3d6b5e;
   --color-sage-900:    #1e3d34;

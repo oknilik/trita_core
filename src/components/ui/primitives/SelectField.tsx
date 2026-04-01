@@ -42,9 +42,9 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(funct
   return (
     <div className={cn("flex flex-col gap-2", containerClassName)}>
       {label ? (
-        <label htmlFor={fieldId} className={cn("text-sm font-semibold text-ink", labelClassName)}>
+        <label htmlFor={fieldId} className={cn("text-sm font-semibold text-text-primary", labelClassName)}>
           {label}
-          {required ? <span className="ml-1 text-bronze">*</span> : null}
+          {required ? <span className="ml-1 text-action-primary-bg">*</span> : null}
         </label>
       ) : null}
       <select
@@ -55,12 +55,12 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(funct
         aria-describedby={describedBy}
         aria-invalid={hasError || ariaInvalid || undefined}
         className={cn(
-          "min-h-[44px] w-full rounded-lg border bg-white px-3 text-sm text-ink transition",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
-          "disabled:cursor-not-allowed disabled:bg-cream disabled:text-muted",
+          "min-h-[44px] w-full rounded-lg border border-border-default bg-surface-card px-3 text-sm text-text-primary transition",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-canvas",
+          "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted",
           hasError
-            ? "border-rose-300 focus-visible:border-rose-400 focus-visible:ring-rose-200"
-            : "border-sand focus-visible:border-sage/45 focus-visible:ring-sage/20",
+            ? "border-state-error-border focus-visible:border-state-error-border focus-visible:ring-state-error-border"
+            : "focus-visible:border-action-primary-bg focus-visible:ring-focus-ring",
           selectClassName,
         )}
         {...props}
@@ -68,12 +68,12 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(funct
         {children}
       </select>
       {helpText ? (
-        <p id={helpTextId} className={cn("text-xs text-ink-body/70", helpTextClassName)}>
+        <p id={helpTextId} className={cn("text-xs text-text-secondary", helpTextClassName)}>
           {helpText}
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className={cn("text-xs text-rose-600", errorClassName)}>
+        <p id={errorId} className={cn("text-xs text-state-error-fg", errorClassName)}>
           {error}
         </p>
       ) : null}
