@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { Card } from "@/components/ui/primitives/Card";
 import { TeamPatternCard } from "./TeamPatternCard";
 import {
   generateTeamSummary,
@@ -151,7 +152,8 @@ export function TeamOverviewTab({
       {data.completedCount === 0 && (
         <div className="rounded-2xl border-2 border-dashed border-sand bg-white p-8 text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            // {t("teamComp.noDataEyebrow", loc)}
+            {"// "}
+            {t("teamComp.noDataEyebrow", loc)}
           </p>
           <p className="mt-3 font-fraunces text-xl text-ink">
             {t("teamComp.noAssessmentsTitle", loc)}
@@ -173,11 +175,12 @@ export function TeamOverviewTab({
       {/* 2-column grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left: Personality profile card */}
-        <div className="rounded-2xl border border-sand bg-white shadow-sm">
+        <Card className="p-0">
           <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                // {t("teamComp.teamAvgSelfEyebrow", loc)}
+                {"// "}
+                {t("teamComp.teamAvgSelfEyebrow", loc)}
               </p>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
                 {t("teamComp.hexacoProfile", loc)}
@@ -248,15 +251,16 @@ export function TeamOverviewTab({
               </>
             )}
           </div>
-        </div>
+        </Card>
 
         {/* Right column */}
         <div className="flex flex-col gap-6">
           {/* Card 1: Csapatdinamika */}
-          <div className="rounded-2xl border border-sand bg-white shadow-sm">
+          <Card className="p-0">
             <div className="px-6 py-4 border-b border-warm-mid">
               <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                // {t("teamComp.teamDynamicsEyebrow", loc)}
+                {"// "}
+                {t("teamComp.teamDynamicsEyebrow", loc)}
               </p>
               <h2 className="font-fraunces text-lg text-ink mt-0.5">
                 {t("teamComp.keyCharacteristics", loc)}
@@ -272,9 +276,10 @@ export function TeamOverviewTab({
                   {/* Strength */}
                   {topDimConfig && data.topDim && (
                     <div className="bg-[#e8f7f1] border border-[#a0d8c4] rounded-xl p-4">
-                      <p className="font-mono text-[9px] uppercase tracking-widest text-[#059669] mb-1">
-                        // {t("teamComp.teamStrengthEyebrow", loc)}
-                      </p>
+                        <p className="font-mono text-[9px] uppercase tracking-widest text-[#059669] mb-1">
+                          {"// "}
+                          {t("teamComp.teamStrengthEyebrow", loc)}
+                        </p>
                       <p className="text-sm font-semibold text-ink">
                         {topDimConfig.code} · {topDimConfig.label}
                       </p>
@@ -294,7 +299,8 @@ export function TeamOverviewTab({
                     data.bottomDim.code !== data.topDim?.code && (
                       <div className="bg-[#fff8ee] border border-[#f5d99a] rounded-xl p-4">
                         <p className="font-mono text-[9px] uppercase tracking-widest text-[#b45309] mb-1">
-                          // {t("teamComp.growthAreaEyebrow", loc)}
+                          {"// "}
+                          {t("teamComp.growthAreaEyebrow", loc)}
                         </p>
                         <p className="text-sm font-semibold text-ink">
                           {bottomDimConfig.code} · {bottomDimConfig.label}
@@ -313,7 +319,8 @@ export function TeamOverviewTab({
                   {diverseDimConfig && diverseStdDev >= 8 && (
                     <div className="bg-[#eee9fc] border border-[#c8bef5] rounded-xl p-4">
                       <p className="font-mono text-[9px] uppercase tracking-widest text-[#7c3aed] mb-1">
-                        // {t("teamComp.mostDiverseEyebrow", loc)}
+                        {"// "}
+                        {t("teamComp.mostDiverseEyebrow", loc)}
                       </p>
                       <p className="text-sm font-semibold text-ink">
                         {diverseDimConfig.code} · {diverseDimConfig.label}
@@ -330,14 +337,15 @@ export function TeamOverviewTab({
                 </div>
               )}
             </div>
-          </div>
+          </Card>
 
           {/* Card 2: Members mini list */}
-          <div className="rounded-2xl border border-sand bg-white shadow-sm">
+          <Card className="p-0">
             <div className="px-6 py-4 border-b border-warm-mid flex items-center justify-between gap-3">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-                  // {t("teamComp.membersEyebrow", loc)}
+                  {"// "}
+                  {t("teamComp.membersEyebrow", loc)}
                 </p>
                 <h2 className="font-fraunces text-xl text-ink mt-0.5">
                   {t("teamComp.teamMembersTitle", loc)} ({data.memberCount})
@@ -399,7 +407,7 @@ export function TeamOverviewTab({
                 </div>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
 

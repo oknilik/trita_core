@@ -4,6 +4,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TeamHeatmap } from "@/components/manager/TeamHeatmap";
 import { TeamInsights } from "@/components/manager/TeamInsights";
+import { Card } from "@/components/ui/primitives/Card";
 import type { TeamPageData } from "@/lib/team-stats";
 
 interface TeamProfileTabProps {
@@ -29,13 +30,13 @@ export function TeamProfileTab({
   if (!hasData) {
     return (
       <div className="pt-6">
-        <div className="rounded-2xl border border-sand bg-white p-10 text-center shadow-sm">
+        <Card spacing="lg" className="p-10 text-center">
           <p className="text-sm text-ink-body">
             {heatmapRows.length === 0
               ? t("teamComp.noMembersProfile", loc)
               : t("teamComp.noAssessmentProfile", loc)}
           </p>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -49,7 +50,7 @@ export function TeamProfileTab({
   return (
     <div className="flex flex-col gap-8 pt-6">
       {/* Heatmap */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8 overflow-x-auto">
+      <Card as="section" spacing="lg" className="overflow-x-auto md:p-8">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
           {t("teamComp.personalityProfileEyebrow", loc)}
         </p>
@@ -60,13 +61,13 @@ export function TeamProfileTab({
           {t("teamComp.heatmapDesc", loc)}
         </p>
         <TeamHeatmap rows={heatmapRows} dims={dims} isHu={isHu} />
-      </section>
+      </Card>
 
       {/* Team insights */}
       {heatmapRows.some((r) =>
         dimConfigs.some((d) => r.scores[d.code] !== null)
       ) && (
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card as="section" spacing="lg" className="md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {t("teamComp.analysisEyebrow", loc)}
           </p>
@@ -74,7 +75,7 @@ export function TeamProfileTab({
             {t("teamComp.teamAnalysis", loc)}
           </h2>
           <TeamInsights rows={heatmapRows} dims={dims} isHu={isHu} />
-        </section>
+        </Card>
       )}
     </div>
   );

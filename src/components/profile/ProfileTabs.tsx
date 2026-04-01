@@ -24,6 +24,7 @@ import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
+import { Card } from "@/components/ui/primitives/Card";
 import type { ProductLayerStatus } from "@/lib/domain/layers-4plus2";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 
@@ -632,7 +633,7 @@ export function ProfileTabs({
       />
 
       {layerStatuses && layerStatuses.length > 0 ? (
-        <section className="rounded-2xl border border-sand bg-white p-5">
+        <Card as="section" spacing="md" className="p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
             {t("content.layerStatusEyebrow", locale)}
           </p>
@@ -669,7 +670,7 @@ export function ProfileTabs({
               );
             })}
           </div>
-        </section>
+        </Card>
       ) : null}
 
       {/* Journey bridge CTA — single primary direction after self insight */}
@@ -686,7 +687,7 @@ export function ProfileTabs({
           />
 
           {shouldShowTeamShortcut ? (
-            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+            <Card spacing="sm" className="rounded-xl px-4 py-3">
               <p className="text-[12px] leading-relaxed text-ink-body">
                 {t("content.bridgeOptionalTeamHint", locale)}{" "}
                 <Link
@@ -696,11 +697,11 @@ export function ProfileTabs({
                   {t("content.bridgeOptionalTeamCta", locale)} →
                 </Link>
               </p>
-            </div>
+            </Card>
           ) : null}
 
           {shouldShowOrgExpansionPrompt ? (
-            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+            <Card spacing="sm" className="rounded-xl px-4 py-3">
               <p className="text-[12px] leading-relaxed text-ink-body">
                 {locale === "hu"
                   ? "Van függő szervezeti meghívásod. Ha szeretnéd, most kiterjesztheted a személyes utadat csapat- és szervezeti nézetre."
@@ -712,11 +713,11 @@ export function ProfileTabs({
                   {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
                 </Link>
               </p>
-            </div>
+            </Card>
           ) : null}
 
           {shouldShowTeamCreationBanner ? (
-            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+            <Card spacing="sm" className="rounded-xl px-4 py-3">
               <p className="text-[12px] leading-relaxed text-ink-body">
                 {locale === "hu"
                   ? "Team fókuszt választottál. Ha szeretnéd, indítsd el most az első csapatod."
@@ -728,11 +729,11 @@ export function ProfileTabs({
                   {locale === "hu" ? "Csapat létrehozása" : "Create a team"} →
                 </Link>
               </p>
-            </div>
+            </Card>
           ) : null}
 
           {shouldShowAssessmentContinuation ? (
-            <div className="rounded-xl border border-sand bg-white px-4 py-3">
+            <Card spacing="sm" className="rounded-xl px-4 py-3">
               <p className="text-[12px] leading-relaxed text-ink-body">
                 {locale === "hu"
                   ? "A self assessmented még folyamatban van. Folytasd ott, ahol abbahagytad."
@@ -744,7 +745,7 @@ export function ProfileTabs({
                   {locale === "hu" ? "Folytatás" : "Continue"} →
                 </Link>
               </p>
-            </div>
+            </Card>
           ) : null}
         </div>
       ) : null}

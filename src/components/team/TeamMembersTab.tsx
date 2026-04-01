@@ -7,6 +7,7 @@ import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCan
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
 import { TeamMemberRoleEditor } from "@/components/team/TeamMemberRoleEditor";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
+import { Card } from "@/components/ui/primitives/Card";
 
 interface SerializedMemberRow {
   id: string;
@@ -52,7 +53,7 @@ export function TeamMembersTab({
   return (
     <div className="flex flex-col gap-8 pt-6">
       {/* Members section */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+      <Card as="section" spacing="lg" className="md:p-8">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
           {t("teamComp.membersTabEyebrow", loc)}
         </p>
@@ -155,7 +156,7 @@ export function TeamMembersTab({
             <TeamInviteForm teamId={teamId} locale={locale as "hu" | "en"} />
           </div>
         )}
-      </section>
+      </Card>
 
     </div>
   );

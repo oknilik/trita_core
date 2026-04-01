@@ -4,6 +4,7 @@ import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { SerializedTeam, CampaignWithStats } from "@/lib/org-stats";
+import { Card } from "@/components/ui/primitives/Card";
 import { NextStepBanner } from "./NextStepBanner";
 import { RemindPendingButton } from "./RemindPendingButton";
 
@@ -125,7 +126,7 @@ export function OrgOverviewTab({
       {/* 2-column grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left: Szervezeti személyiség */}
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <Card spacing="lg">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("org.overview.profileEyebrow", loc)}
           </p>
@@ -198,10 +199,10 @@ export function OrgOverviewTab({
               )}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Right: Csapatok */}
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <Card spacing="lg">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
             {t("org.overview.teamsEyebrow", loc)}
           </p>
@@ -244,7 +245,7 @@ export function OrgOverviewTab({
               ))}
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );

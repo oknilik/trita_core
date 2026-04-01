@@ -19,6 +19,7 @@ import { OrgDeactivateButton } from "@/components/org/OrgDeactivateButton";
 import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
 import { BillingPortalButton } from "@/components/org/BillingPortalButton";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import { Card } from "@/components/ui/primitives/Card";
 
 export const dynamic = "force-dynamic";
 
@@ -98,7 +99,7 @@ export default async function OrgSettingsPage({
         ) : null}
 
         {/* Org name */}
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card as="section" spacing="lg" className="md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {t("org.settings.orgNameEyebrow", locale)}
           </p>
@@ -114,10 +115,10 @@ export default async function OrgSettingsPage({
           ) : (
             <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
           )}
-        </section>
+        </Card>
 
         {/* Előfizetés */}
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card as="section" spacing="lg" className="md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {t("org.settings.subscriptionEyebrow", locale)}
           </p>
@@ -186,11 +187,11 @@ export default async function OrgSettingsPage({
               )}
             </div>
           </div>
-        </section>
+        </Card>
 
         {/* Seat info — team / org plans only */}
         {tier !== "scale" && tier !== "none" && includedSeats !== Infinity && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <Card as="section" spacing="lg" className="md:p-8">
             <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
               {t("org.settings.seatsEyebrow", locale)}
             </p>
@@ -253,13 +254,13 @@ export default async function OrgSettingsPage({
                     {t("org.settings.upgradeLink", locale)}
                   </a>
                 </div>
-              )}
-            </div>
-          </section>
+                )}
+              </div>
+          </Card>
         )}
 
         {/* Member roles */}
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card as="section" spacing="lg" className="md:p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-1">
             {t("org.settings.rolesEyebrow", locale)}
           </p>
@@ -293,7 +294,7 @@ export default async function OrgSettingsPage({
               </div>
             ))}
           </div>
-        </section>
+        </Card>
 
         {/* Danger zone */}
         <section className="rounded-2xl border border-rose-200 bg-rose-50 p-6 md:p-8">

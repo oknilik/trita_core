@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
+import { Card } from "@/components/ui/primitives/Card";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { inputBase, toggleBtn } from "@/lib/onboarding-styles";
@@ -160,7 +161,7 @@ export function JoinOrgClient({
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card spacing="lg" className="md:p-8">
           <div className="flex flex-col gap-6">
             {requiresProfileOnboarding ? (
               <>
@@ -306,7 +307,7 @@ export function JoinOrgClient({
             </button>
 
           </div>
-        </div>
+        </Card>
 
         <p className="mt-6 text-center text-xs text-muted">
           {copy.profileHint}

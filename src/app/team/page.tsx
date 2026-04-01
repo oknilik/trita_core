@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { Card } from "@/components/ui/primitives/Card";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
@@ -74,7 +75,7 @@ export default async function TeamListPage() {
         </div>
 
         {/* Create new team */}
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <Card as="section" spacing="lg" className="md:p-8">
           <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.18em] text-bronze">
             {"// "}
             {t("team.createNew", locale)}
@@ -86,7 +87,7 @@ export default async function TeamListPage() {
             {t("team.createNewDesc", locale)}
           </p>
           <TeamCreateForm locale={locale} />
-        </section>
+        </Card>
 
         {/* Team list */}
         <section className="flex flex-col gap-5">
@@ -98,11 +99,14 @@ export default async function TeamListPage() {
           </div>
 
           {teams.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-sand bg-white p-10 text-center">
+            <Card
+              spacing="lg"
+              className="border-dashed p-10 text-center"
+            >
               <p className="text-sm text-muted">
                 {t("team.noTeams", locale)}
               </p>
-            </div>
+            </Card>
           )}
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
