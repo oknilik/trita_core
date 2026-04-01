@@ -1,10 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe, STRIPE_PRICES, TRIAL_DAYS, CANDIDATE_PACKAGES, type PriceKey, type CandidatePackageKey } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getServerAuth } from "@/lib/auth-server";
 
 const schema = z.object({
   priceKey: z.enum([
@@ -18,20 +18,49 @@ const schema = z.object({
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
+type CheckoutRuntime = {
+  auth: typeof getServerAuth;
+  prisma: typeof prisma;
+  getActiveOrgMembership: typeof getActiveOrgMembership;
+  stripe: typeof stripe;
+  checkRateLimit: typeof checkRateLimit;
+  appUrl: string;
+};
+
+const defaultCheckoutRuntime: CheckoutRuntime = {
+  auth: getServerAuth,
+  prisma,
+  getActiveOrgMembership,
+  stripe,
+  checkRateLimit,
+  appUrl: APP_URL,
+};
+
+function getCheckoutRuntime(): CheckoutRuntime {
+  const overrides = (
+    globalThis as {
+      __TRITA_BILLING_CHECKOUT_RUNTIME__?: Partial<CheckoutRuntime>;
+    }
+  ).__TRITA_BILLING_CHECKOUT_RUNTIME__;
+  return { ...defaultCheckoutRuntime, ...(overrides ?? {}) };
+}
+
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const runtime = getCheckoutRuntime();
+
+  const { userId } = await runtime.auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const profile = await prisma.userProfile.findUnique({
+  const profile = await runtime.prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true, email: true, locale: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const rateLimitResponse = await checkRateLimit("billing", profile.id);
+  const rateLimitResponse = await runtime.checkRateLimit("billing", profile.id);
   if (rateLimitResponse) return rateLimitResponse;
 
-  const membership = await getActiveOrgMembership(profile.id);
+  const membership = await runtime.getActiveOrgMembership(profile.id);
   if (!membership || membership.role !== "ORG_ADMIN") {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
@@ -43,7 +72,7 @@ export async function POST(req: Request) {
   const isCustomAddon = body.data.priceKey === "candidate_custom";
   const priceId = isCandidateAddon ? null : STRIPE_PRICES[body.data.priceKey as PriceKey];
 
-  const sub = await prisma.subscription.findUnique({
+  const sub = await runtime.prisma.subscription.findUnique({
     where: { orgId: membership.orgId },
     select: { stripeCustomerId: true, status: true },
   });
@@ -51,17 +80,17 @@ export async function POST(req: Request) {
   let customerId = sub?.stripeCustomerId ?? null;
 
   if (!customerId) {
-    const org = await prisma.organization.findUnique({
+    const org = await runtime.prisma.organization.findUnique({
       where: { id: membership.orgId },
       select: { name: true },
     });
-    const customer = await stripe.customers.create({
+    const customer = await runtime.stripe.customers.create({
       email: profile.email ?? undefined,
       name: org?.name,
       metadata: { orgId: membership.orgId, profileId: profile.id },
     });
     customerId = customer.id;
-    await prisma.subscription.upsert({
+    await runtime.prisma.subscription.upsert({
       where: { orgId: membership.orgId },
       create: { orgId: membership.orgId, stripeCustomerId: customerId },
       update: { stripeCustomerId: customerId },
@@ -88,7 +117,7 @@ export async function POST(req: Request) {
       label = pkg.label;
     }
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await runtime.stripe.checkout.sessions.create({
       customer: customerId,
       ui_mode: "embedded",
       mode: "payment",
@@ -104,7 +133,7 @@ export async function POST(req: Request) {
           quantity: 1,
         },
       ],
-      return_url: `${APP_URL}/billing/return?session_id={CHECKOUT_SESSION_ID}&addon=candidate`,
+      return_url: `${runtime.appUrl}/billing/return?session_id={CHECKOUT_SESSION_ID}&addon=candidate`,
       metadata: {
         orgId: membership.orgId,
         type: "candidate_addon",
@@ -115,7 +144,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ clientSecret: session.client_secret });
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await runtime.stripe.checkout.sessions.create({
     customer: customerId,
     ui_mode: "embedded",
     mode: "subscription",
@@ -126,7 +155,7 @@ export async function POST(req: Request) {
       trial_period_days: TRIAL_DAYS,
       metadata: { orgId: membership.orgId },
     },
-    return_url: `${APP_URL}/billing/return?session_id={CHECKOUT_SESSION_ID}`,
+    return_url: `${runtime.appUrl}/billing/return?session_id={CHECKOUT_SESSION_ID}`,
     metadata: { orgId: membership.orgId },
     allow_promotion_codes: true,
   });

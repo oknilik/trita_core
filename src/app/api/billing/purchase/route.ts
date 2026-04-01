@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe, isOneTimeTier, getOneTimePriceId } from "@/lib/stripe";
+import { getServerAuth } from "@/lib/auth-server";
 
 const TEAM_TIERS = ["team_snapshot", "team_deep_dive"] as const;
 
@@ -14,8 +14,38 @@ const schema = z.object({
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
+type PurchaseRuntime = {
+  auth: typeof getServerAuth;
+  prisma: typeof prisma;
+  getActiveOrgMembership: typeof getActiveOrgMembership;
+  stripe: typeof stripe;
+  isOneTimeTier: typeof isOneTimeTier;
+  getOneTimePriceId: typeof getOneTimePriceId;
+  appUrl: string;
+};
+
+const defaultPurchaseRuntime: PurchaseRuntime = {
+  auth: getServerAuth,
+  prisma,
+  getActiveOrgMembership,
+  stripe,
+  isOneTimeTier,
+  getOneTimePriceId,
+  appUrl: APP_URL,
+};
+
+function getPurchaseRuntime(): PurchaseRuntime {
+  const overrides = (
+    globalThis as {
+      __TRITA_BILLING_PURCHASE_RUNTIME__?: Partial<PurchaseRuntime>;
+    }
+  ).__TRITA_BILLING_PURCHASE_RUNTIME__;
+  return { ...defaultPurchaseRuntime, ...(overrides ?? {}) };
+}
+
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const runtime = getPurchaseRuntime();
+  const { userId } = await runtime.auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const body = schema.safeParse(await req.json());
@@ -23,16 +53,16 @@ export async function POST(req: Request) {
 
   const { tier, teamId } = body.data;
 
-  if (!isOneTimeTier(tier)) {
+  if (!runtime.isOneTimeTier(tier)) {
     return NextResponse.json({ error: "INVALID_TIER" }, { status: 400 });
   }
 
-  const priceId = getOneTimePriceId(tier);
+  const priceId = runtime.getOneTimePriceId(tier);
   if (!priceId) {
     return NextResponse.json({ error: "PRICE_NOT_CONFIGURED" }, { status: 400 });
   }
 
-  const profile = await prisma.userProfile.findUnique({
+  const profile = await runtime.prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true, email: true, locale: true },
   });
@@ -43,7 +73,7 @@ export async function POST(req: Request) {
     if (!teamId) {
       return NextResponse.json({ error: "TEAM_ID_REQUIRED" }, { status: 400 });
     }
-    const team = await prisma.team.findUnique({
+    const team = await runtime.prisma.team.findUnique({
       where: { id: teamId },
       select: { ownerId: true, orgId: true },
     });
@@ -53,7 +83,7 @@ export async function POST(req: Request) {
     let isOrgManager = false;
 
     if (!isTeamOwner && team.orgId) {
-      const membership = await prisma.organizationMember.findFirst({
+      const membership = await runtime.prisma.organizationMember.findFirst({
         where: { userId: profile.id, orgId: team.orgId, leftAt: null },
         select: { role: true, orgId: true },
       });
@@ -70,10 +100,10 @@ export async function POST(req: Request) {
   // Stripe customer keresése/létrehozása
   let customerId: string | null = null;
 
-  const membership = await getActiveOrgMembership(profile.id);
+  const membership = await runtime.getActiveOrgMembership(profile.id);
 
   if (membership?.orgId) {
-    const sub = await prisma.subscription.findUnique({
+    const sub = await runtime.prisma.subscription.findUnique({
       where: { orgId: membership.orgId },
       select: { stripeCustomerId: true },
     });
@@ -81,7 +111,7 @@ export async function POST(req: Request) {
   }
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
+    const customer = await runtime.stripe.customers.create({
       email: profile.email ?? undefined,
       metadata: { profileId: profile.id, orgId: membership?.orgId ?? "" },
     });
@@ -90,14 +120,14 @@ export async function POST(req: Request) {
 
   const stripeLocale = profile.locale === "hu" ? "hu" : "en";
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await runtime.stripe.checkout.sessions.create({
     customer: customerId,
     mode: "payment",
     locale: stripeLocale,
     line_items: [{ price: priceId, quantity: 1 }],
     allow_promotion_codes: true,
-    success_url: `${APP_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${APP_URL}/billing`,
+    success_url: `${runtime.appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${runtime.appUrl}/billing`,
     metadata: {
       type: "one_time_purchase",
       tier,

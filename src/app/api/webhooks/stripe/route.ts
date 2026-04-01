@@ -10,12 +10,38 @@ export const dynamic = "force-dynamic";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
+type StripeWebhookRuntime = {
+  stripe: typeof stripe;
+  prisma: typeof prisma;
+  sendOrderConfirmationEmail: typeof sendOrderConfirmationEmail;
+  addCredits: typeof addCredits;
+  webhookSecret?: string;
+};
+
+const defaultStripeWebhookRuntime: StripeWebhookRuntime = {
+  stripe,
+  prisma,
+  sendOrderConfirmationEmail,
+  addCredits,
+  webhookSecret: WEBHOOK_SECRET,
+};
+
+function getStripeWebhookRuntime(): StripeWebhookRuntime {
+  const overrides = (
+    globalThis as {
+      __TRITA_STRIPE_WEBHOOK_RUNTIME__?: Partial<StripeWebhookRuntime>;
+    }
+  ).__TRITA_STRIPE_WEBHOOK_RUNTIME__;
+  return { ...defaultStripeWebhookRuntime, ...(overrides ?? {}) };
+}
+
 async function upsertSubscription(
+  runtime: StripeWebhookRuntime,
   orgId: string,
   subscription: Stripe.Subscription,
   customerId: string,
 ) {
-  await prisma.subscription.upsert({
+  await runtime.prisma.subscription.upsert({
     where: { orgId },
     create: {
       orgId,
@@ -48,7 +74,8 @@ async function upsertSubscription(
 }
 
 export async function POST(req: Request) {
-  if (!WEBHOOK_SECRET) {
+  const runtime = getStripeWebhookRuntime();
+  if (!runtime.webhookSecret) {
     console.error("[Stripe webhook] STRIPE_WEBHOOK_SECRET is not configured!");
     return new NextResponse("Webhook secret not configured", { status: 500 });
   }
@@ -60,7 +87,7 @@ export async function POST(req: Request) {
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(payload, sig, WEBHOOK_SECRET);
+    event = runtime.stripe.webhooks.constructEvent(payload, sig, runtime.webhookSecret);
   } catch (err) {
     console.error("[Stripe webhook] Signature verification failed:", err);
     return new NextResponse("Invalid signature", { status: 400 });
@@ -86,7 +113,7 @@ export async function POST(req: Request) {
           }
 
           // Duplikáció védelem
-          const existing = await prisma.purchase.findFirst({
+          const existing = await runtime.prisma.purchase.findFirst({
             where: { stripeCheckoutSessionId: session.id },
           });
           if (existing) {
@@ -96,7 +123,7 @@ export async function POST(req: Request) {
 
           const config = TIER_CONFIG[tier];
 
-          await prisma.purchase.create({
+          await runtime.prisma.purchase.create({
             data: {
               userProfileId,
               orgId: orgId || null,
@@ -130,12 +157,12 @@ export async function POST(req: Request) {
           };
           const label = creditLabels[creditCount] ?? `${creditCount}× jelölt értékelés`;
           // Idempotency: return page may have already processed this session
-          const alreadyProcessed = await prisma.candidateCredit.findFirst({
+          const alreadyProcessed = await runtime.prisma.candidateCredit.findFirst({
             where: { orgId, note: { contains: session.id } },
             select: { id: true },
           });
           if (!alreadyProcessed) {
-            await addCredits({
+            await runtime.addCredits({
               orgId,
               amount: creditCount,
               actorId,
@@ -152,12 +179,12 @@ export async function POST(req: Request) {
 
         const subscriptionId = session.subscription as string;
         const customerId = session.customer as string;
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const subscription = await runtime.stripe.subscriptions.retrieve(subscriptionId);
 
-        await upsertSubscription(orgId, subscription, customerId);
+        await upsertSubscription(runtime, orgId, subscription, customerId);
 
         // Activate org if it was in PENDING_SETUP
-        await prisma.organization.updateMany({
+        await runtime.prisma.organization.updateMany({
           where: { id: orgId, status: "PENDING_SETUP" },
           data: { status: "ACTIVE" },
         });
@@ -177,7 +204,7 @@ export async function POST(req: Request) {
             ? subscription.customer
             : subscription.customer.id;
 
-        await upsertSubscription(orgId, subscription, customerId);
+        await upsertSubscription(runtime, orgId, subscription, customerId);
 
         if (
           event.type === "customer.subscription.updated" &&
@@ -186,12 +213,12 @@ export async function POST(req: Request) {
           event.data.previous_attributes.status === "trialing" &&
           subscription.status === "active"
         ) {
-          const org = await prisma.organization.findUnique({
+          const org = await runtime.prisma.organization.findUnique({
             where: { id: orgId },
             select: { name: true, owner: { select: { email: true } } },
           });
           if (org?.owner?.email) {
-            await sendOrderConfirmationEmail({
+            await runtime.sendOrderConfirmationEmail({
               to: org.owner.email,
               name: org.name,
             });
