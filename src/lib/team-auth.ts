@@ -1,5 +1,15 @@
 import { prisma } from "./prisma";
-import { hasOrgRole } from "./auth";
+
+// Keep role hierarchy local to avoid importing redirect-bound auth helpers.
+const ORG_ROLE_RANK: Record<string, number> = {
+  ORG_ADMIN: 3,
+  ORG_MANAGER: 2,
+  ORG_MEMBER: 1,
+};
+
+function hasOrgRole(actual: string, minimum: string): boolean {
+  return (ORG_ROLE_RANK[actual] ?? 0) >= (ORG_ROLE_RANK[minimum] ?? 999);
+}
 
 /**
  * Determines whether a user can access a specific team.
