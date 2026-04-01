@@ -22,20 +22,29 @@ export default async function OrgSetupPage({
   const { org } = await requireOrgRole(orgId, "ORG_ADMIN");
   const subscription = await getOrgSubscription(orgId);
   const subscriptionState = getSubscriptionState(subscription);
-  if (subscriptionState === "none") redirect("/billing/upgrade");
 
   // If already active, redirect to org detail
   if (org.status === "ACTIVE") {
     redirect(`/org/${orgId}`);
   }
 
-  if (subscriptionState === "restricted" || subscriptionState === "frozen") {
+  if (
+    subscriptionState === "none" ||
+    subscriptionState === "restricted" ||
+    subscriptionState === "frozen"
+  ) {
     const isHu = locale !== "en";
     return (
       <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-2xl space-y-5">
           <OrgSubscriptionBanner
-            state={subscriptionState === "frozen" ? "frozen" : "restricted"}
+            state={
+              subscriptionState === "frozen"
+                ? "frozen"
+                : subscriptionState === "none"
+                  ? "none"
+                  : "restricted"
+            }
             locale={locale}
           />
           <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
