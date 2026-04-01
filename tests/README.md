@@ -71,3 +71,13 @@ Artifacts are uploaded per layer:
 - logs for failed/successful runs
 - E2E screenshots/videos/traces and Playwright report
 - coverage directory upload (when present)
+
+## Functional block execution
+
+To see test output in domain-level blocks (for example `journey`, `assessment`, `join`, `policy`), use:
+
+- `pnpm test:blocks` — runs `unit` grouped by functional domains
+- `pnpm test:blocks:all` — runs `unit + integration + client` in functional blocks
+- `pnpm test:blocks:full` — runs `unit + integration + client + e2e` in functional blocks
+
+Each block is printed with a dedicated header and a final PASS/FAIL summary, so it is easy to see which functional area broke.
