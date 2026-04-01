@@ -20,7 +20,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "pnpm exec next dev -p 4100",
+    command: "TRITA_E2E_AUTH_BYPASS=1 pnpm exec next dev -p 4100",
     url: baseURL,
     timeout: 120_000,
     reuseExistingServer: true,

@@ -34,7 +34,18 @@ const isPublicRoute = createRouteMatcher([
 
 const isAuthRoute = createRouteMatcher(["/sign-in", "/sign-up"]);
 
+const E2E_AUTH_COOKIE_NAME = "trita_e2e_user_id";
+
+function isE2EAuthBypassEnabled(req: NextRequest): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  if (process.env.TRITA_E2E_AUTH_BYPASS !== "1") return false;
+  const value = req.cookies.get(E2E_AUTH_COOKIE_NAME)?.value?.trim();
+  return Boolean(value);
+}
+
 const handler = clerkMiddleware(async (auth, req) => {
+  const e2eBypass = isE2EAuthBypassEnabled(req);
+
   if (req.nextUrl.pathname.startsWith("/api")) {
     return nextWithPathname(req);
   }
@@ -42,7 +53,7 @@ const handler = clerkMiddleware(async (auth, req) => {
   // Redirect authenticated users away from sign-in/sign-up to the central journey handoff.
   if (isAuthRoute(req)) {
     const { userId } = await auth();
-    if (userId) {
+    if (userId || e2eBypass) {
       return NextResponse.redirect(new URL(JOURNEY_HOME_HANDOFF_PATH, req.url));
     }
     return nextWithPathname(req);
@@ -52,6 +63,9 @@ const handler = clerkMiddleware(async (auth, req) => {
     return nextWithPathname(req);
   }
   if (isProtectedRoute(req)) {
+    if (e2eBypass) {
+      return nextWithPathname(req);
+    }
     const homeUrl = new URL("/", req.url).toString();
     await auth.protect({
       unauthenticatedUrl: homeUrl,

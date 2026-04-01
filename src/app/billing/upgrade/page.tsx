@@ -1,13 +1,13 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { getOrgSubscription } from "@/lib/subscription";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { getServerAuth } from "@/lib/auth-server";
 import { BillingUpgradeClient } from "./BillingUpgradeClient";
 
 export default async function BillingUpgradePage() {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({

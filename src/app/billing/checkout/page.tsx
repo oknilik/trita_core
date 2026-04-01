@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
@@ -7,6 +6,7 @@ import { getActiveOrgMembership } from "@/lib/org-context";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { getServerAuth } from "@/lib/auth-server";
 import { EmbeddedCheckoutClient } from "./EmbeddedCheckoutClient";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,7 @@ export default async function CheckoutPage({
 }) {
   const [locale, { userId }, { plan, qty }] = await Promise.all([
     getServerLocale(),
-    auth(),
+    getServerAuth(),
     searchParams,
   ]);
 
