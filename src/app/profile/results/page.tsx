@@ -12,6 +12,7 @@ import { runProfileEngine } from "@/lib/profile-engine";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import {
   BLOCK1, BLOCK8,
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
@@ -171,11 +172,11 @@ export default async function ProfileResultsPage({
         </main>
       );
     }
-    redirect("/assessment");
+    redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
   const scores = latestResult.scores as ScoreResult;
-  if (scores.type !== "likert") redirect("/assessment");
+  if (scores.type !== "likert") redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const testType = latestResult.testType as TestType;
   const config = getTestConfig(testType, locale);

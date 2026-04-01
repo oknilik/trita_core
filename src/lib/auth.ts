@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export type { UserRole };
 
@@ -17,13 +18,13 @@ export async function requireAdmin() {
 
   const userEmail = user.primaryEmailAddress?.emailAddress;
   if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
-    redirect("/dashboard");
+    redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
   return { user };
 }
 
-// Requires the user to have a specific role. Redirects to /dashboard if not.
+// Requires the user to have a specific role. Redirects to journey home handoff if not.
 export async function requireRole(role: UserRole) {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
@@ -34,7 +35,7 @@ export async function requireRole(role: UserRole) {
   });
 
   if (!profile || profile.role !== role) {
-    redirect("/dashboard");
+    redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
   return { user, role: profile.role };
@@ -78,7 +79,7 @@ export async function requireOrgContext(orgId: string): Promise<{
     where: { clerkId: user.id },
     select: { id: true },
   });
-  if (!profile) redirect("/dashboard");
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
@@ -88,7 +89,7 @@ export async function requireOrgContext(orgId: string): Promise<{
     },
   });
 
-  if (!membership) redirect("/org");
+  if (!membership) redirect(JOURNEY_HOME_HANDOFF_PATH);
   if (membership.org.status === "INACTIVE") redirect("/org/suspended");
 
   return { profileId: profile.id, role: membership.role, org: membership.org };
@@ -105,7 +106,7 @@ export async function requireOrgRole(
   org: { id: string; name: string; status: string };
 }> {
   const ctx = await requireOrgContext(orgId);
-  if (!hasOrgRole(ctx.role, minRole)) redirect(`/org/${orgId}`);
+  if (!hasOrgRole(ctx.role, minRole)) redirect(JOURNEY_HOME_HANDOFF_PATH);
   return ctx;
 }
 

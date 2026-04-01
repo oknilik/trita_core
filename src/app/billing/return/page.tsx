@@ -7,6 +7,8 @@ import { t } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 import { addCredits } from "@/lib/candidate-credits";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { auth } from "@clerk/nextjs/server";
+import { resolveJourney } from "@/lib/journey/engine";
 
 export const dynamic = "force-dynamic";
 
@@ -26,17 +28,33 @@ export default async function ReturnPage({
 }: {
   searchParams: Promise<{ session_id?: string; addon?: string }>;
 }) {
-  const [locale, params] = await Promise.all([getServerLocale(), searchParams]);
+  const [locale, params, { userId }] = await Promise.all([
+    getServerLocale(),
+    searchParams,
+    auth(),
+  ]);
   const sessionId = params.session_id;
   const addon = params.addon;
+  let handoffDestination = JOURNEY_HOME_HANDOFF_PATH;
 
-  if (!sessionId) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (userId) {
+    const profile = await prisma.userProfile.findUnique({
+      where: { clerkId: userId },
+      select: { id: true },
+    });
+    if (profile) {
+      const journey = await resolveJourney(profile.id);
+      handoffDestination = journey.destination;
+    }
+  }
+
+  if (!sessionId) redirect(handoffDestination);
 
   let session;
   try {
     session = await stripe.checkout.sessions.retrieve(sessionId);
   } catch {
-    redirect(JOURNEY_HOME_HANDOFF_PATH);
+    redirect(handoffDestination);
   }
 
   if (session.status === "open") {
@@ -91,10 +109,10 @@ export default async function ReturnPage({
               {t("billing.returnCandidateBody", locale)}
             </p>
             <Link
-              href={`/hiring/${orgId}`}
+              href={handoffDestination}
               className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
             >
-              {t("billing.returnCandidateCta", locale)}
+              {t("billing.returnSubCta", locale)}
             </Link>
           </div>
         </div>
@@ -118,7 +136,7 @@ export default async function ReturnPage({
             {t("billing.returnSubBody", locale)}
           </p>
           <Link
-            href="/profile/results"
+            href={handoffDestination}
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
           >
             {t("billing.returnSubCta", locale)}

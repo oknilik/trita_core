@@ -33,7 +33,7 @@ export default async function TeamListPage() {
     where: { userId: profile.id, leftAt: null },
     select: { orgId: true },
   });
-  if (memberships.length === 0) redirect("/org");
+  if (memberships.length === 0) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const orgIds = memberships.map((m) => m.orgId);
   const teams = await prisma.team.findMany({

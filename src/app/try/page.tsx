@@ -5,6 +5,7 @@ import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { AssessmentClient } from "@/app/assessment/AssessmentClient";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -17,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TryPage() {
   // If already logged in, use the normal assessment flow
   const { userId } = await auth();
-  if (userId) redirect("/assessment");
+  if (userId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const locale = await getServerLocale();
   const config = getTestConfig("HEXACO", locale);

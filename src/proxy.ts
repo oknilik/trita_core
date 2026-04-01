@@ -2,6 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { normalizeLocale } from "@/lib/i18n";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 function nextWithPathname(req: NextRequest) {
   const res = NextResponse.next();
@@ -38,11 +39,11 @@ const handler = clerkMiddleware(async (auth, req) => {
     return nextWithPathname(req);
   }
 
-  // Redirect authenticated users away from sign-in/sign-up to dashboard
+  // Redirect authenticated users away from sign-in/sign-up to the central journey handoff.
   if (isAuthRoute(req)) {
     const { userId } = await auth();
     if (userId) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL(JOURNEY_HOME_HANDOFF_PATH, req.url));
     }
     return nextWithPathname(req);
   }

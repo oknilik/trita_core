@@ -12,6 +12,7 @@ import { TritaLogo } from "@/components/TritaLogo";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { toggleBtn, inputBase } from "@/lib/onboarding-styles";
 import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 
 
@@ -159,7 +160,7 @@ export function OnboardingClient() {
       if (!response.ok) throw new Error("Save failed");
 
       window.dispatchEvent(new CustomEvent("profile-updated"));
-      router.push("/assessment");
+      router.push(JOURNEY_HOME_HANDOFF_PATH);
     } catch {
       showToast(t("onboarding.errorGeneric", locale), "error");
     } finally {

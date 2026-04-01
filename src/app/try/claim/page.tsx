@@ -10,6 +10,7 @@ import {
   readAssessmentDraftFromStorage,
   toAssessmentAnswerPayload,
 } from "@/lib/assessment-draft";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export default function TryClaimPage() {
   const router = useRouter();
@@ -30,13 +31,13 @@ export default function TryClaimPage() {
     const draft = readAssessmentDraftFromStorage({ testType: "HEXACO" });
     if (!draft) {
       // No draft — user might have already claimed or never took the test
-      router.replace("/profile/results");
+      router.replace(JOURNEY_HOME_HANDOFF_PATH);
       return;
     }
 
     const answers = draft.answers ?? {};
     if (Object.keys(answers).length === 0) {
-      router.replace("/profile/results");
+      router.replace(JOURNEY_HOME_HANDOFF_PATH);
       return;
     }
 
@@ -56,7 +57,7 @@ export default function TryClaimPage() {
           throw new Error(body?.error ?? "Claim failed");
         }
         clearAssessmentDraftFromStorage("HEXACO");
-        router.replace("/profile/results");
+        router.replace(JOURNEY_HOME_HANDOFF_PATH);
       })
       .catch((err) => {
         console.error("[claim] error:", err);
