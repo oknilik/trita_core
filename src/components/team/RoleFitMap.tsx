@@ -28,15 +28,58 @@ const ROLE_ZONES: RoleZone[] = [
   { id: "str", labelKey: "teamComp.zoneStrategistLabel", x: 215, y: 210, r: 42, bg: "var(--color-surface-chip-neutral)", stroke: "var(--color-border-default)", tc: "var(--color-text-muted)", dims: [], missing: true },
 ];
 
-function getZoneForMember(hexaco: IntelligenceMember["hexaco"]): string {
-  const sorted = Object.entries(hexaco).sort(([, a], [, b]) => b - a);
-  const top = sorted[0][0];
-  if (top === "A") return "med";
-  if (top === "O" || top === "X") return "inn";
-  if (top === "C") return "exe";
-  if (top === "H") return "ana";
-  if (top === "E") return "ene";
-  return "med";
+type HexacoKey = keyof IntelligenceMember["hexaco"];
+type ZoneFitConfidence = "high" | "medium" | "low";
+
+interface ZoneFitResult {
+  primaryZoneId: string;
+  primaryScore: number;
+  secondaryScore: number;
+  confidence: ZoneFitConfidence;
+}
+
+const ROLE_ZONE_WEIGHTS: Record<string, Partial<Record<HexacoKey, number>>> = {
+  med: { A: 0.5, H: 0.3, E: 0.2 },
+  inn: { O: 0.45, X: 0.35, C: 0.2 },
+  exe: { C: 0.55, X: 0.25, A: 0.2 },
+  ana: { H: 0.35, C: 0.35, O: 0.3 },
+  ene: { X: 0.45, E: 0.3, O: 0.25 },
+};
+
+function weightedZoneScore(
+  hexaco: IntelligenceMember["hexaco"],
+  weights: Partial<Record<HexacoKey, number>>,
+): number {
+  let weightedSum = 0;
+  let totalWeight = 0;
+  for (const [dim, weight] of Object.entries(weights) as Array<[HexacoKey, number]>) {
+    weightedSum += hexaco[dim] * weight;
+    totalWeight += weight;
+  }
+  if (totalWeight <= 0) return 0;
+  return weightedSum / totalWeight;
+}
+
+function resolveZoneFit(hexaco: IntelligenceMember["hexaco"]): ZoneFitResult {
+  const scores = Object.entries(ROLE_ZONE_WEIGHTS).map(([zoneId, weights]) => ({
+    zoneId,
+    score: weightedZoneScore(hexaco, weights),
+  }));
+  scores.sort((a, b) => b.score - a.score);
+
+  const top = scores[0] ?? { zoneId: "med", score: 0 };
+  const second = scores[1] ?? { zoneId: "med", score: 0 };
+  const gap = top.score - second.score;
+
+  const confidence: ZoneFitConfidence =
+    gap >= 12 ? "high" : gap >= 6 ? "medium" : "low";
+
+  return {
+    primaryZoneId: top.zoneId,
+    primaryScore: top.score,
+    secondaryScore: second.score,
+    confidence,
+  };
 }
 
 const DIM_COLORS: Record<string, string> = {
@@ -51,10 +94,18 @@ const DIM_COLORS: Record<string, string> = {
 interface RoleDetailPanelProps {
   member: IntelligenceMember;
   zone: RoleZone;
+  fit: ZoneFitResult;
   loc: Locale;
 }
 
-function RoleDetailPanel({ member, zone, loc }: RoleDetailPanelProps) {
+function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
+  const confidenceKey =
+    fit.confidence === "high"
+      ? "teamComp.roleFitConfidenceHigh"
+      : fit.confidence === "medium"
+        ? "teamComp.roleFitConfidenceMedium"
+        : "teamComp.roleFitConfidenceLow";
+
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
       <div className="flex items-center gap-3">
@@ -72,6 +123,13 @@ function RoleDetailPanel({ member, zone, loc }: RoleDetailPanelProps) {
           >
             {t(zone.labelKey, loc)}
           </span>
+          <p className="mt-1 text-[10px] text-ink-body">
+            {t("teamComp.roleFitScore", loc)}:{" "}
+            <span className="font-semibold text-ink">{Math.round(fit.primaryScore)}%</span>
+            {" · "}
+            {t("teamComp.roleFitConfidence", loc)}:{" "}
+            <span className="font-semibold text-ink">{t(confidenceKey, loc)}</span>
+          </p>
         </div>
       </div>
 
@@ -117,11 +175,13 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
   const membersWithData = members.filter((m) => m.hasAssessmentData);
   const membersWithoutData = members.filter((m) => !m.hasAssessmentData);
 
+  const memberFitById = new Map<string, ZoneFitResult>();
   const zoneMembers: Record<string, IntelligenceMember[]> = {};
   membersWithData.forEach((m) => {
-    const zoneId = getZoneForMember(m.hexaco);
-    if (!zoneMembers[zoneId]) zoneMembers[zoneId] = [];
-    zoneMembers[zoneId].push(m);
+    const fit = resolveZoneFit(m.hexaco);
+    memberFitById.set(m.id, fit);
+    if (!zoneMembers[fit.primaryZoneId]) zoneMembers[fit.primaryZoneId] = [];
+    zoneMembers[fit.primaryZoneId].push(m);
   });
 
   const missingZones = ROLE_ZONES.filter(
@@ -129,8 +189,11 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
   );
 
   const selectedMember = membersWithData.find((m) => m.id === selected);
+  const selectedFit = selectedMember
+    ? memberFitById.get(selectedMember.id) ?? null
+    : null;
   const selectedZone = selectedMember
-    ? ROLE_ZONES.find((z) => z.id === getZoneForMember(selectedMember.hexaco))
+    ? ROLE_ZONES.find((z) => z.id === selectedFit?.primaryZoneId)
     : null;
 
   if (membersWithData.length === 0) {
@@ -202,6 +265,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
           {ROLE_ZONES.filter((z) => !z.missing).map((z) => {
             const mems = zoneMembers[z.id] ?? [];
             return mems.map((m, i) => {
+              const fit = memberFitById.get(m.id);
               const angle =
                 mems.length > 1 ? (i / mems.length) * Math.PI * 2 - Math.PI / 2 : 0;
               const dist = mems.length > 1 ? z.r * 0.42 : 0;
@@ -221,6 +285,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                     fill={m.color}
                     stroke={selected === m.id ? "var(--color-action-primary-bg)" : "white"}
                     strokeWidth={selected === m.id ? 2.5 : 2}
+                    opacity={fit?.confidence === "low" ? 0.74 : 1}
                   />
                   <text
                     x={px}
@@ -261,8 +326,13 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
 
       {/* Detail panel */}
       <div className="w-full flex-shrink-0 md:w-[240px]">
-        {selectedMember && selectedZone ? (
-          <RoleDetailPanel member={selectedMember} zone={selectedZone} loc={loc} />
+        {selectedMember && selectedZone && selectedFit ? (
+          <RoleDetailPanel
+            member={selectedMember}
+            zone={selectedZone}
+            fit={selectedFit}
+            loc={loc}
+          />
         ) : (
           <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
             <p className="text-[12px] text-muted">
