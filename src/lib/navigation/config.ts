@@ -115,8 +115,8 @@ function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext)
     ...ctx.teams.map((team) => ({
       id: `team-${team.id}`,
       label: team.name,
-      description: "Csapatkép, tagok és meghívások",
-      href: `/team/${team.id}`,
+      description: "Csapatkép és intelligencia riport",
+      href: `/team/${team.id}?tab=profile`,
     })),
     ...(ctx.org
       ? [{

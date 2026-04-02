@@ -49,6 +49,14 @@ test("manager teams dropdown lists all accessible teams (member or manager)", ()
 
   const childLabels = teamsItem.items?.map((item) => item.label) ?? [];
   assert.deepEqual(childLabels, ["Csapataim", "Alpha Team", "Beta Team", "Observer körök"]);
+
+  const childHrefs = teamsItem.items?.map((item) => item.href) ?? [];
+  assert.deepEqual(childHrefs, [
+    "/team",
+    "/team/team_1?tab=profile",
+    "/team/team_2?tab=profile",
+    "/org/org_1?tab=campaigns",
+  ]);
 });
 
 test("manager analytics dropdown includes report entry for each accessible team", () => {
