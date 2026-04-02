@@ -96,7 +96,7 @@ export function TeamPageShell({
     },
     {
       key: "belbin",
-      label: "Belbin",
+      label: isHu ? "Csapatszerepek" : "Team roles",
     },
   ];
 

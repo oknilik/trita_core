@@ -114,8 +114,8 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "core",
     label: { hu: "Csapatszerep", en: "Team role" },
     description: {
-      hu: "Belbin-szint: hogyan járulsz hozzá a csapat működéséhez.",
-      en: "Belbin layer: how you contribute to team execution.",
+      hu: "Csapatszerep-szint: hogyan járulsz hozzá a csapat működéséhez.",
+      en: "Team-role layer: how you contribute to team execution.",
     },
     order: 2,
     dependencies: ["personality"],

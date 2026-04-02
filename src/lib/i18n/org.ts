@@ -1270,15 +1270,15 @@ export const orgTranslations = {
 
     // TeamBelbinSection
     estimatedRolesEyebrow: { hu: "csapatszerepek becslése", en: "estimated team roles" },
-    belbinTitle: { hu: "Belbin csapatszerep-elemzés", en: "Belbin team role analysis" },
+    belbinTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
     belbinDesc: {
-      hu: "A személyiségprofilok alapján becsült Belbin-szerepkörök. A pontos méréshez minden tagnak ki kell töltenie a Belbin kérdőívet.",
-      en: "Belbin roles estimated from personality profiles. For exact measurements, all members should complete the Belbin questionnaire.",
+      hu: "A személyiségprofilok alapján becsült csapatszerepkörök. A pontos méréshez minden tagnak ki kell töltenie a csapatszerep kérdőívet.",
+      en: "Team roles estimated from personality profiles. For exact measurements, all members should complete the team-role questionnaire.",
     },
     profileStatus: { hu: "Személyiségprofil státusz", en: "Personality profile status" },
     profileStatusDesc: {
-      hu: "{done} / {total} tagnak van személyiségprofilja — a Belbin-becslések erre épülnek",
-      en: "{done} / {total} members have personality data — Belbin estimates are derived from this",
+      hu: "{done} / {total} tagnak van személyiségprofilja — a csapatszerep-becslések erre épülnek",
+      en: "{done} / {total} members have personality data — team-role estimates are derived from this",
     },
     roleDistributionEyebrow: { hu: "szerepkör-eloszlás", en: "role distribution" },
     roleCompositionTitle: { hu: "Csapatszerepek megoszlása", en: "Team role composition" },

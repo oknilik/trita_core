@@ -247,10 +247,10 @@ export default async function TeamDetailPage({
     },
     {
       key: "belbin" as const,
-      title: "Belbin",
+      title: isHu ? "Csapatszerepek" : "Team roles",
       description: isHu
-        ? "Belbin szerepek és csapaton belüli egyensúly."
-        : "Belbin roles and team-balance details.",
+        ? "Csapatszerepek és csapaton belüli egyensúly."
+        : "Team-role balance and role-distribution details.",
       badge: undefined as number | undefined,
     },
   ];
@@ -658,42 +658,6 @@ export default async function TeamDetailPage({
           />
         ) : null}
 
-        <section>
-          <DashboardSectionHeader
-            label={isHu ? "Nézetek" : "Views"}
-            className="mb-4"
-          />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {viewCards.map((card) => (
-              <Link
-                key={card.key}
-                href={`/team/${teamId}?tab=${card.key}`}
-                className="group rounded-[18px] border border-sand bg-white p-4 shadow-[0_10px_28px_rgba(26,26,46,0.04)] transition-colors hover:border-bronze/35 hover:bg-cream"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-dm-sans text-[14px] font-semibold text-ink">
-                    {card.title}
-                  </p>
-                  {card.badge ? (
-                    <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
-                      {card.badge}
-                    </span>
-                  ) : null}
-                </div>
-                <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
-                  {card.description}
-                </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-sage transition-colors group-hover:text-sage-dark">
-                  {isHu ? "Nézet megnyitása" : "Open view"}
-                  <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 2l4 4-4 4" />
-                  </svg>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
           <DashboardSectionHeader label={t("teamDetail.sectionSnapshot", locale)} className="mb-4" />
@@ -733,6 +697,42 @@ export default async function TeamDetailPage({
                 </Link>
               ) : null}
             </DashboardMetricCard>
+          </div>
+        </section>
+
+        <section>
+          <DashboardSectionHeader
+            label={isHu ? "Nézetek" : "Views"}
+            className="mb-4"
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {viewCards.map((card) => (
+              <Link
+                key={card.key}
+                href={`/team/${teamId}?tab=${card.key}`}
+                className="group rounded-[18px] border border-sand bg-white p-4 shadow-[0_10px_28px_rgba(26,26,46,0.04)] transition-colors hover:border-bronze/35 hover:bg-cream"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-dm-sans text-[14px] font-semibold text-ink">
+                    {card.title}
+                  </p>
+                  {card.badge ? (
+                    <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
+                      {card.badge}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
+                  {card.description}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-sage transition-colors group-hover:text-sage-dark">
+                  {isHu ? "Nézet megnyitása" : "Open view"}
+                  <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 2l4 4-4 4" />
+                  </svg>
+                </span>
+              </Link>
+            ))}
           </div>
         </section>
 
