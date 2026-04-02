@@ -10,6 +10,7 @@ import {
   resolveWorkspaceNavRole,
   type WorkspaceNavItem,
 } from "@/lib/navigation/config";
+import { getUserMenuItemIds } from "@/lib/navigation/visibility";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
@@ -176,6 +177,10 @@ export function NavHeaderUI({
   const [avatarFrom, avatarTo] = getAvatarGradient(displayName ?? "trita");
   const roleLabel =
     role === "ORG_ADMIN" ? "Admin" : role === "ORG_MANAGER" ? "Manager" : "Felhasználó";
+  const userMenuItems = new Set(getUserMenuItemIds());
+  const showProfileMenuItem = userMenuItems.has("profile");
+  const showLanguageMenuItem = userMenuItems.has("language");
+  const showSignOutMenuItem = userMenuItems.has("sign_out");
 
   const closeAll = useCallback(() => setOpenDropdown(null), []);
 
@@ -292,44 +297,50 @@ export function NavHeaderUI({
         </div>
 
         <div className="mt-1 rounded-xl bg-white px-2 py-2">
-          <Link
-            href="/profile"
-            onClick={closeAll}
-            className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-          >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-              <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="8" cy="5" r="3" />
-                <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
-              </svg>
-            </span>
-            <span>Saját profil</span>
-          </Link>
-
-          <div className="mt-1 rounded-lg px-2.5 py-2.5">
-            <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
-              Nyelv
-            </p>
-            <LanguageSwitcher variant="pills" />
-          </div>
-
-          <div className="mt-1 border-t border-[var(--color-border-soft)] pt-1">
-            <button
-              type="button"
-              onClick={() => {
-                closeAll();
-                signOut({ redirectUrl: "/" });
-              }}
-              className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-[13px] font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+          {showProfileMenuItem ? (
+            <Link
+              href="/profile"
+              onClick={closeAll}
+              className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
+                  <circle cx="8" cy="5" r="3" />
+                  <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
                 </svg>
               </span>
-              <span>Kijelentkezés</span>
-            </button>
-          </div>
+              <span>Saját profil</span>
+            </Link>
+          ) : null}
+
+          {showLanguageMenuItem ? (
+            <div className="mt-1 rounded-lg px-2.5 py-2.5">
+              <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+                Nyelv
+              </p>
+              <LanguageSwitcher variant="pills" />
+            </div>
+          ) : null}
+
+          {showSignOutMenuItem ? (
+            <div className="mt-1 border-t border-[var(--color-border-soft)] pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  closeAll();
+                  signOut({ redirectUrl: "/" });
+                }}
+                className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-[13px] font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
+                  </svg>
+                </span>
+                <span>Kijelentkezés</span>
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     );
@@ -613,47 +624,55 @@ export function NavHeaderUI({
                     </div>
                   ))}
 
-                <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
-                  <p className="pb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
-                    Fiók
-                  </p>
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileMenu("closed")}
-                    className="flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="8" cy="5" r="3" />
-                        <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
-                      </svg>
-                    </span>
-                    <span>Saját profil</span>
-                  </Link>
-
-                  <div className="rounded-lg px-3 py-3">
-                    <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
-                      Nyelv
+                {showProfileMenuItem || showLanguageMenuItem ? (
+                  <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
+                    <p className="pb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
+                      Fiók
                     </p>
-                    <LanguageSwitcher variant="pills" />
-                  </div>
-                </div>
+                    {showProfileMenuItem ? (
+                      <Link
+                        href="/profile"
+                        onClick={() => setMobileMenu("closed")}
+                        className="flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                      >
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                          <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="8" cy="5" r="3" />
+                            <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
+                          </svg>
+                        </span>
+                        <span>Saját profil</span>
+                      </Link>
+                    ) : null}
 
-                <div className="border-t border-[var(--color-border-soft)] px-4 pb-4 pt-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      signOut({ redirectUrl: "/" });
-                      setMobileMenu("closed");
-                    }}
-                    className="flex items-center gap-2 text-[13px] text-[var(--color-text-muted)]"
-                  >
-                    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
-                    </svg>
-                    Kijelentkezés
-                  </button>
-                </div>
+                    {showLanguageMenuItem ? (
+                      <div className="rounded-lg px-3 py-3">
+                        <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+                          Nyelv
+                        </p>
+                        <LanguageSwitcher variant="pills" />
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {showSignOutMenuItem ? (
+                  <div className="border-t border-[var(--color-border-soft)] px-4 pb-4 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        signOut({ redirectUrl: "/" });
+                        setMobileMenu("closed");
+                      }}
+                      className="flex items-center gap-2 text-[13px] text-[var(--color-text-muted)]"
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
+                      </svg>
+                      Kijelentkezés
+                    </button>
+                  </div>
+                ) : null}
               </div>
             )}
           </div>

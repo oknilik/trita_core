@@ -164,6 +164,10 @@ export async function GET(req: Request) {
   const journey = serializeJourneySnapshot(journeySnapshot);
 
   return NextResponse.json({
+    viewer: {
+      role: orgMembership.role,
+      isOrgAdmin: isAdmin,
+    },
     org: {
       id: org.id,
       name: org.name,

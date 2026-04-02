@@ -13,6 +13,8 @@ import {
 import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/dashboard/ia-contract";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { getAvatarGradient } from "@/lib/ui/avatar";
+import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
+import { canViewDashboardBlock } from "@/lib/navigation/visibility";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -27,6 +29,10 @@ interface TeamMember {
 }
 
 interface OrgStatusResponse {
+  viewer?: {
+    role: string;
+    isOrgAdmin: boolean;
+  };
   org: { id: string; name: string; status: string; createdAt: string };
   teams: Array<{
     id: string;
@@ -131,6 +137,9 @@ export function AdminDashboard() {
   );
 
   const { org, teams, stats } = data;
+  const viewerNavRole = resolveWorkspaceNavRole(data.viewer?.role ?? "SELF");
+  const showOnboardingChecklist = canViewDashboardBlock(viewerNavRole, "onboarding_checklist");
+  const showAnalyticsTeaser = canViewDashboardBlock(viewerNavRole, "analytics_teaser");
 
   // ── Derived ──────────────────────────────────────────────────────────────
 
@@ -299,7 +308,9 @@ export function AdminDashboard() {
       cta: t("dashboard.trackProgress", localeTag),
     },
   ];
-  const pendingOnboardingSteps = onboardingSteps.filter((step) => !step.done);
+  const pendingOnboardingSteps = showOnboardingChecklist
+    ? onboardingSteps.filter((step) => !step.done)
+    : [];
   const attentionItems = [
     ...dashboardVm.riskAttentionPanel.items.map((item) => ({
       id: item.id,
@@ -633,20 +644,22 @@ export function AdminDashboard() {
             </DashboardPanel>
           </section>
 
-          <section>
-            <DashboardSectionHeader label={analyticsTeaserLabel} className="mb-4" />
-            <DashboardActionCard
-              eyebrow={analyticsTeaserEyebrow}
-              title={analyticsTeaserTitle}
-              tone="warm"
-              body={<p>{insightTeaserBody}</p>}
-              cta={{
-                href: `/org/${org.id}`,
-                label: analyticsTeaserCta,
-                tone: "link",
-              }}
-            />
-          </section>
+          {showAnalyticsTeaser ? (
+            <section>
+              <DashboardSectionHeader label={analyticsTeaserLabel} className="mb-4" />
+              <DashboardActionCard
+                eyebrow={analyticsTeaserEyebrow}
+                title={analyticsTeaserTitle}
+                tone="warm"
+                body={<p>{insightTeaserBody}</p>}
+                cta={{
+                  href: `/org/${org.id}`,
+                  label: analyticsTeaserCta,
+                  tone: "link",
+                }}
+              />
+            </section>
+          ) : null}
         </div>
 
       </main>

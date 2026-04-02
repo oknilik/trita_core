@@ -1,4 +1,12 @@
-export type WorkspaceNavRole = "org_admin" | "org_manager" | "self";
+import { resolveWorkspaceNavRole, type WorkspaceNavRole } from "@/lib/navigation/roles";
+import {
+  canViewAnalyticsFeature,
+  canViewNavSection,
+  canViewOrgAdminFeature,
+} from "@/lib/navigation/visibility";
+
+export { resolveWorkspaceNavRole };
+export type { WorkspaceNavRole };
 
 export interface WorkspaceNavTeam {
   id: string;
@@ -34,12 +42,6 @@ export interface WorkspaceNavItem {
   matchPrefixes: string[];
   badge?: number;
   items?: WorkspaceNavDestination[];
-}
-
-export function resolveWorkspaceNavRole(role: string): WorkspaceNavRole {
-  if (role === "ORG_ADMIN") return "org_admin";
-  if (role === "ORG_MANAGER") return "org_manager";
-  return "self";
 }
 
 function uniqueMatchPrefixes(...prefixes: Array<string | null | undefined>): string[] {
@@ -186,34 +188,44 @@ function buildHiringDestinations(
 }
 
 function buildOrgDestinations(ctx: WorkspaceNavContext, role: WorkspaceNavRole): WorkspaceNavDestination[] {
-  if (!ctx.org || role !== "org_admin") return [];
+  if (!ctx.org) return [];
 
-  return [
-    {
+  const items: WorkspaceNavDestination[] = [];
+
+  if (canViewOrgAdminFeature(role, "settings")) {
+    items.push({
       id: "org-admin",
       label: "Admin központ",
       description: "Szervezeti adminfeladatok egy helyen",
       href: `/org/${ctx.org.id}/settings`,
-    },
-    {
-      id: "org-permissions",
-      label: "Jogosultságok",
-      description: "Szerepkörök és hozzáférések kezelése",
-      href: `/org/${ctx.org.id}?tab=members`,
-    },
-    {
-      id: "org-billing",
-      label: "Számlázás",
-      description: "Előfizetés és számlázás kezelése",
-      href: `/org/${ctx.org.id}/settings`,
-    },
-    {
+    });
+    items.push({
       id: "org-settings",
       label: "Beállítások",
       description: "Szervezeti beállítások",
       href: `/org/${ctx.org.id}/settings`,
-    },
-  ];
+    });
+  }
+
+  if (canViewOrgAdminFeature(role, "permissions")) {
+    items.push({
+      id: "org-permissions",
+      label: "Jogosultságok",
+      description: "Szerepkörök és hozzáférések kezelése",
+      href: `/org/${ctx.org.id}?tab=members`,
+    });
+  }
+
+  if (canViewOrgAdminFeature(role, "billing")) {
+    items.push({
+      id: "org-billing",
+      label: "Számlázás",
+      description: "Előfizetés és számlázás kezelése",
+      href: `/org/${ctx.org.id}/settings`,
+    });
+  }
+
+  return items;
 }
 
 function buildAnalyticsDestinations(
@@ -224,37 +236,48 @@ function buildAnalyticsDestinations(
 
   if (role === "org_admin") {
     if (!ctx.org) return [];
-    return [
-      {
+    const items: WorkspaceNavDestination[] = [];
+
+    if (canViewAnalyticsFeature(role, "org_overview")) {
+      items.push({
         id: "analytics-org-profile",
         label: "Szervezeti kép",
         description: "Összkép és fő értelmezés",
         href: `/org/${ctx.org.id}`,
-      },
-      {
+      });
+    }
+
+    if (canViewAnalyticsFeature(role, "team_patterns")) {
+      items.push({
         id: "analytics-team-patterns",
         label: "Csapatmintázatok",
         description: "Csapatok mintázatai egy nézetben",
         href: `/org/${ctx.org.id}?tab=teams`,
-      },
-      ...(primaryTeam
-        ? [{
+      });
+    }
+
+    if (canViewAnalyticsFeature(role, "reports") && primaryTeam) {
+      items.push({
             id: "analytics-reports",
             label: "Riportok",
             description: "Részletes csapatriport",
             href: `/team/${primaryTeam.id}?tab=profile`,
-          }]
-        : []),
-      {
+          });
+    }
+
+    if (canViewAnalyticsFeature(role, "deep_analysis")) {
+      items.push({
         id: "analytics-deeper-layers",
         label: "Mélyelemzés",
         description: "Rétegek és részletes értelmezés",
         href: "/assessment-layers",
-      },
-    ];
+      });
+    }
+
+    return items;
   }
 
-  if (!primaryTeam) return [];
+  if (!primaryTeam || !canViewAnalyticsFeature(role, "reports")) return [];
 
   return [
     {
@@ -353,10 +376,10 @@ export function buildWorkspaceNavigation(
 
   const items: Array<WorkspaceNavItem | null> = [home];
 
-  if (teamNav) items.push(teamNav);
-  if (hiringNav) items.push(hiringNav);
-  if (role === "org_admin" && orgNav) items.push(orgNav);
-  if (analyticsNav) items.push(analyticsNav);
+  if (canViewNavSection(role, "teams") && teamNav) items.push(teamNav);
+  if (canViewNavSection(role, "hiring") && hiringNav) items.push(hiringNav);
+  if (canViewNavSection(role, "org") && orgNav) items.push(orgNav);
+  if (canViewNavSection(role, "analytics") && analyticsNav) items.push(analyticsNav);
 
   return items.filter((item): item is WorkspaceNavItem => Boolean(item));
 }
