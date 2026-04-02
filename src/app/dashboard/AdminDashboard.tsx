@@ -85,19 +85,6 @@ function progressColor(pct: number): string {
   return "#c8410a";
 }
 
-// ── Dummy data (until real API) ────────────────────────────────────────────────
-
-const DUMMY_HEXACO: Record<string, number> = { H: 62, E: 48, X: 71, A: 55, C: 68, O: 74 };
-
-const HEXACO_DIMS = [
-  { key: "H", name: { hu: "Őszinteség", en: "Honesty-Humility" }, color: "#c8410a" },
-  { key: "E", name: { hu: "Emocionalitás", en: "Emotionality" }, color: "#1D9E75" },
-  { key: "X", name: { hu: "Extraverzió", en: "Extraversion" }, color: "#378ADD" },
-  { key: "A", name: { hu: "Barátságosság", en: "Agreeableness" }, color: "#EF9F27" },
-  { key: "C", name: { hu: "Lelkiismeretesség", en: "Conscientiousness" }, color: "#7F77DD" },
-  { key: "O", name: { hu: "Nyitottság", en: "Openness" }, color: "#D4537E" },
-];
-
 const ORG_HERO_GRADIENT =
   "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)";
 const ORG_HERO_PRIMARY = "#d2a36a";
@@ -192,18 +179,6 @@ export function AdminDashboard() {
       ? t("dashboard.activityCompleted", localeTag)
       : t("dashboard.activityJoined", localeTag),
   }))).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
-
-  // Insight
-  const localizedHexacoDims = HEXACO_DIMS.map((dim) => ({
-    ...dim,
-    name: dim.name[localeTag],
-  }));
-  const topDim = localizedHexacoDims.reduce((a, b) =>
-    DUMMY_HEXACO[a.key] > DUMMY_HEXACO[b.key] ? a : b,
-  );
-  const lowDim = localizedHexacoDims.reduce((a, b) =>
-    DUMMY_HEXACO[a.key] < DUMMY_HEXACO[b.key] ? a : b,
-  );
 
   // TODO(journey-guardrail): remove this fallback once `/api/admin/org-status`
   // always guarantees `journey.nextBestAction`.
@@ -347,8 +322,8 @@ export function AdminDashboard() {
     })),
   ];
   const insightTeaserBody = isHu
-    ? `${topDim.name} most a legerősebb szervezeti minta, miközben ${lowDim.name.toLowerCase()} körül lehet a legtöbb súrlódás. A részletes értelmezés külön analitikai nézetbe való, itt csak a fő jelzést tartjuk meg.`
-    : `${topDim.name} is the strongest organizational signal right now, while ${lowDim.name.toLowerCase()} is the most likely source of friction. The detailed interpretation belongs in analytics; the dashboard keeps only the key signal.`;
+    ? `A részletes szervezeti értelmezés külön analitikai nézetben érhető el. Jelenleg ${teamsWithSnapshot}/${teams.length} csapatnál áll rendelkezésre csapatkép, összesen ${stats.completedCount} kitöltött felméréssel.`
+    : `Detailed organization interpretation is available in analytics. Right now ${teamsWithSnapshot}/${teams.length} teams have team insights, based on ${stats.completedCount} completed assessments.`;
   const analyticsTeaserLabel = isHu ? "Analitikai nézet" : "Analytics";
   const analyticsTeaserEyebrow = isHu ? "Rövid összkép" : "Quick insight";
   const analyticsTeaserTitle = isHu ? "Szervezeti összkép" : "Organization snapshot";
@@ -664,25 +639,7 @@ export function AdminDashboard() {
               eyebrow={analyticsTeaserEyebrow}
               title={analyticsTeaserTitle}
               tone="warm"
-              body={
-                <div className="space-y-3">
-                  <p>{insightTeaserBody}</p>
-                  <div className="flex flex-wrap gap-2">
-                    <DashboardStatusChip
-                      label={isHu ? `Erős jelzés: ${topDim.name}` : `Strong signal: ${topDim.name}`}
-                      tone="sage"
-                    />
-                    <DashboardStatusChip
-                      label={isHu ? `Figyeld: ${lowDim.name}` : `Watch: ${lowDim.name}`}
-                      tone="warm"
-                    />
-                    <DashboardStatusChip
-                      label={isHu ? `${teamsWithSnapshot}/${teams.length} csapatkép kész` : `${teamsWithSnapshot}/${teams.length} team insights ready`}
-                      tone="muted"
-                    />
-                  </div>
-                </div>
-              }
+              body={<p>{insightTeaserBody}</p>}
               cta={{
                 href: `/org/${org.id}`,
                 label: analyticsTeaserCta,

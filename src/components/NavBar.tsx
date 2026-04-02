@@ -14,8 +14,9 @@ import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 // ─── Active link helper ───────────────────────────────────────────────────────
 
 function isLinkActive(pathname: string, href: string): boolean {
+  const normalizedHref = href.split("?")[0] ?? href;
   if (href === "/") return pathname === "/";
-  return pathname.startsWith(href);
+  return pathname.startsWith(normalizedHref);
 }
 
 // ─── Nav link ─────────────────────────────────────────────────────────────────
@@ -53,8 +54,7 @@ export function NavBar({
   const { signOut } = useClerk();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [hasDraft, setHasDraft] = useState(false);
-  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -72,7 +72,7 @@ export function NavBar({
   ];
 
   const authLinks = [
-    { href: "/profile/results", label: t("nav.profile", locale) },
+    { href: signedInHomeHref, label: t("nav.home", locale) },
     { href: "/blog", label: t("nav.blog", locale) },
     { href: "/pricing", label: t("nav.pricing", locale) },
   ];
