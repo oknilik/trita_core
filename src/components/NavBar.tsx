@@ -171,10 +171,6 @@ export function NavBar({
             <button
               type="button"
               onClick={() => {
-                if (!isSignedIn) {
-                  setDrawerOpen(false);
-                  return;
-                }
                 setDrawerOpen((v) => !v);
               }}
               aria-label={t("nav.menu", locale)}
