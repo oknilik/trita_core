@@ -20,6 +20,7 @@ A részletes csapatszerep-elemzés maradjon külön deep-dive oldalon.
 - Nincs duplikált szerepvizualizáció két külön oldalon ugyanazzal a tartalommal.
 - Alacsony adatminőségnél nincs “erős” ajánlás.
 - User-facing copyban a “Csapatszerepek” kifejezés maradjon; ne jelenjen meg “Belbin” technikai címkeként.
+- A 3×3 pszicho-mátrix nem marad az `intelligence` oldalon; ha szükséges, deep-dive szinten opcionális.
 
 ---
 
@@ -73,19 +74,18 @@ Done when:
 
 - A blokkok nem lokálisan számolják az evidence-t.
 
-### B2. 3×3 mátrix átmeneti policy
+### B2. 3×3 mátrix kivezetése az intelligence nézetről
 
 Feladat:
 
-- A 3×3 mátrix maradjon ideiglenesen, de “támogató jel” státuszban.
-- Erősítsük a disclaimer copyt:
-  - becslés alapja,
-  - mit jelent és mit nem jelent,
-  - mikor tekinthető stabilnak.
+- A 3×3 mátrix kerüljön ki az `intelligence` nézetről.
+- Ha még szükséges megtartani, csak deep-dive/profil oldalon legyen opcionális toggle-ként.
+- Az `intelligence` oldalon ezt az információt az érthetőbb erőforrás-kártyák hordozzák.
 
 Done when:
 
-- A felhasználó nem érti félre teljesítményértékelésként.
+- Az `intelligence` oldalon nincs 3×3 mátrix.
+- Nincs olyan vizualizáció, ami disclaimer nélkül félrevezethető.
 
 ### B3. Action-priority szabályok
 
@@ -97,6 +97,8 @@ Akciókártya motor (3-4 prioritás):
 - “alacsony completion”
 - “observer kör hiány”
 - “alacsony kohézió / magas szórás” (ha minőség elégséges)
+- “magas szórás egy dimenzión belül” (pl. Extraverzió szélsőséges tartományban)
+- “vezető-csapat értékrend-eltérés” (manager H/A profil vs csapatátlag)
 
 Alacsony confidence esetén:
 
@@ -105,6 +107,21 @@ Alacsony confidence esetén:
 Done when:
 
 - Minden ajánlás mögött explicit trigger feltétel van.
+
+### B4. Insufficient data state
+
+Feladat:
+
+- `?tab=intelligence` oldalon 0-2 completed assessment esetén dedikált “nincs elég adat” állapot jelenjen meg.
+- Ne félig kitöltött metrika-dashboard jelenjen meg, hanem:
+  - rövid helyzetkép,
+  - miért nincs még elég adat,
+  - konkrét CTA-k az adatgyűjtéshez.
+
+Done when:
+
+- Alacsony adatállapotban az oldal nem félkész analytics nézetnek hat.
+- A user azonnal látja, mit kell tennie a stabil csapatképhez.
 
 ---
 
@@ -128,15 +145,19 @@ Done when:
 
 Feladat:
 
-Új layout:
+Új layout (egyszerű, olvasható lista-alapú megközelítés):
 
-- bal: szerepkategória oszlopok/csoportok,
-- jobb: tagkártyák (név, elsődleges szerep, 1-2 kulcsdimenzió),
-- no-data tagok külön “adat hiányzik” listában.
+- Egydimenziós tag-kártya lista (nem kétoszlopos kategória-rendszer).
+- Kártyánként kötelező:
+  - név,
+  - 3 csapatszerep pill,
+  - 1-2 kiemelkedő HEXACO dimenzió.
+- No-data tagok külön “adat hiányzik” szekcióban, dedikált CTA-val.
 
 Done when:
 
-- Nincs “random buborék” érzet; a vezető gyorsan olvassa.
+- A vezető sorban olvasva gyorsan értelmezi, “ki mit hoz a csapatba”.
+- Nincs “random buborék” vagy túlbonyolított vizuális érzet.
 
 ### C3. Fejlesztési prioritás kártyák
 
@@ -188,6 +209,8 @@ Feladat:
 
 - `?tab=intelligence` maradjon stabil.
 - `?tab=roles` ne dobjon meglepő fallbacket: ha nem támogatott, menjen explicit `?tab=intelligence`-re.
+- Legacy vagy hibás tab paramétereknél explicit, kiszámítható fallback legyen.
+- Alacsony adatállapotnál a fallback a B4 szerinti dedikált insufficient-data nézetre fusson.
 
 Done when:
 
@@ -203,6 +226,8 @@ Feladat:
 
 - User-facing: “Csapatszerepek”.
 - “Belbin” csak módszertani háttérszövegben, ha muszáj.
+- “Coaching” helyett: “tanácsadói konzultáció”.
+- Az `intelligence` oldalon blokkcímként “Ki mit hoz a csapatba” használata a “Csapattérkép” helyett.
 
 Done when:
 
@@ -244,15 +269,56 @@ Done when:
 
 - A fő intelligence flow regresszióálló.
 
+### F3. Visual regression snapshot
+
+Feladat:
+
+- Playwright screenshot comparison az `intelligence` és `belbin` nézet fő állapotaira.
+- Legalább ezekre legyen baseline:
+  - low-data,
+  - sufficient-data,
+  - deep-dive entry CTA blokk.
+
+Done when:
+
+- A spacing/szín/hierarchia regressziók gyorsan észlelhetők.
+
+---
+
+## WORKSTREAM G — Adatvizualizáció és chart policy
+
+### G1. Intelligence chart-minimal policy
+
+Feladat:
+
+- Az `intelligence` oldalon ne legyen kötelező chart-alapú megjelenítés gyenge mintanagyságnál.
+- Elsődleges forma: pill-ek, metrikák, rövid magyarázó szöveg, akciókártyák.
+- Chart csak akkor jelenjen meg, ha az adatminőség és mintanagyság ezt indokolja.
+
+Done when:
+
+- Az `intelligence` nézet nem kelti “hamis pontosság” érzetét.
+
+### G2. Deep-dive chart ownership
+
+Feladat:
+
+- A részletes chartok tulajdonosa a `belbin` (csapatszerep deep-dive) nézet.
+- Az `intelligence` nézet teaser/átvezető szerepben marad.
+
+Done when:
+
+- A két oldal vizualizációs szerepe nem keveredik.
+
 ---
 
 ## Implementációs sorrend (javasolt)
 
-1. B1, B3 (adat + action logika)
+1. B1, B2, B3, B4 (adat + action + insufficient-data alapok)
 2. A1, C1, C3 (új page skeleton)
-3. C2, C4 (vizuális és layout polish)
-4. D1, D2, E1, E2 (navigáció + copy)
-5. F1, F2 (teszt)
+3. C2, C4, G1 (vizuális és vizualizációs policy polish)
+4. D1, D2, E1, E2, G2 (navigáció + copy + deep-dive ownership)
+5. F1, F2, F3 (teszt + vizuális regresszió)
 
 ---
 
@@ -275,4 +341,5 @@ Done when:
 - A részletes szerepelemzés külön deep-dive oldalon él.
 - Minden fő insighthoz látható evidence/confidence jelölés tartozik.
 - A vizuális rendszer egységesebb, kevésbé zajos.
-- A fő flow-k teszttel védettek.
+- A fő flow-k teszttel és vizuális snapshottal védettek.
+- Az intelligence oldalon nincs félrevezető 3×3 mátrix.
