@@ -54,11 +54,19 @@ export function resolveHome(params: {
     };
   }
 
-  // 3) Manager/admin org cockpit.
-  if (context.currentContext === "org-admin" || context.currentContext === "org-manager") {
+  // 3a) Admin org cockpit.
+  if (context.currentContext === "org-admin") {
     return {
       activeSurface: "org",
       home: buildHomeResolution("/dashboard", "org_cockpit", primaryAction),
+    };
+  }
+
+  // 3b) Manager team cockpit.
+  if (context.currentContext === "org-manager") {
+    return {
+      activeSurface: "team",
+      home: buildHomeResolution("/manager", "manager_cockpit", primaryAction),
     };
   }
 

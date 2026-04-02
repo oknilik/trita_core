@@ -111,6 +111,7 @@ export type HomeReason =
   | "pending_join"
   | "assessment_continuation"
   | "org_cockpit"
+  | "manager_cockpit"
   | "team_home"
   | "personal_home"
   | "first_assessment";

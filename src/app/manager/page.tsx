@@ -1,0 +1,361 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect, notFound } from "next/navigation";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+import { getServerLocale } from "@/lib/i18n-server";
+import { getManagerCockpitData } from "@/lib/manager-cockpit";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import {
+  DashboardMetricCard,
+  DashboardPanel,
+  DashboardSectionHeader,
+  DashboardStatusChip,
+} from "@/components/dashboard/DashboardPrimitives";
+import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  return {
+    title: locale === "hu" ? "Csapatvezető cockpit | trita" : "Manager cockpit | trita",
+    robots: { index: false },
+  };
+}
+
+export default async function ManagerCockpitPage() {
+  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  if (!userId) redirect("/sign-in");
+
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true, username: true },
+  });
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
+
+  const data = await getManagerCockpitData(profile.id, locale as "hu" | "en");
+  if (!data) redirect(JOURNEY_HOME_HANDOFF_PATH);
+
+  const isHu = locale !== "en";
+  const teamCount = data.teams.length;
+  const isSingleTeam = teamCount === 1;
+  const totalCompletionPct = data.totalMembers > 0
+    ? Math.round((data.totalCompleted / data.totalMembers) * 100)
+    : 0;
+
+  const heroTheme = SURFACE_HERO_THEME.team;
+
+  // ── Next step resolution ──────────────────────────────────────────────────
+  const weakestTeam = data.teams.find((t) => t.completionPct < 100);
+  const teamWithFriction = data.teams.find((t) => t.frictionCount > 0);
+  const teamWithCampaign = data.teams.find((t) => t.activeCampaign);
+  const teamNeedingMembers = data.teams.find((t) => t.memberCount < 3);
+
+  let nextStep: {
+    title: string;
+    description: string;
+    primary: { label: string; href: string };
+    secondary?: { label: string; href: string } | null;
+  };
+
+  if (teamNeedingMembers) {
+    nextStep = {
+      title: isHu ? "Csapat bővítése" : "Grow your team",
+      description: isHu
+        ? `A(z) ${teamNeedingMembers.teamName} csapatnak legalább 3 tag kell a csapatképhez. Jelenleg ${teamNeedingMembers.memberCount} tag van.`
+        : `${teamNeedingMembers.teamName} needs at least 3 members for team insights. Currently ${teamNeedingMembers.memberCount} members.`,
+      primary: {
+        label: isHu ? "Tagok meghívása" : "Invite members",
+        href: `/team/${teamNeedingMembers.teamId}?tab=members`,
+      },
+    };
+  } else if (weakestTeam && weakestTeam.completionPct < 100) {
+    const missing = weakestTeam.memberCount - weakestTeam.completedCount;
+    nextStep = {
+      title: isHu ? "Kitöltések lezárása" : "Close pending assessments",
+      description: isHu
+        ? `A(z) ${weakestTeam.teamName} csapatban ${missing} tag nem töltötte ki a személyiségtesztet.`
+        : `${missing} members in ${weakestTeam.teamName} haven't completed the personality assessment.`,
+      primary: {
+        label: isHu ? "Tagok állapota" : "View member status",
+        href: `/team/${weakestTeam.teamId}?tab=members`,
+      },
+      secondary: weakestTeam.hasPattern
+        ? { label: isHu ? "Csapatkép" : "Team profile", href: `/team/${weakestTeam.teamId}?tab=profile` }
+        : null,
+    };
+  } else if (teamWithCampaign) {
+    const c = teamWithCampaign.activeCampaign!;
+    nextStep = {
+      title: isHu ? "Feedback kör nyomon követése" : "Track feedback round",
+      description: isHu
+        ? `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer visszajelzés érkezett a(z) ${teamWithCampaign.teamName} csapatban.`
+        : `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer responses received in ${teamWithCampaign.teamName}.`,
+      primary: {
+        label: isHu ? "Kör megtekintése" : "View round",
+        href: `/org/${data.orgId}?tab=campaigns`,
+      },
+    };
+  } else if (teamWithFriction) {
+    nextStep = {
+      title: isHu ? "Dinamika áttekintése" : "Review team dynamics",
+      description: isHu
+        ? `A(z) ${teamWithFriction.teamName} csapatban ${teamWithFriction.frictionCount} potenciális súrlódási pont van. Érdemes áttekinteni a részleteket.`
+        : `${teamWithFriction.frictionCount} potential friction points in ${teamWithFriction.teamName}. Worth reviewing the details.`,
+      primary: {
+        label: isHu ? "Dinamika megtekintése" : "View dynamics",
+        href: `/team/${teamWithFriction.teamId}?tab=intelligence`,
+      },
+    };
+  } else {
+    nextStep = {
+      title: isHu ? "Minden rendben" : "All good",
+      description: isHu
+        ? "A csapataid jó állapotban vannak. Tekintsd át az eredményeket vagy indíts feedback kört."
+        : "Your teams are in good shape. Review results or start a feedback round.",
+      primary: {
+        label: isHu ? "Csapatkép megtekintése" : "View team profile",
+        href: `/team/${data.teams[0].teamId}?tab=profile`,
+      },
+    };
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  return (
+    <PlatformPageShell
+      surface="team"
+      contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+    >
+      {/* ═══ HERO ═══ */}
+      <SurfaceHero
+        variant="team"
+        eyebrow={
+          <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+            {isHu ? "// csapatvezető cockpit" : "// manager cockpit"}
+          </p>
+        }
+        title={
+          <h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">
+            {isHu ? `Szia, ${profile.username?.split(" ")[0] ?? "Menedzser"}!` : `Hi, ${profile.username?.split(" ")[0] ?? "Manager"}!`}
+          </h1>
+        }
+        summary={
+          isSingleTeam
+            ? (isHu
+                ? `A(z) ${data.teams[0].teamName} csapatod ${data.teams[0].completionPct}%-on áll.`
+                : `Your ${data.teams[0].teamName} team is at ${data.teams[0].completionPct}% completion.`)
+            : (isHu
+                ? `${teamCount} csapatodat kezeled, összesen ${data.totalMembers} taggal.`
+                : `You manage ${teamCount} teams with ${data.totalMembers} members total.`)
+        }
+        chips={[
+          <span key="members" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
+            {data.totalMembers} {isHu ? "tag" : "members"}
+          </span>,
+          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
+            {data.totalCompleted} {isHu ? "kitöltve" : "completed"}
+          </span>,
+          <span key="teams" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
+            {teamCount} {isHu ? "csapat" : "teams"}
+          </span>,
+        ]}
+        actions={
+          <Link
+            href={`/team/${data.teams[0].teamId}`}
+            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+            style={{ backgroundColor: heroTheme.primary }}
+          >
+            {isSingleTeam
+              ? (isHu ? "Csapat áttekintése" : "View team")
+              : (isHu ? "Első csapat" : "Primary team")}
+          </Link>
+        }
+        aside={
+          <>
+            <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
+              {isHu ? "Összesítés" : "Summary"}
+            </p>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Kitöltöttség" : "Completion"}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{totalCompletionPct}%</p>
+              </div>
+              <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Függő" : "Pending"}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalMembers - data.totalCompleted}</p>
+              </div>
+              <div className="rounded-xl bg-white/[0.08] px-3 py-2">
+                <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Meghívók" : "Invites"}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalPendingInvites}</p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
+                <span>{isHu ? "Összesített kitöltöttség" : "Overall completion"}</span>
+                <span className="font-semibold text-white/[0.7]">{totalCompletionPct}%</span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
+                <div
+                  className="h-full rounded-full"
+                  style={{ width: `${totalCompletionPct}%`, backgroundColor: "#8ad0b4" }}
+                />
+              </div>
+            </div>
+          </>
+        }
+      />
+
+      {/* ═══ CSAPATOK ═══ */}
+      <section>
+        <DashboardSectionHeader label={isHu ? "Csapataid" : "Your teams"} className="mb-4" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {data.teams.map((team) => (
+            <Link key={team.teamId} href={`/team/${team.teamId}`} className="block">
+              <DashboardPanel className="p-5 transition-shadow hover:shadow-md">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-fraunces text-[16px] text-ink">{team.teamName}</p>
+                  <DashboardStatusChip
+                    label={team.hasPattern ? (isHu ? "Csapatkép kész" : "Pattern ready") : `${team.completionPct}%`}
+                    tone={team.hasPattern ? "sage" : team.completionPct >= 50 ? "warm" : "bronze"}
+                  />
+                </div>
+                <div className="mt-3 flex gap-1.5">
+                  {team.completedCount > 0 && <div className="h-1.5 rounded-full bg-sage" style={{ flex: team.completedCount }} />}
+                  {team.memberCount - team.completedCount > 0 && <div className="h-1.5 rounded-full bg-bronze/40" style={{ flex: team.memberCount - team.completedCount }} />}
+                </div>
+                <p className="mt-2 text-[11px] text-ink-body">
+                  {team.completedCount}/{team.memberCount} {isHu ? "tag kitöltötte" : "members completed"}
+                  {team.pendingInviteCount > 0 && (
+                    <> · {team.pendingInviteCount} {isHu ? "függő meghívó" : "pending invites"}</>
+                  )}
+                </p>
+                {(team.frictionCount > 0 || team.alignedCount > 0) && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {team.alignedCount > 0 && (
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] text-emerald-800">
+                        {team.alignedCount} {isHu ? "hasonló" : "aligned"}
+                      </span>
+                    )}
+                    {team.complementaryCount > 0 && (
+                      <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[10px] text-ink-body">
+                        {team.complementaryCount} {isHu ? "kiegészítő" : "complementary"}
+                      </span>
+                    )}
+                    {team.frictionCount > 0 && (
+                      <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] text-amber-800">
+                        {team.frictionCount} {isHu ? "súrlódás" : "friction"}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </DashboardPanel>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ TAGOK ÁLLAPOT ═══ */}
+      {data.primaryTeamData && (
+        <section>
+          <DashboardSectionHeader
+            label={isSingleTeam
+              ? (isHu ? "Csapattagok állapota" : "Team member status")
+              : (isHu ? `${data.primaryTeamData.teamName} — tagok` : `${data.primaryTeamData.teamName} — members`)}
+            className="mb-4"
+          />
+          <DashboardPanel className="divide-y divide-[var(--color-border-default)] p-0">
+            {data.primaryTeamData.members.map((member) => {
+              const isDone = member.scores !== null;
+              const [from, to] = getAvatarGradient(member.displayName);
+              const initial = getAvatarMonogram(member.displayName, { length: 1 });
+
+              return (
+                <div key={member.id} className="flex items-center gap-3 px-5 py-3.5">
+                  <div
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white"
+                    style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
+                  >
+                    {initial}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] font-medium text-ink">{member.displayName}</p>
+                    <p className="text-[10px] text-ink-body">{member.role}</p>
+                  </div>
+                  {isDone ? (
+                    <DashboardStatusChip label={isHu ? "Kitöltve" : "Done"} tone="sage" />
+                  ) : (
+                    <DashboardStatusChip label={isHu ? "Folyamatban" : "In progress"} tone="warm" />
+                  )}
+                  {isDone && member.top3Dims.length > 0 && (
+                    <div className="hidden items-center gap-1 sm:flex">
+                      {member.top3Dims.map((d) => (
+                        <span
+                          key={d.code}
+                          className="rounded-full px-1.5 py-0.5 text-[9px] font-semibold text-white"
+                          style={{ backgroundColor: d.color }}
+                        >
+                          {d.code} {d.value}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </DashboardPanel>
+        </section>
+      )}
+
+      {/* ═══ DYNAMICS ÖSSZEFOGLALÓ ═══ */}
+      {data.primaryTeamData && data.primaryTeamData.dynamicsEdges.length > 0 && (
+        <section>
+          <DashboardSectionHeader label={isHu ? "Csapatdinamika" : "Team dynamics"} className="mb-4" />
+          <div className="grid gap-3 sm:grid-cols-3">
+            <DashboardMetricCard
+              accent="var(--color-state-success-strong)"
+              title={isHu ? "Hasonló profil" : "Aligned"}
+              value={String(data.teams[0]?.alignedCount ?? 0)}
+              sub={isHu ? "Hasonló személyiségprofilú párok" : "Pairs with similar personality profiles"}
+            />
+            <DashboardMetricCard
+              accent="#d3cfc6"
+              title={isHu ? "Kiegészítő" : "Complementary"}
+              value={String(data.teams[0]?.complementaryCount ?? 0)}
+              sub={isHu ? "Eltérő de kezelhető profilok" : "Different but manageable profiles"}
+            />
+            <DashboardMetricCard
+              accent="#f59e0b"
+              title={isHu ? "Potenciális súrlódás" : "Potential friction"}
+              value={String(data.teams[0]?.frictionCount ?? 0)}
+              sub={isHu ? "Tudatos kommunikáció szükséges" : "Conscious communication needed"}
+            />
+          </div>
+          <div className="mt-3 flex justify-end">
+            <Link
+              href={`/team/${data.teams[0].teamId}?tab=intelligence`}
+              className="text-[12px] font-semibold text-sage transition-colors hover:text-sage-dark"
+            >
+              {isHu ? "Részletes dinamika térkép →" : "Detailed dynamics map →"}
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ JAVASOLT KÖVETKEZŐ LÉPÉS ═══ */}
+      <section>
+        <DashboardSectionHeader label={isHu ? "Javasolt következő lépés" : "Suggested next step"} className="mb-4" />
+        <JourneyNextStepCard
+          eyebrow={isHu ? "Csapatvezető teendő" : "Manager action"}
+          title={nextStep.title}
+          description={nextStep.description}
+          primary={nextStep.primary}
+          secondary={nextStep.secondary}
+        />
+      </section>
+    </PlatformPageShell>
+  );
+}
