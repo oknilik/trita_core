@@ -192,32 +192,6 @@ export default async function TeamDetailPage({
   const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
   if (!teamData) notFound();
 
-  const tabItems: Array<{ key: TeamTabKey; label: string; shortLabel?: string; badge?: number }> = [
-    {
-      key: "overview",
-      label: t("teamComp.tabOverview", locale),
-      shortLabel: isHu ? "Áttek." : "Overview",
-    },
-    {
-      key: "intelligence",
-      label: t("teamComp.tabIntelligence", locale),
-      shortLabel: t("teamComp.tabIntelligenceShort", locale),
-    },
-    {
-      key: "profile",
-      label: t("teamComp.tabProfile", locale),
-      shortLabel: isHu ? "Profil" : "Profile",
-      badge: teamData.completedCount > 0 ? teamData.completedCount : undefined,
-    },
-    {
-      key: "members",
-      label: t("teamComp.tabMembers", locale),
-      shortLabel: isHu ? "Tagok" : "Members",
-      badge: teamData.memberCount + teamData.pendingInvites.length,
-    },
-    { key: "belbin", label: "Belbin", shortLabel: "Belbin" },
-  ];
-
   const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => {
     const hexaco = m.scores
       ? {
@@ -245,83 +219,41 @@ export default async function TeamDetailPage({
     };
   });
 
-  const teamTabBaseClass =
-    "inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-medium leading-none whitespace-nowrap transition-colors";
-  const teamTabsNav = (
-    <nav className="mb-2" aria-label={isHu ? "Csapat nézetek" : "Team views"}>
-      <div className="md:hidden -mx-1 overflow-x-auto px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <div className="inline-flex min-w-max snap-x snap-mandatory gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)]">
-          {tabItems.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <Link
-                key={tab.key}
-                href={`/team/${teamId}?tab=${tab.key}`}
-                aria-current={isActive ? "page" : undefined}
-                className={[
-                  teamTabBaseClass,
-                  "min-w-[88px] shrink-0 snap-start",
-                  isActive
-                    ? "bg-ink text-white"
-                    : "text-ink-body hover:bg-cream hover:text-ink",
-                ].join(" ")}
-              >
-                <span>{tab.shortLabel ?? tab.label}</span>
-                {tab.badge ? (
-                  <span
-                    className={[
-                      "rounded-full px-1.5 py-0.5 text-[9px] font-semibold",
-                      isActive
-                        ? "bg-white/20 text-white"
-                        : "bg-warm-mid text-ink",
-                    ].join(" ")}
-                  >
-                    {tab.badge}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="hidden md:flex md:justify-center">
-        <div className="inline-flex min-w-max gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)]">
-          {tabItems.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <Link
-                key={tab.key}
-                href={`/team/${teamId}?tab=${tab.key}`}
-                aria-current={isActive ? "page" : undefined}
-                className={[
-                  teamTabBaseClass,
-                  "px-4 text-[13px]",
-                  isActive
-                    ? "bg-ink text-white"
-                    : "text-ink-body hover:bg-cream hover:text-ink",
-                ].join(" ")}
-              >
-                <span>{tab.label}</span>
-                {tab.badge ? (
-                  <span
-                    className={[
-                      "rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                      isActive
-                        ? "bg-white/20 text-white"
-                        : "bg-warm-mid text-ink",
-                    ].join(" ")}
-                  >
-                    {tab.badge}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </nav>
-  );
+  const backToOverviewLabel = isHu ? "Vissza a csapatkép áttekintéshez" : "Back to team overview";
+  const viewCards = [
+    {
+      key: "intelligence" as const,
+      title: t("teamComp.tabIntelligence", locale),
+      description: isHu
+        ? "Potenciál, típusok és csapatdinamika vizualizáció."
+        : "Potential, type and team-dynamics visual view.",
+      badge: undefined as number | undefined,
+    },
+    {
+      key: "profile" as const,
+      title: t("teamComp.tabProfile", locale),
+      description: isHu
+        ? "HEXACO heatmap és csapat-szintű személyiség-elemzés."
+        : "HEXACO heatmap and team-level personality analysis.",
+      badge: teamData.completedCount > 0 ? teamData.completedCount : undefined,
+    },
+    {
+      key: "members" as const,
+      title: t("teamComp.tabMembers", locale),
+      description: isHu
+        ? "Taglista, meghívók és kitöltési állapot."
+        : "Members, invites and completion status.",
+      badge: teamData.memberCount + teamData.pendingInvites.length,
+    },
+    {
+      key: "belbin" as const,
+      title: "Belbin",
+      description: isHu
+        ? "Belbin szerepek és csapaton belüli egyensúly."
+        : "Belbin roles and team-balance details.",
+      badge: undefined as number | undefined,
+    },
+  ];
 
   // ── Profile tab: heatmap + insights ──────────────────────────────────────
   if (activeTab === "profile") {
@@ -330,7 +262,15 @@ export default async function TeamDetailPage({
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        {teamTabsNav}
+        <Link
+          href={`/team/${teamId}?tab=overview`}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {backToOverviewLabel}
+        </Link>
         <TeamProfileTab
           heatmapRows={teamData.heatmapRows}
           dimConfigs={teamData.dimConfigs}
@@ -364,7 +304,15 @@ export default async function TeamDetailPage({
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        {teamTabsNav}
+        <Link
+          href={`/team/${teamId}?tab=overview`}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {backToOverviewLabel}
+        </Link>
         <TeamMembersTab
           members={membersForTab}
           pendingInvites={pendingForTab}
@@ -387,7 +335,15 @@ export default async function TeamDetailPage({
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        {teamTabsNav}
+        <Link
+          href={`/team/${teamId}?tab=overview`}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {backToOverviewLabel}
+        </Link>
         <TeamIntelligence
           members={intelligenceMembers}
           edges={[]}
@@ -404,7 +360,15 @@ export default async function TeamDetailPage({
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        {teamTabsNav}
+        <Link
+          href={`/team/${teamId}?tab=overview`}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {backToOverviewLabel}
+        </Link>
         <TeamBelbinSection members={teamData.members} isHu={isHu} />
       </PlatformPageShell>
     );
@@ -564,7 +528,6 @@ export default async function TeamDetailPage({
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-        {teamTabsNav}
         {/* ═══ HERO ═══ */}
         <SurfaceHero
           variant="team"
@@ -694,6 +657,42 @@ export default async function TeamDetailPage({
             locale={locale}
           />
         ) : null}
+
+        <section>
+          <DashboardSectionHeader
+            label={isHu ? "Nézetek" : "Views"}
+            className="mb-4"
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {viewCards.map((card) => (
+              <Link
+                key={card.key}
+                href={`/team/${teamId}?tab=${card.key}`}
+                className="group rounded-[18px] border border-sand bg-white p-4 shadow-[0_10px_28px_rgba(26,26,46,0.04)] transition-colors hover:border-bronze/35 hover:bg-cream"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-dm-sans text-[14px] font-semibold text-ink">
+                    {card.title}
+                  </p>
+                  {card.badge ? (
+                    <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
+                      {card.badge}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
+                  {card.description}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-sage transition-colors group-hover:text-sage-dark">
+                  {isHu ? "Nézet megnyitása" : "Open view"}
+                  <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 2l4 4-4 4" />
+                  </svg>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
