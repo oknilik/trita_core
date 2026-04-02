@@ -269,6 +269,12 @@ export default async function TeamDetailPage({
         : "Role fit is a personality-based estimate.",
     },
   };
+  const intelligenceQualityLabel =
+    mapQuality === "sufficient"
+      ? isHu ? "elegendő adat" : "sufficient data"
+      : mapQuality === "partial"
+        ? isHu ? "részleges adat" : "partial data"
+        : isHu ? "nincs adat" : "no data";
   const backToOverviewLabel = isHu ? "Vissza a csapatkép áttekintéshez" : "Back to team overview";
   const supportingViews = [
     {
@@ -386,6 +392,33 @@ export default async function TeamDetailPage({
           </svg>
           {backToOverviewLabel}
         </Link>
+        <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+            {t("teamComp.tabIntelligence", locale)}
+          </p>
+          <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
+            {isHu ? "Csapatintelligencia nézet" : "Team intelligence view"}
+          </h1>
+          <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-body">
+            {isHu
+              ? "A csapattérkép és szerepilleszkedés egy helyen, adatminőség-jelzéssel és magyarázható becslésekkel."
+              : "Team map and role-fit in one place, with data-quality indicators and explainable estimates."}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+              {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+              <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
+            </span>
+            <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+              {isHu ? "Adatállapot" : "Data status"}:{" "}
+              <span className="font-semibold text-ink">{intelligenceQualityLabel}</span>
+            </span>
+            <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+              {isHu ? "Dinamika nézet" : "Dynamics view"}:{" "}
+              <span className="font-semibold text-ink">{isHu ? "hamarosan" : "coming soon"}</span>
+            </span>
+          </div>
+        </section>
         <TeamIntelligence
           members={intelligenceMembers}
           edges={[]}
@@ -749,18 +782,40 @@ export default async function TeamDetailPage({
             label={t("teamComp.tabIntelligence", locale)}
             className="mb-4"
           />
-          <p className="mb-4 text-[12px] leading-relaxed text-ink-body">
-            {isHu
-              ? "A csapatintelligencia nézetek az állapotkép alatt, egy helyen jelennek meg."
-              : "Team intelligence views are grouped here under the status snapshot."}
-          </p>
-          <TeamIntelligence
-            members={intelligenceMembers}
-            edges={[]}
-            evidenceBySub={intelligenceEvidenceBySub}
-            presentation="blocks"
-            isHu={isHu}
-          />
+          <Link
+            href={`/team/${teamId}?tab=intelligence`}
+            className="group block rounded-[22px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] transition-all hover:-translate-y-0.5 hover:border-bronze/40 hover:shadow-[0_18px_36px_rgba(26,26,46,0.09)] md:p-6"
+          >
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div className="max-w-2xl">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                  {isHu ? "Külön nézet" : "Dedicated view"}
+                </p>
+                <h3 className="mt-1 font-fraunces text-[26px] leading-tight text-ink md:text-[31px]">
+                  {t("teamComp.tabIntelligence", locale)}
+                </h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-ink-body">
+                  {isHu
+                    ? "Potenciál- és szerepilleszkedési térkép egy oldalon, adatminőség-jelzéssel. A nézetet külön oldalon nyithatod meg, hogy fókuszáltan elemezhető legyen."
+                    : "Potential and role-fit maps in one dedicated view with data-quality markers. Open separately for focused analysis."}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+                    {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+                    <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
+                  </span>
+                  <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+                    {isHu ? "Adatállapot" : "Data status"}:{" "}
+                    <span className="font-semibold text-ink">{intelligenceQualityLabel}</span>
+                  </span>
+                </div>
+              </div>
+              <span className="inline-flex min-h-[44px] items-center justify-center rounded-[12px] bg-ink px-5 py-2 text-[12px] font-semibold text-white transition-colors group-hover:bg-ink/90">
+                {isHu ? "Csapatintelligencia megnyitása" : "Open team intelligence"}
+              </span>
+            </div>
+          </Link>
+
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {supportingViews.map((card) => (
               <Link

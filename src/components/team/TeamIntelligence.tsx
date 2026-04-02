@@ -102,22 +102,26 @@ interface EvidenceSummaryProps {
 
 function EvidenceSummary({ evidence, loc }: EvidenceSummaryProps) {
   return (
-    <div className="rounded-xl border border-sand bg-white px-3 py-2.5">
+    <div className="rounded-xl border border-sand bg-cream/65 px-3 py-2.5">
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
         {t("teamComp.evidenceEyebrow", loc)}
       </p>
-      <p className="mt-1 text-[12px] text-ink-body">
-        {t("teamComp.evidenceSource", loc)}:{" "}
-        <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
-        {" · "}
-        {t("teamComp.evidenceQuality", loc)}:{" "}
-        <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
-        {" · "}
-        {t("teamComp.evidenceConfidence", loc)}:{" "}
-        <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
-      </p>
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
+        <span className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body">
+          {t("teamComp.evidenceSource", loc)}:{" "}
+          <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
+        </span>
+        <span className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body">
+          {t("teamComp.evidenceQuality", loc)}:{" "}
+          <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
+        </span>
+        <span className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body">
+          {t("teamComp.evidenceConfidence", loc)}:{" "}
+          <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
+        </span>
+      </div>
       {evidence.note ? (
-        <p className="mt-1 text-[11px] text-muted">{evidence.note}</p>
+        <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{evidence.note}</p>
       ) : null}
     </div>
   );
@@ -141,39 +145,48 @@ export function TeamIntelligence({
 
   if (presentation === "blocks") {
     return (
-      <div className="flex flex-col gap-5 pt-2">
+      <div className="flex flex-col gap-6 pt-2">
         {edges.length === 0 ? (
-          <p className="rounded-xl border border-warm-mid bg-cream px-3 py-2 text-[12px] text-ink-body">
+          <p className="rounded-xl border border-warm-mid bg-cream px-3 py-2.5 text-[12px] text-ink-body">
             {t("teamComp.dynamicsHiddenHint", loc)}
           </p>
         ) : null}
 
-        <section className="rounded-2xl border border-sand bg-white p-4 md:p-5">
-          <div className="mb-3">
+        <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <p className="font-dm-sans text-[14px] font-semibold text-ink">
               {t("teamComp.subMap", loc)}
             </p>
+            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+              {loc === "hu" ? "fókusz: potenciál" : "focus: potential"}
+            </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.map} loc={loc} />
           <TeamMap members={members} isHu={isHu} />
         </section>
 
-        <section className="rounded-2xl border border-sand bg-white p-4 md:p-5">
-          <div className="mb-3">
+        <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <p className="font-dm-sans text-[14px] font-semibold text-ink">
               {t("teamComp.subRoles", loc)}
             </p>
+            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+              {loc === "hu" ? "fókusz: illeszkedés" : "focus: fit"}
+            </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
           <RoleFitMap members={members} isHu={isHu} />
         </section>
 
         {edges.length > 0 ? (
-          <section className="rounded-2xl border border-sand bg-white p-4 md:p-5">
-            <div className="mb-3">
+          <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+            <div className="mb-3 flex items-center justify-between gap-3">
               <p className="font-dm-sans text-[14px] font-semibold text-ink">
                 {t("teamComp.subDynamics", loc)}
               </p>
+              <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+                {loc === "hu" ? "fókusz: kapcsolatok" : "focus: dynamics"}
+              </span>
             </div>
             <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
             <DynamicsMap members={members} edges={edges} isHu={isHu} />
