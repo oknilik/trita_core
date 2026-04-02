@@ -103,28 +103,21 @@ function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext)
     ];
   }
 
-  const primaryTeam = getPrimaryTeam(ctx.teams);
-  if (!primaryTeam) return [];
+  if (ctx.teams.length === 0) return [];
 
   return [
     {
-      id: "team-profile",
-      label: "Csapatkép",
-      description: "Csapatkép és fő riport",
-      href: `/team/${primaryTeam.id}?tab=profile`,
+      id: "team-overview",
+      label: "Csapataim",
+      description: "Összes csapat és aktuális állapot",
+      href: "/team",
     },
-    {
-      id: "team-members",
-      label: "Tagok",
-      description: "Taglista és szerepkörök",
-      href: `/team/${primaryTeam.id}?tab=members`,
-    },
-    {
-      id: "team-invites",
-      label: "Meghívások",
-      description: "Nyitott meghívások kezelése",
-      href: `/team/${primaryTeam.id}?tab=members`,
-    },
+    ...ctx.teams.map((team) => ({
+      id: `team-${team.id}`,
+      label: team.name,
+      description: "Csapatkép, tagok és meghívások",
+      href: `/team/${team.id}`,
+    })),
     ...(ctx.org
       ? [{
           id: "team-observer-rounds",
@@ -277,27 +270,22 @@ function buildAnalyticsDestinations(
     return items;
   }
 
-  if (!primaryTeam || !canViewAnalyticsFeature(role, "reports")) return [];
+  if (!canViewAnalyticsFeature(role, "reports")) return [];
+  if (ctx.teams.length === 0) return [];
 
   return [
     {
-      id: "analytics-team-report",
-      label: "Csapatriport",
-      description: "A csapatkép fő riportja",
-      href: `/team/${primaryTeam.id}?tab=profile`,
+      id: "analytics-team-reports-overview",
+      label: "Csapatriportok",
+      description: "Válassz csapatot a részletes riporthoz",
+      href: "/team",
     },
-    {
-      id: "analytics-comparison",
-      label: "Összevetés",
-      description: "Mintázatok és eltérések",
-      href: `/team/${primaryTeam.id}?tab=profile`,
-    },
-    {
-      id: "analytics-export",
-      label: "Export",
-      description: "Riport export és megosztás",
-      href: `/team/${primaryTeam.id}?tab=profile`,
-    },
+    ...ctx.teams.map((team) => ({
+      id: `analytics-team-${team.id}`,
+      label: team.name,
+      description: "Csapatriport és összevetés",
+      href: `/team/${team.id}?tab=profile`,
+    })),
   ];
 }
 
@@ -333,7 +321,7 @@ export function buildWorkspaceNavigation(
     "teams",
     teamLabel,
     teamItems[0]?.href ?? (ctx.teams[0] ? `/team/${ctx.teams[0].id}` : ctx.homeHref),
-    uniqueMatchPrefixes(...ctx.teams.map((team) => `/team/${team.id}`)),
+    uniqueMatchPrefixes("/team", ...ctx.teams.map((team) => `/team/${team.id}`)),
     teamItems,
   );
 

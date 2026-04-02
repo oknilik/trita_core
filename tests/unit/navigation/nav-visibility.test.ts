@@ -16,6 +16,14 @@ const baseContext = {
   activeCampaignCount: 2,
 } as const;
 
+const multiTeamContext = {
+  ...baseContext,
+  teams: [
+    { id: "team_1", name: "Alpha Team" },
+    { id: "team_2", name: "Beta Team" },
+  ],
+} as const;
+
 test("admin topnav contains the full IA menu", () => {
   const navItems = buildWorkspaceNavigation("org_admin", baseContext);
   const ids = navItems.map((item) => item.id);
@@ -29,6 +37,32 @@ test("manager topnav omits admin-only organization menu", () => {
 
   assert.deepEqual(ids, ["home", "teams", "hiring", "analytics"]);
   assert.equal(ids.includes("org"), false);
+});
+
+test("manager teams dropdown lists all accessible teams (member or manager)", () => {
+  const navItems = buildWorkspaceNavigation("org_manager", multiTeamContext);
+  const teamsItem = navItems.find((item) => item.id === "teams");
+
+  assert.ok(teamsItem);
+  assert.equal(teamsItem.kind, "dropdown");
+  assert.equal(teamsItem.primaryHref, "/team");
+
+  const childLabels = teamsItem.items?.map((item) => item.label) ?? [];
+  assert.deepEqual(childLabels, ["Csapataim", "Alpha Team", "Beta Team", "Observer körök"]);
+});
+
+test("manager analytics dropdown includes report entry for each accessible team", () => {
+  const navItems = buildWorkspaceNavigation("org_manager", multiTeamContext);
+  const analyticsItem = navItems.find((item) => item.id === "analytics");
+
+  assert.ok(analyticsItem);
+  assert.equal(analyticsItem.kind, "dropdown");
+
+  const childLabels = analyticsItem.items?.map((item) => item.label) ?? [];
+  assert.deepEqual(childLabels, ["Csapatriportok", "Alpha Team", "Beta Team"]);
+
+  const childHrefs = analyticsItem.items?.map((item) => item.href) ?? [];
+  assert.deepEqual(childHrefs, ["/team", "/team/team_1?tab=profile", "/team/team_2?tab=profile"]);
 });
 
 test("manager cannot see admin-only org features in visibility model", () => {
