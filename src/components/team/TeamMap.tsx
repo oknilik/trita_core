@@ -60,10 +60,6 @@ function estimateFromHexaco(hexaco: Hexaco): { skillLevel: 1 | 2 | 3; growthPote
   return { skillLevel, growthPotential };
 }
 
-function hasRealScores(hexaco: Hexaco): boolean {
-  return Object.values(hexaco).some((v) => v !== 50);
-}
-
 interface PlacedMember extends IntelligenceMember {
   skillLevel: 1 | 2 | 3;
   growthPotential: 1 | 2 | 3;
@@ -176,12 +172,12 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const [selected, setSelected] = useState<string | null>(null);
 
-  const placedMembers: PlacedMember[] = members.map((m) => {
-    if (hasRealScores(m.hexaco)) {
-      const { skillLevel, growthPotential } = estimateFromHexaco(m.hexaco);
-      return { ...m, skillLevel, growthPotential, isEstimated: true };
-    }
-    return { ...m, isEstimated: false };
+  const membersWithData = members.filter((m) => m.hasAssessmentData);
+  const membersWithoutData = members.filter((m) => !m.hasAssessmentData);
+  const placedMembers: PlacedMember[] = membersWithData.map((m) => {
+    const { skillLevel, growthPotential } = estimateFromHexaco(m.hexaco);
+    const zone = ZONE_LABELS[`${growthPotential}_${skillLevel}`] ?? m.zone;
+    return { ...m, skillLevel, growthPotential, zone, isEstimated: true };
   });
 
   const hasEstimated = placedMembers.some((m) => m.isEstimated);
@@ -322,6 +318,31 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
           </p>
         </div>
       )}
+
+      {membersWithoutData.length > 0 ? (
+        <div className="rounded-xl border border-sand bg-white p-3">
+          <p className="text-[12px] font-medium text-ink">
+            {t("teamComp.membersWithoutAssessment", loc)}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {membersWithoutData.map((m) => (
+              <span
+                key={m.id}
+                className="inline-flex items-center gap-1.5 rounded-full border border-sand bg-cream px-2 py-1 text-[11px] text-ink-body"
+                title={m.name}
+              >
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-semibold"
+                  style={{ background: m.color, color: m.textColor }}
+                >
+                  {m.initials}
+                </span>
+                <span>{m.name}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

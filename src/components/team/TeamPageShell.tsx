@@ -123,6 +123,7 @@ export function TeamPageShell({
       name,
       initials,
       hexaco,
+      hasAssessmentData: !!m.scores,
       skillLevel: 2,
       growthPotential: 2,
       zone: !m.scores ? t("teamComp.noDataZone", loc) : zoneName,

@@ -32,7 +32,10 @@ import {
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
-import type { IntelligenceMember } from "@/components/team/TeamIntelligence";
+import type {
+  IntelligenceMember,
+  TeamIntelligenceEvidence,
+} from "@/components/team/TeamIntelligence";
 import { TeamBelbinSection } from "@/components/team/TeamBelbinSection";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 
@@ -75,6 +78,23 @@ const ZONE_NAMES_HU: Record<string, string> = {
 function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3, isHu: boolean): string {
   const names = isHu ? ZONE_NAMES_HU : ZONE_NAMES_EN;
   return names[`${potential}_${skill}`] ?? (isHu ? "Megbízható tag" : "Solid contributor");
+}
+
+function resolveEvidenceQuality(
+  assessedCount: number,
+  totalCount: number,
+): TeamIntelligenceEvidence["quality"] {
+  if (assessedCount === 0 || totalCount === 0) return "none";
+  if (assessedCount < 3) return "partial";
+  return "sufficient";
+}
+
+function resolveEvidenceConfidence(
+  quality: TeamIntelligenceEvidence["quality"],
+): TeamIntelligenceEvidence["confidence"] {
+  if (quality === "sufficient") return "high";
+  if (quality === "partial") return "medium";
+  return "low";
 }
 
 function isTeamTab(tab: string | undefined): tab is TeamTabKey {
@@ -209,6 +229,7 @@ export default async function TeamDetailPage({
       name: m.displayName,
       initials: getAvatarMonogram(m.displayName, { length: 2 }),
       hexaco,
+      hasAssessmentData: !!m.scores,
       skillLevel: 2,
       growthPotential: 2,
       zone: !m.scores
@@ -218,6 +239,36 @@ export default async function TeamDetailPage({
       textColor: "var(--color-neutral-white)",
     };
   });
+  const assessedCount = intelligenceMembers.filter((m) => m.hasAssessmentData).length;
+  const totalCount = intelligenceMembers.length;
+  const mapQuality = resolveEvidenceQuality(assessedCount, totalCount);
+  const roleQuality = resolveEvidenceQuality(assessedCount, totalCount);
+  const intelligenceEvidenceBySub: Record<"map" | "dynamics" | "roles", TeamIntelligenceEvidence> = {
+    map: {
+      source: "self",
+      quality: mapQuality,
+      confidence: resolveEvidenceConfidence(mapQuality),
+      note: isHu
+        ? "A pozíciók HEXACO self-assessmentből számolt becslések."
+        : "Positions are estimated from HEXACO self-assessment data.",
+    },
+    dynamics: {
+      source: "self_plus_observer",
+      quality: "none",
+      confidence: "low",
+      note: isHu
+        ? "A kapcsolati nézethez observer vagy peer-kapcsolati adat szükséges."
+        : "Relationship view requires observer or peer-connection data.",
+    },
+    roles: {
+      source: "inferred",
+      quality: roleQuality,
+      confidence: roleQuality === "sufficient" ? "medium" : "low",
+      note: isHu
+        ? "A csapatszerep illeszkedés személyiség-alapú becslés."
+        : "Role fit is a personality-based estimate.",
+    },
+  };
 
   const backToOverviewLabel = isHu ? "Vissza a csapatkép áttekintéshez" : "Back to team overview";
   const viewCards = [
@@ -347,6 +398,7 @@ export default async function TeamDetailPage({
         <TeamIntelligence
           members={intelligenceMembers}
           edges={[]}
+          evidenceBySub={intelligenceEvidenceBySub}
           isHu={isHu}
         />
       </PlatformPageShell>

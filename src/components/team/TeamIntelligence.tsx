@@ -14,6 +14,7 @@ export interface IntelligenceMember {
   name: string;
   initials: string;
   hexaco: { H: number; E: number; X: number; A: number; C: number; O: number };
+  hasAssessmentData: boolean;
   skillLevel: 1 | 2 | 3;
   growthPotential: 1 | 2 | 3;
   zone: string;
@@ -27,9 +28,17 @@ export interface DynamicsEdge {
   type: "good" | "neutral" | "tension";
 }
 
+export interface TeamIntelligenceEvidence {
+  source: "self" | "self_plus_observer" | "inferred";
+  quality: "none" | "partial" | "sufficient";
+  confidence: "low" | "medium" | "high";
+  note?: string;
+}
+
 interface TeamIntelligenceProps {
   members: IntelligenceMember[];
   edges: DynamicsEdge[];
+  evidenceBySub?: Partial<Record<SubTab, TeamIntelligenceEvidence>>;
   isHu?: boolean;
 }
 
@@ -39,22 +48,73 @@ const SUB_KEYS: Record<SubTab, string> = {
   roles: "teamComp.subRoles",
 };
 
-export function TeamIntelligence({ members, edges, isHu = true }: TeamIntelligenceProps) {
+const SOURCE_KEY: Record<TeamIntelligenceEvidence["source"], string> = {
+  self: "teamComp.evidenceSourceSelf",
+  self_plus_observer: "teamComp.evidenceSourceSelfObserver",
+  inferred: "teamComp.evidenceSourceInferred",
+};
+
+const QUALITY_KEY: Record<TeamIntelligenceEvidence["quality"], string> = {
+  none: "teamComp.evidenceQualityNone",
+  partial: "teamComp.evidenceQualityPartial",
+  sufficient: "teamComp.evidenceQualitySufficient",
+};
+
+const CONFIDENCE_KEY: Record<TeamIntelligenceEvidence["confidence"], string> = {
+  low: "teamComp.evidenceConfidenceLow",
+  medium: "teamComp.evidenceConfidenceMedium",
+  high: "teamComp.evidenceConfidenceHigh",
+};
+
+const DEFAULT_EVIDENCE: Record<SubTab, TeamIntelligenceEvidence> = {
+  map: {
+    source: "self",
+    quality: "partial",
+    confidence: "medium",
+  },
+  dynamics: {
+    source: "self_plus_observer",
+    quality: "none",
+    confidence: "low",
+  },
+  roles: {
+    source: "inferred",
+    quality: "partial",
+    confidence: "low",
+  },
+};
+
+function mergeEvidence(
+  custom: Partial<Record<SubTab, TeamIntelligenceEvidence>> | undefined,
+): Record<SubTab, TeamIntelligenceEvidence> {
+  return {
+    map: custom?.map ?? DEFAULT_EVIDENCE.map,
+    dynamics: custom?.dynamics ?? DEFAULT_EVIDENCE.dynamics,
+    roles: custom?.roles ?? DEFAULT_EVIDENCE.roles,
+  };
+}
+
+export function TeamIntelligence({ members, edges, evidenceBySub, isHu = true }: TeamIntelligenceProps) {
   const [sub, setSub] = useState<SubTab>("map");
   const loc: Locale = isHu ? "hu" : "en";
+  const availableTabs: SubTab[] = edges.length > 0
+    ? ["map", "dynamics", "roles"]
+    : ["map", "roles"];
+  const activeSub: SubTab = availableTabs.includes(sub) ? sub : "map";
+  const evidence = mergeEvidence(evidenceBySub)[activeSub];
 
   return (
     <div className="pt-6">
       {/* Al-tab navigáció */}
       <div className="mb-5 flex gap-2">
-        {(["map", "dynamics", "roles"] as SubTab[]).map((tab) => (
+        {availableTabs.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setSub(tab)}
             className={[
               "rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors",
-              sub === tab
+              activeSub === tab
                 ? "bg-ink text-white"
                 : "bg-warm-mid text-ink-body hover:bg-sand",
             ].join(" ")}
@@ -64,9 +124,34 @@ export function TeamIntelligence({ members, edges, isHu = true }: TeamIntelligen
         ))}
       </div>
 
-      {sub === "map" && <TeamMap members={members} isHu={isHu} />}
-      {sub === "dynamics" && <DynamicsMap members={members} edges={edges} isHu={isHu} />}
-      {sub === "roles" && <RoleFitMap members={members} isHu={isHu} />}
+      {edges.length === 0 ? (
+        <p className="mb-4 rounded-xl border border-warm-mid bg-cream px-3 py-2 text-[12px] text-ink-body">
+          {t("teamComp.dynamicsHiddenHint", loc)}
+        </p>
+      ) : null}
+
+      <div className="mb-4 rounded-xl border border-sand bg-white px-3 py-2.5">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+          {t("teamComp.evidenceEyebrow", loc)}
+        </p>
+        <p className="mt-1 text-[12px] text-ink-body">
+          {t("teamComp.evidenceSource", loc)}:{" "}
+          <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
+          {" · "}
+          {t("teamComp.evidenceQuality", loc)}:{" "}
+          <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
+          {" · "}
+          {t("teamComp.evidenceConfidence", loc)}:{" "}
+          <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
+        </p>
+        {evidence.note ? (
+          <p className="mt-1 text-[11px] text-muted">{evidence.note}</p>
+        ) : null}
+      </div>
+
+      {activeSub === "map" && <TeamMap members={members} isHu={isHu} />}
+      {activeSub === "dynamics" && <DynamicsMap members={members} edges={edges} isHu={isHu} />}
+      {activeSub === "roles" && <RoleFitMap members={members} isHu={isHu} />}
     </div>
   );
 }

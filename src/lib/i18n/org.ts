@@ -1351,6 +1351,10 @@ export const orgTranslations = {
     // TeamMap
     clickAvatar: { hu: "Kattints egy avatárra", en: "Click on an avatar" },
     clickAvatarDesc: { hu: "a részletes profil megtekintéséhez", en: "to view detailed profile" },
+    membersWithoutAssessment: {
+      hu: "Assessment nélküli tagok (nem kerülnek a térképre):",
+      en: "Members without assessment data (excluded from the map):",
+    },
     estimationNote: {
       hu: "Az átlátszó avatárok pozíciója személyiségadatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.",
       en: "Transparent avatars are positioned based on personality data (C → skill level, (O+X)/2 → potential). Final placement can be manually adjusted by the team leader.",
@@ -1369,6 +1373,10 @@ export const orgTranslations = {
       hu: "Indíts szakmai visszajelzési kört a dynamics map feltöltéséhez",
       en: "Run a peer feedback round to populate the dynamics map",
     },
+    dynamicsHiddenHint: {
+      hu: "A kapcsolati dinamika nézet csak akkor jelenik meg, ha van observer vagy peer kapcsolat-adat.",
+      en: "The dynamics view is available only when observer or peer relationship data exists.",
+    },
     connectionsEyebrow: { hu: "// kapcsolatok", en: "// connections" },
     edgeGood: { hu: "jó együttmű.", en: "good collab." },
     edgeTension: { hu: "feszültség", en: "tension" },
@@ -1383,6 +1391,11 @@ export const orgTranslations = {
 
     // RoleFitMap
     dominantDimsEyebrow: { hu: "// domináns dimenziók", en: "// dominant dimensions" },
+    noRoleFitDataTitle: { hu: "Még nincs elegendő adat", en: "Not enough data yet" },
+    noRoleFitDataDesc: {
+      hu: "A szerepilleszkedéshez legalább egy kitöltött assessment szükséges.",
+      en: "Role fit requires at least one completed assessment.",
+    },
     missingRoleLabel: { hu: "Hiányzó szerep:", en: "Missing role:" },
     missingRoleTag: { hu: "⚠ hiányzik", en: "⚠ missing" },
     clickPersonRole: { hu: "Kattints egy személyre", en: "Click on a person" },
@@ -1400,6 +1413,19 @@ export const orgTranslations = {
     subMap: { hu: "① Csapattérkép", en: "① Team Map" },
     subDynamics: { hu: "② Dinamika", en: "② Dynamics Map" },
     subRoles: { hu: "③ Szerep illeszkedés", en: "③ Role Fit" },
+    evidenceEyebrow: { hu: "adatminőség", en: "data quality" },
+    evidenceSource: { hu: "Forrás", en: "Source" },
+    evidenceQuality: { hu: "Minőség", en: "Quality" },
+    evidenceConfidence: { hu: "Biztonság", en: "Confidence" },
+    evidenceSourceSelf: { hu: "Self assessment", en: "Self assessment" },
+    evidenceSourceSelfObserver: { hu: "Self + observer", en: "Self + observer" },
+    evidenceSourceInferred: { hu: "Becsült modell", en: "Inferred model" },
+    evidenceQualityNone: { hu: "nincs", en: "none" },
+    evidenceQualityPartial: { hu: "részleges", en: "partial" },
+    evidenceQualitySufficient: { hu: "elegendő", en: "sufficient" },
+    evidenceConfidenceLow: { hu: "alacsony", en: "low" },
+    evidenceConfidenceMedium: { hu: "közepes", en: "medium" },
+    evidenceConfidenceHigh: { hu: "magas", en: "high" },
   },
 
   // ── Team pages (/team, /team/[id]) ──────────────────────────────────────

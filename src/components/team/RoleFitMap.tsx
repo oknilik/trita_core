@@ -114,9 +114,11 @@ interface RoleFitMapProps {
 export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const loc: Locale = isHu ? "hu" : "en";
+  const membersWithData = members.filter((m) => m.hasAssessmentData);
+  const membersWithoutData = members.filter((m) => !m.hasAssessmentData);
 
   const zoneMembers: Record<string, IntelligenceMember[]> = {};
-  members.forEach((m) => {
+  membersWithData.forEach((m) => {
     const zoneId = getZoneForMember(m.hexaco);
     if (!zoneMembers[zoneId]) zoneMembers[zoneId] = [];
     zoneMembers[zoneId].push(m);
@@ -126,13 +128,34 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
     (z) => !z.missing && (!zoneMembers[z.id] || zoneMembers[z.id].length === 0)
   );
 
-  const selectedMember = members.find((m) => m.id === selected);
+  const selectedMember = membersWithData.find((m) => m.id === selected);
   const selectedZone = selectedMember
     ? ROLE_ZONES.find((z) => z.id === getZoneForMember(selectedMember.hexaco))
     : null;
 
+  if (membersWithData.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-sand bg-[#f8f7f4] p-10 text-center">
+        <p className="text-[14px] font-semibold text-ink">
+          {t("teamComp.noRoleFitDataTitle", loc)}
+        </p>
+        <p className="mt-1 text-[12px] text-muted">
+          {t("teamComp.noRoleFitDataDesc", loc)}
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4 md:flex-row">
+    <div className="flex flex-col gap-4">
+      {membersWithoutData.length > 0 ? (
+        <div className="rounded-xl border border-sand bg-white px-3 py-2 text-[12px] text-ink-body">
+          {t("teamComp.membersWithoutAssessment", loc)}:{" "}
+          <span className="font-semibold text-ink">{membersWithoutData.length}</span>
+        </div>
+      ) : null}
+
+      <div className="flex flex-col gap-4 md:flex-row">
       <div className="flex-1">
         <svg
           viewBox="0 0 430 340"
@@ -249,6 +272,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }
