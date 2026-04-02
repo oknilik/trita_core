@@ -17,7 +17,13 @@ export interface TeamIntelligenceEvidence {
 export type TeamIntelligenceEvidenceBySub = Record<TeamIntelligenceSubTab, TeamIntelligenceEvidence>;
 
 export interface TeamIntelligencePriority {
-  id: "missing_assessments" | "missing_observer_round" | "role_coverage_gap" | "cohesion_risk";
+  id:
+    | "missing_assessments"
+    | "missing_observer_round"
+    | "role_coverage_gap"
+    | "cohesion_risk"
+    | "dimension_spread"
+    | "leader_team_mismatch";
   tone: "sage" | "amber" | "violet" | "rose";
   title: string;
   reason: string;
@@ -61,6 +67,16 @@ function stdDev(values: number[]): number {
   const avg = mean(values);
   const variance = mean(values.map((value) => (value - avg) ** 2));
   return Math.sqrt(variance);
+}
+
+function isLikelyLeaderRole(role: string): boolean {
+  const normalized = role.trim().toLowerCase();
+  return (
+    normalized.includes("manager") ||
+    normalized.includes("lead") ||
+    normalized.includes("owner") ||
+    normalized.includes("admin")
+  );
 }
 
 export function resolveTeamIntelligenceQuality(
@@ -238,6 +254,80 @@ export function buildTeamIntelligencePriorities({
         ctaLabel: tr(locale, "Személyiségprofil megnyitása", "Open personality profile"),
         ctaHref: `/team/${teamId}?tab=profile`,
       });
+    }
+
+    const dimensions = ["H", "E", "X", "A", "C", "O"] as const;
+    const maxSpread = dimensions.reduce(
+      (best, dim) => {
+        const values = membersWithScores
+          .map((member) => member.scores?.[dim])
+          .filter((value): value is number => typeof value === "number");
+        if (values.length < 2) return best;
+        const currentMin = Math.min(...values);
+        const currentMax = Math.max(...values);
+        const currentRange = currentMax - currentMin;
+        if (currentRange > best.range) {
+          return { dim, range: currentRange };
+        }
+        return best;
+      },
+      { dim: "X" as (typeof dimensions)[number], range: 0 },
+    );
+
+    if (maxSpread.range >= 32) {
+      priorities.push({
+        id: "dimension_spread",
+        tone: "rose",
+        title: tr(locale, "Magas dimenzió-szórás", "High dimension spread"),
+        reason: tr(
+          locale,
+          `A(z) ${maxSpread.dim} tengelyen szélsőséges a szórás (${Math.round(maxSpread.range)} pont), ami együttműködési feszültséget jelezhet.`,
+          `${maxSpread.dim} shows a wide spread (${Math.round(maxSpread.range)} points), which may create collaboration friction.`,
+        ),
+        ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
+        ctaHref: `/team/${teamId}?tab=profile`,
+      });
+    }
+
+    const leaderWithScores = membersWithScores.find((member) =>
+      isLikelyLeaderRole(member.role),
+    );
+    if (leaderWithScores) {
+      const teamAverageH = mean(
+        membersWithScores
+          .map((member) => member.scores?.H)
+          .filter((value): value is number => typeof value === "number"),
+      );
+      const teamAverageA = mean(
+        membersWithScores
+          .map((member) => member.scores?.A)
+          .filter((value): value is number => typeof value === "number"),
+      );
+      const leaderDeltaH = Math.abs((leaderWithScores.scores?.H ?? teamAverageH) - teamAverageH);
+      const leaderDeltaA = Math.abs((leaderWithScores.scores?.A ?? teamAverageA) - teamAverageA);
+
+      if (leaderDeltaH >= 18 || leaderDeltaA >= 18) {
+        priorities.push({
+          id: "leader_team_mismatch",
+          tone: "amber",
+          title: tr(
+            locale,
+            "Vezető-csapat értékrend eltérés",
+            "Leader-team value mismatch",
+          ),
+          reason: tr(
+            locale,
+            `A vezető H/A profilja szignifikánsan eltér a csapatátlagtól (ΔH: ${Math.round(
+              leaderDeltaH,
+            )}, ΔA: ${Math.round(leaderDeltaA)}).`,
+            `Leader H/A profile deviates from team average (ΔH: ${Math.round(
+              leaderDeltaH,
+            )}, ΔA: ${Math.round(leaderDeltaA)}).`,
+          ),
+          ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
+          ctaHref: `/team/${teamId}?tab=belbin`,
+        });
+      }
     }
   }
 
