@@ -17,6 +17,19 @@ import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
+function formatTimeAgo(date: Date, isHu: boolean): string {
+  const now = Date.now();
+  const diffMs = now - date.getTime();
+  const diffMin = Math.floor(diffMs / 60_000);
+  if (diffMin < 1) return isHu ? "éppen most" : "just now";
+  if (diffMin < 60) return isHu ? `${diffMin} perce` : `${diffMin}m ago`;
+  const diffH = Math.floor(diffMin / 60);
+  if (diffH < 24) return isHu ? `${diffH} órája` : `${diffH}h ago`;
+  const diffD = Math.floor(diffH / 24);
+  if (diffD < 30) return isHu ? `${diffD} napja` : `${diffD}d ago`;
+  return date.toLocaleDateString(isHu ? "hu-HU" : "en-US", { month: "short", day: "numeric" });
+}
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -342,6 +355,41 @@ export default async function ManagerCockpitPage() {
               {isHu ? "Részletes dinamika térkép →" : "Detailed dynamics map →"}
             </Link>
           </div>
+        </section>
+      )}
+
+      {/* ═══ UTOLSÓ ESEMÉNYEK ═══ */}
+      {data.recentEvents.length > 0 && (
+        <section>
+          <DashboardSectionHeader label={isHu ? "Utolsó események" : "Recent events"} className="mb-4" />
+          <DashboardPanel className="divide-y divide-[var(--color-border-default)] p-0">
+            {data.recentEvents.map((event, i) => {
+              const icon = event.kind === "assessment_completed" ? "✅"
+                : event.kind === "observer_received" ? "👁"
+                : "👋";
+              const label = event.kind === "assessment_completed"
+                ? (isHu ? "kitöltötte a személyiségtesztet" : "completed personality assessment")
+                : event.kind === "observer_received"
+                  ? (isHu ? "observer visszajelzést kapott" : "received observer feedback")
+                  : (isHu ? "csatlakozott" : "joined");
+              const date = new Date(event.timestamp);
+              const ago = formatTimeAgo(date, isHu);
+
+              return (
+                <div key={`${event.kind}-${event.timestamp}-${i}`} className="flex items-center gap-3 px-5 py-3">
+                  <span className="text-[14px]">{icon}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[12px] text-ink">
+                      <span className="font-semibold">{event.memberName}</span>{" "}
+                      {label}
+                    </p>
+                    <p className="text-[10px] text-ink-body">{event.teamName}</p>
+                  </div>
+                  <span className="shrink-0 text-[10px] text-muted">{ago}</span>
+                </div>
+              );
+            })}
+          </DashboardPanel>
         </section>
       )}
 

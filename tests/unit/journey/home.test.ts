@@ -40,9 +40,9 @@ test("self in progress goes to assessment", () => {
   assert.equal(result.home.destination, "/assessment");
 });
 
-test("manager/admin goes to org cockpit", () => {
+test("admin goes to org cockpit", () => {
   const context = buildJourneyContext({
-    currentContext: "org-manager",
+    currentContext: "org-admin",
     assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
   });
   const state = buildJourneyState("TEAM_READY");
@@ -51,6 +51,19 @@ test("manager/admin goes to org cockpit", () => {
   assert.equal(result.activeSurface, "org");
   assert.equal(result.home.reason, "org_cockpit");
   assert.equal(result.home.destination, "/dashboard");
+});
+
+test("manager goes to manager cockpit", () => {
+  const context = buildJourneyContext({
+    currentContext: "org-manager",
+    assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
+  });
+  const state = buildJourneyState("TEAM_READY");
+  const result = resolveHome({ context, state });
+
+  assert.equal(result.activeSurface, "team");
+  assert.equal(result.home.reason, "manager_cockpit");
+  assert.equal(result.home.destination, "/manager");
 });
 
 test("org member without completed self is redirected to assessment", () => {
