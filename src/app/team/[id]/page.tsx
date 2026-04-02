@@ -32,12 +32,14 @@ import {
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
-import type {
-  IntelligenceMember,
-  TeamIntelligenceEvidence,
-} from "@/components/team/TeamIntelligence";
+import type { IntelligenceMember } from "@/components/team/TeamIntelligence";
 import { TeamBelbinSection } from "@/components/team/TeamBelbinSection";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
+import {
+  buildTeamIntelligenceEvidence,
+  buildTeamIntelligencePriorities,
+  resolveTeamIntelligenceQuality,
+} from "@/lib/team-intelligence";
 
 export const dynamic = "force-dynamic";
 
@@ -80,23 +82,6 @@ function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3, isHu: boolean): str
   return names[`${potential}_${skill}`] ?? (isHu ? "Megbízható tag" : "Solid contributor");
 }
 
-function resolveEvidenceQuality(
-  assessedCount: number,
-  totalCount: number,
-): TeamIntelligenceEvidence["quality"] {
-  if (assessedCount === 0 || totalCount === 0) return "none";
-  if (assessedCount < 3) return "partial";
-  return "sufficient";
-}
-
-function resolveEvidenceConfidence(
-  quality: TeamIntelligenceEvidence["quality"],
-): TeamIntelligenceEvidence["confidence"] {
-  if (quality === "sufficient") return "high";
-  if (quality === "partial") return "medium";
-  return "low";
-}
-
 function isTeamTab(tab: string | undefined): tab is TeamTabKey {
   if (!tab) return false;
   return TEAM_TAB_KEYS.includes(tab as TeamTabKey);
@@ -120,8 +105,12 @@ export default async function TeamDetailPage({
   const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
     getServerLocale(), getServerAuth(), params, searchParams,
   ]);
-  const activeTab: TeamTabKey = isTeamTab(resolvedSearchParams.tab)
-    ? resolvedSearchParams.tab
+  const requestedTab = resolvedSearchParams.tab;
+  if (requestedTab === "roles") {
+    redirect(`/team/${teamId}?tab=intelligence`);
+  }
+  const activeTab: TeamTabKey = isTeamTab(requestedTab)
+    ? requestedTab
     : "overview";
   if (!userId) redirect("/sign-in");
 
@@ -241,34 +230,27 @@ export default async function TeamDetailPage({
   });
   const assessedCount = intelligenceMembers.filter((m) => m.hasAssessmentData).length;
   const totalCount = intelligenceMembers.length;
-  const mapQuality = resolveEvidenceQuality(assessedCount, totalCount);
-  const roleQuality = resolveEvidenceQuality(assessedCount, totalCount);
-  const intelligenceEvidenceBySub: Record<"map" | "dynamics" | "roles", TeamIntelligenceEvidence> = {
-    map: {
-      source: "self",
-      quality: mapQuality,
-      confidence: resolveEvidenceConfidence(mapQuality),
-      note: isHu
-        ? "A pozíciók HEXACO self-assessmentből számolt becslések."
-        : "Positions are estimated from HEXACO self-assessment data.",
-    },
-    dynamics: {
-      source: "self_plus_observer",
-      quality: "none",
-      confidence: "low",
-      note: isHu
-        ? "A kapcsolati nézethez observer vagy peer-kapcsolati adat szükséges."
-        : "Relationship view requires observer or peer-connection data.",
-    },
-    roles: {
-      source: "inferred",
-      quality: roleQuality,
-      confidence: roleQuality === "sufficient" ? "medium" : "low",
-      note: isHu
-        ? "A csapatszerep illeszkedés személyiség-alapú becslés."
-        : "Role fit is a personality-based estimate.",
-    },
-  };
+  const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
+  const intelligenceEvidenceBySub = buildTeamIntelligenceEvidence({
+    assessedCount,
+    totalCount,
+    hasDynamicsData: false,
+    locale: locale as "hu" | "en",
+  });
+  const intelligencePriorities = buildTeamIntelligencePriorities({
+    members: teamData.members,
+    completedCount: teamData.completedCount,
+    memberCount: teamData.memberCount,
+    teamId,
+    orgId: teamData.orgId,
+    hasObserverRound: !!teamData.activeCampaign,
+    canManageTeamActions,
+    locale: locale as "hu" | "en",
+  });
+  const minimumIntelligenceAssessments = 3;
+  const missingForStableIntelligence = Math.max(minimumIntelligenceAssessments - assessedCount, 0);
+  const hasSufficientIntelligenceData = assessedCount >= minimumIntelligenceAssessments;
+  const membersWithoutAssessment = teamData.members.filter((member) => !member.scores);
   const intelligenceQualityLabel =
     mapQuality === "sufficient"
       ? isHu ? "elegendő adat" : "sufficient data"
@@ -378,6 +360,95 @@ export default async function TeamDetailPage({
 
   // ── Intelligence tab: potential/types and map ───────────────────────────
   if (activeTab === "intelligence") {
+    if (!hasSufficientIntelligenceData) {
+      return (
+        <PlatformPageShell
+          surface="team"
+          contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+        >
+          <Link
+            href={`/team/${teamId}?tab=overview`}
+            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          >
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 3L5 8l5 5" />
+            </svg>
+            {backToOverviewLabel}
+          </Link>
+
+          <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+              {t("teamComp.tabIntelligence", locale)}
+            </p>
+            <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
+              {isHu ? "Még nincs elég adat a csapatintelligenciához" : "Not enough data yet for team intelligence"}
+            </h1>
+            <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-body">
+              {isHu
+                ? "A stabil értelmezéshez legalább 3 kitöltött self assessment szükséges. Addig a nézet inkább adatgyűjtési fókuszban marad."
+                : "At least 3 completed self-assessments are required for stable interpretation. Until then, this view stays in data-collection mode."}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+                {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+                <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
+              </span>
+              <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+                {isHu ? "Hiányzik a stabil nézethez" : "Still needed for stable view"}:{" "}
+                <span className="font-semibold text-ink">{missingForStableIntelligence}</span>
+              </span>
+              <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
+                {isHu ? "Observer kör" : "Observer round"}:{" "}
+                <span className="font-semibold text-ink">
+                  {teamData.activeCampaign ? (isHu ? "aktív" : "active") : (isHu ? "nincs" : "none")}
+                </span>
+              </span>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href={`/team/${teamId}?tab=members`}
+                className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+              >
+                {isHu ? "Tagok és kitöltések kezelése" : "Manage members and completions"}
+              </Link>
+              {canManageTeamActions && teamData.orgId ? (
+                <Link
+                  href={`/org/${teamData.orgId}?tab=campaigns`}
+                  className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                >
+                  {isHu ? "Observer kör indítása" : "Start observer round"}
+                </Link>
+              ) : null}
+            </div>
+          </section>
+
+          <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+              {isHu ? "Kiknél hiányzik még adat" : "Members still missing data"}
+            </p>
+            {membersWithoutAssessment.length > 0 ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {membersWithoutAssessment.map((member) => (
+                  <span
+                    key={`${member.userId}-missing-intel`}
+                    className="rounded-full border border-sand bg-cream px-2.5 py-1 text-[12px] text-ink-body"
+                  >
+                    {member.displayName}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-2 text-[12px] text-ink-body">
+                {isHu
+                  ? "Minden tagnak van legalább részleges adatpontja, de még nincs elég kitöltés a stabil csapatképre."
+                  : "All members have partial data points, but there are still not enough completions for stable team intelligence."}
+              </p>
+            )}
+          </section>
+        </PlatformPageShell>
+      );
+    }
+
     return (
       <PlatformPageShell
         surface="team"
@@ -401,8 +472,8 @@ export default async function TeamDetailPage({
           </h1>
           <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-body">
             {isHu
-              ? "A csapattérkép és szerepilleszkedés egy helyen, adatminőség-jelzéssel és magyarázható becslésekkel."
-              : "Team map and role-fit in one place, with data-quality indicators and explainable estimates."}
+              ? "Összefoglaló nézet arról, ki mit hoz a csapatba, hol vannak hiányok, és mi a következő legjobb lépés."
+              : "Executive summary of who brings what to the team, where the gaps are, and what the next best action is."}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
@@ -419,13 +490,81 @@ export default async function TeamDetailPage({
             </span>
           </div>
         </section>
+
+        <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+            {isHu ? "Csapat-összefoglaló" : "Team summary"}
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-sand bg-cream/60 p-3">
+              <p className="text-[11px] text-ink-body">{isHu ? "Assessment készültség" : "Assessment readiness"}</p>
+              <p className="mt-1 font-fraunces text-[26px] text-ink">{Math.round((assessedCount / Math.max(totalCount, 1)) * 100)}%</p>
+              <p className="text-[11px] text-muted">{assessedCount}/{totalCount}</p>
+            </div>
+            <div className="rounded-xl border border-sand bg-cream/60 p-3">
+              <p className="text-[11px] text-ink-body">{isHu ? "Observer kör státusz" : "Observer round status"}</p>
+              <p className="mt-1 font-fraunces text-[26px] text-ink">{teamData.activeCampaign ? (isHu ? "Aktív" : "Active") : (isHu ? "Nincs" : "None")}</p>
+              <p className="text-[11px] text-muted">
+                {teamData.activeCampaign
+                  ? (isHu ? "Visszajelzések gyűjtése folyamatban" : "Feedback collection in progress")
+                  : (isHu ? "A dinamika adatokhoz szükséges" : "Required for dynamics data")}
+              </p>
+            </div>
+            <div className="rounded-xl border border-sand bg-cream/60 p-3">
+              <p className="text-[11px] text-ink-body">{isHu ? "Csapatminta státusz" : "Pattern status"}</p>
+              <p className="mt-1 font-fraunces text-[26px] text-ink">{teamData.patternResult ? (isHu ? "Elérhető" : "Ready") : (isHu ? "Folyamatban" : "In progress")}</p>
+              <p className="text-[11px] text-muted">
+                {teamData.patternResult
+                  ? teamData.patternResult.fullLabel
+                  : isHu
+                    ? "Legalább 3 kitöltés szükséges"
+                    : "At least 3 completions required"}
+              </p>
+            </div>
+          </div>
+        </section>
+
         <TeamIntelligence
           members={intelligenceMembers}
           edges={[]}
           evidenceBySub={intelligenceEvidenceBySub}
           presentation="blocks"
           isHu={isHu}
+          noDataCtaHref={`/team/${teamId}?tab=members`}
+          noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
+          deepDiveHref={`/team/${teamId}?tab=belbin`}
+          deepDiveLabel={isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
         />
+
+        <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+            {isHu ? "Fejlesztési prioritások" : "Development priorities"}
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {intelligencePriorities.map((priority) => {
+              const toneClass =
+                priority.tone === "rose"
+                  ? "border-rose-200 bg-rose-50"
+                  : priority.tone === "amber"
+                    ? "border-amber-200 bg-amber-50"
+                    : priority.tone === "violet"
+                      ? "border-violet-200 bg-violet-50"
+                      : "border-emerald-200 bg-emerald-50";
+              return (
+                <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>
+                  <p className="text-[13px] font-semibold text-ink">{priority.title}</p>
+                  <p className="mt-1 text-[12px] leading-relaxed text-ink-body">{priority.reason}</p>
+                  <Link
+                    href={priority.ctaHref}
+                    className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                  >
+                    {priority.ctaLabel}
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </PlatformPageShell>
     );
   }

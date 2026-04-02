@@ -1,13 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TeamMap } from "./TeamMap";
 import { DynamicsMap } from "./DynamicsMap";
 import { RoleFitMap } from "./RoleFitMap";
+import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
+import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
+import type {
+  TeamIntelligenceEvidence,
+  TeamIntelligenceSubTab,
+} from "@/lib/team-intelligence";
 
-export type SubTab = "map" | "dynamics" | "roles";
+export type SubTab = TeamIntelligenceSubTab;
 
 export interface IntelligenceMember {
   id: string;
@@ -28,19 +35,16 @@ export interface DynamicsEdge {
   type: "good" | "neutral" | "tension";
 }
 
-export interface TeamIntelligenceEvidence {
-  source: "self" | "self_plus_observer" | "inferred";
-  quality: "none" | "partial" | "sufficient";
-  confidence: "low" | "medium" | "high";
-  note?: string;
-}
-
 interface TeamIntelligenceProps {
   members: IntelligenceMember[];
   edges: DynamicsEdge[];
   evidenceBySub?: Partial<Record<SubTab, TeamIntelligenceEvidence>>;
   presentation?: "tabs" | "blocks";
   isHu?: boolean;
+  noDataCtaHref?: string;
+  noDataCtaLabel?: string;
+  deepDiveHref?: string;
+  deepDiveLabel?: string;
 }
 
 const SUB_KEYS: Record<SubTab, string> = {
@@ -133,6 +137,10 @@ export function TeamIntelligence({
   evidenceBySub,
   presentation = "tabs",
   isHu = true,
+  noDataCtaHref,
+  noDataCtaLabel,
+  deepDiveHref,
+  deepDiveLabel,
 }: TeamIntelligenceProps) {
   const [sub, setSub] = useState<SubTab>("map");
   const loc: Locale = isHu ? "hu" : "en";
@@ -144,54 +152,165 @@ export function TeamIntelligence({
   const evidence = evidenceByTab[activeSub];
 
   if (presentation === "blocks") {
+    const membersWithData = members.filter((member) => member.hasAssessmentData);
+    const membersWithoutData = members.filter((member) => !member.hasAssessmentData);
+
     return (
       <div className="flex flex-col gap-6 pt-2">
-        {edges.length === 0 ? (
-          <p className="rounded-xl border border-warm-mid bg-cream px-3 py-2.5 text-[12px] text-ink-body">
-            {t("teamComp.dynamicsHiddenHint", loc)}
-          </p>
-        ) : null}
-
         <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
           <div className="mb-3 flex items-center justify-between gap-3">
             <p className="font-dm-sans text-[14px] font-semibold text-ink">
-              {t("teamComp.subMap", loc)}
+              {isHu ? "Ki mit hoz a csapatba" : "Who brings what to the team"}
             </p>
             <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-              {loc === "hu" ? "fókusz: potenciál" : "focus: potential"}
-            </span>
-          </div>
-          <EvidenceSummary evidence={evidenceByTab.map} loc={loc} />
-          <TeamMap members={members} isHu={isHu} />
-        </section>
-
-        <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="font-dm-sans text-[14px] font-semibold text-ink">
-              {t("teamComp.subRoles", loc)}
-            </p>
-            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-              {loc === "hu" ? "fókusz: illeszkedés" : "focus: fit"}
+              {membersWithData.length}/{members.length}{" "}
+              {isHu ? "tag értelmezhető adattal" : "members with usable data"}
             </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
-          <RoleFitMap members={members} isHu={isHu} />
+          <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {membersWithData.map((member) => {
+              const roleScores = estimateBelbinFromHexaco(member.hexaco);
+              const topRoles = getTopRoles(roleScores, 3);
+              const topDims = Object.entries(member.hexaco)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 2);
+              return (
+                <article
+                  key={member.id}
+                  className="rounded-xl border border-sand bg-cream/45 p-3"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white text-[11px] font-semibold"
+                      style={{ background: member.color, color: member.textColor }}
+                    >
+                      {member.initials}
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-semibold text-ink">{member.name}</p>
+                      <p className="text-[11px] text-muted">
+                        {isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {topRoles.map((role) => (
+                      <span
+                        key={`${member.id}-${role.role}`}
+                        className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body"
+                      >
+                        {isHu ? BELBIN_ROLES[role.role].hu : BELBIN_ROLES[role.role].en}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {topDims.map(([dim, value]) => (
+                      <span
+                        key={`${member.id}-${dim}`}
+                        className="rounded-full bg-white px-2 py-0.5 text-[11px] text-ink-body"
+                      >
+                        <span className="font-semibold text-ink">{dim}</span> {Math.round(value)}%
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
+
+            {membersWithData.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-[12px] text-ink-body">
+                {isHu
+                  ? "Még nincs kitöltött assessment adat az erőforrás-térképhez."
+                  : "No completed assessment data yet for the resource map."}
+              </div>
+            ) : null}
+          </div>
+
+          {membersWithoutData.length > 0 ? (
+            <div className="mt-3 rounded-xl border border-dashed border-sand bg-white p-3">
+              <p className="text-[12px] font-medium text-ink">
+                {isHu ? "Még hiányzó adatok" : "Missing data members"}
+              </p>
+              <p className="mt-1 text-[11px] text-ink-body">
+                {membersWithoutData.length}{" "}
+                {isHu
+                  ? "tag még nem rendelkezik értelmezhető assessment adattal."
+                  : "members still do not have usable assessment data."}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {membersWithoutData.slice(0, 8).map((member) => (
+                  <span
+                    key={`${member.id}-missing`}
+                    className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body"
+                  >
+                    {member.name}
+                  </span>
+                ))}
+              </div>
+              {membersWithoutData.length > 8 ? (
+                <p className="mt-1 text-[11px] text-muted">
+                  +{membersWithoutData.length - 8} {isHu ? "fő" : "more"}
+                </p>
+              ) : null}
+              {noDataCtaHref && noDataCtaLabel ? (
+                <Link
+                  href={noDataCtaHref}
+                  className="mt-3 inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                >
+                  {noDataCtaLabel}
+                </Link>
+              ) : null}
+            </div>
+          ) : null}
+
+          {edges.length > 0 ? (
+            <div className="mt-3 rounded-xl border border-sand bg-white p-3">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <p className="font-dm-sans text-[13px] font-semibold text-ink">
+                  {t("teamComp.subDynamics", loc)}
+                </p>
+                <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+                  {loc === "hu" ? "fókusz: kapcsolatok" : "focus: dynamics"}
+                </span>
+              </div>
+              <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
+              <DynamicsMap members={members} edges={edges} isHu={isHu} />
+            </div>
+          ) : (
+            <p className="mt-3 rounded-xl border border-warm-mid bg-cream px-3 py-2.5 text-[12px] text-ink-body">
+              {t("teamComp.dynamicsHiddenHint", loc)}
+            </p>
+          )}
         </section>
 
-        {edges.length > 0 ? (
-          <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="font-dm-sans text-[14px] font-semibold text-ink">
-                {t("teamComp.subDynamics", loc)}
-              </p>
-              <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-                {loc === "hu" ? "fókusz: kapcsolatok" : "focus: dynamics"}
-              </span>
+        <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="font-dm-sans text-[14px] font-semibold text-ink">
+              {isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
+            </p>
+            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+              {isHu ? "deep-dive" : "deep dive"}
+            </span>
+          </div>
+          <p className="text-[12px] leading-relaxed text-ink-body">
+            {isHu
+              ? "A részletes szerep-eloszlás, hiányzó szerepek és egyéni bontás külön deep-dive nézetben érhető el."
+              : "Detailed role distribution, missing roles and per-member breakdown are available in a separate deep-dive view."}
+          </p>
+          {deepDiveHref ? (
+            <div className="mt-3">
+              <Link
+                href={deepDiveHref}
+                className="inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+              >
+                {deepDiveLabel ?? (isHu ? "Részletes csapatszerep-elemzés megnyitása" : "Open detailed team-role analysis")}
+              </Link>
             </div>
-            <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
-            <DynamicsMap members={members} edges={edges} isHu={isHu} />
-          </section>
-        ) : null}
+          ) : null}
+        </section>
       </div>
     );
   }
