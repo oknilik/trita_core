@@ -6,15 +6,12 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import {
   DashboardActionCard,
-  DashboardMetricCard,
   DashboardPanel,
   DashboardSectionHeader,
   DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
 import { createOrgDashboardIA, type DashboardRiskAttentionItem } from "@/lib/dashboard/ia-contract";
-import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
-import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 import { getAvatarGradient } from "@/lib/ui/avatar";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -104,9 +101,6 @@ const HEXACO_DIMS = [
 const ORG_HERO_GRADIENT =
   "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)";
 const ORG_HERO_PRIMARY = "#d2a36a";
-const ORG_HERO_BADGE_BG = "rgba(210,163,106,0.22)";
-const ORG_HERO_BADGE_TEXT = "#f4c792";
-
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export function AdminDashboard() {
@@ -154,7 +148,6 @@ export function AdminDashboard() {
   const missingMembers = teams.flatMap((t) => t.members.filter((m) => !m.assessmentDone));
   const missingCount = missingMembers.length;
   const teamsWithSnapshot = teams.filter((t) => t.members.filter((m) => m.assessmentDone).length >= 3).length;
-  const notStarted = teams.flatMap((t) => t.members.filter((m) => !m.assessmentDone && !m.joinedAt)).length;
 
   // Todos
   type Todo = { severity: "red" | "amber" | "green"; title: string; desc: string; cta?: { label: string; href: string } };
@@ -209,8 +202,6 @@ export function AdminDashboard() {
   const lowDim = localizedHexacoDims.reduce((a, b) =>
     DUMMY_HEXACO[a.key] < DUMMY_HEXACO[b.key] ? a : b,
   );
-  const conscientiousnessDim =
-    localizedHexacoDims.find((dim) => dim.key === "C") ?? localizedHexacoDims[4];
 
   // TODO(journey-guardrail): remove this fallback once `/api/admin/org-status`
   // always guarantees `journey.nextBestAction`.
@@ -287,30 +278,12 @@ export function AdminDashboard() {
     })),
     updatedAtLabel: lastUpdated,
   });
-  const [orgCompletionCard, teamReadinessCard, attentionCard] =
-    dashboardVm.completionStatusCards;
-  const layerStatuses = evaluateProductLayersForScope(localeTag, {
-    hasSelfAssessmentStarted: stats.totalMembers > 0,
-    hasSelfAssessment: stats.adminHasAssessment,
-    hasBelbinStarted: teamsWithSnapshot > 0,
-    hasBelbin: teamsWithSnapshot > 0,
-    hasStrengthProfile: stats.completedCount > 0,
-    hasObserverFeedback: (data.journey?.completionSummary?.self?.completedObservers ?? 0) > 0,
-    hasTeamInsights: teamsWithSnapshot > 0,
-    hasOrgCampaign: (data.journey?.completionSummary?.org?.activeCampaignCount ?? 0) > 0,
-    hasValuesLayerStarted: false,
-    hasValuesLayer: false,
-    hasConflictLayerStarted: false,
-    hasConflictLayer: false,
-    hasPlusAccess: true,
-  }, "dashboard", "org");
   const heroChips = dashboardVm.heroSummary.chips;
-  const secondaryFocusAction = dashboardVm.recommendedAction.secondary ?? {
+  const secondaryHeroAction = dashboardVm.recommendedAction.secondary ?? {
     label: t("dashboard.openOrgCockpit", localeTag),
     href: `/org/${org.id}`,
   };
 
-  const showOnboarding = teams.length === 1 && !stats.teamMapUnlocked;
   const onboardingSteps = [
     {
       title: t("dashboard.firstTeamCreated", localeTag),
@@ -349,6 +322,31 @@ export function AdminDashboard() {
       cta: t("dashboard.trackProgress", localeTag),
     },
   ];
+  const pendingOnboardingSteps = onboardingSteps.filter((step) => !step.done);
+  const attentionItems = [
+    ...dashboardVm.riskAttentionPanel.items.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      cta: item.cta ?? null,
+      tone:
+        item.severity === "high"
+          ? "rose"
+          : item.severity === "medium"
+            ? "warm"
+            : "sage",
+    })),
+    ...pendingOnboardingSteps.map((step, index) => ({
+      id: `onboarding-${index}`,
+      title: step.title,
+      description: step.detail,
+      cta: { label: step.cta, href: step.href },
+      tone: "bronze" as const,
+    })),
+  ];
+  const insightTeaserBody = isHu
+    ? `${topDim.name} most a legerősebb szervezeti minta, miközben ${lowDim.name.toLowerCase()} körül lehet a legtöbb súrlódás. A részletes értelmezés külön analitikai nézetbe való, itt csak a fő jelzést tartjuk meg.`
+    : `${topDim.name} is the strongest organizational signal right now, while ${lowDim.name.toLowerCase()} is the most likely source of friction. The detailed interpretation belongs in analytics; the dashboard keeps only the key signal.`;
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
@@ -405,17 +403,17 @@ export function AdminDashboard() {
 
                   <div className="mt-6 flex flex-wrap gap-2">
                     <Link
-                      href={`/org/${org.id}?tab=members`}
+                      href={dashboardVm.recommendedAction.primary.href}
                       className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white no-underline transition hover:brightness-110"
                       style={{ backgroundColor: ORG_HERO_PRIMARY }}
                     >
-                      {t("dashboard.inviteMembersForPattern", localeTag)}
+                      {dashboardVm.recommendedAction.primary.label}
                     </Link>
                     <Link
-                      href={`/org/${org.id}`}
+                      href={secondaryHeroAction.href}
                       className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] no-underline transition hover:bg-white/[0.12]"
                     >
-                      {t("dashboard.openOrgReport", localeTag)}
+                      {secondaryHeroAction.label}
                     </Link>
                   </div>
                 </div>
@@ -450,32 +448,42 @@ export function AdminDashboard() {
                     <div>
                       <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
                         <span>{t("dashboard.orgCompletion", localeTag)}</span>
-                        <span className="font-semibold text-white/[0.7]">{orgCompletionCard.progressPct ?? 0}%</span>
+                        <span className="font-semibold text-white/[0.7]">
+                          {dashboardVm.completionStatusCards[0]?.progressPct ?? 0}%
+                        </span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${orgCompletionCard.progressPct ?? 0}%`, backgroundColor: "#8ad0b4" }}
+                          style={{
+                            width: `${dashboardVm.completionStatusCards[0]?.progressPct ?? 0}%`,
+                            backgroundColor: "#8ad0b4",
+                          }}
                         />
                       </div>
                       <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                        {orgCompletionCard.sub}
+                        {dashboardVm.completionStatusCards[0]?.sub}
                       </p>
                     </div>
 
                     <div>
                       <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
                         <span>{t("dashboard.teamPatternReadiness", localeTag)}</span>
-                        <span className="font-semibold text-white/[0.7]">{teamReadinessCard.progressPct ?? 0}%</span>
+                        <span className="font-semibold text-white/[0.7]">
+                          {dashboardVm.completionStatusCards[1]?.progressPct ?? 0}%
+                        </span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${teamReadinessCard.progressPct ?? 0}%`, backgroundColor: ORG_HERO_PRIMARY }}
+                          style={{
+                            width: `${dashboardVm.completionStatusCards[1]?.progressPct ?? 0}%`,
+                            backgroundColor: ORG_HERO_PRIMARY,
+                          }}
                         />
                       </div>
                       <p className="mt-1.5 text-[10px] text-white/[0.45]">
-                        {teamReadinessCard.sub}
+                        {dashboardVm.completionStatusCards[1]?.sub}
                       </p>
                     </div>
                   </div>
@@ -485,373 +493,135 @@ export function AdminDashboard() {
           </div>
         </section>
 
-        {showOnboarding && (
-          <section className="mb-8">
-            <ProgressChecklist
-              eyebrow={t("dashboard.onboardingEyebrow", localeTag)}
-              title={t("dashboard.firstTeamKickoff", localeTag)}
-              description={t("dashboard.onboardingDesc", localeTag)}
-              items={onboardingSteps.map((step, index) => ({
-                id: `onboarding-step-${index}`,
-                title: step.title,
-                detail: step.detail,
-                done: step.done,
-                cta: step.done
-                  ? undefined
-                  : {
-                      label: step.cta,
-                      href: step.href,
-                    },
-              }))}
-              nextStepLabel={t("dashboard.nextStep", localeTag)}
+        <section className="mb-8">
+          <DashboardSectionHeader label={t("dashboard.needsAttention", localeTag)} className="mb-4" />
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+            <JourneyNextStepCard
+              eyebrow={t("dashboard.recommendedStep", localeTag)}
+              title={dashboardVm.recommendedAction.title}
+              description={dashboardVm.recommendedAction.description}
+              primary={dashboardVm.recommendedAction.primary}
+              secondary={dashboardVm.recommendedAction.secondary}
             />
-          </section>
-        )}
 
-        {showOnboarding ? (
-          <section className="mb-8">
-            <DashboardSectionHeader
-              label={t("dashboard.upcomingModules", localeTag)}
-              className="mb-4"
-            />
-            <div className="relative overflow-hidden rounded-[24px] border border-sand bg-white">
-              <div className="space-y-5 p-5 blur-[2.5px]">
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <div className="rounded-2xl border border-sand bg-cream p-4">
-                    <div className="h-3.5 w-40 rounded bg-sand" />
-                    <div className="mt-3 h-3 w-full rounded bg-sand/90" />
-                    <div className="mt-2 h-3 w-3/4 rounded bg-sand/90" />
-                    <div className="mt-4 h-9 w-32 rounded bg-sand" />
-                  </div>
-                  <div className="rounded-2xl border border-sand bg-cream p-4">
-                    <div className="h-3.5 w-32 rounded bg-sand" />
-                    <div className="mt-3 space-y-2">
-                      <div className="h-10 w-full rounded bg-sand/90" />
-                      <div className="h-10 w-full rounded bg-sand/90" />
-                      <div className="h-10 w-full rounded bg-sand/90" />
+            <DashboardPanel className="px-5 py-[18px]">
+              <div className="mb-3.5 flex items-center justify-between">
+                <span className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+                  {t("dashboard.needsAttention", localeTag)}
+                </span>
+                {attentionItems.length > 0 && (
+                  <DashboardStatusChip label={String(attentionItems.length)} tone="bronze" />
+                )}
+              </div>
+              {attentionItems.length === 0 ? (
+                <p className="text-[13px] text-muted">
+                  {t("dashboard.noOpenActions", localeTag)}
+                </p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {attentionItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="rounded-[18px] bg-cream py-3 pl-3.5 pr-3.5"
+                      style={{
+                        borderLeft: `2px solid ${
+                          item.tone === "rose"
+                            ? "var(--color-accent-primary)"
+                            : item.tone === "warm" || item.tone === "bronze"
+                              ? "#d4a15a"
+                              : "var(--color-action-primary-bg)"
+                        }`,
+                      }}
+                    >
+                      <p className="mb-0.5 text-[13px] font-semibold text-ink">{item.title}</p>
+                      <p className="text-[12px] leading-[1.5] text-ink-body">{item.description}</p>
+                      {item.cta && (
+                        <Link href={item.cta.href} className="mt-1 inline-block text-[11px] font-semibold text-bronze no-underline">
+                          {item.cta.label} →
+                        </Link>
+                      )}
                     </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                  {Array.from({ length: 4 }).map((_, idx) => (
-                    <div key={idx} className="h-28 rounded-2xl border border-sand bg-cream" />
                   ))}
                 </div>
-                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-                  <div className="h-44 rounded-2xl border border-sand bg-cream" />
-                  <div className="h-44 rounded-2xl border border-sand bg-cream" />
-                </div>
-              </div>
+              )}
+            </DashboardPanel>
+          </div>
+        </section>
 
-              <div className="absolute inset-0 flex items-center justify-center bg-white/35 px-4">
-                <div className="max-w-md rounded-2xl border border-sand bg-white px-5 py-4 text-center shadow-[0_12px_32px_rgba(26,26,46,0.08)]">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bronze/80">
-                    {t("dashboard.onboardingFocus", localeTag)}
-                  </p>
-                  <p className="mt-2 text-[13px] leading-[1.65] text-ink-body">
-                    {t("dashboard.onboardingFocusDesc", localeTag)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-        ) : (
-          <>
-            <section className="mb-8 grid gap-4 lg:grid-cols-2">
-              <JourneyNextStepCard
-                eyebrow={t("dashboard.recommendedStep", localeTag)}
-                title={dashboardVm.recommendedAction.title}
-                description={dashboardVm.recommendedAction.description}
-                primary={dashboardVm.recommendedAction.primary}
-                secondary={dashboardVm.recommendedAction.secondary}
-              />
-
-              <DashboardPanel tone="warm" className="p-5">
-                <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-sage-dark/70">
-                  {t("dashboard.secondaryStep", localeTag)}
+        <section className="mb-8">
+          <DashboardSectionHeader label={t("dashboard.teamMovement", localeTag)} className="mb-4" />
+          <DashboardPanel className="px-5 py-5 sm:px-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
+                  {t("dashboard.teamStatus", localeTag)}
                 </p>
-                <div className="mt-4 space-y-3">
-                  <Link
-                    href={secondaryFocusAction.href}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[12px] border border-sand bg-white px-4 py-3 text-[13px] font-semibold text-ink no-underline transition-colors hover:border-sage/25 hover:bg-cream"
-                  >
-                    {secondaryFocusAction.label}
-                  </Link>
-                  <Link
-                    href={`/org/${org.id}`}
-                    className="inline-flex text-[12px] font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
-                  >
-                    {t("dashboard.moreActionsOrg", localeTag)}
-                  </Link>
-                </div>
-              </DashboardPanel>
-            </section>
-
-            {/* ═══ KPI ROW ═══ */}
-            <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
-              <DashboardMetricCard
-                accent="var(--color-accent-primary)"
-                title={orgCompletionCard.label}
-                value={orgCompletionCard.value.replace("%", "")}
-                suffix="%"
-                sub={orgCompletionCard.sub}
-                progressPct={orgCompletionCard.progressPct}
-                progressColor="var(--color-accent-primary)"
-              />
-              <DashboardMetricCard
-                accent="#1D9E75"
-                title={t("dashboard.activeMembersTitle", localeTag)}
-                value={`${stats.completedCount}`}
-                suffix={`/${stats.totalMembers}`}
-                sub={notStarted > 0
-                  ? tf("dashboard.notStartedCount", localeTag, { count: String(notStarted) })
-                  : t("dashboard.everyoneStarted", localeTag)}
-                progressPct={stats.totalMembers > 0 ? (stats.completedCount / stats.totalMembers) * 100 : 0}
-                progressColor="#1D9E75"
-              />
-              <DashboardMetricCard
-                accent="var(--color-accent-primary)"
-                title={attentionCard.label}
-                value={attentionCard.value}
-                sub={attentionCard.sub}
-                valueColor={Number(attentionCard.value) > 0 ? "var(--color-accent-primary)" : undefined}
-                progressPct={attentionCard.progressPct}
-                progressColor="var(--color-accent-primary)"
-              />
-              <DashboardMetricCard
-                accent="#0F6E56"
-                title={teamReadinessCard.label}
-                value={`${teamsWithSnapshot}`}
-                suffix={`/${teams.length}`}
-                sub={teamReadinessCard.sub}
-                progressPct={teamReadinessCard.progressPct}
-                progressColor="#0F6E56"
-              />
+                <p className="mt-2 text-[11px] leading-[1.5] text-ink-body">
+                  {t("dashboard.teamStatusDesc", localeTag)}
+                </p>
+              </div>
+              <Link href="/team" className="text-[12px] font-semibold text-bronze no-underline">
+                {t("dashboard.allTeams", localeTag)}
+              </Link>
             </div>
+            <div className="mt-4 flex flex-col gap-3">
+              {teams.map((team) => {
+                const done = team.members.filter((m) => m.assessmentDone).length;
+                const total = team.members.length;
+                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+                const rem = total - done;
+                const snap = done >= 3;
+                const [from, to] = getAvatarGradient(team.name);
 
-            <section className="mb-8">
-              <DashboardPanel className="p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                    {t("dashboard.layerReadiness", localeTag)}
-                  </p>
-                  <DashboardStatusChip
-                    label={`${layerStatuses.filter((layer) => layer.status === "COMPLETED").length}/6 ${t("orgHero.done", localeTag)}`}
-                    tone="sage"
-                  />
-                </div>
-                <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  {layerStatuses.map((layer) => {
-                    const tone =
-                      layer.status === "COMPLETED"
-                        ? "sage"
-                        : layer.status === "IN_PROGRESS"
-                          ? "bronze"
-                        : layer.status === "AVAILABLE"
-                          ? "warm"
-                          : "muted";
-                    const statusLabel =
-                      layer.status === "COMPLETED"
-                        ? t("dashboard.layerStatusCompleted", localeTag)
-                        : layer.status === "IN_PROGRESS"
-                          ? t("dashboard.layerStatusInProgress", localeTag)
-                          : layer.status === "AVAILABLE"
-                          ? t("dashboard.layerStatusAvailable", localeTag)
-                          : t("dashboard.layerStatusLocked", localeTag);
+                const insight = rem > 0 && snap
+                  ? tf("dashboard.insightAlmostReady", localeTag, { count: String(rem) })
+                  : snap
+                    ? t("dashboard.insightReady", localeTag)
+                    : tf("dashboard.insightNeeded", localeTag, { count: String(rem) });
 
-                    return (
-                      <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-[12px] font-semibold text-ink">{layer.label}</p>
-                          <DashboardStatusChip label={statusLabel} tone={tone} />
+                const statusLabel = snap
+                  ? t("dashboard.patternReady", localeTag)
+                  : pct >= 50
+                    ? t("dashboard.patternBuilding", localeTag)
+                    : t("dashboard.pending", localeTag);
+                const statusTone = snap ? "sage" : pct >= 50 ? "warm" : "rose";
+
+                return (
+                  <Link key={team.id} href={`/team/${team.id}`} className="block rounded-[20px] border border-sand bg-cream p-4 no-underline transition-colors hover:bg-warm">
+                    <div className="mb-2.5 flex items-start justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-semibold text-white" style={{ background: `linear-gradient(135deg,${from},${to})` }}>
+                          {team.name[0]?.toUpperCase() ?? "?"}
                         </div>
-                        <p className="mt-1 text-[11px] leading-relaxed text-ink-body">
-                          {layer.description}
-                        </p>
+                        <div>
+                          <p className="text-[13px] font-semibold text-ink">{team.name}</p>
+                          <p className="mt-0.5 text-[11px] text-muted">
+                            {tf("dashboard.teamMemberCount", localeTag, { count: String(total) })}
+                          </p>
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </DashboardPanel>
-            </section>
-
-            <DashboardSectionHeader label={t("dashboard.leadershipFocus", localeTag)} className="mb-4" />
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
-
-              <div className="flex flex-col gap-5">
-                <DashboardPanel className="px-5 py-5 sm:px-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
-                        {t("dashboard.orgPersonalityProfile", localeTag)}
-                      </p>
-                      <p className="mt-2 text-[11px] leading-[1.5] text-ink-body">
-                        {tf("dashboard.assessedMembersAvg", localeTag, { count: String(stats.completedCount) })}
-                      </p>
+                      <DashboardStatusChip label={statusLabel} tone={statusTone} />
                     </div>
-                    <Link href={`/org/${org.id}`} className="text-[12px] font-semibold text-bronze no-underline">
-                      {t("dashboard.detailedView", localeTag)}
-                    </Link>
-                  </div>
-                  <div className="my-4 border-t border-sand" />
-                  <div className="mb-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
-                    {localizedHexacoDims.map((d) => (
-                      <DimRing key={d.key} name={d.name} value={DUMMY_HEXACO[d.key]} color={d.color} />
-                    ))}
-                  </div>
-                  <DashboardActionCard
-                    eyebrow={t("dashboard.dominantPattern", localeTag)}
-                    title={t("dashboard.structuredInnovator", localeTag)}
-                    tone="warm"
-                    body={
-                      <>
-                        {tf("dashboard.patternDesc", localeTag, { top: topDim.name.toLowerCase(), conscientiousness: conscientiousnessDim.name.toLowerCase(), low: lowDim.name.toLowerCase() })}
-                      </>
-                    }
-                    cta={{
-                      href: `/org/${org.id}`,
-                      label: t("dashboard.openTeamPattern", localeTag),
-                      tone: "link",
-                    }}
-                  />
-                </DashboardPanel>
-              </div>
-
-              <div className="flex flex-col gap-5">
-                <div
-                  className="rounded-[28px] px-5 py-5"
-                  style={{
-                    background: ORG_HERO_GRADIENT,
-                  }}
-                >
-                  <p className="mb-2 text-[10px] uppercase tracking-[0.9px] text-white/[0.32]">
-                    {t("dashboard.watchNow", localeTag)}
-                  </p>
-                  <h3 className="mb-2 font-fraunces text-[24px] leading-[1.05] tracking-tight text-white">
-                    {tf("dashboard.highLow", localeTag, { top: topDim.name.toLowerCase(), low: lowDim.name.toLowerCase() })}
-                  </h3>
-                  <p className="text-[12.5px] leading-[1.7] text-white/[0.68]">
-                    {tf("dashboard.frictionDesc", localeTag, { low: lowDim.name.toLowerCase(), pct: String(DUMMY_HEXACO[lowDim.key]) })}
-                  </p>
-                  <Link href={`/org/${org.id}`} className="mt-4 inline-flex text-[12px] font-semibold text-[var(--color-accent-primary-soft)] no-underline">
-                    {t("dashboard.detailedAnalysis", localeTag)}
+                    <div className="mb-2 h-1 overflow-hidden rounded-[3px] bg-sand">
+                      <div className="h-full rounded-[3px]" style={{ width: `${pct}%`, background: progressColor(pct) }} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="flex-1 pr-3 text-[12px] leading-[1.55] text-ink-body">{insight}</p>
+                      <span className="shrink-0 text-[12px] font-semibold text-bronze">
+                        {t("dashboard.open", localeTag)}
+                      </span>
+                    </div>
                   </Link>
-                </div>
-
-                <DashboardPanel className="px-5 py-[18px]">
-                  <div className="mb-3.5 flex items-center justify-between">
-                    <span className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                      {t("dashboard.needsAttention", localeTag)}
-                    </span>
-                    {dashboardVm.riskAttentionPanel.items.length > 0 && (
-                      <DashboardStatusChip label={String(dashboardVm.riskAttentionPanel.items.length)} tone="bronze" />
-                    )}
-                  </div>
-                  {dashboardVm.riskAttentionPanel.items.length === 0 ? (
-                    <p className="text-[13px] text-muted">
-                      {t("dashboard.noOpenActions", localeTag)}
-                    </p>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      {dashboardVm.riskAttentionPanel.items.map((item) => (
-                        <div
-                          key={item.id}
-                          className="rounded-[18px] bg-cream py-3 pl-3.5 pr-3.5"
-                          style={{
-                            borderLeft: `2px solid ${
-                              item.severity === "high"
-                                ? "var(--color-accent-primary)"
-                                : item.severity === "medium"
-                                  ? "#d4a15a"
-                                  : "var(--color-action-primary-bg)"
-                            }`,
-                          }}
-                        >
-                          <p className="mb-0.5 text-[13px] font-semibold text-ink">{item.title}</p>
-                          <p className="text-[12px] leading-[1.5] text-ink-body">{item.description}</p>
-                          {item.cta && (
-                            <Link href={item.cta.href} className="mt-1 inline-block text-[11px] font-semibold text-bronze no-underline">
-                              {item.cta.label} →
-                            </Link>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </DashboardPanel>
-              </div>
+                );
+              })}
             </div>
+          </DashboardPanel>
+        </section>
 
-            <DashboardSectionHeader label={t("dashboard.teamMovement", localeTag)} className="mb-4 mt-8" />
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-              <DashboardPanel className="px-5 py-5 sm:px-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
-                      {t("dashboard.teamStatus", localeTag)}
-                    </p>
-                    <p className="mt-2 text-[11px] leading-[1.5] text-ink-body">
-                      {t("dashboard.teamStatusDesc", localeTag)}
-                    </p>
-                  </div>
-                  <Link href="/team" className="text-[12px] font-semibold text-bronze no-underline">
-                    {t("dashboard.allTeams", localeTag)}
-                  </Link>
-                </div>
-                <div className="mt-4 flex flex-col gap-3">
-                  {teams.map((team) => {
-                    const done = team.members.filter((m) => m.assessmentDone).length;
-                    const total = team.members.length;
-                    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-                    const rem = total - done;
-                    const snap = done >= 3;
-                    const [from, to] = getAvatarGradient(team.name);
-
-                    const insight = rem > 0 && snap
-                      ? tf("dashboard.insightAlmostReady", localeTag, { count: String(rem) })
-                      : snap
-                      ? t("dashboard.insightReady", localeTag)
-                      : tf("dashboard.insightNeeded", localeTag, { count: String(rem) });
-
-                    const statusLabel = snap
-                      ? t("dashboard.patternReady", localeTag)
-                      : pct >= 50
-                        ? t("dashboard.patternBuilding", localeTag)
-                        : t("dashboard.pending", localeTag);
-                    const statusTone = snap ? "sage" : pct >= 50 ? "warm" : "rose";
-
-                    return (
-                      <Link key={team.id} href={`/team/${team.id}`} className="block rounded-[20px] border border-sand bg-cream p-4 no-underline transition-colors hover:bg-warm">
-                        <div className="mb-2.5 flex items-start justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-semibold text-white" style={{ background: `linear-gradient(135deg,${from},${to})` }}>
-                              {team.name[0]?.toUpperCase() ?? "?"}
-                            </div>
-                            <div>
-                              <p className="text-[13px] font-semibold text-ink">{team.name}</p>
-                              <p className="mt-0.5 text-[11px] text-muted">
-                                {tf("dashboard.teamMemberCount", localeTag, { count: String(total) })}
-                              </p>
-                            </div>
-                          </div>
-                          <DashboardStatusChip label={statusLabel} tone={statusTone} />
-                        </div>
-                        <div className="mb-2 h-1 overflow-hidden rounded-[3px] bg-sand">
-                          <div className="h-full rounded-[3px]" style={{ width: `${pct}%`, background: progressColor(pct) }} />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="flex-1 pr-3 text-[12px] leading-[1.55] text-ink-body">{insight}</p>
-                          <span className="shrink-0 text-[12px] font-semibold text-bronze">
-                            {t("dashboard.open", localeTag)}
-                          </span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </DashboardPanel>
-
-              <DashboardPanel className="px-5 py-5">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <section>
+            <DashboardSectionHeader label={t("dashboard.recentActivity", localeTag)} className="mb-4" />
+            <DashboardPanel className="px-5 py-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="font-fraunces text-[24px] leading-none tracking-tight text-ink">
@@ -879,10 +649,33 @@ export function AdminDashboard() {
                     ))}
                   </div>
                 )}
-              </DashboardPanel>
-            </div>
-          </>
-        )}
+            </DashboardPanel>
+          </section>
+
+          <section>
+            <DashboardSectionHeader label={t("dashboard.leadershipFocus", localeTag)} className="mb-4" />
+            <DashboardActionCard
+              eyebrow={t("dashboard.orgPersonalityProfile", localeTag)}
+              title={t("dashboard.structuredInnovator", localeTag)}
+              tone="warm"
+              body={
+                <div className="space-y-3">
+                  <p>{insightTeaserBody}</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {localizedHexacoDims.map((d) => (
+                      <DimRing key={d.key} name={d.name} value={DUMMY_HEXACO[d.key]} color={d.color} />
+                    ))}
+                  </div>
+                </div>
+              }
+              cta={{
+                href: `/org/${org.id}`,
+                label: t("dashboard.detailedAnalysis", localeTag),
+                tone: "link",
+              }}
+            />
+          </section>
+        </div>
 
       </main>
     </div>
