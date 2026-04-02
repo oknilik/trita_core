@@ -206,14 +206,16 @@ export default async function TeamDetailPage({
     {
       key: "profile",
       label: t("teamComp.tabProfile", locale),
+      shortLabel: isHu ? "Profil" : "Profile",
       badge: teamData.completedCount > 0 ? teamData.completedCount : undefined,
     },
     {
       key: "members",
       label: t("teamComp.tabMembers", locale),
+      shortLabel: isHu ? "Tagok" : "Members",
       badge: teamData.memberCount + teamData.pendingInvites.length,
     },
-    { key: "belbin", label: "Belbin" },
+    { key: "belbin", label: "Belbin", shortLabel: "Belbin" },
   ];
 
   const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => {
@@ -243,42 +245,80 @@ export default async function TeamDetailPage({
     };
   });
 
+  const teamTabBaseClass =
+    "inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-medium leading-none whitespace-nowrap transition-colors";
   const teamTabsNav = (
-    <nav
-      className="mb-2 overflow-x-auto md:overflow-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-      aria-label={isHu ? "Csapat nézetek" : "Team views"}
-    >
-      <div className="mx-auto inline-flex min-w-max snap-x snap-mandatory gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)] md:min-w-0 md:snap-none">
-        {tabItems.map((tab) => {
-          const isActive = activeTab === tab.key;
-          return (
-            <Link
-              key={tab.key}
-              href={`/team/${teamId}?tab=${tab.key}`}
-              className={[
-                "inline-flex min-h-[42px] shrink-0 snap-start items-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-medium leading-none whitespace-nowrap transition-colors sm:px-4 sm:text-[13px] md:snap-none",
-                isActive
-                  ? "bg-ink text-white"
-                  : "text-ink-body hover:bg-cream hover:text-ink",
-              ].join(" ")}
-            >
-              <span className="sm:hidden">{tab.shortLabel ?? tab.label}</span>
-              <span className="hidden sm:inline">{tab.label}</span>
-              {tab.badge ? (
-                <span
-                  className={[
-                    "rounded-full px-1.5 py-0.5 text-[9px] font-semibold sm:px-2 sm:text-[10px]",
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-warm-mid text-ink",
-                  ].join(" ")}
-                >
-                  {tab.badge}
-                </span>
-              ) : null}
-            </Link>
-          );
-        })}
+    <nav className="mb-2" aria-label={isHu ? "Csapat nézetek" : "Team views"}>
+      <div className="md:hidden -mx-1 overflow-x-auto px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="inline-flex min-w-max snap-x snap-mandatory gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)]">
+          {tabItems.map((tab) => {
+            const isActive = activeTab === tab.key;
+            return (
+              <Link
+                key={tab.key}
+                href={`/team/${teamId}?tab=${tab.key}`}
+                aria-current={isActive ? "page" : undefined}
+                className={[
+                  teamTabBaseClass,
+                  "min-w-[88px] shrink-0 snap-start",
+                  isActive
+                    ? "bg-ink text-white"
+                    : "text-ink-body hover:bg-cream hover:text-ink",
+                ].join(" ")}
+              >
+                <span>{tab.shortLabel ?? tab.label}</span>
+                {tab.badge ? (
+                  <span
+                    className={[
+                      "rounded-full px-1.5 py-0.5 text-[9px] font-semibold",
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-warm-mid text-ink",
+                    ].join(" ")}
+                  >
+                    {tab.badge}
+                  </span>
+                ) : null}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="hidden md:flex md:justify-center">
+        <div className="inline-flex min-w-max gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)]">
+          {tabItems.map((tab) => {
+            const isActive = activeTab === tab.key;
+            return (
+              <Link
+                key={tab.key}
+                href={`/team/${teamId}?tab=${tab.key}`}
+                aria-current={isActive ? "page" : undefined}
+                className={[
+                  teamTabBaseClass,
+                  "px-4 text-[13px]",
+                  isActive
+                    ? "bg-ink text-white"
+                    : "text-ink-body hover:bg-cream hover:text-ink",
+                ].join(" ")}
+              >
+                <span>{tab.label}</span>
+                {tab.badge ? (
+                  <span
+                    className={[
+                      "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-warm-mid text-ink",
+                    ].join(" ")}
+                  >
+                    {tab.badge}
+                  </span>
+                ) : null}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
