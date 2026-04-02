@@ -50,6 +50,10 @@ function stripQuery(path: string): string {
   return path.split("?")[0] ?? path;
 }
 
+function getPrimaryTeam(teams: WorkspaceNavTeam[]): WorkspaceNavTeam | null {
+  return teams[0] ?? null;
+}
+
 function buildHomeItem(homeHref: string): WorkspaceNavItem {
   const homePath = stripQuery(homeHref);
   const matchPrefixes =
@@ -66,39 +70,68 @@ function buildHomeItem(homeHref: string): WorkspaceNavItem {
   };
 }
 
-function buildTeamDestinations(role: WorkspaceNavRole, teams: WorkspaceNavTeam[]): WorkspaceNavDestination[] {
-  if (teams.length === 0) return [];
-
-  if (teams.length === 1) {
-    const team = teams[0];
+function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext): WorkspaceNavDestination[] {
+  if (role === "org_admin") {
+    if (!ctx.org) return [];
     return [
       {
-        id: "team-overview",
-        label: "Csapat áttekintése",
-        description: "Eredmények és aktivitás",
-        href: `/team/${team.id}`,
+        id: "teams-overview",
+        label: "Összes csapat",
+        description: "Szervezeti csapatlista és státuszok",
+        href: `/org/${ctx.org.id}?tab=teams`,
       },
       {
-        id: "team-members",
-        label: "Tagok és szerepkörök",
-        description: "Meglévő tagok kezelése",
-        href: `/team/${team.id}?tab=members`,
+        id: "teams-create",
+        label: "Csapat létrehozása",
+        description: "Új csapat indítása a teams nézetből",
+        href: `/org/${ctx.org.id}?tab=teams`,
       },
       {
-        id: "team-profile",
-        label: role === "org_manager" ? "Riportok" : "Személyiségprofil",
-        description: "Személyiségprofil áttekintése",
-        href: `/team/${team.id}?tab=profile`,
+        id: "teams-members",
+        label: "Tagok",
+        description: "Szervezeti tagok és csapathoz rendelés",
+        href: `/org/${ctx.org.id}?tab=members`,
+      },
+      {
+        id: "teams-invites",
+        label: "Meghívások",
+        description: "Függő szervezeti és csapat meghívások",
+        href: `/org/${ctx.org.id}?tab=members`,
       },
     ];
   }
 
-  return teams.map((team) => ({
-    id: `team-${team.id}`,
-    label: team.name,
-    description: "Csapat áttekintése",
-    href: `/team/${team.id}`,
-  }));
+  const primaryTeam = getPrimaryTeam(ctx.teams);
+  if (!primaryTeam) return [];
+
+  return [
+    {
+      id: "team-profile",
+      label: "Csapatkép",
+      description: "A csapat mintázata és riportja",
+      href: `/team/${primaryTeam.id}?tab=profile`,
+    },
+    {
+      id: "team-members",
+      label: "Tagok",
+      description: "Csapattagok és szerepkörök",
+      href: `/team/${primaryTeam.id}?tab=members`,
+    },
+    {
+      id: "team-invites",
+      label: "Meghívások",
+      description: "Tagfelvétel és függő team invite-ok",
+      href: `/team/${primaryTeam.id}?tab=members`,
+    },
+    ...(ctx.org
+      ? [{
+          id: "team-observer-rounds",
+          label: "Observer körök",
+          description: "Aktív és lezárt szervezeti körök",
+          href: `/org/${ctx.org.id}?tab=campaigns`,
+        }]
+      : []),
+  ];
 }
 
 function buildHiringDestinations(
@@ -107,84 +140,142 @@ function buildHiringDestinations(
 ): WorkspaceNavDestination[] {
   if (!ctx.org || !ctx.hasHiringAccess) return [];
 
-  const items: WorkspaceNavDestination[] = [
+  if (role === "org_admin") {
+    return [
+      {
+        id: "hiring-overview",
+        label: "Jelöltfolyamat",
+        description: "Aktív és lezárt jelöltek áttekintése",
+        href: `/hiring/${ctx.org.id}`,
+      },
+      {
+        id: "hiring-add",
+        label: "Új jelölt indítása",
+        description: "Új meghívó és értékelés indítása",
+        href: `/hiring/${ctx.org.id}?invite=true`,
+      },
+      {
+        id: "hiring-credits",
+        label: "Kreditek / csomagok",
+        description: "Hiring kreditek és előfizetés kezelése",
+        href: `/org/${ctx.org.id}/settings`,
+      },
+    ];
+  }
+
+  return [
     {
-      id: "hiring-overview",
-      label: "Jelöltfolyamat",
-      description: "Aktív és archív jelöltek",
+      id: "hiring-my-candidates",
+      label: "Jelöltjeim",
+      description: "A saját vagy kezelhető jelöltfolyamatok",
       href: `/hiring/${ctx.org.id}`,
     },
     {
       id: "hiring-add",
-      label: "Új jelölt hozzáadása",
-      description: "Értékelés indítása",
+      label: "Új jelölt",
+      description: "Új jelölt meghívása értékelésre",
       href: `/hiring/${ctx.org.id}?invite=true`,
     },
+    {
+      id: "hiring-credits-available",
+      label: "Elérhető kreditek",
+      description: "Aktuális kreditkeret és felhasználás",
+      href: `/hiring/${ctx.org.id}`,
+    },
   ];
-
-  if (role === "org_admin") {
-    items.push({
-      id: "hiring-credits",
-      label: "Csomagok és kreditek",
-      description: "Candidate add-on kezelése",
-      href: `/org/${ctx.org.id}/settings`,
-    });
-  }
-
-  return items;
 }
 
 function buildOrgDestinations(ctx: WorkspaceNavContext, role: WorkspaceNavRole): WorkspaceNavDestination[] {
   if (!ctx.org || role !== "org_admin") return [];
 
-  const items: WorkspaceNavDestination[] = [
+  return [
     {
       id: "org-overview",
       label: "Szervezeti áttekintés",
-      description: "Csapatok és tagok összesítése",
+      description: "Operatív állapot és szervezeti összkép",
       href: `/org/${ctx.org.id}`,
     },
     {
-      id: "org-members",
-      label: "Szerepkörök kezelése",
-      description: "Admin, manager, member",
+      id: "org-permissions",
+      label: "Jogosultságok",
+      description: "Admin, manager és member szerepkörök",
       href: `/org/${ctx.org.id}?tab=members`,
+    },
+    {
+      id: "org-billing",
+      label: "Számlázás",
+      description: "Előfizetés, csomagok és billing portal",
+      href: `/org/${ctx.org.id}/settings`,
     },
     {
       id: "org-settings",
       label: "Beállítások",
-      description: "Számlázás, csomagok",
+      description: "Szervezetnév és admin kezelőfelület",
       href: `/org/${ctx.org.id}/settings`,
     },
   ];
-
-  return items;
 }
 
 function buildAnalyticsDestinations(
   ctx: WorkspaceNavContext,
   role: WorkspaceNavRole,
 ): WorkspaceNavDestination[] {
-  if (ctx.teams.length === 0) return [];
+  const primaryTeam = getPrimaryTeam(ctx.teams);
 
-  if (ctx.teams.length === 1) {
-    const team = ctx.teams[0];
+  if (role === "org_admin") {
+    if (!ctx.org) return [];
     return [
       {
-        id: "analytics-team-profile",
-        label: role === "org_manager" ? "Csapatriport" : "Csapatprofil",
-        description: "Team pattern és értelmező nézet",
-        href: `/team/${team.id}?tab=profile`,
+        id: "analytics-org-profile",
+        label: "Szervezeti profil",
+        description: "Szervezeti állapot és összefoglaló nézet",
+        href: `/org/${ctx.org.id}`,
+      },
+      {
+        id: "analytics-team-patterns",
+        label: "Csapatmintázatok",
+        description: "Csapatok állapota és mintázatai",
+        href: `/org/${ctx.org.id}?tab=teams`,
+      },
+      ...(primaryTeam
+        ? [{
+            id: "analytics-reports",
+            label: "Riportok",
+            description: "A vezető csapat részletes riportnézete",
+            href: `/team/${primaryTeam.id}?tab=profile`,
+          }]
+        : []),
+      {
+        id: "analytics-deeper-layers",
+        label: "Rétegek / mélyebb elemzés",
+        description: "4+2 rétegek és további értelmező nézetek",
+        href: "/assessment-layers",
       },
     ];
   }
 
-  return ctx.teams.map((team) => ({
-    id: `analytics-team-${team.id}`,
-    label: team.name,
-    description: "Csapatprofil és riportok",
-    href: `/team/${team.id}?tab=profile`,
-  }));
+  if (!primaryTeam) return [];
+
+  return [
+    {
+      id: "analytics-team-report",
+      label: "Csapatriport",
+      description: "A csapatkép és fő riportnézet",
+      href: `/team/${primaryTeam.id}?tab=profile`,
+    },
+    {
+      id: "analytics-comparison",
+      label: "Összehasonlítás",
+      description: "Mintázatok és eltérések áttekintése",
+      href: `/team/${primaryTeam.id}?tab=profile`,
+    },
+    {
+      id: "analytics-export",
+      label: "Export",
+      description: "Riport megnyitása export és megosztás előtt",
+      href: `/team/${primaryTeam.id}?tab=profile`,
+    },
+  ];
 }
 
 function buildDropdownItem(
@@ -213,7 +304,7 @@ export function buildWorkspaceNavigation(
 ): WorkspaceNavItem[] {
   const home = buildHomeItem(ctx.homeHref);
 
-  const teamItems = buildTeamDestinations(role, ctx.teams);
+  const teamItems = buildTeamDestinations(role, ctx);
   const teamLabel = role === "org_manager" ? "Csapatom" : "Csapatok";
   const teamNav = buildDropdownItem(
     "teams",
