@@ -309,7 +309,7 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       },
     ],
     riskAttentionPanel: {
-      title: txt(locale, "Figyelmet kér", "Needs attention"),
+      title: txt(locale, "Figyelmet igényel", "Needs attention"),
       summary:
         riskItems.length > 0
           ? txt(locale, "Van néhány blokk, amit érdemes lezárni.", "There are blockers to resolve.")
@@ -391,7 +391,7 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
       },
     ],
     riskAttentionPanel: {
-      title: txt(input.locale, "Figyelmet kér", "Needs attention"),
+      title: txt(input.locale, "Figyelmet igényel", "Needs attention"),
       summary:
         input.waitingCount > 0
           ? txt(input.locale, "A hiányzó kitöltések lassítják a csapatképet.", "Missing assessments slow down team insight.")
@@ -425,17 +425,25 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
 export function createOrgDashboardIA(input: OrgDashboardIAInput): DashboardIAViewModel {
   const completionPct = toPct(input.completedMembers, Math.max(input.totalMembers, 1));
   const teamReadinessPct = toPct(input.teamsReadyCount, Math.max(input.teamCount, 1));
+  const heroSummary =
+    input.pendingAttentionCount > 0
+      ? txt(
+          input.locale,
+          `${input.teamsReadyCount}/${input.teamCount} csapatkép kész. Most ${input.pendingAttentionCount} nyitott teendő igényel figyelmet. Következő lépés: zárd a nyitott pontokat, majd indítsd a javasolt akciót.`,
+          `${input.teamsReadyCount}/${input.teamCount} team insights are ready. Right now ${input.pendingAttentionCount} open tasks need attention. Next step: close the open items, then run the suggested action.`,
+        )
+      : txt(
+          input.locale,
+          `${input.teamsReadyCount}/${input.teamCount} csapatkép kész, a szervezeti állapot stabil. Következő lépés: haladj tovább a javasolt következő akcióval.`,
+          `${input.teamsReadyCount}/${input.teamCount} team insights are ready and the org state is stable. Next step: continue with the suggested action.`,
+        );
 
   return {
     scope: "org",
     heroSummary: {
       eyebrow: txt(input.locale, "Szervezeti cockpit", "Organization cockpit"),
       title: input.orgName,
-      summary: txt(
-        input.locale,
-        `${input.teamCount} csapatból ${input.teamsReadyCount} áll készen, ${input.pendingAttentionCount} figyelmi pont nyitott.`,
-        `${input.teamsReadyCount} of ${input.teamCount} teams are ready, with ${input.pendingAttentionCount} open attention points.`,
-      ),
+      summary: heroSummary,
       chips: [
         `${input.totalMembers} ${txt(input.locale, "aktív tag", "active members")}`,
         `${input.teamCount} ${txt(input.locale, "csapat", "teams")}`,
@@ -468,12 +476,12 @@ export function createOrgDashboardIA(input: OrgDashboardIAInput): DashboardIAVie
       },
       {
         id: "org-attention",
-        label: txt(input.locale, "Figyelmet kér", "Needs attention"),
+        label: txt(input.locale, "Figyelmet igényel", "Needs attention"),
         value: String(input.pendingAttentionCount),
         sub: txt(
           input.locale,
-          input.pendingAttentionCount > 0 ? "Nyitott teendők a stabil org képhez." : "Nincs kritikus teendő.",
-          input.pendingAttentionCount > 0 ? "Open tasks before stable org insight." : "No critical tasks.",
+          input.pendingAttentionCount > 0 ? "Ezeket zárd le a következő szervezeti lépés előtt." : "Nincs azonnali teendő.",
+          input.pendingAttentionCount > 0 ? "Close these before the next organization step." : "No immediate action needed.",
         ),
         progressPct: Math.min(input.pendingAttentionCount * 33, 100),
       },
@@ -489,10 +497,14 @@ export function createOrgDashboardIA(input: OrgDashboardIAInput): DashboardIAVie
       },
     ],
     riskAttentionPanel: {
-      title: txt(input.locale, "Figyelmet kér", "Needs attention"),
+      title: txt(input.locale, "Figyelmet igényel", "Needs attention"),
       summary:
         input.riskItems.length > 0
-          ? txt(input.locale, "A következő döntés előtt ezeket zárd le.", "Close these before the next decision cycle.")
+          ? txt(
+              input.locale,
+              "Először ezeket a pontokat zárd le, utána jöhet a következő lépés.",
+              "Close these items first, then continue with the next step.",
+            )
           : txt(input.locale, "Nincs nyitott kritikus jelzés.", "No open critical warning."),
       items: input.riskItems,
     },
