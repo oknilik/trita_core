@@ -147,6 +147,9 @@ export function NavHeaderUI({
     hasHiringAccess,
     activeCampaignCount,
   });
+  const homeItem = navItems.find((item) => item.id === "home");
+  const homeLabel = homeItem?.label ?? "Vezérlő";
+  const homeDestination = homeItem?.primaryHref ?? homeHref;
   const onHome =
     homePath === "/dashboard" || homePath === "/platform/home"
       ? pathname === "/dashboard" || pathname === "/platform/home"
@@ -468,12 +471,12 @@ export function NavHeaderUI({
             {mobileMenu === "quickview" ? (
               <div className="mx-4 mt-2 rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-4 shadow-lg shadow-black/[0.04]">
                 <Link
-                  href={homeHref}
+                  href={homeDestination}
                   onClick={() => setMobileMenu("closed")}
                   className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-medium text-white"
                 >
                   <GridIcon className="h-3.5 w-3.5" />
-                  Vezérlő
+                  {homeLabel}
                 </Link>
 
                 <div className="flex flex-col gap-0.5">
@@ -544,12 +547,12 @@ export function NavHeaderUI({
               <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.04]">
                 <div className="flex items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-3">
                   <Link
-                    href={homeHref}
+                    href={homeDestination}
                     onClick={() => setMobileMenu("closed")}
                     className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-medium text-white"
                   >
                     <GridIcon className="h-3.5 w-3.5" />
-                    Vezérlő
+                    {homeLabel}
                   </Link>
                   <button
                     type="button"

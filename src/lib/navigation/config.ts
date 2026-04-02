@@ -77,25 +77,25 @@ function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext)
       {
         id: "teams-overview",
         label: "Összes csapat",
-        description: "Szervezeti csapatlista és státuszok",
+        description: "Csapatlista és aktuális állapot",
         href: `/org/${ctx.org.id}?tab=teams`,
       },
       {
         id: "teams-create",
-        label: "Csapat létrehozása",
-        description: "Új csapat indítása a teams nézetből",
+        label: "Új csapat",
+        description: "Új csapat indítása",
         href: `/org/${ctx.org.id}?tab=teams`,
       },
       {
         id: "teams-members",
         label: "Tagok",
-        description: "Szervezeti tagok és csapathoz rendelés",
+        description: "Tagok és szerepkörök kezelése",
         href: `/org/${ctx.org.id}?tab=members`,
       },
       {
         id: "teams-invites",
         label: "Meghívások",
-        description: "Függő szervezeti és csapat meghívások",
+        description: "Nyitott meghívások áttekintése",
         href: `/org/${ctx.org.id}?tab=members`,
       },
     ];
@@ -108,26 +108,26 @@ function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext)
     {
       id: "team-profile",
       label: "Csapatkép",
-      description: "A csapat mintázata és riportja",
+      description: "Csapatkép és fő riport",
       href: `/team/${primaryTeam.id}?tab=profile`,
     },
     {
       id: "team-members",
       label: "Tagok",
-      description: "Csapattagok és szerepkörök",
+      description: "Taglista és szerepkörök",
       href: `/team/${primaryTeam.id}?tab=members`,
     },
     {
       id: "team-invites",
       label: "Meghívások",
-      description: "Tagfelvétel és függő team invite-ok",
+      description: "Nyitott meghívások kezelése",
       href: `/team/${primaryTeam.id}?tab=members`,
     },
     ...(ctx.org
       ? [{
           id: "team-observer-rounds",
           label: "Observer körök",
-          description: "Aktív és lezárt szervezeti körök",
+          description: "Observer körök állapota",
           href: `/org/${ctx.org.id}?tab=campaigns`,
         }]
       : []),
@@ -145,19 +145,19 @@ function buildHiringDestinations(
       {
         id: "hiring-overview",
         label: "Jelöltfolyamat",
-        description: "Aktív és lezárt jelöltek áttekintése",
+        description: "Aktív és lezárt jelöltek",
         href: `/hiring/${ctx.org.id}`,
       },
       {
         id: "hiring-add",
-        label: "Új jelölt indítása",
-        description: "Új meghívó és értékelés indítása",
+        label: "Új jelölt",
+        description: "Meghívó küldése új jelöltnek",
         href: `/hiring/${ctx.org.id}?invite=true`,
       },
       {
         id: "hiring-credits",
-        label: "Kreditek / csomagok",
-        description: "Hiring kreditek és előfizetés kezelése",
+        label: "Kreditek",
+        description: "Kreditkeret és csomagok",
         href: `/org/${ctx.org.id}/settings`,
       },
     ];
@@ -167,7 +167,7 @@ function buildHiringDestinations(
     {
       id: "hiring-my-candidates",
       label: "Jelöltjeim",
-      description: "A saját vagy kezelhető jelöltfolyamatok",
+      description: "A kezelt jelöltfolyamatok",
       href: `/hiring/${ctx.org.id}`,
     },
     {
@@ -178,8 +178,8 @@ function buildHiringDestinations(
     },
     {
       id: "hiring-credits-available",
-      label: "Elérhető kreditek",
-      description: "Aktuális kreditkeret és felhasználás",
+      label: "Kreditek",
+      description: "Elérhető kreditkeret",
       href: `/hiring/${ctx.org.id}`,
     },
   ];
@@ -191,26 +191,26 @@ function buildOrgDestinations(ctx: WorkspaceNavContext, role: WorkspaceNavRole):
   return [
     {
       id: "org-admin",
-      label: "Szervezeti admin",
-      description: "Admin központ, alapbeállítások és kezelés",
+      label: "Admin központ",
+      description: "Szervezeti adminfeladatok egy helyen",
       href: `/org/${ctx.org.id}/settings`,
     },
     {
       id: "org-permissions",
       label: "Jogosultságok",
-      description: "Admin, manager és member szerepkörök",
+      description: "Szerepkörök és hozzáférések kezelése",
       href: `/org/${ctx.org.id}?tab=members`,
     },
     {
       id: "org-billing",
       label: "Számlázás",
-      description: "Előfizetés, csomagok és billing portal",
+      description: "Előfizetés és számlázás kezelése",
       href: `/org/${ctx.org.id}/settings`,
     },
     {
       id: "org-settings",
       label: "Beállítások",
-      description: "Szervezetnév és admin kezelőfelület",
+      description: "Szervezeti beállítások",
       href: `/org/${ctx.org.id}/settings`,
     },
   ];
@@ -227,28 +227,28 @@ function buildAnalyticsDestinations(
     return [
       {
         id: "analytics-org-profile",
-        label: "Szervezeti profil",
-        description: "Szervezeti állapot és összefoglaló nézet",
+        label: "Szervezeti kép",
+        description: "Összkép és fő értelmezés",
         href: `/org/${ctx.org.id}`,
       },
       {
         id: "analytics-team-patterns",
         label: "Csapatmintázatok",
-        description: "Csapatok állapota és mintázatai",
+        description: "Csapatok mintázatai egy nézetben",
         href: `/org/${ctx.org.id}?tab=teams`,
       },
       ...(primaryTeam
         ? [{
             id: "analytics-reports",
             label: "Riportok",
-            description: "A vezető csapat részletes riportnézete",
+            description: "Részletes csapatriport",
             href: `/team/${primaryTeam.id}?tab=profile`,
           }]
         : []),
       {
         id: "analytics-deeper-layers",
-        label: "Rétegek / mélyebb elemzés",
-        description: "4+2 rétegek és további értelmező nézetek",
+        label: "Mélyelemzés",
+        description: "Rétegek és részletes értelmezés",
         href: "/assessment-layers",
       },
     ];
@@ -260,19 +260,19 @@ function buildAnalyticsDestinations(
     {
       id: "analytics-team-report",
       label: "Csapatriport",
-      description: "A csapatkép és fő riportnézet",
+      description: "A csapatkép fő riportja",
       href: `/team/${primaryTeam.id}?tab=profile`,
     },
     {
       id: "analytics-comparison",
-      label: "Összehasonlítás",
-      description: "Mintázatok és eltérések áttekintése",
+      label: "Összevetés",
+      description: "Mintázatok és eltérések",
       href: `/team/${primaryTeam.id}?tab=profile`,
     },
     {
       id: "analytics-export",
       label: "Export",
-      description: "Riport megnyitása export és megosztás előtt",
+      description: "Riport export és megosztás",
       href: `/team/${primaryTeam.id}?tab=profile`,
     },
   ];
