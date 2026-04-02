@@ -53,6 +53,79 @@ function getHubIds(edges: DynamicsEdge[]): string[] {
     .map(([id]) => id);
 }
 
+// ── Dimension breakdown helpers ──────────────────────────────────────────────
+
+const FRICTION_WEIGHTS: Record<string, number> = {
+  C: 0.30, A: 0.25, H: 0.20, E: 0.15, X: 0.05, O: 0.05,
+};
+
+const DIM_LABELS: Record<string, { hu: string; en: string }> = {
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  H: { hu: "Őszinteség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  O: { hu: "Nyitottság", en: "Openness" },
+};
+
+const DIM_FRICTION_HINT: Record<string, { hu: string; en: string }> = {
+  C: { hu: "Eltérő munkaszervezés és határidő-kezelés", en: "Different work organization and deadline approach" },
+  A: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
+  H: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
+  E: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
+  X: { hu: "Eltérő energia-szint és interakciós igény", en: "Different energy level and interaction needs" },
+  O: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
+};
+
+const DIM_ALIGNED_HINT: Record<string, { hu: string; en: string }> = {
+  C: { hu: "Hasonló munkastílus és szervezettség", en: "Similar work style and organization" },
+  A: { hu: "Hasonló kommunikációs megközelítés", en: "Similar communication approach" },
+  H: { hu: "Hasonló értékrend és átláthatóság-igény", en: "Similar values and transparency needs" },
+  E: { hu: "Hasonló érzelmi hőfok", en: "Similar emotional temperature" },
+  X: { hu: "Hasonló szociális energia", en: "Similar social energy" },
+  O: { hu: "Hasonló nyitottság az újra", en: "Similar openness to new ideas" },
+};
+
+interface DimGap {
+  code: string;
+  gap: number;
+  contribution: number;
+  label: string;
+  hint: string;
+}
+
+function computeDimBreakdown(
+  a: IntelligenceMember["hexaco"],
+  b: IntelligenceMember["hexaco"],
+  loc: Locale,
+): { gaps: DimGap[]; totalFriction: number } {
+  const dims = ["C", "A", "H", "E", "X", "O"] as const;
+  const gaps: DimGap[] = [];
+  let totalFriction = 0;
+
+  for (const code of dims) {
+    const gap = Math.abs(a[code] - b[code]);
+    const w = FRICTION_WEIGHTS[code] ?? 0;
+    const contribution = Math.round(w * gap);
+    totalFriction += contribution;
+    const isSmall = gap < 15;
+    gaps.push({
+      code,
+      gap,
+      contribution,
+      label: (DIM_LABELS[code]?.[loc] ?? code),
+      hint: isSmall
+        ? (DIM_ALIGNED_HINT[code]?.[loc] ?? "")
+        : (DIM_FRICTION_HINT[code]?.[loc] ?? ""),
+    });
+  }
+
+  gaps.sort((x, y) => y.contribution - x.contribution);
+  return { gaps, totalFriction };
+}
+
+// ── Detail panel ────────────────────────────────────────────────────────────
+
 interface DynamicsDetailPanelProps {
   member: IntelligenceMember;
   edges: DynamicsEdge[];
@@ -61,10 +134,9 @@ interface DynamicsDetailPanelProps {
 }
 
 function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPanelProps) {
+  const [expandedEdge, setExpandedEdge] = useState<string | null>(null);
   const memberMap = Object.fromEntries(members.map((m) => [m.id, m]));
-  // Profile-based edges are symmetric — show all edges involving this member
-  const outgoing = edges.filter((e) => e.from === member.id || e.to === member.id);
-  const incoming = edges.filter((e) => e.to === member.id || e.from === member.id);
+  const myEdges = edges.filter((e) => e.from === member.id || e.to === member.id);
 
   const edgeLabelKey: Record<DynamicsEdge["type"], string> = {
     aligned: "teamComp.edgeAligned",
@@ -81,31 +153,81 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
         >
           {member.initials}
         </div>
-        <div>
-          <p className="text-[14px] font-bold text-ink">{member.name}</p>
-        </div>
+        <p className="text-[14px] font-bold text-ink">{member.name}</p>
       </div>
 
-      {outgoing.length > 0 && (
+      {myEdges.length > 0 && (
         <div>
           <SectionEyebrow className="mb-1.5 text-[8px]">
             {t("teamComp.connectionsEyebrow", loc)}
           </SectionEyebrow>
-          <div className="flex flex-col gap-1">
-            {outgoing.map((e, i) => {
+          <div className="flex flex-col gap-0.5">
+            {myEdges.map((e, i) => {
               const otherId = e.from === member.id ? e.to : e.from;
               const target = memberMap[otherId];
               if (!target) return null;
+              const isExpanded = expandedEdge === otherId;
+              const breakdown = isExpanded
+                ? computeDimBreakdown(member.hexaco, target.hexaco, loc)
+                : null;
+
               return (
-                <div key={i} className="flex items-center gap-2">
-                  <div
-                    className="h-2 w-2 flex-shrink-0 rounded-full"
-                    style={{ background: EDGE_COLORS[e.type] }}
-                  />
-                  <span className="text-[11px] text-ink-body">{target.name}</span>
-                  <span className="ml-auto text-[10px] text-muted">
-                    {t(edgeLabelKey[e.type], loc)}
-                  </span>
+                <div key={i}>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedEdge(isExpanded ? null : otherId)}
+                    className="flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition-colors hover:bg-cream"
+                  >
+                    <div
+                      className="h-2 w-2 flex-shrink-0 rounded-full"
+                      style={{ background: EDGE_COLORS[e.type] }}
+                    />
+                    <span className="text-[11px] text-ink-body">{target.name}</span>
+                    <span className="ml-auto text-[10px] text-muted">
+                      {t(edgeLabelKey[e.type], loc)}
+                    </span>
+                    <svg
+                      className={`h-3 w-3 text-muted transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                      viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                    >
+                      <path d="M3 4.5L6 7.5L9 4.5" />
+                    </svg>
+                  </button>
+
+                  {isExpanded && breakdown && (
+                    <div className="mb-2 ml-5 mt-1 rounded-lg border border-sand bg-cream/60 p-3">
+                      <div className="flex flex-col gap-2">
+                        {breakdown.gaps.slice(0, 4).map((g) => (
+                          <div key={g.code}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-semibold text-ink">{g.label}</span>
+                              <span className="text-[10px] text-muted">
+                                {g.gap < 15
+                                  ? (loc === "hu" ? "hasonló" : "similar")
+                                  : g.gap < 30
+                                    ? (loc === "hu" ? "eltérő" : "different")
+                                    : (loc === "hu" ? "nagyon eltérő" : "very different")}
+                              </span>
+                            </div>
+                            <div className="mt-0.5 flex gap-1">
+                              <div className="h-1 flex-1 overflow-hidden rounded-full bg-sand">
+                                <div
+                                  className="h-full rounded-full"
+                                  style={{
+                                    width: `${Math.min(g.gap, 100)}%`,
+                                    backgroundColor: g.gap < 15 ? "var(--color-state-success-strong)" : g.gap < 30 ? "#d3cfc6" : "#f59e0b",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            {g.hint && (
+                              <p className="mt-0.5 text-[9px] leading-snug text-muted">{g.hint}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -114,7 +236,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
       )}
 
       <div className="border-t border-sand pt-2 text-[11px] text-ink-body">
-        <span className="font-semibold text-ink">{incoming.length}</span> {t("teamComp.incomingConnections", loc)}
+        <span className="font-semibold text-ink">{myEdges.length}</span> {t("teamComp.incomingConnections", loc)}
       </div>
     </div>
   );
