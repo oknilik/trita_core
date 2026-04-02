@@ -36,6 +36,7 @@
 | `nav-convergence-rfc.md` | Navigáció konvergencia RFC |
 | `test-ownership.md` | Teszt fájl ownership és felelősség |
 | `testing-quality-gate.md` | Teszt quality gate szabályok |
+| `changelog/` | Napi changelog fájlok (dátum szerint) |
 
 ### `audits/` — Egyszeri auditok és ellenőrzések
 | Fájl | Tartalom |
