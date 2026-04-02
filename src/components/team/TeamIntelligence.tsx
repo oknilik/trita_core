@@ -1,12 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { TeamMap } from "./TeamMap";
-import { DynamicsMap } from "./DynamicsMap";
-import { RoleFitMap } from "./RoleFitMap";
 import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import type {
@@ -46,12 +42,6 @@ interface TeamIntelligenceProps {
   deepDiveHref?: string;
   deepDiveLabel?: string;
 }
-
-const SUB_KEYS: Record<SubTab, string> = {
-  map: "teamComp.subMap",
-  dynamics: "teamComp.subDynamics",
-  roles: "teamComp.subRoles",
-};
 
 const SOURCE_KEY: Record<TeamIntelligenceEvidence["source"], string> = {
   self: "teamComp.evidenceSourceSelf",
@@ -135,218 +125,192 @@ export function TeamIntelligence({
   members,
   edges,
   evidenceBySub,
-  presentation = "tabs",
   isHu = true,
   noDataCtaHref,
   noDataCtaLabel,
   deepDiveHref,
   deepDiveLabel,
 }: TeamIntelligenceProps) {
-  const [sub, setSub] = useState<SubTab>("map");
   const loc: Locale = isHu ? "hu" : "en";
-  const availableTabs: SubTab[] = edges.length > 0
-    ? ["map", "dynamics", "roles"]
-    : ["map", "roles"];
   const evidenceByTab = mergeEvidence(evidenceBySub);
-  const activeSub: SubTab = availableTabs.includes(sub) ? sub : "map";
-  const evidence = evidenceByTab[activeSub];
+  const membersWithData = members.filter((member) => member.hasAssessmentData);
+  const membersWithoutData = members.filter((member) => !member.hasAssessmentData);
+  const dynamicsCounts = edges.reduce(
+    (acc, edge) => {
+      if (edge.type === "good") acc.good += 1;
+      if (edge.type === "neutral") acc.neutral += 1;
+      if (edge.type === "tension") acc.tension += 1;
+      return acc;
+    },
+    { good: 0, neutral: 0, tension: 0 },
+  );
 
-  if (presentation === "blocks") {
-    const membersWithData = members.filter((member) => member.hasAssessmentData);
-    const membersWithoutData = members.filter((member) => !member.hasAssessmentData);
-
-    return (
-      <div className="flex flex-col gap-6 pt-2">
-        <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="font-dm-sans text-[14px] font-semibold text-ink">
-              {isHu ? "Ki mit hoz a csapatba" : "Who brings what to the team"}
-            </p>
-            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-              {membersWithData.length}/{members.length}{" "}
-              {isHu ? "tag értelmezhető adattal" : "members with usable data"}
-            </span>
-          </div>
-          <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
-          <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
-            {membersWithData.map((member) => {
-              const roleScores = estimateBelbinFromHexaco(member.hexaco);
-              const topRoles = getTopRoles(roleScores, 3);
-              const topDims = Object.entries(member.hexaco)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, 2);
-              return (
-                <article
-                  key={member.id}
-                  className="rounded-xl border border-sand bg-cream/45 p-3"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white text-[11px] font-semibold"
-                      style={{ background: member.color, color: member.textColor }}
-                    >
-                      {member.initials}
-                    </div>
-                    <div>
-                      <p className="text-[13px] font-semibold text-ink">{member.name}</p>
-                      <p className="text-[11px] text-muted">
-                        {isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-2.5 flex flex-wrap gap-1.5">
-                    {topRoles.map((role) => (
-                      <span
-                        key={`${member.id}-${role.role}`}
-                        className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body"
-                      >
-                        {isHu ? BELBIN_ROLES[role.role].hu : BELBIN_ROLES[role.role].en}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-2.5 flex flex-wrap gap-1.5">
-                    {topDims.map(([dim, value]) => (
-                      <span
-                        key={`${member.id}-${dim}`}
-                        className="rounded-full bg-white px-2 py-0.5 text-[11px] text-ink-body"
-                      >
-                        <span className="font-semibold text-ink">{dim}</span> {Math.round(value)}%
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              );
-            })}
-
-            {membersWithData.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-[12px] text-ink-body">
-                {isHu
-                  ? "Még nincs kitöltött assessment adat az erőforrás-térképhez."
-                  : "No completed assessment data yet for the resource map."}
-              </div>
-            ) : null}
-          </div>
-
-          {membersWithoutData.length > 0 ? (
-            <div className="mt-3 rounded-xl border border-dashed border-sand bg-white p-3">
-              <p className="text-[12px] font-medium text-ink">
-                {isHu ? "Még hiányzó adatok" : "Missing data members"}
-              </p>
-              <p className="mt-1 text-[11px] text-ink-body">
-                {membersWithoutData.length}{" "}
-                {isHu
-                  ? "tag még nem rendelkezik értelmezhető assessment adattal."
-                  : "members still do not have usable assessment data."}
-              </p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {membersWithoutData.slice(0, 8).map((member) => (
-                  <span
-                    key={`${member.id}-missing`}
-                    className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body"
+  return (
+    <div className="flex flex-col gap-6 pt-2">
+      <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="font-dm-sans text-[14px] font-semibold text-ink">
+            {isHu ? "Ki mit hoz a csapatba" : "Who brings what to the team"}
+          </p>
+          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+            {membersWithData.length}/{members.length}{" "}
+            {isHu ? "tag értelmezhető adattal" : "members with usable data"}
+          </span>
+        </div>
+        <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
+        <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+          {membersWithData.map((member) => {
+            const roleScores = estimateBelbinFromHexaco(member.hexaco);
+            const topRoles = getTopRoles(roleScores, 3);
+            const topDims = Object.entries(member.hexaco)
+              .sort(([, a], [, b]) => b - a)
+              .slice(0, 2);
+            return (
+              <article
+                key={member.id}
+                className="rounded-xl border border-sand bg-cream/45 p-3"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white text-[11px] font-semibold"
+                    style={{ background: member.color, color: member.textColor }}
                   >
-                    {member.name}
-                  </span>
-                ))}
-              </div>
-              {membersWithoutData.length > 8 ? (
-                <p className="mt-1 text-[11px] text-muted">
-                  +{membersWithoutData.length - 8} {isHu ? "fő" : "more"}
-                </p>
-              ) : null}
-              {noDataCtaHref && noDataCtaLabel ? (
-                <Link
-                  href={noDataCtaHref}
-                  className="mt-3 inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
-                >
-                  {noDataCtaLabel}
-                </Link>
-              ) : null}
+                    {member.initials}
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-semibold text-ink">{member.name}</p>
+                    <p className="text-[11px] text-muted">
+                      {isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {topRoles.map((role) => (
+                    <span
+                      key={`${member.id}-${role.role}`}
+                      className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body"
+                    >
+                      {isHu ? BELBIN_ROLES[role.role].hu : BELBIN_ROLES[role.role].en}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {topDims.map(([dim, value]) => (
+                    <span
+                      key={`${member.id}-${dim}`}
+                      className="rounded-full bg-white px-2 py-0.5 text-[11px] text-ink-body"
+                    >
+                      <span className="font-semibold text-ink">{dim}</span> {Math.round(value)}%
+                    </span>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+
+          {membersWithData.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-[12px] text-ink-body">
+              {isHu
+                ? "Még nincs kitöltött assessment adat az erőforrás-térképhez."
+                : "No completed assessment data yet for the resource map."}
             </div>
           ) : null}
+        </div>
 
-          {edges.length > 0 ? (
-            <div className="mt-3 rounded-xl border border-sand bg-white p-3">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <p className="font-dm-sans text-[13px] font-semibold text-ink">
-                  {t("teamComp.subDynamics", loc)}
-                </p>
-                <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-                  {loc === "hu" ? "fókusz: kapcsolatok" : "focus: dynamics"}
+        {membersWithoutData.length > 0 ? (
+          <div className="mt-3 rounded-xl border border-dashed border-sand bg-white p-3">
+            <p className="text-[12px] font-medium text-ink">
+              {isHu ? "Még hiányzó adatok" : "Missing data members"}
+            </p>
+            <p className="mt-1 text-[11px] text-ink-body">
+              {membersWithoutData.length}{" "}
+              {isHu
+                ? "tag még nem rendelkezik értelmezhető assessment adattal."
+                : "members still do not have usable assessment data."}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {membersWithoutData.slice(0, 8).map((member) => (
+                <span
+                  key={`${member.id}-missing`}
+                  className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body"
+                >
+                  {member.name}
                 </span>
-              </div>
-              <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
-              <DynamicsMap members={members} edges={edges} isHu={isHu} />
+              ))}
+            </div>
+            {membersWithoutData.length > 8 ? (
+              <p className="mt-1 text-[11px] text-muted">
+                +{membersWithoutData.length - 8} {isHu ? "fő" : "more"}
+              </p>
+            ) : null}
+            {noDataCtaHref && noDataCtaLabel ? (
+              <Link
+                href={noDataCtaHref}
+                className="mt-3 inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+              >
+                {noDataCtaLabel}
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="mt-3 rounded-xl border border-sand bg-white p-3">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <p className="font-dm-sans text-[13px] font-semibold text-ink">
+              {t("teamComp.subDynamics", loc)}
+            </p>
+            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+              {isHu ? "summary only" : "summary only"}
+            </span>
+          </div>
+          <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
+          {edges.length > 0 ? (
+            <div className="mt-2 flex flex-wrap gap-2">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-800">
+                {isHu ? "Támogató kapcsolatok" : "Supportive links"}: {dynamicsCounts.good}
+              </span>
+              <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
+                {isHu ? "Semleges kapcsolatok" : "Neutral links"}: {dynamicsCounts.neutral}
+              </span>
+              <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] text-rose-800">
+                {isHu ? "Feszültségi pontok" : "Tension links"}: {dynamicsCounts.tension}
+              </span>
             </div>
           ) : (
-            <p className="mt-3 rounded-xl border border-warm-mid bg-cream px-3 py-2.5 text-[12px] text-ink-body">
+            <p className="mt-2 text-[12px] text-ink-body">
               {t("teamComp.dynamicsHiddenHint", loc)}
             </p>
           )}
-        </section>
+        </div>
+      </section>
 
-        <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="font-dm-sans text-[14px] font-semibold text-ink">
-              {isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
-            </p>
-            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-              {isHu ? "deep-dive" : "deep dive"}
-            </span>
-          </div>
-          <p className="text-[12px] leading-relaxed text-ink-body">
-            {isHu
-              ? "A részletes szerep-eloszlás, hiányzó szerepek és egyéni bontás külön deep-dive nézetben érhető el."
-              : "Detailed role distribution, missing roles and per-member breakdown are available in a separate deep-dive view."}
+      <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="font-dm-sans text-[14px] font-semibold text-ink">
+            {isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
           </p>
-          {deepDiveHref ? (
-            <div className="mt-3">
-              <Link
-                href={deepDiveHref}
-                className="inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
-              >
-                {deepDiveLabel ?? (isHu ? "Részletes csapatszerep-elemzés megnyitása" : "Open detailed team-role analysis")}
-              </Link>
-            </div>
-          ) : null}
-        </section>
-      </div>
-    );
-  }
-
-  return (
-    <div className="pt-6">
-      {/* Al-tab navigáció */}
-      <div className="mb-5 flex gap-2">
-        {availableTabs.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setSub(tab)}
-            className={[
-              "rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors",
-              activeSub === tab
-                ? "bg-ink text-white"
-                : "bg-warm-mid text-ink-body hover:bg-sand",
-            ].join(" ")}
-          >
-            {t(SUB_KEYS[tab], loc)}
-          </button>
-        ))}
-      </div>
-
-      {edges.length === 0 ? (
-        <p className="mb-4 rounded-xl border border-warm-mid bg-cream px-3 py-2 text-[12px] text-ink-body">
-          {t("teamComp.dynamicsHiddenHint", loc)}
+          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+            {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
+          </span>
+        </div>
+        <p className="text-[12px] leading-relaxed text-ink-body">
+          {isHu
+            ? "Az intelligence nézet summary jellegű. A részletes chartok és szerep-eloszlás a Csapatszerepek deep-dive felületen érhető el."
+            : "The intelligence view stays summary-first. Detailed charts and role distribution are owned by the Team roles deep-dive surface."}
         </p>
-      ) : null}
-
-      <EvidenceSummary evidence={evidence} loc={loc} />
-
-      {activeSub === "map" && <TeamMap members={members} isHu={isHu} />}
-      {activeSub === "dynamics" && <DynamicsMap members={members} edges={edges} isHu={isHu} />}
-      {activeSub === "roles" && <RoleFitMap members={members} isHu={isHu} />}
+        {deepDiveHref ? (
+          <div className="mt-3">
+            <Link
+              href={deepDiveHref}
+              className="inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+            >
+              {deepDiveLabel ?? (isHu ? "Részletes csapatszerep-elemzés megnyitása" : "Open detailed team-role analysis")}
+            </Link>
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }
