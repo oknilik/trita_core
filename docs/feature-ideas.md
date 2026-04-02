@@ -60,3 +60,75 @@ TrustResponse {
 - Nem helyettesíti a személyiségtesztet — kiegészíti
 - Nem nyilvános (csapaton belüli, csak a vezető látja az aggregált képet)
 - Nem egyéni visszajelzés — a dynamics map szintjén aggregált
+
+---
+
+## 2. Csapat szerep teszt (Belbin) menedzselése és riportba foglalása
+
+**Státusz:** backlog
+**Prioritás:** magas
+**Előfeltétel:** a Belbin teszt kód megvan, a self-layer szinten kitölthető
+
+### Jelenlegi állapot a kódban
+
+A Belbin teszt infrastruktúra implementált:
+- **Kérdőív:** `src/lib/belbin-questions.ts` — 7 szekció × 8 állítás, pontelosztásos formátum
+- **Scoring:** `src/lib/belbin-scoring.ts` — 9 Belbin szerep (PL, RI, CO, SH, ME, TW, IM, CF, SP), top 3 kiválasztás
+- **HEXACO becslés:** `src/lib/belbin-estimate.ts` — ha nincs kitöltött Belbin teszt, HEXACO profilból becsül
+- **Kitöltő felület:** `src/app/assessment/belbin/BelbinClient.tsx` + `page.tsx`
+- **Submit API:** `src/app/api/belbin/submit/route.ts`
+- **Adatmodell:** `BelbinAnswer` (válaszok) + `BelbinScore` (eredmény, source: `questionnaire` | `estimate`)
+- **Csapat nézet:** `src/components/team/TeamBelbinSection.tsx` (492 sor) — szerep-eloszlás, heatmap, hiányzó/túlreprezentált szerepek, tag-szerep mátrix
+- **Team intelligence-be bekötve:** a team page-en a Belbin szekció renderelődik HEXACO becslésből
+
+### Ami hiányzik
+
+**1. Manager-vezérelt Belbin kör indítás:**
+A személyiségteszt kitöltés a self-layer-en történik (user saját maga tölti ki). A Belbin tesztre viszont nincs campaign/round mechanizmus — a manager nem tud köröket indítani, emlékeztetőt küldeni, vagy nyomon követni a kitöltöttséget.
+
+**2. Becslés vs. valódi kitöltés megkülönböztetése a riportban:**
+Jelenleg a `TeamBelbinSection` a HEXACO-ból becsült Belbin szerepeket használja. A riportnak egyértelműen jeleznie kellene:
+- ki töltötte ki ténylegesen a Belbin tesztet (`source: "questionnaire"`)
+- kinél fut becslésből (`source: "estimate"`)
+- mekkora a lefedettség (X/Y tag valódi kitöltéssel)
+
+**3. Egyéni Belbin eredmény a személyes profilon:**
+A self dashboard-on nincs Belbin eredmény megjelenítés. A user kitölti a tesztet, de az eredményt csak a csapat nézetben látja (ha csapattag).
+
+**4. PDF/export integrálás:**
+A csapat riportba a Belbin szerep-eloszlás nem kerül bele.
+
+### Minimális scope
+
+**Fázis A — Riport pontosítás (kis effort):**
+- `TeamBelbinSection` jelezze a source-t tagonként (becslés badge vs. kitöltött badge)
+- Összesítő: "3/8 tag valódi kitöltéssel, 5 becslésből"
+- A profil results oldalon jelenjen meg a saját Belbin eredmény (top 3 szerep + leírás)
+
+**Fázis B — Belbin kör menedzselés (közepes effort):**
+- Campaign-szerű lifecycle: manager indít Belbin kitöltési kört
+- Tagok kapnak értesítést / a dashboardon megjelenik a teendő
+- Kitöltöttség tracking a team oldalon
+- A journey engine felismeri a Belbin köröt mint next-best-action
+
+**Fázis C — Riport export (kis effort):**
+- A csapat PDF-be bekerül a Belbin szekció
+- Szerep-eloszlás, hiányzó szerepek, erősségek
+
+### Meglévő kód referencia
+
+| Fájl | Méret | Funkció |
+|------|-------|---------|
+| `src/lib/belbin-scoring.ts` | 62 sor | 9 szerep scoring + `getTopRoles()` |
+| `src/lib/belbin-estimate.ts` | 45 sor | HEXACO → Belbin becslés mapping |
+| `src/lib/belbin-questions.ts` | 137 sor | 7 szekció × 8 állítás kérdésbank |
+| `src/app/assessment/belbin/` | 85 sor | Kitöltő UI + page |
+| `src/app/api/belbin/submit/route.ts` | 54 sor | Submit + score mentés |
+| `src/components/team/TeamBelbinSection.tsx` | 492 sor | Csapat Belbin vizualizáció |
+| Prisma: `BelbinAnswer`, `BelbinScore` | — | Adatmodell kész |
+
+### Nem scope
+
+- Nem új kérdőív fejlesztés — a meglévő Belbin teszt marad
+- Nem módosítja a HEXACO becslés logikát — az fallback marad
+- Nem ad egyéni coaching ajánlást — csak a szerep felismerés és csapat szintű eloszlás
