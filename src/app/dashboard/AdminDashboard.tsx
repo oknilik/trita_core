@@ -101,6 +101,8 @@ const HEXACO_DIMS = [
 const ORG_HERO_GRADIENT =
   "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)";
 const ORG_HERO_PRIMARY = "#d2a36a";
+const ORG_HERO_BADGE_BG = "rgba(210,163,106,0.22)";
+const ORG_HERO_BADGE_TEXT = "#f4c792";
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export function AdminDashboard() {
@@ -398,7 +400,7 @@ export function AdminDashboard() {
                     {dashboardVm.riskAttentionPanel.items.length > 0 && (
                       <span
                         className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
-                        style={{ backgroundColor: "rgba(210,163,106,0.22)", color: "#f4c792" }}
+                        style={{ backgroundColor: ORG_HERO_BADGE_BG, color: ORG_HERO_BADGE_TEXT }}
                       >
                         {tf("dashboard.openAttentionPoints", localeTag, { count: String(dashboardVm.riskAttentionPanel.items.length) })}
                       </span>
