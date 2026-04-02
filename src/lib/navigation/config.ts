@@ -190,10 +190,10 @@ function buildOrgDestinations(ctx: WorkspaceNavContext, role: WorkspaceNavRole):
 
   return [
     {
-      id: "org-overview",
-      label: "Szervezeti áttekintés",
-      description: "Operatív állapot és szervezeti összkép",
-      href: `/org/${ctx.org.id}`,
+      id: "org-admin",
+      label: "Szervezeti admin",
+      description: "Admin központ, alapbeállítások és kezelés",
+      href: `/org/${ctx.org.id}/settings`,
     },
     {
       id: "org-permissions",
@@ -327,8 +327,11 @@ export function buildWorkspaceNavigation(
   const orgNav = buildDropdownItem(
     "org",
     "Szervezet",
-    ctx.org ? `/org/${ctx.org.id}` : ctx.homeHref,
-    uniqueMatchPrefixes(ctx.org ? `/org/${ctx.org.id}` : null),
+    ctx.org ? `/org/${ctx.org.id}/settings` : ctx.homeHref,
+    uniqueMatchPrefixes(
+      ctx.org ? `/org/${ctx.org.id}/settings` : null,
+      ctx.org ? `/org/${ctx.org.id}?tab=members` : null,
+    ),
     orgItems,
     ctx.activeCampaignCount > 0 ? ctx.activeCampaignCount : undefined,
   );
@@ -338,7 +341,13 @@ export function buildWorkspaceNavigation(
     "analytics",
     role === "org_manager" ? "Riportok" : "Analitika",
     analyticsItems[0]?.href ?? ctx.homeHref,
-    uniqueMatchPrefixes(...ctx.teams.map((team) => `/team/${team.id}?tab=profile`), ...ctx.teams.map((team) => `/team/${team.id}`)),
+    uniqueMatchPrefixes(
+      ...ctx.teams.map((team) => `/team/${team.id}?tab=profile`),
+      ctx.org ? `/org/${ctx.org.id}?tab=overview` : null,
+      ctx.org ? `/org/${ctx.org.id}?tab=teams` : null,
+      ctx.org ? `/org/${ctx.org.id}?tab=campaigns` : null,
+      "/assessment-layers",
+    ),
     analyticsItems,
   );
 

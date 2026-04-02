@@ -233,19 +233,32 @@ export function NavHeaderUI({
   }
 
   function isNavItemActive(item: WorkspaceNavItem): boolean {
+    const currentPathWithQuery = activeTab ? `${pathname}?tab=${activeTab}` : pathname;
+    const matchesPrefix = (prefix: string) => {
+      if (prefix.includes("?")) {
+        if (currentPathWithQuery === prefix) return true;
+        // Org overview is the implicit default when no `tab` query is present.
+        if (prefix.endsWith("?tab=overview") && activeTab == null) {
+          return pathname === prefix.split("?")[0];
+        }
+        return false;
+      }
+      return pathname.startsWith(prefix);
+    };
+
     switch (item.id) {
       case "home":
         return onHome;
       case "teams":
         return teams.some((team) => pathname.startsWith(`/team/${team.id}`)) && activeTab !== "profile";
       case "analytics":
-        return teams.some((team) => pathname.startsWith(`/team/${team.id}`)) && activeTab === "profile";
+        return item.matchPrefixes.some(matchesPrefix);
       case "hiring":
         return org ? pathname.startsWith(`/hiring/${org.id}`) : false;
       case "org":
-        return org ? pathname.startsWith(`/org/${org.id}`) : false;
+        return item.matchPrefixes.some(matchesPrefix);
       default:
-        return item.matchPrefixes.some((prefix) => pathname.startsWith(prefix));
+        return item.matchPrefixes.some(matchesPrefix);
     }
   }
 
