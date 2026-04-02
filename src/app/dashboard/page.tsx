@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
+import { getServerAuth } from "@/lib/auth-server";
 import { AdminDashboard } from "./AdminDashboard";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +18,7 @@ export default async function DashboardPage({
     ? "platform_home_page"
     : "dashboard_page";
 
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({

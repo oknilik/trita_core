@@ -1,13 +1,13 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getServerAuth } from "@/lib/auth-server";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
 
 export default async function OrgRedirectPage() {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({

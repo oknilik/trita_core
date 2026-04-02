@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TeamListPage() {
-  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
   if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({

@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { auth } from "@clerk/nextjs/server";
 import { ClerkProvider } from "@clerk/nextjs";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
@@ -21,6 +20,7 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getMetadataBase } from "@/lib/seo";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { getServerAuth } from "@/lib/auth-server";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -78,7 +78,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   type NavData = React.ComponentProps<typeof NavHeaderUI>;
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
 
   let signedInHomeHref: string = JOURNEY_HOME_HANDOFF_PATH;
   let signedInExperienceHints: JourneyExperienceHints | null = null;

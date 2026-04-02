@@ -20,14 +20,15 @@ const DELETE_GOODBYE_MS = 1300;
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const { signOut } = useClerk();
   const { locale, setLocale } = useLocale();
   const { showToast } = useToast();
+  const [e2eBypassSession, setE2EBypassSession] = useState(false);
+  const [hasCheckedBypass, setHasCheckedBypass] = useState(false);
 
   const [email, setEmail] = useState<string | null>(null);
   const [accessLevel, setAccessLevel] = useState<string | null>(null);
-  const [lastAssessment, setLastAssessment] = useState<string | null>(null);
   const [hasLoadedDemographics, setHasLoadedDemographics] = useState(false);
 
   // Demographics
@@ -82,12 +83,22 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    if (isSignedIn) {
+    const hasBypassCookie =
+      typeof document !== "undefined" &&
+      document.cookie.split(";").some((entry) => entry.trim().startsWith("trita_e2e_user_id="));
+    setE2EBypassSession(hasBypassCookie);
+    setHasCheckedBypass(true);
+  }, []);
+
+  const sessionEligible = isSignedIn || e2eBypassSession;
+
+  useEffect(() => {
+    if (sessionEligible) {
       void loadDemographics();
       return;
     }
     setHasLoadedDemographics(false);
-  }, [isSignedIn, loadDemographics]);
+  }, [sessionEligible, loadDemographics]);
 
   useEffect(() => {
     if (saveState !== "saved" && saveState !== "error") return;
@@ -101,7 +112,7 @@ export default function ProfilePage() {
     setSavedLocale((prev) => { setSelectedLocale((cur) => (cur === prev ? locale : cur)); return locale; });
   }, [locale]);
 
-  if (!isLoaded || (isSignedIn && !hasLoadedDemographics)) {
+  if (!isLoaded || !hasCheckedBypass || (sessionEligible && !hasLoadedDemographics)) {
     return (
       <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
         <div className="mx-auto max-w-[640px] px-5 py-10">
@@ -117,14 +128,14 @@ export default function ProfilePage() {
     );
   }
 
-  if (!isSignedIn) { router.push("/sign-in"); return null; }
+  if (!sessionEligible) { router.push("/sign-in"); return null; }
 
   const initials = getAvatarMonogram(
-    username.trim() || user?.primaryEmailAddress?.emailAddress,
+    username.trim() || email,
     { length: 1 },
   );
-  const displayName = username.trim() || user?.username || user?.firstName || t("common.userFallback", locale);
-  const avatarColorName = username.trim() || user?.username || user?.primaryEmailAddress?.emailAddress || "";
+  const displayName = username.trim() || email || t("common.userFallback", locale);
+  const avatarColorName = username.trim() || email || "";
   const [avatarFrom, avatarTo] = getAvatarGradient(avatarColorName);
 
   const currentYear = new Date().getFullYear();

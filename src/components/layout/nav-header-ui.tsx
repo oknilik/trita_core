@@ -301,6 +301,7 @@ export function NavHeaderUI({
             <Link
               href="/profile"
               onClick={closeAll}
+              data-testid="nav-user-menu-profile"
               className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
@@ -377,7 +378,11 @@ export function NavHeaderUI({
                   ) : null}
 
                   {item.kind === "link" ? (
-                    <Link href={item.primaryHref} className={itemClass}>
+                    <Link
+                      href={item.primaryHref}
+                      data-testid={`nav-item-${item.id}`}
+                      className={itemClass}
+                    >
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
                     </Link>
@@ -385,6 +390,7 @@ export function NavHeaderUI({
                     <div className="relative">
                       <button
                         type="button"
+                        data-testid={`nav-item-${item.id}`}
                         className={itemClass}
                         onClick={() => toggle(item.id)}
                       >
@@ -422,6 +428,7 @@ export function NavHeaderUI({
               <button
                 type="button"
                 onClick={() => toggle("user")}
+                data-testid="nav-user-menu-trigger"
                 className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
               >
                 {showIdentityLoader ? (

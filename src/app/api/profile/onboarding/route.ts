@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSelfAccessLevel } from "@/lib/access";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { getServerAuth } from "@/lib/auth-server";
 
 const currentYear = new Date().getFullYear();
 
@@ -17,7 +17,7 @@ const onboardingSchema = z.object({
 });
 
 export async function GET() {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -64,7 +64,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

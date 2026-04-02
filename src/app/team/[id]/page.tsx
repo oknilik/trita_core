@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
@@ -50,7 +50,7 @@ export default async function TeamDetailPage({
   searchParams: Promise<{ tab?: string }>;
 }) {
   const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
-    getServerLocale(), auth(), params, searchParams,
+    getServerLocale(), getServerAuth(), params, searchParams,
   ]);
   const activeTab = resolvedSearchParams.tab ?? "overview";
   if (!userId) redirect("/sign-in");

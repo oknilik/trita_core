@@ -1,10 +1,10 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { getServerAuth } from "@/lib/auth-server";
 
 export type { UserRole };
 
@@ -14,24 +14,28 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
   .filter(Boolean);
 
 export async function requireAdmin() {
-  const user = await currentUser();
-  if (!user) redirect("/sign-in");
+  const { userId } = await getServerAuth();
+  if (!userId) redirect("/sign-in");
 
-  const userEmail = user.primaryEmailAddress?.emailAddress;
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { email: true },
+  });
+  const userEmail = profile?.email;
   if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
     redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
-  return { user };
+  return { userId };
 }
 
 // Requires the user to have a specific role. Redirects to journey home handoff if not.
 export async function requireRole(role: UserRole) {
-  const user = await currentUser();
-  if (!user) redirect("/sign-in");
+  const { userId } = await getServerAuth();
+  if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: user.id },
+    where: { clerkId: userId },
     select: { role: true },
   });
 
@@ -39,16 +43,16 @@ export async function requireRole(role: UserRole) {
     redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
 
-  return { user, role: profile.role };
+  return { userId, role: profile.role };
 }
 
 // Returns the current user's role from DB, or null if not found.
 export async function getUserRole(): Promise<UserRole | null> {
-  const user = await currentUser();
-  if (!user) return null;
+  const { userId } = await getServerAuth();
+  if (!userId) return null;
 
   const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: user.id },
+    where: { clerkId: userId },
     select: { role: true },
   });
 
@@ -73,11 +77,11 @@ export async function requireOrgContext(orgId: string): Promise<{
   role: string;
   org: { id: string; name: string; status: string };
 }> {
-  const user = await currentUser();
-  if (!user) redirect("/sign-in");
+  const { userId } = await getServerAuth();
+  if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: user.id },
+    where: { clerkId: userId },
     select: { id: true },
   });
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
