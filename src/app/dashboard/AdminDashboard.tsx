@@ -398,7 +398,7 @@ export function AdminDashboard() {
                     {dashboardVm.riskAttentionPanel.items.length > 0 && (
                       <span
                         className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
-                        style={{ backgroundColor: ORG_HERO_BADGE_BG, color: ORG_HERO_BADGE_TEXT }}
+                        style={{ backgroundColor: "rgba(210,163,106,0.22)", color: "#f4c792" }}
                       >
                         {tf("dashboard.openAttentionPoints", localeTag, { count: String(dashboardVm.riskAttentionPanel.items.length) })}
                       </span>
