@@ -128,7 +128,7 @@ export function NavHeaderUI({
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
 
-  type DropdownKey = WorkspaceNavItem["id"] | null;
+  type DropdownKey = WorkspaceNavItem["id"] | "user" | null;
   type MobileMenuState = "closed" | "quickview" | "expanded";
 
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
@@ -261,6 +261,64 @@ export function NavHeaderUI({
     );
   }
 
+  function UserDropdown({ isOpen }: { isOpen: boolean }) {
+    if (!isOpen) return null;
+    return (
+      <div
+        className="absolute right-0 top-[calc(100%+6px)] z-50 w-[280px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
+        style={{ animation: "fade-in 150ms ease-out" }}
+      >
+        <div className="rounded-xl bg-white/80 px-3.5 py-3">
+          <p className="truncate text-[13px] font-semibold text-[var(--color-text-primary)]">
+            {displayName ?? "Saját profil"}
+          </p>
+          <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
+        </div>
+
+        <div className="mt-1 rounded-xl bg-white px-2 py-2">
+          <Link
+            href="/profile"
+            onClick={closeAll}
+            className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+              <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="8" cy="5" r="3" />
+                <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
+              </svg>
+            </span>
+            <span>Saját profil</span>
+          </Link>
+
+          <div className="mt-1 rounded-lg px-2.5 py-2.5">
+            <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+              Nyelv
+            </p>
+            <LanguageSwitcher variant="pills" />
+          </div>
+
+          <div className="mt-1 border-t border-[var(--color-border-soft)] pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                closeAll();
+                signOut({ redirectUrl: "/" });
+              }}
+              className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-[13px] font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
+                </svg>
+              </span>
+              <span>Kijelentkezés</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {openDropdown && <div className="fixed inset-0 z-30" onClick={closeAll} />}
@@ -333,34 +391,36 @@ export function NavHeaderUI({
 
           <div className="hidden items-center gap-2 lg:flex">
             <div className="h-5 w-px bg-[var(--color-border-default)]" />
-            <LanguageSwitcher />
-
-            <Link
-              href="/profile"
-              className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white pl-1 pr-2.5 py-0.5 transition hover:border-[var(--color-text-muted)]"
-            >
-              {showIdentityLoader ? (
-                <div className="h-7 w-7 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
-              ) : (
-                <div
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                  style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-                >
-                  {initial}
-                </div>
-              )}
-              {showIdentityLoader ? (
-                <span className="h-2.5 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
-              ) : (
-                <span className="max-w-[90px] truncate text-[12px] font-medium text-[var(--color-text-secondary)]">
-                  {displayName ?? "Profil"}
-                </span>
-              )}
-            </Link>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => toggle("user")}
+                className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
+              >
+                {showIdentityLoader ? (
+                  <div className="h-7 w-7 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
+                ) : (
+                  <div
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                    style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+                  >
+                    {initial}
+                  </div>
+                )}
+                {showIdentityLoader ? (
+                  <span className="h-2.5 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
+                ) : (
+                  <span className="max-w-[90px] truncate text-[12px] font-medium text-[var(--color-text-secondary)]">
+                    {displayName ?? "Profil"}
+                  </span>
+                )}
+                <ChevronDown />
+              </button>
+              <UserDropdown isOpen={openDropdown === "user"} />
+            </div>
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <LanguageSwitcher />
             <button
               type="button"
               onClick={() => setMobileMenu((prev) => (prev === "closed" ? "quickview" : "closed"))}
@@ -436,10 +496,10 @@ export function NavHeaderUI({
                   </button>
                 </div>
 
-                <Link
-                  href="/profile"
-                  onClick={() => setMobileMenu("closed")}
-                  className="mt-2 flex items-center gap-3 rounded-lg border-t border-[var(--color-border-default)] px-2 pt-3 transition-colors hover:bg-[var(--color-surface-subtle)]"
+                <button
+                  type="button"
+                  onClick={() => setMobileMenu("expanded")}
+                  className="mt-2 flex w-full items-center gap-3 rounded-lg border-t border-[var(--color-border-default)] px-2 pt-3 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
                 >
                   {showIdentityLoader ? (
                     <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
@@ -465,7 +525,7 @@ export function NavHeaderUI({
                   <svg className="h-4 w-4 text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <path d="M4 2l4 4-4 4" />
                   </svg>
-                </Link>
+                </button>
               </div>
             ) : (
               <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.04]">
@@ -537,7 +597,33 @@ export function NavHeaderUI({
                     </div>
                   ))}
 
-                <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-4 pt-4">
+                <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
+                  <p className="pb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
+                    Fiók
+                  </p>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenu("closed")}
+                    className="flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="8" cy="5" r="3" />
+                        <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
+                      </svg>
+                    </span>
+                    <span>Saját profil</span>
+                  </Link>
+
+                  <div className="rounded-lg px-3 py-3">
+                    <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+                      Nyelv
+                    </p>
+                    <LanguageSwitcher variant="pills" />
+                  </div>
+                </div>
+
+                <div className="border-t border-[var(--color-border-soft)] px-4 pb-4 pt-3">
                   <button
                     type="button"
                     onClick={() => {
