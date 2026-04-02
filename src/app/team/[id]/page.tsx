@@ -192,9 +192,17 @@ export default async function TeamDetailPage({
   const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
   if (!teamData) notFound();
 
-  const tabItems: Array<{ key: TeamTabKey; label: string; badge?: number }> = [
-    { key: "overview", label: t("teamComp.tabOverview", locale) },
-    { key: "intelligence", label: t("teamComp.tabIntelligence", locale) },
+  const tabItems: Array<{ key: TeamTabKey; label: string; shortLabel?: string; badge?: number }> = [
+    {
+      key: "overview",
+      label: t("teamComp.tabOverview", locale),
+      shortLabel: isHu ? "Áttek." : "Overview",
+    },
+    {
+      key: "intelligence",
+      label: t("teamComp.tabIntelligence", locale),
+      shortLabel: t("teamComp.tabIntelligenceShort", locale),
+    },
     {
       key: "profile",
       label: t("teamComp.tabProfile", locale),
@@ -237,10 +245,10 @@ export default async function TeamDetailPage({
 
   const teamTabsNav = (
     <nav
-      className="mb-2 overflow-x-auto"
+      className="mb-2 overflow-x-auto md:overflow-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       aria-label={isHu ? "Csapat nézetek" : "Team views"}
     >
-      <div className="inline-flex min-w-full gap-2 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)]">
+      <div className="mx-auto inline-flex min-w-max snap-x snap-mandatory gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)] md:min-w-0 md:snap-none">
         {tabItems.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
@@ -248,17 +256,18 @@ export default async function TeamDetailPage({
               key={tab.key}
               href={`/team/${teamId}?tab=${tab.key}`}
               className={[
-                "inline-flex min-h-[38px] items-center gap-2 rounded-xl px-4 py-2 text-[12px] font-medium transition-colors whitespace-nowrap",
+                "inline-flex min-h-[42px] shrink-0 snap-start items-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-medium leading-none whitespace-nowrap transition-colors sm:px-4 sm:text-[13px] md:snap-none",
                 isActive
                   ? "bg-ink text-white"
                   : "text-ink-body hover:bg-cream hover:text-ink",
               ].join(" ")}
             >
-              <span>{tab.label}</span>
+              <span className="sm:hidden">{tab.shortLabel ?? tab.label}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
               {tab.badge ? (
                 <span
                   className={[
-                    "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                    "rounded-full px-1.5 py-0.5 text-[9px] font-semibold sm:px-2 sm:text-[10px]",
                     isActive
                       ? "bg-white/20 text-white"
                       : "bg-warm-mid text-ink",
