@@ -14,7 +14,6 @@ import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { NavHeaderUI } from "@/components/layout/nav-header-ui";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
 import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourney } from "@/lib/journey/engine";
@@ -91,8 +90,6 @@ export default async function RootLayout({
         homeHref: signedInHomeHref,
         role: "SELF",
         activeCampaignCount: 0,
-        isAdmin: false,
-        isManager: false,
         hasHiringAccess: false,
       }
     : null;
@@ -121,8 +118,6 @@ export default async function RootLayout({
             teams: [],
             role: "SELF",
             activeCampaignCount: 0,
-            isAdmin: false,
-            isManager: false,
             hasHiringAccess: false,
           }),
           homeHref: signedInHomeHref,
@@ -130,9 +125,6 @@ export default async function RootLayout({
 
         const membership = await getActiveOrgMembership(profile.id);
         if (membership) {
-          const isAdmin = hasOrgRole(membership.role, "ORG_ADMIN");
-          const isManager = hasOrgRole(membership.role, "ORG_MANAGER");
-
           const [org, accessibleTeamIds, activeCampaignCount, policySnapshot] = await Promise.all([
             prisma.organization.findUnique({
               where: { id: membership.orgId },
@@ -167,8 +159,6 @@ export default async function RootLayout({
             homeHref: signedInHomeHref,
             role: membership.role,
             activeCampaignCount,
-            isAdmin,
-            isManager,
             hasHiringAccess,
           };
         }
