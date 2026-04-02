@@ -5,7 +5,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getManageableTeamIds } from "@/lib/team-auth";
 import { getPlanTier } from "@/lib/subscription";
-import { getCreditBalance, getCreditHistory } from "@/lib/candidate-credits";
+import { getCreditBalance } from "@/lib/candidate-credits";
 import {
   resolveOrgCapabilityDecision,
   resolveOrgPolicySnapshot,
@@ -14,6 +14,7 @@ import {
 import { HiringPaywall } from "./_components/HiringPaywall";
 import { HiringDashboard } from "./_components/HiringDashboard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +65,6 @@ export default async function HiringPage({
   const isOrgOrScale = tier === "org" || tier === "scale";
 
   let creditBalance: { available: number; totalPurchased: number; totalUsed: number } | null = null;
-  let creditHistory: Array<{ id: string; type: string; amount: number; balance: number; note: string | null; actorId: string | null; createdAt: string }> | null = null;
 
   if (!isOrgOrScale) {
     creditBalance = await getCreditBalance(orgId);
@@ -84,12 +84,6 @@ export default async function HiringPage({
       }
     }
 
-    if (isAdmin) {
-      creditHistory = (await getCreditHistory(orgId, 10)).map((e) => ({
-        ...e,
-        createdAt: e.createdAt.toISOString(),
-      }));
-    }
   }
 
   const canInviteNew = isOrgOrScale || (creditBalance?.available ?? 0) > 0;
@@ -157,21 +151,21 @@ export default async function HiringPage({
   }));
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
-        <HiringDashboard
-          orgId={orgId}
-          orgName={org.name}
-          teams={isAdmin ? teams : teams.filter((t) => managerTeamIds?.includes(t.id) ?? false)}
-          invites={invites}
-          locale={locale}
-          planTier={tier}
-          creditBalance={creditBalance}
-          creditHistory={creditHistory}
-          canInviteNew={canInviteNew}
-          isAdmin={isAdmin}
-        />
-      </main>
-    </div>
+    <PlatformPageShell
+      surface="team"
+      contentClassName="max-w-5xl gap-6 px-4 py-10"
+    >
+      <HiringDashboard
+        orgId={orgId}
+        orgName={org.name}
+        teams={isAdmin ? teams : teams.filter((t) => managerTeamIds?.includes(t.id) ?? false)}
+        invites={invites}
+        locale={locale}
+        planTier={tier}
+        creditBalance={creditBalance}
+        canInviteNew={canInviteNew}
+        isAdmin={isAdmin}
+      />
+    </PlatformPageShell>
   );
 }

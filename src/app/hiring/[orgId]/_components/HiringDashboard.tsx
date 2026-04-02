@@ -34,15 +34,6 @@ interface CreditBalance {
   totalUsed: number;
 }
 
-interface CreditHistoryEntry {
-  id: string;
-  type: string;
-  amount: number;
-  balance: number;
-  note: string | null;
-  actorId: string | null;
-  createdAt: string;
-}
 
 interface HiringDashboardProps {
   orgId: string;
@@ -52,7 +43,6 @@ interface HiringDashboardProps {
   locale: Locale;
   planTier: string;
   creditBalance: CreditBalance | null;
-  creditHistory: CreditHistoryEntry[] | null;
   canInviteNew: boolean;
   isAdmin: boolean;
 }
@@ -195,12 +185,10 @@ export function HiringDashboard({
   locale,
   planTier,
   creditBalance,
-  creditHistory,
   canInviteNew,
   isAdmin,
 }: HiringDashboardProps) {
   const [showForm, setShowForm] = useState(false);
-  const [creditQty, setCreditQty] = useState(1);
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
   const isHu = locale !== "en";
   const planTierLabel = planTier
@@ -208,13 +196,6 @@ export function HiringDashboard({
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
-
-  const creditUnitPrice = creditQty >= 10 ? 31.20 : creditQty >= 5 ? 33.15 : 39;
-  const creditTotalValue = creditUnitPrice * creditQty;
-  const creditTotal = creditTotalValue.toFixed(2);
-  const creditDiscountPct = creditQty >= 10 ? 20 : creditQty >= 5 ? 15 : 0;
-  const creditBaseTotal = 39 * creditQty;
-  const creditSavings = Math.max(0, creditBaseTotal - creditTotalValue);
 
   const pending = invites.filter(
     (i) => i.status === "PENDING" && new Date(i.expiresAt) >= new Date()
@@ -353,185 +334,32 @@ export function HiringDashboard({
         </div>
       </div>
 
-      {/* Credit pool bar — credit-based tiers */}
+      {/* Credit status — compact inline bar */}
       {creditBalance && (
-        <section className="overflow-hidden rounded-[24px] border border-sand bg-white shadow-[0_14px_32px_rgba(26,26,46,0.04)]">
-          <div className="border-b border-sand bg-[linear-gradient(90deg,#fbf4e8_0%,#f8f2e8_55%,#f6eee2_100%)] px-5 py-4 sm:px-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bronze">
-                  {t("hiring.creditEyebrow", locale)}
-                </p>
-                <p className="mt-1 text-[13px] text-ink-body">
-                  {isHu
-                    ? "A jelöltmeghívások kredit alapon működnek."
-                    : "Candidate invites run on a credit-based model."}
-                </p>
-              </div>
-              <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sage-dark">
-                {creditBalance.available} {t("hiring.creditsAvailable", locale)}
-              </span>
-            </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sand bg-white px-5 py-3">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sage-dark">
+              {creditBalance.available} {t("hiring.creditsAvailable", locale)}
+            </span>
+            <span className="text-[11px] text-muted">
+              {isHu
+                ? `${creditBalance.totalUsed} felhasznált · ${creditBalance.totalPurchased} összesen vásárolt`
+                : `${creditBalance.totalUsed} used · ${creditBalance.totalPurchased} total purchased`}
+            </span>
           </div>
-
-          <div className="grid gap-4 p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_340px]">
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                <div className="rounded-xl border border-sand bg-white px-3 py-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted">
-                    {t("hiring.creditsAvailable", locale)}
-                  </p>
-                  <p className="mt-1 font-fraunces text-[26px] leading-none text-sage-dark">
-                    {creditBalance.available}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-sand bg-white px-3 py-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted">
-                    {t("hiring.creditsPurchased", locale)}
-                  </p>
-                  <p className="mt-1 font-fraunces text-[26px] leading-none text-ink">
-                    {creditBalance.totalPurchased}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-sand bg-white px-3 py-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted">
-                    {t("hiring.creditsUsed", locale)}
-                  </p>
-                  <p className="mt-1 font-fraunces text-[26px] leading-none text-bronze-dark">
-                    {creditBalance.totalUsed}
-                  </p>
-                </div>
-              </div>
-
-              <div className="rounded-xl border border-sand bg-cream px-4 py-3">
-                <div className="mb-1.5 flex items-center justify-between text-[11px] text-ink-body">
-                  <span>{isHu ? "Felhasználási arány" : "Usage rate"}</span>
-                  <span className="font-semibold text-ink">{creditUsagePct}%</span>
-                </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-sand">
-                  <div
-                    className="h-full rounded-full bg-sage transition-all"
-                    style={{ width: `${creditUsagePct}%` }}
-                  />
-                </div>
-                <p className="mt-1.5 text-[10px] text-muted">
-                  {isHu
-                    ? `${creditBalance.totalUsed} felhasznált · ${creditBalance.available} elérhető`
-                    : `${creditBalance.totalUsed} used · ${creditBalance.available} available`}
-                </p>
-              </div>
-            </div>
-
-            <aside className="rounded-2xl border border-sand bg-[#fcf7ef] p-4">
-              {isAdmin ? (
-                <>
-                  <p className="font-fraunces text-[24px] leading-none text-ink">
-                    {isHu ? "Kredit vásárlás" : "Buy credits"}
-                  </p>
-                  <p className="mt-1.5 text-[12px] text-ink-body">
-                    {isHu
-                      ? "Válassz csomagot vagy állítsd be a darabszámot."
-                      : "Choose a bundle or adjust quantity manually."}
-                  </p>
-
-                  <div className="mt-3 grid grid-cols-3 gap-2">
-                    {[1, 5, 10].map((qty) => {
-                      const active = creditQty === qty;
-                      const discount = qty >= 10 ? 20 : qty >= 5 ? 15 : 0;
-                      return (
-                        <button
-                          key={qty}
-                          type="button"
-                          onClick={() => setCreditQty(qty)}
-                          className={[
-                            "min-h-[44px] rounded-lg border px-2 text-[11px] font-semibold transition",
-                            active
-                              ? "border-sage/45 bg-sage-soft text-sage-dark"
-                              : "border-sand bg-white text-ink-body hover:border-sage/30",
-                          ].join(" ")}
-                        >
-                          {qty}×{discount > 0 ? ` · −${discount}%` : ""}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between gap-3">
-                    <div className="flex items-center overflow-hidden rounded-lg border border-sand bg-white">
-                      <button
-                        type="button"
-                        onClick={() => setCreditQty((q) => Math.max(1, q - 1))}
-                        className="min-h-[40px] w-9 text-sm text-ink-body transition hover:text-bronze"
-                      >
-                        −
-                      </button>
-                      <span className="min-w-[34px] text-center font-mono text-[12px] font-semibold text-ink">
-                        {creditQty}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setCreditQty((q) => q + 1)}
-                        className="min-h-[40px] w-9 text-sm text-ink-body transition hover:text-bronze"
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-mono text-[10px] text-muted">
-                        €{creditUnitPrice.toFixed(2)}/{isHu ? "db" : "credit"}
-                      </p>
-                      <p className="text-[11px] font-semibold text-ink">
-                        {creditDiscountPct > 0
-                          ? `${isHu ? "kedvezmény" : "discount"} −${creditDiscountPct}%`
-                          : (isHu ? "alap ár" : "base price")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-sand bg-white px-3 py-2.5">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.12em] text-muted">
-                        {isHu ? "Összesen" : "Total"}
-                      </p>
-                      <p className="font-fraunces text-[24px] leading-none text-ink">€{creditTotal}</p>
-                      {creditSavings > 0 && (
-                        <p className="text-[10px] text-emerald-700">
-                          {isHu
-                            ? `Megtakarítás: €${creditSavings.toFixed(2)}`
-                            : `You save: €${creditSavings.toFixed(2)}`}
-                        </p>
-                      )}
-                    </div>
-                    <Link
-                      href={`/billing/checkout?plan=candidate_custom&qty=${creditQty}`}
-                      className={getButtonClassName({
-                        size: "sm",
-                        className: "bg-sage px-4 text-[11px] text-white hover:bg-sage-dark hover:text-white",
-                      })}
-                    >
-                      +{creditQty}
-                    </Link>
-                  </div>
-                </>
-              ) : creditBalance.available === 0 ? (
-                <div className="space-y-2">
-                  <p className="text-[12px] text-ink-body">
-                    {isHu
-                      ? "Nincs elérhető kredited. Küldj gyors igényt az adminnak."
-                      : "No credits left. Send a quick request to your admin."}
-                  </p>
-                  <RequestCreditsButton orgId={orgId} locale={locale} />
-                </div>
-              ) : (
-                <p className="text-[12px] text-ink-body">
-                  {isHu
-                    ? "Van elérhető kredited, így új jelölteket azonnal meghívhatsz."
-                    : "You have available credits, so you can invite new candidates right away."}
-                </p>
-              )}
-            </aside>
+          <div className="flex items-center gap-2">
+            {isAdmin ? (
+              <Link
+                href={`/org/${orgId}/settings`}
+                className="text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
+              >
+                {isHu ? "Kreditek kezelése →" : "Manage credits →"}
+              </Link>
+            ) : creditBalance.available === 0 ? (
+              <RequestCreditsButton orgId={orgId} locale={locale} />
+            ) : null}
           </div>
-        </section>
+        </div>
       )}
 
       {/* No-credits warning banner for managers */}
@@ -701,46 +529,6 @@ export function HiringDashboard({
             ))}
           </div>
         </section>
-      )}
-
-      {/* Credit history — admin only, when credits are tracked */}
-      {isAdmin && creditHistory && creditHistory.length > 0 && (
-        <div className="rounded-xl border border-sand bg-white p-5">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-3">
-            {t("hiring.creditLogEyebrow", locale)}
-          </p>
-          <div className="divide-y divide-sand">
-            {creditHistory.map((entry) => (
-              <div key={entry.id} className="flex items-center justify-between py-2.5">
-                <div className="min-w-0">
-                  <p className="text-xs text-ink-body truncate">
-                    {entry.note ?? (entry.type === "purchase"
-                      ? t("hiring.creditPurchase", locale)
-                      : t("hiring.creditUsage", locale))}
-                  </p>
-                  <p className="text-[10px] text-muted">
-                    {new Date(entry.createdAt).toLocaleDateString(
-                      locale === "en" ? "en-GB" : "hu-HU",
-                      { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <span
-                    className={`font-mono text-xs font-semibold ${
-                      entry.amount > 0 ? "text-emerald-700" : "text-bronze"
-                    }`}
-                  >
-                    {entry.amount > 0 ? `+${entry.amount}` : entry.amount}
-                  </span>
-                  <span className="font-mono text-[10px] text-muted w-6 text-right">
-                    {entry.balance}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       )}
 
       {/* Empty state */}
