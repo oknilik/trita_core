@@ -1,9 +1,10 @@
 import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
+import { extractDimensionScores } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type HexacoScores } from "./team-pattern";
 
 const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
-type DimCode = (typeof DIM_ORDER)[number];
+type DynamicsEdgeType = "good" | "neutral" | "tension";
 
 const DIM_COLORS: Record<string, string> = {
   H: "#6366F1",
@@ -55,6 +56,17 @@ export interface TeamActiveCampaign {
   daysActive: number;
 }
 
+export interface TeamDynamicsEdge {
+  fromUserId: string;
+  toUserId: string;
+  type: DynamicsEdgeType;
+  source: "observer";
+  relationshipType: string | null;
+  confidence: number | null;
+  dimensionDelta: number | null;
+  createdAt: string;
+}
+
 export interface TeamPageData {
   teamId: string;
   teamName: string;
@@ -67,6 +79,7 @@ export interface TeamPageData {
   topDim: { code: string; value: number } | null;
   bottomDim: { code: string; value: number } | null;
   activeCampaign: TeamActiveCampaign | null;
+  dynamicsEdges: TeamDynamicsEdge[];
   members: SerializedTeamMember[];
   pendingInvites: Array<{ id: string; email: string; createdAt: string }>;
   heatmapRows: Array<{
@@ -77,6 +90,58 @@ export interface TeamPageData {
   }>;
   dimConfigs: Array<{ code: string; label: string; color: string }>;
   patternResult: TeamPatternResult | null;
+}
+
+function calculateDimensionDelta(
+  selfScores: Record<string, number> | null | undefined,
+  observerScores: unknown,
+): number | null {
+  if (!selfScores) return null;
+  const observerDimensions = extractDimensionScores(observerScores);
+  if (!observerDimensions) return null;
+
+  const deltas = DIM_ORDER.map((dim) => {
+    const selfValue = selfScores[dim];
+    const observerValue = observerDimensions[dim];
+    if (typeof selfValue !== "number" || typeof observerValue !== "number") return null;
+    return Math.abs(selfValue - observerValue);
+  }).filter((value): value is number => value !== null);
+
+  if (deltas.length === 0) return null;
+  return Math.round(deltas.reduce((sum, value) => sum + value, 0) / deltas.length);
+}
+
+function resolveDynamicsEdgeType(input: {
+  relationshipType: string | null;
+  confidence: number | null;
+  dimensionDelta: number | null;
+}): DynamicsEdgeType {
+  const { relationshipType, confidence, dimensionDelta } = input;
+
+  if (typeof dimensionDelta === "number") {
+    if (dimensionDelta >= 24) return "tension";
+    if (dimensionDelta >= 14) return "neutral";
+  }
+
+  if (typeof confidence === "number") {
+    if (confidence >= 4) return "good";
+    if (confidence <= 2) return "neutral";
+  }
+
+  if (relationshipType === "COLLEAGUE" || relationshipType === "FRIEND" || relationshipType === "PARTNER") {
+    return "good";
+  }
+
+  return "neutral";
+}
+
+function mergeDynamicsEdgeType(a: DynamicsEdgeType, b: DynamicsEdgeType): DynamicsEdgeType {
+  const priority: Record<DynamicsEdgeType, number> = {
+    tension: 3,
+    neutral: 2,
+    good: 1,
+  };
+  return priority[a] >= priority[b] ? a : b;
 }
 
 export async function getTeamPageData(
@@ -219,6 +284,82 @@ export async function getTeamPageData(
     }),
   ]);
 
+  const memberSelfScoresByUserId = new Map(
+    members.map((member) => [member.userId, member.scores]),
+  );
+  const teamUserIds = members.map((member) => member.userId);
+
+  const observerLinksRaw = await prisma.observerInvitation.findMany({
+    where: {
+      inviterId: { in: teamUserIds },
+      observerProfileId: { in: teamUserIds },
+      status: "COMPLETED",
+      assessment: { isNot: null },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      inviterId: true,
+      observerProfileId: true,
+      createdAt: true,
+      assessment: {
+        select: {
+          relationshipType: true,
+          confidence: true,
+          scores: true,
+        },
+      },
+    },
+  });
+
+  const edgeBucket = new Map<string, TeamDynamicsEdge>();
+  for (const relation of observerLinksRaw) {
+    if (!relation.observerProfileId) continue;
+    const fromUserId = relation.observerProfileId;
+    const toUserId = relation.inviterId;
+    const pairKey = `${fromUserId}__${toUserId}`;
+    const relationshipType = relation.assessment?.relationshipType ?? null;
+    const confidence = relation.assessment?.confidence ?? null;
+    const dimensionDelta = calculateDimensionDelta(
+      memberSelfScoresByUserId.get(toUserId),
+      relation.assessment?.scores,
+    );
+    const type = resolveDynamicsEdgeType({
+      relationshipType,
+      confidence,
+      dimensionDelta,
+    });
+
+    const existing = edgeBucket.get(pairKey);
+    if (!existing) {
+      edgeBucket.set(pairKey, {
+        fromUserId,
+        toUserId,
+        type,
+        source: "observer",
+        relationshipType,
+        confidence,
+        dimensionDelta,
+        createdAt: relation.createdAt.toISOString(),
+      });
+      continue;
+    }
+
+    edgeBucket.set(pairKey, {
+      ...existing,
+      type: mergeDynamicsEdgeType(existing.type, type),
+      confidence: typeof existing.confidence === "number"
+        ? Math.max(existing.confidence, confidence ?? 0)
+        : confidence,
+      dimensionDelta:
+        existing.dimensionDelta === null
+          ? dimensionDelta
+          : dimensionDelta === null
+            ? existing.dimensionDelta
+            : Math.max(existing.dimensionDelta, dimensionDelta),
+    });
+  }
+  const dynamicsEdges = Array.from(edgeBucket.values());
+
   // Compute active campaign stats
   let activeCampaign: TeamActiveCampaign | null = null;
   if (campaignRaw) {
@@ -345,6 +486,7 @@ export async function getTeamPageData(
     topDim,
     bottomDim,
     activeCampaign,
+    dynamicsEdges,
     members,
     pendingInvites,
     heatmapRows,

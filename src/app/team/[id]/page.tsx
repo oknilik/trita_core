@@ -32,7 +32,7 @@ import {
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
-import type { IntelligenceMember } from "@/components/team/TeamIntelligence";
+import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
 import { TeamBelbinSection } from "@/components/team/TeamBelbinSection";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import {
@@ -233,7 +233,13 @@ export default async function TeamDetailPage({
   });
   const assessedCount = intelligenceMembers.filter((m) => m.hasAssessmentData).length;
   const totalCount = intelligenceMembers.length;
+  const teamDynamicsEdges: DynamicsEdge[] = teamData.dynamicsEdges.map((edge) => ({
+    from: edge.fromUserId,
+    to: edge.toUserId,
+    type: edge.type,
+  }));
   const hasDynamicsData =
+    teamDynamicsEdges.length > 0 ||
     !!teamData.activeCampaign &&
     teamData.activeCampaign.teamParticipantCount > 0 &&
     teamData.activeCampaign.teamObserverDoneCount > 0;
@@ -264,6 +270,12 @@ export default async function TeamDetailPage({
       : mapQuality === "partial"
         ? isHu ? "részleges adat" : "partial data"
         : isHu ? "nincs adat" : "no data";
+  const dynamicsStateLabel =
+    teamDynamicsEdges.length > 0
+      ? (isHu ? "elérhető" : "available")
+      : hasDynamicsData
+        ? (isHu ? "részben elérhető" : "partially available")
+        : (isHu ? "nincs adat" : "no data");
   const backToOverviewLabel = isHu ? "Vissza a csapatkép áttekintéshez" : "Back to team overview";
   const supportingViews = [
     {
@@ -493,7 +505,7 @@ export default async function TeamDetailPage({
             </span>
             <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
               {isHu ? "Dinamika nézet" : "Dynamics view"}:{" "}
-              <span className="font-semibold text-ink">{isHu ? "hamarosan" : "coming soon"}</span>
+              <span className="font-semibold text-ink">{dynamicsStateLabel}</span>
             </span>
           </div>
         </section>
@@ -533,7 +545,7 @@ export default async function TeamDetailPage({
 
         <TeamIntelligence
           members={intelligenceMembers}
-          edges={[]}
+          edges={teamDynamicsEdges}
           evidenceBySub={intelligenceEvidenceBySub}
           presentation="blocks"
           isHu={isHu}

@@ -9,6 +9,7 @@ import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
 } from "@/lib/team-intelligence";
+import { DynamicsMap } from "./DynamicsMap";
 
 export type SubTab = TeamIntelligenceSubTab;
 
@@ -269,21 +270,26 @@ export function TeamIntelligence({
               {t("teamComp.subDynamics", loc)}
             </p>
             <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-              {isHu ? "summary only" : "summary only"}
+              {edges.length > 0 ? (isHu ? "részletes háló" : "detailed network") : (isHu ? "summary only" : "summary only")}
             </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
           {edges.length > 0 ? (
-            <div className="mt-2 flex flex-wrap gap-2">
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-800">
-                {isHu ? "Támogató kapcsolatok" : "Supportive links"}: {dynamicsCounts.good}
-              </span>
-              <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
-                {isHu ? "Semleges kapcsolatok" : "Neutral links"}: {dynamicsCounts.neutral}
-              </span>
-              <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] text-rose-800">
-                {isHu ? "Feszültségi pontok" : "Tension links"}: {dynamicsCounts.tension}
-              </span>
+            <div className="mt-2">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-800">
+                  {isHu ? "Támogató kapcsolatok" : "Supportive links"}: {dynamicsCounts.good}
+                </span>
+                <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
+                  {isHu ? "Semleges kapcsolatok" : "Neutral links"}: {dynamicsCounts.neutral}
+                </span>
+                <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] text-rose-800">
+                  {isHu ? "Feszültségi pontok" : "Tension links"}: {dynamicsCounts.tension}
+                </span>
+              </div>
+              <div className="mt-3">
+                <DynamicsMap members={members} edges={edges} isHu={isHu} />
+              </div>
             </div>
           ) : hasDynamicsData ? (
             <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -298,8 +304,8 @@ export function TeamIntelligence({
               ) : null}
               <p className="w-full text-[12px] text-ink-body">
                 {isHu
-                  ? "A részletes kapcsolati háló megjelenítése folyamatban van, de az observer jelzések már elérhetők."
-                  : "Detailed relationship graph rendering is in progress, but observer signals are already available."}
+                  ? "A kapcsolati hálóhoz csapaton belüli observer kapcsolatok kellenek. Jelenleg valószínűleg főleg külső observer adatok érkeztek."
+                  : "Relationship map needs team-internal observer links. Current observer data is likely mostly external."}
               </p>
             </div>
           ) : (
