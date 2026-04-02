@@ -34,6 +34,7 @@ import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
 import { TeamBelbinSection } from "@/components/team/TeamBelbinSection";
+import { BelbinRoundCard } from "@/components/team/BelbinRoundCard";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import {
   buildTeamIntelligenceEvidence,
@@ -593,6 +594,31 @@ export default async function TeamDetailPage({
 
   // ── Belbin tab ───────────────────────────────────────────────────────────
   if (activeTab === "belbin") {
+    const belbinTeam = await prisma.team.findUnique({
+      where: { id: teamId },
+      select: { belbinRoundActive: true, belbinRoundStartedAt: true },
+    });
+    const belbinMembers = await prisma.teamMember.findMany({
+      where: { teamId },
+      select: {
+        userId: true,
+        user: {
+          select: {
+            username: true,
+            belbinScore: { select: { source: true, updatedAt: true } },
+          },
+        },
+      },
+    });
+    const belbinMemberStatus = belbinMembers.map((m) => ({
+      userId: m.userId,
+      name: m.user.username ?? "?",
+      hasQuestionnaire: m.user.belbinScore?.source === "questionnaire",
+      hasEstimate: m.user.belbinScore?.source === "estimate",
+    }));
+    const belbinCompletedCount = belbinMemberStatus.filter((m) => m.hasQuestionnaire).length;
+    const belbinEstimateCount = belbinMemberStatus.filter((m) => m.hasEstimate).length;
+
     return (
       <PlatformPageShell
         surface="team"
@@ -607,6 +633,16 @@ export default async function TeamDetailPage({
           </svg>
           {backToOverviewLabel}
         </Link>
+        <BelbinRoundCard
+          teamId={teamId}
+          isRoundActive={belbinTeam?.belbinRoundActive ?? false}
+          totalMembers={belbinMembers.length}
+          completedCount={belbinCompletedCount}
+          estimateCount={belbinEstimateCount}
+          members={belbinMemberStatus}
+          canManage={isOrgManager}
+          isHu={isHu}
+        />
         <TeamBelbinSection members={teamData.members} isHu={isHu} />
       </PlatformPageShell>
     );

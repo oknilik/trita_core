@@ -272,11 +272,13 @@ model FeatureInterest {
 // ============================================
 
 model Team {
-  id        String   @id @default(cuid())
-  name      String
-  ownerId   String
-  orgId     String?
-  createdAt DateTime @default(now())
+  id                   String    @id @default(cuid())
+  name                 String
+  ownerId              String
+  orgId                String?
+  createdAt            DateTime  @default(now())
+  belbinRoundActive    Boolean   @default(false)
+  belbinRoundStartedAt DateTime?
 
   owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
   org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
