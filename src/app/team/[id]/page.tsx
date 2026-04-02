@@ -31,8 +31,56 @@ import {
 } from "@/lib/policy-service";
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
+import { TeamIntelligence } from "@/components/team/TeamIntelligence";
+import type { IntelligenceMember } from "@/components/team/TeamIntelligence";
+import { TeamBelbinSection } from "@/components/team/TeamBelbinSection";
+import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 
 export const dynamic = "force-dynamic";
+
+const TEAM_TAB_KEYS = [
+  "overview",
+  "intelligence",
+  "profile",
+  "members",
+  "belbin",
+] as const;
+
+type TeamTabKey = (typeof TEAM_TAB_KEYS)[number];
+
+const ZONE_NAMES_EN: Record<string, string> = {
+  "3_1": "Emerging talent",
+  "3_2": "High growth",
+  "3_3": "Future leader",
+  "2_1": "Developing",
+  "2_2": "Solid contributor",
+  "2_3": "High performer",
+  "1_1": "Development focus",
+  "1_2": "Stable contributor",
+  "1_3": "Senior expert",
+};
+
+const ZONE_NAMES_HU: Record<string, string> = {
+  "3_1": "Feltörekvő tehetség",
+  "3_2": "Magas növekedés",
+  "3_3": "Jövő vezetője",
+  "2_1": "Fejlődik",
+  "2_2": "Megbízható tag",
+  "2_3": "Kiváló teljesítő",
+  "1_1": "Fejlesztési fókusz",
+  "1_2": "Stabil hozzájáruló",
+  "1_3": "Senior szakértő",
+};
+
+function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3, isHu: boolean): string {
+  const names = isHu ? ZONE_NAMES_HU : ZONE_NAMES_EN;
+  return names[`${potential}_${skill}`] ?? (isHu ? "Megbízható tag" : "Solid contributor");
+}
+
+function isTeamTab(tab: string | undefined): tab is TeamTabKey {
+  if (!tab) return false;
+  return TEAM_TAB_KEYS.includes(tab as TeamTabKey);
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -52,7 +100,9 @@ export default async function TeamDetailPage({
   const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
     getServerLocale(), getServerAuth(), params, searchParams,
   ]);
-  const activeTab = resolvedSearchParams.tab ?? "overview";
+  const activeTab: TeamTabKey = isTeamTab(resolvedSearchParams.tab)
+    ? resolvedSearchParams.tab
+    : "overview";
   if (!userId) redirect("/sign-in");
 
   const profile = await prisma.userProfile.findUnique({
@@ -142,6 +192,88 @@ export default async function TeamDetailPage({
   const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
   if (!teamData) notFound();
 
+  const tabItems: Array<{ key: TeamTabKey; label: string; badge?: number }> = [
+    { key: "overview", label: t("teamComp.tabOverview", locale) },
+    { key: "intelligence", label: t("teamComp.tabIntelligence", locale) },
+    {
+      key: "profile",
+      label: t("teamComp.tabProfile", locale),
+      badge: teamData.completedCount > 0 ? teamData.completedCount : undefined,
+    },
+    {
+      key: "members",
+      label: t("teamComp.tabMembers", locale),
+      badge: teamData.memberCount + teamData.pendingInvites.length,
+    },
+    { key: "belbin", label: "Belbin" },
+  ];
+
+  const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => {
+    const hexaco = m.scores
+      ? {
+          H: Math.round(m.scores.H ?? 50),
+          E: Math.round(m.scores.E ?? 50),
+          X: Math.round(m.scores.X ?? 50),
+          A: Math.round(m.scores.A ?? 50),
+          C: Math.round(m.scores.C ?? 50),
+          O: Math.round(m.scores.O ?? 50),
+        }
+      : { H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 };
+
+    return {
+      id: m.userId,
+      name: m.displayName,
+      initials: getAvatarMonogram(m.displayName, { length: 2 }),
+      hexaco,
+      skillLevel: 2,
+      growthPotential: 2,
+      zone: !m.scores
+        ? t("teamComp.noDataZone", locale)
+        : getZoneName(2, 2, isHu),
+      color: getAvatarGradient(m.displayName)[0],
+      textColor: "var(--color-neutral-white)",
+    };
+  });
+
+  const teamTabsNav = (
+    <nav
+      className="mb-2 overflow-x-auto"
+      aria-label={isHu ? "Csapat nézetek" : "Team views"}
+    >
+      <div className="inline-flex min-w-full gap-2 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_8px_26px_rgba(26,26,46,0.04)]">
+        {tabItems.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <Link
+              key={tab.key}
+              href={`/team/${teamId}?tab=${tab.key}`}
+              className={[
+                "inline-flex min-h-[38px] items-center gap-2 rounded-xl px-4 py-2 text-[12px] font-medium transition-colors whitespace-nowrap",
+                isActive
+                  ? "bg-ink text-white"
+                  : "text-ink-body hover:bg-cream hover:text-ink",
+              ].join(" ")}
+            >
+              <span>{tab.label}</span>
+              {tab.badge ? (
+                <span
+                  className={[
+                    "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                    isActive
+                      ? "bg-white/20 text-white"
+                      : "bg-warm-mid text-ink",
+                  ].join(" ")}
+                >
+                  {tab.badge}
+                </span>
+              ) : null}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+
   // ── Profile tab: heatmap + insights ──────────────────────────────────────
   if (activeTab === "profile") {
     return (
@@ -149,17 +281,7 @@ export default async function TeamDetailPage({
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/team/${teamId}`}
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
-          >
-            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 3L5 8l5 5" />
-            </svg>
-            {teamData.teamName}
-          </Link>
-        </div>
+        {teamTabsNav}
         <TeamProfileTab
           heatmapRows={teamData.heatmapRows}
           dimConfigs={teamData.dimConfigs}
@@ -193,17 +315,7 @@ export default async function TeamDetailPage({
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/team/${teamId}`}
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
-          >
-            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 3L5 8l5 5" />
-            </svg>
-            {teamData.teamName}
-          </Link>
-        </div>
+        {teamTabsNav}
         <TeamMembersTab
           members={membersForTab}
           pendingInvites={pendingForTab}
@@ -215,6 +327,36 @@ export default async function TeamDetailPage({
           locale={locale}
           dateLocale={isHu ? "hu-HU" : "en-US"}
         />
+      </PlatformPageShell>
+    );
+  }
+
+  // ── Intelligence tab: potential/types and map ───────────────────────────
+  if (activeTab === "intelligence") {
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+      >
+        {teamTabsNav}
+        <TeamIntelligence
+          members={intelligenceMembers}
+          edges={[]}
+          isHu={isHu}
+        />
+      </PlatformPageShell>
+    );
+  }
+
+  // ── Belbin tab ───────────────────────────────────────────────────────────
+  if (activeTab === "belbin") {
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+      >
+        {teamTabsNav}
+        <TeamBelbinSection members={teamData.members} isHu={isHu} />
       </PlatformPageShell>
     );
   }
@@ -373,6 +515,7 @@ export default async function TeamDetailPage({
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
+        {teamTabsNav}
         {/* ═══ HERO ═══ */}
         <SurfaceHero
           variant="team"
@@ -543,6 +686,15 @@ export default async function TeamDetailPage({
               ) : null}
             </DashboardMetricCard>
           </div>
+        </section>
+
+        <section>
+          <DashboardSectionHeader label={t("teamComp.teamPatternEyebrow", locale)} className="mb-4" />
+          <TeamPatternCard
+            patternResult={teamData.patternResult}
+            totalMembers={teamData.memberCount}
+            isHu={isHu}
+          />
         </section>
 
         <section>
