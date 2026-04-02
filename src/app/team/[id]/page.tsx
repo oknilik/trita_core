@@ -233,11 +233,15 @@ export default async function TeamDetailPage({
   });
   const assessedCount = intelligenceMembers.filter((m) => m.hasAssessmentData).length;
   const totalCount = intelligenceMembers.length;
+  const hasDynamicsData =
+    !!teamData.activeCampaign &&
+    teamData.activeCampaign.teamParticipantCount > 0 &&
+    teamData.activeCampaign.teamObserverDoneCount > 0;
   const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
   const intelligenceEvidenceBySub = buildTeamIntelligenceEvidence({
     assessedCount,
     totalCount,
-    hasDynamicsData: false,
+    hasDynamicsData,
     locale: locale as "hu" | "en",
   });
   const intelligencePriorities = buildTeamIntelligencePriorities({
@@ -533,6 +537,15 @@ export default async function TeamDetailPage({
           evidenceBySub={intelligenceEvidenceBySub}
           presentation="blocks"
           isHu={isHu}
+          hasDynamicsData={hasDynamicsData}
+          dynamicsSummary={
+            teamData.activeCampaign
+              ? {
+                  participantCount: teamData.activeCampaign.teamParticipantCount,
+                  observerDoneCount: teamData.activeCampaign.teamObserverDoneCount,
+                }
+              : undefined
+          }
           noDataCtaHref={`/team/${teamId}?tab=members`}
           noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
           deepDiveHref={`/team/${teamId}?tab=belbin`}

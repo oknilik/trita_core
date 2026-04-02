@@ -37,6 +37,11 @@ interface TeamIntelligenceProps {
   evidenceBySub?: Partial<Record<SubTab, TeamIntelligenceEvidence>>;
   presentation?: "tabs" | "blocks";
   isHu?: boolean;
+  hasDynamicsData?: boolean;
+  dynamicsSummary?: {
+    participantCount: number;
+    observerDoneCount: number;
+  };
   noDataCtaHref?: string;
   noDataCtaLabel?: string;
   deepDiveHref?: string;
@@ -126,6 +131,8 @@ export function TeamIntelligence({
   edges,
   evidenceBySub,
   isHu = true,
+  hasDynamicsData = false,
+  dynamicsSummary,
   noDataCtaHref,
   noDataCtaLabel,
   deepDiveHref,
@@ -277,6 +284,23 @@ export function TeamIntelligence({
               <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] text-rose-800">
                 {isHu ? "Feszültségi pontok" : "Tension links"}: {dynamicsCounts.tension}
               </span>
+            </div>
+          ) : hasDynamicsData ? (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-800">
+                {isHu ? "Observer adatok beérkeztek" : "Observer data detected"}
+              </span>
+              {dynamicsSummary ? (
+                <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
+                  {dynamicsSummary.observerDoneCount}/{Math.max(dynamicsSummary.participantCount, 1)}{" "}
+                  {isHu ? "résztvevő visszajelzéssel" : "participants with feedback"}
+                </span>
+              ) : null}
+              <p className="w-full text-[12px] text-ink-body">
+                {isHu
+                  ? "A részletes kapcsolati háló megjelenítése folyamatban van, de az observer jelzések már elérhetők."
+                  : "Detailed relationship graph rendering is in progress, but observer signals are already available."}
+              </p>
             </div>
           ) : (
             <p className="mt-2 text-[12px] text-ink-body">
