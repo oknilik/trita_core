@@ -39,6 +39,7 @@ interface TeamIntelligenceProps {
   members: IntelligenceMember[];
   edges: DynamicsEdge[];
   evidenceBySub?: Partial<Record<SubTab, TeamIntelligenceEvidence>>;
+  presentation?: "tabs" | "blocks";
   isHu?: boolean;
 }
 
@@ -94,14 +95,93 @@ function mergeEvidence(
   };
 }
 
-export function TeamIntelligence({ members, edges, evidenceBySub, isHu = true }: TeamIntelligenceProps) {
+interface EvidenceSummaryProps {
+  evidence: TeamIntelligenceEvidence;
+  loc: Locale;
+}
+
+function EvidenceSummary({ evidence, loc }: EvidenceSummaryProps) {
+  return (
+    <div className="rounded-xl border border-sand bg-white px-3 py-2.5">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+        {t("teamComp.evidenceEyebrow", loc)}
+      </p>
+      <p className="mt-1 text-[12px] text-ink-body">
+        {t("teamComp.evidenceSource", loc)}:{" "}
+        <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
+        {" · "}
+        {t("teamComp.evidenceQuality", loc)}:{" "}
+        <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
+        {" · "}
+        {t("teamComp.evidenceConfidence", loc)}:{" "}
+        <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
+      </p>
+      {evidence.note ? (
+        <p className="mt-1 text-[11px] text-muted">{evidence.note}</p>
+      ) : null}
+    </div>
+  );
+}
+
+export function TeamIntelligence({
+  members,
+  edges,
+  evidenceBySub,
+  presentation = "tabs",
+  isHu = true,
+}: TeamIntelligenceProps) {
   const [sub, setSub] = useState<SubTab>("map");
   const loc: Locale = isHu ? "hu" : "en";
   const availableTabs: SubTab[] = edges.length > 0
     ? ["map", "dynamics", "roles"]
     : ["map", "roles"];
+  const evidenceByTab = mergeEvidence(evidenceBySub);
   const activeSub: SubTab = availableTabs.includes(sub) ? sub : "map";
-  const evidence = mergeEvidence(evidenceBySub)[activeSub];
+  const evidence = evidenceByTab[activeSub];
+
+  if (presentation === "blocks") {
+    return (
+      <div className="flex flex-col gap-5 pt-2">
+        {edges.length === 0 ? (
+          <p className="rounded-xl border border-warm-mid bg-cream px-3 py-2 text-[12px] text-ink-body">
+            {t("teamComp.dynamicsHiddenHint", loc)}
+          </p>
+        ) : null}
+
+        <section className="rounded-2xl border border-sand bg-white p-4 md:p-5">
+          <div className="mb-3">
+            <p className="font-dm-sans text-[14px] font-semibold text-ink">
+              {t("teamComp.subMap", loc)}
+            </p>
+          </div>
+          <EvidenceSummary evidence={evidenceByTab.map} loc={loc} />
+          <TeamMap members={members} isHu={isHu} />
+        </section>
+
+        <section className="rounded-2xl border border-sand bg-white p-4 md:p-5">
+          <div className="mb-3">
+            <p className="font-dm-sans text-[14px] font-semibold text-ink">
+              {t("teamComp.subRoles", loc)}
+            </p>
+          </div>
+          <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
+          <RoleFitMap members={members} isHu={isHu} />
+        </section>
+
+        {edges.length > 0 ? (
+          <section className="rounded-2xl border border-sand bg-white p-4 md:p-5">
+            <div className="mb-3">
+              <p className="font-dm-sans text-[14px] font-semibold text-ink">
+                {t("teamComp.subDynamics", loc)}
+              </p>
+            </div>
+            <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
+            <DynamicsMap members={members} edges={edges} isHu={isHu} />
+          </section>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className="pt-6">
@@ -130,24 +210,7 @@ export function TeamIntelligence({ members, edges, evidenceBySub, isHu = true }:
         </p>
       ) : null}
 
-      <div className="mb-4 rounded-xl border border-sand bg-white px-3 py-2.5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-          {t("teamComp.evidenceEyebrow", loc)}
-        </p>
-        <p className="mt-1 text-[12px] text-ink-body">
-          {t("teamComp.evidenceSource", loc)}:{" "}
-          <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
-          {" · "}
-          {t("teamComp.evidenceQuality", loc)}:{" "}
-          <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
-          {" · "}
-          {t("teamComp.evidenceConfidence", loc)}:{" "}
-          <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
-        </p>
-        {evidence.note ? (
-          <p className="mt-1 text-[11px] text-muted">{evidence.note}</p>
-        ) : null}
-      </div>
+      <EvidenceSummary evidence={evidence} loc={loc} />
 
       {activeSub === "map" && <TeamMap members={members} isHu={isHu} />}
       {activeSub === "dynamics" && <DynamicsMap members={members} edges={edges} isHu={isHu} />}

@@ -269,17 +269,8 @@ export default async function TeamDetailPage({
         : "Role fit is a personality-based estimate.",
     },
   };
-
   const backToOverviewLabel = isHu ? "Vissza a csapatkép áttekintéshez" : "Back to team overview";
-  const viewCards = [
-    {
-      key: "intelligence" as const,
-      title: t("teamComp.tabIntelligence", locale),
-      description: isHu
-        ? "Potenciál, típusok és csapatdinamika vizualizáció."
-        : "Potential, type and team-dynamics visual view.",
-      badge: undefined as number | undefined,
-    },
+  const supportingViews = [
     {
       key: "profile" as const,
       title: t("teamComp.tabProfile", locale),
@@ -399,6 +390,7 @@ export default async function TeamDetailPage({
           members={intelligenceMembers}
           edges={[]}
           evidenceBySub={intelligenceEvidenceBySub}
+          presentation="blocks"
           isHu={isHu}
         />
       </PlatformPageShell>
@@ -752,37 +744,41 @@ export default async function TeamDetailPage({
           </div>
         </section>
 
-        <section>
+        <section id="team-intelligence">
           <DashboardSectionHeader
-            label={isHu ? "Nézetek" : "Views"}
+            label={t("teamComp.tabIntelligence", locale)}
             className="mb-4"
           />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {viewCards.map((card) => (
+          <p className="mb-4 text-[12px] leading-relaxed text-ink-body">
+            {isHu
+              ? "A csapatintelligencia nézetek az állapotkép alatt, egy helyen jelennek meg."
+              : "Team intelligence views are grouped here under the status snapshot."}
+          </p>
+          <TeamIntelligence
+            members={intelligenceMembers}
+            edges={[]}
+            evidenceBySub={intelligenceEvidenceBySub}
+            presentation="blocks"
+            isHu={isHu}
+          />
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {supportingViews.map((card) => (
               <Link
                 key={card.key}
                 href={`/team/${teamId}?tab=${card.key}`}
-                className="group rounded-[18px] border border-sand bg-white p-4 shadow-[0_10px_28px_rgba(26,26,46,0.04)] transition-colors hover:border-bronze/35 hover:bg-cream"
+                className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-dm-sans text-[14px] font-semibold text-ink">
-                    {card.title}
-                  </p>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-[13px] font-semibold text-ink">{card.title}</p>
                   {card.badge ? (
                     <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
                       {card.badge}
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
+                <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
                   {card.description}
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-sage transition-colors group-hover:text-sage-dark">
-                  {isHu ? "Nézet megnyitása" : "Open view"}
-                  <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 2l4 4-4 4" />
-                  </svg>
-                </span>
               </Link>
             ))}
           </div>
