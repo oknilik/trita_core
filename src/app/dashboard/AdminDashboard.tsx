@@ -347,6 +347,10 @@ export function AdminDashboard() {
   const insightTeaserBody = isHu
     ? `${topDim.name} most a legerősebb szervezeti minta, miközben ${lowDim.name.toLowerCase()} körül lehet a legtöbb súrlódás. A részletes értelmezés külön analitikai nézetbe való, itt csak a fő jelzést tartjuk meg.`
     : `${topDim.name} is the strongest organizational signal right now, while ${lowDim.name.toLowerCase()} is the most likely source of friction. The detailed interpretation belongs in analytics; the dashboard keeps only the key signal.`;
+  const analyticsTeaserLabel = isHu ? "Analitikai nézet" : "Analytics";
+  const analyticsTeaserEyebrow = isHu ? "Rövid összkép" : "Quick insight";
+  const analyticsTeaserTitle = isHu ? "Szervezeti összkép" : "Organization snapshot";
+  const analyticsTeaserCta = isHu ? "Analitika megnyitása →" : "Open analytics →";
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
@@ -653,24 +657,33 @@ export function AdminDashboard() {
           </section>
 
           <section>
-            <DashboardSectionHeader label={t("dashboard.leadershipFocus", localeTag)} className="mb-4" />
+            <DashboardSectionHeader label={analyticsTeaserLabel} className="mb-4" />
             <DashboardActionCard
-              eyebrow={t("dashboard.orgPersonalityProfile", localeTag)}
-              title={t("dashboard.structuredInnovator", localeTag)}
+              eyebrow={analyticsTeaserEyebrow}
+              title={analyticsTeaserTitle}
               tone="warm"
               body={
                 <div className="space-y-3">
                   <p>{insightTeaserBody}</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    {localizedHexacoDims.map((d) => (
-                      <DimRing key={d.key} name={d.name} value={DUMMY_HEXACO[d.key]} color={d.color} />
-                    ))}
+                  <div className="flex flex-wrap gap-2">
+                    <DashboardStatusChip
+                      label={isHu ? `Erős jelzés: ${topDim.name}` : `Strong signal: ${topDim.name}`}
+                      tone="sage"
+                    />
+                    <DashboardStatusChip
+                      label={isHu ? `Figyeld: ${lowDim.name}` : `Watch: ${lowDim.name}`}
+                      tone="warm"
+                    />
+                    <DashboardStatusChip
+                      label={isHu ? `${teamsWithSnapshot}/${teams.length} csapatkép kész` : `${teamsWithSnapshot}/${teams.length} team insights ready`}
+                      tone="muted"
+                    />
                   </div>
                 </div>
               }
               cta={{
                 href: `/org/${org.id}`,
-                label: t("dashboard.detailedAnalysis", localeTag),
+                label: analyticsTeaserCta,
                 tone: "link",
               }}
             />
@@ -678,22 +691,6 @@ export function AdminDashboard() {
         </div>
 
       </main>
-    </div>
-  );
-}
-
-// ── Sub-components ──────────────────────────────────────────────────────────
-
-function DimRing({ name, value, color }: { name: string; value: number; color: string }) {
-  const c = 125.66;
-  return (
-    <div className="flex flex-col items-center">
-      <svg viewBox="0 0 52 52" width="52" height="52" className="mx-auto">
-        <circle cx="26" cy="26" r="20" fill="none" stroke="rgba(26,46,34,0.08)" strokeWidth="5" />
-        <circle cx="26" cy="26" r="20" fill="none" stroke={color} strokeWidth="5" strokeDasharray={c} strokeDashoffset={c * (1 - value / 100)} strokeLinecap="round" transform="rotate(-90 26 26)" style={{ transition: "stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)" }} />
-        <text x="26" y="30" textAnchor="middle" fontSize="12" fontWeight="500" fill="#1a2e22">{value}</text>
-      </svg>
-      <p className="mt-1 text-center text-[10px] leading-tight text-muted">{name}</p>
     </div>
   );
 }
