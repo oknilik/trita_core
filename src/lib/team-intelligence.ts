@@ -2,6 +2,7 @@ import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
 import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 
+export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
 export type TeamIntelligenceSubTab = "map" | "dynamics" | "roles";
 export type TeamIntelligenceEvidenceSource = "self" | "self_plus_observer" | "inferred";
 export type TeamIntelligenceEvidenceQuality = "none" | "partial" | "sufficient";
@@ -29,6 +30,11 @@ export interface TeamIntelligencePriority {
   reason: string;
   ctaLabel: string;
   ctaHref: string;
+}
+
+export function resolveTeamTabRedirect(tab: string | undefined): "intelligence" | null {
+  if (tab === "roles") return "intelligence";
+  return null;
 }
 
 interface BuildEvidenceInput {
@@ -84,7 +90,7 @@ export function resolveTeamIntelligenceQuality(
   totalCount: number,
 ): TeamIntelligenceEvidenceQuality {
   if (assessedCount === 0 || totalCount === 0) return "none";
-  if (assessedCount < 3) return "partial";
+  if (assessedCount < MIN_INTELLIGENCE_ASSESSMENTS) return "partial";
   return "sufficient";
 }
 
@@ -163,15 +169,20 @@ export function buildTeamIntelligencePriorities({
       title: tr(locale, "Hiányzó assessment kitöltések", "Missing assessment completions"),
       reason: tr(
         locale,
-        `A stabil csapatképhez legalább 3 kitöltés kell. Jelenleg még ${Math.max(3 - completedCount, 0)} hiányzik.`,
-        `At least 3 completions are needed for a stable team view. ${Math.max(3 - completedCount, 0)} still missing.`,
+        `A stabil csapatképhez legalább ${MIN_INTELLIGENCE_ASSESSMENTS} kitöltés kell. Jelenleg még ${Math.max(MIN_INTELLIGENCE_ASSESSMENTS - completedCount, 0)} hiányzik.`,
+        `At least ${MIN_INTELLIGENCE_ASSESSMENTS} completions are needed for a stable team view. ${Math.max(MIN_INTELLIGENCE_ASSESSMENTS - completedCount, 0)} still missing.`,
       ),
       ctaLabel: tr(locale, "Tagok és állapot megnyitása", "Open members and status"),
       ctaHref: `/team/${teamId}?tab=members`,
     });
   }
 
-  if (!hasObserverRound && orgId && canManageTeamActions && completedCount >= 3) {
+  if (
+    !hasObserverRound &&
+    orgId &&
+    canManageTeamActions &&
+    completedCount >= MIN_INTELLIGENCE_ASSESSMENTS
+  ) {
     priorities.push({
       id: "missing_observer_round",
       tone: "violet",

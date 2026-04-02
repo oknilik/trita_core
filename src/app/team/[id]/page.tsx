@@ -38,7 +38,9 @@ import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import {
   buildTeamIntelligenceEvidence,
   buildTeamIntelligencePriorities,
+  MIN_INTELLIGENCE_ASSESSMENTS,
   resolveTeamIntelligenceQuality,
+  resolveTeamTabRedirect,
 } from "@/lib/team-intelligence";
 
 export const dynamic = "force-dynamic";
@@ -106,8 +108,9 @@ export default async function TeamDetailPage({
     getServerLocale(), getServerAuth(), params, searchParams,
   ]);
   const requestedTab = resolvedSearchParams.tab;
-  if (requestedTab === "roles") {
-    redirect(`/team/${teamId}?tab=intelligence`);
+  const teamTabRedirect = resolveTeamTabRedirect(requestedTab);
+  if (teamTabRedirect) {
+    redirect(`/team/${teamId}?tab=${teamTabRedirect}`);
   }
   const activeTab: TeamTabKey = isTeamTab(requestedTab)
     ? requestedTab
@@ -247,7 +250,7 @@ export default async function TeamDetailPage({
     canManageTeamActions,
     locale: locale as "hu" | "en",
   });
-  const minimumIntelligenceAssessments = 3;
+  const minimumIntelligenceAssessments = MIN_INTELLIGENCE_ASSESSMENTS;
   const missingForStableIntelligence = Math.max(minimumIntelligenceAssessments - assessedCount, 0);
   const hasSufficientIntelligenceData = assessedCount >= minimumIntelligenceAssessments;
   const membersWithoutAssessment = teamData.members.filter((member) => !member.scores);
