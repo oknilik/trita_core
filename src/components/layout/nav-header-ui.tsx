@@ -298,20 +298,39 @@ export function NavHeaderUI({
 
         <div className="mt-1 rounded-xl bg-white px-2 py-2">
           {showProfileMenuItem ? (
-            <Link
-              href="/profile"
-              onClick={closeAll}
-              data-testid="nav-user-menu-profile"
-              className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="8" cy="5" r="3" />
-                  <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
-                </svg>
-              </span>
-              <span>Saját profil</span>
-            </Link>
+            <>
+              <Link
+                href="/profile"
+                onClick={closeAll}
+                data-testid="nav-user-menu-profile"
+                className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="8" cy="5" r="3" />
+                    <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
+                  </svg>
+                </span>
+                <span>Profil beállítások</span>
+              </Link>
+
+              <Link
+                href="/profile/results"
+                onClick={closeAll}
+                data-testid="nav-user-menu-results"
+                className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 13.5h12" />
+                    <path d="M4 10V6.5" />
+                    <path d="M8 10V3.5" />
+                    <path d="M12 10V8" />
+                  </svg>
+                </span>
+                <span>Eredményeim</span>
+              </Link>
+            </>
           ) : null}
 
           {showLanguageMenuItem ? (
@@ -637,19 +656,37 @@ export function NavHeaderUI({
                       Fiók
                     </p>
                     {showProfileMenuItem ? (
-                      <Link
-                        href="/profile"
-                        onClick={() => setMobileMenu("closed")}
-                        className="flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-                      >
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                          <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="8" cy="5" r="3" />
-                            <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
-                          </svg>
-                        </span>
-                        <span>Saját profil</span>
-                      </Link>
+                      <>
+                        <Link
+                          href="/profile"
+                          onClick={() => setMobileMenu("closed")}
+                          className="flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="8" cy="5" r="3" />
+                              <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                          </span>
+                          <span>Profil beállítások</span>
+                        </Link>
+
+                        <Link
+                          href="/profile/results"
+                          onClick={() => setMobileMenu("closed")}
+                          className="mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M2 13.5h12" />
+                              <path d="M4 10V6.5" />
+                              <path d="M8 10V3.5" />
+                              <path d="M12 10V8" />
+                            </svg>
+                          </span>
+                          <span>Eredményeim</span>
+                        </Link>
+                      </>
                     ) : null}
 
                     {showLanguageMenuItem ? (

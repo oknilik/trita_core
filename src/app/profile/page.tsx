@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { ConfirmModal } from "@/components/ui/Modal";
@@ -249,6 +250,12 @@ export default function ProfilePage() {
               {locale === "hu" ? "Magyar" : "English"}
             </span>
           </div>
+          <Link
+            href="/profile/results"
+            className="mt-4 inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-default)] bg-white px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+          >
+            {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"}
+          </Link>
         </div>
 
         {/* ═══ RÓLAD ═══ */}
