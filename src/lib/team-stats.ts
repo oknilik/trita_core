@@ -1,10 +1,9 @@
 import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
-import { extractDimensionScores } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type HexacoScores } from "./team-pattern";
 
 const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
-type DynamicsEdgeType = "good" | "neutral" | "tension";
+type DynamicsEdgeType = "aligned" | "complementary" | "friction";
 
 const DIM_COLORS: Record<string, string> = {
   H: "#6366F1",
@@ -60,7 +59,7 @@ export interface TeamDynamicsEdge {
   fromUserId: string;
   toUserId: string;
   type: DynamicsEdgeType;
-  source: "observer";
+  source: "observer" | "profile_estimate";
   relationshipType: string | null;
   confidence: number | null;
   dimensionDelta: number | null;
@@ -92,56 +91,68 @@ export interface TeamPageData {
   patternResult: TeamPatternResult | null;
 }
 
-function calculateDimensionDelta(
-  selfScores: Record<string, number> | null | undefined,
-  observerScores: unknown,
-): number | null {
-  if (!selfScores) return null;
-  const observerDimensions = extractDimensionScores(observerScores);
-  if (!observerDimensions) return null;
+// ── Profile-based friction estimate ─────────────────────────────────────────
+// Weighted HEXACO dimension gaps predict interpersonal friction potential.
+// Weights based on established personality psychology research:
+//   C (conscientiousness) and A (agreeableness) gaps are the strongest work
+//   friction predictors; H (honesty-humility) follows; E, X, O are weaker.
 
-  const deltas = DIM_ORDER.map((dim) => {
-    const selfValue = selfScores[dim];
-    const observerValue = observerDimensions[dim];
-    if (typeof selfValue !== "number" || typeof observerValue !== "number") return null;
-    return Math.abs(selfValue - observerValue);
-  }).filter((value): value is number => value !== null);
+const FRICTION_WEIGHTS: Record<string, number> = {
+  C: 0.30,  // deadline/quality/follow-through tension
+  A: 0.25,  // communication style conflicts
+  H: 0.20,  // trust and motive attribution
+  E: 0.15,  // emotional thermostat mismatch
+  X: 0.05,  // communication frequency mismatch
+  O: 0.05,  // innovation vs pragmatism
+};
 
-  if (deltas.length === 0) return null;
-  return Math.round(deltas.reduce((sum, value) => sum + value, 0) / deltas.length);
+function calculatePairFriction(
+  scoresA: Record<string, number>,
+  scoresB: Record<string, number>,
+): number {
+  let weightedSum = 0;
+  for (const dim of DIM_ORDER) {
+    const a = scoresA[dim];
+    const b = scoresB[dim];
+    if (typeof a !== "number" || typeof b !== "number") continue;
+    weightedSum += (FRICTION_WEIGHTS[dim] ?? 0) * Math.abs(a - b);
+  }
+  return Math.round(weightedSum);
 }
 
-function resolveDynamicsEdgeType(input: {
-  relationshipType: string | null;
-  confidence: number | null;
-  dimensionDelta: number | null;
-}): DynamicsEdgeType {
-  const { relationshipType, confidence, dimensionDelta } = input;
-
-  if (typeof dimensionDelta === "number") {
-    if (dimensionDelta >= 24) return "tension";
-    if (dimensionDelta >= 14) return "neutral";
-  }
-
-  if (typeof confidence === "number") {
-    if (confidence >= 4) return "good";
-    if (confidence <= 2) return "neutral";
-  }
-
-  if (relationshipType === "COLLEAGUE" || relationshipType === "FRIEND" || relationshipType === "PARTNER") {
-    return "good";
-  }
-
-  return "neutral";
+function frictionToEdgeType(frictionScore: number): DynamicsEdgeType {
+  if (frictionScore < 12) return "aligned";
+  if (frictionScore < 22) return "complementary";
+  return "friction";
 }
 
-function mergeDynamicsEdgeType(a: DynamicsEdgeType, b: DynamicsEdgeType): DynamicsEdgeType {
-  const priority: Record<DynamicsEdgeType, number> = {
-    tension: 3,
-    neutral: 2,
-    good: 1,
-  };
-  return priority[a] >= priority[b] ? a : b;
+function buildProfileBasedEdges(
+  members: SerializedTeamMember[],
+): TeamDynamicsEdge[] {
+  const assessed = members.filter((m) => m.scores !== null);
+  const edges: TeamDynamicsEdge[] = [];
+
+  for (let i = 0; i < assessed.length; i++) {
+    for (let j = i + 1; j < assessed.length; j++) {
+      const a = assessed[i];
+      const b = assessed[j];
+      const friction = calculatePairFriction(a.scores!, b.scores!);
+      const type = frictionToEdgeType(friction);
+
+      edges.push({
+        fromUserId: a.userId,
+        toUserId: b.userId,
+        type,
+        source: "profile_estimate",
+        relationshipType: null,
+        confidence: null,
+        dimensionDelta: friction,
+        createdAt: new Date().toISOString(),
+      });
+    }
+  }
+
+  return edges;
 }
 
 export async function getTeamPageData(
@@ -284,81 +295,8 @@ export async function getTeamPageData(
     }),
   ]);
 
-  const memberSelfScoresByUserId = new Map(
-    members.map((member) => [member.userId, member.scores]),
-  );
-  const teamUserIds = members.map((member) => member.userId);
-
-  const observerLinksRaw = await prisma.observerInvitation.findMany({
-    where: {
-      inviterId: { in: teamUserIds },
-      observerProfileId: { in: teamUserIds },
-      status: "COMPLETED",
-      assessment: { isNot: null },
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      inviterId: true,
-      observerProfileId: true,
-      createdAt: true,
-      assessment: {
-        select: {
-          relationshipType: true,
-          confidence: true,
-          scores: true,
-        },
-      },
-    },
-  });
-
-  const edgeBucket = new Map<string, TeamDynamicsEdge>();
-  for (const relation of observerLinksRaw) {
-    if (!relation.observerProfileId) continue;
-    const fromUserId = relation.observerProfileId;
-    const toUserId = relation.inviterId;
-    const pairKey = `${fromUserId}__${toUserId}`;
-    const relationshipType = relation.assessment?.relationshipType ?? null;
-    const confidence = relation.assessment?.confidence ?? null;
-    const dimensionDelta = calculateDimensionDelta(
-      memberSelfScoresByUserId.get(toUserId),
-      relation.assessment?.scores,
-    );
-    const type = resolveDynamicsEdgeType({
-      relationshipType,
-      confidence,
-      dimensionDelta,
-    });
-
-    const existing = edgeBucket.get(pairKey);
-    if (!existing) {
-      edgeBucket.set(pairKey, {
-        fromUserId,
-        toUserId,
-        type,
-        source: "observer",
-        relationshipType,
-        confidence,
-        dimensionDelta,
-        createdAt: relation.createdAt.toISOString(),
-      });
-      continue;
-    }
-
-    edgeBucket.set(pairKey, {
-      ...existing,
-      type: mergeDynamicsEdgeType(existing.type, type),
-      confidence: typeof existing.confidence === "number"
-        ? Math.max(existing.confidence, confidence ?? 0)
-        : confidence,
-      dimensionDelta:
-        existing.dimensionDelta === null
-          ? dimensionDelta
-          : dimensionDelta === null
-            ? existing.dimensionDelta
-            : Math.max(existing.dimensionDelta, dimensionDelta),
-    });
-  }
-  const dynamicsEdges = Array.from(edgeBucket.values());
+  // ── Profile-based friction edges (pairwise HEXACO gap analysis) ──────────
+  const dynamicsEdges = buildProfileBasedEdges(members);
 
   // Compute active campaign stats
   let activeCampaign: TeamActiveCampaign | null = null;

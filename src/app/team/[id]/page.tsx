@@ -236,13 +236,9 @@ export default async function TeamDetailPage({
   const teamDynamicsEdges: DynamicsEdge[] = teamData.dynamicsEdges.map((edge) => ({
     from: edge.fromUserId,
     to: edge.toUserId,
-    type: edge.type,
+    type: edge.type as DynamicsEdge["type"],
   }));
-  const hasDynamicsData =
-    teamDynamicsEdges.length > 0 ||
-    !!teamData.activeCampaign &&
-    teamData.activeCampaign.teamParticipantCount > 0 &&
-    teamData.activeCampaign.teamObserverDoneCount > 0;
+  const hasDynamicsData = teamDynamicsEdges.length > 0;
   const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
   const intelligenceEvidenceBySub = buildTeamIntelligenceEvidence({
     assessedCount,
@@ -272,10 +268,8 @@ export default async function TeamDetailPage({
         : isHu ? "nincs adat" : "no data";
   const dynamicsStateLabel =
     teamDynamicsEdges.length > 0
-      ? (isHu ? "elérhető" : "available")
-      : hasDynamicsData
-        ? (isHu ? "részben elérhető" : "partially available")
-        : (isHu ? "nincs adat" : "no data");
+      ? (isHu ? "profil becslés" : "profile estimate")
+      : (isHu ? "nincs adat" : "no data");
   const backToOverviewLabel = isHu ? "Vissza a csapatkép áttekintéshez" : "Back to team overview";
   const supportingViews = [
     {

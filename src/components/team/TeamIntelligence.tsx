@@ -29,7 +29,7 @@ export interface IntelligenceMember {
 export interface DynamicsEdge {
   from: string;
   to: string;
-  type: "good" | "neutral" | "tension";
+  type: "aligned" | "complementary" | "friction";
 }
 
 interface TeamIntelligenceProps {
@@ -145,12 +145,12 @@ export function TeamIntelligence({
   const membersWithoutData = members.filter((member) => !member.hasAssessmentData);
   const dynamicsCounts = edges.reduce(
     (acc, edge) => {
-      if (edge.type === "good") acc.good += 1;
-      if (edge.type === "neutral") acc.neutral += 1;
-      if (edge.type === "tension") acc.tension += 1;
+      if (edge.type === "aligned") acc.aligned += 1;
+      if (edge.type === "complementary") acc.complementary += 1;
+      if (edge.type === "friction") acc.friction += 1;
       return acc;
     },
-    { good: 0, neutral: 0, tension: 0 },
+    { aligned: 0, complementary: 0, friction: 0 },
   );
 
   return (
@@ -270,7 +270,7 @@ export function TeamIntelligence({
               {t("teamComp.subDynamics", loc)}
             </p>
             <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
-              {edges.length > 0 ? (isHu ? "részletes háló" : "detailed network") : (isHu ? "summary only" : "summary only")}
+              {isHu ? "profil alapú becslés" : "profile-based estimate"}
             </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
@@ -278,35 +278,23 @@ export function TeamIntelligence({
             <div className="mt-2">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-800">
-                  {isHu ? "Támogató kapcsolatok" : "Supportive links"}: {dynamicsCounts.good}
+                  {isHu ? "Hasonló profil" : "Aligned"}: {dynamicsCounts.aligned}
                 </span>
                 <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
-                  {isHu ? "Semleges kapcsolatok" : "Neutral links"}: {dynamicsCounts.neutral}
+                  {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
                 </span>
-                <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] text-rose-800">
-                  {isHu ? "Feszültségi pontok" : "Tension links"}: {dynamicsCounts.tension}
+                <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] text-amber-800">
+                  {isHu ? "Potenciális súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
                 </span>
               </div>
+              <p className="mt-2 text-[11px] text-ink-body/60">
+                {isHu
+                  ? "A becslés a HEXACO személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
+                  : "Estimates are based on HEXACO personality profile gaps. Actual relationship dynamics require a 360° trust round."}
+              </p>
               <div className="mt-3">
                 <DynamicsMap members={members} edges={edges} isHu={isHu} />
               </div>
-            </div>
-          ) : hasDynamicsData ? (
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] text-emerald-800">
-                {isHu ? "Observer adatok beérkeztek" : "Observer data detected"}
-              </span>
-              {dynamicsSummary ? (
-                <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
-                  {dynamicsSummary.observerDoneCount}/{Math.max(dynamicsSummary.participantCount, 1)}{" "}
-                  {isHu ? "résztvevő visszajelzéssel" : "participants with feedback"}
-                </span>
-              ) : null}
-              <p className="w-full text-[12px] text-ink-body">
-                {isHu
-                  ? "A kapcsolati hálóhoz csapaton belüli observer kapcsolatok kellenek. Jelenleg valószínűleg főleg külső observer adatok érkeztek."
-                  : "Relationship map needs team-internal observer links. Current observer data is likely mostly external."}
-              </p>
             </div>
           ) : (
             <p className="mt-2 text-[12px] text-ink-body">

@@ -7,21 +7,21 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
-  good: "var(--color-state-success-strong)",
-  neutral: "#d3cfc6",
-  tension: "#f87171",
+  aligned: "var(--color-state-success-strong)",
+  complementary: "#d3cfc6",
+  friction: "#f59e0b",
 };
 
 const EDGE_WIDTHS: Record<DynamicsEdge["type"], number> = {
-  good: 2.5,
-  neutral: 1.5,
-  tension: 2,
+  aligned: 2.5,
+  complementary: 1.5,
+  friction: 2,
 };
 
 const EDGE_DASH: Record<DynamicsEdge["type"], string> = {
-  good: "none",
-  neutral: "6 3",
-  tension: "none",
+  aligned: "none",
+  complementary: "6 3",
+  friction: "none",
 };
 
 function getCircularPositions(
@@ -44,7 +44,7 @@ function getCircularPositions(
 function getHubIds(edges: DynamicsEdge[]): string[] {
   const counts: Record<string, number> = {};
   edges
-    .filter((e) => e.type === "good")
+    .filter((e) => e.type === "aligned")
     .forEach((e) => {
       counts[e.to] = (counts[e.to] ?? 0) + 1;
     });
@@ -62,13 +62,14 @@ interface DynamicsDetailPanelProps {
 
 function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPanelProps) {
   const memberMap = Object.fromEntries(members.map((m) => [m.id, m]));
-  const outgoing = edges.filter((e) => e.from === member.id);
-  const incoming = edges.filter((e) => e.to === member.id);
+  // Profile-based edges are symmetric — show all edges involving this member
+  const outgoing = edges.filter((e) => e.from === member.id || e.to === member.id);
+  const incoming = edges.filter((e) => e.to === member.id || e.from === member.id);
 
   const edgeLabelKey: Record<DynamicsEdge["type"], string> = {
-    good: "teamComp.edgeGood",
-    tension: "teamComp.edgeTension",
-    neutral: "teamComp.edgeNeutral",
+    aligned: "teamComp.edgeAligned",
+    friction: "teamComp.edgeFriction",
+    complementary: "teamComp.edgeComplementary",
   };
 
   return (
@@ -92,7 +93,8 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
           </SectionEyebrow>
           <div className="flex flex-col gap-1">
             {outgoing.map((e, i) => {
-              const target = memberMap[e.to];
+              const otherId = e.from === member.id ? e.to : e.from;
+              const target = memberMap[otherId];
               if (!target) return null;
               return (
                 <div key={i} className="flex items-center gap-2">
@@ -167,7 +169,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                 stroke={EDGE_COLORS[e.type]}
                 strokeWidth={EDGE_WIDTHS[e.type]}
                 strokeDasharray={EDGE_DASH[e.type]}
-                opacity={e.type === "neutral" ? 0.45 : 0.8}
+                opacity={e.type === "complementary" ? 0.45 : 0.8}
               />
             );
           })}
@@ -230,8 +232,8 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
         {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-4">
-          {(["good", "neutral", "tension"] as DynamicsEdge["type"][]).map((edgeType) => {
-            const legendKey = edgeType === "good" ? "teamComp.legendGood" : edgeType === "neutral" ? "teamComp.legendNeutral" : "teamComp.legendTension";
+          {(["aligned", "complementary", "friction"] as DynamicsEdge["type"][]).map((edgeType) => {
+            const legendKey = edgeType === "aligned" ? "teamComp.legendAligned" : edgeType === "complementary" ? "teamComp.legendComplementary" : "teamComp.legendFriction";
             return (
               <div key={edgeType} className="flex items-center gap-2">
                 <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[edgeType] }} />
