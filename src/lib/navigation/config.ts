@@ -116,7 +116,7 @@ function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext)
       id: `team-${team.id}`,
       label: team.name,
       description: "Csapatkép és intelligencia riport",
-      href: `/team/${team.id}?tab=profile`,
+      href: `/team/${team.id}?tab=overview`,
     })),
     ...(ctx.org
       ? [{

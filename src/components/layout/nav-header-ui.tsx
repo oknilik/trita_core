@@ -371,16 +371,16 @@ export function NavHeaderUI({
       {openDropdown && <div className="fixed inset-0 z-30" onClick={closeAll} />}
 
       <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
+        <div className="mx-auto grid h-14 max-w-6xl grid-cols-[auto_1fr_auto] items-center px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8">
           <Link
             href={homeHref}
             aria-label="trita"
-            className="font-fraunces mr-3 text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className="font-fraunces justify-self-start text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
           >
             <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="hidden items-center gap-1 lg:flex lg:justify-self-center">
             {navItems.map((item, index) => {
               const isActive = isNavItemActive(item);
               const itemClass =
@@ -441,7 +441,7 @@ export function NavHeaderUI({
             })}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-2 lg:flex lg:justify-self-end">
             <div className="h-5 w-px bg-[var(--color-border-default)]" />
             <div className="relative">
               <button
@@ -473,7 +473,7 @@ export function NavHeaderUI({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-2 justify-self-end lg:hidden">
             <button
               type="button"
               onClick={() => setMobileMenu((prev) => (prev === "closed" ? "quickview" : "closed"))}
