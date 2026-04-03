@@ -5,6 +5,7 @@ import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe, STRIPE_PRICES, TRIAL_DAYS, CANDIDATE_PACKAGES, type PriceKey, type CandidatePackageKey } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getServerAuth } from "@/lib/auth-server";
+import { buildCheckoutMetadata } from "@/lib/billing/stripe-metadata";
 
 const schema = z.object({
   priceKey: z.enum([
@@ -135,10 +136,20 @@ export async function POST(req: Request) {
       ],
       return_url: `${runtime.appUrl}/billing/return?session_id={CHECKOUT_SESSION_ID}&addon=candidate`,
       metadata: {
+        // Legacy keys (backward compat with existing handler)
         orgId: membership.orgId,
         type: "candidate_addon",
         creditCount: String(credits),
         actorId: profile.id,
+        // Unified metadata contract (B1)
+        ...buildCheckoutMetadata({
+          tritaUserId: profile.id,
+          organizationId: membership.orgId,
+          productType: "candidate_pack",
+          candidatePackSize: String(credits),
+          locale: stripeLocale,
+          currency: "eur",
+        }),
       },
     });
     return NextResponse.json({ clientSecret: session.client_secret });
@@ -156,7 +167,17 @@ export async function POST(req: Request) {
       metadata: { orgId: membership.orgId },
     },
     return_url: `${runtime.appUrl}/billing/return?session_id={CHECKOUT_SESSION_ID}`,
-    metadata: { orgId: membership.orgId },
+    metadata: {
+      orgId: membership.orgId,
+      ...buildCheckoutMetadata({
+        tritaUserId: profile.id,
+        organizationId: membership.orgId,
+        productType: body.data.priceKey.startsWith("org") ? "org_subscription" : "team_subscription",
+        billingInterval: body.data.priceKey.includes("annual") ? "annual" : "monthly",
+        locale: stripeLocale,
+        currency: "eur",
+      }),
+    },
     allow_promotion_codes: true,
   });
 

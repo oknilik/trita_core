@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { stripe, isOneTimeTier, getOneTimePriceId } from "@/lib/stripe";
 import { getServerAuth } from "@/lib/auth-server";
+import { buildCheckoutMetadata } from "@/lib/billing/stripe-metadata";
 
 const TEAM_TIERS = ["team_snapshot", "team_deep_dive"] as const;
 
@@ -129,11 +130,21 @@ export async function POST(req: Request) {
     success_url: `${runtime.appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${runtime.appUrl}/billing`,
     metadata: {
+      // Legacy keys (backward compat)
       type: "one_time_purchase",
       tier,
       userProfileId: profile.id,
       orgId: membership?.orgId ?? "",
       teamId: teamId ?? "",
+      // Unified metadata contract (B1)
+      ...buildCheckoutMetadata({
+        tritaUserId: profile.id,
+        organizationId: membership?.orgId,
+        teamId: teamId ?? undefined,
+        productType: tier as "self_plus" | "team_snapshot" | "team_deep_dive",
+        locale: stripeLocale,
+        currency: "eur",
+      }),
     },
   });
 
