@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { calculateBelbinScores } from "@/lib/belbin-scoring";
-import type { BelbinAnswers } from "@/lib/belbin-scoring";
+import { calculateTeamRoleScores } from "@/lib/team-role-scoring";
+import type { TeamRoleAnswers } from "@/lib/team-role-scoring";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -14,10 +14,10 @@ export async function POST(req: NextRequest) {
   });
   if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
-  let answers: BelbinAnswers;
+  let answers: TeamRoleAnswers;
   try {
     const body = await req.json();
-    answers = body.answers as BelbinAnswers;
+    answers = body.answers as TeamRoleAnswers;
     if (!answers || typeof answers !== "object") {
       return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
     }
@@ -25,28 +25,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
-  const scores = calculateBelbinScores(answers);
+  const scores = calculateTeamRoleScores(answers);
 
-  // Upsert BelbinAnswer
-  const belbinAnswer = await prisma.belbinAnswer.upsert({
+  // Upsert TeamRoleAnswer
+  const teamRoleAnswer = await prisma.teamRoleAnswer.upsert({
     where: { userProfileId: profile.id },
     create: { userProfileId: profile.id, answers: answers as object },
     update: { answers: answers as object },
   });
 
-  // Upsert BelbinScore
-  await prisma.belbinScore.upsert({
+  // Upsert TeamRoleScore
+  await prisma.teamRoleScore.upsert({
     where: { userProfileId: profile.id },
     create: {
       userProfileId: profile.id,
       scores: scores as object,
       source: "questionnaire",
-      belbinAnswerId: belbinAnswer.id,
+      teamRoleAnswerId: teamRoleAnswer.id,
     },
     update: {
       scores: scores as object,
       source: "questionnaire",
-      belbinAnswerId: belbinAnswer.id,
+      teamRoleAnswerId: teamRoleAnswer.id,
     },
   });
 

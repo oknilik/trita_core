@@ -11,8 +11,8 @@
 - **Problem**: "Csapatkép megtekintése" CTAs navigated to `/team/[id]?tab=profile` but the page ignored the `tab` query param — always showed the overview.
 - **Root cause**: `TeamPageShell` (tab router) and `TeamProfileTab` were built but never integrated into the server page.
 - **Fix**: Added `searchParams` handling to the team page. When `tab=profile`, the existing `TeamProfileTab` renders with heatmap + insights data. Back link returns to overview.
-- **Remaining**: `TeamPageShell`, `TeamOverviewTab`, `TeamMembersTab`, `TeamIntelligence`, `TeamBelbinSection`, `TeamMap`, `DynamicsMap`, `RoleFitMap` are dead code — not imported anywhere. Decision needed: integrate or remove.
-  - Files: `src/components/team/TeamPageShell.tsx`, `TeamOverviewTab.tsx`, `TeamMembersTab.tsx`, `TeamIntelligence.tsx`, `TeamBelbinSection.tsx`, `TeamMap.tsx`, `DynamicsMap.tsx`, `RoleFitMap.tsx`
+- **Remaining**: `TeamPageShell`, `TeamOverviewTab`, `TeamMembersTab`, `TeamIntelligence`, `TeamCsapatszerepSection`, `TeamMap`, `DynamicsMap`, `RoleFitMap` are dead code — not imported anywhere. Decision needed: integrate or remove.
+  - Files: `src/components/team/TeamPageShell.tsx`, `TeamOverviewTab.tsx`, `TeamMembersTab.tsx`, `TeamIntelligence.tsx`, `TeamCsapatszerepSection.tsx`, `TeamMap.tsx`, `DynamicsMap.tsx`, `RoleFitMap.tsx`
 
 ### 2. Billing nav links pointed to non-existent `/billing` route (`105f372`)
 - **Problem**: `nav-header-ui.tsx` (desktop + mobile) linked to `/billing` which has no page — 404 for users.
@@ -52,7 +52,7 @@
 - `src/components/team/TeamOverviewTab.tsx` — 426 lines, never used
 - `src/components/team/TeamMembersTab.tsx` — 165 lines, never used
 - `src/components/team/TeamIntelligence.tsx` — visualization, never used
-- `src/components/team/TeamBelbinSection.tsx` — Belbin analysis, never used
+- `src/components/team/TeamCsapatszerepSection.tsx` — Csapatszerep analysis, never used
 - `src/components/team/TeamMap.tsx`, `DynamicsMap.tsx`, `RoleFitMap.tsx` — graph visualizations, never used
 - **Decision**: If these are planned for future use, keep with TODO markers. Otherwise, delete to reduce maintenance burden.
 

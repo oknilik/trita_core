@@ -114,28 +114,28 @@ function SelfPanel() {
           </div>
         </div>
 
-        {/* Belbin teaser */}
+        {/* TeamRole teaser */}
         <div className="flex gap-1.5">
           <div className="flex-[1.2] rounded-lg border border-[var(--color-action-primary-bg)]/30 bg-[var(--color-surface-self-accent-soft)] px-2.5 py-2">
             <span className="inline-flex rounded-sm bg-[var(--color-action-primary-bg)] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-white">
-              {t("landing.selfBelbinPrimary", locale)}
+              {t("landing.selfTeamRolePrimary", locale)}
             </span>
-            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfBelbin1Name", locale)}</p>
-            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfBelbin1Desc", locale)}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfTeamRole1Name", locale)}</p>
+            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfTeamRole1Desc", locale)}</p>
           </div>
           <div className="flex-1 rounded-lg border border-[var(--color-border-default)] px-2.5 py-2">
             <span className="inline-flex rounded-sm bg-[var(--color-surface-highlight-warm)] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
-              {t("landing.selfBelbinSecondary", locale)}
+              {t("landing.selfTeamRoleSecondary", locale)}
             </span>
-            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfBelbin2Name", locale)}</p>
-            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfBelbin2Desc", locale)}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfTeamRole2Name", locale)}</p>
+            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfTeamRole2Desc", locale)}</p>
           </div>
           <div className="flex-1 rounded-lg border border-[var(--color-border-default)] px-2.5 py-2">
             <span className="inline-flex rounded-sm bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-[6px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              {t("landing.selfBelbinTertiary", locale)}
+              {t("landing.selfTeamRoleTertiary", locale)}
             </span>
-            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfBelbin3Name", locale)}</p>
-            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfBelbin3Desc", locale)}</p>
+            <p className="mt-0.5 text-[11px] font-semibold text-[var(--color-text-primary)]">{t("landing.selfTeamRole3Name", locale)}</p>
+            <p className="text-[8px] text-[var(--color-text-secondary)]">{t("landing.selfTeamRole3Desc", locale)}</p>
           </div>
         </div>
       </div>

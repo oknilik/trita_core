@@ -6,7 +6,7 @@ Auditált felületek:
 
 - `/team/[id]?tab=intelligence`
 - `/team/[id]?tab=profile`
-- `/team/[id]?tab=belbin` (UI-ban: Csapatszerepek)
+- `/team/[id]?tab=team-role` (UI-ban: Csapatszerepek)
 - overview nézetből ide vezető belépési pontok
 
 Audit szempontok:
@@ -112,23 +112,23 @@ Forrás:
 
 - `src/components/team/RoleFitMap.tsx`
 
-### 6) Csapatszerepek (Belbin becslés)
+### 6) Csapatszerepek (Csapatszerep becslés)
 
 Relevancia: **5/10**
 
 Mi jó:
 
-- Expliciten becsült (HEXACO->Belbin súlyozás), több hasznos role-balance nézettel.
+- Expliciten becsült (HEXACO->Csapatszerep súlyozás), több hasznos role-balance nézettel.
 
 Fő limit:
 
-- Nem valódi Belbin mérés; becslési hiba potenciál magas.
-- Több helyen továbbra is “Belbin” terminológia maradt a copy/key rétegben.
+- Nem valódi Csapatszerep mérés; becslési hiba potenciál magas.
+- Több helyen továbbra is “Csapatszerep” terminológia maradt a copy/key rétegben.
 
 Forrás:
 
-- `src/components/team/TeamBelbinSection.tsx`
-- `src/lib/belbin-estimate.ts`
+- `src/components/team/TeamCsapatszerepSection.tsx`
+- `src/lib/team-role-estimate.ts`
 
 ---
 
@@ -194,7 +194,7 @@ No-score member ne kapjon “normál pontot”, külön “adat hiányzik” buc
 ## 5) Csapatszerepek modul tisztázása
 
 - Terminológia egységesítés: “Csapatszerepek (HEXACO-becslés)”.
-- Belbin szó ne jelenjen meg user-facing felületen.
+- Csapatszerep szó ne jelenjen meg user-facing felületen.
 - Rövid módszertani disclaimer kötelező.
 
 ---

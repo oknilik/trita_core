@@ -7,7 +7,7 @@ This document defines visualization ownership for team intelligence surfaces and
 ## Scope Ownership
 
 - `?tab=intelligence` is a summary-first operational surface.
-- `?tab=belbin` (Csapatszerepek) is the deep-dive analytical surface.
+- `?tab=team-role` (Csapatszerepek) is the deep-dive analytical surface.
 
 ## Intelligence Rules
 
@@ -21,7 +21,7 @@ This document defines visualization ownership for team intelligence surfaces and
 
 ## Deep-Dive Rules
 
-- Detailed role distribution, gap analysis and analytical charting belong to `?tab=belbin`.
+- Detailed role distribution, gap analysis and analytical charting belong to `?tab=team-role`.
 - Intelligence must provide a clear handoff CTA to the deep-dive view.
 - Do not duplicate the same detailed role visualizations in both surfaces.
 

@@ -4,22 +4,22 @@ import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
-import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
-import type { BelbinRoleCode, BelbinScores } from "@/lib/belbin-scoring";
+import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
+import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 
-interface MemberWithBelbin {
+interface MemberWithTeamRole {
   id: string;
   userId: string;
   displayName: string;
   hasScores: boolean;
-  belbinScores: BelbinScores | null;
-  top3: { role: BelbinRoleCode; score: number }[];
-  primaryRole: BelbinRoleCode | null;
+  teamRoleScores: TeamRoleScores | null;
+  top3: { role: TeamRoleCode; score: number }[];
+  primaryRole: TeamRoleCode | null;
 }
 
-const ROLE_COLORS: Record<BelbinRoleCode, string> = {
+const ROLE_COLORS: Record<TeamRoleCode, string> = {
   PL: "var(--color-visual-gradient-indigo)",
   RI: "#0ea5e9",
   CO: "var(--color-state-success-strong)",
@@ -38,12 +38,12 @@ function RoleChip({
   isHu,
   size = "sm",
 }: {
-  role: BelbinRoleCode;
+  role: TeamRoleCode;
   isHu: boolean;
   size?: "sm" | "xs";
 }) {
   const color = ROLE_COLORS[role];
-  const label = isHu ? BELBIN_ROLES[role].hu : BELBIN_ROLES[role].en;
+  const label = isHu ? TEAM_ROLES[role].hu : TEAM_ROLES[role].en;
   return (
     <span
       className={`inline-flex items-center rounded-full font-semibold ${
@@ -58,13 +58,13 @@ function RoleChip({
   );
 }
 
-// ── BelbinCompletionStatus ────────────────────────────────────────────────────
+// ── TeamRoleCompletionStatus ────────────────────────────────────────────────────
 
-function BelbinCompletionStatus({
+function TeamRoleCompletionStatus({
   members,
   isHu,
 }: {
-  members: MemberWithBelbin[];
+  members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
   const withScores = members.filter((m) => m.hasScores).length;
@@ -104,11 +104,11 @@ function RoleComposition({
   members,
   isHu,
 }: {
-  members: MemberWithBelbin[];
+  members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
   const roleCounts = useMemo(() => {
-    const counts: Partial<Record<BelbinRoleCode, number>> = {};
+    const counts: Partial<Record<TeamRoleCode, number>> = {};
     for (const m of members) {
       if (!m.primaryRole) continue;
       counts[m.primaryRole] = (counts[m.primaryRole] ?? 0) + 1;
@@ -116,7 +116,7 @@ function RoleComposition({
     return counts;
   }, [members]);
 
-  const sorted = (Object.entries(roleCounts) as [BelbinRoleCode, number][])
+  const sorted = (Object.entries(roleCounts) as [TeamRoleCode, number][])
     .sort((a, b) => b[1] - a[1]);
 
   const withData = members.filter((m) => m.primaryRole).length;
@@ -158,20 +158,20 @@ function RoleComposition({
 
 // ── RoleAlerts ───────────────────────────────────────────────────────────────
 
-const ALL_ROLES = Object.keys(BELBIN_ROLES) as BelbinRoleCode[];
+const ALL_ROLES = Object.keys(TEAM_ROLES) as TeamRoleCode[];
 
 function RoleAlerts({
   members,
   isHu,
 }: {
-  members: MemberWithBelbin[];
+  members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
   const withData = members.filter((m) => m.primaryRole);
 
   if (withData.length < 2) return null;
 
-  const roleCounts: Record<BelbinRoleCode, number> = {} as Record<BelbinRoleCode, number>;
+  const roleCounts: Record<TeamRoleCode, number> = {} as Record<TeamRoleCode, number>;
   for (const r of ALL_ROLES) roleCounts[r] = 0;
   for (const m of withData) {
     if (m.primaryRole) roleCounts[m.primaryRole]++;
@@ -225,13 +225,13 @@ function RoleAlerts({
   );
 }
 
-// ── IndividualBelbinTable ─────────────────────────────────────────────────────
+// ── IndividualTeamRoleTable ─────────────────────────────────────────────────────
 
-function IndividualBelbinTable({
+function IndividualTeamRoleTable({
   members,
   isHu,
 }: {
-  members: MemberWithBelbin[];
+  members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
   return (
@@ -294,7 +294,7 @@ function IndividualBelbinTable({
 // People-oriented roles: CO, TW, RI
 // Thought-oriented roles: PL, ME, SP
 
-const ROLE_CATEGORY: Record<BelbinRoleCode, "action" | "people" | "thought"> = {
+const ROLE_CATEGORY: Record<TeamRoleCode, "action" | "people" | "thought"> = {
   SH: "action", IM: "action", CF: "action",
   CO: "people", TW: "people", RI: "people",
   PL: "thought", ME: "thought", SP: "thought",
@@ -304,7 +304,7 @@ function CrossAnalysis({
   members,
   isHu,
 }: {
-  members: MemberWithBelbin[];
+  members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
   const withData = members.filter((m) => m.primaryRole);
@@ -323,19 +323,19 @@ function CrossAnalysis({
     {
       key: "action" as const,
       labelKey: "teamComp.actionOriented",
-      roles: ["SH", "IM", "CF"] as BelbinRoleCode[],
+      roles: ["SH", "IM", "CF"] as TeamRoleCode[],
       color: "var(--color-state-warning-strong)",
     },
     {
       key: "people" as const,
       labelKey: "teamComp.peopleOriented",
-      roles: ["CO", "TW", "RI"] as BelbinRoleCode[],
+      roles: ["CO", "TW", "RI"] as TeamRoleCode[],
       color: "var(--color-state-success-strong)",
     },
     {
       key: "thought" as const,
       labelKey: "teamComp.thoughtOriented",
-      roles: ["PL", "ME", "SP"] as BelbinRoleCode[],
+      roles: ["PL", "ME", "SP"] as TeamRoleCode[],
       color: "var(--color-visual-gradient-indigo)",
     },
   ];
@@ -374,16 +374,16 @@ function CrossAnalysis({
   );
 }
 
-// ── Main: TeamBelbinSection ───────────────────────────────────────────────────
+// ── Main: TeamRoleSection ───────────────────────────────────────────────────
 
-interface TeamBelbinSectionProps {
+interface TeamRoleSectionProps {
   members: SerializedTeamMember[];
   isHu: boolean;
 }
 
-export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
+export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
   const loc: Locale = isHu ? "hu" : "en";
-  const membersWithBelbin = useMemo<MemberWithBelbin[]>(() => {
+  const membersWithTeamRole = useMemo<MemberWithTeamRole[]>(() => {
     return members.map((m) => {
       if (!m.scores) {
         return {
@@ -391,7 +391,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
           userId: m.userId,
           displayName: m.displayName,
           hasScores: false,
-          belbinScores: null,
+          teamRoleScores: null,
           top3: [],
           primaryRole: null,
         };
@@ -404,21 +404,21 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
           userId: m.userId,
           displayName: m.displayName,
           hasScores: false,
-          belbinScores: null,
+          teamRoleScores: null,
           top3: [],
           primaryRole: null,
         };
       }
-      const belbinScores = estimateBelbinFromHexaco(
+      const teamRoleScores = estimateTeamRolesFromHexaco(
         m.scores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>,
       );
-      const top3 = getTopRoles(belbinScores, 3);
+      const top3 = getTopRoles(teamRoleScores, 3);
       return {
         id: m.id,
         userId: m.userId,
         displayName: m.displayName,
         hasScores: true,
-        belbinScores,
+        teamRoleScores,
         top3,
         primaryRole: top3[0]?.role ?? null,
       };
@@ -433,15 +433,15 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
           {t("teamComp.estimatedRolesEyebrow", loc)}
         </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-2xl text-ink">
-          {t("teamComp.belbinTitle", loc)}
+          {t("teamComp.teamRoleTitle", loc)}
         </h2>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink-body">
-          {t("teamComp.belbinDesc", loc)}
+          {t("teamComp.teamRoleDesc", loc)}
         </p>
       </div>
 
       {/* Completion status */}
-      <BelbinCompletionStatus members={membersWithBelbin} isHu={isHu} />
+      <TeamRoleCompletionStatus members={membersWithTeamRole} isHu={isHu} />
 
       {/* Role composition */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
@@ -452,7 +452,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
         <h4 className="mb-5 font-fraunces text-xl text-ink">
           {t("teamComp.roleCompositionTitle", loc)}
         </h4>
-        <RoleComposition members={membersWithBelbin} isHu={isHu} />
+        <RoleComposition members={membersWithTeamRole} isHu={isHu} />
       </section>
 
       {/* Alerts */}
@@ -461,7 +461,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
           {"// "}
           {t("teamComp.balanceAlertsEyebrow", loc)}
         </SectionEyebrow>
-        <RoleAlerts members={membersWithBelbin} isHu={isHu} />
+        <RoleAlerts members={membersWithTeamRole} isHu={isHu} />
       </section>
 
       {/* Cross-analysis */}
@@ -473,7 +473,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
         <p className="mb-4 text-sm text-ink-body">
           {t("teamComp.categoryAnalysisDesc", loc)}
         </p>
-        <CrossAnalysis members={membersWithBelbin} isHu={isHu} />
+        <CrossAnalysis members={membersWithTeamRole} isHu={isHu} />
       </section>
 
       {/* Individual table */}
@@ -485,7 +485,7 @@ export function TeamBelbinSection({ members, isHu }: TeamBelbinSectionProps) {
         <h4 className="mb-4 font-fraunces text-xl text-ink">
           {t("teamComp.memberRoleProfiles", loc)}
         </h4>
-        <IndividualBelbinTable members={membersWithBelbin} isHu={isHu} />
+        <IndividualTeamRoleTable members={membersWithTeamRole} isHu={isHu} />
       </section>
     </div>
   );

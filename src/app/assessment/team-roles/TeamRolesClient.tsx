@@ -2,22 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { BelbinQuestionnaire } from "@/components/assessment/BelbinQuestionnaire";
-import type { BelbinAnswers } from "@/lib/belbin-scoring";
+import { TeamRoleQuestionnaire } from "@/components/assessment/TeamRoleQuestionnaire";
+import type { TeamRoleAnswers } from "@/lib/team-role-scoring";
 import type { Locale } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
-interface BelbinClientProps {
+interface TeamRolesClientProps {
   locale: Locale;
 }
 
-export function BelbinClient({ locale }: BelbinClientProps) {
+export function TeamRolesClient({ locale }: TeamRolesClientProps) {
   const router = useRouter();
 
   const handleComplete = useCallback(
-    async (answers: BelbinAnswers) => {
+    async (answers: TeamRoleAnswers) => {
       try {
-        await fetch("/api/belbin/submit", {
+        await fetch("/api/team-roles/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ answers }),
@@ -36,7 +36,7 @@ export function BelbinClient({ locale }: BelbinClientProps) {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10">
-      <BelbinQuestionnaire
+      <TeamRoleQuestionnaire
         locale={locale}
         onComplete={handleComplete}
         onSkip={handleSkip}

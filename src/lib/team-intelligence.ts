@@ -1,5 +1,5 @@
-import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
-import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
+import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
+import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 
 export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
@@ -209,10 +209,10 @@ export function buildTeamIntelligencePriorities({
   );
 
   if (membersWithScores.length >= 4) {
-    const keyRoles: Array<keyof typeof BELBIN_ROLES> = ["CO", "SH", "ME"];
-    const presentTopRoles = new Set<keyof typeof BELBIN_ROLES>();
+    const keyRoles: Array<keyof typeof TEAM_ROLES> = ["CO", "SH", "ME"];
+    const presentTopRoles = new Set<keyof typeof TEAM_ROLES>();
     membersWithScores.forEach((member) => {
-      const scores = estimateBelbinFromHexaco({
+      const scores = estimateTeamRolesFromHexaco({
         H: member.scores!.H,
         E: member.scores!.E,
         X: member.scores!.X,
@@ -227,7 +227,7 @@ export function buildTeamIntelligencePriorities({
     const missingKeyRoles = keyRoles.filter((role) => !presentTopRoles.has(role));
     if (missingKeyRoles.length > 0) {
       const roleNames = missingKeyRoles
-        .map((role) => (locale === "hu" ? BELBIN_ROLES[role].hu : BELBIN_ROLES[role].en))
+        .map((role) => (locale === "hu" ? TEAM_ROLES[role].hu : TEAM_ROLES[role].en))
         .join(", ");
       priorities.push({
         id: "role_coverage_gap",
@@ -239,7 +239,7 @@ export function buildTeamIntelligencePriorities({
           `Estimated role map is missing: ${roleNames}.`,
         ),
         ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
-        ctaHref: `/team/${teamId}?tab=belbin`,
+        ctaHref: `/team/${teamId}?tab=teamRole`,
       });
     }
 
@@ -336,7 +336,7 @@ export function buildTeamIntelligencePriorities({
             )}, ΔA: ${Math.round(leaderDeltaA)}).`,
           ),
           ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
-          ctaHref: `/team/${teamId}?tab=belbin`,
+          ctaHref: `/team/${teamId}?tab=teamRole`,
         });
       }
     }

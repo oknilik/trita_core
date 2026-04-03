@@ -28,7 +28,7 @@ export interface PdfData {
   watchDimensions?: string[];
   // Dimensions
   dimensions: { name: string; shortName: string; value: number; description: string }[];
-  belbinRoles: { name: string; subtitle: string; score: number; rank: number }[];
+  teamRoleRoles: { name: string; subtitle: string; score: number; rank: number }[];
   // Altruism
   altruism?: { value: number; description: string };
   // Plus content

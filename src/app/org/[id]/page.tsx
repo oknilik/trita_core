@@ -229,8 +229,8 @@ export default async function OrgDetailPage({
   const orgLayerStatuses = evaluateProductLayersForScope(locale === "en" ? "en" : "hu", {
     hasSelfAssessmentStarted: pageData.memberCount > 0,
     hasSelfAssessment: pageData.completedMemberCount > 0,
-    hasBelbinStarted: pageData.completedMemberCount > 0,
-    hasBelbin: teamsReadyCount > 0,
+    hasTeamRoleStarted: pageData.completedMemberCount > 0,
+    hasTeamRole: teamsReadyCount > 0,
     hasStrengthProfile: pageData.completedMemberCount > 0,
     hasObserverFeedback,
     hasTeamInsights: teamsReadyCount > 0,

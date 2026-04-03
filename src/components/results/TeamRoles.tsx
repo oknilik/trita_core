@@ -1,17 +1,17 @@
 "use client";
 
-import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
-import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
-import type { BelbinRoleCode } from "@/lib/belbin-scoring";
+import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
+import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
-interface BelbinRolesProps {
+interface TeamRolesProps {
   hexacoScores: Record<string, number>;
   locale: Locale;
 }
 
-const ROLE_SUBTITLES: Record<BelbinRoleCode, { hu: string; en: string }> = {
+const ROLE_SUBTITLES: Record<TeamRoleCode, { hu: string; en: string }> = {
   PL: { hu: "Kreatív ötletgazda a csapatban", en: "Creative ideas person in the team" },
   RI: { hu: "Lelkes networker a csapatban", en: "Enthusiastic networker in the team" },
   CO: { hu: "Érett koordinátor a csapatban", en: "Mature coordinator in the team" },
@@ -23,7 +23,7 @@ const ROLE_SUBTITLES: Record<BelbinRoleCode, { hu: string; en: string }> = {
   SP: { hu: "Szaktudású specialista a csapatban", en: "Expert specialist in the team" },
 };
 
-const ROLE_DESCRIPTIONS: Record<BelbinRoleCode, { hu: string; en: string }> = {
+const ROLE_DESCRIPTIONS: Record<TeamRoleCode, { hu: string; en: string }> = {
   PL: { hu: "Eredeti gondolkodó, aki új megoldásokat hoz — de néha elszakad a gyakorlati megvalósítástól.", en: "Original thinker who brings new solutions — but can lose touch with practical implementation." },
   RI: { hu: "Könnyen teremt kapcsolatokat és hoz külső lehetőségeket — de az utánkövetés nem az erőssége.", en: "Easily builds connections and brings external opportunities — but follow-through isn't their strength." },
   CO: { hu: "Természetes facilitátor, aki célra fókuszálja a csapatot — de delegálhat túl sokat.", en: "Natural facilitator who focuses the team on goals — but may over-delegate." },
@@ -41,13 +41,13 @@ const RANK_LABELS = [
   { hu: "Harmadik", en: "Third" },
 ];
 
-export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
+export function TeamRoles({ hexacoScores, locale }: TeamRolesProps) {
   const lang = locale === "hu" ? "hu" : "en";
 
   const hasHexacoDims = "H" in hexacoScores && "X" in hexacoScores;
   if (!hasHexacoDims) return null;
 
-  const estimated = estimateBelbinFromHexaco(
+  const estimated = estimateTeamRolesFromHexaco(
     hexacoScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>,
   );
   const top3 = getTopRoles(estimated, 3);
@@ -55,18 +55,18 @@ export function BelbinRoles({ hexacoScores, locale }: BelbinRolesProps) {
   return (
     <section>
       <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
-        {t("results.belbinEyebrow", locale)}
+        {t("results.teamRoleEyebrow", locale)}
       </p>
       <h2 className="mt-1.5 mb-6 font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
-        {t("results.belbinTitle", locale)}
+        {t("results.teamRoleTitle", locale)}
       </h2>
       <p className="mb-6 max-w-lg text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
-        {t("content.belbinSub", locale)}
+        {t("content.teamRoleSub", locale)}
       </p>
 
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
         {top3.map(({ role, score }, idx) => {
-          const roleMeta = BELBIN_ROLES[role];
+          const roleMeta = TEAM_ROLES[role];
           const subtitle = ROLE_SUBTITLES[role];
           const desc = ROLE_DESCRIPTIONS[role];
           const rank = RANK_LABELS[idx];

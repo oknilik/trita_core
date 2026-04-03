@@ -12,8 +12,8 @@ export type ProductLayerId =
 export type LayerCompletionRuleKind =
   | "SELF_ASSESSMENT_STARTED"
   | "SELF_ASSESSMENT_COMPLETED"
-  | "BELBIN_STARTED"
-  | "BELBIN_COMPLETED"
+  | "TEAM_ROLE_STARTED"
+  | "TEAM_ROLE_COMPLETED"
   | "STRENGTH_PROFILE_AVAILABLE"
   | "OBSERVER_FEEDBACK_RECEIVED"
   | "TEAM_INSIGHTS_READY"
@@ -63,8 +63,8 @@ export interface ProductLayerConfig {
 export interface LayerCompletionSignals {
   hasSelfAssessmentStarted?: boolean;
   hasSelfAssessment: boolean;
-  hasBelbinStarted?: boolean;
-  hasBelbin: boolean;
+  hasTeamRoleStarted?: boolean;
+  hasTeamRole: boolean;
   hasStrengthProfile: boolean;
   hasObserverFeedback: boolean;
   hasTeamInsights: boolean;
@@ -119,10 +119,10 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     },
     order: 2,
     dependencies: ["personality"],
-    progressStartRules: [{ kind: "BELBIN_STARTED" }],
-    completionRules: [{ kind: "BELBIN_COMPLETED" }],
+    progressStartRules: [{ kind: "TEAM_ROLE_STARTED" }],
+    completionRules: [{ kind: "TEAM_ROLE_COMPLETED" }],
     renderingMap: {
-      results: { surface: "self", sectionKey: "belbin-roles" },
+      results: { surface: "self", sectionKey: "teamRole-roles" },
       dashboard: { surface: "team", sectionKey: "team-role-map" },
     },
   },
@@ -212,10 +212,10 @@ function satisfiesRule(
       return Boolean(signals.hasSelfAssessmentStarted);
     case "SELF_ASSESSMENT_COMPLETED":
       return signals.hasSelfAssessment;
-    case "BELBIN_STARTED":
-      return Boolean(signals.hasBelbinStarted);
-    case "BELBIN_COMPLETED":
-      return signals.hasBelbin;
+    case "TEAM_ROLE_STARTED":
+      return Boolean(signals.hasTeamRoleStarted);
+    case "TEAM_ROLE_COMPLETED":
+      return signals.hasTeamRole;
     case "STRENGTH_PROFILE_AVAILABLE":
       return signals.hasStrengthProfile;
     case "OBSERVER_FEEDBACK_RECEIVED":

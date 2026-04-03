@@ -286,8 +286,8 @@ export function OrgOnboardingWizard() {
   const onboardingLayerStatuses = evaluateProductLayersForScope(isHu ? "hu" : "en", {
     hasSelfAssessmentStarted: hasProfileStarted,
     hasSelfAssessment: false,
-    hasBelbinStarted: Boolean(state.teamName.trim()) || Boolean(teamId),
-    hasBelbin: false,
+    hasTeamRoleStarted: Boolean(state.teamName.trim()) || Boolean(teamId),
+    hasTeamRole: false,
     hasStrengthProfile: false,
     hasObserverFeedback: false,
     hasTeamInsights: false,

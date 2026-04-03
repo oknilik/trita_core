@@ -77,8 +77,8 @@ export default async function ProfileResultsPage({
     draft,
     researchSurveyRecord,
     journeySnapshot,
-    belbinAnswerRecord,
-    belbinScoreRecord,
+    teamRoleAnswerRecord,
+    teamRoleScoreRecord,
   ] = await Promise.all([
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
@@ -134,11 +134,11 @@ export default async function ProfileResultsPage({
       locale,
       entryPoint: "profile_results_page",
     }),
-    prisma.belbinAnswer.findUnique({
+    prisma.teamRoleAnswer.findUnique({
       where: { userProfileId: profile.id },
       select: { id: true },
     }),
-    prisma.belbinScore.findUnique({
+    prisma.teamRoleScore.findUnique({
       where: { userProfileId: profile.id },
       select: { id: true },
     }),
@@ -215,8 +215,8 @@ export default async function ProfileResultsPage({
   const layerStatuses = evaluateProductLayersForScope(locale, {
     hasSelfAssessmentStarted: journeySnapshot.state.completionSummary.self.started,
     hasSelfAssessment: journeySnapshot.state.completionSummary.self.completed,
-    hasBelbinStarted: Boolean(belbinAnswerRecord),
-    hasBelbin: Boolean(belbinScoreRecord),
+    hasTeamRoleStarted: Boolean(teamRoleAnswerRecord),
+    hasTeamRole: Boolean(teamRoleScoreRecord),
     hasStrengthProfile: Boolean(latestResult),
     hasObserverFeedback: completedObservers.length > 0,
     hasTeamInsights: journeySnapshot.state.completionSummary.team.ready,

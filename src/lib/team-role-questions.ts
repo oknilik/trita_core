@@ -1,20 +1,20 @@
-// Belbin Self-Perception Inventory — 7 sections × 8 statements
+// TeamRole Self-Perception Inventory — 7 sections × 8 statements
 // Each section: distribute 10 points across the 8 statements
-// Based on Belbin's original SPI questionnaire (adapted, publicly available version)
+// Based on TeamRole's original SPI questionnaire (adapted, publicly available version)
 
-export interface BelbinStatement {
+export interface TeamRoleStatement {
   index: number; // 0-7
   hu: string;
   en: string;
 }
 
-export interface BelbinSection {
+export interface TeamRoleSection {
   group: number; // 0-6
   heading: { hu: string; en: string };
-  statements: BelbinStatement[];
+  statements: TeamRoleStatement[];
 }
 
-export const BELBIN_SECTIONS: BelbinSection[] = [
+export const TEAM_ROLE_SECTIONS: TeamRoleSection[] = [
   {
     group: 0,
     heading: {

@@ -11,7 +11,7 @@ import { TeamMembersTab } from "./TeamMembersTab";
 import { TeamIntelligence } from "./TeamIntelligence";
 import type { IntelligenceMember } from "./TeamIntelligence";
 import type { TeamPageData } from "@/lib/team-stats";
-import { TeamBelbinSection } from "./TeamBelbinSection";
+import { TeamRoleSection } from "./TeamRoleSection";
 import { getAvatarMonogram, getAvatarSolidColor } from "@/lib/ui/avatar";
 
 const ZONE_NAMES_EN: Record<string, string> = {
@@ -95,7 +95,7 @@ export function TeamPageShell({
       badge: data.memberCount + data.pendingInvites.length,
     },
     {
-      key: "belbin",
+      key: "teamRole",
       label: isHu ? "Csapatszerepek" : "Team roles",
     },
   ];
@@ -192,8 +192,8 @@ export function TeamPageShell({
         />
       )}
 
-      {activeTab === "belbin" && (
-        <TeamBelbinSection members={data.members} isHu={isHu} />
+      {activeTab === "teamRole" && (
+        <TeamRoleSection members={data.members} isHu={isHu} />
       )}
     </div>
   );

@@ -293,7 +293,7 @@ Token validáció → Auth ellenőrzés → Profil kiegészítés → Context sw
 
 | Layer | Állapot | Időzítés |
 |---|---|---|
-| **Belbin flow** | Schema + scoring kész, UI részleges | Rövid távú |
+| **Csapatszerep flow** | Schema + scoring kész, UI részleges | Rövid távú |
 | **Values layer** | Schema placeholder | Közép távú |
 | **Conflict layer** | Schema placeholder | Közép távú |
 

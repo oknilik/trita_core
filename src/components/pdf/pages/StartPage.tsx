@@ -5,7 +5,7 @@ import { PdfFooter } from "../components/PdfFooter";
 import { PdfInsightPair } from "../components/PdfInsightPair";
 import { PdfDimStrip } from "../components/PdfDimStrip";
 import { PdfDimDetails } from "../components/PdfDimDetails";
-import { PdfBelbin } from "../components/PdfBelbin";
+import { PdfTeamRoles } from "../components/PdfTeamRoles";
 import { PdfCalloutBox } from "../components/PdfCalloutBox";
 import { t } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
@@ -63,12 +63,12 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
         </Text>
         <PdfDimDetails dimensions={data.dimensions} />
 
-        {/* ── Belbin ── */}
+        {/* ── TeamRole ── */}
         <View style={s.sectionDivider} />
         <Text style={s.sectionEyebrowFirst}>
           {t("pdf.teamRoles", locale)}
         </Text>
-        <PdfBelbin roles={data.belbinRoles} />
+        <PdfTeamRoles roles={data.teamRoleRoles} />
 
         {/* ── Start upsell ── */}
         {!hasPlus && (

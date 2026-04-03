@@ -33,8 +33,8 @@ import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
-import { TeamBelbinSection } from "@/components/team/TeamBelbinSection";
-import { BelbinRoundCard } from "@/components/team/BelbinRoundCard";
+import { TeamRoleSection } from "@/components/team/TeamRoleSection";
+import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import {
   buildTeamIntelligenceEvidence,
@@ -51,7 +51,7 @@ const TEAM_TAB_KEYS = [
   "intelligence",
   "profile",
   "members",
-  "belbin",
+  "teamRole",
 ] as const;
 
 type TeamTabKey = (typeof TEAM_TAB_KEYS)[number];
@@ -290,7 +290,7 @@ export default async function TeamDetailPage({
       badge: teamData.memberCount + teamData.pendingInvites.length,
     },
     {
-      key: "belbin" as const,
+      key: "teamRole" as const,
       title: isHu ? "Csapatszerepek" : "Team roles",
       description: isHu
         ? "Csapatszerepek és csapaton belüli egyensúly."
@@ -555,8 +555,8 @@ export default async function TeamDetailPage({
           }
           noDataCtaHref={`/team/${teamId}?tab=members`}
           noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
-          deepDiveHref={`/team/${teamId}?tab=belbin`}
-          deepDiveLabel={isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
+          deepDiveHref={`/team/${teamId}?tab=teamRole`}
+          deepDiveLabel={isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
         />
 
         <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
@@ -592,32 +592,32 @@ export default async function TeamDetailPage({
     );
   }
 
-  // ── Belbin tab ───────────────────────────────────────────────────────────
-  if (activeTab === "belbin") {
-    const belbinTeam = await prisma.team.findUnique({
+  // ── TeamRole tab ───────────────────────────────────────────────────────────
+  if (activeTab === "teamRole") {
+    const teamRoleTeam = await prisma.team.findUnique({
       where: { id: teamId },
-      select: { belbinRoundActive: true, belbinRoundStartedAt: true },
+      select: { teamRoleRoundActive: true, teamRoleRoundStartedAt: true },
     });
-    const belbinMembers = await prisma.teamMember.findMany({
+    const teamRoleMembers = await prisma.teamMember.findMany({
       where: { teamId },
       select: {
         userId: true,
         user: {
           select: {
             username: true,
-            belbinScore: { select: { source: true, updatedAt: true } },
+            teamRoleScore: { select: { source: true, updatedAt: true } },
           },
         },
       },
     });
-    const belbinMemberStatus = belbinMembers.map((m) => ({
+    const teamRoleMemberStatus = teamRoleMembers.map((m) => ({
       userId: m.userId,
       name: m.user.username ?? "?",
-      hasQuestionnaire: m.user.belbinScore?.source === "questionnaire",
-      hasEstimate: m.user.belbinScore?.source === "estimate",
+      hasQuestionnaire: m.user.teamRoleScore?.source === "questionnaire",
+      hasEstimate: m.user.teamRoleScore?.source === "estimate",
     }));
-    const belbinCompletedCount = belbinMemberStatus.filter((m) => m.hasQuestionnaire).length;
-    const belbinEstimateCount = belbinMemberStatus.filter((m) => m.hasEstimate).length;
+    const teamRoleCompletedCount = teamRoleMemberStatus.filter((m) => m.hasQuestionnaire).length;
+    const teamRoleEstimateCount = teamRoleMemberStatus.filter((m) => m.hasEstimate).length;
 
     return (
       <PlatformPageShell
@@ -633,17 +633,17 @@ export default async function TeamDetailPage({
           </svg>
           {backToOverviewLabel}
         </Link>
-        <BelbinRoundCard
+        <TeamRoleRoundCard
           teamId={teamId}
-          isRoundActive={belbinTeam?.belbinRoundActive ?? false}
-          totalMembers={belbinMembers.length}
-          completedCount={belbinCompletedCount}
-          estimateCount={belbinEstimateCount}
-          members={belbinMemberStatus}
+          isRoundActive={teamRoleTeam?.teamRoleRoundActive ?? false}
+          totalMembers={teamRoleMembers.length}
+          completedCount={teamRoleCompletedCount}
+          estimateCount={teamRoleEstimateCount}
+          members={teamRoleMemberStatus}
           canManage={isOrgManager}
           isHu={isHu}
         />
-        <TeamBelbinSection members={teamData.members} isHu={isHu} />
+        <TeamRoleSection members={teamData.members} isHu={isHu} />
       </PlatformPageShell>
     );
   }
@@ -737,8 +737,8 @@ export default async function TeamDetailPage({
   const teamLayerStatuses = evaluateProductLayersForScope(isHu ? "hu" : "en", {
     hasSelfAssessmentStarted: teamData.memberCount > 0,
     hasSelfAssessment: completedCount > 0,
-    hasBelbinStarted: completedCount > 0,
-    hasBelbin: hasPattern,
+    hasTeamRoleStarted: completedCount > 0,
+    hasTeamRole: hasPattern,
     hasStrengthProfile: completedCount > 0,
     hasObserverFeedback:
       hasObserver && teamData.activeCampaign!.teamObserverDoneCount > 0,

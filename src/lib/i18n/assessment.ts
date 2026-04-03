@@ -86,7 +86,7 @@ export const assessmentTranslations = {
     journeyMilestone75Sub: { hu: "Még néhány kérdés, és kész az eredményed. A célegyenesben vagy!", en: "Just a few more questions and your results will be ready!" },
     journeyMilestone75Hint: { hu: "A profil annál pontosabb, minél természetesebben válaszolsz — az utolsó kérdéseknél is bízz az ösztöneidben.", en: "The more naturally you answer, the more accurate your profile — trust your instincts on these last questions too." },
   },
-  belbin: {
+  teamRole: {
     eyebrow: { hu: "// csapatszerep kérdőív", en: "// team role questionnaire" },
     introTitle: { hu: "Ismerd meg csapatszerepeidet", en: "Discover your team roles" },
     introBody1: { hu: "Ez a kérdőív 7 szakaszból áll. Minden szakaszban 10 pontot kell elosztanod 8 állítás között — abból, hogy mennyi igaz rád a csapatmunkában.", en: "This questionnaire has 7 sections. In each section, distribute 10 points across 8 statements — based on how much each applies to you in team work." },

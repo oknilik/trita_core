@@ -63,72 +63,72 @@ TrustResponse {
 
 ---
 
-## 2. Csapat szerep teszt (Belbin) menedzselése és riportba foglalása
+## 2. Csapat szerep teszt (Csapatszerep) menedzselése és riportba foglalása
 
 **Státusz:** backlog
 **Prioritás:** magas
-**Előfeltétel:** a Belbin teszt kód megvan, a self-layer szinten kitölthető
+**Előfeltétel:** a Csapatszerep teszt kód megvan, a self-layer szinten kitölthető
 
 ### Jelenlegi állapot a kódban
 
-A Belbin teszt infrastruktúra implementált:
-- **Kérdőív:** `src/lib/belbin-questions.ts` — 7 szekció × 8 állítás, pontelosztásos formátum
-- **Scoring:** `src/lib/belbin-scoring.ts` — 9 Belbin szerep (PL, RI, CO, SH, ME, TW, IM, CF, SP), top 3 kiválasztás
-- **HEXACO becslés:** `src/lib/belbin-estimate.ts` — ha nincs kitöltött Belbin teszt, HEXACO profilból becsül
-- **Kitöltő felület:** `src/app/assessment/belbin/BelbinClient.tsx` + `page.tsx`
-- **Submit API:** `src/app/api/belbin/submit/route.ts`
-- **Adatmodell:** `BelbinAnswer` (válaszok) + `BelbinScore` (eredmény, source: `questionnaire` | `estimate`)
-- **Csapat nézet:** `src/components/team/TeamBelbinSection.tsx` (492 sor) — szerep-eloszlás, heatmap, hiányzó/túlreprezentált szerepek, tag-szerep mátrix
-- **Team intelligence-be bekötve:** a team page-en a Belbin szekció renderelődik HEXACO becslésből
+A Csapatszerep teszt infrastruktúra implementált:
+- **Kérdőív:** `src/lib/team-role-questions.ts` — 7 szekció × 8 állítás, pontelosztásos formátum
+- **Scoring:** `src/lib/team-role-scoring.ts` — 9 Csapatszerep szerep (PL, RI, CO, SH, ME, TW, IM, CF, SP), top 3 kiválasztás
+- **HEXACO becslés:** `src/lib/team-role-estimate.ts` — ha nincs kitöltött Csapatszerep teszt, HEXACO profilból becsül
+- **Kitöltő felület:** `src/app/assessment/team-role/CsapatszerepClient.tsx` + `page.tsx`
+- **Submit API:** `src/app/api/team-role/submit/route.ts`
+- **Adatmodell:** `CsapatszerepAnswer` (válaszok) + `CsapatszerepScore` (eredmény, source: `questionnaire` | `estimate`)
+- **Csapat nézet:** `src/components/team/TeamCsapatszerepSection.tsx` (492 sor) — szerep-eloszlás, heatmap, hiányzó/túlreprezentált szerepek, tag-szerep mátrix
+- **Team intelligence-be bekötve:** a team page-en a Csapatszerep szekció renderelődik HEXACO becslésből
 
 ### Ami hiányzik
 
-**1. Manager-vezérelt Belbin kör indítás:**
-A személyiségteszt kitöltés a self-layer-en történik (user saját maga tölti ki). A Belbin tesztre viszont nincs campaign/round mechanizmus — a manager nem tud köröket indítani, emlékeztetőt küldeni, vagy nyomon követni a kitöltöttséget.
+**1. Manager-vezérelt Csapatszerep kör indítás:**
+A személyiségteszt kitöltés a self-layer-en történik (user saját maga tölti ki). A Csapatszerep tesztre viszont nincs campaign/round mechanizmus — a manager nem tud köröket indítani, emlékeztetőt küldeni, vagy nyomon követni a kitöltöttséget.
 
 **2. Becslés vs. valódi kitöltés megkülönböztetése a riportban:**
-Jelenleg a `TeamBelbinSection` a HEXACO-ból becsült Belbin szerepeket használja. A riportnak egyértelműen jeleznie kellene:
-- ki töltötte ki ténylegesen a Belbin tesztet (`source: "questionnaire"`)
+Jelenleg a `TeamCsapatszerepSection` a HEXACO-ból becsült Csapatszerep szerepeket használja. A riportnak egyértelműen jeleznie kellene:
+- ki töltötte ki ténylegesen a Csapatszerep tesztet (`source: "questionnaire"`)
 - kinél fut becslésből (`source: "estimate"`)
 - mekkora a lefedettség (X/Y tag valódi kitöltéssel)
 
-**3. Egyéni Belbin eredmény a személyes profilon:**
-A self dashboard-on nincs Belbin eredmény megjelenítés. A user kitölti a tesztet, de az eredményt csak a csapat nézetben látja (ha csapattag).
+**3. Egyéni Csapatszerep eredmény a személyes profilon:**
+A self dashboard-on nincs Csapatszerep eredmény megjelenítés. A user kitölti a tesztet, de az eredményt csak a csapat nézetben látja (ha csapattag).
 
 **4. PDF/export integrálás:**
-A csapat riportba a Belbin szerep-eloszlás nem kerül bele.
+A csapat riportba a Csapatszerep szerep-eloszlás nem kerül bele.
 
 ### Minimális scope
 
 **Fázis A — Riport pontosítás (kis effort):**
-- `TeamBelbinSection` jelezze a source-t tagonként (becslés badge vs. kitöltött badge)
+- `TeamCsapatszerepSection` jelezze a source-t tagonként (becslés badge vs. kitöltött badge)
 - Összesítő: "3/8 tag valódi kitöltéssel, 5 becslésből"
-- A profil results oldalon jelenjen meg a saját Belbin eredmény (top 3 szerep + leírás)
+- A profil results oldalon jelenjen meg a saját Csapatszerep eredmény (top 3 szerep + leírás)
 
-**Fázis B — Belbin kör menedzselés (közepes effort):**
-- Campaign-szerű lifecycle: manager indít Belbin kitöltési kört
+**Fázis B — Csapatszerep kör menedzselés (közepes effort):**
+- Campaign-szerű lifecycle: manager indít Csapatszerep kitöltési kört
 - Tagok kapnak értesítést / a dashboardon megjelenik a teendő
 - Kitöltöttség tracking a team oldalon
-- A journey engine felismeri a Belbin köröt mint next-best-action
+- A journey engine felismeri a Csapatszerep köröt mint next-best-action
 
 **Fázis C — Riport export (kis effort):**
-- A csapat PDF-be bekerül a Belbin szekció
+- A csapat PDF-be bekerül a Csapatszerep szekció
 - Szerep-eloszlás, hiányzó szerepek, erősségek
 
 ### Meglévő kód referencia
 
 | Fájl | Méret | Funkció |
 |------|-------|---------|
-| `src/lib/belbin-scoring.ts` | 62 sor | 9 szerep scoring + `getTopRoles()` |
-| `src/lib/belbin-estimate.ts` | 45 sor | HEXACO → Belbin becslés mapping |
-| `src/lib/belbin-questions.ts` | 137 sor | 7 szekció × 8 állítás kérdésbank |
-| `src/app/assessment/belbin/` | 85 sor | Kitöltő UI + page |
-| `src/app/api/belbin/submit/route.ts` | 54 sor | Submit + score mentés |
-| `src/components/team/TeamBelbinSection.tsx` | 492 sor | Csapat Belbin vizualizáció |
-| Prisma: `BelbinAnswer`, `BelbinScore` | — | Adatmodell kész |
+| `src/lib/team-role-scoring.ts` | 62 sor | 9 szerep scoring + `getTopRoles()` |
+| `src/lib/team-role-estimate.ts` | 45 sor | HEXACO → Csapatszerep becslés mapping |
+| `src/lib/team-role-questions.ts` | 137 sor | 7 szekció × 8 állítás kérdésbank |
+| `src/app/assessment/team-role/` | 85 sor | Kitöltő UI + page |
+| `src/app/api/team-role/submit/route.ts` | 54 sor | Submit + score mentés |
+| `src/components/team/TeamCsapatszerepSection.tsx` | 492 sor | Csapat Csapatszerep vizualizáció |
+| Prisma: `CsapatszerepAnswer`, `CsapatszerepScore` | — | Adatmodell kész |
 
 ### Nem scope
 
-- Nem új kérdőív fejlesztés — a meglévő Belbin teszt marad
+- Nem új kérdőív fejlesztés — a meglévő Csapatszerep teszt marad
 - Nem módosítja a HEXACO becslés logikát — az fallback marad
 - Nem ad egyéni coaching ajánlást — csak a szerep felismerés és csapat szintű eloszlás

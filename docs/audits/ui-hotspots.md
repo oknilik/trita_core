@@ -28,7 +28,7 @@ Mérési jel: `min-h-[44px]` előfordulás + core flow érintettség.
 | P1 | `src/app/org/[id]/page.tsx` | 4 előfordulás, org landing |
 | P1 | `src/app/hiring/[orgId]/_components/HiringDashboard.tsx` | 4 előfordulás, hiring surface |
 | P1 | `src/components/results/InvitationsTab.tsx` | 4 előfordulás, profile/results flow |
-| P1 | `src/components/assessment/BelbinQuestionnaire.tsx` | 4 előfordulás, assessment extension |
+| P1 | `src/components/assessment/CsapatszerepQuestionnaire.tsx` | 4 előfordulás, assessment extension |
 | P2 | `src/app/observe/[token]/ObserverClient.tsx` | 3 előfordulás, observer token flow |
 
 ---

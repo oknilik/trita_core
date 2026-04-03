@@ -35,7 +35,7 @@ A manager bejelentkezés után egy **csapatfókuszú cockpitot** lát, ami az ő
 | **Scope** | Teljes szervezet | Saját csapat(ok) |
 | **Fő metrika** | Org completion %, csapatok száma | Csapat completion %, tagok állapota |
 | **Kampányok** | Összes org kampány | Csak a csapatomat érintő körök |
-| **Tagok** | Összes org member | Csapattagjaim (név, kitöltöttség, Belbin) |
+| **Tagok** | Összes org member | Csapattagjaim (név, kitöltöttség, Csapatszerep) |
 | **Akciók** | Org invite, kampány indítás, billing | Tag emlékeztető, feedback kör nyomon követés |
 | **Dinamika** | Org-szintű összesítés | Csapat friction térkép, részletes breakdown |
 | **Next step** | Org-szintű javasolt akció | Csapatspecifikus javasolt akció |
@@ -54,7 +54,7 @@ Tagonkénti kártya grid:
 - Név + avatar
 - Személyiségteszt: kész / folyamatban / nem kezdte el
 - Observer kör: X visszajelzés érkezett
-- Belbin: kész (top szerep) / becslésből / nincs
+- Csapatszerep: kész (top szerep) / becslésből / nincs
 - Utolsó aktivitás időbélyeg
 
 Ez a manager **legfontosabb** nézete — egy pillantásra látja, ki hol tart.
@@ -76,7 +76,7 @@ Manager-specifikus next-best-action:
 - "2 tag nem töltötte ki a tesztet — küldj emlékeztetőt"
 - "A csapatkép elérhető — tekintsd meg az eredményeket"
 - "Indíts feedback kört a csapat dinamikájának felméréséhez"
-- "A Belbin teszt 3 tagnál becslésből fut — indíts kitöltési kört"
+- "A Csapatszerep teszt 3 tagnál becslésből fut — indíts kitöltési kört"
 
 ### 6. Multi-team nézet (ha több csapatot kezel)
 Ha a manager több csapatban is manager:
@@ -125,7 +125,7 @@ A manager cockpit adatai a meglévő `getTeamPageData()` és `getTeamPageData()`
 - Completion: `teamData.completedCount` / `teamData.memberCount`
 - Dynamics: `teamData.dynamicsEdges`
 - Campaign: `teamData.activeCampaign`
-- Belbin: `BelbinScore` query per member
+- Csapatszerep: `CsapatszerepScore` query per member
 
 Új data function: `getManagerCockpitData(profileId)` ami összegyűjti az összes managed team adatát.
 
@@ -162,7 +162,7 @@ A `nav-header-ui.tsx` manager-nél a "Szervezet" dropdown helyett "Csapatom" / "
 ### Fázis 3 — Multi-team + polish
 9. Több csapat kezelése (multi-team grid)
 10. Emlékeztető küldés CTA bekötés
-11. Belbin lefedettség jelzése
+11. Csapatszerep lefedettség jelzése
 12. Mobile responsive layout
 
 ---
@@ -179,4 +179,4 @@ A `nav-header-ui.tsx` manager-nél a "Szervezet" dropdown helyett "Csapatom" / "
 | `ProgressChecklist` | `src/components/journey/ProgressChecklist.tsx` | Tagok teljesítettség checklist |
 | `DashboardStatusChip` | `src/components/dashboard/DashboardPrimitives.tsx` | Státusz badge |
 | `getAvatarGradient` | `src/lib/ui/avatar.ts` | Tag avatar színek |
-| `TeamBelbinSection` | `src/components/team/TeamBelbinSection.tsx` | Belbin vizualizáció (kompakt verzióhoz) |
+| `TeamCsapatszerepSection` | `src/components/team/TeamCsapatszerepSection.tsx` | Csapatszerep vizualizáció (kompakt verzióhoz) |

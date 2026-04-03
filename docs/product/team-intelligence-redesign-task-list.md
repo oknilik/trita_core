@@ -16,10 +16,10 @@ A részletes csapatszerep-elemzés maradjon külön deep-dive oldalon.
 ## Kötelező elvek
 
 - `intelligence` oldal = executive summary + akció.
-- `belbin` (csapatszerepek) oldal = részletes elemzés/deep-dive.
+- `team-role` (csapatszerepek) oldal = részletes elemzés/deep-dive.
 - Nincs duplikált szerepvizualizáció két külön oldalon ugyanazzal a tartalommal.
 - Alacsony adatminőségnél nincs “erős” ajánlás.
-- User-facing copyban a “Csapatszerepek” kifejezés maradjon; ne jelenjen meg “Belbin” technikai címkeként.
+- User-facing copyban a “Csapatszerepek” kifejezés maradjon; ne jelenjen meg “Csapatszerep” technikai címkeként.
 - A 3×3 pszicho-mátrix nem marad az `intelligence` oldalon; ha szükséges, deep-dive szinten opcionális.
 
 ---
@@ -46,7 +46,7 @@ Done when:
 Feladat:
 
 - `intelligence` oldalról kivezetni a redundáns részletes szerep-eloszlás elemeket.
-- `belbin` tab maradjon részletes elemzésre.
+- `team-role` tab maradjon részletes elemzésre.
 - Adjunk egyértelmű “Részletes csapatszerep-elemzés” átvezető CTA-t.
 
 Done when:
@@ -225,7 +225,7 @@ Done when:
 Feladat:
 
 - User-facing: “Csapatszerepek”.
-- “Belbin” csak módszertani háttérszövegben, ha muszáj.
+- “Csapatszerep” csak módszertani háttérszövegben, ha muszáj.
 - “Coaching” helyett: “tanácsadói konzultáció”.
 - Az `intelligence` oldalon blokkcímként “Ki mit hoz a csapatba” használata a “Csapattérkép” helyett.
 
@@ -263,7 +263,7 @@ Minimum:
 - Team overview -> intelligence entry card -> intelligence page,
 - intelligence page low-data állapot,
 - intelligence page sufficient-data állapot,
-- belbin deep-dive átvezetés.
+- team-role deep-dive átvezetés.
 
 Done when:
 
@@ -273,7 +273,7 @@ Done when:
 
 Feladat:
 
-- Playwright screenshot comparison az `intelligence` és `belbin` nézet fő állapotaira.
+- Playwright screenshot comparison az `intelligence` és `team-role` nézet fő állapotaira.
 - Legalább ezekre legyen baseline:
   - low-data,
   - sufficient-data,
@@ -303,7 +303,7 @@ Done when:
 
 Feladat:
 
-- A részletes chartok tulajdonosa a `belbin` (csapatszerep deep-dive) nézet.
+- A részletes chartok tulajdonosa a `team-role` (csapatszerep deep-dive) nézet.
 - Az `intelligence` nézet teaser/átvezető szerepben marad.
 
 Done when:
@@ -328,7 +328,7 @@ Done when:
 - `src/components/team/TeamIntelligence.tsx`
 - `src/components/team/RoleFitMap.tsx`
 - `src/components/team/TeamMap.tsx`
-- `src/components/team/TeamBelbinSection.tsx`
+- `src/components/team/TeamCsapatszerepSection.tsx`
 - `src/lib/team-pattern.ts`
 - `src/lib/i18n/org.ts`
 

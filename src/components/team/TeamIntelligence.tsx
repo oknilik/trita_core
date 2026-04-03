@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
-import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
+import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
+import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -168,7 +168,7 @@ export function TeamIntelligence({
         <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
           {membersWithData.map((member) => {
-            const roleScores = estimateBelbinFromHexaco(member.hexaco);
+            const roleScores = estimateTeamRolesFromHexaco(member.hexaco);
             const topRoles = getTopRoles(roleScores, 3);
             const topDims = Object.entries(member.hexaco)
               .sort(([, a], [, b]) => b - a)
@@ -199,7 +199,7 @@ export function TeamIntelligence({
                       key={`${member.id}-${role.role}`}
                       className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body"
                     >
-                      {isHu ? BELBIN_ROLES[role.role].hu : BELBIN_ROLES[role.role].en}
+                      {isHu ? TEAM_ROLES[role.role].hu : TEAM_ROLES[role.role].en}
                     </span>
                   ))}
                 </div>
@@ -307,7 +307,7 @@ export function TeamIntelligence({
       <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
           <p className="font-dm-sans text-[14px] font-semibold text-ink">
-            {isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
+            {isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
           </p>
           <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
             {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
@@ -324,7 +324,7 @@ export function TeamIntelligence({
               href={deepDiveHref}
               className="inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
             >
-              {deepDiveLabel ?? (isHu ? "Részletes csapatszerep-elemzés megnyitása" : "Open detailed team-role analysis")}
+              {deepDiveLabel ?? (isHu ? "Részletes csapatszerep elemzés megnyitása" : "Open detailed team-role analysis")}
             </Link>
           </div>
         ) : null}

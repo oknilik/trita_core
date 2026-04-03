@@ -35,7 +35,7 @@ What is happening:
 - Meanwhile multiple CTAs and nav items still point to:
   - `?tab=profile`
   - `?tab=members`
-- The legacy `TeamPageShell` still defines `overview`, `intelligence`, `profile`, `members`, `belbin`, but it is not used by the live route.
+- The legacy `TeamPageShell` still defines `overview`, `intelligence`, `profile`, `members`, `team-role`, but it is not used by the live route.
 
 Impact:
 - `?tab=members` is effectively broken on the live route.

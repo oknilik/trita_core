@@ -6,8 +6,8 @@ import { getServerLocale } from "@/lib/i18n-server";
 import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
-import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
-import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
+import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -91,11 +91,11 @@ export default async function SharedProfilePage({
     ? `${typeLabels[topTwo[0].code]?.[locale] ?? ""} ${typeLabels[topTwo[1].code]?.[locale] ?? ""}`
     : "";
 
-  // Belbin
+  // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));
-  const hasBelbin = "H" in hexScores && "X" in hexScores;
-  const belbinTop3 = hasBelbin
-    ? getTopRoles(estimateBelbinFromHexaco(hexScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>), 3)
+  const hasTeamRole = "H" in hexScores && "X" in hexScores;
+  const teamRoleTop3 = hasTeamRole
+    ? getTopRoles(estimateTeamRolesFromHexaco(hexScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>), 3)
     : [];
 
   const rankLabels = [
@@ -187,15 +187,15 @@ export default async function SharedProfilePage({
           })}
         </div>
 
-        {/* Belbin */}
-        {belbinTop3.length > 0 && (
+        {/* TeamRole */}
+        {teamRoleTop3.length > 0 && (
           <div>
             <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
-              {t("results.belbinHeading", locale)}
+              {t("results.teamRoleHeading", locale)}
             </p>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
-              {belbinTop3.map(({ role, score }, idx) => {
-                const roleMeta = BELBIN_ROLES[role];
+              {teamRoleTop3.map(({ role, score }, idx) => {
+                const roleMeta = TEAM_ROLES[role];
                 const isPrimary = idx === 0;
                 return (
                   <div

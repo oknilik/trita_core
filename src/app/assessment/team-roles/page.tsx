@@ -2,13 +2,13 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { BelbinClient } from "./BelbinClient";
+import { TeamRolesClient } from "./TeamRolesClient";
 import type { Locale } from "@/lib/i18n";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
 
-export default async function BelbinAssessmentPage() {
+export default async function TeamRoleAssessmentPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) redirect("/sign-in");
 
@@ -33,7 +33,7 @@ export default async function BelbinAssessmentPage() {
 
   return (
     <main className="min-h-dvh bg-cream">
-      <BelbinClient locale={locale as Locale} />
+      <TeamRolesClient locale={locale as Locale} />
     </main>
   );
 }

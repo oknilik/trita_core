@@ -4,25 +4,25 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardStatusChip } from "@/components/dashboard/DashboardPrimitives";
 
-interface BelbinMemberStatus {
+interface TeamRoleMemberStatus {
   userId: string;
   name: string;
   hasQuestionnaire: boolean;
   hasEstimate: boolean;
 }
 
-interface BelbinRoundCardProps {
+interface TeamRoleRoundCardProps {
   teamId: string;
   isRoundActive: boolean;
   totalMembers: number;
   completedCount: number;
   estimateCount: number;
-  members: BelbinMemberStatus[];
+  members: TeamRoleMemberStatus[];
   canManage: boolean;
   isHu: boolean;
 }
 
-export function BelbinRoundCard({
+export function TeamRoleRoundCard({
   teamId,
   isRoundActive,
   totalMembers,
@@ -31,7 +31,7 @@ export function BelbinRoundCard({
   members,
   canManage,
   isHu,
-}: BelbinRoundCardProps) {
+}: TeamRoleRoundCardProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const allDone = completedCount === totalMembers;
@@ -39,7 +39,7 @@ export function BelbinRoundCard({
   async function toggleRound() {
     setLoading(true);
     try {
-      await fetch("/api/team/belbin-round", {
+      await fetch("/api/team/role-round", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teamId, active: !isRoundActive }),
@@ -60,7 +60,7 @@ export function BelbinRoundCard({
             {isHu ? "// csapat szerep teszt" : "// team role assessment"}
           </p>
           <h3 className="mt-1 font-fraunces text-[18px] text-ink">
-            {isHu ? "Belbin csapatszerep kör" : "Belbin team role round"}
+            {isHu ? "Csapatszerep kör" : "Team role round"}
           </h3>
         </div>
         <DashboardStatusChip
@@ -79,8 +79,8 @@ export function BelbinRoundCard({
 
       <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
         {isHu
-          ? "A Belbin csapatszerep teszt feltérképezi, ki milyen szerepben erős a csapatmunkában. A HEXACO profilból becslés már elérhető, de a valódi kérdőív pontosabb képet ad."
-          : "The Belbin team role test maps out everyone's strengths in teamwork. HEXACO-based estimates are available, but the actual questionnaire gives a more accurate picture."}
+          ? "A TeamRole csapatszerep teszt feltérképezi, ki milyen szerepben erős a csapatmunkában. A HEXACO profilból becslés már elérhető, de a valódi kérdőív pontosabb képet ad."
+          : "The TeamRole team role test maps out everyone's strengths in teamwork. HEXACO-based estimates are available, but the actual questionnaire gives a more accurate picture."}
       </p>
 
       {/* Progress */}
@@ -140,7 +140,7 @@ export function BelbinRoundCard({
               ? "..."
               : isRoundActive
                 ? (isHu ? "Kör lezárása" : "Close round")
-                : (isHu ? "Belbin kör indítása" : "Start Belbin round")}
+                : (isHu ? "Csapatszerep kör indítása" : "Start team role round")}
           </button>
           {isRoundActive && !allDone && (
             <span className="text-[11px] text-muted">

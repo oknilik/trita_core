@@ -109,9 +109,9 @@ model UserProfile {
   // Billing: one-time purchases
   purchases Purchase[]
 
-  // Belbin layer
-  belbinAnswer BelbinAnswer?
-  belbinScore  BelbinScore?
+  // Team role layer
+  teamRoleAnswer TeamRoleAnswer?
+  teamRoleScore  TeamRoleScore?
 
   @@index([activeOrgId])
 }
@@ -277,8 +277,8 @@ model Team {
   ownerId              String
   orgId                String?
   createdAt            DateTime  @default(now())
-  belbinRoundActive    Boolean   @default(false)
-  belbinRoundStartedAt DateTime?
+  teamRoleRoundActive    Boolean   @default(false) @map("belbinRoundActive")
+  teamRoleRoundStartedAt DateTime? @map("belbinRoundStartedAt")
 
   owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
   org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
@@ -526,33 +526,36 @@ model Purchase {
 }
 
 // ============================================
-// BELBIN LAYER
+// TEAM ROLE LAYER
 // ============================================
 
-model BelbinAnswer {
+model TeamRoleAnswer {
   id            String   @id @default(cuid())
   userProfileId String   @unique
   answers       Json     // Record<groupIndex 0-6, Record<statementIndex 0-7, points>>
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  userProfile UserProfile  @relation(fields: [userProfileId], references: [id])
-  score       BelbinScore?
+  userProfile UserProfile    @relation(fields: [userProfileId], references: [id])
+  score       TeamRoleScore?
+
+  @@map("BelbinAnswer")
 }
 
-model BelbinScore {
-  id             String   @id @default(cuid())
-  userProfileId  String   @unique
-  scores         Json     // Record<roleCode, totalPoints>
-  source         String   // "questionnaire" | "estimate"
-  belbinAnswerId String?  @unique
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model TeamRoleScore {
+  id               String   @id @default(cuid())
+  userProfileId    String   @unique
+  scores           Json     // Record<roleCode, totalPoints>
+  source           String   // "questionnaire" | "estimate"
+  teamRoleAnswerId String?  @unique @map("belbinAnswerId")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  userProfile  UserProfile   @relation(fields: [userProfileId], references: [id])
-  belbinAnswer BelbinAnswer? @relation(fields: [belbinAnswerId], references: [id])
+  userProfile    UserProfile     @relation(fields: [userProfileId], references: [id])
+  teamRoleAnswer TeamRoleAnswer? @relation(fields: [teamRoleAnswerId], references: [id])
 
   @@index([userProfileId])
+  @@map("BelbinScore")
 }
 
 model AdvisorySession {

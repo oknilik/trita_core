@@ -1,20 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { estimateBelbinFromHexaco } from "@/lib/belbin-estimate";
-import { BELBIN_ROLES, getTopRoles } from "@/lib/belbin-scoring";
-import type { BelbinRoleCode } from "@/lib/belbin-scoring";
+import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
+import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
-interface BelbinTeaserProps {
+interface TeamRoleTeaserProps {
   /** HEXACO dimension scores (0-100) keyed by dimension code */
   hexacoScores: Record<string, number>;
   locale: Locale | string;
 }
 
-const ROLE_DESCRIPTIONS: Record<BelbinRoleCode, { hu: string; en: string }> = {
+const ROLE_DESCRIPTIONS: Record<TeamRoleCode, { hu: string; en: string }> = {
   PL: { hu: "Kreatív ötletgazda, nem konvencionális gondolkodó", en: "Creative ideas, unconventional thinker" },
   RI: { hu: "Lelkes networker, külső lehetőségeket hoz", en: "Enthusiastic networker, finds external opportunities" },
   CO: { hu: "Érett koordinátor, célra összpontosítja a csapatot", en: "Mature coordinator, focuses the team on goals" },
@@ -26,14 +26,14 @@ const ROLE_DESCRIPTIONS: Record<BelbinRoleCode, { hu: string; en: string }> = {
   SP: { hu: "Szaktudású specialista, mélyreható ismeretek", en: "Expert specialist, deep subject knowledge" },
 };
 
-export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
+export function TeamRoleTeaser({ hexacoScores, locale }: TeamRoleTeaserProps) {
   const loc = (locale === "hu" ? "hu" : "en") as Locale;
 
   // Only meaningful for HEXACO-coded dimensions (H, E, X, A, C, O)
   const hasHexacoDims = "H" in hexacoScores && "X" in hexacoScores;
   if (!hasHexacoDims) return null;
 
-  const estimated = estimateBelbinFromHexaco(
+  const estimated = estimateTeamRolesFromHexaco(
     hexacoScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>,
   );
   const top3 = getTopRoles(estimated, 3);
@@ -42,29 +42,29 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
     <section>
       <div className="mb-6 flex items-center gap-2.5">
         <SectionEyebrow className="text-[11px] tracking-[2px]">
-          {t("content.belbinTeaserEyebrow", loc)}
+          {t("content.teamRoleTeaserEyebrow", loc)}
         </SectionEyebrow>
         <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-muted">
-          {t("content.belbinTeaserEstimate", loc)}
+          {t("content.teamRoleTeaserEstimate", loc)}
         </span>
       </div>
 
       <h2 className="mb-2 font-fraunces text-2xl text-ink">
-        {t("content.belbinTeaserTitle", loc)}
+        {t("content.teamRoleTeaserTitle", loc)}
       </h2>
       <p className="mb-6 max-w-lg text-sm leading-relaxed text-ink-body">
-        {t("content.belbinTeaserDesc", loc)}
+        {t("content.teamRoleTeaserDesc", loc)}
       </p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {top3.map(({ role, score }, idx) => {
-          const roleMeta = BELBIN_ROLES[role];
+          const roleMeta = TEAM_ROLES[role];
           const desc = ROLE_DESCRIPTIONS[role];
           const rankLabel = idx === 0
-            ? t("content.belbinTeaserPrimary", loc)
+            ? t("content.teamRoleTeaserPrimary", loc)
             : idx === 1
-              ? t("content.belbinTeaserSecondary", loc)
-              : t("content.belbinTeaserSupporting", loc);
+              ? t("content.teamRoleTeaserSecondary", loc)
+              : t("content.teamRoleTeaserSupporting", loc);
           const rankColor = idx === 0
             ? "bg-sage text-white"
             : "bg-warm-mid text-ink-body";
@@ -98,13 +98,13 @@ export function BelbinTeaser({ hexacoScores, locale }: BelbinTeaserProps) {
       {/* Info note + CTA */}
       <div className="mt-5 flex flex-col gap-3 rounded-xl border border-sand bg-cream px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[12px] leading-relaxed text-ink-body">
-          {t("content.belbinTeaserInfoNote", loc)}
+          {t("content.teamRoleTeaserInfoNote", loc)}
         </p>
         <Link
           href="/sign-up?intent=team"
           className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg border border-sand bg-white px-4 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
         >
-          {t("content.belbinTeaserJoinTeam", loc)}
+          {t("content.teamRoleTeaserJoinTeam", loc)}
         </Link>
       </div>
     </section>

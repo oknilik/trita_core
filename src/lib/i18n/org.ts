@@ -1268,10 +1268,10 @@ export const orgTranslations = {
       en: "This is an interpretation of the team's current self-assessment-based operating pattern. Not a diagnosis or performance label — it can change over time.",
     },
 
-    // TeamBelbinSection
+    // TeamRoleSection
     estimatedRolesEyebrow: { hu: "csapatszerepek becslése", en: "estimated team roles" },
-    belbinTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
-    belbinDesc: {
+    teamRoleTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
+    teamRoleDesc: {
       hu: "A személyiségprofilok alapján becsült csapatszerepkörök. A pontos méréshez minden tagnak ki kell töltenie a csapatszerep kérdőívet.",
       en: "Team roles estimated from personality profiles. For exact measurements, all members should complete the team-role questionnaire.",
     },

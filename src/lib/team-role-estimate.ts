@@ -1,17 +1,17 @@
-// Estimate Belbin team roles from HEXACO dimension scores
+// Estimate TeamRole team roles from HEXACO dimension scores
 // HEXACO coding: H=Honesty-Humility, E=Emotionality, X=eXtraversion,
 //                A=Agreeableness, C=Conscientiousness, O=Openness
 // Scores are 0-100 (percentage)
 
-import type { BelbinRoleCode, BelbinScores } from "./belbin-scoring";
-import { BELBIN_ROLES } from "./belbin-scoring";
+import type { TeamRoleCode, TeamRoleScores } from "./team-role-scoring";
+import { TEAM_ROLES } from "./team-role-scoring";
 
 type HexacoDimCode = "H" | "E" | "X" | "A" | "C" | "O";
 type WeightMap = Partial<Record<HexacoDimCode, number>>;
 
 // Weights derived from personality-role literature
 // Each role gets a weighted sum of HEXACO dim scores (positive = boosted by high score)
-export const HEXACO_BELBIN_WEIGHTS: Record<BelbinRoleCode, WeightMap> = {
+export const HEXACO_TEAM_ROLE_WEIGHTS: Record<TeamRoleCode, WeightMap> = {
   PL: { O: +0.45, C: -0.15, H: -0.10, X: -0.10 }, // Creative, unconventional
   RI: { X: +0.45, A: +0.20, O: +0.15, E: -0.10 }, // Outgoing, networker
   CO: { A: +0.30, H: +0.30, C: +0.20, X: +0.10 }, // Mature, trusting chair
@@ -23,16 +23,16 @@ export const HEXACO_BELBIN_WEIGHTS: Record<BelbinRoleCode, WeightMap> = {
   SP: { O: +0.30, C: +0.25, X: -0.15, A: -0.05 }, // Single-minded, dedicated
 };
 
-// Estimate Belbin scores from HEXACO dimension scores (0-100 range)
-// Returns BelbinScores where values are arbitrary weighted sums (not constrained to 0-10)
+// Estimate TeamRole scores from HEXACO dimension scores (0-100 range)
+// Returns TeamRoleScores where values are arbitrary weighted sums (not constrained to 0-10)
 // Suitable for relative ranking, not absolute comparison to questionnaire scores
-export function estimateBelbinFromHexaco(
+export function estimateTeamRolesFromHexaco(
   hexaco: Record<HexacoDimCode, number>,
-): BelbinScores {
-  const raw = {} as BelbinScores;
+): TeamRoleScores {
+  const raw = {} as TeamRoleScores;
 
-  for (const roleCode of Object.keys(BELBIN_ROLES) as BelbinRoleCode[]) {
-    const weights = HEXACO_BELBIN_WEIGHTS[roleCode];
+  for (const roleCode of Object.keys(TEAM_ROLES) as TeamRoleCode[]) {
+    const weights = HEXACO_TEAM_ROLE_WEIGHTS[roleCode];
     let score = 50; // baseline
     for (const [dim, w] of Object.entries(weights) as [HexacoDimCode, number][]) {
       const dimVal = hexaco[dim] ?? 50;

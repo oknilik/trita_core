@@ -2,13 +2,13 @@
 
 import { useState, useCallback } from "react";
 import { t, tf, type Locale } from "@/lib/i18n";
-import { BELBIN_SECTIONS } from "@/lib/belbin-questions";
-import { calculateBelbinScores, getTopRoles } from "@/lib/belbin-scoring";
-import type { BelbinAnswers } from "@/lib/belbin-scoring";
+import { TEAM_ROLE_SECTIONS } from "@/lib/team-role-questions";
+import { calculateTeamRoleScores, getTopRoles } from "@/lib/team-role-scoring";
+import type { TeamRoleAnswers } from "@/lib/team-role-scoring";
 
-interface BelbinQuestionnaireProps {
+interface TeamRoleQuestionnaireProps {
   locale: Locale | string;
-  onComplete: (answers: BelbinAnswers) => void;
+  onComplete: (answers: TeamRoleAnswers) => void;
   onSkip?: () => void;
 }
 
@@ -40,7 +40,7 @@ function PointsRow({
           type="button"
           onClick={() => onChange(statement.index, Math.max(0, points - 1))}
           disabled={points === 0}
-          aria-label={t("belbin.decrease", resolvedLocale)}
+          aria-label={t("teamRole.decrease", resolvedLocale)}
           className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -58,7 +58,7 @@ function PointsRow({
           type="button"
           onClick={() => onChange(statement.index, points + 1)}
           disabled={remaining === 0}
-          aria-label={t("belbin.increase", resolvedLocale)}
+          aria-label={t("teamRole.increase", resolvedLocale)}
           className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -70,16 +70,16 @@ function PointsRow({
   );
 }
 
-export function BelbinQuestionnaire({
+export function TeamRoleQuestionnaire({
   locale,
   onComplete,
   onSkip,
-}: BelbinQuestionnaireProps) {
+}: TeamRoleQuestionnaireProps) {
   const resolvedLocale = (locale === "hu" ? "hu" : "en") as Locale;
   const [currentGroup, setCurrentGroup] = useState(0);
-  const [answers, setAnswers] = useState<BelbinAnswers>(() =>
+  const [answers, setAnswers] = useState<TeamRoleAnswers>(() =>
     Object.fromEntries(
-      BELBIN_SECTIONS.map((s) => [
+      TEAM_ROLE_SECTIONS.map((s) => [
         s.group,
         Object.fromEntries(s.statements.map((st) => [st.index, 0])),
       ]),
@@ -90,7 +90,7 @@ export function BelbinQuestionnaire({
   const groupAnswers = answers[currentGroup] ?? {};
   const used = Object.values(groupAnswers).reduce((a, b) => a + b, 0);
   const remaining = POINTS_PER_GROUP - used;
-  const section = BELBIN_SECTIONS[currentGroup];
+  const section = TEAM_ROLE_SECTIONS[currentGroup];
 
   const handleChange = useCallback(
     (stmtIdx: number, newVal: number) => {
@@ -110,7 +110,7 @@ export function BelbinQuestionnaire({
   const canProceed = remaining === 0;
 
   const handleNext = () => {
-    if (currentGroup < BELBIN_SECTIONS.length - 1) {
+    if (currentGroup < TEAM_ROLE_SECTIONS.length - 1) {
       setCurrentGroup((g) => g + 1);
     } else {
       onComplete(answers);
@@ -121,17 +121,17 @@ export function BelbinQuestionnaire({
     return (
       <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {t("belbin.eyebrow", resolvedLocale)}
+          {t("teamRole.eyebrow", resolvedLocale)}
         </p>
         <div>
           <h2 className="font-fraunces text-2xl text-ink">
-            {t("belbin.introTitle", resolvedLocale)}
+            {t("teamRole.introTitle", resolvedLocale)}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-body">
-            {t("belbin.introBody1", resolvedLocale)}
+            {t("teamRole.introBody1", resolvedLocale)}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ink-body">
-            {t("belbin.introBody2", resolvedLocale)}
+            {t("teamRole.introBody2", resolvedLocale)}
           </p>
         </div>
         <div className="flex gap-3">
@@ -140,7 +140,7 @@ export function BelbinQuestionnaire({
             onClick={() => setShowIntro(false)}
             className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
           >
-            {t("belbin.start", resolvedLocale)}
+            {t("teamRole.start", resolvedLocale)}
           </button>
           {onSkip && (
             <button
@@ -148,7 +148,7 @@ export function BelbinQuestionnaire({
               onClick={onSkip}
               className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
-              {t("belbin.skip", resolvedLocale)}
+              {t("teamRole.skip", resolvedLocale)}
             </button>
           )}
         </div>
@@ -163,18 +163,18 @@ export function BelbinQuestionnaire({
         <div className="flex-1 overflow-hidden rounded-full bg-sand">
           <div
             className="h-1.5 rounded-full bg-sage transition-all duration-300"
-            style={{ width: `${((currentGroup + 1) / BELBIN_SECTIONS.length) * 100}%` }}
+            style={{ width: `${((currentGroup + 1) / TEAM_ROLE_SECTIONS.length) * 100}%` }}
           />
         </div>
         <span className="font-mono text-[11px] text-muted">
-          {currentGroup + 1} / {BELBIN_SECTIONS.length}
+          {currentGroup + 1} / {TEAM_ROLE_SECTIONS.length}
         </span>
       </div>
 
       {/* Heading */}
       <div>
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
-          {tf("belbin.sectionLabel", resolvedLocale, { n: currentGroup + 1 })}
+          {tf("teamRole.sectionLabel", resolvedLocale, { n: currentGroup + 1 })}
         </p>
         <h3 className="mt-1 font-fraunces text-xl text-ink">
           {locale === "hu" ? section.heading.hu : section.heading.en}
@@ -194,12 +194,12 @@ export function BelbinQuestionnaire({
             <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 8l3.5 3.5L13 5" />
             </svg>
-            {t("belbin.allDistributed", resolvedLocale)}
+            {t("teamRole.allDistributed", resolvedLocale)}
           </>
         ) : (
           remaining === 1
-            ? t("belbin.pointRemainingOne", resolvedLocale)
-            : tf("belbin.pointsRemaining", resolvedLocale, { n: remaining })
+            ? t("teamRole.pointRemainingOne", resolvedLocale)
+            : tf("teamRole.pointsRemaining", resolvedLocale, { n: remaining })
         )}
       </div>
 
@@ -228,7 +228,7 @@ export function BelbinQuestionnaire({
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
           </svg>
-          {t("belbin.back", resolvedLocale)}
+          {t("teamRole.back", resolvedLocale)}
         </button>
 
         <button
@@ -237,9 +237,9 @@ export function BelbinQuestionnaire({
           disabled={!canProceed}
           className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {currentGroup < BELBIN_SECTIONS.length - 1
-            ? t("belbin.next", resolvedLocale)
-            : t("belbin.finish", resolvedLocale)}
+          {currentGroup < TEAM_ROLE_SECTIONS.length - 1
+            ? t("teamRole.next", resolvedLocale)
+            : t("teamRole.finish", resolvedLocale)}
         </button>
       </div>
     </div>

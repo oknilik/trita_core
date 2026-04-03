@@ -1,14 +1,14 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 
-interface BelbinRole {
+interface TeamRoleRole {
   name: string;
   subtitle: string;
   score: number;
   rank: number;
 }
 
-export function PdfBelbin({ roles }: { roles: BelbinRole[] }) {
+export function PdfTeamRoles({ roles }: { roles: TeamRoleRole[] }) {
   const rankColors = [
     { bg: colors.sage, text: colors.white, label: { hu: "Elsődleges", en: "Primary" } },
     { bg: colors.bronze100, text: colors.bronzeDark, label: { hu: "Másodlagos", en: "Secondary" } },

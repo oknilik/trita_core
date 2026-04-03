@@ -4,11 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { canManageTeam } from "@/lib/team-auth";
 
 /**
- * POST /api/team/belbin-round
+ * POST /api/team/role-round
  * Body: { teamId: string, active: boolean }
  *
- * Manager toggles the Belbin round for a team.
- * When activated, team members see the Belbin assessment as a next action.
+ * Manager toggles the Team role round for a team.
+ * When activated, team members see the TeamRole assessment as a next action.
  */
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
   await prisma.team.update({
     where: { id: teamId },
     data: {
-      belbinRoundActive: active,
-      belbinRoundStartedAt: active ? new Date() : null,
+      teamRoleRoundActive: active,
+      teamRoleRoundStartedAt: active ? new Date() : null,
     },
   });
 
@@ -60,9 +60,9 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * GET /api/team/belbin-round?teamId=xxx
+ * GET /api/team/role-round?teamId=xxx
  *
- * Returns Belbin round status and per-member completion.
+ * Returns Team role round status and per-member completion.
  */
 export async function GET(req: NextRequest) {
   const { userId } = await auth();
@@ -80,15 +80,15 @@ export async function GET(req: NextRequest) {
   const team = await prisma.team.findUnique({
     where: { id: teamId },
     select: {
-      belbinRoundActive: true,
-      belbinRoundStartedAt: true,
+      teamRoleRoundActive: true,
+      teamRoleRoundStartedAt: true,
       members: {
         select: {
           userId: true,
           user: {
             select: {
               username: true,
-              belbinScore: { select: { source: true, updatedAt: true } },
+              teamRoleScore: { select: { source: true, updatedAt: true } },
             },
           },
         },
@@ -100,14 +100,14 @@ export async function GET(req: NextRequest) {
   const memberStatus = team.members.map((m) => ({
     userId: m.userId,
     name: m.user.username ?? "?",
-    hasQuestionnaire: m.user.belbinScore?.source === "questionnaire",
-    hasEstimate: m.user.belbinScore?.source === "estimate",
-    completedAt: m.user.belbinScore?.updatedAt?.toISOString() ?? null,
+    hasQuestionnaire: m.user.teamRoleScore?.source === "questionnaire",
+    hasEstimate: m.user.teamRoleScore?.source === "estimate",
+    completedAt: m.user.teamRoleScore?.updatedAt?.toISOString() ?? null,
   }));
 
   return NextResponse.json({
-    active: team.belbinRoundActive,
-    startedAt: team.belbinRoundStartedAt?.toISOString() ?? null,
+    active: team.teamRoleRoundActive,
+    startedAt: team.teamRoleRoundStartedAt?.toISOString() ?? null,
     totalMembers: memberStatus.length,
     completedCount: memberStatus.filter((m) => m.hasQuestionnaire).length,
     estimateCount: memberStatus.filter((m) => m.hasEstimate && !m.hasQuestionnaire).length,

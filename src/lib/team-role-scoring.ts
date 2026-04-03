@@ -1,7 +1,7 @@
-// Belbin Team Role scoring — standard Self-Perception Inventory mapping
+// Team role scoring — standard Self-Perception Inventory mapping
 // 7 sections × 8 statements (a–h) × 10 points per section
 
-export const BELBIN_ROLES = {
+export const TEAM_ROLES = {
   PL: { hu: "Ötletgazda",          en: "Plant" },
   RI: { hu: "Erőforrás-felderítő", en: "Resource Investigator" },
   CO: { hu: "Koordinátor",          en: "Coordinator" },
@@ -13,11 +13,11 @@ export const BELBIN_ROLES = {
   SP: { hu: "Szakember",           en: "Specialist" },
 } as const;
 
-export type BelbinRoleCode = keyof typeof BELBIN_ROLES;
+export type TeamRoleCode = keyof typeof TEAM_ROLES;
 
 // [sectionIndex 0-6][statementIndex 0-7] → role code
-// Based on the standard Belbin SPI mapping
-export const BELBIN_SCORING_MAP: BelbinRoleCode[][] = [
+// Based on the standard team role SPI mapping
+export const TEAM_ROLE_SCORING_MAP: TeamRoleCode[][] = [
   ["IM", "SH", "CO", "ME", "RI", "TW", "CF", "PL"], // Section 1
   ["TW", "CF", "RI", "PL", "ME", "CO", "SH", "IM"], // Section 2
   ["PL", "RI", "CO", "SH", "TW", "IM", "ME", "CF"], // Section 3
@@ -27,21 +27,21 @@ export const BELBIN_SCORING_MAP: BelbinRoleCode[][] = [
   ["CF", "PL", "IM", "TW", "SH", "ME", "CO", "RI"], // Section 7
 ];
 
-export type BelbinAnswers = Record<number, Record<number, number>>;
+export type TeamRoleAnswers = Record<number, Record<number, number>>;
 // answers[groupIndex][statementIndex] = points (0-10 per group, sum must equal 10)
 
-export type BelbinScores = Record<BelbinRoleCode, number>;
+export type TeamRoleScores = Record<TeamRoleCode, number>;
 
-export function calculateBelbinScores(answers: BelbinAnswers): BelbinScores {
+export function calculateTeamRoleScores(answers: TeamRoleAnswers): TeamRoleScores {
   const totals = Object.fromEntries(
-    Object.keys(BELBIN_ROLES).map((k) => [k, 0]),
-  ) as BelbinScores;
+    Object.keys(TEAM_ROLES).map((k) => [k, 0]),
+  ) as TeamRoleScores;
 
   for (let group = 0; group < 7; group++) {
     const groupAnswers = answers[group] ?? {};
     for (let stmt = 0; stmt < 8; stmt++) {
       const points = groupAnswers[stmt] ?? 0;
-      const role = BELBIN_SCORING_MAP[group]?.[stmt];
+      const role = TEAM_ROLE_SCORING_MAP[group]?.[stmt];
       if (role) {
         totals[role] += points;
       }
@@ -52,10 +52,10 @@ export function calculateBelbinScores(answers: BelbinAnswers): BelbinScores {
 }
 
 export function getTopRoles(
-  scores: BelbinScores,
+  scores: TeamRoleScores,
   n = 3,
-): { role: BelbinRoleCode; score: number }[] {
-  return (Object.entries(scores) as [BelbinRoleCode, number][])
+): { role: TeamRoleCode; score: number }[] {
+  return (Object.entries(scores) as [TeamRoleCode, number][])
     .sort((a, b) => b[1] - a[1])
     .slice(0, n)
     .map(([role, score]) => ({ role, score }));

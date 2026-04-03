@@ -17,7 +17,7 @@
 ### `product/` — Feature tervezés és termék scope
 | Fájl | Tartalom |
 |------|----------|
-| `feature-ideas.md` | Feature backlog (bizalmi háló, Belbin menedzselés) |
+| `feature-ideas.md` | Feature backlog (bizalmi háló, Csapatszerep menedzselés) |
 | `dashboard-content-scope.md` | Dashboard tartalmi scope és blokkok |
 | `observer-flow-inventory.md` | Observer flow teljes lifecycle inventory |
 | `join-apply-inventory.md` | Join/apply flow leltár |

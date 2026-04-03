@@ -13,7 +13,7 @@ import { UpgradeButton } from "./UpgradeButton";
 import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
 import { DimensionStrip } from "@/components/results/DimensionStrip";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
-import { BelbinRoles } from "@/components/results/BelbinRoles";
+import { TeamRoles } from "@/components/results/TeamRoles";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
 import { LockedPreview } from "@/components/results/LockedPreview";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
@@ -302,13 +302,13 @@ function ResultsTab({
         </>
       )}
 
-      {/* 4. Belbin team roles */}
-      <BelbinRoles
+      {/* 4. TeamRole team roles */}
+      <TeamRoles
         hexacoScores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
         locale={locale}
       />
 
-      {/* 4. Inline upsell — after Belbin, before locked sections */}
+      {/* 4. Inline upsell — after TeamRole, before locked sections */}
       {!isPlus && <InlineUpsell />}
 
       {/* 5. Locked content preview */}
@@ -573,18 +573,18 @@ export function ProfileTabs({
                 value: d.score,
                 description: d.insight,
               })),
-              belbinRoles: (() => {
+              teamRoleRoles: (() => {
                 try {
                   // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { estimateBelbinFromHexaco } = require("@/lib/belbin-estimate");
+                  const { estimateTeamRolesFromHexaco } = require("@/lib/team-role-estimate");
                   // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { BELBIN_ROLES, getTopRoles } = require("@/lib/belbin-scoring");
+                  const { TEAM_ROLES, getTopRoles } = require("@/lib/team-role-scoring");
                   const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
                   if (!("H" in hexScores) || !("X" in hexScores)) return [];
-                  const estimated = estimateBelbinFromHexaco(hexScores);
+                  const estimated = estimateTeamRolesFromHexaco(hexScores);
                   const top3 = getTopRoles(estimated, 3);
                   return top3.map((r: { role: string; score: number }, i: number) => ({
-                    name: BELBIN_ROLES[r.role][locale === "hu" ? "hu" : "en"],
+                    name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
                     subtitle: "",
                     score: r.score,
                     rank: i,
