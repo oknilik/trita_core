@@ -1,7 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { stripe } from "@/lib/stripe";
+import { stripe, TIER_CONFIG } from "@/lib/stripe";
+import { prisma } from "@/lib/prisma";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const metadata: Metadata = {
@@ -35,6 +36,12 @@ export default async function BillingSuccessPage({
   const { session_id: sessionId } = await searchParams;
   if (!sessionId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
+
   let tier = "unknown";
   let teamId: string | undefined;
 
@@ -42,6 +49,46 @@ export default async function BillingSuccessPage({
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     tier = session.metadata?.tier ?? "unknown";
     teamId = session.metadata?.teamId || undefined;
+
+    // ── Idempotent purchase sync ──────────────────────────────────────────
+    // The webhook is the truth source, but it may arrive after the user
+    // lands here. Create the purchase if it doesn't exist yet — the webhook
+    // handler checks stripeCheckoutSessionId and skips duplicates.
+    if (
+      tier !== "unknown" &&
+      session.mode === "payment" &&
+      session.payment_status === "paid" &&
+      session.metadata?.type === "one_time_purchase"
+    ) {
+      const existing = await prisma.purchase.findFirst({
+        where: { stripeCheckoutSessionId: sessionId },
+      });
+
+      if (!existing) {
+        const config = TIER_CONFIG[tier];
+        await prisma.purchase.create({
+          data: {
+            userProfileId: profile.id,
+            orgId: session.metadata.orgId || null,
+            teamId: session.metadata.teamId || null,
+            tier,
+            productType: tier,
+            stripePaymentIntentId:
+              typeof session.payment_intent === "string"
+                ? session.payment_intent
+                : null,
+            stripeCheckoutSessionId: sessionId,
+            amount: session.amount_total ?? 0,
+            grossAmount: session.amount_total ?? 0,
+            currency: session.currency ?? "eur",
+            status: "completed",
+            invoiceStatus: "pending",
+            includesAdvisory: config?.includesAdvisory ?? false,
+            includedCredits: config?.includedCredits ?? 0,
+          },
+        });
+      }
+    }
   } catch {
     redirect(JOURNEY_HOME_HANDOFF_PATH);
   }
