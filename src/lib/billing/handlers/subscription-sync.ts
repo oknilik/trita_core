@@ -65,8 +65,25 @@ export async function handleSubscriptionEvent(
       }
     }
 
-    // F6: subscription deleted
+    // F5: Log plan/quantity/cancel changes
+    if (event.type === "customer.subscription.updated") {
+      const prev = event.data.previous_attributes as Record<string, unknown> | undefined;
+      if (prev) {
+        if ("items" in prev) {
+          console.log(`[Stripe] Plan/quantity changed for org ${orgId}`);
+        }
+        if ("cancel_at_period_end" in prev) {
+          console.log(`[Stripe] Cancel flag changed for org ${orgId}: cancelAtPeriodEnd=${subscription.cancel_at_period_end}`);
+        }
+      }
+    }
+
+    // F6: subscription deleted → ensure local state is canceled
     if (event.type === "customer.subscription.deleted") {
+      await runtime.prisma.subscription.update({
+        where: { orgId },
+        data: { status: "canceled" },
+      });
       console.log(`[Stripe] Subscription canceled for org ${orgId}`);
     }
 

@@ -16,6 +16,7 @@ import { handleCheckoutSessionCompleted } from "@/lib/billing/handlers/checkout-
 import { handleSubscriptionEvent } from "@/lib/billing/handlers/subscription-sync";
 import { handleInvoicePaid } from "@/lib/billing/handlers/invoice-paid";
 import { handleInvoicePaymentFailed } from "@/lib/billing/handlers/invoice-failed";
+import { handleChargeRefunded } from "@/lib/billing/handlers/refund";
 
 export const dynamic = "force-dynamic";
 
@@ -76,6 +77,10 @@ export async function POST(req: Request) {
 
       case "invoice.payment_failed":
         await handleInvoicePaymentFailed(runtime, event);
+        break;
+
+      case "charge.refunded":
+        await handleChargeRefunded(runtime, event);
         break;
 
       default:
