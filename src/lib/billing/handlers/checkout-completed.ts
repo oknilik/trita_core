@@ -13,6 +13,12 @@ import {
   markEventProcessed,
   markEventFailed,
 } from "@/lib/billing/idempotency";
+import { withBillingTrace } from "@/lib/billing/tracing";
+import { resolvePartner, resolvePartnerForPurchase } from "@/lib/billing/partner-resolver";
+import { resolveVatDecision } from "@/lib/billing/vat-decision";
+import { buildPurchaseInvoiceItem } from "@/lib/billing/invoice-items";
+import { normalizeInvoicePayload } from "@/lib/billing/invoice-normalizer";
+import { createInvoiceDocument, BillingoApiError } from "@/lib/billing/billingo-client";
 import type { StripeWebhookRuntime } from "./shared";
 import { extractCustomerId, extractSubscriptionId, upsertSubscription } from "./shared";
 
@@ -22,6 +28,7 @@ export async function handleCheckoutSessionCompleted(
 ) {
   const session = event.data.object as Stripe.Checkout.Session;
   const orgId = session.metadata?.orgId;
+  const productType = session.metadata?.product_type ?? session.metadata?.type ?? "unknown";
 
   // Idempotency check
   if (await isEventProcessed(event.id)) {
@@ -31,6 +38,9 @@ export async function handleCheckoutSessionCompleted(
   await markEventProcessing(event.id, event.type, session.id);
 
   try {
+    return withBillingTrace(
+      { stripeEventId: event.id, eventType: event.type, productType, sourceEntityId: orgId ?? undefined },
+      async () => {
     if (!orgId) {
       await markEventFailed(event.id, "Missing orgId in metadata", false);
       return;
@@ -58,6 +68,8 @@ export async function handleCheckoutSessionCompleted(
     }
 
     await markEventProcessed(event.id);
+      },
+    );
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     await markEventFailed(event.id, msg, true);
@@ -115,13 +127,59 @@ async function handleOneTimePurchase(
 
   console.log(`[Stripe] Purchase created: ${tier} for profile ${userProfileId}`);
 
-  // TODO: Billingo invoice creation (E1 step 4-7)
-  // 1. resolvePartnerForPurchase()
-  // 2. resolveVatDecision()
-  // 3. buildPurchaseInvoiceItem()
-  // 4. createInvoiceDocument()
-  // 5. Save BillingDocumentLink
-  // 6. Update purchase.invoiceStatus = "issued"
+  // ── Billingo invoice creation ──────────────────────────────────────────
+  const purchase = await runtime.prisma.purchase.findFirst({
+    where: { stripeCheckoutSessionId: session.id },
+    select: { id: true },
+  });
+
+  if (purchase) {
+    try {
+      const partnerInput = await resolvePartnerForPurchase({
+        productType: tier,
+        userId: userProfileId,
+        organizationId: orgId,
+      });
+      const partner = await resolvePartner(partnerInput);
+      const vatDecision = resolveVatDecision({ countryCode: partnerInput.countryCode });
+      const item = buildPurchaseInvoiceItem(tier, 1, vatDecision);
+      const payload = normalizeInvoicePayload({
+        partnerId: partner.billingoPartnerId,
+        vatDecision,
+        items: [item],
+      });
+
+      const doc = await createInvoiceDocument(payload);
+
+      await runtime.prisma.billingDocumentLink.create({
+        data: {
+          sourceType: "purchase",
+          sourceId: purchase.id,
+          stripeCheckoutSessionId: session.id,
+          billingoDocumentId: String(doc.id),
+          billingoDocumentNumber: doc.invoiceNumber,
+          documentType: "invoice",
+          status: "issued",
+        },
+      });
+
+      await runtime.prisma.purchase.update({
+        where: { id: purchase.id },
+        data: {
+          billingoDocumentId: String(doc.id),
+          billingoDocumentNumber: doc.invoiceNumber,
+          invoiceStatus: "issued",
+        },
+      });
+    } catch (billingoErr) {
+      console.error("[Billing] Billingo invoice creation failed for purchase:", billingoErr);
+      await runtime.prisma.purchase.update({
+        where: { id: purchase.id },
+        data: { invoiceStatus: "failed" },
+      });
+      // Non-blocking: purchase is already created, invoice retry possible
+    }
+  }
 }
 
 async function handleCandidateAddon(
@@ -158,7 +216,39 @@ async function handleCandidateAddon(
 
   console.log(`[Stripe] +${creditCount} candidate credits for org ${orgId}`);
 
-  // TODO: Billingo invoice for candidate addon
+  // ── Billingo invoice for candidate addon ─────────────────────────────
+  try {
+    const packKey = creditCount >= 10 ? "candidate_pack_10" : creditCount >= 5 ? "candidate_pack_5" : "candidate_pack_1";
+    const partnerInput = await resolvePartnerForPurchase({
+      productType: "candidate_pack",
+      userId: actorId,
+      organizationId: orgId,
+    });
+    const partner = await resolvePartner(partnerInput);
+    const vatDecision = resolveVatDecision({ countryCode: partnerInput.countryCode });
+    const item = buildPurchaseInvoiceItem(packKey, 1, vatDecision);
+    const payload = normalizeInvoicePayload({
+      partnerId: partner.billingoPartnerId,
+      vatDecision,
+      items: [item],
+    });
+
+    const doc = await createInvoiceDocument(payload);
+
+    await runtime.prisma.billingDocumentLink.create({
+      data: {
+        sourceType: "candidate_addon",
+        sourceId: orgId,
+        stripeCheckoutSessionId: session.id,
+        billingoDocumentId: String(doc.id),
+        billingoDocumentNumber: doc.invoiceNumber,
+        documentType: "invoice",
+        status: "issued",
+      },
+    });
+  } catch (billingoErr) {
+    console.error("[Billing] Billingo invoice creation failed for candidate addon:", billingoErr);
+  }
 }
 
 async function handleSubscriptionCheckout(

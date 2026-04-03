@@ -11,6 +11,7 @@ import {
   markEventProcessed,
   markEventFailed,
 } from "@/lib/billing/idempotency";
+import { traceBillingEvent } from "@/lib/billing/tracing";
 import { createCorrectionDocument } from "@/lib/billing/billingo-client";
 import type { StripeWebhookRuntime } from "./shared";
 
@@ -54,7 +55,7 @@ export async function handleChargeRefunded(
         where: {
           OR: [
             { stripeCheckoutSessionId: charge.metadata?.checkoutSessionId },
-            { stripeInvoiceId: charge.invoice ? String(charge.invoice) : undefined },
+            { stripeInvoiceId: (charge as unknown as Record<string, unknown>).invoice ? String((charge as unknown as Record<string, unknown>).invoice) : undefined },
           ],
         },
         select: { id: true, billingoDocumentId: true, status: true },
@@ -91,7 +92,7 @@ export async function handleChargeRefunded(
         where: { id: purchase.id },
         data: {
           status: charge.amount_refunded === charge.amount ? "refunded" : "completed",
-          invoiceStatus: "voided",
+          invoiceStatus: "corrected",
         },
       });
     }
@@ -118,11 +119,11 @@ async function createCorrectionAndLink(
       data: {
         sourceType,
         sourceId,
-        stripeInvoiceId: charge.invoice ? String(charge.invoice) : null,
+        stripeInvoiceId: (charge as unknown as Record<string, unknown>).invoice ? String((charge as unknown as Record<string, unknown>).invoice) : null,
         billingoDocumentId: String(correctionDoc.id),
         billingoDocumentNumber: correctionDoc.invoiceNumber,
         documentType: "correction",
-        status: "voided",
+        status: "corrected",
       },
     });
 

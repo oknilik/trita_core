@@ -5,6 +5,7 @@
  */
 
 import type Stripe from "stripe";
+import { traceBillingEvent } from "@/lib/billing/tracing";
 import {
   isEventProcessed,
   markEventProcessing,
@@ -24,7 +25,8 @@ export async function handleInvoicePaymentFailed(
   }
 
   const invoice = event.data.object as Stripe.Invoice;
-  const subscriptionId = extractSubscriptionId(invoice.subscription);
+  const invoiceAny = invoice as unknown as Record<string, unknown>;
+  const subscriptionId = extractSubscriptionId(invoiceAny.subscription as string | undefined);
   if (!subscriptionId) return;
 
   await markEventProcessing(event.id, event.type, invoice.id);
@@ -41,7 +43,12 @@ export async function handleInvoicePaymentFailed(
     // Sync subscription state (likely → past_due)
     await upsertSubscription(runtime, orgId, subscription, customerId);
 
-    console.log(`[Stripe] Invoice payment failed for org ${orgId}: ${invoice.id}`);
+    traceBillingEvent({
+      stripeEventId: event.id,
+      eventType: event.type,
+      sourceEntityId: orgId,
+      resultStatus: "success",
+    });
 
     // TODO: dunning/reminder hook — értesítés az org admin-nak
 

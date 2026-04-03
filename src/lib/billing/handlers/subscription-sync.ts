@@ -5,6 +5,7 @@
  */
 
 import type Stripe from "stripe";
+import { traceBillingEvent } from "@/lib/billing/tracing";
 import {
   isEventProcessed,
   markEventProcessing,
@@ -35,35 +36,8 @@ export async function handleSubscriptionEvent(
   try {
     await upsertSubscription(runtime, orgId, subscription, customerId);
 
-    // F5: Handle trialing → active transition (send order confirmation)
-    if (event.type === "customer.subscription.updated") {
-      const previousStatus =
-        event.data.previous_attributes &&
-        "status" in event.data.previous_attributes
-          ? String(event.data.previous_attributes.status)
-          : null;
-
-      if (previousStatus === "trialing" && subscription.status === "active") {
-        // Guard: only send once (check local status wasn't already active)
-        const localSub = await runtime.prisma.subscription.findUnique({
-          where: { orgId },
-          select: { status: true },
-        });
-
-        if (localSub?.status !== "active") {
-          const org = await runtime.prisma.organization.findUnique({
-            where: { id: orgId },
-            select: { name: true, owner: { select: { email: true } } },
-          });
-          if (org?.owner?.email) {
-            await runtime.sendOrderConfirmationEmail({
-              to: org.owner.email,
-              name: org.name,
-            });
-          }
-        }
-      }
-    }
+    // F5: Note — order confirmation email moved to invoice.paid handler
+    //     (canonical payment trigger, not state transition)
 
     // F5: Log plan/quantity/cancel changes
     if (event.type === "customer.subscription.updated") {
@@ -84,7 +58,12 @@ export async function handleSubscriptionEvent(
         where: { orgId },
         data: { status: "canceled" },
       });
-      console.log(`[Stripe] Subscription canceled for org ${orgId}`);
+      traceBillingEvent({
+        stripeEventId: event.id,
+        eventType: event.type,
+        sourceEntityId: orgId,
+        resultStatus: "success",
+      });
     }
 
     await markEventProcessed(event.id);
