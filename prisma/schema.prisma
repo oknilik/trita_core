@@ -398,18 +398,23 @@ model CandidateCredit {
 }
 
 model Subscription {
-  id                   String    @id @default(cuid())
-  orgId                String    @unique
-  stripeCustomerId     String?   @unique
-  stripeSubscriptionId String?   @unique
-  stripePriceId        String?
-  status               String    @default("trialing")
-  trialEndsAt          DateTime?
-  currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean   @default(false)
-  candidateCredits     Int       @default(0)
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id                     String    @id @default(cuid())
+  orgId                  String    @unique
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeLatestInvoiceId  String?
+  planType               String?   // "team" | "org" | "scale"
+  billingInterval        String?   // "monthly" | "annual"
+  status                 String    @default("trialing")
+  trialEndsAt            DateTime?
+  currentPeriodStart     DateTime?
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean   @default(false)
+  candidateCredits       Int       @default(0)
+  billingoLastDocumentId String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
   org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
@@ -515,6 +520,13 @@ model Purchase {
 
   metadata                Json?
 
+  // Billingo invoice tracking
+  productType             String?  // "self_plus" | "team_snapshot" | "candidate_pack"
+  grossAmount             Int?     // bruttó összeg centben (ÁFA-val)
+  billingoDocumentId      String?
+  billingoDocumentNumber  String?
+  invoiceStatus           String   @default("not_applicable") // "pending" | "issued" | "failed" | "not_applicable"
+
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
 
@@ -581,4 +593,64 @@ model AdvisorySession {
   @@index([orgId])
   @@index([teamId])
   @@index([purchaseId])
+}
+
+// ============================================
+// BILLING EVENT TRACKING
+// ============================================
+
+model BillingEventLog {
+  id           String    @id @default(cuid())
+  provider     String    // "stripe" | "billingo"
+  eventId      String    @unique // Stripe event.id or internal ID
+  eventType    String    // e.g. "checkout.session.completed"
+  objectId     String?   // Stripe object ID (session, invoice, subscription)
+  status       String    @default("processing") // "processing" | "processed" | "failed" | "skipped"
+  processedAt  DateTime?
+  errorMessage String?
+  retryable    Boolean   @default(false)
+  retryCount   Int       @default(0)
+  lastRetryAt  DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([eventType])
+  @@index([status])
+  @@index([objectId])
+}
+
+model BillingoPartnerLink {
+  id               String  @id @default(cuid())
+  userId           String? // UserProfile.id — for self purchases
+  organizationId   String? // Organization.id — for org/team purchases
+  billingoPartnerId String @unique
+  email            String
+  countryCode      String  @default("HU")
+  taxNumber        String?
+  euVatNumber      String?
+  currency         String  @default("EUR")
+  locale           String  @default("hu")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([email])
+}
+
+model BillingDocumentLink {
+  id                      String  @id @default(cuid())
+  sourceType              String  // "purchase" | "subscription_invoice" | "candidate_addon"
+  sourceId                String  // Purchase.id or Subscription.id
+  stripeInvoiceId         String?
+  stripeCheckoutSessionId String?
+  billingoDocumentId      String
+  billingoDocumentNumber  String?
+  documentType            String  // "invoice" | "correction" | "proforma"
+  status                  String  @default("issued") // "issued" | "voided" | "corrected"
+  createdAt               DateTime @default(now())
+
+  @@index([sourceType, sourceId])
+  @@index([billingoDocumentId])
+  @@index([stripeInvoiceId])
+  @@index([stripeCheckoutSessionId])
 }
