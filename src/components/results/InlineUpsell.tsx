@@ -2,6 +2,7 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { UpgradeButton } from "@/components/profile/UpgradeButton";
 
 export function InlineUpsell() {
   const { locale } = useLocale();
@@ -41,12 +42,7 @@ export function InlineUpsell() {
         <span className="text-[10px] text-white/[0.25]">
           {t("results.upsellOnetime", locale)}
         </span>
-        <button
-          type="button"
-          className="min-h-[44px] rounded-[11px] bg-[var(--color-accent-primary)] px-7 py-[13px] text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-110"
-        >
-          {t("results.upsellBuy", locale)}
-        </button>
+        <UpgradeButton tier="self_plus" label={t("results.upsellBuy", locale)} />
       </div>
     </div>
   );

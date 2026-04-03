@@ -6,6 +6,7 @@ import { getDimensionTier, tierColors, dimensionFacets } from "@/lib/dimension-u
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { UpgradeButton } from "@/components/profile/UpgradeButton";
 
 interface FacetEntry {
   code: string;
@@ -172,12 +173,7 @@ function AccordionItem({
                       {facetNames.join(" · ")}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    className="shrink-0 rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[10px] font-semibold text-white transition hover:-translate-y-px hover:brightness-110"
-                  >
-                    {t("results.facetUnlock", locale)}
-                  </button>
+                  <UpgradeButton tier="self_plus" label={t("results.facetUnlock", locale)} />
                 </div>
               )}
             </div>

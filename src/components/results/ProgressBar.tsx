@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
@@ -27,6 +28,7 @@ interface PackageCardProps {
   features: string[];
   buttonLabel: string;
   buttonStyle: "ghost" | "bronze" | "done";
+  onButtonClick?: () => void;
   locale: "hu" | "en";
 }
 
@@ -40,6 +42,7 @@ function PackageCard({
   features,
   buttonLabel,
   buttonStyle,
+  onButtonClick,
   locale,
 }: PackageCardProps) {
   return (
@@ -99,6 +102,8 @@ function PackageCard({
 
       <button
         type="button"
+        onClick={onButtonClick}
+        disabled={buttonStyle === "done"}
         className={[
           "mt-3 min-h-[44px] w-full rounded-lg py-2 text-center text-[11px] font-semibold transition",
           buttonStyle === "bronze" &&
@@ -129,7 +134,24 @@ export function ProgressBar({
   onNavigateToInvites,
 }: ProgressBarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const router = useRouter();
   const { locale } = useLocale();
+
+  async function handlePlusUpgrade() {
+    if (upgradeLoading) return;
+    setUpgradeLoading(true);
+    try {
+      const res = await fetch("/api/billing/purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: "self_plus" }),
+      });
+      const data = (await res.json()) as { url?: string };
+      if (data.url) router.push(data.url);
+    } catch { /* silent */ }
+    setUpgradeLoading(false);
+  }
 
   const steps = [
     { key: "test", done: true },
@@ -271,6 +293,7 @@ export function ProgressBar({
                       : t("progress.buttonUnlock", locale)
                   }
                   buttonStyle={hasSelfPlus ? "done" : "bronze"}
+                  onButtonClick={hasSelfPlus ? undefined : handlePlusUpgrade}
                   locale={locale}
                 />
               </div>
