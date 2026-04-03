@@ -2,6 +2,30 @@
 
 > Utolsó frissítés: 2026-04-03
 > Minden diagram státusszal jelölt: ✅ implemented / 🟡 target / 🔵 conceptual
+>
+> Kapcsolódó policy dokumentumok:
+> - [Billing Failure Policy](billing-failure-policy.md) — Billingo non-blocking policy és retry szabályok
+> - [Billing Access States](billing-access-states.md) — provisioning vs entitlement vs payment
+> - [Billing Correction Policy](billing-correction-policy.md) — stornó vs helyesbítő szabályok
+> - [Billing Event Matrix](billing-event-matrix.md) — event → action → számla mátrix
+> - [Billing Source of Truth](billing-source-of-truth.md) — három truth réteg
+> - [Billing Product Mapping](billing-product-mapping.md) — termék → Stripe → Billingo mapping
+>
+> **Current vs Target összefoglaló:**
+> | Terület | Státusz |
+> |---------|---------|
+> | Webhook dispatch + handler-ek | ✅ Implemented |
+> | Idempotency layer | ✅ Implemented |
+> | Billingo chain (purchase + subscription) | ✅ Implemented (Billingo API key szükséges az élesítéshez) |
+> | Invoice status state machine | ✅ Implemented |
+> | Retry admin endpoint | ✅ Implemented (reset for retry) |
+> | Structured tracing | ✅ Implemented |
+> | VAT decision (HU + EU B2B + Intl) | ✅ Implemented baseline |
+> | EU B2C VAT kezelés | 🟡 Target (V2) |
+> | Részleges refund → automatikus helyesbítő | 🟡 Target (V2) |
+> | Reconciliation admin UI | 🟡 Target (API kész, UI nincs) |
+> | Full retry re-dispatch (Stripe event fetch) | 🟡 Target |
+> | Dunning/reminder on payment failure | 🔵 Conceptual |
 
 ---
 
