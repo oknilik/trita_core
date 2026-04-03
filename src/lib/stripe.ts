@@ -48,8 +48,9 @@ export const STRIPE_ONE_TIME_PRICES = {
 
 export type OneTimeTier = keyof typeof STRIPE_ONE_TIME_PRICES;
 
-export function getOneTimePriceId(tier: OneTimeTier): string {
-  return STRIPE_ONE_TIME_PRICES[tier];
+export function getOneTimePriceId(tier: OneTimeTier): string | null {
+  const id = STRIPE_ONE_TIME_PRICES[tier];
+  return id && id.length > 0 ? id : null;
 }
 
 export function isOneTimeTier(tier: string): tier is OneTimeTier {

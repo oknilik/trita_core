@@ -10,10 +10,12 @@ interface UpgradeButtonProps {
 
 export function UpgradeButton({ tier, label }: UpgradeButtonProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   async function handleClick() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/billing/purchase", {
         method: "POST",
@@ -24,21 +26,30 @@ export function UpgradeButton({ tier, label }: UpgradeButtonProps) {
       if (data.url) {
         router.push(data.url);
       } else {
+        setError(data.error === "PRICE_NOT_CONFIGURED"
+          ? "Ez a csomag jelenleg nem elérhető."
+          : "Hiba történt. Próbáld újra.");
         setLoading(false);
       }
     } catch {
+      setError("Hiba történt. Próbáld újra.");
       setLoading(false);
     }
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={loading}
-      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {loading ? "…" : label}
-    </button>
+    <div>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={loading}
+        className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {loading ? "…" : label}
+      </button>
+      {error && (
+        <p className="mt-2 text-xs text-rose-600">{error}</p>
+      )}
+    </div>
   );
 }
