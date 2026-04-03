@@ -21,23 +21,25 @@ Font.register({
 });
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
+// IMPORTANT: react-pdf renders in Node.js, NOT in a browser.
+// CSS custom properties (var(--xxx)) do not work here — use hex values only.
 
 export const colors = {
-  sage: "var(--color-action-primary-bg)",
-  sageDark: "var(--color-accent-self-deep)",
-  sageLight: "var(--color-accent-self)",
-  sage100: "var(--color-surface-self-accent-soft)",
-  bronze: "var(--color-accent-primary)",
-  bronzeLight: "var(--color-accent-primary-soft)",
-  bronze100: "var(--color-surface-highlight-warm)",
-  bronzeDark: "var(--color-accent-primary-strong)",
-  ink: "var(--color-text-primary)",
-  ink500: "var(--color-text-secondary)",
-  ink300: "var(--color-text-muted)",
-  cream: "var(--color-surface-canvas)",
-  cream500: "var(--color-border-default)",
-  cream300: "var(--color-surface-subtle)",
-  white: "var(--color-neutral-white)",
+  sage: "#3d6b5e",
+  sageDark: "#2d4f46",
+  sageLight: "#4a8b78",
+  sage100: "#e8f0ed",
+  bronze: "#c17f4a",
+  bronzeLight: "#d4a67a",
+  bronze100: "#faf0e6",
+  bronzeDark: "#a0623a",
+  ink: "#1a1a2e",
+  ink500: "#4a4a5e",
+  ink300: "#8a8a9a",
+  cream: "#faf9f6",
+  cream500: "#e8e0d3",
+  cream300: "#f3f0eb",
+  white: "#ffffff",
 };
 
 // ─── Shared styles ───────────────────────────────────────────────────────────

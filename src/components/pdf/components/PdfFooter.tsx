@@ -26,8 +26,8 @@ export function PdfFooter({ pageNum, totalPages, locale = "hu" }: PdfFooterProps
         borderTop: `0.5 solid ${colors.cream500}`,
       }}
     >
-      <Text style={{ fontFamily: "Fraunces", fontSize: 6, color: "var(--color-action-primary-bg)" }}>
-        tri<Text style={{ color: "var(--color-accent-primary)" }}>ta</Text>
+      <Text style={{ fontFamily: "Fraunces", fontSize: 6, color: "#3d6b5e" }}>
+        tri<Text style={{ color: "#c17f4a" }}>ta</Text>
       </Text>
       <Text>trita.io · {t("pdf.footerTagline", locale)}</Text>
       <Text>

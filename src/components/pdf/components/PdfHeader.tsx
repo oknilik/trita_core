@@ -61,7 +61,7 @@ export function PdfHeader({ name, date, type, percentile, insight, plan, locale 
                 {t("pdf.headerTop", locale)}
               </Text>
               {topDimensions.map((d) => (
-                <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(61,107,94,0.3)", color: "var(--color-text-success-soft)" }}>
+                <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(61,107,94,0.3)", color: "#a8d5c5" }}>
                   {d}
                 </Text>
               ))}
@@ -73,7 +73,7 @@ export function PdfHeader({ name, date, type, percentile, insight, plan, locale 
                 {t("pdf.headerWatch", locale)}
               </Text>
               {watchDimensions.map((d) => (
-                <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(193,127,74,0.2)", color: "var(--color-accent-primary-soft)" }}>
+                <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(193,127,74,0.2)", color: "#d4a67a" }}>
                   {d}
                 </Text>
               ))}
