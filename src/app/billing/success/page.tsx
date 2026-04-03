@@ -4,6 +4,11 @@ import type { Metadata } from "next";
 import { stripe, TIER_CONFIG } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { resolvePartner, resolvePartnerForPurchase } from "@/lib/billing/partner-resolver";
+import { resolveVatDecision } from "@/lib/billing/vat-decision";
+import { buildPurchaseInvoiceItem } from "@/lib/billing/invoice-items";
+import { normalizeInvoicePayload } from "@/lib/billing/invoice-normalizer";
+import { createInvoiceDocument } from "@/lib/billing/billingo-client";
 
 export const metadata: Metadata = {
   title: "Sikeres vásárlás | Trita",
@@ -66,7 +71,7 @@ export default async function BillingSuccessPage({
 
       if (!existing) {
         const config = TIER_CONFIG[tier];
-        await prisma.purchase.create({
+        const purchase = await prisma.purchase.create({
           data: {
             userProfileId: profile.id,
             orgId: session.metadata.orgId || null,
@@ -87,6 +92,51 @@ export default async function BillingSuccessPage({
             includedCredits: config?.includedCredits ?? 0,
           },
         });
+
+        // ── Billingo invoice (non-blocking) ────────────────────────
+        try {
+          const partnerInput = await resolvePartnerForPurchase({
+            productType: tier,
+            userId: profile.id,
+            organizationId: session.metadata.orgId || undefined,
+          });
+          const partner = await resolvePartner(partnerInput);
+          const vatDecision = resolveVatDecision({ countryCode: partnerInput.countryCode });
+          const item = buildPurchaseInvoiceItem(tier, 1, vatDecision);
+          const payload = normalizeInvoicePayload({
+            partnerId: partner.billingoPartnerId,
+            vatDecision,
+            items: [item],
+          });
+          const doc = await createInvoiceDocument(payload);
+
+          await prisma.billingDocumentLink.create({
+            data: {
+              sourceType: "purchase",
+              sourceId: purchase.id,
+              stripeCheckoutSessionId: sessionId,
+              billingoDocumentId: String(doc.id),
+              billingoDocumentNumber: doc.invoiceNumber,
+              documentType: "invoice",
+              status: "issued",
+            },
+          });
+          await prisma.purchase.update({
+            where: { id: purchase.id },
+            data: {
+              billingoDocumentId: String(doc.id),
+              billingoDocumentNumber: doc.invoiceNumber,
+              invoiceStatus: "issued",
+            },
+          });
+        } catch (billingoErr) {
+          // Non-blocking — purchase already created, Billingo retry possible
+          console.error("[Billing/Success] Billingo invoice failed:", billingoErr);
+          await prisma.purchase.update({
+            where: { id: purchase.id },
+            data: { invoiceStatus: "failed" },
+          });
+        }
       }
     }
   } catch {
