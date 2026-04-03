@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     line_items: [{ price: priceId, quantity: 1 }],
     allow_promotion_codes: true,
     success_url: `${runtime.appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${runtime.appUrl}/billing`,
+    cancel_url: `${runtime.appUrl}/profile/results`,
     metadata: {
       // Legacy keys (backward compat)
       type: "one_time_purchase",
