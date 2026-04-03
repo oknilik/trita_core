@@ -165,8 +165,8 @@ export async function updatePartnerIfNeeded(
       address: {
         country_code: input.countryCode || "HU",
         post_code: "0000",
-        city: "-",
-        address: "-",
+        city: "N/A",
+        address: "N/A",
       },
       emails: [input.email],
       taxcode: input.taxNumber ?? "",
