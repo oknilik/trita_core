@@ -1,171 +1,58 @@
+/**
+ * D1 — Stripe webhook route (dispatch layer)
+ *
+ * Signature verification → event parsing → handler dispatch.
+ * Domain logic lives in src/lib/billing/handlers/*.
+ */
+
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail } from "@/lib/emails";
 import { addCredits } from "@/lib/candidate-credits";
-import { TIER_CONFIG } from "@/lib/stripe";
+import type { StripeWebhookRuntime } from "@/lib/billing/handlers/shared";
+import { handleCheckoutSessionCompleted } from "@/lib/billing/handlers/checkout-completed";
+import { handleSubscriptionEvent } from "@/lib/billing/handlers/subscription-sync";
+import { handleInvoicePaid } from "@/lib/billing/handlers/invoice-paid";
+import { handleInvoicePaymentFailed } from "@/lib/billing/handlers/invoice-failed";
 
 export const dynamic = "force-dynamic";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
-type StripeWebhookRuntime = {
-  stripe: typeof stripe;
-  prisma: typeof prisma;
-  sendOrderConfirmationEmail: typeof sendOrderConfirmationEmail;
-  addCredits: typeof addCredits;
-  webhookSecret?: string;
-};
-
-const defaultStripeWebhookRuntime: StripeWebhookRuntime = {
+const defaultRuntime: StripeWebhookRuntime = {
   stripe,
   prisma,
   sendOrderConfirmationEmail,
   addCredits,
-  webhookSecret: WEBHOOK_SECRET,
 };
 
-function getStripeWebhookRuntime(): StripeWebhookRuntime {
+function getRuntime(): StripeWebhookRuntime {
   const overrides = (
     globalThis as {
       __TRITA_STRIPE_WEBHOOK_RUNTIME__?: Partial<StripeWebhookRuntime>;
     }
   ).__TRITA_STRIPE_WEBHOOK_RUNTIME__;
-  return { ...defaultStripeWebhookRuntime, ...(overrides ?? {}) };
-}
-
-async function upsertSubscription(
-  runtime: StripeWebhookRuntime,
-  orgId: string,
-  subscription: Stripe.Subscription,
-  customerId: string,
-) {
-  await runtime.prisma.subscription.upsert({
-    where: { orgId },
-    create: {
-      orgId,
-      stripeCustomerId: customerId,
-      stripeSubscriptionId: subscription.id,
-      stripePriceId: subscription.items.data[0]?.price.id ?? null,
-      status: subscription.status,
-      trialEndsAt: subscription.trial_end
-        ? new Date(subscription.trial_end * 1000)
-        : null,
-      currentPeriodEnd: subscription.items.data[0]?.current_period_end
-        ? new Date(subscription.items.data[0].current_period_end * 1000)
-        : null,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    },
-    update: {
-      stripeCustomerId: customerId,
-      stripeSubscriptionId: subscription.id,
-      stripePriceId: subscription.items.data[0]?.price.id ?? null,
-      status: subscription.status,
-      trialEndsAt: subscription.trial_end
-        ? new Date(subscription.trial_end * 1000)
-        : null,
-      currentPeriodEnd: subscription.items.data[0]?.current_period_end
-        ? new Date(subscription.items.data[0].current_period_end * 1000)
-        : null,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    },
-  });
-}
-
-function extractCustomerId(
-  customer: string | Stripe.Customer | Stripe.DeletedCustomer | null | undefined,
-): string | null {
-  if (!customer) return null;
-  if (typeof customer === "string") return customer;
-  return customer.id;
-}
-
-function extractSubscriptionId(
-  subscription: string | Stripe.Subscription | null | undefined,
-): string | null {
-  if (!subscription) return null;
-  if (typeof subscription === "string") return subscription;
-  return subscription.id;
-}
-
-async function syncSubscriptionFromEventObject(
-  runtime: StripeWebhookRuntime,
-  input: {
-    eventType:
-      | "checkout.session.completed"
-      | "customer.subscription.created"
-      | "customer.subscription.updated"
-      | "customer.subscription.deleted"
-      | "invoice.paid"
-      | "invoice.payment_failed";
-    subscription: Stripe.Subscription;
-    customerId: string;
-    previousStatus?: string | null;
-  },
-): Promise<void> {
-  const orgId = input.subscription.metadata?.orgId;
-  if (!orgId) return;
-
-  const previousLocal = await runtime.prisma.subscription.findUnique({
-    where: { orgId },
-    select: { status: true },
-  });
-
-  await upsertSubscription(runtime, orgId, input.subscription, input.customerId);
-
-  if (input.eventType === "checkout.session.completed") {
-    // Activate org if it was in PENDING_SETUP
-    await runtime.prisma.organization.updateMany({
-      where: { id: orgId, status: "PENDING_SETUP" },
-      data: { status: "ACTIVE" },
-    });
-    console.log(`[Stripe] Checkout complete for org ${orgId}`);
-    return;
-  }
-
-  const transitionedFromTrialingToActive =
-    input.eventType === "customer.subscription.updated" &&
-    input.previousStatus === "trialing" &&
-    input.subscription.status === "active";
-
-  // Idempotency: duplicate webhook retries must not resend order confirmation.
-  if (transitionedFromTrialingToActive && previousLocal?.status !== "active") {
-    const org = await runtime.prisma.organization.findUnique({
-      where: { id: orgId },
-      select: { name: true, owner: { select: { email: true } } },
-    });
-    if (org?.owner?.email) {
-      await runtime.sendOrderConfirmationEmail({
-        to: org.owner.email,
-        name: org.name,
-      });
-    }
-  }
-
-  if (input.eventType === "invoice.paid" || input.eventType === "invoice.payment_failed") {
-    console.log(`[Stripe] Invoice event ${input.eventType} synced for org ${orgId}`);
-    return;
-  }
-
-  console.log(`[Stripe] Subscription ${input.subscription.status} for org ${orgId}`);
+  return { ...defaultRuntime, ...(overrides ?? {}) };
 }
 
 export async function POST(req: Request) {
-  const runtime = getStripeWebhookRuntime();
-  if (!runtime.webhookSecret) {
+  const runtime = getRuntime();
+  const webhookSecret = WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
     console.error("[Stripe webhook] STRIPE_WEBHOOK_SECRET is not configured!");
     return new NextResponse("Webhook secret not configured", { status: 500 });
   }
 
   const payload = await req.text();
   const sig = req.headers.get("stripe-signature");
-
   if (!sig) return new NextResponse("Missing signature", { status: 400 });
 
   let event: Stripe.Event;
   try {
-    event = runtime.stripe.webhooks.constructEvent(payload, sig, runtime.webhookSecret);
+    event = runtime.stripe.webhooks.constructEvent(payload, sig, webhookSecret);
   } catch (err) {
     console.error("[Stripe webhook] Signature verification failed:", err);
     return new NextResponse("Invalid signature", { status: 400 });
@@ -173,142 +60,26 @@ export async function POST(req: Request) {
 
   try {
     switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        const orgId = session.metadata?.orgId;
-        if (!orgId) break;
-
-        // ── One-time purchase ──────────────────────────────────
-        if (session.mode === "payment" && session.metadata?.type === "one_time_purchase") {
-          const tier = session.metadata.tier;
-          const userProfileId = session.metadata.userProfileId;
-          const orgId = session.metadata.orgId || null;
-          const teamId = session.metadata.teamId || null;
-
-          if (!tier || !userProfileId) {
-            console.error("[Stripe] Missing metadata in one_time_purchase session", session.id);
-            break;
-          }
-
-          // Duplikáció védelem
-          const existing = await runtime.prisma.purchase.findFirst({
-            where: { stripeCheckoutSessionId: session.id },
-          });
-          if (existing) {
-            console.log(`[Stripe] Skipping duplicate purchase for session ${session.id}`);
-            break;
-          }
-
-          const config = TIER_CONFIG[tier];
-
-          await runtime.prisma.purchase.create({
-            data: {
-              userProfileId,
-              orgId: orgId || null,
-              teamId: teamId || null,
-              tier,
-              stripePaymentIntentId:
-                typeof session.payment_intent === "string"
-                  ? session.payment_intent
-                  : (session.payment_intent as { id: string } | null)?.id ?? null,
-              stripeCheckoutSessionId: session.id,
-              amount: session.amount_total ?? 0,
-              currency: session.currency ?? "eur",
-              status: "completed",
-              includesAdvisory: config?.includesAdvisory ?? false,
-              includedCredits: config?.includedCredits ?? 0,
-            },
-          });
-
-          console.log(`[Stripe] Purchase created: ${tier} for profile ${userProfileId}`);
-          break;
-        }
-
-        // ── Candidate addon one-time payment ─────────────────
-        if (session.mode === "payment" && session.metadata?.type === "candidate_addon") {
-          const creditCount = parseInt(session.metadata.creditCount ?? "1", 10);
-          const actorId = session.metadata.actorId ?? "system";
-          const creditLabels: Record<number, string> = {
-            1: "1× jelölt értékelés",
-            5: "5× jelölt értékelés csomag",
-            10: "10× jelölt értékelés csomag",
-          };
-          const label = creditLabels[creditCount] ?? `${creditCount}× jelölt értékelés`;
-          // Idempotency: return page may have already processed this session
-          const alreadyProcessed = await runtime.prisma.candidateCredit.findFirst({
-            where: { orgId, note: { contains: session.id } },
-            select: { id: true },
-          });
-          if (!alreadyProcessed) {
-            await runtime.addCredits({
-              orgId,
-              amount: creditCount,
-              actorId,
-              note: `${label} [${session.id}]`,
-            });
-            console.log(`[Stripe] +${creditCount} candidate credits for org ${orgId}`);
-          } else {
-            console.log(`[Stripe] Skipping duplicate credit for session ${session.id}`);
-          }
-          break;
-        }
-
-        if (session.mode !== "subscription") break;
-
-        const subscriptionId = extractSubscriptionId(session.subscription);
-        const customerId = extractCustomerId(session.customer);
-        if (!subscriptionId || !customerId) break;
-        const subscription = await runtime.stripe.subscriptions.retrieve(subscriptionId);
-
-        await syncSubscriptionFromEventObject(runtime, {
-          eventType: "checkout.session.completed",
-          subscription,
-          customerId,
-        });
+      case "checkout.session.completed":
+        await handleCheckoutSessionCompleted(runtime, event);
         break;
-      }
 
       case "customer.subscription.created":
       case "customer.subscription.updated":
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription;
-        const customerId = extractCustomerId(subscription.customer);
-        if (!customerId) break;
-        const previousStatus =
-          event.type === "customer.subscription.updated" &&
-          event.data.previous_attributes &&
-          "status" in event.data.previous_attributes
-            ? String(event.data.previous_attributes.status)
-            : null;
-
-        await syncSubscriptionFromEventObject(runtime, {
-          eventType: event.type,
-          subscription,
-          customerId,
-          previousStatus,
-        });
+      case "customer.subscription.deleted":
+        await handleSubscriptionEvent(runtime, event);
         break;
-      }
 
       case "invoice.paid":
-      case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = extractSubscriptionId(invoice.subscription);
-        if (!subscriptionId) break;
-        const subscription = await runtime.stripe.subscriptions.retrieve(subscriptionId);
-        const customerId =
-          extractCustomerId(invoice.customer) ?? extractCustomerId(subscription.customer);
-        if (!customerId) break;
-
-        await syncSubscriptionFromEventObject(runtime, {
-          eventType: event.type,
-          subscription,
-          customerId,
-        });
+        await handleInvoicePaid(runtime, event);
         break;
-      }
+
+      case "invoice.payment_failed":
+        await handleInvoicePaymentFailed(runtime, event);
+        break;
 
       default:
+        // Unhandled event types are silently acknowledged
         break;
     }
   } catch (err) {
