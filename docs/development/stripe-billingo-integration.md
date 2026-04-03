@@ -1,7 +1,7 @@
 # Stripe / Billingo integrációs terv
 
 > Dátum: 2026-04-03
-> Státusz: P0 infrastruktúra implementálva — Billingo API bekötés TODO
+> Státusz: P0 + P1 + P2 implementálva — Billingo éles bekötés a TODO handler-ekből indulhat
 
 ---
 
