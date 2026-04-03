@@ -186,7 +186,7 @@ export async function createInvoiceDocument(
     bank_account_id: 0,
     currency: input.currency,
     language: input.language === "hu" ? "hu" : "en",
-    type: input.type === "proforma" ? 3 : 1,
+    type: input.type === "proforma" ? "proforma" : "invoice",
     payment_method: "online_bankcard",
     electronic: true,
     fulfillment_date: input.fulfillmentDate ?? today,
@@ -195,7 +195,8 @@ export async function createInvoiceDocument(
     comment: input.comment ?? "",
     items: input.items.map((item) => ({
       name: item.name,
-      net_unit_price: item.unitPrice,
+      unit_price: item.unitPrice,
+      unit_price_type: "net",
       quantity: item.quantity,
       unit: item.unit,
       vat: item.vat,
