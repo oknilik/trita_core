@@ -1,7 +1,7 @@
 # Stripe / Billingo integrációs terv
 
 > Dátum: 2026-04-03
-> Státusz: terv — implementáció nem kezdődött
+> Státusz: P0 infrastruktúra implementálva — Billingo API bekötés TODO
 
 ---
 
