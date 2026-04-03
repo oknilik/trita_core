@@ -102,6 +102,7 @@ async function billingoFetch(
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
+    console.error(`[Billingo] API ${res.status} ${res.statusText}:`, JSON.stringify(body, null, 2));
     throw new BillingoApiError(
       `Billingo API error: ${res.status} ${res.statusText}`,
       res.status,
@@ -119,29 +120,35 @@ export async function findOrCreatePartner(
   input: BillingoPartnerInput,
 ): Promise<number> {
   // Search by email first
-  const searchRes = await billingoFetch(
-    `/partners?query=${encodeURIComponent(input.email)}`,
-  );
-  const searchData = await searchRes.json();
-  const existing = searchData?.data?.[0];
-  if (existing?.id) return existing.id;
+  try {
+    const searchRes = await billingoFetch(
+      `/partners?query=${encodeURIComponent(input.email)}`,
+    );
+    const searchData = await searchRes.json();
+    const existing = searchData?.data?.[0];
+    if (existing?.id) return existing.id;
+  } catch {
+    // Search failed — proceed to create
+  }
 
-  // Create new partner
+  // Create new partner (Billingo v3 API format)
+  const partnerPayload = {
+    name: input.name,
+    address: {
+      country_code: input.countryCode || "HU",
+      post_code: "0000",
+      city: "-",
+      address: "-",
+    },
+    emails: [input.email],
+    taxcode: input.taxNumber || "",
+  };
+
+  console.log("[Billingo] Creating partner:", JSON.stringify(partnerPayload));
+
   const createRes = await billingoFetch("/partners", {
     method: "POST",
-    body: JSON.stringify({
-      name: input.name,
-      emails: [input.email],
-      taxcode: input.taxNumber ?? "",
-      iban: "",
-      phone: "",
-      address: input.address ?? {
-        street_name: "",
-        city: "",
-        post_code: "",
-        country_code: input.countryCode,
-      },
-    }),
+    body: JSON.stringify(partnerPayload),
   });
   const created = await createRes.json();
   return created.id;
@@ -155,14 +162,14 @@ export async function updatePartnerIfNeeded(
     method: "PUT",
     body: JSON.stringify({
       name: input.name,
+      address: {
+        country_code: input.countryCode || "HU",
+        post_code: "0000",
+        city: "-",
+        address: "-",
+      },
       emails: [input.email],
       taxcode: input.taxNumber ?? "",
-      address: input.address ?? {
-        street_name: "",
-        city: "",
-        post_code: "",
-        country_code: input.countryCode,
-      },
     }),
   });
 }
@@ -172,24 +179,30 @@ export async function createInvoiceDocument(
 ): Promise<BillingoDocument> {
   const blockId = input.blockId || getBlockId();
 
+  const today = new Date().toISOString().slice(0, 10);
   const payload = {
     partner_id: input.partnerId,
     block_id: blockId,
+    bank_account_id: 0,
     currency: input.currency,
-    language: input.language,
+    language: input.language === "hu" ? "hu" : "en",
     type: input.type === "proforma" ? 3 : 1,
-    payment_method: input.paymentMethod,
-    fulfillment_date: input.fulfillmentDate ?? new Date().toISOString().slice(0, 10),
-    due_date: input.dueDate ?? new Date().toISOString().slice(0, 10),
+    payment_method: "online_bankcard",
+    electronic: true,
+    fulfillment_date: input.fulfillmentDate ?? today,
+    due_date: input.dueDate ?? today,
+    paid_date: today,
     comment: input.comment ?? "",
     items: input.items.map((item) => ({
       name: item.name,
-      unit_price: item.unitPrice,
+      net_unit_price: item.unitPrice,
       quantity: item.quantity,
       unit: item.unit,
       vat: item.vat,
     })),
   };
+
+  console.log("[Billingo] Creating document:", JSON.stringify(payload));
 
   const res = await billingoFetch("/documents", {
     method: "POST",
