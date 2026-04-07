@@ -9,6 +9,8 @@ import type { Locale } from "@/lib/i18n";
 interface NotificationItem {
   id: string;
   type: string;
+  category: string;
+  priority: string;
   titleKey: string;
   bodyKey: string;
   vars: Record<string, string | number> | null;
@@ -20,6 +22,17 @@ interface NotificationItem {
 interface NotificationPanelProps {
   onClose: () => void;
 }
+
+// ── Category → icon color mapping ────────────────────────────────────────────
+
+const CATEGORY_ICON_STYLES: Record<string, string> = {
+  assessment: "bg-indigo-50 text-indigo-600",
+  observer:   "bg-purple-50 text-purple-600",
+  org:        "bg-sky-50 text-sky-600",
+  campaign:   "bg-emerald-50 text-emerald-600",
+  billing:    "bg-amber-50 text-amber-700",
+  system:     "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]",
+};
 
 // ── Relative time ───────────────────────────────────────────────────────────
 
@@ -177,27 +190,32 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
               ? tf(item.bodyKey, loc, item.vars as Record<string, string | number>)
               : t(item.bodyKey, loc);
 
+            const iconColor = item.read
+              ? "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]"
+              : CATEGORY_ICON_STYLES[item.category] ?? CATEGORY_ICON_STYLES.system;
+
             const content = (
               <div className="flex items-start gap-3">
                 <span
-                  className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
-                    item.read
-                      ? "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]"
-                      : "bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)]"
-                  }`}
+                  className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${iconColor}`}
                 >
                   <NotifIcon type={item.type} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p
-                    className={`text-[12px] leading-snug ${
-                      item.read
-                        ? "text-[var(--color-text-muted)]"
-                        : "font-semibold text-[var(--color-text-primary)]"
-                    }`}
-                  >
-                    {title}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <p
+                      className={`text-[12px] leading-snug ${
+                        item.read
+                          ? "text-[var(--color-text-muted)]"
+                          : "font-semibold text-[var(--color-text-primary)]"
+                      }`}
+                    >
+                      {title}
+                    </p>
+                    {item.priority === "high" && !item.read && (
+                      <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                    )}
+                  </div>
                   <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
                     {body}
                   </p>

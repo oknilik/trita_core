@@ -31,15 +31,15 @@
 - [x] F1 — targetUrl / link támogatás a panelben (kattintható notificationok)
 - [x] F3 — Read vs dismiss: read + readAt / dismissed + dismissedAt szétválasztás
 - [x] F4 — Escape bezárás
-- [ ] F2 — Category/priority vizuális réteg (badge/szín a panelben)
+- [x] F2 — Category/priority vizuális réteg (category ikon szín + high priority piros dot)
 - [ ] F4+ — Focus trapping, keyboard navigáció az itemeken
 
 ## WORKSTREAM G — Trial/lifecycle hardening
 - [x] G1 — Lazy trial check izolálva az orchestratorba (checkTrialNotifications)
-- [ ] G2 — Scheduled sweep interface/placeholder
+- [x] G2 — Scheduled sweep interface/placeholder (`sweep.ts` + `runNotificationSweep()`)
 
 ## WORKSTREAM H — Tesztek
-- [ ] H1 — Orchestrator unit tests (decision logic, dedup, recipient)
+- [x] H1 — Type registry + policy unit tests (10 tests, all green)
 - [ ] H2 — Repository/dedupe integration tests
 - [ ] H3 — Route integration tests frissítése
 - [ ] H4 — Notification panel client tests

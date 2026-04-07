@@ -22,6 +22,8 @@ export async function GET() {
     select: {
       id: true,
       type: true,
+      category: true,
+      priority: true,
       titleKey: true,
       bodyKey: true,
       vars: true,
