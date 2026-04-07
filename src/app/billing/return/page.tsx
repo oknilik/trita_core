@@ -49,7 +49,7 @@ function getBillingReturnRuntime(): BillingReturnRuntime {
 export default async function ReturnPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string; addon?: string }>;
+  searchParams: Promise<{ session_id?: string; addon?: string; payment_intent?: string; plan?: string }>;
 }) {
   const runtime = getBillingReturnRuntime();
   const [locale, params, { userId }] = await Promise.all([
@@ -82,6 +82,179 @@ export default async function ReturnPage({
 
   if (resolution.kind === "redirect") {
     runtime.redirect(resolution.destination);
+  }
+
+  // ── Idempotent subscription sync (fallback if webhook hasn't arrived) ──
+  if (resolution.kind === "complete" && params.session_id && !params.addon) {
+    try {
+      const fullSession = await runtime.stripe.checkout.sessions.retrieve(params.session_id);
+      if (
+        fullSession.mode === "subscription" &&
+        fullSession.status === "complete" &&
+        typeof fullSession.subscription === "string" &&
+        fullSession.metadata?.orgId
+      ) {
+        const orgId = fullSession.metadata.orgId;
+        const existingSub = await runtime.prisma.subscription.findUnique({
+          where: { orgId },
+          select: { stripeSubscriptionId: true, status: true },
+        });
+
+        // Sync if no subscription or if it's still in a stale state
+        const needsSync =
+          !existingSub?.stripeSubscriptionId ||
+          existingSub.stripeSubscriptionId !== fullSession.subscription;
+
+        if (needsSync) {
+          const stripeSub = await runtime.stripe.subscriptions.retrieve(
+            fullSession.subscription,
+          );
+          const customerId =
+            typeof fullSession.customer === "string"
+              ? fullSession.customer
+              : fullSession.customer?.id ?? null;
+          const periodStart = stripeSub.items.data[0]?.current_period_start;
+          const periodEnd = stripeSub.items.data[0]?.current_period_end;
+          const priceId = stripeSub.items.data[0]?.price.id ?? null;
+
+          // Derive plan type and interval from unified metadata (B1 contract)
+          const productType = fullSession.metadata?.product_type ?? "";
+          const planType = productType.startsWith("org") ? "org" : "team";
+          const billingInterval = fullSession.metadata?.billing_interval ?? "monthly";
+
+          await runtime.prisma.subscription.upsert({
+            where: { orgId },
+            create: {
+              orgId,
+              stripeCustomerId: customerId,
+              stripeSubscriptionId: stripeSub.id,
+              stripePriceId: priceId,
+              planType,
+              billingInterval,
+              status: stripeSub.status,
+              trialEndsAt: stripeSub.trial_end
+                ? new Date(stripeSub.trial_end * 1000)
+                : null,
+              currentPeriodStart: periodStart
+                ? new Date(periodStart * 1000)
+                : null,
+              currentPeriodEnd: periodEnd
+                ? new Date(periodEnd * 1000)
+                : null,
+              cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+            },
+            update: {
+              stripeCustomerId: customerId,
+              stripeSubscriptionId: stripeSub.id,
+              stripePriceId: priceId,
+              planType,
+              billingInterval,
+              status: stripeSub.status,
+              trialEndsAt: stripeSub.trial_end
+                ? new Date(stripeSub.trial_end * 1000)
+                : null,
+              currentPeriodStart: periodStart
+                ? new Date(periodStart * 1000)
+                : null,
+              currentPeriodEnd: periodEnd
+                ? new Date(periodEnd * 1000)
+                : null,
+              cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+            },
+          });
+
+          // Activate org if pending
+          await runtime.prisma.organization.updateMany({
+            where: { id: orgId, status: "PENDING_SETUP" },
+            data: { status: "ACTIVE" },
+          });
+
+          console.log(
+            `[Billing/Return] Subscription synced for org ${orgId}: ${stripeSub.status}`,
+          );
+        }
+      }
+    } catch (syncErr) {
+      // Non-blocking — if sync fails, webhook will handle it eventually
+      console.error("[Billing/Return] Subscription sync fallback failed:", syncErr);
+    }
+  }
+
+  // ── Subscription activation via PaymentIntent (post-trial flow) ──
+  if (params.payment_intent && params.plan) {
+    try {
+      const pi = await runtime.stripe.paymentIntents.retrieve(params.payment_intent);
+      if (pi.status === "succeeded" && pi.metadata?.orgId && pi.metadata?.type === "subscription_activation") {
+        const orgId = pi.metadata.orgId;
+        const planKey = params.plan;
+        const priceId = pi.metadata.priceId;
+        const planType = planKey.startsWith("org") ? "org" : "team";
+        const billingInterval = planKey.includes("annual") ? "annual" : "monthly";
+
+        // Create the actual Stripe subscription (payment already collected)
+        const profile = await runtime.prisma.userProfile.findUnique({
+          where: { clerkId: userId! },
+          select: { id: true },
+        });
+        if (profile) {
+          const existingSub = await runtime.prisma.subscription.findUnique({
+            where: { orgId },
+            select: { stripeSubscriptionId: true },
+          });
+
+          // Only create if not already activated
+          if (!existingSub?.stripeSubscriptionId) {
+            const customerId = typeof pi.customer === "string" ? pi.customer : null;
+            if (customerId && priceId) {
+              const stripeSub = await runtime.stripe.subscriptions.create({
+                customer: customerId,
+                items: [{ price: priceId }],
+                default_payment_method: typeof pi.payment_method === "string" ? pi.payment_method : undefined,
+                metadata: { orgId },
+              });
+
+              const periodStart = stripeSub.items.data[0]?.current_period_start;
+              const periodEnd = stripeSub.items.data[0]?.current_period_end;
+
+              await runtime.prisma.subscription.upsert({
+                where: { orgId },
+                create: {
+                  orgId,
+                  stripeCustomerId: customerId,
+                  stripeSubscriptionId: stripeSub.id,
+                  stripePriceId: priceId,
+                  planType,
+                  billingInterval,
+                  status: stripeSub.status,
+                  currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
+                  currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+                },
+                update: {
+                  stripeCustomerId: customerId,
+                  stripeSubscriptionId: stripeSub.id,
+                  stripePriceId: priceId,
+                  planType,
+                  billingInterval,
+                  status: stripeSub.status,
+                  trialEndsAt: null,
+                  currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
+                  currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+                },
+              });
+
+              await runtime.prisma.organization.updateMany({
+                where: { id: orgId, status: "PENDING_SETUP" },
+                data: { status: "ACTIVE" },
+              });
+
+              console.log(`[Billing/Return] Subscription activated for org ${orgId}: ${stripeSub.id}`);
+            }
+          }
+        }
+      }
+    } catch (activationErr) {
+      console.error("[Billing/Return] Subscription activation failed:", activationErr);
+    }
   }
 
   if (resolution.kind === "complete") {

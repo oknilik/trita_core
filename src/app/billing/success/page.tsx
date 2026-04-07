@@ -33,13 +33,13 @@ const MESSAGES: Record<string, string> = {
 export default async function BillingSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; payment_intent?: string }>;
 }) {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const { session_id: sessionId } = await searchParams;
-  if (!sessionId) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  const { session_id: sessionId, payment_intent: paymentIntentId } = await searchParams;
+  if (!sessionId && !paymentIntentId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
@@ -51,14 +51,93 @@ export default async function BillingSuccessPage({
   let teamId: string | undefined;
 
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    tier = session.metadata?.tier ?? "unknown";
-    teamId = session.metadata?.teamId || undefined;
+    // ── PaymentIntent flow (Elements checkout) ────────────────────────────
+    if (paymentIntentId && !sessionId) {
+      const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+      tier = pi.metadata?.tier ?? "unknown";
+      teamId = pi.metadata?.teamId || undefined;
 
-    // ── Idempotent purchase sync ──────────────────────────────────────────
-    // The webhook is the truth source, but it may arrive after the user
-    // lands here. Create the purchase if it doesn't exist yet — the webhook
-    // handler checks stripeCheckoutSessionId and skips duplicates.
+      if (
+        tier !== "unknown" &&
+        pi.status === "succeeded" &&
+        pi.metadata?.type === "one_time_purchase"
+      ) {
+        const existing = await prisma.purchase.findFirst({
+          where: { stripePaymentIntentId: paymentIntentId },
+        });
+
+        if (!existing) {
+          const config = TIER_CONFIG[tier];
+          const purchase = await prisma.purchase.create({
+            data: {
+              userProfileId: profile.id,
+              orgId: pi.metadata.orgId || null,
+              teamId: pi.metadata.teamId || null,
+              tier,
+              productType: tier,
+              stripePaymentIntentId: paymentIntentId,
+              amount: pi.amount ?? 0,
+              grossAmount: pi.amount ?? 0,
+              currency: pi.currency ?? "eur",
+              status: "completed",
+              invoiceStatus: "pending",
+              includesAdvisory: config?.includesAdvisory ?? false,
+              includedCredits: config?.includedCredits ?? 0,
+            },
+          });
+
+          // Billingo invoice (non-blocking)
+          try {
+            const partnerInput = await resolvePartnerForPurchase({
+              productType: tier,
+              userId: profile.id,
+              organizationId: pi.metadata.orgId || undefined,
+            });
+            const partner = await resolvePartner(partnerInput);
+            const vatDecision = resolveVatDecision({ countryCode: partnerInput.countryCode });
+            const item = buildPurchaseInvoiceItem(tier, 1, vatDecision);
+            const payload = normalizeInvoicePayload({
+              partnerId: partner.billingoPartnerId,
+              vatDecision,
+              items: [item],
+            });
+            const doc = await createInvoiceDocument(payload);
+
+            await prisma.billingDocumentLink.create({
+              data: {
+                sourceType: "purchase",
+                sourceId: purchase.id,
+                billingoDocumentId: String(doc.id),
+                billingoDocumentNumber: doc.invoiceNumber,
+                documentType: "invoice",
+                status: "issued",
+              },
+            });
+            await prisma.purchase.update({
+              where: { id: purchase.id },
+              data: {
+                billingoDocumentId: String(doc.id),
+                billingoDocumentNumber: doc.invoiceNumber,
+                invoiceStatus: "issued",
+              },
+            });
+          } catch (billingoErr) {
+            console.error("[Billing/Success] Billingo invoice failed (PI flow):", billingoErr);
+            await prisma.purchase.update({
+              where: { id: purchase.id },
+              data: { invoiceStatus: "failed" },
+            });
+          }
+        }
+      }
+    }
+
+    // ── Checkout Session flow (legacy) ────────────────────────────────────
+    if (sessionId) {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    tier = session.metadata?.tier ?? tier;
+    teamId = session.metadata?.teamId || teamId;
+
     if (
       tier !== "unknown" &&
       session.mode === "payment" &&
@@ -139,6 +218,7 @@ export default async function BillingSuccessPage({
         }
       }
     }
+    } // close if (sessionId)
   } catch {
     redirect(JOURNEY_HOME_HANDOFF_PATH);
   }

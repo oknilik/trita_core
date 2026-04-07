@@ -155,6 +155,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ clientSecret: session.client_secret });
   }
 
+  // Only offer trial if org never had one before
+  const existingSub = await runtime.prisma.subscription.findUnique({
+    where: { orgId: membership.orgId },
+    select: { trialEndsAt: true, stripeSubscriptionId: true },
+  });
+  const hadTrialBefore = !!existingSub?.trialEndsAt || !!existingSub?.stripeSubscriptionId;
+
   const session = await runtime.stripe.checkout.sessions.create({
     customer: customerId,
     ui_mode: "embedded",
@@ -163,7 +170,7 @@ export async function POST(req: Request) {
     payment_method_types: ["card"],
     line_items: [{ price: priceId!, quantity: 1 }],
     subscription_data: {
-      trial_period_days: TRIAL_DAYS,
+      ...(hadTrialBefore ? {} : { trial_period_days: TRIAL_DAYS }),
       metadata: { orgId: membership.orgId },
     },
     return_url: `${runtime.appUrl}/billing/return?session_id={CHECKOUT_SESSION_ID}`,
