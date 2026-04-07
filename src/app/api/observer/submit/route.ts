@@ -115,21 +115,34 @@ export async function POST(req: Request) {
   );
 
   // In-app notification — notify observer that their submission was received (if registered user)
-  if (invitation.observerProfileId) {
-    prisma.userProfile.findUnique({
+  // observerProfileId may be null if the link wasn't opened while signed in,
+  // so we also try to match by observerEmail.
+  (async () => {
+    let observerUserId = invitation.observerProfileId;
+
+    if (!observerUserId && invitation.observerEmail) {
+      const observer = await prisma.userProfile.findFirst({
+        where: { email: invitation.observerEmail, deleted: false },
+        select: { id: true },
+      });
+      observerUserId = observer?.id ?? null;
+    }
+
+    if (!observerUserId) return;
+
+    const inviter = await prisma.userProfile.findUnique({
       where: { id: invitation.inviterId },
       select: { username: true, email: true },
-    }).then((inviter) => {
-      if (!inviter) return;
-      return import("@/lib/notifications").then(({ handleObserverSubmitted }) =>
-        handleObserverSubmitted({
-          observerUserId: invitation.observerProfileId!,
-          inviterName: inviter.username ?? inviter.email ?? "—",
-          invitationId: invitation.id,
-        }),
-      );
-    }).catch((err) => console.error("[Notification] Observer submitted error:", err));
-  }
+    });
+    if (!inviter) return;
+
+    const { handleObserverSubmitted } = await import("@/lib/notifications");
+    await handleObserverSubmitted({
+      observerUserId,
+      inviterName: inviter.username ?? inviter.email ?? "—",
+      invitationId: invitation.id,
+    });
+  })().catch((err) => console.error("[Notification] Observer submitted error:", err));
 
   // Email — only from the 2nd completed observer onward (fire-and-forget)
   prisma.observerAssessment.count({
