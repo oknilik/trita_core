@@ -113,6 +113,9 @@ model UserProfile {
   teamRoleAnswer TeamRoleAnswer?
   teamRoleScore  TeamRoleScore?
 
+  // Notifications
+  notifications Notification[]
+
   @@index([activeOrgId])
 }
 
@@ -653,4 +656,42 @@ model BillingDocumentLink {
   @@index([billingoDocumentId])
   @@index([stripeInvoiceId])
   @@index([stripeCheckoutSessionId])
+}
+
+// ── Notification Hub ────────────────────────────────────────────────────────
+
+enum NotificationType {
+  OBSERVER_COMPLETED
+  RESULT_READY
+  PURCHASE_CONFIRMED
+  ORG_INVITE_RECEIVED
+  CAMPAIGN_LAUNCHED
+  CAMPAIGN_CLOSED
+  TEAM_MEMBER_ADDED
+  ORG_INVITE_ACCEPTED
+  TRIAL_ENDING_SOON
+  TRIAL_EXPIRED
+  PAYMENT_FAILED
+  SUBSCRIPTION_FROZEN
+  LOW_CANDIDATE_CREDITS
+  MEMBER_COMPLETED_ASSESSMENT
+  CAMPAIGN_MILESTONE
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  titleKey  String
+  bodyKey   String
+  vars      Json?
+  link      String?
+  read      Boolean          @default(false)
+  dismissed Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dismissed, createdAt])
+  @@index([userId, read])
 }

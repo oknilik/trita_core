@@ -13,6 +13,7 @@ import { assessmentTranslations } from "./assessment";
 import { resultsTranslations } from "./results";
 import { profileTranslations } from "./profile";
 import { orgTranslations } from "./org";
+import { notificationTranslations } from "./notifications";
 
 // ── Merged dictionary ───────────────────────────────────────────────────────
 const translations = {
@@ -23,6 +24,7 @@ const translations = {
   ...resultsTranslations,
   ...profileTranslations,
   ...orgTranslations,
+  ...notificationTranslations,
 } as const;
 
 // ── Resolver ────────────────────────────────────────────────────────────────
