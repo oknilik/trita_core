@@ -120,7 +120,7 @@ export function InvoiceList() {
       {/* Table */}
       <div className="bg-white">
         {/* Column headers */}
-        <div className="hidden items-center gap-3 border-b border-sand/60 px-4 py-2 text-[10px] font-medium uppercase tracking-wide text-muted sm:grid sm:grid-cols-[1fr_5rem_6rem_7rem]">
+        <div className="hidden items-center gap-3 border-b border-sand/60 px-4 py-2 text-[10px] font-medium uppercase tracking-wide text-muted sm:grid sm:grid-cols-[1fr_5rem_6rem_5.5rem]">
           <span>{isHu ? "Tétel" : "Item"}</span>
           <span className="text-right">{isHu ? "Összeg" : "Amount"}</span>
           <span className="text-right">{isHu ? "Dátum" : "Date"}</span>
@@ -138,7 +138,7 @@ export function InvoiceList() {
           return (
             <div
               key={inv.id}
-              className="flex flex-col gap-2 border-b border-sand/40 px-4 py-3 last:border-b-0 sm:grid sm:grid-cols-[1fr_5rem_6rem_7rem] sm:items-center sm:gap-3 sm:py-2.5"
+              className="flex flex-col gap-2 border-b border-sand/40 px-4 py-3 last:border-b-0 sm:grid sm:grid-cols-[1fr_5rem_6rem_5.5rem] sm:items-center sm:gap-3 sm:py-2.5"
             >
               {/* Product */}
               <div className="min-w-0">
@@ -159,18 +159,20 @@ export function InvoiceList() {
               </span>
 
               {/* Actions */}
-              <div className="flex items-center gap-1.5 sm:justify-end">
+              <div className="flex flex-col gap-1 sm:items-end">
                 {inv.hasBillingoInvoice && inv.billingoDocumentId && (
                   <button
                     type="button"
                     onClick={() => handleDownloadPdf(inv.billingoDocumentId!)}
                     disabled={downloadingId === inv.billingoDocumentId}
-                    className="inline-flex min-h-[28px] items-center gap-1 rounded-md border border-sand px-2 text-[10px] font-medium text-ink-body transition hover:border-sage/40 hover:text-sage disabled:opacity-50"
+                    className="inline-flex min-h-[28px] items-center gap-1.5 rounded-md border border-sand px-2.5 text-[10px] font-medium text-ink-body transition hover:border-sage/40 hover:text-sage disabled:opacity-50"
                   >
-                    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-3 w-3 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M8 2v9M4.5 7.5L8 11l3.5-3.5M3 14h10" />
                     </svg>
-                    {downloadingId === inv.billingoDocumentId ? "..." : "PDF"}
+                    {downloadingId === inv.billingoDocumentId
+                      ? "..."
+                      : isHu ? "Számla" : "Invoice"}
                   </button>
                 )}
                 {inv.stripeReceiptUrl && (
@@ -178,9 +180,9 @@ export function InvoiceList() {
                     href={inv.stripeReceiptUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-[28px] items-center gap-1 rounded-md border border-sand px-2 text-[10px] font-medium text-ink-body transition hover:border-sage/40 hover:text-sage"
+                    className="inline-flex min-h-[28px] items-center gap-1.5 rounded-md border border-sand px-2.5 text-[10px] font-medium text-ink-body transition hover:border-sage/40 hover:text-sage"
                   >
-                    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-3 w-3 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M6 3H3v10h10v-3M10 2h4v4M7 9l7-7" />
                     </svg>
                     {isHu ? "Bizonylat" : "Receipt"}
