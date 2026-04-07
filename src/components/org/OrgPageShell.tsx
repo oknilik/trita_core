@@ -9,6 +9,8 @@ import { OrgCampaignsTab } from "./OrgCampaignsTab";
 import { OrgOverviewTab } from "./OrgOverviewTab";
 import { OrgTeamsTab } from "./OrgTeamsTab";
 import { OrgMembersTab } from "./OrgMembersTab";
+import { OrgBillingTab } from "./OrgBillingTab";
+import type { SerializedSubscription } from "./OrgCurrentPlanCard";
 import type {
   OrgPageData,
   SerializedMember,
@@ -38,6 +40,9 @@ interface OrgPageShellProps {
   members: SerializedMember[];
   pendingInvites: SerializedPendingInvite[];
   teams: SerializedTeam[];
+  subscription?: SerializedSubscription | null;
+  memberCount?: number;
+  seatLimit?: number;
 }
 
 export function OrgPageShell({
@@ -56,6 +61,9 @@ export function OrgPageShell({
   members,
   pendingInvites,
   teams,
+  subscription = null,
+  memberCount = 0,
+  seatLimit = 0,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
   const tabFromUrl = searchParams.get("tab") ?? "overview";
@@ -96,6 +104,10 @@ export function OrgPageShell({
       label: t("org.shell.tabMembers", loc),
       badge: members.length + pendingInvites.length,
     },
+    ...((isAdmin || isManager) ? [{
+      key: "billing",
+      label: t("org.shell.tabBilling", loc),
+    }] : []),
   ];
 
   return (
@@ -154,6 +166,18 @@ export function OrgPageShell({
             isHu={isHu}
             locale={locale}
             dateLocale={dateLocale}
+          />
+        )}
+
+        {activeTab === "billing" && (isAdmin || isManager) && (
+          <OrgBillingTab
+            orgId={orgId}
+            subscription={subscription}
+            memberCount={memberCount}
+            seatLimit={seatLimit}
+            teams={teams.map((tm) => ({ id: tm.id, name: tm.name }))}
+            locale={locale}
+            isAdmin={isAdmin}
           />
         )}
       </div>

@@ -18,6 +18,8 @@ export async function getOrgSubscription(orgId: string) {
     where: { orgId },
     select: {
       status: true,
+      planType: true,
+      billingInterval: true,
       trialEndsAt: true,
       currentPeriodEnd: true,
       cancelAtPeriodEnd: true,
@@ -73,7 +75,7 @@ export function getSubscriptionState(
 export type PlanTier = "team" | "org" | "scale" | "none";
 
 export function getPlanTier(
-  sub: Awaited<ReturnType<typeof getOrgSubscription>>
+  sub: { stripePriceId: string | null } | null | undefined
 ): PlanTier {
   if (!sub || !sub.stripePriceId) return "none";
   if (ORG_PRICE_IDS.includes(sub.stripePriceId)) return "org";

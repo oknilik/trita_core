@@ -8,6 +8,7 @@ import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
+import { getPlanTier, PLAN_SEAT_LIMITS } from "@/lib/subscription";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -188,6 +189,22 @@ export default async function OrgDetailPage({
     id: tm.id, name: tm.name, createdAt: tm.createdAt.toISOString(), _count: { members: tm._count.members },
   }));
 
+  // Subscription data for billing tab
+  const sub = policySnapshot.subscription;
+  const subTier = getPlanTier(sub);
+  const subscriptionSeatLimit = PLAN_SEAT_LIMITS[subTier];
+  const serializedSubscription = sub ? {
+    status: sub.status,
+    planType: sub.planType ?? null,
+    billingInterval: sub.billingInterval ?? null,
+    currentPeriodEnd: sub.currentPeriodEnd?.toISOString() ?? null,
+    trialEndsAt: sub.trialEndsAt?.toISOString() ?? null,
+    cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
+    candidateCredits: sub.candidateCredits,
+    stripePriceId: sub.stripePriceId ?? null,
+    stripeSubscriptionId: sub.stripeSubscriptionId ?? null,
+  } : null;
+
   const completionPct = pageData.activeTotalParticipants > 0
     ? Math.round((pageData.activeSelfDone / pageData.activeTotalParticipants) * 100)
     : 0;
@@ -360,12 +377,20 @@ export default async function OrgDetailPage({
           )}
           footer={
             isAdminForActions ? (
-              <Link
-                href={`/org/${orgId}/settings`}
-                className="inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
-              >
-                {t("org.settingsLink", locale)} →
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link
+                  href={`/org/${orgId}?tab=billing`}
+                  className="inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
+                >
+                  {t("org.shell.tabBilling", locale)} →
+                </Link>
+                <Link
+                  href={`/org/${orgId}/settings`}
+                  className="inline-flex text-[12px] font-semibold text-white/[0.65] transition hover:text-white"
+                >
+                  {t("org.settingsLink", locale)} →
+                </Link>
+              </div>
             ) : undefined
           }
           aside={(
@@ -666,6 +691,9 @@ export default async function OrgDetailPage({
             members={serializedMembers}
             pendingInvites={serializedPendingInvites}
             teams={serializedTeams}
+            subscription={serializedSubscription}
+            memberCount={pageData.memberCount}
+            seatLimit={subscriptionSeatLimit}
           />
         </Suspense>
 

@@ -167,25 +167,12 @@ export default async function OrgSettingsPage({
             </div>
 
             <div className="flex flex-shrink-0 gap-2">
-              {(subStatus === "trialing" || subStatus === "none") && (
-                <a
-                  href="/billing/checkout?plan=org_monthly"
-                  className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white hover:bg-sage-dark transition-colors"
-                >
-                  {t("org.settings.activateBtn", locale)}
-                </a>
-              )}
-              {(subStatus === "active" || subStatus === "past_due") && (
-                <BillingPortalButton isHu={isHu} />
-              )}
-              {subStatus === "canceled" && (
-                <a
-                  href="/billing/checkout?plan=org_monthly"
-                  className="inline-flex min-h-[40px] items-center rounded-lg border border-sage px-4 text-xs font-semibold text-bronze hover:bg-sage-soft transition-colors"
-                >
-                  {t("org.settings.reactivateBtn", locale)}
-                </a>
-              )}
+              <a
+                href={`/org/${orgId}?tab=billing`}
+                className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white hover:bg-sage-dark transition-colors"
+              >
+                {isHu ? "Számlázás kezelése →" : "Manage billing →"}
+              </a>
             </div>
           </div>
         </Card>
@@ -249,7 +236,7 @@ export default async function OrgSettingsPage({
                     {t("org.settings.upgradeHint", locale)}
                   </p>
                   <a
-                    href="/billing/checkout?plan=org_monthly"
+                    href={`/org/${orgId}?tab=billing`}
                     className="font-semibold text-bronze hover:underline"
                   >
                     {t("org.settings.upgradeLink", locale)}
