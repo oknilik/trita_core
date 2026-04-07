@@ -127,12 +127,10 @@ async function handleOneTimePurchase(
 
   console.log(`[Stripe] Purchase created: ${tier} for profile ${userProfileId}`);
 
-  // Notify buyer
-  const { createNotification } = await import("@/lib/notifications");
-  createNotification({
+  // Notify buyer via orchestrator
+  const { handlePurchaseConfirmed } = await import("@/lib/notifications");
+  handlePurchaseConfirmed({
     userId: userProfileId,
-    type: "PURCHASE_CONFIRMED",
-    link: "/profile/results",
   }).catch((err) => console.error("[Notification] Purchase confirmed error:", err));
 
   // ── Billingo invoice creation ──────────────────────────────────────────

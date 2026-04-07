@@ -115,17 +115,23 @@ export async function PATCH(
     select: { id: true, name: true, status: true, closedAt: true },
   });
 
-  // Notify org members about campaign status change (fire-and-forget)
-  if (body.data.status === "ACTIVE" || body.data.status === "CLOSED") {
-    import("@/lib/notifications").then(({ createOrgNotification }) =>
-      createOrgNotification(
+  // Notify org members about campaign status change via orchestrator (fire-and-forget)
+  if (body.data.status === "ACTIVE") {
+    import("@/lib/notifications").then(({ handleCampaignLaunched }) =>
+      handleCampaignLaunched({
         orgId,
-        body.data.status === "ACTIVE" ? "CAMPAIGN_LAUNCHED" : "CAMPAIGN_CLOSED",
-        {
-          vars: { campaignName: campaign.name ?? "" },
-          link: `/org/${orgId}?tab=campaigns`,
-        },
-      ).catch((err) => console.error("[Notification] Campaign status error:", err)),
+        campaignId,
+        campaignName: campaign.name ?? "",
+      }).catch((err) => console.error("[Notification] Campaign launched error:", err)),
+    );
+  }
+  if (body.data.status === "CLOSED") {
+    import("@/lib/notifications").then(({ handleCampaignClosed }) =>
+      handleCampaignClosed({
+        orgId,
+        campaignId,
+        campaignName: campaign.name ?? "",
+      }).catch((err) => console.error("[Notification] Campaign closed error:", err)),
     );
   }
 

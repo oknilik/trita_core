@@ -1,46 +1,67 @@
-# Notification Hub — Feladatlista
+# Notification Hub V1.5 — Feladatlista
 
-## Fázis 1: Adatréteg
-- [x] 1.1 — `Notification` model + `NotificationType` enum a `prisma/schema.prisma`-ba
-- [x] 1.2 — `prisma db push` (migráció)
-- [x] 1.3 — `src/lib/notifications.ts` — `createNotification()` + `createOrgNotification()` helpers
-- [x] 1.4 — `src/lib/i18n/notifications.ts` — összes típus HU/EN fordítás (15 típus × title + body)
-- [x] 1.5 — Regisztráció `src/lib/i18n/index.ts`-ben
+## WORKSTREAM A — Audit és domain inventory
+- [x] A1 — Notification entrypoint inventory (9 trigger point dokumentálva)
+- [x] A2 — Notification type audit (15 type, category/priority/source hozzárendelve)
 
-## Fázis 2: API végpontok
-- [x] 2.1 — `GET /api/notifications` — lista (max 20, non-dismissed, userId auth)
-- [x] 2.2 — `GET /api/notifications/unread-count` — olvasatlan szám (polling endpoint)
-- [x] 2.3 — `POST /api/notifications/mark-read` — `{ ids: string[] }` vagy `{ all: true }`
-- [x] 2.4 — `DELETE /api/notifications/[id]` — soft dismiss (dismissed: true)
+## WORKSTREAM B — Domain model bővítés
+- [x] B1 — Notification modell bővítése (category, priority, sourceType, sourceId, actorUserId, dedupeKey, readAt, dismissedAt)
+- [x] B2 — Typed enums: NotificationCategory, NotificationPriority, NotificationSourceType (`types.ts`)
+- [x] B3 — Dedupe stratégia: `dedupeKey` + `@@unique([dedupeKey, userId])` constraint + batch dedup
 
-## Fázis 3: UI komponensek
-- [x] 3.1 — `NotificationBell.tsx` — bell SVG ikon + unread badge + 30s polling
-- [x] 3.2 — `NotificationPanel.tsx` — dropdown lista (380px) + mark all read + dismiss + empty state + relatív idő
-- [x] 3.3 — `nav-header-ui.tsx` integráció — bell beillesztése separator és user menü közé, `"notifications"` dropdown key
-- [x] 3.4 — Mobil notification bell a mobile nav szekcióban
+## WORKSTREAM C — Orchestrator + repository
+- [x] C1 — Központi orchestrator (`src/lib/notifications/orchestrator.ts`)
+- [x] C2 — Domain-oriented API: handleObserverCompleted, handleResultReady, stb. (11 metódus)
+- [x] C3 — Repository réteg (`src/lib/notifications/repository.ts`) — persistNotification + persistNotificationBatch
 
-## Fázis 4: Event integration
-- [x] 4.1 — `OBSERVER_COMPLETED` → `api/observer/submit/route.ts` (inviter user)
-- [x] 4.2 — `RESULT_READY` → `api/assessment/submit/route.ts` (user)
-- [x] 4.3 — `ORG_INVITE_RECEIVED` → `api/org/[id]/invite/route.ts` (invited user)
-- [x] 4.4 — `CAMPAIGN_LAUNCHED` / `CAMPAIGN_CLOSED` → campaign PATCH handler (org members)
-- [x] 4.5 — `PAYMENT_FAILED` → `billing/handlers/invoice-failed.ts` (org admins)
-- [x] 4.6 — `PURCHASE_CONFIRMED` → `billing/handlers/checkout-completed.ts` (buyer)
-- [x] 4.7 — `ORG_INVITE_ACCEPTED` → `lib/acceptance/service.ts` (org admins)
-- [x] 4.8 — `SUBSCRIPTION_FROZEN` → `billing/handlers/subscription-sync.ts` (org admins)
-- [x] 4.9 — `TRIAL_ENDING_SOON` / `TRIAL_EXPIRED` → lazy check org dashboard load
+## WORKSTREAM D — Route/handler integrációk átvezetése
+- [x] D1 — Observer completed → orchestrator.handleObserverCompleted
+- [x] D2 — Result ready → orchestrator.handleResultReady
+- [x] D3 — Org invite received → orchestrator.handleOrgInviteReceived
+- [x] D4 — Campaign launched/closed → orchestrator.handleCampaignLaunched/Closed
+- [x] D5 — Billing handlers → orchestrator.handlePaymentFailed/PurchaseConfirmed/SubscriptionFrozen
+- [x] D6 — Acceptance service → orchestrator.handleOrgInviteAccepted
 
-## Fázis 5: Polish
-- [x] 5.1 — Relatív idő formázás ("2 perce", "3 órája", "5 napja" / "2m ago", "3h ago")
-- [x] 5.2 — Keyboard accessibility (Escape bezárás)
-- [ ] 5.3 — Teljes role tesztelés (INDIVIDUAL, ORG_MEMBER, ORG_MANAGER, ORG_ADMIN)
+## WORKSTREAM E — Recipient policy és fan-out
+- [x] E1 — Központi policy layer (`src/lib/notifications/policy.ts`) — role-based recipient resolution
+- [x] E2 — createOrgNotification → repository.persistNotificationBatch + policy.resolveOrgRecipients
+- [x] E3 — Role-aware delivery: ORG_NOTIFICATION_MIN_ROLE registry
+
+## WORKSTREAM F — UI/UX erősítés
+- [x] F1 — targetUrl / link támogatás a panelben (kattintható notificationok)
+- [x] F3 — Read vs dismiss: read + readAt / dismissed + dismissedAt szétválasztás
+- [x] F4 — Escape bezárás
+- [ ] F2 — Category/priority vizuális réteg (badge/szín a panelben)
+- [ ] F4+ — Focus trapping, keyboard navigáció az itemeken
+
+## WORKSTREAM G — Trial/lifecycle hardening
+- [x] G1 — Lazy trial check izolálva az orchestratorba (checkTrialNotifications)
+- [ ] G2 — Scheduled sweep interface/placeholder
+
+## WORKSTREAM H — Tesztek
+- [ ] H1 — Orchestrator unit tests (decision logic, dedup, recipient)
+- [ ] H2 — Repository/dedupe integration tests
+- [ ] H3 — Route integration tests frissítése
+- [ ] H4 — Notification panel client tests
+
+## WORKSTREAM I — Dokumentáció
+- [x] I1 — Architecture doc (`docs/architecture/notification-architecture.md`)
+- [x] I2 — Type matrix doc (`docs/architecture/notification-type-matrix.md`)
+- [x] I3 — Guardrail szabályok (matrix doc-ban)
 
 ---
 
-## Architekturális döntések
+## Modul struktúra
 
-- **i18n kulcsok a DB-ben** — `titleKey` + `bodyKey` + `vars` JSON → nyelv váltásnál a régi értesítések is az aktuális nyelven
-- **Polling** (30s) — nincs WebSocket/SSE, a `DashboardAutoRefresh` mintáját követjük
-- **Soft-delete** — `dismissed: boolean` flag, nem tényleges törlés
-- **Fan-out** — `createOrgNotification()` egy `createMany` hívás az org tagjainak (minRole szűrés)
-- **Lazy trial check** — cron job helyett org dashboard load-nál ellenőrizzük a trial státuszt, deduplicated (3/7 napos ablak)
+```
+src/lib/notifications/
+├── index.ts           — public API (re-exports orchestrator)
+├── orchestrator.ts    — 11 domain event handler
+├── repository.ts      — persist + batch persist + dedup
+├── policy.ts          — role-based recipient resolution
+└── types.ts           — NotificationIntent, category/priority/source enums, type meta registry
+```
+
+## Régi fájl
+
+A `src/lib/notifications.ts` (flat helper) törölve → `src/lib/notifications/` modul váltotta.

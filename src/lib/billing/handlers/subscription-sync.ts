@@ -65,11 +65,11 @@ export async function handleSubscriptionEvent(
         resultStatus: "success",
       });
 
-      // Notify org admins
-      const { createOrgNotification } = await import("@/lib/notifications");
-      createOrgNotification(orgId, "SUBSCRIPTION_FROZEN", {
-        link: `/org/${orgId}?tab=billing`,
-        minRole: "ORG_ADMIN",
+      // Notify org admins via orchestrator
+      const { handleSubscriptionFrozen } = await import("@/lib/notifications");
+      handleSubscriptionFrozen({
+        orgId,
+        stripeSubscriptionId: subscription.id,
       }).catch((err) => console.error("[Notification] Subscription frozen error:", err));
     }
 

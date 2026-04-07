@@ -591,15 +591,14 @@ async function runJoinTransaction(
   await acceptanceRuntimeDeps.setActiveOrgContext(actor.profileId, invite.orgId);
   void acceptanceRuntimeDeps.syncSeatBilling(invite.orgId);
 
-  // Notify org admins that a member joined (fire-and-forget)
-  import("@/lib/notifications").then(({ createOrgNotification }) => {
-    const memberName = actor.username ?? "—";
-    createOrgNotification(invite.orgId, "ORG_INVITE_ACCEPTED", {
-      vars: { name: memberName },
-      link: `/org/${invite.orgId}?tab=members`,
-      minRole: "ORG_ADMIN",
-    }).catch((err) => console.error("[Notification] Org invite accepted error:", err));
-  });
+  // Notify org admins via orchestrator (fire-and-forget)
+  import("@/lib/notifications").then(({ handleOrgInviteAccepted }) =>
+    handleOrgInviteAccepted({
+      orgId: invite.orgId,
+      memberName: actor.username ?? "—",
+      memberUserId: actor.profileId,
+    }).catch((err) => console.error("[Notification] Org invite accepted error:", err)),
+  );
 
   return {
     changed: true,

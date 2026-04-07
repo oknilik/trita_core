@@ -679,19 +679,28 @@ enum NotificationType {
 }
 
 model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  type      NotificationType
-  titleKey  String
-  bodyKey   String
-  vars      Json?
-  link      String?
-  read      Boolean          @default(false)
-  dismissed Boolean          @default(false)
-  createdAt DateTime         @default(now())
+  id            String           @id @default(cuid())
+  userId        String
+  type          NotificationType
+  category      String           @default("system")   // assessment | observer | org | campaign | billing | system
+  priority      String           @default("normal")   // low | normal | high
+  titleKey      String
+  bodyKey       String
+  vars          Json?
+  link          String?
+  sourceType    String?          // e.g. "observer_invitation", "campaign", "stripe_invoice"
+  sourceId      String?          // e.g. invitationId, campaignId, stripeInvoiceId
+  actorUserId   String?          // who triggered this (e.g. observer, inviter)
+  dedupeKey     String?          // for dedup: e.g. "PAYMENT_FAILED:orgId:invoiceId"
+  read          Boolean          @default(false)
+  readAt        DateTime?
+  dismissed     Boolean          @default(false)
+  dismissedAt   DateTime?
+  createdAt     DateTime         @default(now())
 
   user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([dedupeKey, userId])
   @@index([userId, dismissed, createdAt])
   @@index([userId, read])
 }

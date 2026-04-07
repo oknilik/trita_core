@@ -50,11 +50,11 @@ export async function handleInvoicePaymentFailed(
       resultStatus: "success",
     });
 
-    // Notify org admins about payment failure
-    const { createOrgNotification } = await import("@/lib/notifications");
-    await createOrgNotification(orgId, "PAYMENT_FAILED", {
-      link: `/org/${orgId}?tab=billing`,
-      minRole: "ORG_ADMIN",
+    // Notify org admins via orchestrator
+    const { handlePaymentFailed } = await import("@/lib/notifications");
+    await handlePaymentFailed({
+      orgId,
+      stripeInvoiceId: invoice.id,
     }).catch((err) => console.error("[Notification] Payment failed error:", err));
 
     await markEventProcessed(event.id);

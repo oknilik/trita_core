@@ -127,12 +127,11 @@ export async function POST(req: Request) {
     }),
   ]);
 
-  // In-app notification (fire-and-forget)
-  import("@/lib/notifications").then(({ createNotification }) =>
-    createNotification({
+  // In-app notification via orchestrator (fire-and-forget)
+  import("@/lib/notifications").then(({ handleResultReady }) =>
+    handleResultReady({
       userId: profile.id,
-      type: "RESULT_READY",
-      link: "/profile/results",
+      assessmentResultId: result.id,
     }).catch((err) => console.error("[Notification] Result ready error:", err)),
   );
 

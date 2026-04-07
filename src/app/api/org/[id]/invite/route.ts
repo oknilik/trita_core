@@ -116,13 +116,12 @@ export async function POST(
     select: { id: true, role: true, joinedAt: true },
   });
 
-  // Notify invited user
-  import("@/lib/notifications").then(({ createNotification }) =>
-    createNotification({
+  // Notify invited user via orchestrator
+  import("@/lib/notifications").then(({ handleOrgInviteReceived }) =>
+    handleOrgInviteReceived({
       userId: targetUser.id,
-      type: "ORG_INVITE_RECEIVED",
-      vars: { orgName: org.name },
-      link: `/org/${orgId}`,
+      orgId,
+      orgName: org.name,
     }).catch((err) => console.error("[Notification] Org invite error:", err)),
   );
 

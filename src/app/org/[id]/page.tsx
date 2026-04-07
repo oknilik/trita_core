@@ -57,9 +57,9 @@ export default async function OrgDetailPage({
   });
   const policy = policySnapshot.policy;
 
-  // Lazy trial notification check (fire-and-forget, non-blocking)
+  // Lazy trial notification check via orchestrator (fire-and-forget)
   if (hasOrgRole(memberRole, "ORG_ADMIN")) {
-    import("@/lib/notifications").then(({ checkTrialNotifications }) =>
+    import("@/lib/notifications/orchestrator").then(({ checkTrialNotifications }) =>
       checkTrialNotifications(orgId).catch(() => {}),
     );
   }

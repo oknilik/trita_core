@@ -126,13 +126,12 @@ export async function POST(req: Request) {
       locale,
     }).catch((err) => console.error("[Email] Observer completion send error:", err));
 
-    // In-app notification
-    const { createNotification } = await import("@/lib/notifications");
-    createNotification({
-      userId: invitation.inviterId,
-      type: "OBSERVER_COMPLETED",
-      vars: { name: invitation.observerName ?? "Valaki" },
-      link: "/profile/results",
+    // In-app notification via orchestrator
+    const { handleObserverCompleted } = await import("@/lib/notifications");
+    handleObserverCompleted({
+      inviterId: invitation.inviterId,
+      observerName: invitation.observerName ?? "Valaki",
+      invitationId: invitation.id,
     }).catch((err) => console.error("[Notification] Observer completed error:", err));
   }).catch((err) => console.error("[Email] Inviter lookup error:", err));
 
