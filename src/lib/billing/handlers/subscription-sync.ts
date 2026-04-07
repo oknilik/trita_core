@@ -64,6 +64,13 @@ export async function handleSubscriptionEvent(
         sourceEntityId: orgId,
         resultStatus: "success",
       });
+
+      // Notify org admins
+      const { createOrgNotification } = await import("@/lib/notifications");
+      createOrgNotification(orgId, "SUBSCRIPTION_FROZEN", {
+        link: `/org/${orgId}?tab=billing`,
+        minRole: "ORG_ADMIN",
+      }).catch((err) => console.error("[Notification] Subscription frozen error:", err));
     }
 
     await markEventProcessed(event.id);

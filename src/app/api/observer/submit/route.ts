@@ -125,6 +125,15 @@ export async function POST(req: Request) {
       inviterName: inviter.username ?? inviter.email,
       locale,
     }).catch((err) => console.error("[Email] Observer completion send error:", err));
+
+    // In-app notification
+    const { createNotification } = await import("@/lib/notifications");
+    createNotification({
+      userId: invitation.inviterId,
+      type: "OBSERVER_COMPLETED",
+      vars: { name: invitation.observerName ?? "Valaki" },
+      link: "/profile/results",
+    }).catch((err) => console.error("[Notification] Observer completed error:", err));
   }).catch((err) => console.error("[Email] Inviter lookup error:", err));
 
   return NextResponse.json({ success: true });

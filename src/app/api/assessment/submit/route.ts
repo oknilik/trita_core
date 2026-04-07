@@ -127,5 +127,14 @@ export async function POST(req: Request) {
     }),
   ]);
 
+  // In-app notification (fire-and-forget)
+  import("@/lib/notifications").then(({ createNotification }) =>
+    createNotification({
+      userId: profile.id,
+      type: "RESULT_READY",
+      link: "/profile/results",
+    }).catch((err) => console.error("[Notification] Result ready error:", err)),
+  );
+
   return NextResponse.json({ id: result.id });
 }

@@ -56,6 +56,13 @@ export default async function OrgDetailPage({
     orgRole: memberRole,
   });
   const policy = policySnapshot.policy;
+
+  // Lazy trial notification check (fire-and-forget, non-blocking)
+  if (hasOrgRole(memberRole, "ORG_ADMIN")) {
+    import("@/lib/notifications").then(({ checkTrialNotifications }) =>
+      checkTrialNotifications(orgId).catch(() => {}),
+    );
+  }
   const launchCampaignDecision = resolveOrgCapabilityDecision(
     policySnapshot,
     "launchCampaign",

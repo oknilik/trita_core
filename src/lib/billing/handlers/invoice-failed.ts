@@ -50,7 +50,12 @@ export async function handleInvoicePaymentFailed(
       resultStatus: "success",
     });
 
-    // TODO: dunning/reminder hook — értesítés az org admin-nak
+    // Notify org admins about payment failure
+    const { createOrgNotification } = await import("@/lib/notifications");
+    await createOrgNotification(orgId, "PAYMENT_FAILED", {
+      link: `/org/${orgId}?tab=billing`,
+      minRole: "ORG_ADMIN",
+    }).catch((err) => console.error("[Notification] Payment failed error:", err));
 
     await markEventProcessed(event.id);
   } catch (err) {

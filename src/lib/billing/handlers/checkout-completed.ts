@@ -127,6 +127,14 @@ async function handleOneTimePurchase(
 
   console.log(`[Stripe] Purchase created: ${tier} for profile ${userProfileId}`);
 
+  // Notify buyer
+  const { createNotification } = await import("@/lib/notifications");
+  createNotification({
+    userId: userProfileId,
+    type: "PURCHASE_CONFIRMED",
+    link: "/profile/results",
+  }).catch((err) => console.error("[Notification] Purchase confirmed error:", err));
+
   // ── Billingo invoice creation ──────────────────────────────────────────
   const purchase = await runtime.prisma.purchase.findFirst({
     where: { stripeCheckoutSessionId: session.id },

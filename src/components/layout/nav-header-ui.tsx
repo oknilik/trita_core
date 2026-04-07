@@ -12,6 +12,8 @@ import {
 } from "@/lib/navigation/config";
 import { getUserMenuItemIds } from "@/lib/navigation/visibility";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+import { NotificationBell } from "./NotificationBell";
+import { NotificationPanel } from "./NotificationPanel";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -129,7 +131,7 @@ export function NavHeaderUI({
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
 
-  type DropdownKey = WorkspaceNavItem["id"] | "user" | null;
+  type DropdownKey = WorkspaceNavItem["id"] | "user" | "notifications" | null;
   type MobileMenuState = "closed" | "quickview" | "expanded";
 
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
@@ -444,6 +446,15 @@ export function NavHeaderUI({
           <div className="hidden items-center gap-2 lg:flex lg:justify-self-end">
             <div className="h-5 w-px bg-[var(--color-border-default)]" />
             <div className="relative">
+              <NotificationBell
+                isOpen={openDropdown === "notifications"}
+                onToggle={() => toggle("notifications")}
+              />
+              {openDropdown === "notifications" && (
+                <NotificationPanel onClose={() => setOpenDropdown(null)} />
+              )}
+            </div>
+            <div className="relative">
               <button
                 type="button"
                 onClick={() => toggle("user")}
@@ -474,6 +485,15 @@ export function NavHeaderUI({
           </div>
 
           <div className="flex items-center gap-2 justify-self-end lg:hidden">
+            <div className="relative">
+              <NotificationBell
+                isOpen={openDropdown === "notifications"}
+                onToggle={() => toggle("notifications")}
+              />
+              {openDropdown === "notifications" && (
+                <NotificationPanel onClose={() => setOpenDropdown(null)} />
+              )}
+            </div>
             <button
               type="button"
               onClick={() => setMobileMenu((prev) => (prev === "closed" ? "quickview" : "closed"))}

@@ -112,8 +112,22 @@ export async function PATCH(
       status: body.data.status,
       ...(body.data.status === "CLOSED" ? { closedAt: new Date() } : {}),
     },
-    select: { id: true, status: true, closedAt: true },
+    select: { id: true, name: true, status: true, closedAt: true },
   });
+
+  // Notify org members about campaign status change (fire-and-forget)
+  if (body.data.status === "ACTIVE" || body.data.status === "CLOSED") {
+    import("@/lib/notifications").then(({ createOrgNotification }) =>
+      createOrgNotification(
+        orgId,
+        body.data.status === "ACTIVE" ? "CAMPAIGN_LAUNCHED" : "CAMPAIGN_CLOSED",
+        {
+          vars: { campaignName: campaign.name ?? "" },
+          link: `/org/${orgId}?tab=campaigns`,
+        },
+      ).catch((err) => console.error("[Notification] Campaign status error:", err)),
+    );
+  }
 
   return NextResponse.json({ campaign });
 }
