@@ -105,7 +105,16 @@ export async function POST(req: Request) {
     }),
   ]);
 
-  // Notify inviter — only from the 2nd completed observer onward (fire-and-forget)
+  // In-app notification — every observer completion (fire-and-forget)
+  import("@/lib/notifications").then(({ handleObserverCompleted }) =>
+    handleObserverCompleted({
+      inviterId: invitation.inviterId,
+      observerName: invitation.observerName ?? "Valaki",
+      invitationId: invitation.id,
+    }).catch((err) => console.error("[Notification] Observer completed error:", err)),
+  );
+
+  // Email — only from the 2nd completed observer onward (fire-and-forget)
   prisma.observerAssessment.count({
     where: {
       invitation: { inviterId: invitation.inviterId },
@@ -125,14 +134,6 @@ export async function POST(req: Request) {
       inviterName: inviter.username ?? inviter.email,
       locale,
     }).catch((err) => console.error("[Email] Observer completion send error:", err));
-
-    // In-app notification via orchestrator
-    const { handleObserverCompleted } = await import("@/lib/notifications");
-    handleObserverCompleted({
-      inviterId: invitation.inviterId,
-      observerName: invitation.observerName ?? "Valaki",
-      invitationId: invitation.id,
-    }).catch((err) => console.error("[Notification] Observer completed error:", err));
   }).catch((err) => console.error("[Email] Inviter lookup error:", err));
 
   return NextResponse.json({ success: true });
