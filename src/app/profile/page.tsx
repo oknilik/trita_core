@@ -12,6 +12,7 @@ import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+import { InvoiceList } from "@/components/profile/InvoiceList";
 
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -352,6 +353,10 @@ export default function ProfilePage() {
                 {t("profile.logoutButton", locale)}
               </button>
             </div>
+            <div className="my-2.5 h-px bg-sand" />
+            {/* Invoices */}
+            <InvoiceList />
+
             <div className="my-2.5 h-px bg-[#f0e0e0]" />
             {/* Delete */}
             <div className="flex items-center justify-between gap-3">

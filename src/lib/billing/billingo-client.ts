@@ -245,3 +245,27 @@ export async function getDocument(
     status: doc.cancelled ? "voided" : "issued",
   };
 }
+
+/**
+ * Download invoice PDF from Billingo.
+ * Returns the raw PDF buffer.
+ */
+export async function downloadDocumentPdf(
+  documentId: number,
+): Promise<ArrayBuffer> {
+  const url = `${BILLINGO_BASE_URL}/documents/${documentId}/download`;
+  const res = await fetch(url, {
+    headers: { "X-API-KEY": getApiKey() },
+  });
+
+  if (!res.ok) {
+    throw new BillingoApiError(
+      `Billingo PDF download failed: ${res.status}`,
+      res.status,
+      null,
+      res.status >= 500,
+    );
+  }
+
+  return res.arrayBuffer();
+}
