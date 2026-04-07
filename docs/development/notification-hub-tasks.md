@@ -40,7 +40,7 @@
 
 ## WORKSTREAM H — Tesztek
 - [x] H1 — Type registry + policy unit tests (10 tests, all green)
-- [ ] H2 — Repository/dedupe integration tests
+- [x] H2 — Dedupe filter unit tests (9 tests, all green)
 - [ ] H3 — Route integration tests frissítése
 - [ ] H4 — Notification panel client tests
 

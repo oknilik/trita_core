@@ -11,6 +11,24 @@ import {
   type NotificationIntent,
 } from "./types";
 
+// ── Pure dedup filter (exported for testing) ────────────────────────────────
+
+export function filterDuplicateIntents(
+  intents: NotificationIntent[],
+  existingKeys: Set<string>,
+): NotificationIntent[] {
+  return intents.filter((i) => {
+    if (!i.dedupeKey) return true;
+    return !existingKeys.has(`${i.dedupeKey}:${i.userId}`);
+  });
+}
+
+export function buildDedupeKeySet(
+  existing: Array<{ dedupeKey: string | null; userId: string }>,
+): Set<string> {
+  return new Set(existing.map((e) => `${e.dedupeKey}:${e.userId}`));
+}
+
 // ── Create single notification (with dedupe) ────────────────────────────────
 
 export async function persistNotification(intent: NotificationIntent) {
@@ -63,14 +81,12 @@ export async function persistNotificationBatch(intents: NotificationIntent[]) {
     existingKeys = new Set(existing.map((e) => `${e.dedupeKey}:${e.userId}`));
   }
 
-  const filtered = intents.filter((i) => {
-    if (!i.dedupeKey) return true;
-    return !existingKeys.has(`${i.dedupeKey}:${i.userId}`);
-  });
+  const filtered = filterDuplicateIntents(intents, existingKeys);
 
   if (filtered.length === 0) return;
 
   await prisma.notification.createMany({
+
     data: filtered.map((intent) => {
       const meta = NOTIFICATION_TYPE_META[intent.type];
       return {
