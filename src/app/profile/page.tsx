@@ -337,6 +337,11 @@ export default function ProfilePage() {
         </div>
 
         {/* ═══ DANGER BOX ═══ */}
+        {/* ═══ SZÁMLÁK ═══ */}
+        <div className="mt-6">
+          <InvoiceList />
+        </div>
+
         <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
           <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-[9px] text-[#c0392b]">!</div>
@@ -353,10 +358,6 @@ export default function ProfilePage() {
                 {t("profile.logoutButton", locale)}
               </button>
             </div>
-            <div className="my-2.5 h-px bg-sand" />
-            {/* Invoices */}
-            <InvoiceList />
-
             <div className="my-2.5 h-px bg-[#f0e0e0]" />
             {/* Delete */}
             <div className="flex items-center justify-between gap-3">

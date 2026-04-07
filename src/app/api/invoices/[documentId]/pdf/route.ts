@@ -28,7 +28,8 @@ export async function GET(
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  // Verify ownership: the document must belong to a purchase by this user
+  // Verify ownership: document must belong to a purchase by this user
+  // or a subscription invoice for an org they're in
   const purchase = await prisma.purchase.findFirst({
     where: {
       userProfileId: profile.id,
@@ -37,14 +38,37 @@ export async function GET(
     select: { id: true, billingoDocumentNumber: true },
   });
 
+  let docNumber = purchase?.billingoDocumentNumber ?? null;
+
   if (!purchase) {
-    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    // Check subscription docs via org membership
+    const orgMemberships = await prisma.organizationMember.findMany({
+      where: { userId: profile.id },
+      select: { orgId: true },
+    });
+    const orgIds = orgMemberships.map((m) => m.orgId);
+
+    const subDoc = orgIds.length > 0
+      ? await prisma.billingDocumentLink.findFirst({
+          where: {
+            billingoDocumentId: documentId,
+            sourceType: "subscription_invoice",
+            sourceId: { in: orgIds },
+          },
+          select: { billingoDocumentNumber: true },
+        })
+      : null;
+
+    if (!subDoc) {
+      return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    }
+    docNumber = subDoc.billingoDocumentNumber;
   }
 
   try {
     const pdfBuffer = await downloadDocumentPdf(Number(documentId));
-    const filename = purchase.billingoDocumentNumber
-      ? `trita-szamla-${purchase.billingoDocumentNumber}.pdf`
+    const filename = docNumber
+      ? `trita-szamla-${docNumber}.pdf`
       : `trita-szamla-${documentId}.pdf`;
 
     return new NextResponse(pdfBuffer, {

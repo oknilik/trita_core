@@ -72,5 +72,66 @@ export async function GET() {
     }),
   );
 
+  // Also include subscription invoices from BillingDocumentLink
+  // (these come from invoice.paid webhook, not from purchases)
+  const orgMemberships = await prisma.organizationMember.findMany({
+    where: { userId: profile.id },
+    select: { orgId: true },
+  });
+  const orgIds = orgMemberships.map((m) => m.orgId);
+
+  if (orgIds.length > 0) {
+    const subscriptionDocs = await prisma.billingDocumentLink.findMany({
+      where: {
+        sourceType: "subscription_invoice",
+        sourceId: { in: orgIds },
+        status: "issued",
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        sourceId: true,
+        billingoDocumentId: true,
+        billingoDocumentNumber: true,
+        stripeInvoiceId: true,
+        createdAt: true,
+      },
+    });
+
+    for (const doc of subscriptionDocs) {
+      // Avoid duplicating purchases that already have a doc link
+      const alreadyIncluded = invoices.some(
+        (inv) => inv.billingoDocumentId === doc.billingoDocumentId,
+      );
+      if (alreadyIncluded) continue;
+
+      let stripeReceiptUrl: string | null = null;
+      if (doc.stripeInvoiceId) {
+        try {
+          const inv = await stripe.invoices.retrieve(doc.stripeInvoiceId);
+          stripeReceiptUrl = inv.hosted_invoice_url ?? null;
+        } catch {
+          // non-critical
+        }
+      }
+
+      invoices.push({
+        id: doc.id,
+        product: "org_subscription",
+        amount: 0, // Amount lives in Stripe, not in our doc link
+        currency: "eur",
+        date: doc.createdAt.toISOString(),
+        billingoDocumentId: doc.billingoDocumentId,
+        billingoDocumentNumber: doc.billingoDocumentNumber,
+        invoiceStatus: "issued",
+        stripeReceiptUrl,
+        hasBillingoInvoice: true,
+      });
+    }
+  }
+
+  // Sort all invoices by date descending
+  invoices.sort((a, b) => b.date.localeCompare(a.date));
+
   return NextResponse.json({ invoices });
 }
