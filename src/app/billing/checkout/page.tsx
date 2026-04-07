@@ -19,9 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function CheckoutPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string; qty?: string }>;
+  searchParams: Promise<{ plan?: string; qty?: string; tier?: string; teamId?: string }>;
 }) {
-  const [locale, { userId }, { plan, qty }] = await Promise.all([
+  const [locale, { userId }, params] = await Promise.all([
     getServerLocale(),
     getServerAuth(),
     searchParams,
@@ -35,29 +35,50 @@ export default async function CheckoutPage({
   });
   if (!profile) redirect("/sign-in");
 
-  const membership = await getActiveOrgMembership(profile.id);
-  if (!membership || !hasOrgRole(membership.role, "ORG_ADMIN")) {
-    redirect(JOURNEY_HOME_HANDOFF_PATH);
+  // One-time purchase mode (tier param) — no org requirement for self_plus
+  const isOneTimePurchase = !!params.tier;
+  const isSelfTier = params.tier === "self_plus";
+
+  if (!isOneTimePurchase) {
+    // Subscription checkout requires ORG_ADMIN
+    const membership = await getActiveOrgMembership(profile.id);
+    if (!membership || !hasOrgRole(membership.role, "ORG_ADMIN")) {
+      redirect(JOURNEY_HOME_HANDOFF_PATH);
+    }
   }
 
-  const priceKey = plan ?? "org_monthly";
-  const quantity = qty ? Math.max(1, parseInt(qty, 10) || 1) : undefined;
+  const priceKey = params.plan ?? "org_monthly";
+  const quantity = params.qty ? Math.max(1, parseInt(params.qty, 10) || 1) : undefined;
+
+  const isHu = locale !== "en";
+  const eyebrow = isOneTimePurchase
+    ? (isHu ? "vásárlás" : "purchase")
+    : t("billing.checkoutEyebrow", locale);
+  const title = isOneTimePurchase
+    ? (isHu ? "Biztonságos fizetés" : "Secure checkout")
+    : t("billing.checkoutTitle", locale);
 
   return (
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-3xl px-4 py-10">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
           {"// "}
-          {t("billing.checkoutEyebrow", locale)}
+          {eyebrow}
         </p>
         <h1 className="mt-1 font-fraunces text-3xl text-ink mb-2">
-          {t("billing.checkoutTitle", locale)}
+          {title}
         </h1>
         <p className="text-sm text-ink-warm mb-8">
           {t("billing.checkoutSubtitle", locale)}
         </p>
 
-        <EmbeddedCheckoutClient priceKey={priceKey} quantity={quantity} />
+        <EmbeddedCheckoutClient
+          priceKey={isOneTimePurchase ? undefined : priceKey}
+          quantity={quantity}
+          tier={params.tier}
+          teamId={params.teamId}
+          locale={locale}
+        />
       </main>
     </div>
   );

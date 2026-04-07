@@ -123,12 +123,12 @@ export async function POST(req: Request) {
 
   const session = await runtime.stripe.checkout.sessions.create({
     customer: customerId,
+    ui_mode: "embedded",
     mode: "payment",
     locale: stripeLocale,
     line_items: [{ price: priceId, quantity: 1 }],
     allow_promotion_codes: true,
-    success_url: `${runtime.appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${runtime.appUrl}/profile/results`,
+    return_url: `${runtime.appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
     metadata: {
       // Legacy keys (backward compat)
       type: "one_time_purchase",
@@ -148,5 +148,5 @@ export async function POST(req: Request) {
     },
   });
 
-  return NextResponse.json({ url: session.url });
+  return NextResponse.json({ clientSecret: session.client_secret });
 }

@@ -138,19 +138,10 @@ export function ProgressBar({
   const router = useRouter();
   const { locale } = useLocale();
 
-  async function handlePlusUpgrade() {
+  function handlePlusUpgrade() {
     if (upgradeLoading) return;
     setUpgradeLoading(true);
-    try {
-      const res = await fetch("/api/billing/purchase", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: "self_plus" }),
-      });
-      const data = (await res.json()) as { url?: string };
-      if (data.url) router.push(data.url);
-    } catch { /* silent */ }
-    setUpgradeLoading(false);
+    router.push("/billing/checkout?tier=self_plus");
   }
 
   const steps = [
