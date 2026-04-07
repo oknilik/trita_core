@@ -55,6 +55,7 @@ export interface NotificationTypeMeta {
 
 export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMeta> = {
   OBSERVER_COMPLETED:          { titleKey: "notifications.observerCompleted.title",          bodyKey: "notifications.observerCompleted.body",          category: "observer",    defaultPriority: "normal" },
+  OBSERVER_SUBMITTED:          { titleKey: "notifications.observerSubmitted.title",          bodyKey: "notifications.observerSubmitted.body",          category: "observer",    defaultPriority: "low"    },
   RESULT_READY:                { titleKey: "notifications.resultReady.title",                bodyKey: "notifications.resultReady.body",                category: "assessment",  defaultPriority: "normal" },
   PURCHASE_CONFIRMED:          { titleKey: "notifications.purchaseConfirmed.title",          bodyKey: "notifications.purchaseConfirmed.body",          category: "billing",     defaultPriority: "normal" },
   ORG_INVITE_RECEIVED:         { titleKey: "notifications.orgInviteReceived.title",          bodyKey: "notifications.orgInviteReceived.body",          category: "org",         defaultPriority: "normal" },

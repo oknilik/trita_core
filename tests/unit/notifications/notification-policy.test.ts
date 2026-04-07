@@ -13,6 +13,7 @@ import { isPersonalNotificationType } from "@/lib/notifications/policy";
 test("H1.9: personal notification types are correctly identified", () => {
   const personalTypes = [
     "OBSERVER_COMPLETED",
+    "OBSERVER_SUBMITTED",
     "RESULT_READY",
     "PURCHASE_CONFIRMED",
     "ORG_INVITE_RECEIVED",

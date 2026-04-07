@@ -105,7 +105,7 @@ export async function POST(req: Request) {
     }),
   ]);
 
-  // In-app notification — every observer completion (fire-and-forget)
+  // In-app notification — notify inviter that observer completed (fire-and-forget)
   import("@/lib/notifications").then(({ handleObserverCompleted }) =>
     handleObserverCompleted({
       inviterId: invitation.inviterId,
@@ -113,6 +113,23 @@ export async function POST(req: Request) {
       invitationId: invitation.id,
     }).catch((err) => console.error("[Notification] Observer completed error:", err)),
   );
+
+  // In-app notification — notify observer that their submission was received (if registered user)
+  if (invitation.observerProfileId) {
+    prisma.userProfile.findUnique({
+      where: { id: invitation.inviterId },
+      select: { username: true, email: true },
+    }).then((inviter) => {
+      if (!inviter) return;
+      return import("@/lib/notifications").then(({ handleObserverSubmitted }) =>
+        handleObserverSubmitted({
+          observerUserId: invitation.observerProfileId!,
+          inviterName: inviter.username ?? inviter.email ?? "—",
+          invitationId: invitation.id,
+        }),
+      );
+    }).catch((err) => console.error("[Notification] Observer submitted error:", err));
+  }
 
   // Email — only from the 2nd completed observer onward (fire-and-forget)
   prisma.observerAssessment.count({

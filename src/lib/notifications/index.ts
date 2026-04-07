@@ -6,6 +6,7 @@
 
 export {
   handleObserverCompleted,
+  handleObserverSubmitted,
   handleResultReady,
   handlePurchaseConfirmed,
   handlePaymentFailed,

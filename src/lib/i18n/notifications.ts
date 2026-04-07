@@ -4,6 +4,10 @@ export const notificationTranslations = {
       title: { hu: "Megfigyelői visszajelzés érkezett", en: "Observer feedback received" },
       body: { hu: "{name} kitöltötte a megfigyelői értékelést.", en: "{name} completed the observer assessment." },
     },
+    observerSubmitted: {
+      title: { hu: "Értékelés elküldve", en: "Assessment submitted" },
+      body: { hu: "Sikeresen kitöltötted {inviterName} értékelését. Köszönjük!", en: "You successfully completed {inviterName}'s assessment. Thank you!" },
+    },
     resultReady: {
       title: { hu: "Az eredményed elkészült", en: "Your results are ready" },
       body: { hu: "A személyiségteszted kiértékelése megtekinthető.", en: "Your personality assessment results are now available." },

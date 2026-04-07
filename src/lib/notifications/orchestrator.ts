@@ -34,6 +34,26 @@ export async function handleObserverCompleted(params: {
   });
 }
 
+/** Notify the observer that their submission was received (if they're a registered user). */
+export async function handleObserverSubmitted(params: {
+  observerUserId: string;
+  inviterName: string;
+  invitationId: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.OBSERVER_SUBMITTED;
+  await persistNotification({
+    userId: params.observerUserId,
+    type: "OBSERVER_SUBMITTED",
+    category: meta.category,
+    priority: meta.defaultPriority,
+    vars: { inviterName: params.inviterName },
+    link: "/profile/results",
+    sourceType: "observer_invitation",
+    sourceId: params.invitationId,
+    dedupeKey: `OBSERVER_SUBMITTED:${params.invitationId}`,
+  });
+}
+
 // ── Assessment events ───────────────────────────────────────────────────────
 
 export async function handleResultReady(params: {
