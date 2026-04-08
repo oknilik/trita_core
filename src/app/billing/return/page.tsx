@@ -10,6 +10,7 @@ import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.ser
 import { resolveBillingReturnResolution } from "@/lib/billing/return-resolution";
 import { getServerAuth } from "@/lib/auth-server";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { finalizeFromFallback } from "@/lib/billing/finalization-service";
 
 export const dynamic = "force-dynamic";
 
@@ -218,113 +219,21 @@ export default async function ReturnPage({
   // ── PaymentIntent fallback finalization (for webhook delays/outages) ──
   if (params.payment_intent) {
     try {
-      const pi = await runtime.stripe.paymentIntents.retrieve(params.payment_intent);
-
-      if (
-        params.addon === "candidate" &&
-        pi.status === "succeeded" &&
-        pi.metadata?.type === "candidate_addon" &&
-        pi.metadata?.orgId
-      ) {
-        const orgId = pi.metadata.orgId;
-        const creditCount = parseInt(pi.metadata.creditCount ?? "1", 10);
-        const actorId = pi.metadata.actorId ?? activeProfileId ?? "system";
-        const creditLabels: Record<number, string> = {
-          1: "1× jelölt értékelés",
-          5: "5× jelölt értékelés",
-          10: "10× jelölt értékelés",
-        };
-
-        const alreadyProcessed = await runtime.prisma.candidateCredit.findFirst({
-          where: { orgId, note: { contains: params.payment_intent } },
-          select: { id: true },
-        });
-
-        if (!alreadyProcessed) {
-          const label = creditLabels[creditCount] ?? `${creditCount}× jelölt értékelés`;
-          await runtime.addCredits({
-            orgId,
-            amount: creditCount,
-            actorId,
-            note: `${label} [${params.payment_intent}]`,
-          });
-        }
-
-        paymentIntentCompleted = true;
-        paymentIntentCandidateAddonApplied = true;
-      }
-
-      if (
-        params.plan &&
-        pi.status === "succeeded" &&
-        pi.metadata?.orgId &&
-        pi.metadata?.type === "subscription_activation"
-      ) {
-        const orgId = pi.metadata.orgId;
-        const planKey = params.plan;
-        const priceId = pi.metadata.priceId;
-        const planType = planKey.startsWith("org") ? "org" : "team";
-        const billingInterval = planKey.includes("annual") ? "annual" : "monthly";
-
-        // Create the actual Stripe subscription (payment already collected)
-        if (activeProfileId) {
-          const existingSub = await runtime.prisma.subscription.findUnique({
-            where: { orgId },
-            select: { stripeSubscriptionId: true },
-          });
-
-          // Only create if not already activated
-          if (!existingSub?.stripeSubscriptionId) {
-            const customerId = typeof pi.customer === "string" ? pi.customer : null;
-            if (customerId && priceId) {
-              const stripeSub = await runtime.stripe.subscriptions.create({
-                customer: customerId,
-                items: [{ price: priceId }],
-                default_payment_method: typeof pi.payment_method === "string" ? pi.payment_method : undefined,
-                metadata: { orgId },
-              });
-
-              const periodStart = stripeSub.items.data[0]?.current_period_start;
-              const periodEnd = stripeSub.items.data[0]?.current_period_end;
-
-              await runtime.prisma.subscription.upsert({
-                where: { orgId },
-                create: {
-                  orgId,
-                  stripeCustomerId: customerId,
-                  stripeSubscriptionId: stripeSub.id,
-                  stripePriceId: priceId,
-                  planType,
-                  billingInterval,
-                  status: stripeSub.status,
-                  currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
-                  currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-                },
-                update: {
-                  stripeCustomerId: customerId,
-                  stripeSubscriptionId: stripeSub.id,
-                  stripePriceId: priceId,
-                  planType,
-                  billingInterval,
-                  status: stripeSub.status,
-                  trialEndsAt: null,
-                  currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
-                  currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-                },
-              });
-
-              await runtime.prisma.organization.updateMany({
-                where: { id: orgId, status: "PENDING_SETUP" },
-                data: { status: "ACTIVE" },
-              });
-
-              console.log(`[Billing/Return] Subscription activated for org ${orgId}: ${stripeSub.id}`);
-            }
-          }
-        }
-
-        paymentIntentCompleted = true;
-      }
+      const finalization = await finalizeFromFallback(
+        {
+          paymentIntentId: params.payment_intent,
+          plan: params.plan,
+          addon: params.addon,
+          actorProfileId: activeProfileId,
+        },
+        {
+          stripe: runtime.stripe,
+          prisma: runtime.prisma,
+          addCredits: runtime.addCredits,
+        },
+      );
+      paymentIntentCompleted = finalization.completed;
+      paymentIntentCandidateAddonApplied = finalization.candidateAddonApplied;
     } catch (activationErr) {
       console.error("[Billing/Return] Subscription activation failed:", activationErr);
     }
