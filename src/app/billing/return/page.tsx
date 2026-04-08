@@ -9,6 +9,7 @@ import { addCredits } from "@/lib/candidate-credits";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { resolveBillingReturnResolution } from "@/lib/billing/return-resolution";
 import { getServerAuth } from "@/lib/auth-server";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const dynamic = "force-dynamic";
 
@@ -57,35 +58,66 @@ export default async function ReturnPage({
     searchParams,
     runtime.auth(),
   ]);
-  const resolution = await resolveBillingReturnResolution(
-    {
-      sessionId: params.session_id,
-      addon: params.addon,
-      userId,
-    },
-    {
-      findProfileByClerkId: async (clerkId) =>
-        runtime.prisma.userProfile.findUnique({
-          where: { clerkId },
-          select: { id: true },
-        }),
-      resolveJourneyFallbackForProfileId: runtime.resolveJourneyFallbackForProfileId,
-      retrieveSession: runtime.stripe.checkout.sessions.retrieve,
-      findCandidateCreditBySession: async (orgId, sessionId) =>
-        runtime.prisma.candidateCredit.findFirst({
-          where: { orgId, note: { contains: sessionId } },
-          select: { id: true },
-        }),
-      addCredits: runtime.addCredits,
-    },
-  );
 
-  if (resolution.kind === "redirect") {
+  let handoffDestination = JOURNEY_HOME_HANDOFF_PATH;
+  let activeProfileId: string | null = null;
+
+  if (userId) {
+    const activeProfile = await runtime.prisma.userProfile.findUnique({
+      where: { clerkId: userId },
+      select: { id: true },
+    });
+    if (activeProfile) {
+      activeProfileId = activeProfile.id;
+      handoffDestination = await runtime.resolveJourneyFallbackForProfileId(activeProfile.id);
+    }
+  }
+
+  if (!params.session_id && !params.payment_intent) {
+    runtime.redirect(handoffDestination);
+  }
+
+  let resolution: Awaited<ReturnType<typeof resolveBillingReturnResolution>> | null = null;
+  if (params.session_id) {
+    resolution = await resolveBillingReturnResolution(
+      {
+        sessionId: params.session_id,
+        addon: params.addon,
+        userId,
+      },
+      {
+        findProfileByClerkId: async (clerkId) =>
+          runtime.prisma.userProfile.findUnique({
+            where: { clerkId },
+            select: { id: true },
+          }),
+        resolveJourneyFallbackForProfileId: runtime.resolveJourneyFallbackForProfileId,
+        retrieveSession: async (sessionId) => {
+          const session = await runtime.stripe.checkout.sessions.retrieve(sessionId);
+          return {
+            status: session.status ?? "expired",
+            mode: session.mode,
+            metadata: session.metadata ?? undefined,
+          };
+        },
+        findCandidateCreditBySession: async (orgId, sessionId) =>
+          runtime.prisma.candidateCredit.findFirst({
+            where: { orgId, note: { contains: sessionId } },
+            select: { id: true },
+          }),
+        addCredits: async (input) => {
+          await runtime.addCredits(input);
+        },
+      },
+    );
+  }
+
+  if (resolution?.kind === "redirect") {
     runtime.redirect(resolution.destination);
   }
 
   // ── Idempotent subscription sync (fallback if webhook hasn't arrived) ──
-  if (resolution.kind === "complete" && params.session_id && !params.addon) {
+  if (resolution?.kind === "complete" && params.session_id && !params.addon) {
     try {
       const fullSession = await runtime.stripe.checkout.sessions.retrieve(params.session_id);
       if (
@@ -180,11 +212,54 @@ export default async function ReturnPage({
     }
   }
 
-  // ── Subscription activation via PaymentIntent (post-trial flow) ──
-  if (params.payment_intent && params.plan) {
+  let paymentIntentCompleted = false;
+  let paymentIntentCandidateAddonApplied = false;
+
+  // ── PaymentIntent fallback finalization (for webhook delays/outages) ──
+  if (params.payment_intent) {
     try {
       const pi = await runtime.stripe.paymentIntents.retrieve(params.payment_intent);
-      if (pi.status === "succeeded" && pi.metadata?.orgId && pi.metadata?.type === "subscription_activation") {
+
+      if (
+        params.addon === "candidate" &&
+        pi.status === "succeeded" &&
+        pi.metadata?.type === "candidate_addon" &&
+        pi.metadata?.orgId
+      ) {
+        const orgId = pi.metadata.orgId;
+        const creditCount = parseInt(pi.metadata.creditCount ?? "1", 10);
+        const actorId = pi.metadata.actorId ?? activeProfileId ?? "system";
+        const creditLabels: Record<number, string> = {
+          1: "1× jelölt értékelés",
+          5: "5× jelölt értékelés",
+          10: "10× jelölt értékelés",
+        };
+
+        const alreadyProcessed = await runtime.prisma.candidateCredit.findFirst({
+          where: { orgId, note: { contains: params.payment_intent } },
+          select: { id: true },
+        });
+
+        if (!alreadyProcessed) {
+          const label = creditLabels[creditCount] ?? `${creditCount}× jelölt értékelés`;
+          await runtime.addCredits({
+            orgId,
+            amount: creditCount,
+            actorId,
+            note: `${label} [${params.payment_intent}]`,
+          });
+        }
+
+        paymentIntentCompleted = true;
+        paymentIntentCandidateAddonApplied = true;
+      }
+
+      if (
+        params.plan &&
+        pi.status === "succeeded" &&
+        pi.metadata?.orgId &&
+        pi.metadata?.type === "subscription_activation"
+      ) {
         const orgId = pi.metadata.orgId;
         const planKey = params.plan;
         const priceId = pi.metadata.priceId;
@@ -192,11 +267,7 @@ export default async function ReturnPage({
         const billingInterval = planKey.includes("annual") ? "annual" : "monthly";
 
         // Create the actual Stripe subscription (payment already collected)
-        const profile = await runtime.prisma.userProfile.findUnique({
-          where: { clerkId: userId! },
-          select: { id: true },
-        });
-        if (profile) {
+        if (activeProfileId) {
           const existingSub = await runtime.prisma.subscription.findUnique({
             where: { orgId },
             select: { stripeSubscriptionId: true },
@@ -251,13 +322,23 @@ export default async function ReturnPage({
             }
           }
         }
+
+        paymentIntentCompleted = true;
       }
     } catch (activationErr) {
       console.error("[Billing/Return] Subscription activation failed:", activationErr);
     }
   }
 
-  if (resolution.kind === "complete") {
+  const completedViaPaymentIntent = paymentIntentCompleted;
+  if (resolution?.kind === "complete" || completedViaPaymentIntent) {
+    const candidateAddonApplied = resolution?.kind === "complete"
+      ? resolution.candidateAddonApplied
+      : paymentIntentCandidateAddonApplied;
+    const destination = resolution?.kind === "complete"
+      ? resolution.handoffDestination
+      : handoffDestination;
+
     return (
       <div className="min-h-dvh bg-cream flex items-center justify-center">
         <div className="max-w-md text-center px-6">
@@ -272,12 +353,12 @@ export default async function ReturnPage({
             {t("billing.returnSuccessTitle", locale)}
           </h1>
           <p className="text-sm text-ink-warm mb-6">
-            {resolution.candidateAddonApplied
+            {candidateAddonApplied
               ? t("billing.returnCandidateBody", locale)
               : t("billing.returnSubBody", locale)}
           </p>
           <Link
-            href={resolution.handoffDestination}
+            href={destination}
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white hover:bg-sage-dark transition"
           >
             {t("billing.returnSubCta", locale)}
