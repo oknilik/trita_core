@@ -75,7 +75,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
           isAdmin ? (
             <>
               <Link
-                href="/billing/checkout?plan=candidate_addon"
+                href="/billing/checkout?plan=candidate_5"
                 className={getButtonClassName({
                   className: "px-8",
                 })}

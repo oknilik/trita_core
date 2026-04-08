@@ -39,7 +39,7 @@ export function TeamTierPanel({
               ctaLabel={plan.ctaLabel ?? t("pricing.teamCta", locale)}
               ctaHref={
                 isSnapshot
-                  ? (isLoggedIn ? "/billing/checkout?plan=team_snapshot" : plan.ctaHref)
+                  ? (isLoggedIn ? "/billing/checkout?tier=team_snapshot" : plan.ctaHref)
                   : (isLoggedIn ? `/billing/checkout?plan=team_${billing}` : plan.ctaHref)
               }
               ctaVariant={plan.id === "team" ? "primary" : "outline"}
