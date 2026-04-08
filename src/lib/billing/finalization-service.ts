@@ -1,5 +1,6 @@
 import type { prisma as PrismaClientSingleton } from "@/lib/prisma";
 import type { stripe as StripeClient } from "@/lib/stripe";
+import { TIER_CONFIG } from "@/lib/stripe";
 
 type PrismaClient = typeof PrismaClientSingleton;
 type Stripe = typeof StripeClient;
@@ -25,6 +26,8 @@ export interface FinalizePaymentIntentInput {
 export interface PaymentIntentFinalizationResult {
   completed: boolean;
   candidateAddonApplied: boolean;
+  oneTimePurchaseApplied: boolean;
+  subscriptionActivationApplied: boolean;
 }
 
 async function finalizePaymentIntentInternal(
@@ -34,7 +37,60 @@ async function finalizePaymentIntentInternal(
 ): Promise<PaymentIntentFinalizationResult> {
   const pi = await runtime.stripe.paymentIntents.retrieve(input.paymentIntentId);
   if (pi.status !== "succeeded") {
-    return { completed: false, candidateAddonApplied: false };
+    return {
+      completed: false,
+      candidateAddonApplied: false,
+      oneTimePurchaseApplied: false,
+      subscriptionActivationApplied: false,
+    };
+  }
+
+  if (pi.metadata?.type === "one_time_purchase") {
+    const tier = pi.metadata.tier;
+    const userProfileId = pi.metadata.userProfileId ?? input.actorProfileId;
+    if (tier && userProfileId) {
+      const existing = await runtime.prisma.purchase.findFirst({
+        where: { stripePaymentIntentId: input.paymentIntentId },
+      });
+
+      if (!existing) {
+        const config = TIER_CONFIG[tier];
+        await runtime.prisma.purchase.create({
+          data: {
+            userProfileId,
+            orgId: pi.metadata.orgId || null,
+            teamId: pi.metadata.teamId || null,
+            tier,
+            productType: tier,
+            stripePaymentIntentId: input.paymentIntentId,
+            amount: pi.amount ?? 0,
+            grossAmount: pi.amount ?? 0,
+            currency: pi.currency ?? "eur",
+            status: "completed",
+            invoiceStatus: "pending",
+            includesAdvisory: config?.includesAdvisory ?? false,
+            includedCredits: config?.includedCredits ?? 0,
+          },
+        });
+      }
+
+      console.log(
+        `[Billing/Finalization:${source}] One-time purchase finalized for user ${userProfileId} (${tier})`,
+      );
+      return {
+        completed: true,
+        candidateAddonApplied: false,
+        oneTimePurchaseApplied: true,
+        subscriptionActivationApplied: false,
+      };
+    }
+
+    return {
+      completed: false,
+      candidateAddonApplied: false,
+      oneTimePurchaseApplied: false,
+      subscriptionActivationApplied: false,
+    };
   }
 
   if (
@@ -67,7 +123,12 @@ async function finalizePaymentIntentInternal(
     }
 
     console.log(`[Billing/Finalization:${source}] Candidate addon finalized for org ${orgId}`);
-    return { completed: true, candidateAddonApplied: true };
+    return {
+      completed: true,
+      candidateAddonApplied: true,
+      oneTimePurchaseApplied: false,
+      subscriptionActivationApplied: false,
+    };
   }
 
   const planKey = input.plan ?? pi.metadata?.plan;
@@ -137,10 +198,20 @@ async function finalizePaymentIntentInternal(
       }
     }
 
-    return { completed: true, candidateAddonApplied: false };
+    return {
+      completed: true,
+      candidateAddonApplied: false,
+      oneTimePurchaseApplied: false,
+      subscriptionActivationApplied: true,
+    };
   }
 
-  return { completed: false, candidateAddonApplied: false };
+  return {
+    completed: false,
+    candidateAddonApplied: false,
+    oneTimePurchaseApplied: false,
+    subscriptionActivationApplied: false,
+  };
 }
 
 export async function finalizeFromFallback(
@@ -156,4 +227,3 @@ export async function finalizeFromWebhook(
 ): Promise<PaymentIntentFinalizationResult> {
   return finalizePaymentIntentInternal("webhook", input, runtime);
 }
-
