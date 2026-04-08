@@ -10,6 +10,7 @@
  *     → Creates a Stripe Subscription with payment_behavior: "default_incomplete",
  *       returns clientSecret from the latest invoice's payment_intent
  *   - Candidate addon (candidate_1, candidate_5, candidate_10)
+ *     or custom quantity
  *     → Creates a PaymentIntent with inline amount
  */
 
@@ -20,7 +21,6 @@ import { getActiveOrgMembership } from "@/lib/org-context";
 import {
   stripe,
   STRIPE_PRICES,
-  STRIPE_ONE_TIME_PRICES,
   TIER_CONFIG,
   CANDIDATE_PACKAGES,
   TRIAL_DAYS,
@@ -37,6 +37,7 @@ const schema = z.object({
   plan: z.enum(["team_monthly", "team_annual", "org_monthly", "org_annual"]).optional(),
   // Candidate addon
   candidatePack: z.enum(["candidate_1", "candidate_5", "candidate_10"]).optional(),
+  candidateQuantity: z.number().int().min(1).max(50).optional(),
 });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
@@ -54,7 +55,7 @@ export async function POST(req: Request) {
   const body = schema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  const { tier, teamId, plan, candidatePack } = body.data;
+  const { tier, teamId, plan, candidatePack, candidateQuantity } = body.data;
   const stripeLocale = profile.locale === "hu" ? "hu" : "en";
 
   // ── Resolve or create Stripe customer ──────────────────────────────────
@@ -249,27 +250,35 @@ export async function POST(req: Request) {
   }
 
   // ═══ 3. CANDIDATE ADDON ═══
-  if (candidatePack) {
+  if (candidatePack || candidateQuantity) {
     if (!membership || membership.role !== "ORG_ADMIN") {
       return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
     }
 
-    const pkg = CANDIDATE_PACKAGES[candidatePack];
+    const quantity = candidateQuantity ?? CANDIDATE_PACKAGES[candidatePack!].credits;
+    const isPresetPack = !!candidatePack && !candidateQuantity;
+    const amount = isPresetPack
+      ? CANDIDATE_PACKAGES[candidatePack!].unitAmount
+      : Math.round(3900 * (quantity >= 10 ? 0.8 : quantity >= 5 ? 0.85 : 1)) * quantity;
+    const label = isPresetPack
+      ? CANDIDATE_PACKAGES[candidatePack!].label
+      : `${quantity}× jelölt értékelés`;
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: pkg.unitAmount,
+      amount,
       currency: "eur",
       customer: customerId,
       automatic_payment_methods: { enabled: true },
       metadata: {
         type: "candidate_addon",
         orgId: membership.orgId,
-        creditCount: String(pkg.credits),
+        creditCount: String(quantity),
         actorId: profile.id,
         ...buildCheckoutMetadata({
           tritaUserId: profile.id,
           organizationId: membership.orgId,
           productType: "candidate_pack",
-          candidatePackSize: String(pkg.credits),
+          candidatePackSize: String(quantity),
           locale: stripeLocale,
           currency: "eur",
         }),
@@ -279,9 +288,9 @@ export async function POST(req: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       mode: "payment",
-      amount: pkg.unitAmount,
+      amount,
       currency: "eur",
-      productName: pkg.label,
+      productName: label,
       returnUrl: `${APP_URL}/billing/return?payment_intent=${paymentIntent.id}&addon=candidate`,
     });
   }

@@ -11,7 +11,6 @@ interface Team {
 }
 
 interface OrgProductCardsProps {
-  orgId: string;
   teams: Team[];
   locale: string;
   isAdmin: boolean;
@@ -56,7 +55,6 @@ function ProductCard({
 }
 
 export function OrgProductCards({
-  orgId,
   teams,
   locale,
   isAdmin,
@@ -65,7 +63,16 @@ export function OrgProductCards({
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<string>(teams[0]?.id ?? "");
-  const [candidateQty, setCandidateQty] = useState<"candidate_1" | "candidate_5" | "candidate_10">("candidate_5");
+  const [candidateQuantity, setCandidateQuantity] = useState<number>(5);
+
+  const candidateAmountCents = Math.round(
+    3900 * (candidateQuantity >= 10 ? 0.8 : candidateQuantity >= 5 ? 0.85 : 1),
+  ) * candidateQuantity;
+  const candidatePrice = new Intl.NumberFormat(locale === "hu" ? "hu-HU" : "en-US", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 2,
+  }).format(candidateAmountCents / 100);
 
   function handleOneTimePurchase(tier: string) {
     if (!isAdmin) return;
@@ -78,7 +85,7 @@ export function OrgProductCards({
   function handleCandidatePurchase() {
     if (!isAdmin) return;
     setLoading("candidate");
-    router.push(`/billing/checkout?plan=${candidateQty}`);
+    router.push(`/billing/checkout?plan=candidate_custom&qty=${candidateQuantity}`);
   }
 
   const teamSelector = teams.length > 0 ? (
@@ -138,32 +145,32 @@ export function OrgProductCards({
         <ProductCard
           name={t("org.billing.candidatePackName", loc)}
           description={t("org.billing.candidatePackDesc", loc)}
-          price={
-            candidateQty === "candidate_1" ? "€39" :
-            candidateQty === "candidate_5" ? "€169" : "€299"
-          }
+          price={candidatePrice}
           locale={locale}
           isAdmin={isAdmin}
           onPurchase={handleCandidatePurchase}
           loading={loading === "candidate"}
         >
           <div className="mt-2">
-            <div className="flex gap-1.5">
-              {(["candidate_1", "candidate_5", "candidate_10"] as const).map((qty) => (
-                <button
-                  key={qty}
-                  type="button"
-                  onClick={() => setCandidateQty(qty)}
-                  className={`rounded-md px-2.5 py-1 text-[10px] font-semibold transition ${
-                    candidateQty === qty
-                      ? "bg-sage text-white"
-                      : "border border-sand text-muted hover:border-sage"
-                  }`}
-                >
-                  {qty === "candidate_1" ? "1×" : qty === "candidate_5" ? "5×" : "10×"}
-                </button>
-              ))}
-            </div>
+            <label className="text-[10px] text-muted">
+              {t("org.billing.candidatePackName", loc)}: {candidateQuantity}
+            </label>
+            <input
+              type="range"
+              min={1}
+              max={50}
+              step={1}
+              value={candidateQuantity}
+              onChange={(event) => setCandidateQuantity(Number.parseInt(event.target.value, 10))}
+              className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-lg bg-sand accent-sage"
+            />
+            <p className="mt-2 text-[10px] text-muted">
+              {candidateQuantity >= 10
+                ? "-20%"
+                : candidateQuantity >= 5
+                ? "-15%"
+                : t("org.billing.candidatePackDesc", loc)}
+            </p>
           </div>
         </ProductCard>
       </div>

@@ -24,7 +24,8 @@ export type CheckoutCandidatePack = (typeof CHECKOUT_CANDIDATE_PACKS)[number];
 export type CreatePaymentRequestBody =
   | { tier: CheckoutOneTimeTier; teamId?: string }
   | { plan: CheckoutSubscriptionPlan }
-  | { candidatePack: CheckoutCandidatePack };
+  | { candidatePack: CheckoutCandidatePack }
+  | { candidateQuantity: number };
 
 export type CheckoutIntentKind = "one_time" | "subscription" | "candidate_pack";
 
@@ -55,11 +56,18 @@ export function resolveCheckoutIntent(input: {
   tier?: string;
   plan?: string;
   teamId?: string;
+  qty?: string;
 }): CheckoutIntentResolution {
   const rawTier = normalizeToken(input.tier);
   const rawPlan = normalizeToken(input.plan);
   const teamId = normalizeToken(input.teamId);
+  const rawQty = normalizeToken(input.qty);
   const warnings: string[] = [];
+
+  const parsedQty = rawQty ? Number.parseInt(rawQty, 10) : NaN;
+  const safeCandidateQuantity = Number.isFinite(parsedQty)
+    ? Math.min(50, Math.max(1, parsedQty))
+    : undefined;
 
   if (rawTier && rawPlan) {
     warnings.push("checkout.both_plan_and_tier_present.using_tier");
@@ -101,10 +109,18 @@ export function resolveCheckoutIntent(input: {
       };
     }
 
-    if (rawPlan === "candidate_addon" || rawPlan === "candidate_custom") {
+    if (rawPlan === "candidate_custom") {
+      return {
+        body: { candidateQuantity: safeCandidateQuantity ?? 5 },
+        kind: "candidate_pack",
+        warnings,
+      };
+    }
+
+    if (rawPlan === "candidate_addon") {
       warnings.push("checkout.legacy_candidate_plan_param_defaulted");
       return {
-        body: { candidatePack: "candidate_5" },
+        body: { candidateQuantity: safeCandidateQuantity ?? 5 },
         kind: "candidate_pack",
         warnings,
       };
@@ -119,4 +135,3 @@ export function resolveCheckoutIntent(input: {
     warnings,
   };
 }
-

@@ -40,6 +40,7 @@ export default async function CheckoutPage({
     tier: params.tier,
     plan: params.plan,
     teamId: params.teamId,
+    qty: params.qty,
   });
   if (intent.warnings.length > 0) {
     console.warn("[Billing/Checkout] Normalized legacy or invalid checkout query params:", {

@@ -57,7 +57,6 @@ export function OrgBillingTab({
 
       {/* One-time products */}
       <OrgProductCards
-        orgId={orgId}
         teams={teams}
         locale={locale}
         isAdmin={isAdmin}
