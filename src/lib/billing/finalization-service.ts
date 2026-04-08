@@ -144,59 +144,104 @@ async function finalizePaymentIntentInternal(
 
     const existingSub = await runtime.prisma.subscription.findUnique({
       where: { orgId },
-      select: { stripeSubscriptionId: true },
+      select: { stripeSubscriptionId: true, status: true },
     });
 
-    if (!existingSub?.stripeSubscriptionId) {
-      const customerId = typeof pi.customer === "string" ? pi.customer : null;
-      if (customerId && priceId) {
-        const stripeSub = await runtime.stripe.subscriptions.create({
+    const existingStatus = (existingSub?.status ?? "").toLowerCase();
+    const hasReusableSubscription =
+      !!existingSub?.stripeSubscriptionId &&
+      (existingStatus === "active" ||
+        existingStatus === "trialing" ||
+        existingStatus === "past_due" ||
+        existingStatus === "unpaid");
+    if (hasReusableSubscription) {
+      return {
+        completed: true,
+        candidateAddonApplied: false,
+        oneTimePurchaseApplied: false,
+        subscriptionActivationApplied: true,
+      };
+    }
+
+    const customerId = typeof pi.customer === "string" ? pi.customer : null;
+    if (!customerId || !priceId) {
+      console.warn(
+        `[Billing/Finalization:${source}] Missing customer/price for subscription activation`,
+        {
+          orgId,
+          hasCustomer: Boolean(customerId),
+          hasPriceId: Boolean(priceId),
+          paymentIntentId: input.paymentIntentId,
+        },
+      );
+      return {
+        completed: false,
+        candidateAddonApplied: false,
+        oneTimePurchaseApplied: false,
+        subscriptionActivationApplied: false,
+      };
+    }
+
+    const paymentMethodId =
+      typeof pi.payment_method === "string" ? pi.payment_method : null;
+    if (paymentMethodId) {
+      try {
+        await runtime.stripe.paymentMethods.attach(paymentMethodId, {
           customer: customerId,
-          items: [{ price: priceId }],
-          default_payment_method:
-            typeof pi.payment_method === "string" ? pi.payment_method : undefined,
-          metadata: { orgId },
         });
-
-        const periodStart = stripeSub.items.data[0]?.current_period_start;
-        const periodEnd = stripeSub.items.data[0]?.current_period_end;
-
-        await runtime.prisma.subscription.upsert({
-          where: { orgId },
-          create: {
-            orgId,
-            stripeCustomerId: customerId,
-            stripeSubscriptionId: stripeSub.id,
-            stripePriceId: priceId,
-            planType,
-            billingInterval,
-            status: stripeSub.status,
-            currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
-            currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-          },
-          update: {
-            stripeCustomerId: customerId,
-            stripeSubscriptionId: stripeSub.id,
-            stripePriceId: priceId,
-            planType,
-            billingInterval,
-            status: stripeSub.status,
-            trialEndsAt: null,
-            currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
-            currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-          },
-        });
-
-        await runtime.prisma.organization.updateMany({
-          where: { id: orgId, status: "PENDING_SETUP" },
-          data: { status: "ACTIVE" },
-        });
-
-        console.log(
-          `[Billing/Finalization:${source}] Subscription activated for org ${orgId}: ${stripeSub.id}`,
-        );
+      } catch (attachError) {
+        const message = attachError instanceof Error ? attachError.message : String(attachError);
+        // Safe no-op if already attached to the same customer.
+        if (!message.toLowerCase().includes("already")) {
+          throw attachError;
+        }
       }
     }
+
+    const stripeSub = await runtime.stripe.subscriptions.create({
+      customer: customerId,
+      items: [{ price: priceId }],
+      default_payment_method: paymentMethodId ?? undefined,
+      metadata: { orgId },
+    });
+
+    const periodStart = stripeSub.items.data[0]?.current_period_start;
+    const periodEnd = stripeSub.items.data[0]?.current_period_end;
+
+    await runtime.prisma.subscription.upsert({
+      where: { orgId },
+      create: {
+        orgId,
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: stripeSub.id,
+        stripePriceId: priceId,
+        planType,
+        billingInterval,
+        status: stripeSub.status,
+        currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
+        currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+      },
+      update: {
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: stripeSub.id,
+        stripePriceId: priceId,
+        planType,
+        billingInterval,
+        status: stripeSub.status,
+        trialEndsAt: null,
+        currentPeriodStart: periodStart ? new Date(periodStart * 1000) : null,
+        currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+      },
+    });
+
+    await runtime.prisma.organization.updateMany({
+      where: { id: orgId, status: "PENDING_SETUP" },
+      data: { status: "ACTIVE" },
+    });
+
+    console.log(
+      `[Billing/Finalization:${source}] Subscription activated for org ${orgId}: ${stripeSub.id}`,
+    );
 
     return {
       completed: true,

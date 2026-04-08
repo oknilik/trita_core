@@ -219,6 +219,8 @@ export async function POST(req: Request) {
         currency: (stripePrice.currency as string) ?? "eur",
         customer: customerId,
         automatic_payment_methods: { enabled: true },
+        // Store payment method on customer so renewal subscription can reuse it.
+        setup_future_usage: "off_session",
         metadata: {
           type: "subscription_activation",
           plan,
