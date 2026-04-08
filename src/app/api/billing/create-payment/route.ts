@@ -28,6 +28,7 @@ import {
 } from "@/lib/stripe";
 import { getServerAuth } from "@/lib/auth-server";
 import { buildCheckoutMetadata } from "@/lib/billing/stripe-metadata";
+import { traceBillingEvent } from "@/lib/billing/tracing";
 
 const schema = z.object({
   // One-time purchase
@@ -57,6 +58,7 @@ export async function POST(req: Request) {
 
   const { tier, teamId, plan, candidatePack, candidateQuantity } = body.data;
   const stripeLocale = profile.locale === "hu" ? "hu" : "en";
+  const productType = tier ?? plan ?? (candidatePack || candidateQuantity ? "candidate_addon" : undefined);
 
   // ── Resolve or create Stripe customer ──────────────────────────────────
   let customerId: string | null = null;
@@ -246,6 +248,19 @@ export async function POST(req: Request) {
         returnUrl: `${APP_URL}/billing/return?payment_intent=${paymentIntent.id}&plan=${plan}`,
       });
     } catch (err) {
+      traceBillingEvent({
+        entryPoint: "api.billing.create_payment",
+        stripeObjectType: "payment_intent",
+        finalizationPath: "none",
+        outcome: "failed",
+        resultStatus: "failed",
+        idempotencyKey: `${profile.id}:${membership?.orgId ?? "no-org"}:${plan}`,
+        stripeEventId: `${profile.id}:${plan}`,
+        eventType: "create_payment.subscription",
+        productType: plan,
+        sourceEntityId: membership?.orgId ?? profile.id,
+        errorCode: err instanceof Error ? err.message.slice(0, 100) : "subscription_failed",
+      });
       console.error("[Billing/CreatePayment] Subscription creation failed:", err);
       return NextResponse.json({ error: "SUBSCRIPTION_FAILED" }, { status: 502 });
     }
@@ -297,5 +312,18 @@ export async function POST(req: Request) {
     });
   }
 
+  traceBillingEvent({
+    entryPoint: "api.billing.create_payment",
+    stripeObjectType: "payment_intent",
+    finalizationPath: "none",
+    outcome: "failed",
+    resultStatus: "failed",
+    idempotencyKey: `${profile.id}:invalid`,
+    stripeEventId: `${profile.id}:invalid`,
+    eventType: "create_payment.invalid_input",
+    productType,
+    sourceEntityId: membership?.orgId ?? profile.id,
+    errorCode: "invalid_input",
+  });
   return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 }

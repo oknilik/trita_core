@@ -1,6 +1,7 @@
 import type { prisma as PrismaClientSingleton } from "@/lib/prisma";
 import type { stripe as StripeClient } from "@/lib/stripe";
 import { TIER_CONFIG } from "@/lib/stripe";
+import { traceBillingEvent } from "@/lib/billing/tracing";
 
 type PrismaClient = typeof PrismaClientSingleton;
 type Stripe = typeof StripeClient;
@@ -36,7 +37,36 @@ async function finalizePaymentIntentInternal(
   runtime: BillingFinalizationRuntime,
 ): Promise<PaymentIntentFinalizationResult> {
   const pi = await runtime.stripe.paymentIntents.retrieve(input.paymentIntentId);
+  const traceBase = {
+    entryPoint: `billing.finalization.${source}`,
+    stripeObjectType: "payment_intent",
+    finalizationPath: source,
+    idempotencyKey: input.paymentIntentId,
+    stripeEventId: input.paymentIntentId,
+    eventType: `payment_intent.finalize.${source}`,
+    productType: pi.metadata?.type ?? input.plan ?? input.addon,
+    sourceEntityId: pi.metadata?.orgId ?? pi.metadata?.userProfileId ?? undefined,
+  } as const;
+
+  const trace = (
+    outcome: "success" | "skipped" | "failed" | "processing",
+    extra?: Partial<{
+      errorCode: string;
+      sourceEntityId: string;
+      productType: string;
+    }>,
+  ) =>
+    traceBillingEvent({
+      ...traceBase,
+      ...extra,
+      outcome,
+      resultStatus: outcome,
+      errorCode: extra?.errorCode,
+    });
+
+  trace("processing");
   if (pi.status !== "succeeded") {
+    trace("skipped", { errorCode: `status_${pi.status}` });
     return {
       completed: false,
       candidateAddonApplied: false,
@@ -77,6 +107,10 @@ async function finalizePaymentIntentInternal(
       console.log(
         `[Billing/Finalization:${source}] One-time purchase finalized for user ${userProfileId} (${tier})`,
       );
+      trace("success", {
+        sourceEntityId: userProfileId,
+        productType: tier,
+      });
       return {
         completed: true,
         candidateAddonApplied: false,
@@ -85,6 +119,10 @@ async function finalizePaymentIntentInternal(
       };
     }
 
+    trace("failed", {
+      errorCode: "missing_tier_or_user",
+      productType: tier,
+    });
     return {
       completed: false,
       candidateAddonApplied: false,
@@ -123,6 +161,7 @@ async function finalizePaymentIntentInternal(
     }
 
     console.log(`[Billing/Finalization:${source}] Candidate addon finalized for org ${orgId}`);
+    trace("success", { sourceEntityId: orgId, productType: "candidate_addon" });
     return {
       completed: true,
       candidateAddonApplied: true,
@@ -155,6 +194,10 @@ async function finalizePaymentIntentInternal(
         existingStatus === "past_due" ||
         existingStatus === "unpaid");
     if (hasReusableSubscription) {
+      trace("success", {
+        sourceEntityId: orgId,
+        productType: "subscription_activation_reused",
+      });
       return {
         completed: true,
         candidateAddonApplied: false,
@@ -174,6 +217,11 @@ async function finalizePaymentIntentInternal(
           paymentIntentId: input.paymentIntentId,
         },
       );
+      trace("failed", {
+        sourceEntityId: orgId,
+        productType: "subscription_activation",
+        errorCode: "missing_customer_or_price",
+      });
       return {
         completed: false,
         candidateAddonApplied: false,
@@ -242,6 +290,10 @@ async function finalizePaymentIntentInternal(
     console.log(
       `[Billing/Finalization:${source}] Subscription activated for org ${orgId}: ${stripeSub.id}`,
     );
+    trace("success", {
+      sourceEntityId: orgId,
+      productType: "subscription_activation",
+    });
 
     return {
       completed: true,
@@ -251,6 +303,7 @@ async function finalizePaymentIntentInternal(
     };
   }
 
+  trace("skipped", { errorCode: "no_matching_finalization_branch" });
   return {
     completed: false,
     candidateAddonApplied: false,

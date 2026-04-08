@@ -11,6 +11,7 @@ import { resolveBillingReturnResolution } from "@/lib/billing/return-resolution"
 import { getServerAuth } from "@/lib/auth-server";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { finalizeFromFallback } from "@/lib/billing/finalization-service";
+import { traceBillingEvent } from "@/lib/billing/tracing";
 
 export const dynamic = "force-dynamic";
 
@@ -75,6 +76,19 @@ export default async function ReturnPage({
   }
 
   if (!params.session_id && !params.payment_intent) {
+    traceBillingEvent({
+      entryPoint: "page.billing.return",
+      stripeObjectType: "payment_intent",
+      finalizationPath: "none",
+      outcome: "skipped",
+      resultStatus: "skipped",
+      idempotencyKey: `return:${activeProfileId ?? "anonymous"}:missing`,
+      stripeEventId: `return:${activeProfileId ?? "anonymous"}:missing`,
+      eventType: "billing.return.missing_params",
+      productType: params.plan ?? params.addon,
+      sourceEntityId: activeProfileId ?? undefined,
+      errorCode: "missing_session_and_payment_intent",
+    });
     runtime.redirect(handoffDestination);
   }
 
@@ -205,11 +219,36 @@ export default async function ReturnPage({
           console.log(
             `[Billing/Return] Subscription synced for org ${orgId}: ${stripeSub.status}`,
           );
+          traceBillingEvent({
+            entryPoint: "page.billing.return",
+            stripeObjectType: "subscription",
+            finalizationPath: "fallback",
+            outcome: "success",
+            resultStatus: "success",
+            idempotencyKey: params.session_id,
+            stripeEventId: params.session_id,
+            eventType: "billing.return.subscription_sync_fallback",
+            productType: fullSession.metadata?.product_type ?? undefined,
+            sourceEntityId: orgId,
+          });
         }
       }
     } catch (syncErr) {
       // Non-blocking — if sync fails, webhook will handle it eventually
       console.error("[Billing/Return] Subscription sync fallback failed:", syncErr);
+      traceBillingEvent({
+        entryPoint: "page.billing.return",
+        stripeObjectType: "subscription",
+        finalizationPath: "fallback",
+        outcome: "failed",
+        resultStatus: "failed",
+        idempotencyKey: params.session_id,
+        stripeEventId: params.session_id,
+        eventType: "billing.return.subscription_sync_fallback",
+        productType: params.plan,
+        sourceEntityId: activeProfileId ?? undefined,
+        errorCode: syncErr instanceof Error ? syncErr.message.slice(0, 100) : "sync_failed",
+      });
     }
   }
 
@@ -234,8 +273,34 @@ export default async function ReturnPage({
       );
       paymentIntentCompleted = finalization.completed;
       paymentIntentCandidateAddonApplied = finalization.candidateAddonApplied;
+      traceBillingEvent({
+        entryPoint: "page.billing.return",
+        stripeObjectType: "payment_intent",
+        finalizationPath: "fallback",
+        outcome: finalization.completed ? "success" : "skipped",
+        resultStatus: finalization.completed ? "success" : "skipped",
+        idempotencyKey: params.payment_intent,
+        stripeEventId: params.payment_intent,
+        eventType: "billing.return.payment_intent_fallback",
+        productType: params.plan ?? params.addon,
+        sourceEntityId: activeProfileId ?? undefined,
+      });
     } catch (activationErr) {
       console.error("[Billing/Return] Subscription activation failed:", activationErr);
+      traceBillingEvent({
+        entryPoint: "page.billing.return",
+        stripeObjectType: "payment_intent",
+        finalizationPath: "fallback",
+        outcome: "failed",
+        resultStatus: "failed",
+        idempotencyKey: params.payment_intent,
+        stripeEventId: params.payment_intent,
+        eventType: "billing.return.payment_intent_fallback",
+        productType: params.plan ?? params.addon,
+        sourceEntityId: activeProfileId ?? undefined,
+        errorCode:
+          activationErr instanceof Error ? activationErr.message.slice(0, 100) : "fallback_failed",
+      });
     }
   }
 

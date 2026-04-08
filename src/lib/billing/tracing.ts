@@ -6,25 +6,39 @@
  */
 
 export interface BillingTraceContext {
+  entryPoint?: string;
+  stripeObjectType?: string;
+  finalizationPath?: "webhook" | "fallback" | "none";
+  outcome?: "success" | "skipped" | "failed" | "processing";
+  idempotencyKey?: string;
   stripeEventId: string;
   eventType: string;
   productType?: string;
   sourceEntityId?: string;
   billingoPartnerId?: string | number;
   billingoDocumentId?: string | number;
+  // Deprecated alias: prefer `outcome`.
   resultStatus: "success" | "skipped" | "failed" | "processing";
   errorCode?: string;
   durationMs?: number;
 }
 
 export function traceBillingEvent(ctx: BillingTraceContext): void {
+  const outcome = ctx.outcome ?? ctx.resultStatus;
   const entry = {
     _tag: "billing",
     ts: new Date().toISOString(),
+    entryPoint: ctx.entryPoint ?? ctx.eventType ?? "unknown",
+    stripeObjectType: ctx.stripeObjectType ?? "unknown",
+    finalizationPath: ctx.finalizationPath ?? "none",
+    outcome,
+    idempotencyKey: ctx.idempotencyKey ?? ctx.stripeEventId,
     ...ctx,
+    outcome,
+    resultStatus: outcome,
   };
 
-  if (ctx.resultStatus === "failed") {
+  if (outcome === "failed") {
     console.error("[Billing]", JSON.stringify(entry));
   } else {
     console.log("[Billing]", JSON.stringify(entry));
@@ -39,12 +53,13 @@ export async function withBillingTrace<T>(
   fn: () => Promise<T>,
 ): Promise<T> {
   const start = Date.now();
-  traceBillingEvent({ ...ctx, resultStatus: "processing" });
+  traceBillingEvent({ ...ctx, outcome: "processing", resultStatus: "processing" });
 
   try {
     const result = await fn();
     traceBillingEvent({
       ...ctx,
+      outcome: "success",
       resultStatus: "success",
       durationMs: Date.now() - start,
     });
@@ -52,6 +67,7 @@ export async function withBillingTrace<T>(
   } catch (err) {
     traceBillingEvent({
       ...ctx,
+      outcome: "failed",
       resultStatus: "failed",
       errorCode: err instanceof Error ? err.message.slice(0, 100) : "unknown",
       durationMs: Date.now() - start,
