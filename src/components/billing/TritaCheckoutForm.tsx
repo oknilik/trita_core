@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import {
   Elements,
   PaymentElement,
@@ -67,6 +67,15 @@ function PaymentForm({ returnUrl, mode, locale, onSuccess }: PaymentFormProps) {
       <PaymentElement
         options={{
           layout: "tabs",
+        }}
+        onLoadError={(event) => {
+          console.error("[TritaCheckout] PaymentElement loaderror", event);
+          setError(
+            isHu
+              ? "A fizetési modul nem tölthető be. Ellenőrizd a Stripe kulcsok beállítását (publishable/secret), majd próbáld újra."
+              : "The payment module could not be loaded. Check Stripe key configuration (publishable/secret) and try again.",
+          );
+          setProcessing(false);
         }}
       />
 
