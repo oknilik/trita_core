@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TritaCheckoutForm } from "@/components/billing/TritaCheckoutForm";
+import type { CreatePaymentRequestBody } from "@/lib/billing/checkout-intent";
 
 interface CheckoutState {
   clientSecret: string;
@@ -15,14 +16,11 @@ interface CheckoutState {
 }
 
 interface Props {
-  priceKey?: string;
-  quantity?: number;
-  tier?: string;
-  teamId?: string;
+  checkoutBody: CreatePaymentRequestBody;
   locale: string;
 }
 
-export function EmbeddedCheckoutClient({ priceKey, quantity, tier, teamId, locale }: Props) {
+export function EmbeddedCheckoutClient({ checkoutBody, locale }: Props) {
   const [state, setState] = useState<CheckoutState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,22 +29,10 @@ export function EmbeddedCheckoutClient({ priceKey, quantity, tier, teamId, local
   useEffect(() => {
     async function init() {
       try {
-        const body: Record<string, unknown> = {};
-        if (tier) body.tier = tier;
-        if (teamId) body.teamId = teamId;
-        if (priceKey) {
-          if (priceKey.startsWith("candidate_")) {
-            body.candidatePack = priceKey;
-          } else {
-            body.plan = priceKey;
-          }
-        }
-        if (quantity && quantity > 1) body.quantity = quantity;
-
         const res = await fetch("/api/billing/create-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify(checkoutBody),
         });
 
         if (!res.ok) {
@@ -76,7 +62,7 @@ export function EmbeddedCheckoutClient({ priceKey, quantity, tier, teamId, local
       setLoading(false);
     }
     init();
-  }, [tier, teamId, priceKey, quantity, isHu]);
+  }, [checkoutBody, isHu]);
 
   if (loading) {
     return (

@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getServerAuth } from "@/lib/auth-server";
 import { EmbeddedCheckoutClient } from "./EmbeddedCheckoutClient";
+import { resolveCheckoutIntent } from "@/lib/billing/checkout-intent";
 
 export const dynamic = "force-dynamic";
 
@@ -35,20 +36,28 @@ export default async function CheckoutPage({
   });
   if (!profile) redirect("/sign-in");
 
-  // One-time purchase mode (tier param) — no org requirement for self_plus
-  const isOneTimePurchase = !!params.tier;
-  const isSelfTier = params.tier === "self_plus";
+  const intent = resolveCheckoutIntent({
+    tier: params.tier,
+    plan: params.plan,
+    teamId: params.teamId,
+  });
+  if (intent.warnings.length > 0) {
+    console.warn("[Billing/Checkout] Normalized legacy or invalid checkout query params:", {
+      params,
+      warnings: intent.warnings,
+      resolvedBody: intent.body,
+    });
+  }
 
-  if (!isOneTimePurchase) {
+  const isOneTimePurchase = intent.kind === "one_time";
+
+  if (intent.kind === "subscription" || intent.kind === "candidate_pack") {
     // Subscription checkout requires ORG_ADMIN
     const membership = await getActiveOrgMembership(profile.id);
     if (!membership || !hasOrgRole(membership.role, "ORG_ADMIN")) {
       redirect(JOURNEY_HOME_HANDOFF_PATH);
     }
   }
-
-  const priceKey = params.plan ?? "org_monthly";
-  const quantity = params.qty ? Math.max(1, parseInt(params.qty, 10) || 1) : undefined;
 
   const isHu = locale !== "en";
   const eyebrow = isOneTimePurchase
@@ -73,10 +82,7 @@ export default async function CheckoutPage({
         </p>
 
         <EmbeddedCheckoutClient
-          priceKey={isOneTimePurchase ? undefined : priceKey}
-          quantity={quantity}
-          tier={params.tier}
-          teamId={params.teamId}
+          checkoutBody={intent.body}
           locale={locale}
         />
       </main>
