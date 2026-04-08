@@ -35,6 +35,7 @@
     "test:journey": "NODE_OPTIONS='--conditions=react-server' npx tsx --test tests/unit/journey/*.test.ts",
     "test:journey:smoke": "NODE_OPTIONS='--conditions=react-server' npx tsx --test tests/unit/journey/journey-contract.smoke.test.ts",
     "test:acceptance": "NODE_OPTIONS='--conditions=react-server' npx tsx --test tests/integration/acceptance/*.test.ts",
+    "billing:check-keys": "node scripts/check-stripe-keypair.mjs",
     "postinstall": "prisma generate",
     "seed:assessment": "npx tsx scripts/seed-assessment.ts",
     "seed:org-team": "npx tsx scripts/seed-org-team.ts",
