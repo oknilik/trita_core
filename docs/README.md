@@ -36,6 +36,7 @@
 | `nav-convergence-rfc.md` | Navigáció konvergencia RFC |
 | `test-ownership.md` | Teszt fájl ownership és felelősség |
 | `testing-quality-gate.md` | Teszt quality gate szabályok |
+| `sprint-impact-plan-2026-04-08.md` | 1 sprintes prioritási terv (kész/drift/next-3 impact) |
 | `changelog/` | Napi changelog fájlok (dátum szerint) |
 
 ### `audits/` — Egyszeri auditok és ellenőrzések
