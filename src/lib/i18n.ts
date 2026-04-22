@@ -305,9 +305,9 @@ const translations = {
       de: "Forschungsziele",
     },
     goalsItems: {
-      hu: "Megvizsgálni, mennyire egyezik az önértékelés és a külső visszajelzés dimenziónként.|Összehasonlítani a HEXACO és a Big Five modellek kérdésbankjait és eredményeit.|Feltárni, mennyire tartják a résztvevők relevánsnak a kapott személyiségprofilt és a munka világára vonatkozó következtetéseket.|Megvizsgálni, hogy a kapcsolat típusa és időtartama befolyásolja-e a külső visszajelzések pontosságát.|Feltárni, hogy munkahelyi kapcsolatokban (kolléga párok) szisztematikusan eltér-e az önkép és a mások által látott kép – előzetes adatként a csapatdinamikai kutatás következő fázisához.",
-      en: "Examine agreement between self-assessment and ratings from others across dimensions.|Compare the HEXACO and Big Five question banks and results.|Explore how relevant participants find their profile, especially conclusions applied to work.|Investigate whether relationship type and duration moderate rating accuracy.|Explore colleague pairs as preliminary data for the next phase of team dynamics research.",
-      de: "Untersuchen, inwieweit Selbst- und Fremdeinschätzung auf Dimensionsebene übereinstimmen.|HEXACO- und Big-Five-Fragenkataloge und Ergebnisse vergleichen.|Erfassen, wie relevant Teilnehmende ihr Profil finden, insbesondere im Arbeitskontext.|Untersuchen, ob Beziehungstyp und -dauer die Genauigkeit der Fremdeinschätzung beeinflussen.|Kollegenpaare als Vorläuferdaten für die nächste Phase der Teamdynamikforschung untersuchen.",
+      hu: "Megvizsgálni, mennyire egyezik az önértékelés és a külső visszajelzés dimenziónként.|Összehasonlítani a HEXACO, a Big Five és a Trita Six-Factor Inventory (TSFI) modellek kérdésbankjait és eredményeit.|Feltárni, mennyire tartják a résztvevők relevánsnak a kapott személyiségprofilt és a munka világára vonatkozó következtetéseket.|Megvizsgálni, hogy a kapcsolat típusa és időtartama befolyásolja-e a külső visszajelzések pontosságát.|Feltárni, hogy munkahelyi kapcsolatokban (kolléga párok) szisztematikusan eltér-e az önkép és a mások által látott kép – előzetes adatként a csapatdinamikai kutatás következő fázisához.",
+      en: "Examine agreement between self-assessment and ratings from others across dimensions.|Compare the HEXACO, Big Five, and Trita Six-Factor Inventory (TSFI) question banks and results.|Explore how relevant participants find their profile, especially conclusions applied to work.|Investigate whether relationship type and duration moderate rating accuracy.|Explore colleague pairs as preliminary data for the next phase of team dynamics research.",
+      de: "Untersuchen, inwieweit Selbst- und Fremdeinschätzung auf Dimensionsebene übereinstimmen.|HEXACO-, Big-Five- und Trita-Six-Factor-Inventory- (TSFI-) Fragenkataloge und Ergebnisse vergleichen.|Erfassen, wie relevant Teilnehmende ihr Profil finden, insbesondere im Arbeitskontext.|Untersuchen, ob Beziehungstyp und -dauer die Genauigkeit der Fremdeinschätzung beeinflussen.|Kollegenpaare als Vorläuferdaten für die nächste Phase der Teamdynamikforschung untersuchen.",
     },
     designTitle: {
       hu: "Kutatási design",
@@ -315,9 +315,9 @@ const translations = {
       de: "Studiendesign",
     },
     designBody: {
-      hu: "Online, kérdőíves pilot kutatás. Minden résztvevő véletlenszerűen kap egy önértékelő tesztet (HEXACO vagy Big Five), majd opcionálisan ismerősöket hívhat meg külső visszajelzésre.",
-      en: "Online, questionnaire-based pilot study. Each participant completes one randomly assigned self-assessment (HEXACO or Big Five), and can optionally invite people for external feedback.",
-      de: "Online-Fragebogenstudie in der Pilotphase. Jede teilnehmende Person füllt einen zufällig zugewiesenen Selbsteinschätzungsfragebogen aus (HEXACO oder Big Five) und kann optional Personen für eine Fremdeinschätzung einladen.",
+      hu: "Online, kérdőíves pilot kutatás. Minden résztvevő véletlenszerűen kap egy önértékelő tesztet (HEXACO, Big Five vagy TSFI), majd opcionálisan ismerősöket hívhat meg külső visszajelzésre.",
+      en: "Online, questionnaire-based pilot study. Each participant completes one randomly assigned self-assessment (HEXACO, Big Five, or TSFI), and can optionally invite people for external feedback.",
+      de: "Online-Fragebogenstudie in der Pilotphase. Jede teilnehmende Person füllt einen zufällig zugewiesenen Selbsteinschätzungsfragebogen aus (HEXACO, Big Five oder TSFI) und kann optional Personen für eine Fremdeinschätzung einladen.",
     },
     flowTitle: {
       hu: "A kutatás menete",
@@ -325,9 +325,9 @@ const translations = {
       de: "Ablauf",
     },
     flowItems: {
-      hu: "Regisztráció és önkéntes hozzájárulás megadása.|Demográfiai adatok rögzítése (onboarding).|Önértékelő kérdőív kitöltése (HEXACO vagy Big Five – véletlenszerűen kiosztva).|Személyiségprofil megtekintése a dashboardon.|Rövid kutatási visszajelzés kitöltése.|Értékelők meghívása (opcionális) – értesítést küldünk, ha elkészülnek.",
-      en: "Registration and informed consent.|Demographic onboarding (age, gender, education, occupation).|Self-assessment questionnaire (HEXACO or Big Five – randomly assigned).|View your personality profile on the dashboard.|Complete a short research feedback survey.|Invite people for external feedback (optional) – you'll get an email when they finish.",
-      de: "Registrierung und informierte Einwilligung.|Demografisches Onboarding (Alter, Geschlecht, Bildung, Berufsstatus).|Selbsteinschätzungsfragebogen (HEXACO oder Big Five – zufällig zugeteilt).|Persönlichkeitsprofil im Dashboard ansehen.|Kurze Forschungs-Feedback-Befragung ausfüllen.|Personen zur Fremdeinschätzung einladen (optional) – du erhältst eine E-Mail, wenn sie fertig sind.",
+      hu: "Regisztráció és önkéntes hozzájárulás megadása.|Demográfiai adatok rögzítése (onboarding).|Önértékelő kérdőív kitöltése (HEXACO, Big Five vagy TSFI – véletlenszerűen kiosztva).|Személyiségprofil megtekintése a dashboardon.|Rövid kutatási visszajelzés kitöltése.|Értékelők meghívása (opcionális) – értesítést küldünk, ha elkészülnek.",
+      en: "Registration and informed consent.|Demographic onboarding (age, gender, education, occupation).|Self-assessment questionnaire (HEXACO, Big Five, or TSFI – randomly assigned).|View your personality profile on the dashboard.|Complete a short research feedback survey.|Invite people for external feedback (optional) – you'll get an email when they finish.",
+      de: "Registrierung und informierte Einwilligung.|Demografisches Onboarding (Alter, Geschlecht, Bildung, Berufsstatus).|Selbsteinschätzungsfragebogen (HEXACO, Big Five oder TSFI – zufällig zugeteilt).|Persönlichkeitsprofil im Dashboard ansehen.|Kurze Forschungs-Feedback-Befragung ausfüllen.|Personen zur Fremdeinschätzung einladen (optional) – du erhältst eine E-Mail, wenn sie fertig sind.",
     },
     instrumentsTitle: {
       hu: "Mérőeszközök",
