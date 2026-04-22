@@ -335,9 +335,9 @@ const translations = {
       de: "Instrumente",
     },
     instrumentsItems: {
-      hu: "HEXACO-PI-R kérdésbank (önértékelő és külső értékelő változat).|Big Five Aspect Scales (BFAS) kérdésbank (önértékelő és külső értékelő változat).|Minden résztvevő véletlenszerűen kap egyet a kettő közül.",
-      en: "HEXACO-PI-R item set (self-report and external rating versions).|Big Five Aspect Scales (BFAS) item set (self-report and external rating versions).|Each participant is randomly assigned to one of the two instruments.",
-      de: "HEXACO-PI-R Fragenkatalog (Selbst- und Fremdeinschätzung).|Big Five Aspect Scales (BFAS) Fragenkatalog (Selbst- und Fremdeinschätzung).|Jede Person erhält zufällig eines der beiden Instrumente.",
+      hu: "HEXACO-PI-R kérdésbank (önértékelő és külső értékelő változat).|Big Five Aspect Scales (BFAS) kérdésbank (önértékelő és külső értékelő változat).|Trita Six-Factor Inventory (TSFI) kérdésbank (önértékelő és külső értékelő változat).|Minden résztvevő véletlenszerűen kap egyet a három közül.",
+      en: "HEXACO-PI-R item set (self-report and external rating versions).|Big Five Aspect Scales (BFAS) item set (self-report and external rating versions).|Trita Six-Factor Inventory (TSFI) item set (self-report and external rating versions).|Each participant is randomly assigned to one of the three instruments.",
+      de: "HEXACO-PI-R Fragenkatalog (Selbst- und Fremdeinschätzung).|Big Five Aspect Scales (BFAS) Fragenkatalog (Selbst- und Fremdeinschätzung).|Trita Six-Factor Inventory (TSFI) Fragenkatalog (Selbst- und Fremdeinschätzung).|Jede Person erhält zufällig eines der drei Instrumente.",
     },
     dataTitle: {
       hu: "Adatkezelés röviden",
