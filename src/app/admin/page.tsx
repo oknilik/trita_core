@@ -10,6 +10,7 @@ import { AdminTableSection } from "@/app/admin/_components/AdminTableSection";
 import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
 import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
 import { AdminDraftReminderSection } from "@/app/admin/_components/AdminDraftReminderSection";
+import { AdminOrgAccessSection } from "@/app/admin/_components/AdminOrgAccessSection";
 import { AdminTabNav } from "@/app/admin/_components/AdminTabNav";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
@@ -41,13 +42,81 @@ export default async function AdminPage({
   await requireAdmin();
   const locale = await getServerLocale();
   const { tab } = await searchParams;
-  const activeTab = tab === "research" || tab === "reminders" ? tab : "overview";
+  const activeTab =
+    tab === "research" || tab === "reminders" || tab === "orgs" ? tab : "overview";
 
   const now = Date.now();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
   const threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000);
   const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
+
+  // Orgs tab — manual access provisioning (consulting mode)
+  if (activeTab === "orgs") {
+    const orgs = await prisma.organization.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        createdAt: true,
+        _count: { select: { members: true } },
+        subscription: {
+          select: {
+            status: true,
+            planType: true,
+            trialEndsAt: true,
+            currentPeriodEnd: true,
+            candidateCredits: true,
+          },
+        },
+      },
+    });
+
+    return (
+      <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <FadeIn>
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">// admin</p>
+            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
+              {t("admin.title", locale)}
+            </h1>
+            <p className="mt-2 text-sm text-ink-body">
+              {t("admin.subtitle", locale)}
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={0.05}>
+            <Suspense>
+              <AdminTabNav />
+            </Suspense>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <AdminOrgAccessSection
+              orgs={orgs.map((org) => ({
+                id: org.id,
+                name: org.name,
+                status: org.status,
+                createdAt: org.createdAt.toISOString(),
+                memberCount: org._count.members,
+                subscription: org.subscription
+                  ? {
+                      status: org.subscription.status,
+                      planType: org.subscription.planType,
+                      trialEndsAt: org.subscription.trialEndsAt?.toISOString() ?? null,
+                      currentPeriodEnd:
+                        org.subscription.currentPeriodEnd?.toISOString() ?? null,
+                      candidateCredits: org.subscription.candidateCredits,
+                    }
+                  : null,
+              }))}
+            />
+          </FadeIn>
+        </div>
+      </main>
+    );
+  }
 
   // Reminders tab — only fetch what's needed
   if (activeTab === "reminders") {

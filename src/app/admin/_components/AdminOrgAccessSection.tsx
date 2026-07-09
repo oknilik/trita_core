@@ -1,0 +1,207 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+interface OrgRow {
+  id: string;
+  name: string;
+  status: string;
+  createdAt: string;
+  memberCount: number;
+  subscription: {
+    status: string;
+    planType: string | null;
+    trialEndsAt: string | null;
+    currentPeriodEnd: string | null;
+    candidateCredits: number;
+  } | null;
+}
+
+interface Props {
+  orgs: OrgRow[];
+}
+
+type RowState = { loading: boolean; error: string | null };
+
+const PLAN_OPTIONS = ["team", "org", "scale"] as const;
+
+function subscriptionLabel(sub: OrgRow["subscription"]): {
+  text: string;
+  tone: "active" | "trial" | "off";
+} {
+  if (!sub || sub.status === "none") return { text: "nincs hozzáférés", tone: "off" };
+  if (sub.status === "active") {
+    const until = sub.currentPeriodEnd
+      ? new Date(sub.currentPeriodEnd).toLocaleDateString("hu-HU")
+      : "—";
+    return { text: `aktív · ${sub.planType ?? "?"} · ${until}-ig`, tone: "active" };
+  }
+  if (sub.status === "trialing") {
+    const until = sub.trialEndsAt
+      ? new Date(sub.trialEndsAt).toLocaleDateString("hu-HU")
+      : "—";
+    return { text: `trial · ${until}-ig`, tone: "trial" };
+  }
+  return { text: sub.status, tone: "off" };
+}
+
+export function AdminOrgAccessSection({ orgs }: Props) {
+  const router = useRouter();
+  const [rowState, setRowState] = useState<Record<string, RowState>>({});
+  const [planChoice, setPlanChoice] = useState<Record<string, string>>({});
+  const [monthsChoice, setMonthsChoice] = useState<Record<string, number>>({});
+
+  async function callAction(
+    orgId: string,
+    action: "activate" | "trial" | "extend" | "deactivate",
+  ) {
+    setRowState((s) => ({ ...s, [orgId]: { loading: true, error: null } }));
+    try {
+      const res = await fetch("/api/admin/org-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orgId,
+          action,
+          planType: (planChoice[orgId] ?? "team") as "team" | "org" | "scale",
+          months: monthsChoice[orgId] ?? 12,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Hiba történt");
+      }
+      setRowState((s) => ({ ...s, [orgId]: { loading: false, error: null } }));
+      router.refresh();
+    } catch (err) {
+      setRowState((s) => ({
+        ...s,
+        [orgId]: {
+          loading: false,
+          error: err instanceof Error ? err.message : "Hiba történt",
+        },
+      }));
+    }
+  }
+
+  return (
+    <section className="rounded-xl border border-sand bg-white p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+          Szervezeti hozzáférések
+        </h2>
+        <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
+          {orgs.length} szervezet
+        </span>
+      </div>
+
+      <p className="mb-5 text-xs text-muted">
+        Kézi aktiválás — a fizetés a platformon kívül történik (tanácsadói számlázás).
+      </p>
+
+      {orgs.length === 0 ? (
+        <p className="text-sm text-muted">Még nincs szervezet.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {orgs.map((org) => {
+            const state = rowState[org.id] ?? { loading: false, error: null };
+            const sub = subscriptionLabel(org.subscription);
+            return (
+              <div
+                key={org.id}
+                className="rounded-lg border border-sand bg-cream p-4"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-ink">{org.name}</p>
+                    <p className="text-xs text-muted">
+                      {org.memberCount} tag ·{" "}
+                      <span
+                        className={
+                          sub.tone === "active"
+                            ? "font-semibold text-emerald-700"
+                            : sub.tone === "trial"
+                              ? "font-semibold text-amber-700"
+                              : "text-muted"
+                        }
+                      >
+                        {sub.text}
+                      </span>
+                      {org.subscription
+                        ? ` · ${org.subscription.candidateCredits} kredit`
+                        : ""}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <select
+                      value={planChoice[org.id] ?? "team"}
+                      onChange={(e) =>
+                        setPlanChoice((s) => ({ ...s, [org.id]: e.target.value }))
+                      }
+                      className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
+                      aria-label="Csomag"
+                    >
+                      {PLAN_OPTIONS.map((p) => (
+                        <option key={p} value={p}>
+                          {p}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={monthsChoice[org.id] ?? 12}
+                      onChange={(e) =>
+                        setMonthsChoice((s) => ({
+                          ...s,
+                          [org.id]: Number(e.target.value),
+                        }))
+                      }
+                      className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
+                      aria-label="Időtartam"
+                    >
+                      {[1, 3, 6, 12].map((m) => (
+                        <option key={m} value={m}>
+                          {m} hó
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      disabled={state.loading}
+                      onClick={() => callAction(org.id, "activate")}
+                      className="min-h-[36px] rounded-lg bg-sage px-3 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                    >
+                      Aktiválás
+                    </button>
+                    <button
+                      type="button"
+                      disabled={state.loading}
+                      onClick={() => callAction(org.id, "trial")}
+                      className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                    >
+                      Trial
+                    </button>
+                    {org.subscription && org.subscription.status !== "none" && (
+                      <button
+                        type="button"
+                        disabled={state.loading}
+                        onClick={() => callAction(org.id, "deactivate")}
+                        className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
+                      >
+                        Lezárás
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {state.error && (
+                  <p className="mt-2 text-xs text-rose-600">{state.error}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
