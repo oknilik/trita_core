@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["iridaceous-rickie-overloath.ngrok-free.dev"],
+  allowedDevOrigins: ["iridaceous-rickie-overloath.ngrok-free.dev", "192.168.173.183"],
+
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "doodleipsum.com" },
+    ],
+  },
 
   // HTTP headers for resource hints (preconnect, dns-prefetch)
   async headers() {

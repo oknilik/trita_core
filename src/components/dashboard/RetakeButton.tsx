@@ -21,7 +21,7 @@ export function RetakeButton() {
     const url = new URL(window.location.href);
     url.searchParams.delete("retake");
     const nextPath = `${url.pathname}${url.search}${url.hash}`;
-    window.history.replaceState({}, "", nextPath || "/dashboard");
+    window.history.replaceState({}, "", nextPath || "/profile/results");
     cleanedUrl.current = true;
   }, [shouldAutoOpen]);
 
@@ -30,7 +30,7 @@ export function RetakeButton() {
       <button
         type="button"
         onClick={() => setShowModal(true)}
-        className="flex min-h-[44px] items-center rounded-lg border border-indigo-600 bg-transparent px-6 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
+        className="flex min-h-[44px] items-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-bronze transition hover:bg-sage-soft"
       >
         {t("dashboard.retake", locale)}
       </button>

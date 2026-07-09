@@ -3,65 +3,83 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { t } from "@/lib/i18n";
+import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
+import { resolveJourney } from "@/lib/journey/engine";
+import { OrgOnboardingWizard } from "./OrgOnboardingWizard";
 import { OnboardingClient } from "./OnboardingClient";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: t("meta.onboardingTitle", locale),
-    robots: {
-      index: false,
-      follow: false,
-      nocache: true,
-      googleBot: {
-        index: false,
-        follow: false,
-        noimageindex: true,
-      },
-    },
+    title: locale === "hu" ? "Beállítás | trita" : "Setup | trita",
+    robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false, noimageindex: true } },
   };
 }
 
-export default async function OnboardingPage() {
+export default async function OnboardingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ intent?: string }>;
+}) {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
+
+  const params = await searchParams;
+  const queryIntent = params?.intent;
+  const metadataIntent = user.unsafeMetadata?.intent as string | undefined;
+  const explicitIntent = normalizeJourneyIntent(queryIntent ?? metadataIntent);
+  // intent forrása: query param → Clerk unsafeMetadata → default "explore"
+  const intent = queryIntent ?? metadataIntent ?? "explore";
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: user.id },
     select: { id: true, onboardedAt: true, deleted: true },
   });
 
-  // Race condition: deleted profile still has clerkId set — detach it and create fresh
+  // Race condition: deleted profile → detach and recreate
   if (profile?.deleted) {
-    await prisma.userProfile.update({
-      where: { id: profile.id },
-      data: { clerkId: null },
-    });
-    await prisma.userProfile.upsert({
+    await prisma.userProfile.update({ where: { id: profile.id }, data: { clerkId: null } });
+    const recreated = await prisma.userProfile.upsert({
       where: { clerkId: user.id },
-      create: {
-        clerkId: user.id,
-        email: user.primaryEmailAddress?.emailAddress ?? undefined,
-      },
+      create: { clerkId: user.id, email: user.primaryEmailAddress?.emailAddress ?? undefined },
       update: {},
+      select: { id: true },
     });
-    return <OnboardingClient />;
+    if (explicitIntent) {
+      await setJourneyIntentForProfile(recreated.id, explicitIntent);
+    }
+    return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;
   }
 
-  if (profile?.onboardedAt) redirect("/dashboard");
-
-  // Profile may not exist yet (webhook race) — create it
+  // Profile nem létezik még (webhook race) → create
   if (!profile) {
-    await prisma.userProfile.upsert({
+    const created = await prisma.userProfile.upsert({
       where: { clerkId: user.id },
-      create: {
-        clerkId: user.id,
-        email: user.primaryEmailAddress?.emailAddress ?? undefined,
-      },
+      create: { clerkId: user.id, email: user.primaryEmailAddress?.emailAddress ?? undefined },
       update: {},
+      select: { id: true },
     });
+    if (explicitIntent) {
+      await setJourneyIntentForProfile(created.id, explicitIntent);
+    }
+    return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;
   }
 
-  return <OnboardingClient />;
+  if (explicitIntent) {
+    await setJourneyIntentForProfile(profile.id, explicitIntent);
+  }
+
+  const journey = await resolveJourney(profile.id, {
+    entryIntent: explicitIntent ?? undefined,
+    entryPoint: "onboarding_page",
+  });
+  if (
+    profile.onboardedAt ||
+    journey.currentContext !== "self-only" ||
+    journey.reason === "pending_join"
+  ) {
+    redirect(journey.destination);
+  }
+
+  return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;
 }

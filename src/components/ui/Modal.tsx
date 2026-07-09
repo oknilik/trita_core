@@ -9,8 +9,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   description?: string;
+  eyebrow?: string;
   children?: React.ReactNode;
   variant?: "default" | "danger";
+  design?: "default" | "brand";
   hideCloseButton?: boolean;
   hideHeader?: boolean;
 }
@@ -20,12 +22,15 @@ export function Modal({
   onClose,
   title,
   description,
+  eyebrow,
   children,
   variant = "default",
+  design = "brand",
   hideCloseButton = false,
   hideHeader = false,
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
+  const isBrand = design === "brand";
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -37,6 +42,7 @@ export function Modal({
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -56,7 +62,12 @@ export function Modal({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+          className={[
+            "fixed inset-0 z-50 flex justify-center",
+            isBrand ? "items-end p-0 sm:items-center sm:p-4" : "items-center p-4",
+          ].join(" ")}
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -64,32 +75,51 @@ export function Modal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className={[
+              "absolute inset-0",
+              isBrand ? "bg-black/35" : "bg-black/40 backdrop-blur-sm",
+            ].join(" ")}
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: isBrand ? 0.985 : 0.95, y: isBrand ? 12 : 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className={`relative w-full max-w-md overflow-hidden rounded-2xl border bg-white shadow-2xl ${
-              variant === "danger" ? "border-rose-200/70" : "border-gray-100"
-            }`}
+            exit={{ opacity: 0, scale: isBrand ? 0.985 : 0.95, y: isBrand ? 12 : 10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={[
+              "relative w-full overflow-hidden border",
+              isBrand
+                ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+                : "max-w-md rounded-2xl bg-white shadow-2xl",
+              variant === "danger"
+                ? (isBrand ? "border-[#eadccf]" : "border-rose-200/70")
+                : (isBrand ? "border-sand" : "border-gray-100"),
+            ].join(" ")}
           >
             <div
-              className={`h-1 w-full ${
+              className={[
+                "h-1 w-full",
                 variant === "danger"
-                  ? "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400"
-                  : "bg-gradient-to-r from-indigo-400 via-indigo-500 to-sky-400"
-              }`}
+                  ? (isBrand
+                    ? "bg-[var(--color-accent-primary)]"
+                    : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
+                  : (isBrand
+                    ? "bg-sage"
+                    : "bg-gradient-to-r from-indigo-400 via-indigo-500 to-sky-400"),
+              ].join(" ")}
             />
 
             {!hideCloseButton && (
               <button
                 type="button"
                 onClick={onClose}
-                className="absolute right-4 top-5 rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                className={[
+                  "absolute right-4 top-5 rounded-lg p-1 transition",
+                  isBrand
+                    ? "text-ink-body/55 hover:bg-cream hover:text-ink-body"
+                    : "text-gray-400 hover:bg-gray-100 hover:text-gray-600",
+                ].join(" ")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -102,15 +132,27 @@ export function Modal({
               </button>
             )}
 
-            <div className={hideCloseButton ? "p-6" : "p-6 pr-12"}>
+            <div
+              className={hideCloseButton
+                ? "p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
+                : "p-4 pr-11 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
+            >
               {!hideHeader && (
-                <div className="flex items-start gap-3">
+                <div
+                  className={
+                    isBrand
+                      ? "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
+                      : "flex items-start gap-3"
+                  }
+                >
                   <div
-                    className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                    className={[
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                      !isBrand ? "mt-0.5" : "",
                       variant === "danger"
-                        ? "bg-rose-100 text-rose-700"
-                        : "bg-indigo-100 text-indigo-700"
-                    }`}
+                        ? (isBrand ? "bg-[#f8eee8] text-[#8c4a31]" : "bg-rose-100 text-rose-700")
+                        : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
+                    ].join(" ")}
                   >
                     {variant === "danger" ? (
                       <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -122,24 +164,43 @@ export function Modal({
                       </svg>
                     )}
                   </div>
-                  <div>
+                  <div className={isBrand ? "text-center" : undefined}>
+                    {eyebrow && (
+                      <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.18em] text-bronze/80">
+                        {eyebrow}
+                      </p>
+                    )}
                     <h2
-                      className={`text-lg font-semibold ${
-                        variant === "danger" ? "text-rose-900" : "text-gray-900"
-                      }`}
+                      className={[
+                        "text-lg font-semibold",
+                        isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
+                        variant === "danger"
+                          ? (isBrand ? "text-ink" : "text-rose-900")
+                          : (isBrand ? "text-ink" : "text-gray-900"),
+                      ].join(" ")}
                     >
                       {title}
                     </h2>
                     {description && (
-                      <p
-                        className={`mt-2 text-sm leading-relaxed ${
-                          variant === "danger" ? "text-rose-700" : "text-gray-600"
-                        }`}
-                      >
-                        {description}
-                      </p>
+                      isBrand && variant === "danger" ? (
+                        <div className="mt-3 rounded-xl border border-[#eadccf] bg-[#fcf5ef] px-3 py-2.5">
+                          <p className="text-sm leading-relaxed text-ink-body">{description}</p>
+                        </div>
+                      ) : (
+                        <p
+                          className={[
+                            "mt-2 text-sm leading-relaxed",
+                            variant === "danger"
+                              ? (isBrand ? "text-ink-body" : "text-rose-700")
+                              : (isBrand ? "text-ink-body" : "text-gray-600"),
+                          ].join(" ")}
+                        >
+                          {description}
+                        </p>
+                      )
                     )}
                   </div>
+                  {isBrand ? <div aria-hidden className="hidden h-9 w-9 sm:block" /> : null}
                 </div>
               )}
 
@@ -189,18 +250,19 @@ export function ConfirmModal({
         onClose={onClose}
         title=""
         variant="default"
+        design="brand"
         hideCloseButton
         hideHeader
       >
         <div className="flex flex-col items-center justify-center py-10 text-center">
-          <div className="text-5xl leading-none">🤗</div>
-          <p className="mt-4 text-base font-semibold text-indigo-700">{loadingNote}</p>
-          <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-gray-100 md:w-80">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-sand border-t-sage" />
+          <p className="mt-4 text-base font-semibold text-ink">{loadingNote}</p>
+          <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-cream md:w-80">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ duration: loadingDurationMs / 1000, ease: "linear" }}
-              className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+              className="h-full rounded-full bg-sage"
             />
           </div>
         </div>
@@ -215,13 +277,14 @@ export function ConfirmModal({
       title={title}
       description={description}
       variant={variant}
+      design="brand"
     >
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
+      <div className="flex flex-col-reverse items-center gap-2 sm:flex-row sm:items-center sm:justify-center sm:gap-3">
         <button
           type="button"
           onClick={onClose}
           disabled={isLoading}
-          className="min-h-[44px] rounded-lg border border-gray-100 bg-white px-5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-[44px] rounded-[10px] border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50"
         >
           {cancelText}
         </button>
@@ -229,10 +292,10 @@ export function ConfirmModal({
           type="button"
           onClick={onConfirm}
           disabled={isLoading}
-          className={`min-h-[48px] rounded-lg px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 ${
+          className={`min-h-[44px] rounded-[10px] px-5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 ${
             variant === "danger"
-              ? "bg-rose-600 hover:bg-rose-700"
-              : "bg-gradient-to-r from-indigo-600 to-purple-600"
+              ? "bg-[#8c4a31] hover:bg-[#7a3f2a]"
+              : "bg-sage hover:bg-sage-dark"
           }`}
         >
           {isLoading && loadingText ? loadingText : confirmText}

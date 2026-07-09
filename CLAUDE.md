@@ -1,18 +1,21 @@
 # Trita - Project Context
 
 ## What is this project?
-**Trita** is a research platform for a university thesis examining the comparative validity
-and observer agreement of modern trait-based personality assessment models.
+**Trita** is a 3-layer behavioral intelligence platform with dual academic + product purpose.
 
-The primary focus is on **HEXACO-PI-R**, a **theory-consistent modified HEXACO** (reduced,
-context-adapted item set), and **Big Five Aspect Scales (BFAS)**.
+**Layer 1 — Research (KÉSZ / production)**: University thesis platform. Comparative validity of
+HEXACO-PI-R, modified HEXACO, and BFAS. Randomly assigns one test per user (priority-balanced),
+collects self + observer assessments, generates comparative results. Goal: ~50 completions per
+core test type with observer validation.
 
-The app randomly assigns one test type per user (priority-balanced distribution favoring core
-instruments), collects self-assessments and observer (peer) assessments, and provides comparative
-results. Goal: ~50 completions per core test type, with observer validation.
+**Layer 2 — B2B/Org (IN PROGRESS — `PHASE_2_redesign` branch)**: Multi-tenant organization
+management, 360° campaign orchestration, team analytics, and Stripe-gated subscription billing.
+Organizations can invite members, run structured 360° feedback campaigns, and view team heatmaps.
 
-Long-term vision (post-research): Translate empirically validated personality signals into
-practical decision-support tools for career and team contexts.
+**Layer 3 — Coach/Career (EJTVE)**: Not being built. Insufficient value/complexity tradeoff.
+
+**Active branch**: `PHASE_2_redesign` — 76+ files, 9400+ lines, significantly diverged from `main`.
+All new B2B features live here. Design system also upgraded to Design B in this branch.
 
 ---
 
@@ -64,12 +67,25 @@ codebase/
 │   │   │   ├── layout.tsx
 │   │   │   ├── page.tsx
 │   │   │   └── loading.tsx
-│   │   ├── admin/                    # Admin dashboard (research stats)
+│   │   ├── admin/                    # Admin dashboard (research stats, Design B)
 │   │   │   ├── page.tsx
 │   │   │   └── _components/
 │   │   │       ├── AdminStatCard.tsx
 │   │   │       ├── AdminMetricsGrid.tsx
+│   │   │       ├── AdminTabNav.tsx
 │   │   │       └── AdminTableSection.tsx
+│   │   ├── org/[id]/                 # Org dashboard (Design B)
+│   │   │   ├── page.tsx              # Org overview + campaign list
+│   │   │   └── campaigns/
+│   │   │       ├── page.tsx          # Campaigns index (redirect)
+│   │   │       └── [campaignId]/
+│   │   │           └── page.tsx      # Campaign detail + participants
+│   │   ├── billing/                  # Stripe billing (Design B)
+│   │   │   ├── page.tsx              # Billing overview
+│   │   │   └── upgrade/page.tsx      # Upgrade / paywall gate
+│   │   ├── apply/[token]/page.tsx    # Org invite acceptance
+│   │   ├── team/[id]/page.tsx        # Team analytics / heatmap
+│   │   ├── blog/                     # Blog (static content)
 │   │   ├── privacy/page.tsx          # Privacy policy
 │   │   ├── research/page.tsx         # Research info page
 │   │   ├── api/
@@ -96,6 +112,13 @@ codebase/
 │   │   │   ├── survey/route.ts           # POST research survey responses
 │   │   │   ├── features/
 │   │   │   │   └── interest/route.ts     # POST feature interest (fake door validation)
+│   │   │   ├── org/[id]/
+│   │   │   │   ├── route.ts              # GET org data, POST create campaign
+│   │   │   │   ├── campaigns/route.ts    # GET campaigns list
+│   │   │   │   └── campaigns/[campaignId]/route.ts  # POST add participants, PATCH status
+│   │   │   ├── billing/
+│   │   │   │   ├── checkout/route.ts     # POST create Stripe checkout session
+│   │   │   │   └── portal/route.ts       # POST create Stripe billing portal session
 │   │   │   └── webhooks/clerk/route.ts   # Clerk event sync
 │   │   ├── layout.tsx                # Root layout + ClerkProvider + generateMetadata (i18n)
 │   │   ├── page.tsx                  # Landing page (research context)
@@ -141,6 +164,10 @@ codebase/
 │   │   │   ├── AssessmentDoodle.tsx
 │   │   │   ├── DashboardDoodle.tsx
 │   │   │   └── ProfileDoodle.tsx
+│   │   ├── org/
+│   │   │   ├── CampaignList.tsx      # Campaign list with inline AddMembersPanel
+│   │   │   ├── CampaignStatusButton.tsx  # Status transition button (DRAFT→ACTIVE→CLOSED)
+│   │   │   └── AddParticipantButton.tsx  # Checkbox member picker for campaign participants
 │   │   ├── ui/
 │   │   │   ├── Modal.tsx             # Reusable modal/dialog
 │   │   │   ├── Picker.tsx            # Date/option picker
@@ -155,7 +182,9 @@ codebase/
 │   │   └── UserMenu.tsx
 │   ├── lib/
 │   │   ├── prisma.ts                 # Singleton Prisma client
-│   │   ├── auth.ts                   # Authentication helpers
+│   │   ├── auth.ts                   # Authentication helpers (requireOrgContext, hasOrgRole)
+│   │   ├── subscription.ts           # getOrgSubscription, hasAccess, trialDaysLeft
+│   │   ├── require-active-subscription.ts  # Server guard: redirect to /billing/upgrade if no active sub
 │   │   ├── seo.ts                    # SEO metadata helpers
 │   │   ├── assignTestType.ts         # Priority-balanced test type assignment (core first)
 │   │   ├── scoring.ts                # Scoring logic per test type
@@ -180,7 +209,8 @@ codebase/
 │   ├── schema.prisma
 │   └── migrations/
 ├── scripts/
-│   └── seed-assessment.ts            # CLI: seed test data with optional observers
+│   ├── seed-assessment.ts            # CLI: seed test data with optional observers
+│   └── seed-org-team.ts              # CLI: seed org + members + tests + observers + campaign + subscription
 ├── .env                              # Environment variables (NEVER commit)
 ├── CLAUDE.md                         # This file
 └── package.json
@@ -288,6 +318,48 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 - Collected via `ResearchSurvey` component on dashboard
 - API: `POST /api/survey`
 
+### B2B/Org Layer
+
+#### Organization Management
+- Route: `/org/[id]` — org overview, member list, active campaign banner, campaign list
+- `requireOrgContext(orgId)` — server-side auth guard: validates membership + returns `{ profileId, role, org }`
+- `hasOrgRole(role, minRole)` — hierarchical check: ORG_ADMIN > ORG_MANAGER > ORG_MEMBER
+- Members: `OrganizationMember.@@unique([userId])` — one user in one org at a time
+- Org invite flow: `OrganizationPendingInvite` → `/apply/[token]`
+
+#### Subscription / Billing
+- Stripe-based billing, one `Subscription` record per org
+- `requireActiveSubscription()` — server guard used on all org-gated pages; redirects to `/billing/upgrade`
+- `hasAccess(sub)`: active OR (trialing AND trialEndsAt > now)
+- Billing portal: `/billing` — manage, upgrade, cancel
+- Seed script auto-creates `active` subscription (1-year `currentPeriodEnd`)
+
+#### 360° Campaigns
+- Status flow: DRAFT → ACTIVE → CLOSED (closing is permanent, no undo)
+- `CampaignList` — inline add-member panel (`AddMembersPanel`), optimistic count update, `router.refresh()`
+- `CampaignStatusButton` — manager-only status transition with confirmation for CLOSED
+- `AddParticipantButton` — checkbox picker for available org members not yet in campaign
+- Active campaign banner on org page: emerald, anchor-scrolls to `#campaigns`
+- Campaign detail: `/org/[id]/campaigns/[campaignId]` — participants list + add participants + status transition
+- Only managers (`hasOrgRole(role, "ORG_MANAGER")`) can add participants or change status
+- API: `POST /api/org/[id]/campaigns/[campaignId]` — add participants (`{ userIds }`)
+- API: `PATCH /api/org/[id]/campaigns/[campaignId]` — status transition (`{ status }`)
+
+#### Teams
+- `Team` + `TeamMember` models for sub-org groupings
+- Team analytics route: `/team/[id]` — heatmap, insights
+- `TeamHeatmap`, `TeamInsights` components
+
+#### Seed Script (org)
+```bash
+pnpm seed:org-team --email user@example.com --members 6 --clean
+```
+- Creates org, active subscription, N fake members with full profiles
+- Seeds completed HEXACO assessments for all members
+- Seeds observer invitations (2 per member, COMPLETED)
+- Seeds 360° campaign (ACTIVE, all members as participants)
+- `--clean`: removes existing org/data for that email before re-seeding
+
 ### Fake Door Feature Validation
 - `UpcomingFeaturesCTA` component shows upcoming features (team analysis, communication insights, 360° feedback)
 - Clicking → records interest in `FeatureInterest` table
@@ -296,16 +368,25 @@ Ez a lista bővíthető — új teszttípus hozzáadásához: enum bővítés + 
 - API: `POST /api/features/interest`
 
 ### Admin Dashboard
-- Route: `/admin` — research statistics and overview
-- Components: `AdminStatCard`, `AdminMetricsGrid`, `AdminTableSection`
-- Shows aggregate data for research monitoring
+- Route: `/admin` — research statistics and monitoring
+- **Design**: Design B (trita B tokens — see Design System section)
+- **Tab navigation**: `AdminTabNav` — 3 tabs: Áttekintés / Kutatás / Emlékeztetők
+  - Active tab: `text-[#c8410a]` underline; inactive: `text-[#a09a90]`
+- **Components**:
+  - `AdminStatCard` — stat card with `borderTopColor: "#c8410a"` accent; no `color` prop
+  - `AdminMetricsGrid` — grid of `AdminStatCard` components
+  - `AdminTableSection` — tabular data display
+- Page eyebrow: `font-mono text-xs uppercase tracking-widest text-[#c8410a]` — `// admin`
+- Page heading: `font-playfair text-3xl text-[#1a1814]`
 
 ### API Error Handling
 - API routes return short error codes (e.g., `"INVITE_LIMIT_REACHED"`, `"INVALID_TOKEN"`)
 - Client localizes via `t(\`error.${code}\`, locale)` with fallback to generic error message
 - Error codes in `i18n.ts`: `NO_TEST_TYPE`, `INVITE_LIMIT_REACHED`, `SELF_INVITE`, `INVALID_TOKEN`,
   `ALREADY_USED`, `INVITE_CANCELED`, `INVITE_EXPIRED`, `ANSWER_COUNT_MISMATCH`, `DUPLICATE_ANSWER`,
-  `MISSING_ANSWER`, `INVALID_LIKERT_ANSWER`, `EMAIL_SEND_FAILED`
+  `MISSING_ANSWER`, `INVALID_LIKERT_ANSWER`, `EMAIL_SEND_FAILED`, `FORBIDDEN`, `INVALID_INPUT`
+- B2B/Org API routes return `{ error: "FORBIDDEN" }` (403) for role/access violations
+- `INVALID_INPUT` used for Zod parse failures on org/campaign routes
 
 ### Assessment UX
 - **Server-side draft sync**: answers saved to `AssessmentDraft` (DB) via `/api/assessment/draft`; also mirrored to `trita_draft_{testType}` localStorage
@@ -371,6 +452,10 @@ pnpm seed:assessment --email user@example.com --type HEXACO --observers 3 --clea
 - `TestType`: HEXACO, HEXACO_MODIFIED, BIG_FIVE
 - `RelationshipType`: FRIEND, COLLEAGUE, FAMILY, PARTNER, OTHER
 - `InvitationStatus`: PENDING, COMPLETED, EXPIRED, CANCELED
+- `OrgRole`: ORG_ADMIN, ORG_MANAGER, ORG_MEMBER (hierarchical — ORG_ADMIN > ORG_MANAGER > ORG_MEMBER)
+- `OrgStatus`: ACTIVE, SUSPENDED
+- `SubscriptionStatus`: trialing, active, past_due, canceled, unpaid, none
+- `CampaignStatus`: DRAFT, ACTIVE, CLOSED (irreversible flow — no going back)
 
 ### Models
 
@@ -409,6 +494,39 @@ pnpm seed:assessment --email user@example.com --type HEXACO --observers 3 --clea
 **FeatureInterest** — fake door validation
 - id, userProfileId, featureKey ("team", "comm", "360"), timestamp
 - Unique: (userProfileId, featureKey)
+
+**Organization** — multi-tenant org unit
+- id, name, slug (unique), status (OrgStatus), createdAt
+- Relations: members, pendingInvites, subscription, campaigns, teams
+
+**OrganizationMember** — org membership
+- id, orgId, userId, role (OrgRole), joinedAt
+- `@@unique([userId])` — one user can only be in ONE org at a time
+- Auth helpers: `requireOrgContext(orgId)` → `{ profileId, role, org }`, `hasOrgRole(role, minRole)`
+
+**OrganizationPendingInvite** — email-based invite to join org
+- id, orgId, email, role, token (unique), expiresAt, createdAt
+
+**Team** — sub-unit within an org (for team analytics/heatmap)
+- id, orgId, name, createdAt
+
+**TeamMember** — user in a team
+- id, teamId, userId, joinedAt
+- `@@unique([teamId, userId])`
+
+**Subscription** — Stripe billing record per org
+- id, orgId (unique), stripeCustomerId, stripeSubscriptionId, stripePriceId
+- status (SubscriptionStatus), trialEndsAt, currentPeriodEnd, cancelAtPeriodEnd
+- Access guard: `requireActiveSubscription()` → redirects to `/billing/upgrade` if no active/trial sub
+- `hasAccess(sub)`: returns true if `status === "active"` OR (`status === "trialing"` AND `trialEndsAt > now`)
+
+**Campaign** — 360° feedback campaign within an org
+- id, orgId, creatorId, name, description, status (CampaignStatus), createdAt, closedAt
+- Status flow: DRAFT → ACTIVE → CLOSED (closing is permanent)
+
+**CampaignParticipant** — user added to a campaign
+- id, campaignId, userId, addedAt
+- `@@unique([campaignId, userId])`
 
 ---
 
@@ -485,205 +603,173 @@ Soft delete / anonymization. When a user deletes their account:
 
 ## Design System
 
-### Color Palette
+Two design systems coexist. **Design A** is legacy (research/self layer). **Design B** is active
+for all new pages (B2B/org layer, admin). When editing any org/admin/billing/campaign page,
+always use Design B tokens.
 
-**Brand (Primary)**
-| Token | Tailwind | Usage |
-|-------|----------|-------|
-| Primary | `indigo-600` | Buttons, links, active states |
-| Primary hover | `indigo-700` | Button hover |
-| Primary light | `indigo-50` / `indigo-100` | Backgrounds, badges |
-| Primary text | `indigo-500` | Labels, tags |
-| Accent | `purple-500` / `purple-600` | Gradients, secondary accents |
+---
 
-**Neutral**
-| Token | Tailwind | Usage |
-|-------|----------|-------|
-| Background | `white` | Page/card backgrounds |
-| Surface | `gray-50` | Input bg, section bg, cards |
-| Border | `gray-100` | All borders, dividers |
-| Border dark | `gray-200` | Stronger borders, disabled bg |
-| Text primary | `gray-900` | Headings, main content |
-| Text body | `gray-600` | Paragraphs, descriptions |
-| Text secondary | `gray-500` | Captions, metadata, labels |
-| Text label | `gray-700` | Form labels, nav items |
-| Disabled text | `gray-400` | Disabled button text |
+### Design A — Legacy (research/self layer)
 
-**Semantic**
-| Token | Tailwind | Usage |
-|-------|----------|-------|
-| Danger bg | `rose-50` | Error/delete section bg |
-| Danger border | `rose-100` / `rose-200` | Error borders |
-| Danger text | `rose-700` | Error messages, danger text |
-| Danger heading | `rose-900` | Danger section headings |
+Used in: assessment, dashboard, observe, onboarding, profile, landing, auth.
 
-### Gradients
+**Color tokens (Tailwind)**
+| Role | Token |
+|------|-------|
+| Primary | `indigo-600` / hover `indigo-700` |
+| Primary light | `indigo-50` / `indigo-100` |
+| Background | `white` / `gray-50` |
+| Border | `gray-100` / `gray-200` |
+| Text primary | `gray-900` |
+| Text body | `gray-600` |
+| Text secondary | `gray-500` |
+| Danger | `rose-50/100/700/900` |
+
+**Gradients**
 ```
-Page bg (auth, assessment): bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50
-CTA button:                  bg-gradient-to-r from-indigo-600 to-purple-600
-Progress bar fill:           bg-gradient-to-r from-indigo-500 to-purple-500
-Hero card:                   bg-gradient-to-br from-indigo-50 via-white to-purple-50
+Page bg:       bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50
+CTA button:    bg-gradient-to-r from-indigo-600 to-purple-600
+Progress:      bg-gradient-to-r from-indigo-500 to-purple-500
 ```
 
-### Typography
+**Typography**: Geist Sans (primary), Geist Mono (code)
 
-**Font**: Geist Sans (primary), Geist Mono (code)
+**Standard card**: `rounded-xl border border-gray-100 bg-white p-6 md:p-8`
 
+---
+
+### Design B — Active (B2B/org layer + admin)
+
+Used in: `/org/`, `/admin/`, `/billing/`, `/apply/`, `/team/`, campaign pages.
+**Never mix Design A Tailwind color classes into Design B pages.**
+
+**Color tokens (hex — always hardcoded, not Tailwind color names)**
+| Role | Value | Usage |
+|------|-------|-------|
+| Page background | `#faf9f6` | `bg-[#faf9f6]` on `min-h-dvh` |
+| Card/surface | `white` | Card backgrounds |
+| Border | `#e8e4dc` | All borders, dividers |
+| Text primary | `#1a1814` | Headings, strong text |
+| Text body | `#3d3a35` | Paragraphs, labels |
+| Text muted | `#5a5650` | Subtitles, secondary |
+| Text faint | `#a09a90` | Captions, placeholders |
+| Accent (brand) | `#c8410a` | CTAs, eyebrows, active states |
+| Accent hover | `#b53a09` | Button hover |
+| Accent light | `#c8410a/10` or `#fff5f0` | Badge bg |
+
+**Typography**
 | Element | Classes |
 |---------|---------|
-| Page title | `text-3xl md:text-4xl font-bold text-gray-900` |
-| Section heading | `text-2xl font-semibold text-gray-900` |
-| Card heading | `text-lg font-semibold text-gray-900` |
-| Body | `text-sm text-gray-600` |
-| Label | `text-sm font-semibold text-gray-700` |
-| Tag/badge | `text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500` |
-| Caption | `text-xs text-gray-500` |
+| Page eyebrow | `font-mono text-xs uppercase tracking-widest text-[#c8410a]` — format: `// szekció neve` |
+| Page title | `font-playfair text-3xl text-[#1a1814] md:text-4xl` |
+| Section heading | `font-playfair text-xl text-[#1a1814]` |
+| Card heading | `text-sm font-semibold text-[#1a1814]` |
+| Body | `text-sm text-[#3d3a35]` |
+| Muted/subtitle | `text-sm text-[#5a5650]` |
+| Caption | `text-xs text-[#3d3a35]/50` |
+| Faint label | `font-mono text-xs uppercase tracking-widest text-[#a09a90]` |
 
-### Spacing
+**Font**: `font-playfair` (headings), Geist Sans (body), Geist Mono (eyebrows/labels)
+**Page wrapper**: `min-h-dvh bg-[#faf9f6]` (NOT `min-h-screen`)
 
+**Cards & Sections**
+```
+Standard card:   rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8
+Light section:   rounded-xl border border-[#e8e4dc] bg-[#faf9f6] p-4
+Error alert:     rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700
+```
+
+**Buttons**
+```
+Primary:   min-h-[44px] rounded-lg bg-[#c8410a] px-5 text-sm font-semibold text-white
+           transition hover:bg-[#b53a09] disabled:cursor-not-allowed disabled:opacity-50
+Secondary: min-h-[44px] rounded-lg border border-[#e8e4dc] bg-white px-5
+           text-sm font-semibold text-[#3d3a35] transition hover:border-[#c8410a]/40 hover:text-[#c8410a]
+Danger:    min-h-[44px] rounded-lg border border-rose-200 bg-white px-5
+           text-sm font-semibold text-rose-700 transition hover:bg-rose-50
+```
+
+**Status badges**
+```
+Active (ACTIVE):  bg-emerald-50 text-emerald-700
+Closed (CLOSED):  bg-[#e8e4dc] text-[#3d3a35]
+Draft (DRAFT):    bg-amber-50 text-amber-700
+Badge shape:      rounded-full px-2.5 py-0.5 text-xs font-semibold
+```
+
+**Back link pattern**
+```tsx
+<Link href="..." className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#3d3a35] transition-colors hover:text-[#c8410a]">
+  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 3L5 8l5 5" />
+  </svg>
+  Vissza / Back to ...
+</Link>
+```
+
+**Page structure template (Design B)**
+```tsx
+<div className="min-h-dvh bg-[#faf9f6]">
+  <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-12">
+    {/* Header */}
+    <div>
+      <p className="font-mono text-xs uppercase tracking-widest text-[#c8410a]">// szekció</p>
+      <h1 className="mt-1 font-playfair text-3xl text-[#1a1814] md:text-4xl">Cím</h1>
+      <p className="mt-2 text-sm text-[#5a5650]">Alcím</p>
+    </div>
+    {/* Cards */}
+    <section className="rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8">
+      <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[#c8410a]">// szekció</p>
+      <h2 className="mb-5 font-playfair text-xl text-[#1a1814]">...</h2>
+    </section>
+  </main>
+</div>
+```
+
+---
+
+### Shared (both systems)
+
+**Spacing**
 | Context | Value |
 |---------|-------|
 | Page max width | `max-w-5xl` (main), `max-w-3xl` (assessment), `max-w-md` (auth) |
 | Card padding | `p-6 md:p-8` |
 | Section gap | `gap-6` or `gap-8` |
-| Form element gap | `gap-4` |
-| Component inner gap | `gap-2` or `gap-3` |
 
-### Border Radius
+**Border Radius**
 | Element | Class |
 |---------|-------|
 | Buttons, inputs | `rounded-lg` |
-| Cards, sections | `rounded-xl` |
-| Major containers | `rounded-2xl` |
-| Hero containers | `rounded-3xl` |
-| Badges, avatars | `rounded-full` |
+| Cards (A) | `rounded-xl` |
+| Cards (B) | `rounded-2xl` |
+| Badges | `rounded-full` |
 
-### Interactive Elements
+**Min touch target**: `min-h-[44px]` on every button, link, and input — BOTH systems.
 
-**Min touch target**: `min-h-[44px]` on every button, link, and input.
+**Responsive**: Only `md:` breakpoint. Mobile-first always. Grid: `grid-cols-1` → `md:grid-cols-2/3`.
 
-**Primary button**
-```
-min-h-[44px] rounded-lg bg-indigo-600 px-6 text-sm font-semibold text-white
-transition hover:bg-indigo-700
-disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400
-```
-
-**Secondary button (outline)**
-```
-min-h-[44px] rounded-lg border border-indigo-600 bg-transparent px-8
-text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50
-```
-
-**Danger button**
-```
-min-h-[44px] rounded-lg border border-rose-200 bg-white px-5
-text-sm font-semibold text-rose-700 transition hover:bg-rose-100
-```
-
-**Google OAuth button**
-```
-min-h-[44px] rounded-lg border border-gray-200 bg-white px-4
-text-sm font-semibold text-gray-700 flex items-center justify-center gap-3
-transition hover:bg-gray-50
-```
-
-**Text input**
-```
-min-h-[44px] rounded-lg border border-gray-100 bg-gray-50 px-3
-text-sm font-normal text-gray-900
-focus:border-indigo-300 focus:outline-none
-```
-
-**Form label**
-```
-flex flex-col gap-2 text-sm font-semibold text-gray-700
-```
-
-### Cards & Sections
-
-**Standard card**: `rounded-xl border border-gray-100 bg-white p-6 md:p-8`
-**Light section**: `rounded-xl border border-gray-100 bg-gray-50 p-4`
-**Danger section**: `rounded-xl border border-rose-100 bg-rose-50 p-6`
-**Error alert**: `rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700`
-
-### Divider
-```
-<div className="my-5 flex items-center gap-3">
-  <div className="h-px flex-1 bg-gray-100" />
-  <span className="text-xs text-gray-400">vagy</span>
-  <div className="h-px flex-1 bg-gray-100" />
-</div>
-```
-
-### Animations (Framer Motion)
-
+**Animations (Framer Motion — Design A only)**
 | Pattern | Values |
 |---------|--------|
-| Card enter | `initial={{ opacity: 0, x: 50 }}` → `animate={{ opacity: 1, x: 0 }}` duration `0.3s` |
+| Card enter | `initial={{ opacity: 0, x: 50 }}` → `animate={{ opacity: 1, x: 0 }}` 0.3s |
 | Card exit | `exit={{ opacity: 0, x: -50 }}` |
-| Menu open | `initial={{ opacity: 0, y: -6, scale: 0.98 }}` → `animate={{ opacity: 1, y: 0, scale: 1 }}` duration `0.15s` |
 | Button hover | `whileHover={{ scale: 1.02 }}` |
 | Button tap | `whileTap={{ scale: 0.98 }}` |
-| Progress bar | Animated width, duration `0.5s`, ease `easeOut` |
 
-### Responsive
-- **Breakpoint**: Only `md:` (768px) is used. Mobile-first always.
-- **Pattern**: `base-mobile-class md:desktop-class`
-- **Grid**: `grid-cols-1` → `md:grid-cols-2` or `md:grid-cols-3`
-
-### Illustrations (Doodle Style)
+### Illustrations (Doodle Style — Design A)
 
 **Stílus**: Kézzel rajzolt, minimalista doodle illusztrációk inline SVG-ként.
+- Stroke width: `4px`, `strokeLinecap="round"`, `strokeLinejoin="round"`, stroke: `#111827`
+- ViewBox: `360x200` (inner pages), `360x280` (landing); háttér: `#F8FAFC`
+- Pasztel blob palette: `#E0E7FF`, `#EDE9FE`, `#C7D2FE`, `#D1FAE5`, `#CCFBF1`, `#FCE7F3`, `#FFEDD5`, `#FEF3C7`, `#DBEAFE`
 
-**Technikai jellemzők:**
-- Stroke width: `4px`, `strokeLinecap="round"`, `strokeLinejoin="round"`
-- Stroke szín: `#111827` (gray-900)
-- Fill nélküli vonalrajz a karaktereknél, fehér fill a test/ruhánál
-- ViewBox méret: `360x200` (belső oldalak), `360x280` (landing)
-- Lekerekített sarkok: `rx="24"`
-- Háttér: `#F8FAFC` (gray-50)
-
-**Pasztel színpaletta (amorf háttér-formák):**
-| Szín | Hex | Használat |
-|------|-----|-----------|
-| Lavender | `#E0E7FF` | Elsődleges dekoratív blob |
-| Violet | `#EDE9FE` | Másodlagos blob |
-| Lila | `#C7D2FE` | Kiegészítő blob |
-| Menta | `#D1FAE5` | Zöld tónusú blob |
-| Türkiz | `#CCFBF1` | Kiegészítő blob |
-| Rózsaszín | `#FCE7F3` | Pink tónusú blob |
-| Barack | `#FFEDD5` | Meleg tónusú blob |
-| Napsárga | `#FEF3C7` | Sárga tónusú blob |
-| Égkék | `#DBEAFE` | Kék tónusú blob |
-
-**Amorf formák:**
-- Komplex bezier görbékből álló organikus foltok
-- Minden illusztráció 4-6 háttér blobbal rendelkezik
-- Változatos méretben, az illusztráció szélein és mögötte
-- Átfedhetik egymást, de a karakter mindig felül van
-
-**Karakterek:**
-- Kerek fej, egyszerű arc (ív-szemek, mosoly)
-- Lekerekített test/ruha fehér fill-lel
-- Rövid, egyszerű végtagok
-- Minden oldalnak van legalább egy karaktere
-- Arckifejezések pozitívak (mosoly, kíváncsiság)
-- Opcionális kiegészítők: haj vonalak, csillagok, szívek, felkiáltójelek
-
-**Dekoratív elemek:**
-- Kis csillagok (3-4 vonalú, `stroke="#4F46E5"` vagy `"#10B981"`)
-- Pontok és körök (`fill` a pasztel palettából)
-- Hullámos/íves akcentus vonalak brand színekben
-- Kis szívek, pipák, felkiáltójelek ahol tematikusan illik
-
-**Elhelyezés:**
 | Komponens | Fájl | Kontextus |
 |-----------|------|-----------|
-| AssessmentDoodle | `components/illustrations/` | Teszt kitöltés - karakter formmal |
-| DashboardDoodle | `components/illustrations/` | Eredmények - karakter diagrammal |
-| ProfileDoodle | `components/illustrations/` | Profil - karakter önarckép |
-| DoodleIllustration | `components/landing/` | Landing - több karakter együtt |
+| AssessmentDoodle | `components/illustrations/` | Teszt kitöltés |
+| DashboardDoodle | `components/illustrations/` | Eredmények |
+| ProfileDoodle | `components/illustrations/` | Profil |
+| DoodleIllustration | `components/landing/` | Landing |
 
 ---
 
@@ -699,9 +785,26 @@ flex flex-col gap-2 text-sm font-semibold text-gray-700
   - Állapot: client state + `localStorage` + cookie + (bejelentkezve) `UserProfile.locale` sync GET/POST `/api/profile/locale`
   - Nyelvváltás után `router.refresh()` kötelező, hogy a server oldalak is azonnal frissüljenek
   - UI és e-mail szövegek i18n kulcsokkal; kérdésbankok locale-spec készülnek, HU a fallback
-- 44px minimum touch targets on all interactive elements
-- `gray-100` borders on all cards and sections
-- `indigo-600` as primary action color
+- 44px minimum touch targets on all interactive elements (`min-h-[44px]`)
+- After ALL mutations (API POST/PATCH/DELETE): call `router.refresh()` — no full page reload
+
+### Design B Rules (org/admin/billing pages)
+- ALWAYS use `min-h-dvh` (not `min-h-screen`) for page wrappers
+- NEVER use Tailwind color names (`gray-`, `indigo-`, `purple-`) on Design B pages — always hex tokens
+- Page eyebrow: `font-mono text-xs uppercase tracking-widest text-[#c8410a]` with `// szekció neve` format
+- Headings: `font-playfair` — never `font-bold` for h1/h2 on Design B pages
+- Cards: `rounded-2xl border border-[#e8e4dc] bg-white p-6 shadow-sm md:p-8`
+- Primary action: `bg-[#c8410a]` hover `bg-[#b53a09]`
+- Border color: `#e8e4dc` everywhere (not gray-100/200)
+- Status badges: emerald=ACTIVE, amber=DRAFT, `#e8e4dc`/`#3d3a35`=CLOSED
+
+### Org-specific Patterns
+- `requireOrgContext(orgId)` — always the first auth call on org pages
+- `requireActiveSubscription()` — always after `requireOrgContext` on gated pages
+- `hasOrgRole(role, "ORG_MANAGER")` — gates all write actions (add participants, status transitions)
+- Campaign status transitions are irreversible: never offer a "back" button from CLOSED
+- `OrganizationMember.@@unique([userId])` — a user can only be in ONE org; code must respect this
+- Org API error responses: `{ error: "FORBIDDEN" }` for role violations, `{ error: "INVALID_INPUT" }` for bad payloads
 
 ---
 
@@ -710,30 +813,33 @@ flex flex-col gap-2 text-sm font-semibold text-gray-700
 A kutatási MVP-ből ideiglenesen kikerültek, de itt dokumentálva maradnak,
 hogy a kutatás után könnyen visszahozhatók legyenek.
 
-### LemonSqueezy fizetési integráció
-- Checkout API: `/api/lemonsqueezy/checkout` — LemonSqueezy checkout session létrehozás
-- Webhook: `/api/lemonsqueezy/webhook` — subscription lifecycle kezelés (created/updated/cancelled/expired)
-- HMAC signature verification
-- Resend email küldés order confirmation-re
-- DB mezők: `UserProfile.lsCustomerId`, `lsSubscriptionId`, `plan`, `planExpiresAt`
-- `AssessmentResult.premiumUnlocked`, `lsOrderId`
+### Stripe individual plan (self-layer)
+- Az org-szintű Stripe integráció aktív (B2B layer). Az egyéni/self-layer fizetési rendszer parkolóban.
+- Tervezett: Free/Pro plan per user, `UserProfile.stripeCustomerId`, `plan`, `planExpiresAt`
+- Pricing page: `/pricing` — Free vs Pro összehasonlítás
+- Checkout success: `/checkout/success`
+- Webhook: `/api/stripe/webhook` — subscription lifecycle
 
-### Pro/Free plan rendszer
-- `src/lib/plan.ts` — `getUserPlan()` helper
-- `/api/profile/plan` — GET current plan status
-- `/api/profile/plan/test` — DEV-only plan toggle
+### Pro/Free plan rendszer (individual)
+- `src/lib/plan.ts` — `getUserPlan()` helper (parkolóban)
 - Dashboard Pro badge + upgrade banner
-- Pricing oldal: `/pricing` — Free vs Pro összehasonlítás
-- Checkout success: `/checkout/success` — fizetés utáni visszajelzés
+- `AssessmentResult.premiumUnlocked`
+
+### Candidate hiring layer
+- `CandidateInvite` + `CandidateResult` modellek a sémában megvannak
+- `/apply/[token]` kandidáns meghívó flow
+- `/share/[token]` eredmény megosztás
+- Parkolóban: nem elég értékes az aktuális fókuszhoz
 
 ### Env változók (megőrizni .env-ben kommentként)
-- `LEMONSQUEEZY_API_KEY`
-- `LEMONSQUEEZY_STORE_ID`
-- `LEMONSQUEEZY_WEBHOOK_SECRET`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRICE_ID`
 - `RESEND_API_KEY`
 
-### Visszaállítás lépései
-1. Prisma séma: visszaadni `lsCustomerId`, `lsSubscriptionId`, `plan`, `planExpiresAt` mezőket
-2. API route-ok visszamásolása
-3. Dashboard Pro banner + Pricing page visszakapcsolása
-4. Middleware-be `/checkout` route védelem
+### Visszaállítás lépései (individual plan)
+1. Prisma séma: `stripeCustomerId`, `plan`, `planExpiresAt` a `UserProfile`-ra
+2. API route-ok: `/api/stripe/checkout`, `/api/stripe/webhook`
+3. `lib/plan.ts` visszakapcsolása
+4. Dashboard Pro badge + Pricing page
+5. Middleware: `/checkout` route védelem

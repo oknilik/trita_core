@@ -1,20 +1,25 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { ProgressBar } from '@/components/assessment/ProgressBar'
+import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
-import { AssessmentDoodle } from '@/components/illustrations/AssessmentDoodle'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
+import {
+  clearAssessmentDraftFromStorage,
+  getAssessmentDraftKey,
+  getResumeQuestionIndex,
+  readAssessmentDraftFromStorage,
+  toAssessmentAnswerPayload,
+  writeAssessmentDraftToStorage,
+} from '@/lib/assessment-draft'
 import type { TestType } from '@prisma/client'
-import { pickRandomDoodle } from '@/lib/doodles'
 type AssessmentQuestion = { id: number; text: string }
 
-const QUESTIONS_PER_PAGE = 5
 
 interface AssessmentClientProps {
   testType: TestType
@@ -23,6 +28,7 @@ interface AssessmentClientProps {
   questions: AssessmentQuestion[]
   initialDraft?: { answers: Record<string, number>; currentPage: number }
   clearDraft?: boolean
+  guestMode?: boolean
 }
 
 export function AssessmentClient({
@@ -32,175 +38,253 @@ export function AssessmentClient({
   questions,
   initialDraft,
   clearDraft = false,
+  guestMode = false,
 }: AssessmentClientProps) {
   const router = useRouter()
   const { showToast } = useToast()
   const { locale } = useLocale()
-  const draftKey = `trita_draft_${testType}`
+  const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
+  const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
+  const draftStorageKey = useMemo(() => getAssessmentDraftKey(testType), [testType])
+  const maxQuestionIndex = Math.max(totalQuestions - 1, 0)
+  const clampQuestionIndex = useCallback(
+    (value: number) => Math.min(Math.max(value, 0), maxQuestionIndex),
+    [maxQuestionIndex],
+  )
 
-  const [currentPage, setCurrentPage] = useState(initialDraft?.currentPage ?? 0)
   const [answers, setAnswers] = useState<Record<number, number>>(() => {
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
       const parsed: Record<number, number> = {}
       for (const [k, v] of Object.entries(initialDraft.answers)) {
-        parsed[Number(k)] = v
+        const questionId = Number(k)
+        if (!Number.isInteger(questionId)) continue
+        if (!Number.isInteger(v) || v < 1 || v > 5) continue
+        parsed[questionId] = v
       }
       return parsed
     }
     return {}
   })
+  const [questionIndex, setQuestionIndex] = useState(0) // single flat index 0..totalQuestions-1
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [evaluationProgress, setEvaluationProgress] = useState(0)
-  const pageQuestions = questions.slice(currentPage * QUESTIONS_PER_PAGE, (currentPage + 1) * QUESTIONS_PER_PAGE)
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
   const [autoAdvance, setAutoAdvance] = useState(true)
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const [checkpoint, setCheckpoint] = useState<number | null>(null)
-  const [doodleSrc, setDoodleSrc] = useState<string>(() => pickRandomDoodle())
-  const [showIntro, setShowIntro] = useState(() => {
-    const hasDraft = initialDraft && Object.keys(initialDraft.answers ?? {}).length > 0
-    return !hasDraft
+  // null = not yet determined (avoid flash), true = show intro, false = skip
+  const [showIntro, setShowIntro] = useState<boolean | null>(() => {
+    const hasServerDraft = initialDraft && Object.keys(initialDraft.answers ?? {}).length > 0
+    if (hasServerDraft) return false
+    return null // will resolve in useEffect after hydration
   })
+  const answersRef = useRef(answers)
+  const questionIndexRef = useRef(questionIndex)
+  const checkpointRef = useRef<number | null>(checkpoint)
+  const isSubmittingRef = useRef(isSubmitting)
+  const localDraftRevisionRef = useRef(0)
+  const autoAdvanceTimerRef = useRef<number | null>(null)
+  const stepTransitionLockRef = useRef(false)
+
+  // After hydration, check localStorage for guest draft and resolve showIntro
+  useEffect(() => {
+    if (showIntro !== null) return
+    if (readAssessmentDraftFromStorage({ testType })) {
+      setShowIntro(false)
+      return
+    }
+    setShowIntro(true)
+  }, [showIntro, testType])
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
       ? ([25, 50, 75] as const).filter(
-          (m) => (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >= m,
+        (m) => (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >= m,
         )
       : [],
   ))
-  const initializedFocusPage = useRef<number | null>(null)
 
-  const totalPages = Math.ceil(totalQuestions / QUESTIONS_PER_PAGE)
-  const isLastPage = currentPage === totalPages - 1
   const answeredCount = Object.keys(answers).length
   const isFullyCompleted = answeredCount >= totalQuestions
   const remainingQuestions = Math.max(totalQuestions - answeredCount, 0)
   const etaMinutes = Math.max(1, Math.ceil((remainingQuestions * 15) / 60))
-  const activeQuestion = pageQuestions[activeQuestionIndex] ?? null
-  const canGoForwardWithinPage = activeQuestionIndex < pageQuestions.length - 1
-  const canGoBackWithinPage = activeQuestionIndex > 0
-  const canGoPrev = canGoBackWithinPage || currentPage > 0
+  const activeQuestion = questions[questionIndex] ?? null
+  const canGoPrev = questionIndex > 0
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined
-  const canGoNext = pageQuestions.every((q) => answers[q.id] !== undefined)
   const checkpointActive = checkpoint !== null
   const canProceed = checkpointActive || currentQuestionAnswered
   const showEvaluateButton = !checkpointActive && isFullyCompleted
 
   // Refs to always have the latest values in async callbacks
   const latestAnswersRef = useRef(answers)
-  const latestPageRef = useRef(currentPage)
-  useEffect(() => { latestAnswersRef.current = answers }, [answers])
-  useEffect(() => { latestPageRef.current = currentPage }, [currentPage])
-
-  // Scroll question area into center on page change
-  const questionAreaRef = useRef<HTMLDivElement>(null)
-  const scrollMounted = useRef(false)
   useEffect(() => {
-    if (!scrollMounted.current) { scrollMounted.current = true; return }
-    questionAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [currentPage])
+    latestAnswersRef.current = answers
+    answersRef.current = answers
+  }, [answers])
+  useEffect(() => {
+    questionIndexRef.current = questionIndex
+  }, [questionIndex])
+  useEffect(() => {
+    checkpointRef.current = checkpoint
+  }, [checkpoint])
+  useEffect(() => {
+    isSubmittingRef.current = isSubmitting
+  }, [isSubmitting])
 
-  useEffect(() => { setDoodleSrc(pickRandomDoodle()) }, [])
+  const questionAreaRef = useRef<HTMLDivElement>(null)
+
+  const setQuestionIndexSafe = useCallback(
+    (updater: number | ((current: number) => number)) => {
+      setQuestionIndex((current) => {
+        const rawNext = typeof updater === 'function' ? updater(current) : updater
+        return clampQuestionIndex(rawNext)
+      })
+    },
+    [clampQuestionIndex],
+  )
 
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
   useEffect(() => {
     if (clearDraft) {
-      localStorage.removeItem(draftKey)
+      clearAssessmentDraftFromStorage(testType)
       return
     }
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
-      localStorage.removeItem(draftKey)
+      clearAssessmentDraftFromStorage(testType)
+      localDraftRevisionRef.current = 0
+      const parsedAnswers: Record<number, number> = {}
+      for (const [key, rawValue] of Object.entries(initialDraft.answers)) {
+        const questionId = Number(key)
+        const value = Number(rawValue)
+        if (!questionIdSet.has(questionId)) continue
+        if (!Number.isInteger(value) || value < 1 || value > 5) continue
+        parsedAnswers[questionId] = value
+      }
+      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, parsedAnswers)
+      setQuestionIndexSafe(resumeIndex)
       return
     }
-    try {
-      const saved = localStorage.getItem(draftKey)
-      if (saved) {
-        const parsed = JSON.parse(saved) as { answers?: Record<number, number>; currentPage?: number } | Record<number, number>
-        if ('answers' in parsed && parsed.answers) {
-          setAnswers(parsed.answers)
-          if (typeof parsed.currentPage === 'number') {
-            setCurrentPage(parsed.currentPage)
-          }
-          const pct = (Object.keys(parsed.answers).length / totalQuestions) * 100
-          for (const m of [25, 50, 75] as const) {
-            if (pct >= m) reachedCheckpoints.current.add(m)
-          }
-        } else {
-          const legacyAnswers = parsed as Record<number, number>
-          setAnswers(legacyAnswers)
-          const pct = (Object.keys(legacyAnswers).length / totalQuestions) * 100
-          for (const m of [25, 50, 75] as const) {
-            if (pct >= m) reachedCheckpoints.current.add(m)
-          }
-        }
+    const localDraft = readAssessmentDraftFromStorage({
+      testType,
+      questionIds: questionIdSet,
+      totalQuestions,
+    })
+    if (!localDraft) return
+
+    setAnswers(localDraft.answers)
+    latestAnswersRef.current = localDraft.answers
+    answersRef.current = localDraft.answers
+    localDraftRevisionRef.current = localDraft.revision
+    const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, localDraft.answers)
+    setQuestionIndexSafe(resumeIndex)
+    const pct = (Object.keys(localDraft.answers).length / totalQuestions) * 100
+    for (const checkpointMark of [25, 50, 75] as const) {
+      if (pct >= checkpointMark) reachedCheckpoints.current.add(checkpointMark)
+    }
+  }, [
+    clearDraft,
+    initialDraft?.answers,
+    orderedQuestionIds,
+    questionIdSet,
+    setQuestionIndexSafe,
+    testType,
+    totalQuestions,
+  ])
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== draftStorageKey) return
+      if (!event.newValue) return
+
+      const nextSnapshot = readAssessmentDraftFromStorage({
+        testType,
+        questionIds: questionIdSet,
+        totalQuestions,
+      })
+      if (!nextSnapshot) return
+      if (nextSnapshot.revision < localDraftRevisionRef.current) return
+
+      localDraftRevisionRef.current = nextSnapshot.revision
+      setAnswers(nextSnapshot.answers)
+      latestAnswersRef.current = nextSnapshot.answers
+      answersRef.current = nextSnapshot.answers
+      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, nextSnapshot.answers)
+      setQuestionIndexSafe(resumeIndex)
+      setShowIntro(false)
+
+      const pct = (Object.keys(nextSnapshot.answers).length / totalQuestions) * 100
+      for (const checkpointMark of [25, 50, 75] as const) {
+        if (pct >= checkpointMark) reachedCheckpoints.current.add(checkpointMark)
       }
-    } catch {
-      // ignore
     }
-  }, [draftKey, initialDraft?.answers, clearDraft])
 
-  // Save draft to localStorage on every answer/page change
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [draftStorageKey, orderedQuestionIds, questionIdSet, setQuestionIndexSafe, testType, totalQuestions])
+
+  // Save draft to localStorage on every meaningful change.
   useEffect(() => {
-    if (Object.keys(answers).length > 0) {
-      localStorage.setItem(draftKey, JSON.stringify({ answers, currentPage }))
+    if (answeredCount === 0) {
+      clearAssessmentDraftFromStorage(testType)
+      return
     }
-  }, [answers, currentPage, draftKey])
+    localDraftRevisionRef.current += 1
+    writeAssessmentDraftToStorage({
+      testType,
+      answers,
+      questionIndex,
+      questionIds: questionIdSet,
+      totalQuestions,
+      revision: localDraftRevisionRef.current,
+    })
+  }, [answers, answeredCount, questionIdSet, questionIndex, testType, totalQuestions])
 
-  // Debounced server save (2 s)
+  // Debounced server save (2 s) — skip for guest users.
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const serverSaveAbortRef = useRef<AbortController | null>(null)
   useEffect(() => {
-    if (Object.keys(answers).length === 0) return
+    if (guestMode || answeredCount === 0) return
     if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
     serverSaveDebounce.current = setTimeout(async () => {
+      serverSaveAbortRef.current?.abort()
+      const abortController = new AbortController()
+      serverSaveAbortRef.current = abortController
+      setIsSavingDraft(true)
       try {
         await fetch('/api/assessment/draft', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             answers: latestAnswersRef.current,
-            currentPage: latestPageRef.current,
+            currentPage: questionIndexRef.current,
           }),
+          signal: abortController.signal,
         })
       } catch {
         // Silent fail
+      } finally {
+        if (serverSaveAbortRef.current === abortController) {
+          serverSaveAbortRef.current = null
+          setIsSavingDraft(false)
+        }
       }
     }, 2000)
     return () => {
       if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current)
+      serverSaveDebounce.current = null
+      serverSaveAbortRef.current?.abort()
+      serverSaveAbortRef.current = null
+      setIsSavingDraft(false)
     }
-  }, [answers])
+  }, [answeredCount, guestMode, questionIndex, setIsSavingDraft])
 
-  const handleBeforeUnload = useCallback(
-    (e: BeforeUnloadEvent) => {
-      if (Object.keys(answers).length > 0 && !isSubmitting) {
-        e.preventDefault()
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimerRef.current) {
+        clearTimeout(autoAdvanceTimerRef.current)
+        autoAdvanceTimerRef.current = null
       }
-    },
-    [answers, isSubmitting],
-  )
-
-  useEffect(() => {
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [handleBeforeUnload])
-
-  // Initialize active question index once the correct page is set.
-  useEffect(() => {
-    if (pageQuestions.length === 0) return
-    if (initializedFocusPage.current === currentPage) return
-
-    const firstUnanswered = pageQuestions.findIndex((q) => answers[q.id] === undefined)
-
-    if (firstUnanswered === -1 && currentPage < totalPages - 1) {
-      // Every question on this page is already answered (draft resume) — skip it.
-      setCurrentPage((prev) => prev + 1)
-      return  // initializedFocusPage stays unset for this page so the next page re-inits
     }
-
-    setActiveQuestionIndex(firstUnanswered === -1 ? pageQuestions.length - 1 : firstUnanswered)
-    initializedFocusPage.current = currentPage
-  }, [currentPage, pageQuestions, answers, totalPages])
+  }, [])
 
   useEffect(() => {
     const marks = [25, 50, 75]
@@ -215,48 +299,13 @@ export function AssessmentClient({
 
   const highlightMissing = useCallback(
     (missingId: number) => {
-      const missingIdx = pageQuestions.findIndex((q) => q.id === missingId)
-      if (missingIdx >= 0) setActiveQuestionIndex(missingIdx)
       setHighlightQuestionId(missingId)
       window.setTimeout(() => {
         setHighlightQuestionId((current) => (current === missingId ? null : current))
       }, 1200)
     },
-    [pageQuestions],
+    [],
   )
-
-  const saveDraftToServer = useCallback(async (page: number) => {
-    setIsSavingDraft(true)
-    try {
-      await fetch('/api/assessment/draft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, currentPage: page }),
-      })
-    } catch {
-      // Silent fail
-    } finally {
-      setIsSavingDraft(false)
-    }
-  }, [answers])
-
-  const handleNextPage = useCallback(() => {
-    if (!canGoNext) {
-      const missing = pageQuestions.find((q) => answers[q.id] === undefined)
-      if (missing) highlightMissing(missing.id)
-      return
-    }
-    if (isLastPage) return
-    const nextPage = currentPage + 1
-    setCurrentPage(nextPage)
-    saveDraftToServer(nextPage) // fire-and-forget — UI nem vár rá
-  }, [canGoNext, pageQuestions, answers, highlightMissing, isLastPage, currentPage, saveDraftToServer])
-
-  const handlePrevPage = useCallback(() => {
-    if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1)
-    }
-  }, [currentPage])
 
   const handleFinish = useCallback(async () => {
     // Cancel any pending debounced draft save so it doesn't re-create the draft after submit deletes it
@@ -264,36 +313,49 @@ export function AssessmentClient({
       clearTimeout(serverSaveDebounce.current)
       serverSaveDebounce.current = null
     }
+    serverSaveAbortRef.current?.abort()
+    serverSaveAbortRef.current = null
+    setIsSavingDraft(false)
 
     const currentAnswers = latestAnswersRef.current
-    const canGoNextNow = pageQuestions.every((q) => currentAnswers[q.id] !== undefined)
-    if (!canGoNextNow) {
-      const missing = pageQuestions.find((q) => currentAnswers[q.id] === undefined)
-      if (missing) highlightMissing(missing.id)
+    const firstUnanswered = questions.findIndex((q) => currentAnswers[q.id] === undefined)
+    if (firstUnanswered !== -1) {
+      setQuestionIndexSafe(firstUnanswered)
       return
     }
-    if (Object.keys(currentAnswers).length < totalQuestions) {
-      setCurrentPage(0)
-      return
-    }
-    if (isSubmitting) return
+    if (isSubmittingRef.current) return
+    isSubmittingRef.current = true
     setIsSubmitting(true)
     setEvaluationProgress(0)
 
     const progressInterval = setInterval(() => {
       setEvaluationProgress((prev) => {
         if (prev >= 70) return prev
-        return prev + Math.random() * 4 + 1
+        return Math.min(prev + Math.random() * 4 + 1, 70)
       })
     }, 300)
 
     try {
+      if (guestMode) {
+        // Guest mode: skip API submit, keep localStorage draft, redirect to registration gate
+        clearInterval(progressInterval)
+        const rampInterval = setInterval(() => {
+          setEvaluationProgress((prev) => {
+            if (prev >= 100) { clearInterval(rampInterval); return 100 }
+            return Math.min(prev + Math.random() * 4 + 2, 100)
+          })
+        }, 200)
+        await new Promise((resolve) => setTimeout(resolve, 2500))
+        clearInterval(rampInterval)
+        setEvaluationProgress(100)
+        await new Promise((resolve) => setTimeout(resolve, 400))
+        router.push('/try/complete')
+        return
+      }
+
       const payload = {
         testType,
-        answers: Object.entries(currentAnswers).map(([questionId, value]) => ({
-          questionId: Number(questionId),
-          value,
-        })),
+        answers: toAssessmentAnswerPayload(currentAnswers),
       }
       const response = await fetch('/api/assessment/submit', {
         method: 'POST',
@@ -307,12 +369,12 @@ export function AssessmentClient({
       }
 
       clearInterval(progressInterval)
-      localStorage.removeItem(draftKey)
+      clearAssessmentDraftFromStorage(testType)
 
       const rampInterval = setInterval(() => {
         setEvaluationProgress((prev) => {
           if (prev >= 100) { clearInterval(rampInterval); return 100 }
-          return prev + Math.random() * 3 + 1
+          return Math.min(prev + Math.random() * 3 + 1, 100)
         })
       }, 200)
 
@@ -320,148 +382,105 @@ export function AssessmentClient({
       clearInterval(rampInterval)
       setEvaluationProgress(100)
       await new Promise((resolve) => setTimeout(resolve, 600))
-      router.push('/dashboard')
+      router.push('/assessment/team-roles')
     } catch (error) {
       clearInterval(progressInterval)
+      isSubmittingRef.current = false
       setIsSubmitting(false)
       setEvaluationProgress(0)
       console.error(error)
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [pageQuestions, highlightMissing, isSubmitting, totalQuestions, testType, locale, draftKey, router, showToast])
+  }, [questions, setQuestionIndexSafe, testType, locale, router, showToast, guestMode])
+
+  const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current)
+      autoAdvanceTimerRef.current = null
+    }
+    autoAdvanceTimerRef.current = window.setTimeout(() => {
+      const liveQuestion = questions[questionIndexRef.current]
+      if (!liveQuestion || liveQuestion.id !== questionId) return
+
+      const nextProgress = (nextAnsweredCount / totalQuestions) * 100
+      const willTriggerCheckpoint = [25, 50, 75].some(
+        (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
+      )
+      if (willTriggerCheckpoint || checkpointRef.current !== null) return
+
+      if (questionIndexRef.current < totalQuestions - 1) {
+        setQuestionIndexSafe((current) => current + 1)
+      } else {
+        void handleFinish()
+      }
+    }, 130)
+  }, [handleFinish, questions, setQuestionIndexSafe, totalQuestions])
 
   const handleAnswer = useCallback((questionId: number, value: number) => {
-    const updatedAnswers = { ...answers, [questionId]: value }
-    const wasUnanswered = answers[questionId] === undefined
-    setAnswers(updatedAnswers)
+    if (isSubmittingRef.current) return
+    if (questions[questionIndexRef.current]?.id !== questionId) return
 
-    if (!autoAdvance || !activeQuestion || activeQuestion.id !== questionId) return
+    let nextAnsweredCount = 0
+    setAnswers((current) => {
+      const next = { ...current, [questionId]: value }
+      latestAnswersRef.current = next
+      answersRef.current = next
+      nextAnsweredCount = Object.keys(next).length
+      return next
+    })
 
-    const nextAnsweredCount = wasUnanswered ? answeredCount + 1 : answeredCount
-    const nextProgress = (nextAnsweredCount / totalQuestions) * 100
-    const willTriggerCheckpoint = [25, 50, 75].some(
-      (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
-    )
+    if (!autoAdvance) return
+    scheduleAutoAdvance(questionId, nextAnsweredCount)
+  }, [autoAdvance, questions, scheduleAutoAdvance])
 
+  const runStepTransition = useCallback((action: () => void) => {
+    if (stepTransitionLockRef.current) return
+    stepTransitionLockRef.current = true
+    action()
     window.setTimeout(() => {
-      if (willTriggerCheckpoint) return
-
-      if (canGoForwardWithinPage) {
-        const nextUnanswered = pageQuestions.findIndex(
-          (q, i) => i > activeQuestionIndex && updatedAnswers[q.id] === undefined,
-        )
-        if (nextUnanswered !== -1) {
-          setActiveQuestionIndex(nextUnanswered)
-          return
-        }
-        const allPageAnswered = pageQuestions.every((q) => updatedAnswers[q.id] !== undefined)
-        if (!allPageAnswered) return
-        if (isLastPage) {
-          void handleFinish()
-        } else {
-          const nextPage = currentPage + 1
-          setIsSavingDraft(true)
-          fetch('/api/assessment/draft', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
-          }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
-          setCurrentPage(nextPage)
-        }
-        return
-      }
-
-      if (isLastPage) {
-        void handleFinish()
-        return
-      }
-      const nextPage = currentPage + 1
-      setIsSavingDraft(true)
-      fetch('/api/assessment/draft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: updatedAnswers, currentPage: nextPage }),
-      }).catch(() => {}).finally(() => { setIsSavingDraft(false) })
-      setCurrentPage(nextPage)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 130)
-  }, [
-    answers,
-    autoAdvance,
-    activeQuestion,
-    answeredCount,
-    totalQuestions,
-    canGoForwardWithinPage,
-    pageQuestions,
-    activeQuestionIndex,
-    isLastPage,
-    currentPage,
-    handleFinish,
-  ])
+      stepTransitionLockRef.current = false
+    }, 120)
+  }, [])
 
   const handlePrevStep = useCallback(() => {
-    if (checkpointActive) {
+    if (checkpointRef.current !== null) {
       setCheckpoint(null)
       return
     }
-    if (canGoBackWithinPage) {
-      setActiveQuestionIndex((idx) => idx - 1)
-      return
+    if (questionIndexRef.current > 0) {
+      runStepTransition(() => {
+        setQuestionIndexSafe((current) => current - 1)
+      })
     }
-    handlePrevPage()
-  }, [checkpointActive, canGoBackWithinPage, handlePrevPage])
+  }, [runStepTransition, setQuestionIndexSafe])
 
   const handleNextStep = useCallback(async () => {
-    if (checkpointActive) {
-      setDoodleSrc((prev) => pickRandomDoodle(prev))
+    if (checkpointRef.current !== null) {
       setCheckpoint(null)
-      const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
-      )
-      if (nextUnanswered !== -1) {
-        setActiveQuestionIndex(nextUnanswered)
-      } else if (!isLastPage) {
-        await handleNextPage()
-      }
-      // If isLastPage and nothing unanswered: showEvaluateButton becomes true
-      return
-    }
-    if (activeQuestion && answers[activeQuestion.id] === undefined) {
-      highlightMissing(activeQuestion.id)
-      return
-    }
-    if (canGoForwardWithinPage) {
-      const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
-      )
-      if (nextUnanswered !== -1) {
-        setActiveQuestionIndex(nextUnanswered)
-      } else {
-        if (isLastPage) {
-          await handleFinish()
-        } else {
-          await handleNextPage()
-        }
+      if (questionIndexRef.current < totalQuestions - 1) {
+        runStepTransition(() => {
+          setQuestionIndexSafe((current) => current + 1)
+        })
       }
       return
     }
-    if (isLastPage) {
-      await handleFinish()
+    const liveQuestion = questions[questionIndexRef.current]
+    const liveAnswers = answersRef.current
+    if (liveQuestion && liveAnswers[liveQuestion.id] === undefined) {
+      highlightMissing(liveQuestion.id)
       return
     }
-    await handleNextPage()
-  }, [
-    checkpointActive,
-    activeQuestion,
-    activeQuestionIndex,
-    answers,
-    highlightMissing,
-    canGoForwardWithinPage,
-    pageQuestions,
-    isLastPage,
-    handleFinish,
-    handleNextPage,
-  ])
+
+    if (questionIndexRef.current < totalQuestions - 1) {
+      runStepTransition(() => {
+        setQuestionIndexSafe((current) => current + 1)
+      })
+      return
+    }
+
+    if (isSubmittingRef.current) return
+    await handleFinish()
+  }, [highlightMissing, handleFinish, questions, runStepTransition, setQuestionIndexSafe, totalQuestions])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -488,31 +507,101 @@ export function AssessmentClient({
     return <EvaluatingScreen progress={evaluationProgress} />
   }
 
+  // Still resolving localStorage — show blank screen to avoid intro flash
+  if (showIntro === null) {
+    return <div className="min-h-dvh bg-[var(--color-surface-canvas)]" />;
+  }
+
   if (showIntro) {
+    const steps = [
+      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-white", title: t("assessment.introStep1", locale), sub: t("assessment.introStep1Sub", locale) },
+      { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
+      { num: 3, style: "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
+    ]
+    const previewDims = [
+      { name: t("landing.selfDim1", locale), val: 79 },
+      { name: t("landing.selfDim2", locale), val: 46 },
+      { name: t("landing.selfDim3", locale), val: 34 },
+    ]
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-2xl px-4 py-12">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-10 shadow-sm">
-            <h1 className="text-2xl font-bold text-gray-900">
-              👋 {t('assessment.introWelcome', locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
-              {t('assessment.introBody', locale)}
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
-              {t("assessment.introAutoAdvanceHint", locale)}
-            </p>
-            <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-800">
-              {t('assessment.introCount', locale)}
+      <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
+        {/* Minimal nav */}
+        <nav className="flex items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
+          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          </Link>
+        </nav>
+
+        {/* Two-column hero */}
+        <div className="mx-auto max-w-4xl px-5 lg:px-10">
+          <div className="grid grid-cols-1 items-start gap-8 py-10 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:py-14">
+
+            {/* Left column */}
+            <div>
+              <div className="mb-2.5 flex items-center gap-2">
+                <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
+                <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
+                  {t("assessment.introEyebrow", locale)}
+                </span>
+              </div>
+              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-[var(--color-text-primary)] lg:text-[28px]">
+                {t("assessment.introHeadline1", locale)}
+                <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
+              </h1>
+              <p className="mb-5 max-w-[360px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {t("assessment.introSub", locale)}
+              </p>
+              <div className="mb-5 rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-3.5 py-3">
+                <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)]">
+                  {t("assessment.introInfo", locale)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowIntro(false)}
+                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-[15px] font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+              >
+                {t("assessment.introStart", locale)}
+              </button>
+              <p className="mt-2.5 text-center text-[11px] text-[var(--color-text-muted)] lg:text-left">
+                {t("assessment.introMeta", locale)}
+              </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowIntro(false)}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
-            >
-              {t('assessment.introStart', locale)}
-            </button>
+
+            {/* Right column */}
+            <div className="flex flex-col gap-2.5">
+              {steps.map((s) => (
+                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-white p-3 px-3.5">
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-[13px] font-medium ${s.style}`}>
+                    {s.num}
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">{s.title}</p>
+                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{s.sub}</p>
+                  </div>
+                </div>
+              ))}
+              <div className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-4 py-3.5">
+                <p className="text-[6px] uppercase tracking-[1.5px] text-white/20">
+                  {t("assessment.introPreviewEyebrow", locale)}
+                </p>
+                <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[var(--color-accent-primary-soft)]">
+                  {t("landing.selfPanelType", locale)}
+                </p>
+                <div className="mt-2 flex gap-1.5">
+                  {previewDims.map((d) => (
+                    <div key={d.name} className="flex-1 rounded bg-white/[0.05] px-1 py-1 text-center">
+                      <p className="text-[5px] text-white/20">{d.name}</p>
+                      <p className="font-fraunces text-xs text-white/[0.35]">{d.val}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-1.5 text-center text-[7px] text-white/[0.15]">
+                  {t("assessment.introPreviewLabel", locale)}
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -520,82 +609,134 @@ export function AssessmentClient({
   }
 
   return (
-    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-      <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
-          <ProgressBar current={answeredCount} total={totalQuestions} />
-          <div className="mt-2 overflow-x-auto">
-            <div className="flex min-w-max items-center gap-2 text-xs text-gray-600">
-              <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
-                {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
-              </div>
-              <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1 font-medium text-indigo-700">
-                {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-6 hidden rounded-2xl border border-gray-100 bg-white p-4 sm:block">
-          <div className="h-36 w-full">
-            <AssessmentDoodle src={doodleSrc} />
-          </div>
-        </div>
-
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
-            <input
-              type="checkbox"
-              checked={autoAdvance}
-              onChange={(event) => setAutoAdvance(event.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600"
-            />
-            {t('assessment.autoAdvance', locale)}
-          </label>
-        </div>
-
-        <div ref={questionAreaRef}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={
-              checkpointActive
-                ? `checkpoint-${checkpoint}`
-                : `${currentPage}-${activeQuestion?.id ?? 'none'}`
-            }
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col gap-6"
+    <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
+      {/* ═══ MINIMAL NAV ═══ */}
+      <nav className="flex shrink-0 items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
+        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+          <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] text-[var(--color-action-primary-bg)]">
+            ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
+          </span>
+          <a
+            href={guestMode ? "/" : "/profile/results"}
+            className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
           >
-            {checkpointActive ? (
-              <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center md:min-h-[19rem] md:p-8">
-                <div className="text-5xl leading-none">
-                  {checkpoint === 25 ? '🌱' : checkpoint === 50 ? '💡' : '🏁'}
+            {t('assessment.continueLater', locale)}
+          </a>
+        </div>
+      </nav>
+
+      {/* ═══ PROGRESS BAR — single row ═══ */}
+      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--color-border-default)] px-7 py-2.5">
+        <div className="flex items-baseline gap-1">
+          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
+          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+        </div>
+        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
+          {/* Answered reach — light sage: up to last answered question position */}
+          {(() => {
+            let lastAnsweredIdx = -1;
+            for (let i = questions.length - 1; i >= 0; i--) {
+              if (answers[questions[i].id] !== undefined) { lastAnsweredIdx = i; break; }
+            }
+            const answeredReach = Math.max(lastAnsweredIdx + 1, questionIndex + 1);
+            return (
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
+                style={{ width: `${(answeredReach / totalQuestions) * 100}%` }}
+              />
+            );
+          })()}
+          {/* Current position — solid sage */}
+          <div
+            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
+            style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
+          />
+        </div>
+        <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
+          {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
+        </span>
+      </div>
+
+      {/* ═══ QUESTION AREA (centered) ═══ */}
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 lg:py-12">
+        <div ref={questionAreaRef} className="w-full max-w-xl">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={
+                checkpointActive
+                  ? `checkpoint-${checkpoint}`
+                  : `q-${activeQuestion?.id ?? 'none'}`
+              }
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-col items-center"
+            >
+              {checkpointActive ? (
+                <div className="flex flex-col items-center text-center">
+                  {/* Sage pill badge */}
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-action-primary-bg)]">
+                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+                    {t('assessment.journeyMilestone', locale)}
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="mb-3 font-fraunces text-[24px] leading-[1.25] text-[var(--color-text-primary)] lg:text-[26px]">
+                    {t(
+                      checkpoint === 25 ? 'assessment.journeyMilestone25'
+                      : checkpoint === 50 ? 'assessment.journeyMilestone50'
+                      : 'assessment.journeyMilestone75',
+                      locale
+                    )}
+                  </h2>
+
+                  {/* Subtitle */}
+                  <p className="mb-5 max-w-[400px] text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+                    {t(
+                      checkpoint === 25 ? 'assessment.journeyMilestone25Sub'
+                      : checkpoint === 50 ? 'assessment.journeyMilestone50Sub'
+                      : 'assessment.journeyMilestone75Sub',
+                      locale
+                    )}
+                  </p>
+
+                  {/* Segmented progress — 10 segments */}
+                  <div className="mb-5 flex w-full max-w-[280px] gap-[3px]">
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const filledSegments = Math.round((answeredCount / totalQuestions) * 10);
+                      return (
+                        <div
+                          key={i}
+                          className={`h-2 flex-1 rounded-full ${
+                            i < filledSegments
+                              ? "bg-[var(--color-action-primary-bg)]"
+                              : i === filledSegments
+                                ? "bg-[var(--color-accent-primary)]"
+                                : "bg-[var(--color-border-default)]"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {/* Tip callout */}
+                  <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
+                    <span className="mt-px shrink-0 text-sm">💡</span>
+                    <p className="text-[13px] leading-[1.45] text-[var(--color-accent-self-deep)]">
+                      {t(
+                        checkpoint === 25 ? 'assessment.journeyMilestone25Hint'
+                        : checkpoint === 50 ? 'assessment.journeyMilestone50Hint'
+                        : 'assessment.journeyMilestone75Hint',
+                        locale
+                      )}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
-                  {t('assessment.journeyMilestone', locale)}
-                </p>
-                <p className="mt-2 text-xl font-bold text-emerald-800 md:text-2xl">
-                  {t(
-                    checkpoint === 25 ? 'assessment.journeyMilestone25'
-                    : checkpoint === 50 ? 'assessment.journeyMilestone50'
-                    : 'assessment.journeyMilestone75',
-                    locale
-                  )}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-emerald-700">
-                  {t(
-                    checkpoint === 25 ? 'assessment.journeyMilestone25Hint'
-                    : checkpoint === 50 ? 'assessment.journeyMilestone50Hint'
-                    : 'assessment.journeyMilestone75Hint',
-                    locale
-                  )}
-                </p>
-              </div>
-            ) : activeQuestion ? (
-              <div key={activeQuestion.id} id={`question-${activeQuestion.id}`}>
+              ) : activeQuestion ? (
                 <QuestionCard
                   testName={testName}
                   format="likert"
@@ -604,67 +745,76 @@ export function AssessmentClient({
                   onChange={(v) => handleAnswer(activeQuestion.id, v)}
                   highlight={highlightQuestionId === activeQuestion.id}
                 />
-              </div>
-            ) : null}
-          </motion.div>
-        </AnimatePresence>
+              ) : null}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* Navigation */}
-        <div className="mt-8 flex items-center justify-between gap-4">
-          <motion.button
-            onClick={handlePrevStep}
-            disabled={!canGoPrev}
-            className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-              !canGoPrev
-                ? 'cursor-not-allowed bg-gray-200 text-gray-400'
-                : 'bg-white text-gray-700 shadow-md hover:shadow-lg'
-            }`}
-            whileHover={canGoPrev ? { scale: 1.02 } : {}}
-            whileTap={canGoPrev ? { scale: 0.98 } : {}}
-          >
-            {t('assessment.prevCta', locale)}
-          </motion.button>
-
-          {!showEvaluateButton ? (
-            <motion.button
-              onClick={() => void handleNextStep()}
-              aria-disabled={!canProceed || isSavingDraft}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                canProceed && !isSavingDraft
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'
-                  : 'cursor-not-allowed bg-gray-200 text-gray-400'
-              }`}
-              whileHover={canProceed && !isSavingDraft ? { scale: 1.02 } : {}}
-              whileTap={canProceed && !isSavingDraft ? { scale: 0.98 } : {}}
-            >
-              {isSavingDraft ? t('actions.save', locale) : t('assessment.nextCta', locale)}
-            </motion.button>
-          ) : (
-            <motion.button
-              onClick={() => void handleFinish()}
-              disabled={isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                !isSubmitting
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg'
-                  : 'cursor-not-allowed bg-gray-200 text-gray-400'
-              }`}
-              whileHover={!isSubmitting ? { scale: 1.02 } : {}}
-              whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-            >
-              {t('assessment.evaluateCta', locale)}
-            </motion.button>
-          )}
-        </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 text-center text-sm text-gray-500"
-        >
+        {/* Hint */}
+        <p className="mt-6 text-xs italic text-[var(--color-text-muted)]">
           {t('assessment.helpLikert', locale)}
-        </motion.p>
+        </p>
+      </div>
+
+      {/* ═══ FOOTER BAR ═══ */}
+      <div className="flex shrink-0 items-center justify-between border-t border-[var(--color-border-default)] bg-white px-7 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)]">
+        <button
+          type="button"
+          onClick={handlePrevStep}
+          disabled={!canGoPrev}
+          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-[13px] transition-all ${
+            canGoPrev
+              ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
+              : "border-transparent bg-transparent text-transparent pointer-events-none"
+          }`}
+        >
+          ← {t('assessment.prevCta', locale)}
+        </button>
+
+        <label className="flex cursor-pointer items-center gap-2">
+          <div
+            className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
+              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
+            }`}
+          >
+            {autoAdvance && <span className="text-[8px] leading-none text-white">✓</span>}
+          </div>
+          <input
+            type="checkbox"
+            checked={autoAdvance}
+            onChange={(e) => setAutoAdvance(e.target.checked)}
+            className="sr-only"
+          />
+          <span className="text-[11px] text-[var(--color-text-muted)]">{t('assessment.autoAdvance', locale)}</span>
+        </label>
+
+        {!showEvaluateButton ? (
+          <button
+            type="button"
+            onClick={() => void handleNextStep()}
+            disabled={!canProceed || isSavingDraft}
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+              canProceed && !isSavingDraft
+                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
+            }`}
+          >
+            {t('assessment.nextCta', locale)} →
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void handleFinish()}
+            disabled={isSubmitting}
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+              !isSubmitting
+                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
+            }`}
+          >
+            {t('assessment.evaluateCta', locale)}
+          </button>
+        )}
       </div>
     </div>
   )

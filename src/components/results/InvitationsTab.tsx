@@ -1,0 +1,398 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
+import { useToast } from "@/components/ui/Toast";
+import { t } from "@/lib/i18n";
+import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
+
+interface InvitationsTabProps {
+  sentInvitations: SerializedSentInvitation[];
+  receivedInvitations: SerializedReceivedInvitation[];
+  isPlus: boolean;
+}
+
+// ─── Clipboard helper ────────────────────────────────────────────────────────
+
+async function copyText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch { /* fallback */ }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-9999px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  } catch { return false; }
+}
+
+// ─── Locked ──────────────────────────────────────────────────────────────────
+
+function LockedInvitations() {
+  const { locale } = useLocale();
+
+  return (
+    <div className="rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-8 text-center">
+      <span className="mb-2.5 inline-block text-[32px] opacity-20">🔒</span>
+      <h3 className="mb-1.5 font-fraunces text-[18px] text-[var(--color-text-primary)]">
+        {t("invitations.lockedTitle", locale)}
+      </h3>
+      <p className="mx-auto mb-4 max-w-[380px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+        {t("invitations.lockedSub", locale)}
+      </p>
+      <button
+        type="button"
+        className="min-h-[44px] rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-110"
+      >
+        {t("invitations.lockedCta", locale)}
+      </button>
+    </div>
+  );
+}
+
+// ─── Main component ──────────────────────────────────────────────────────────
+
+export function InvitationsTab({
+  sentInvitations,
+  receivedInvitations,
+  isPlus,
+}: InvitationsTabProps) {
+  const { locale } = useLocale();
+  const { showToast } = useToast();
+
+  // ─── State & logic (create / copy / delete) ────────────────────────────────
+  const [invitations, setInvitations] = useState(sentInvitations);
+  const [email, setEmail] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const active = invitations.filter((i) => i.status !== "CANCELED");
+    const pendingCount = active.filter((i) => i.status === "PENDING").length;
+    window.dispatchEvent(
+      new CustomEvent("dashboard:invites-updated", {
+        detail: { hasInvites: active.length > 0, pendingInvites: pendingCount },
+      }),
+    );
+  }, [invitations]);
+
+  const handleCreate = async () => {
+    if (isCreating) return;
+    setIsCreating(true);
+    setCreateError(null);
+    const hasEmail = email.trim().length > 0;
+    try {
+      const res = await fetch("/api/observer/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: hasEmail ? JSON.stringify({ email: email.trim() }) : JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const code = data.error ?? "";
+        const loc = t(`error.${code}`, locale);
+        setCreateError(loc !== `error.${code}` ? loc : t("invitations.errorGeneric", locale));
+        return;
+      }
+      setInvitations((prev) => [{
+        id: data.id, token: data.token, status: "PENDING",
+        createdAt: new Date().toISOString(), completedAt: null,
+        observerEmail: hasEmail ? email.trim() : null, relationship: null,
+      }, ...prev]);
+      if (hasEmail && !data.emailSent) {
+        showToast(t("error.EMAIL_SEND_FAILED", locale), "info");
+      }
+      setEmail("");
+    } catch {
+      setCreateError(t("invitations.errorGeneric", locale));
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleCopy = async (token: string) => {
+    const link = `${window.location.origin}/observe/${token}`;
+    const ok = await copyText(link);
+    if (!ok) { showToast(t("invitations.copyFailed", locale), "error"); return; }
+    setCopiedToken(token);
+    setTimeout(() => setCopiedToken(null), 2000);
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/observer/invite/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setInvitations((prev) => prev.filter((inv) => inv.id !== id));
+    } catch {
+      showToast(t("invitations.deleteFailed", locale), "error");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // A) LOCKED
+  if (!isPlus) {
+    return <LockedInvitations />;
+  }
+
+  const active = invitations.filter((i) => i.status !== "CANCELED");
+  const completed = active.filter((i) => i.status === "COMPLETED");
+  const pending = active.filter((i) => i.status === "PENDING");
+  const canCreate = active.length < 5;
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { year: "numeric", month: "short", day: "numeric" });
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* 1. Header */}
+      <div>
+        <div className="mb-1.5 flex items-center gap-2">
+          <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
+          <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+            {t("invitations.eyebrow", locale)}
+          </span>
+        </div>
+        <h2 className="font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
+          {t("invitations.title", locale)}
+        </h2>
+        <p className="mt-1 max-w-[480px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+          {t("invitations.sub", locale)}
+        </p>
+      </div>
+
+      {/* 2. Stat cells */}
+      <div className="grid grid-cols-3 gap-2">
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
+          <p className="font-fraunces text-2xl" style={{ color: completed.length > 0 ? "var(--color-action-primary-bg)" : "var(--color-text-primary)" }}>
+            {completed.length}
+          </p>
+          <p className="text-[10px] text-[var(--color-text-muted)]">{t("invitations.statReceived", locale)}</p>
+        </div>
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
+          <p className="font-fraunces text-2xl" style={{ color: pending.length > 0 ? "var(--color-accent-primary)" : "var(--color-text-primary)" }}>
+            {pending.length}
+          </p>
+          <p className="text-[10px] text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
+        </div>
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
+          <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}/5</p>
+          <p className="text-[10px] text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
+        </div>
+      </div>
+
+      {/* 3. Info banner */}
+      <div className="flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/15 bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4">
+        <span className="shrink-0 text-sm" style={{ color: "var(--color-action-primary-bg)" }}>
+          {completed.length >= 2 ? "✓" : "ℹ"}
+        </span>
+        <p className="text-xs leading-relaxed" style={{ color: "var(--color-accent-self-deep)" }}>
+          {completed.length >= 2
+            ? `${completed.length} ${t("invitations.infoReady", locale)}`
+            : t("invitations.infoNeeded", locale)}
+        </p>
+      </div>
+
+      {/* 4. Create form */}
+      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
+        <p className="mb-3 text-[13px] font-semibold text-[var(--color-text-primary)]">
+          + {t("invitations.formTitle", locale)}
+        </p>
+
+        {canCreate ? (
+          <>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                placeholder={t("invitations.formPlaceholder", locale)}
+                className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-[13px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleCreate}
+                disabled={isCreating}
+                className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
+              >
+                {isCreating ? "..." : t("invitations.formSubmit", locale)}
+              </button>
+            </div>
+            {createError && (
+              <p className="mt-2 text-xs text-[var(--color-accent-primary)]">{createError}</p>
+            )}
+            <div className="mt-2.5 flex flex-col gap-1">
+              <span className="text-[11px] text-[var(--color-text-muted)]">
+                🔗 {t("invitations.formHintLink", locale)}
+              </span>
+              <span className="text-[11px] text-[var(--color-text-muted)]">
+                📧 {t("invitations.formHintEmail", locale)}
+              </span>
+            </div>
+          </>
+        ) : (
+          <p className="text-[13px] text-[var(--color-text-muted)]">
+            {t("invitations.limitReached", locale)}
+          </p>
+        )}
+      </div>
+
+      {/* 5. Invitation list or empty state */}
+      {active.length === 0 ? (
+        <div className="rounded-xl border-[1.5px] border-dashed border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-9 text-center">
+          <span className="mb-2 inline-block text-[28px] opacity-25" style={{ color: "var(--color-text-muted)" }}>👥</span>
+          <p className="text-sm font-medium text-[var(--color-text-secondary)]">
+            {t("invitations.emptyTitle", locale)}
+          </p>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            {t("invitations.emptySub", locale)}
+          </p>
+          <p className="mx-auto mt-2 max-w-[420px] text-[11px] leading-relaxed text-[#7a6f63]">
+            {locale === "hu"
+              ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
+              : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
+          </p>
+          <div className="mt-3">
+            <Link
+              href="/onboarding?intent=team"
+              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[#dcccb5] bg-white px-4 text-[11px] font-semibold text-[#7d5a40] transition hover:bg-[#fff7ec]"
+            >
+              {locale === "hu" ? "Csapat út megnyitása" : "Open team path"}
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {/* Completed group */}
+          {completed.length > 0 && (
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                {`${t("invitations.groupReceived", locale)} (${completed.length})`}
+              </p>
+              {completed.map((inv) => (
+                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-action-primary-bg)]/30 hover:shadow-sm">
+                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-action-primary-bg)" }}>✓</div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-medium text-[var(--color-text-primary)]">
+                      {inv.observerEmail ?? t("invitations.linkInvite", locale)}
+                    </p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      {t("invitations.receivedLabel", locale)}: {formatDate(inv.completedAt ?? inv.createdAt)}
+                      {" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}
+                    </p>
+                  </div>
+                  <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}>
+                    {t("invitations.statusCompleted", locale)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Pending group */}
+          {pending.length > 0 && (
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                {`${t("invitations.groupPending", locale)} (${pending.length})`}
+              </p>
+              {pending.map((inv) => (
+                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
+                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
+                    {inv.observerEmail ? "⏳" : "🔗"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-medium text-[var(--color-text-primary)]">
+                      {inv.observerEmail ?? t("invitations.linkInvite", locale)}
+                    </p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      {t("invitations.sentLabel", locale)}: {formatDate(inv.createdAt)}
+                      {" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
+                      {t("invitations.statusPending", locale)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(inv.token)}
+                      className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)]"
+                    >
+                      {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(inv.id)}
+                      disabled={deletingId === inv.id}
+                      className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50"
+                    >
+                      {deletingId === inv.id ? "..." : "✕"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 6. Received invitations (where others invited this user) */}
+      {receivedInvitations.length > 0 && (
+        <div className="border-t border-[var(--color-border-soft)] pt-5">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+            {t("invitations.receivedSection", locale)}
+          </p>
+          {receivedInvitations.map((inv) => {
+            const name = inv.inviterUsername ?? t("invitations.anonymous", locale);
+            const isPending = inv.status === "PENDING";
+            const isExpired = new Date(inv.expiresAt) < new Date();
+            const isDone = inv.status === "COMPLETED";
+
+            return (
+              <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5">
+                <div
+                  className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm"
+                  style={{ backgroundColor: isDone ? "var(--color-surface-self-accent-soft)" : "var(--color-surface-subtle)", color: isDone ? "var(--color-action-primary-bg)" : "var(--color-text-muted)" }}
+                >
+                  {isDone ? "✓" : "📩"}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium text-[var(--color-text-primary)]">{name}</p>
+                  <p className="text-[11px] text-[var(--color-text-muted)]">
+                    {isDone
+                      ? t("invitations.statusCompleted", locale)
+                      : inv.status === "CANCELED"
+                        ? t("invitations.statusCanceled", locale)
+                        : isExpired
+                          ? t("invitations.statusExpired", locale)
+                          : t("invitations.statusPendingLower", locale)}
+                  </p>
+                </div>
+                {isPending && !isExpired && (
+                  <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-4 py-2 text-[11px] font-semibold text-white">
+                    {t("invitations.fillIn", locale)}
+                  </Link>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

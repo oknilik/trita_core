@@ -33,6 +33,24 @@ enum InvitationStatus {
   CANCELED
 }
 
+enum UserRole {
+  INDIVIDUAL
+  ORG_ADMIN
+  ORG_MEMBER
+}
+
+enum ScoreRange {
+  LOW
+  MED
+  HIGH
+}
+
+enum ObserverType {
+  INTERNAL
+  EXTERNAL
+  ANONYMOUS
+}
+
 // ============================================
 // MODELS
 // ============================================
@@ -42,6 +60,7 @@ model UserProfile {
   clerkId   String?  @unique
   email     String?
   username  String?
+  activeOrgId String?
   deleted   Boolean  @default(false)
   locale    String?
   createdAt DateTime @default(now())
@@ -50,20 +69,18 @@ model UserProfile {
   // Demographic data (onboarding)
   birthYear   Int?
   gender      String?
-  education   String?
-  occupation  String?
-  occupationStatus String?
-  workSchedule String?
-  companySize String?
-  studyLevel String?
-  unemploymentDuration String?
   country     String?
+  avatarUrl   String?
   onboardedAt DateTime?
 
   // Research study fields
   testType           TestType?
   testTypeAssignedAt DateTime?
-  consentedAt        DateTime?
+  consentedAt           DateTime?
+  assessmentSkippedAt   DateTime?
+
+  // Role (default: INDIVIDUAL)
+  role      UserRole @default(INDIVIDUAL)
 
   assessmentResults    AssessmentResult[]
   assessmentDraft      AssessmentDraft?
@@ -72,6 +89,34 @@ model UserProfile {
   satisfactionFeedback SatisfactionFeedback?
   researchSurvey       ResearchSurvey?
   featureInterests     FeatureInterest[]
+
+  // Team layer (KKV)
+  ownedTeams       Team[]       @relation("TeamOwner")
+  teamMemberships  TeamMember[]
+
+  // Organization layer (KKV)
+  ownedOrgs      Organization[]       @relation("OrgOwner")
+  orgMemberships OrganizationMember[]
+  activeOrg      Organization?        @relation("ActiveOrgContext", fields: [activeOrgId], references: [id], onDelete: SetNull)
+
+  // Campaign layer (360°)
+  createdCampaigns       Campaign[]            @relation("CampaignCreator")
+  campaignParticipations CampaignParticipant[]
+
+  // Candidate hiring layer
+  managedCandidates CandidateInvite[] @relation("ManagedCandidates")
+
+  // Billing: one-time purchases
+  purchases Purchase[]
+
+  // Team role layer
+  teamRoleAnswer TeamRoleAnswer?
+  teamRoleScore  TeamRoleScore?
+
+  // Notifications
+  notifications Notification[]
+
+  @@index([activeOrgId])
 }
 
 model AssessmentDraft {
@@ -99,6 +144,9 @@ model AssessmentResult {
   testType         TestType?
   isSelfAssessment Boolean   @default(true)
 
+  // Public share
+  shareToken       String?   @unique
+
   userProfile       UserProfile?        @relation(fields: [userProfileId], references: [id])
   dimensionFeedback DimensionFeedback[]
 
@@ -120,6 +168,8 @@ model ObserverInvitation {
   completedAt        DateTime?
   reminderCount      Int              @default(0)
   lastReminderSentAt DateTime?
+  observerType       ObserverType     @default(INTERNAL)
+  externalContext    String?
 
   inviter    UserProfile         @relation("InviterInvitations", fields: [inviterId], references: [id])
   observer   UserProfile?        @relation("ObserverInvitations", fields: [observerProfileId], references: [id])
@@ -198,7 +248,7 @@ model SatisfactionFeedback {
 model DimensionFeedback {
   id                String   @id @default(cuid())
   assessmentResultId String
-  dimensionCode     String   // "H", "E", "X", "A", "C", "O" (HEXACO) or "O", "C", "E", "A", "N" (BIG_FIVE)
+  dimensionCode     String   // "H", "E", "X", "A", "C", "O"
   accuracyRating    Int      // 1-5 (😕😐🙂😊🤩)
   comment           String?
   createdAt         DateTime @default(now())
@@ -221,4 +271,440 @@ model FeatureInterest {
 
   @@unique([userProfileId, featureKey])
   @@index([featureKey])
+}
+
+// ============================================
+// TEAM LAYER (KKV)
+// ============================================
+
+model Team {
+  id                   String    @id @default(cuid())
+  name                 String
+  ownerId              String
+  orgId                String?
+  createdAt            DateTime  @default(now())
+  teamRoleRoundActive    Boolean   @default(false) @map("belbinRoundActive")
+  teamRoleRoundStartedAt DateTime? @map("belbinRoundStartedAt")
+
+  owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
+  org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  members          TeamMember[]
+  pendingInvites   TeamPendingInvite[]
+  candidateInvites CandidateInvite[]
+
+  @@index([ownerId])
+  @@index([orgId])
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     String   @default("member") // "member" | "manager" | "admin"
+  joinedAt DateTime @default(now())
+
+  team Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user UserProfile @relation(fields: [userId], references: [id])
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+// Pending team invites for users who haven't registered yet
+model TeamPendingInvite {
+  id        String   @id @default(cuid())
+  teamId    String
+  email     String
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, email])
+  @@index([email])
+}
+
+// ============================================
+// CANDIDATE / HIRING LAYER
+// ============================================
+
+model CandidateInvite {
+  id          String    @id @default(cuid())
+  token       String    @unique @default(cuid())
+  managerId   String
+  teamId      String?
+  email       String?
+  name        String?
+  position    String?
+  status      String    @default("PENDING")   // PENDING | COMPLETED | EXPIRED
+  testType    String    @default("HEXACO")
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  completedAt        DateTime?
+  draftStartedAt     DateTime?
+  draftAnsweredCount Int       @default(0)
+
+  manager UserProfile      @relation("ManagedCandidates", fields: [managerId], references: [id])
+  team    Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  result  CandidateResult?
+
+  @@index([managerId])
+  @@index([token])
+  @@index([teamId])
+}
+
+model CandidateResult {
+  id        String   @id @default(cuid())
+  inviteId  String   @unique
+  testType  String
+  scores    Json
+  createdAt DateTime @default(now())
+
+  invite CandidateInvite @relation(fields: [inviteId], references: [id])
+}
+
+// ============================================
+// ORGANIZATION LAYER (KKV)
+// ============================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  status    String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner            UserProfile                @relation("OrgOwner", fields: [ownerId], references: [id])
+  activeUsers      UserProfile[]              @relation("ActiveOrgContext")
+  members          OrganizationMember[]
+  pendingInvites   OrganizationPendingInvite[]
+  teams            Team[]
+  campaigns        Campaign[]
+  subscription     Subscription?
+  candidateCredits CandidateCredit[]
+
+  @@index([ownerId])
+}
+
+model CandidateCredit {
+  id        String   @id @default(cuid())
+  orgId     String
+  type      String   // "purchase" | "usage" | "refund"
+  amount    Int      // positive: top-up, negative: usage
+  balance   Int      // running balance AFTER this transaction
+  note      String?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([orgId, createdAt])
+}
+
+model Subscription {
+  id                     String    @id @default(cuid())
+  orgId                  String    @unique
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeLatestInvoiceId  String?
+  planType               String?   // "team" | "org" | "scale"
+  billingInterval        String?   // "monthly" | "annual"
+  status                 String    @default("trialing")
+  trialEndsAt            DateTime?
+  currentPeriodStart     DateTime?
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean   @default(false)
+  candidateCredits       Int       @default(0)
+  billingoLastDocumentId String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
+}
+
+model OrganizationMember {
+  id       String   @id @default(cuid())
+  orgId    String
+  userId   String
+  role     String    @default("ORG_MEMBER") // "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER"
+  joinedAt DateTime  @default(now())
+  leftAt   DateTime?
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user UserProfile  @relation(fields: [userId], references: [id])
+
+  @@unique([orgId, userId])
+  @@index([orgId])
+  @@index([userId])
+  @@index([userId, leftAt])
+}
+
+model OrganizationPendingInvite {
+  id        String   @id @default(cuid())
+  orgId     String
+  email     String
+  role      String   @default("ORG_MEMBER") // "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER"
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, email])
+  @@index([email])
+}
+
+// ── 360° Campaign layer ────────────────────────────────────────────────────
+
+model Campaign {
+  id          String    @id @default(cuid())
+  orgId       String
+  name        String
+  description String?
+  status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  closedAt    DateTime?
+
+  org          Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  creator      UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
+  participants CampaignParticipant[]
+
+  @@index([orgId])
+  @@index([createdBy])
+}
+
+model CampaignParticipant {
+  id         String   @id @default(cuid())
+  campaignId String
+  userId     String
+  addedAt    DateTime @default(now())
+
+  campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     UserProfile @relation(fields: [userId], references: [id])
+
+  @@unique([campaignId, userId])
+  @@index([campaignId])
+  @@index([userId])
+}
+
+// ============================================
+// PURCHASE LAYER (one-time payments)
+// ============================================
+
+model Purchase {
+  id                      String   @id @default(cuid())
+
+  userProfileId           String
+  userProfile             UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  orgId                   String?
+  teamId                  String?
+
+  // "self_plus" | "team_snapshot" | "team_deep_dive"
+  tier                    String
+
+  stripePaymentIntentId   String?
+  stripeCheckoutSessionId String?
+  amount                  Int      // cent-ben (€49 = 4900)
+  currency                String   @default("eur")
+  status                  String   @default("completed")
+  // "pending" | "completed" | "refunded"
+
+  // Advisory tracking (Team Deep Dive tartalmaz 1 session-t)
+  includesAdvisory        Boolean  @default(false)
+  advisoryUsed            Boolean  @default(false)
+
+  // Candidate credit (későbbi csomagokhoz)
+  includedCredits         Int      @default(0)
+
+  metadata                Json?
+
+  // Billingo invoice tracking
+  productType             String?  // "self_plus" | "team_snapshot" | "candidate_pack"
+  grossAmount             Int?     // bruttó összeg centben (ÁFA-val)
+  billingoDocumentId      String?
+  billingoDocumentNumber  String?
+  invoiceStatus           String   @default("not_applicable") // "pending" | "issued" | "failed" | "not_applicable"
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([userProfileId])
+  @@index([orgId])
+  @@index([teamId])
+  @@index([tier])
+  @@index([stripeCheckoutSessionId])
+}
+
+// ============================================
+// TEAM ROLE LAYER
+// ============================================
+
+model TeamRoleAnswer {
+  id            String   @id @default(cuid())
+  userProfileId String   @unique
+  answers       Json     // Record<groupIndex 0-6, Record<statementIndex 0-7, points>>
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  userProfile UserProfile    @relation(fields: [userProfileId], references: [id])
+  score       TeamRoleScore?
+
+  @@map("BelbinAnswer")
+}
+
+model TeamRoleScore {
+  id               String   @id @default(cuid())
+  userProfileId    String   @unique
+  scores           Json     // Record<roleCode, totalPoints>
+  source           String   // "questionnaire" | "estimate"
+  teamRoleAnswerId String?  @unique @map("belbinAnswerId")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  userProfile    UserProfile     @relation(fields: [userProfileId], references: [id])
+  teamRoleAnswer TeamRoleAnswer? @relation(fields: [teamRoleAnswerId], references: [id])
+
+  @@index([userProfileId])
+  @@map("BelbinScore")
+}
+
+model AdvisorySession {
+  id             String    @id @default(cuid())
+
+  orgId          String?
+  teamId         String?
+  purchaseId     String?
+  subscriptionId String?
+  requestedById  String
+
+  type           String    // "guided" | "facilitation" | "workshop"
+  status         String    @default("requested")
+  // "requested" | "scheduled" | "completed" | "canceled"
+
+  scheduledAt    DateTime?
+  completedAt    DateTime?
+  notes          String?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([orgId])
+  @@index([teamId])
+  @@index([purchaseId])
+}
+
+// ============================================
+// BILLING EVENT TRACKING
+// ============================================
+
+model BillingEventLog {
+  id           String    @id @default(cuid())
+  provider     String    // "stripe" | "billingo"
+  eventId      String    @unique // Stripe event.id or internal ID
+  eventType    String    // e.g. "checkout.session.completed"
+  objectId     String?   // Stripe object ID (session, invoice, subscription)
+  status       String    @default("processing") // "processing" | "processed" | "failed" | "skipped"
+  processedAt  DateTime?
+  errorMessage String?
+  retryable    Boolean   @default(false)
+  retryCount   Int       @default(0)
+  lastRetryAt  DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([eventType])
+  @@index([status])
+  @@index([objectId])
+}
+
+model BillingoPartnerLink {
+  id               String  @id @default(cuid())
+  userId           String? // UserProfile.id — for self purchases
+  organizationId   String? // Organization.id — for org/team purchases
+  billingoPartnerId String @unique
+  email            String
+  countryCode      String  @default("HU")
+  taxNumber        String?
+  euVatNumber      String?
+  currency         String  @default("EUR")
+  locale           String  @default("hu")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([email])
+}
+
+model BillingDocumentLink {
+  id                      String  @id @default(cuid())
+  sourceType              String  // "purchase" | "subscription_invoice" | "candidate_addon"
+  sourceId                String  // Purchase.id or Subscription.id
+  stripeInvoiceId         String?
+  stripeCheckoutSessionId String?
+  billingoDocumentId      String
+  billingoDocumentNumber  String?
+  documentType            String  // "invoice" | "correction" | "proforma"
+  status                  String  @default("issued") // "issued" | "voided" | "corrected"
+  createdAt               DateTime @default(now())
+
+  @@index([sourceType, sourceId])
+  @@index([billingoDocumentId])
+  @@index([stripeInvoiceId])
+  @@index([stripeCheckoutSessionId])
+}
+
+// ── Notification Hub ────────────────────────────────────────────────────────
+
+enum NotificationType {
+  OBSERVER_COMPLETED
+  OBSERVER_SUBMITTED
+  RESULT_READY
+  PURCHASE_CONFIRMED
+  ORG_INVITE_RECEIVED
+  CAMPAIGN_LAUNCHED
+  CAMPAIGN_CLOSED
+  TEAM_MEMBER_ADDED
+  ORG_INVITE_ACCEPTED
+  TRIAL_ENDING_SOON
+  TRIAL_EXPIRED
+  PAYMENT_FAILED
+  SUBSCRIPTION_FROZEN
+  LOW_CANDIDATE_CREDITS
+  MEMBER_COMPLETED_ASSESSMENT
+  CAMPAIGN_MILESTONE
+}
+
+model Notification {
+  id            String           @id @default(cuid())
+  userId        String
+  type          NotificationType
+  category      String           @default("system")   // assessment | observer | org | campaign | billing | system
+  priority      String           @default("normal")   // low | normal | high
+  titleKey      String
+  bodyKey       String
+  vars          Json?
+  link          String?
+  sourceType    String?          // e.g. "observer_invitation", "campaign", "stripe_invoice"
+  sourceId      String?          // e.g. invitationId, campaignId, stripeInvoiceId
+  actorUserId   String?          // who triggered this (e.g. observer, inviter)
+  dedupeKey     String?          // for dedup: e.g. "PAYMENT_FAILED:orgId:invoiceId"
+  read          Boolean          @default(false)
+  readAt        DateTime?
+  dismissed     Boolean          @default(false)
+  dismissedAt   DateTime?
+  createdAt     DateTime         @default(now())
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([dedupeKey, userId])
+  @@index([userId, dismissed, createdAt])
+  @@index([userId, read])
 }

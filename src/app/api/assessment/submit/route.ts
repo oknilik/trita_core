@@ -6,6 +6,7 @@ import { assignTestType } from "@/lib/assignTestType";
 import { getTestConfig } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -18,6 +19,9 @@ const submissionSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -122,6 +126,14 @@ export async function POST(req: Request) {
       where: { userProfileId: profile.id },
     }),
   ]);
+
+  // In-app notification via orchestrator (fire-and-forget)
+  import("@/lib/notifications").then(({ handleResultReady }) =>
+    handleResultReady({
+      userId: profile.id,
+      assessmentResultId: result.id,
+    }).catch((err) => console.error("[Notification] Result ready error:", err)),
+  );
 
   return NextResponse.json({ id: result.id });
 }

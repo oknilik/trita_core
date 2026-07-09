@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationCodeEmail, sendMagicLinkEmail } from "@/lib/emails";
 import { clerkClient } from "@clerk/nextjs/server";
+import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -18,6 +19,7 @@ const clerkUserSchema = z.object({
     .optional(),
   primary_email_address_id: z.string().optional().nullable(),
   username: z.string().optional().nullable(),
+  unsafe_metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 const clerkEmailSchema = z.object({
@@ -80,7 +82,7 @@ export async function POST(req: Request) {
     const fallbackEmail = user.email_addresses?.[0]?.email_address;
     const email = primaryEmail ?? fallbackEmail ?? null;
 
-    await prisma.userProfile.upsert({
+    const upsertedProfile = await prisma.userProfile.upsert({
       where: { clerkId: user.id },
       create: {
         clerkId: user.id,
@@ -91,7 +93,38 @@ export async function POST(req: Request) {
         email,
         ...(user.username ? { username: user.username } : {}),
       },
+      select: { id: true },
     });
+
+    const intent = normalizeJourneyIntent(user.unsafe_metadata?.intent);
+    if (intent) {
+      await setJourneyIntentForProfile(upsertedProfile.id, intent);
+    }
+
+    // Note: org invites are fulfilled via the /join/org/[inviteId] page, not here,
+    // so that profile data (username, gender, etc.) gets collected first.
+    // Note: team invites are fulfilled via the /join/[token] page, not here.
+
+    // Back-link any observer invitations sent to this email before registration
+    if (event.type === "user.created" && email) {
+      const newProfile = await prisma.userProfile.findUnique({
+        where: { clerkId: user.id },
+        select: { id: true },
+      });
+      if (newProfile) {
+        await prisma.observerInvitation.updateMany({
+          where: {
+            observerEmail: { equals: email, mode: "insensitive" },
+            observerProfileId: null,
+            status: { in: ["PENDING", "COMPLETED"] },
+          },
+          data: {
+            observerProfileId: newProfile.id,
+            observerType: "INTERNAL",
+          },
+        });
+      }
+    }
   }
 
   if (event.type === "user.deleted") {
@@ -144,7 +177,7 @@ export async function POST(req: Request) {
       console.log("[Webhook] email.created extracted:", { to, code: code ? "****" : undefined, magicLink: magicLink ? "yes" : undefined });
 
       if (to && (magicLink || code)) {
-        let locale: "hu" | "en" | "de" | undefined;
+        let locale: "hu" | "en" | undefined;
         // For existing users (sign-in): locale is stored in the DB, not in Clerk metadata
         try {
           const profile = await prisma.userProfile.findFirst({
@@ -152,7 +185,7 @@ export async function POST(req: Request) {
             select: { locale: true },
           });
           const dbLocale = profile?.locale;
-          if (dbLocale === "hu" || dbLocale === "en" || dbLocale === "de") {
+          if (dbLocale === "hu" || dbLocale === "en") {
             locale = dbLocale;
           }
         } catch (err) {
@@ -164,7 +197,7 @@ export async function POST(req: Request) {
             const client = await clerkClient();
             const signUp = await client.signUps.get(data.sign_up_id);
             const metaLocale = signUp.unsafeMetadata?.locale as string | undefined;
-            if (metaLocale === "hu" || metaLocale === "en" || metaLocale === "de") {
+            if (metaLocale === "hu" || metaLocale === "en") {
               locale = metaLocale;
             }
           } catch (err) {
@@ -172,7 +205,7 @@ export async function POST(req: Request) {
           }
         }
 
-        const resolvedLocale: "hu" | "en" | "de" = locale ?? "en";
+        const resolvedLocale: "hu" | "en" = locale ?? "en";
 
         if (magicLink) {
           await sendMagicLinkEmail({ to, magicLinkUrl: magicLink, locale: resolvedLocale });

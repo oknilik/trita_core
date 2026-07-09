@@ -1,0 +1,110 @@
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getActiveOrgMembership } from "@/lib/org-context";
+import { hasOrgRole } from "@/lib/auth";
+import { canManageTeam } from "@/lib/team-auth";
+import { getOrgSubscription, getPlanTier } from "@/lib/subscription";
+import { addCredits } from "@/lib/candidate-credits";
+import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+
+// DELETE /api/manager/candidates/[id] — revoke a PENDING candidate invite
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const { id } = await params;
+
+  const invite = await prisma.candidateInvite.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      managerId: true,
+      teamId: true,
+      status: true,
+      name: true,
+      email: true,
+      position: true,
+      team: { select: { orgId: true } },
+    },
+  });
+
+  if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+  let orgMembershipRole: string | null = null;
+  if (invite.team?.orgId) {
+    const orgMembership = await prisma.organizationMember.findFirst({
+      where: { userId: profile.id, orgId: invite.team.orgId },
+      select: { role: true },
+    });
+    orgMembershipRole = orgMembership?.role ?? null;
+    const evaluateSnapshot = await resolveOrgPolicySnapshot({
+      orgId: invite.team.orgId,
+      orgRole: orgMembershipRole,
+      teamId: invite.teamId,
+      hasTeamMembership: Boolean(invite.teamId),
+      hasOrgMembership: Boolean(orgMembershipRole),
+    });
+    const evaluateDecision = resolveOrgCapabilityDecision(
+      evaluateSnapshot,
+      "candidateEvaluate",
+    );
+    if (!evaluateDecision.allowed) {
+      return NextResponse.json(
+        {
+          error: "CAPABILITY_DENIED",
+          reason: evaluateDecision.reason,
+          upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
+        },
+        { status: 403 },
+      );
+    }
+  }
+
+  let canRevoke = invite.managerId === profile.id;
+  if (!canRevoke && invite.teamId && orgMembershipRole) {
+    canRevoke = hasOrgRole(orgMembershipRole, "ORG_ADMIN")
+      || await canManageTeam(profile.id, invite.teamId, orgMembershipRole);
+  }
+  if (!canRevoke) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+
+  if (invite.status !== "PENDING") return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
+
+  // Determine orgId: via team, or via manager's org membership
+  const orgId =
+    invite.team?.orgId ??
+    (await getActiveOrgMembership(profile.id))?.orgId ??
+    null;
+
+  await prisma.candidateInvite.update({
+    where: { id },
+    data: { status: "CANCELED" },
+  });
+
+  // Refund 1 credit for non-unlimited tiers
+  if (orgId) {
+    const sub = await getOrgSubscription(orgId);
+    const tier = getPlanTier(sub);
+    const isUnlimited = tier === "org" || tier === "scale";
+    if (!isUnlimited && sub) {
+      const label = invite.name ?? invite.email ?? "unknown";
+      await addCredits({
+        orgId,
+        amount: 1,
+        actorId: profile.id,
+        note: `Visszavonás: ${label}${invite.position ? ` (${invite.position})` : ""}`,
+      });
+    }
+  }
+
+  return NextResponse.json({ ok: true });
+}

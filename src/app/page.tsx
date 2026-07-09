@@ -1,63 +1,51 @@
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { StatsSection } from "@/components/landing/StatsSection";
+import { TrustBar } from "@/components/landing/TrustBar";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { FeatureCards } from "@/components/landing/FeatureCards";
-import { BottomCTA } from "@/components/landing/BottomCTA";
-import { t } from "@/lib/i18n";
-import { getServerLocale } from "@/lib/i18n-server";
-import { getLanguageAlternates, getSiteUrl } from "@/lib/seo";
+import { Features } from "@/components/landing/Features";
+import { ProofSection } from "@/components/landing/ProofSection";
+import { StatsBar } from "@/components/landing/StatsBar";
+import { CtaSection } from "@/components/landing/CtaSection";
+import { getSiteUrl } from "@/lib/seo";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-// ISR: Revalidate every 1 hour (3600 seconds)
-// This makes the landing page load instantly for most visitors
-export const revalidate = 3600;
+export const metadata: Metadata = {
+  title: "trita",
+  description:
+    "A trita kutatás alapú csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
+};
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
-  const title = "trita";
-  const ogTitle = t("landing.heroTitle", locale);
-  const description = t("meta.description", locale);
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ mode?: string }>;
+}) {
+  const { userId } = await auth();
+  if (userId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: "/",
-      languages: getLanguageAlternates("/"),
-    },
-    openGraph: {
-      type: "website",
-      title: ogTitle,
-      description,
-      url: "/",
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: ogTitle,
-      description,
-    },
-  };
-}
+  const params = await searchParams;
+  const mode: SiteMode = params.mode === "team" ? "team" : "self";
 
-export default function Home() {
   const siteUrl = getSiteUrl();
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Trita",
+    name: "trita",
     url: siteUrl,
     logo: `${siteUrl}/favicon.svg`,
   };
   const websiteJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Trita",
+    name: "trita",
     url: siteUrl,
   };
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-cream">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -66,11 +54,13 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-      <HeroSection />
-      <StatsSection />
-      <HowItWorks />
-      <FeatureCards />
-      <BottomCTA />
+      <HeroSection mode={mode} />
+      <TrustBar mode={mode} />
+      <HowItWorks mode={mode} />
+      <Features mode={mode} />
+      <ProofSection />
+      <StatsBar />
+      <CtaSection mode={mode} />
     </main>
   );
 }

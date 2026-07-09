@@ -10,8 +10,8 @@ const CY = 150;
 const MAX_R = 100;
 const LABEL_R = 114;
 const RINGS = [0.25, 0.5, 0.75, 1.0];
-const SELF_POINT_COLOR = "#8B5CF6";
-const OBSERVER_POINT_COLOR = "#10B981";
+const SELF_POINT_COLOR = "var(--color-visual-gradient-violet)";
+const OBSERVER_POINT_COLOR = "var(--color-state-success-strong)";
 
 interface RadarDimension {
   code: string;
@@ -118,11 +118,11 @@ export const RadarChart = memo(function RadarChart({
         <radialGradient id={auraId} cx="50%" cy="50%">
           <stop offset="0%" stopColor="#EEF2FF" stopOpacity="0.95" />
           <stop offset="75%" stopColor="#EDE9FE" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          <stop offset="100%" stopColor="var(--color-neutral-white)" stopOpacity="0" />
         </radialGradient>
 
         <radialGradient id={surfaceId} cx="50%" cy="45%">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.92" />
+          <stop offset="0%" stopColor="var(--color-neutral-white)" stopOpacity="0.92" />
           <stop offset="100%" stopColor="#EEF2FF" stopOpacity="0.5" />
         </radialGradient>
 
@@ -136,26 +136,26 @@ export const RadarChart = memo(function RadarChart({
         </linearGradient>
 
         <linearGradient id={radarGlowFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" stopOpacity="0.25" />
           <stop offset="100%" stopColor="#D946EF" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id={radarFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.32" />
-          <stop offset="55%" stopColor="#8B5CF6" stopOpacity="0.24" />
+          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" stopOpacity="0.32" />
+          <stop offset="55%" stopColor="var(--color-visual-gradient-violet)" stopOpacity="0.24" />
           <stop offset="100%" stopColor="#D946EF" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id={radarStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" />
-          <stop offset="50%" stopColor="#8B5CF6" />
+          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" />
+          <stop offset="50%" stopColor="var(--color-visual-gradient-violet)" />
           <stop offset="100%" stopColor="#D946EF" />
         </linearGradient>
 
         <linearGradient id={observerFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#10B981" stopOpacity="0.24" />
+          <stop offset="0%" stopColor="var(--color-state-success-strong)" stopOpacity="0.24" />
           <stop offset="100%" stopColor="#14B8A6" stopOpacity="0.14" />
         </linearGradient>
         <linearGradient id={observerStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#10B981" />
+          <stop offset="0%" stopColor="var(--color-state-success-strong)" />
           <stop offset="100%" stopColor="#14B8A6" />
         </linearGradient>
 
@@ -177,7 +177,7 @@ export const RadarChart = memo(function RadarChart({
           <feDropShadow dx="0" dy="3" stdDeviation="5" floodOpacity="0.25"/>
         </filter>
         <filter id={labelShadowId}>
-          <feDropShadow dx="0" dy="1" stdDeviation="1.15" floodColor="#FFFFFF" floodOpacity="0.9" />
+          <feDropShadow dx="0" dy="1" stdDeviation="1.15" floodColor="var(--color-neutral-white)" floodOpacity="0.9" />
         </filter>
       </defs>
 
@@ -311,7 +311,7 @@ export const RadarChart = memo(function RadarChart({
             cx={p.x}
             cy={p.y}
             r="2.1"
-            fill="#FFFFFF"
+            fill="var(--color-neutral-white)"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.68 + i * 0.06, duration: 0.3, ease: "easeOut" }}
@@ -406,7 +406,7 @@ export const RadarChart = memo(function RadarChart({
             width="204"
             height="26"
             rx="13"
-            fill="#FFFFFF"
+            fill="var(--color-neutral-white)"
             opacity="0.88"
             stroke="#E0E7FF"
             strokeWidth="1"

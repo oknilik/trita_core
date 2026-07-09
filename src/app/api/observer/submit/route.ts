@@ -5,6 +5,10 @@ import { getTestConfig } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
+import {
+  resolveObserverTokenLifecycle,
+  toObserverTokenErrorCode,
+} from "@/lib/observer/token-validation";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -35,20 +39,10 @@ export async function POST(req: Request) {
     where: { token },
   });
 
-  if (!invitation) {
-    return NextResponse.json({ error: "INVALID_TOKEN" }, { status: 404 });
-  }
-
-  if (invitation.status === "COMPLETED") {
-    return NextResponse.json({ error: "ALREADY_USED" }, { status: 400 });
-  }
-
-  if (invitation.status === "CANCELED") {
-    return NextResponse.json({ error: "INVITE_CANCELED" }, { status: 400 });
-  }
-
-  if (invitation.expiresAt < new Date()) {
-    return NextResponse.json({ error: "INVITE_EXPIRED" }, { status: 400 });
+  const lifecycle = resolveObserverTokenLifecycle(invitation);
+  if (lifecycle !== "active") {
+    const code = toObserverTokenErrorCode(lifecycle);
+    return NextResponse.json({ error: code }, { status: code === "INVALID_TOKEN" ? 404 : 400 });
   }
 
   // Validate all questions answered
@@ -111,7 +105,46 @@ export async function POST(req: Request) {
     }),
   ]);
 
-  // Notify inviter — only from the 2nd completed observer onward (fire-and-forget)
+  // In-app notification — notify inviter that observer completed (fire-and-forget)
+  import("@/lib/notifications").then(({ handleObserverCompleted }) =>
+    handleObserverCompleted({
+      inviterId: invitation.inviterId,
+      observerName: invitation.observerName ?? "Valaki",
+      invitationId: invitation.id,
+    }).catch((err) => console.error("[Notification] Observer completed error:", err)),
+  );
+
+  // In-app notification — notify observer that their submission was received (if registered user)
+  // observerProfileId may be null if the link wasn't opened while signed in,
+  // so we also try to match by observerEmail.
+  (async () => {
+    let observerUserId = invitation.observerProfileId;
+
+    if (!observerUserId && invitation.observerEmail) {
+      const observer = await prisma.userProfile.findFirst({
+        where: { email: invitation.observerEmail, deleted: false },
+        select: { id: true },
+      });
+      observerUserId = observer?.id ?? null;
+    }
+
+    if (!observerUserId) return;
+
+    const inviter = await prisma.userProfile.findUnique({
+      where: { id: invitation.inviterId },
+      select: { username: true, email: true },
+    });
+    if (!inviter) return;
+
+    const { handleObserverSubmitted } = await import("@/lib/notifications");
+    await handleObserverSubmitted({
+      observerUserId,
+      inviterName: inviter.username ?? inviter.email ?? "—",
+      invitationId: invitation.id,
+    });
+  })().catch((err) => console.error("[Notification] Observer submitted error:", err));
+
+  // Email — only from the 2nd completed observer onward (fire-and-forget)
   prisma.observerAssessment.count({
     where: {
       invitation: { inviterId: invitation.inviterId },
@@ -123,9 +156,9 @@ export async function POST(req: Request) {
       select: { email: true, locale: true, username: true },
     });
     if (!inviter?.email) return;
-    const locale = (["hu", "en", "de"].includes(inviter.locale ?? "")
+    const locale = (["hu", "en"].includes(inviter.locale ?? "")
       ? inviter.locale
-      : undefined) as "hu" | "en" | "de" | undefined;
+      : undefined) as "hu" | "en" | undefined;
     sendObserverCompletionEmail({
       to: inviter.email,
       inviterName: inviter.username ?? inviter.email,

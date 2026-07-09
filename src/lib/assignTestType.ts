@@ -5,8 +5,7 @@ import { CORE_TEST_TYPES } from "./questions";
 /**
  * Priority-balanced random assignment.
  *
- * 1. Core types (HEXACO, HEXACO_MODIFIED, BIG_FIVE) are balanced.
- *    Ties are broken randomly.
+ * Assigns HEXACO to new users.
  */
 export async function assignTestType(userProfileId: string): Promise<TestType> {
   // Count current assignments per type

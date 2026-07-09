@@ -6,6 +6,7 @@ import { assignTestType } from "@/lib/assignTestType";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { AssessmentClient } from "./AssessmentClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -52,8 +53,10 @@ export default async function AssessmentPage({
   }
 
   // Redirect to onboarding if demographics not yet collected
+  // Org-flow users don't have onboardedAt — check org membership before redirecting
   if (!profile.onboardedAt) {
-    redirect("/onboarding");
+    const orgMembership = await getActiveOrgMembership(profile.id);
+    if (!orgMembership) redirect("/onboarding");
   }
 
   // Load existing draft (if any)
@@ -68,7 +71,7 @@ export default async function AssessmentPage({
     !draft &&
     params.confirmed !== "true"
   ) {
-    redirect("/dashboard?retake=true");
+    redirect("/profile/results?retake=true");
   }
 
   // Assign test type if not assigned yet

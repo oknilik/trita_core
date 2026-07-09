@@ -20,13 +20,22 @@ export function AdminTableSection({
   const total = rows.reduce((sum, row) => sum + row.value, 0);
 
   return (
-    <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
-      <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
-      {description && (
-        <p className="mt-1 text-sm text-gray-600">{description}</p>
-      )}
+    <div className="rounded-xl border border-sand bg-white p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+            {title}
+          </h2>
+          {description && (
+            <p className="mt-0.5 text-xs text-ink-body">{description}</p>
+          )}
+        </div>
+        <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
+          {total}
+        </span>
+      </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         {rows.map((row, idx) => {
           const percentage =
             row.percentage ?? (total > 0 ? (row.value / total) * 100 : 0);
@@ -34,22 +43,24 @@ export function AdminTableSection({
             <div key={idx}>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-ink-body">
                     {row.label}
                   </span>
                   {row.subtitle && (
-                    <p className="text-xs text-gray-400 mt-0.5">{row.subtitle}</p>
+                    <p className="mt-0.5 text-xs text-ink-body">
+                      {row.subtitle}
+                    </p>
                   )}
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-sm font-semibold text-ink">
                   {row.value}
                 </span>
               </div>
               <div className="mt-2">
                 <AnimatedBar
                   value={percentage}
-                  color={row.color ?? "#6366F1"}
-                  height="h-2"
+                  color={row.color ?? "var(--color-visual-gradient-indigo)"}
+                  height="h-1.5"
                   delay={idx * 0.1}
                 />
               </div>

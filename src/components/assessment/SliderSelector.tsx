@@ -21,24 +21,16 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
     t('assessment.scale4', locale),
     t('assessment.scale5', locale),
   ]
-  const palette = [
-    { bg: '#F2EEFF', border: '#DDD1FF', text: '#5B4A85', activeBg: '#D9C9FF' },
-    { bg: '#E8DEFF', border: '#CDB8FF', text: '#533F83', activeBg: '#C5A7FF' },
-    { bg: '#DAC7FF', border: '#B695FF', text: '#4B347E', activeBg: '#AE84FF' },
-    { bg: '#C8A8FF', border: '#9965F6', text: '#412872', activeBg: '#915BEE' },
-    { bg: '#B386FF', border: '#7C3AED', text: '#351D61', activeBg: '#7C3AED' },
-  ]
 
   const displayMark = hoveredMark ?? value
 
   return (
-    <div className="w-full space-y-4">
-      {/* Dots */}
-      <div className="flex items-center justify-center gap-3 md:gap-4">
+    <div className="flex w-full flex-col items-center">
+      {/* Circles */}
+      <div className="mb-3 flex gap-2.5 lg:gap-3">
         {[1, 2, 3, 4, 5].map((mark) => {
           const isSelected = value === mark
           const isHovered = hoveredMark === mark
-          const color = palette[mark - 1]
           return (
             <motion.button
               key={mark}
@@ -46,18 +38,17 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               onClick={() => onChange(mark)}
               onMouseEnter={() => setHoveredMark(mark)}
               onMouseLeave={() => setHoveredMark(null)}
-              whileHover={{ scale: 1.18 }}
               whileTap={{ scale: 0.94 }}
-              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border text-sm font-semibold transition-colors md:h-12 md:w-12"
-              style={{
-                backgroundColor: isSelected ? color.activeBg : isHovered ? color.border : color.bg,
-                borderColor: isSelected ? '#5B21B6' : isHovered ? '#7C3AED' : color.border,
-                borderWidth: isSelected || isHovered ? '3px' : '1.5px',
-                color: isSelected || isHovered ? '#FFFFFF' : color.text,
-                opacity: isSelected ? 1 : 0.95,
-              }}
-              animate={{ scale: isSelected ? 1.12 : 1 }}
-              transition={{ duration: 0.18 }}
+              className={[
+                "flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-[15px] font-medium transition-all",
+                isSelected
+                  ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/25"
+                  : isHovered
+                    ? "border-[var(--color-accent-self)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
+                    : "border-[var(--color-border-default)] bg-white text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]",
+              ].join(" ")}
+              animate={{ scale: isSelected ? 1.08 : 1 }}
+              transition={{ duration: 0.15 }}
               aria-label={`${mark} - ${labels[mark - 1]}`}
             >
               {mark}
@@ -66,32 +57,26 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
         })}
       </div>
 
-      {/* Hover preview or selected label */}
-      <div className="flex min-h-[2rem] items-center justify-center">
+      {/* End labels with center dot */}
+      <div className="mb-4 flex w-[320px] items-center justify-between">
+        <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endLeft', locale)}</span>
+        <span className="text-[10px] text-[var(--color-border-default)]">·</span>
+        <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endRight', locale)}</span>
+      </div>
+
+      {/* Hover/selected label */}
+      <div className="flex min-h-[1.25rem] items-center justify-center">
         {displayMark !== null ? (
           <motion.p
             key={`${displayMark}-${hoveredMark !== null ? 'hover' : 'selected'}`}
-            initial={{ opacity: 0, y: 6 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center text-sm font-medium"
-            style={{
-              color: palette[displayMark - 1]?.text ?? '#374151',
-              opacity: hoveredMark !== null && hoveredMark !== value ? 0.65 : 1,
-            }}
+            className="text-center text-xs font-medium text-[var(--color-text-secondary)]"
+            style={{ opacity: hoveredMark !== null && hoveredMark !== value ? 0.6 : 1 }}
           >
             {labels[displayMark - 1]}
           </motion.p>
-        ) : (
-          <p className="text-center text-sm text-gray-400">
-            {t('assessment.emptyValue', locale)}
-          </p>
-        )}
-      </div>
-
-      {/* End labels */}
-      <div className="flex items-center justify-between px-1 text-xs text-gray-500">
-        <span className="max-w-[45%] text-left">{t('assessment.endLeft', locale)}</span>
-        <span className="max-w-[45%] text-right">{t('assessment.endRight', locale)}</span>
+        ) : null}
       </div>
     </div>
   )

@@ -1,81 +1,63 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { t, tf } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TextField } from "@/components/ui/primitives/TextField";
+import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { TritaLogo } from "@/components/TritaLogo";
-import {
-  COMPANY_SIZE_OPTIONS,
-  EDUCATION_OPTIONS,
-  GENDER_OPTIONS,
-  OCCUPATION_STATUS_OPTIONS,
-  STUDY_LEVEL_OPTIONS,
-  UNEMPLOYMENT_DURATION_OPTIONS,
-  WORK_SCHEDULE_OPTIONS,
-  type OccupationStatus,
-  requiresStudyLevel,
-  requiresWorkFields,
-} from "@/lib/onboarding-options";
+import { GENDER_OPTIONS } from "@/lib/onboarding-options";
+import { toggleBtn } from "@/lib/onboarding-styles";
+import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+
+
+
+
+// ── Main component ───────────────────────────────────────────────────────────
 
 export function OnboardingClient() {
   const router = useRouter();
   const { locale } = useLocale();
   const { showToast } = useToast();
 
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
-  const [education, setEducation] = useState("");
-  const [occupationStatus, setOccupationStatus] = useState("");
-  const [workSchedule, setWorkSchedule] = useState("");
-  const [companySize, setCompanySize] = useState("");
-  const [studyLevel, setStudyLevel] = useState("");
-  const [unemploymentDuration, setUnemploymentDuration] = useState("");
   const [country, setCountry] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string>(AVATAR_OPTIONS[0] ?? "");
+  const [avatarsShown, setAvatarsShown] = useState(AVATARS_INITIAL_COUNT);
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Touch state for blur validation
   const [usernameTouched, setUsernameTouched] = useState(false);
   const [birthYearTouched, setBirthYearTouched] = useState(false);
   const [invalidFieldFlash, setInvalidFieldFlash] = useState<
     | "username"
     | "birthYear"
     | "gender"
-    | "education"
-    | "occupationStatus"
-    | "workSchedule"
-    | "companySize"
-    | "studyLevel"
     | "country"
-    | "consent"
-  | null>(null);
-
+    | null
+  >(null);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
+
   const invalidFlashTimerRef = useRef<number | null>(null);
+
   const usernameInputRef = useRef<HTMLInputElement>(null);
   const birthYearInputRef = useRef<HTMLInputElement>(null);
-  const usernameFieldRef = useRef<HTMLLabelElement>(null);
-  const birthYearFieldRef = useRef<HTMLLabelElement>(null);
+  const usernameFieldRef = useRef<HTMLDivElement>(null);
+  const birthYearFieldRef = useRef<HTMLDivElement>(null);
   const genderFieldRef = useRef<HTMLDivElement>(null);
-  const educationFieldRef = useRef<HTMLDivElement>(null);
-  const occupationStatusFieldRef = useRef<HTMLDivElement>(null);
-  const workScheduleFieldRef = useRef<HTMLDivElement>(null);
-  const companySizeFieldRef = useRef<HTMLDivElement>(null);
-  const studyLevelFieldRef = useRef<HTMLDivElement>(null);
-  const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const educationFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const occupationStatusFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const workScheduleFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const companySizeFirstButtonRef = useRef<HTMLButtonElement>(null);
-  const studyLevelFirstButtonRef = useRef<HTMLButtonElement>(null);
   const countryFieldRef = useRef<HTMLDivElement>(null);
   const consentFieldRef = useRef<HTMLLabelElement>(null);
   const consentCheckboxRef = useRef<HTMLInputElement>(null);
+  const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     return () => {
@@ -86,20 +68,16 @@ export function OnboardingClient() {
   }, []);
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
-
   const countryLabel = useMemo(
     () => countryOptions.find((c) => c.value === country)?.label,
     [country, countryOptions],
   );
 
-  // Dynamic validation based on current year
   const currentYear = new Date().getFullYear();
   const minBirthYear = currentYear - 100;
   const maxBirthYear = currentYear - 16;
 
-  const usernameValid =
-    username.trim().length >= 2 && username.trim().length <= 12;
-
+  const usernameValid = username.trim().length >= 2 && username.trim().length <= 20;
   const birthYearNum = Number(birthYear);
   const birthYearValid =
     birthYear !== "" &&
@@ -108,180 +86,65 @@ export function OnboardingClient() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
-  const needsWorkFields =
-    occupationStatus !== "" && requiresWorkFields(occupationStatus as OccupationStatus);
-  const needsStudyLevel =
-    occupationStatus !== "" && requiresStudyLevel(occupationStatus as OccupationStatus);
+  const canStep1 = usernameValid && birthYearValid && gender !== "" && country !== "";
 
-  const occupationDetailsValid =
-    occupationStatus !== "" &&
-    (!needsWorkFields || (workSchedule !== "" && companySize !== "")) &&
-    (!needsStudyLevel || studyLevel !== "");
+  // ── Flash + focus logic ──────────────────────────────────────────────────
 
-  const canSubmit =
-    usernameValid &&
-    birthYearValid &&
-    gender !== "" &&
-    education !== "" &&
-    occupationDetailsValid &&
-    country !== "" &&
-    consent;
-
-  const progressTotals = useMemo(() => {
-    const required: boolean[] = [
-      usernameValid,
-      birthYearValid,
-      gender !== "",
-      education !== "",
-      occupationStatus !== "",
-    ];
-    if (needsWorkFields) required.push(workSchedule !== "", companySize !== "");
-    if (needsStudyLevel) required.push(studyLevel !== "");
-    required.push(country !== "", consent);
-
-    const total = required.length;
-    const completed = required.filter(Boolean).length;
-    return { total, completed, pct: Math.round((completed / Math.max(1, total)) * 100) };
-  }, [
-    usernameValid,
-    birthYearValid,
-    gender,
-    education,
-    occupationStatus,
-    needsWorkFields,
-    workSchedule,
-    companySize,
-    needsStudyLevel,
-    studyLevel,
-    country,
-    consent,
-  ]);
-
-  const handleOccupationStatusChange = (value: OccupationStatus) => {
-    setOccupationStatus(value);
-    if (!requiresWorkFields(value)) {
-      setWorkSchedule("");
-      setCompanySize("");
-    }
-    if (!requiresStudyLevel(value)) {
-      setStudyLevel("");
-    }
-    if (value !== "unemployed") {
-      setUnemploymentDuration("");
-    }
-  };
-
-  const focusAndFlashInvalidField = (
-    field:
-      | "username"
-      | "birthYear"
-      | "gender"
-      | "education"
-      | "occupationStatus"
-      | "workSchedule"
-      | "companySize"
-      | "studyLevel"
-      | "country"
-      | "consent",
+  const flashField = (
+    field: "username" | "birthYear" | "gender" | "country",
   ) => {
     setInvalidFieldFlash(field);
-    if (invalidFlashTimerRef.current !== null) {
-      window.clearTimeout(invalidFlashTimerRef.current);
-    }
+    if (invalidFlashTimerRef.current !== null) window.clearTimeout(invalidFlashTimerRef.current);
     invalidFlashTimerRef.current = window.setTimeout(() => {
       setInvalidFieldFlash(null);
       invalidFlashTimerRef.current = null;
     }, 1000);
 
-    const scrollTarget =
-      field === "username"
-        ? usernameFieldRef.current
-        : field === "birthYear"
-          ? birthYearFieldRef.current
-          : field === "gender"
-            ? genderFieldRef.current
-            : field === "education"
-              ? educationFieldRef.current
-              : field === "occupationStatus"
-                ? occupationStatusFieldRef.current
-                : field === "workSchedule"
-                  ? workScheduleFieldRef.current
-                  : field === "companySize"
-                    ? companySizeFieldRef.current
-                    : field === "studyLevel"
-                      ? studyLevelFieldRef.current
-                      : field === "country"
-                        ? countryFieldRef.current
-                        : consentFieldRef.current;
+    const target =
+      field === "username" ? usernameFieldRef.current :
+      field === "birthYear" ? birthYearFieldRef.current :
+      field === "gender" ? genderFieldRef.current :
+      countryFieldRef.current;
 
-    scrollTarget?.scrollIntoView({ behavior: "smooth", block: "center" });
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
 
     window.setTimeout(() => {
       if (field === "username") usernameInputRef.current?.focus();
       if (field === "birthYear") birthYearInputRef.current?.focus();
       if (field === "gender") genderFirstButtonRef.current?.focus();
-      if (field === "education") educationFirstButtonRef.current?.focus();
-      if (field === "occupationStatus") occupationStatusFirstButtonRef.current?.focus();
-      if (field === "workSchedule") workScheduleFirstButtonRef.current?.focus();
-      if (field === "companySize") companySizeFirstButtonRef.current?.focus();
-      if (field === "studyLevel") studyLevelFirstButtonRef.current?.focus();
       if (field === "country") countryFieldRef.current?.querySelector("button")?.focus();
-      if (field === "consent") consentCheckboxRef.current?.focus();
     }, 180);
   };
 
-  const focusFirstInvalidField = () => {
-    if (!usernameValid) {
-      focusAndFlashInvalidField("username");
-      return;
-    }
-    if (!birthYearValid) {
-      focusAndFlashInvalidField("birthYear");
-      return;
-    }
-    if (gender === "") {
-      focusAndFlashInvalidField("gender");
-      return;
-    }
-    if (education === "") {
-      focusAndFlashInvalidField("education");
-      return;
-    }
-    if (occupationStatus === "") {
-      focusAndFlashInvalidField("occupationStatus");
-      return;
-    }
-    if (needsWorkFields && workSchedule === "") {
-      focusAndFlashInvalidField("workSchedule");
-      return;
-    }
-    if (needsWorkFields && companySize === "") {
-      focusAndFlashInvalidField("companySize");
-      return;
-    }
-    if (needsStudyLevel && studyLevel === "") {
-      focusAndFlashInvalidField("studyLevel");
-      return;
-    }
-    if (country === "") {
-      focusAndFlashInvalidField("country");
-      return;
-    }
-    if (!consent) {
-      focusAndFlashInvalidField("consent");
-    }
+  const focusFirstInvalid = () => {
+    if (!usernameValid) { flashField("username"); return; }
+    if (!birthYearValid) { flashField("birthYear"); return; }
+    if (gender === "") { flashField("gender"); return; }
+    if (country === "") { flashField("country"); }
   };
 
-  const handleSubmit = async () => {
-    if (isSubmitting) return;
-    if (!canSubmit) {
-      setUsernameTouched(true);
-      setBirthYearTouched(true);
-      focusFirstInvalidField();
+  // ── Step handlers ────────────────────────────────────────────────────────
+
+  const handleStep1Next = () => {
+    setUsernameTouched(true);
+    setBirthYearTouched(true);
+    if (!canStep1) {
+      focusFirstInvalid();
       return;
     }
-    setIsSubmitting(true);
+    setStep(2);
+  };
 
+  const handleStep2Next = () => {
+    setStep(3);
+  };
+
+  // ── Submit ───────────────────────────────────────────────────────────────
+
+  const handleSubmit = async () => {
+    if (isSubmitting || !consent) return;
+
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/profile/onboarding", {
         method: "POST",
@@ -290,24 +153,16 @@ export function OnboardingClient() {
           username: username.trim(),
           birthYear: birthYearNum,
           gender,
-          education,
-          occupationStatus,
-          workSchedule: workSchedule || undefined,
-          companySize: companySize || undefined,
-          studyLevel: studyLevel || undefined,
-          unemploymentDuration: unemploymentDuration || undefined,
           country,
+          avatarUrl: avatarUrl || undefined,
           consentedAt: new Date().toISOString(),
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Save failed");
-      }
+      if (!response.ok) throw new Error("Save failed");
 
-      // Update the navbar immediately — UserMenu listens for this event
       window.dispatchEvent(new CustomEvent("profile-updated"));
-      router.push("/assessment");
+      router.push(JOURNEY_HOME_HANDOFF_PATH);
     } catch {
       showToast(t("onboarding.errorGeneric", locale), "error");
     } finally {
@@ -315,122 +170,154 @@ export function OnboardingClient() {
     }
   };
 
-  const toggleClass = (isActive: boolean) =>
-    `min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
-      isActive
-        ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-    }`;
+  // ── Step indicator ───────────────────────────────────────────────────────
+
+  const stepLabels = [
+    t("onboarding.step1Label", locale),
+    t("onboarding.avatarTitle", locale),
+    t("onboarding.step2Label", locale),
+  ];
+  const progress = ((step - 1) / 2) * 100;
+
+  // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="relative flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-4 py-10">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
-      <div className="relative z-10 w-full max-w-lg">
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <TritaLogo size={48} showText={false} />
-          <h1 className="text-2xl font-bold text-gray-900">
-            {t("onboarding.title", locale)}
-          </h1>
-          <p className="max-w-sm text-center text-sm text-gray-600">
-            {t("onboarding.subtitle", locale)}
-          </p>
-          <div className="w-full max-w-sm">
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/70 shadow-inner">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
-                style={{ width: `${progressTotals.pct}%` }}
-              />
-            </div>
-            <p className="mt-2 text-center text-xs font-medium text-gray-500">
-              {tf("onboarding.progress", locale, { completed: progressTotals.completed, total: progressTotals.total })}
+    <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-lg">
+
+        {/* Logo + title */}
+        <div className="mb-10 flex flex-col items-center gap-4">
+          <TritaLogo size={40} showText={false} />
+          <div className="text-center">
+            <h1 className="font-fraunces text-3xl text-ink">
+              {t("onboarding.title", locale)}
+            </h1>
+            <p className="mt-2 text-sm text-ink-body/70 max-w-sm">
+              {t("onboarding.subtitle", locale)}
             </p>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-          <div className="flex flex-col gap-4">
-            <section className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
-              <div className="mb-4">
-                <p className="text-base font-semibold text-gray-900">
-                  👤 {t("onboarding.blockBasicsTitle", locale)}
-                </p>
-                <p className="text-xs text-gray-600">{t("onboarding.blockBasicsHint", locale)}</p>
-              </div>
-              <div className="flex flex-col gap-5">
-                <label
-                  ref={usernameFieldRef}
-                  className="flex flex-col gap-2 text-sm font-semibold text-gray-700"
+        {/* Step indicator */}
+        <div className="mb-8">
+          <div className="mb-2 flex items-center justify-between">
+            {stepLabels.map((label, i) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
+                    i + 1 < step
+                      ? "bg-sage text-white"
+                      : i + 1 === step
+                      ? "bg-ink text-white"
+                      : "bg-sand text-muted"
+                  }`}
                 >
-                  {t("onboarding.usernameLabel", locale)}
-                  <input
+                  {i + 1 < step ? "✓" : i + 1}
+                </div>
+                <span
+                  className={`hidden text-xs font-medium sm:block ${
+                    i + 1 === step ? "text-ink" : "text-muted"
+                  }`}
+                >
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="h-1 w-full overflow-hidden rounded-full bg-sand">
+            <div
+              className="h-full rounded-full bg-sage transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
+
+          {/* ── Step 1: Alapadatok ──────────────────────────────────────── */}
+          {step === 1 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <SectionEyebrow className="mb-1">{"// 01"}</SectionEyebrow>
+                <p className="font-fraunces text-xl text-ink">
+                  {t("onboarding.blockBasicsTitle", locale)}
+                </p>
+                <p className="text-xs text-muted mt-0.5">
+                  {t("onboarding.blockBasicsHint", locale)}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-5">
+
+                {/* Username */}
+                <div ref={usernameFieldRef}>
+                  <TextField
                     ref={usernameInputRef}
+                    label={t("onboarding.usernameLabel", locale)}
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onBlur={() => setUsernameTouched(true)}
                     placeholder={t("onboarding.usernamePlaceholder", locale)}
                     minLength={2}
-                    maxLength={12}
-                    className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none ${
+                    maxLength={20}
+                    error={
                       usernameTouched && username.trim() !== "" && !usernameValid
-                        ? "border-orange-400 bg-orange-100"
-                        : "border-gray-200 bg-gray-50 focus:border-indigo-300"
-                    } ${invalidFieldFlash === "username" ? "ring-2 ring-orange-300" : ""}`}
+                        ? t("onboarding.usernameError", locale)
+                        : undefined
+                    }
+                    helpText={
+                      usernameTouched && username.trim() !== "" && !usernameValid
+                        ? undefined
+                        : t("onboarding.usernameHint", locale)
+                    }
+                    helpTextClassName="pl-1 italic text-xs text-muted"
+                    errorClassName="pl-1 italic text-xs text-bronze"
+                    inputClassName={invalidFieldFlash === "username" ? "ring-2 ring-sage/30" : undefined}
                   />
-                  {usernameTouched && username.trim() !== "" && !usernameValid ? (
-                    <span className="pl-1 text-xs italic text-orange-700">
-                      {t("onboarding.usernameError", locale)}
-                    </span>
-                  ) : (
-                    <span className="pl-1 text-xs italic text-gray-500">
-                      {t("onboarding.usernameHint", locale)}
-                    </span>
-                  )}
-                </label>
+                </div>
 
-                <label
-                  ref={birthYearFieldRef}
-                  className="flex flex-col gap-2 text-sm font-semibold text-gray-700"
-                >
-                  {t("onboarding.birthYearLabel", locale)}
-                  <input
+                {/* Birth year */}
+                <div ref={birthYearFieldRef}>
+                  <TextField
                     ref={birthYearInputRef}
+                    label={t("onboarding.birthYearLabel", locale)}
                     type="number"
                     inputMode="numeric"
                     value={birthYear}
                     onChange={(e) => {
-                      const value = e.target.value;
-                      if (value.length <= 4) {
-                        setBirthYear(value);
-                      }
+                      if (e.target.value.length <= 4) setBirthYear(e.target.value);
                     }}
                     onBlur={() => setBirthYearTouched(true)}
                     placeholder={t("onboarding.birthYearPlaceholder", locale)}
                     min={minBirthYear}
                     max={maxBirthYear}
-                    maxLength={4}
-                    className={`min-h-[44px] rounded-lg border-2 px-3 text-sm font-normal text-gray-900 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                    error={
                       birthYearTouched && birthYear !== "" && !birthYearValid
-                        ? "border-orange-400 bg-orange-100"
-                        : "border-gray-200 bg-gray-50 focus:border-indigo-300"
-                    } ${invalidFieldFlash === "birthYear" ? "ring-2 ring-orange-300" : ""}`}
+                        ? t("onboarding.birthYearError", locale)
+                        : undefined
+                    }
+                    helpText={`${t("onboarding.validRangeLabel", locale)}: ${minBirthYear} – ${maxBirthYear}`}
+                    helpTextClassName={`pl-1 italic text-xs ${
+                      birthYearTouched && birthYear !== "" && !birthYearValid
+                        ? "text-bronze"
+                        : "text-muted"
+                    }`}
+                    inputClassName={`[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none${
+                      invalidFieldFlash === "birthYear" ? " ring-2 ring-sage/30" : ""
+                    }`}
                   />
-                  {birthYearTouched && birthYear !== "" && !birthYearValid ? (
-                    <span className="pl-1 text-xs italic text-orange-700">
-                      {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                    </span>
-                  ) : (
-                    <span className="pl-1 text-xs italic text-gray-500">
-                      {t("onboarding.validRangeLabel", locale)}: {minBirthYear} - {maxBirthYear}
-                    </span>
-                  )}
-                </label>
+                </div>
 
+                {/* Gender */}
                 <div
                   ref={genderFieldRef}
-                  className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+                  className={`flex flex-col gap-2 rounded-lg p-1 transition ${
+                    invalidFieldFlash === "gender" ? "ring-2 ring-sage/30 bg-orange-50/40" : ""
+                  }`}
                 >
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold text-ink">
                     {t("onboarding.genderLabel", locale)}
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -440,7 +327,7 @@ export function OnboardingClient() {
                         ref={idx === 0 ? genderFirstButtonRef : undefined}
                         type="button"
                         onClick={() => setGender(opt.value)}
-                        className={toggleClass(gender === opt.value)}
+                        className={toggleBtn(gender === opt.value)}
                       >
                         {t(opt.labelKey, locale)}
                       </button>
@@ -448,9 +335,12 @@ export function OnboardingClient() {
                   </div>
                 </div>
 
+                {/* Country */}
                 <div
                   ref={countryFieldRef}
-                  className={`rounded-lg transition ${invalidFieldFlash === "country" ? "ring-2 ring-orange-300 bg-orange-50/60 p-1" : ""}`}
+                  className={`rounded-lg transition ${
+                    invalidFieldFlash === "country" ? "ring-2 ring-sage/30 bg-orange-50/40 p-1" : ""
+                  }`}
                 >
                   <PickerTrigger
                     label={t("onboarding.countryLabel", locale)}
@@ -459,227 +349,157 @@ export function OnboardingClient() {
                     onClick={() => setCountryPickerOpen(true)}
                   />
                 </div>
-              </div>
-            </section>
 
-            <section className="rounded-xl border border-purple-100 bg-purple-50/40 p-4">
-              <div className="mb-4">
-                <p className="text-base font-semibold text-gray-900">
-                  🎓 {t("onboarding.blockEducationTitle", locale)}
-                </p>
-                <p className="text-xs text-gray-600">{t("onboarding.blockEducationHint", locale)}</p>
               </div>
-              <div
-                ref={educationFieldRef}
-                className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "education" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+
+              <button
+                type="button"
+                onClick={handleStep1Next}
+                disabled={isSubmitting}
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
-                <span className="text-sm font-semibold text-gray-700">
-                  {t("onboarding.educationLabel", locale)}
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {EDUCATION_OPTIONS.map((opt, idx) => (
-                    <button
-                      key={opt.value}
-                      ref={idx === 0 ? educationFirstButtonRef : undefined}
-                      type="button"
-                      onClick={() => setEducation(opt.value)}
-                      className={toggleClass(education === opt.value)}
-                    >
-                      {t(opt.labelKey, locale)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </section>
+                {t("actions.next", locale)}
+              </button>
+            </div>
+          )}
 
-            <section className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4">
-              <div className="mb-4">
-                <p className="text-base font-semibold text-gray-900">
-                  💼 {t("onboarding.blockStatusTitle", locale)}
+          {/* ── Step 2: Avatar ──────────────────────────────────────────── */}
+          {step === 2 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <SectionEyebrow className="mb-1">{"// 02"}</SectionEyebrow>
+                <p className="font-fraunces text-xl text-ink">
+                  {t("onboarding.avatarTitle", locale)}
                 </p>
-                <p className="text-xs text-gray-600">{t("onboarding.blockStatusHint", locale)}</p>
+                <p className="text-xs text-muted mt-0.5">
+                  {t("onboarding.avatarSub", locale)}
+                </p>
               </div>
-              <div className="flex flex-col gap-5">
-                <div
-                  ref={occupationStatusFieldRef}
-                  className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "occupationStatus" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                >
-                  <span className="text-sm font-semibold text-gray-700">
-                    {t("onboarding.occupationStatusLabel", locale)}
-                  </span>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {OCCUPATION_STATUS_OPTIONS.map((opt, idx) => (
-                      <button
-                        key={opt.value}
-                        ref={idx === 0 ? occupationStatusFirstButtonRef : undefined}
-                        type="button"
-                        onClick={() => handleOccupationStatusChange(opt.value)}
-                        className={toggleClass(occupationStatus === opt.value)}
-                      >
-                        {t(opt.labelKey, locale)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
-                {needsWorkFields && (
-                  <>
-                    <div
-                      ref={workScheduleFieldRef}
-                      className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "workSchedule" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                    >
-                      <span className="text-sm font-semibold text-gray-700">
-                        {t("onboarding.workScheduleLabel", locale)}
-                      </span>
-                      <div className="grid grid-cols-2 gap-2">
-                        {WORK_SCHEDULE_OPTIONS.map((opt, idx) => (
-                          <button
-                            key={opt.value}
-                            ref={idx === 0 ? workScheduleFirstButtonRef : undefined}
-                            type="button"
-                            onClick={() => setWorkSchedule(opt.value)}
-                            className={toggleClass(workSchedule === opt.value)}
-                          >
-                            {t(opt.labelKey, locale)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div
-                      ref={companySizeFieldRef}
-                      className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "companySize" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-                    >
-                      <span className="text-sm font-semibold text-gray-700">
-                        {t("onboarding.companySizeLabel", locale)}
-                      </span>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {COMPANY_SIZE_OPTIONS.map((opt, idx) => (
-                          <button
-                            key={opt.value}
-                            ref={idx === 0 ? companySizeFirstButtonRef : undefined}
-                            type="button"
-                            onClick={() => setCompanySize(opt.value)}
-                            className={toggleClass(companySize === opt.value)}
-                          >
-                            {t(opt.labelKey, locale)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {needsStudyLevel && (
-                  <div
-                    ref={studyLevelFieldRef}
-                    className={`flex flex-col gap-2 rounded-lg p-1 transition ${invalidFieldFlash === "studyLevel" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
+              <div className="grid grid-cols-4 gap-2">
+                {AVATAR_OPTIONS.slice(0, avatarsShown).map((src) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setAvatarUrl(src)}
+                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
+                      avatarUrl === src
+                        ? "border-sage ring-2 ring-sage/30"
+                        : "border-sand hover:border-sage/40"
+                    }`}
                   >
-                    <span className="text-sm font-semibold text-gray-700">
-                      {t("onboarding.studyLevelLabel", locale)}
-                    </span>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {STUDY_LEVEL_OPTIONS.map((opt, idx) => (
-                        <button
-                          key={opt.value}
-                          ref={idx === 0 ? studyLevelFirstButtonRef : undefined}
-                          type="button"
-                          onClick={() => setStudyLevel(opt.value)}
-                          className={toggleClass(studyLevel === opt.value)}
-                        >
-                          {t(opt.labelKey, locale)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {occupationStatus === "unemployed" && (
-                  <div className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-gray-700">
-                      {t("onboarding.unemploymentDurationLabel", locale)}
-                    </span>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                      {UNEMPLOYMENT_DURATION_OPTIONS.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => setUnemploymentDuration(opt.value)}
-                          className={toggleClass(unemploymentDuration === opt.value)}
-                        >
-                          {t(opt.labelKey, locale)}
-                        </button>
-                      ))}
-                    </div>
-                    <span className="pl-1 text-xs italic text-gray-500">
-                      {t("onboarding.unemploymentDurationOptionalHint", locale)}
-                    </span>
-                  </div>
-                )}
+                    <Image
+                      src={src}
+                      alt="avatar option"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
               </div>
-            </section>
-          </div>
+              {AVATAR_OPTIONS.length > avatarsShown && (
+                <button
+                  type="button"
+                  onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
+                  className="text-xs font-medium text-bronze hover:underline self-start"
+                >
+                  {t("onboarding.avatarShowAll", locale).replace("{count}", String(AVATAR_OPTIONS.length))}
+                </button>
+              )}
 
-          {/* Consent */}
-          <label
-            ref={consentFieldRef}
-            className={`mt-4 flex cursor-pointer items-start gap-3 rounded-lg p-1 transition ${invalidFieldFlash === "consent" ? "ring-2 ring-orange-300 bg-orange-50/60" : ""}`}
-          >
-            <input
-              ref={consentCheckboxRef}
-              type="checkbox"
-              checked={consent}
-              onChange={(e) => setConsent(e.target.checked)}
-              className="mt-0.5 h-5 w-5 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            />
-            <span className="text-sm text-gray-600">
-              {t("onboarding.consentLabel", locale)
-                .split("{link}")
-                .map((part, i, arr) =>
-                  i < arr.length - 1 ? (
-                    <span key={i}>
-                      {part}
-                      <a
-                        href="/privacy"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-indigo-600 underline hover:text-indigo-700"
-                      >
-                        {t("onboarding.consentLinkText", locale)}
-                      </a>
-                    </span>
-                  ) : (
-                    <span key={i}>{part}</span>
-                  ),
-                )}
-            </span>
-          </label>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                >
+                  ← {t("actions.back", locale)}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleStep2Next}
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
+                >
+                  {t("actions.next", locale)}
+                </button>
+              </div>
+            </div>
+          )}
 
-          {/* Submit */}
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className={`mt-8 min-h-[48px] w-full rounded-lg px-6 text-sm font-semibold transition-all duration-300 ${
-              canSubmit && !isSubmitting
-                ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200 hover:shadow-xl hover:scale-[1.02]"
-                : "cursor-not-allowed bg-gray-200 text-gray-400"
-            }`}
-          >
-            {isSubmitting
-              ? t("onboarding.saving", locale)
-              : t("onboarding.submit", locale)}
-          </button>
+          {/* ── Step 3: Hozzájárulás ────────────────────────────────────── */}
+          {step === 3 && (
+            <div className="flex flex-col gap-6">
+              <div>
+                <SectionEyebrow className="mb-1">{"// 03"}</SectionEyebrow>
+                <p className="font-fraunces text-xl text-ink">
+                  {t("onboarding.step2Title", locale)}
+                </p>
+              </div>
+
+              <label
+                ref={consentFieldRef}
+                className="flex cursor-pointer items-start gap-3 rounded-lg p-2"
+              >
+                <input
+                  ref={consentCheckboxRef}
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded border-sand accent-sage focus:ring-sage/30"
+                />
+                <span className="text-sm text-ink-body">
+                  {t("onboarding.consentLabel", locale)
+                    .split("{link}")
+                    .map((part, i, arr) =>
+                      i < arr.length - 1 ? (
+                        <span key={i}>
+                          {part}
+                          <a
+                            href="/privacy"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-bronze underline hover:text-bronze-dark"
+                          >
+                            {t("onboarding.consentLinkText", locale)}
+                          </a>
+                        </span>
+                      ) : (
+                        <span key={i}>{part}</span>
+                      ),
+                    )}
+                </span>
+              </label>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                >
+                  ← {t("actions.back", locale)}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !consent}
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                >
+                  {isSubmitting
+                    ? t("onboarding.saving", locale)
+                    : t("onboarding.submit", locale)}
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
 
-        {/* Decorative doodle */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/doodles/sleek.svg"
-          alt=""
-          className="mx-auto mt-8 h-24 w-32 object-contain opacity-50"
-          loading="lazy"
-        />
+        {/* Footer hint */}
+        <p className="mt-6 text-center text-xs text-muted">
+          {t("onboarding.footerHint", locale)}
+        </p>
+
       </div>
 
       {/* Country picker */}

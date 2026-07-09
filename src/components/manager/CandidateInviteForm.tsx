@@ -1,0 +1,246 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { t, type Locale } from "@/lib/i18n";
+
+interface Team {
+  id: string;
+  name: string;
+}
+
+interface CandidateInviteFormProps {
+  locale: string;
+  teams: Team[];
+  preselectedTeamId?: string;
+}
+
+interface CreatedInvite {
+  id: string;
+  token: string;
+  email?: string | null;
+  name?: string | null;
+  position?: string | null;
+}
+
+export function CandidateInviteForm({ locale, teams, preselectedTeamId }: CandidateInviteFormProps) {
+  const loc: Locale = locale === "en" ? "en" : "hu";
+  const isHu = loc !== "en";
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [position, setPosition] = useState("");
+  const [teamId, setTeamId] = useState(preselectedTeamId ?? "");
+  const [inviteLocale, setInviteLocale] = useState<"hu" | "en">(locale === "en" ? "en" : "hu");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const appUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setCreatedInvite(null);
+    if (!name.trim()) {
+      setError(t("manager.candidateInvite.nameRequired", loc));
+      return;
+    }
+    setLoading(true);
+    try {
+      const body: Record<string, string> = {};
+      if (email.trim()) body.email = email.trim();
+      if (name.trim()) body.name = name.trim();
+      if (position.trim()) body.position = position.trim();
+      if (teamId) body.teamId = teamId;
+      body.inviteLocale = inviteLocale;
+
+      const res = await fetch("/api/manager/candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json() as { invite?: CreatedInvite; error?: string };
+      if (!res.ok) {
+        setError(t("manager.candidateInvite.createError", loc));
+        return;
+      }
+      if (data.invite) {
+        setCreatedInvite(data.invite);
+        setEmail("");
+        setName("");
+        setPosition("");
+        setTeamId("");
+        router.refresh();
+      }
+    } catch {
+      setError(t("manager.candidateInvite.genericError", loc));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleCopy() {
+    if (!createdInvite) return;
+    const link = `${appUrl}/apply/${createdInvite.token}`;
+    navigator.clipboard.writeText(link).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {/* noop */});
+  }
+
+  const labelClass =
+    "font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted";
+  const inputClass =
+    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-[13px] text-ink outline-none transition focus:border-sage/55 focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]";
+
+  return (
+    <div className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="rounded-2xl border border-sand bg-warm p-4 sm:p-5">
+          <p className="font-fraunces text-[22px] leading-none text-ink">
+            {t("manager.candidateInvite.createInvite", loc)}
+          </p>
+          <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
+            {isHu
+              ? "Töltsd ki a jelölt alapadatait, és azonnal létrejön az egyedi jelentkezési link."
+              : "Fill in the candidate basics and create a unique application link instantly."}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <label className="flex flex-col gap-2">
+            <span className={labelClass}>{t("manager.candidateInvite.nameLabel", loc)}</span>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t("manager.candidateInvite.namePlaceholder", loc)}
+              required
+              className={inputClass}
+            />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className={labelClass}>{t("manager.candidateInvite.emailLabel", loc)}</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("manager.candidateInvite.emailPlaceholder", loc)}
+              className={inputClass}
+            />
+          </label>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <label className="flex flex-col gap-2">
+            <span className={labelClass}>{t("manager.candidateInvite.positionLabel", loc)}</span>
+            <input
+              type="text"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              placeholder={t("manager.candidateInvite.positionPlaceholder", loc)}
+              className={inputClass}
+            />
+          </label>
+          {teams.length > 0 && (
+            <label className="flex flex-col gap-2">
+              <span className={labelClass}>{t("manager.candidateInvite.teamLabel", loc)}</span>
+              <select
+                value={teamId}
+                onChange={(e) => setTeamId(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">{t("manager.candidateInvite.noTeam", loc)}</option>
+                {teams.map((tm) => (
+                  <option key={tm.id} value={tm.id}>{tm.name}</option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+        <div className="rounded-xl border border-sand bg-white px-4 py-3">
+          <p className={labelClass}>{t("manager.candidateInvite.emailLang", loc)}</p>
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:max-w-[280px]">
+            <button
+              type="button"
+              onClick={() => setInviteLocale("hu")}
+              className={[
+                "min-h-[40px] rounded-lg border text-[12px] font-semibold transition",
+                inviteLocale === "hu"
+                  ? "border-sage/40 bg-sage-soft text-sage-dark"
+                  : "border-sand bg-cream text-ink-body hover:border-sage/30 hover:bg-white",
+              ].join(" ")}
+            >
+              Magyar
+            </button>
+            <button
+              type="button"
+              onClick={() => setInviteLocale("en")}
+              className={[
+                "min-h-[40px] rounded-lg border text-[12px] font-semibold transition",
+                inviteLocale === "en"
+                  ? "border-sage/40 bg-sage-soft text-sage-dark"
+                  : "border-sand bg-cream text-ink-body hover:border-sage/30 hover:bg-white",
+              ].join(" ")}
+            >
+              English
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-[13px] text-rose-700">
+            {error}
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sand bg-white px-4 py-3">
+          <p className="text-[12px] text-ink-body">
+            {isHu ? "Meghívónként 1 credit kerül felhasználásra." : "Each invite uses 1 credit."}
+          </p>
+          <button
+            type="submit"
+            disabled={loading}
+            className="min-h-[44px] rounded-[10px] bg-sage px-6 text-[12px] font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+          >
+            {loading
+              ? t("manager.candidateInvite.creating", loc)
+              : t("manager.candidateInvite.createInvite", loc)}
+          </button>
+        </div>
+      </form>
+
+      {createdInvite && (
+        <div className="rounded-2xl border border-sage/20 bg-[#eef6f2] p-4 sm:p-5">
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-sage-dark/70">
+            {isHu ? "Sikeres meghívó" : "Invite created"}
+          </p>
+          <p className="mb-2 text-[15px] font-semibold text-sage-dark">
+            {t("manager.candidateInvite.inviteCreated", loc)}
+          </p>
+          <p className="mb-3 text-[12px] text-sage-dark/80">
+            {t("manager.candidateInvite.copyInstruction", loc)}
+          </p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 truncate rounded-lg border border-sage/20 bg-white px-3 py-2 text-[12px] text-ink-body">
+              {`${appUrl}/apply/${createdInvite.token}`}
+            </code>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="min-h-[44px] shrink-0 rounded-lg border border-sage/25 bg-white px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage-soft"
+            >
+              {copied ? t("manager.candidateInvite.copied", loc) : t("manager.candidateInvite.copy", loc)}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

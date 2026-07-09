@@ -4,11 +4,17 @@ import { getSiteUrl } from "@/lib/seo";
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = getSiteUrl();
 
+  if (process.env.VERCEL_ENV !== "production") {
+    return {
+      rules: [{ userAgent: "*", disallow: "/" }],
+    };
+  }
+
   return {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/research", "/privacy"],
+        allow: ["/", "/pricing", "/privacy", "/contact"],
         disallow: [
           "/admin",
           "/api/",

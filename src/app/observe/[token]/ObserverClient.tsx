@@ -4,14 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
-import { AssessmentDoodle } from "@/components/illustrations/AssessmentDoodle";
+import { ObserverBackdrop } from "@/components/illustrations/ObserverBackdrop";
 import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Question } from "@/lib/questions";
 import { isLikertQuestion } from "@/lib/questions";
-import { DOODLE_SOURCES, pickRandomDoodle } from "@/lib/doodles";
 
 interface ObserverDraftData {
   phase: "assessment" | "confidence";
@@ -117,7 +116,6 @@ export function ObserverClient({
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null);
   const [highlightConfidence, setHighlightConfidence] = useState(false);
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
-  const [doodleSrc, setDoodleSrc] = useState<string>(DOODLE_SOURCES[0]);
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft
       ? ([25, 50, 75] as const).filter(
@@ -141,8 +139,6 @@ export function ObserverClient({
     if (!scrollMounted.current) { scrollMounted.current = true; return; }
     questionAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [currentPage]);
-
-  useEffect(() => { setDoodleSrc(pickRandomDoodle()); }, []);
 
   useEffect(() => {
     if (initialDraft) {
@@ -369,7 +365,6 @@ export function ObserverClient({
 
   const handleNextStep = useCallback(() => {
     if (checkpointActive) {
-      setDoodleSrc((prev) => pickRandomDoodle(prev));
       setCheckpoint(null);
       const nextUnanswered = pageQuestions.findIndex(
         (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
@@ -522,25 +517,25 @@ export function ObserverClient({
     const canStart = relationshipType !== "" && knownDuration !== "";
 
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-cream">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto max-w-2xl px-4 py-8 md:py-12">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-            <h1 className="text-2xl font-bold text-gray-900">
+          <div className="rounded-2xl border border-sand bg-white p-6 md:p-8">
+            <h1 className="text-2xl font-bold text-ink">
               👋 {t("observer.introWelcome", locale)}
             </h1>
-            <div className="mt-4 rounded-xl border border-indigo-300/70 bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+            <div className="mt-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
               {tf("observer.introInvitedBy", locale, { inviter: inviterName })}
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-gray-600">
+            <p className="mt-4 text-sm leading-relaxed text-ink-body">
               {t("observer.introBodyShort", locale)}
             </p>
-            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
+            <div className="mt-4 rounded-xl border border-sage-ring bg-sage-soft px-4 py-3 text-sm leading-relaxed text-bronze-dark">
               {t("observer.introPauseNote", locale)}
             </div>
 
             <div className="mt-6 flex flex-col gap-4">
-              <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
                 {t("observer.relationshipLabel", locale)}
                 <div className="flex flex-wrap gap-2">
                   {RELATIONSHIP_OPTIONS.map((opt) => (
@@ -550,8 +545,8 @@ export function ObserverClient({
                       onClick={() => setRelationshipType(opt.value)}
                       className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
                         relationshipType === opt.value
-                          ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                          : "border-sand bg-white text-ink-body hover:border-warm-dark"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
@@ -560,7 +555,7 @@ export function ObserverClient({
                 </div>
               </label>
 
-              <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
                 {t("observer.durationLabel", locale)}
                 <div className="flex flex-wrap gap-2">
                   {DURATION_OPTIONS.map((opt) => (
@@ -570,8 +565,8 @@ export function ObserverClient({
                       onClick={() => setKnownDuration(opt.value)}
                       className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
                         knownDuration === opt.value
-                          ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                          : "border-sand bg-white text-ink-body hover:border-warm-dark"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
@@ -590,7 +585,7 @@ export function ObserverClient({
               type="button"
               onClick={() => setPhase("assessment")}
               disabled={!canStart}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 disabled:shadow-none"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
             >
               {t("observer.start", locale)}
             </button>
@@ -602,15 +597,15 @@ export function ObserverClient({
 
   if (phase === "inactive") {
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-cream">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">😕</div>
-            <h1 className="mt-4 text-2xl font-bold text-gray-900">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.inactiveTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.inactiveBody", locale)}
             </p>
           </div>
@@ -621,44 +616,44 @@ export function ObserverClient({
 
   if (phase === "done") {
     return (
-      <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+      <div className="relative min-h-dvh bg-cream">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-white p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 text-2xl font-bold text-gray-900">
+            <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.doneTitle", locale)}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
               {t("observer.doneBody", locale)}
             </p>
             {isSignedIn ? (
               <>
-                <p className="mt-4 text-sm leading-relaxed text-gray-500">
+                <p className="mt-4 text-sm leading-relaxed text-ink-body">
                   {t("observer.doneSignedInHint", locale)}
                 </p>
                 <a
-                  href="/dashboard"
-                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  href="/profile/results"
+                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
                 >
                   {t("observer.goDashboard", locale)}
                 </a>
               </>
             ) : (
               <>
-                <p className="mt-4 text-sm leading-relaxed text-gray-500">
+                <p className="mt-4 text-sm leading-relaxed text-ink-body">
                   {t("observer.doneSignedOutHint", locale)}
                 </p>
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
                   <a
                     href={`/sign-up?observeToken=${token}`}
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
                   >
                     {t("observer.signUpCta", locale)}
                   </a>
                   <a
                     href={`/sign-in?observeToken=${token}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-indigo-600 bg-transparent px-6 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-bronze transition hover:bg-sage-soft"
                   >
                     {t("observer.signInCta", locale)}
                   </a>
@@ -672,10 +667,11 @@ export function ObserverClient({
   }
 
   return (
-    <div className="relative min-h-dvh bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-white" aria-hidden="true" />
+    <div className="relative min-h-dvh bg-cream">
+      <ObserverBackdrop />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
       <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-indigo-100/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sage-ring/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
           <ProgressBar current={answeredCount} total={totalQuestions} />
           {phase === "assessment" && (
             <div className="mt-2 overflow-x-auto">
@@ -688,13 +684,7 @@ export function ObserverClient({
           )}
         </div>
 
-        <div className="mb-6 hidden rounded-2xl border border-gray-100 bg-white p-4 sm:block">
-          <div className="h-36 w-full">
-            <AssessmentDoodle src={doodleSrc} />
-          </div>
-        </div>
-
-        <div className="mb-4 rounded-xl border border-indigo-300/70 bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+        <div className="mb-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
           {thinkOfParts.length > 1 ? (
             thinkOfParts.map((part, index) => (
               <span key={`thinkof-${index}`}>
@@ -709,12 +699,12 @@ export function ObserverClient({
 
         {phase === "assessment" && (
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink-body">
               <input
                 type="checkbox"
                 checked={autoAdvance}
                 onChange={(event) => setAutoAdvance(event.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+                className="h-4 w-4 rounded border-gray-300 text-bronze"
               />
               {t("assessment.autoAdvance", locale)}
             </label>
@@ -814,7 +804,7 @@ export function ObserverClient({
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 !isSubmitting && confidence !== null
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
+                  ? "bg-sage text-white shadow-md hover:bg-sage-dark hover:shadow-lg"
                   : "bg-gray-200 text-gray-400"
               }`}
               whileHover={!isSubmitting && confidence !== null ? { scale: 1.02 } : {}}
@@ -829,7 +819,7 @@ export function ObserverClient({
               aria-disabled={!canProceed || isSubmitting}
               className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
                 canProceed && !isSubmitting
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md hover:shadow-lg"
+                  ? "bg-sage text-white shadow-md hover:bg-sage-dark hover:shadow-lg"
                   : "cursor-not-allowed bg-gray-200 text-gray-400"
               }`}
               whileHover={canProceed && !isSubmitting ? { scale: 1.02 } : {}}

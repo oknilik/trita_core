@@ -1,0 +1,247 @@
+"use client";
+
+import { useState, useCallback } from "react";
+import { t, tf, type Locale } from "@/lib/i18n";
+import { TEAM_ROLE_SECTIONS } from "@/lib/team-role-questions";
+import { calculateTeamRoleScores, getTopRoles } from "@/lib/team-role-scoring";
+import type { TeamRoleAnswers } from "@/lib/team-role-scoring";
+
+interface TeamRoleQuestionnaireProps {
+  locale: Locale | string;
+  onComplete: (answers: TeamRoleAnswers) => void;
+  onSkip?: () => void;
+}
+
+const POINTS_PER_GROUP = 10;
+
+function PointsRow({
+  statement,
+  points,
+  remaining,
+  locale,
+  onChange,
+}: {
+  statement: { index: number; hu: string; en: string };
+  points: number;
+  remaining: number;
+  locale: Locale | string;
+  onChange: (idx: number, val: number) => void;
+}) {
+  const canIncrement = remaining > 0 || points > 0;
+  const resolvedLocale = (locale === "hu" ? "hu" : "en") as Locale;
+
+  return (
+    <div className="flex items-center gap-3 py-2">
+      <div className="flex-1 text-sm leading-relaxed text-ink-body">
+        {locale === "hu" ? statement.hu : statement.en}
+      </div>
+      <div className="flex shrink-0 items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => onChange(statement.index, Math.max(0, points - 1))}
+          disabled={points === 0}
+          aria-label={t("teamRole.decrease", resolvedLocale)}
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M3 8h10" />
+          </svg>
+        </button>
+        <span
+          className={`w-6 text-center font-mono text-sm font-semibold tabular-nums ${
+            points > 0 ? "text-bronze" : "text-muted"
+          }`}
+        >
+          {points}
+        </span>
+        <button
+          type="button"
+          onClick={() => onChange(statement.index, points + 1)}
+          disabled={remaining === 0}
+          aria-label={t("teamRole.increase", resolvedLocale)}
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-sand bg-white text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M8 3v10M3 8h10" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function TeamRoleQuestionnaire({
+  locale,
+  onComplete,
+  onSkip,
+}: TeamRoleQuestionnaireProps) {
+  const resolvedLocale = (locale === "hu" ? "hu" : "en") as Locale;
+  const [currentGroup, setCurrentGroup] = useState(0);
+  const [answers, setAnswers] = useState<TeamRoleAnswers>(() =>
+    Object.fromEntries(
+      TEAM_ROLE_SECTIONS.map((s) => [
+        s.group,
+        Object.fromEntries(s.statements.map((st) => [st.index, 0])),
+      ]),
+    ),
+  );
+  const [showIntro, setShowIntro] = useState(true);
+
+  const groupAnswers = answers[currentGroup] ?? {};
+  const used = Object.values(groupAnswers).reduce((a, b) => a + b, 0);
+  const remaining = POINTS_PER_GROUP - used;
+  const section = TEAM_ROLE_SECTIONS[currentGroup];
+
+  const handleChange = useCallback(
+    (stmtIdx: number, newVal: number) => {
+      setAnswers((prev) => {
+        const groupVals = { ...(prev[currentGroup] ?? {}) };
+        const oldVal = groupVals[stmtIdx] ?? 0;
+        const delta = newVal - oldVal;
+        const currentUsed = Object.values(groupVals).reduce((a, b) => a + b, 0);
+        if (currentUsed + delta > POINTS_PER_GROUP) return prev;
+        groupVals[stmtIdx] = newVal;
+        return { ...prev, [currentGroup]: groupVals };
+      });
+    },
+    [currentGroup],
+  );
+
+  const canProceed = remaining === 0;
+
+  const handleNext = () => {
+    if (currentGroup < TEAM_ROLE_SECTIONS.length - 1) {
+      setCurrentGroup((g) => g + 1);
+    } else {
+      onComplete(answers);
+    }
+  };
+
+  if (showIntro) {
+    return (
+      <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
+          {t("teamRole.eyebrow", resolvedLocale)}
+        </p>
+        <div>
+          <h2 className="font-fraunces text-2xl text-ink">
+            {t("teamRole.introTitle", resolvedLocale)}
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-ink-body">
+            {t("teamRole.introBody1", resolvedLocale)}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-body">
+            {t("teamRole.introBody2", resolvedLocale)}
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setShowIntro(false)}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
+          >
+            {t("teamRole.start", resolvedLocale)}
+          </button>
+          {onSkip && (
+            <button
+              type="button"
+              onClick={onSkip}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+            >
+              {t("teamRole.skip", resolvedLocale)}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
+      {/* Progress */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 overflow-hidden rounded-full bg-sand">
+          <div
+            className="h-1.5 rounded-full bg-sage transition-all duration-300"
+            style={{ width: `${((currentGroup + 1) / TEAM_ROLE_SECTIONS.length) * 100}%` }}
+          />
+        </div>
+        <span className="font-mono text-[11px] text-muted">
+          {currentGroup + 1} / {TEAM_ROLE_SECTIONS.length}
+        </span>
+      </div>
+
+      {/* Heading */}
+      <div>
+        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
+          {tf("teamRole.sectionLabel", resolvedLocale, { n: currentGroup + 1 })}
+        </p>
+        <h3 className="mt-1 font-fraunces text-xl text-ink">
+          {locale === "hu" ? section.heading.hu : section.heading.en}
+        </h3>
+      </div>
+
+      {/* Points remaining badge */}
+      <div
+        className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold ${
+          remaining === 0
+            ? "bg-emerald-50 text-emerald-700"
+            : "bg-cream text-ink-body"
+        }`}
+      >
+        {remaining === 0 ? (
+          <>
+            <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 8l3.5 3.5L13 5" />
+            </svg>
+            {t("teamRole.allDistributed", resolvedLocale)}
+          </>
+        ) : (
+          remaining === 1
+            ? t("teamRole.pointRemainingOne", resolvedLocale)
+            : tf("teamRole.pointsRemaining", resolvedLocale, { n: remaining })
+        )}
+      </div>
+
+      {/* Statements */}
+      <div className="divide-y divide-sand">
+        {section.statements.map((stmt) => (
+          <PointsRow
+            key={stmt.index}
+            statement={stmt}
+            points={groupAnswers[stmt.index] ?? 0}
+            remaining={remaining}
+            locale={locale}
+            onChange={handleChange}
+          />
+        ))}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between gap-3 pt-2">
+        <button
+          type="button"
+          onClick={() => setCurrentGroup((g) => Math.max(0, g - 1))}
+          disabled={currentGroup === 0}
+          className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-sand px-4 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {t("teamRole.back", resolvedLocale)}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleNext}
+          disabled={!canProceed}
+          className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {currentGroup < TEAM_ROLE_SECTIONS.length - 1
+            ? t("teamRole.next", resolvedLocale)
+            : t("teamRole.finish", resolvedLocale)}
+        </button>
+      </div>
+    </div>
+  );
+}
