@@ -17,7 +17,6 @@ import {
 import { OrgRenameForm } from "@/components/org/OrgRenameForm";
 import { OrgDeactivateButton } from "@/components/org/OrgDeactivateButton";
 import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
-import { BillingPortalButton } from "@/components/org/BillingPortalButton";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -168,10 +167,10 @@ export default async function OrgSettingsPage({
 
             <div className="flex flex-shrink-0 gap-2">
               <a
-                href={`/org/${orgId}?tab=billing`}
+                href="/contact"
                 className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white hover:bg-sage-dark transition-colors"
               >
-                {isHu ? "Számlázás kezelése →" : "Manage billing →"}
+                {isHu ? "Kapcsolatfelvétel →" : "Contact us →"}
               </a>
             </div>
           </div>
@@ -236,7 +235,7 @@ export default async function OrgSettingsPage({
                     {t("org.settings.upgradeHint", locale)}
                   </p>
                   <a
-                    href={`/org/${orgId}?tab=billing`}
+                    href="/contact"
                     className="font-semibold text-bronze hover:underline"
                   >
                     {t("org.settings.upgradeLink", locale)}

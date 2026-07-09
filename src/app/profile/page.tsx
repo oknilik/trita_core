@@ -12,7 +12,6 @@ import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
-import { InvoiceList } from "@/components/profile/InvoiceList";
 
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -337,11 +336,6 @@ export default function ProfilePage() {
         </div>
 
         {/* ═══ DANGER BOX ═══ */}
-        {/* ═══ SZÁMLÁK ═══ */}
-        <div className="mt-6">
-          <InvoiceList />
-        </div>
-
         <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
           <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-[9px] text-[#c0392b]">!</div>

@@ -338,7 +338,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
                 </p>
               )}
               <a
-                href="/billing/upgrade"
+                href="/contact"
                 className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-8 text-sm font-semibold text-white transition hover:bg-sage-dark"
               >
                 {t("advisory.upgradeButton", locale)}

@@ -85,7 +85,7 @@ export function OrgSubscriptionBanner({
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
-          href="/billing/upgrade"
+          href="/contact"
           className={cn(
             "inline-flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold text-white transition",
             isNone
@@ -96,19 +96,6 @@ export function OrgSubscriptionBanner({
           )}
         >
           {isHu ? (isNone ? "Előfizetés aktiválása" : "Reaktiválás") : (isNone ? "Activate subscription" : "Reactivate")}
-        </Link>
-        <Link
-          href="/billing/checkout?plan=org_monthly"
-          className={cn(
-            "inline-flex min-h-[40px] items-center rounded-lg border px-4 text-sm font-semibold transition",
-            isNone
-              ? "border-slate-300 text-slate-900 hover:bg-slate-100"
-              : isFrozen
-              ? "border-amber-300 text-amber-900 hover:bg-amber-100"
-              : "border-sky-300 text-sky-900 hover:bg-sky-100",
-          )}
-        >
-          {isHu ? "Előfizetés kezelése" : "Manage subscription"}
         </Link>
       </div>
     </section>

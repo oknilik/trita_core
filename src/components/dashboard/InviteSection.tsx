@@ -185,14 +185,14 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
           Hívd meg a csapatod
         </p>
         <p className="mb-6 text-sm leading-relaxed text-ink-body">
-          Az observer visszajelzés csak csomag-előfizetéssel érhető el. Indíts 14 napos
-          ingyenes trialt – kártyaadat nélkül.
+          Az observer visszajelzés a teljes csomag része. Vedd fel velünk a
+          kapcsolatot, és segítünk aktiválni.
         </p>
         <a
-          href="/billing/upgrade"
+          href="/contact"
           className="inline-flex min-h-[44px] items-center justify-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
         >
-          Trial indítása →
+          Kapcsolatfelvétel →
         </a>
       </section>
     );

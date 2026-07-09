@@ -1,5 +1,7 @@
 import { prisma } from "./prisma";
-import { TEAM_PRICE_IDS, ORG_PRICE_IDS } from "./stripe";
+
+// Trial length for manually provisioned orgs (consulting mode — no Stripe)
+export const TRIAL_DAYS = 14;
 
 export type SubscriptionStatus =
   | "trialing"
@@ -75,12 +77,15 @@ export function getSubscriptionState(
 export type PlanTier = "team" | "org" | "scale" | "none";
 
 export function getPlanTier(
-  sub: { stripePriceId: string | null } | null | undefined
+  sub: { planType?: string | null; stripePriceId?: string | null } | null | undefined
 ): PlanTier {
-  if (!sub || !sub.stripePriceId) return "none";
-  if (ORG_PRICE_IDS.includes(sub.stripePriceId)) return "org";
-  if (TEAM_PRICE_IDS.includes(sub.stripePriceId)) return "team";
-  return "scale";
+  if (!sub) return "none";
+  if (sub.planType === "team" || sub.planType === "org" || sub.planType === "scale") {
+    return sub.planType;
+  }
+  // Legacy records created before planType existed carry only a price id
+  if (sub.stripePriceId) return "team";
+  return "none";
 }
 
 export function hasCandidateAccess(

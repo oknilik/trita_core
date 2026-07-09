@@ -7,11 +7,13 @@ export interface CapabilityGateCopy {
   ctaHref: string;
 }
 
-const DEFAULT_CTA_HREF = "/billing/upgrade";
+// Consulting mode: subscriptions are provisioned manually, so every
+// activation path routes to the contact page instead of a checkout.
+const DEFAULT_CTA_HREF = "/contact";
 
 function resolveCtaHref(code: AccessUpgradeHintCode | undefined): string {
   if (code === "activate_subscription" || code === "reactivate_subscription") {
-    return "/billing/upgrade";
+    return "/contact";
   }
   return DEFAULT_CTA_HREF;
 }

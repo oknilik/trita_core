@@ -73,25 +73,14 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
       <div className="flex flex-col items-center gap-3">
         {isAddon ? (
           isAdmin ? (
-            <>
-              <Link
-                href="/billing/checkout?plan=candidate_5"
-                className={getButtonClassName({
-                  className: "px-8",
-                })}
-              >
-                {t("hiring.activateAddon", locale)}
-              </Link>
-              <p className="text-xs text-muted">
-                {t("hiring.upgradeToOrg", locale)}
-              </p>
-              <Link
-                href="/billing/checkout?plan=org_monthly"
-                className="text-xs font-semibold text-bronze underline decoration-bronze/30 hover:decoration-bronze"
-              >
-                {t("hiring.orgPlanDetails", locale)}
-              </Link>
-            </>
+            <Link
+              href="/contact"
+              className={getButtonClassName({
+                className: "px-8",
+              })}
+            >
+              {t("hiring.activateAddon", locale)}
+            </Link>
           ) : (
             <p className="max-w-sm text-center text-sm text-ink-body">
               {t("hiring.addonAdminRequired", locale)}
@@ -99,7 +88,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
           )
         ) : isAdmin ? (
           <Link
-            href="/billing/checkout?plan=org_monthly"
+            href="/contact"
             className={getButtonClassName({
               className: "px-8",
             })}

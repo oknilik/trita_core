@@ -3,7 +3,6 @@ import "server-only";
 import { Prisma, type TestType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
-import { syncSeatBilling } from "@/lib/seat-billing";
 import { resolveJourney, resolveJourneyForClerkId } from "@/lib/journey/engine";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getTestConfig } from "@/lib/questions";
@@ -257,7 +256,6 @@ export interface AcceptanceResult {
 interface AcceptanceRuntimeDeps {
   getActiveOrgMembership: typeof getActiveOrgMembership;
   setActiveOrgContext: typeof setActiveOrgContext;
-  syncSeatBilling: typeof syncSeatBilling;
   resolveJourney: typeof resolveJourney;
   resolveJourneyForClerkId: typeof resolveJourneyForClerkId;
 }
@@ -265,7 +263,6 @@ interface AcceptanceRuntimeDeps {
 const acceptanceRuntimeDeps: AcceptanceRuntimeDeps = {
   getActiveOrgMembership,
   setActiveOrgContext,
-  syncSeatBilling,
   resolveJourney,
   resolveJourneyForClerkId,
 };
@@ -281,9 +278,6 @@ export function __setAcceptanceRuntimeForTests(
   if (overrides.setActiveOrgContext) {
     acceptanceRuntimeDeps.setActiveOrgContext = overrides.setActiveOrgContext;
   }
-  if (overrides.syncSeatBilling) {
-    acceptanceRuntimeDeps.syncSeatBilling = overrides.syncSeatBilling;
-  }
   if (overrides.resolveJourney) {
     acceptanceRuntimeDeps.resolveJourney = overrides.resolveJourney;
   }
@@ -294,7 +288,6 @@ export function __setAcceptanceRuntimeForTests(
   return () => {
     acceptanceRuntimeDeps.getActiveOrgMembership = previous.getActiveOrgMembership;
     acceptanceRuntimeDeps.setActiveOrgContext = previous.setActiveOrgContext;
-    acceptanceRuntimeDeps.syncSeatBilling = previous.syncSeatBilling;
     acceptanceRuntimeDeps.resolveJourney = previous.resolveJourney;
     acceptanceRuntimeDeps.resolveJourneyForClerkId = previous.resolveJourneyForClerkId;
   };
@@ -589,7 +582,6 @@ async function runJoinTransaction(
     prisma.organizationPendingInvite.delete({ where: { id: invite.inviteId } }),
   ]);
   await acceptanceRuntimeDeps.setActiveOrgContext(actor.profileId, invite.orgId);
-  void acceptanceRuntimeDeps.syncSeatBilling(invite.orgId);
 
   // Notify org admins via orchestrator (fire-and-forget)
   import("@/lib/notifications").then(({ handleOrgInviteAccepted }) =>

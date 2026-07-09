@@ -541,13 +541,13 @@ function ComparisonTabPanel({
           {!hasObserverAccess && (
             <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-white/80 backdrop-blur-sm">
               <p className="mb-4 text-center text-sm font-semibold text-ink">
-                Az összehasonlítás csomag-előfizetéssel érhető el.
+                Az összehasonlítás a teljes csomag része.
               </p>
               <a
-                href="/billing/upgrade"
+                href="/contact"
                 className="inline-flex min-h-[44px] items-center justify-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
               >
-                Trial indítása →
+                Kapcsolatfelvétel →
               </a>
             </div>
           )}

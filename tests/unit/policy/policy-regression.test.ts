@@ -2,7 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { getAccessPolicy } from "@/lib/policy-engine";
 import { hasCandidateAccess } from "@/lib/subscription";
-import { TEAM_PRICE_IDS } from "@/lib/stripe";
 
 type CapabilitySnapshot = {
   read: boolean;
@@ -159,53 +158,39 @@ test("policy regression matrix scenarios remain stable", () => {
   }
 });
 
-function ensureTeamPriceId(): string {
-  const syntheticTeamPriceId = "__test_team_price_id__";
-  if (!TEAM_PRICE_IDS.includes(syntheticTeamPriceId)) {
-    TEAM_PRICE_IDS.push(syntheticTeamPriceId);
-  }
-  return syntheticTeamPriceId;
-}
-
-test("candidate add-on available for active team subscription with positive credits", () => {
-  const teamPriceId = ensureTeamPriceId();
-  const available = hasCandidateAccess({
-    status: "active",
+function teamSubscription(overrides: {
+  status: string;
+  candidateCredits: number;
+}) {
+  return {
+    status: overrides.status,
+    planType: "team",
+    billingInterval: null,
     trialEndsAt: null,
     currentPeriodEnd: null,
     cancelAtPeriodEnd: false,
     stripeCustomerId: null,
     stripeSubscriptionId: null,
-    stripePriceId: teamPriceId,
-    candidateCredits: 2,
-  });
+    stripePriceId: null,
+    candidateCredits: overrides.candidateCredits,
+  };
+}
+
+test("candidate add-on available for active team subscription with positive credits", () => {
+  const available = hasCandidateAccess(
+    teamSubscription({ status: "active", candidateCredits: 2 }),
+  );
   assert.equal(available, true);
 });
 
 test("candidate add-on unavailable without credits or with non-active status", () => {
-  const teamPriceId = ensureTeamPriceId();
-
-  const noCredits = hasCandidateAccess({
-    status: "active",
-    trialEndsAt: null,
-    currentPeriodEnd: null,
-    cancelAtPeriodEnd: false,
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
-    stripePriceId: teamPriceId,
-    candidateCredits: 0,
-  });
+  const noCredits = hasCandidateAccess(
+    teamSubscription({ status: "active", candidateCredits: 0 }),
+  );
   assert.equal(noCredits, false);
 
-  const restricted = hasCandidateAccess({
-    status: "past_due",
-    trialEndsAt: null,
-    currentPeriodEnd: null,
-    cancelAtPeriodEnd: false,
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
-    stripePriceId: teamPriceId,
-    candidateCredits: 4,
-  });
+  const restricted = hasCandidateAccess(
+    teamSubscription({ status: "past_due", candidateCredits: 4 }),
+  );
   assert.equal(restricted, false);
 });

@@ -1,36 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface UpgradeButtonProps {
   tier: string;
   label: string;
 }
 
-export function UpgradeButton({ tier, label }: UpgradeButtonProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-
-  function handleClick() {
-    setLoading(true);
-    router.push(`/billing/checkout?tier=${encodeURIComponent(tier)}`);
-  }
-
+// Consulting mode: paid tiers are provisioned manually, so the upgrade
+// CTA routes to the contact page instead of a checkout flow.
+export function UpgradeButton({ label }: UpgradeButtonProps) {
   return (
-    <div>
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={loading}
-        className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {loading ? "…" : label}
-      </button>
-      {error && (
-        <p className="mt-2 text-xs text-rose-600">{error}</p>
-      )}
-    </div>
+    <Link
+      href="/contact"
+      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
+    >
+      {label}
+    </Link>
   );
 }

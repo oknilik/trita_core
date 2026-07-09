@@ -9,7 +9,7 @@ test("subscription-related denial returns billing reactivation copy", () => {
     upgradeHintCode: "reactivate_subscription",
   });
 
-  assert.equal(copy.ctaHref, "/billing/upgrade");
+  assert.equal(copy.ctaHref, "/contact");
   assert.equal(copy.ctaLabel, "Manage subscription");
 });
 

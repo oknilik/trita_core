@@ -2,7 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { syncSeatBilling } from "@/lib/seat-billing";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 
 const patchSchema = z.object({
@@ -134,8 +133,6 @@ export async function DELETE(
   await prisma.organizationMember.delete({
     where: { orgId_userId: { orgId, userId: targetUserId } },
   });
-
-  void syncSeatBilling(orgId);
 
   return NextResponse.json({ ok: true });
 }

@@ -141,7 +141,7 @@ export function ProgressBar({
   function handlePlusUpgrade() {
     if (upgradeLoading) return;
     setUpgradeLoading(true);
-    router.push("/billing/checkout?tier=self_plus");
+    router.push("/contact");
   }
 
   const steps = [

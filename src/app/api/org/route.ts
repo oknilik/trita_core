@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { TRIAL_DAYS } from "@/lib/stripe";
+import { TRIAL_DAYS } from "@/lib/subscription";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 
