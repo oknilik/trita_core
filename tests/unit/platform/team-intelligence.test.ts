@@ -166,3 +166,14 @@ test("contribution placement: middle profile lands in the middle band", () => {
   assert.equal(placement.skillLevel, 2);
   assert.equal(placement.growthPotential, 2);
 });
+
+// ─── canViewRawTeamResults (report gating, F1) ──────────────────────────────
+
+test("raw team results are consultant-only", async () => {
+  const { canViewRawTeamResults } = await import("@/lib/team-auth");
+  assert.equal(canViewRawTeamResults("ORG_CONSULTANT"), true);
+  assert.equal(canViewRawTeamResults("ORG_ADMIN"), false);
+  assert.equal(canViewRawTeamResults("ORG_MANAGER"), false);
+  assert.equal(canViewRawTeamResults("ORG_MEMBER"), false);
+  assert.equal(canViewRawTeamResults(null), false);
+});

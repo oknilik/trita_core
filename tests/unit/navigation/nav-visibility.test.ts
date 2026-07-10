@@ -70,7 +70,7 @@ test("manager analytics dropdown includes report entry for each accessible team"
   assert.deepEqual(childLabels, ["Csapatriportok", "Alpha Team", "Beta Team"]);
 
   const childHrefs = analyticsItem.items?.map((item) => item.href) ?? [];
-  assert.deepEqual(childHrefs, ["/team", "/team/team_1?tab=profile", "/team/team_2?tab=profile"]);
+  assert.deepEqual(childHrefs, ["/team", "/team/team_1?tab=overview", "/team/team_2?tab=overview"]);
 });
 
 test("manager cannot see admin-only org features in visibility model", () => {

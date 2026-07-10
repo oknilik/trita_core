@@ -19,6 +19,16 @@ function hasOrgRole(actual: string, minimum: string): boolean {
  * - ORG_MANAGER → can access teams where they are a TeamMember (any role)
  * - ORG_MEMBER → can access teams where they are a TeamMember (any role)
  */
+/**
+ * Raw (individual/pairwise) team results are consultant-only.
+ * Everyone else sees progress during collection and the published,
+ * aggregated report after consultant validation (see
+ * docs/product/team-report-gating-plan.md).
+ */
+export function canViewRawTeamResults(orgRole: string | null | undefined): boolean {
+  return orgRole === "ORG_CONSULTANT";
+}
+
 export async function canAccessTeam(
   profileId: string,
   teamId: string,

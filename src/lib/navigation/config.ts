@@ -252,7 +252,7 @@ function buildAnalyticsDestinations(
             id: "analytics-reports",
             label: "Riportok",
             description: "Részletes csapatriport",
-            href: `/team/${primaryTeam.id}?tab=profile`,
+            href: `/team/${primaryTeam.id}?tab=overview`,
           });
     }
 
@@ -282,7 +282,7 @@ function buildAnalyticsDestinations(
       id: `analytics-team-${team.id}`,
       label: team.name,
       description: "Csapatriport és összevetés",
-      href: `/team/${team.id}?tab=profile`,
+      href: `/team/${team.id}?tab=overview`,
     })),
   ];
 }
@@ -351,7 +351,7 @@ export function buildWorkspaceNavigation(
     role === "org_manager" ? "Riportok" : "Analitika",
     analyticsItems[0]?.href ?? ctx.homeHref,
     uniqueMatchPrefixes(
-      ...ctx.teams.map((team) => `/team/${team.id}?tab=profile`),
+      ...ctx.teams.map((team) => `/team/${team.id}?tab=overview`),
       ctx.org ? `/org/${ctx.org.id}?tab=overview` : null,
       ctx.org ? `/org/${ctx.org.id}?tab=teams` : null,
       ctx.org ? `/org/${ctx.org.id}?tab=campaigns` : null,

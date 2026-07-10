@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
-import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
+import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
@@ -143,6 +143,11 @@ export default async function TeamDetailPage({
 
   const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
   if (!hasTeamAccess) redirect(deepLinkFallback);
+  const canViewRaw = canViewRawTeamResults(orgMemberRole);
+  // Raw-result tabs are consultant-only; everyone else gets the progress view.
+  if (!canViewRaw && (activeTab === "intelligence" || activeTab === "profile" || activeTab === "teamRole")) {
+    redirect(`/team/${teamId}?tab=overview`);
+  }
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
   const policySnapshot = await resolveOrgPolicySnapshot({
@@ -838,7 +843,7 @@ export default async function TeamDetailPage({
           ))}
           actions={(
             <>
-              {hasPattern ? (
+              {hasPattern && canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=profile`}
                   className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
@@ -963,12 +968,20 @@ export default async function TeamDetailPage({
             <DashboardMetricCard
               accent="var(--color-accent-primary)"
               title={t("teamDetail.teamPatternTitle", locale)}
-              value={hasPattern ? t("teamDetail.teamPatternAvailable", locale) : t("teamDetail.teamPatternNotYet", locale)}
+              value={
+                hasPattern
+                  ? canViewRaw
+                    ? t("teamDetail.teamPatternAvailable", locale)
+                    : isHu ? "Validálás alatt" : "Pending validation"
+                  : t("teamDetail.teamPatternNotYet", locale)
+              }
               sub={hasPattern
-                ? teamData.patternResult?.fullLabel
+                ? canViewRaw
+                  ? teamData.patternResult?.fullLabel
+                  : isHu ? "A tanácsadó véglegesítése után elérhető" : "Available after consultant validation"
                 : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })}
             >
-              {hasPattern ? (
+              {hasPattern && canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=profile`}
                   className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
@@ -1044,11 +1057,34 @@ export default async function TeamDetailPage({
 
         <section>
           <DashboardSectionHeader label={t("teamComp.teamPatternEyebrow", locale)} className="mb-4" />
-          <TeamPatternCard
-            patternResult={teamData.patternResult}
-            totalMembers={teamData.memberCount}
-            isHu={isHu}
-          />
+          {canViewRaw ? (
+            <TeamPatternCard
+              patternResult={teamData.patternResult}
+              totalMembers={teamData.memberCount}
+              isHu={isHu}
+            />
+          ) : (
+            <DashboardPanel className="p-6">
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+                  <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3.5" y="7" width="9" height="6" rx="1.5" />
+                    <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
+                  </svg>
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-ink">
+                    {isHu ? "A csapatkép validálás alatt" : "Team picture pending validation"}
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                    {isHu
+                      ? "A csapat-szintű eredményeket a tanácsadó összesíti és validálja — a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
+                      : "Team-level results are aggregated and validated by your consultant — they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
+                  </p>
+                </div>
+              </div>
+            </DashboardPanel>
+          )}
         </section>
 
         <section>

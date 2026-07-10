@@ -64,7 +64,6 @@ export default async function ManagerCockpitPage() {
 
   // ── Next step resolution ──────────────────────────────────────────────────
   const weakestTeam = data.teams.find((t) => t.completionPct < 100);
-  const teamWithFriction = data.teams.find((t) => t.frictionCount > 0);
   const teamWithCampaign = data.teams.find((t) => t.activeCampaign);
   const teamNeedingMembers = data.teams.find((t) => t.memberCount < 3);
 
@@ -111,17 +110,6 @@ export default async function ManagerCockpitPage() {
       primary: {
         label: isHu ? "Kör megtekintése" : "View round",
         href: `/org/${data.orgId}?tab=campaigns`,
-      },
-    };
-  } else if (teamWithFriction) {
-    nextStep = {
-      title: isHu ? "Dinamika áttekintése" : "Review team dynamics",
-      description: isHu
-        ? `A(z) ${teamWithFriction.teamName} csapatban ${teamWithFriction.frictionCount} potenciális súrlódási pont van. Érdemes áttekinteni a részleteket.`
-        : `${teamWithFriction.frictionCount} potential friction points in ${teamWithFriction.teamName}. Worth reviewing the details.`,
-      primary: {
-        label: isHu ? "Dinamika megtekintése" : "View dynamics",
-        href: `/team/${teamWithFriction.teamId}?tab=intelligence`,
       },
     };
   } else {
@@ -246,25 +234,6 @@ export default async function ManagerCockpitPage() {
                     <> · {team.pendingInviteCount} {isHu ? "függő meghívó" : "pending invites"}</>
                   )}
                 </p>
-                {(team.frictionCount > 0 || team.alignedCount > 0) && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {team.alignedCount > 0 && (
-                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] text-emerald-800">
-                        {team.alignedCount} {isHu ? "hasonló" : "aligned"}
-                      </span>
-                    )}
-                    {team.complementaryCount > 0 && (
-                      <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[10px] text-ink-body">
-                        {team.complementaryCount} {isHu ? "kiegészítő" : "complementary"}
-                      </span>
-                    )}
-                    {team.frictionCount > 0 && (
-                      <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] text-amber-800">
-                        {team.frictionCount} {isHu ? "súrlódás" : "friction"}
-                      </span>
-                    )}
-                  </div>
-                )}
               </DashboardPanel>
             </Link>
           ))}

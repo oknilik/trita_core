@@ -195,6 +195,13 @@ export default async function OrgDetailPage({
     id: tm.id, name: tm.name, createdAt: tm.createdAt.toISOString(), _count: { members: tm._count.members },
   }));
 
+  // Élő aggregátum (hexacoAvg) csak tanácsadónak — mindenki más a
+  // publikált riportban kapja majd (docs/product/team-report-gating-plan.md)
+  const canViewRawResults = memberRole === "ORG_CONSULTANT";
+  if (!canViewRawResults) {
+    pageData.hexacoAvg = null;
+  }
+
 
   const completionPct = pageData.activeTotalParticipants > 0
     ? Math.round((pageData.activeSelfDone / pageData.activeTotalParticipants) * 100)
