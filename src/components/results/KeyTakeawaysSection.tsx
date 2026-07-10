@@ -10,9 +10,9 @@ interface KeyTakeawaysSectionProps {
 }
 
 export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: KeyTakeawaysSectionProps) {
-  if (!isUnlocked || paragraphs.length === 0) return null;
-
   const { locale } = useLocale();
+
+  if (!isUnlocked || paragraphs.length === 0) return null;
 
   return (
     <div

@@ -9,9 +9,9 @@ interface HowYouWorkSectionProps {
 }
 
 export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionProps) {
-  if (!isUnlocked || paragraphs.length === 0) return null;
-
   const { locale } = useLocale();
+
+  if (!isUnlocked || paragraphs.length === 0) return null;
 
   const mainPattern = paragraphs[0] ?? "";
   const watchArea = paragraphs[1] ?? "";
