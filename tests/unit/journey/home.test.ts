@@ -43,6 +43,7 @@ test("self in progress goes to assessment", () => {
 test("admin goes to org cockpit", () => {
   const context = buildJourneyContext({
     currentContext: "org-admin",
+    orgId: "org_1",
     assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
   });
   const state = buildJourneyState("TEAM_READY");
@@ -50,7 +51,7 @@ test("admin goes to org cockpit", () => {
 
   assert.equal(result.activeSurface, "org");
   assert.equal(result.home.reason, "org_cockpit");
-  assert.equal(result.home.destination, "/dashboard");
+  assert.equal(result.home.destination, "/org/org_1");
 });
 
 test("manager goes to manager cockpit", () => {

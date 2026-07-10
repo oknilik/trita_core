@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
 import { getServerAuth } from "@/lib/auth-server";
-import { AdminDashboard } from "./AdminDashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -23,11 +22,10 @@ export default async function DashboardPage({
   if (!profile) redirect("/sign-in");
 
   const journey = await resolveJourney(profile.id, { entryPoint });
-  if (journey.destination === "/dashboard") {
-    return <AdminDashboard />;
-  }
 
-  let destination = journey.destination;
+  // Safety: never redirect to ourselves (would loop) — fall back to results.
+  let destination =
+    journey.destination === "/dashboard" ? "/profile/results" : journey.destination;
   if (destination.startsWith("/profile/results")) {
     // Legacy `/dashboard?...` entrypoints may still carry self-profile params.
     // Keep forwarding these to avoid breaking retake modal/deep-link flows.

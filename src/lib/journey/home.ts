@@ -54,11 +54,15 @@ export function resolveHome(params: {
     };
   }
 
-  // 3a) Admin org cockpit.
+  // 3a) Admin org cockpit — the org page is the cockpit.
   if (context.currentContext === "org-admin") {
     return {
       activeSurface: "org",
-      home: buildHomeResolution("/dashboard", "org_cockpit", primaryAction),
+      home: buildHomeResolution(
+        context.orgId ? `/org/${context.orgId}` : "/profile/results",
+        "org_cockpit",
+        primaryAction,
+      ),
     };
   }
 
@@ -121,7 +125,11 @@ export function resolveHome(params: {
   if (state.currentStage === "ORG_PARTIAL" || state.currentStage === "ORG_READY") {
     return {
       activeSurface: "org",
-      home: buildHomeResolution("/dashboard", "org_cockpit", primaryAction),
+      home: buildHomeResolution(
+        context.orgId ? `/org/${context.orgId}` : "/profile/results",
+        "org_cockpit",
+        primaryAction,
+      ),
     };
   }
 

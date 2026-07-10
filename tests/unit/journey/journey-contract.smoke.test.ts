@@ -291,7 +291,7 @@ const FIXTURES: SmokeFixture[] = [
       },
     },
     expected: {
-      destination: "/dashboard",
+      destination: "/org/org_1",
       activeSurface: "org",
       stage: "ORG_READY",
       primaryCtaId: "VIEW_ORG_INSIGHTS",
@@ -363,7 +363,7 @@ const FIXTURES: SmokeFixture[] = [
       },
     },
     expected: {
-      destination: "/dashboard",
+      destination: "/org/org_1",
       activeSurface: "org",
       stage: "ORG_READY",
       primaryCtaId: "VIEW_ORG_INSIGHTS",
