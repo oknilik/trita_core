@@ -17,6 +17,8 @@ interface MemberWithTeamRole {
   teamRoleScores: TeamRoleScores | null;
   top3: { role: TeamRoleCode; score: number }[];
   primaryRole: TeamRoleCode | null;
+  /** "questionnaire" = real fill-out, "estimate" = derived from HEXACO */
+  source: "questionnaire" | "estimate" | null;
 }
 
 const ROLE_COLORS: Record<TeamRoleCode, string> = {
@@ -68,6 +70,8 @@ function TeamRoleCompletionStatus({
   isHu: boolean;
 }) {
   const withScores = members.filter((m) => m.hasScores).length;
+  const questionnaireCount = members.filter((m) => m.source === "questionnaire").length;
+  const estimateCount = members.filter((m) => m.source === "estimate").length;
   const total = members.length;
   const pct = total > 0 ? Math.round((withScores / total) * 100) : 0;
 
@@ -80,6 +84,11 @@ function TeamRoleCompletionStatus({
           </p>
           <p className="mt-0.5 text-xs text-ink-body">
             {t("teamComp.profileStatusDesc", isHu ? "hu" : "en").replace("{done}", String(withScores)).replace("{total}", String(total))}
+          </p>
+          <p className="mt-1 text-xs text-muted">
+            {isHu
+              ? `${questionnaireCount} valódi kitöltés · ${estimateCount} HEXACO-becslés`
+              : `${questionnaireCount} real fill-out · ${estimateCount} HEXACO estimate`}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
@@ -260,6 +269,15 @@ function IndividualTeamRoleTable({
                 <span className="text-sm font-semibold text-ink">
                   {m.displayName}
                 </span>
+                {m.source === "questionnaire" ? (
+                  <span className="ml-2 inline-block rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                    {isHu ? "kitöltött" : "completed"}
+                  </span>
+                ) : m.source === "estimate" ? (
+                  <span className="ml-2 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                    {isHu ? "becslés" : "estimate"}
+                  </span>
+                ) : null}
               </td>
               <td className="px-4 py-3">
                 {m.top3[0] ? (
@@ -385,19 +403,23 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const membersWithTeamRole = useMemo<MemberWithTeamRole[]>(() => {
     return members.map((m) => {
-      if (!m.scores) {
+      // Real questionnaire result always wins over the HEXACO estimate
+      if (m.teamRoleScores && m.teamRoleSource === "questionnaire") {
+        const teamRoleScores = m.teamRoleScores as TeamRoleScores;
+        const top3 = getTopRoles(teamRoleScores, 3);
         return {
           id: m.id,
           userId: m.userId,
           displayName: m.displayName,
-          hasScores: false,
-          teamRoleScores: null,
-          top3: [],
-          primaryRole: null,
+          hasScores: true,
+          teamRoleScores,
+          top3,
+          primaryRole: top3[0]?.role ?? null,
+          source: "questionnaire" as const,
         };
       }
-      // Only estimate for HEXACO-coded dimensions
-      const hasHexaco = "H" in m.scores && "X" in m.scores;
+
+      const hasHexaco = m.scores && "H" in m.scores && "X" in m.scores;
       if (!hasHexaco) {
         return {
           id: m.id,
@@ -407,6 +429,7 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
           teamRoleScores: null,
           top3: [],
           primaryRole: null,
+          source: null,
         };
       }
       const teamRoleScores = estimateTeamRolesFromHexaco(
@@ -421,6 +444,7 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
         teamRoleScores,
         top3,
         primaryRole: top3[0]?.role ?? null,
+        source: "estimate" as const,
       };
     });
   }, [members]);

@@ -42,6 +42,9 @@ export interface SerializedTeamMember {
   scores: Record<string, number> | null;
   testType: string | null;
   top3Dims: Array<{ code: string; value: number; color: string }>;
+  /** Completed team-role questionnaire result; null → fall back to HEXACO estimate */
+  teamRoleScores: Record<string, number> | null;
+  teamRoleSource: "questionnaire" | "estimate" | null;
 }
 
 export interface TeamActiveCampaign {
@@ -186,6 +189,9 @@ export async function getTeamPageData(
                 take: 1,
                 select: { testType: true, scores: true },
               },
+              teamRoleScore: {
+                select: { scores: true, source: true },
+              },
             },
           },
         },
@@ -225,6 +231,12 @@ export async function getTeamPageData(
       scores: rawDimensions ?? null,
       testType: ar?.testType ?? null,
       top3Dims,
+      teamRoleScores: m.user.teamRoleScore
+        ? (m.user.teamRoleScore.scores as Record<string, number>)
+        : null,
+      teamRoleSource: m.user.teamRoleScore
+        ? (m.user.teamRoleScore.source as "questionnaire" | "estimate")
+        : null,
     };
   });
 

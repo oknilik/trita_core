@@ -324,14 +324,18 @@ export function buildTeamIntelligencePriorities({
     const keyRoles: Array<keyof typeof TEAM_ROLES> = ["CO", "SH", "ME"];
     const presentTopRoles = new Set<keyof typeof TEAM_ROLES>();
     membersWithScores.forEach((member) => {
-      const scores = estimateTeamRolesFromHexaco({
-        H: member.scores!.H,
-        E: member.scores!.E,
-        X: member.scores!.X,
-        A: member.scores!.A,
-        C: member.scores!.C,
-        O: member.scores!.O,
-      });
+      // Prefer the real questionnaire result; estimate only as fallback
+      const scores =
+        member.teamRoleSource === "questionnaire" && member.teamRoleScores
+          ? (member.teamRoleScores as Record<keyof typeof TEAM_ROLES, number>)
+          : estimateTeamRolesFromHexaco({
+              H: member.scores!.H,
+              E: member.scores!.E,
+              X: member.scores!.X,
+              A: member.scores!.A,
+              C: member.scores!.C,
+              O: member.scores!.O,
+            });
       const top = getTopRoles(scores, 1)[0]?.role;
       if (top) presentTopRoles.add(top);
     });

@@ -25,6 +25,8 @@ function makeMember(
     scores,
     testType: "HEXACO",
     top3Dims: [],
+    teamRoleScores: null,
+    teamRoleSource: null,
   };
 }
 
