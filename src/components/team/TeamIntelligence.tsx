@@ -293,8 +293,8 @@ export function TeamIntelligence({
               </div>
               <p className="mt-2 text-[11px] text-ink-body/60">
                 {isHu
-                  ? "A becslés a HEXACO személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
-                  : "Estimates are based on HEXACO personality profile gaps. Actual relationship dynamics require a 360° trust round."}
+                  ? "A becslés a személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
+                  : "Estimates are based on personality profile gaps. Actual relationship dynamics require a 360° trust round."}
               </p>
               <div className="mt-3">
                 <DynamicsMap members={members} edges={edges} isHu={isHu} />

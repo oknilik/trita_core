@@ -5,7 +5,7 @@ import { PatternExplorer } from "./PatternExplorer";
 export const metadata: Metadata = {
   title: "16 csapatminta — Trita Csapatminta Felfedező",
   description:
-    "Fedezd fel a 16 csapatműködési mintázatot. Interaktív eszköz: húzd a csúszkákat, és nézd meg, melyik mintázat illik a csapatodra. HEXACO-alapú csapatdiagnosztika.",
+    "Fedezd fel a 16 csapatműködési mintázatot. Interaktív eszköz: húzd a csúszkákat, és nézd meg, melyik mintázat illik a csapatodra. Hatfaktoros személyiségmodellre épülő csapatdiagnosztika.",
   openGraph: {
     title: "16 csapatminta — Melyik a tiéd?",
     description:

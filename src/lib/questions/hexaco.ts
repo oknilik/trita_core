@@ -5,8 +5,8 @@ import type { TestConfig } from "./types";
  */
 export const hexacoConfig: TestConfig = {
   type: "HEXACO",
-  name: "HEXACO-PI-R",
-  description: "A hivatalos HEXACO személyiségteszt 100 kérdéssel.",
+  name: "Trita személyiségfelmérés",
+  description: "Hatfaktoros, validált személyiségfelmérés.",
   format: "likert",
   dimensions: [
     {
@@ -91,10 +91,10 @@ export const hexacoConfig: TestConfig = {
         hu: "Extraverzió",
       },
       color: "#F59E0B",
-      description: "Az extraverzió a HEXACO-ban a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas bátorság (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
+      description: "Az extraverzió a hatfaktoros modellben a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas bátorság (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       descriptionByLocale: {
-        en: "Extraversion in the HEXACO model reflects social self-confidence, comfort across social situations, enjoyment of conversation and social gatherings, and overall enthusiasm and energy. Its four facets are Social Self-Esteem (positive self-regard, especially in social contexts), Social Boldness (confidence in group or public settings), Sociability (enjoyment of conversation, interaction, and social gatherings), and Liveliness (general sense of enthusiasm and optimism).",
-        hu: "Az extraverzió a HEXACO-ban a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas bátorság (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
+        en: "Extraversion in the six-factor model reflects social self-confidence, comfort across social situations, enjoyment of conversation and social gatherings, and overall enthusiasm and energy. Its four facets are Social Self-Esteem (positive self-regard, especially in social contexts), Social Boldness (confidence in group or public settings), Sociability (enjoyment of conversation, interaction, and social gatherings), and Liveliness (general sense of enthusiasm and optimism).",
+        hu: "Az extraverzió a hatfaktoros modellben a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas bátorság (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       },
       insights: {
         low: "Kényelmetlenül érezheted magad a figyelem középpontjában, és hajlamos lehetsz kevésbé népszerűnek látni magad. Az egyéni tevékenységeket részesíted előnyben, és kevésbé érzel általános lelkesedést vagy optimizmust.",

@@ -283,8 +283,8 @@ export default async function TeamDetailPage({
       key: "profile" as const,
       title: t("teamComp.tabProfile", locale),
       description: isHu
-        ? "HEXACO heatmap és csapat-szintű személyiség-elemzés."
-        : "HEXACO heatmap and team-level personality analysis.",
+        ? "Személyiség-heatmap és csapat-szintű elemzés."
+        : "Personality heatmap and team-level analysis.",
       badge: teamData.completedCount > 0 ? teamData.completedCount : undefined,
     },
     {

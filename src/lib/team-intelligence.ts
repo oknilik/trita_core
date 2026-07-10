@@ -230,8 +230,8 @@ export function buildTeamIntelligenceEvidence({
       confidence: resolveTeamIntelligenceConfidence(mapQuality),
       note: tr(
         locale,
-        "A pozíciók HEXACO self-assessmentből számolt becslések.",
-        "Positions are estimated from HEXACO self-assessment data.",
+        "A pozíciók az önértékelő személyiségfelmérésből számolt becslések.",
+        "Positions are estimated from self-assessment data.",
       ),
     },
     dynamics: {

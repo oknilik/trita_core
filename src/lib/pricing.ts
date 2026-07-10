@@ -447,7 +447,7 @@ const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
       perMonth: "",
       seats: "",
       features: [
-        "1 személyiségteszt (HEXACO)",
+        "1 teljes személyiségfelmérés",
         "Dimenzió szintű eredmények",
         "Max 2 observer meghívás",
         "Önkép vs. observer összehasonlítás",
@@ -482,7 +482,7 @@ const selfPricingPlansData: Record<Locale, SelfPricingPlan[]> = {
       perMonth: "",
       seats: "",
       features: [
-        "1 personality assessment (HEXACO)",
+        "1 full personality assessment",
         "Dimension-level results",
         "Max 2 observer invites",
         "Self vs. observer comparison",

@@ -79,8 +79,8 @@ export function TeamRoleRoundCard({
 
       <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
         {isHu
-          ? "A TeamRole csapatszerep teszt feltérképezi, ki milyen szerepben erős a csapatmunkában. A HEXACO profilból becslés már elérhető, de a valódi kérdőív pontosabb képet ad."
-          : "The TeamRole team role test maps out everyone's strengths in teamwork. HEXACO-based estimates are available, but the actual questionnaire gives a more accurate picture."}
+          ? "A TeamRole csapatszerep teszt feltérképezi, ki milyen szerepben erős a csapatmunkában. A személyiségprofilból becslés már elérhető, de a valódi kérdőív pontosabb képet ad."
+          : "The TeamRole team role test maps out everyone's strengths in teamwork. Profile-based estimates are available, but the actual questionnaire gives a more accurate picture."}
       </p>
 
       {/* Progress */}

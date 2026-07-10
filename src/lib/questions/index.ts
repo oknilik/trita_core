@@ -9,8 +9,8 @@ const testConfigs: Partial<Record<TestType, TestConfig>> = {
 
 const testLabels: Partial<Record<TestType, Record<Locale, { name: string; description: string }>>> = {
   HEXACO: {
-    hu: { name: "HEXACO-PI-R", description: "A hivatalos HEXACO személyiségteszt 60 kérdéssel." },
-    en: { name: "HEXACO-PI-R", description: "Official HEXACO personality test with 60 items." },
+    hu: { name: "Trita személyiségfelmérés", description: "Hatfaktoros, validált személyiségfelmérés." },
+    en: { name: "Trita personality assessment", description: "Six-factor, validated personality assessment." },
   },
 };
 

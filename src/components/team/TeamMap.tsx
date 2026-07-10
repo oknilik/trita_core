@@ -183,8 +183,8 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
       {/* Model explainer */}
       <p className="text-[10px] leading-relaxed text-muted">
         {loc === "hu"
-          ? "Súlyozott becslés a saját HEXACO-profilból (szállítás: C·H·érzelmi stabilitás; potenciál: O·X·érzelmi stabilitás). Nem mért teljesítményadat."
-          : "Weighted estimate from the self HEXACO profile (delivery: C·H·emotional stability; growth: O·X·emotional stability). Not measured performance data."}
+          ? "Súlyozott becslés a saját személyiségprofilból (szállítás: C·H·érzelmi stabilitás; potenciál: O·X·érzelmi stabilitás). Nem mért teljesítményadat."
+          : "Weighted estimate from the self personality profile (delivery: C·H·emotional stability; growth: O·X·emotional stability). Not measured performance data."}
       </p>
     </div>
   );
