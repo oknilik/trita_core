@@ -2,6 +2,13 @@ export const profileTranslations = {
   profile: {
     title: { hu: "Profilom", en: "My profile" },
     subtitle: { hu: "Itt szerkesztheted az adataidat, és törölheted a fiókodat.", en: "Here you can edit your basic data and delete your account." },
+    orgSectionTitle: { hu: "Szervezeti tagság", en: "Organization membership" },
+    orgSectionSub: { hu: "Ehhez a szervezethez és csapatokhoz tartozol.", en: "The organization and teams you belong to." },
+    orgSectionNone: { hu: "Jelenleg nem vagy szervezet tagja.", en: "You are not a member of an organization." },
+    orgRoleAdmin: { hu: "Admin", en: "Admin" },
+    orgRoleManager: { hu: "Manager", en: "Manager" },
+    orgRoleMember: { hu: "Tag", en: "Member" },
+    orgTeamsLabel: { hu: "Csapataid", en: "Your teams" },
     participationTitle: { hu: "Részvételi állapot", en: "Participation status" },
     participationBody: {
       hu: "Kövesd, hol tartasz a kitöltés és visszajelzések folyamatában.",

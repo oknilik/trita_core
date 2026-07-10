@@ -14,6 +14,10 @@ import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
+type OrgMembershipInfo = {
+  memberships: Array<{ orgId: string; role: string; orgName: string | null }>;
+  teams: Array<{ id: string; name: string; orgId: string }>;
+};
 type SaveState = "idle" | "saving" | "saved" | "error";
 type InvalidField = "username" | "birthYear" | "gender" | "country";
 
@@ -29,6 +33,7 @@ export default function ProfilePage() {
   const [hasCheckedBypass, setHasCheckedBypass] = useState(false);
 
   const [email, setEmail] = useState<string | null>(null);
+  const [orgInfo, setOrgInfo] = useState<OrgMembershipInfo | null>(null);
   const [accessLevel, setAccessLevel] = useState<string | null>(null);
   const [hasLoadedDemographics, setHasLoadedDemographics] = useState(false);
 
@@ -57,6 +62,23 @@ export default function ProfilePage() {
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
   const countryLabel = useMemo(() => countryOptions.find((c) => c.value === country)?.label, [country, countryOptions]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/org/context");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) {
+          setOrgInfo({ memberships: data.memberships ?? [], teams: data.teams ?? [] });
+        }
+      } catch {
+        // A tagság-blokk informatív; hiba esetén egyszerűen nem jelenik meg.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const loadDemographics = useCallback(async () => {
     setHasLoadedDemographics(false);
@@ -257,6 +279,60 @@ export default function ProfilePage() {
             {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"}
           </Link>
         </div>
+
+        {/* ═══ SZERVEZETI TAGSÁG ═══ */}
+        {orgInfo && orgInfo.memberships.length > 0 && (
+          <div className="border-b border-[var(--color-border-default)] py-6">
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.orgSectionTitle", locale)}</h2>
+            <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.orgSectionSub", locale)}</p>
+            <div className="flex flex-col gap-3">
+              {orgInfo.memberships.map((m) => {
+                const roleLabel =
+                  m.role === "ORG_ADMIN"
+                    ? t("profile.orgRoleAdmin", locale)
+                    : m.role === "ORG_MANAGER"
+                      ? t("profile.orgRoleManager", locale)
+                      : t("profile.orgRoleMember", locale);
+                const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
+                const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_MANAGER";
+                return (
+                  <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-white p-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {canOpenOrg ? (
+                        <Link href={`/org/${m.orgId}`} className="text-[13px] font-semibold text-[var(--color-text-primary)] hover:underline">
+                          {m.orgName ?? m.orgId}
+                        </Link>
+                      ) : (
+                        <span className="text-[13px] font-semibold text-[var(--color-text-primary)]">{m.orgName ?? m.orgId}</span>
+                      )}
+                      <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-[10px] font-semibold text-[var(--color-text-secondary)]">
+                        {roleLabel}
+                      </span>
+                    </div>
+                    {orgTeams.length > 0 && (
+                      <div className="mt-2.5">
+                        <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[1px] text-[var(--color-text-muted)]">
+                          {t("profile.orgTeamsLabel", locale)}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {orgTeams.map((team) => (
+                            <Link
+                              key={team.id}
+                              href={`/team/${team.id}`}
+                              className="rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-[11px] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)]"
+                            >
+                              {team.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ═══ RÓLAD ═══ */}
         <div className="border-b border-[var(--color-border-default)] py-6">
