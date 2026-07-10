@@ -544,6 +544,7 @@ export const orgTranslations = {
       inviteTitle: { hu: "Tag meghívása", en: "Invite a member" },
       inviteDescription: { hu: "Add meg a tag emailcímét. Ha már regisztrált a Tritán, azonnal csatlakozik.", en: "Enter the member's email. If they're already on Trita, they'll join immediately." },
       roleAdmin: { hu: "Admin", en: "Admin" },
+      roleConsultant: { hu: "Tanácsadó", en: "Consultant" },
       roleManager: { hu: "Menedzser", en: "Manager" },
       roleMember: { hu: "Tag", en: "Member" },
     },

@@ -189,7 +189,13 @@ export function NavHeaderUI({
   const initial = getAvatarMonogram(displayName, { length: 1, fallback: "P" });
   const [avatarFrom, avatarTo] = getAvatarGradient(displayName ?? "trita");
   const baseRoleLabel =
-    role === "ORG_ADMIN" ? "Admin" : role === "ORG_MANAGER" ? "Manager" : "Felhasználó";
+    role === "ORG_ADMIN"
+      ? "Admin"
+      : role === "ORG_CONSULTANT"
+        ? "Tanácsadó"
+        : role === "ORG_MANAGER"
+          ? "Manager"
+          : "Felhasználó";
   const roleLabel = org ? `${baseRoleLabel} · ${org.name}` : baseRoleLabel;
   const userMenuItems = new Set(getUserMenuItemIds());
   const showProfileMenuItem = userMenuItems.has("profile");

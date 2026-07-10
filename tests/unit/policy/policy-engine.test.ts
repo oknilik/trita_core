@@ -155,3 +155,18 @@ test("getAccessPolicy returns denial reason and hint maps", () => {
   assert.equal(policy.upgradeHints.manage?.code, "reactivate_subscription");
 });
 
+
+test("consultant gets admin-parity org capabilities", () => {
+  const policy = getAccessPolicy(
+    {
+      isAuthenticated: true,
+      orgRole: "ORG_CONSULTANT",
+      membership: { orgId: "org_1", hasOrgMembership: true },
+    },
+    { subscriptionStatus: "active", subscriptionState: "active" },
+  );
+
+  assert.equal(policy.capabilities.has("read"), true);
+  assert.equal(policy.capabilities.has("manage"), true);
+  assert.equal(policy.capabilities.has("orgAdminManage"), true);
+});

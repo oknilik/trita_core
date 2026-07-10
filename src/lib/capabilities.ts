@@ -94,6 +94,10 @@ function normalizeOrgRole(role: string | null | undefined): OrgRoleCapabilityCon
   if (role === "ORG_MEMBER" || role === "ORG_MANAGER" || role === "ORG_ADMIN") {
     return role;
   }
+  // Assigned consultants operate with admin-parity capabilities.
+  if (role === "ORG_CONSULTANT") {
+    return "ORG_ADMIN";
+  }
   return null;
 }
 

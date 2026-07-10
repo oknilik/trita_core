@@ -9,6 +9,7 @@ interface OrgRow {
   status: string;
   createdAt: string;
   memberCount: number;
+  consultants: Array<{ userId: string; email: string | null; username: string | null }>;
   subscription: {
     status: string;
     planType: string | null;
@@ -51,10 +52,12 @@ export function AdminOrgAccessSection({ orgs }: Props) {
   const [rowState, setRowState] = useState<Record<string, RowState>>({});
   const [planChoice, setPlanChoice] = useState<Record<string, string>>({});
   const [monthsChoice, setMonthsChoice] = useState<Record<string, number>>({});
+  const [consultantEmail, setConsultantEmail] = useState<Record<string, string>>({});
 
   async function callAction(
     orgId: string,
-    action: "activate" | "trial" | "extend" | "deactivate",
+    action: "activate" | "trial" | "extend" | "deactivate" | "assign_consultant" | "remove_consultant",
+    extra?: { consultantEmail?: string },
   ) {
     setRowState((s) => ({ ...s, [orgId]: { loading: true, error: null } }));
     try {
@@ -66,11 +69,19 @@ export function AdminOrgAccessSection({ orgs }: Props) {
           action,
           planType: (planChoice[orgId] ?? "team") as "team" | "org" | "scale",
           months: monthsChoice[orgId] ?? 12,
+          ...(extra ?? {}),
         }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Hiba történt");
+        const code = data.error as string | undefined;
+        const message =
+          code === "USER_NOT_FOUND"
+            ? "Nincs ilyen email-című felhasználó."
+            : code === "ALREADY_MEMBER"
+              ? "Ez a felhasználó már tagja a szervezetnek más szerepben."
+              : code ?? "Hiba történt";
+        throw new Error(message);
       }
       setRowState((s) => ({ ...s, [orgId]: { loading: false, error: null } }));
       router.refresh();
@@ -192,6 +203,55 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         Lezárás
                       </button>
                     )}
+                  </div>
+                </div>
+                <div className="mt-3 border-t border-sand pt-3">
+                  <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">
+                    Tanácsadó
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {org.consultants.map((c) => (
+                      <span
+                        key={c.userId}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800"
+                      >
+                        {c.username ?? c.email ?? c.userId}
+                        <button
+                          type="button"
+                          disabled={state.loading}
+                          onClick={() =>
+                            c.email &&
+                            callAction(org.id, "remove_consultant", { consultantEmail: c.email })
+                          }
+                          className="text-amber-600 transition hover:text-rose-600 disabled:opacity-50"
+                          aria-label="Tanácsadó eltávolítása"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                    <input
+                      type="email"
+                      value={consultantEmail[org.id] ?? ""}
+                      onChange={(e) =>
+                        setConsultantEmail((s) => ({ ...s, [org.id]: e.target.value }))
+                      }
+                      placeholder="tanacsado@email.hu"
+                      className="min-h-[36px] w-52 rounded-lg border border-sand bg-white px-2.5 text-xs text-ink"
+                    />
+                    <button
+                      type="button"
+                      disabled={state.loading || !(consultantEmail[org.id] ?? "").includes("@")}
+                      onClick={() => {
+                        const email = (consultantEmail[org.id] ?? "").trim();
+                        if (!email) return;
+                        callAction(org.id, "assign_consultant", { consultantEmail: email });
+                        setConsultantEmail((s) => ({ ...s, [org.id]: "" }));
+                      }}
+                      className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                    >
+                      Hozzárendelés
+                    </button>
                   </div>
                 </div>
                 {state.error && (

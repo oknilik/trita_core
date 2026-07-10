@@ -290,11 +290,13 @@ export default function ProfilePage() {
                 const roleLabel =
                   m.role === "ORG_ADMIN"
                     ? t("profile.orgRoleAdmin", locale)
-                    : m.role === "ORG_MANAGER"
+                    : m.role === "ORG_CONSULTANT"
+                      ? t("profile.orgRoleConsultant", locale)
+                      : m.role === "ORG_MANAGER"
                       ? t("profile.orgRoleManager", locale)
                       : t("profile.orgRoleMember", locale);
                 const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
-                const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_MANAGER";
+                const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_CONSULTANT" || m.role === "ORG_MANAGER";
                 return (
                   <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-white p-4">
                     <div className="flex flex-wrap items-center gap-2">

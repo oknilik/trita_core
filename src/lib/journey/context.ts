@@ -61,7 +61,7 @@ function createEmptyCompletionSummary(): JourneyCompletionSummary {
 }
 
 export function deriveJourneyCurrentContext(orgRole: string | null): JourneyCurrentContext {
-  if (orgRole === "ORG_ADMIN") return "org-admin";
+  if (orgRole === "ORG_ADMIN" || orgRole === "ORG_CONSULTANT") return "org-admin";
   if (orgRole === "ORG_MANAGER") return "org-manager";
   if (orgRole === "ORG_MEMBER") return "org-member";
   return "self-only";

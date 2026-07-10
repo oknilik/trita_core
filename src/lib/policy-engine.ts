@@ -147,11 +147,12 @@ function deriveContext(user: AccessPolicyUser, context: AccessPolicyContext): De
 }
 
 function canRoleManage(orgRole: string | null): boolean {
-  return orgRole === "ORG_MANAGER" || orgRole === "ORG_ADMIN";
+  return orgRole === "ORG_MANAGER" || orgRole === "ORG_ADMIN" || orgRole === "ORG_CONSULTANT";
 }
 
 function isAdmin(orgRole: string | null): boolean {
-  return orgRole === "ORG_ADMIN";
+  // Consultants get admin-parity capabilities inside the org they advise.
+  return orgRole === "ORG_ADMIN" || orgRole === "ORG_CONSULTANT";
 }
 
 function resolveDeniedCapability(

@@ -9,10 +9,19 @@ import { TRIAL_DAYS } from "@/lib/subscription";
 
 const postSchema = z.object({
   orgId: z.string().min(1),
-  action: z.enum(["activate", "trial", "extend", "deactivate", "set_credits"]),
+  action: z.enum([
+    "activate",
+    "trial",
+    "extend",
+    "deactivate",
+    "set_credits",
+    "assign_consultant",
+    "remove_consultant",
+  ]),
   planType: z.enum(["team", "org", "scale"]).optional(),
   months: z.number().int().min(1).max(36).optional(),
   candidateCredits: z.number().int().min(0).max(1000).optional(),
+  consultantEmail: z.string().email().optional(),
 });
 
 // GET /api/admin/org-access — all orgs with subscription state
@@ -40,6 +49,13 @@ export async function GET() {
           candidateCredits: true,
         },
       },
+      members: {
+        where: { role: "ORG_CONSULTANT" },
+        select: {
+          userId: true,
+          user: { select: { email: true, username: true } },
+        },
+      },
     },
   });
 
@@ -50,6 +66,11 @@ export async function GET() {
       status: org.status,
       createdAt: org.createdAt.toISOString(),
       memberCount: org._count.members,
+      consultants: org.members.map((m) => ({
+        userId: m.userId,
+        email: m.user.email,
+        username: m.user.username,
+      })),
       subscription: org.subscription
         ? {
             status: org.subscription.status,
@@ -77,7 +98,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { orgId, action, planType, months, candidateCredits } = parsed.data;
+  const { orgId, action, planType, months, candidateCredits, consultantEmail } = parsed.data;
 
   const org = await prisma.organization.findUnique({
     where: { id: orgId },
@@ -157,6 +178,51 @@ export async function POST(req: NextRequest) {
       data: { status: "canceled", currentPeriodEnd: now },
     });
     return NextResponse.json({ ok: true, subscription: serialize(subscription) });
+  }
+
+  if (action === "assign_consultant" || action === "remove_consultant") {
+    if (!consultantEmail) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
+    const consultant = await prisma.userProfile.findFirst({
+      where: { email: { equals: consultantEmail, mode: "insensitive" }, deleted: false },
+      select: { id: true, email: true, username: true },
+    });
+    if (!consultant) {
+      return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
+    }
+
+    if (action === "assign_consultant") {
+      const existing = await prisma.organizationMember.findUnique({
+        where: { orgId_userId: { orgId, userId: consultant.id } },
+        select: { role: true },
+      });
+      if (existing && existing.role !== "ORG_CONSULTANT") {
+        // Real membership must not be silently converted to a consultancy.
+        return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
+      }
+      await prisma.organizationMember.upsert({
+        where: { orgId_userId: { orgId, userId: consultant.id } },
+        create: { orgId, userId: consultant.id, role: "ORG_CONSULTANT" },
+        update: { role: "ORG_CONSULTANT", leftAt: null },
+      });
+      return NextResponse.json({
+        ok: true,
+        consultant: { userId: consultant.id, email: consultant.email, username: consultant.username },
+      });
+    }
+
+    const membership = await prisma.organizationMember.findUnique({
+      where: { orgId_userId: { orgId, userId: consultant.id } },
+      select: { role: true },
+    });
+    if (!membership || membership.role !== "ORG_CONSULTANT") {
+      return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    }
+    await prisma.organizationMember.delete({
+      where: { orgId_userId: { orgId, userId: consultant.id } },
+    });
+    return NextResponse.json({ ok: true });
   }
 
   // set_credits

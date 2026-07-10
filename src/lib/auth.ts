@@ -59,9 +59,13 @@ export async function getUserRole(): Promise<UserRole | null> {
   return profile?.role ?? null;
 }
 
-// Role hierarchy for org members: ORG_ADMIN > ORG_MANAGER > ORG_MEMBER
+// Role hierarchy for org members: ORG_ADMIN > ORG_MANAGER > ORG_MEMBER.
+// ORG_CONSULTANT is an externally assigned advisor (trita admin assigns it);
+// it carries admin-level visibility but is excluded from last-admin
+// safeguards and cannot be granted through the org invite flows.
 const ORG_ROLE_RANK: Record<string, number> = {
   ORG_ADMIN: 3,
+  ORG_CONSULTANT: 3,
   ORG_MANAGER: 2,
   ORG_MEMBER: 1,
 };

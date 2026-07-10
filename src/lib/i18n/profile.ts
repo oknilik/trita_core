@@ -6,6 +6,7 @@ export const profileTranslations = {
     orgSectionSub: { hu: "Ehhez a szervezethez és csapatokhoz tartozol.", en: "The organization and teams you belong to." },
     orgSectionNone: { hu: "Jelenleg nem vagy szervezet tagja.", en: "You are not a member of an organization." },
     orgRoleAdmin: { hu: "Admin", en: "Admin" },
+    orgRoleConsultant: { hu: "Tanácsadó", en: "Consultant" },
     orgRoleManager: { hu: "Manager", en: "Manager" },
     orgRoleMember: { hu: "Tag", en: "Member" },
     orgTeamsLabel: { hu: "Csapataid", en: "Your teams" },

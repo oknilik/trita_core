@@ -70,6 +70,13 @@ export default async function AdminPage({
             candidateCredits: true,
           },
         },
+        members: {
+          where: { role: "ORG_CONSULTANT" },
+          select: {
+            userId: true,
+            user: { select: { email: true, username: true } },
+          },
+        },
       },
     });
 
@@ -100,6 +107,11 @@ export default async function AdminPage({
                 status: org.status,
                 createdAt: org.createdAt.toISOString(),
                 memberCount: org._count.members,
+                consultants: org.members.map((m) => ({
+                  userId: m.userId,
+                  email: m.user.email,
+                  username: m.user.username,
+                })),
                 subscription: org.subscription
                   ? {
                       status: org.subscription.status,

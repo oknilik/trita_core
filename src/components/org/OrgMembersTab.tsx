@@ -13,12 +13,14 @@ import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
 
 function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
   if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-bronze" };
+  if (role === "ORG_CONSULTANT") return { variant: "info", className: "bg-amber-50 text-amber-700" };
   if (role === "ORG_MANAGER") return { variant: "neutral", className: "bg-ink/10 text-ink" };
   return { variant: "neutral" };
 }
 
 function roleLabel(role: string, loc: Locale) {
   if (role === "ORG_ADMIN") return t("org.members.roleAdmin", loc);
+  if (role === "ORG_CONSULTANT") return t("org.members.roleConsultant", loc);
   if (role === "ORG_MANAGER") return t("org.members.roleManager", loc);
   return t("org.members.roleMember", loc);
 }
