@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
@@ -150,6 +150,54 @@ export function NavHeaderUI({
   const [resolvedUsername, setResolvedUsername] = useState<string | null>(user.username ?? null);
   const [resolvedEmail, setResolvedEmail] = useState<string | null>(user.email ?? null);
   const [identityReady, setIdentityReady] = useState<boolean>(() => Boolean(user.username || user.email));
+  const router = useRouter();
+
+  // Org-váltó: több tagságnál (pl. tanácsadó több kliens-szervezetben)
+  type OrgMembershipEntry = { orgId: string; role: string; orgName: string | null };
+  const [orgMemberships, setOrgMemberships] = useState<OrgMembershipEntry[] | null>(null);
+  const [activeOrgId, setActiveOrgId] = useState<string | null>(org?.id ?? null);
+  const [orgSwitchBusy, setOrgSwitchBusy] = useState(false);
+
+  useEffect(() => {
+    if (!org) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/org/context");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) {
+          setOrgMemberships(data.memberships ?? []);
+          setActiveOrgId(data.activeOrgId ?? org.id);
+        }
+      } catch {
+        // a váltó ilyenkor egyszerűen nem jelenik meg
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [org]);
+
+  async function switchOrg(targetOrgId: string, targetRole: string) {
+    if (orgSwitchBusy || targetOrgId === activeOrgId) return;
+    setOrgSwitchBusy(true);
+    try {
+      const res = await fetch("/api/org/context", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orgId: targetOrgId }),
+      });
+      if (!res.ok) return;
+      setActiveOrgId(targetOrgId);
+      setOpenDropdown(null);
+      // Manager+ szerep az org cockpitra megy, tag a journey elosztóra.
+      const destination =
+        targetRole === "ORG_MEMBER" ? "/dashboard" : `/org/${targetOrgId}`;
+      router.push(destination);
+      router.refresh();
+    } finally {
+      setOrgSwitchBusy(false);
+    }
+  }
 
   const homePath = homeHref.split("?")[0] ?? homeHref;
   const activeTab = searchParams.get("tab");
@@ -353,6 +401,48 @@ export function NavHeaderUI({
                 <span>Eredményeim</span>
               </Link>
             </>
+          ) : null}
+
+          {orgMemberships && orgMemberships.length > 1 ? (
+            <div className="mt-1 rounded-lg px-2.5 py-2.5">
+              <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+                Szervezeteim ({orgMemberships.length})
+              </p>
+              <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1" data-testid="nav-org-switcher">
+                {orgMemberships.map((m) => {
+                  const isActive = m.orgId === activeOrgId;
+                  return (
+                    <button
+                      key={m.orgId}
+                      type="button"
+                      disabled={orgSwitchBusy}
+                      onClick={() => switchOrg(m.orgId, m.role)}
+                      className={`flex min-h-[38px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[12px] transition-colors ${
+                        isActive
+                          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-text-primary)]"
+                          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
+                      } disabled:opacity-50`}
+                    >
+                      <span className="truncate">{m.orgName ?? m.orgId}</span>
+                      <span className="flex shrink-0 items-center gap-1.5">
+                        <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-[var(--color-text-muted)]">
+                          {m.role === "ORG_ADMIN"
+                            ? "Admin"
+                            : m.role === "ORG_CONSULTANT"
+                              ? "Tanácsadó"
+                              : m.role === "ORG_MANAGER"
+                                ? "Manager"
+                                : "Tag"}
+                        </span>
+                        {isActive && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-action-primary-bg)]" />
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           ) : null}
 
           {showLanguageMenuItem ? (
