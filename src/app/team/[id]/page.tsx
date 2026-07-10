@@ -36,6 +36,9 @@ import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamInt
 import { TeamRoleSection } from "@/components/team/TeamRoleSection";
 import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
+import { TeamReportEditor } from "@/components/team/TeamReportEditor";
+import { TeamReportView } from "@/components/team/TeamReportView";
+import { getLatestPublishedReport, listTeamReports } from "@/lib/team-report";
 import {
   buildTeamIntelligenceEvidence,
   buildTeamIntelligencePriorities,
@@ -53,6 +56,7 @@ const TEAM_TAB_KEYS = [
   "profile",
   "members",
   "teamRole",
+  "report",
 ] as const;
 
 type TeamTabKey = (typeof TEAM_TAB_KEYS)[number];
@@ -146,6 +150,11 @@ export default async function TeamDetailPage({
   const canViewRaw = canViewRawTeamResults(orgMemberRole);
   // Raw-result tabs are consultant-only; everyone else gets the progress view.
   if (!canViewRaw && (activeTab === "intelligence" || activeTab === "profile" || activeTab === "teamRole")) {
+    redirect(`/team/${teamId}?tab=overview`);
+  }
+
+  const publishedReport = await getLatestPublishedReport(teamId);
+  if (!canViewRaw && activeTab === "report" && !publishedReport) {
     redirect(`/team/${teamId}?tab=overview`);
   }
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
@@ -659,6 +668,39 @@ export default async function TeamDetailPage({
     );
   }
 
+  if (activeTab === "report") {
+    const consultantReports = canViewRaw ? await listTeamReports(teamId) : [];
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
+      >
+        <Link
+          href={`/team/${teamId}?tab=overview`}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {teamData.teamName}
+        </Link>
+
+        {canViewRaw ? (
+          <>
+            <TeamReportEditor teamId={teamId} reports={consultantReports} isHu={isHu} />
+            {consultantReports
+              .filter((r) => r.status === "PUBLISHED")
+              .map((r) => (
+                <TeamReportView key={r.id} report={r} isHu={isHu} />
+              ))}
+          </>
+        ) : publishedReport ? (
+          <TeamReportView report={publishedReport} isHu={isHu} />
+        ) : null}
+      </PlatformPageShell>
+    );
+  }
+
   const completedCount = teamData.completedCount;
   const inProgressCount = teamData.members.filter((m) => m.scores === null && m.joinedAt).length;
   const waitingCount = teamData.memberCount - completedCount - inProgressCount;
@@ -843,6 +885,14 @@ export default async function TeamDetailPage({
           ))}
           actions={(
             <>
+              {canViewRaw ? (
+                <Link
+                  href={`/team/${teamId}?tab=report`}
+                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
+                >
+                  {isHu ? "Riport" : "Report"}
+                </Link>
+              ) : null}
               {hasPattern && canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=profile`}
@@ -1065,6 +1115,31 @@ export default async function TeamDetailPage({
             />
           ) : (
             <DashboardPanel className="p-6">
+              {publishedReport ? (
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 8.5l3 3 7-7" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-ink">
+                      {isHu ? "A validált csapatkép elérhető" : "The validated team picture is available"}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                      {isHu
+                        ? "A tanácsadó véglegesítette a csapatképet — aggregált eredmények és értékelés."
+                        : "Your consultant has finalized the team picture — aggregate results and assessment."}
+                    </p>
+                    <Link
+                      href={`/team/${teamId}?tab=report`}
+                      className="mt-2 inline-flex text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
+                    >
+                      {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
+                    </Link>
+                  </div>
+                </div>
+              ) : (
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600">
                   <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1083,6 +1158,7 @@ export default async function TeamDetailPage({
                   </p>
                 </div>
               </div>
+              )}
             </DashboardPanel>
           )}
         </section>

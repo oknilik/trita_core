@@ -62,6 +62,7 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   CAMPAIGN_LAUNCHED:           { titleKey: "notifications.campaignLaunched.title",           bodyKey: "notifications.campaignLaunched.body",           category: "campaign",    defaultPriority: "normal" },
   CAMPAIGN_CLOSED:             { titleKey: "notifications.campaignClosed.title",             bodyKey: "notifications.campaignClosed.body",             category: "campaign",    defaultPriority: "normal" },
   TEAM_MEMBER_ADDED:           { titleKey: "notifications.teamMemberAdded.title",            bodyKey: "notifications.teamMemberAdded.body",            category: "org",         defaultPriority: "low"    },
+  TEAM_REPORT_PUBLISHED:       { titleKey: "notifications.teamReportPublished.title",        bodyKey: "notifications.teamReportPublished.body",        category: "org",         defaultPriority: "high"   },
   ORG_INVITE_ACCEPTED:         { titleKey: "notifications.orgInviteAccepted.title",          bodyKey: "notifications.orgInviteAccepted.body",          category: "org",         defaultPriority: "normal" },
   TRIAL_ENDING_SOON:           { titleKey: "notifications.trialEndingSoon.title",            bodyKey: "notifications.trialEndingSoon.body",            category: "billing",     defaultPriority: "high"   },
   TRIAL_EXPIRED:               { titleKey: "notifications.trialExpired.title",               bodyKey: "notifications.trialExpired.body",               category: "billing",     defaultPriority: "high"   },

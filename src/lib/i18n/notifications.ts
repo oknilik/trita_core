@@ -28,6 +28,10 @@ export const notificationTranslations = {
       title: { hu: "Kampány lezárva", en: "Campaign closed" },
       body: { hu: "A(z) \"{campaignName}\" kampány lezárult.", en: "The \"{campaignName}\" campaign has closed." },
     },
+    teamReportPublished: {
+      title: { hu: "A csapatkép elkészült", en: "Team picture ready" },
+      body: { hu: "A(z) {teamName} csapat validált csapatképe elérhető.", en: "The validated team picture for {teamName} is available." },
+    },
     teamMemberAdded: {
       title: { hu: "Új csapattag", en: "New team member" },
       body: { hu: "{name} csatlakozott a(z) {teamName} csapathoz.", en: "{name} joined the {teamName} team." },

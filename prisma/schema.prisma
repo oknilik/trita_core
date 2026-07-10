@@ -290,10 +290,38 @@ model Team {
   org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
   members          TeamMember[]
   pendingInvites   TeamPendingInvite[]
+  reports          TeamReport[]
   candidateInvites CandidateInvite[]
 
   @@index([ownerId])
   @@index([orgId])
+}
+
+model TeamReport {
+  id                String    @id @default(cuid())
+  teamId            String
+  orgId             String?
+  status            String    @default("DRAFT") // "DRAFT" | "PUBLISHED"
+  title             String?
+  // Aggregált metrikák pillanatképe — publikáláskor fagy be, hogy a
+  // validált kép ne csússzon el utólagos adatváltozástól.
+  aggregates        Json?
+  summary           String?
+  strengths         String?
+  risks             String?
+  recommendations   String?
+  interviewFindings String?
+  // Csak a tanácsadó látja, sosem publikálódik az org felé.
+  internalNotes     String?
+  createdById       String
+  publishedAt       DateTime?
+  publishedById     String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, status])
 }
 
 model TeamMember {
@@ -680,6 +708,7 @@ enum NotificationType {
   LOW_CANDIDATE_CREDITS
   MEMBER_COMPLETED_ASSESSMENT
   CAMPAIGN_MILESTONE
+  TEAM_REPORT_PUBLISHED
 }
 
 model Notification {

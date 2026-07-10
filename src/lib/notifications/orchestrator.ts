@@ -227,6 +227,31 @@ export async function handleCampaignClosed(params: {
   );
 }
 
+export async function handleTeamReportPublished(params: {
+  teamId: string;
+  teamName: string;
+  reportId: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.TEAM_REPORT_PUBLISHED;
+  const members = await prisma.teamMember.findMany({
+    where: { teamId: params.teamId },
+    select: { userId: true },
+  });
+  await persistNotificationBatch(
+    members.map(({ userId }) => ({
+      userId,
+      type: "TEAM_REPORT_PUBLISHED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { teamName: params.teamName },
+      link: `/team/${params.teamId}?tab=report`,
+      sourceType: "campaign" as const,
+      sourceId: params.reportId,
+      dedupeKey: `TEAM_REPORT_PUBLISHED:${params.reportId}:${userId}`,
+    })),
+  );
+}
+
 // ── Trial events ────────────────────────────────────────────────────────────
 
 /**

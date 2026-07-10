@@ -15,6 +15,7 @@ export {
   handleOrgInviteAccepted,
   handleCampaignLaunched,
   handleCampaignClosed,
+  handleTeamReportPublished,
   checkTrialNotifications,
 } from "./orchestrator";
 
