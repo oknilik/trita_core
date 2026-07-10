@@ -4,6 +4,7 @@ import type { SerializedTeamMember } from "@/lib/team-stats";
 import {
   MIN_INTELLIGENCE_ASSESSMENTS,
   buildTeamIntelligencePriorities,
+  resolveContributionPlacement,
   resolveTeamIntelligenceConfidence,
   resolveTeamIntelligenceQuality,
   resolveTeamTabRedirect,
@@ -102,4 +103,64 @@ test("priority engine adds leader-team mismatch trigger for large H/A delta", ()
   });
 
   assert.equal(priorities.some((priority) => priority.id === "leader_team_mismatch"), true);
+});
+
+// ─── resolveContributionPlacement ────────────────────────────────────────────
+
+test("contribution placement: high C/H + low E lands in top delivery band", () => {
+  const placement = resolveContributionPlacement({
+    H: 80, E: 20, X: 50, A: 50, C: 85, O: 50,
+  });
+
+  // delivery = 0.6*85 + 0.25*80 + 0.15*(100-20) = 83
+  assert.equal(placement.deliveryScore, 83);
+  assert.equal(placement.skillLevel, 3);
+  assert.equal(placement.source, "self_estimate");
+});
+
+test("contribution placement: high O/X + low E lands in top growth band", () => {
+  const placement = resolveContributionPlacement({
+    H: 50, E: 25, X: 75, A: 50, C: 50, O: 85,
+  });
+
+  // growth = 0.5*85 + 0.3*75 + 0.2*(100-25) = 80
+  assert.equal(placement.growthScore, 80);
+  assert.equal(placement.growthPotential, 3);
+});
+
+test("contribution placement: emotionality is inverted (high E lowers both axes)", () => {
+  const calm = resolveContributionPlacement({ H: 50, E: 10, X: 50, A: 50, C: 50, O: 50 });
+  const anxious = resolveContributionPlacement({ H: 50, E: 90, X: 50, A: 50, C: 50, O: 50 });
+
+  assert.ok(calm.deliveryScore > anxious.deliveryScore);
+  assert.ok(calm.growthScore > anxious.growthScore);
+});
+
+test("contribution placement: composite near band edge is low confidence", () => {
+  // delivery composite lands exactly on the 60 boundary → distance 0 → low
+  const placement = resolveContributionPlacement({
+    H: 60, E: 40, X: 80, A: 50, C: 60, O: 80,
+  });
+
+  assert.equal(placement.deliveryScore, 60);
+  assert.equal(placement.confidence, "low");
+});
+
+test("contribution placement: composites far from both edges are high confidence", () => {
+  const placement = resolveContributionPlacement({
+    H: 90, E: 10, X: 90, A: 50, C: 90, O: 90,
+  });
+
+  assert.ok(placement.deliveryScore >= 70);
+  assert.ok(placement.growthScore >= 70);
+  assert.equal(placement.confidence, "high");
+});
+
+test("contribution placement: middle profile lands in the middle band", () => {
+  const placement = resolveContributionPlacement({
+    H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
+  });
+
+  assert.equal(placement.skillLevel, 2);
+  assert.equal(placement.growthPotential, 2);
 });

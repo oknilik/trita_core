@@ -94,6 +94,118 @@ export function resolveTeamIntelligenceQuality(
   return "sufficient";
 }
 
+// ─── Contribution placement (team map) ──────────────────────────────────────
+//
+// Replaces the earlier single-dimension threshold heuristic (C → skill,
+// (O+X)/2 → growth) with weighted composites over the HEXACO profile.
+// Weights are a documented starting point, not a validated calibration:
+// - delivery reliability: Conscientiousness dominates (planning, follow-
+//   through), Honesty-Humility adds dependability, low Emotionality adds
+//   stability under pressure.
+// - growth/adaptability: Openness dominates (learning orientation),
+//   eXtraversion adds approach energy, low Emotionality adds resilience.
+// Confidence reflects distance from the banding thresholds: placements
+// near a band edge are explicitly low-confidence.
+
+export interface HexacoProfile {
+  H: number;
+  E: number;
+  X: number;
+  A: number;
+  C: number;
+  O: number;
+}
+
+export type PlacementLevel = 1 | 2 | 3;
+export type PlacementConfidence = "low" | "medium" | "high";
+
+export interface ContributionPlacement {
+  /** 0-100 weighted composite: how reliably this person ships/delivers */
+  deliveryScore: number;
+  /** 0-100 weighted composite: learning/adaptability orientation */
+  growthScore: number;
+  skillLevel: PlacementLevel;
+  growthPotential: PlacementLevel;
+  confidence: PlacementConfidence;
+  source: "self_estimate";
+}
+
+const DELIVERY_WEIGHTS: Partial<Record<keyof HexacoProfile, number>> = {
+  C: 0.6,
+  H: 0.25,
+  E: 0.15, // inverted: stability = 100 - E
+};
+
+const GROWTH_WEIGHTS: Partial<Record<keyof HexacoProfile, number>> = {
+  O: 0.5,
+  X: 0.3,
+  E: 0.2, // inverted: resilience = 100 - E
+};
+
+const INVERTED_DIMS: ReadonlySet<keyof HexacoProfile> = new Set(["E"]);
+
+const BAND_LOW = 40;
+const BAND_HIGH = 60;
+// Composite within this distance of a band edge → placement is uncertain
+const LOW_CONFIDENCE_MARGIN = 5;
+const MEDIUM_CONFIDENCE_MARGIN = 10;
+
+function weightedComposite(
+  hexaco: HexacoProfile,
+  weights: Partial<Record<keyof HexacoProfile, number>>,
+): number {
+  let sum = 0;
+  let totalWeight = 0;
+  for (const [dim, weight] of Object.entries(weights) as Array<
+    [keyof HexacoProfile, number]
+  >) {
+    const raw = hexaco[dim];
+    if (typeof raw !== "number" || Number.isNaN(raw)) continue;
+    const value = INVERTED_DIMS.has(dim) ? 100 - raw : raw;
+    sum += value * weight;
+    totalWeight += weight;
+  }
+  if (totalWeight <= 0) return 50;
+  return Math.round(sum / totalWeight);
+}
+
+function toBand(score: number): PlacementLevel {
+  if (score >= BAND_HIGH) return 3;
+  if (score >= BAND_LOW) return 2;
+  return 1;
+}
+
+function boundaryDistance(score: number): number {
+  return Math.min(Math.abs(score - BAND_LOW), Math.abs(score - BAND_HIGH));
+}
+
+export function resolveContributionPlacement(
+  hexaco: HexacoProfile,
+): ContributionPlacement {
+  const deliveryScore = weightedComposite(hexaco, DELIVERY_WEIGHTS);
+  const growthScore = weightedComposite(hexaco, GROWTH_WEIGHTS);
+
+  const minDistance = Math.min(
+    boundaryDistance(deliveryScore),
+    boundaryDistance(growthScore),
+  );
+  const confidence: PlacementConfidence =
+    minDistance < LOW_CONFIDENCE_MARGIN
+      ? "low"
+      : minDistance < MEDIUM_CONFIDENCE_MARGIN
+        ? "medium"
+        : "high";
+
+  return {
+    deliveryScore,
+    growthScore,
+    skillLevel: toBand(deliveryScore),
+    growthPotential: toBand(growthScore),
+    confidence,
+    source: "self_estimate",
+  };
+}
+
 export function resolveTeamIntelligenceConfidence(
   quality: TeamIntelligenceEvidenceQuality,
 ): TeamIntelligenceEvidenceConfidence {

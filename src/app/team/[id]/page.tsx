@@ -40,6 +40,7 @@ import {
   buildTeamIntelligenceEvidence,
   buildTeamIntelligencePriorities,
   MIN_INTELLIGENCE_ASSESSMENTS,
+  resolveContributionPlacement,
   resolveTeamIntelligenceQuality,
   resolveTeamTabRedirect,
 } from "@/lib/team-intelligence";
@@ -217,17 +218,22 @@ export default async function TeamDetailPage({
         }
       : { H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 };
 
+    const placement = resolveContributionPlacement(hexaco);
+
     return {
       id: m.userId,
       name: m.displayName,
       initials: getAvatarMonogram(m.displayName, { length: 2 }),
       hexaco,
       hasAssessmentData: !!m.scores,
-      skillLevel: 2,
-      growthPotential: 2,
+      skillLevel: placement.skillLevel,
+      growthPotential: placement.growthPotential,
+      deliveryScore: placement.deliveryScore,
+      growthScore: placement.growthScore,
+      placementConfidence: placement.confidence,
       zone: !m.scores
         ? t("teamComp.noDataZone", locale)
-        : getZoneName(2, 2, isHu),
+        : getZoneName(placement.skillLevel, placement.growthPotential, isHu),
       color: getAvatarGradient(m.displayName)[0],
       textColor: "var(--color-neutral-white)",
     };

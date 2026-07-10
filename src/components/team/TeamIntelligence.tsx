@@ -21,6 +21,10 @@ export interface IntelligenceMember {
   hasAssessmentData: boolean;
   skillLevel: 1 | 2 | 3;
   growthPotential: 1 | 2 | 3;
+  /** 0-100 weighted composites from resolveContributionPlacement */
+  deliveryScore: number;
+  growthScore: number;
+  placementConfidence: "low" | "medium" | "high";
   zone: string;
   color: string;
   textColor: string;

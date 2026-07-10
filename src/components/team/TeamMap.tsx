@@ -51,18 +51,20 @@ const DIM_NAMES: Record<string, string> = {
 // Keep DIM_NAMES available (used if needed in future)
 void DIM_NAMES;
 
-type Hexaco = IntelligenceMember["hexaco"];
+// Placement (skillLevel/growthPotential/confidence) is computed server-side
+// by resolveContributionPlacement in @/lib/team-intelligence — weighted
+// HEXACO composites with band-edge confidence, not raw thresholds.
 
-function estimateFromHexaco(hexaco: Hexaco): { skillLevel: 1 | 2 | 3; growthPotential: 1 | 2 | 3 } {
-  const skillLevel: 1 | 2 | 3 = hexaco.C >= 60 ? 3 : hexaco.C >= 40 ? 2 : 1;
-  const growthScore = (hexaco.O + hexaco.X) / 2;
-  const growthPotential: 1 | 2 | 3 = growthScore >= 60 ? 3 : growthScore >= 40 ? 2 : 1;
-  return { skillLevel, growthPotential };
-}
+const CONFIDENCE_LABELS: Record<
+  IntelligenceMember["placementConfidence"],
+  { hu: string; en: string; className: string }
+> = {
+  high: { hu: "magas megbízhatóság", en: "high confidence", className: "bg-emerald-50 text-emerald-700" },
+  medium: { hu: "közepes megbízhatóság", en: "medium confidence", className: "bg-amber-50 text-amber-700" },
+  low: { hu: "bizonytalan besorolás", en: "low confidence", className: "bg-rose-50 text-rose-700" },
+};
 
 interface PlacedMember extends IntelligenceMember {
-  skillLevel: 1 | 2 | 3;
-  growthPotential: 1 | 2 | 3;
   isEstimated: boolean;
 }
 
@@ -84,7 +86,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
         </div>
         <div>
           <p className="text-[14px] font-bold text-ink">{member.name}</p>
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             <span className="inline-block rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
               {member.zone}
             </span>
@@ -93,6 +95,13 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
                 {t("teamComp.estimatedTag", loc)}
               </span>
             )}
+            <span
+              className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${CONFIDENCE_LABELS[member.placementConfidence].className}`}
+            >
+              {loc === "hu"
+                ? CONFIDENCE_LABELS[member.placementConfidence].hu
+                : CONFIDENCE_LABELS[member.placementConfidence].en}
+            </span>
           </div>
         </div>
       </div>
@@ -127,10 +136,16 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
         </div>
       </div>
 
-      {/* Skill & growth */}
+      {/* Delivery & growth composites */}
       <div className="flex gap-3 border-t border-sand pt-3">
         <div className="flex-1 text-center">
-          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">skill</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">
+            {loc === "hu" ? "szállítás" : "delivery"}
+          </p>
+          <p className="mt-1 font-mono text-[13px] font-bold text-ink">
+            {member.deliveryScore}
+            <span className="text-[9px] font-normal text-muted">/100</span>
+          </p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
               <div
@@ -144,7 +159,13 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
           </div>
         </div>
         <div className="flex-1 text-center">
-          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">potenciál</p>
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">
+            {loc === "hu" ? "potenciál" : "growth"}
+          </p>
+          <p className="mt-1 font-mono text-[13px] font-bold text-ink">
+            {member.growthScore}
+            <span className="text-[9px] font-normal text-muted">/100</span>
+          </p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
               <div
@@ -158,6 +179,13 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
           </div>
         </div>
       </div>
+
+      {/* Model explainer */}
+      <p className="text-[10px] leading-relaxed text-muted">
+        {loc === "hu"
+          ? "Súlyozott becslés a saját HEXACO-profilból (szállítás: C·H·érzelmi stabilitás; potenciál: O·X·érzelmi stabilitás). Nem mért teljesítményadat."
+          : "Weighted estimate from the self HEXACO profile (delivery: C·H·emotional stability; growth: O·X·emotional stability). Not measured performance data."}
+      </p>
     </div>
   );
 }
@@ -175,9 +203,8 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
   const membersWithData = members.filter((m) => m.hasAssessmentData);
   const membersWithoutData = members.filter((m) => !m.hasAssessmentData);
   const placedMembers: PlacedMember[] = membersWithData.map((m) => {
-    const { skillLevel, growthPotential } = estimateFromHexaco(m.hexaco);
-    const zone = ZONE_LABELS[`${growthPotential}_${skillLevel}`] ?? m.zone;
-    return { ...m, skillLevel, growthPotential, zone, isEstimated: true };
+    const zone = ZONE_LABELS[`${m.growthPotential}_${m.skillLevel}`] ?? m.zone;
+    return { ...m, zone, isEstimated: true };
   });
 
   const hasEstimated = placedMembers.some((m) => m.isEstimated);
@@ -244,7 +271,11 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                                   selected === m.id
                                     ? "ring-2 ring-sage ring-offset-1"
                                     : "",
-                                  m.isEstimated ? "opacity-50" : "",
+                                  m.placementConfidence === "low"
+                                    ? "opacity-50"
+                                    : m.placementConfidence === "medium"
+                                      ? "opacity-75"
+                                      : "",
                                 ].join(" ")}
                                 style={{ background: m.color, color: m.textColor }}
                               >
