@@ -21,6 +21,9 @@ import { getMetadataBase } from "@/lib/seo";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { getServerAuth } from "@/lib/auth-server";
+import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
+import { HelpWidget } from "@/components/help/HelpWidget";
+import type { HelpAudience } from "@/lib/help/topics";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -170,6 +173,15 @@ export default async function RootLayout({
 
   const bodyClasses = `${fraunces.variable} ${dmSans.variable} antialiased`;
 
+  const NAV_ROLE_TO_HELP_AUDIENCE = {
+    org_admin: "admin",
+    org_manager: "manager",
+    self: "member",
+  } as const satisfies Record<string, HelpAudience>;
+  const helpAudience: HelpAudience = userId
+    ? NAV_ROLE_TO_HELP_AUDIENCE[resolveWorkspaceNavRole(navData?.role ?? "SELF")]
+    : "public";
+
   return (
     <html lang={DEFAULT_LOCALE}>
       <body className={bodyClasses}>
@@ -204,6 +216,9 @@ export default async function RootLayout({
                   <Footer />
                 </Suspense>
               )}
+              <Suspense>
+                <HelpWidget audience={helpAudience} />
+              </Suspense>
             </ToastProvider>
           </LocaleProvider>
         </ClerkProvider>
