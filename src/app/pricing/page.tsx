@@ -44,6 +44,16 @@ export default async function PricingPage() {
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
       <PricingHero locale={locale} />
       <PathSelector locale={locale} isLoggedIn={isLoggedIn} />
+
+      {/* Consulting note — activation happens off-platform */}
+      <section className="px-6 lg:px-16">
+        <div className="mx-auto max-w-5xl rounded-xl border border-[var(--color-border-soft)] bg-white px-5 py-4">
+          <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
+            {t("pricing.consultingNote", locale)}
+          </p>
+        </div>
+      </section>
+
       <PricingFAQ locale={locale} />
 
       {/* Bottom CTA */}

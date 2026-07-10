@@ -30,7 +30,7 @@ export function SelfTierPanel({
               description={plan.description}
               features={plan.features}
               ctaLabel={isFree ? t("pricing.selfCtaFree", locale) : t("pricing.selfCtaPaid", locale)}
-              ctaHref={isLoggedIn ? "/profile/results" : plan.ctaHref}
+              ctaHref={isFree ? (isLoggedIn ? "/profile/results" : plan.ctaHref) : "/contact"}
               ctaVariant={isFeatured ? "primary" : "outline"}
               highlighted={isFeatured}
             />

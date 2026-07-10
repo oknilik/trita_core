@@ -280,32 +280,46 @@ export const landingTranslations = {
     heroEyebrow: { hu: "Árazás", en: "Pricing" },
     heroHeading: { hu: "Válaszd azt a szintet, amely most valóban ", en: "Choose the level that's actually useful " },
     heroHeadingEm: { hu: "hasznos.", en: "right now." },
-    heroSub: { hu: "Egyszeri vásárlások és előfizetések — a saját ritmusodban, elköteleződés nélkül.", en: "One-time purchases and subscriptions — at your own pace, no long-term commitment." },
+    heroSub: {
+      hu: "Platform + tanácsadás egyben — az árak tájékoztatók, minden csomag személyes egyeztetéssel indul.",
+      en: "Platform + consulting together — prices are indicative, every plan starts with a personal conversation.",
+    },
 
     // SelfTierPanel
     selfIntro: { hu: "Ismerd meg magad mélyebben — egyszeri vásárlások, a saját ritmusodban.", en: "Get to know yourself deeper — one-time purchases, at your own pace." },
     selfEyebrowFree: { hu: "self · ingyenes", en: "self · free" },
     selfEyebrowPaid: { hu: "self · egyszeri", en: "self · one-time" },
     selfCtaFree: { hu: "Kezdem ingyen", en: "Start free" },
-    selfCtaPaid: { hu: "Megveszem", en: "Buy now" },
+    selfCtaPaid: { hu: "Beszéljünk", en: "Let's talk" },
+    contactCta: { hu: "Beszéljünk", en: "Let's talk" },
+    consultingNote: {
+      hu: "Minden fizetős csomag tanácsadói bevezetéssel indul — az aktiválás és a számlázás személyes egyeztetés után történik.",
+      en: "Every paid plan starts with a consulting-led onboarding — activation and invoicing happen after a personal conversation.",
+    },
 
     // TeamTierPanel
     teamIntro: { hu: "Egyszeri csapatdiagnózis vagy folyamatos platform — válaszd azt, ami most illik.", en: "One-time team diagnosis or continuous platform — pick what fits now." },
-    teamTrialNote: { hu: "14 napos próba kártyaadat nélkül. Bármikor lemondható.", en: "14-day trial, no card required. Cancel anytime." },
+    teamTrialNote: {
+      hu: "Minden csapat-csomag tanácsadói bevezetéssel indul — vedd fel velünk a kapcsolatot.",
+      en: "Every team plan starts with consulting-led onboarding — get in touch with us.",
+    },
     billingLegend: { hu: "Számlázás", en: "Billing" },
     billingAnnual: { hu: "Éves", en: "Annual" },
     billingMonthly: { hu: "Havi", en: "Monthly" },
     billingHintAnnual: { hu: "~17% kedvezmény", en: "~17% savings" },
     billingHintMonthly: { hu: "bármikor lemondható", en: "cancel anytime" },
     billingSavingsNote: { hu: "~17% kedvezmény éves előfizetésnél", en: "~17% savings with annual billing" },
-    teamCta: { hu: "Kipróbálom 14 napig", en: "Try free for 14 days" },
+    teamCta: { hu: "Beszéljünk", en: "Let's talk" },
     teamEyebrow: { hu: "csapat · előfizetés", en: "team · subscription" },
     teamEyebrowSnapshot: { hu: "csapat · egyszeri", en: "team · one-time" },
 
     // OrgTierPanel
     orgIntro: { hu: "Előfizetéses hozzáférés szervezeti szinten — több csapat, szerepkörök, candidate flow.", en: "Subscription access at the organizational level — multiple teams, roles, candidate flow." },
-    orgTrialNote: { hu: "14 napos próba kártyaadat nélkül. Bármikor lemondható.", en: "14-day trial, no card required. Cancel anytime." },
-    orgCtaOrg: { hu: "Elindítom", en: "Get started" },
+    orgTrialNote: {
+      hu: "Minden szervezeti csomag tanácsadói bevezetéssel indul — vedd fel velünk a kapcsolatot.",
+      en: "Every organization plan starts with consulting-led onboarding — get in touch with us.",
+    },
+    orgCtaOrg: { hu: "Beszéljünk", en: "Let's talk" },
     orgCtaScale: { hu: "Kapcsolatfelvétel", en: "Get in touch" },
     orgEyebrowSub: { hu: "szervezet · előfizetés", en: "organization · subscription" },
     orgEyebrowCustom: { hu: "szervezet · egyedi", en: "organization · custom" },

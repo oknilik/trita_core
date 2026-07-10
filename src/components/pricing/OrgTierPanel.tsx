@@ -36,13 +36,7 @@ export function OrgTierPanel({
             description={plan.description}
             features={plan.features}
             ctaLabel={plan.isCustom ? t("pricing.orgCtaScale", locale) : t("pricing.orgCtaOrg", locale)}
-            ctaHref={
-              plan.isCustom
-                ? plan.ctaHref
-                : isLoggedIn
-                ? `/billing/checkout?plan=org_${billing}`
-                : plan.ctaHref
-            }
+            ctaHref="/contact"
             ctaVariant={plan.id === "org" ? "primary" : "outline"}
             highlighted={plan.id === "org"}
             billing={plan.isCustom ? undefined : billing}

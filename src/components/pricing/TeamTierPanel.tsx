@@ -36,12 +36,8 @@ export function TeamTierPanel({
               priceSub={isSnapshot ? plan.seats : plan.perMonth}
               description={plan.description}
               features={plan.features}
-              ctaLabel={plan.ctaLabel ?? t("pricing.teamCta", locale)}
-              ctaHref={
-                isSnapshot
-                  ? (isLoggedIn ? "/billing/checkout?tier=team_snapshot" : plan.ctaHref)
-                  : (isLoggedIn ? `/billing/checkout?plan=team_${billing}` : plan.ctaHref)
-              }
+              ctaLabel={t("pricing.contactCta", locale)}
+              ctaHref="/contact"
               ctaVariant={plan.id === "team" ? "primary" : "outline"}
               highlighted={plan.id === "team"}
               billing={isSnapshot ? undefined : billing}
