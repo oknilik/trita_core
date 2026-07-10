@@ -52,7 +52,7 @@ export default async function OrgSettingsPage({
         user: { select: { id: true, email: true, username: true } },
       },
     }),
-    prisma.organizationMember.count({ where: { orgId } }),
+    prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
     prisma.organizationPendingInvite.count({ where: { orgId } }),
   ]);
 

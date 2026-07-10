@@ -39,7 +39,7 @@ export async function GET() {
       name: true,
       status: true,
       createdAt: true,
-      _count: { select: { members: true } },
+      _count: { select: { members: { where: { role: { not: "ORG_CONSULTANT" } } } } },
       subscription: {
         select: {
           status: true,

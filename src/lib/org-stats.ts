@@ -81,7 +81,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
 
   // Fetch org member IDs for HEXACO averages
   const [memberRows, pendingRows, teamRows] = await Promise.all([
-    prisma.organizationMember.count({ where: { orgId } }),
+    prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
     prisma.organizationPendingInvite.count({ where: { orgId } }),
     prisma.team.count({ where: { orgId } }),
   ]);
@@ -147,7 +147,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
 
   // HEXACO averages: fetch all org member userIds and their assessments
   const orgMembers = await prisma.organizationMember.findMany({
-    where: { orgId },
+    where: { orgId, role: { not: "ORG_CONSULTANT" } },
     select: { userId: true },
   });
   const orgMemberIds = orgMembers.map((m) => m.userId);
