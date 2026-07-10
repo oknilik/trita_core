@@ -1,6 +1,6 @@
 import type { WorkspaceNavRole } from "@/lib/navigation/roles";
 
-export type WorkspaceNavSectionId = "home" | "teams" | "hiring" | "org" | "analytics";
+export type WorkspaceNavSectionId = "home" | "results" | "teams" | "hiring" | "org" | "analytics";
 export type OrgAdminFeatureId = "settings" | "billing" | "permissions";
 export type AnalyticsFeatureId = "org_overview" | "team_patterns" | "reports" | "deep_analysis";
 export type DashboardBlockId = "onboarding_checklist" | "analytics_teaser";
@@ -16,6 +16,7 @@ interface WorkspaceRoleVisibility {
 const ADMIN_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
+    results: false,
     teams: true,
     hiring: true,
     org: true,
@@ -41,6 +42,7 @@ const ADMIN_VISIBILITY: WorkspaceRoleVisibility = {
 const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
+    results: false,
     teams: true,
     hiring: true,
     org: false,
@@ -66,7 +68,8 @@ const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
 const SELF_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
-    teams: false,
+    results: true,
+    teams: true,
     hiring: false,
     org: false,
     analytics: false,

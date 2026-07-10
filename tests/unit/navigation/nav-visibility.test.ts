@@ -96,3 +96,33 @@ test("dashboard block visibility is role-aware", () => {
   assert.equal(canViewDashboardBlock("org_admin", "analytics_teaser"), true);
   assert.equal(canViewDashboardBlock("org_manager", "analytics_teaser"), true);
 });
+
+test("member topnav shows results and own teams, no manager sections", () => {
+  const navItems = buildWorkspaceNavigation("self", baseContext);
+  const ids = navItems.map((item) => item.id);
+
+  assert.deepEqual(ids, ["home", "results", "teams"]);
+});
+
+test("member team dropdown omits manager-only observer rounds entry", () => {
+  const navItems = buildWorkspaceNavigation("self", multiTeamContext);
+  const teamsItem = navItems.find((item) => item.id === "teams");
+  const childIds = (teamsItem?.items ?? []).map((item) => item.id);
+
+  assert.equal(childIds.includes("team-observer-rounds"), false);
+});
+
+test("member without teams gets no teams dropdown", () => {
+  const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
+  const ids = navItems.map((item) => item.id);
+
+  assert.deepEqual(ids, ["home", "results"]);
+});
+
+test("admin org dropdown no longer contains the dead billing entry", () => {
+  const navItems = buildWorkspaceNavigation("org_admin", baseContext);
+  const orgItem = navItems.find((item) => item.id === "org");
+  const childIds = (orgItem?.items ?? []).map((item) => item.id);
+
+  assert.equal(childIds.includes("org-billing"), false);
+});

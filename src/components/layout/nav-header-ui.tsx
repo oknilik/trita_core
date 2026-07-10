@@ -26,6 +26,17 @@ function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+function ResultsIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 13.5h12" />
+      <path d="M4 10V6.5" />
+      <path d="M8 10V3.5" />
+      <path d="M12 10V8" />
+    </svg>
+  );
+}
+
 function TeamIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -231,6 +242,8 @@ export function NavHeaderUI({
     switch (itemId) {
       case "home":
         return <GridIcon className={className} />;
+      case "results":
+        return <ResultsIcon className={className} />;
       case "teams":
         return <TeamIcon className={className} />;
       case "hiring":

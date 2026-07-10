@@ -35,7 +35,7 @@ export interface WorkspaceNavDestination {
 }
 
 export interface WorkspaceNavItem {
-  id: "home" | "teams" | "hiring" | "org" | "analytics";
+  id: "home" | "results" | "teams" | "hiring" | "org" | "analytics";
   label: string;
   kind: "link" | "dropdown";
   primaryHref: string;
@@ -69,6 +69,16 @@ function buildHomeItem(homeHref: string): WorkspaceNavItem {
     kind: "link",
     primaryHref: homeHref,
     matchPrefixes,
+  };
+}
+
+function buildResultsItem(): WorkspaceNavItem {
+  return {
+    id: "results",
+    label: "Eredményeim",
+    kind: "link",
+    primaryHref: "/profile/results",
+    matchPrefixes: ["/profile/results"],
   };
 }
 
@@ -118,7 +128,7 @@ function buildTeamDestinations(role: WorkspaceNavRole, ctx: WorkspaceNavContext)
       description: "Csapatkép és intelligencia riport",
       href: `/team/${team.id}?tab=overview`,
     })),
-    ...(ctx.org
+    ...(ctx.org && role === "org_manager"
       ? [{
           id: "team-observer-rounds",
           label: "Observer körök",
@@ -206,15 +216,6 @@ function buildOrgDestinations(ctx: WorkspaceNavContext, role: WorkspaceNavRole):
       label: "Jogosultságok",
       description: "Szerepkörök és hozzáférések kezelése",
       href: `/org/${ctx.org.id}?tab=members`,
-    });
-  }
-
-  if (canViewOrgAdminFeature(role, "billing")) {
-    items.push({
-      id: "org-billing",
-      label: "Számlázás",
-      description: "Előfizetés és számlázás kezelése",
-      href: `/org/${ctx.org.id}/settings`,
     });
   }
 
@@ -364,6 +365,7 @@ export function buildWorkspaceNavigation(
 
   const items: Array<WorkspaceNavItem | null> = [home];
 
+  if (canViewNavSection(role, "results")) items.push(buildResultsItem());
   if (canViewNavSection(role, "teams") && teamNav) items.push(teamNav);
   if (canViewNavSection(role, "hiring") && hiringNav) items.push(hiringNav);
   if (canViewNavSection(role, "org") && orgNav) items.push(orgNav);
