@@ -2,11 +2,6 @@ export const profileTranslations = {
   profile: {
     title: { hu: "Profilom", en: "My profile" },
     subtitle: { hu: "Itt szerkesztheted az adataidat, és törölheted a fiókodat.", en: "Here you can edit your basic data and delete your account." },
-    researchTag: { hu: "Kutatási fázis", en: "Research phase" },
-    researchBody: {
-      hu: "Az adataid anonimizált formában kerülnek elemzésre a módszertan fejlesztéséhez.",
-      en: "Your data is analyzed in anonymized form to improve the methodology.",
-    },
     participationTitle: { hu: "Részvételi állapot", en: "Participation status" },
     participationBody: {
       hu: "Kövesd, hol tartasz a kitöltés és visszajelzések folyamatában.",
@@ -68,8 +63,8 @@ export const profileTranslations = {
     modalCancel: { hu: "Mégse", en: "Cancel" },
     demographicsTitle: { hu: "Személyes adatok", en: "Personal details" },
     demographicsBody: {
-      hu: "Ezeket az adatokat a kutatáshoz használjuk. Bármikor módosíthatod.",
-      en: "These details are used for research purposes. You can update them any time.",
+      hu: "Ezek az adatok a pontosabb eredményekhez és összehasonlításokhoz kellenek. Bármikor módosíthatod.",
+      en: "These details make your results and comparisons more accurate. You can update them any time.",
     },
     demographicsSaveSuccess: {
       hu: "Személyes adatok frissítve.",

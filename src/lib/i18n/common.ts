@@ -1,12 +1,12 @@
 export const commonTranslations = {
   meta: {
     title: {
-      hu: "Trita - Személyiségteszt kutatás",
-      en: "Trita - Personality Assessment Research",
+      hu: "Trita - Személyiség- és csapatintelligencia",
+      en: "Trita - Personality and Team Intelligence",
     },
     description: {
-      hu: "Töltsd ki a személyiségtesztet, majd vesd össze az önértékelésed a környezeted visszajelzésével. Kutatási fázisban.",
-      en: "Take a personality test and compare your self-assessment with feedback from people who know you. Currently in the research phase.",
+      hu: "Töltsd ki a személyiségtesztet, vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
+      en: "Take a personality assessment, compare your self-image with feedback from people who know you, and see how your team really works.",
     },
     assessmentTitle: {
       hu: "Teszt kitöltése | Trita",
@@ -23,10 +23,6 @@ export const commonTranslations = {
     onboardingTitle: {
       hu: "Személyes adatok | Trita",
       en: "Personal details | Trita",
-    },
-    researchTitle: {
-      hu: "Kutatás módszertana | Trita",
-      en: "Research methodology | Trita",
     },
     adminTitle: {
       hu: "Admin | Trita",
@@ -185,11 +181,9 @@ export const commonTranslations = {
     profileFallback: { hu: "Profil", en: "Profile" },
     profile: { hu: "Profilom", en: "My profile" },
     greetingPrefix: { hu: "Szia, ", en: "Hi, " },
-    participant: { hu: "Kutatási résztvevő", en: "Research participant" },
     coach: { hu: "HR & Csapat", en: "HR & Team" },
     coachDashboard: { hu: "HR & Csapat felület", en: "HR & Team dashboard" },
     teams: { hu: "Csapataim", en: "My Teams" },
-    research: { hu: "Kutatási státusz", en: "Research status" },
     settings: { hu: "Beállítások", en: "Settings" },
     closePanel: { hu: "Panel bezárása", en: "Close panel" },
     becomeCoach: { hu: "Coach-ként csatlakozz", en: "Become a coach" },

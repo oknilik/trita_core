@@ -79,8 +79,8 @@ export const authTranslations = {
       en: "Personal details",
     },
     subtitle: {
-      hu: "Ezek az adatok kizárólag kutatási célra szolgálnak és bizalmasan kezeljük őket.",
-      en: "This data is used exclusively for research purposes and handled confidentially.",
+      hu: "Ezek az adatok a pontosabb eredményekhez kellenek, és bizalmasan kezeljük őket.",
+      en: "This data makes your results more accurate and is handled confidentially.",
     },
     blockBasicsTitle: {
       hu: "Alapadatok",
@@ -376,8 +376,8 @@ export const authTranslations = {
       en: "Introduction",
     },
     introBody: {
-      hu: "A Trita egy egyetemi kutatási projekt, amely személyiségtesztek (HEXACO, Big Five) összehasonlítását végzi önértékelés és ismerősi visszajelzés alapján. Ez a tájékoztató ismerteti, hogyan gyűjtjük, kezeljük és védjük az adataidat.",
-      en: "Trita is a university research project that compares personality assessments (HEXACO, Big Five) using self-ratings and feedback from others. This policy describes how we collect, process, and protect your data.",
+      hu: "A Trita személyiség- és csapatintelligencia platform, amely önértékelésre és ismerősi visszajelzésre épülő, validált személyiségfelméréseket kínál. Ez a tájékoztató ismerteti, hogyan gyűjtjük, kezeljük és védjük az adataidat.",
+      en: "Trita is a personality and team intelligence platform offering validated personality assessments based on self-ratings and feedback from others. This policy describes how we collect, process, and protect your data.",
     },
     dataCollectedTitle: {
       hu: "Milyen adatokat gyűjtünk?",
@@ -392,8 +392,8 @@ export const authTranslations = {
       en: "Demographic data: username, birth year, gender, education level, country, current status (work/study), work arrangement, company size, study level, unemployment duration.",
     },
     dataAssessment: {
-      hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések, valamint az eredmények utáni kutatási kérdőív (korábbi teszttapasztalat, munkakörülmények, motiváció stb.).",
-      en: "Assessment data: personality test answers, calculated scores, ratings from others, and the post-results research survey (prior test experience, work context, motivation, etc.).",
+      hu: "Tesztadatok: személyiségteszt válaszok, számított pontszámok, ismerősi értékelések, valamint az eredmények utáni visszajelző kérdőív (korábbi teszttapasztalat, munkakörülmények, motiváció stb.).",
+      en: "Assessment data: personality test answers, calculated scores, ratings from others, and the post-results feedback survey (prior test experience, work context, motivation, etc.).",
     },
     dataTechnical: {
       hu: "Technikai adatok: nyelvi beállítás (cookie), munkamenet-azonosítók, anonimizált látogatottsági statisztikák (Vercel Analytics, süti nélküli).",
@@ -404,8 +404,8 @@ export const authTranslations = {
       en: "How do we use your data?",
     },
     purposeResearch: {
-      hu: "Tudományos kutatás: a személyiségteszt-modellek összehasonlítása egyetemi szakdolgozat keretében. A kutatási eredmények kizárólag anonimizált, aggregált formában kerülnek publikálásra.",
-      en: "Scientific research: comparing personality assessment models as part of a university thesis. Research results are published exclusively in anonymized, aggregated form.",
+      hu: "A szolgáltatás fejlesztése: a módszertan pontosítása és a felmérések minőségének javítása kizárólag anonimizált, aggregált adatok alapján.",
+      en: "Service improvement: refining the methodology and the quality of the assessments, based exclusively on anonymized, aggregated data.",
     },
     purposeService: {
       hu: "Szolgáltatás működtetése: a teszt kitöltése, eredmények megjelenítése, ismerősi meghívók kezelése.",
@@ -444,8 +444,8 @@ export const authTranslations = {
       en: "Clerk (clerk.com) – authentication and session management. Operates under EU/US data protection frameworks (EU–U.S. Data Privacy Framework).",
     },
     processorsNeon: {
-      hu: "Neon (neon.tech) – PostgreSQL adatbázis-tárhely, amelyen a felhasználói és kutatási adatok tárolódnak. Adatközpontok az EU-ban.",
-      en: "Neon (neon.tech) – PostgreSQL database hosting where user and research data is stored. Data centres within the EU.",
+      hu: "Neon (neon.tech) – PostgreSQL adatbázis-tárhely, amelyen a felhasználói adatok tárolódnak. Adatközpontok az EU-ban.",
+      en: "Neon (neon.tech) – PostgreSQL database hosting where user data is stored. Data centres within the EU.",
     },
     processorsVercel: {
       hu: "Vercel (vercel.com) – alkalmazás-tárhely és anonimizált forgalomstatisztikák (Vercel Analytics). A Vercel DPA (adatfeldolgozói megállapodás) elfogadva.",
@@ -468,8 +468,8 @@ export const authTranslations = {
       en: "Deletion: you can delete your profile and all associated data at any time from your profile page.",
     },
     rightsWithdraw: {
-      hu: "Hozzájárulás visszavonása: a profil törlésével visszavonod a hozzájárulásodat. A már anonimizált kutatási adatok nem törölhetők.",
-      en: "Withdrawal of consent: deleting your profile withdraws your consent. Already anonymized research data cannot be deleted.",
+      hu: "Hozzájárulás visszavonása: a profil törlésével visszavonod a hozzájárulásodat. A már anonimizált, aggregált adatok nem törölhetők.",
+      en: "Withdrawal of consent: deleting your profile withdraws your consent. Already anonymized, aggregated data cannot be deleted.",
     },
     contactTitle: {
       hu: "Kapcsolat",

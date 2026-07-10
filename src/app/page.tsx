@@ -15,7 +15,7 @@ import type { SiteMode } from "@/components/landing/ModeSwitcher";
 export const metadata: Metadata = {
   title: "trita",
   description:
-    "A trita kutatás alapú csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
+    "A trita validált módszertanra épülő személyiség- és csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
 };
 
 export default async function Home({
