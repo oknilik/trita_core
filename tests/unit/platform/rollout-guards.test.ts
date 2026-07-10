@@ -1,9 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-  isUnifiedJourneyHandoffEnabled,
-  parseBooleanRolloutFlag,
-} from "@/lib/rollout-guards";
+import { parseBooleanRolloutFlag } from "@/lib/rollout-guards";
 import {
   isPolicyEngineEnforcementEnabled,
   isSharedAcceptanceServiceEnabled,
@@ -24,23 +21,6 @@ test("parseBooleanRolloutFlag falls back to default on empty/unknown", () => {
   assert.equal(parseBooleanRolloutFlag("unexpected", true), true);
 });
 
-test("isUnifiedJourneyHandoffEnabled reads NEXT_PUBLIC flag", () => {
-  const original = process.env.NEXT_PUBLIC_TRITA_UNIFIED_JOURNEY_HANDOFF;
-
-  try {
-    delete process.env.NEXT_PUBLIC_TRITA_UNIFIED_JOURNEY_HANDOFF;
-    assert.equal(isUnifiedJourneyHandoffEnabled(), true);
-
-    process.env.NEXT_PUBLIC_TRITA_UNIFIED_JOURNEY_HANDOFF = "0";
-    assert.equal(isUnifiedJourneyHandoffEnabled(), false);
-  } finally {
-    if (original === undefined) {
-      delete process.env.NEXT_PUBLIC_TRITA_UNIFIED_JOURNEY_HANDOFF;
-    } else {
-      process.env.NEXT_PUBLIC_TRITA_UNIFIED_JOURNEY_HANDOFF = original;
-    }
-  }
-});
 
 test("server rollout guards default to enabled and obey explicit disable", () => {
   const originalShared = process.env.TRITA_SHARED_ACCEPTANCE_SERVICE;

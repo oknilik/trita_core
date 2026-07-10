@@ -31,8 +31,8 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
     }
   });
 
-  test("platform home handoff forwards to sign-in", async ({ page }) => {
-    await expectRedirectPath(page, "/platform/home", "/sign-in");
+  test("dashboard handoff forwards to sign-in", async ({ page }) => {
+    await expectRedirectPath(page, "/dashboard", "/sign-in");
 
     const emailInput = page.locator("input[type='email']").first();
     const primaryCta = page.locator("form button[type='submit']").first();
@@ -41,7 +41,7 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
   });
 
   test("sign-in entrypoint keeps redirect intent and CTA remains coherent", async ({ page }) => {
-    await page.goto("/sign-in?redirect_url=%2Fplatform%2Fhome", { waitUntil: "domcontentloaded" });
+    await page.goto("/sign-in?redirect_url=%2Fdashboard", { waitUntil: "domcontentloaded" });
     await expectFinalPathname(page, "/sign-in");
 
     const emailInput = page.locator("input[type='email']").first();
@@ -50,11 +50,11 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
 
     await expect(emailInput).toBeVisible();
     await expect(primaryCta).toBeVisible();
-    await expect(signUpLink).toHaveAttribute("href", /redirect_url=%2Fplatform%2Fhome/);
+    await expect(signUpLink).toHaveAttribute("href", /redirect_url=%2Fdashboard/);
   });
 
   test("sign-up entrypoint keeps redirect intent and unlocks CTA only after intent pick", async ({ page }) => {
-    await page.goto("/sign-up?redirect_url=%2Fplatform%2Fhome", { waitUntil: "domcontentloaded" });
+    await page.goto("/sign-up?redirect_url=%2Fdashboard", { waitUntil: "domcontentloaded" });
     await expectFinalPathname(page, "/sign-up");
 
     const primaryCta = page.locator("form button[type='submit']").first();
@@ -64,7 +64,7 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
     await expect(primaryCta).toBeDisabled();
     await intentButton.click();
     await expect(primaryCta).toBeEnabled();
-    await expect(signInLink).toHaveAttribute("href", /redirect_url=%2Fplatform%2Fhome/);
+    await expect(signInLink).toHaveAttribute("href", /redirect_url=%2Fdashboard/);
   });
 
   test("onboarding finish entrypoint falls back through protected-route guard", async ({ page }) => {

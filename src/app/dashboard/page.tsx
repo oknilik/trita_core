@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
@@ -12,11 +11,7 @@ export default async function DashboardPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") ?? "/dashboard";
-  const entryPoint = pathname.startsWith("/platform/home")
-    ? "platform_home_page"
-    : "dashboard_page";
+  const entryPoint = "dashboard_page";
 
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");

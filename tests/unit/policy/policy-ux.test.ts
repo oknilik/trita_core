@@ -21,6 +21,6 @@ test("role insufficient denial returns role guidance copy", () => {
   });
 
   assert.ok(copy.title.includes("jogosults"));
-  assert.equal(copy.ctaHref, "/platform/home");
+  assert.equal(copy.ctaHref, "/dashboard");
 });
 

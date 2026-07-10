@@ -58,10 +58,7 @@ function getPrimaryTeam(teams: WorkspaceNavTeam[]): WorkspaceNavTeam | null {
 
 function buildHomeItem(homeHref: string): WorkspaceNavItem {
   const homePath = stripQuery(homeHref);
-  const matchPrefixes =
-    homePath === "/dashboard" || homePath === "/platform/home"
-      ? ["/dashboard", "/platform/home"]
-      : [homePath];
+  const matchPrefixes = [homePath];
 
   return {
     id: "home",

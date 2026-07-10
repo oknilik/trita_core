@@ -11,10 +11,3 @@ export function parseBooleanRolloutFlag(
   if (FALSY_ENV_VALUES.has(normalized)) return false;
   return defaultValue;
 }
-
-export function isUnifiedJourneyHandoffEnabled(): boolean {
-  return parseBooleanRolloutFlag(
-    process.env.NEXT_PUBLIC_TRITA_UNIFIED_JOURNEY_HANDOFF,
-    true,
-  );
-}

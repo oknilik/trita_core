@@ -1,11 +1,6 @@
 import "server-only";
 
-import {
-  isUnifiedJourneyHandoffEnabled,
-  parseBooleanRolloutFlag,
-} from "@/lib/rollout-guards";
-
-export { isUnifiedJourneyHandoffEnabled };
+import { parseBooleanRolloutFlag } from "@/lib/rollout-guards";
 
 export function isSharedAcceptanceServiceEnabled(): boolean {
   return parseBooleanRolloutFlag(

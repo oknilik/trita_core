@@ -55,14 +55,14 @@ export function getCapabilityGateCopy(params: {
           description:
             "A tartalom látható, de ehhez az akcióhoz manager vagy admin jogosultság kell.",
           ctaLabel: "Részletek",
-          ctaHref: "/platform/home",
+          ctaHref: "/dashboard",
         }
       : {
           title: "Higher permission required",
           description:
             "You can view this content, but this action requires manager or admin role.",
           ctaLabel: "Details",
-          ctaHref: "/platform/home",
+          ctaHref: "/dashboard",
         };
   }
 

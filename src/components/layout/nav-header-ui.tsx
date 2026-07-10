@@ -165,8 +165,8 @@ export function NavHeaderUI({
   const homeLabel = homeItem?.label ?? "Vezérlő";
   const homeDestination = homeItem?.primaryHref ?? homeHref;
   const onHome =
-    homePath === "/dashboard" || homePath === "/platform/home"
-      ? pathname === "/dashboard" || pathname === "/platform/home"
+    homePath === "/dashboard"
+      ? pathname === "/dashboard"
       : pathname.startsWith(homePath);
 
   const refreshIdentity = useCallback(async () => {
