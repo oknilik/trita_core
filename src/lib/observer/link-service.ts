@@ -36,6 +36,10 @@ export async function linkObserverTokenToProfile(
     },
   });
 
+  if (!invitation) {
+    return { ok: false, code: "INVALID_TOKEN" };
+  }
+
   const lifecycle = resolveObserverTokenLifecycle(invitation, options.now);
   if (lifecycle !== "active") {
     return {

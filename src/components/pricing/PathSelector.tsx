@@ -56,12 +56,8 @@ export function PathSelector({
         {active === "self" && (
           <SelfTierPanel locale={locale} isLoggedIn={isLoggedIn} />
         )}
-        {active === "team" && (
-          <TeamTierPanel locale={locale} isLoggedIn={isLoggedIn} />
-        )}
-        {active === "org" && (
-          <OrgTierPanel locale={locale} isLoggedIn={isLoggedIn} />
-        )}
+        {active === "team" && <TeamTierPanel locale={locale} />}
+        {active === "org" && <OrgTierPanel locale={locale} />}
       </div>
 
       {/* Tab-dependent contextual blocks */}

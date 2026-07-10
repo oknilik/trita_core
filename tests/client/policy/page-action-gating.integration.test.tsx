@@ -5,7 +5,6 @@ import { t } from "@/lib/i18n";
 import { OrgMembersTab } from "@/components/org/OrgMembersTab";
 import { OrgCampaignsTab } from "@/components/org/OrgCampaignsTab";
 import { OrgTeamsTab } from "@/components/org/OrgTeamsTab";
-import { BillingPortalButton } from "@/components/org/BillingPortalButton";
 import { ProfileHero } from "@/components/results/ProfileHero";
 import { HiringDashboard } from "@/app/hiring/[orgId]/_components/HiringDashboard";
 
@@ -92,7 +91,7 @@ const baseMembers = [
   },
 ];
 
-const noPendingInvites: Array<{ id: string; email: string }> = [];
+const noPendingInvites: Array<{ id: string; email: string; role: string; createdAt: string }> = [];
 
 function renderMembersTab(canInviteMembers: boolean) {
   return render(
@@ -149,7 +148,6 @@ function renderHiringDashboard(canInviteNew: boolean) {
       locale="en"
       planTier="org_monthly"
       creditBalance={null}
-      creditHistory={null}
       canInviteNew={canInviteNew}
       isAdmin
     />,
@@ -333,28 +331,4 @@ describe("E3 page action gating client tests", () => {
     );
   });
 
-  describe("billing manage action", () => {
-    it("active: billing portal button is available and triggers portal request", async () => {
-      const user = userEvent.setup();
-      render(<BillingPortalButton isHu={false} />);
-
-      const billingButton = screen.getByRole("button", { name: "Manage billing →" });
-      expect(billingButton).toBeEnabled();
-
-      await user.click(billingButton);
-
-      await waitFor(() => {
-        expect(fetch).toHaveBeenCalledWith("/api/billing/portal", { method: "POST" });
-      });
-    });
-
-    it.each(["restricted", "frozen"] as const)(
-      "%s: billing manage remains available for reactivation flows",
-      (state) => {
-        render(<BillingPortalButton isHu={false} />);
-        expect(screen.getByRole("button", { name: "Manage billing →" })).toBeEnabled();
-        expect(state).toBeDefined();
-      },
-    );
-  });
 });

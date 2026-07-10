@@ -10,6 +10,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
+import type { InvitationStatus } from "@prisma/client";
 import { getTestConfig } from "@/lib/questions";
 import { POST as observerSubmitPOST } from "@/app/api/observer/submit/route";
 
@@ -44,7 +45,7 @@ async function createInviterProfile(overrides: { email?: string } = {}) {
 
 async function createInvitation(
   inviterId: string,
-  overrides: { status?: string; expiresAt?: Date } = {},
+  overrides: { status?: InvitationStatus; expiresAt?: Date } = {},
 ) {
   const id = makeId("inv");
   return prisma.observerInvitation.create({

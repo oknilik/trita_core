@@ -606,7 +606,7 @@ describe("C5.5 ObserverClient integration", () => {
 
       // Only ONE submit call (draft delete calls don't count)
       const submitCalls = fetchMock.mock.calls.filter(
-        (call: [string, ...unknown[]]) => call[0] === "/api/observer/submit",
+        (call: unknown[]) => call[0] === "/api/observer/submit",
       );
       expect(submitCalls.length).toBe(1);
     });
@@ -630,7 +630,7 @@ describe("C5.5 ObserverClient integration", () => {
 
       // Should NOT have called submit endpoint
       const submitCalls = fetchMock.mock.calls.filter(
-        (call: [string, ...unknown[]]) => call[0] === "/api/observer/submit",
+        (call: unknown[]) => call[0] === "/api/observer/submit",
       );
       expect(submitCalls.length).toBe(0);
 

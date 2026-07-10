@@ -8,10 +8,8 @@ import { TierCard } from "./TierCard";
 
 export function TeamTierPanel({
   locale,
-  isLoggedIn,
 }: {
   locale: Locale;
-  isLoggedIn: boolean;
 }) {
   const [billing, setBilling] = useState<"annual" | "monthly">("annual");
   const plans = getTeamPricingPlans(locale);

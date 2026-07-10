@@ -101,7 +101,7 @@ async function createFixture() {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO",
+        testType: "HEXACO" as const,
         testTypeAssignedAt: now,
       })),
       ...FIXTURE.sufficientMembers.map((member) => ({
@@ -112,7 +112,7 @@ async function createFixture() {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO",
+        testType: "HEXACO" as const,
         testTypeAssignedAt: now,
       })),
     ],

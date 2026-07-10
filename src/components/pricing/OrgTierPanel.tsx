@@ -8,10 +8,8 @@ import { TierCard } from "./TierCard";
 
 export function OrgTierPanel({
   locale,
-  isLoggedIn,
 }: {
   locale: Locale;
-  isLoggedIn: boolean;
 }) {
   const [billing, setBilling] = useState<"annual" | "monthly">("annual");
   const plans = getOrgPricingPlans(locale);

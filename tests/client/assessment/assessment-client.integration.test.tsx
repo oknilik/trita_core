@@ -165,7 +165,7 @@ function getCurrentProgressBarWidth(): number {
     return (
       element.style.width.length > 0 &&
       typeof element.className === "string" &&
-      element.className.includes("bg-[#3d6b5e] transition-all duration-300")
+      element.className.includes("bg-[var(--color-action-primary-bg)] transition-all duration-300")
     );
   }) as HTMLDivElement | undefined;
 
@@ -284,7 +284,7 @@ describe("AssessmentClient integration behavior", () => {
     await user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") }));
     await expectCurrentQuestionNumber(1);
     const selected = screen.getByRole("button", { name: /^4 - / });
-    expect(selected).toHaveClass("bg-[#3d6b5e]");
+    expect(selected).toHaveClass("bg-[var(--color-action-primary-bg)]");
   });
 
   it("restores an existing local draft and resumes from the first unanswered question", async () => {

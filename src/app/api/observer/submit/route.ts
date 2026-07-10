@@ -39,6 +39,10 @@ export async function POST(req: Request) {
     where: { token },
   });
 
+  if (!invitation) {
+    return NextResponse.json({ error: "INVALID_TOKEN" }, { status: 404 });
+  }
+
   const lifecycle = resolveObserverTokenLifecycle(invitation);
   if (lifecycle !== "active") {
     const code = toObserverTokenErrorCode(lifecycle);

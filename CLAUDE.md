@@ -1,5 +1,13 @@
 # Trita - Project Context
 
+> **2026-07 UPDATE — Consulting mode:** A Trita tanácsadás-vezérelt modellben
+> működik. A Stripe/Billingo billing réteg eltávolítva (visszaállítható a
+> `billing-v1-parked` git tagből); a fizetés a platformon kívül történik.
+> Org-hozzáférést az admin ad kézzel: `/admin?tab=orgs` +
+> `/api/admin/org-access`. Minden upgrade/checkout CTA `/contact`-ra mutat.
+> A policy engine és a Subscription modell változatlanul él (kézi truth-tal).
+> Részletek: `docs/development/changelog/2026-07-10.md`.
+
 ## What is this project?
 **Trita** is a 3-layer behavioral intelligence platform with dual academic + product purpose.
 

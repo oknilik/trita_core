@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildWorkspaceNavigation } from "@/lib/navigation/config";
+import { buildWorkspaceNavigation, type WorkspaceNavContext } from "@/lib/navigation/config";
 import {
   canViewAnalyticsFeature,
   canViewDashboardBlock,
@@ -8,21 +8,21 @@ import {
   getUserMenuItemIds,
 } from "@/lib/navigation/visibility";
 
-const baseContext = {
+const baseContext: WorkspaceNavContext = {
   homeHref: "/dashboard",
   org: { id: "org_1", name: "Acme" },
   teams: [{ id: "team_1", name: "Alpha Team" }],
   hasHiringAccess: true,
   activeCampaignCount: 2,
-} as const;
+};
 
-const multiTeamContext = {
+const multiTeamContext: WorkspaceNavContext = {
   ...baseContext,
   teams: [
     { id: "team_1", name: "Alpha Team" },
     { id: "team_2", name: "Beta Team" },
   ],
-} as const;
+};
 
 test("admin topnav contains the full IA menu", () => {
   const navItems = buildWorkspaceNavigation("org_admin", baseContext);

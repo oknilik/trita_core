@@ -352,7 +352,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const decision = can(
       {
         isAuthenticated: true,
-        membership: null,
+        membership: undefined,
         teamRole: null,
         purchaseState: { tiers: [], hasObserverAccess: false },
       },
@@ -368,7 +368,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const decision = can(
       {
         isAuthenticated: true,
-        membership: null,
+        membership: undefined,
         teamRole: null,
         purchaseState: { tiers: ["self_plus"], hasObserverAccess: true },
       },
@@ -383,7 +383,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const decision = can(
       {
         isAuthenticated: true,
-        membership: { orgId: "org_1", role: "ORG_MEMBER" },
+        membership: { orgId: "org_1" }, orgRole: "ORG_MEMBER",
         teamRole: null,
         purchaseState: {},
       },
@@ -399,7 +399,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const capabilities = resolveCapabilities(
       {
         isAuthenticated: true,
-        membership: { orgId: "org_1", role: "ORG_MEMBER" },
+        membership: { orgId: "org_1" }, orgRole: "ORG_MEMBER",
         teamRole: null,
         purchaseState: {},
       },
@@ -416,7 +416,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const decision = can(
       {
         isAuthenticated: true,
-        membership: { orgId: "org_1", role: "ORG_MEMBER" },
+        membership: { orgId: "org_1" }, orgRole: "ORG_MEMBER",
         teamRole: "member",
         purchaseState: {},
       },

@@ -17,6 +17,8 @@ test("createOrgPolicyInputs derives org access context from subscription", () =>
     },
     {
       status: "active",
+      planType: "team",
+      billingInterval: null,
       trialEndsAt: null,
       currentPeriodEnd: null,
       cancelAtPeriodEnd: false,
