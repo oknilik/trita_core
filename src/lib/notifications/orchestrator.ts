@@ -231,14 +231,30 @@ export async function handleTeamReportPublished(params: {
   teamId: string;
   teamName: string;
   reportId: string;
+  orgId?: string | null;
 }) {
   const meta = NOTIFICATION_TYPE_META.TEAM_REPORT_PUBLISHED;
   const members = await prisma.teamMember.findMany({
     where: { teamId: params.teamId },
     select: { userId: true },
   });
+  // Az org vezetői (manager/admin) akkor is kapjanak értesítést, ha nem
+  // tagjai a csapatnak — a riport nekik (is) készül. Tanácsadó nem címzett.
+  const orgLeads = params.orgId
+    ? await prisma.organizationMember.findMany({
+        where: {
+          orgId: params.orgId,
+          leftAt: null,
+          role: { in: ["ORG_MANAGER", "ORG_ADMIN"] },
+        },
+        select: { userId: true },
+      })
+    : [];
+  const recipientIds = [
+    ...new Set([...members, ...orgLeads].map(({ userId }) => userId)),
+  ];
   await persistNotificationBatch(
-    members.map(({ userId }) => ({
+    recipientIds.map((userId) => ({
       userId,
       type: "TEAM_REPORT_PUBLISHED" as const,
       category: meta.category,

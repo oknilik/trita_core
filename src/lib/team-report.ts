@@ -1,8 +1,18 @@
 import { prisma } from "@/lib/prisma";
-import { getTeamPageData } from "@/lib/team-stats";
+import { getTeamPageData, FRICTION_WEIGHTS } from "@/lib/team-stats";
 import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles, type TeamRoleScores } from "@/lib/team-role-scoring";
-import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
+import {
+  MIN_INTELLIGENCE_ASSESSMENTS,
+  resolveTeamIntelligenceQuality,
+  type TeamIntelligenceEvidenceQuality,
+} from "@/lib/team-intelligence";
+import {
+  generateTeamSummary,
+  getStrengthInsight,
+  getWeaknessInsight,
+  getDiversityInsight,
+} from "@/lib/team-insights";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -21,9 +31,35 @@ export interface TeamReportAggregates {
   /** Elsődleges csapatszerep-eloszlás (szerepkód → fő) + lefedettség */
   roleDistribution: {
     counts: Record<string, number>;
+    /** 2-3. legerősebb szerepek tagonként (szerepkód → fő) — tartalék-lefedettség */
+    secondaryCounts?: Record<string, number>;
     questionnaireCount: number;
     estimateCount: number;
   } | null;
+  /** Le nem fedett csapatszerepek (szerepkódok) — csak roleDistribution mellett */
+  roleGaps: string[] | null;
+  /** Mi mért, mi becsült — a riport adatalapja */
+  evidence: {
+    quality: TeamIntelligenceEvidenceQuality;
+    observerEdgeCount: number;
+    estimatedEdgeCount: number;
+  } | null;
+  /** Kapcsolati dinamika összképe — kizárólag aggregált, egyéni párok nélkül */
+  dynamics: {
+    alignedCount: number;
+    complementaryCount: number;
+    frictionCount: number;
+    /** A súrlódást leginkább hajtó dimenziók (magas szórás × friction-súly), max 2 */
+    topFrictionDims: string[];
+    source: "observer" | "profile_estimate" | "mixed";
+  } | null;
+}
+
+export interface TeamReportActionItem {
+  title: string;
+  description: string;
+  /** Időtáv napokban: 30 / 60 / 90 */
+  timeframe: "30" | "60" | "90";
 }
 
 export interface SerializedTeamReport {
@@ -37,6 +73,8 @@ export interface SerializedTeamReport {
   risks: string | null;
   recommendations: string | null;
   interviewFindings: string | null;
+  leadershipGuide: string | null;
+  actionItems: TeamReportActionItem[] | null;
   /** Csak tanácsadói nézetben kerül kitöltésre */
   internalNotes: string | null;
   publishedAt: string | null;
@@ -82,6 +120,7 @@ export async function buildTeamReportAggregates(
   let roleDistribution: TeamReportAggregates["roleDistribution"] = null;
   if (hasMinimum) {
     const counts: Record<string, number> = {};
+    const secondaryCounts: Record<string, number> = {};
     let questionnaireCount = 0;
     let estimateCount = 0;
     for (const member of assessed) {
@@ -96,12 +135,67 @@ export async function buildTeamReportAggregates(
         estimateCount++;
       }
       if (!scores) continue;
-      const top = getTopRoles(scores, 1)[0]?.role;
-      if (top && top in TEAM_ROLES) {
-        counts[top] = (counts[top] ?? 0) + 1;
-      }
+      const top3 = getTopRoles(scores, 3);
+      top3.forEach(({ role }, index) => {
+        if (!(role in TEAM_ROLES)) return;
+        if (index === 0) {
+          counts[role] = (counts[role] ?? 0) + 1;
+        } else {
+          secondaryCounts[role] = (secondaryCounts[role] ?? 0) + 1;
+        }
+      });
     }
-    roleDistribution = { counts, questionnaireCount, estimateCount };
+    roleDistribution = { counts, secondaryCounts, questionnaireCount, estimateCount };
+  }
+
+  // Valódi hiány: sem elsődleges, sem másodlagos/harmadlagos lefedettség.
+  const roleGaps = roleDistribution
+    ? Object.keys(TEAM_ROLES).filter(
+        (role) =>
+          !(role in roleDistribution!.counts) &&
+          !(role in (roleDistribution!.secondaryCounts ?? {})),
+      )
+    : null;
+
+  // Adatalap: mi mért (observer), mi becsült (profil-alapú).
+  const observerEdgeCount = teamData.dynamicsEdges.filter(
+    (e) => e.source === "observer",
+  ).length;
+  const estimatedEdgeCount = teamData.dynamicsEdges.length - observerEdgeCount;
+  const evidence = {
+    quality: resolveTeamIntelligenceQuality(completedCount, memberCount),
+    observerEdgeCount,
+    estimatedEdgeCount,
+  };
+
+  // Dinamika-összkép — csak él-típus darabszámok, egyéni párok nélkül.
+  let dynamics: TeamReportAggregates["dynamics"] = null;
+  if (hasMinimum && teamData.dynamicsEdges.length > 0) {
+    const counts = { aligned: 0, complementary: 0, friction: 0 };
+    for (const edge of teamData.dynamicsEdges) {
+      if (edge.type in counts) counts[edge.type as keyof typeof counts]++;
+    }
+    // Súrlódás-hajtó dimenziók: magas szórás × friction-súly (C/A/H dominál).
+    const topFrictionDims = dimensionSpread
+      ? Object.entries(dimensionSpread)
+          .map(([dim, spread]) => ({ dim, score: (FRICTION_WEIGHTS[dim] ?? 0) * spread }))
+          .filter((d) => (dimensionSpread![d.dim] ?? 0) >= 12)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 2)
+          .map((d) => d.dim)
+      : [];
+    dynamics = {
+      alignedCount: counts.aligned,
+      complementaryCount: counts.complementary,
+      frictionCount: counts.friction,
+      topFrictionDims,
+      source:
+        observerEdgeCount === 0
+          ? "profile_estimate"
+          : estimatedEdgeCount === 0
+            ? "observer"
+            : "mixed",
+    };
   }
 
   return {
@@ -120,7 +214,174 @@ export async function buildTeamReportAggregates(
           }
         : null,
     roleDistribution,
+    roleGaps,
+    evidence,
+    dynamics,
   };
+}
+
+// ── Vázlat-előtöltés ─────────────────────────────────────────────────────────
+// Új vázlat nyitásakor a narratív mezők generált javaslatot kapnak a
+// team-insights értelmezési rétegből — a tanácsadó szerkeszti, nem nulláról ír.
+// Csak magyarul generálunk (elsődleges piac); a tanácsadó átírhatja.
+
+const PREFILL_DIM_LABELS: Record<string, string> = {
+  H: "őszinteség-méltányosság",
+  E: "érzelmi reaktivitás",
+  X: "társas energia",
+  A: "együttműködési stílus",
+  C: "strukturáltság",
+  O: "nyitottság",
+};
+
+export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
+  summary: string;
+  strengths: string;
+  risks: string;
+  recommendations: string;
+  leadershipGuide: string;
+  actionItems: TeamReportActionItem[];
+} | null {
+  const avgs = agg.dimensionAverages;
+  if (!avgs || Object.keys(avgs).length < 2) return null;
+
+  const sorted = Object.entries(avgs).sort((a, b) => b[1] - a[1]);
+  const topDims = sorted.slice(0, 2).map(([dim]) => dim);
+  const bottomDim = sorted[sorted.length - 1][0];
+  const spreadDims = agg.dimensionSpread
+    ? Object.entries(agg.dimensionSpread)
+        .filter(([, spread]) => spread >= 12)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([dim]) => dim)
+    : [];
+
+  const dynamicsTotal = agg.dynamics
+    ? agg.dynamics.alignedCount + agg.dynamics.complementaryCount + agg.dynamics.frictionCount
+    : 0;
+  const frictionShare = agg.dynamics && dynamicsTotal > 0
+    ? agg.dynamics.frictionCount / dynamicsTotal
+    : 0;
+  const alignedShare = agg.dynamics && dynamicsTotal > 0
+    ? agg.dynamics.alignedCount / dynamicsTotal
+    : 0;
+  const frictionDimLabels = (agg.dynamics?.topFrictionDims ?? [])
+    .map((dim) => PREFILL_DIM_LABELS[dim] ?? dim)
+    .join(", ");
+  const gapRoleNames = (agg.roleGaps ?? [])
+    .map((role) => TEAM_ROLES[role as keyof typeof TEAM_ROLES]?.hu ?? role)
+    .join(", ");
+  const evidenceWeak = agg.evidence ? agg.evidence.quality !== "sufficient" : false;
+  const observerMissing = agg.evidence ? agg.evidence.observerEdgeCount === 0 : true;
+
+  const bullets = (lines: string[]) =>
+    lines.filter((l) => l.length > 0).map((l) => `• ${l}`).join("\n");
+
+  // Összefoglaló: profil-mondat + dinamika-számok.
+  let summary = generateTeamSummary(avgs);
+  if (agg.dynamics && dynamicsTotal > 0) {
+    summary += ` A ${dynamicsTotal} tagpárból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő és ${agg.dynamics.frictionCount} mutat súrlódási potenciált.`;
+  }
+
+  const strengths = bullets([
+    ...topDims.map((dim) => getStrengthInsight(dim)),
+    alignedShare >= 0.5
+      ? "A hasonló munkastílusok gyors összecsiszolódást és alacsony koordinációs költséget adnak."
+      : "",
+  ]);
+
+  const risks = bullets([
+    getWeaknessInsight(bottomDim),
+    ...spreadDims.map((dim) => getDiversityInsight(dim)),
+    frictionShare >= 0.4
+      ? `A tagpárok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
+      : "",
+    alignedShare >= 0.5
+      ? "A homogén profil közös vakfoltokat hordozhat — amit senki nem vesz észre, az kimarad."
+      : "",
+    gapRoleNames
+      ? `Lefedetlen csapatszerep: ${gapRoleNames} — ezekre se elsődleges, se tartalék lefedettség nincs.`
+      : "",
+  ]);
+
+  const recommendations = bullets([
+    frictionShare >= 0.4 || frictionDimLabels
+      ? `Közös működési normák rögzítése (döntéshozatal, határidő-kezelés, kommunikáció)${frictionDimLabels ? ` — elsősorban a következő területeken: ${frictionDimLabels}` : ""}.`
+      : "",
+    gapRoleNames
+      ? `A hiányzó szerepek (${gapRoleNames}) tudatos pótlása: felelős kijelölése a csapaton belül vagy külső támogatás bevonása.`
+      : "",
+    observerMissing
+      ? "Kollégai (observer) visszajelzés-kör indítása — a jelenlegi kép részben profil-alapú becslésen áll, a mért adat megerősíti vagy árnyalja."
+      : "",
+    alignedShare >= 0.5
+      ? "Külső visszajelzés tudatos behozása (más csapat, ügyfél, mentor) a közös vakfoltok ellensúlyozására."
+      : "",
+  ]);
+
+  const leadershipGuide = bullets([
+    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál a csapat magától teljesít.`,
+    ...spreadDims.map((dim) => getDiversityInsight(dim)),
+    getWeaknessInsight(bottomDim),
+  ]);
+
+  const actionItems: TeamReportActionItem[] = [
+    {
+      title: "Csapatkép-átbeszélő workshop",
+      description:
+        "A riport közös értelmezése a csapattal: erősségek megerősítése, kockázatok nyílt megbeszélése, kérdések tisztázása.",
+      timeframe: "30",
+    },
+    ...(frictionShare >= 0.4 || frictionDimLabels
+      ? [
+          {
+            title: "Működési normák rögzítése",
+            description: `Közös minimum-szabályok a legnagyobb eltérésű területekre${frictionDimLabels ? ` (${frictionDimLabels})` : ""}: hogyan döntünk, hogyan kezeljük a határidőket, melyik csatornán kommunikálunk.`,
+            timeframe: "30" as const,
+          },
+        ]
+      : []),
+    ...(gapRoleNames
+      ? [
+          {
+            title: "Szerep-tisztázás",
+            description: `A lefedetlen szerepek (${gapRoleNames}) pótlásának megtervezése: belső felelős kijelölése, folyamat-támasz vagy külső erőforrás.`,
+            timeframe: "60" as const,
+          },
+        ]
+      : []),
+    ...(evidenceWeak || observerMissing
+      ? [
+          {
+            title: "Kollégai visszajelzés-kör",
+            description:
+              "Observer-kör indítása a csapatban — a becsült elemek megerősítése mért adattal, a következő riport pontosabb képet ad.",
+            timeframe: "60" as const,
+          },
+        ]
+      : []),
+    {
+      title: "Utánkövetés és riport-frissítés",
+      description:
+        "A bevezetett normák és szerepek működésének áttekintése; új riport készítése a változás mérésére.",
+      timeframe: "90",
+    },
+  ];
+
+  return { summary, strengths, risks, recommendations, leadershipGuide, actionItems };
+}
+
+export function parseActionItems(value: unknown): TeamReportActionItem[] | null {
+  if (!Array.isArray(value)) return null;
+  const items = value.filter(
+    (item): item is TeamReportActionItem =>
+      typeof item === "object" &&
+      item !== null &&
+      typeof (item as TeamReportActionItem).title === "string" &&
+      typeof (item as TeamReportActionItem).description === "string" &&
+      ["30", "60", "90"].includes(String((item as TeamReportActionItem).timeframe)),
+  );
+  return items.length > 0 ? items : null;
 }
 
 type TeamReportRecord = {
@@ -134,6 +395,8 @@ type TeamReportRecord = {
   risks: string | null;
   recommendations: string | null;
   interviewFindings: string | null;
+  leadershipGuide: string | null;
+  actionItems: unknown;
   internalNotes: string | null;
   publishedAt: Date | null;
   createdAt: Date;
@@ -155,6 +418,8 @@ export function serializeTeamReport(
     risks: report.risks,
     recommendations: report.recommendations,
     interviewFindings: report.interviewFindings,
+    leadershipGuide: report.leadershipGuide,
+    actionItems: parseActionItems(report.actionItems),
     internalNotes: options.includeInternalNotes ? report.internalNotes : null,
     publishedAt: report.publishedAt?.toISOString() ?? null,
     createdAt: report.createdAt.toISOString(),

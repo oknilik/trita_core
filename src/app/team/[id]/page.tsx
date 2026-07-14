@@ -37,6 +37,7 @@ import { TeamRoleSection } from "@/components/team/TeamRoleSection";
 import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import { TeamReportEditor } from "@/components/team/TeamReportEditor";
+import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { TeamReportView } from "@/components/team/TeamReportView";
 import { getLatestPublishedReport, listTeamReports } from "@/lib/team-report";
 import {
@@ -686,14 +687,12 @@ export default async function TeamDetailPage({
         </Link>
 
         {canViewRaw ? (
-          <>
-            <TeamReportEditor teamId={teamId} reports={consultantReports} isHu={isHu} />
-            {consultantReports
-              .filter((r) => r.status === "PUBLISHED")
-              .map((r) => (
-                <TeamReportView key={r.id} report={r} isHu={isHu} />
-              ))}
-          </>
+          <TeamReportEditor
+            teamId={teamId}
+            orgId={teamData.orgId}
+            reports={consultantReports}
+            isHu={isHu}
+          />
         ) : publishedReport ? (
           <TeamReportView report={publishedReport} isHu={isHu} />
         ) : null}
@@ -904,7 +903,11 @@ export default async function TeamDetailPage({
               ) : null}
               {canManageTeamActions && teamData.orgId ? (
                 <Link
-                  href={`/org/${teamData.orgId}?tab=campaigns`}
+                  href={
+                    hasObserver
+                      ? `/org/${teamData.orgId}?tab=campaigns`
+                      : `/org/${teamData.orgId}/campaigns/new?team=${teamId}`
+                  }
                   className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
                 >
                   {hasObserver
@@ -1162,6 +1165,32 @@ export default async function TeamDetailPage({
             </DashboardPanel>
           )}
         </section>
+
+        {(canViewRaw || isOrgManager) && teamData.orgId ? (
+          <TeamMeasurementTimeline
+            items={(
+              await prisma.campaign.findMany({
+                where: { teamId },
+                orderBy: { createdAt: "desc" },
+                take: 10,
+                select: {
+                  id: true,
+                  orgId: true,
+                  name: true,
+                  type: true,
+                  status: true,
+                  createdAt: true,
+                  closedAt: true,
+                },
+              })
+            ).map((c) => ({
+              ...c,
+              createdAt: c.createdAt.toISOString(),
+              closedAt: c.closedAt?.toISOString() ?? null,
+            }))}
+            isHu={isHu}
+          />
+        ) : null}
 
         <section>
           <DashboardSectionHeader label={t("teamDetail.sectionJourney", locale)} className="mb-4" />

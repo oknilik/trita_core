@@ -100,7 +100,7 @@ export interface TeamPageData {
 //   C (conscientiousness) and A (agreeableness) gaps are the strongest work
 //   friction predictors; H (honesty-humility) follows; E, X, O are weaker.
 
-const FRICTION_WEIGHTS: Record<string, number> = {
+export const FRICTION_WEIGHTS: Record<string, number> = {
   C: 0.30,  // deadline/quality/follow-through tension
   A: 0.25,  // communication style conflicts
   H: 0.20,  // trust and motive attribution

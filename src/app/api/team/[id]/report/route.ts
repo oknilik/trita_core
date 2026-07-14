@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
 import {
+  buildDraftNarrativePrefill,
   buildTeamReportAggregates,
   serializeTeamReport,
 } from "@/lib/team-report";
@@ -18,12 +19,23 @@ const narrativeFields = {
   risks: z.string().max(8000).nullish(),
   recommendations: z.string().max(8000).nullish(),
   interviewFindings: z.string().max(8000).nullish(),
+  leadershipGuide: z.string().max(8000).nullish(),
+  actionItems: z
+    .array(
+      z.object({
+        title: z.string().max(200),
+        description: z.string().max(2000),
+        timeframe: z.enum(["30", "60", "90"]),
+      }),
+    )
+    .max(20)
+    .nullish(),
   internalNotes: z.string().max(8000).nullish(),
 };
 
 const patchSchema = z.object({
   reportId: z.string().min(1),
-  action: z.enum(["save", "publish"]).default("save"),
+  action: z.enum(["save", "preview", "publish", "unpublish"]).default("save"),
   ...narrativeFields,
 });
 
@@ -66,10 +78,26 @@ export async function POST(
     return NextResponse.json({ error: ctx.error }, { status: ctx.status });
   }
 
+  // Idempotens: ha már van vázlat, azt adjuk vissza — nem nyitunk másodikat.
+  const existingDraft = await prisma.teamReport.findFirst({
+    where: { teamId, status: "DRAFT" },
+    orderBy: { createdAt: "desc" },
+  });
+  if (existingDraft) {
+    return NextResponse.json({
+      ok: true,
+      report: serializeTeamReport(existingDraft, { includeInternalNotes: true }),
+    });
+  }
+
   const aggregates = await buildTeamReportAggregates(teamId);
   if (!aggregates) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
+
+  // A narratív mezőket generált javaslattal töltjük elő — a tanácsadó
+  // szerkeszthető kiindulópontot kap, nem üres űrlapot.
+  const prefill = buildDraftNarrativePrefill(aggregates);
 
   const report = await prisma.teamReport.create({
     data: {
@@ -78,6 +106,13 @@ export async function POST(
       status: "DRAFT",
       aggregates: aggregates as object,
       createdById: ctx.profileId,
+      ...(prefill
+        ? {
+            ...prefill,
+            // Prisma Json input: a típusos tömböt plain JSON-ként adjuk át.
+            actionItems: prefill.actionItems as unknown as object[],
+          }
+        : {}),
     },
   });
 
@@ -85,6 +120,48 @@ export async function POST(
     ok: true,
     report: serializeTeamReport(report, { includeInternalNotes: true }),
   });
+}
+
+// DELETE /api/team/[id]/report — vázlat (pl. visszavont riport) végleges törlése
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id: teamId } = await params;
+  const ctx = await requireConsultant(teamId);
+  if ("error" in ctx) {
+    return NextResponse.json({ error: ctx.error }, { status: ctx.status });
+  }
+
+  const parsed = z
+    .object({ reportId: z.string().min(1) })
+    .safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+  }
+
+  const existing = await prisma.teamReport.findFirst({
+    where: { id: parsed.data.reportId, teamId },
+    select: { id: true, status: true },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
+  if (existing.status === "PUBLISHED") {
+    // Korábbi (nem aktuális) publikált riport törölhető; az aktuális,
+    // szervezet felé látható riportot előbb vissza kell vonni.
+    const latestPublished = await prisma.teamReport.findFirst({
+      where: { teamId, status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
+      select: { id: true },
+    });
+    if (latestPublished?.id === existing.id) {
+      return NextResponse.json({ error: "ALREADY_PUBLISHED" }, { status: 409 });
+    }
+  }
+
+  await prisma.teamReport.delete({ where: { id: existing.id } });
+  return NextResponse.json({ ok: true });
 }
 
 // PATCH /api/team/[id]/report — narratíva mentése / publikálás
@@ -111,13 +188,49 @@ export async function PATCH(
   if (!existing) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
+
+  // Publikálás visszavonása: a riport vázlatként újra szerkeszthető, a
+  // szervezet felé eltűnik. Csak a legutolsó publikált riport vonható
+  // vissza, és csak ha nincs éppen nyitott vázlat (különben kettő lenne).
+  if (action === "unpublish") {
+    if (existing.status !== "PUBLISHED") {
+      return NextResponse.json({ error: "NOT_PUBLISHED" }, { status: 409 });
+    }
+    const openDraft = await prisma.teamReport.findFirst({
+      where: { teamId, status: "DRAFT" },
+      select: { id: true },
+    });
+    if (openDraft) {
+      return NextResponse.json({ error: "DRAFT_EXISTS" }, { status: 409 });
+    }
+    const latestPublished = await prisma.teamReport.findFirst({
+      where: { teamId, status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
+      select: { id: true },
+    });
+    if (latestPublished?.id !== reportId) {
+      return NextResponse.json({ error: "NOT_LATEST" }, { status: 409 });
+    }
+    const report = await prisma.teamReport.update({
+      where: { id: reportId },
+      data: { status: "DRAFT", publishedAt: null, publishedById: null },
+    });
+    return NextResponse.json({
+      ok: true,
+      report: serializeTeamReport(report, { includeInternalNotes: true }),
+    });
+  }
+
   if (existing.status === "PUBLISHED") {
-    // A publikált (validált) riport nem szerkeszthető — új riportot kell nyitni.
+    // A publikált (validált) riport közvetlenül nem szerkeszthető —
+    // előbb vissza kell vonni (unpublish), vagy új riportot nyitni.
     return NextResponse.json({ error: "ALREADY_PUBLISHED" }, { status: 409 });
   }
 
+  // null-t is kiszűrjük: a kliens üres stringet/üres tömböt küld törléskor,
+  // és a nullable Json mező (actionItems) plain null-t nem fogad.
   const narrativeData = Object.fromEntries(
-    Object.entries(fields).filter(([, value]) => value !== undefined),
+    Object.entries(fields).filter(([, value]) => value !== undefined && value !== null),
   );
 
   if (action === "publish") {
@@ -143,6 +256,7 @@ export async function PATCH(
         teamId,
         teamName: team?.name ?? "—",
         reportId: report.id,
+        orgId: ctx.orgId,
       }).catch((err: unknown) => console.error("[Notification] Team report published error:", err)),
     );
 
@@ -152,9 +266,17 @@ export async function PATCH(
     });
   }
 
+  // "preview" mentéskor az aggregátumokat is újraépítjük, hogy az előnézet
+  // pontosan azt mutassa, amit a publikálás rögzítene.
+  const aggregates =
+    action === "preview" ? await buildTeamReportAggregates(teamId) : null;
+
   const report = await prisma.teamReport.update({
     where: { id: reportId },
-    data: narrativeData,
+    data: {
+      ...narrativeData,
+      ...(aggregates ? { aggregates: aggregates as object } : {}),
+    },
   });
   return NextResponse.json({
     ok: true,
