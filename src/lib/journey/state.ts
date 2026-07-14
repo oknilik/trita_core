@@ -2,6 +2,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { resolveJourneyContext } from "@/lib/journey/context";
+import { isConsultingLed } from "@/lib/operating-mode";
 import type {
   JourneyAction,
   JourneyActionId,
@@ -186,7 +187,9 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
   if (hasPendingMembershipInvite) {
     teamBridgeActions.push("JOIN_TEAM");
   }
-  if (self.explicitTeamIntent || !hasPendingMembershipInvite) {
+  // Consulting-led módban a self-serve csapat-létrehozás nem elérhető út —
+  // a team-irányú terelést az érdeklődés-banner (TeamInterestBanner) végzi.
+  if (!isConsultingLed() && (self.explicitTeamIntent || !hasPendingMembershipInvite)) {
     teamBridgeActions.push("CREATE_TEAM");
   }
 

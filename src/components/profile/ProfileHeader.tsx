@@ -1,6 +1,7 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type ProfileLevel = "start" | "plus";
 
@@ -49,11 +50,15 @@ export function ProfileHeader({
             <span className="text-ink-body">{formattedDate}</span>
           </p>
         </div>
-        <span
-          className={`shrink-0 rounded-full px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-widest ${badge.classes}`}
-        >
-          {badge.label}
-        </span>
+        {/* Csomag-badge csak aktív paywall mellett — kikapcsolt paywallnál
+            nincs látható szint-fogalom. */}
+        {SELF_PAYWALL_ENABLED && (
+          <span
+            className={`shrink-0 rounded-full px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-widest ${badge.classes}`}
+          >
+            {badge.label}
+          </span>
+        )}
       </div>
     </div>
   );

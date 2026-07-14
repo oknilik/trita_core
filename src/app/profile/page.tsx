@@ -12,6 +12,7 @@ import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type OrgMembershipInfo = {
@@ -263,10 +264,12 @@ export default function ProfilePage() {
             {t("profile.heroSubtitle", locale)}
           </p>
           <div className="mt-3 flex flex-wrap gap-4">
-            <span className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
-              <span className="h-[5px] w-[5px] rounded-full bg-[var(--color-action-primary-bg)]" />
-              {planLabel}
-            </span>
+            {SELF_PAYWALL_ENABLED && (
+              <span className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
+                <span className="h-[5px] w-[5px] rounded-full bg-[var(--color-action-primary-bg)]" />
+                {planLabel}
+              </span>
+            )}
             <span className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
               <span className="h-[5px] w-[5px] rounded-full bg-[var(--color-accent-primary)]" />
               {locale === "hu" ? "Magyar" : "English"}

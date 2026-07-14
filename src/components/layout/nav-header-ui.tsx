@@ -12,6 +12,7 @@ import {
 } from "@/lib/navigation/config";
 import { getUserMenuItemIds } from "@/lib/navigation/visibility";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+import { isConsultingLed } from "@/lib/operating-mode";
 import { NotificationBell } from "./NotificationBell";
 import { NotificationPanel } from "./NotificationPanel";
 
@@ -443,6 +444,24 @@ export function NavHeaderUI({
                 })}
               </div>
             </div>
+          ) : null}
+
+          {/* Tanácsadói ügyfél-org létrehozás — csak consulting-led módban */}
+          {isConsultingLed() &&
+          orgMemberships?.some((m) => m.role === "ORG_CONSULTANT") ? (
+            <Link
+              href="/org/new"
+              onClick={closeAll}
+              data-testid="nav-new-client-org"
+              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 3v10M3 8h10" />
+                </svg>
+              </span>
+              <span>Új ügyfél-szervezet</span>
+            </Link>
           ) : null}
 
           {showLanguageMenuItem ? (

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { isConsultingLed } from "@/lib/operating-mode";
 import type {
   JourneyActionId,
   JourneyNextBestAction,
@@ -346,7 +347,29 @@ export function resolveNextBestAction(
   locale: JourneyResolverLocale = "en",
 ): JourneyNextBestAction {
   const safeLocale: JourneyResolverLocale = locale === "hu" ? "hu" : "en";
-  const resolved = resolveCtaIdsWithLocale(state, safeLocale);
+  let resolved = resolveCtaIdsWithLocale(state, safeLocale);
+
+  // Consulting-led módban a CREATE_TEAM (self-serve csapat-létrehozás)
+  // nem ajánlható — observer/eredmény irányra képezzük át; a team-irányú
+  // terelést az eredmény-oldali érdeklődés-banner végzi.
+  if (isConsultingLed()) {
+    if (resolved.primary === "CREATE_TEAM") {
+      resolved = {
+        primary: "INVITE_OBSERVERS",
+        secondary:
+          resolved.secondary === "INVITE_OBSERVERS" || resolved.secondary === "CREATE_TEAM"
+            ? "REVIEW_SELF_RESULTS"
+            : resolved.secondary,
+        explanation: txt(
+          safeLocale,
+          "A saját insight elkészült. Kérj kollégai visszajelzést, vagy mélyítsd az eredményeidet — csapatelemzéshez a lap alján tudsz érdeklődni.",
+          "Your self insight is ready. Collect observer feedback or deepen your results — for team analysis, express interest at the bottom of the page.",
+        ),
+      };
+    } else if (resolved.secondary === "CREATE_TEAM") {
+      resolved = { ...resolved, secondary: "REVIEW_SELF_RESULTS" };
+    }
+  }
   const availableIds = new Set(state.availableNextActions.map((action) => action.id));
   const fallbackPrimary = state.availableNextActions[0]?.id ?? null;
 

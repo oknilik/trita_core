@@ -6,9 +6,13 @@ import { prisma } from "@/lib/prisma";
 import { TRIAL_DAYS } from "@/lib/subscription";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
+import { isConsultingLed } from "@/lib/operating-mode";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
+  // Consulting-led mód: a tanácsadó ügyfél-szervezetet hoz létre, amelybe
+  // ORG_CONSULTANT-ként lép be (nem admin) — a kliens admin később csatlakozik.
+  asConsultant: z.boolean().optional(),
 });
 
 // POST /api/org — create a new organization (multi-org membership supported)
@@ -28,6 +32,24 @@ export async function POST(req: Request) {
   const body = createSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
+  // Tanácsadói org-létrehozás: csak consulting-led módban, és csak olyan
+  // usernek, aki már kijelölt tanácsadó legalább egy szervezetben (a
+  // tanácsadói identitást a trita admin adja az /admin felületen).
+  let creatorRole: "ORG_ADMIN" | "ORG_CONSULTANT" = "ORG_ADMIN";
+  if (body.data.asConsultant) {
+    if (!isConsultingLed()) {
+      return NextResponse.json({ error: "NOT_CONSULTING_MODE" }, { status: 403 });
+    }
+    const consultantMembership = await prisma.organizationMember.findFirst({
+      where: { userId: profile.id, role: "ORG_CONSULTANT", leftAt: null },
+      select: { id: true },
+    });
+    if (!consultantMembership) {
+      return NextResponse.json({ error: "NOT_CONSULTANT" }, { status: 403 });
+    }
+    creatorRole = "ORG_CONSULTANT";
+  }
+
   try {
     const org = await prisma.$transaction(async (tx) => {
       const newOrg = await tx.organization.create({
@@ -36,7 +58,7 @@ export async function POST(req: Request) {
           ownerId: profile.id,
           status: "PENDING_SETUP",
           members: {
-            create: { userId: profile.id, role: "ORG_ADMIN" },
+            create: { userId: profile.id, role: creatorRole },
           },
         },
         select: { id: true, name: true, createdAt: true, status: true },

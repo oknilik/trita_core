@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 interface ProgressBarProps {
   hasSelfPlus: boolean;
@@ -144,10 +145,11 @@ export function ProgressBar({
     router.push("/contact");
   }
 
+  // Kikapcsolt paywallnál a csomag-lépés nem létezik a checklistben.
   const steps = [
     { key: "test", done: true },
     { key: "results", done: true },
-    { key: "package", done: hasSelfPlus },
+    ...(SELF_PAYWALL_ENABLED ? [{ key: "package", done: hasSelfPlus }] : []),
     { key: "observers", done: hasSelfPlus && observersSent },
     { key: "feedback", done: hasSelfPlus && observersCompleted },
   ];
@@ -261,33 +263,38 @@ export function ProgressBar({
                 </div>
               ))}
 
-              {/* Divider */}
-              <div className="flex items-center gap-2.5 border-b border-[var(--color-border-soft)] px-5 py-2">
-                <div className="h-px flex-1 bg-[var(--color-border-default)]" />
-                <span className="text-[9px] uppercase tracking-widest text-[var(--color-text-muted)]">
-                  {t("progress.deepenDivider", locale)}
-                </span>
-                <div className="h-px flex-1 bg-[var(--color-border-default)]" />
-              </div>
+              {/* Csomag-blokk csak aktív paywall mellett */}
+              {SELF_PAYWALL_ENABLED && (
+                <>
+                  {/* Divider */}
+                  <div className="flex items-center gap-2.5 border-b border-[var(--color-border-soft)] px-5 py-2">
+                    <div className="h-px flex-1 bg-[var(--color-border-default)]" />
+                    <span className="text-[9px] uppercase tracking-widest text-[var(--color-text-muted)]">
+                      {t("progress.deepenDivider", locale)}
+                    </span>
+                    <div className="h-px flex-1 bg-[var(--color-border-default)]" />
+                  </div>
 
-              {/* Package card */}
-              <div className="flex gap-2.5 border-b border-[var(--color-border-soft)] px-5 py-3">
-                <PackageCard
-                  name="Plus"
-                  price={hasSelfPlus ? null : "€9"}
-                  owned={hasSelfPlus}
-                  recommended={!hasSelfPlus}
-                  features={plusFeatures}
-                  buttonLabel={
-                    hasSelfPlus
-                      ? t("progress.buttonActive", locale)
-                      : t("progress.buttonUnlock", locale)
-                  }
-                  buttonStyle={hasSelfPlus ? "done" : "bronze"}
-                  onButtonClick={hasSelfPlus ? undefined : handlePlusUpgrade}
-                  locale={locale}
-                />
-              </div>
+                  {/* Package card */}
+                  <div className="flex gap-2.5 border-b border-[var(--color-border-soft)] px-5 py-3">
+                    <PackageCard
+                      name="Plus"
+                      price={hasSelfPlus ? null : "€9"}
+                      owned={hasSelfPlus}
+                      recommended={!hasSelfPlus}
+                      features={plusFeatures}
+                      buttonLabel={
+                        hasSelfPlus
+                          ? t("progress.buttonActive", locale)
+                          : t("progress.buttonUnlock", locale)
+                      }
+                      buttonStyle={hasSelfPlus ? "done" : "bronze"}
+                      onButtonClick={hasSelfPlus ? undefined : handlePlusUpgrade}
+                      locale={locale}
+                    />
+                  </div>
+                </>
+              )}
 
               {/* Observer step: send invitations */}
               <div

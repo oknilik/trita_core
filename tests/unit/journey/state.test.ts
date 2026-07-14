@@ -36,7 +36,10 @@ test("team intent without membership resolves TEAM_NOT_JOINED", () => {
   );
 
   assert.equal(state.currentStage, "TEAM_NOT_JOINED");
-  assert.equal(state.recommendedNextAction?.id, "CREATE_TEAM");
+  // Consulting-led módban (operating-mode.ts) a CREATE_TEAM self-serve út
+  // nem ajánlott — self-serve visszakapcsolásnál ez újra CREATE_TEAM lesz.
+  assert.equal(state.recommendedNextAction?.id, "REVIEW_SELF_RESULTS");
+  assert.ok(!state.availableNextActions.some((a) => a.id === "CREATE_TEAM"));
 });
 
 test("org-ready context resolves ORG_READY stage", () => {

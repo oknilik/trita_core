@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { getOrgSubscription, hasAccess, getPlanTier } from "./subscription";
+import { SELF_PAYWALL_ENABLED } from "./operating-mode";
 
 /**
  * Hozzáférési szintek — alacsonyabbtól magasabbig.
@@ -30,6 +31,10 @@ function higherAccess(a: AccessLevel, b: AccessLevel): AccessLevel {
  * User egyéni hozzáférési szintje.
  */
 export async function getSelfAccessLevel(userProfileId: string): Promise<AccessLevel> {
+  // Paywall kikapcsolva: mindenki a teljes egyéni riportot kapja.
+  // Visszakapcsolás: operating-mode.ts → SELF_PAYWALL_ENABLED = true.
+  if (!SELF_PAYWALL_ENABLED) return "self_plus";
+
   const [selfPurchase, orgMembership, teamMembership] = await Promise.all([
     prisma.purchase.findFirst({
       where: {
@@ -155,21 +160,6 @@ export function hasMinAccess(current: AccessLevel, required: AccessLevel): boole
 
 /**
  * Mi a következő természetes upgrade a jelenlegi szintről?
+ * (getNextUpgrade törölve 2026-07-14 — nem volt fogyasztója; a parkolt
+ * billing-világ árlistája a billing-v1-parked tagben él.)
  */
-export function getNextUpgrade(current: AccessLevel): { tier: string; label: string } | null {
-  switch (current) {
-    case "none":
-    case "self_start":
-      return { tier: "self_plus", label: "Plus (€9)" };
-    case "self_plus":
-      return { tier: "team_snapshot", label: "Team Snapshot (€99)" };
-    case "team_snapshot":
-      return { tier: "team_deep_dive", label: "Team Deep Dive (€990)" };
-    case "team_deep_dive":
-      return { tier: "team_pulse", label: "Team Pulse (€149/hó)" };
-    case "team_pulse":
-      return { tier: "org_insight", label: "Org Insight (€4 900/év)" };
-    default:
-      return null;
-  }
-}
