@@ -73,6 +73,10 @@ model UserProfile {
   avatarUrl   String?
   onboardedAt DateTime?
 
+  // Karrier-iránytű háttéradatok (results oldal wizard): status, eduLevel,
+  // eduField, ageBand, currentIndustry, interests[] — lásd CareerBackground.
+  careerBackground Json?
+
   // Research study fields
   testType           TestType?
   testTypeAssignedAt DateTime?
@@ -89,6 +93,7 @@ model UserProfile {
   satisfactionFeedback SatisfactionFeedback?
   researchSurvey       ResearchSurvey?
   featureInterests     FeatureInterest[]
+  roleFitFeedbacks     RoleFitFeedback[]
 
   // Team layer (KKV)
   ownedTeams       Team[]       @relation("TeamOwner")
@@ -261,6 +266,23 @@ model DimensionFeedback {
 }
 
 // Upcoming feature interest — fake door validation
+// Iparági illeszkedés kalibrációs visszajelzés — „dolgoztál ilyen
+// szerepben, találó volt-e?" A súlyok hosszú távú validálásához.
+model RoleFitFeedback {
+  id            String   @id @default(cuid())
+  userProfileId String
+  industryKey   String
+  roleKey       String
+  fitScore      Int
+  verdict       String // "accurate" | "inaccurate"
+  createdAt     DateTime @default(now())
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([userProfileId, industryKey, roleKey])
+  @@index([industryKey, roleKey])
+}
+
 model FeatureInterest {
   id            String   @id @default(cuid())
   userProfileId String
@@ -311,6 +333,10 @@ model TeamReport {
   risks             String?
   recommendations   String?
   interviewFindings String?
+  // „Hogyan vezesd ezt a csapatot" — vezetőknek szóló javaslatok.
+  leadershipGuide   String?
+  // Strukturált akcióterv: [{ title, description, timeframe: "30"|"60"|"90" }]
+  actionItems       Json?
   // Csak a tanácsadó látja, sosem publikálódik az org felé.
   internalNotes     String?
   createdById       String
@@ -494,6 +520,10 @@ model Campaign {
   orgId       String
   name        String
   description String?
+  // Mérés-típus: "OBSERVER_360" | "TEAM_ROLE" (| "PSYCH_SAFETY" később)
+  type        String    @default("OBSERVER_360")
+  // Csapat-célzású kampánynál a cél-csapat (riport-híd + idővonal ehhez köt)
+  teamId      String?
   status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
   createdBy   String
   createdAt   DateTime  @default(now())
@@ -506,6 +536,7 @@ model Campaign {
 
   @@index([orgId])
   @@index([createdBy])
+  @@index([teamId])
 }
 
 model CampaignParticipant {
