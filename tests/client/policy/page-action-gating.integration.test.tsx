@@ -198,9 +198,11 @@ describe("E3 page action gating client tests", () => {
     it("active: can start a new campaign", () => {
       renderCampaignsTab(true);
 
-      expect(
-        screen.getByRole("button", { name: new RegExp(t("org.campaigns.newCta", "en"), "i") }),
-      ).toBeEnabled();
+      // Az inline űrlap helyett a CTA a wizardra mutató link.
+      const cta = screen.getByRole("link", {
+        name: new RegExp(t("org.campaigns.newCta", "en"), "i"),
+      });
+      expect(cta).toHaveAttribute("href", "/org/org_1/campaigns/new");
       expect(screen.queryByRole("link", { name: actionGateCopy.ctaLabel })).not.toBeInTheDocument();
     });
 

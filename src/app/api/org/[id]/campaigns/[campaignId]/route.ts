@@ -26,7 +26,7 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
-      select: { id: true, orgId: true, status: true },
+      select: { id: true, orgId: true, status: true, type: true, teamId: true },
     }),
   ]);
 
@@ -114,6 +114,22 @@ export async function PATCH(
     },
     select: { id: true, name: true, status: true, closedAt: true },
   });
+
+  // Szerep-kör kampány: az aktiválás/zárás a csapat kérdőív-körét vezérli.
+  if (ctx.campaign.type === "TEAM_ROLE" && ctx.campaign.teamId) {
+    if (body.data.status === "ACTIVE") {
+      await prisma.team.update({
+        where: { id: ctx.campaign.teamId },
+        data: { teamRoleRoundActive: true, teamRoleRoundStartedAt: new Date() },
+      });
+    }
+    if (body.data.status === "CLOSED") {
+      await prisma.team.update({
+        where: { id: ctx.campaign.teamId },
+        data: { teamRoleRoundActive: false },
+      });
+    }
+  }
 
   // Notify org members about campaign status change via orchestrator (fire-and-forget)
   if (body.data.status === "ACTIVE") {

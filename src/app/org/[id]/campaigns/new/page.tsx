@@ -22,10 +22,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function NewCampaignPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ team?: string }>;
 }) {
-  const [locale, { id: orgId }] = await Promise.all([getServerLocale(), params]);
+  const [locale, { id: orgId }, { team: preselectedTeamId }] = await Promise.all([
+    getServerLocale(),
+    params,
+    searchParams,
+  ]);
 
   const { role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
@@ -83,18 +89,43 @@ export default async function NewCampaignPage({
     );
   }
 
-  const members = await prisma.organizationMember.findMany({
-    where: { orgId },
-    orderBy: { joinedAt: "asc" },
-    select: {
-      userId: true,
-      user: { select: { username: true, email: true } },
-    },
-  });
+  const [members, teams] = await Promise.all([
+    prisma.organizationMember.findMany({
+      where: { orgId },
+      orderBy: { joinedAt: "asc" },
+      select: {
+        userId: true,
+        user: { select: { username: true, email: true } },
+      },
+    }),
+    prisma.team.findMany({
+      where: { orgId },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        members: {
+          select: {
+            userId: true,
+            user: { select: { username: true, email: true } },
+          },
+        },
+      },
+    }),
+  ]);
 
   const serializedMembers = members.map((m) => ({
     userId: m.userId,
     displayName: m.user.username ?? m.user.email ?? m.userId,
+  }));
+
+  const serializedTeams = teams.map((team) => ({
+    id: team.id,
+    name: team.name,
+    members: team.members.map((m) => ({
+      userId: m.userId,
+      displayName: m.user.username ?? m.user.email ?? m.userId,
+    })),
   }));
 
   return (
@@ -132,6 +163,8 @@ export default async function NewCampaignPage({
         <CampaignWizard
           orgId={orgId}
           members={serializedMembers}
+          teams={serializedTeams}
+          preselectedTeamId={preselectedTeamId ?? null}
           locale={locale}
         />
       </main>

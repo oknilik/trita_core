@@ -7,6 +7,8 @@ import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/po
 const createSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
+  type: z.enum(["OBSERVER_360", "TEAM_ROLE"]).default("OBSERVER_360"),
+  teamId: z.string().min(1).optional(),
 });
 
 // GET /api/org/[id]/campaigns — list org campaigns
@@ -91,17 +93,36 @@ export async function POST(
   const body = createSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
+  // Csapat-célzásnál a csapatnak ehhez az org-hoz kell tartoznia.
+  if (body.data.teamId) {
+    const team = await prisma.team.findUnique({
+      where: { id: body.data.teamId },
+      select: { orgId: true },
+    });
+    if (!team || team.orgId !== orgId) {
+      return NextResponse.json({ error: "INVALID_TEAM" }, { status: 400 });
+    }
+  }
+  // Szerep-kör kampány csak csapatra indítható (a kör a csapaton él).
+  if (body.data.type === "TEAM_ROLE" && !body.data.teamId) {
+    return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });
+  }
+
   const campaign = await prisma.campaign.create({
     data: {
       orgId,
       name: body.data.name,
       description: body.data.description,
+      type: body.data.type,
+      teamId: body.data.teamId,
       createdBy: profile.id,
     },
     select: {
       id: true,
       name: true,
       description: true,
+      type: true,
+      teamId: true,
       status: true,
       createdAt: true,
     },

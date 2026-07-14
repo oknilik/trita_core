@@ -143,6 +143,7 @@ export default async function CampaignDetailPage({
         name: true,
         description: true,
         status: true,
+        teamId: true,
         createdAt: true,
         closedAt: true,
         creator: { select: { username: true } },
@@ -610,9 +611,27 @@ export default async function CampaignDetailPage({
               nextStatus={nextStatus}
               label={nextStatusLabel(nextStatus, locale)}
               isDanger={nextStatus === "CLOSED"}
+              confirmMessage={t(
+                nextStatus === "CLOSED"
+                  ? "campaignWiz.closeConfirm"
+                  : "campaignWiz.activateConfirm",
+                locale,
+              )}
             />
           </section>
         )}
+
+        {/* Lezárt kampány → riport-híd */}
+        {campaign.status === "CLOSED" && campaign.teamId && canManageCampaign ? (
+          <section className="rounded-2xl border border-sage/40 bg-sage/5 p-5">
+            <Link
+              href={`/team/${campaign.teamId}?tab=report`}
+              className="text-sm font-semibold text-sage-dark transition hover:text-ink"
+            >
+              {t("campaignWiz.closedReportCta", locale)}
+            </Link>
+          </section>
+        ) : null}
         {!canManageCampaign && isManagerRole && manageGateCopy ? (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">

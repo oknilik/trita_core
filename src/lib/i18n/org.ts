@@ -999,6 +999,55 @@ export const orgTranslations = {
     },
     creating: { hu: "Létrehozás...", en: "Creating..." },
     createCampaign: { hu: "Kampány létrehozása", en: "Create campaign" },
+
+    // Típusválasztó (0. lépés)
+    stepType: { hu: "Mérés típusa", en: "Measurement type" },
+    typeTitle: { hu: "Mit szeretnél mérni?", en: "What do you want to measure?" },
+    typeObserverName: { hu: "Kollégai visszajelzés (360°)", en: "Peer feedback (360°)" },
+    typeObserverDesc: {
+      hu: "A tagok kollégákat hívnak meg, akik kívülről jellemzik őket — az önkép és a külső kép összevethetővé válik.",
+      en: "Members invite colleagues who describe them from the outside — self-image and outside image become comparable.",
+    },
+    typeObserverMeta: { hu: "~10 perc / megfigyelő · név szerinti meghívás", en: "~10 min per observer · named invitations" },
+    typeObserverOut: { hu: "Eredmény: önkép vs. külső kép összehasonlítás, mért kapcsolati adatok a riportban", en: "Output: self vs. outside comparison, measured relationship data in the report" },
+    typeRoleName: { hu: "Csapatszerep-kör", en: "Team role round" },
+    typeRoleDesc: {
+      hu: "A csapat tagjai kitöltik a szerep-kérdőívet — a becsült szerepek helyett mért szerep-térkép készül.",
+      en: "Team members fill out the role questionnaire — a measured role map replaces estimates.",
+    },
+    typeRoleMeta: { hu: "~8 perc / fő · egy csapatra indítható", en: "~8 min per member · launched for one team" },
+    typeRoleOut: { hu: "Eredmény: mért szerep-lefedettség a csapatoldalon és a riportban", en: "Output: measured role coverage on the team page and in the report" },
+    typePsychName: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
+    typePsychDesc: {
+      hu: "Rövid, anonim csapat-kérdőív arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.",
+      en: "Short, anonymous team survey on how safe it feels to fail, ask, and disagree.",
+    },
+    typeComingSoon: { hu: "Hamarosan", en: "Coming soon" },
+
+    // Célzás (csapat-alapú)
+    stepTargeting: { hu: "Résztvevők", en: "Participants" },
+    teamsTitle: { hu: "Csapatok", en: "Teams" },
+    teamMemberCount: { hu: "{count} tag", en: "{count} members" },
+    noTeams: { hu: "Nincs csapat a szervezetben — válassz tagokat egyénileg.", en: "No teams in this organization — pick members individually." },
+    individualTitle: { hu: "Egyéni kiválasztás", en: "Individual selection" },
+    roleTeamHint: {
+      hu: "A szerep-kör a teljes csapatra indul — válaszd ki, melyik csapatra.",
+      en: "The role round runs for a whole team — choose which team.",
+    },
+    targetTeamLabel: { hu: "// cél-csapat", en: "// target team" },
+    typeSummaryLabel: { hu: "// mérés típusa", en: "// measurement type" },
+    autoNameHint: { hu: "A nevet mi javasoltuk — átírhatod.", en: "We suggested the name — feel free to change it." },
+
+    // Életciklus megerősítések
+    activateConfirm: {
+      hu: "Aktiválod a kampányt?\n\n• A résztvevők e-mail értesítést kapnak.\n• Aktív kampányhoz később is adhatsz résztvevőt.\n• A későbbi lezárás végleges — a kampány nem nyitható újra.",
+      en: "Activate this campaign?\n\n• Participants will receive an email notification.\n• You can still add participants while active.\n• Closing later is final — the campaign cannot be reopened.",
+    },
+    closeConfirm: {
+      hu: "Lezárod a kampányt?\n\n• A kitöltés leáll, több visszajelzés nem érkezik.\n• A lezárás végleges — a kampány nem nyitható újra.\n• Az eddig beérkezett adatok megmaradnak és a riportban felhasználhatók.",
+      en: "Close this campaign?\n\n• Filling stops; no more responses will arrive.\n• Closing is final — the campaign cannot be reopened.\n• Data collected so far is kept and usable in the report.",
+    },
+    closedReportCta: { hu: "Mért adat érkezett — riport frissítése →", en: "Measured data arrived — update the report →" },
   },
 
   // ── Hiring ───────────────────────────────────────────────────────────────

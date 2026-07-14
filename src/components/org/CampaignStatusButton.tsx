@@ -9,6 +9,8 @@ interface CampaignStatusButtonProps {
   nextStatus: string;
   label: string;
   isDanger: boolean;
+  /** Megerősítő szöveg a következményekkel — a szerver adja lokalizálva. */
+  confirmMessage?: string;
 }
 
 export function CampaignStatusButton({
@@ -17,12 +19,14 @@ export function CampaignStatusButton({
   nextStatus,
   label,
   isDanger,
+  confirmMessage,
 }: CampaignStatusButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleClick() {
+    if (confirmMessage && !window.confirm(confirmMessage)) return;
     setLoading(true);
     setError(null);
     try {
