@@ -11,6 +11,7 @@ import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
 import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
 import { AdminDraftReminderSection } from "@/app/admin/_components/AdminDraftReminderSection";
 import { AdminOrgAccessSection } from "@/app/admin/_components/AdminOrgAccessSection";
+import { AdminFeedbackSection } from "@/app/admin/_components/AdminFeedbackSection";
 import { AdminTabNav } from "@/app/admin/_components/AdminTabNav";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
@@ -43,13 +44,95 @@ export default async function AdminPage({
   const locale = await getServerLocale();
   const { tab } = await searchParams;
   const activeTab =
-    tab === "research" || tab === "reminders" || tab === "orgs" ? tab : "overview";
+    tab === "research" || tab === "reminders" || tab === "orgs" || tab === "feedback"
+      ? tab
+      : "overview";
 
   const now = Date.now();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
   const threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000);
   const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
+
+  // Feedback tab — szerep-kalibráció + érdeklődés-jelzések
+  if (activeTab === "feedback") {
+    const [roleFitRows, interestRows] = await Promise.all([
+      prisma.roleFitFeedback.groupBy({
+        by: ["industryKey", "roleKey", "verdict"],
+        _count: { _all: true },
+        _avg: { fitScore: true },
+      }),
+      prisma.featureInterest.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 100,
+        select: {
+          id: true,
+          featureKey: true,
+          createdAt: true,
+          userProfile: { select: { email: true, username: true } },
+        },
+      }),
+    ]);
+
+    // verdict-soronkénti groupBy → szerepenkénti aggregát
+    const aggregateMap = new Map<
+      string,
+      { industryKey: string; roleKey: string; accurate: number; inaccurate: number; scoreSum: number; total: number }
+    >();
+    for (const row of roleFitRows) {
+      const key = `${row.industryKey}:${row.roleKey}`;
+      const entry =
+        aggregateMap.get(key) ??
+        { industryKey: row.industryKey, roleKey: row.roleKey, accurate: 0, inaccurate: 0, scoreSum: 0, total: 0 };
+      const count = row._count._all;
+      if (row.verdict === "accurate") entry.accurate += count;
+      else entry.inaccurate += count;
+      entry.scoreSum += (row._avg.fitScore ?? 0) * count;
+      entry.total += count;
+      aggregateMap.set(key, entry);
+    }
+    const roleFitAggregates = [...aggregateMap.values()]
+      .map((entry) => ({
+        industryKey: entry.industryKey,
+        roleKey: entry.roleKey,
+        accurate: entry.accurate,
+        inaccurate: entry.inaccurate,
+        avgFitScore: entry.total > 0 ? Math.round(entry.scoreSum / entry.total) : 0,
+      }))
+      .sort((a, b) => b.accurate + b.inaccurate - (a.accurate + a.inaccurate));
+
+    return (
+      <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <FadeIn>
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
+            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
+              {t("admin.title", locale)}
+            </h1>
+          </FadeIn>
+
+          <FadeIn delay={0.05}>
+            <Suspense>
+              <AdminTabNav />
+            </Suspense>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <AdminFeedbackSection
+              roleFitAggregates={roleFitAggregates}
+              interests={interestRows.map((row) => ({
+                id: row.id,
+                featureKey: row.featureKey,
+                createdAt: row.createdAt.toISOString(),
+                email: row.userProfile.email,
+                username: row.userProfile.username,
+              }))}
+            />
+          </FadeIn>
+        </div>
+      </main>
+    );
+  }
 
   // Orgs tab — manual access provisioning (consulting mode)
   if (activeTab === "orgs") {

@@ -8,6 +8,7 @@ const TABS = [
   { id: "research", label: "Kutatás" },
   { id: "reminders", label: "Emlékeztetők" },
   { id: "orgs", label: "Szervezetek" },
+  { id: "feedback", label: "Visszajelzések" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
