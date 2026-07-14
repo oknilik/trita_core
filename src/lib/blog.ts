@@ -11,6 +11,7 @@ export interface BlogPost {
   description: string;
   publishedAt: string;
   locale: "hu" | "en";
+  translationSlug?: string;
   tags: string[];
   readingTime: string;
   content: string;
@@ -64,6 +65,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     description: data.description as string,
     publishedAt: data.publishedAt as string,
     locale,
+    translationSlug: data.translationSlug as string | undefined,
     tags: (data.tags ?? []) as string[],
     readingTime: locale === "hu" ? `${minutes} perc` : `${minutes} min read`,
     content,

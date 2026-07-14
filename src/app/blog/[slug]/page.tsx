@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/seo";
-
-export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -25,11 +23,17 @@ export async function generateMetadata({
   if (!post) return {};
 
   const baseUrl = getSiteUrl();
+  const languages = post.translationSlug
+    ? {
+        [post.locale]: `/blog/${slug}`,
+        [post.locale === "hu" ? "en" : "hu"]: `/blog/${post.translationSlug}`,
+      }
+    : undefined;
 
   return {
     title: `${post.title} | trita blog`,
     description: post.description,
-    alternates: { canonical: `/blog/${slug}` },
+    alternates: { canonical: `/blog/${slug}`, languages },
     openGraph: {
       title: post.title,
       description: post.description,
@@ -49,10 +53,11 @@ export async function generateMetadata({
 // ─── Tag color helper ─────────────────────────────────────────────────────────
 
 function getTagStyle(tag: string): string {
-  const sage = ["Bevezetés", "Csapatdinamika", "Önértékelés", "Fluktuáció", "Introduction", "Team dynamics"];
-  const bronze = ["Change management", "HEXACO", "Toborzás", "Recruitment"];
-  if (sage.includes(tag)) return "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]";
-  if (bronze.includes(tag)) return "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]";
+  const sage = ["bevezetés", "csapatdinamika", "önértékelés", "fluktuáció", "introduction", "team dynamics", "self-assessment", "turnover"];
+  const bronze = ["change management", "hexaco", "toborzás", "recruitment", "pszichometria", "psychometrics"];
+  const key = tag.toLowerCase();
+  if (sage.includes(key)) return "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]";
+  if (bronze.includes(key)) return "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]";
   return "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]";
 }
 
@@ -60,7 +65,7 @@ function getTagStyle(tag: string): string {
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-5 py-4 font-fraunces text-[17px] italic leading-[1.7] text-[var(--color-accent-self-deep)]">
+    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-[19px] italic leading-[1.65] text-[var(--color-accent-self-deep)]">
       {children}
     </div>
   );
@@ -131,31 +136,31 @@ function CompareTable({
   );
 }
 
-function KeyInsight({ children }: { children: React.ReactNode }) {
+function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
     <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
-      <div className="font-dm-sans mb-2 text-[8px] uppercase tracking-[1.5px] text-[var(--color-accent-primary-soft)]">
-        {"//"} kulcsgondolat
+      <div className="font-dm-sans mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+        {"//"} {isHu ? "kulcsgondolat" : "key insight"}
       </div>
-      <div className="text-[15px] leading-[1.75] text-white/85">{children}</div>
+      <div className="text-[16px] leading-[1.75] text-white/85">{children}</div>
     </div>
   );
 }
 
 // ─── Prose overrides ──────────────────────────────────────────────────────────
 
-const components = {
+const makeComponents = (isHu: boolean) => ({
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="mb-5 mt-14 font-fraunces text-[24px] leading-[1.3] text-[var(--color-text-primary)]" {...props} />
+    <h1 className="mb-5 mt-14 font-fraunces text-[30px] leading-[1.22] tracking-tight text-ink" {...props} />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="mb-4 mt-12 font-fraunces text-[20px] leading-[1.3] text-[var(--color-text-primary)]" {...props} />
+    <h2 className="mb-4 mt-12 font-fraunces text-[25px] leading-[1.22] tracking-tight text-ink" {...props} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="mb-3 mt-10 text-lg font-semibold text-[var(--color-text-primary)]" {...props} />
+    <h3 className="mb-3 mt-10 text-xl font-semibold text-[var(--color-text-primary)]" {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="mb-6 text-[15px] leading-[1.85] text-[var(--color-text-secondary)]" {...props} />
+    <p className="mb-6 text-[17px] leading-[1.8] text-[var(--color-text-secondary)]" {...props} />
   ),
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
     <ul className="mb-6 space-y-2 pl-5" {...props} />
@@ -165,7 +170,7 @@ const components = {
   ),
   li: (props: React.HTMLAttributes<HTMLLIElement>) => (
     <li
-      className="relative pl-2 text-[15px] leading-[1.85] text-[var(--color-text-secondary)] before:absolute before:-left-3 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[var(--color-accent-primary)] [ol>&]:before:content-none"
+      className="relative pl-2 text-[17px] leading-[1.8] text-[var(--color-text-secondary)] before:absolute before:-left-3 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[var(--color-accent-primary)] [ol>&]:before:content-none"
       {...props}
     />
   ),
@@ -187,8 +192,10 @@ const components = {
   StatRow,
   DimBadge,
   CompareTable,
-  KeyInsight,
-};
+  KeyInsight: ({ children }: { children: React.ReactNode }) => (
+    <KeyInsight isHu={isHu}>{children}</KeyInsight>
+  ),
+});
 
 export default async function BlogPostPage({
   params,
@@ -200,6 +207,12 @@ export default async function BlogPostPage({
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
+  // Nyelvváltásnál a cikk átirányít a saját fordítás-párjára,
+  // hogy a tartalom is nyelvet váltson, ne csak a keret.
+  if (post.locale !== locale && post.translationSlug) {
+    redirect(`/blog/${post.translationSlug}`);
+  }
+
 
   // Related posts (same tags, excluding current)
   const allPosts = getAllPosts(locale as "hu" | "en");
@@ -210,10 +223,10 @@ export default async function BlogPostPage({
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
       {/* Header */}
-      <div className="mx-auto max-w-[720px] px-5 pb-0 pt-5 lg:px-14">
+      <div className="mx-auto max-w-[840px] px-7 pb-0 pt-6">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1 text-xs text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
+          className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
         >
           <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -222,14 +235,14 @@ export default async function BlogPostPage({
         </Link>
       </div>
 
-      <article className="mx-auto max-w-[720px] px-5 pb-12 pt-3 lg:px-14">
+      <article className="mx-auto max-w-[840px] px-7 pb-14 pt-4">
         {/* Tags */}
         {post.tags.length > 0 && (
-          <div className="mb-2 flex flex-wrap gap-1">
+          <div className="mb-3 flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className={`rounded-full px-2 py-[2.5px] text-[8px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
+                className={`rounded-full px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
               >
                 {tag}
               </span>
@@ -237,18 +250,21 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* Title */}
-        <h1 className="mb-2 font-fraunces text-[26px] leading-[1.18] tracking-tight text-[var(--color-text-primary)] lg:text-[30px]">
+        {/* Title — a landing headline léptékével */}
+        <h1
+          className="mb-3 font-fraunces font-normal tracking-tight text-ink"
+          style={{ fontSize: "clamp(28px, 4.5vw, 42px)", lineHeight: 1.12 }}
+        >
           {post.title}
         </h1>
 
         {/* Description */}
-        <p className="mb-2.5 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+        <p className="mb-3 text-[17px] font-light leading-relaxed text-ink-body">
           {post.description}
         </p>
 
         {/* Meta */}
-        <div className="mb-8 flex items-center gap-2 border-b border-[var(--color-border-default)] pb-4 text-[11px] text-[var(--color-text-muted)]">
+        <div className="mb-9 flex items-center gap-2 border-b border-[var(--color-border-default)] pb-5 text-xs text-[var(--color-text-muted)]">
           <span>
             {new Date(post.publishedAt).toLocaleDateString(
               locale === "en" ? "en-GB" : "hu-HU",
@@ -260,34 +276,37 @@ export default async function BlogPostPage({
         </div>
 
         {/* MDX Content */}
-        <MDXRemote source={post.content} components={components} />
+        <MDXRemote source={post.content} components={makeComponents(post.locale !== "en")} />
 
         {/* Related posts */}
         {relatedPosts.length > 0 && (
-          <div className="mt-8 border-t border-[var(--color-border-default)] pt-6">
-            <p className="mb-3 text-[9px] font-semibold uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
-              {t("blog.readNext", locale)}
-            </p>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-10 border-t border-[var(--color-border-default)] pt-7">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
+              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary)]">
+                {t("blog.readNext", locale)}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {relatedPosts.map((rel) => (
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="rounded-[10px] border border-[var(--color-border-default)] bg-white p-4 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.03]"
+                  className="rounded-2xl border border-sand bg-white p-5 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.04]"
                 >
                   {rel.tags.length > 0 && (
-                    <div className="mb-1 flex flex-wrap gap-[3px]">
+                    <div className="mb-1.5 flex flex-wrap gap-1">
                       {rel.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-[5px] py-px text-[6px] uppercase tracking-wide text-[var(--color-text-muted)]">
+                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-[8px] uppercase tracking-wide text-[var(--color-text-muted)]">
                           {tag}
                         </span>
                       ))}
                     </div>
                   )}
-                  <h3 className="mb-[3px] font-fraunces text-sm leading-[1.2] text-[var(--color-text-primary)]">
+                  <h3 className="mb-1 font-fraunces text-[15px] leading-[1.25] text-ink">
                     {rel.title}
                   </h3>
-                  <span className="text-[9px] text-[var(--color-text-muted)]">
+                  <span className="text-[10px] text-[var(--color-text-muted)]">
                     {new Date(rel.publishedAt).toLocaleDateString(
                       locale === "en" ? "en-GB" : "hu-HU",
                       { year: "numeric", month: "long", day: "numeric" },
@@ -301,15 +320,15 @@ export default async function BlogPostPage({
         )}
 
         {/* CTA block */}
-        <div className="mt-7 flex flex-col items-center gap-5 rounded-xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
+        <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           <div className="flex-1 text-center sm:text-left">
-            <p className="mb-1 text-[8px] uppercase tracking-[1.5px] text-[var(--color-accent-primary-soft)]">
+            <p className="mb-1.5 font-dm-sans text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
               {t("blog.tryEyebrow", locale)}
             </p>
-            <h3 className="mb-1 font-fraunces text-lg leading-snug text-white">
+            <h3 className="mb-1.5 font-fraunces text-xl leading-snug text-white">
               {t("blog.tryTitle", locale)}
             </h3>
-            <p className="text-xs leading-relaxed text-white/[0.35]">
+            <p className="text-[13px] leading-relaxed text-white/[0.45]">
               {t("blog.trySub", locale)}
             </p>
           </div>

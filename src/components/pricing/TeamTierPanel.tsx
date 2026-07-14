@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
 import { getTeamPricingPlans } from "@/lib/pricing";
@@ -11,7 +8,6 @@ export function TeamTierPanel({
 }: {
   locale: Locale;
 }) {
-  const [billing, setBilling] = useState<"annual" | "monthly">("annual");
   const plans = getTeamPricingPlans(locale);
 
   return (
@@ -30,22 +26,13 @@ export function TeamTierPanel({
               name={plan.name}
               badge={plan.badge}
               price={plan.price}
-              monthlyPrice={plan.monthlyPrice}
-              priceSub={isSnapshot ? plan.seats : plan.perMonth}
+              priceSub={isSnapshot ? plan.seats : `${plan.perMonth} · ${plan.seats}`}
               description={plan.description}
               features={plan.features}
               ctaLabel={t("pricing.contactCta", locale)}
               ctaHref="/contact"
               ctaVariant={plan.id === "team" ? "primary" : "outline"}
               highlighted={plan.id === "team"}
-              billing={isSnapshot ? undefined : billing}
-              onBillingChange={isSnapshot ? undefined : setBilling}
-              billingLabelAnnual={t("pricing.billingAnnual", locale)}
-              billingLabelMonthly={t("pricing.billingMonthly", locale)}
-              billingLegend={t("pricing.billingLegend", locale)}
-              billingHintAnnual={t("pricing.billingHintAnnual", locale)}
-              billingHintMonthly={t("pricing.billingHintMonthly", locale)}
-              billingSavingsNote={t("pricing.billingSavingsNote", locale)}
             />
           );
         })}

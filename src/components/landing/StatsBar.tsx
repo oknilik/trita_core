@@ -1,16 +1,24 @@
 "use client";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-export function StatsBar() {
+export function StatsBar({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
 
-  const stats = [
-    { value: "~15", suffix: t("landing.statMinSuffix", locale), label: t("landing.statMinLabel", locale) },
-    { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
-    { value: t("landing.statResultValue", locale), suffix: "", label: t("landing.statResultLabel", locale), isText: true },
-    { value: t("landing.statSelfValue", locale), suffix: "", label: t("landing.statSelfLabel", locale), isText: true },
-  ];
+  const stats = mode === "self"
+    ? [
+        { value: "~15", suffix: t("landing.statMinSuffix", locale), label: t("landing.statMinLabel", locale) },
+        { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
+        { value: t("landing.statResultValue", locale), suffix: "", label: t("landing.statResultLabel", locale), isText: true },
+        { value: t("landing.statSelfValue", locale), suffix: "", label: t("landing.statSelfLabel", locale), isText: true },
+      ]
+    : [
+        { value: "~15", suffix: t("landing.statMinSuffix", locale), label: t("landing.statTeamMinLabel", locale) },
+        { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
+        { value: t("landing.statTeamPictureValue", locale), suffix: "", label: t("landing.statTeamPictureLabel", locale), isText: true },
+        { value: "16", suffix: "", label: t("landing.statTeamPatternLabel", locale) },
+      ];
 
   return (
     <div className="mx-auto max-w-[1120px] px-7">

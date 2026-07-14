@@ -15,7 +15,7 @@ import {
 // Tartalma: src/lib/help/topics.ts. Landing + belépett felület egyaránt
 // használja; a közönséget (audience) a root layout adja át szerep alapján.
 
-const HIDDEN_PREFIXES = ["/observe", "/founding", "/assessment", "/onboarding"];
+const HIDDEN_PREFIXES = ["/observe", "/pilot", "/assessment", "/onboarding"];
 
 export function HelpWidget({ audience }: { audience: HelpAudience }) {
   const pathname = usePathname();

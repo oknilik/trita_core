@@ -54,7 +54,7 @@ export const commonTranslations = {
     colLegal: { hu: "Jogi", en: "Legal" },
     blog: { hu: "Blog", en: "Blog" },
     pricing: { hu: "Árazás", en: "Pricing" },
-    founding: { hu: "Alapítói program", en: "Founding program" },
+    pilot: { hu: "Pilotprogram", en: "Pilot program" },
     navFounding: { hu: "Alapítói program", en: "Founding" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signUp: { hu: "Regisztráció", en: "Sign up" },

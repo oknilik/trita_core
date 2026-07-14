@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
 
-const FAQ_COUNT = 6;
+const FAQ_COUNT = 5;
 
 export function PricingFAQ({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState<number | null>(null);

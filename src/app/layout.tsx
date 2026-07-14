@@ -99,7 +99,7 @@ export default async function RootLayout({
   const locale = await getServerLocale();
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
-  const isNoShell = pathname.startsWith("/founding");
+  const isNoShell = pathname.startsWith("/pilot");
 
   try {
     if (userId) {

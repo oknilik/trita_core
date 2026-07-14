@@ -13,7 +13,7 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
 export const metadata: Metadata = {
-  title: "trita",
+  title: "trita — személyiség- és csapatintelligencia platform",
   description:
     "A trita validált módszertanra épülő személyiség- és csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
 };
@@ -58,8 +58,8 @@ export default async function Home({
       <TrustBar mode={mode} />
       <HowItWorks mode={mode} />
       <Features mode={mode} />
-      <ProofSection />
-      <StatsBar />
+      <ProofSection mode={mode} />
+      <StatsBar mode={mode} />
       <CtaSection mode={mode} />
     </main>
   );

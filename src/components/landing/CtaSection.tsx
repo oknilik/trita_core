@@ -23,7 +23,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
     ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.ctaSelfCta", locale))
     : t("landing.ctaTeamCta", locale);
   const microcopy = isSelf ? t("landing.ctaSelfMicrocopy", locale) : t("landing.ctaTeamMicrocopy", locale);
-  const ctaHref = isSelf ? "/try" : "/sign-up?type=team";
+  const ctaHref = isSelf ? "/try" : "/contact";
 
   return (
     <section className="px-7 py-12 md:py-20">

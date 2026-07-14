@@ -12,7 +12,7 @@ import {
   isBalanced,
 } from "@/lib/pattern-data";
 
-// ── Design tokens (founding page palette) ──────────────────
+// ── Design tokens (pilot page palette) ──────────────────
 const T = {
   bg: "#FAF7F2",
   card: "#F3EDE4",
@@ -633,7 +633,7 @@ export function PatternExplorer() {
               csapatod valódi adata. Csapatprofilok, heatmap, tension pair elemzés.
             </p>
             <a
-              href="/founding"
+              href="/pilot"
               className="mt-6 inline-flex min-h-[44px] items-center rounded-lg px-8 text-sm font-semibold text-white transition-colors"
               style={{ backgroundColor: T.accent }}
               onMouseEnter={(e) =>

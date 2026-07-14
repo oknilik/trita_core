@@ -30,7 +30,7 @@ export function Footer() {
       links: [
         { label: t("footer.blog", locale), href: "/blog" },
         { label: t("footer.pricing", locale), href: "/pricing" },
-        { label: t("footer.founding", locale), href: "/founding" },
+        { label: t("footer.pilot", locale), href: "/pilot" },
       ],
     },
     {
