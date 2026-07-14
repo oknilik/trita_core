@@ -99,7 +99,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
 
   return (
     <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-gray-900">
             {t("dashboard.feedbackTitle", locale)}

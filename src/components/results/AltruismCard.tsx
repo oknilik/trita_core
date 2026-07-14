@@ -36,7 +36,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
           <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
             {t("content.altruismName", locale)}
           </span>
-          <div className="h-1 w-[120px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+          <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
             <div className={`h-full rounded-sm ${colors.fill}`} style={{ width: `${value}%` }} />
           </div>
           <span className={`w-10 shrink-0 text-right font-fraunces text-base ${colors.text}`}>

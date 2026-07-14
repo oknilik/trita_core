@@ -3,6 +3,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { isConsultingLed } from "@/lib/operating-mode";
+import { TeamInterestBanner } from "@/components/results/TeamInterestBanner";
+import type { CareerBackground } from "@/lib/industry-fit";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getSelfAccessLevel } from "@/lib/access";
@@ -12,7 +15,6 @@ import type { AccessLevel } from "@/lib/access";
 import { runProfileEngine } from "@/lib/profile-engine";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
-import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import {
   BLOCK1, BLOCK8,
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
@@ -52,7 +54,7 @@ function getInsight(
   return insights[range];
 }
 
-type TabId = "results" | "comparison" | "invites";
+type TabId = "results" | "workstyle" | "career" | "comparison" | "invites";
 
 export default async function ProfileResultsPage({
   searchParams,
@@ -64,7 +66,7 @@ export default async function ProfileResultsPage({
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, username: true, email: true },
+    select: { id: true, username: true, email: true, careerBackground: true },
   });
   if (!profile) redirect("/sign-in");
 
@@ -75,11 +77,8 @@ export default async function ProfileResultsPage({
     sentInvitationsRaw,
     receivedInvitationsRaw,
     draft,
-    researchSurveyRecord,
     satisfactionFeedbackRecord,
     journeySnapshot,
-    teamRoleAnswerRecord,
-    teamRoleScoreRecord,
   ] = await Promise.all([
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
@@ -127,10 +126,6 @@ export default async function ProfileResultsPage({
       where: { userProfileId: profile.id },
       select: { answers: true, testType: true },
     }),
-    prisma.researchSurvey.findFirst({
-      where: { userProfileId: profile.id },
-      select: { id: true },
-    }),
     prisma.satisfactionFeedback.findFirst({
       where: { userProfileId: profile.id },
       select: { id: true },
@@ -138,14 +133,6 @@ export default async function ProfileResultsPage({
     getJourneySnapshotForProfileId(profile.id, {
       locale,
       entryPoint: "profile_results_page",
-    }),
-    prisma.teamRoleAnswer.findUnique({
-      where: { userProfileId: profile.id },
-      select: { id: true },
-    }),
-    prisma.teamRoleScore.findUnique({
-      where: { userProfileId: profile.id },
-      select: { id: true },
     }),
   ]);
 
@@ -200,7 +187,6 @@ export default async function ProfileResultsPage({
     ? Object.keys(draft.answers as Record<string, number>).length
     : 0;
   const draftTotalQuestions = config.questions.length;
-  const hasResearchSurvey = Boolean(researchSurveyRecord);
   const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
   const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
   const selfDashboardVm = createSelfDashboardIA({
@@ -218,21 +204,6 @@ export default async function ProfileResultsPage({
     (e) => e.scores as ScoreResult,
   );
   const hasObserverData = completedObservers.length >= 2;
-  const layerStatuses = evaluateProductLayersForScope(locale, {
-    hasSelfAssessmentStarted: journeySnapshot.state.completionSummary.self.started,
-    hasSelfAssessment: journeySnapshot.state.completionSummary.self.completed,
-    hasTeamRoleStarted: Boolean(teamRoleAnswerRecord),
-    hasTeamRole: Boolean(teamRoleScoreRecord),
-    hasStrengthProfile: Boolean(latestResult),
-    hasObserverFeedback: completedObservers.length > 0,
-    hasTeamInsights: journeySnapshot.state.completionSummary.team.ready,
-    hasOrgCampaign: journeySnapshot.state.completionSummary.org.activeCampaignCount > 0,
-    hasValuesLayerStarted: false,
-    hasValuesLayer: false,
-    hasConflictLayerStarted: false,
-    hasConflictLayer: false,
-    hasPlusAccess: accessLevelRaw === "self_plus",
-  }, "results", "self");
 
   const mainDimCodes = config.dimensions
     .filter((d) => d.code !== "I")
@@ -357,6 +328,8 @@ export default async function ProfileResultsPage({
   const initialTab: TabId =
     tabParam === "comparison" ? "comparison" :
     tabParam === "invites" ? "invites" :
+    tabParam === "workstyle" ? "workstyle" :
+    tabParam === "career" ? "career" :
     "results";
 
   const displayName =
@@ -588,7 +561,9 @@ export default async function ProfileResultsPage({
         pendingInvites={pendingInvitesCount}
         completedObserver={completedObservers.length}
       />
-      <div>
+      {/* A ProfileTabs belső ritmusával (gap-8 md:gap-12) azonos térköz a
+          tabokon kívüli elemeknek (pl. csapat-érdeklődés banner) is. */}
+      <div className="flex flex-col gap-8 md:gap-12">
         <ProfileTabs
           name={displayName}
           assessmentDate={latestResult.createdAt.toISOString()}
@@ -601,9 +576,7 @@ export default async function ProfileResultsPage({
           observerCount={completedObservers.length}
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
-          hasResearchSurvey={hasResearchSurvey}
           feedbackSubmitted={feedbackSubmitted}
-          occupationStatus={null}
           hasDraft={Boolean(draft)}
           draftAnsweredCount={draftAnsweredCount}
           draftTotalQuestions={draftTotalQuestions}
@@ -614,6 +587,7 @@ export default async function ProfileResultsPage({
           strengths={strengths}
           watchAreas={watchAreas}
           plusContent={plusContent}
+          careerBackground={profile.careerBackground as CareerBackground | null}
           bridgeNextStep={{
             stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
             explanation: selfDashboardVm.recommendedAction.description,
@@ -634,8 +608,27 @@ export default async function ProfileResultsPage({
           }
           experienceHints={journeySnapshot.resolution.experienceHints}
           experienceHintDestination={journeySnapshot.resolution.destination}
-          layerStatuses={layerStatuses}
         />
+
+        {/* Csapat-érdeklődés (meleg lead) — csak consulting-led módban,
+            és csak ha a user még nem tagja csapatnak/szervezetnek. */}
+        {isConsultingLed() &&
+          !journeySnapshot.state.completionSummary.team.joined &&
+          !journeySnapshot.state.completionSummary.org.joined && (
+            <TeamInterestBanner
+              alreadySent={Boolean(
+                await prisma.featureInterest.findUnique({
+                  where: {
+                    userProfileId_featureKey: {
+                      userProfileId: profile.id,
+                      featureKey: "team",
+                    },
+                  },
+                  select: { id: true },
+                }),
+              )}
+            />
+          )}
 
       </div>
     </PlatformPageShell>

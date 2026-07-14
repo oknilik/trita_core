@@ -14,15 +14,17 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
 
   return (
     <div className="w-full overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
-      <div className="grid grid-cols-3 md:grid-cols-6">
+      {/* Mobilon 3×2 rács: sorvégi cellán nincs jobb szegély, az első sor
+          alsó szegélyt kap — md-től egysoros. */}
+      <div className="grid grid-cols-3 max-md:[&>div:nth-child(-n+3)]:border-b max-md:[&>div:nth-child(3n)]:border-r-0 md:grid-cols-6">
         {dimensions.map((dim, i) => {
           const tier = getDimensionTier(dim.value);
           const colors = tierColors[tier];
           return (
             <div
               key={dim.name}
-              className={`px-2.5 py-4 text-center transition-colors hover:bg-[var(--color-surface-subtle)] ${
-                i < dimensions.length - 1 ? "border-r border-[var(--color-border-soft)]" : ""
+              className={`border-[var(--color-border-soft)] px-2 py-4 text-center transition-colors hover:bg-[var(--color-surface-subtle)] md:px-2.5 ${
+                i < dimensions.length - 1 ? "border-r" : ""
               }`}
             >
               <p className="mb-1.5 text-[10px] text-[var(--color-text-muted)]">

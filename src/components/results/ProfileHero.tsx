@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { Button } from "@/components/ui/primitives/Button";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type AccessLevel = "start" | "plus";
 
@@ -54,19 +55,35 @@ export function ProfileHero({
   return (
     <SurfaceHero
       variant="self"
-      contentClassName="mx-auto max-w-4xl px-9 pb-8 pt-10"
+      contentClassName="mx-auto max-w-4xl px-5 pb-7 pt-8 md:px-9 md:pb-8 md:pt-10"
       eyebrow={
-        <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
-          {t("results.heroEyebrow", locale)}
-        </p>
+        // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
+        // eyebrow nincs.
+        SELF_PAYWALL_ENABLED ? (
+          <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+            {t("results.heroEyebrow", locale)}
+          </p>
+        ) : undefined
       }
       badge={
-        <span
-          className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
-          style={{ backgroundColor: level.bg, color: level.color }}
-        >
-          {level.label}
-        </span>
+        SELF_PAYWALL_ENABLED ? (
+          <span
+            className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+            style={{ backgroundColor: level.bg, color: level.color }}
+          >
+            {level.label}
+          </span>
+        ) : (
+          <span
+            className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.08)",
+              color: "rgba(255,255,255,0.45)",
+            }}
+          >
+            {t("results.heroEyebrow", locale)}
+          </span>
+        )
       }
       title={(
         <div className="mb-0.5 flex items-center gap-3">
@@ -76,7 +93,7 @@ export function ProfileHero({
           >
             {initial}
           </div>
-          <h1 className="font-fraunces text-[34px] tracking-tight text-white">
+          <h1 className="break-words font-fraunces text-[26px] tracking-tight text-white md:text-[34px]">
             {userName}
           </h1>
         </div>
@@ -87,14 +104,21 @@ export function ProfileHero({
         </p>
       )}
       body={(
-        <div className="flex items-start justify-between gap-3">
-          <span className="font-fraunces text-[22px] italic text-[var(--color-accent-primary-soft)]">
-            {personalityType}
-          </span>
-          {percentile ? (
-            <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[9px] text-white/[0.45]">
-              {percentile}
+        <div>
+          <div className="flex items-start justify-between gap-3">
+            <span className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)] md:text-[22px]">
+              {personalityType}
             </span>
+            {percentile ? (
+              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[9px] text-white/[0.45]">
+                {percentile}
+              </span>
+            ) : null}
+          </div>
+          {percentile ? (
+            <p className="mt-1 text-right text-[9px] text-white/[0.28]">
+              {t("results.percentileNote", locale)}
+            </p>
           ) : null}
         </div>
       )}
@@ -141,7 +165,7 @@ export function ProfileHero({
         </>
       )}
       actions={(
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             type="button"
             onClick={onShare}

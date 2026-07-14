@@ -213,7 +213,7 @@ export function ComparisonTab({
                   hasGap ? "border-[var(--color-accent-primary)]/30 bg-[var(--color-surface-highlight-warm)]" : "border-[var(--color-action-primary-bg)]/20 bg-white"
                 }`}
               >
-                <div className="mb-2.5 flex items-center justify-between">
+                <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-[13px] font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
                   <span
                     className="rounded px-2 py-0.5 text-[11px] font-medium"

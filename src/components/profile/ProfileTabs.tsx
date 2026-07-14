@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
@@ -10,12 +10,16 @@ import { ProfileHero } from "@/components/results/ProfileHero";
 import { ProgressBar } from "@/components/results/ProgressBar";
 import { InsightPair } from "@/components/results/InsightPair";
 import { UpgradeButton } from "./UpgradeButton";
-import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 import { DimensionStrip } from "@/components/results/DimensionStrip";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
+import { isConsultingLed } from "@/lib/operating-mode";
+import { RadarChart } from "@/components/dashboard/RadarChart";
+import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
+import { CareerCompass } from "@/components/results/CareerCompass";
+import type { CareerBackground } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
 import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
@@ -26,11 +30,10 @@ import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { Card } from "@/components/ui/primitives/Card";
-import type { ProductLayerStatus } from "@/lib/domain/layers-4plus2";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 
 type ProfileLevel = "start" | "plus";
-type TabId = "results" | "comparison" | "invites";
+type TabId = "results" | "workstyle" | "career" | "comparison" | "invites";
 
 // ─── Serialized prop types ──────────────────────────────────────────────────
 
@@ -104,9 +107,7 @@ export interface ProfileTabsProps {
   observerCount: number;
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
-  hasResearchSurvey: boolean;
   feedbackSubmitted: boolean;
-  occupationStatus: string | null;
   hasDraft: boolean;
   draftAnsweredCount: number;
   draftTotalQuestions: number;
@@ -129,9 +130,9 @@ export interface ProfileTabsProps {
   };
   bridgeNextStep?: BridgeNextStep;
   hasTeamOrOrgMembership?: boolean;
-  layerStatuses?: ProductLayerStatus[];
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
+  careerBackground?: CareerBackground | null;
 }
 
 // ─── Shared paywall components ──────────────────────────────────────────────
@@ -183,37 +184,24 @@ function TabPaywall({ tier, tierLabel, price, teaser, locale }: {
 
 interface ResultsTabProps {
   dimensions: SerializedDimension[];
-  growthFocusItems: SerializedGrowthItem[];
-  assessmentResultId: string;
   isPlus: boolean;
   hasObserverData: boolean;
-  observerCount: number;
-  feedbackSubmitted: boolean;
   locale: Locale;
   plusContent?: ProfileTabsProps["plusContent"];
+  /** Observer-CTA: átvált a meghívások tabra */
+  onOpenInvites: () => void;
 }
 
+// „Ki vagyok?" — radar, dimenziók, altruizmus, kulcs-tanulságok.
 function ResultsTab({
   dimensions,
-  growthFocusItems,
-  assessmentResultId,
   isPlus,
   hasObserverData,
-  observerCount,
-  feedbackSubmitted,
   locale,
   plusContent,
+  onOpenInvites,
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
-  const showObserver = hasObserverData && isPlus;
-
-  const observerDims = mainDims.map((d) => ({
-    code: d.code,
-    label: d.label,
-    color: d.color,
-    selfScore: d.score,
-    observerScore: d.observerScore,
-  }));
 
   const stripDims = mainDims.map((d) => ({
     name: d.label,
@@ -230,21 +218,54 @@ function ResultsTab({
     facets: d.facets,
   }));
 
+  const strongestIdx = accordionDims.reduce(
+    (best, dim, idx) => (dim.value > accordionDims[best].value ? idx : best),
+    0,
+  );
+
   return (
     <div className="flex flex-col gap-10 md:gap-14">
-      {/* 1. Dimension strip — 6 column overview */}
-      <div>
-        <p className="mb-1.5 text-[11px] font-medium text-[var(--color-text-muted)]">
-          {t("content.stripLabel", locale)}
-        </p>
-        <DimensionStrip dimensions={stripDims} />
-      </div>
+      {/* 1. Áttekintés: radar + dimenzió-strip */}
+      <section>
+        <DashboardSectionHeader
+          label={t("results.sectionOverview", locale)}
+          className="mb-4"
+        />
+        <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
+          <div className="mx-auto w-full max-w-[320px]">
+            <RadarChart
+              dimensions={mainDims.map((d) => ({
+                code: d.code,
+                color: d.color,
+                score: d.score,
+              }))}
+              uid="self-report"
+            />
+          </div>
+          <div>
+            <p className="mb-1.5 text-[11px] font-medium text-[var(--color-text-muted)]">
+              {t("content.stripLabel", locale)}
+            </p>
+            <DimensionStrip dimensions={stripDims} />
+            <p className="mt-3 text-[10px] leading-relaxed text-[var(--color-text-muted)]">
+              {t("results.radarNote", locale)}
+            </p>
+          </div>
+        </div>
+      </section>
 
-      {/* 2. Dimension accordion */}
-      <DimensionAccordion
-        dimensions={accordionDims}
-        showUpsell={!isPlus}
-      />
+      {/* 2. Dimenziók részletesen — a legerősebb alapból nyitva */}
+      <section>
+        <DashboardSectionHeader
+          label={t("results.sectionDimensions", locale)}
+          className="mb-4"
+        />
+        <DimensionAccordion
+          dimensions={accordionDims}
+          showUpsell={!isPlus}
+          defaultOpenIdx={strongestIdx}
+        />
+      </section>
 
       {/* Altruism — supplementary scale */}
       {(() => {
@@ -258,27 +279,62 @@ function ResultsTab({
         );
       })()}
 
-      {/* Profile summary dark card — between dimensions and plus content */}
-      {isPlus && plusContent && plusContent.takeaways.length > 0 && (
-        <div
-          className="rounded-2xl p-5 px-6"
-          style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
-        >
-          <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
-            {t("content.profileSummary", locale)}
-          </p>
-          <div className="flex flex-col gap-2">
-            {plusContent.takeaways.slice(0, 2).map((t, i) => (
-              <div key={i} className="flex items-start gap-2.5">
-                <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-                <p className="text-[13px] leading-[1.6] text-white/[0.55]">{t}</p>
-              </div>
-            ))}
+      {/* 3. Kulcs-tanulságok — rövid zárás; a részletes munkastílus külön tabon */}
+      {isPlus && plusContent && (
+        <KeyTakeawaysSection
+          paragraphs={plusContent.takeaways}
+          closingText={plusContent.closingText}
+          isUnlocked={true}
+        />
+      )}
+
+      {/* Observer kontextus-CTA — ha még nincs külső visszajelzés */}
+      {!hasObserverData && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-5">
+          <div className="max-w-xl">
+            <p className="text-sm font-semibold text-[var(--color-text-primary)]">
+              {t("results.observerCtaTitle", locale)}
+            </p>
+            <p className="mt-1 text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+              {t("results.observerCtaBody", locale)}
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={onOpenInvites}
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+          >
+            {t("results.observerCtaButton", locale)}
+          </button>
         </div>
       )}
 
-      {/* 3. Plus content sections */}
+      {/* Inline upsell — csak aktív paywallnál */}
+      {!isPlus && <InlineUpsell />}
+
+      {/* Locked content preview — csak aktív paywallnál */}
+      {!isPlus && <LockedPreview isPlus={false} />}
+    </div>
+  );
+}
+
+// „Hogyan dolgozom?" — munkastílus, ideális környezet, szerep-illeszkedés,
+// csapatszerep-hajlamok.
+function WorkStyleTab({
+  dimensions,
+  isPlus,
+  locale,
+  plusContent,
+}: {
+  dimensions: SerializedDimension[];
+  isPlus: boolean;
+  locale: Locale;
+  plusContent?: ProfileTabsProps["plusContent"];
+}) {
+  const mainDims = dimensions.filter((d) => d.code !== "I");
+
+  return (
+    <div className="flex flex-col gap-10 md:gap-14">
       {isPlus && plusContent && (
         <>
           <HowYouWorkSection
@@ -298,32 +354,64 @@ function ResultsTab({
             prepRoles={plusContent.roleFit.prepRoles}
             isUnlocked={true}
           />
-          <KeyTakeawaysSection
-            paragraphs={plusContent.takeaways}
-            closingText={plusContent.closingText}
-            isUnlocked={true}
-          />
         </>
       )}
 
-      {/* 4. TeamRole team roles */}
-      <TeamRoles
-        hexacoScores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
-        locale={locale}
-      />
+      <section>
+        <DashboardSectionHeader
+          label={t("results.sectionRoles", locale)}
+          className="mb-4"
+        />
+        <TeamRoles
+          hexacoScores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
+          locale={locale}
+        />
+      </section>
+    </div>
+  );
+}
 
-      {/* 4. Inline upsell — after TeamRole, before locked sections */}
-      {!isPlus && <InlineUpsell />}
+// „Merre tovább?" — Karrier-iránytű, a fejlődési terv az eredménybe integrálva.
+function CareerTab({
+  dimensions,
+  growthFocusItems,
+  hasObserverData,
+  careerBackground,
+  locale,
+  onOpenInvites,
+}: {
+  dimensions: SerializedDimension[];
+  growthFocusItems: SerializedGrowthItem[];
+  hasObserverData: boolean;
+  careerBackground: CareerBackground | null;
+  locale: Locale;
+  onOpenInvites: () => void;
+}) {
+  const mainDims = dimensions.filter((d) => d.code !== "I");
 
-      {/* 5. Locked content preview */}
-      {!isPlus && <LockedPreview isPlus={false} />}
-
-      {/* 6. Satisfaction feedback (research) */}
-      <FeedbackForm
-        initialSubmitted={feedbackSubmitted}
-        hasObserverFeedback={hasObserverData}
-      />
-
+  return (
+    <div className="flex flex-col gap-10 md:gap-14">
+      <section>
+        <DashboardSectionHeader
+          label={t("results.ccTitle", locale)}
+          className="mb-4"
+        />
+        <CareerCompass
+          scores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
+          observerScores={
+            hasObserverData
+              ? Object.fromEntries(
+                  mainDims
+                    .filter((d) => typeof d.observerScore === "number")
+                    .map((d) => [d.code, d.observerScore as number]),
+                )
+              : null
+          }
+          initialBackground={careerBackground}
+          growthFocusItems={growthFocusItems}
+          onRequestObserver={onOpenInvites}
+        />
+      </section>
     </div>
   );
 }
@@ -343,9 +431,7 @@ export function ProfileTabs({
   observerCount,
   sentInvitations,
   receivedInvitations,
-  hasResearchSurvey,
   feedbackSubmitted,
-  occupationStatus,
   hasDraft,
   draftAnsweredCount,
   draftTotalQuestions,
@@ -358,16 +444,43 @@ export function ProfileTabs({
   plusContent,
   bridgeNextStep,
   hasTeamOrOrgMembership = false,
-  layerStatuses,
   experienceHints,
   experienceHintDestination,
+  careerBackground = null,
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
   const router = useRouter();
   const tabBarRef = useRef<HTMLDivElement>(null);
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+  // Görgethetőség-jelzés: él-fade csak akkor, ha arra még van tartalom.
+  const [tabFade, setTabFade] = useState({ left: false, right: false });
+
+  const updateTabFade = useCallback(() => {
+    const el = tabScrollRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    setTabFade({
+      left: el.scrollLeft > 4,
+      right: el.scrollLeft < maxScroll - 4,
+    });
+  }, []);
+
+  useEffect(() => {
+    updateTabFade();
+    window.addEventListener("resize", updateTabFade);
+    return () => window.removeEventListener("resize", updateTabFade);
+  }, [updateTabFade]);
+
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
-  const [surveyOpen, setSurveyOpen] = useState(false);
+
+  // Az aktív tab úszik be a látótérbe (mount + tab-váltás).
+  useEffect(() => {
+    const el = tabScrollRef.current?.querySelector<HTMLButtonElement>(
+      `button[data-tab-id="${activeTab}"]`,
+    );
+    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [activeTab]);
 
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
@@ -391,13 +504,20 @@ export function ProfileTabs({
         ? t(stageKeyMap[bridgeNextStep.stage], locale)
         : t("content.bridgeFallbackStage", locale))
     : null;
+  // Consulting-led módban a „Csapat/szervezet indítása" gyorslink
+  // (self-serve onboarding) rejtve — a terelést az érdeklődés-banner végzi.
   const shouldShowTeamShortcut = bridgeNextStep
-    ? !hasTeamOrOrgMembership &&
+    ? !isConsultingLed() &&
+      !hasTeamOrOrgMembership &&
       (bridgeNextStep.stage === "SELF_COMPLETED" || bridgeNextStep.stage === "OBSERVER_PENDING")
     : false;
   const shouldShowOrgExpansionPrompt = Boolean(experienceHints?.showOrgExpansionPrompt);
+  // Consulting-led módban a self-serve csapat-létrehozó banner nem jelenik
+  // meg — helyette az eredmény-oldal alján lévő érdeklődés-banner terel.
   const shouldShowTeamCreationBanner = Boolean(
-    experienceHints?.showTeamCreationBanner && !hasTeamOrOrgMembership,
+    !isConsultingLed() &&
+      experienceHints?.showTeamCreationBanner &&
+      !hasTeamOrOrgMembership,
   );
   const shouldShowAssessmentContinuation = Boolean(experienceHints?.showAssessmentContinuation);
 
@@ -428,6 +548,28 @@ export function ProfileTabs({
       ),
     },
     {
+      id: "workstyle",
+      label: t("results.tabWorkstyle", locale),
+      locked: false,
+      icon: (
+        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="6" width="14" height="10" rx="1.5" />
+          <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h3A1.5 1.5 0 0 1 13 4.5V6M3 10.5h14" />
+        </svg>
+      ),
+    },
+    {
+      id: "career",
+      label: t("results.tabCareer", locale),
+      locked: false,
+      icon: (
+        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="10" cy="10" r="8" />
+          <path d="M13 7l-2 5-4 1 2-5 4-1z" />
+        </svg>
+      ),
+    },
+    {
       id: "comparison",
       label: t("results.tabComparison", locale),
       locked: !isPlus,
@@ -453,14 +595,6 @@ export function ProfileTabs({
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
-      {/* Research survey modal */}
-      <ResearchSurvey
-        locale={locale as Locale}
-        hasObserverFeedback={hasObserverData}
-        occupationStatus={occupationStatus}
-        isOpen={surveyOpen}
-        onClose={() => setSurveyOpen(false)}
-      />
 
       {/* Dark sage hero */}
       <ProfileHero
@@ -643,46 +777,134 @@ export function ProfileTabs({
         onNavigateToInvites={() => handleTabChange("invites")}
       />
 
-      {layerStatuses && layerStatuses.length > 0 ? (
-        <Card as="section" spacing="md" className="p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
-            {t("content.layerStatusEyebrow", locale)}
-          </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {layerStatuses.map((layer) => {
-              const statusLabel =
-                layer.status === "COMPLETED"
-                  ? t("content.layerStatusCompleted", locale)
-                  : layer.status === "IN_PROGRESS"
-                    ? t("content.layerStatusInProgress", locale)
-                  : layer.status === "AVAILABLE"
-                    ? t("content.layerStatusAvailable", locale)
-                    : t("content.layerStatusLocked", locale);
+      {/* Insight pair */}
+      {strengths && watchAreas && (
+        <InsightPair
+          strengths={(() => {
+            const mainDims = dimensions.filter((d) => d.code !== "I");
+            const high = mainDims.filter((d) => d.score >= 70);
+            if (high.length === 0) {
+              const top2 = [...mainDims].sort((a, b) => b.score - a.score).slice(0, 2);
+              return top2.map((d) => ({ dimension: d.label, text: d.insight }));
+            }
+            return high.map((d) => ({ dimension: d.label, text: d.insight }));
+          })()}
+          watchAreas={(() => {
+            const mainDims = dimensions.filter((d) => d.code !== "I");
+            const low = mainDims.filter((d) => d.score < 40);
+            if (low.length === 0) return [{ text: t("content.noLowDimension", locale) }];
+            return low.map((d) => ({ dimension: d.label, text: d.insight }));
+          })()}
+        />
+      )}
 
-              const statusClass =
-                layer.status === "COMPLETED"
-                  ? "bg-sage-soft text-sage-dark"
-                  : layer.status === "IN_PROGRESS"
-                    ? "bg-[#e9f3ff] text-[#2f5d87]"
-                  : layer.status === "AVAILABLE"
-                    ? "bg-[var(--color-surface-chip-warm-soft)] text-[var(--color-accent-primary-strong)]"
-                    : "bg-cream text-ink-body";
+      {/* Tab bar — pill style */}
+      <div
+        ref={tabBarRef}
+        className="relative scroll-mt-24 rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-white"
+      >
+        {/* Él-fade jelzők — csak ott, ahol még van elgörgetett tartalom */}
+        {tabFade.left && (
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-white to-transparent" />
+        )}
+        {tabFade.right && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-white to-transparent" />
+        )}
+        <div
+          ref={tabScrollRef}
+          onScroll={updateTabFade}
+          className="flex snap-x overflow-x-auto rounded-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="tablist"
+          aria-label="Profile navigation"
+        >
+        {TABS.map((tab, i) => (
+          <button
+            key={tab.id}
+            data-tab-id={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            onClick={() => handleTabChange(tab.id)}
+            className={[
+              // Mobilon természetes szélesség + vízszintes görgetés; md-től
+              // egyenlő oszlopok. A felirat sosem törik/csonkul.
+              "flex min-h-[48px] flex-none shrink-0 snap-start items-center justify-center gap-1.5 whitespace-nowrap px-4 py-3 text-center text-xs font-medium transition-all md:flex-1 md:px-3",
+              i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
+              activeTab === tab.id
+                ? "bg-[var(--color-action-primary-bg)] text-white"
+                : "bg-white text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
+            ].filter(Boolean).join(" ")}
+          >
+            {tab.locked ? (
+              <svg viewBox="0 0 12 14" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="6" width="10" height="7" rx="1.5" />
+                <path d="M3 6V4a3 3 0 0 1 6 0v2" />
+              </svg>
+            ) : tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
+        </div>
+      </div>
 
-              return (
-                <div key={layer.id} className="rounded-xl border border-sand bg-cream px-3 py-2.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-[12px] font-semibold text-ink">{layer.label}</p>
-                    <span className={`rounded-full px-2 py-[2px] text-[10px] font-semibold ${statusClass}`}>
-                      {statusLabel}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-[11px] leading-relaxed text-ink-body">{layer.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-      ) : null}
+      {/* Tab content */}
+      <div
+        key={activeTab}
+        className="flex flex-col gap-10 md:gap-14"
+        style={{ animation: "fadeIn 0.25s ease-out" }}
+      >
+        {activeTab === "results" && (
+          <ResultsTab
+            dimensions={dimensions}
+            onOpenInvites={() => handleTabChange("invites")}
+            isPlus={isPlus}
+            hasObserverData={hasObserverData}
+            locale={locale}
+            plusContent={plusContent}
+          />
+        )}
+        {activeTab === "workstyle" && (
+          <WorkStyleTab
+            dimensions={dimensions}
+            isPlus={isPlus}
+            locale={locale}
+            plusContent={plusContent}
+          />
+        )}
+        {activeTab === "career" && (
+          <CareerTab
+            dimensions={dimensions}
+            growthFocusItems={growthFocusItems}
+            hasObserverData={hasObserverData}
+            careerBackground={careerBackground}
+            locale={locale}
+            onOpenInvites={() => handleTabChange("invites")}
+          />
+        )}
+        {activeTab === "comparison" && (
+          isPlus ? (
+            <ComparisonTabNew
+              dimensions={dimensions}
+              hasObserverData={hasObserverData}
+              observerCount={observerCount}
+            />
+          ) : (
+            <TabPaywall
+              tier="self_plus"
+              tierLabel="Plus"
+              price="€9"
+              locale={locale}
+              teaser={t("content.paywallComparisonTeaser", locale)}
+            />
+          )
+        )}
+        {activeTab === "invites" && (
+          <InvitationsTab
+            sentInvitations={sentInvitations}
+            receivedInvitations={receivedInvitations}
+            isPlus={isPlus}
+          />
+        )}
+      </div>
 
       {/* Journey bridge CTA — single primary direction after self insight */}
       {bridgeNextStep ? (
@@ -761,103 +983,11 @@ export function ProfileTabs({
         </div>
       ) : null}
 
-      {/* Insight pair */}
-      {strengths && watchAreas && (
-        <InsightPair
-          strengths={(() => {
-            const mainDims = dimensions.filter((d) => d.code !== "I");
-            const high = mainDims.filter((d) => d.score >= 70);
-            if (high.length === 0) {
-              const top2 = [...mainDims].sort((a, b) => b.score - a.score).slice(0, 2);
-              return top2.map((d) => ({ dimension: d.label, text: d.insight }));
-            }
-            return high.map((d) => ({ dimension: d.label, text: d.insight }));
-          })()}
-          watchAreas={(() => {
-            const mainDims = dimensions.filter((d) => d.code !== "I");
-            const low = mainDims.filter((d) => d.score < 40);
-            if (low.length === 0) return [{ text: t("content.noLowDimension", locale) }];
-            return low.map((d) => ({ dimension: d.label, text: d.insight }));
-          })()}
-        />
-      )}
-
-      {/* Tab bar — pill style */}
-      <div
-        ref={tabBarRef}
-        className="scroll-mt-24 flex overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-white"
-        role="tablist"
-        aria-label="Profile navigation"
-      >
-        {TABS.map((tab, i) => (
-          <button
-            key={tab.id}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            onClick={() => handleTabChange(tab.id)}
-            className={[
-              "flex min-h-[48px] flex-1 items-center justify-center gap-1.5 py-3 text-center text-xs font-medium transition-all",
-              i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
-              activeTab === tab.id
-                ? "bg-[var(--color-action-primary-bg)] text-white"
-                : "bg-white text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
-            ].filter(Boolean).join(" ")}
-          >
-            {tab.locked ? (
-              <svg viewBox="0 0 12 14" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="1" y="6" width="10" height="7" rx="1.5" />
-                <path d="M3 6V4a3 3 0 0 1 6 0v2" />
-              </svg>
-            ) : tab.icon}
-            <span className="truncate">{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Tab content */}
-      <div
-        key={activeTab}
-        className="flex flex-col gap-10 md:gap-14"
-        style={{ animation: "fadeIn 0.25s ease-out" }}
-      >
-        {activeTab === "results" && (
-          <ResultsTab
-            dimensions={dimensions}
-            growthFocusItems={growthFocusItems}
-            assessmentResultId={assessmentResultId}
-            isPlus={isPlus}
-            hasObserverData={hasObserverData}
-            observerCount={observerCount}
-            feedbackSubmitted={feedbackSubmitted}
-            locale={locale}
-            plusContent={plusContent}
-          />
-        )}
-        {activeTab === "comparison" && (
-          isPlus ? (
-            <ComparisonTabNew
-              dimensions={dimensions}
-              hasObserverData={hasObserverData}
-              observerCount={observerCount}
-            />
-          ) : (
-            <TabPaywall
-              tier="self_plus"
-              tierLabel="Plus"
-              price="€9"
-              locale={locale}
-              teaser={t("content.paywallComparisonTeaser", locale)}
-            />
-          )
-        )}
-        {activeTab === "invites" && (
-          <InvitationsTab
-            sentInvitations={sentInvitations}
-            receivedInvitations={receivedInvitations}
-            isPlus={isPlus}
-          />
-        )}
-      </div>
+      {/* Elégedettség-visszajelzés — egyszer, az oldal alján */}
+      <FeedbackForm
+        initialSubmitted={feedbackSubmitted}
+        hasObserverFeedback={hasObserverData}
+      />
     </div>
   );
 }

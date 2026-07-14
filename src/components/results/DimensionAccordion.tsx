@@ -26,6 +26,8 @@ interface DimensionEntry {
 interface DimensionAccordionProps {
   dimensions: DimensionEntry[];
   showUpsell?: boolean;
+  /** Alapból nyitott elem indexe (pl. a legerősebb dimenzió) */
+  defaultOpenIdx?: number | null;
 }
 
 function AccordionItem({
@@ -70,7 +72,7 @@ function AccordionItem({
         <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
           {name}
         </span>
-        <div className="h-1 w-[120px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+        <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
           <div
             className={`h-full rounded-sm ${colors.fill}`}
             style={{ width: `${value}%` }}
@@ -128,7 +130,8 @@ function AccordionItem({
                     {t("content.accFacetDetail", locale)}
                   </p>
                   <div className="rounded-lg bg-white/60 p-3">
-                    <div className="grid grid-cols-2 gap-2">
+                    {/* Mobilon egy oszlop — két oszlopban a skála+szám összecsúszna */}
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {facets.map((f) => {
                         const fTier = getDimensionTier(f.score);
                         const fColors = tierColors[fTier];
@@ -187,8 +190,11 @@ function AccordionItem({
 export function DimensionAccordion({
   dimensions,
   showUpsell = false,
+  defaultOpenIdx = 0,
 }: DimensionAccordionProps) {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  // Alapból egy elem nyitva (default: az első) — a tartalom ne legyen
+  // teljesen rejtve az első ránézésre.
+  const [openIdx, setOpenIdx] = useState<number | null>(defaultOpenIdx);
   const { locale } = useLocale();
 
   return (
