@@ -145,11 +145,12 @@ export async function resolveJourneyContext(
             select: { orgId: true, role: true, joinedAt: true },
           })
         : getActiveOrgMembership(profileId),
-      prisma.featureInterest.findUnique({
+      prisma.feedback.findUnique({
         where: {
-          userProfileId_featureKey: {
+          userProfileId_kind_targetKey: {
             userProfileId: profileId,
-            featureKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
+            kind: "feature_interest",
+            targetKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
           },
         },
         select: { userProfileId: true },

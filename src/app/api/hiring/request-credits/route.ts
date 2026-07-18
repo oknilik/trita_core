@@ -62,7 +62,7 @@ export async function POST(req: Request) {
             <strong>${orgName}</strong> szervezethez.
           </p>
           <p style="font-size:13px;color:#7a756e;margin-top:12px">
-            A jelenlegi credit pool üres. Tölts fel krediteket, hogy a csapat
+            A jelenlegi kreditkeret üres. Tölts fel krediteket, hogy a csapat
             folytathassa a jelöltértékelést.
           </p>
           <div style="margin-top:20px">

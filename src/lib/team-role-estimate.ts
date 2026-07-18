@@ -1,41 +1,41 @@
-// Estimate TeamRole team roles from HEXACO dimension scores
-// HEXACO coding: H=Honesty-Humility, E=Emotionality, X=eXtraversion,
+// Estimate TeamRole team roles from TRITAN dimension scores
+// TRITAN coding: H=Honesty-Humility, E=Emotionality, X=eXtraversion,
 //                A=Agreeableness, C=Conscientiousness, O=Openness
 // Scores are 0-100 (percentage)
 
 import type { TeamRoleCode, TeamRoleScores } from "./team-role-scoring";
 import { TEAM_ROLES } from "./team-role-scoring";
 
-type HexacoDimCode = "H" | "E" | "X" | "A" | "C" | "O";
-type WeightMap = Partial<Record<HexacoDimCode, number>>;
+type TritanDimCode = "INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN";
+type WeightMap = Partial<Record<TritanDimCode, number>>;
 
 // Weights derived from personality-role literature
-// Each role gets a weighted sum of HEXACO dim scores (positive = boosted by high score)
-export const HEXACO_TEAM_ROLE_WEIGHTS: Record<TeamRoleCode, WeightMap> = {
-  PL: { O: +0.45, C: -0.15, H: -0.10, X: -0.10 }, // Creative, unconventional
-  RI: { X: +0.45, A: +0.20, O: +0.15, E: -0.10 }, // Outgoing, networker
-  CO: { A: +0.30, H: +0.30, C: +0.20, X: +0.10 }, // Mature, trusting chair
-  SH: { X: +0.40, A: -0.30, E: -0.20, C: +0.10 }, // Drive, challenge, impatient
-  ME: { C: +0.30, O: +0.25, X: -0.20, E: -0.10 }, // Sober, strategic, critical
-  TW: { A: +0.45, E: +0.15, X: +0.10, H: +0.10 }, // Cooperative, diplomatic
-  IM: { C: +0.45, H: +0.25, O: -0.15, E: -0.05 }, // Disciplined, reliable
-  CF: { C: +0.30, E: +0.25, X: -0.20, O: -0.05 }, // Painstaking, anxious
-  SP: { O: +0.30, C: +0.25, X: -0.15, A: -0.05 }, // Single-minded, dedicated
+// Each role gets a weighted sum of TRITAN dim scores (positive = boosted by high score)
+export const TRITAN_TEAM_ROLE_WEIGHTS: Record<TeamRoleCode, WeightMap> = {
+  PL: { OPEN: +0.45, THOR: -0.15, INTE: -0.10, TEMP: -0.10 }, // Creative, unconventional
+  RI: { TEMP: +0.45, ADAP: +0.20, OPEN: +0.15, RESO: -0.10 }, // Outgoing, networker
+  CO: { ADAP: +0.30, INTE: +0.30, THOR: +0.20, TEMP: +0.10 }, // Mature, trusting chair
+  SH: { TEMP: +0.40, ADAP: -0.30, RESO: -0.20, THOR: +0.10 }, // Drive, challenge, impatient
+  ME: { THOR: +0.30, OPEN: +0.25, TEMP: -0.20, RESO: -0.10 }, // Sober, strategic, critical
+  TW: { ADAP: +0.45, RESO: +0.15, TEMP: +0.10, INTE: +0.10 }, // Cooperative, diplomatic
+  IM: { THOR: +0.45, INTE: +0.25, OPEN: -0.15, RESO: -0.05 }, // Disciplined, reliable
+  CF: { THOR: +0.30, RESO: +0.25, TEMP: -0.20, OPEN: -0.05 }, // Painstaking, anxious
+  SP: { OPEN: +0.30, THOR: +0.25, TEMP: -0.15, ADAP: -0.05 }, // Single-minded, dedicated
 };
 
-// Estimate TeamRole scores from HEXACO dimension scores (0-100 range)
+// Estimate TeamRole scores from TRITAN dimension scores (0-100 range)
 // Returns TeamRoleScores where values are arbitrary weighted sums (not constrained to 0-10)
 // Suitable for relative ranking, not absolute comparison to questionnaire scores
-export function estimateTeamRolesFromHexaco(
-  hexaco: Record<HexacoDimCode, number>,
+export function estimateTeamRolesFromTritan(
+  tritan: Record<TritanDimCode, number>,
 ): TeamRoleScores {
   const raw = {} as TeamRoleScores;
 
   for (const roleCode of Object.keys(TEAM_ROLES) as TeamRoleCode[]) {
-    const weights = HEXACO_TEAM_ROLE_WEIGHTS[roleCode];
+    const weights = TRITAN_TEAM_ROLE_WEIGHTS[roleCode];
     let score = 50; // baseline
-    for (const [dim, w] of Object.entries(weights) as [HexacoDimCode, number][]) {
-      const dimVal = hexaco[dim] ?? 50;
+    for (const [dim, w] of Object.entries(weights) as [TritanDimCode, number][]) {
+      const dimVal = tritan[dim] ?? 50;
       score += (dimVal - 50) * w;
     }
     raw[roleCode] = Math.max(0, Math.round(score));

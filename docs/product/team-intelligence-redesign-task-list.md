@@ -151,7 +151,7 @@ Feladat:
 - Kártyánként kötelező:
   - név,
   - 3 csapatszerep pill,
-  - 1-2 kiemelkedő HEXACO dimenzió.
+  - 1-2 kiemelkedő TRITAN dimenzió.
 - No-data tagok külön “adat hiányzik” szekcióban, dedikált CTA-val.
 
 Done when:

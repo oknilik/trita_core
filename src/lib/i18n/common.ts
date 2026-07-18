@@ -13,7 +13,7 @@ export const commonTranslations = {
       en: "Take the test | Trita",
     },
     dashboardTitle: {
-      hu: "Dashboard | Trita",
+      hu: "Vezérlő | Trita",
       en: "Dashboard | Trita",
     },
     observeTitle: {
@@ -36,7 +36,7 @@ export const commonTranslations = {
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
     menu: { hu: "Menü", en: "Menu" },
     blog: { hu: "Blog", en: "Blog" },
-    pricing: { hu: "Árazás", en: "Pricing" },
+    pricing: { hu: "Együttműködés", en: "How we work" },
     profile: { hu: "Profilom", en: "My profile" },
     team: { hu: "Csapat", en: "Team" },
     organizations: { hu: "Szervezetek", en: "Organizations" },
@@ -53,7 +53,7 @@ export const commonTranslations = {
     colAccount: { hu: "Fiók", en: "Account" },
     colLegal: { hu: "Jogi", en: "Legal" },
     blog: { hu: "Blog", en: "Blog" },
-    pricing: { hu: "Árazás", en: "Pricing" },
+    pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     navFounding: { hu: "Alapítói program", en: "Founding" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
@@ -86,8 +86,8 @@ export const commonTranslations = {
   },
   actions: {
     startTest: { hu: "Teszt kitöltése", en: "Start test" },
-    next: { hu: "Következő ->", en: "Next ->" },
-    prev: { hu: "<- Előző", en: "<- Previous" },
+    next: { hu: "Következő →", en: "Next ->" },
+    prev: { hu: "← Előző", en: "<- Previous" },
     save: { hu: "Mentés...", en: "Saving..." },
     viewResults: { hu: "Eredmények megtekintése", en: "View results" },
     submit: { hu: "Küldés", en: "Submit" },
@@ -104,7 +104,7 @@ export const commonTranslations = {
     deleteProfile: { hu: "Fiók törlése", en: "Delete account" },
     signInCta: { hu: "Bejelentkezés", en: "Sign in" },
     signUpCta: { hu: "Regisztráció", en: "Sign up" },
-    goDashboard: { hu: "Ugrás a dashboardra", en: "Go to dashboard" },
+    goDashboard: { hu: "Ugrás a vezérlőre", en: "Go to dashboard" },
     verify: { hu: "Megerősítés", en: "Verify" },
     verifying: { hu: "Ellenőrzés...", en: "Verifying..." },
     backToSignUp: {
@@ -121,7 +121,7 @@ export const commonTranslations = {
       en: "No test type assigned yet. Complete the test first.",
     },
     INVITE_LIMIT_REACHED: {
-      hu: "Elérted a maximális (5) meghívó limitet.",
+      hu: "Egyszerre legfeljebb 5 aktív meghívód lehet — ezt most elérted.",
       en: "You reached the maximum (5) invite limit.",
     },
     SELF_INVITE: {
@@ -153,15 +153,15 @@ export const commonTranslations = {
       en: "The number of answers does not match the number of questions.",
     },
     DUPLICATE_ANSWER: {
-      hu: "Duplikált válasz érkezett ugyanarra a kérdésre.",
+      hu: "Ugyanarra a kérdésre több válasz is érkezett.",
       en: "Duplicate answer received for the same question.",
     },
     MISSING_ANSWER: {
-      hu: "Hiányzik válasz egy kérdésre.",
+      hu: "Egy kérdésre nem érkezett válasz.",
       en: "An answer is missing for a question.",
     },
     INVALID_LIKERT_ANSWER: {
-      hu: "Érvénytelen Likert válasz.",
+      hu: "Érvénytelen válaszérték.",
       en: "Invalid Likert answer.",
     },
     EMAIL_SEND_FAILED: {
@@ -173,7 +173,7 @@ export const commonTranslations = {
       en: "You already have an active invite for this email address. Delete the existing one first if you want to send a new one.",
     },
     INVALID_DIMENSION_CODE: {
-      hu: "Érvénytelen dimenzió kód.",
+      hu: "Érvénytelen dimenziókód.",
       en: "Invalid dimension code.",
     },
   },
@@ -186,13 +186,13 @@ export const commonTranslations = {
     teams: { hu: "Csapataim", en: "My Teams" },
     settings: { hu: "Beállítások", en: "Settings" },
     closePanel: { hu: "Panel bezárása", en: "Close panel" },
-    becomeCoach: { hu: "Coach-ként csatlakozz", en: "Become a coach" },
+    becomeCoach: { hu: "Csatlakozz coachként", en: "Become a coach" },
   },
   becomeCoach: {
     tag: { hu: "Coach program", en: "Coach program" },
-    title: { hu: "Csatlakozz coach-ként", en: "Become a coach on Trita" },
+    title: { hu: "Csatlakozz coachként", en: "Become a coach on Trita" },
     subtitle: {
-      hu: "Segíts ügyfeleidnek mélyebben megismerni önmagukat érvényes személyiségadatok és AI-támogatott debrief segítségével.",
+      hu: "Segíts ügyfeleidnek mélyebben megismerni önmagukat érvényes személyiségadatok és AI-támogatott kiértékelés segítségével.",
       en: "Help your clients understand themselves more deeply with validated personality data and AI-powered debriefs.",
     },
     featuresTitle: { hu: "Mit kapsz?", en: "What you get" },
@@ -232,7 +232,7 @@ export const commonTranslations = {
     },
     motivationLabel: { hu: "Motiváció", en: "Motivation" },
     motivationPlaceholder: {
-      hu: "Miért szeretnél coach-ként csatlakozni a Tritához? Hogyan tudnád hasznosítani a platformot az ügyfeleid számára?",
+      hu: "Miért szeretnél coachként csatlakozni a Tritához? Hogyan tudnád hasznosítani a platformot az ügyfeleid számára?",
       en: "Why do you want to join Trita as a coach? How would you use the platform with your clients?",
     },
     specializationsLabel: { hu: "Szakterületek (opcionális)", en: "Specializations (optional)" },
@@ -259,11 +259,11 @@ export const commonTranslations = {
     eyebrow: { hu: "Kapcsolat", en: "Contact" },
     title: { hu: "Beszéljünk arról, miben tud segíteni a trita.", en: "Let's talk about how trita can help." },
     subtitle: {
-      hu: "Demo, árazás, partneri együttműködés vagy support — írj nekünk itt, és egy munkanapon belül válaszolunk.",
+      hu: "Demó, árazás, partneri együttműködés vagy támogatás — írj nekünk itt, és egy munkanapon belül válaszolunk.",
       en: "Demo, pricing, partnerships, or support — send us a note and we'll reply within one business day.",
     },
     heroCta: { hu: "Írok nektek", en: "Send a message" },
-    chipResponseTime: { hu: "24h válaszidő", en: "24h response time" },
+    chipResponseTime: { hu: "24 órás válaszidő", en: "24h response time" },
 
     // Form section
     sectionEyebrow: { hu: "Kapcsolatfelvétel", en: "Get in touch" },

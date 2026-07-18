@@ -10,7 +10,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
   const [hasDraft, setHasDraft] = useState(false);
-  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
+  // localStorage csak kliensen olvasható — hydration-biztos minta, szándékos.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
   const headlineBefore = isSelf
     ? t("landing.ctaSelfHeadlineBefore", locale)

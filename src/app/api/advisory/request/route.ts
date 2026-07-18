@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
                 <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1a2e;">
                   <p style="font-size: 16px; line-height: 1.7;">Kedves ${firstName},</p>
                   <p style="font-size: 16px; line-height: 1.7;">
-                    Megkaptuk a tanácsadói konzultáció igényedet!
+                    Megkaptuk a jelentkezésedet a tanácsadói konzultációra!
                     24 órán belül személyesen kereslek az időpont-egyeztetéssel.
                   </p>
                   <p style="font-size: 16px; line-height: 1.7;">

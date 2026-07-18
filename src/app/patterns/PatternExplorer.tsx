@@ -159,7 +159,7 @@ function PatternCard({
               className="mb-2 font-mono text-[9px] uppercase tracking-widest"
               style={{ color: "#2e6b50" }}
             >
-              // erősségek
+              {"// erősségek"}
             </p>
             <ul className="space-y-1">
               {pattern.strengths.map((s) => (
@@ -178,7 +178,7 @@ function PatternCard({
               className="mb-2 font-mono text-[9px] uppercase tracking-widest"
               style={{ color: "#b5651d" }}
             >
-              // vakfoltok
+              {"// vakfoltok"}
             </p>
             <ul className="space-y-1">
               {pattern.risks.map((r) => (
@@ -308,7 +308,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
   return (
     <div className="mt-10 border-t pt-10" style={{ borderColor: T.border }}>
       <p className="mb-1 font-mono text-[10px] uppercase tracking-widest" style={{ color: T.muted }}>
-        // mind a 16 mintázat
+        {"// mind a 16 mintázat"}
       </p>
       <h3 className="mb-8 font-fraunces text-xl" style={{ color: T.heading }}>
         Összes csapatmintázat
@@ -389,7 +389,7 @@ function AlternativeSection({
         className="mb-2 font-mono text-[9px] uppercase tracking-widest"
         style={{ color: T.muted }}
       >
-        // közeli alternatív mintázat
+        {"// közeli alternatív mintázat"}
       </p>
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -475,7 +475,7 @@ export function PatternExplorer() {
           className="font-mono text-xs uppercase tracking-widest"
           style={{ color: T.accent }}
         >
-          // csapatminta felfedező
+          {"// csapatminta felfedező"}
         </p>
         <h1
           className="mt-1 font-fraunces text-3xl leading-tight md:text-4xl"
@@ -505,7 +505,7 @@ export function PatternExplorer() {
                 className="mb-6 font-mono text-[10px] uppercase tracking-widest"
                 style={{ color: T.muted }}
               >
-                // 4 tengelyen beállítható
+                {"// 4 tengelyen beállítható"}
               </p>
               <div className="flex flex-col gap-7">
                 {AXIS_META.map((axis, i) => (
@@ -534,7 +534,7 @@ export function PatternExplorer() {
                 className="mr-1 font-mono text-[9px] uppercase tracking-wider"
                 style={{ color: T.accent }}
               >
-                // tipp
+                {"// tipp"}
               </span>
               A narancssárga sáv jelzi a{" "}
               <span style={{ color: T.text, fontWeight: 600 }}>kiegyensúlyozott zónát</span>{" "}
@@ -618,7 +618,7 @@ export function PatternExplorer() {
             className="font-mono text-xs uppercase tracking-widest"
             style={{ color: T.accent }}
           >
-            // tudományos személyiségmérés
+            {"// tudományos személyiségmérés"}
           </p>
           <h2
             className="mt-2 font-fraunces text-2xl leading-snug"
@@ -629,7 +629,7 @@ export function PatternExplorer() {
 
           <SignedOut>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
-              A Trita felmérése ~15 perc — és az eredmény nem egy csúszka, hanem a
+              A Trita felmérése ~10 perc — és az eredmény nem egy csúszka, hanem a
               csapatod valódi adata. Csapatprofilok, heatmap, tension pair elemzés.
             </p>
             <a

@@ -41,16 +41,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
-  await prisma.roleFitFeedback.upsert({
+  await prisma.feedback.upsert({
     where: {
-      userProfileId_industryKey_roleKey: {
+      userProfileId_kind_targetKey: {
         userProfileId: profile.id,
-        industryKey,
-        roleKey,
+        kind: "role_fit",
+        targetKey: `${industryKey}:${roleKey}`,
       },
     },
-    create: { userProfileId: profile.id, industryKey, roleKey, fitScore, verdict },
-    update: { fitScore, verdict },
+    create: {
+      userProfileId: profile.id,
+      kind: "role_fit",
+      targetKey: `${industryKey}:${roleKey}`,
+      rating: fitScore,
+      payload: { verdict },
+    },
+    update: { rating: fitScore, payload: { verdict } },
   });
 
   return NextResponse.json({ ok: true });

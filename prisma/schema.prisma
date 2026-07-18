@@ -13,9 +13,9 @@ datasource db {
 // ============================================
 
 enum TestType {
-  HEXACO
-  HEXACO_MODIFIED
-  BIG_FIVE
+  // TRITAN = a Trita hatfaktoros modellje (TSFI kérdésbank) — az egyetlen
+  // aktív instrumentum. Ld. docs/product/tritan-naming.md.
+  TRITAN
 }
 
 enum RelationshipType {
@@ -70,7 +70,6 @@ model UserProfile {
   birthYear   Int?
   gender      String?
   country     String?
-  avatarUrl   String?
   onboardedAt DateTime?
 
   // Karrier-iránytű háttéradatok (results oldal wizard): status, eduLevel,
@@ -86,14 +85,16 @@ model UserProfile {
   // Role (default: INDIVIDUAL)
   role      UserRole @default(INDIVIDUAL)
 
+  // Platform-szintű tanácsadó: az admin onboardolja a tritára (ConsultantInvite).
+  // Nem kényszerül tesztre; org-okhoz ORG_CONSULTANT tagsággal rendelhető.
+  isConsultant Boolean @default(false)
+
   assessmentResults    AssessmentResult[]
   assessmentDraft      AssessmentDraft?
+  consultantInvitesSent ConsultantInvite[] @relation("ConsultantInviter")
   sentInvitations      ObserverInvitation[] @relation("InviterInvitations")
   receivedInvitations  ObserverInvitation[] @relation("ObserverInvitations")
-  satisfactionFeedback SatisfactionFeedback?
-  researchSurvey       ResearchSurvey?
-  featureInterests     FeatureInterest[]
-  roleFitFeedbacks     RoleFitFeedback[]
+  feedbacks            Feedback[]
 
   // Team layer (KKV)
   ownedTeams       Team[]       @relation("TeamOwner")
@@ -153,7 +154,6 @@ model AssessmentResult {
   shareToken       String?   @unique
 
   userProfile       UserProfile?        @relation(fields: [userProfileId], references: [id])
-  dimensionFeedback DimensionFeedback[]
 
   @@index([userProfileId])
 }
@@ -214,85 +214,27 @@ model ObserverAssessment {
   invitation ObserverInvitation @relation(fields: [invitationId], references: [id])
 }
 
-// Merged post-results research survey (replaces SatisfactionFeedback in UI)
-model ResearchSurvey {
-  id                 String   @id @default(cuid())
-  userProfileId      String   @unique
-  createdAt          DateTime @default(now())
-
-  selfAccuracy          Int      // 1-5: how well they recognized themselves
-  priorTest             String   // "mbti" | "bigfive" | "other" | "none"
-  positionLevel         String?  // "junior" | "middle" | "senior" | "independent" — employed only
-  studyField            String?  // "business" | "stem" | "humanities" | "health" | "other" — student only
-  industry              String?  // sector — employed/student
-  motivation            String   // comma-separated: selfknowledge, career, study, recommended, curiosity
-  sharingIntent         String   // comma-separated: manager, hr, colleagues, friends, nobody
-  feedbackSources       String?  // comma-separated: manager, peers, reports, clients, none — employed only
-  has360Process         String?  // "yes" | "no" | "unknown" — employed only
-  personalityImportance Int?     // 1-5: how important is personality at work
-  observerUsefulness    Int?     // 1-5, only if observer feedback exists
-
-  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
-}
-
-// Satisfaction feedback for research comparison
-model SatisfactionFeedback {
-  id                         String   @id @default(cuid())
-  userProfileId              String   @unique
-  agreementScore             Int // 1-5 (😕😐🙂😊🤩) - "Mennyire ismertél magadra?"
-  observerFeedbackUsefulness Int? // 1-5 (😕😐🙂😊🤩) - Optional: usefulness of observer feedback
-  siteUsefulness             Int? // 1-5 (😕😐🙂😊🤩) - Optional: overall site usefulness
-  freeformFeedback           String?
-  interestedInUpdates        Boolean @default(false)
-  createdAt                  DateTime @default(now())
-
-  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
-}
-
-// Dimension-level feedback for accuracy assessment
-model DimensionFeedback {
-  id                String   @id @default(cuid())
-  assessmentResultId String
-  dimensionCode     String   // "H", "E", "X", "A", "C", "O"
-  accuracyRating    Int      // 1-5 (😕😐🙂😊🤩)
-  comment           String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  assessmentResult AssessmentResult @relation(fields: [assessmentResultId], references: [id], onDelete: Cascade)
-
-  @@unique([assessmentResultId, dimensionCode])
-  @@index([assessmentResultId])
-}
-
-// Upcoming feature interest — fake door validation
-// Iparági illeszkedés kalibrációs visszajelzés — „dolgoztál ilyen
-// szerepben, találó volt-e?" A súlyok hosszú távú validálásához.
-model RoleFitFeedback {
+// Egységes visszajelzés-modell (2026-07-16) — a korábbi öt külön modell
+// (ResearchSurvey, SatisfactionFeedback, DimensionFeedback, RoleFitFeedback,
+// FeatureInterest) helyett. kind + targetKey azonosítja a típust és célt,
+// rating a számszerű értékelés, payload a típus-specifikus többlet.
+// kind értékek: "satisfaction" | "dimension" | "role_fit" | "feature_interest"
+// targetKey: dimension → "<assessmentResultId>:<dimCode>" ·
+//            role_fit → "<industryKey>:<roleKey>" · feature_interest → featureKey
+model Feedback {
   id            String   @id @default(cuid())
   userProfileId String
-  industryKey   String
-  roleKey       String
-  fitScore      Int
-  verdict       String // "accurate" | "inaccurate"
+  kind          String
+  targetKey     String?
+  rating        Int?
+  payload       Json?
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   userProfile UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
 
-  @@unique([userProfileId, industryKey, roleKey])
-  @@index([industryKey, roleKey])
-}
-
-model FeatureInterest {
-  id            String   @id @default(cuid())
-  userProfileId String
-  featureKey    String   // "team" | "comm" | "360"
-  createdAt     DateTime @default(now())
-
-  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
-
-  @@unique([userProfileId, featureKey])
-  @@index([featureKey])
+  @@unique([userProfileId, kind, targetKey])
+  @@index([kind, targetKey])
 }
 
 // ============================================
@@ -391,7 +333,7 @@ model CandidateInvite {
   name        String?
   position    String?
   status      String    @default("PENDING")   // PENDING | COMPLETED | EXPIRED
-  testType    String    @default("HEXACO")
+  testType    String    @default("TRITAN")
   expiresAt   DateTime
   createdAt   DateTime  @default(now())
   completedAt        DateTime?
@@ -426,6 +368,10 @@ model Organization {
   name      String
   ownerId   String
   status    String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"
+  // Cég-/számlázási adatok (adószám, cím, kapcsolattartó, iparág stb.) —
+  // KIZÁRÓLAG az admin felületen jelenik meg és szerkeszthető.
+  // Mezőlista: src/lib/org-billing.ts (OrgBillingProfile).
+  billingProfile Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -520,8 +466,12 @@ model Campaign {
   orgId       String
   name        String
   description String?
-  // Mérés-típus: "OBSERVER_360" | "TEAM_ROLE" (| "PSYCH_SAFETY" később)
+  // Mérés-típus: "OBSERVER_360" | "TEAM_ROLE" | "PSYCH_SAFETY"
+  // Több-lépéses kampánynál az első lépés típusa (kompatibilitás).
   type        String    @default("OBSERVER_360")
+  // Rendezett mérés-lépések. Üres tömbnél a `type` az egyetlen lépés.
+  // A lépések felhasználónként, sorban nyílnak meg (CampaignParticipant.currentStep).
+  steps       String[]  @default([])
   // Csapat-célzású kampánynál a cél-csapat (riport-híd + idővonal ehhez köt)
   teamId      String?
   status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
@@ -530,9 +480,10 @@ model Campaign {
   updatedAt   DateTime  @updatedAt
   closedAt    DateTime?
 
-  org          Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  creator      UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
-  participants CampaignParticipant[]
+  org                  Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  creator              UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
+  participants         CampaignParticipant[]
+  psychSafetyResponses PsychSafetyResponse[]
 
   @@index([orgId])
   @@index([createdBy])
@@ -544,6 +495,12 @@ model CampaignParticipant {
   campaignId String
   userId     String
   addedAt    DateTime @default(now())
+  // Kitöltöttség ténye (pl. pszich. biztonság pulse) — értékek NÉLKÜL.
+  completedAt DateTime?
+  // Több-lépéses kampány: a résztvevő aktuális lépés-indexe a Campaign.steps-ben.
+  currentStep Int @default(0)
+  // lépés-típus → ISO teljesítési idő (pl. { "TEAM_ROLE": "2026-07-20T..." })
+  stepCompletions Json?
 
   campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   user     UserProfile @relation(fields: [userId], references: [id])
@@ -551,6 +508,38 @@ model CampaignParticipant {
   @@unique([campaignId, userId])
   @@index([campaignId])
   @@index([userId])
+}
+
+// Tanácsadó-meghívó a platformra: az admin email alapján hív meg tanácsadót.
+// Ha a profil már létezik, azonnal alkalmazzuk (isConsultant + acceptedAt);
+// különben regisztrációkor, email-egyezésnél.
+model ConsultantInvite {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  invitedById String
+  note        String?
+  createdAt   DateTime  @default(now())
+  acceptedAt  DateTime?
+
+  invitedBy UserProfile @relation("ConsultantInviter", fields: [invitedById], references: [id])
+
+  @@index([email])
+}
+
+// Anonim pszichológiai biztonság válasz — SZÁNDÉKOSAN nincs user-referencia.
+// Azonosíthatóság ellen: véletlen UUID id + nap pontosságúra csonkolt
+// beküldési dátum. A kitöltöttséget a CampaignParticipant.completedAt
+// követi, értékek nélkül. Aggregálás csak ≥3 válasznál (lib/psych-safety.ts).
+model PsychSafetyResponse {
+  id          String   @id @default(uuid())
+  campaignId  String
+  // itemId → 1..5 nyers válasz (PS1..PS8)
+  answers     Json
+  submittedOn DateTime
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
 }
 
 // ============================================
@@ -664,61 +653,8 @@ model AdvisorySession {
 // BILLING EVENT TRACKING
 // ============================================
 
-model BillingEventLog {
-  id           String    @id @default(cuid())
-  provider     String    // "stripe" | "billingo"
-  eventId      String    @unique // Stripe event.id or internal ID
-  eventType    String    // e.g. "checkout.session.completed"
-  objectId     String?   // Stripe object ID (session, invoice, subscription)
-  status       String    @default("processing") // "processing" | "processed" | "failed" | "skipped"
-  processedAt  DateTime?
-  errorMessage String?
-  retryable    Boolean   @default(false)
-  retryCount   Int       @default(0)
-  lastRetryAt  DateTime?
-  createdAt    DateTime  @default(now())
 
-  @@index([eventType])
-  @@index([status])
-  @@index([objectId])
-}
 
-model BillingoPartnerLink {
-  id               String  @id @default(cuid())
-  userId           String? // UserProfile.id — for self purchases
-  organizationId   String? // Organization.id — for org/team purchases
-  billingoPartnerId String @unique
-  email            String
-  countryCode      String  @default("HU")
-  taxNumber        String?
-  euVatNumber      String?
-  currency         String  @default("EUR")
-  locale           String  @default("hu")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  @@index([userId])
-  @@index([organizationId])
-  @@index([email])
-}
-
-model BillingDocumentLink {
-  id                      String  @id @default(cuid())
-  sourceType              String  // "purchase" | "subscription_invoice" | "candidate_addon"
-  sourceId                String  // Purchase.id or Subscription.id
-  stripeInvoiceId         String?
-  stripeCheckoutSessionId String?
-  billingoDocumentId      String
-  billingoDocumentNumber  String?
-  documentType            String  // "invoice" | "correction" | "proforma"
-  status                  String  @default("issued") // "issued" | "voided" | "corrected"
-  createdAt               DateTime @default(now())
-
-  @@index([sourceType, sourceId])
-  @@index([billingoDocumentId])
-  @@index([stripeInvoiceId])
-  @@index([stripeCheckoutSessionId])
-}
 
 // ── Notification Hub ────────────────────────────────────────────────────────
 
@@ -740,6 +676,7 @@ enum NotificationType {
   MEMBER_COMPLETED_ASSESSMENT
   CAMPAIGN_MILESTONE
   TEAM_REPORT_PUBLISHED
+  MEASUREMENT_STEP_OPENED
 }
 
 model Notification {

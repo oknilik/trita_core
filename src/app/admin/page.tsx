@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -13,8 +14,9 @@ import { AdminDraftReminderSection } from "@/app/admin/_components/AdminDraftRem
 import { AdminOrgAccessSection } from "@/app/admin/_components/AdminOrgAccessSection";
 import { AdminFeedbackSection } from "@/app/admin/_components/AdminFeedbackSection";
 import { AdminTabNav } from "@/app/admin/_components/AdminTabNav";
+import { AdminConsultantsSection } from "@/app/admin/_components/AdminConsultantsSection";
+import { sanitizeOrgBillingProfile } from "@/lib/org-billing";
 import { getTestConfig } from "@/lib/questions";
-import type { TestType } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -44,51 +46,143 @@ export default async function AdminPage({
   const locale = await getServerLocale();
   const { tab } = await searchParams;
   const activeTab =
-    tab === "research" || tab === "reminders" || tab === "orgs" || tab === "feedback"
+    tab === "research" ||
+    tab === "reminders" ||
+    tab === "orgs" ||
+    tab === "feedback" ||
+    tab === "consultants" ||
+    tab === "ops"
       ? tab
       : "overview";
 
+  // Szerver-komponens: kérés-idejű időbélyeg a statisztika-ablakokhoz — szándékos.
   const now = Date.now();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
   const threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000);
   const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
 
+  // ── Tanácsadók fül — platform-szintű tanácsadó-onboarding ──
+  if (activeTab === "consultants") {
+    const orgs = await prisma.organization.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    });
+    return (
+      <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <FadeIn>
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
+            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
+              {t("admin.title", locale)}
+            </h1>
+            <p className="mt-2 text-sm text-ink-body">{t("admin.subtitle", locale)}</p>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <Suspense>
+              <AdminTabNav />
+            </Suspense>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <AdminConsultantsSection orgs={orgs} />
+          </FadeIn>
+        </div>
+      </main>
+    );
+  }
+
+  // ── Működés gyűjtőfül — üzemeltetési nézetek belépői ──
+  if (activeTab === "ops") {
+    const opsCards = [
+      {
+        href: "/admin?tab=feedback",
+        title: "Visszajelzések",
+        desc: "Szerep-kalibráció és érdeklődés-jelzések a felhasználóktól.",
+      },
+      {
+        href: "/admin?tab=reminders",
+        title: "Emlékeztetők",
+        desc: "Kitöltési emlékeztetők és piszkozat-követés.",
+      },
+      {
+        href: "/admin?tab=research",
+        title: "Kutatás",
+        desc: "Kérdésbank-statisztikák és kutatási bontások.",
+      },
+    ];
+    return (
+      <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-7xl">
+          <FadeIn>
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
+            <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
+              {t("admin.title", locale)}
+            </h1>
+            <p className="mt-2 text-sm text-ink-body">{t("admin.subtitle", locale)}</p>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <Suspense>
+              <AdminTabNav />
+            </Suspense>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {opsCards.map((card) => (
+                <Link
+                  key={card.href}
+                  href={card.href}
+                  className="group rounded-2xl border border-sand bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sage/40"
+                >
+                  <p className="text-[15px] font-semibold text-ink group-hover:text-bronze">
+                    {card.title} →
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-ink-body">{card.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </main>
+    );
+  }
+
   // Feedback tab — szerep-kalibráció + érdeklődés-jelzések
   if (activeTab === "feedback") {
     const [roleFitRows, interestRows] = await Promise.all([
-      prisma.roleFitFeedback.groupBy({
-        by: ["industryKey", "roleKey", "verdict"],
-        _count: { _all: true },
-        _avg: { fitScore: true },
+      prisma.feedback.findMany({
+        where: { kind: "role_fit" },
+        select: { targetKey: true, rating: true, payload: true },
       }),
-      prisma.featureInterest.findMany({
+      prisma.feedback.findMany({
+        where: { kind: "feature_interest" },
         orderBy: { createdAt: "desc" },
         take: 100,
         select: {
           id: true,
-          featureKey: true,
+          targetKey: true,
           createdAt: true,
           userProfile: { select: { email: true, username: true } },
         },
       }),
     ]);
 
-    // verdict-soronkénti groupBy → szerepenkénti aggregát
+    // soronkénti feldolgozás → szerepenkénti aggregát
+    // (targetKey: "<industryKey>:<roleKey>", payload.verdict, rating = fitScore)
     const aggregateMap = new Map<
       string,
       { industryKey: string; roleKey: string; accurate: number; inaccurate: number; scoreSum: number; total: number }
     >();
     for (const row of roleFitRows) {
-      const key = `${row.industryKey}:${row.roleKey}`;
+      const [industryKey = "?", roleKey = "?"] = (row.targetKey ?? "").split(":");
+      const key = `${industryKey}:${roleKey}`;
       const entry =
         aggregateMap.get(key) ??
-        { industryKey: row.industryKey, roleKey: row.roleKey, accurate: 0, inaccurate: 0, scoreSum: 0, total: 0 };
-      const count = row._count._all;
-      if (row.verdict === "accurate") entry.accurate += count;
-      else entry.inaccurate += count;
-      entry.scoreSum += (row._avg.fitScore ?? 0) * count;
-      entry.total += count;
+        { industryKey, roleKey, accurate: 0, inaccurate: 0, scoreSum: 0, total: 0 };
+      const verdict = (row.payload as { verdict?: string } | null)?.verdict;
+      if (verdict === "accurate") entry.accurate += 1;
+      else entry.inaccurate += 1;
+      entry.scoreSum += row.rating ?? 0;
+      entry.total += 1;
       aggregateMap.set(key, entry);
     }
     const roleFitAggregates = [...aggregateMap.values()]
@@ -122,7 +216,7 @@ export default async function AdminPage({
               roleFitAggregates={roleFitAggregates}
               interests={interestRows.map((row) => ({
                 id: row.id,
-                featureKey: row.featureKey,
+                featureKey: row.targetKey ?? "?",
                 createdAt: row.createdAt.toISOString(),
                 email: row.userProfile.email,
                 username: row.userProfile.username,
@@ -142,6 +236,7 @@ export default async function AdminPage({
         id: true,
         name: true,
         status: true,
+        billingProfile: true,
         createdAt: true,
         _count: { select: { members: { where: { role: { not: "ORG_CONSULTANT" } } } } },
         subscription: {
@@ -167,7 +262,7 @@ export default async function AdminPage({
       <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
         <div className="mx-auto max-w-7xl">
           <FadeIn>
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">// admin</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
             <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
               {t("admin.title", locale)}
             </h1>
@@ -188,6 +283,7 @@ export default async function AdminPage({
                 id: org.id,
                 name: org.name,
                 status: org.status,
+                billingProfile: sanitizeOrgBillingProfile(org.billingProfile),
                 createdAt: org.createdAt.toISOString(),
                 memberCount: org._count.members,
                 consultants: org.members.map((m) => ({
@@ -305,18 +401,16 @@ export default async function AdminPage({
         }),
       ]);
 
-    // Question counts per test type (for progress display)
+    // Question counts per test type (for progress display) — egyetlen aktív instrumentum
     const questionCounts: Record<string, number> = {
-      HEXACO: getTestConfig("HEXACO" as TestType).questions.length,
-      HEXACO_MODIFIED: getTestConfig("HEXACO_MODIFIED" as TestType).questions.length,
-      BIG_FIVE: getTestConfig("BIG_FIVE" as TestType).questions.length,
+      TRITAN: getTestConfig("TRITAN").questions.length,
     };
 
     return (
       <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
         <div className="mx-auto max-w-7xl">
           <FadeIn>
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">// admin</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
             <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
               {t("admin.title", locale)}
             </h1>
@@ -398,7 +492,7 @@ export default async function AdminPage({
   }
 
   // Overview + Research: fetch all data in parallel
-  const [userStats, assessmentStats, invitationStats, feedbackStats, surveyStats] =
+  const [userStats, assessmentStats, invitationStats, feedbackStats] =
     await Promise.all([
       (async () => {
         const currentYear = new Date().getFullYear();
@@ -489,44 +583,69 @@ export default async function AdminPage({
       })(),
 
       (async () => {
-        const satisfactionCount = await prisma.satisfactionFeedback.count();
-        const avgScores = await prisma.satisfactionFeedback.aggregate({
-          _avg: {
-            agreementScore: true,
-            observerFeedbackUsefulness: true,
-            siteUsefulness: true,
-          },
-        });
-        const dimensionCount = await prisma.dimensionFeedback.count();
-        const dimensionAvgHexaco = await prisma.dimensionFeedback.groupBy({
-          by: ["dimensionCode"],
-          _avg: { accuracyRating: true },
-          _count: { id: true },
-          where: { assessmentResult: { testType: "HEXACO" } },
-          orderBy: { _avg: { accuracyRating: "desc" } },
-        });
-        return { satisfactionCount, avgScores, dimensionCount, dimensionAvgHexaco };
-      })(),
+        // Egységes Feedback-modellből (kind: satisfaction / dimension) —
+        // pilot-lépték: memóriában aggregálunk.
+        const [satisfactionRows, dimensionRows] = await Promise.all([
+          prisma.feedback.findMany({
+            where: { kind: "satisfaction" },
+            select: { rating: true, payload: true },
+          }),
+          prisma.feedback.findMany({
+            where: { kind: "dimension" },
+            select: { targetKey: true, rating: true },
+          }),
+        ]);
 
-      (async () => {
-        const count = await prisma.researchSurvey.count();
-        const byPriorTest = await prisma.researchSurvey.groupBy({
-          by: ["priorTest"],
-          _count: { id: true },
-          orderBy: { _count: { id: "desc" } },
-        });
-        const byHas360 = await prisma.researchSurvey.groupBy({
-          by: ["has360Process"],
-          _count: { id: true },
-        });
-        const avgs = await prisma.researchSurvey.aggregate({
+        const avg = (nums: number[]) =>
+          nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
+        const satPayload = (row: { payload: unknown }) =>
+          (row.payload ?? {}) as {
+            observerFeedbackUsefulness?: number | null;
+            siteUsefulness?: number | null;
+          };
+        const avgScores = {
           _avg: {
-            selfAccuracy: true,
-            personalityImportance: true,
-            observerUsefulness: true,
+            agreementScore: avg(
+              satisfactionRows.map((r) => r.rating).filter((v): v is number => v != null)
+            ),
+            observerFeedbackUsefulness: avg(
+              satisfactionRows
+                .map((r) => satPayload(r).observerFeedbackUsefulness)
+                .filter((v): v is number => v != null)
+            ),
+            siteUsefulness: avg(
+              satisfactionRows
+                .map((r) => satPayload(r).siteUsefulness)
+                .filter((v): v is number => v != null)
+            ),
           },
-        });
-        return { count, byPriorTest, byHas360, avgs };
+        };
+
+        // targetKey: "<assessmentResultId>:<dimCode>" → dimenziónkénti átlag
+        const dimMap = new Map<string, { sum: number; count: number }>();
+        for (const row of dimensionRows) {
+          const dimCode = (row.targetKey ?? "").split(":")[1] ?? "?";
+          const entry = dimMap.get(dimCode) ?? { sum: 0, count: 0 };
+          entry.sum += row.rating ?? 0;
+          entry.count += 1;
+          dimMap.set(dimCode, entry);
+        }
+        const dimensionAvgTritan = [...dimMap.entries()]
+          .map(([dimensionCode, { sum, count }]) => ({
+            dimensionCode,
+            _avg: { accuracyRating: count ? sum / count : null },
+            _count: { id: count },
+          }))
+          .sort(
+            (a, b) => (b._avg.accuracyRating ?? 0) - (a._avg.accuracyRating ?? 0)
+          );
+
+        return {
+          satisfactionCount: satisfactionRows.length,
+          avgScores,
+          dimensionCount: dimensionRows.length,
+          dimensionAvgTritan,
+        };
       })(),
     ]);
 
@@ -555,16 +674,6 @@ export default async function AdminPage({
   const selfCount = assessmentStats.total;
   const observerCount = assessmentStats.observerTotal;
 
-  const avgSelfAccuracy = surveyStats.avgs._avg.selfAccuracy
-    ? Math.round(surveyStats.avgs._avg.selfAccuracy * 10) / 10
-    : null;
-  const avgPersonalityImportance = surveyStats.avgs._avg.personalityImportance
-    ? Math.round(surveyStats.avgs._avg.personalityImportance * 10) / 10
-    : null;
-  const avgSurveyObserverUsefulness = surveyStats.avgs._avg.observerUsefulness
-    ? Math.round(surveyStats.avgs._avg.observerUsefulness * 10) / 10
-    : null;
-
   const avgAgreement = feedbackStats.avgScores._avg.agreementScore
     ? Math.round(feedbackStats.avgScores._avg.agreementScore * 10) / 10
     : 0;
@@ -575,11 +684,30 @@ export default async function AdminPage({
     ? Math.round(feedbackStats.avgScores._avg.siteUsefulness * 10) / 10
     : 0;
 
+  // Szelíd teszt-CTA: az adminnak nem kötelező a teszt — csak felajánljuk.
+  const { userId: adminClerkId } = await import("@/lib/auth-server").then((m) =>
+    m.getServerAuth(),
+  );
+  const adminProfile = adminClerkId
+    ? await prisma.userProfile.findUnique({
+        where: { clerkId: adminClerkId },
+        select: { id: true },
+      })
+    : null;
+  const adminHasSelfResult = adminProfile
+    ? Boolean(
+        await prisma.assessmentResult.findFirst({
+          where: { userProfileId: adminProfile.id, isSelfAssessment: true },
+          select: { id: true },
+        }),
+      )
+    : true;
+
   return (
     <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">// admin</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
           <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {t("admin.title", locale)}
           </h1>
@@ -596,7 +724,60 @@ export default async function AdminPage({
 
         {/* ── Overview tab ── */}
         {activeTab === "overview" && (
-          <FadeIn delay={0.1}>
+          <FadeIn delay={0.08}>
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <Link
+                href="/org/new"
+                className="group rounded-2xl border border-sage/40 bg-sage/5 p-5 transition hover:-translate-y-0.5 hover:border-sage"
+              >
+                <p className="text-[15px] font-semibold text-ink group-hover:text-sage-dark">
+                  + Új szervezet
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                  Ügyfél-org létrehozása és admin meghívása.
+                </p>
+              </Link>
+              <Link
+                href="/admin?tab=consultants"
+                className="group rounded-2xl border border-sand bg-white p-5 transition hover:-translate-y-0.5 hover:border-sage/40"
+              >
+                <p className="text-[15px] font-semibold text-ink group-hover:text-bronze">
+                  Tanácsadó meghívása
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                  Onboardolás a tritára + szervezet-kiosztás.
+                </p>
+              </Link>
+              <Link
+                href="/admin?tab=orgs"
+                className="group rounded-2xl border border-sand bg-white p-5 transition hover:-translate-y-0.5 hover:border-sage/40"
+              >
+                <p className="text-[15px] font-semibold text-ink group-hover:text-bronze">
+                  Szervezetek kezelése
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                  Hozzáférések, tanácsadó-kiosztás, kreditek.
+                </p>
+              </Link>
+            </div>
+            {!adminHasSelfResult && (
+              <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[15px] font-semibold text-ink">
+                    A saját TRITAN-profilod még nincs kitöltve
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                    Nem kötelező — de ha szeretnéd látni a saját mintázatodat, ~10 perc.
+                  </p>
+                </div>
+                <Link
+                  href="/assessment"
+                  className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg border border-sand bg-white px-4 text-[13px] font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink"
+                >
+                  Teszt indítása →
+                </Link>
+              </div>
+            )}
             <AdminMetricsGrid>
               <AdminStatCard
                 title={t("admin.totalUsers", locale)}
@@ -697,127 +878,6 @@ export default async function AdminPage({
               </div>
             </FadeIn>
 
-            {/* Research Survey Stats */}
-            <FadeIn delay={0.3}>
-              <div className="mt-6 rounded-xl border border-sand bg-white p-6">
-                <div className="mb-5 flex items-center justify-between">
-                  <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
-                    Research Survey
-                  </h2>
-                  <span className="rounded-full bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-body">
-                    {surveyStats.count} responses
-                  </span>
-                </div>
-
-                <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="rounded-lg border border-sand bg-cream p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                      Self-accuracy (Avg)
-                    </p>
-                    <p className="mt-2 text-2xl font-bold text-ink">
-                      {avgSelfAccuracy !== null ? `${avgSelfAccuracy}/5` : "–"}
-                    </p>
-                  </div>
-                  <div className="rounded-lg border border-sand bg-cream p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                      Personality importance (Avg)
-                    </p>
-                    <p className="mt-2 text-2xl font-bold text-ink">
-                      {avgPersonalityImportance !== null
-                        ? `${avgPersonalityImportance}/5`
-                        : "–"}
-                    </p>
-                  </div>
-                  <div className="rounded-lg border border-sand bg-cream p-4">
-                    <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                      Observer usefulness (Avg)
-                    </p>
-                    <p className="mt-2 text-2xl font-bold text-ink">
-                      {avgSurveyObserverUsefulness !== null
-                        ? `${avgSurveyObserverUsefulness}/5`
-                        : "–"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div>
-                    <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
-                      Prior personality test
-                    </h3>
-                    <div className="space-y-2">
-                      {surveyStats.byPriorTest.length > 0 ? (
-                        surveyStats.byPriorTest.map(
-                          (item: { priorTest: string; _count: { id: number } }) => (
-                            <div
-                              key={item.priorTest}
-                              className="flex items-center justify-between text-sm"
-                            >
-                              <span className="font-medium uppercase text-ink-body">
-                                {item.priorTest}
-                              </span>
-                              <span className="text-ink">
-                                {item._count.id}
-                                <span className="ml-1 text-muted">
-                                  (
-                                  {surveyStats.count > 0
-                                    ? Math.round(
-                                        (item._count.id / surveyStats.count) * 100
-                                      )
-                                    : 0}
-                                  %)
-                                </span>
-                              </span>
-                            </div>
-                          )
-                        )
-                      ) : (
-                        <p className="text-xs text-muted">No data yet</p>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
-                      Has 360 process
-                    </h3>
-                    <div className="space-y-2">
-                      {surveyStats.byHas360.filter(
-                        (item: { has360Process: string | null }) =>
-                          item.has360Process !== null
-                      ).length > 0 ? (
-                        surveyStats.byHas360
-                          .filter(
-                            (item: {
-                              has360Process: string | null;
-                              _count: { id: number };
-                            }) => item.has360Process !== null
-                          )
-                          .map(
-                            (item: {
-                              has360Process: string | null;
-                              _count: { id: number };
-                            }) => (
-                              <div
-                                key={item.has360Process}
-                                className="flex items-center justify-between text-sm"
-                              >
-                                <span className="font-medium uppercase text-ink-body">
-                                  {item.has360Process}
-                                </span>
-                                <span className="text-ink">
-                                  {item._count.id}
-                                </span>
-                              </div>
-                            )
-                          )
-                      ) : (
-                        <p className="text-xs text-muted">No data yet</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
 
             {/* Feedback Insights */}
             <FadeIn delay={0.4}>
@@ -854,11 +914,11 @@ export default async function AdminPage({
 
                 <div className="mt-6">
                   <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">
-                    Dimension Accuracy — HEXACO
+                    Dimension Accuracy — TRITAN
                   </h3>
                   <div className="space-y-2">
-                    {feedbackStats.dimensionAvgHexaco.length > 0 ? (
-                      feedbackStats.dimensionAvgHexaco.map(
+                    {feedbackStats.dimensionAvgTritan.length > 0 ? (
+                      feedbackStats.dimensionAvgTritan.map(
                         (dim: {
                           dimensionCode: string;
                           _avg: { accuracyRating: number | null };

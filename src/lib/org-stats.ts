@@ -46,7 +46,7 @@ export interface SerializedTeam {
 
 export interface OrgPageData {
   campaigns: CampaignWithStats[];
-  hexacoAvg: Record<string, number> | null;
+  tritanAvg: Record<string, number> | null;
   memberCount: number;
   pendingCount: number;
   teamCount: number;
@@ -79,7 +79,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     },
   });
 
-  // Fetch org member IDs for HEXACO averages
+  // Fetch org member IDs for TRITAN averages
   const [memberRows, pendingRows, teamRows] = await Promise.all([
     prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
     prisma.organizationPendingInvite.count({ where: { orgId } }),
@@ -145,14 +145,14 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     };
   });
 
-  // HEXACO averages: fetch all org member userIds and their assessments
+  // TRITAN averages: fetch all org member userIds and their assessments
   const orgMembers = await prisma.organizationMember.findMany({
     where: { orgId, role: { not: "ORG_CONSULTANT" } },
     select: { userId: true },
   });
   const orgMemberIds = orgMembers.map((m) => m.userId);
 
-  let hexacoAvg: Record<string, number> | null = null;
+  let tritanAvg: Record<string, number> | null = null;
   let completedMemberCount = 0;
   if (orgMemberIds.length > 0) {
     const assessmentResults = await prisma.assessmentResult.findMany({
@@ -164,8 +164,8 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       distinct: ["userProfileId"],
     });
 
-    const dims = ["H", "E", "X", "A", "C", "O"];
-    const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
+    const dims = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+    const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
 
     for (const ar of assessmentResults) {
       const scores = ar.scores as { type?: string; dimensions?: Record<string, number> };
@@ -181,9 +181,9 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     }
 
     if (completedMemberCount >= 3) {
-      hexacoAvg = {};
+      tritanAvg = {};
       for (const d of dims) {
-        hexacoAvg[d] = Math.round(sums[d] / completedMemberCount);
+        tritanAvg[d] = Math.round(sums[d] / completedMemberCount);
       }
     }
   }
@@ -196,7 +196,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
 
   return {
     campaigns,
-    hexacoAvg,
+    tritanAvg,
     memberCount: memberRows,
     pendingCount: pendingRows,
     teamCount: teamRows,

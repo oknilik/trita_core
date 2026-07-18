@@ -35,7 +35,7 @@ export const AXIS_META: AxisMeta[] = [
     lowDetail:
       "Egyéni motiváció, belső verseny, taktikus hozzáállás. A tagok saját eredményüket maximalizálják.",
     highDetail:
-      "Erős összetartás, kölcsönös támogatás, fairness-érzet. A csapat egységben gondolkodik.",
+      "Erős összetartás, kölcsönös támogatás, erős igazságérzet. A csapat egységben gondolkodik.",
     midDetail:
       "Vegyes dinamika — van együttműködés és van egyéni verseny is. A helyzettől függ, melyik dominál.",
   },
@@ -87,7 +87,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     strengths: ["Gyors ötlet→megvalósítás", "Erős belső kohézió", "Nyitott a változásra", "Magas energia"],
     risks: ["Kiégés veszélye", "Fókusz-szétszóródás", "Groupthink", "Túl merev folyamatok"],
     people: "Innovatív, társas, szervezett emberek, akik szeretnek csapatban alkotni.",
-    contexts: "Termékfejlesztés, innovációs labor, design thinking csapatok, startup core team",
+    contexts: "Termékfejlesztés, innovációs labor, design thinking csapatok, startup alapcsapat",
     color: "var(--color-bronze)",
   },
   "1110": {
@@ -97,19 +97,19 @@ export const PATTERNS: Record<string, PatternContent> = {
       "Fegyelmezett, összetartó csapat, amely a bevált módszereket hatékonyan alkalmazza.",
     strengths: ["Kiváló végrehajtás", "Erős csapatszellem", "Jól működő rutinok", "Megbízható teljesítmény"],
     risks: ["Innovációs deficit", "Változás-ellenállás", "Elfojtott feszültségek", "Lassú adaptáció"],
-    people: "Megbízható, lojális, feladat-orientált emberek, akik szeretik a tiszta struktúrát.",
-    contexts: "Operáció, ügyfélkiszolgálás, projektmenedzsment, compliance csapatok",
+    people: "Megbízható, lojális, feladatorientált emberek, akik szeretik a tiszta struktúrát.",
+    contexts: "Üzemeltetés, ügyfélkiszolgálás, projektmenedzsment, compliance csapatok",
     color: "#b5651d",
   },
   "1101": {
     name: "Szabadon Alkotó Közösség",
     alias: "Kreatív Kommuna",
     description:
-      "Szabadon áramló, innovatív csapat, amely szereti egymást és a kísérletezést.",
+      "Szabadon áramló, innovatív csapat, amelyben erős az összetartás, és szeretik a kísérletezést.",
     strengths: ["Rendkívüli kreativitás", "Erős bizalom", "Gyors alkalmazkodás", "Vonzó kultúra"],
     risks: ["Kaotikus végrehajtás", "Priorizálási nehézség", "Határidő-lazaság", "Nehéz visszajelzés"],
     people: "Kreatív, empatikus, nyitott emberek, akik a közösséget és a szabadságot keresik.",
-    contexts: "Design, márkastratégia, content, UX kutatás, kreatív ügynökségek",
+    contexts: "Design, márkastratégia, tartalomkészítés, UX-kutatás, kreatív ügynökségek",
     color: "#d4763a",
   },
   "1100": {
@@ -171,7 +171,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     name: "Felfedező Labor",
     alias: "Kutatólabor",
     description:
-      "Csendes, mélyen gondolkodó csapat, szisztematikusan fed fel új területeket.",
+      "Csendes, mélyen gondolkodó csapat, szisztematikusan fedez fel új területeket.",
     strengths: ["Mély, alapos munka", "Erős belső bizalom", "Szisztematikus innováció", "Alacsony hibaarány"],
     risks: ["Lassú döntéshozatal", "Kifelé láthatatlan", "Konfrontáció-kerülés", "Passzivitás látszata"],
     people: "Introvertált, kíváncsi, alapos, együttműködő kutatói típusok.",
@@ -197,7 +197,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     strengths: ["Magas pszichológiai biztonság", "Mély, eredeti gondolkodás", "Erős belső kultúra", "Tartós elköteleződés"],
     risks: ["Külvilággal nehéz kommunikáció", "Lassú végrehajtás", "Harmónia > eredmény", "Külső nyomás kezelése"],
     people: "Introvertált kreativitás, mély gondolkodók, értékvezérelt alkotók.",
-    contexts: "UX research, stratégiai tervezés, tartalom, indie game fejlesztés",
+    contexts: "UX-kutatás, stratégiai tervezés, tartalomkészítés, indie játékfejlesztés",
     color: "#3a8066",
   },
   "0100": {
@@ -226,7 +226,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     name: "Precíz Szakmai Műhely",
     alias: "Mérnöki Műhely",
     description:
-      "Precíz, feladat-orientált csapat, mindenki a saját területén a legjobb.",
+      "Precíz, feladatorientált csapat, mindenki a saját területén a legjobb.",
     strengths: ["Kiváló technikai kompetencia", "Hatékonyság", "Egyértelmű felelősségek", "Megbízható output"],
     risks: ["Alacsony érzelmi kapcsolódás", "Kiégés veszélye", "Újítás nehezen kap teret", "Inkább egyéni hozzájárulók"],
     people: "Precíz, önálló, technikai beállítottságú szakemberek.",

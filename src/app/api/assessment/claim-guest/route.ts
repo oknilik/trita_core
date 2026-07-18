@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getTestConfig } from "@/lib/questions";
+import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 
@@ -30,16 +30,16 @@ export async function POST(req: Request) {
   }
 
   const { answers } = parsed.data;
-  const testType = "HEXACO" as const;
+  const testType = "TRITAN" as const;
 
-  // Find or create profile, force-assign HEXACO
+  // Find or create profile, force-assign TRITAN
   const profile = await prisma.userProfile.upsert({
     where: { clerkId: userId },
     create: { clerkId: userId, testType, testTypeAssignedAt: new Date() },
     update: {},
   });
 
-  // If profile has no test type, assign HEXACO
+  // If profile has no test type, assign TRITAN
   if (!profile.testType) {
     await prisma.userProfile.update({
       where: { id: profile.id },
@@ -47,17 +47,11 @@ export async function POST(req: Request) {
     });
   }
 
-  // Validate answers against HEXACO config
+  // Validate answers against TRITAN config — a rövid (TSFI-S) és a teljes
+  // forma hiánytalan kitöltése egyaránt érvényes.
   const config = getTestConfig(testType);
   const expectedIds = new Set(config.questions.map((q) => q.id));
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
-
-  if (relevantAnswers.length !== expectedIds.size) {
-    return NextResponse.json(
-      { error: "ANSWER_COUNT_MISMATCH" },
-      { status: 400 },
-    );
-  }
 
   const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));
   if (answeredIds.size !== relevantAnswers.length) {
@@ -67,13 +61,11 @@ export async function POST(req: Request) {
     );
   }
 
-  for (const id of expectedIds) {
-    if (!answeredIds.has(id)) {
-      return NextResponse.json(
-        { error: "MISSING_ANSWER" },
-        { status: 400 },
-      );
-    }
+  if (!isCompleteFormAnswerSet(testType, answeredIds)) {
+    return NextResponse.json(
+      { error: "ANSWER_COUNT_MISMATCH" },
+      { status: 400 },
+    );
   }
 
   const typedAnswers = relevantAnswers.map((a) => ({
@@ -94,6 +86,11 @@ export async function POST(req: Request) {
       },
     },
   });
+
+  // Több-lépéses kampány: a megszerzett self-eredmény lépteti az OBSERVER_360 lépést
+  import("@/lib/campaign-steps").then(({ advanceCampaignStepForUser }) =>
+    advanceCampaignStepForUser(profile.id, "OBSERVER_360").catch(() => {}),
+  );
 
   return NextResponse.json({ id: result.id });
 }

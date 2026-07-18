@@ -10,10 +10,10 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
+import { INDUSTRIES } from "@/lib/industry-fit";
 import { TritaLogo } from "@/components/TritaLogo";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { toggleBtn } from "@/lib/onboarding-styles";
-import { AVATAR_OPTIONS, AVATARS_INITIAL_COUNT } from "@/lib/avatars";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 
@@ -26,13 +26,18 @@ export function OnboardingClient() {
   const { locale } = useLocale();
   const { showToast } = useToast();
 
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string>(AVATAR_OPTIONS[0] ?? "");
-  const [avatarsShown, setAvatarsShown] = useState(AVATARS_INITIAL_COUNT);
+  // Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez
+  const [eduLevel, setEduLevel] = useState("");
+  const [eduField, setEduField] = useState("");
+  const [currentIndustry, setCurrentIndustry] = useState("");
+  const [eduPickerOpen, setEduPickerOpen] = useState(false);
+  const [eduFieldPickerOpen, setEduFieldPickerOpen] = useState(false);
+  const [industryPickerOpen, setIndustryPickerOpen] = useState(false);
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -68,6 +73,29 @@ export function OnboardingClient() {
   }, []);
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
+
+  const eduOptions = useMemo(() => ([
+    { value: "primary", label: t("results.ccEduPrimary", locale) },
+    { value: "secondary", label: t("results.ccEduSecondary", locale) },
+    { value: "vocational", label: t("results.ccEduVocational", locale) },
+    { value: "higher", label: t("results.ccEduHigher", locale) },
+  ]), [locale]);
+  const eduFieldOptions = useMemo(() => ([
+    { value: "tech_engineering", label: t("results.ccFieldTech", locale) },
+    { value: "economics", label: t("results.ccFieldEconomics", locale) },
+    { value: "health", label: t("results.ccFieldHealth", locale) },
+    { value: "humanities", label: t("results.ccFieldHumanities", locale) },
+    { value: "natural_science", label: t("results.ccFieldScience", locale) },
+    { value: "legal", label: t("results.ccFieldLegal", locale) },
+    { value: "arts", label: t("results.ccFieldArts", locale) },
+    { value: "pedagogy", label: t("results.ccFieldPedagogy", locale) },
+    { value: "trade", label: t("results.ccFieldTrade", locale) },
+    { value: "none", label: t("results.ccFieldNone", locale) },
+  ]), [locale]);
+  const industryOptions = useMemo(() => ([
+    ...INDUSTRIES.map((i) => ({ value: i.key, label: locale === "hu" ? i.hu : i.en })),
+    { value: "", label: t("results.ccCurrentNone", locale) },
+  ]), [locale]);
   const countryLabel = useMemo(
     () => countryOptions.find((c) => c.value === country)?.label,
     [country, countryOptions],
@@ -135,9 +163,6 @@ export function OnboardingClient() {
     setStep(2);
   };
 
-  const handleStep2Next = () => {
-    setStep(3);
-  };
 
   // ── Submit ───────────────────────────────────────────────────────────────
 
@@ -154,8 +179,10 @@ export function OnboardingClient() {
           birthYear: birthYearNum,
           gender,
           country,
-          avatarUrl: avatarUrl || undefined,
           consentedAt: new Date().toISOString(),
+          ...(eduLevel && { eduLevel }),
+          ...(eduLevel && eduLevel !== "primary" && eduField && { eduField }),
+          ...(currentIndustry && { currentIndustry }),
         }),
       });
 
@@ -174,10 +201,9 @@ export function OnboardingClient() {
 
   const stepLabels = [
     t("onboarding.step1Label", locale),
-    t("onboarding.avatarTitle", locale),
     t("onboarding.step2Label", locale),
   ];
-  const progress = ((step - 1) / 2) * 100;
+  const progress = ((step - 1) / 1) * 100;
 
   // ── Render ───────────────────────────────────────────────────────────────
 
@@ -350,6 +376,35 @@ export function OnboardingClient() {
                   />
                 </div>
 
+                {/* Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez */}
+                <div className="mt-2 border-t border-sand pt-4">
+                  <p className="mb-3 text-[11px] font-medium uppercase tracking-[1px] text-muted">
+                    {t("onboarding.careerSectionLabel", locale)}
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    <PickerTrigger
+                      label={t("onboarding.eduLabel", locale)}
+                      value={eduOptions.find((o) => o.value === eduLevel)?.label ?? ""}
+                      placeholder={t("onboarding.optionalPlaceholder", locale)}
+                      onClick={() => setEduPickerOpen(true)}
+                    />
+                    {eduLevel && eduLevel !== "primary" && (
+                      <PickerTrigger
+                        label={t("onboarding.eduFieldLabel", locale)}
+                        value={eduFieldOptions.find((o) => o.value === eduField)?.label ?? ""}
+                        placeholder={t("onboarding.optionalPlaceholder", locale)}
+                        onClick={() => setEduFieldPickerOpen(true)}
+                      />
+                    )}
+                    <PickerTrigger
+                      label={t("onboarding.industryLabel", locale)}
+                      value={industryOptions.find((o) => o.value === currentIndustry && o.value !== "")?.label ?? ""}
+                      placeholder={t("onboarding.optionalPlaceholder", locale)}
+                      onClick={() => setIndustryPickerOpen(true)}
+                    />
+                  </div>
+                </div>
+
               </div>
 
               <button
@@ -363,75 +418,11 @@ export function OnboardingClient() {
             </div>
           )}
 
-          {/* ── Step 2: Avatar ──────────────────────────────────────────── */}
+          {/* ── Step 2: Hozzájárulás ────────────────────────────────────── */}
           {step === 2 && (
             <div className="flex flex-col gap-6">
               <div>
                 <SectionEyebrow className="mb-1">{"// 02"}</SectionEyebrow>
-                <p className="font-fraunces text-xl text-ink">
-                  {t("onboarding.avatarTitle", locale)}
-                </p>
-                <p className="text-xs text-muted mt-0.5">
-                  {t("onboarding.avatarSub", locale)}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-4 gap-2">
-                {AVATAR_OPTIONS.slice(0, avatarsShown).map((src) => (
-                  <button
-                    key={src}
-                    type="button"
-                    onClick={() => setAvatarUrl(src)}
-                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
-                      avatarUrl === src
-                        ? "border-sage ring-2 ring-sage/30"
-                        : "border-sand hover:border-sage/40"
-                    }`}
-                  >
-                    <Image
-                      src={src}
-                      alt="avatar option"
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-              {AVATAR_OPTIONS.length > avatarsShown && (
-                <button
-                  type="button"
-                  onClick={() => setAvatarsShown(AVATAR_OPTIONS.length)}
-                  className="text-xs font-medium text-bronze hover:underline self-start"
-                >
-                  {t("onboarding.avatarShowAll", locale).replace("{count}", String(AVATAR_OPTIONS.length))}
-                </button>
-              )}
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
-                >
-                  ← {t("actions.back", locale)}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleStep2Next}
-                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
-                >
-                  {t("actions.next", locale)}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 3: Hozzájárulás ────────────────────────────────────── */}
-          {step === 3 && (
-            <div className="flex flex-col gap-6">
-              <div>
-                <SectionEyebrow className="mb-1">{"// 03"}</SectionEyebrow>
                 <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.step2Title", locale)}
                 </p>
@@ -512,6 +503,30 @@ export function OnboardingClient() {
         title={t("onboarding.countryLabel", locale)}
         searchable
         searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
+      />
+      <Picker
+        isOpen={eduPickerOpen}
+        onClose={() => setEduPickerOpen(false)}
+        onSelect={setEduLevel}
+        options={eduOptions}
+        selectedValue={eduLevel}
+        title={t("onboarding.eduLabel", locale)}
+      />
+      <Picker
+        isOpen={eduFieldPickerOpen}
+        onClose={() => setEduFieldPickerOpen(false)}
+        onSelect={setEduField}
+        options={eduFieldOptions}
+        selectedValue={eduField}
+        title={t("onboarding.eduFieldLabel", locale)}
+      />
+      <Picker
+        isOpen={industryPickerOpen}
+        onClose={() => setIndustryPickerOpen(false)}
+        onSelect={setCurrentIndustry}
+        options={industryOptions}
+        selectedValue={currentIndustry}
+        title={t("onboarding.industryLabel", locale)}
       />
     </div>
   );

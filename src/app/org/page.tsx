@@ -1,3 +1,4 @@
+import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
@@ -9,6 +10,8 @@ export const dynamic = "force-dynamic";
 export default async function OrgRedirectPage() {
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
+
+  await requireOnboardedByClerkId(userId);
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },

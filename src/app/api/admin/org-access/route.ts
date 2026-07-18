@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TRIAL_DAYS } from "@/lib/subscription";
+import { sanitizeOrgBillingProfile } from "@/lib/org-billing";
 
 // Consulting mode: subscriptions are provisioned manually by the platform
 // admin instead of Stripe. This endpoint is the single write path for that.
@@ -17,7 +18,10 @@ const postSchema = z.object({
     "set_credits",
     "assign_consultant",
     "remove_consultant",
+    "update_billing",
   ]),
+  // Cégadatok (update_billing) — a mezőket a sanitizeOrgBillingProfile szűri.
+  billing: z.record(z.string(), z.string()).optional(),
   planType: z.enum(["team", "org", "scale"]).optional(),
   months: z.number().int().min(1).max(36).optional(),
   candidateCredits: z.number().int().min(0).max(1000).optional(),
@@ -38,6 +42,7 @@ export async function GET() {
       id: true,
       name: true,
       status: true,
+      billingProfile: true,
       createdAt: true,
       _count: { select: { members: { where: { role: { not: "ORG_CONSULTANT" } } } } },
       subscription: {
@@ -98,7 +103,8 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { orgId, action, planType, months, candidateCredits, consultantEmail } = parsed.data;
+  const { orgId, action, planType, months, candidateCredits, consultantEmail, billing } =
+    parsed.data;
 
   const org = await prisma.organization.findUnique({
     where: { id: orgId },
@@ -109,6 +115,16 @@ export async function POST(req: NextRequest) {
   }
 
   const now = new Date();
+
+  // Cégadatok mentése (számlázáshoz) — csak admin felületen szerkeszthető.
+  if (action === "update_billing") {
+    const sanitized = sanitizeOrgBillingProfile(billing);
+    await prisma.organization.update({
+      where: { id: orgId },
+      data: { billingProfile: sanitized as Record<string, string> },
+    });
+    return NextResponse.json({ ok: true, billingProfile: sanitized });
+  }
 
   if (action === "activate" || action === "extend") {
     const monthsToAdd = months ?? 12;

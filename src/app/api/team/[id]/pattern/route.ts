@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { canAccessTeam } from "@/lib/team-auth";
-import { calculateTeamPattern, type HexacoScores } from "@/lib/team-pattern";
+import { calculateTeamPattern, type TritanScores } from "@/lib/team-pattern";
 import type { ScoreResult } from "@/lib/scoring";
 
 export async function GET(
@@ -57,8 +57,8 @@ export async function GET(
 
   const totalMembers = teamMembers.length;
 
-  // Build the members array for calculateTeamPattern — only those with HEXACO scores
-  const membersWithScores: Array<{ userId: string; scores: HexacoScores }> = [];
+  // Build the members array for calculateTeamPattern — only those with TRITAN scores
+  const membersWithScores: Array<{ userId: string; scores: TritanScores }> = [];
 
   for (const tm of teamMembers) {
     const ar = tm.user.assessmentResults[0];
@@ -75,12 +75,12 @@ export async function GET(
     membersWithScores.push({
       userId: tm.user.id,
       scores: {
-        H: dims.H,
-        E: dims.E,
-        X: dims.X,
-        A: dims.A,
-        C: dims.C,
-        O: dims.O,
+        INTE: dims.H,
+        RESO: dims.E,
+        TEMP: dims.X,
+        ADAP: dims.A,
+        THOR: dims.C,
+        OPEN: dims.O,
       },
     });
   }

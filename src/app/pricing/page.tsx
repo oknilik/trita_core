@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { auth } from "@clerk/nextjs/server";
 import { getLanguageAlternates } from "@/lib/seo";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
-import { PricingHero } from "@/components/pricing/PricingHero";
-import { PathSelector } from "@/components/pricing/PathSelector";
-import { PricingFAQ } from "@/components/pricing/PricingFAQ";
+import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
-
   const title = t("pricing.metaTitle", locale);
   const description = t("pricing.metaDescription", locale);
-
   return {
     title,
     description,
@@ -21,56 +16,146 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: "/pricing",
       languages: getLanguageAlternates("/pricing"),
     },
-    openGraph: {
-      title,
-      description,
-      url: "/pricing",
-      type: "website",
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
+    openGraph: { title, description, url: "/pricing", type: "website", siteName: "trita" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-3 flex items-center gap-2">
+      <span className="h-[1.5px] w-5 bg-[var(--color-accent-primary)]" />
+      <span className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+        {children}
+      </span>
+    </div>
+  );
+}
+
 export default async function PricingPage() {
-  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  const isLoggedIn = !!userId;
+  const locale = await getServerLocale();
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      <PricingHero locale={locale} />
-      <PathSelector locale={locale} isLoggedIn={isLoggedIn} />
+      {/* ── Hero ── */}
+      <section className="px-6 pb-10 pt-14 text-center lg:px-16 lg:pt-20">
+        <p className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+          {t("pricing.heroEyebrow", locale)}
+        </p>
+        <h1 className="mx-auto mt-3 max-w-2xl font-fraunces text-[clamp(30px,5vw,44px)] leading-[1.15] tracking-tight text-[var(--color-text-primary)]">
+          {t("pricing.heroHeading", locale)}
+          <em className="text-[var(--color-action-primary-bg)]">{t("pricing.heroHeadingEm", locale)}</em>
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--color-text-muted)]">
+          {t("pricing.heroSub", locale)}
+        </p>
+      </section>
 
-      {/* Consulting note — activation happens off-platform */}
+      {/* ── Egyéni: ingyenes ── */}
       <section className="px-6 lg:px-16">
-        <div className="mx-auto max-w-5xl rounded-xl border border-[var(--color-border-soft)] bg-white px-5 py-4">
-          <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
-            {t("pricing.consultingNote", locale)}
+        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-white p-7 lg:p-9">
+          <Eyebrow>{t("pricing.selfEyebrow", locale)}</Eyebrow>
+          <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
+            {t("pricing.selfTitle", locale)}
+          </h2>
+          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+            {t("pricing.selfBody", locale)}
+          </p>
+          <Link
+            href="/try"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-border-default)] bg-white px-5 text-[13px] font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)]"
+          >
+            {t("pricing.selfCta", locale)}
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Csapat & szervezet: program ── */}
+      <section className="mt-6 px-6 lg:px-16">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-white p-7 lg:p-9">
+          <Eyebrow>{t("pricing.teamEyebrow", locale)}</Eyebrow>
+          <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
+            {t("pricing.teamTitle", locale)}
+          </h2>
+          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+            {t("pricing.teamBody", locale)}
+          </p>
+
+          <ol className="mt-6 grid gap-3 sm:grid-cols-3">
+            {(["teamHow1", "teamHow2", "teamHow3"] as const).map((key, i) => (
+              <li
+                key={key}
+                className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-3.5"
+              >
+                <span className="font-fraunces text-lg text-[var(--color-action-primary-bg)]">{i + 1}</span>
+                <p className="mt-1 text-[13px] leading-snug text-[var(--color-text-secondary)]">
+                  {t(`pricing.${key}`, locale)}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-6 rounded-xl bg-[var(--color-surface-self-accent-soft)]/60 px-4 py-3.5 text-[13px] leading-relaxed text-[var(--color-accent-self-deep)]">
+            {t("pricing.teamPriceNote", locale)}
+          </p>
+
+          <Link
+            href="/contact"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-[13px] font-semibold text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
+          >
+            {t("pricing.teamCta", locale)}
+          </Link>
+          <p className="mt-3 text-[11px] text-[var(--color-text-muted)]">
+            {t("pricing.ctaTrust", locale)}
           </p>
         </div>
       </section>
 
-      <PricingFAQ locale={locale} />
+      {/* ── Pilot kiemelés ── */}
+      <section className="mt-6 px-6 lg:px-16">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-accent-primary)]/40 bg-[var(--color-surface-highlight-warm)] p-7 lg:p-9">
+          <Eyebrow>{t("pricing.pilotEyebrow", locale)}</Eyebrow>
+          <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
+            {t("pricing.pilotTitle", locale)}
+          </h2>
+          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+            {t("pricing.pilotBody", locale)}
+          </p>
+          <Link
+            href="/pilot"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-white px-5 text-[13px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
+          >
+            {t("pricing.pilotCta", locale)}
+          </Link>
+        </div>
+      </section>
 
-      {/* Bottom CTA */}
-      <section className="mx-5 mb-8 mt-12 lg:mx-14">
-        <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] p-8 lg:p-12">
-          <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
-            <div className="flex-1">
-              <h2 className="font-fraunces text-2xl text-white lg:text-3xl">{t("pricing.bottomHeading", locale)}</h2>
-              <p className="mt-2 text-sm text-white/[0.35]">{t("pricing.bottomSub", locale)}</p>
-            </div>
-            <Link
-              href="/try"
-              className="shrink-0 rounded-[10px] bg-[var(--color-accent-primary)] px-8 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+      {/* ── GYIK ── */}
+      <section className="mx-auto mt-14 max-w-3xl px-6 lg:px-0">
+        <h2 className="text-center font-fraunces text-2xl text-[var(--color-text-primary)]">
+          {t("pricing.faqHeading", locale)}
+        </h2>
+        <div className="mt-6 space-y-3">
+          {([1, 2, 3, 4] as const).map((i) => (
+            <details
+              key={i}
+              className="group rounded-xl border border-[var(--color-border-soft)] bg-white px-5 py-4"
             >
-              {t("pricing.bottomCta", locale)}
-            </Link>
-          </div>
+              <summary className="cursor-pointer list-none text-[14px] font-semibold text-[var(--color-text-primary)]">
+                {t(`pricing.faqQ${i}`, locale)}
+              </summary>
+              <p className="mt-2 text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+                {t(`pricing.faqA${i}`, locale)}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Villámkérdés — súrlódásmentes kapcsolatfelvétel ── */}
+      <section className="mx-5 mb-8 mt-14 lg:mx-14">
+        <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] px-6 py-10 lg:px-10 lg:py-12">
+          <PricingQuickAsk locale={locale} />
         </div>
       </section>
     </main>

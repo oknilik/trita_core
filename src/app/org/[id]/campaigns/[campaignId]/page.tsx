@@ -1,10 +1,11 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
@@ -18,6 +19,12 @@ import {
   resolveOrgPolicySnapshot,
   toOrgSubscriptionBannerState,
 } from "@/lib/policy-service";
+import {
+  PSYCH_SAFETY_ITEMS,
+  PSYCH_SAFETY_MIN_RESPONSES,
+  aggregatePsychSafety,
+} from "@/lib/psych-safety";
+import { CAMPAIGN_STEP_LABELS, isCampaignStepType } from "@/lib/campaign-steps-core";
 
 export const dynamic = "force-dynamic";
 
@@ -31,24 +38,24 @@ const STATUS_TRANSITIONS: Record<string, string | null> = {
   CLOSED: null,
 };
 
-const HEXACO_DIMS = ["H", "E", "X", "A", "C", "O"] as const;
+const TRITAN_DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
-const HEXACO_COLORS: Record<string, string> = {
-  H: "var(--color-visual-gradient-indigo)",
-  E: "var(--color-visual-gradient-violet)",
-  X: "#06B6D4",
-  A: "var(--color-state-success-strong)",
-  C: "var(--color-state-warning-strong)",
-  O: "#EF4444",
+const TRITAN_COLORS: Record<string, string> = {
+  INTE: "var(--color-visual-gradient-indigo)",
+  RESO: "var(--color-visual-gradient-violet)",
+  TEMP: "#06B6D4",
+  ADAP: "var(--color-state-success-strong)",
+  THOR: "var(--color-state-warning-strong)",
+  OPEN: "#EF4444",
 };
 
-const HEXACO_LABEL_KEYS: Record<string, string> = {
-  H: "org.campaign.hexacoH",
-  E: "org.campaign.hexacoE",
-  X: "org.campaign.hexacoX",
-  A: "org.campaign.hexacoA",
-  C: "org.campaign.hexacoC",
-  O: "org.campaign.hexacoO",
+const TRITAN_LABEL_KEYS: Record<string, string> = {
+  INTE: "org.campaign.tritanINTE",
+  RESO: "org.campaign.tritanRESO",
+  TEMP: "org.campaign.tritanTEMP",
+  ADAP: "org.campaign.tritanADAP",
+  THOR: "org.campaign.tritanTHOR",
+  OPEN: "org.campaign.tritanOPEN",
 };
 
 function statusLabel(status: string, locale: "hu" | "en") {
@@ -78,13 +85,13 @@ function eyebrowLabel(status: string, locale: "hu" | "en") {
 function computeAvgScores(
   results: { userProfileId: string | null; scores: unknown }[]
 ): Record<string, number> | null {
-  const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
+  const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
   let count = 0;
   for (const r of results) {
     const scores = r.scores as Record<string, number>;
-    const hasAll = HEXACO_DIMS.every((d) => typeof scores[d] === "number");
+    const hasAll = TRITAN_DIMS.every((d) => typeof scores[d] === "number");
     if (hasAll) {
-      for (const d of HEXACO_DIMS) {
+      for (const d of TRITAN_DIMS) {
         sums[d] += scores[d];
       }
       count++;
@@ -92,7 +99,7 @@ function computeAvgScores(
   }
   if (count === 0) return null;
   const avg: Record<string, number> = {};
-  for (const d of HEXACO_DIMS) {
+  for (const d of TRITAN_DIMS) {
     avg[d] = Math.round(sums[d] / count);
   }
   return avg;
@@ -108,7 +115,15 @@ export default async function CampaignDetailPage({
     params,
   ]);
 
-  const { role: memberRole } = await requireOrgContext(orgId);
+  const { profileId, role: memberRole } = await requireOrgContext(orgId);
+  // Kampány-felület: csak tanácsadó (ORG_CONSULTANT vagy platform-admin).
+  const viewer = await prisma.userProfile.findUnique({
+    where: { id: profileId },
+    select: { email: true, isConsultant: true },
+  });
+  if (!isConsultantSurface(memberRole, viewer?.email, viewer?.isConsultant)) {
+    redirect(`/org/${orgId}`);
+  }
   const isHu = locale !== "en";
   const policySnapshot = await resolveOrgPolicySnapshot({
     orgId,
@@ -143,6 +158,8 @@ export default async function CampaignDetailPage({
         name: true,
         description: true,
         status: true,
+        type: true,
+        steps: true,
         teamId: true,
         createdAt: true,
         closedAt: true,
@@ -153,6 +170,9 @@ export default async function CampaignDetailPage({
             id: true,
             addedAt: true,
             userId: true,
+            completedAt: true,
+            currentStep: true,
+            stepCompletions: true,
             user: { select: { id: true, username: true, email: true } },
           },
         },
@@ -208,6 +228,27 @@ export default async function CampaignDetailPage({
 
   const participantUserIds = campaign.participants.map((p) => p.userId);
 
+  // Több-lépéses kampány: effektív lépések + pulse-jelenlét.
+  const campaignSteps =
+    campaign.steps.length > 0 ? campaign.steps : [campaign.type];
+  const isMultiStep = campaignSteps.length > 1;
+  const hasPsychStep = campaignSteps.includes("PSYCH_SAFETY");
+  // Csak-pulse kampánynál a self/observer statok nem értelmezettek.
+  const isPsychOnly = campaignSteps.length === 1 && campaignSteps[0] === "PSYCH_SAFETY";
+
+  // Pszich. biztonság pulse: anonim válaszok aggregálása (csak ≥3 válasznál).
+  const psCompletedCount = campaign.participants.filter((p) => p.completedAt).length;
+  const psAggregate = hasPsychStep
+    ? aggregatePsychSafety(
+        (
+          await prisma.psychSafetyResponse.findMany({
+            where: { campaignId },
+            select: { answers: true },
+          })
+        ).map((r) => r.answers),
+      )
+    : null;
+
   // Self-assessment completion
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
@@ -245,9 +286,11 @@ export default async function CampaignDetailPage({
   const totalCount = participantUserIds.length;
 
   const completionPct =
-    totalCount > 0 ? Math.round((selfDoneCount / totalCount) * 100) : 0;
+    totalCount > 0
+      ? Math.round(((isPsychOnly ? psCompletedCount : selfDoneCount) / totalCount) * 100)
+      : 0;
 
-  // For CLOSED: compute HEXACO averages + previous campaign comparison
+  // For CLOSED: compute TRITAN averages + previous campaign comparison
   let currentAvgScores: Record<string, number> | null = null;
   let previousAvgScores: Record<string, number> | null = null;
   let previousCampaignName: string | null = null;
@@ -370,8 +413,66 @@ export default async function CampaignDetailPage({
           </div>
         </div>
 
+        {/* Több-lépéses kampány: lépésenkénti haladás */}
+        {isMultiStep && totalCount > 0 && (
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              {isHu ? "Mérés-lépések" : "Measurement steps"}
+            </p>
+            <p className="mb-5 text-xs text-ink-body/70">
+              {isHu
+                ? "A lépések tagonként, sorban nyílnak meg — aki végez az egyikkel, annak (értesítéssel) megnyílik a következő."
+                : "Steps open per member, in order — when someone finishes one, the next opens for them (with a notification)."}
+            </p>
+            <div className="flex flex-col gap-3">
+              {campaignSteps.map((stepType, idx) => {
+                const label = isCampaignStepType(stepType)
+                  ? isHu
+                    ? CAMPAIGN_STEP_LABELS[stepType].hu
+                    : CAMPAIGN_STEP_LABELS[stepType].en
+                  : stepType;
+                const doneCount = campaign.participants.filter((p) => {
+                  const sc = p.stepCompletions;
+                  return (
+                    sc &&
+                    typeof sc === "object" &&
+                    !Array.isArray(sc) &&
+                    Boolean((sc as Record<string, unknown>)[stepType])
+                  );
+                }).length;
+                const hereCount = campaign.participants.filter(
+                  (p) => p.currentStep === idx,
+                ).length;
+                const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+                return (
+                  <div key={stepType} className="flex items-center gap-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage/15 font-mono text-[11px] font-bold text-sage-dark">
+                      {idx + 1}
+                    </span>
+                    <span className="w-56 shrink-0 text-[13px] font-medium text-ink md:w-72">
+                      {label}
+                    </span>
+                    <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
+                      <div
+                        className="h-full rounded-full bg-sage transition-all duration-700"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="w-24 shrink-0 text-right text-xs tabular-nums text-muted">
+                      {doneCount}/{totalCount} {isHu ? "kész" : "done"}
+                      {hereCount > 0 ? (
+                        <span className="text-bronze"> · {hereCount} {isHu ? "itt tart" : "here"}</span>
+                      ) : null}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         {/* Summary stat cards */}
-        {totalCount > 0 && (
+        {!isPsychOnly && totalCount > 0 && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {/* Self-assessment */}
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
@@ -447,8 +548,92 @@ export default async function CampaignDetailPage({
           </div>
         )}
 
+        {/* Pszich. biztonság: anonim csapatszintű összkép */}
+        {hasPsychStep && (
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              {t("org.campaign.psEyebrow", locale)}
+            </p>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 className="font-fraunces text-xl text-ink">
+                {t("org.campaign.psIndexTitle", locale)}
+              </h2>
+              <span className="text-xs text-ink-body/60">
+                {psCompletedCount} / {totalCount} {t("org.campaign.psCompleted", locale)}
+              </span>
+            </div>
+            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-ink-body/70">
+              {t("org.campaign.psAnonNote", locale)}
+            </p>
+
+            {psAggregate ? (
+              <div className="mt-6 flex flex-col gap-6">
+                <div className="flex items-center gap-5">
+                  <p className="font-fraunces text-5xl text-ink">
+                    {psAggregate.index}
+                    <span className="ml-1 font-sans text-sm font-normal text-muted">/ 100</span>
+                  </p>
+                  <div>
+                    <p className="text-sm font-semibold text-ink">
+                      {t(
+                        psAggregate.band === "high"
+                          ? "org.campaign.psBandHigh"
+                          : psAggregate.band === "mid"
+                            ? "org.campaign.psBandMid"
+                            : "org.campaign.psBandLow",
+                        locale,
+                      )}
+                    </p>
+                    <p className="mt-0.5 text-xs text-ink-body/60">
+                      {tf("org.campaign.psResponses", locale, { count: psAggregate.count })} ·{" "}
+                      {tf("org.campaign.psSpread", locale, { spread: psAggregate.spread })}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-muted">
+                    {t("org.campaign.psItemsTitle", locale)}
+                  </p>
+                  <div className="flex flex-col gap-2.5">
+                    {PSYCH_SAFETY_ITEMS.map((item) => {
+                      const mean = psAggregate.itemMeans[item.id] ?? 0;
+                      const pct = ((mean - 1) / 4) * 100;
+                      return (
+                        <div key={item.id} className="flex items-center gap-3">
+                          <span className="w-64 shrink-0 text-xs leading-snug text-ink-body md:w-80">
+                            {item.text[isHu ? "hu" : "en"]}
+                          </span>
+                          <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
+                            <div
+                              className="h-full rounded-full bg-sage transition-all duration-700"
+                              style={{ width: `${Math.max(0, Math.min(100, pct))}%` }}
+                            />
+                          </div>
+                          <span className="w-10 text-right text-xs tabular-nums text-muted">
+                            {mean.toFixed(1)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6 rounded-xl border border-sand bg-cream px-4 py-4">
+                <p className="text-sm text-ink-body">
+                  {tf("org.campaign.psBelowThreshold", locale, {
+                    min: PSYCH_SAFETY_MIN_RESPONSES,
+                  })}
+                </p>
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Development arc (closed campaigns with previous data) */}
-        {campaign.status === "CLOSED" &&
+        {!isPsychOnly &&
+          campaign.status === "CLOSED" &&
           currentAvgScores &&
           previousAvgScores &&
           previousCampaignName && (
@@ -463,11 +648,11 @@ export default async function CampaignDetailPage({
                 {tf("org.campaign.devArcCompare", locale, { name: previousCampaignName! })}
               </p>
               <div className="flex flex-col gap-3">
-                {HEXACO_DIMS.map((d) => {
+                {TRITAN_DIMS.map((d) => {
                   const curr = currentAvgScores![d] ?? 0;
                   const prev = previousAvgScores![d] ?? 0;
                   const delta = curr - prev;
-                  const label = t(HEXACO_LABEL_KEYS[d], locale);
+                  const label = t(TRITAN_LABEL_KEYS[d], locale);
                   return (
                     <div key={d} className="flex items-center gap-3">
                       <span className="w-36 shrink-0 text-xs text-ink-body truncate">
@@ -478,7 +663,7 @@ export default async function CampaignDetailPage({
                           className="h-full rounded-full transition-all duration-700"
                           style={{
                             width: `${curr}%`,
-                            backgroundColor: HEXACO_COLORS[d],
+                            backgroundColor: TRITAN_COLORS[d],
                           }}
                         />
                       </div>
@@ -537,7 +722,7 @@ export default async function CampaignDetailPage({
                       )}
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      {isFullyDone ? (
+                      {isPsychOnly ? null : isFullyDone ? (
                         <StatusChip variant="success">
                           {t("org.campaign.participantDone", locale)}
                         </StatusChip>
@@ -550,7 +735,7 @@ export default async function CampaignDetailPage({
                           {t("org.campaign.participantNotStarted", locale)}
                         </StatusChip>
                       )}
-                      {obsCount > 0 && (
+                      {!isPsychOnly && obsCount > 0 && (
                         <span className="text-xs text-muted">
                           {obsCount} obs.
                         </span>

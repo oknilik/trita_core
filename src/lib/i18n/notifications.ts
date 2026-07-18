@@ -14,7 +14,7 @@ export const notificationTranslations = {
     },
     purchaseConfirmed: {
       title: { hu: "Sikeres vásárlás", en: "Purchase confirmed" },
-      body: { hu: "A vásárlásod sikeresen feldolgozásra került.", en: "Your purchase has been successfully processed." },
+      body: { hu: "A vásárlásodat feldolgoztuk.", en: "Your purchase has been successfully processed." },
     },
     orgInviteReceived: {
       title: { hu: "Szervezeti meghívás", en: "Organization invite" },
@@ -23,6 +23,13 @@ export const notificationTranslations = {
     campaignLaunched: {
       title: { hu: "Kampány elindítva", en: "Campaign launched" },
       body: { hu: "A(z) \"{campaignName}\" kampány aktív.", en: "The \"{campaignName}\" campaign is now active." },
+    },
+    stepOpened: {
+      title: { hu: "Új mérés vár rád", en: "A new measurement is ready for you" },
+      body: {
+        hu: "A(z) \"{campaignName}\" kampányban megnyílt a következő méréslépésed — pár perc az egész, kattints és töltsd ki.",
+        en: "Your next measurement step in \"{campaignName}\" is now open — it only takes a few minutes.",
+      },
     },
     campaignClosed: {
       title: { hu: "Kampány lezárva", en: "Campaign closed" },
@@ -54,7 +61,7 @@ export const notificationTranslations = {
     },
     subscriptionFrozen: {
       title: { hu: "Előfizetés felfüggesztve", en: "Subscription frozen" },
-      body: { hu: "Az előfizetésed felfüggesztésre került.", en: "Your subscription has been frozen." },
+      body: { hu: "Az előfizetésedet felfüggesztettük.", en: "Your subscription has been frozen." },
     },
     lowCandidateCredits: {
       title: { hu: "Alacsony jelöltkeret", en: "Low candidate credits" },

@@ -3,19 +3,22 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
+// 4 fő fül (2026-07-17 racionalizálás): Vezérlő · Szervezetek · Tanácsadók ·
+// Működés. A régi feedback/reminders/research nézetek a Működés gyűjtőfül
+// alól nyílnak (mélylinkjeik változatlanul élnek — ilyenkor a Működés aktív).
 const TABS = [
-  { id: "overview", label: "Áttekintés" },
-  { id: "research", label: "Kutatás" },
-  { id: "reminders", label: "Emlékeztetők" },
+  { id: "overview", label: "Vezérlő" },
   { id: "orgs", label: "Szervezetek" },
-  { id: "feedback", label: "Visszajelzések" },
+  { id: "consultants", label: "Tanácsadók" },
+  { id: "ops", label: "Működés" },
 ] as const;
 
-type TabId = (typeof TABS)[number]["id"];
+const OPS_SUBTABS = new Set(["ops", "feedback", "reminders", "research"]);
 
 export function AdminTabNav() {
   const searchParams = useSearchParams();
-  const active = (searchParams.get("tab") ?? "overview") as TabId;
+  const raw = searchParams.get("tab") ?? "overview";
+  const active = OPS_SUBTABS.has(raw) ? "ops" : raw;
 
   return (
     <div className="mt-6 mb-8 flex gap-1 rounded-xl border border-sand bg-cream p-1">

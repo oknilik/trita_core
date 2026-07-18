@@ -6,10 +6,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import {
-  NOTIFICATION_TYPE_META,
-  type NotificationIntent,
-} from "./types";
+import { NOTIFICATION_TYPE_META } from "./types";
 import { persistNotification, persistNotificationBatch } from "./repository";
 import { resolveOrgRecipients } from "./policy";
 
@@ -203,6 +200,34 @@ export async function handleCampaignLaunched(params: {
       dedupeKey: `CAMPAIGN_LAUNCHED:${params.campaignId}:${userId}`,
     })),
   );
+}
+
+// Több-lépéses kampány: a user számára megnyílt a következő mérés-lépés.
+export async function handleMeasurementStepOpened(params: {
+  userId: string;
+  campaignId: string;
+  campaignName: string;
+  stepType: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.MEASUREMENT_STEP_OPENED;
+  const STEP_LINKS: Record<string, string> = {
+    OBSERVER_360: "/assessment",
+    TEAM_ROLE: "/assessment/team-roles",
+    PSYCH_SAFETY: "/assessment/psych-safety",
+  };
+  await persistNotificationBatch([
+    {
+      userId: params.userId,
+      type: "MEASUREMENT_STEP_OPENED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { campaignName: params.campaignName },
+      link: STEP_LINKS[params.stepType] ?? "/dashboard",
+      sourceType: "campaign" as const,
+      sourceId: params.campaignId,
+      dedupeKey: `MEASUREMENT_STEP_OPENED:${params.campaignId}:${params.stepType}:${params.userId}`,
+    },
+  ]);
 }
 
 export async function handleCampaignClosed(params: {

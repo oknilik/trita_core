@@ -2,15 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProgressBar } from "@/components/assessment/ProgressBar";
+import Link from "next/link";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
-import { ObserverBackdrop } from "@/components/illustrations/ObserverBackdrop";
 import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
-import type { Question } from "@/lib/questions";
-import { isLikertQuestion } from "@/lib/questions";
+import { isLikertQuestion, type Question } from "@/lib/questions/types";
 
 interface ObserverDraftData {
   phase: "assessment" | "confidence";
@@ -531,7 +529,7 @@ export function ObserverClient({
               {t("observer.introBodyShort", locale)}
             </p>
             <div className="mt-4 rounded-xl border border-sage-ring bg-sage-soft px-4 py-3 text-sm leading-relaxed text-bronze-dark">
-              {t("observer.introPauseNote", locale)}
+              {tf("observer.introPauseNote", locale, { count: questions.length })}
             </div>
 
             <div className="mt-6 flex flex-col gap-4">
@@ -666,108 +664,134 @@ export function ObserverClient({
     );
   }
 
+  const globalIndex = activeQuestion
+    ? questions.findIndex((q) => q.id === activeQuestion.id)
+    : totalQuestions - 1;
+  const displayIndex = phase === "confidence" ? totalQuestions : globalIndex + 1;
+
   return (
-    <div className="relative min-h-dvh bg-cream">
-      <ObserverBackdrop />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-      <div className="relative z-10 mx-auto max-w-3xl px-4 py-8 md:py-12">
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sage-ring/60 bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
-          <ProgressBar current={answeredCount} total={totalQuestions} />
-          {phase === "assessment" && (
-            <div className="mt-2 overflow-x-auto">
-              <div className="flex min-w-max items-center gap-2 text-xs text-gray-600">
-                <div className="whitespace-nowrap rounded-md bg-gray-50 px-2 py-1">
-                  {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+    <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
+      {/* ═══ MINIMAL NAV — a self-kitöltéssel azonos héj ═══ */}
+      <nav className="flex shrink-0 items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
+        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+          <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+        </Link>
+        <span className="text-[10px] text-[var(--color-action-primary-bg)]">
+          ✓ {t("assessment.savedState", locale)}
+        </span>
+      </nav>
 
-        <div className="mb-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
-          {thinkOfParts.length > 1 ? (
-            thinkOfParts.map((part, index) => (
-              <span key={`thinkof-${index}`}>
-                {part}
-                {index < thinkOfParts.length - 1 ? <strong className="font-bold italic">{inviterName}</strong> : null}
-              </span>
-            ))
-          ) : (
-            thinkOfText
-          )}
+      {/* ═══ PROGRESS BAR — single row ═══ */}
+      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--color-border-default)] px-7 py-2.5">
+        <div className="flex items-baseline gap-1">
+          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
+          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
         </div>
+        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
+          <div
+            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
+            style={{ width: `${(Math.max(answeredCount, displayIndex) / totalQuestions) * 100}%` }}
+          />
+          <div
+            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
+            style={{ width: `${(displayIndex / totalQuestions) * 100}%` }}
+          />
+        </div>
+        <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
+          {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
+        </span>
+      </div>
 
-        {phase === "assessment" && (
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink-body">
-              <input
-                type="checkbox"
-                checked={autoAdvance}
-                onChange={(event) => setAutoAdvance(event.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-bronze"
-              />
-              {t("assessment.autoAdvance", locale)}
-            </label>
-          </div>
+      {/* Observer-emlékeztető — kire gondolj válasz közben */}
+      <div className="shrink-0 border-b border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-7 py-2 text-center text-[12px] text-[var(--color-accent-self-deep)]">
+        {thinkOfParts.length > 1 ? (
+          thinkOfParts.map((part, index) => (
+            <span key={`thinkof-${index}`}>
+              {part}
+              {index < thinkOfParts.length - 1 ? <strong className="font-semibold">{inviterName}</strong> : null}
+            </span>
+          ))
+        ) : (
+          thinkOfText
         )}
+      </div>
 
-        <div ref={questionAreaRef}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={
-              phase === "confidence"
-                ? "observer-confidence"
-                : checkpointActive
-                  ? `observer-checkpoint-${checkpoint}`
-                  : `observer-${currentPage}-${activeQuestion?.id ?? "none"}`
-            }
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col gap-6"
-          >
-            {phase === "confidence" ? (
-              <>
-                <QuestionCard
-                  testName={testName}
-                  format="likert"
-                  question={t("observer.confidenceLabel", locale)}
-                  value={confidence}
-                  onChange={(v) => setConfidence(v)}
-                  highlight={highlightConfidence}
-                />
-                <p className="text-center text-sm text-gray-400">
-                  {t("observer.confidenceHint", locale)}
-                </p>
-              </>
-            ) : checkpointActive ? (
-              <div className="flex min-h-[18rem] flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center md:min-h-[19rem] md:p-8">
-                <div className="text-5xl leading-none">
-                  {checkpoint === 25 ? '🌱' : checkpoint === 50 ? '💡' : '🏁'}
+      {/* ═══ QUESTION AREA (centered) ═══ */}
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 lg:py-12">
+        <div ref={questionAreaRef} className="w-full max-w-xl">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={
+                phase === "confidence"
+                  ? "observer-confidence"
+                  : checkpointActive
+                    ? `observer-checkpoint-${checkpoint}`
+                    : `observer-${activeQuestion?.id ?? "none"}`
+              }
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-col items-center"
+            >
+              {phase === "confidence" ? (
+                <>
+                  <QuestionCard
+                    testName={testName}
+                    format="likert"
+                    question={t("observer.confidenceLabel", locale)}
+                    value={confidence}
+                    onChange={(v) => setConfidence(v)}
+                    highlight={highlightConfidence}
+                  />
+                  <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
+                    {t("observer.confidenceHint", locale)}
+                  </p>
+                </>
+              ) : checkpointActive ? (
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-action-primary-bg)]">
+                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+                    {t("assessment.journeyMilestone", locale)}
+                  </div>
+                  <h2 className="mb-3 font-fraunces text-[24px] leading-[1.25] text-[var(--color-text-primary)] lg:text-[26px]">
+                    {t(
+                      checkpoint === 25 ? "assessment.journeyMilestone25"
+                      : checkpoint === 50 ? "assessment.journeyMilestone50"
+                      : "assessment.journeyMilestone75",
+                      locale
+                    )}
+                  </h2>
+                  <div className="mb-5 flex w-full max-w-[280px] gap-[3px]">
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const filledSegments = Math.round((answeredCount / totalQuestions) * 10);
+                      return (
+                        <div
+                          key={i}
+                          className={`h-2 flex-1 rounded-full ${
+                            i < filledSegments
+                              ? "bg-[var(--color-action-primary-bg)]"
+                              : i === filledSegments
+                                ? "bg-[var(--color-accent-primary)]"
+                                : "bg-[var(--color-border-default)]"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
+                    <span className="mt-px shrink-0 text-sm">💡</span>
+                    <p className="text-[13px] leading-[1.45] text-[var(--color-accent-self-deep)]">
+                      {t(
+                        checkpoint === 25 ? "assessment.journeyMilestone25Hint"
+                        : checkpoint === 50 ? "assessment.journeyMilestone50Hint"
+                        : "assessment.journeyMilestone75Hint",
+                        locale
+                      )}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
-                  {t("assessment.journeyMilestone", locale)}
-                </p>
-                <p className="mt-2 text-xl font-bold text-emerald-800 md:text-2xl">
-                  {t(
-                    checkpoint === 25 ? "assessment.journeyMilestone25"
-                    : checkpoint === 50 ? "assessment.journeyMilestone50"
-                    : "assessment.journeyMilestone75",
-                    locale
-                  )}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-emerald-700">
-                  {t(
-                    checkpoint === 25 ? "assessment.journeyMilestone25Hint"
-                    : checkpoint === 50 ? "assessment.journeyMilestone50Hint"
-                    : "assessment.journeyMilestone75Hint",
-                    locale
-                  )}
-                </p>
-              </div>
-            ) : activeQuestion && isLikertQuestion(activeQuestion) ? (
-              <div key={activeQuestion.id} id={`observer-question-${activeQuestion.id}`}>
+              ) : activeQuestion && isLikertQuestion(activeQuestion) ? (
                 <QuestionCard
                   testName={testName}
                   dimension={activeQuestion.dimension}
@@ -777,67 +801,76 @@ export function ObserverClient({
                   onChange={(v) => handleAnswer(activeQuestion.id, v)}
                   highlight={highlightQuestionId === activeQuestion.id}
                 />
-              </div>
-            ) : null}
-          </motion.div>
-        </AnimatePresence>
+              ) : null}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        <div className="mt-8 flex items-center justify-between gap-4">
-          <motion.button
-            onClick={handlePrevStep}
-            disabled={!canGoPrev}
-            className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-              !canGoPrev
-                ? "cursor-not-allowed bg-gray-200 text-gray-400"
-                : "bg-white text-gray-700 shadow-md hover:shadow-lg"
-            }`}
-            whileHover={canGoPrev ? { scale: 1.02 } : {}}
-            whileTap={canGoPrev ? { scale: 0.98 } : {}}
-          >
-            {t("assessment.prevCta", locale)}
-          </motion.button>
-
-          {phase === "confidence" ? (
-            <motion.button
-              onClick={handleFinish}
-              disabled={isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                !isSubmitting && confidence !== null
-                  ? "bg-sage text-white shadow-md hover:bg-sage-dark hover:shadow-lg"
-                  : "bg-gray-200 text-gray-400"
-              }`}
-              whileHover={!isSubmitting && confidence !== null ? { scale: 1.02 } : {}}
-              whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-            >
-              {isSubmitting ? t("observer.submitLoading", locale) : t("observer.submit", locale)}
-            </motion.button>
-          ) : (
-            <motion.button
-              onClick={handleNextStep}
-              disabled={isSubmitting}
-              aria-disabled={!canProceed || isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 font-semibold transition-all ${
-                canProceed && !isSubmitting
-                  ? "bg-sage text-white shadow-md hover:bg-sage-dark hover:shadow-lg"
-                  : "cursor-not-allowed bg-gray-200 text-gray-400"
-              }`}
-              whileHover={canProceed && !isSubmitting ? { scale: 1.02 } : {}}
-              whileTap={canProceed && !isSubmitting ? { scale: 0.98 } : {}}
-            >
-              {t("assessment.nextCta", locale)}
-            </motion.button>
-          )}
-        </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 text-center text-sm text-gray-500"
-        >
+        <p className="mt-6 text-xs italic text-[var(--color-text-muted)]">
           {helpText}
-        </motion.p>
+        </p>
+      </div>
+
+      {/* ═══ FOOTER BAR — a self-kitöltéssel azonos ═══ */}
+      <div className="flex shrink-0 items-center justify-between border-t border-[var(--color-border-default)] bg-white px-7 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)]">
+        <button
+          type="button"
+          onClick={handlePrevStep}
+          disabled={!canGoPrev}
+          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-[13px] transition-all ${
+            canGoPrev
+              ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
+              : "border-transparent bg-transparent text-transparent pointer-events-none"
+          }`}
+        >
+          ← {t("assessment.prevCta", locale)}
+        </button>
+
+        <label className="flex cursor-pointer items-center gap-2">
+          <div
+            className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
+              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
+            }`}
+          >
+            {autoAdvance && <span className="text-[8px] leading-none text-white">✓</span>}
+          </div>
+          <input
+            type="checkbox"
+            checked={autoAdvance}
+            onChange={(e) => setAutoAdvance(e.target.checked)}
+            className="sr-only"
+          />
+          <span className="text-[11px] text-[var(--color-text-muted)]">{t("assessment.autoAdvance", locale)}</span>
+        </label>
+
+        {phase === "confidence" ? (
+          <button
+            type="button"
+            onClick={handleFinish}
+            disabled={isSubmitting}
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+              !isSubmitting && confidence !== null
+                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
+            }`}
+          >
+            {isSubmitting ? t("observer.submitLoading", locale) : t("observer.submit", locale)}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleNextStep}
+            disabled={isSubmitting}
+            aria-disabled={!canProceed || isSubmitting}
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+              canProceed && !isSubmitting
+                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
+            }`}
+          >
+            {t("assessment.nextCta", locale)} →
+          </button>
+        )}
       </div>
     </div>
   );

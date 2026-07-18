@@ -1,3 +1,4 @@
+import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -43,6 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ManagerCockpitPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) redirect("/sign-in");
+
+  await requireOnboardedByClerkId(userId);
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
@@ -116,7 +119,7 @@ export default async function ManagerCockpitPage() {
     nextStep = {
       title: isHu ? "Minden rendben" : "All good",
       description: isHu
-        ? "A csapataid jó állapotban vannak. Tekintsd át az eredményeket vagy indíts feedback kört."
+        ? "A csapataid jó állapotban vannak. Tekintsd át az eredményeket vagy indíts visszajelzési kört."
         : "Your teams are in good shape. Review results or start a feedback round.",
       primary: {
         label: isHu ? "Csapatkép megtekintése" : "View team profile",

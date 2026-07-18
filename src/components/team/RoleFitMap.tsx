@@ -20,15 +20,15 @@ interface RoleZone {
 }
 
 const ROLE_ZONES: RoleZone[] = [
-  { id: "med", labelKey: "teamComp.zoneMediatorLabel",   x: 215, y: 80,  r: 55, bg: "#e8f7f1", stroke: "#6ee7b7", tc: "#085041", dims: ["A"] },
-  { id: "inn", labelKey: "teamComp.zoneInnovatorLabel",  x: 360, y: 185, r: 55, bg: "#e0f2fe", stroke: "#7dd3fc", tc: "#075985", dims: ["O", "X"] },
-  { id: "exe", labelKey: "teamComp.zoneExecutorLabel",   x: 300, y: 285, r: 50, bg: "#ede9fe", stroke: "#c4b5fd", tc: "#4c1d95", dims: ["C"] },
-  { id: "ana", labelKey: "teamComp.zoneAnalyzerLabel",   x: 130, y: 285, r: 50, bg: "#fef9c3", stroke: "#fcd34d", tc: "#713f12", dims: ["H", "C"] },
-  { id: "ene", labelKey: "teamComp.zoneEnergizerLabel",  x: 70,  y: 185, r: 55, bg: "#fce7f3", stroke: "#f9a8d4", tc: "#831843", dims: ["E", "X"] },
+  { id: "med", labelKey: "teamComp.zoneMediatorLabel",   x: 215, y: 80,  r: 55, bg: "#e8f7f1", stroke: "#6ee7b7", tc: "#085041", dims: ["ADAP"] },
+  { id: "inn", labelKey: "teamComp.zoneInnovatorLabel",  x: 360, y: 185, r: 55, bg: "#e0f2fe", stroke: "#7dd3fc", tc: "#075985", dims: ["OPEN", "TEMP"] },
+  { id: "exe", labelKey: "teamComp.zoneExecutorLabel",   x: 300, y: 285, r: 50, bg: "#ede9fe", stroke: "#c4b5fd", tc: "#4c1d95", dims: ["THOR"] },
+  { id: "ana", labelKey: "teamComp.zoneAnalyzerLabel",   x: 130, y: 285, r: 50, bg: "#fef9c3", stroke: "#fcd34d", tc: "#713f12", dims: ["INTE", "THOR"] },
+  { id: "ene", labelKey: "teamComp.zoneEnergizerLabel",  x: 70,  y: 185, r: 55, bg: "#fce7f3", stroke: "#f9a8d4", tc: "#831843", dims: ["RESO", "TEMP"] },
   { id: "str", labelKey: "teamComp.zoneStrategistLabel", x: 215, y: 210, r: 42, bg: "var(--color-surface-chip-neutral)", stroke: "var(--color-border-default)", tc: "var(--color-text-muted)", dims: [], missing: true },
 ];
 
-type HexacoKey = keyof IntelligenceMember["hexaco"];
+type TritanKey = keyof IntelligenceMember["tritan"];
 type ZoneFitConfidence = "high" | "medium" | "low";
 
 interface ZoneFitResult {
@@ -38,32 +38,32 @@ interface ZoneFitResult {
   confidence: ZoneFitConfidence;
 }
 
-const ROLE_ZONE_WEIGHTS: Record<string, Partial<Record<HexacoKey, number>>> = {
-  med: { A: 0.5, H: 0.3, E: 0.2 },
-  inn: { O: 0.45, X: 0.35, C: 0.2 },
-  exe: { C: 0.55, X: 0.25, A: 0.2 },
-  ana: { H: 0.35, C: 0.35, O: 0.3 },
-  ene: { X: 0.45, E: 0.3, O: 0.25 },
+const ROLE_ZONE_WEIGHTS: Record<string, Partial<Record<TritanKey, number>>> = {
+  med: { ADAP: 0.5, INTE: 0.3, RESO: 0.2 },
+  inn: { OPEN: 0.45, TEMP: 0.35, THOR: 0.2 },
+  exe: { THOR: 0.55, TEMP: 0.25, ADAP: 0.2 },
+  ana: { INTE: 0.35, THOR: 0.35, OPEN: 0.3 },
+  ene: { TEMP: 0.45, RESO: 0.3, OPEN: 0.25 },
 };
 
 function weightedZoneScore(
-  hexaco: IntelligenceMember["hexaco"],
-  weights: Partial<Record<HexacoKey, number>>,
+  tritan: IntelligenceMember["tritan"],
+  weights: Partial<Record<TritanKey, number>>,
 ): number {
   let weightedSum = 0;
   let totalWeight = 0;
-  for (const [dim, weight] of Object.entries(weights) as Array<[HexacoKey, number]>) {
-    weightedSum += hexaco[dim] * weight;
+  for (const [dim, weight] of Object.entries(weights) as Array<[TritanKey, number]>) {
+    weightedSum += tritan[dim] * weight;
     totalWeight += weight;
   }
   if (totalWeight <= 0) return 0;
   return weightedSum / totalWeight;
 }
 
-function resolveZoneFit(hexaco: IntelligenceMember["hexaco"]): ZoneFitResult {
+function resolveZoneFit(tritan: IntelligenceMember["tritan"]): ZoneFitResult {
   const scores = Object.entries(ROLE_ZONE_WEIGHTS).map(([zoneId, weights]) => ({
     zoneId,
-    score: weightedZoneScore(hexaco, weights),
+    score: weightedZoneScore(tritan, weights),
   }));
   scores.sort((a, b) => b.score - a.score);
 
@@ -83,12 +83,12 @@ function resolveZoneFit(hexaco: IntelligenceMember["hexaco"]): ZoneFitResult {
 }
 
 const DIM_COLORS: Record<string, string> = {
-  H: "var(--color-visual-gradient-indigo)",
-  E: "#EC4899",
-  X: "var(--color-state-warning-strong)",
-  A: "var(--color-state-success-strong)",
-  C: "var(--color-visual-gradient-violet)",
-  O: "#06B6D4",
+  INTE: "var(--color-visual-gradient-indigo)",
+  RESO: "#EC4899",
+  TEMP: "var(--color-state-warning-strong)",
+  ADAP: "var(--color-state-success-strong)",
+  THOR: "var(--color-visual-gradient-violet)",
+  OPEN: "#06B6D4",
 };
 
 interface RoleDetailPanelProps {
@@ -138,7 +138,7 @@ function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
           {t("teamComp.dominantDimsEyebrow", loc)}
         </SectionEyebrow>
         <div className="flex flex-col gap-1.5">
-          {Object.entries(member.hexaco)
+          {Object.entries(member.tritan)
             .sort(([, a], [, b]) => b - a)
             .slice(0, 3)
             .map(([k, v]) => (
@@ -178,7 +178,7 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
   const memberFitById = new Map<string, ZoneFitResult>();
   const zoneMembers: Record<string, IntelligenceMember[]> = {};
   membersWithData.forEach((m) => {
-    const fit = resolveZoneFit(m.hexaco);
+    const fit = resolveZoneFit(m.tritan);
     memberFitById.set(m.id, fit);
     if (!zoneMembers[fit.primaryZoneId]) zoneMembers[fit.primaryZoneId] = [];
     zoneMembers[fit.primaryZoneId].push(m);

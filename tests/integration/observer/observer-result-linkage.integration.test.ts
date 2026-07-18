@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 /**
  * C5.4 — Observer → result linkage integration tests
  *
@@ -30,7 +31,7 @@ async function createInviterWithResult(overrides: {
   selfAnswerValue?: number;
 } = {}) {
   const id = makeId("inviter");
-  const config = getTestConfig("HEXACO" as any);
+  const config = getTestConfig("TRITAN");
 
   const profile = await prisma.userProfile.create({
     data: {
@@ -38,7 +39,7 @@ async function createInviterWithResult(overrides: {
       clerkId: makeId("clerk"),
       email: `${id}@test.trita.app`,
       username: `Inviter ${id}`,
-      testType: "HEXACO",
+      testType: "TRITAN",
       testTypeAssignedAt: NOW,
       onboardedAt: NOW,
       consentedAt: NOW,
@@ -53,13 +54,13 @@ async function createInviterWithResult(overrides: {
     questionId: q.id,
     value: selfValue,
   }));
-  const selfScores = calculateScores("HEXACO" as any, selfAnswers);
+  const selfScores = calculateScores("TRITAN", selfAnswers);
 
   const result = await prisma.assessmentResult.create({
     data: {
       userProfileId: profile.id,
-      testType: "HEXACO",
-      scores: selfScores as any,
+      testType: "TRITAN",
+      scores: selfScores as Prisma.InputJsonValue,
       isSelfAssessment: true,
     },
   });
@@ -72,7 +73,7 @@ async function createInvitation(inviterId: string) {
     data: {
       id: makeId("inv"),
       inviterId,
-      testType: "HEXACO",
+      testType: "TRITAN",
       status: "PENDING",
       expiresAt: FUTURE,
       observerType: "EXTERNAL",
@@ -81,7 +82,7 @@ async function createInvitation(inviterId: string) {
 }
 
 function buildValidAnswers(value: number = 3) {
-  const config = getTestConfig("HEXACO" as any);
+  const config = getTestConfig("TRITAN");
   return config.questions.map((q) => ({ questionId: q.id, value }));
 }
 

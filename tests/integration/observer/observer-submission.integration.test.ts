@@ -33,7 +33,7 @@ async function createInviterProfile(overrides: { email?: string } = {}) {
       clerkId: makeId("clerk"),
       email: overrides.email ?? `${id}@test.trita.app`,
       username: `Inviter ${id}`,
-      testType: "HEXACO",
+      testType: "TRITAN",
       testTypeAssignedAt: NOW,
       onboardedAt: NOW,
       consentedAt: NOW,
@@ -52,7 +52,7 @@ async function createInvitation(
     data: {
       id,
       inviterId,
-      testType: "HEXACO",
+      testType: "TRITAN",
       status: overrides.status ?? "PENDING",
       expiresAt: overrides.expiresAt ?? FUTURE,
       observerType: "EXTERNAL",
@@ -61,7 +61,7 @@ async function createInvitation(
 }
 
 function buildValidAnswers(): Array<{ questionId: number; value: number }> {
-  const config = getTestConfig("HEXACO" as any);
+  const config = getTestConfig("TRITAN");
   return config.questions.map((q) => ({ questionId: q.id, value: 3 }));
 }
 
@@ -207,7 +207,7 @@ test("C5.3 Observer submission edge cases", async (t) => {
 
     assert.ok(assessment);
     assert.equal(assessment!.invitation.inviterId, inviter.id);
-    assert.equal(assessment!.invitation.testType, "HEXACO");
+    assert.equal(assessment!.invitation.testType, "TRITAN");
   });
 
   await t.test("two different inviters, observer submits to correct one only", async () => {
@@ -318,7 +318,7 @@ test("C5.3 Observer submission edge cases", async (t) => {
     const inv1 = await createInvitation(inviter.id);
     const inv2 = await createInvitation(inviter.id);
 
-    const config = getTestConfig("HEXACO" as any);
+    const config = getTestConfig("TRITAN");
 
     // Observer 1: all answers = 5 (highest)
     const highAnswers = config.questions.map((q) => ({ questionId: q.id, value: 5 }));
@@ -333,8 +333,8 @@ test("C5.3 Observer submission edge cases", async (t) => {
       orderBy: { createdAt: "asc" },
     });
 
-    const scores1 = (a1.scores as any).dimensions as Record<string, number>;
-    const scores2 = (a2.scores as any).dimensions as Record<string, number>;
+    const scores1 = (a1.scores as { dimensions: Record<string, number> }).dimensions;
+    const scores2 = (a2.scores as { dimensions: Record<string, number> }).dimensions;
 
     // High answers should produce higher scores than low answers
     // Note: reverse-scored questions may invert some dimensions
@@ -348,7 +348,7 @@ test("C5.3 Observer submission edge cases", async (t) => {
   await t.test("all answers = 1 (minimum) → valid submit, scores ≤ 25", async () => {
     const inviter = await createInviterProfile();
     const invitation = await createInvitation(inviter.id);
-    const config = getTestConfig("HEXACO" as any);
+    const config = getTestConfig("TRITAN");
 
     const answers = config.questions.map((q) => ({ questionId: q.id, value: 1 }));
     const res = await callSubmit(buildSubmitPayload(invitation.token, { answers }));
@@ -357,7 +357,7 @@ test("C5.3 Observer submission edge cases", async (t) => {
     const assessment = await prisma.observerAssessment.findUnique({
       where: { invitationId: invitation.id },
     });
-    const dims = (assessment!.scores as any).dimensions as Record<string, number>;
+    const dims = (assessment!.scores as { dimensions: Record<string, number> }).dimensions;
 
     // With all 1s: non-reversed → (1-1)/4*100 = 0, reversed → (5-1)/4*100 = 100
     // So scores won't all be 0, but they should be computed
@@ -369,7 +369,7 @@ test("C5.3 Observer submission edge cases", async (t) => {
   await t.test("all answers = 5 (maximum) → valid submit, scores ≥ 75", async () => {
     const inviter = await createInviterProfile();
     const invitation = await createInvitation(inviter.id);
-    const config = getTestConfig("HEXACO" as any);
+    const config = getTestConfig("TRITAN");
 
     const answers = config.questions.map((q) => ({ questionId: q.id, value: 5 }));
     const res = await callSubmit(buildSubmitPayload(invitation.token, { answers }));
@@ -378,7 +378,7 @@ test("C5.3 Observer submission edge cases", async (t) => {
     const assessment = await prisma.observerAssessment.findUnique({
       where: { invitationId: invitation.id },
     });
-    const dims = (assessment!.scores as any).dimensions as Record<string, number>;
+    const dims = (assessment!.scores as { dimensions: Record<string, number> }).dimensions;
 
     for (const score of Object.values(dims)) {
       assert.ok(score >= 0 && score <= 100, `Score ${score} should be in 0-100 range`);

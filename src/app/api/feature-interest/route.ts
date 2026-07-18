@@ -44,8 +44,14 @@ export async function POST(req: Request) {
   }
   const { featureKey, message } = parsed.data;
 
-  const existing = await prisma.featureInterest.findUnique({
-    where: { userProfileId_featureKey: { userProfileId: profile.id, featureKey } },
+  const existing = await prisma.feedback.findUnique({
+    where: {
+      userProfileId_kind_targetKey: {
+        userProfileId: profile.id,
+        kind: "feature_interest",
+        targetKey: featureKey,
+      },
+    },
     select: { id: true },
   });
   if (existing && UNIQUE_FEATURE_KEYS.has(featureKey)) {
@@ -53,8 +59,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, already: true });
   }
   if (!existing) {
-    await prisma.featureInterest.create({
-      data: { userProfileId: profile.id, featureKey },
+    await prisma.feedback.create({
+      data: {
+        userProfileId: profile.id,
+        kind: "feature_interest",
+        targetKey: featureKey,
+      },
     });
   }
 

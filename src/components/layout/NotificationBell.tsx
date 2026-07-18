@@ -26,6 +26,9 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
   }, []);
 
   useEffect(() => {
+    // Külső rendszerrel (API) szinkronizáló polling — az azonnali első
+    // lekérés szándékos, nem kaszkád-render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     poll();
     const timer = setInterval(poll, POLL_INTERVAL);
     return () => clearInterval(timer);
@@ -33,6 +36,8 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
 
   // Re-poll when panel closes (user may have read notifications)
   useEffect(() => {
+    // Panel-záráskor frissítés a szerverről — külső állapot szinkron, szándékos.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!isOpen) poll();
   }, [isOpen, poll]);
 

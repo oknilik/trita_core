@@ -94,7 +94,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
   }, [block6Pairs, block7Pairs, topSoloDims, l]);
 
   // Dimenziók megjelenítési sorrendje
-  const dimOrder = ["H", "E", "X", "A", "C", "O"];
+  const dimOrder = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
   const displayDims = dimOrder.filter((d) => categories[d] !== undefined);
 
   const steps: { num: string; node: React.ReactNode }[] = [

@@ -1,5 +1,6 @@
 "use client";
 
+import { isConsultingLed } from "@/lib/operating-mode";
 import { Component, Suspense, useEffect, useState } from "react";
 import type { ErrorInfo, ReactNode } from "react";
 import { useSignUp } from "@clerk/nextjs";
@@ -58,7 +59,12 @@ function SignUpContent() {
   const redirectUrl = searchParams.get("redirect_url");
   const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") ? redirectUrl : null;
   const { locale } = useLocale();
-  const [intent, setIntent] = useState<AuthIntent | null>(null);
+  // Consulting-led módban nincs intent-választó: minden regisztráció a
+  // személyes (explore) úton indul, csapat/org kizárólag meghívóval vagy
+  // tanácsadói úton jön létre.
+  const [intent, setIntent] = useState<AuthIntent | null>(
+    isConsultingLed() ? "explore" : null,
+  );
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -183,6 +189,7 @@ function SignUpContent() {
       <div className="flex min-h-[80dvh] items-center justify-center bg-[var(--color-surface-canvas)] px-4 py-10">
         <div className="flex w-full max-w-[440px] lg:max-w-[800px] lg:overflow-hidden lg:rounded-xl lg:border lg:border-[var(--color-border-soft)] lg:bg-[var(--color-surface-canvas)] lg:shadow-sm">
           <AuthLeftPanel context="verify" />
+          <div id="clerk-captcha" className="hidden" />
           <div className="flex flex-1 flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
             <h1 className="mb-1 font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)]">
               {t("auth.verifyTitle", locale)}
@@ -267,13 +274,15 @@ function SignUpContent() {
             {t("auth.signUpSubtitle", locale)}
           </p>
 
-          {/* Intent selector */}
-          <div className="mb-5">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-text-muted)]">
-              {t("auth.intentQuestion", locale)}
-            </p>
-            <IntentSelector value={intent} onChange={setIntent} />
-          </div>
+          {/* Intent selector — self-serve módban él; consulting-led alatt rejtve */}
+          {!isConsultingLed() && (
+            <div className="mb-5">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-text-muted)]">
+                {t("auth.intentQuestion", locale)}
+              </p>
+              <IntentSelector value={intent} onChange={setIntent} />
+            </div>
+          )}
 
           {observeToken && (
             <div className="mb-4 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-surface-toast)] px-4 py-3 text-sm text-[var(--color-text-secondary)]">

@@ -1,4 +1,5 @@
 import { t } from "@/lib/i18n";
+import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -59,7 +60,7 @@ export function DimensionOverview({
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white"
                   style={{ backgroundColor: dim.color }}
                 >
-                  {dim.code}
+                  {TRITAN_DIM_ABBR[dim.code as TritanDimCode]?.[isHu ? "hu" : "en"] ?? dim.code}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold text-ink truncate">{dim.label}</p>

@@ -23,7 +23,7 @@ interface TeamInsightsProps {
 type Level = "high" | "mid" | "low";
 
 const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = {
-  H: {
+  INTE: {
     high: {
       hu: "A csapat kultúráját az igazságosság és becsületesség jellemzi — alacsony belső politizálás, magas kölcsönös bizalom. Jó alap bizalomra épülő együttműködéshez.",
       en: "The team culture is defined by fairness and honesty — low internal politics, high mutual trust. A strong foundation for trust-based collaboration.",
@@ -37,7 +37,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "A low team average on this dimension may signal self-interest-driven dynamics. Making expectations and norms explicit is advisable.",
     },
   },
-  E: {
+  RESO: {
     high: {
       hu: "Empatikus, érzelmileg érzékeny csapat — erős interperszonális érzékenység, de nyomás alatt érdemes strukturált érzelmi támogatást biztosítani.",
       en: "Empathetic and emotionally sensitive team — strong interpersonal awareness, though structured emotional support is useful under pressure.",
@@ -51,7 +51,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Stress-tolerant, rational decision-making team. Empathy and emotional communication can be strengthened with intentional development.",
     },
   },
-  X: {
+  TEMP: {
     high: {
       hu: "Energikus, kommunikatív csapat — gyorsan épít kapcsolatokat, jól teljesít együttműködést és csapatmunkát igénylő feladatokon.",
       en: "Energetic, communicative team — builds relationships quickly and performs well on tasks requiring collaboration and teamwork.",
@@ -65,7 +65,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "More introverted team — deep focus and independent work are strengths. Proactive communication may need intentional development.",
     },
   },
-  A: {
+  ADAP: {
     high: {
       hu: "Együttműködő, konfliktusmentes csapat — erős harmónia és empátia. Érdemes a direkt visszajelzési kultúrát is tudatosan erősíteni.",
       en: "Cooperative, low-conflict team — strong harmony and empathy. Intentionally building a direct feedback culture is also worthwhile.",
@@ -79,7 +79,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Direct, assertive team — characterized by fast decision-making and confidence. Conflict management culture deserves attention.",
     },
   },
-  C: {
+  THOR: {
     high: {
       hu: "Szervezett, megbízható, határidőkre érzékeny csapat — ideális komplex, több lépéses projektek végrehajtásához.",
       en: "Organized, reliable, deadline-aware team — ideal for executing complex, multi-step projects.",
@@ -93,7 +93,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Flexible, creative working style. Strengthening structural frameworks, prioritization tools, and process tracking is recommended.",
     },
   },
-  O: {
+  OPEN: {
     high: {
       hu: "Innovatív, kíváncsi csapat — szívesen kísérletezik és nyitott az új megközelítésekre. Jól teljesít változékony, kreatív feladatokban.",
       en: "Innovative, curious team — embraces experimentation and new approaches. Performs well in dynamic, creative tasks.",

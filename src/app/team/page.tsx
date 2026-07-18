@@ -1,3 +1,4 @@
+import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -26,6 +27,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TeamListPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
   if (!userId) redirect("/sign-in");
+
+  await requireOnboardedByClerkId(userId);
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },

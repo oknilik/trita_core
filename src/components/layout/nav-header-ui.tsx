@@ -535,6 +535,11 @@ export function NavHeaderUI({
                     >
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
+                      {item.badge ? (
+                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[9px] text-white">
+                          {item.badge}
+                        </span>
+                      ) : null}
                     </Link>
                   ) : (
                     <div className="relative">

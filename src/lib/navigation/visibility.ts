@@ -20,7 +20,7 @@ const ADMIN_VISIBILITY: WorkspaceRoleVisibility = {
     teams: true,
     hiring: true,
     org: true,
-    analytics: true,
+    analytics: false,
   },
   orgAdmin: {
     settings: true,
@@ -46,7 +46,7 @@ const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
     teams: true,
     hiring: true,
     org: false,
-    analytics: true,
+    analytics: false,
   },
   orgAdmin: {
     settings: false,

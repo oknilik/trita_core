@@ -4,6 +4,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 
 const CX = 150;
 const CY = 150;
@@ -70,7 +71,27 @@ export const RadarChart = memo(function RadarChart({
   const { locale } = useLocale();
   const resolvedSelfLabel = selfLabel ?? t("comparison.self", locale);
   const resolvedObserverLabel = observerLabel ?? t("comparison.others", locale);
-  const n = dimensions.length;
+
+  // TRITAN-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
+  // mozaikszót (T·R·I·T·A·N = X,E,H,C,A,O). A két T-t a pozíció
+  // különbözteti meg. Nem-standard kódoknál marad az eredeti sorrend.
+  const TRITAN_RADAR_ORDER: readonly string[] = ["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"];
+  const isTritanSet = dimensions.every((d) => TRITAN_RADAR_ORDER.includes(d.code));
+  const orderedDimensions = isTritanSet
+    ? [...dimensions].sort(
+        (a, b) => TRITAN_RADAR_ORDER.indexOf(a.code) - TRITAN_RADAR_ORDER.indexOf(b.code),
+      )
+    : dimensions;
+  const axisLabel = (code: string): string => {
+    if (isTritanSet && TRITAN_DIMENSIONS[code as TritanDimCode]) {
+      return TRITAN_DIMENSIONS[code as TritanDimCode].letter;
+    }
+    return (
+      TRITAN_DIM_ABBR[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code
+    );
+  };
+
+  const n = orderedDimensions.length;
   const radarFillId = `radar-fill-${uid}`;
   const radarStrokeId = `radar-stroke-${uid}`;
   const radarGlowFillId = `radar-glow-fill-${uid}`;
@@ -85,7 +106,7 @@ export const RadarChart = memo(function RadarChart({
   const shadowId = `shadow-${uid}`;
   const labelShadowId = `label-shadow-${uid}`;
 
-  const dataPoints = dimensions.map((dim, i) => ({
+  const dataPoints = orderedDimensions.map((dim, i) => ({
     ...getPoint(i, n, MAX_R * (Math.max(dim.score, 2) / 100)),
     ...dim,
   }));
@@ -96,7 +117,7 @@ export const RadarChart = memo(function RadarChart({
 
   // Observer average polygon
   const observerPoints = showObserver
-    ? dimensions.map((dim, i) => ({
+    ? orderedDimensions.map((dim, i) => ({
         ...getPoint(i, n, MAX_R * (Math.max(dim.observerScore ?? 0, 2) / 100)),
         ...dim,
       }))
@@ -207,7 +228,7 @@ export const RadarChart = memo(function RadarChart({
       ))}
 
       {/* Axis lines */}
-      {dimensions.map((dim, i) => {
+      {orderedDimensions.map((dim, i) => {
         const p = getPoint(i, n, MAX_R);
         return (
           <g key={i}>
@@ -338,7 +359,7 @@ export const RadarChart = memo(function RadarChart({
       ))}
 
       {/* Dimension labels */}
-      {dimensions.map((dim, i) => {
+      {orderedDimensions.map((dim, i) => {
         const p = getPoint(i, n, LABEL_R);
         const offset = getLabelOffset(i, n);
         return (
@@ -360,7 +381,7 @@ export const RadarChart = memo(function RadarChart({
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 + i * 0.05, duration: 0.4 }}
             >
-              {dim.code}
+              {axisLabel(dim.code)}
             </motion.text>
           </g>
         );

@@ -17,27 +17,27 @@ interface GrowthFocusProps {
 
 // Generic growth suggestion per dimension
 const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
-  H: {
+  INTE: {
     hu: "Tudatos értékek mentén való döntéshozatal és átlátható kommunikáció.",
     en: "Value-aligned decision-making and transparent communication.",
   },
-  E: {
+  RESO: {
     hu: "Stresszkezelési technikák és érzelmi önszabályozás erősítése.",
     en: "Strengthening stress management and emotional self-regulation.",
   },
-  X: {
+  TEMP: {
     hu: "Társas jelenlét és láthatóság tudatos növelése.",
     en: "Consciously building social presence and visibility.",
   },
-  A: {
+  ADAP: {
     hu: "Együttműködési és konfliktuskezelési készségek fejlesztése.",
     en: "Developing collaboration and conflict resolution skills.",
   },
-  C: {
+  THOR: {
     hu: "Szervezettség, tervezés és következetes végrehajtás fejlesztése.",
     en: "Building organization, planning, and consistent execution.",
   },
-  O: {
+  OPEN: {
     hu: "Kíváncsiság, tanulási kedv és kreatív gondolkodás ösztönzése.",
     en: "Encouraging curiosity, a learning mindset, and creative thinking.",
   },

@@ -22,7 +22,7 @@ const translations = {
       heading: "Köszönjük a vásárlást!",
       greeting: (name: string) =>
         `Kedves ${name},`,
-      body: "A fizetésed sikeresen feldolgozásra került. A Pro funkcióid azonnal elérhetők.",
+      body: "A fizetésedet feldolgoztuk. A Pro funkcióid azonnal elérhetők.",
       features: "Amit most elérsz:",
       featureList: [
         "Részletes, személyre szabott kiértékelés",
@@ -30,11 +30,11 @@ const translations = {
         "Fejlődés követés",
         "PDF export",
       ],
-      cta: "Ugrás a Dashboardra",
+      cta: "Ugrás a vezérlőre",
       footer:
         "Ha kérdésed van, válaszolj erre az emailre. Szívesen segítünk!",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Thank you for your purchase! – Trita",
@@ -66,7 +66,7 @@ const translations = {
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Invitation to a personality assessment – Trita",
@@ -86,8 +86,8 @@ const translations = {
       greeting: (name: string) => `Szia, ${name}!`,
       body: "Jó hír: az egyik meghívottad kitöltötte a kérdőívet. Nézd meg, hogyan látnak téged mások!",
       cta: "Megnézem az eredményeket",
-      thanks: "Köszönjük, hogy részt veszel a kutatásban!",
-      team: "a trita csapat",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
     },
     en: {
       subject: "New feedback received – trita",
@@ -107,7 +107,7 @@ const translations = {
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Your verification code – trita",
@@ -129,7 +129,7 @@ const translations = {
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Your sign-in code – trita",
@@ -151,7 +151,7 @@ const translations = {
       footer:
         "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Your sign-in link – Trita",
@@ -169,11 +169,11 @@ const translations = {
       subject: "Már majdnem kész vagy a teszttel – folytasd itt",
       greeting: (name: string) => `Szia, ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a ${testName} személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
+        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
       cta: "Folytatom a tesztet",
       footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
-      thanks: "Köszönjük, hogy segíted a kutatásunkat!",
-      team: "A Trita csapata",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
     },
     en: {
       subject: "Continue your assessment – you're almost there! – trita",
@@ -184,16 +184,6 @@ const translations = {
       footer: "If you've already completed the test, feel free to ignore this email.",
       thanks: "Thank you for participating in the research!",
       team: "the trita team",
-    },
-    de: {
-      subject: "Setz deinen Test fort – du bist fast am Ziel! – trita",
-      greeting: (name: string) => `Hallo, ${name}!`,
-      body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Wir haben gesehen, dass du mit dem ${testName}-Persönlichkeitstest begonnen, ihn aber noch nicht abgeschlossen hast. Du hast bereits ${answeredCount} von ${totalCount} Fragen beantwortet – du bist fast fertig!\n\nDeine Ergebnisse zeigen dir, wie du dich selbst entlang der ${testName}-Dimensionen siehst, und du kannst anschließend Beobachter einladen, um deren Sicht mit deiner zu vergleichen. Klicke unten, um weiterzumachen.`,
-      cta: "Test fortsetzen",
-      footer: "Falls du den Test bereits abgeschlossen hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Danke, dass du an der Forschung teilnimmst!",
-      team: "das trita-Team",
     },
   },
 } as const;

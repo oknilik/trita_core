@@ -18,12 +18,12 @@ export async function GET() {
 
   if (!profile) return NextResponse.json({ keys: [] });
 
-  const interests = await prisma.featureInterest.findMany({
-    where: { userProfileId: profile.id },
-    select: { featureKey: true },
+  const interests = await prisma.feedback.findMany({
+    where: { userProfileId: profile.id, kind: "feature_interest" },
+    select: { targetKey: true },
   });
 
-  return NextResponse.json({ keys: interests.map((i) => i.featureKey) });
+  return NextResponse.json({ keys: interests.map((i) => i.targetKey) });
 }
 
 export async function POST(req: Request) {
@@ -48,20 +48,25 @@ export async function POST(req: Request) {
   }
 
   const key = {
-    userProfileId_featureKey: {
+    userProfileId_kind_targetKey: {
       userProfileId: profile.id,
-      featureKey: parsed.data.featureKey,
+      kind: "feature_interest",
+      targetKey: parsed.data.featureKey,
     },
   };
 
-  const existing = await prisma.featureInterest.findUnique({ where: key });
+  const existing = await prisma.feedback.findUnique({ where: key });
 
   if (existing) {
-    await prisma.featureInterest.delete({ where: key });
+    await prisma.feedback.delete({ where: key });
     return NextResponse.json({ ok: true, action: "removed" });
   } else {
-    await prisma.featureInterest.create({
-      data: { userProfileId: profile.id, featureKey: parsed.data.featureKey },
+    await prisma.feedback.create({
+      data: {
+        userProfileId: profile.id,
+        kind: "feature_interest",
+        targetKey: parsed.data.featureKey,
+      },
     });
     return NextResponse.json({ ok: true, action: "added" });
   }

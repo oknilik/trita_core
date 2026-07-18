@@ -12,7 +12,7 @@
  *   --observers <n>       Observer válaszok száma (alapértelmezett: 0)
  *   --candidates <n>      Candidate (jelölt) assessmentek száma (alapértelmezett: 0)
  *   --team-id <id>        Team ID amelyhez a jelöltek kapcsolódnak (opcionális)
- *   --hexaco <values>     Fix HEXACO dimenziók (pl.: H=70,E=40,X=60,A=55,C=80,O=35)
+ *   --tritan <values>     Fix TRITAN dimenziók (pl.: H=70,E=40,X=60,A=55,C=80,O=35)
  *   --clean               Törli az összes meglévő assessment eredményt a userhez
  *   --help                Súgó
  */
@@ -77,13 +77,13 @@ function nearbyScore(base: number, variance = 18): number {
   return Math.max(5, Math.min(95, Math.round(base + (Math.random() - 0.5) * 2 * variance)));
 }
 
-const HEXACO_FACETS: Record<string, string[]> = {
-  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  A: ["forgiveness", "gentleness", "flexibility", "patience"],
-  C: ["organization", "diligence", "prudence", "perfectionism"],
-  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const TRITAN_FACETS: Record<string, string[]> = {
+  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
+  THOR: ["organization", "diligence", "prudence", "perfectionism"],
+  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
   I: ["altruism"], // Interstitial altruism scale
 };
 
@@ -95,73 +95,73 @@ type ScoreJSON = {
   questionCount: number;
 };
 
-type HexacoDimensions = Record<"H" | "E" | "X" | "A" | "C" | "O", number>;
+type TritanDimensions = Record<"H" | "E" | "X" | "A" | "C" | "O", number>;
 
-const HEXACO_DIM_CODES = ["H", "E", "X", "A", "C", "O"] as const;
+const TRITAN_DIM_CODES = ["H", "E", "X", "A", "C", "O"] as const;
 
 function clampScore(score: number): number {
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
-function parseHexacoDimensions(raw: string): HexacoDimensions {
+function parseTritanDimensions(raw: string): TritanDimensions {
   const trimmed = raw.trim();
-  const result: Partial<HexacoDimensions> = {};
+  const result: Partial<TritanDimensions> = {};
 
   if (trimmed.startsWith("{")) {
     let parsed: unknown;
     try {
       parsed = JSON.parse(trimmed);
     } catch {
-      throw new Error("A --hexaco JSON formátuma hibás.");
+      throw new Error("A --tritan JSON formátuma hibás.");
     }
     if (!parsed || typeof parsed !== "object") {
-      throw new Error("A --hexaco JSON formátuma hibás.");
+      throw new Error("A --tritan JSON formátuma hibás.");
     }
     for (const [k, v] of Object.entries(parsed as Record<string, unknown>)) {
       const key = k.trim().toUpperCase();
-      if (!HEXACO_DIM_CODES.includes(key as (typeof HEXACO_DIM_CODES)[number])) continue;
+      if (!TRITAN_DIM_CODES.includes(key as (typeof TRITAN_DIM_CODES)[number])) continue;
       if (typeof v !== "number" || !Number.isFinite(v)) {
-        throw new Error(`A --hexaco dimenzió értéke szám kell legyen: ${key}`);
+        throw new Error(`A --tritan dimenzió értéke szám kell legyen: ${key}`);
       }
-      result[key as keyof HexacoDimensions] = clampScore(v);
+      result[key as keyof TritanDimensions] = clampScore(v);
     }
   } else {
     const pairs = trimmed.split(/[;,]/).map((s) => s.trim()).filter(Boolean);
     for (const pair of pairs) {
       const match = pair.match(/^([A-Za-z])\s*[:=]\s*(-?\d+(?:\.\d+)?)$/);
       if (!match) {
-        throw new Error(`Érvénytelen --hexaco elem: "${pair}". Várt formátum pl. H=70`);
+        throw new Error(`Érvénytelen --tritan elem: "${pair}". Várt formátum pl. H=70`);
       }
       const key = match[1].toUpperCase();
       const value = Number.parseFloat(match[2]);
-      if (!HEXACO_DIM_CODES.includes(key as (typeof HEXACO_DIM_CODES)[number])) {
-        throw new Error(`Ismeretlen HEXACO dimenzió: ${key}`);
+      if (!TRITAN_DIM_CODES.includes(key as (typeof TRITAN_DIM_CODES)[number])) {
+        throw new Error(`Ismeretlen TRITAN dimenzió: ${key}`);
       }
       if (!Number.isFinite(value)) {
         throw new Error(`Érvénytelen szám: ${pair}`);
       }
-      result[key as keyof HexacoDimensions] = clampScore(value);
+      result[key as keyof TritanDimensions] = clampScore(value);
     }
   }
 
-  for (const dim of HEXACO_DIM_CODES) {
+  for (const dim of TRITAN_DIM_CODES) {
     if (result[dim] === undefined) {
-      throw new Error(`A --hexaco paraméterből hiányzik a(z) ${dim} dimenzió.`);
+      throw new Error(`A --tritan paraméterből hiányzik a(z) ${dim} dimenzió.`);
     }
   }
 
-  return result as HexacoDimensions;
+  return result as TritanDimensions;
 }
 
-function generateHexacoScores(opts?: {
-  fixedDimensions?: HexacoDimensions;
+function generateTritanScores(opts?: {
+  fixedDimensions?: TritanDimensions;
   aroundBaseVariance?: number;
 }): ScoreJSON {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
 
-  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
-    const fixed = opts?.fixedDimensions?.[dim as keyof HexacoDimensions];
+  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
+    const fixed = opts?.fixedDimensions?.[dim as keyof TritanDimensions];
     const variance = opts?.aroundBaseVariance ?? 0;
     const base = fixed === undefined
       ? rand(22, 83)
@@ -217,7 +217,7 @@ Opciók:
   --observers <n>       Observer válaszok száma  (alapért.: 0)
   --candidates <n>      Jelölt (candidate) assessmentek száma  (alapért.: 0)
   --team-id <id>        Team ID amelyhez a jelöltek kapcsolódnak  (opcionális)
-  --hexaco <values>     Fix HEXACO dimenziók (pl. H=70,E=40,X=60,A=55,C=80,O=35)
+  --tritan <values>     Fix TRITAN dimenziók (pl. H=70,E=40,X=60,A=55,C=80,O=35)
   --clean               Törli az összes korábbi assessment eredményt
   --help                Ez a súgó
 
@@ -225,9 +225,9 @@ Példák:
   pnpm seed:assessment --email me@example.com
   pnpm seed:assessment --email me@example.com --observers 3
   pnpm seed:assessment --email me@example.com --clean --observers 2
-  pnpm seed:assessment --email me@example.com --hexaco H=70,E=40,X=60,A=55,C=80,O=35
+  pnpm seed:assessment --email me@example.com --tritan H=70,E=40,X=60,A=55,C=80,O=35
   pnpm seed:assessment --email me@example.com --candidates 5
-  pnpm seed:assessment --email me@example.com --candidates 3 --team-id clxyz123 --hexaco H=70,E=40,X=60,A=55,C=80,O=35
+  pnpm seed:assessment --email me@example.com --candidates 3 --team-id clxyz123 --tritan H=70,E=40,X=60,A=55,C=80,O=35
 `);
     return;
   }
@@ -242,14 +242,14 @@ Példák:
   const candidateCount = Math.max(0, parseInt(args.candidates ?? "0", 10) || 0);
   const teamId = args["team-id"] ?? null;
   const clean = "clean" in args;
-  const hexacoInput = args.hexaco;
+  const tritanInput = args.tritan;
 
-  let fixedHexaco: HexacoDimensions | undefined;
-  if (hexacoInput) {
+  let fixedTritan: TritanDimensions | undefined;
+  if (tritanInput) {
     try {
-      fixedHexaco = parseHexacoDimensions(hexacoInput);
+      fixedTritan = parseTritanDimensions(tritanInput);
     } catch (error) {
-      console.error(`❌  Hibás --hexaco paraméter: ${(error as Error).message}`);
+      console.error(`❌  Hibás --tritan paraméter: ${(error as Error).message}`);
       process.exit(1);
     }
   }
@@ -284,10 +284,14 @@ Példák:
       });
       if (results.length > 0) {
         const resultIds = results.map((r) => r.id);
-        const { count: fbCount } = await prisma.dimensionFeedback.deleteMany({
-          where: { assessmentResultId: { in: resultIds } },
+        // dimension-feedback targetKey: "<assessmentResultId>:<dimCode>"
+        const { count: fbCount } = await prisma.feedback.deleteMany({
+          where: {
+            kind: "dimension",
+            OR: resultIds.map((id) => ({ targetKey: { startsWith: `${id}:` } })),
+          },
         });
-        if (fbCount > 0) console.log(`🧹  Törölve ${fbCount} DimensionFeedback`);
+        if (fbCount > 0) console.log(`🧹  Törölve ${fbCount} dimenzió-feedback`);
       }
 
       const { count: resultCount } = await prisma.assessmentResult.deleteMany({
@@ -307,15 +311,10 @@ Példák:
         console.log(`🧹  Törölve ${invites.length} ObserverInvitation (draft + assessment)`);
       }
 
-      const { count: surveyCount } = await prisma.researchSurvey.deleteMany({
+      const { count: feedbackCount } = await prisma.feedback.deleteMany({
         where: { userProfileId: profile.id },
       });
-      if (surveyCount > 0) console.log(`🧹  Törölve ResearchSurvey`);
-
-      const { count: satCount } = await prisma.satisfactionFeedback.deleteMany({
-        where: { userProfileId: profile.id },
-      });
-      if (satCount > 0) console.log(`🧹  Törölve SatisfactionFeedback`);
+      if (feedbackCount > 0) console.log(`🧹  Törölve ${feedbackCount} Feedback`);
 
       const candidateInvites = await prisma.candidateInvite.findMany({
         where: { managerId: profile.id },
@@ -330,30 +329,30 @@ Példák:
     }
 
     // ── Self assessment ─────────────────────────────────────────────────────
-    const selfScores = generateHexacoScores({
-      fixedDimensions: fixedHexaco,
+    const selfScores = generateTritanScores({
+      fixedDimensions: fixedTritan,
       aroundBaseVariance: 0,
     });
     const result = await prisma.assessmentResult.create({
       data: {
         userProfileId: profile.id,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
         scores: selfScores as object,
       },
     });
     console.log(`✅  AssessmentResult létrehozva: ${result.id}`);
     console.log(`    Dimenziók: ${JSON.stringify(selfScores.dimensions)}`);
-    if (fixedHexaco) {
-      console.log("    (Fix HEXACO bemenet alapján generálva)");
+    if (fixedTritan) {
+      console.log("    (Fix TRITAN bemenet alapján generálva)");
     }
 
-    if (profile.testType !== "HEXACO") {
+    if (profile.testType !== "TRITAN") {
       await prisma.userProfile.update({
         where: { id: profile.id },
-        data: { testType: "HEXACO" },
+        data: { testType: "TRITAN" },
       });
-      console.log(`✅  UserProfile.testType beállítva: HEXACO`);
+      console.log(`✅  UserProfile.testType beállítva: TRITAN`);
     }
 
     // ── Observer assessments ────────────────────────────────────────────────
@@ -365,15 +364,15 @@ Példák:
           data: {
             inviterId: profile.id,
             observerEmail: `observer${i + 1}@seed.test`,
-            testType: "HEXACO",
+            testType: "TRITAN",
             status: "COMPLETED",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(),
           },
         });
 
-        const obsScores = generateHexacoScores(
-          fixedHexaco ? { fixedDimensions: fixedHexaco, aroundBaseVariance: 15 } : undefined
+        const obsScores = generateTritanScores(
+          fixedTritan ? { fixedDimensions: fixedTritan, aroundBaseVariance: 15 } : undefined
         );
         await prisma.observerAssessment.create({
           data: {
@@ -413,20 +412,20 @@ Példák:
             name: fake.name,
             position: fake.position,
             status: "COMPLETED",
-            testType: "HEXACO",
+            testType: "TRITAN",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
           },
         });
 
-        const candidateScores = generateHexacoScores(
-          fixedHexaco ? { fixedDimensions: fixedHexaco, aroundBaseVariance: 20 } : undefined
+        const candidateScores = generateTritanScores(
+          fixedTritan ? { fixedDimensions: fixedTritan, aroundBaseVariance: 20 } : undefined
         );
 
         await prisma.candidateResult.create({
           data: {
             inviteId: invite.id,
-            testType: "HEXACO",
+            testType: "TRITAN",
             scores: candidateScores as object,
           },
         });

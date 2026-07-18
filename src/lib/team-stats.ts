@@ -1,35 +1,35 @@
 import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
-import { calculateTeamPattern, type TeamPatternResult, type HexacoScores } from "./team-pattern";
+import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from "./team-pattern";
 
-const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
+const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 type DynamicsEdgeType = "aligned" | "complementary" | "friction";
 
 const DIM_COLORS: Record<string, string> = {
-  H: "#6366F1",
-  E: "#EC4899",
-  X: "#F59E0B",
-  A: "#10B981",
-  C: "#8B5CF6",
-  O: "#06B6D4",
+  INTE: "#6366F1",
+  RESO: "#EC4899",
+  TEMP: "#F59E0B",
+  ADAP: "#10B981",
+  THOR: "#8B5CF6",
+  OPEN: "#06B6D4",
 };
 
 const DIM_LABELS_HU: Record<string, string> = {
-  H: "Önzetlenség",
-  E: "Érzelmi stabilitás",
-  X: "Extraverzió",
-  A: "Barátságosság",
-  C: "Lelkiismeretesség",
-  O: "Nyitottság",
+  INTE: "Integritás",
+  RESO: "Rezonancia",
+  TEMP: "Társas energia",
+  ADAP: "Alkalmazkodás",
+  THOR: "Tervezettség",
+  OPEN: "Nyitottság",
 };
 
 const DIM_LABELS_EN: Record<string, string> = {
-  H: "Honesty-Humility",
-  E: "Emotionality",
-  X: "Extraversion",
-  A: "Agreeableness",
-  C: "Conscientiousness",
-  O: "Openness",
+  INTE: "Integrity",
+  RESO: "Resonance",
+  TEMP: "Tempo",
+  ADAP: "Adaptability",
+  THOR: "Thoroughness",
+  OPEN: "Openness",
 };
 
 export interface SerializedTeamMember {
@@ -42,7 +42,7 @@ export interface SerializedTeamMember {
   scores: Record<string, number> | null;
   testType: string | null;
   top3Dims: Array<{ code: string; value: number; color: string }>;
-  /** Completed team-role questionnaire result; null → fall back to HEXACO estimate */
+  /** Completed team-role questionnaire result; null → fall back to TRITAN estimate */
   teamRoleScores: Record<string, number> | null;
   teamRoleSource: "questionnaire" | "estimate" | null;
 }
@@ -95,18 +95,18 @@ export interface TeamPageData {
 }
 
 // ── Profile-based friction estimate ─────────────────────────────────────────
-// Weighted HEXACO dimension gaps predict interpersonal friction potential.
+// Weighted TRITAN dimension gaps predict interpersonal friction potential.
 // Weights based on established personality psychology research:
 //   C (conscientiousness) and A (agreeableness) gaps are the strongest work
 //   friction predictors; H (honesty-humility) follows; E, X, O are weaker.
 
 export const FRICTION_WEIGHTS: Record<string, number> = {
-  C: 0.30,  // deadline/quality/follow-through tension
-  A: 0.25,  // communication style conflicts
-  H: 0.20,  // trust and motive attribution
-  E: 0.15,  // emotional thermostat mismatch
-  X: 0.05,  // communication frequency mismatch
-  O: 0.05,  // innovation vs pragmatism
+  THOR: 0.30,  // deadline/quality/follow-through tension
+  ADAP: 0.25,  // communication style conflicts
+  INTE: 0.20,  // trust and motive attribution
+  RESO: 0.15,  // emotional thermostat mismatch
+  TEMP: 0.05,  // communication frequency mismatch
+  OPEN: 0.05,  // innovation vs pragmatism
 };
 
 function calculatePairFriction(
@@ -307,7 +307,7 @@ export async function getTeamPageData(
     }),
   ]);
 
-  // ── Profile-based friction edges (pairwise HEXACO gap analysis) ──────────
+  // ── Profile-based friction edges (pairwise TRITAN gap analysis) ──────────
   const dynamicsEdges = buildProfileBasedEdges(members);
 
   // Compute active campaign stats
@@ -398,8 +398,8 @@ export async function getTeamPageData(
     createdAt: inv.createdAt.toISOString(),
   }));
 
-  // Compute team pattern (requires at least 3 members with full HEXACO scores)
-  const hexacoMembers: Array<{ userId: string; scores: HexacoScores }> = [];
+  // Compute team pattern (requires at least 3 members with full TRITAN scores)
+  const tritanMembers: Array<{ userId: string; scores: TritanScores }> = [];
   for (const m of members) {
     const s = m.scores;
     if (
@@ -407,20 +407,20 @@ export async function getTeamPageData(
       s.H !== undefined && s.E !== undefined && s.X !== undefined &&
       s.A !== undefined && s.C !== undefined && s.O !== undefined
     ) {
-      hexacoMembers.push({
+      tritanMembers.push({
         userId: m.userId,
-        scores: { H: s.H, E: s.E, X: s.X, A: s.A, C: s.C, O: s.O },
+        scores: { INTE: s.H, RESO: s.E, TEMP: s.X, ADAP: s.A, THOR: s.C, OPEN: s.O },
       });
     }
   }
 
-  const corePattern = calculateTeamPattern(hexacoMembers);
+  const corePattern = calculateTeamPattern(tritanMembers);
   const patternResult: TeamPatternResult | null = corePattern
     ? {
         ...corePattern,
         memberCount:           members.length,
-        membersWithAssessment: hexacoMembers.length,
-        missingMembers:        members.length - hexacoMembers.length,
+        membersWithAssessment: tritanMembers.length,
+        missingMembers:        members.length - tritanMembers.length,
       }
     : null;
 

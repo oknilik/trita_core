@@ -7,12 +7,17 @@ import { TRIAL_DAYS } from "@/lib/subscription";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 import { isConsultingLed } from "@/lib/operating-mode";
+import { isPlatformAdminEmail } from "@/lib/measurement-auth";
+import { sanitizeOrgBillingProfile } from "@/lib/org-billing";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
   // Consulting-led mód: a tanácsadó ügyfél-szervezetet hoz létre, amelybe
   // ORG_CONSULTANT-ként lép be (nem admin) — a kliens admin később csatlakozik.
   asConsultant: z.boolean().optional(),
+  // Cégadatok (opcionális) — már létrehozáskor megadhatók; a mezőket a
+  // sanitizeOrgBillingProfile szűri. Később az admin felületen bővíthető.
+  billing: z.record(z.string(), z.string()).optional(),
 });
 
 // POST /api/org — create a new organization (multi-org membership supported)
@@ -25,17 +30,26 @@ export async function POST(req: Request) {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const body = createSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  // Tanácsadói org-létrehozás: csak consulting-led módban, és csak olyan
-  // usernek, aki már kijelölt tanácsadó legalább egy szervezetben (a
-  // tanácsadói identitást a trita admin adja az /admin felületen).
+  // Tanácsadói org-létrehozás: csak consulting-led módban. Tanácsadónak
+  // számít a platform-tanácsadó (isConsultant), a platform-admin
+  // (ADMIN_EMAILS) és a már kiosztott ORG_CONSULTANT is — így az ELSŐ
+  // szervezet is létrehozható (nincs tyúk-tojás).
   let creatorRole: "ORG_ADMIN" | "ORG_CONSULTANT" = "ORG_ADMIN";
+
+  // Consulting-led módban org-ot KIZÁRÓLAG tanácsadó hozhat létre
+  // (asConsultant ág) — a self-serve org-létrehozás zárva. Self-serve
+  // módra váltásnál (operating-mode.ts) ez a kapu magától kinyílik.
+  if (isConsultingLed() && !body.data.asConsultant) {
+    return NextResponse.json({ error: "CONSULTING_MODE_ONLY" }, { status: 403 });
+  }
+
   if (body.data.asConsultant) {
     if (!isConsultingLed()) {
       return NextResponse.json({ error: "NOT_CONSULTING_MODE" }, { status: 403 });
@@ -44,7 +58,11 @@ export async function POST(req: Request) {
       where: { userId: profile.id, role: "ORG_CONSULTANT", leftAt: null },
       select: { id: true },
     });
-    if (!consultantMembership) {
+    const isTrustedConsultant =
+      profile.isConsultant ||
+      isPlatformAdminEmail(profile.email) ||
+      Boolean(consultantMembership);
+    if (!isTrustedConsultant) {
       return NextResponse.json({ error: "NOT_CONSULTANT" }, { status: 403 });
     }
     creatorRole = "ORG_CONSULTANT";
@@ -52,11 +70,15 @@ export async function POST(req: Request) {
 
   try {
     const org = await prisma.$transaction(async (tx) => {
+      const billingProfile = sanitizeOrgBillingProfile(body.data.billing);
       const newOrg = await tx.organization.create({
         data: {
           name: body.data.name,
           ownerId: profile.id,
           status: "PENDING_SETUP",
+          ...(Object.keys(billingProfile).length > 0
+            ? { billingProfile: billingProfile as Record<string, string> }
+            : {}),
           members: {
             create: { userId: profile.id, role: creatorRole },
           },

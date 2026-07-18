@@ -133,7 +133,7 @@ export default async function HiringPage({
     }),
   ]);
 
-  const TOTAL_QUESTIONS: Record<string, number> = { HEXACO: 60 };
+  const TOTAL_QUESTIONS: Record<string, number> = { TRITAN: 60 };
 
   const invites = invitesRaw.map((inv) => ({
     id: inv.id,

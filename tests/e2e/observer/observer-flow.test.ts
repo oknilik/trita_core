@@ -25,12 +25,12 @@ async function createObserverFixture(options: {
 } = {}): Promise<ObserverFixture> {
   const inviterId = makeId("obs_inviter");
   const invitationCount = options.invitationCount ?? 1;
-  const config = getTestConfig("HEXACO");
+  const config = getTestConfig("TRITAN");
   const selfAnswers = config.questions.map((q) => ({
     questionId: q.id,
     value: 3,
   }));
-  const selfScores = calculateScores("HEXACO", selfAnswers);
+  const selfScores = calculateScores("TRITAN", selfAnswers);
 
   await prisma.userProfile.create({
     data: {
@@ -39,7 +39,7 @@ async function createObserverFixture(options: {
       email: `${inviterId}@test.trita.app`,
       username: `Observer E2E ${inviterId}`,
       locale: "en",
-      testType: "HEXACO",
+      testType: "TRITAN",
       testTypeAssignedAt: NOW,
       onboardedAt: NOW,
       consentedAt: NOW,
@@ -52,7 +52,7 @@ async function createObserverFixture(options: {
     data: {
       id: makeId("self_result"),
       userProfileId: inviterId,
-      testType: "HEXACO",
+      testType: "TRITAN",
       isSelfAssessment: true,
       scores: selfScores as never,
     },
@@ -64,7 +64,7 @@ async function createObserverFixture(options: {
         data: {
           id: makeId("obs_inv"),
           inviterId,
-          testType: "HEXACO",
+          testType: "TRITAN",
           status: options.status ?? "PENDING",
           expiresAt: options.expiresAt ?? new Date("2026-04-20T10:00:00.000Z"),
           observerType: "EXTERNAL",

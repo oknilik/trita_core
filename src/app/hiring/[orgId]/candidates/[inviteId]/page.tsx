@@ -22,12 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const DIM_COLORS: Record<string, string> = {
-  H: "var(--color-visual-gradient-indigo)",
-  E: "var(--color-visual-gradient-violet)",
-  X: "#06B6D4",
-  A: "var(--color-state-success-strong)",
-  C: "var(--color-state-warning-strong)",
-  O: "#EF4444",
+  INTE: "var(--color-visual-gradient-indigo)",
+  RESO: "var(--color-visual-gradient-violet)",
+  TEMP: "#06B6D4",
+  ADAP: "var(--color-state-success-strong)",
+  THOR: "var(--color-state-warning-strong)",
+  OPEN: "#EF4444",
 };
 
 function getDimensionInsight(
@@ -36,7 +36,7 @@ function getDimensionInsight(
   locale: Locale
 ): string {
   const insights: Record<string, Record<string, Record<Locale, string>>> = {
-    H: {
+    INTE: {
       high: {
         hu: "Etikus, szabálykövető. Nem hajlamos manipulációra, transzparens kommunikátor. Jó compliance, audit és bizalmi pozíciókban.",
         en: "Ethical, rule-following. Not prone to manipulation, transparent communicator. Strong in compliance, audit, and trust-based roles.",
@@ -50,7 +50,7 @@ function getDimensionInsight(
         en: "Pragmatic, results-oriented. Good at selling and negotiating, but watch transparency in team settings.",
       },
     },
-    E: {
+    RESO: {
       high: {
         hu: "Érzelmileg érzékeny, empatikus. Jól olvas másokat, de stressz alatt lassabban regenerálódik. Strukturált visszajelzés segíti.",
         en: "Emotionally sensitive, empathetic. Reads others well but recovers slower under stress. Benefits from structured feedback.",
@@ -64,7 +64,7 @@ function getDimensionInsight(
         en: "Stress-tolerant, rational decision-maker. Great in crises but may overlook teammates' emotions.",
       },
     },
-    X: {
+    TEMP: {
       high: {
         hu: "Energikus, társaságkedvelő. Természetes facilitátor és csapatépítő. Ideális ügyfélkapcsolati vagy vezetői pozícióban.",
         en: "Energetic, sociable. Natural facilitator and team builder. Ideal for client-facing or leadership roles.",
@@ -78,7 +78,7 @@ function getDimensionInsight(
         en: "Deeply focused, introverted. Excels in solo work and deep focus. May be less vocal in team meetings.",
       },
     },
-    A: {
+    ADAP: {
       high: {
         hu: "Kooperatív, konfliktuselkerülő. Kiváló csapatjátékos, de néha a saját véleményét háttérbe szorítja a harmónia kedvéért.",
         en: "Cooperative, conflict-averse. Excellent team player but may suppress own opinions to maintain harmony.",
@@ -92,7 +92,7 @@ function getDimensionInsight(
         en: "Critical, competitive. Comfortable with confrontation, thrives in competitive settings. Watch collaboration style in teams.",
       },
     },
-    C: {
+    THOR: {
       high: {
         hu: "Rendszerezett, precíz, megbízható. Határidőket tart, részletekre figyel. Ideális projektvezetői vagy ops pozícióban.",
         en: "Organized, precise, reliable. Meets deadlines, detail-oriented. Ideal for project management or ops roles.",
@@ -106,7 +106,7 @@ function getDimensionInsight(
         en: "Spontaneous, flexible but less structured. Strong in creative roles, may need support in project management.",
       },
     },
-    O: {
+    OPEN: {
       high: {
         hu: "Nyitott, kreatív, érdeklődő. Szeret új megközelítéseket keresni. Innovációs és stratégiai pozíciókban erős.",
         en: "Open, creative, curious. Likes exploring new approaches. Strong in innovation and strategy roles.",
@@ -170,8 +170,8 @@ export default async function CandidateResultPage({
   }
 
   const candidateScores = extractDimensionScores(invite.result.scores) ?? {};
-  const testType = invite.result.testType ?? "HEXACO";
-  const dims = ["H", "E", "X", "A", "C", "O"];
+  const testType = invite.result.testType ?? "TRITAN";
+  const dims = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
 
   const profileOutput = runProfileEngine(candidateScores, testType);
 
@@ -216,7 +216,7 @@ export default async function CandidateResultPage({
       );
 
     if (validScores.length >= 1) {
-      const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
+      const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
       for (const s of validScores) {
         for (const d of dims) sums[d] += s[d];
       }
@@ -416,7 +416,7 @@ export default async function CandidateResultPage({
         {/* ② SZEMÉLYISÉGPROFIL + ÉRTELMEZÉS */}
         <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
           <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-            {t("hiring.hexacoProfileEyebrow", locale)}
+            {t("hiring.tritanProfileEyebrow", locale)}
           </p>
           <h2 className="mb-6 font-fraunces text-xl text-ink">
             {t("hiring.personalityProfile", locale)}

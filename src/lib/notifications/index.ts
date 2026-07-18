@@ -14,6 +14,7 @@ export {
   handleOrgInviteReceived,
   handleOrgInviteAccepted,
   handleCampaignLaunched,
+  handleMeasurementStepOpened,
   handleCampaignClosed,
   handleTeamReportPublished,
   checkTrialNotifications,

@@ -1,5 +1,5 @@
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
-import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 
 export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
@@ -97,7 +97,7 @@ export function resolveTeamIntelligenceQuality(
 // ─── Contribution placement (team map) ──────────────────────────────────────
 //
 // Replaces the earlier single-dimension threshold heuristic (C → skill,
-// (O+X)/2 → growth) with weighted composites over the HEXACO profile.
+// (O+X)/2 → growth) with weighted composites over the TRITAN profile.
 // Weights are a documented starting point, not a validated calibration:
 // - delivery reliability: Conscientiousness dominates (planning, follow-
 //   through), Honesty-Humility adds dependability, low Emotionality adds
@@ -107,13 +107,13 @@ export function resolveTeamIntelligenceQuality(
 // Confidence reflects distance from the banding thresholds: placements
 // near a band edge are explicitly low-confidence.
 
-export interface HexacoProfile {
-  H: number;
-  E: number;
-  X: number;
-  A: number;
-  C: number;
-  O: number;
+export interface TritanProfile {
+  INTE: number;
+  RESO: number;
+  TEMP: number;
+  ADAP: number;
+  THOR: number;
+  OPEN: number;
 }
 
 export type PlacementLevel = 1 | 2 | 3;
@@ -130,19 +130,19 @@ export interface ContributionPlacement {
   source: "self_estimate";
 }
 
-const DELIVERY_WEIGHTS: Partial<Record<keyof HexacoProfile, number>> = {
-  C: 0.6,
-  H: 0.25,
-  E: 0.15, // inverted: stability = 100 - E
+const DELIVERY_WEIGHTS: Partial<Record<keyof TritanProfile, number>> = {
+  THOR: 0.6,
+  INTE: 0.25,
+  RESO: 0.15, // inverted: stability = 100 - E
 };
 
-const GROWTH_WEIGHTS: Partial<Record<keyof HexacoProfile, number>> = {
-  O: 0.5,
-  X: 0.3,
-  E: 0.2, // inverted: resilience = 100 - E
+const GROWTH_WEIGHTS: Partial<Record<keyof TritanProfile, number>> = {
+  OPEN: 0.5,
+  TEMP: 0.3,
+  RESO: 0.2, // inverted: resilience = 100 - E
 };
 
-const INVERTED_DIMS: ReadonlySet<keyof HexacoProfile> = new Set(["E"]);
+const INVERTED_DIMS: ReadonlySet<keyof TritanProfile> = new Set(["RESO"]);
 
 const BAND_LOW = 40;
 const BAND_HIGH = 60;
@@ -151,15 +151,15 @@ const LOW_CONFIDENCE_MARGIN = 5;
 const MEDIUM_CONFIDENCE_MARGIN = 10;
 
 function weightedComposite(
-  hexaco: HexacoProfile,
-  weights: Partial<Record<keyof HexacoProfile, number>>,
+  tritan: TritanProfile,
+  weights: Partial<Record<keyof TritanProfile, number>>,
 ): number {
   let sum = 0;
   let totalWeight = 0;
   for (const [dim, weight] of Object.entries(weights) as Array<
-    [keyof HexacoProfile, number]
+    [keyof TritanProfile, number]
   >) {
-    const raw = hexaco[dim];
+    const raw = tritan[dim];
     if (typeof raw !== "number" || Number.isNaN(raw)) continue;
     const value = INVERTED_DIMS.has(dim) ? 100 - raw : raw;
     sum += value * weight;
@@ -180,10 +180,10 @@ function boundaryDistance(score: number): number {
 }
 
 export function resolveContributionPlacement(
-  hexaco: HexacoProfile,
+  tritan: TritanProfile,
 ): ContributionPlacement {
-  const deliveryScore = weightedComposite(hexaco, DELIVERY_WEIGHTS);
-  const growthScore = weightedComposite(hexaco, GROWTH_WEIGHTS);
+  const deliveryScore = weightedComposite(tritan, DELIVERY_WEIGHTS);
+  const growthScore = weightedComposite(tritan, GROWTH_WEIGHTS);
 
   const minDistance = Math.min(
     boundaryDistance(deliveryScore),
@@ -312,12 +312,12 @@ export function buildTeamIntelligencePriorities({
   const membersWithScores = members.filter(
     (member) =>
       !!member.scores &&
-      member.scores.H !== undefined &&
-      member.scores.E !== undefined &&
-      member.scores.X !== undefined &&
-      member.scores.A !== undefined &&
-      member.scores.C !== undefined &&
-      member.scores.O !== undefined,
+      member.scores.INTE !== undefined &&
+      member.scores.RESO !== undefined &&
+      member.scores.TEMP !== undefined &&
+      member.scores.ADAP !== undefined &&
+      member.scores.THOR !== undefined &&
+      member.scores.OPEN !== undefined,
   );
 
   if (membersWithScores.length >= 4) {
@@ -328,13 +328,13 @@ export function buildTeamIntelligencePriorities({
       const scores =
         member.teamRoleSource === "questionnaire" && member.teamRoleScores
           ? (member.teamRoleScores as Record<keyof typeof TEAM_ROLES, number>)
-          : estimateTeamRolesFromHexaco({
-              H: member.scores!.H,
-              E: member.scores!.E,
-              X: member.scores!.X,
-              A: member.scores!.A,
-              C: member.scores!.C,
-              O: member.scores!.O,
+          : estimateTeamRolesFromTritan({
+              INTE: member.scores!.INTE,
+              RESO: member.scores!.RESO,
+              TEMP: member.scores!.TEMP,
+              ADAP: member.scores!.ADAP,
+              THOR: member.scores!.THOR,
+              OPEN: member.scores!.OPEN,
             });
       const top = getTopRoles(scores, 1)[0]?.role;
       if (top) presentTopRoles.add(top);
@@ -360,7 +360,7 @@ export function buildTeamIntelligencePriorities({
     }
 
     const cohesionValues = membersWithScores.map((member) =>
-      (member.scores!.A + member.scores!.H) / 2,
+      (member.scores!.ADAP + member.scores!.INTE) / 2,
     );
     const cohesionAverage = mean(cohesionValues);
     const cohesionSpread = stdDev(cohesionValues);
@@ -383,7 +383,7 @@ export function buildTeamIntelligencePriorities({
       });
     }
 
-    const dimensions = ["H", "E", "X", "A", "C", "O"] as const;
+    const dimensions = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
     const maxSpread = dimensions.reduce(
       (best, dim) => {
         const values = membersWithScores
@@ -398,7 +398,7 @@ export function buildTeamIntelligencePriorities({
         }
         return best;
       },
-      { dim: "X" as (typeof dimensions)[number], range: 0 },
+      { dim: "TEMP" as (typeof dimensions)[number], range: 0 },
     );
 
     if (maxSpread.range >= 32) {
@@ -422,16 +422,16 @@ export function buildTeamIntelligencePriorities({
     if (leaderWithScores) {
       const teamAverageH = mean(
         membersWithScores
-          .map((member) => member.scores?.H)
+          .map((member) => member.scores?.INTE)
           .filter((value): value is number => typeof value === "number"),
       );
       const teamAverageA = mean(
         membersWithScores
-          .map((member) => member.scores?.A)
+          .map((member) => member.scores?.ADAP)
           .filter((value): value is number => typeof value === "number"),
       );
-      const leaderDeltaH = Math.abs((leaderWithScores.scores?.H ?? teamAverageH) - teamAverageH);
-      const leaderDeltaA = Math.abs((leaderWithScores.scores?.A ?? teamAverageA) - teamAverageA);
+      const leaderDeltaH = Math.abs((leaderWithScores.scores?.INTE ?? teamAverageH) - teamAverageH);
+      const leaderDeltaA = Math.abs((leaderWithScores.scores?.ADAP ?? teamAverageA) - teamAverageA);
 
       if (leaderDeltaH >= 18 || leaderDeltaA >= 18) {
         priorities.push({

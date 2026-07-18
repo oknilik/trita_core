@@ -1,13 +1,13 @@
 "use client";
 
-import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 interface TeamRolesProps {
-  hexacoScores: Record<string, number>;
+  tritanScores: Record<string, number>;
   locale: Locale;
 }
 
@@ -41,14 +41,14 @@ const RANK_LABELS = [
   { hu: "Harmadik", en: "Third" },
 ];
 
-export function TeamRoles({ hexacoScores, locale }: TeamRolesProps) {
+export function TeamRoles({ tritanScores, locale }: TeamRolesProps) {
   const lang = locale === "hu" ? "hu" : "en";
 
-  const hasHexacoDims = "H" in hexacoScores && "X" in hexacoScores;
-  if (!hasHexacoDims) return null;
+  const hasTritanDims = "INTE" in tritanScores && "TEMP" in tritanScores;
+  if (!hasTritanDims) return null;
 
-  const estimated = estimateTeamRolesFromHexaco(
-    hexacoScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>,
+  const estimated = estimateTeamRolesFromTritan(
+    tritanScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
   );
   const top3 = getTopRoles(estimated, 3);
 

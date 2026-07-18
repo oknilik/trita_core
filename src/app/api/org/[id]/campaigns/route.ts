@@ -3,11 +3,19 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { canManageMeasurements } from "@/lib/measurement-auth";
+import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  type: z.enum(["OBSERVER_360", "TEAM_ROLE"]).default("OBSERVER_360"),
+  type: z.enum(["OBSERVER_360", "TEAM_ROLE", "PSYCH_SAFETY"]).default("OBSERVER_360"),
+  // Több-lépéses kampány: a kiválasztott mérések (kanonikus sorrendbe rendezzük).
+  types: z
+    .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "PSYCH_SAFETY"]))
+    .min(1)
+    .max(3)
+    .optional(),
   teamId: z.string().min(1).optional(),
 });
 
@@ -63,7 +71,7 @@ export async function POST(
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -73,6 +81,10 @@ export async function POST(
   });
   if (!membership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  // Mérést csak tanácsadó indít (ORG_CONSULTANT vagy platform-admin).
+  if (!canManageMeasurements(membership.role, profile.email, profile.isConsultant)) {
+    return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
   }
   const policySnapshot = await resolveOrgPolicySnapshot({
     orgId,
@@ -103,8 +115,18 @@ export async function POST(
       return NextResponse.json({ error: "INVALID_TEAM" }, { status: 400 });
     }
   }
-  // Szerep-kör kampány csak csapatra indítható (a kör a csapaton él).
-  if (body.data.type === "TEAM_ROLE" && !body.data.teamId) {
+  // Lépések: a types-ból (vagy legacy type-ból), kanonikus sorrendben.
+  const steps = normalizeCampaignSteps(body.data.types ?? [body.data.type]);
+  if (steps.length === 0) {
+    return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+  }
+
+  // Szerep-kört vagy pszich. biztonságot tartalmazó kampány csak csapatra
+  // indítható (a kör a csapaton él, az anonim aggregátum csapatszintű).
+  if (
+    steps.some((st) => st === "TEAM_ROLE" || st === "PSYCH_SAFETY") &&
+    !body.data.teamId
+  ) {
     return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });
   }
 
@@ -113,7 +135,8 @@ export async function POST(
       orgId,
       name: body.data.name,
       description: body.data.description,
-      type: body.data.type,
+      type: steps[0],
+      steps,
       teamId: body.data.teamId,
       createdBy: profile.id,
     },

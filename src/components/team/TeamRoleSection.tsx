@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
 import type { SerializedTeamMember } from "@/lib/team-stats";
@@ -17,7 +17,7 @@ interface MemberWithTeamRole {
   teamRoleScores: TeamRoleScores | null;
   top3: { role: TeamRoleCode; score: number }[];
   primaryRole: TeamRoleCode | null;
-  /** "questionnaire" = real fill-out, "estimate" = derived from HEXACO */
+  /** "questionnaire" = real fill-out, "estimate" = derived from TRITAN */
   source: "questionnaire" | "estimate" | null;
 }
 
@@ -87,8 +87,8 @@ function TeamRoleCompletionStatus({
           </p>
           <p className="mt-1 text-xs text-muted">
             {isHu
-              ? `${questionnaireCount} valódi kitöltés · ${estimateCount} HEXACO-becslés`
-              : `${questionnaireCount} real fill-out · ${estimateCount} HEXACO estimate`}
+              ? `${questionnaireCount} valódi kitöltés · ${estimateCount} TRITAN-becslés`
+              : `${questionnaireCount} real fill-out · ${estimateCount} TRITAN estimate`}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
@@ -403,7 +403,7 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const membersWithTeamRole = useMemo<MemberWithTeamRole[]>(() => {
     return members.map((m) => {
-      // Real questionnaire result always wins over the HEXACO estimate
+      // Real questionnaire result always wins over the TRITAN estimate
       if (m.teamRoleScores && m.teamRoleSource === "questionnaire") {
         const teamRoleScores = m.teamRoleScores as TeamRoleScores;
         const top3 = getTopRoles(teamRoleScores, 3);
@@ -419,8 +419,8 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
         };
       }
 
-      const hasHexaco = m.scores && "H" in m.scores && "X" in m.scores;
-      if (!hasHexaco) {
+      const hasTritan = m.scores && "INTE" in m.scores && "TEMP" in m.scores;
+      if (!hasTritan) {
         return {
           id: m.id,
           userId: m.userId,
@@ -432,8 +432,8 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
           source: null,
         };
       }
-      const teamRoleScores = estimateTeamRolesFromHexaco(
-        m.scores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>,
+      const teamRoleScores = estimateTeamRolesFromTritan(
+        m.scores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
       );
       const top3 = getTopRoles(teamRoleScores, 3);
       return {

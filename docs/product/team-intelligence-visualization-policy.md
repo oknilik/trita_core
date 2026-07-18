@@ -14,7 +14,7 @@ This document defines visualization ownership for team intelligence surfaces and
 - The intelligence page should prefer:
   - short evidence labels (`source`, `quality`, `confidence`)
   - compact metric chips
-  - member cards with role pills and key HEXACO dimensions
+  - member cards with role pills and key TRITAN dimensions
   - explicit next-step CTAs
 - The intelligence page should avoid detailed chart-heavy blocks by default.
 - If data is insufficient (fewer than 3 completed self assessments), show a dedicated collection-first state instead of partial analytics layouts.

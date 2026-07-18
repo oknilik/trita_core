@@ -12,7 +12,7 @@ Validált ötletek, amik a backlogba kerültek. Minden bejegyzés tartalmazza a 
 
 ### Motiváció
 
-A jelenlegi csapatdinamika térkép a HEXACO személyiségprofil-eltérésekből **becsli** a potenciális súrlódási pontokat. Ez kutatásban megalapozott, de nem mért adat — nem veszi figyelembe a tényleges bizalmi szintet, együttműködési tapasztalatot, vagy kommunikációs mintákat.
+A jelenlegi csapatdinamika térkép a TRITAN személyiségprofil-eltérésekből **becsli** a potenciális súrlódási pontokat. Ez kutatásban megalapozott, de nem mért adat — nem veszi figyelembe a tényleges bizalmi szintet, együttműködési tapasztalatot, vagy kommunikációs mintákat.
 
 Egy rövid, célzott 360°-os mikro-kérdőív valódi relációs adatot ad, ami:
 - pontosítja a dynamics map edge típusait (becslés → mérés)
@@ -74,12 +74,12 @@ TrustResponse {
 A Csapatszerep teszt infrastruktúra implementált:
 - **Kérdőív:** `src/lib/team-role-questions.ts` — 7 szekció × 8 állítás, pontelosztásos formátum
 - **Scoring:** `src/lib/team-role-scoring.ts` — 9 Csapatszerep szerep (PL, RI, CO, SH, ME, TW, IM, CF, SP), top 3 kiválasztás
-- **HEXACO becslés:** `src/lib/team-role-estimate.ts` — ha nincs kitöltött Csapatszerep teszt, HEXACO profilból becsül
+- **TRITAN becslés:** `src/lib/team-role-estimate.ts` — ha nincs kitöltött Csapatszerep teszt, TRITAN profilból becsül
 - **Kitöltő felület:** `src/app/assessment/team-role/CsapatszerepClient.tsx` + `page.tsx`
 - **Submit API:** `src/app/api/team-role/submit/route.ts`
 - **Adatmodell:** `CsapatszerepAnswer` (válaszok) + `CsapatszerepScore` (eredmény, source: `questionnaire` | `estimate`)
 - **Csapat nézet:** `src/components/team/TeamCsapatszerepSection.tsx` (492 sor) — szerep-eloszlás, heatmap, hiányzó/túlreprezentált szerepek, tag-szerep mátrix
-- **Team intelligence-be bekötve:** a team page-en a Csapatszerep szekció renderelődik HEXACO becslésből
+- **Team intelligence-be bekötve:** a team page-en a Csapatszerep szekció renderelődik TRITAN becslésből
 
 ### Ami hiányzik
 
@@ -87,7 +87,7 @@ A Csapatszerep teszt infrastruktúra implementált:
 A személyiségteszt kitöltés a self-layer-en történik (user saját maga tölti ki). A Csapatszerep tesztre viszont nincs campaign/round mechanizmus — a manager nem tud köröket indítani, emlékeztetőt küldeni, vagy nyomon követni a kitöltöttséget.
 
 **2. Becslés vs. valódi kitöltés megkülönböztetése a riportban:**
-Jelenleg a `TeamCsapatszerepSection` a HEXACO-ból becsült Csapatszerep szerepeket használja. A riportnak egyértelműen jeleznie kellene:
+Jelenleg a `TeamCsapatszerepSection` a TRITAN-ból becsült Csapatszerep szerepeket használja. A riportnak egyértelműen jeleznie kellene:
 - ki töltötte ki ténylegesen a Csapatszerep tesztet (`source: "questionnaire"`)
 - kinél fut becslésből (`source: "estimate"`)
 - mekkora a lefedettség (X/Y tag valódi kitöltéssel)
@@ -120,7 +120,7 @@ A csapat riportba a Csapatszerep szerep-eloszlás nem kerül bele.
 | Fájl | Méret | Funkció |
 |------|-------|---------|
 | `src/lib/team-role-scoring.ts` | 62 sor | 9 szerep scoring + `getTopRoles()` |
-| `src/lib/team-role-estimate.ts` | 45 sor | HEXACO → Csapatszerep becslés mapping |
+| `src/lib/team-role-estimate.ts` | 45 sor | TRITAN → Csapatszerep becslés mapping |
 | `src/lib/team-role-questions.ts` | 137 sor | 7 szekció × 8 állítás kérdésbank |
 | `src/app/assessment/team-role/` | 85 sor | Kitöltő UI + page |
 | `src/app/api/team-role/submit/route.ts` | 54 sor | Submit + score mentés |
@@ -130,5 +130,5 @@ A csapat riportba a Csapatszerep szerep-eloszlás nem kerül bele.
 ### Nem scope
 
 - Nem új kérdőív fejlesztés — a meglévő Csapatszerep teszt marad
-- Nem módosítja a HEXACO becslés logikát — az fallback marad
+- Nem módosítja a TRITAN becslés logikát — az fallback marad
 - Nem ad egyéni coaching ajánlást — csak a szerep felismerés és csapat szintű eloszlás

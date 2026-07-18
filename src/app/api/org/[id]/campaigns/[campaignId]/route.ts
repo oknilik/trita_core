@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { canManageMeasurements } from "@/lib/measurement-auth";
 
 const patchSchema = z.object({
   status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
@@ -15,7 +16,7 @@ const addParticipantsSchema = z.object({
 async function resolveContext(orgId: string, campaignId: string, userId: string) {
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return null;
 
@@ -26,12 +27,18 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
-      select: { id: true, orgId: true, status: true, type: true, teamId: true },
+      select: { id: true, orgId: true, status: true, type: true, teamId: true, steps: true },
     }),
   ]);
 
   if (!membership || !campaign) return null;
-  return { profileId: profile.id, role: membership.role, campaign };
+  return {
+    profileId: profile.id,
+    email: profile.email,
+    isConsultant: profile.isConsultant,
+    role: membership.role,
+    campaign,
+  };
 }
 
 async function resolveManageCapabilityDecision(orgId: string, role: string) {
@@ -91,6 +98,10 @@ export async function PATCH(
 
   const ctx = await resolveContext(orgId, campaignId, userId);
   if (!ctx) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  // Mérést csak tanácsadó kezel (ORG_CONSULTANT vagy platform-admin).
+  if (!canManageMeasurements(ctx.role, ctx.email, ctx.isConsultant)) {
+    return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
+  }
   const decision = await resolveManageCapabilityDecision(orgId, ctx.role);
   if (!decision.allowed) {
     return NextResponse.json(
@@ -115,8 +126,10 @@ export async function PATCH(
     select: { id: true, name: true, status: true, closedAt: true },
   });
 
-  // Szerep-kör kampány: az aktiválás/zárás a csapat kérdőív-körét vezérli.
-  if (ctx.campaign.type === "TEAM_ROLE" && ctx.campaign.teamId) {
+  // Szerep-kört tartalmazó kampány: az aktiválás/zárás a csapat kérdőív-körét vezérli.
+  const campaignSteps =
+    ctx.campaign.steps.length > 0 ? ctx.campaign.steps : [ctx.campaign.type];
+  if (campaignSteps.includes("TEAM_ROLE") && ctx.campaign.teamId) {
     if (body.data.status === "ACTIVE") {
       await prisma.team.update({
         where: { id: ctx.campaign.teamId },
@@ -129,6 +142,14 @@ export async function PATCH(
         data: { teamRoleRoundActive: false },
       });
     }
+  }
+
+  // Több-lépéses kampány: résztvevők haladásának inicializálása +
+  // lépés-nyitó értesítések (fire-and-forget).
+  if (body.data.status === "ACTIVE") {
+    import("@/lib/campaign-steps").then(({ initializeCampaignProgress }) =>
+      initializeCampaignProgress(campaignId).catch(() => {}),
+    );
   }
 
   // Notify org members about campaign status change via orchestrator (fire-and-forget)
@@ -166,6 +187,10 @@ export async function POST(
 
   const ctx = await resolveContext(orgId, campaignId, userId);
   if (!ctx) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  // Mérést csak tanácsadó kezel (ORG_CONSULTANT vagy platform-admin).
+  if (!canManageMeasurements(ctx.role, ctx.email, ctx.isConsultant)) {
+    return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
+  }
   const decision = await resolveManageCapabilityDecision(orgId, ctx.role);
   if (!decision.allowed) {
     return NextResponse.json(
@@ -199,6 +224,14 @@ export async function POST(
     })),
     skipDuplicates: true,
   });
+
+  // Aktív kampánynál az új résztvevők azonnal megkapják az első nyitott
+  // lépésüket (fast-forward + értesítés).
+  if (ctx.campaign.status === "ACTIVE") {
+    import("@/lib/campaign-steps").then(({ initializeCampaignProgress }) =>
+      initializeCampaignProgress(campaignId, body.data.userIds).catch(() => {}),
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }

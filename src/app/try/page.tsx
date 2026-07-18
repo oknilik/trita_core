@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getTestConfig } from "@/lib/questions";
@@ -21,12 +22,12 @@ export default async function TryPage() {
   if (userId) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const locale = await getServerLocale();
-  const config = getTestConfig("HEXACO", locale);
+  const config = getTestConfig("TRITAN", locale, DEFAULT_ASSESSMENT_FORM);
   const questions = config.questions.map((q) => ({ id: q.id, text: q.text }));
 
   return (
     <AssessmentClient
-      testType="HEXACO"
+      testType="TRITAN"
       testName={config.name}
       totalQuestions={config.questions.length}
       questions={questions}

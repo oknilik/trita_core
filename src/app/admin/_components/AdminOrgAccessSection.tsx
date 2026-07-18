@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  ORG_BILLING_FIELDS,
+  type OrgBillingProfile,
+} from "@/lib/org-billing";
 
 interface OrgRow {
   id: string;
   name: string;
   status: string;
+  billingProfile: OrgBillingProfile;
   createdAt: string;
   memberCount: number;
   consultants: Array<{ userId: string; email: string | null; username: string | null }>;
@@ -53,6 +58,35 @@ export function AdminOrgAccessSection({ orgs }: Props) {
   const [planChoice, setPlanChoice] = useState<Record<string, string>>({});
   const [monthsChoice, setMonthsChoice] = useState<Record<string, number>>({});
   const [consultantEmail, setConsultantEmail] = useState<Record<string, string>>({});
+  // Cégadatok (számlázás): lenyíló szerkesztő szervezetenként.
+  const [billingOpen, setBillingOpen] = useState<Record<string, boolean>>({});
+  const [billingDraft, setBillingDraft] = useState<Record<string, OrgBillingProfile>>({});
+  const [billingState, setBillingState] = useState<
+    Record<string, { saving: boolean; message: string | null; error: boolean }>
+  >({});
+
+  async function saveBilling(orgId: string) {
+    const draft = billingDraft[orgId] ?? {};
+    setBillingState((s) => ({ ...s, [orgId]: { saving: true, message: null, error: false } }));
+    try {
+      const res = await fetch("/api/admin/org-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orgId, action: "update_billing", billing: draft }),
+      });
+      if (!res.ok) throw new Error("save failed");
+      setBillingState((s) => ({
+        ...s,
+        [orgId]: { saving: false, message: "Cégadatok mentve.", error: false },
+      }));
+      router.refresh();
+    } catch {
+      setBillingState((s) => ({
+        ...s,
+        [orgId]: { saving: false, message: "A mentés nem sikerült.", error: true },
+      }));
+    }
+  }
 
   async function callAction(
     orgId: string,
@@ -257,6 +291,91 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                 {state.error && (
                   <p className="mt-2 text-xs text-rose-600">{state.error}</p>
                 )}
+
+                {/* ── Cégadatok (számlázás) — csak itt, az admin nézetben ── */}
+                <div className="mt-3 border-t border-sand pt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBillingOpen((o) => ({ ...o, [org.id]: !o[org.id] }));
+                      setBillingDraft((d) =>
+                        d[org.id] ? d : { ...d, [org.id]: { ...org.billingProfile } },
+                      );
+                    }}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-body transition hover:text-bronze"
+                  >
+                    <span>{billingOpen[org.id] ? "▾" : "▸"}</span>
+                    Cégadatok (számlázás)
+                    {Object.keys(org.billingProfile).length > 0 ? (
+                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                        kitöltve
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                        hiányzik
+                      </span>
+                    )}
+                  </button>
+
+                  {billingOpen[org.id] && (
+                    <div className="mt-3">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {ORG_BILLING_FIELDS.map((field) => {
+                          const value =
+                            (billingDraft[org.id]?.[field.key] as string | undefined) ?? "";
+                          const onChange = (v: string) =>
+                            setBillingDraft((d) => ({
+                              ...d,
+                              [org.id]: { ...(d[org.id] ?? {}), [field.key]: v },
+                            }));
+                          return (
+                            <label key={field.key} className="flex flex-col gap-1">
+                              <span className="text-[11px] font-medium text-muted">
+                                {field.label}
+                              </span>
+                              {field.type === "textarea" ? (
+                                <textarea
+                                  value={value}
+                                  onChange={(e) => onChange(e.target.value)}
+                                  placeholder={field.placeholder}
+                                  rows={2}
+                                  className="rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink outline-none transition focus:border-sage"
+                                />
+                              ) : (
+                                <input
+                                  type={field.type ?? "text"}
+                                  value={value}
+                                  onChange={(e) => onChange(e.target.value)}
+                                  placeholder={field.placeholder}
+                                  className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+                                />
+                              )}
+                            </label>
+                          );
+                        })}
+                      </div>
+                      <div className="mt-3 flex items-center gap-3">
+                        <button
+                          type="button"
+                          disabled={billingState[org.id]?.saving}
+                          onClick={() => saveBilling(org.id)}
+                          className="min-h-[38px] rounded-lg bg-ink px-5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                        >
+                          {billingState[org.id]?.saving ? "Mentés…" : "Cégadatok mentése"}
+                        </button>
+                        {billingState[org.id]?.message && (
+                          <p
+                            className={`text-xs font-medium ${
+                              billingState[org.id]?.error ? "text-rose-600" : "text-sage-dark"
+                            }`}
+                          >
+                            {billingState[org.id]?.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}

@@ -23,26 +23,29 @@ export async function setJourneyIntentForProfile(
   intent: JourneyEntryIntent,
 ): Promise<void> {
   if (intent === "team") {
-    await prisma.featureInterest.upsert({
+    await prisma.feedback.upsert({
       where: {
-        userProfileId_featureKey: {
+        userProfileId_kind_targetKey: {
           userProfileId: profileId,
-          featureKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
+          kind: "feature_interest",
+          targetKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
         },
       },
       update: {},
       create: {
         userProfileId: profileId,
-        featureKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
+        kind: "feature_interest",
+        targetKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
       },
     });
     return;
   }
 
-  await prisma.featureInterest.deleteMany({
+  await prisma.feedback.deleteMany({
     where: {
       userProfileId: profileId,
-      featureKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
+      kind: "feature_interest",
+      targetKey: JOURNEY_TEAM_INTENT_FEATURE_KEY,
     },
   });
 }

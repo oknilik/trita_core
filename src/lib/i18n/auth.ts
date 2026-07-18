@@ -34,7 +34,7 @@ export const authTranslations = {
     errorEmailExists: { hu: "Ez az email cím már regisztrálva van. Jelentkezz be.", en: "This email is already registered. Please sign in." },
     errorWeakPassword: { hu: "A jelszó túl gyenge. Használj legalább 8 karaktert, nagybetűt és számot.", en: "Password is too weak. Use at least 8 characters, one uppercase letter, and one number." },
     errorSignUpGeneric: { hu: "Hiba történt a regisztráció során.", en: "An error occurred during sign up." },
-    errorVerificationIncomplete: { hu: "A verifikáció nem fejeződött be. Próbáld újra.", en: "Verification did not complete. Please try again." },
+    errorVerificationIncomplete: { hu: "A megerősítés nem fejeződött be. Próbáld újra.", en: "Verification did not complete. Please try again." },
     errorVerificationInvalid: { hu: "Érvénytelen kód. Ellenőrizd és próbáld újra.", en: "Invalid code. Check and try again." },
     errorGoogleSignUp: { hu: "Nem sikerült elindítani a Google regisztrációt.", en: "Could not start Google sign up." },
     forgotPassword: { hu: "Elfelejtett jelszó", en: "Forgot password?" },
@@ -51,7 +51,7 @@ export const authTranslations = {
     resetRequestError: { hu: "Nem sikerült elküldeni a kódot.", en: "Could not send the code." },
     resetVerifyError: { hu: "Nem sikerült frissíteni a jelszót.", en: "Could not reset the password." },
     backToSignIn: { hu: "Vissza a bejelentkezéshez", en: "Back to sign in" },
-    errorSecondFactorRequired: { hu: "Második faktor szükséges. Jelentkezz be a megfelelő módon.", en: "Second factor required. Please complete 2FA." },
+    errorSecondFactorRequired: { hu: "Kétlépcsős azonosítás szükséges — jelentkezz be a második lépcsővel is.", en: "Second factor required. Please complete 2FA." },
     submitSendLink: { hu: "Link küldése", en: "Send link" },
     submitSendLinkLoading: { hu: "Küldés...", en: "Sending..." },
     submitSendCode: { hu: "Kód küldése és folytatás", en: "Send code & continue" },
@@ -62,7 +62,7 @@ export const authTranslations = {
       en: "We sent a sign-in link to {email}. Click the button in the email to continue.",
     },
     magicLinkBack: { hu: "Más email cím megadása", en: "Use a different email" },
-    intentQuestion: { hu: "Mire használod a triát?", en: "What will you use trita for?" },
+    intentQuestion: { hu: "Mire használnád a Tritát?", en: "What will you use trita for?" },
     errorBoundaryMessage: {
       hu: "Valami hiba történt. Kérjük, frissítsd az oldalt.",
       en: "Something went wrong. Please refresh the page.",
@@ -294,6 +294,11 @@ export const authTranslations = {
       hu: "Ország",
       en: "Country",
     },
+    careerSectionLabel: { hu: "Karrier-háttér (opcionális)", en: "Career background (optional)" },
+    eduLabel: { hu: "Legmagasabb végzettséged", en: "Highest education" },
+    eduFieldLabel: { hu: "Végzettség területe", en: "Field of study" },
+    industryLabel: { hu: "Jelenlegi vagy legutóbbi munkaterületed", en: "Current or most recent field of work" },
+    optionalPlaceholder: { hu: "Válassz (kihagyható)", en: "Select (optional)" },
     countryPlaceholder: {
       hu: "Keresés...",
       en: "Search...",
@@ -355,12 +360,6 @@ export const authTranslations = {
     step1Label: { hu: "Alapadatok", en: "Basic info" },
     step2Label: { hu: "Hozzájárulás", en: "Consent" },
     step2Title: { hu: "Egy utolsó lépés", en: "One last step" },
-    avatarTitle: { hu: "Válassz avatart", en: "Choose an avatar" },
-    avatarSub: { hu: "Ez jelenik meg a profilodban.", en: "This will appear on your profile." },
-    avatarShowAll: {
-      hu: "+ Összes megjelenítése ({count})",
-      en: "+ Show all ({count})",
-    },
   },
   privacy: {
     title: {

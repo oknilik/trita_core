@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getTeamPageData, FRICTION_WEIGHTS } from "@/lib/team-stats";
-import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles, type TeamRoleScores } from "@/lib/team-role-scoring";
 import {
   MIN_INTELLIGENCE_ASSESSMENTS,
@@ -13,6 +13,12 @@ import {
   getWeaknessInsight,
   getDiversityInsight,
 } from "@/lib/team-insights";
+import {
+  aggregatePsychSafety,
+  weakPsychSafetyItemIds,
+  getPsychSafetyItem,
+  PSYCH_SAFETY_ACTIONS,
+} from "@/lib/psych-safety";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -53,6 +59,24 @@ export interface TeamReportAggregates {
     topFrictionDims: string[];
     source: "observer" | "profile_estimate" | "mixed";
   } | null;
+  /**
+   * Pszichológiai biztonság pulse — a legutóbbi kör anonim aggregátuma.
+   * Opcionális: régebbi riport-pillanatképekben nem létezik; null, ha nincs
+   * mérés vagy a válaszszám az anonimitás-küszöb (3) alatt van.
+   */
+  psychSafety?: {
+    index: number;
+    band: "low" | "mid" | "high";
+    count: number;
+    spread: number;
+    /** Itemenkénti normalizált átlag (1–5, magas = biztonságos) */
+    itemMeans: Record<string, number>;
+    /** A küszöb (3,4) alatti területek, leggyengébbtől — akció-javaslathoz */
+    weakItemIds: string[];
+    campaignName: string;
+    campaignStatus: string;
+    measuredAt: string;
+  } | null;
 }
 
 export interface TeamReportActionItem {
@@ -82,7 +106,7 @@ export interface SerializedTeamReport {
   updatedAt: string;
 }
 
-const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
+const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
@@ -128,9 +152,9 @@ export async function buildTeamReportAggregates(
       if (member.teamRoleSource === "questionnaire" && member.teamRoleScores) {
         scores = member.teamRoleScores as TeamRoleScores;
         questionnaireCount++;
-      } else if (member.scores && "H" in member.scores && "X" in member.scores) {
-        scores = estimateTeamRolesFromHexaco(
-          member.scores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>,
+      } else if (member.scores && "INTE" in member.scores && "TEMP" in member.scores) {
+        scores = estimateTeamRolesFromTritan(
+          member.scores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
         );
         estimateCount++;
       }
@@ -198,6 +222,39 @@ export async function buildTeamReportAggregates(
     };
   }
 
+  // Pszichológiai biztonság: a legutóbbi kör anonim aggregátuma.
+  // A pillanatképbe fagy — a riport a publikáláskori állapotot őrzi.
+  let psychSafety: TeamReportAggregates["psychSafety"] = null;
+  const psCampaign = await prisma.campaign.findFirst({
+    where: { teamId, type: "PSYCH_SAFETY", status: { in: ["ACTIVE", "CLOSED"] } },
+    orderBy: { createdAt: "desc" },
+    select: {
+      name: true,
+      status: true,
+      closedAt: true,
+      createdAt: true,
+      psychSafetyResponses: { select: { answers: true } },
+    },
+  });
+  if (psCampaign) {
+    const psAgg = aggregatePsychSafety(
+      psCampaign.psychSafetyResponses.map((r) => r.answers),
+    );
+    if (psAgg) {
+      psychSafety = {
+        index: psAgg.index,
+        band: psAgg.band,
+        count: psAgg.count,
+        spread: psAgg.spread,
+        itemMeans: psAgg.itemMeans,
+        weakItemIds: weakPsychSafetyItemIds(psAgg.itemMeans),
+        campaignName: psCampaign.name,
+        campaignStatus: psCampaign.status,
+        measuredAt: (psCampaign.closedAt ?? psCampaign.createdAt).toISOString(),
+      };
+    }
+  }
+
   return {
     generatedAt: new Date().toISOString(),
     memberCount,
@@ -217,6 +274,7 @@ export async function buildTeamReportAggregates(
     roleGaps,
     evidence,
     dynamics,
+    psychSafety,
   };
 }
 
@@ -226,12 +284,12 @@ export async function buildTeamReportAggregates(
 // Csak magyarul generálunk (elsődleges piac); a tanácsadó átírhatja.
 
 const PREFILL_DIM_LABELS: Record<string, string> = {
-  H: "őszinteség-méltányosság",
-  E: "érzelmi reaktivitás",
-  X: "társas energia",
-  A: "együttműködési stílus",
-  C: "strukturáltság",
-  O: "nyitottság",
+  INTE: "integritás",
+  RESO: "rezonancia",
+  TEMP: "társas energia",
+  ADAP: "alkalmazkodás",
+  THOR: "tervezettség",
+  OPEN: "nyitottság",
 };
 
 export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
@@ -274,6 +332,14 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   const evidenceWeak = agg.evidence ? agg.evidence.quality !== "sufficient" : false;
   const observerMissing = agg.evidence ? agg.evidence.observerEdgeCount === 0 : true;
 
+  // Pszich. biztonság: gyenge területek a narratívához és az akciólistához.
+  const ps = agg.psychSafety ?? null;
+  const psWeakAreas = ps
+    ? ps.weakItemIds
+        .map((id) => getPsychSafetyItem(id)?.area.hu)
+        .filter((a): a is string => Boolean(a))
+    : [];
+
   const bullets = (lines: string[]) =>
     lines.filter((l) => l.length > 0).map((l) => `• ${l}`).join("\n");
 
@@ -302,6 +368,12 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     gapRoleNames
       ? `Lefedetlen csapatszerep: ${gapRoleNames} — ezekre se elsődleges, se tartalék lefedettség nincs.`
       : "",
+    ps && psWeakAreas.length > 0
+      ? `A pszichológiai biztonság pulse (${ps.index}/100, ${ps.count} névtelen válasz) gyenge pontjai: ${psWeakAreas.join(", ")} — ezeken a területeken a tagok visszatarthatják a valós véleményüket, ami torzítja a többi mérést is.`
+      : "",
+    ps && ps.spread >= 20
+      ? "A biztonság-élmény erősen megosztott a csapaton belül — az átlag mögött nagyon eltérő egyéni tapasztalatok állnak."
+      : "",
   ]);
 
   const recommendations = bullets([
@@ -316,6 +388,15 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       : "",
     alignedShare >= 0.5
       ? "Külső visszajelzés tudatos behozása (más csapat, ügyfél, mentor) a közös vakfoltok ellensúlyozására."
+      : "",
+    ...(ps && psWeakAreas.length > 0
+      ? ps.weakItemIds.map(
+          (id) =>
+            `${getPsychSafetyItem(id)?.area.hu ?? id}: ${PSYCH_SAFETY_ACTIONS[id]?.hu ?? ""}`,
+        )
+      : []),
+    !ps
+      ? "Pszichológiai biztonság pulse indítása — névtelen, ~2 perces mérés; enélkül a csapatkép a kimondott véleményekre épül, a visszatartottakra nem."
       : "",
   ]);
 
@@ -359,6 +440,13 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
             timeframe: "60" as const,
           },
         ]
+      : []),
+    ...(ps && ps.weakItemIds.length > 0
+      ? ps.weakItemIds.slice(0, 2).map((id) => ({
+          title: `Pszichológiai biztonság: ${getPsychSafetyItem(id)?.area.hu ?? id}`,
+          description: PSYCH_SAFETY_ACTIONS[id]?.hu ?? "",
+          timeframe: "30" as const,
+        }))
       : []),
     {
       title: "Utánkövetés és riport-frissítés",

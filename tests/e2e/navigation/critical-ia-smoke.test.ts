@@ -27,12 +27,12 @@ function buildLikertScores(offset: number) {
   return {
     type: "likert",
     dimensions: {
-      H: 58 + offset,
-      E: 54 + offset,
-      X: 49 + offset,
-      A: 62 + offset,
-      C: 64 + offset,
-      O: 57 + offset,
+      INTE: 58 + offset,
+      RESO: 54 + offset,
+      TEMP: 49 + offset,
+      ADAP: 62 + offset,
+      THOR: 64 + offset,
+      OPEN: 57 + offset,
     },
   };
 }
@@ -61,7 +61,7 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO",
+        testType: "TRITAN",
         testTypeAssignedAt: now,
       },
       {
@@ -72,7 +72,7 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO",
+        testType: "TRITAN",
         testTypeAssignedAt: now,
       },
     ],
@@ -144,14 +144,14 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
       {
         id: makeId("ia_result_admin"),
         userProfileId: adminProfileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
         scores: buildLikertScores(2),
       },
       {
         id: makeId("ia_result_manager"),
         userProfileId: managerProfileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
         scores: buildLikertScores(0),
       },
@@ -167,7 +167,7 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
       name: "IA Candidate",
       position: "Frontend Engineer",
       status: "PENDING",
-      testType: "HEXACO",
+      testType: "TRITAN",
       expiresAt: new Date("2026-05-15T00:00:00.000Z"),
     },
   });

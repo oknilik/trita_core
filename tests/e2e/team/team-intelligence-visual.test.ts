@@ -31,16 +31,16 @@ const ALL_PROFILE_IDS = [
   ...FIXTURE.sufficientMembers.map((member) => member.profileId),
 ];
 
-function scorePayload(input: { H: number; E: number; X: number; A: number; C: number; O: number }) {
+function scorePayload(input: { INTE: number; RESO: number; TEMP: number; ADAP: number; THOR: number; OPEN: number }) {
   return {
     type: "likert",
     dimensions: {
-      H: input.H,
-      E: input.E,
-      X: input.X,
-      A: input.A,
-      C: input.C,
-      O: input.O,
+      INTE: input.INTE,
+      RESO: input.RESO,
+      TEMP: input.TEMP,
+      ADAP: input.ADAP,
+      THOR: input.THOR,
+      OPEN: input.OPEN,
     },
   };
 }
@@ -90,7 +90,7 @@ async function createFixture() {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO",
+        testType: "TRITAN",
         testTypeAssignedAt: now,
       },
       ...FIXTURE.lowMembers.map((member) => ({
@@ -101,7 +101,7 @@ async function createFixture() {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO" as const,
+        testType: "TRITAN" as const,
         testTypeAssignedAt: now,
       })),
       ...FIXTURE.sufficientMembers.map((member) => ({
@@ -112,7 +112,7 @@ async function createFixture() {
         locale: "hu",
         onboardedAt: now,
         consentedAt: now,
-        testType: "HEXACO" as const,
+        testType: "TRITAN" as const,
         testTypeAssignedAt: now,
       })),
     ],
@@ -194,37 +194,37 @@ async function createFixture() {
       {
         id: "e2e_intel_visual_result_admin",
         userProfileId: FIXTURE.admin.profileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ H: 61, E: 47, X: 51, A: 58, C: 62, O: 56 }),
+        scores: scorePayload({ INTE: 61, RESO: 47, TEMP: 51, ADAP: 58, THOR: 62, OPEN: 56 }),
       },
       {
         id: "e2e_intel_visual_result_low_1",
         userProfileId: FIXTURE.lowMembers[0].profileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ H: 55, E: 49, X: 33, A: 57, C: 54, O: 52 }),
+        scores: scorePayload({ INTE: 55, RESO: 49, TEMP: 33, ADAP: 57, THOR: 54, OPEN: 52 }),
       },
       {
         id: "e2e_intel_visual_result_ok_1",
         userProfileId: FIXTURE.sufficientMembers[0].profileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ H: 49, E: 51, X: 73, A: 48, C: 52, O: 64 }),
+        scores: scorePayload({ INTE: 49, RESO: 51, TEMP: 73, ADAP: 48, THOR: 52, OPEN: 64 }),
       },
       {
         id: "e2e_intel_visual_result_ok_2",
         userProfileId: FIXTURE.sufficientMembers[1].profileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ H: 58, E: 45, X: 30, A: 64, C: 66, O: 53 }),
+        scores: scorePayload({ INTE: 58, RESO: 45, TEMP: 30, ADAP: 64, THOR: 66, OPEN: 53 }),
       },
       {
         id: "e2e_intel_visual_result_ok_3",
         userProfileId: FIXTURE.sufficientMembers[2].profileId,
-        testType: "HEXACO",
+        testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ H: 63, E: 43, X: 68, A: 59, C: 60, O: 62 }),
+        scores: scorePayload({ INTE: 63, RESO: 43, TEMP: 68, ADAP: 59, THOR: 60, OPEN: 62 }),
       },
     ],
   });

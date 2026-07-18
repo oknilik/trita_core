@@ -6,6 +6,7 @@ import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { NewClientOrgForm } from "@/components/org/NewClientOrgForm";
+import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -23,15 +24,21 @@ export default async function NewClientOrgPage() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) redirect("/sign-in");
 
+  // Org-ot a platform-admin, a platform-tanácsadó vagy egy már kiosztott
+  // ORG_CONSULTANT hozhat létre.
   const consultantMembership = await prisma.organizationMember.findFirst({
     where: { userId: profile.id, role: "ORG_CONSULTANT", leftAt: null },
     select: { id: true },
   });
-  if (!consultantMembership) notFound();
+  const canCreateOrg =
+    profile.isConsultant ||
+    isPlatformAdminEmail(profile.email) ||
+    Boolean(consultantMembership);
+  if (!canCreateOrg) notFound();
 
   const isHu = locale !== "en";
 

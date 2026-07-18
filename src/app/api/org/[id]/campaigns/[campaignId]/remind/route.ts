@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
+import { canManageMeasurements } from "@/lib/measurement-auth";
 
 // POST /api/org/[id]/campaigns/[campaignId]/remind
 // Counts participants who have not completed a self-assessment.
@@ -18,7 +19,7 @@ export async function POST(
   // Resolve profile
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -30,6 +31,10 @@ export async function POST(
   if (!membership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   if (!hasOrgRole(membership.role, "ORG_MANAGER")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  // Mérést csak tanácsadó kezel (ORG_CONSULTANT vagy platform-admin).
+  if (!canManageMeasurements(membership.role, profile.email, profile.isConsultant)) {
+    return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
   }
 
   // Check campaign exists and is ACTIVE

@@ -1,7 +1,7 @@
 /**
  * seed-it-team.ts
  * Az "IT csapat" nevű csapatot feltölti 8 fake taggal,
- * mindegyiknek HEXACO self-assessment + 2 observer eredménnyel.
+ * mindegyiknek TRITAN self-assessment + 2 observer eredménnyel.
  */
 
 import { readFileSync } from "fs";
@@ -33,19 +33,19 @@ function nearbyScore(base: number, variance = 18) {
   return Math.max(5, Math.min(95, Math.round(base + (Math.random() - 0.5) * 2 * variance)));
 }
 
-const HEXACO_FACETS: Record<string, string[]> = {
-  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  A: ["forgiveness", "gentleness", "flexibility", "patience"],
-  C: ["organization", "diligence", "prudence", "perfectionism"],
-  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const TRITAN_FACETS: Record<string, string[]> = {
+  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
+  THOR: ["organization", "diligence", "prudence", "perfectionism"],
+  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
 };
 
-function generateHexacoScores() {
+function generateTritanScores() {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
-  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
+  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
     const base = rand(22, 83);
     dimensions[dim] = base;
     facets[dim] = {};
@@ -99,7 +99,7 @@ async function main() {
           data: {
             email: fake.email,
             username: fake.username,
-            testType: "HEXACO",
+            testType: "TRITAN",
             testTypeAssignedAt: new Date(),
             onboardedAt: new Date(),
           },
@@ -136,11 +136,11 @@ async function main() {
         select: { id: true },
       });
       if (!hasResult) {
-        const scores = generateHexacoScores();
+        const scores = generateTritanScores();
         await prisma.assessmentResult.create({
           data: {
             userProfileId: profile.id,
-            testType: "HEXACO",
+            testType: "TRITAN",
             isSelfAssessment: true,
             scores: scores as object,
           },
@@ -167,7 +167,7 @@ async function main() {
             inviterId: profile.id,
             observerProfileId: observer.id,
             observerEmail: observer.email,
-            testType: "HEXACO",
+            testType: "TRITAN",
             status: "COMPLETED",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(),
@@ -180,7 +180,7 @@ async function main() {
             invitationId: invitation.id,
             relationshipType: RELATIONSHIPS[rand(0, 2)],
             knownDuration: DURATIONS[rand(0, 3)],
-            scores: generateHexacoScores() as object,
+            scores: generateTritanScores() as object,
             confidence: rand(3, 5),
           },
         });

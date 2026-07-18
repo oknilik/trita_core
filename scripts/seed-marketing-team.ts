@@ -2,7 +2,7 @@
  * seed-marketing-team.ts
  *
  * Feltölti a meglévő "Marketing" csapatot dummy adatokkal a "Trita Demo Kft." orgban.
- * - 5 marketing tag: 3 teljes profil + HEXACO eredmény, 2 félig kitöltött (nincs teszt)
+ * - 5 marketing tag: 3 teljes profil + TRITAN eredmény, 2 félig kitöltött (nincs teszt)
  * - 1 ACTIVE Q2 2026 kampány, csak a tagok felével mint résztvevő
  *
  * Futtatás:
@@ -38,19 +38,19 @@ function nearbyScore(base: number, variance = 18) {
   return Math.max(5, Math.min(95, Math.round(base + (Math.random() - 0.5) * 2 * variance)));
 }
 
-const HEXACO_FACETS: Record<string, string[]> = {
-  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  A: ["forgiveness", "gentleness", "flexibility", "patience"],
-  C: ["organization", "diligence", "prudence", "perfectionism"],
-  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const TRITAN_FACETS: Record<string, string[]> = {
+  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
+  THOR: ["organization", "diligence", "prudence", "perfectionism"],
+  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
 };
 
-function generateHexacoScores() {
+function generateTritanScores() {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
-  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
+  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
     const base = rand(22, 83);
     dimensions[dim] = base;
     facets[dim] = {};
@@ -63,7 +63,7 @@ function generateHexacoScores() {
 
 // Marketing csapat fake tagjai (különálló email domain)
 const MARKETING_MEMBERS = [
-  // Teljes profil + HEXACO eredmény
+  // Teljes profil + TRITAN eredmény
   { username: "Farkas Nóra",     email: "farkas.nora@mktg.seed.test",     full: true  },
   { username: "Simon Ádám",      email: "simon.adam@mktg.seed.test",      full: true  },
   { username: "Papp Judit",      email: "papp.judit@mktg.seed.test",      full: true  },
@@ -150,7 +150,7 @@ async function main() {
         const profileData: Parameters<typeof prisma.userProfile.create>[0]["data"] = {
           email: m.email,
           username: m.username,
-          testType: "HEXACO",
+          testType: "TRITAN",
           testTypeAssignedAt: new Date(),
         };
         // noOnboarding: nincs onboardedAt → még nem töltötte ki a demógrafikát
@@ -190,9 +190,9 @@ async function main() {
           await prisma.assessmentResult.create({
             data: {
               userProfileId: profile.id,
-              testType: "HEXACO",
+              testType: "TRITAN",
               isSelfAssessment: true,
-              scores: generateHexacoScores() as object,
+              scores: generateTritanScores() as object,
             },
           });
         }
@@ -219,7 +219,7 @@ async function main() {
             inviterId: profile.id,
             observerProfileId: observer.id,
             observerEmail: observer.email,
-            testType: "HEXACO",
+            testType: "TRITAN",
             status: "COMPLETED",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(),
@@ -231,7 +231,7 @@ async function main() {
             invitationId: invitation.id,
             relationshipType: RELATIONSHIPS[rand(0, 1)],
             knownDuration: DURATIONS[rand(0, 2)],
-            scores: generateHexacoScores() as object,
+            scores: generateTritanScores() as object,
             confidence: rand(3, 5),
           },
         });
@@ -282,9 +282,9 @@ async function main() {
    Q2 kampány:       http://localhost:3000/org/${org.id}/campaigns/${campaign.id}
 
    Tagok:
-   ✅ Farkas Nóra   — teljes profil + HEXACO
-   ✅ Simon Ádám    — teljes profil + HEXACO
-   ✅ Papp Judit    — teljes profil + HEXACO
+   ✅ Farkas Nóra   — teljes profil + TRITAN
+   ✅ Simon Ádám    — teljes profil + TRITAN
+   ✅ Papp Judit    — teljes profil + TRITAN
    ⚠️  Lőrincz Bence — onboarding kész, teszt hiányzik
    ⚠️  Hegedűs Petra — onboarding sem kész
 `);

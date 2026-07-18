@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
@@ -102,7 +103,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
-  const config = getTestConfig(invitation.testType as TestType, locale);
+  const config = getTestConfig(invitation.testType as TestType, locale, DEFAULT_ASSESSMENT_FORM);
   const inviterName = invitation.inviter.username ?? t("common.someone", locale);
 
   const draft = await prisma.observerDraft.findUnique({

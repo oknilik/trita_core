@@ -76,13 +76,13 @@ export interface TeamPatternResult {
 }
 
 /** Scores in 0–100 range (as stored in AssessmentResult.scores.dimensions) */
-export interface HexacoScores {
-  H: number;
-  E: number;
-  X: number;
-  A: number;
-  C: number;
-  O: number;
+export interface TritanScores {
+  INTE: number;
+  RESO: number;
+  TEMP: number;
+  ADAP: number;
+  THOR: number;
+  OPEN: number;
 }
 
 // ============================================================
@@ -158,7 +158,7 @@ function poleLetter(
 // ============================================================
 
 export function calculateTeamPattern(
-  members: Array<{ userId: string; scores: HexacoScores }>
+  members: Array<{ userId: string; scores: TritanScores }>
 ): TeamPatternResult | null {
   if (members.length < 3) return null;
 
@@ -166,19 +166,19 @@ export function calculateTeamPattern(
 
   // ── 1. Tengely értékek ──────────────────────────────────
   const rawAxes: TeamAxes = {
-    drive:      mean(allScores.map((s) => s.X)),
-    cohesion:   mean(allScores.map((s) => (s.A + s.H) / 2)),
-    discipline: mean(allScores.map((s) => s.C)),
-    openness:   mean(allScores.map((s) => s.O)),
+    drive:      mean(allScores.map((s) => s.TEMP)),
+    cohesion:   mean(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
+    discipline: mean(allScores.map((s) => s.THOR)),
+    openness:   mean(allScores.map((s) => s.OPEN)),
   };
 
   const rawDiversity: TeamDiversity = {
-    drive:        stddev(allScores.map((s) => s.X)),
-    cohesion:     stddev(allScores.map((s) => (s.A + s.H) / 2)),
-    discipline:   stddev(allScores.map((s) => s.C)),
-    openness:     stddev(allScores.map((s) => s.O)),
-    emotionality: stddev(allScores.map((s) => s.E)),
-    honesty:      stddev(allScores.map((s) => s.H)),
+    drive:        stddev(allScores.map((s) => s.TEMP)),
+    cohesion:     stddev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
+    discipline:   stddev(allScores.map((s) => s.THOR)),
+    openness:     stddev(allScores.map((s) => s.OPEN)),
+    emotionality: stddev(allScores.map((s) => s.RESO)),
+    honesty:      stddev(allScores.map((s) => s.INTE)),
   };
 
   // ── 2. Tengely részletek ────────────────────────────────
@@ -207,10 +207,10 @@ export function calculateTeamPattern(
 
   // ── 3. Mintakód (domináns 4 betű) ──────────────────────
   const patternCode = [
-    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "E", "R"),
-    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "C", "V"),
+    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "RESO", "R"),
+    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "THOR", "V"),
     poleLetter(rawAxes.discipline, THRESHOLDS.discipline, "S", "F"),
-    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "X", "P"),
+    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "TEMP", "P"),
   ].join("");
 
   // ── 4. Globális diverzitás suffix ──────────────────────
@@ -232,7 +232,7 @@ export function calculateTeamPattern(
     const axisIndex = ["drive", "cohesion", "discipline", "openness"].indexOf(mostUnstable);
     const currentLetter = altLetters[axisIndex];
     const flipMap: Record<string, string> = {
-      E: "R", R: "E", C: "V", V: "C", S: "F", F: "S", X: "P", P: "X",
+      RESO: "R", R: "RESO", THOR: "V", V: "THOR", S: "F", F: "S", TEMP: "P", P: "TEMP",
     };
     altLetters[axisIndex] = flipMap[currentLetter];
     alternativeCode = altLetters.join("");
@@ -267,10 +267,10 @@ export function calculateTeamPattern(
   // ── 8. Egyén-minta távolság ─────────────────────────────
   const styleDistances: StyleDistance[] = members.map((m) => {
     const deviations: Record<string, number> = {
-      drive:      Math.abs(m.scores.X - rawAxes.drive),
-      cohesion:   Math.abs((m.scores.A + m.scores.H) / 2 - rawAxes.cohesion),
-      discipline: Math.abs(m.scores.C - rawAxes.discipline),
-      openness:   Math.abs(m.scores.O - rawAxes.openness),
+      drive:      Math.abs(m.scores.TEMP - rawAxes.drive),
+      cohesion:   Math.abs((m.scores.ADAP + m.scores.INTE) / 2 - rawAxes.cohesion),
+      discipline: Math.abs(m.scores.THOR - rawAxes.discipline),
+      openness:   Math.abs(m.scores.OPEN - rawAxes.openness),
     };
 
     const tensionAxes = Object.entries(deviations)
@@ -355,20 +355,20 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     ],
     blindSpots: [
       "A tempó kiégéshez vezethet — a csapat nem mindig ismeri fel a saját korlátait",
-      "Az újdonság iránti vonzalom elterelheti a fókuszt a core feladatokról",
-      "A magas kohézió groupthink-et okozhat: senki nem mer ellentmondani",
+      "Az újdonság iránti vonzalom elterelheti a fókuszt az alapfeladatokról",
+      "A magas kohézió csoportgondolkodást (groupthink) okozhat: senki nem mer ellentmondani",
       "A struktúra rugalmatlansággá válhat, ha a folyamatok túlterheltek",
     ],
     communicationStyle:
-      "Gyors, közvetlen, de empatikus. Szeretik a standup-okat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
+      "Gyors, közvetlen, de empatikus. Szeretik a standupokat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
     idealTasks:
-      "Új termék fejlesztés, innovációs sprint, stratégiai pivot — ahol egyszerre kell kreativitás és megvalósítási képesség.",
+      "Új termékek fejlesztése, innovációs sprint, stratégiai pivot — ahol egyszerre kell kreativitás és megvalósítási képesség.",
     riskSituations:
       "Hosszú, monoton projektek; konfliktuskerülés, ami elfojtott feszültséghez vezet; túl sok párhuzamos kezdeményezés.",
     leaderActions: [
-      "Építs be rendszeres „lassítás napokat” a sprintek közé — reflexiós idő",
-      "Jelölj ki egy „ördög ügyvédjét” a nagyobb döntéseknél a groupthink ellen",
-      "Limitáld a párhuzamos projektek számát — maximum 2 aktív kezdeményezés egyszerre",
+      "Építs be rendszeres „lassító napokat” a sprintek közé — reflexiós idő",
+      "Jelölj ki egy „ördög ügyvédjét” a nagyobb döntéseknél a csoportgondolkodás ellen",
+      "Korlátozd a párhuzamos projektek számát — maximum 2 aktív kezdeményezés egyszerre",
     ],
   },
 
@@ -390,15 +390,15 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Külső változásokra lassan reagálnak",
     ],
     communicationStyle:
-      "Világos, strukturált, feladat-orientált. Szeretik a napirendeket, a check-in-eket és a dokumentált döntéseket.",
+      "Világos, strukturált, feladatorientált. Szeretik a napirendeket, a rövid egyeztetéseket és a dokumentált döntéseket.",
     idealTasks:
-      "Ismétlődő, magas minőségű delivery; operatív működés; ügyfélkiszolgálás; compliance-igényes projektek.",
+      "Ismétlődő, magas minőségű szállítás; operatív működés; ügyfélkiszolgálás; compliance-igényes projektek.",
     riskSituations:
       "Piaci változás, ami gyors adaptációt igényel; új vezető, aki felborítja a rutint; nincs egyértelmű „hogyan”.",
     leaderActions: [
       "Negyedévente szervezz egy „mi lenne ha” workshopot — kényszerítsd a csapatot alternatív szcenáriókra",
-      "Hozz be külső impulzust: vendégelőadó, cross-team projekt, iparági benchmark",
-      "Jutalmaz meg konkrétan egy sikeres kísérletezést — jelzés, hogy az újítás értékelt",
+      "Hozz be külső impulzust: vendégelőadó, csapatközi projekt, iparági benchmark",
+      "Jutalmazz meg látványosan egy sikeres kísérletet — jelzés, hogy az újításnak értéke van",
     ],
   },
 
@@ -406,7 +406,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     name: "Kreatív Kommuna",
     subtitle: "Energikus · Összetartó · Rugalmas · Felfedező",
     description:
-      "Szabadon áramló, innovatív csapat, amely szereti egymást és a kísérletezést. A kreativitás és az összetartozás hajtja őket.",
+      "Szabadon áramló, innovatív csapat, amelyben erős az összetartás, és szeretik a kísérletezést. A kreativitás és az összetartozás hajtja őket.",
     strengths: [
       "Rendkívüli kreativitás — az ötletelés a természetes állapotuk",
       "Erős bizalom és pszichológiai biztonság",
@@ -420,14 +420,14 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "A harmonikus légkör miatt nehéz negatív visszajelzést adni",
     ],
     communicationStyle:
-      "Informális, szabad asszociációs, gyakran spontán. Sok ötletelés, kevés formális meeting.",
+      "Informális, szabad asszociációs, gyakran spontán. Sok ötletelés, kevés formális megbeszélés.",
     idealTasks:
       "Koncepció-fázis, brainstorming, design sprint, márkaépítés — divergens gondolkodás.",
     riskSituations:
-      "Komplex, többlépéses projekt szoros határidővel; compliance feladatok; delivery > ötlet.",
+      "Komplex, többlépéses projekt szoros határidővel; compliance-feladatok; szállítás > ötlet.",
     leaderActions: [
-      "Vezess be enyhe struktúrát: heti 1 prioritás-review, de ne kontrollálj túl sokat",
-      "Használj „idea parking lot”-ot — az ötleteket rögzítsd, de ne fusson mind egyszerre",
+      "Vezess be enyhe struktúrát: heti egy prioritás-áttekintés, de ne kontrollálj túl sokat",
+      "Használj „ötletparkolót” — az ötleteket rögzítsd, de ne fusson mind egyszerre",
       "Párosítsd a csapatot egy strukturáltabb csapattal a végrehajtási fázisban",
     ],
   },
@@ -488,7 +488,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     riskSituations:
       "Hosszú kooperáció-igényes projektek; mentoring; csapatépítés.",
     leaderActions: [
-      "Vezess be csapat-szintű KPI-okat az egyéni metrikák mellé",
+      "Vezess be csapatszintű KPI-kat az egyéni metrikák mellé",
       "Strukturálj páros feladatokat, ahol a siker kölcsönös",
       "Figyelj a kiégés jeleire — a nagy energia mögött gyakran kimerülés van",
     ],
@@ -512,7 +512,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Magas fluktuáció — aki nem bírja a tempót, elmegy",
     ],
     communicationStyle:
-      "Felülről lefelé, tömör, utasítás-jellegű. A meetingek rövidek és döntésközpontúak.",
+      "Felülről lefelé, tömör, utasításjellegű. A megbeszélések rövidek és döntésközpontúak.",
     idealTasks:
       "Operatív kihívások szoros határidővel, turnaround, válságkezelés.",
     riskSituations:
@@ -520,7 +520,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     leaderActions: [
       "Hozz létre biztonságos fórumot, ahol a tagok névtelenül jelezhetnek problémákat",
       "Rotáld a vezetői szerepeket projekt-szinten",
-      "Havi „tanulság-review”: hibákat tanulságként, nem kudarcként kezelitek",
+      "Havi tanulság-kör: a hibákat tanulságként, nem kudarcként kezelitek",
     ],
   },
 
@@ -590,7 +590,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     name: "Kutatólabor",
     subtitle: "Visszafogott · Összetartó · Strukturált · Felfedező",
     description:
-      "Csendes, mélyen gondolkodó csapat, amely szisztematikusan fed fel új területeket. Minőség és alaposság.",
+      "Csendes, mélyen gondolkodó csapat, amely szisztematikusan fedez fel új területeket. Minőség és alaposság.",
     strengths: [
       "Mély, alapos munkavégzés",
       "Erős belső bizalom és kölcsönös tisztelet",
@@ -604,13 +604,13 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Kívülről passzivitásnak tűnhet",
     ],
     communicationStyle:
-      "Átgondolt, írásos, részletes. Ritka, de alapos meetingek.",
+      "Átgondolt, írásos, részletes. Ritka, de alapos megbeszélések.",
     idealTasks:
       "Kutatás, komplex analízis, termékfejlesztés korai fázis, minőségbiztosítás.",
     riskSituations:
-      "Szoros határidők; pitching; stakeholder management; gyors kommunikáció.",
+      "Szoros határidők; prezentációk; stakeholder-kezelés; gyors kommunikáció.",
     leaderActions: [
-      "Adj elegendő időt a mélymunkához — védd meg a felesleges meetingektől",
+      "Adj elegendő időt a mélymunkához — védd meg a felesleges megbeszélésektől",
       "Segítsd a csapatot a munkájuk „eladásában”",
       "Rendszeres „show & tell” — ez láthatóságot ad",
     ],
@@ -638,11 +638,11 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     idealTasks:
       "Operatív működés, karbantartás, minőségbiztosítás, back-office.",
     riskSituations:
-      "Piaci disruption; szervezeti átalakulás; „hangos” érdekképviselet.",
+      "Hirtelen piaci változás; szervezeti átalakulás; „hangos” érdekképviselet.",
     leaderActions: [
       "Tedd láthatóvá a csapat munkáját — heti összefoglaló a stakeholdereknek",
       "Évente: „mi az 1 dolog, amit megváltoztatnátok?”",
-      "Apró, biztonságos kísérletek — „próbáljuk ki ezt a toolt 2 hétre”",
+      "Apró, biztonságos kísérletek — „próbáljuk ki ezt az eszközt két hétig”",
     ],
   },
 
@@ -666,7 +666,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     communicationStyle:
       "Mély, személyes, gyakran nonverbális. Kívülállóknak nehéz csatlakozni.",
     idealTasks:
-      "Koncepciófejlesztés, UX kutatás, stratégiai gondolkodás, tartalom.",
+      "Koncepciófejlesztés, UX-kutatás, stratégiai gondolkodás, tartalom.",
     riskSituations:
       "Szoros határidők; nagy prezentáció; konfliktusos stakeholderek; gyors skálázás.",
     leaderActions: [
@@ -694,7 +694,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Innováció hiányzik — pragmatizmus → konzervativizmus",
     ],
     communicationStyle:
-      "Meleg, személyes, támogató. Sok informális beszélgetés, kevés formális meeting.",
+      "Meleg, személyes, támogató. Sok informális beszélgetés, kevés formális megbeszélés.",
     idealTasks:
       "HR, ügyfélszolgálat, belső támogatás, mentoring.",
     riskSituations:
@@ -728,11 +728,11 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     communicationStyle:
       "Precíz, adatgazdag, formális. Vitaközpontú, de civilizált. Írásos preferencia.",
     idealTasks:
-      "Stratégiai tervezés, adatelemzés, komplex problémafeloldás, technikai architektúra.",
+      "Stratégiai tervezés, adatelemzés, komplex problémamegoldás, technikai architektúra.",
     riskSituations:
       "Csapatépítés; ügyfélkommunikáció; „jó elég” vs „tökéletes” helyzetek.",
     leaderActions: [
-      "Strukturált tudásmegosztó fórum — heti tech talk vagy lesson learned",
+      "Strukturált tudásmegosztó fórum — heti szakmai bemutató vagy tanulság-kör",
       "Közös csapatcélok, amik csak együttműködéssel érhetők el",
       "1:1-ben kérdezd meg, hogyan érzik magukat a csapatban",
     ],
@@ -742,7 +742,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     name: "Mérnöki Műhely",
     subtitle: "Visszafogott · Versengő · Strukturált · Pragmatikus",
     description:
-      "Precíz, feladat-orientált csapat, mindenki a saját területén a legjobb.",
+      "Precíz, feladatorientált csapat, mindenki a saját területén a legjobb.",
     strengths: [
       "Kiváló technikai/szakmai kompetencia",
       "Hatékony, nem pazarolják az időt",
@@ -756,11 +756,11 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Inkább egyéni hozzájárulók, mint valódi csapat",
     ],
     communicationStyle:
-      "Tömör, technikai, szükségalapú. Részletes dokumentáció, minimális small talk.",
+      "Tömör, technikai, szükségalapú. Részletes dokumentáció, minimális csevegés.",
     idealTasks:
       "Fejlesztés, engineering, pénzügy, audit.",
     riskSituations:
-      "Csapatépítés; változásmenedzsment; ügyfél-prezentáció; „soft skills”.",
+      "Csapatépítés; változásmenedzsment; ügyfélprezentáció; „soft skills”.",
     leaderActions: [
       "Negyedéves informális esemény — ebéd, séta, nem-munka",
       "Rendszeresen: „miben segíthetek?” — itt nem szokás segítséget kérni",
@@ -790,7 +790,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     idealTasks:
       "Kutatás, korai innováció, kreatív fejlesztés.",
     riskSituations:
-      "Csapat-szintű koordináció; szoros határidők; ügyfélkiszolgálás; skálázás.",
+      "Csapatszintű koordináció; szoros határidők; ügyfélkiszolgálás; skálázás.",
     leaderActions: [
       "1 közös „északi csillag” — egyetlen cél, szabad út",
       "Heti 15 perces standup — nem kontroll, hanem „tudjunk egymásról”",
@@ -836,7 +836,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
 export const AXIS_LABELS = {
   drive:      { name: "Hajtóerő",  low: "Visszafogott", high: "Energikus" },
   cohesion:   { name: "Kohézió",   low: "Versengő",     high: "Összetartó",
-    tooltip: "A barátságosság és fairness dimenziók átlagából képzett közelítő jelző." },
+    tooltip: "A barátságosság és a méltányosság dimenzióinak átlagából képzett közelítő jelző." },
   discipline: { name: "Fegyelem",  low: "Rugalmas",     high: "Strukturált" },
   openness:   { name: "Nyitottság",low: "Pragmatikus",  high: "Felfedező" },
 } as const;

@@ -51,7 +51,7 @@ async function createInvitation(
     data: {
       id: makeId("inv"),
       inviterId,
-      testType: "HEXACO",
+      testType: "TRITAN",
       status: overrides.status ?? "PENDING",
       expiresAt: overrides.expiresAt ?? FUTURE,
       observerProfileId: overrides.observerProfileId ?? null,
@@ -62,7 +62,7 @@ async function createInvitation(
 }
 
 function buildValidAnswers() {
-  const config = getTestConfig("HEXACO" as const);
+  const config = getTestConfig("TRITAN" as const);
   return config.questions.map((q) => ({
     questionId: q.id,
     value: 3,

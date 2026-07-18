@@ -38,6 +38,7 @@
     "postinstall": "prisma generate",
     "seed:assessment": "npx tsx scripts/seed-assessment.ts",
     "seed:org-team": "npx tsx scripts/seed-org-team.ts",
+    "seed:psych-safety": "npx tsx scripts/seed-psych-safety.ts",
     "seed:blocks": "npx tsx scripts/seed-recommendation-blocks.ts",
     "pregen:outputs": "npx tsx scripts/pre-generate-outputs.ts",
     "pregen:outputs:haiku3": "npx tsx scripts/pre-generate-outputs.ts --provider anthropic --model claude-3-haiku-20240307 --concurrency 4",

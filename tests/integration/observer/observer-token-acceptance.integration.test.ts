@@ -34,7 +34,7 @@ async function createInviterProfile() {
       clerkId: makeId("clerk"),
       email: `${id}@test.trita.app`,
       username: `Inviter ${id}`,
-      testType: "HEXACO",
+      testType: "TRITAN",
       testTypeAssignedAt: NOW,
       onboardedAt: NOW,
       consentedAt: NOW,
@@ -57,7 +57,7 @@ async function createInvitation(
     data: {
       id,
       inviterId,
-      testType: "HEXACO",
+      testType: "TRITAN",
       status: overrides.status ?? "PENDING",
       expiresAt: overrides.expiresAt ?? FUTURE,
       completedAt: overrides.completedAt ?? null,
@@ -67,7 +67,7 @@ async function createInvitation(
 }
 
 function buildValidAnswers(): Array<{ questionId: number; value: number }> {
-  const config = getTestConfig("HEXACO" as any);
+  const config = getTestConfig("TRITAN");
   return config.questions.map((q) => ({
     questionId: q.id,
     value: 3, // neutral Likert value
@@ -213,7 +213,7 @@ test("C5.2 Observer token acceptance", async (t) => {
     const inviter = await createInviterProfile();
     const invitation = await createInvitation(inviter.id);
 
-    // Only send first 5 answers (should be 60 for HEXACO)
+    // Only send first 5 answers (should be 60 for TRITAN)
     const answers = buildValidAnswers().slice(0, 5);
 
     const payload = buildSubmitPayload(invitation.token, { answers });
@@ -293,13 +293,13 @@ test("C5.2 Observer token acceptance", async (t) => {
     assert.equal(scores.type, "likert");
 
     const dims = scores.dimensions as Record<string, number>;
-    // HEXACO has 6 dimensions: H, E, X, A, C, O
-    assert.ok("H" in dims);
-    assert.ok("E" in dims);
-    assert.ok("X" in dims);
-    assert.ok("A" in dims);
-    assert.ok("C" in dims);
-    assert.ok("O" in dims);
+    // TRITAN has 6 dimensions: H, E, X, A, C, O
+    assert.ok("INTE" in dims);
+    assert.ok("RESO" in dims);
+    assert.ok("TEMP" in dims);
+    assert.ok("ADAP" in dims);
+    assert.ok("THOR" in dims);
+    assert.ok("OPEN" in dims);
 
     // All neutral (value=3) → score should be 50 ((3-1)/4*100 = 50)
     for (const [code, score] of Object.entries(dims)) {

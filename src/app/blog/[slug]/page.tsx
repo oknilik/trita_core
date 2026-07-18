@@ -54,7 +54,7 @@ export async function generateMetadata({
 
 function getTagStyle(tag: string): string {
   const sage = ["bevezetés", "csapatdinamika", "önértékelés", "fluktuáció", "introduction", "team dynamics", "self-assessment", "turnover"];
-  const bronze = ["change management", "hexaco", "toborzás", "recruitment", "pszichometria", "psychometrics"];
+  const bronze = ["change management", "tritan", "toborzás", "recruitment", "pszichometria", "psychometrics"];
   const key = tag.toLowerCase();
   if (sage.includes(key)) return "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]";
   if (bronze.includes(key)) return "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]";
@@ -85,12 +85,12 @@ function StatRow({ children }: { children: React.ReactNode }) {
 }
 
 const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  H: { bg: "var(--color-surface-self-accent-soft)", text: "var(--color-accent-self-deep)", border: "var(--color-action-primary-bg)" },
-  E: { bg: "#f5f3ff", text: "#5b21b6", border: "#ddd6fe" },
-  X: { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
-  A: { bg: "#f0fdf4", text: "#166534", border: "#bbf7d0" },
-  C: { bg: "var(--color-surface-highlight-warm)", text: "var(--color-accent-primary-strong)", border: "var(--color-accent-primary)" },
-  O: { bg: "#fdf2f8", text: "#86198f", border: "#f5d0fe" },
+  INTE: { bg: "var(--color-surface-self-accent-soft)", text: "var(--color-accent-self-deep)", border: "var(--color-action-primary-bg)" },
+  RESO: { bg: "#f5f3ff", text: "#5b21b6", border: "#ddd6fe" },
+  TEMP: { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
+  ADAP: { bg: "#f0fdf4", text: "#166534", border: "#bbf7d0" },
+  THOR: { bg: "var(--color-surface-highlight-warm)", text: "var(--color-accent-primary-strong)", border: "var(--color-accent-primary)" },
+  OPEN: { bg: "#fdf2f8", text: "#86198f", border: "#f5d0fe" },
   N: { bg: "#fff1f2", text: "#9f1239", border: "#fecdd3" },
 };
 

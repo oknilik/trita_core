@@ -50,7 +50,7 @@ Aggregátum-minimum: 3 kitöltés alatt aggregált adat sem jelenik meg
   szerver-oldali redirect → overview; az overview eredmény-blokkjai
   (TeamPatternCard, profil-link) helyett „validálás alatt" státuszkártya.
   A members tab marad (csak kitöltöttség-státuszt mutat, score-t nem).
-- Org oldal: hexacoAvg (élő aggregátum) nem-tanácsadónak rejtve.
+- Org oldal: tritanAvg (élő aggregátum) nem-tanácsadónak rejtve.
 - Manager cockpit: súrlódás/hasonlóság chipek és attention-elem ki
   (eredmény-derivált); marad a progress + események.
 - Nav: manager „Riportok" linkek ?tab=profile → ?tab=overview (F2-ben a

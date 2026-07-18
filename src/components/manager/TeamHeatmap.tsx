@@ -39,27 +39,27 @@ function scoreZone(score: number | null, locale: Locale): { label: string; textC
 }
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
-  H: {
+  INTE: {
     hu: "Becsületesség, igazságosság, szerénység — mennyire kerüli a manipulációt és az önérdek-érvényesítést",
     en: "Honesty, fairness, modesty — tendency to avoid manipulation and self-promotion",
   },
-  E: {
+  RESO: {
     hu: "Érzelmi érzékenység, szorongásra való hajlam, empátia mások iránt",
     en: "Emotional sensitivity, tendency toward anxiety, empathy for others",
   },
-  X: {
+  TEMP: {
     hu: "Szociabilitás, magabiztosság, energikusság — mennyire tölt fel a társas közeg",
     en: "Sociability, confidence, energy — degree to which social settings are energizing",
   },
-  A: {
+  ADAP: {
     hu: "Türelem, együttműködés, megbocsátás — mennyire kerüli a konfliktust és törekszik harmóniára",
     en: "Patience, cooperation, forgiveness — tendency to avoid conflict and seek harmony",
   },
-  C: {
+  THOR: {
     hu: "Szervezettség, kitartás, fegyelmezettség — mennyire megbízható és célirányos a munkavégzés",
     en: "Organization, diligence, self-discipline — reliability and goal-directedness at work",
   },
-  O: {
+  OPEN: {
     hu: "Nyitottság, kreativitás, intellektuális kíváncsiság — mennyire keresi az újszerű megközelítéseket",
     en: "Openness, creativity, intellectual curiosity — tendency to seek novel ideas and approaches",
   },

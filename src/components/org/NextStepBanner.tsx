@@ -9,7 +9,7 @@ interface NextStepBannerProps {
   memberCount: number;
   activeCampaignCount: number;
   completedMemberCount: number;
-  hexacoAvg: Record<string, number> | null;
+  tritanAvg: Record<string, number> | null;
   isHu: boolean;
 }
 
@@ -20,9 +20,9 @@ type StepState =
   | "ready";
 
 function getStepState(props: NextStepBannerProps): StepState {
-  const { memberCount, activeCampaignCount, completedMemberCount, hexacoAvg } = props;
+  const { memberCount, activeCampaignCount, completedMemberCount, tritanAvg } = props;
   if (memberCount < 3) return "invite_members";
-  if (activeCampaignCount === 0 && !hexacoAvg) return "create_campaign";
+  if (activeCampaignCount === 0 && !tritanAvg) return "create_campaign";
   if (completedMemberCount < 3) return "await_completions";
   return "ready";
 }
@@ -72,7 +72,7 @@ export function NextStepBanner({
   memberCount,
   activeCampaignCount,
   completedMemberCount,
-  hexacoAvg,
+  tritanAvg,
   isHu,
 }: NextStepBannerProps) {
   const loc: Locale = isHu ? "hu" : "en";
@@ -81,7 +81,7 @@ export function NextStepBanner({
     memberCount,
     activeCampaignCount,
     completedMemberCount,
-    hexacoAvg,
+    tritanAvg,
     isHu,
   });
 

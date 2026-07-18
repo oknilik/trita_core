@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import type { Metadata } from "next";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
@@ -89,7 +90,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
   }
 
   const testType = invite.testType as TestType;
-  const config = getTestConfig(testType, locale);
+  const config = getTestConfig(testType, locale, DEFAULT_ASSESSMENT_FORM);
 
   return (
     <CandidateClient

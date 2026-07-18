@@ -24,12 +24,12 @@ import {
 // a top-irányokhoz kötött fejlődési terv és observer-pontosítás CTA.
 
 const DIM_LABELS: Record<DimCode, { hu: string; en: string }> = {
-  H: { hu: "őszinteség", en: "honesty" },
-  E: { hu: "érzelmi érzékenység", en: "emotional sensitivity" },
-  X: { hu: "társas energia", en: "social energy" },
-  A: { hu: "együttműködés", en: "agreeableness" },
-  C: { hu: "strukturáltság", en: "conscientiousness" },
-  O: { hu: "nyitottság", en: "openness" },
+  INTE: { hu: "integritás", en: "integrity" },
+  RESO: { hu: "rezonancia", en: "resonance" },
+  TEMP: { hu: "társas energia", en: "tempo" },
+  ADAP: { hu: "alkalmazkodás", en: "adaptability" },
+  THOR: { hu: "tervezettség", en: "thoroughness" },
+  OPEN: { hu: "nyitottság", en: "openness" },
 };
 
 const PREF_AXES: Array<{ axis: PrefAxis; lowKey: string; highKey: string }> = [
@@ -342,9 +342,15 @@ export function CareerCompass({
 }) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
-  const [step, setStep] = useState<Step>(initialBackground ? "result" : "intro");
+  // Teljes mentett háttérnél (van status — a wizardot már végigvitte) egyből
+  // az eredmény jön; az onboardingból származó RÉSZLEGES háttér (edu/iparág,
+  // status nélkül) a wizardot előtöltve indítja.
+  const hasCompleteBackground = Boolean(
+    initialBackground && (initialBackground as { status?: string }).status,
+  );
+  const [step, setStep] = useState<Step>(hasCompleteBackground ? "result" : "intro");
   const [background, setBackground] = useState<CareerBackground>(
-    initialBackground ?? EMPTY_BACKGROUND,
+    initialBackground ? { ...EMPTY_BACKGROUND, ...initialBackground } : EMPTY_BACKGROUND,
   );
   const [prefs, setPrefs] = useState<UserPrefs>({});
   const [leadFocus, setLeadFocus] = useState(false);

@@ -1,36 +1,36 @@
 // src/lib/team-insights.ts
 // Értelmezési réteg — elkülönítve a core kalkulációtól (team-pattern.ts)
 
-// ── Dimenzió szintű insight (KPI sor + HEXACO blokk) ──────
+// ── Dimenzió szintű insight (KPI sor + TRITAN blokk) ──────
 
 export function getDimensionInsight(dimension: string, score: number): string {
   const insights: Record<string, { high: string; mid: string; low: string }> = {
-    H: {
+    INTE: {
       high: "Erős fairness és szabálytisztelet",
       mid:  "Kiegyensúlyozott etikai érzékenység",
       low:  "Pragmatikus, célorientált hozzáállás",
     },
-    E: {
+    RESO: {
       high: "Érzékeny, empatikus csapatdinamika",
       mid:  "Kiegyensúlyozott érzelmi stabilitás",
       low:  "Reziliens, nyomásálló csapatenergia",
     },
-    X: {
+    TEMP: {
       high: "Magas csapatenergia, társas nyitottság",
       mid:  "Kiegyensúlyozott aktivitási szint",
       low:  "Visszafogott, mélymunka-orientált csapat",
     },
-    A: {
+    ADAP: {
       high: "Erős együttműködés, alacsony súrlódás",
       mid:  "Vegyes kooperációs hajlandóság",
       low:  "Direkt, konfrontatív kommunikáció",
     },
-    C: {
+    THOR: {
       high: "Fegyelmezett, strukturált munkavégzés",
       mid:  "Kiegyensúlyozott szervezettség",
       low:  "Rugalmas, adaptív munkastílus",
     },
-    O: {
+    OPEN: {
       high: "Nyitott, kísérletező szemlélet",
       mid:  "Kiegyensúlyozott innováció és stabilitás",
       low:  "Pragmatikus, bevált módszerekre építő",
@@ -44,7 +44,7 @@ export function getDimensionInsight(dimension: string, score: number): string {
   return dim.low;
 }
 
-// ── HEXACO profil 1 mondatos összefoglaló ─────────────────
+// ── TRITAN profil 1 mondatos összefoglaló ─────────────────
 
 export function generateTeamSummary(scores: Record<string, number>): string {
   const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
@@ -55,64 +55,64 @@ export function generateTeamSummary(scores: Record<string, number>): string {
   const lowest = entries[entries.length - 1];
 
   const dimNamesHigh: Record<string, string> = {
-    H: "fairness-érzékenységgel",
-    E: "érzelmi érzékenységgel",
-    X: "társas energiával",
-    A: "együttműködési készséggel",
-    C: "strukturáltsággal",
-    O: "nyitottsággal",
+    INTE: "fairness-érzékenységgel",
+    RESO: "érzelmi érzékenységgel",
+    TEMP: "társas energiával",
+    ADAP: "együttműködési készséggel",
+    THOR: "strukturáltsággal",
+    OPEN: "nyitottsággal",
   };
 
   const dimNamesLow: Record<string, string> = {
-    H: "pragmatikus önérvényesítés",
-    E: "érzelmi stabilitás",
-    X: "visszafogott csapatenergia",
-    A: "közvetlen kommunikáció",
-    C: "rugalmas szervezettség",
-    O: "pragmatikus fókusz",
+    INTE: "pragmatikus önérvényesítés",
+    RESO: "érzelmi stabilitás",
+    TEMP: "visszafogott csapatenergia",
+    ADAP: "közvetlen kommunikáció",
+    THOR: "rugalmas szervezettség",
+    OPEN: "pragmatikus fókusz",
   };
 
   const h = dimNamesHigh[highest[0]] ?? highest[0];
   const h2 = dimNamesHigh[secondHighest[0]] ?? secondHighest[0];
   const l = dimNamesLow[lowest[0]] ?? lowest[0];
 
-  return `Ez a csapat kiemelkedő ${h} (${highest[1]}%) és ${h2} (${secondHighest[1]}%) jellemezhető, ahol a ${l} (${lowest[1]}%) a legfőbb fejlesztési irány.`;
+  return `A csapatot kiemelkedő ${h} (${highest[1]}%) és ${h2} (${secondHighest[1]}%) jellemzi; a legfőbb fejlesztési irány a ${l} (${lowest[1]}%).`;
 }
 
 // ── Kulcs jellemzők actionable insight-ok ─────────────────
 
 export function getStrengthInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "A csapat természetesen igazságos döntéseket hoz — használd ki a belső mediátorok erejét.",
-    E: "Empatikus csapat — workshopokon és ügyfélhelyzetekben különösen erős.",
-    X: "Társas helyzetekben gyorsan aktiválható — workshopokon, pitcheknél kiváló.",
-    A: "Erős együttműködés — komplex projekteknél természetesen jól koordinálnak.",
-    C: "Fegyelmezett végrehajtás — határidős projekteknél kiváló teljesítmény várható.",
-    O: "Nyitott az újra — innovációs sprintek és kísérletezés természetes közeg nekik.",
+    INTE: "A csapat ösztönösen méltányos döntéseket hoz — használd ki a belső mediátorok erejét.",
+    RESO: "Empatikus csapat — workshopokon és ügyfélhelyzetekben különösen erős.",
+    TEMP: "Társas helyzetekben gyorsan aktiválható — workshopokon, prezentációknál kiváló.",
+    ADAP: "Erős együttműködés — komplex projekteknél maguktól is jól koordinálnak.",
+    THOR: "Fegyelmezett végrehajtás — határidős projekteknél kiváló teljesítmény várható.",
+    OPEN: "Nyitott az újra — innovációs sprintek és kísérletezés természetes közeg nekik.",
   };
   return insights[dimension] ?? "";
 }
 
 export function getWeaknessInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "Figyelj a csapaton belüli méltányosság-érzetre — érdemes rendszeres check-in.",
-    E: "Érzelmileg érzékenyebb dinamika — konfliktushelyzetben óvatosabb kezelés kell.",
-    X: "Visszafogottabb csapat — az aktiváláshoz tudatos energizálás kell a meetingeken.",
-    A: "Direkt kommunikáció — konfliktusnál gyorsabban eszkalálódhat. Strukturált vita-formátum segít.",
-    C: "Rugalmas, de kaotikus lehet — enyhe struktúra bevezetése javít a kiszámíthatóságon.",
-    O: "Pragmatikus fókusz — az innovációhoz külső impulzus (workshop, vendégelőadó) kell.",
+    INTE: "Figyelj a csapaton belüli méltányosságérzetre — érdemes rendszeres visszajelző kört tartani.",
+    RESO: "Érzelmileg érzékenyebb dinamika — konfliktushelyzetben óvatosabb kezelés kell.",
+    TEMP: "Visszafogottabb csapat — az aktiváláshoz tudatos energizálás kell a megbeszéléseken.",
+    ADAP: "Direkt kommunikáció — konfliktusnál gyorsabban eszkalálódhat. Strukturált vitaformátum segít.",
+    THOR: "Rugalmas, de kaotikus lehet — enyhe struktúra bevezetése javít a kiszámíthatóságon.",
+    OPEN: "Pragmatikus fókusz — az innovációhoz külső impulzus (workshop, vendégelőadó) kell.",
   };
   return insights[dimension] ?? "";
 }
 
 export function getDiversityInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "Eltérő fairness-érzet — érdemes tudatosan tisztázni a csapat normáit.",
-    E: "Vegyes stressztűrés — a vezető személyre szabott támogatást adjon.",
-    X: "Eltérő energiaszintek — az intrók és extrók külön figyelmet igényelnek a meetingformátumoknál.",
-    A: "Eltérő együttműködési stílusok — a páros munkában érdemes tudatosan keverni.",
-    C: "Eltérő szervezettség — közös minimum-szabályok kellenek a koordinációhoz.",
-    O: "Eltérő nyitottság új megközelítésekre — az innováció és a stabilitás igénye egyaránt jelen van.",
+    INTE: "Eltérő igazságérzet — érdemes tudatosan tisztázni a csapat normáit.",
+    RESO: "Vegyes stressztűrés — a vezető adjon személyre szabott támogatást.",
+    TEMP: "Eltérő energiaszintek — az introvertáltak és extravertáltak külön figyelmet igényelnek a megbeszélések formátumánál.",
+    ADAP: "Eltérő együttműködési stílusok — a páros munkában érdemes tudatosan keverni.",
+    THOR: "Eltérő szervezettség — közös minimum-szabályok kellenek a koordinációhoz.",
+    OPEN: "Eltérő nyitottság új megközelítésekre — az innováció és a stabilitás igénye egyaránt jelen van.",
   };
   return insights[dimension] ?? "";
 }

@@ -44,6 +44,14 @@ function isE2EAuthBypassEnabled(req: NextRequest): boolean {
 }
 
 const handler = clerkMiddleware(async (auth, req) => {
+  // SSO-callback: semmilyen redirect-logika nem futhat (dev/tunnel loop-ok
+  // ellen), DE a clerkMiddleware-en belül maradunk, hogy a downstream
+  // auth()-hívások (pl. root layout) Clerk-kontextust kapjanak — enélkül
+  // "auth() was called but Clerk can't detect clerkMiddleware()" hibát dob.
+  if (req.nextUrl.pathname.includes("/sso-callback")) {
+    return nextWithPathname(req);
+  }
+
   const e2eBypass = isE2EAuthBypassEnabled(req);
 
   if (req.nextUrl.pathname.startsWith("/api")) {
@@ -86,12 +94,8 @@ const handler = clerkMiddleware(async (auth, req) => {
 });
 
 export function proxy(req: NextRequest, event: import("next/server").NextFetchEvent) {
-  // Bypass clerkMiddleware for SSO callbacks — the AuthenticateWithRedirectCallback
-  // component handles the OAuth flow client-side. Running clerkMiddleware on these
-  // routes causes an infinite redirect loop in development (ngrok/tunnel).
-  if (req.nextUrl.pathname.includes("/sso-callback")) {
-    return nextWithPathname(req);
-  }
+  // Az sso-callback speciális kezelése a clerkMiddleware-en BELÜL történik
+  // (ld. handler eleje) — a teljes bypass a layout auth() hívását törte el.
   return handler(req, event);
 }
 

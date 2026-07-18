@@ -1,13 +1,13 @@
 "use client";
 
+import { estimateAssessmentMinutes } from "@/lib/questions/types";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
 import { useToast } from "@/components/ui/Toast";
-import type { Question } from "@/lib/questions";
-import { isLikertQuestion } from "@/lib/questions";
+import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -321,7 +321,7 @@ export function CandidateClient({
                 : t("candidate.introTitleGeneric", locale)}
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-ink-body">
-              {tf("candidate.introBody", locale, { count: totalQuestions })}
+              {tf("candidate.introBody", locale, { count: totalQuestions, minutes: estimateAssessmentMinutes(totalQuestions) })}
             </p>
             <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
               {t("candidate.introAutoSave", locale)}

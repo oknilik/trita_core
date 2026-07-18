@@ -22,7 +22,7 @@ export const profileTranslations = {
     statusInProgress: { hu: "Folyamatban", en: "In progress" },
     statusNotStarted: { hu: "Nincs elkezdve", en: "Not started" },
     statusWaiting: { hu: "Várakozás", en: "Waiting" },
-    statusRequested: { hu: "Kikérve", en: "Requested" },
+    statusRequested: { hu: "Elküldve", en: "Requested" },
     statusReceived: { hu: "Érkezett", en: "Received" },
     saveBarLabel: { hu: "Változtatások", en: "Changes" },
     saveBarUnsaved: { hu: "Nem mentett módosítások", en: "Unsaved changes" },

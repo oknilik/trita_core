@@ -39,7 +39,7 @@ async function createProfile(options: {
       consentedAt: completeProfile ? NOW : null,
       onboardedAt: completeProfile ? NOW : null,
       activeOrgId: options.activeOrgId ?? null,
-      testType: "HEXACO",
+      testType: "TRITAN",
       testTypeAssignedAt: NOW,
     },
   });
@@ -113,7 +113,7 @@ async function createCandidateInvite(options: {
       name: "Candidate Integration",
       position: "Engineer",
       status: options.status ?? "PENDING",
-      testType: "HEXACO",
+      testType: "TRITAN",
       expiresAt: options.expiresAt ?? FUTURE,
       createdAt: NOW,
       draftAnsweredCount: 0,
@@ -322,7 +322,7 @@ test("pending assessment + join: journey handoff keeps destination on /assessmen
   await prisma.assessmentDraft.create({
     data: {
       userProfileId: user.id,
-      testType: "HEXACO",
+      testType: "TRITAN",
       answers: { 1: 3, 2: 4 },
       currentPage: 1,
       createdAt: NOW,
@@ -390,7 +390,7 @@ test("relevant apply endpoint: /api/candidate/[token]/progress mutates draft pro
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ answeredCount: 17 }),
-    }) as any,
+    }) as unknown as Parameters<typeof candidateProgressPATCH>[0],
     { params: Promise.resolve({ token: pendingInvite.token }) },
   );
 

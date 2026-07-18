@@ -50,12 +50,12 @@ export const tierColors = {
   },
 } as const;
 
-// HEXACO alskálák — dimenzió KÓD alapján (teszt-független)
+// TRITAN alskálák — dimenzió KÓD alapján (teszt-független)
 export const dimensionFacets: Record<string, string[]> = {
-  H: ["Őszinteség", "Igazságosság", "Szerénység", "Önzetlenség"],
-  E: ["Félelem", "Szorongás", "Függőség", "Érzékenység"],
-  X: ["Társas önértékelés", "Társas merészség", "Szociabilitás", "Élénkség"],
-  A: ["Megbocsátás", "Kedvesség", "Rugalmasság", "Türelem"],
-  C: ["Szervezettség", "Szorgalom", "Perfekcionizmus", "Körültekintés"],
-  O: ["Esztétikai érzék", "Kíváncsiság", "Kreativitás", "Nem-konvencionálitás"],
+  INTE: ["Egyenesség", "Méltányosság", "Mértékletesség", "Szerénység"],
+  RESO: ["Óvatosság", "Stresszérzékenység", "Támaszkeresés", "Érzelmi kötődés"],
+  TEMP: ["Társas önbizalom", "Fellépés", "Társaságkedvelés", "Lendület"],
+  ADAP: ["Megbocsátás", "Elfogadás", "Rugalmasság", "Türelem"],
+  THOR: ["Rendszerezettség", "Kitartás", "Precizitás", "Megfontoltság"],
+  OPEN: ["Esztétikai fogékonyság", "Kíváncsiság", "Alkotókedv", "Rendhagyó gondolkodás"],
 };

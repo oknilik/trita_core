@@ -13,7 +13,9 @@ export default function TryCompletePage() {
   const { isSignedIn } = useAuth();
   const { locale } = useLocale();
   const [hasDraft, setHasDraft] = useState<boolean | null>(null);
-  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
+  // localStorage csak kliensen olvasható — hydration-biztos minta, szándékos.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
   useEffect(() => {
     if (hasDraft === false) router.replace("/try");

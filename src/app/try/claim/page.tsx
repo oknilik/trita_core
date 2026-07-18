@@ -10,7 +10,6 @@ import {
   readAssessmentDraftFromStorage,
   toAssessmentAnswerPayload,
 } from "@/lib/assessment-draft";
-import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export default function TryClaimPage() {
   const router = useRouter();
@@ -28,16 +27,16 @@ export default function TryClaimPage() {
     if (claimed.current) return;
     claimed.current = true;
 
-    const draft = readAssessmentDraftFromStorage({ testType: "HEXACO" });
+    const draft = readAssessmentDraftFromStorage({ testType: "TRITAN" });
     if (!draft) {
       // No draft — user might have already claimed or never took the test
-      router.replace(JOURNEY_HOME_HANDOFF_PATH);
+      router.replace("/onboarding");
       return;
     }
 
     const answers = draft.answers ?? {};
     if (Object.keys(answers).length === 0) {
-      router.replace(JOURNEY_HOME_HANDOFF_PATH);
+      router.replace("/onboarding");
       return;
     }
 
@@ -56,8 +55,8 @@ export default function TryClaimPage() {
           const body = await res.json().catch(() => null);
           throw new Error(body?.error ?? "Claim failed");
         }
-        clearAssessmentDraftFromStorage("HEXACO");
-        router.replace(JOURNEY_HOME_HANDOFF_PATH);
+        clearAssessmentDraftFromStorage("TRITAN");
+        router.replace("/onboarding");
       })
       .catch((err) => {
         console.error("[claim] error:", err);

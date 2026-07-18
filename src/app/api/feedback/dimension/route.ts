@@ -6,7 +6,7 @@ import { getTestConfig } from "@/lib/questions";
 
 const DimensionFeedbackSchema = z.object({
   assessmentResultId: z.string().cuid(),
-  dimensionCode: z.string().min(1).max(3),
+  dimensionCode: z.string().min(1).max(4),
   accuracyRating: z.number().int().min(1).max(5),
   comment: z.string().max(2000).optional(),
 });
@@ -65,24 +65,27 @@ export async function POST(req: Request) {
     }
   }
 
-  // 6. Upsert feedback (allow updates)
-  const feedback = await prisma.dimensionFeedback.upsert({
+  // 6. Upsert feedback (allow updates) — targetKey: "<assessmentResultId>:<dimCode>"
+  const targetKey = `${payload.assessmentResultId}:${payload.dimensionCode}`;
+  const comment = payload.comment?.trim() || null;
+  const feedback = await prisma.feedback.upsert({
     where: {
-      assessmentResultId_dimensionCode: {
-        assessmentResultId: payload.assessmentResultId,
-        dimensionCode: payload.dimensionCode,
+      userProfileId_kind_targetKey: {
+        userProfileId: profile.id,
+        kind: "dimension",
+        targetKey,
       },
     },
     create: {
-      assessmentResultId: payload.assessmentResultId,
-      dimensionCode: payload.dimensionCode,
-      accuracyRating: payload.accuracyRating,
-      comment: payload.comment?.trim() || null,
+      userProfileId: profile.id,
+      kind: "dimension",
+      targetKey,
+      rating: payload.accuracyRating,
+      payload: { comment },
     },
     update: {
-      accuracyRating: payload.accuracyRating,
-      comment: payload.comment?.trim() || null,
-      updatedAt: new Date(),
+      rating: payload.accuracyRating,
+      payload: { comment },
     },
   });
 

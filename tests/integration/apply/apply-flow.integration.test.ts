@@ -51,7 +51,7 @@ async function createProfile(options: {
       consentedAt: completeProfile ? NOW : null,
       onboardedAt: completeProfile ? NOW : null,
       activeOrgId: options.activeOrgId ?? null,
-      testType: "HEXACO",
+      testType: "TRITAN",
       testTypeAssignedAt: NOW,
       createdAt: NOW,
       updatedAt: NOW,
@@ -117,14 +117,14 @@ async function createCandidateInvite(options: {
       email: `${makeId("candidate")}@integration.trita.app`,
       position: "Engineer",
       status: "PENDING",
-      testType: "HEXACO",
+      testType: "TRITAN",
       expiresAt: FUTURE,
       createdAt: NOW,
     },
   });
 }
 
-function buildCompleteAnswers(testType: TestType = "HEXACO") {
+function buildCompleteAnswers(testType: TestType = "TRITAN") {
   const config = getTestConfig(testType);
   return config.questions.map((question, index) => ({
     questionId: question.id,
@@ -180,7 +180,7 @@ test("duplicate apply submit is handled idempotently (ALREADY_USED on second sub
   const owner = await createProfile({ username: "Owner2" });
   const { team } = await createOrgAndTeam(owner.id);
   const invite = await createCandidateInvite({ managerId: owner.id, teamId: team.id });
-  const answers = buildCompleteAnswers("HEXACO");
+  const answers = buildCompleteAnswers("TRITAN");
 
   const first = await completeAcceptance({
     token: invite.token,
@@ -306,7 +306,7 @@ test("post-accept handoff returns journey destination for authenticated apply su
   const candidateUser = await createProfile({ username: "CandidateUser" });
   const { team } = await createOrgAndTeam(owner.id);
   const invite = await createCandidateInvite({ managerId: owner.id, teamId: team.id });
-  const answers = buildCompleteAnswers("HEXACO");
+  const answers = buildCompleteAnswers("TRITAN");
 
   restorers.push(
     __setAcceptanceRuntimeForTests({

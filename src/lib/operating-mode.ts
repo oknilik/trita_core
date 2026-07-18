@@ -19,6 +19,15 @@ export function isConsultingLed(): boolean {
   return OPERATING_MODE === "consulting_led";
 }
 
+// Kérdőív-forma a kiszolgált flow-kban (self, try, observer, candidate).
+// "short" = TSFI-S (60 item, ~9 perc) — a sima felhasználói út ezt kapja.
+// "full" = teljes 100 itemes bank. KÉSŐBBI FUNKCIÓ: tanácsadói választás
+// kampány-szinten (Campaign mezőként) — akkor ez a konstans lesz a default,
+// és a kampány felülbírálhatja. A pontozás formától független (a teljes
+// konfigból dolgozik, a meg nem válaszolt itemek nem számítanak).
+export type { AssessmentForm } from "@/lib/questions/types";
+export const DEFAULT_ASSESSMENT_FORM: "short" | "full" = "short";
+
 // Self-riport paywall. false = mindenki a teljes egyéni riportot kapja
 // (a getSelfAccessLevel mindenkinek self_plus szintet ad, az upsell/lock
 // felületek maguktól eltűnnek, mert plus-szinthez kötöttek).

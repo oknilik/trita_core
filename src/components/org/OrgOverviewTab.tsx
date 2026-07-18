@@ -9,35 +9,35 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { NextStepBanner } from "./NextStepBanner";
 import { RemindPendingButton } from "./RemindPendingButton";
 
-const HEXACO_COLORS: Record<string, string> = {
-  H: "var(--color-visual-gradient-indigo)",
-  E: "var(--color-visual-gradient-violet)",
-  X: "#06B6D4",
-  A: "var(--color-state-success-strong)",
-  C: "var(--color-state-warning-strong)",
-  O: "#EF4444",
+const TRITAN_COLORS: Record<string, string> = {
+  INTE: "var(--color-visual-gradient-indigo)",
+  RESO: "var(--color-visual-gradient-violet)",
+  TEMP: "#06B6D4",
+  ADAP: "var(--color-state-success-strong)",
+  THOR: "var(--color-state-warning-strong)",
+  OPEN: "#EF4444",
 };
 
-const HEXACO_LABELS_HU: Record<string, string> = {
-  H: "Önzetlenség",
-  E: "Érzelmi stabilitás",
-  X: "Extraverzió",
-  A: "Barátságosság",
-  C: "Lelkiismeretesség",
-  O: "Nyitottság",
+const TRITAN_LABELS_HU: Record<string, string> = {
+  INTE: "Integritás",
+  RESO: "Rezonancia",
+  TEMP: "Társas energia",
+  ADAP: "Alkalmazkodás",
+  THOR: "Tervezettség",
+  OPEN: "Nyitottság",
 };
 
-const HEXACO_LABELS_EN: Record<string, string> = {
-  H: "Honesty-Humility",
-  E: "Emotionality",
-  X: "eXtraversion",
-  A: "Agreeableness",
-  C: "Conscientiousness",
-  O: "Openness",
+const TRITAN_LABELS_EN: Record<string, string> = {
+  INTE: "Integrity",
+  RESO: "Resonance",
+  TEMP: "eXtraversion",
+  ADAP: "Adaptability",
+  THOR: "Thoroughness",
+  OPEN: "Openness",
 };
 
 interface OrgOverviewTabProps {
-  hexacoAvg: Record<string, number> | null;
+  tritanAvg: Record<string, number> | null;
   teams: SerializedTeam[];
   orgId: string;
   campaigns: CampaignWithStats[];
@@ -50,7 +50,7 @@ interface OrgOverviewTabProps {
 }
 
 export function OrgOverviewTab({
-  hexacoAvg,
+  tritanAvg,
   teams,
   orgId,
   campaigns,
@@ -62,21 +62,21 @@ export function OrgOverviewTab({
 }: OrgOverviewTabProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const activeCampaigns = campaigns.filter((c) => c.status === "ACTIVE");
-  const dims = ["H", "E", "X", "A", "C", "O"];
+  const dims = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
 
   // Compute top2 and bottom1 for insight chips
   let insightChips: { label: string; color: string; kind: "top" | "bottom" }[] = [];
-  if (hexacoAvg) {
+  if (tritanAvg) {
     const sorted = dims
-      .map((d) => ({ d, v: hexacoAvg[d] ?? 0 }))
+      .map((d) => ({ d, v: tritanAvg[d] ?? 0 }))
       .sort((a, b) => b.v - a.v);
-    const labels = isHu ? HEXACO_LABELS_HU : HEXACO_LABELS_EN;
+    const labels = isHu ? TRITAN_LABELS_HU : TRITAN_LABELS_EN;
     insightChips = [
-      { label: labels[sorted[0].d], color: HEXACO_COLORS[sorted[0].d], kind: "top" },
-      { label: labels[sorted[1].d], color: HEXACO_COLORS[sorted[1].d], kind: "top" },
+      { label: labels[sorted[0].d], color: TRITAN_COLORS[sorted[0].d], kind: "top" },
+      { label: labels[sorted[1].d], color: TRITAN_COLORS[sorted[1].d], kind: "top" },
       {
         label: labels[sorted[sorted.length - 1].d],
-        color: HEXACO_COLORS[sorted[sorted.length - 1].d],
+        color: TRITAN_COLORS[sorted[sorted.length - 1].d],
         kind: "bottom",
       },
     ];
@@ -90,7 +90,7 @@ export function OrgOverviewTab({
         memberCount={memberCount}
         activeCampaignCount={activeCampaignCount}
         completedMemberCount={completedMemberCount}
-        hexacoAvg={hexacoAvg}
+        tritanAvg={tritanAvg}
         isHu={isHu}
       />
 
@@ -135,7 +135,7 @@ export function OrgOverviewTab({
             {t("org.overview.profileTitle", loc)}
           </h3>
 
-          {!hexacoAvg ? (
+          {!tritanAvg ? (
             <div className="flex flex-col gap-4 rounded-xl border border-sand bg-cream p-5">
               <div>
                 <div className="mb-1.5 flex items-center justify-between gap-2">
@@ -163,15 +163,15 @@ export function OrgOverviewTab({
           ) : (
             <div className="flex flex-col gap-2.5">
               {dims.map((d) => {
-                const val = hexacoAvg[d] ?? 0;
-                const label = isHu ? HEXACO_LABELS_HU[d] : HEXACO_LABELS_EN[d];
+                const val = tritanAvg[d] ?? 0;
+                const label = isHu ? TRITAN_LABELS_HU[d] : TRITAN_LABELS_EN[d];
                 return (
                   <div key={d} className="flex items-center gap-3">
                     <span className="w-36 shrink-0 text-xs text-ink-body truncate">{label}</span>
                     <div className="flex-1 h-[6px] rounded-full overflow-hidden bg-sand">
                       <div
                         className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${val}%`, backgroundColor: HEXACO_COLORS[d] }}
+                        style={{ width: `${val}%`, backgroundColor: TRITAN_COLORS[d] }}
                       />
                     </div>
                     <span className="w-8 text-right text-xs tabular-nums text-muted">

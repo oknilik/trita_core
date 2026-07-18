@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendAssessmentDraftReminderEmail } from "@/lib/emails";
@@ -41,7 +42,7 @@ export async function POST(
   }
 
   const locale = normalizeLocale(draft.userProfile.locale);
-  const config = getTestConfig(draft.testType as TestType, locale);
+  const config = getTestConfig(draft.testType as TestType, locale, DEFAULT_ASSESSMENT_FORM);
   const totalCount = config.questions.length;
   const answeredCount = Object.keys(draft.answers as Record<string, number>).length;
   const name = draft.userProfile.username ?? draft.userProfile.email;

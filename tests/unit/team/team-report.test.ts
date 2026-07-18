@@ -61,8 +61,8 @@ const richAggregates: TeamReportAggregates = {
   memberCount: 5,
   completedCount: 4,
   completionPct: 80,
-  dimensionAverages: { H: 62, E: 45, X: 58, A: 51, C: 70, O: 40 },
-  dimensionSpread: { H: 8, E: 14, X: 9, A: 6, C: 18, O: 7 },
+  dimensionAverages: { INTE: 62, RESO: 45, TEMP: 58, ADAP: 51, THOR: 70, OPEN: 40 },
+  dimensionSpread: { INTE: 8, RESO: 14, TEMP: 9, ADAP: 6, THOR: 18, OPEN: 7 },
   pattern: { label: "Végrehajtó mag", confidence: "medium" },
   roleDistribution: {
     counts: { IM: 3, CO: 1 },
@@ -76,7 +76,7 @@ const richAggregates: TeamReportAggregates = {
     alignedCount: 1,
     complementaryCount: 2,
     frictionCount: 3,
-    topFrictionDims: ["C", "E"],
+    topFrictionDims: ["THOR", "RESO"],
     source: "profile_estimate",
   },
 };

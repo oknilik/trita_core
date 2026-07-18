@@ -251,7 +251,8 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   // Detect existing localStorage draft for guest users.
   // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
   const [hasDraft, setHasDraft] = useState(false);
-  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("HEXACO")); }, []);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage csak kliensen olvasható, hydration-biztos minta
+  useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
   return (
     <section className="bg-cream">

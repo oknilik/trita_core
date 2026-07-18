@@ -40,7 +40,7 @@ const CONTENT: Record<
     ],
     stats: [
       { value: "6", label: "dimenzió" },
-      { value: "~15", label: "perc" },
+      { value: "~10", label: "perc" },
     ],
   },
   team: {
@@ -59,7 +59,7 @@ const CONTENT: Record<
       "Szerepillesztés és vakfoltok",
     ],
     stats: [
-      { value: "14", label: "napos trial" },
+      { value: "14", label: "nap próbaidő" },
       { value: "0", label: "kártyaadat" },
     ],
   },
@@ -74,7 +74,7 @@ const CONTENT: Record<
     subtitle: "Az observer értékelés segít a meghívónak megismerni, hogyan látják mások.",
   },
   signin: {
-    tag: "üdv vissza",
+    tag: "örülünk, hogy újra itt vagy",
     title: (
       <>
         Folytasd ott,{" "}

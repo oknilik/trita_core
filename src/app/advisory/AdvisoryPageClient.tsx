@@ -123,7 +123,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="mb-10">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          // {t("advisory.eyebrow", locale)}
+          {"// "}{t("advisory.eyebrow", locale)}
         </p>
         <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
           {isAdvisory
@@ -256,7 +256,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
               </p>
             </div>
             <span className="shrink-0 text-sm font-semibold text-ink">
-              + €200 / {t("advisory.deepDivePrice", locale)}
+              {t("advisory.deepDivePrice", locale)}
             </span>
           </div>
         </div>
@@ -266,7 +266,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {isAdvisory && !requestSent && (
         <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
           <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
-            // {tier === "custom"
+            {"// "}{tier === "custom"
               ? t("advisory.ctaCustomEyebrow", locale)
               : t("advisory.ctaAdvisoryEyebrow", locale)}
           </p>
@@ -310,7 +310,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
             <div>
               <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-bronze">
-                // advisory
+                {"// advisory"}
               </p>
               <h2 className="mb-3 font-fraunces text-2xl text-ink">
                 Trita Advisory
@@ -327,8 +327,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
                 ))}
               </ul>
               <div className="mb-4 flex items-baseline gap-2">
-                <span className="font-fraunces text-3xl text-ink">€149</span>
-                <span className="text-sm text-ink-body">
+                <span className="font-fraunces text-2xl text-ink">
                   {t("advisory.pricePerMonth", locale)}
                 </span>
               </div>

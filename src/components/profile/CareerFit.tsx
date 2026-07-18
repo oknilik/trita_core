@@ -25,7 +25,7 @@ const ROLES: CareerRole[] = [
     en: "Project Management",
     descHu: "Strukturált tervezés, határidők kezelése, csapatok koordinálása.",
     descEn: "Structured planning, deadline management, coordinating teams.",
-    boosts: { C: 1.5, X: 0.5, A: 0.5 },
+    boosts: { THOR: 1.5, TEMP: 0.5, ADAP: 0.5 },
   },
   {
     id: "hr_people",
@@ -33,7 +33,7 @@ const ROLES: CareerRole[] = [
     en: "HR / People Operations",
     descHu: "Emberek fejlesztése, szervezeti kultúra, tehetséggondozás.",
     descEn: "People development, organizational culture, talent management.",
-    boosts: { A: 1.5, X: 0.8, H: 0.7 },
+    boosts: { ADAP: 1.5, TEMP: 0.8, INTE: 0.7 },
   },
   {
     id: "research_analysis",
@@ -41,8 +41,8 @@ const ROLES: CareerRole[] = [
     en: "Research & Analysis",
     descHu: "Mélyreható vizsgálatok, adatelemzés, komplex összefüggések feltárása.",
     descEn: "In-depth investigation, data analysis, uncovering complex patterns.",
-    boosts: { O: 1.5, C: 0.8 },
-    reduces: { X: 0.5 },
+    boosts: { OPEN: 1.5, THOR: 0.8 },
+    reduces: { TEMP: 0.5 },
   },
   {
     id: "compliance_audit",
@@ -50,8 +50,8 @@ const ROLES: CareerRole[] = [
     en: "Compliance / Audit",
     descHu: "Szabályok betartása, etikai felügyelet, szervezeti megfelelőség.",
     descEn: "Rule adherence, ethical oversight, organizational compliance.",
-    boosts: { H: 1.5, C: 1.2 },
-    reduces: { O: 0.4 },
+    boosts: { INTE: 1.5, THOR: 1.2 },
+    reduces: { OPEN: 0.4 },
   },
   {
     id: "sales_bd",
@@ -59,8 +59,8 @@ const ROLES: CareerRole[] = [
     en: "Sales / Business Development",
     descHu: "Kapcsolatépítés, tárgyalás, üzleti lehetőségek azonosítása.",
     descEn: "Relationship building, negotiation, identifying business opportunities.",
-    boosts: { X: 1.5, A: 0.5 },
-    reduces: { E: 0.4 },
+    boosts: { TEMP: 1.5, ADAP: 0.5 },
+    reduces: { RESO: 0.4 },
   },
   {
     id: "innovation_design",
@@ -68,8 +68,8 @@ const ROLES: CareerRole[] = [
     en: "Innovation / Design",
     descHu: "Új megközelítések, kreatív problémamegoldás, kísérletezés.",
     descEn: "New approaches, creative problem-solving, experimentation.",
-    boosts: { O: 1.5, X: 0.5 },
-    reduces: { C: 0.3 },
+    boosts: { OPEN: 1.5, TEMP: 0.5 },
+    reduces: { THOR: 0.3 },
   },
   {
     id: "counseling_coaching",
@@ -77,7 +77,7 @@ const ROLES: CareerRole[] = [
     en: "Counseling / Coaching",
     descHu: "Mások fejlődésének támogatása, empátia, aktív meghallgatás.",
     descEn: "Supporting others' growth, empathy, active listening.",
-    boosts: { E: 1.0, A: 1.2, H: 0.5 },
+    boosts: { RESO: 1.0, ADAP: 1.2, INTE: 0.5 },
   },
   {
     id: "operations",
@@ -85,8 +85,8 @@ const ROLES: CareerRole[] = [
     en: "Operations / Process Improvement",
     descHu: "Hatékonyság növelése, standardizáció, rendszerek karbantartása.",
     descEn: "Efficiency gains, standardization, system maintenance.",
-    boosts: { C: 1.5, H: 0.5 },
-    reduces: { O: 0.5 },
+    boosts: { THOR: 1.5, INTE: 0.5 },
+    reduces: { OPEN: 0.5 },
   },
   {
     id: "technical_engineering",
@@ -94,8 +94,8 @@ const ROLES: CareerRole[] = [
     en: "Engineering / Technical",
     descHu: "Precíz megvalósítás, technikai problémamegoldás, rendszerépítés.",
     descEn: "Precise implementation, technical problem-solving, system building.",
-    boosts: { C: 1.2, O: 0.8 },
-    reduces: { E: 0.4, X: 0.3 },
+    boosts: { THOR: 1.2, OPEN: 0.8 },
+    reduces: { RESO: 0.4, TEMP: 0.3 },
   },
   {
     id: "leadership",
@@ -103,8 +103,8 @@ const ROLES: CareerRole[] = [
     en: "Leadership / Management",
     descHu: "Irány kijelölése, emberek motiválása, szervezeti döntéshozatal.",
     descEn: "Setting direction, motivating people, organizational decision-making.",
-    boosts: { X: 1.2, C: 0.8, H: 0.5 },
-    reduces: { E: 0.5 },
+    boosts: { TEMP: 1.2, THOR: 0.8, INTE: 0.5 },
+    reduces: { RESO: 0.5 },
   },
 ];
 

@@ -71,4 +71,5 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   LOW_CANDIDATE_CREDITS:       { titleKey: "notifications.lowCandidateCredits.title",        bodyKey: "notifications.lowCandidateCredits.body",        category: "billing",     defaultPriority: "normal" },
   MEMBER_COMPLETED_ASSESSMENT: { titleKey: "notifications.memberCompletedAssessment.title",  bodyKey: "notifications.memberCompletedAssessment.body",  category: "assessment",  defaultPriority: "low"    },
   CAMPAIGN_MILESTONE:          { titleKey: "notifications.campaignMilestone.title",          bodyKey: "notifications.campaignMilestone.body",          category: "campaign",    defaultPriority: "normal" },
+  MEASUREMENT_STEP_OPENED:     { titleKey: "notifications.stepOpened.title",                  bodyKey: "notifications.stepOpened.body",                 category: "campaign",    defaultPriority: "normal" },
 };

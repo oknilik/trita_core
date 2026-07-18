@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -33,11 +34,17 @@ export default async function NewCampaignPage({
     searchParams,
   ]);
 
-  const { role: memberRole, org } = await requireOrgContext(orgId);
+  const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
 
   const isManager = hasOrgRole(memberRole, "ORG_MANAGER");
   if (!isManager) notFound();
+  // Kampányt csak tanácsadó hoz létre (ORG_CONSULTANT vagy platform-admin).
+  const viewer = await prisma.userProfile.findUnique({
+    where: { id: profileId },
+    select: { email: true, isConsultant: true },
+  });
+  if (!isConsultantSurface(memberRole, viewer?.email, viewer?.isConsultant)) notFound();
   const policySnapshot = await resolveOrgPolicySnapshot({
     orgId,
     orgRole: memberRole,

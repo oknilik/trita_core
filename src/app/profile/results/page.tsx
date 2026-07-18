@@ -1,3 +1,4 @@
+import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -64,6 +65,8 @@ export default async function ProfileResultsPage({
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) redirect("/sign-in");
 
+  await requireOnboardedByClerkId(userId);
+
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true, username: true, email: true, careerBackground: true },
@@ -126,8 +129,8 @@ export default async function ProfileResultsPage({
       where: { userProfileId: profile.id },
       select: { answers: true, testType: true },
     }),
-    prisma.satisfactionFeedback.findFirst({
-      where: { userProfileId: profile.id },
+    prisma.feedback.findFirst({
+      where: { userProfileId: profile.id, kind: "satisfaction" },
       select: { id: true },
     }),
     getJourneySnapshotForProfileId(profile.id, {
@@ -172,7 +175,36 @@ export default async function ProfileResultsPage({
         </main>
       );
     }
-    redirect(journeySnapshot.resolution.destination);
+    // Nincs eredmény és nincs draft: NEM kényszerítünk a tesztre —
+    // barátságos indítóképernyő teljes navigációval (profil, blog,
+    // kijelentkezés elérhető marad). A teszt ajánlott, nem kötelező.
+    return (
+      <main className="-mx-4 -my-8 flex min-h-[80dvh] flex-col items-center justify-center bg-[var(--color-surface-canvas)] px-6 py-16 text-center">
+        <div className="w-full max-w-sm">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface-self-accent-soft)]">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-action-primary-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
+            </svg>
+          </div>
+          <h1 className="font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)] md:text-3xl">
+            {t("results.nextStepTestTitle", locale)}
+          </h1>
+          <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[var(--color-text-muted)]">
+            {t("results.nextStepTestBody", locale)}
+          </p>
+          <Link
+            href="/assessment"
+            className={getButtonClassName({
+              size: "lg",
+              className:
+                "mt-8 rounded-xl px-8 text-[15px] shadow-md shadow-[var(--color-action-primary-bg)]/20 hover:-translate-y-px hover:brightness-[1.06]",
+            })}
+          >
+            {t("actions.startTest", locale)}
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   const scores = latestResult.scores as ScoreResult;
@@ -345,12 +377,12 @@ export default async function ProfileResultsPage({
     const topTwo = [...mainDimensions].sort((a, b) => b.score - a.score).slice(0, 2);
     if (topTwo.length < 2) return t("results.uniqueProfile", locale);
     const labels: Record<string, { hu: string; en: string }> = {
-      H: { hu: "Elvi", en: "Principled" },
-      E: { hu: "Érzékeny", en: "Sensitive" },
-      X: { hu: "Energikus", en: "Energetic" },
-      A: { hu: "Együttműködő", en: "Cooperative" },
-      C: { hu: "Rendszerező", en: "Systematic" },
-      O: { hu: "Innovátor", en: "Innovator" },
+      INTE: { hu: "Elvi", en: "Principled" },
+      RESO: { hu: "Érzékeny", en: "Sensitive" },
+      TEMP: { hu: "Energikus", en: "Energetic" },
+      ADAP: { hu: "Együttműködő", en: "Cooperative" },
+      THOR: { hu: "Rendszerező", en: "Systematic" },
+      OPEN: { hu: "Innovátor", en: "Innovator" },
     };
     const a = labels[topTwo[0].code]?.[locale] ?? topTwo[0].label;
     const b = labels[topTwo[1].code]?.[locale] ?? topTwo[1].label;
@@ -371,20 +403,20 @@ export default async function ProfileResultsPage({
     if (!strongest || !weakest) return "";
 
     const strengthVerbs: Record<string, { hu: string; en: string }> = {
-      H: { hu: "Hitelesen és manipulációmentesen működsz", en: "You operate with authenticity and integrity" },
-      E: { hu: "Mélyen és empatikusan kapcsolódsz másokhoz", en: "You connect deeply and empathetically with others" },
-      X: { hu: "Energikusan és inspirálóan vagy jelen", en: "You bring energy and inspiration to your interactions" },
-      A: { hu: "Rugalmasan és türelmesen kezeled a helyzeteket", en: "You handle situations with flexibility and patience" },
-      C: { hu: "Rendszerben és felelősen működsz", en: "You work systematically and responsibly" },
-      O: { hu: "Kísérletezően és stratégiailag gondolkodsz", en: "You think experimentally and strategically" },
+      INTE: { hu: "Hitelesen és manipulációmentesen működsz", en: "You operate with authenticity and integrity" },
+      RESO: { hu: "Mélyen és empatikusan kapcsolódsz másokhoz", en: "You connect deeply and empathetically with others" },
+      TEMP: { hu: "Energikusan és inspirálóan vagy jelen", en: "You bring energy and inspiration to your interactions" },
+      ADAP: { hu: "Rugalmasan és türelmesen kezeled a helyzeteket", en: "You handle situations with flexibility and patience" },
+      THOR: { hu: "Rendszerben és felelősen működsz", en: "You work systematically and responsibly" },
+      OPEN: { hu: "Kísérletezően és stratégiailag gondolkodsz", en: "You think experimentally and strategically" },
     };
     const weakVerbs: Record<string, { hu: string; en: string }> = {
-      H: { hu: "a státusz és pozíció természetesebb tereped", en: "status and positioning come more naturally to you" },
-      E: { hu: "az érzelmi bevonódás kevésbé természetes tereped", en: "emotional involvement is less natural for you" },
-      X: { hu: "a társas láthatóság kevésbé természetes tereped", en: "social visibility is less natural for you" },
-      A: { hu: "a konfliktusos helyzetekben élesebb reakciók jellemzőek", en: "you tend to react more sharply in conflict" },
-      C: { hu: "a strukturált végrehajtás kevésbé természetes tereped", en: "structured execution is less natural for you" },
-      O: { hu: "a bevált módszereket részesíted előnyben", en: "you prefer established methods" },
+      INTE: { hu: "a státusz és pozíció természetesebb tereped", en: "status and positioning come more naturally to you" },
+      RESO: { hu: "az érzelmi bevonódás kevésbé természetes tereped", en: "emotional involvement is less natural for you" },
+      TEMP: { hu: "a társas láthatóság kevésbé természetes tereped", en: "social visibility is less natural for you" },
+      ADAP: { hu: "a konfliktusos helyzetekben élesebb reakciók jellemzőek", en: "you tend to react more sharply in conflict" },
+      THOR: { hu: "a strukturált végrehajtás kevésbé természetes tereped", en: "structured execution is less natural for you" },
+      OPEN: { hu: "a bevált módszereket részesíted előnyben", en: "you prefer established methods" },
     };
 
     const s = strengthVerbs[strongest.code]?.[locale] ?? strongest.label;
@@ -617,11 +649,12 @@ export default async function ProfileResultsPage({
           !journeySnapshot.state.completionSummary.org.joined && (
             <TeamInterestBanner
               alreadySent={Boolean(
-                await prisma.featureInterest.findUnique({
+                await prisma.feedback.findUnique({
                   where: {
-                    userProfileId_featureKey: {
+                    userProfileId_kind_targetKey: {
                       userProfileId: profile.id,
-                      featureKey: "team",
+                      kind: "feature_interest",
+                      targetKey: "team",
                     },
                   },
                   select: { id: true },

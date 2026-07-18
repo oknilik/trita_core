@@ -1,4 +1,5 @@
 import { t, tf } from "@/lib/i18n";
+import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import Link from "next/link";
@@ -118,7 +119,7 @@ export function ObserverComparison({
                         className="flex h-6 w-6 items-center justify-center rounded-md font-mono text-[10px] font-semibold text-white"
                         style={{ backgroundColor: dim.color }}
                       >
-                        {dim.code}
+                        {TRITAN_DIM_ABBR[dim.code as TritanDimCode]?.[isHu ? "hu" : "en"] ?? dim.code}
                       </div>
                       <span className="text-sm font-semibold text-ink">{dim.label}</span>
                     </div>

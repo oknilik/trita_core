@@ -1,4 +1,6 @@
+import { requireOnboarded } from "@/lib/onboarding-guard";
 import { currentUser } from "@clerk/nextjs/server";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -6,7 +8,6 @@ import { assignTestType } from "@/lib/assignTestType";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
-import { getActiveOrgMembership } from "@/lib/org-context";
 import { AssessmentClient } from "./AssessmentClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -52,12 +53,8 @@ export default async function AssessmentPage({
     });
   }
 
-  // Redirect to onboarding if demographics not yet collected
-  // Org-flow users don't have onboardedAt — check org membership before redirecting
-  if (!profile.onboardedAt) {
-    const orgMembership = await getActiveOrgMembership(profile.id);
-    if (!orgMembership) redirect("/onboarding");
-  }
+  // Központi onboarding-guard (org-tag kivétellel) — ld. lib/onboarding-guard
+  await requireOnboarded(profile);
 
   // Load existing draft (if any)
   const draft = await prisma.assessmentDraft.findUnique({
@@ -80,7 +77,7 @@ export default async function AssessmentPage({
     testType = await assignTestType(profile.id);
   }
   const locale = await getServerLocale();
-  const config = getTestConfig(testType, locale);
+  const config = getTestConfig(testType, locale, DEFAULT_ASSESSMENT_FORM);
 
   const initialDraft =
     draft && draft.testType === testType
@@ -100,6 +97,7 @@ export default async function AssessmentPage({
       testType={testType}
       testName={config.name}
       totalQuestions={config.questions.length}
+      draftScope={profile.id}
       questions={questions}
       initialDraft={initialDraft}
       clearDraft={clearDraft}

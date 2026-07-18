@@ -1,7 +1,7 @@
 /**
  * seed-org-team.ts
  *
- * Létrehoz egy szervezetet + csapatot, és feltölti fake userekkel (HEXACO eredménnyel).
+ * Létrehoz egy szervezetet + csapatot, és feltölti fake userekkel (TRITAN eredménnyel).
  * Az admin user (--email) lesz az org és csapat tulajdonosa, ORG_ADMIN szerepkörrel.
  * A csapattagok fake UserProfile rekordokként jönnek létre (nincs Clerk fiók).
  *
@@ -77,20 +77,20 @@ function nearbyScore(base: number, variance = 18): number {
   return Math.max(5, Math.min(95, Math.round(base + (Math.random() - 0.5) * 2 * variance)));
 }
 
-const HEXACO_FACETS: Record<string, string[]> = {
-  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  A: ["forgiveness", "gentleness", "flexibility", "patience"],
-  C: ["organization", "diligence", "prudence", "perfectionism"],
-  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const TRITAN_FACETS: Record<string, string[]> = {
+  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
+  THOR: ["organization", "diligence", "prudence", "perfectionism"],
+  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
   I: ["altruism"], // Interstitial altruism scale
 };
 
-function generateHexacoScores() {
+function generateTritanScores() {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
-  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
+  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
     const base = rand(22, 83);
     dimensions[dim] = base;
     facets[dim] = {};
@@ -251,18 +251,18 @@ Opciók:
       select: { id: true },
     });
     if (!adminHasResult) {
-      const adminScores = generateHexacoScores();
+      const adminScores = generateTritanScores();
       await prisma.assessmentResult.create({
         data: {
           userProfileId: admin.id,
-          testType: "HEXACO",
+          testType: "TRITAN",
           isSelfAssessment: true,
           scores: adminScores as object,
         },
       });
       await prisma.userProfile.update({
         where: { id: admin.id },
-        data: { testType: "HEXACO" },
+        data: { testType: "TRITAN" },
       });
       console.log(`   ✅  Admin assessment eredmény létrehozva`);
     } else {
@@ -286,7 +286,7 @@ Opciók:
           data: {
             email: fake.email,
             username: fake.username,
-            testType: "HEXACO",
+            testType: "TRITAN",
             testTypeAssignedAt: new Date(),
             onboardedAt: new Date(),
           },
@@ -300,11 +300,11 @@ Opciók:
         select: { id: true },
       });
       if (!hasResult) {
-        const scores = generateHexacoScores();
+        const scores = generateTritanScores();
         await prisma.assessmentResult.create({
           data: {
             userProfileId: userProfile.id,
-            testType: "HEXACO",
+            testType: "TRITAN",
             isSelfAssessment: true,
             scores: scores as object,
           },
@@ -378,14 +378,14 @@ Opciók:
 
         const rel = RELATIONSHIPS[rand(0, 2)];
         const dur = DURATIONS[rand(0, 3)];
-        const scores = generateHexacoScores();
+        const scores = generateTritanScores();
 
         const invitation = await prisma.observerInvitation.create({
           data: {
             inviterId: profile.id,
             observerProfileId: observer.id,
             observerEmail: observer.email,
-            testType: "HEXACO",
+            testType: "TRITAN",
             status: "COMPLETED",
             expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             completedAt: new Date(),
@@ -416,14 +416,14 @@ Opciók:
 
       const rel = RELATIONSHIPS[rand(0, 2)];
       const dur = DURATIONS[rand(0, 3)];
-      const scores = generateHexacoScores();
+      const scores = generateTritanScores();
 
       const invitation = await prisma.observerInvitation.create({
         data: {
           inviterId: admin.id,
           observerProfileId: observer.id,
           observerEmail: observer.email,
-          testType: "HEXACO",
+          testType: "TRITAN",
           status: "COMPLETED",
           expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           completedAt: new Date(),

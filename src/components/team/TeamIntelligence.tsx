@@ -4,7 +4,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
-import { estimateTeamRolesFromHexaco } from "@/lib/team-role-estimate";
+import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -17,7 +17,7 @@ export interface IntelligenceMember {
   id: string;
   name: string;
   initials: string;
-  hexaco: { H: number; E: number; X: number; A: number; C: number; O: number };
+  tritan: { INTE: number; RESO: number; TEMP: number; ADAP: number; THOR: number; OPEN: number };
   hasAssessmentData: boolean;
   skillLevel: 1 | 2 | 3;
   growthPotential: 1 | 2 | 3;
@@ -172,9 +172,9 @@ export function TeamIntelligence({
         <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
           {membersWithData.map((member) => {
-            const roleScores = estimateTeamRolesFromHexaco(member.hexaco);
+            const roleScores = estimateTeamRolesFromTritan(member.tritan);
             const topRoles = getTopRoles(roleScores, 3);
-            const topDims = Object.entries(member.hexaco)
+            const topDims = Object.entries(member.tritan)
               .sort(([, a], [, b]) => b - a)
               .slice(0, 2);
             return (

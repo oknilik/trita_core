@@ -1,28 +1,33 @@
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import {
+  PSYCH_SAFETY_ITEMS,
+  PSYCH_SAFETY_ACTIONS,
+  getPsychSafetyItem,
+} from "@/lib/psych-safety";
 import type { SerializedTeamReport } from "@/lib/team-report";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  H: { hu: "Őszinteség", en: "Honesty" },
-  E: { hu: "Érzelmesség", en: "Emotionality" },
-  X: { hu: "Extraverzió", en: "Extraversion" },
-  A: { hu: "Barátságosság", en: "Agreeableness" },
-  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  O: { hu: "Nyitottság", en: "Openness" },
+  INTE: { hu: "Integritás", en: "Integrity" },
+  RESO: { hu: "Rezonancia", en: "Resonance" },
+  TEMP: { hu: "Társas energia", en: "Tempo" },
+  ADAP: { hu: "Alkalmazkodás", en: "Adaptability" },
+  THOR: { hu: "Tervezettség", en: "Thoroughness" },
+  OPEN: { hu: "Nyitottság", en: "Openness" },
 };
 
 // Dimenzió-színek — a team oldal dimConfigs palettájával azonos.
 const DIM_COLORS: Record<string, string> = {
-  H: "#6366F1",
-  E: "#EC4899",
-  X: "#F59E0B",
-  A: "#10B981",
-  C: "#8B5CF6",
-  O: "#06B6D4",
+  INTE: "#6366F1",
+  RESO: "#EC4899",
+  TEMP: "#F59E0B",
+  ADAP: "#10B981",
+  THOR: "#8B5CF6",
+  OPEN: "#06B6D4",
 };
 
-const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
+const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
 // Hiányzó csapatszerep rövid következménye a vezető nyelvén.
 const ROLE_GAP_HINTS: Record<string, { hu: string; en: string }> = {
@@ -500,6 +505,114 @@ export function TeamReportView({
                 : agg.dynamics.source === "mixed"
                   ? isHu ? "Részben kollégai visszajelzés, részben profil-alapú becslés." : "Partly observer feedback, partly profile-based estimate."
                   : isHu ? "Profil-alapú becslés — kapcsolatpáronkénti adatok nem jelennek meg." : "Profile-based estimate — pair-level data is not shown."}
+            </p>
+          </DashboardPanel>
+        </section>
+      )}
+
+      {/* Pszichológiai biztonság — anonim pulse-aggregátum */}
+      {agg?.psychSafety && (
+        <section>
+          <DashboardSectionHeader
+            label={isHu ? "Pszichológiai biztonság" : "Psychological safety"}
+            className="mb-4"
+          />
+          <DashboardPanel className="p-6">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <p className="font-fraunces text-5xl text-ink">
+                {agg.psychSafety.index}
+                <span className="ml-1 font-sans text-sm font-normal text-muted">/ 100</span>
+              </p>
+              <div>
+                <p className="text-sm font-semibold text-ink">
+                  {agg.psychSafety.band === "high"
+                    ? isHu ? "Erős biztonság-élmény" : "Strong sense of safety"
+                    : agg.psychSafety.band === "mid"
+                      ? isHu ? "Közepes biztonság-élmény" : "Moderate sense of safety"
+                      : isHu ? "Törékeny biztonság-élmény" : "Fragile sense of safety"}
+                </p>
+                <p className="mt-0.5 text-xs text-ink-body/60">
+                  {agg.psychSafety.count}{" "}
+                  {isHu ? "névtelen válasz" : "anonymous responses"} ·{" "}
+                  {isHu ? "szóródás" : "spread"} ±{agg.psychSafety.spread} ·{" "}
+                  {new Date(agg.psychSafety.measuredAt).toLocaleDateString(
+                    isHu ? "hu-HU" : "en-GB",
+                    { year: "numeric", month: "short" },
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-2">
+              {PSYCH_SAFETY_ITEMS.map((item) => {
+                const mean = agg.psychSafety!.itemMeans[item.id];
+                if (typeof mean !== "number") return null;
+                const pct = Math.max(0, Math.min(100, ((mean - 1) / 4) * 100));
+                const isWeak = agg.psychSafety!.weakItemIds.includes(item.id);
+                return (
+                  <div key={item.id} className="flex items-center gap-3">
+                    <span
+                      className={`w-56 shrink-0 text-xs leading-snug md:w-64 ${
+                        isWeak ? "font-semibold text-amber-800" : "text-ink-body"
+                      }`}
+                    >
+                      {isHu ? item.area.hu : item.area.en}
+                    </span>
+                    <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${
+                          isWeak ? "bg-amber-500" : "bg-sage"
+                        }`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="w-9 text-right text-xs tabular-nums text-muted">
+                      {mean.toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {agg.psychSafety.weakItemIds.length > 0 ? (
+              <div className="mt-5 flex flex-col gap-3">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-amber-700">
+                  {isHu ? "Gyenge területek — javasolt lépések" : "Weak areas — suggested steps"}
+                </p>
+                {agg.psychSafety.weakItemIds.map((id) => {
+                  const item = getPsychSafetyItem(id);
+                  const action = PSYCH_SAFETY_ACTIONS[id];
+                  if (!item || !action) return null;
+                  return (
+                    <div
+                      key={id}
+                      className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3"
+                    >
+                      <p className="text-[13px] font-semibold text-ink">
+                        {isHu ? item.area.hu : item.area.en}
+                        <span className="ml-2 font-normal tabular-nums text-amber-700">
+                          {agg.psychSafety!.itemMeans[id]?.toFixed(1)} / 5
+                        </span>
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                        {isHu ? action.hu : action.en}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="mt-5 rounded-xl bg-sage/5 px-4 py-3 text-xs leading-relaxed text-ink-body">
+                {isHu
+                  ? "Nincs kirívóan gyenge terület — a biztonság-élmény kiegyensúlyozott. Érdemes rendszeres pulse-szal követni, hogy így is maradjon."
+                  : "No conspicuously weak area — the sense of safety is balanced. Track it with a regular pulse to keep it that way."}
+              </p>
+            )}
+
+            <p className="mt-4 text-[10px] text-muted">
+              {isHu
+                ? "Névtelen mérés: csak csapatszintű összesítés, egyéni válasz nem visszakereshető (min. 3 kitöltés)."
+                : "Anonymous measurement: team-level aggregate only, individual answers cannot be traced back (min. 3 responses)."}
             </p>
           </DashboardPanel>
         </section>

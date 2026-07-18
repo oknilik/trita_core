@@ -4,9 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-function memberAvatar(_seed: string) {
-  return "/avatars/avatar-1.png";
-}
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -257,14 +254,9 @@ export function CampaignCard({
                     p.selfDone ? "border-emerald-200" : "border-white",
                   ].join(" ")}
                 >
-                  <Image
-                    src={memberAvatar(p.userId)}
-                    alt={p.username ?? p.email ?? "?"}
-                    width={32}
-                    height={32}
-                    unoptimized
-                    className="h-full w-full object-cover"
-                  />
+                  <span className="flex h-full w-full items-center justify-center bg-sand text-[10px] font-bold text-ink-body">
+                    {getInitials(p.username ?? p.email ?? "?")}
+                  </span>
                 </div>
               ))}
               {campaign.participants.length > 6 && (

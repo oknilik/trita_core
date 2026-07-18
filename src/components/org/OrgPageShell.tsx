@@ -6,7 +6,6 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { PrimaryTabs } from "./PrimaryTabs";
 import { OrgCampaignsTab } from "./OrgCampaignsTab";
-import { OrgOverviewTab } from "./OrgOverviewTab";
 import { OrgTeamsTab } from "./OrgTeamsTab";
 import { OrgMembersTab } from "./OrgMembersTab";
 import type {
@@ -25,6 +24,8 @@ interface OrgPageShellProps {
   canCreateTeam: boolean;
   canInviteMembers: boolean;
   canManageCampaigns: boolean;
+  /** Mérés-kezelés (kampányok) — csak tanácsadói felületen igaz. */
+  canManageMeasurements: boolean;
   actionGateCopy?: {
     title: string;
     description: string;
@@ -48,6 +49,7 @@ export function OrgPageShell({
   canCreateTeam,
   canInviteMembers,
   canManageCampaigns,
+  canManageMeasurements,
   actionGateCopy = null,
   isHu,
   locale,
@@ -58,7 +60,14 @@ export function OrgPageShell({
   teams,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
-  const tabFromUrl = searchParams.get("tab") ?? "overview";
+  // Egyszerű váz mindenkinek: Csapatok az alapfül; a Kampányok fül csak a
+  // tanácsadói felületen létezik. (Az Áttekintés fül kivezetve — duplikált.)
+  const defaultTab = "teams";
+  const allowedTabs = canManageMeasurements
+    ? ["teams", "campaigns", "members"]
+    : ["teams", "members"];
+  const rawTabFromUrl = searchParams.get("tab") ?? defaultTab;
+  const tabFromUrl = allowedTabs.includes(rawTabFromUrl) ? rawTabFromUrl : defaultTab;
   const [activeTab, setActiveTab] = useState(tabFromUrl);
 
   // Sync local tab state when URL search params change (e.g. link navigation)
@@ -80,17 +89,20 @@ export function OrgPageShell({
   const loc = locale as Locale;
 
   const tabs = [
-    { key: "overview", label: t("org.shell.tabOverview", loc) },
-    {
-      key: "campaigns",
-      label: t("org.shell.tabCampaigns", loc),
-      badge: activeCampaignCount > 0 ? activeCampaignCount : undefined,
-    },
     {
       key: "teams",
       label: t("org.shell.tabTeams", loc),
       badge: teams.length > 0 ? teams.length : undefined,
     },
+    ...(canManageMeasurements
+      ? [
+          {
+            key: "campaigns",
+            label: t("org.shell.tabCampaigns", loc),
+            badge: activeCampaignCount > 0 ? activeCampaignCount : undefined,
+          },
+        ]
+      : []),
     {
       key: "members",
       label: t("org.shell.tabMembers", loc),
@@ -103,22 +115,7 @@ export function OrgPageShell({
       <PrimaryTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
 
       <div>
-        {activeTab === "overview" && (
-          <OrgOverviewTab
-            hexacoAvg={pageData.hexacoAvg}
-            teams={teams}
-            orgId={orgId}
-            campaigns={pageData.campaigns}
-            memberCount={pageData.memberCount}
-            completedMemberCount={pageData.completedMemberCount}
-            activeCampaignCount={pageData.activeCampaignCount}
-            isHu={isHu}
-            dateLocale={dateLocale}
-            isManager={isManager}
-          />
-        )}
-
-        {activeTab === "campaigns" && (
+        {canManageMeasurements && activeTab === "campaigns" && (
           <OrgCampaignsTab
             orgId={orgId}
             campaigns={pageData.campaigns}

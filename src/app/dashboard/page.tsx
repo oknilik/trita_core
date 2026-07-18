@@ -1,6 +1,8 @@
+import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
+import { resolveStaffDestination } from "@/lib/journey/guardrails.server";
 import { getServerAuth } from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
@@ -15,11 +17,17 @@ export default async function DashboardPage({
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
+  await requireOnboardedByClerkId(userId);
+
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true },
   });
   if (!profile) redirect("/sign-in");
+
+  // Platform-stáb (admin/tanácsadó): egyből a munkafelületére — nincs teszt-kapu.
+  const staffDestination = await resolveStaffDestination(profile.id);
+  if (staffDestination) redirect(staffDestination);
 
   const journey = await resolveJourney(profile.id, { entryPoint });
 

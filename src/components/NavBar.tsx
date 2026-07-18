@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
@@ -54,7 +55,7 @@ export function NavBar({
   const { signOut } = useClerk();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("HEXACO"));
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("TRITAN"));
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -82,7 +83,7 @@ export function NavBar({
     isSignedIn &&
       signedInExperienceHints &&
       (signedInExperienceHints.showOrgExpansionPrompt ||
-        signedInExperienceHints.showTeamCreationBanner ||
+        (signedInExperienceHints.showTeamCreationBanner && !isConsultingLed()) ||
         signedInExperienceHints.showAssessmentContinuation),
   );
 
@@ -96,7 +97,7 @@ export function NavBar({
           ctaLabel: locale === "hu" ? "Meghívás megnyitása" : "Open invite",
           ctaHref: signedInHomeHref,
         }
-      : signedInExperienceHints.showTeamCreationBanner
+      : signedInExperienceHints.showTeamCreationBanner && !isConsultingLed()
         ? {
             body: locale === "hu"
               ? "Team fókuszt választottál. Hozd létre az első csapatodat, és építs közös képet a self eredményekből."

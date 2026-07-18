@@ -96,7 +96,7 @@ Dashboard should be optimized for:
 
 Should move off dashboard:
 - deep analytics interpretation
-- detailed HEXACO comparison views
+- detailed TRITAN comparison views
 - broad organizational reporting surfaces
 - settings / billing / structural admin
 - personal profile management

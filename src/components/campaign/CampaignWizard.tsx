@@ -29,7 +29,16 @@ interface CampaignWizardProps {
 }
 
 type Step = 1 | 2 | 3 | 4;
-type CampaignType = "OBSERVER_360" | "TEAM_ROLE";
+type CampaignType = "OBSERVER_360" | "TEAM_ROLE" | "PSYCH_SAFETY";
+
+// Kanonikus lépés-sorrend: személyiség → szerepek → biztonság.
+const STEP_ORDER: CampaignType[] = ["OBSERVER_360", "TEAM_ROLE", "PSYCH_SAFETY"];
+
+const TYPE_NAME_KEYS: Record<CampaignType, string> = {
+  OBSERVER_360: "campaignWiz.typeObserverName",
+  TEAM_ROLE: "campaignWiz.typeRoleName",
+  PSYCH_SAFETY: "campaignWiz.typePsychName",
+};
 
 // A mérés-katalógus: mit mér, mennyi idő, mit kapsz belőle.
 const TYPE_CARDS: Array<{
@@ -58,7 +67,8 @@ const TYPE_CARDS: Array<{
     type: "PSYCH_SAFETY",
     nameKey: "campaignWiz.typePsychName",
     descKey: "campaignWiz.typePsychDesc",
-    comingSoon: true,
+    metaKey: "campaignWiz.typePsychMeta",
+    outKey: "campaignWiz.typePsychOut",
   },
 ];
 
@@ -72,7 +82,8 @@ export function CampaignWizard({
   const router = useRouter();
   const preselectedTeam = teams.find((tm) => tm.id === preselectedTeamId) ?? null;
   const [step, setStep] = useState<Step>(1);
-  const [type, setType] = useState<CampaignType | null>(null);
+  // Több mérés is választható — a tagoknak sorban nyílnak meg.
+  const [selectedTypes, setSelectedTypes] = useState<Set<CampaignType>>(new Set());
   const [name, setName] = useState("");
   const [nameTouched, setNameTouched] = useState(false);
   const [description, setDescription] = useState("");
@@ -92,23 +103,35 @@ export function CampaignWizard({
 
   const targetTeam = teams.find((tm) => tm.id === targetTeamId) ?? null;
 
+  const chosenSteps = STEP_ORDER.filter((tp) => selectedTypes.has(tp));
+  const type: CampaignType | null = chosenSteps[0] ?? null;
+
   // Auto-név: "Marketing — Kollégai visszajelzés (360°) · 2026. július"
-  function buildSuggestedName(nextType: CampaignType, teamName?: string | null): string {
-    const typeLabel = t(
-      nextType === "OBSERVER_360" ? "campaignWiz.typeObserverName" : "campaignWiz.typeRoleName",
-      locale,
-    );
+  // több lépésnél: "Marketing — Mérés-sorozat (3) · 2026. július"
+  function buildSuggestedName(nextSteps: CampaignType[], teamName?: string | null): string {
     const monthYear = new Date().toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", {
       year: "numeric",
       month: "long",
     });
-    return `${teamName ? `${teamName} — ` : ""}${typeLabel} · ${monthYear}`.slice(0, 100);
+    const label =
+      nextSteps.length > 1
+        ? `${t("campaignWiz.seriesName", locale)} (${nextSteps.length})`
+        : nextSteps[0]
+          ? t(TYPE_NAME_KEYS[nextSteps[0]], locale)
+          : "";
+    return `${teamName ? `${teamName} — ` : ""}${label} · ${monthYear}`.slice(0, 100);
   }
 
-  function pickType(nextType: CampaignType) {
-    setType(nextType);
-    if (!nameTouched) setName(buildSuggestedName(nextType, targetTeam?.name));
-    setStep(2);
+  function toggleType(nextType: CampaignType) {
+    setSelectedTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(nextType)) next.delete(nextType);
+      else next.add(nextType);
+      if (!nameTouched) {
+        setName(buildSuggestedName(STEP_ORDER.filter((tp) => next.has(tp)), targetTeam?.name));
+      }
+      return next;
+    });
   }
 
   function toggleMember(userId: string) {
@@ -137,11 +160,11 @@ export function CampaignWizard({
     setTargetTeamId(fully ? null : team.id);
   }
 
-  // Szerep-körnél a célzás = egyetlen csapat (radio-jellegű választás).
+  // Csapathoz kötött mérésnél a célzás = egyetlen csapat (radio-jellegű választás).
   function pickRoleTeam(team: TeamOption) {
     setTargetTeamId(team.id);
     setSelectedIds(new Set(team.members.map((m) => m.userId)));
-    if (!nameTouched && type) setName(buildSuggestedName(type, team.name));
+    if (!nameTouched && chosenSteps.length > 0) setName(buildSuggestedName(chosenSteps, team.name));
   }
 
   function toggleAll() {
@@ -165,6 +188,7 @@ export function CampaignWizard({
           name: name.trim(),
           description: description.trim() || undefined,
           type,
+          types: chosenSteps,
           teamId: targetTeamId ?? undefined,
         }),
       });
@@ -195,12 +219,20 @@ export function CampaignWizard({
   }
 
   const selectedMembers = members.filter((m) => selectedIds.has(m.userId));
-  const typeLabel = type
-    ? t(type === "OBSERVER_360" ? "campaignWiz.typeObserverName" : "campaignWiz.typeRoleName", locale)
-    : "";
+  const typeLabel =
+    chosenSteps.length > 1
+      ? chosenSteps.map((tp, i) => `${i + 1}. ${t(TYPE_NAME_KEYS[tp], locale)}`).join(" → ")
+      : type
+        ? t(TYPE_NAME_KEYS[type], locale)
+        : "";
   // Résztvevő nélkül is mehet tovább (később hozzáadható) — kivéve a
   // szerep-kört, ahol kötelező a cél-csapat.
-  const canProceedTargeting = type === "TEAM_ROLE" ? targetTeamId !== null : true;
+  // Csapathoz kötött mérések: a szerep-kör és a pszich. biztonság pulse
+  // egyetlen cél-csapaton él (az anonim aggregátum is csapatszintű).
+  const isTeamLocked = chosenSteps.some(
+    (tp) => tp === "TEAM_ROLE" || tp === "PSYCH_SAFETY",
+  );
+  const canProceedTargeting = isTeamLocked ? targetTeamId !== null : true;
 
   return (
     <div className="flex flex-col gap-6">
@@ -247,29 +279,39 @@ export function CampaignWizard({
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("campaignWiz.typeTitle", locale)}
           </h2>
+          <p className="mb-4 text-[13px] leading-relaxed text-ink-body">
+            {t("campaignWiz.typeMultiHint", locale)}
+          </p>
           <div className="flex flex-col gap-3">
-            {TYPE_CARDS.map((card) => (
+            {TYPE_CARDS.map((card) => {
+              const isSelected = selectedTypes.has(card.type as CampaignType);
+              const orderIndex = chosenSteps.indexOf(card.type as CampaignType);
+              return (
               <button
                 key={card.type}
                 type="button"
                 disabled={card.comingSoon}
-                onClick={() => !card.comingSoon && pickType(card.type as CampaignType)}
+                onClick={() => !card.comingSoon && toggleType(card.type as CampaignType)}
                 className={[
                   "rounded-[14px] border p-4 text-left transition",
                   card.comingSoon
                     ? "cursor-not-allowed border-dashed border-sand bg-cream/40 opacity-70"
-                    : type === card.type
+                    : isSelected
                     ? "border-sage bg-sage/5"
                     : "border-sand bg-white hover:border-sage/50 hover:bg-sage/5",
                 ].join(" ")}
               >
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-[15px] font-semibold text-ink">{t(card.nameKey, locale)}</p>
-                  {card.comingSoon && (
+                  {isSelected ? (
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
+                      {orderIndex + 1}
+                    </span>
+                  ) : card.comingSoon ? (
                     <span className="rounded-full bg-sand px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
                       {t("campaignWiz.typeComingSoon", locale)}
                     </span>
-                  )}
+                  ) : null}
                 </div>
                 <p className="mt-1 text-[13px] leading-relaxed text-ink-body">
                   {t(card.descKey, locale)}
@@ -283,7 +325,21 @@ export function CampaignWizard({
                   <p className="mt-1 text-[11px] text-bronze">{t(card.outKey, locale)}</p>
                 )}
               </button>
-            ))}
+              );
+            })}
+          </div>
+          <div className="mt-6 flex justify-end">
+            <Button
+              type="button"
+              disabled={chosenSteps.length === 0}
+              onClick={() => {
+                if (!nameTouched) setName(buildSuggestedName(chosenSteps, targetTeam?.name));
+                setStep(2);
+              }}
+              variant="primary"
+            >
+              {t("campaignWiz.next", locale)}
+            </Button>
           </div>
         </Card>
       )}
@@ -349,7 +405,7 @@ export function CampaignWizard({
             <h2 className="font-fraunces text-xl text-ink">
               {t("campaignWiz.selectParticipants", locale)}
             </h2>
-            {type !== "TEAM_ROLE" && members.length > 0 && (
+            {!isTeamLocked && members.length > 0 && (
               <Button
                 type="button"
                 onClick={toggleAll}
@@ -364,7 +420,7 @@ export function CampaignWizard({
             )}
           </div>
 
-          {type === "TEAM_ROLE" && (
+          {isTeamLocked && (
             <p className="mb-4 text-[13px] text-ink-body">{t("campaignWiz.roleTeamHint", locale)}</p>
           )}
 
@@ -376,7 +432,7 @@ export function CampaignWizard({
               <div className="flex flex-col gap-2">
                 {teams.map((team) => {
                   const checked =
-                    type === "TEAM_ROLE" ? targetTeamId === team.id : isTeamFullySelected(team);
+                    isTeamLocked ? targetTeamId === team.id : isTeamFullySelected(team);
                   return (
                     <label
                       key={team.id}
@@ -387,11 +443,11 @@ export function CampaignWizard({
                     >
                       <span className="flex items-center gap-3">
                         <input
-                          type={type === "TEAM_ROLE" ? "radio" : "checkbox"}
-                          name={type === "TEAM_ROLE" ? "roleTeam" : undefined}
+                          type={isTeamLocked ? "radio" : "checkbox"}
+                          name={isTeamLocked ? "roleTeam" : undefined}
                           checked={checked}
                           onChange={() =>
-                            type === "TEAM_ROLE" ? pickRoleTeam(team) : toggleTeam(team)
+                            isTeamLocked ? pickRoleTeam(team) : toggleTeam(team)
                           }
                           className="h-4 w-4 accent-sage"
                         />
@@ -407,7 +463,7 @@ export function CampaignWizard({
             </div>
           )}
 
-          {type !== "TEAM_ROLE" && (
+          {!isTeamLocked && (
             <>
               {teams.length === 0 && (
                 <p className="mb-3 text-sm text-muted">{t("campaignWiz.noTeams", locale)}</p>

@@ -9,7 +9,7 @@ import {
 } from "@/lib/assessment-draft";
 import { installBrowserLocalStorageMock } from "../../helpers/local-storage-mock";
 
-const TEST_TYPE = "HEXACO";
+const TEST_TYPE = "TRITAN";
 const DRAFT_KEY = getAssessmentDraftKey(TEST_TYPE);
 
 test("atomic write: older revision cannot overwrite newer snapshot", () => {

@@ -1,7 +1,7 @@
 import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getTestConfig } from "@/lib/questions";
+import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
@@ -61,14 +61,9 @@ export async function POST(req: Request) {
   if (hasDuplicates) {
     return NextResponse.json({ error: "DUPLICATE_ANSWER" }, { status: 400 });
   }
-  // If answers are missing after filtering (common after question-bank updates), return a clear error.
-  if (answeredIds.size !== expectedIds.size) {
+  // A rövid (TSFI-S) és a teljes forma hiánytalan kitöltése egyaránt érvényes.
+  if (!isCompleteFormAnswerSet(invitation.testType as TestType, answeredIds)) {
     return NextResponse.json({ error: "MISSING_ANSWER" }, { status: 400 });
-  }
-  for (const id of expectedIds) {
-    if (!answeredIds.has(id)) {
-      return NextResponse.json({ error: "MISSING_ANSWER" }, { status: 400 });
-    }
   }
 
   for (const answer of relevantAnswers) {

@@ -11,7 +11,7 @@ import { ProgressBar } from "@/components/results/ProgressBar";
 import { InsightPair } from "@/components/results/InsightPair";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
-import { DimensionStrip } from "@/components/results/DimensionStrip";
+import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
@@ -203,25 +203,19 @@ function ResultsTab({
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
-  const stripDims = mainDims.map((d) => ({
-    name: d.label,
-    shortName: d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label,
-    value: d.score,
-  }));
-
-  const accordionDims = mainDims.map((d) => ({
-    code: d.code,
-    name: d.label,
-    value: d.score,
-    description: d.description,
-    insight: d.insight,
-    facets: d.facets,
-  }));
-
-  const strongestIdx = accordionDims.reduce(
-    (best, dim, idx) => (dim.value > accordionDims[best].value ? idx : best),
-    0,
-  );
+  // Akkordeon a radar TRITAN-rendjében (X,E,H,C,A,O) — egyezik az
+  // áttekintő listával; az első elem alapból nyitva.
+  const accordionDims = (["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"] as const)
+    .map((code) => mainDims.find((d) => d.code === code))
+    .filter((d): d is (typeof mainDims)[number] => Boolean(d))
+    .map((d) => ({
+      code: d.code,
+      name: d.label,
+      value: d.score,
+      description: d.description,
+      insight: d.insight,
+      facets: d.facets,
+    }));
 
   return (
     <div className="flex flex-col gap-10 md:gap-14">
@@ -246,7 +240,50 @@ function ResultsTab({
             <p className="mb-1.5 text-[11px] font-medium text-[var(--color-text-muted)]">
               {t("content.stripLabel", locale)}
             </p>
-            <DimensionStrip dimensions={stripDims} />
+            {/* Soros lista a radar mellett — a hosszú dimenziónevek nem
+                törnek, a sáv + szint-címke egy pillantásra olvasható. */}
+            <div className="flex flex-col gap-2.5 rounded-xl border border-[var(--color-border-soft)] bg-white p-4">
+              {/* Sorrend = a radar TRITAN-rendje (T·R·I·T·A·N), a színek és
+                  az értékek a dimenzió-színt viselik — alacsony szintnél is
+                  jól láthatóan. */}
+              {(["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"] as const)
+                .map((code) => mainDims.find((d) => d.code === code))
+                .filter((d): d is (typeof mainDims)[number] => Boolean(d))
+                .map((d) => {
+                  const tier = getDimensionTier(d.score);
+                  const colors = tierColors[tier];
+                  return (
+                    <div key={d.code}>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-2 w-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: d.color }}
+                        />
+                        <span className="min-w-0 flex-1 text-xs font-medium text-[var(--color-text-primary)]">
+                          {d.label}
+                        </span>
+                        <span
+                          className={`shrink-0 rounded px-[7px] py-[2px] text-[8px] font-semibold ${colors.tagBg} ${colors.tagText}`}
+                        >
+                          {getDimensionLabel(d.score, locale)}
+                        </span>
+                        <span
+                          className="w-8 shrink-0 text-right font-fraunces text-sm"
+                          style={{ color: d.color }}
+                        >
+                          {d.score}
+                        </span>
+                      </div>
+                      <div className="ml-4 mt-1 h-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+                        <div
+                          className="h-full rounded-sm"
+                          style={{ width: `${d.score}%`, backgroundColor: d.color }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
             <p className="mt-3 text-[10px] leading-relaxed text-[var(--color-text-muted)]">
               {t("results.radarNote", locale)}
             </p>
@@ -263,7 +300,7 @@ function ResultsTab({
         <DimensionAccordion
           dimensions={accordionDims}
           showUpsell={!isPlus}
-          defaultOpenIdx={strongestIdx}
+          defaultOpenIdx={0}
         />
       </section>
 
@@ -363,7 +400,7 @@ function WorkStyleTab({
           className="mb-4"
         />
         <TeamRoles
-          hexacoScores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
+          tritanScores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
           locale={locale}
         />
       </section>
@@ -637,20 +674,20 @@ export function ProfileTabs({
             const lowDims = mainDims.filter((d) => d.score < 40);
 
             const strengthDescs: Record<string, { hu: string; en: string }> = {
-              "H": { hu: "hiteles, manipulációmentes", en: "authentic, manipulation-free" },
-              "E": { hu: "erős empátia, mély kapcsolódás", en: "strong empathy, deep connection" },
-              "X": { hu: "inspiráló, energikus jelenlét", en: "inspiring, energetic presence" },
-              "A": { hu: "megbocsátó, rugalmas, türelmes", en: "forgiving, flexible, patient" },
-              "C": { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
-              "O": { hu: "kísérletező, stratégiai gondolkodó", en: "experimental, strategic thinker" },
+              "INTE": { hu: "hiteles, manipulációmentes", en: "authentic, manipulation-free" },
+              "RESO": { hu: "erős empátia, mély kapcsolódás", en: "strong empathy, deep connection" },
+              "TEMP": { hu: "inspiráló, energikus jelenlét", en: "inspiring, energetic presence" },
+              "ADAP": { hu: "megbocsátó, rugalmas, türelmes", en: "forgiving, flexible, patient" },
+              "THOR": { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
+              "OPEN": { hu: "kísérletező, stratégiai gondolkodó", en: "experimental, strategic thinker" },
             };
             const watchDescs: Record<string, { hu: string; en: string }> = {
-              "H": { hu: "státuszorientáltabb, versengőbb", en: "more status-oriented, competitive" },
-              "E": { hu: "érzelmileg távolabb, kevesebb empátia", en: "emotionally distant, less empathy" },
-              "X": { hu: "kisebb társas láthatóság, visszahúzódóbb", en: "lower social visibility, more reserved" },
-              "A": { hu: "élesebb reakciók konfliktusban", en: "sharper reactions in conflict" },
-              "C": { hu: "kevésbé szervezett, rugalmasabb", en: "less organized, more flexible" },
-              "O": { hu: "bevált módszereket preferálja", en: "prefers established methods" },
+              "INTE": { hu: "státuszorientáltabb, versengőbb", en: "more status-oriented, competitive" },
+              "RESO": { hu: "érzelmileg távolabb, kevesebb empátia", en: "emotionally distant, less empathy" },
+              "TEMP": { hu: "kisebb társas láthatóság, visszahúzódóbb", en: "lower social visibility, more reserved" },
+              "ADAP": { hu: "élesebb reakciók konfliktusban", en: "sharper reactions in conflict" },
+              "THOR": { hu: "kevésbé szervezett, rugalmasabb", en: "less organized, more flexible" },
+              "OPEN": { hu: "bevált módszereket preferálja", en: "prefers established methods" },
             };
             const lang = locale;
             const strengthBullets = highDims.length > 0
@@ -721,12 +758,12 @@ export function ProfileTabs({
               teamRoleRoles: (() => {
                 try {
                   // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { estimateTeamRolesFromHexaco } = require("@/lib/team-role-estimate");
+                  const { estimateTeamRolesFromTritan } = require("@/lib/team-role-estimate");
                   // eslint-disable-next-line @typescript-eslint/no-require-imports
                   const { TEAM_ROLES, getTopRoles } = require("@/lib/team-role-scoring");
                   const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
-                  if (!("H" in hexScores) || !("X" in hexScores)) return [];
-                  const estimated = estimateTeamRolesFromHexaco(hexScores);
+                  if (!("INTE" in hexScores) || !("TEMP" in hexScores)) return [];
+                  const estimated = estimateTeamRolesFromTritan(hexScores);
                   const top3 = getTopRoles(estimated, 3);
                   return top3.map((r: { role: string; score: number }, i: number) => ({
                     name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
@@ -906,18 +943,23 @@ export function ProfileTabs({
         )}
       </div>
 
-      {/* Journey bridge CTA — single primary direction after self insight */}
+      {/* Journey bridge CTA — csak self-serve módban; consulting-led alatt az
+          eredményoldal kontextuális CTA-i (observer-CTA, érdeklődés-banner)
+          terelnek, a generikus journey-kártya duplikáció lenne. A hasznos
+          jelzés-kártyák (függő org-meghívó, félbehagyott teszt) maradnak. */}
       {bridgeNextStep ? (
         <div className="space-y-3">
-          <JourneyNextStepCard
-            eyebrow={t("content.bridgeEyebrow", locale)}
-            title={bridgeStageLabel
-              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
-              : t("content.bridgeJourney", locale)}
-            description={bridgeNextStep.explanation}
-            primary={bridgeNextStep.primary}
-            secondary={bridgeNextStep.secondary}
-          />
+          {!isConsultingLed() ? (
+            <JourneyNextStepCard
+              eyebrow={t("content.bridgeEyebrow", locale)}
+              title={bridgeStageLabel
+                ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
+                : t("content.bridgeJourney", locale)}
+              description={bridgeNextStep.explanation}
+              primary={bridgeNextStep.primary}
+              secondary={bridgeNextStep.secondary}
+            />
+          ) : null}
 
           {shouldShowTeamShortcut ? (
             <Card spacing="sm" className="rounded-xl px-4 py-3">

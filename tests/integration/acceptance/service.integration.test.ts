@@ -26,6 +26,8 @@ const PAST = new Date("2026-03-01T10:00:00.000Z");
 
 const restorers: Array<() => void> = [];
 
+const prismaModels = prisma as unknown as Record<string, Record<string, unknown>>;
+
 function stubMethod<T extends object, K extends keyof T>(
   obj: T,
   key: K,
@@ -67,8 +69,8 @@ test("new user invite link resolves to profile completion acceptance state", asy
     },
   });
 
-  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
-  stubMethod((prisma as any).userProfile, "upsert", async () =>
+  stubMethod(prismaModels.teamPendingInvite, "findUnique", async () => invite);
+  stubMethod(prismaModels.userProfile, "upsert", async () =>
     createTestUserProfileRecord({
       id: user.profileId,
       username: null,
@@ -107,8 +109,8 @@ test("existing user invite link resolves to team assignment pending", async () =
     },
   });
 
-  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
-  stubMethod((prisma as any).userProfile, "upsert", async () =>
+  stubMethod(prismaModels.teamPendingInvite, "findUnique", async () => invite);
+  stubMethod(prismaModels.userProfile, "upsert", async () =>
     createTestUserProfileRecord({
       id: user.profileId,
       username: user.username,
@@ -132,10 +134,10 @@ test("existing user invite link resolves to team assignment pending", async () =
 });
 
 test("expired token returns expired state on apply model", async () => {
-  stubMethod((prisma as any).candidateInvite, "findUnique", async () => ({
+  stubMethod(prismaModels.candidateInvite, "findUnique", async () => ({
     id: "candidate-expired",
     token: "expired-token",
-    testType: "HEXACO",
+    testType: "TRITAN",
     position: "Engineer",
     name: "Candidate",
     status: "PENDING",
@@ -149,10 +151,10 @@ test("expired token returns expired state on apply model", async () => {
 });
 
 test("duplicate accept returns already-used error", async () => {
-  stubMethod((prisma as any).candidateInvite, "findUnique", async () => ({
+  stubMethod(prismaModels.candidateInvite, "findUnique", async () => ({
     id: "candidate-completed",
     token: "duplicate-token",
-    testType: "HEXACO",
+    testType: "TRITAN",
     position: "Engineer",
     name: "Candidate",
     status: "COMPLETED",
@@ -184,8 +186,8 @@ test("already member invite resolves to already accepted state", async () => {
     org: { name: "Org Three" },
   });
 
-  stubMethod((prisma as any).organizationPendingInvite, "findUnique", async () => invite);
-  stubMethod((prisma as any).userProfile, "upsert", async () =>
+  stubMethod(prismaModels.organizationPendingInvite, "findUnique", async () => invite);
+  stubMethod(prismaModels.userProfile, "upsert", async () =>
     createTestUserProfileRecord({
       id: user.profileId,
       username: user.username,
@@ -195,11 +197,11 @@ test("already member invite resolves to already accepted state", async () => {
       onboardedAt: NOW,
     }),
   );
-  stubMethod((prisma as any).organization, "findUnique", async () => ({
+  stubMethod(prismaModels.organization, "findUnique", async () => ({
     id: "org-3",
     name: "Org Three",
   }));
-  stubMethod((prisma as any).organizationMember, "findFirst", async () => ({
+  stubMethod(prismaModels.organizationMember, "findFirst", async () => ({
     orgId: "org-3",
   }));
   stubRuntime({
@@ -240,8 +242,8 @@ test("unfinished assessment after join uses journey handoff destination", async 
     },
   });
 
-  stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
-  stubMethod((prisma as any).userProfile, "upsert", async () =>
+  stubMethod(prismaModels.teamPendingInvite, "findUnique", async () => invite);
+  stubMethod(prismaModels.userProfile, "upsert", async () =>
     createTestUserProfileRecord({
       id: user.profileId,
       username: user.username,
@@ -251,9 +253,9 @@ test("unfinished assessment after join uses journey handoff destination", async 
       onboardedAt: NOW,
     }),
   );
-  stubMethod((prisma as any).organizationMember, "upsert", async () => ({}));
-  stubMethod((prisma as any).teamMember, "upsert", async () => ({}));
-  stubMethod((prisma as any), "$transaction", async () => []);
+  stubMethod(prismaModels.organizationMember, "upsert", async () => ({}));
+  stubMethod(prismaModels.teamMember, "upsert", async () => ({}));
+  stubMethod(prisma as unknown as Record<string, unknown>, "$transaction", async () => []);
   stubRuntime({
     getActiveOrgMembership: async () => null,
     setActiveOrgContext: async () =>
@@ -295,8 +297,8 @@ test("restricted/frozen acceptance attempts hand off to journey destination", as
       },
     });
 
-    stubMethod((prisma as any).teamPendingInvite, "findUnique", async () => invite);
-    stubMethod((prisma as any).userProfile, "upsert", async () =>
+    stubMethod(prismaModels.teamPendingInvite, "findUnique", async () => invite);
+    stubMethod(prismaModels.userProfile, "upsert", async () =>
       createTestUserProfileRecord({
         id: user.profileId,
         username: user.username,
@@ -306,9 +308,9 @@ test("restricted/frozen acceptance attempts hand off to journey destination", as
         onboardedAt: NOW,
       }),
     );
-    stubMethod((prisma as any).organizationMember, "upsert", async () => ({}));
-    stubMethod((prisma as any).teamMember, "upsert", async () => ({}));
-    stubMethod((prisma as any), "$transaction", async () => []);
+    stubMethod(prismaModels.organizationMember, "upsert", async () => ({}));
+    stubMethod(prismaModels.teamMember, "upsert", async () => ({}));
+    stubMethod(prisma as unknown as Record<string, unknown>, "$transaction", async () => []);
     stubRuntime({
       getActiveOrgMembership: async () => null,
       setActiveOrgContext: async () =>

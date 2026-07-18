@@ -14,6 +14,7 @@ interface ParseOptions {
 
 interface WriteOptions extends ParseOptions {
   testType: string;
+  scope?: string;
   answers: Record<number, number>;
   questionIndex: number;
   revision?: number;
@@ -21,6 +22,7 @@ interface WriteOptions extends ParseOptions {
 
 interface ReadOptions extends ParseOptions {
   testType: string;
+  scope?: string;
 }
 
 function getStorage(): Storage | null {
@@ -93,8 +95,16 @@ function parseSnapshot(raw: string, options: ParseOptions): AssessmentDraftSnaps
   };
 }
 
-export function getAssessmentDraftKey(testType: string): string {
-  return `${ASSESSMENT_DRAFT_STORAGE_PREFIX}${testType}`;
+/**
+ * Draft-kulcs: vendégnél a régi, scope nélküli kulcs (a /try, a landing
+ * CTA-k és a claim-flow változatlanul működik) — bejelentkezett usernél
+ * a profil-id-val scope-olt kulcs, hogy kijelentkezés után a vendég-flow
+ * (vagy egy másik user) ne örökölje a válaszokat.
+ */
+export function getAssessmentDraftKey(testType: string, scope?: string): string {
+  return scope
+    ? `${ASSESSMENT_DRAFT_STORAGE_PREFIX}${testType}__u_${scope}`
+    : `${ASSESSMENT_DRAFT_STORAGE_PREFIX}${testType}`;
 }
 
 export function readAssessmentDraftFromStorage(
@@ -102,7 +112,7 @@ export function readAssessmentDraftFromStorage(
 ): AssessmentDraftSnapshot | null {
   const storage = getStorage();
   if (!storage) return null;
-  const raw = storage.getItem(getAssessmentDraftKey(options.testType));
+  const raw = storage.getItem(getAssessmentDraftKey(options.testType, options.scope));
   if (!raw) return null;
   return parseSnapshot(raw, options);
 }
@@ -111,7 +121,7 @@ export function writeAssessmentDraftToStorage(options: WriteOptions): void {
   const storage = getStorage();
   if (!storage) return;
 
-  const key = getAssessmentDraftKey(options.testType);
+  const key = getAssessmentDraftKey(options.testType, options.scope);
   const revision = options.revision ?? 0;
 
   const existingRaw = storage.getItem(key);
@@ -137,13 +147,13 @@ export function writeAssessmentDraftToStorage(options: WriteOptions): void {
   storage.setItem(key, JSON.stringify(snapshot));
 }
 
-export function clearAssessmentDraftFromStorage(testType: string): void {
+export function clearAssessmentDraftFromStorage(testType: string, scope?: string): void {
   const storage = getStorage();
   if (!storage) return;
-  storage.removeItem(getAssessmentDraftKey(testType));
+  storage.removeItem(getAssessmentDraftKey(testType, scope));
 }
 
-export function hasAssessmentDraftInStorage(testType: string): boolean {
+export function hasAssessmentDraftInStorage(testType: string, scope?: string): boolean {
   return readAssessmentDraftFromStorage({ testType }) !== null;
 }
 

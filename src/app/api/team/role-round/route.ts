@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { canManageTeam } from "@/lib/team-auth";
+import { canManageMeasurements } from "@/lib/measurement-auth";
 
 /**
  * POST /api/team/role-round
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
@@ -47,6 +48,10 @@ export async function POST(req: NextRequest) {
 
   const canManage = await canManageTeam(profile.id, teamId, membership.role);
   if (!canManage) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  // Mérést (szerep-kört) csak tanácsadó indít/zár.
+  if (!canManageMeasurements(membership.role, profile.email, profile.isConsultant)) {
+    return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
+  }
 
   await prisma.team.update({
     where: { id: teamId },

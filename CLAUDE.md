@@ -78,6 +78,12 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
   megfogalmazást használj („hatfaktoros személyiségmodell", „Trita
   személyiségfelmérés"). Kivétel: külső tesztekre utaló kérdőív-opciók,
   edukációs blogcikk.
+- **TRITAN névtér (2026-07-14)**: a dimenziók/facetek megjelenítési nevei a
+  TRITAN-modellt követik (T·R·I·T·A·N = Tempo/Társas energia, Rezonancia,
+  Integritás, Tervezettség/Thoroughness, Alkalmazkodás/Adaptability,
+  Nyitottság). Kanonikus térkép: `src/lib/tritan.ts`; HEXACO-megfeleltetés:
+  `docs/product/tritan-naming.md`. Új felületen NE vezess be saját
+  dimenzió-címkét — a tritan.ts-ből dolgozz.
 - Dimenziókódok: H/E/X/A/C/O (E fordított: magasabb = érzelmesebb).
 - TestType enum a sémában: HEXACO | HEXACO_MODIFIED | BIG_FIVE (utóbbi
   kettőnek nincs kérdésbankja — örökség).

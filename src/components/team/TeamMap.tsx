@@ -31,21 +31,21 @@ const ZONE_LABELS_HU: Record<string, string> = {
 };
 
 const DIM_COLORS: Record<string, string> = {
-  H: "var(--color-visual-gradient-indigo)",
-  E: "#EC4899",
-  X: "var(--color-state-warning-strong)",
-  A: "var(--color-state-success-strong)",
-  C: "var(--color-visual-gradient-violet)",
-  O: "#06B6D4",
+  INTE: "var(--color-visual-gradient-indigo)",
+  RESO: "#EC4899",
+  TEMP: "var(--color-state-warning-strong)",
+  ADAP: "var(--color-state-success-strong)",
+  THOR: "var(--color-visual-gradient-violet)",
+  OPEN: "#06B6D4",
 };
 
 const DIM_NAMES: Record<string, string> = {
-  H: "Őszinteség",
-  E: "Érzelmesség",
-  X: "Extraverzió",
-  A: "Barátságosság",
-  C: "Lelkiism.",
-  O: "Nyitottság",
+  INTE: "Integritás",
+  RESO: "Rezonancia",
+  TEMP: "Társas energia",
+  ADAP: "Alkalmazkodás",
+  THOR: "Lelkiism.",
+  OPEN: "Nyitottság",
 };
 
 // Keep DIM_NAMES available (used if needed in future)
@@ -53,7 +53,7 @@ void DIM_NAMES;
 
 // Placement (skillLevel/growthPotential/confidence) is computed server-side
 // by resolveContributionPlacement in @/lib/team-intelligence — weighted
-// HEXACO composites with band-edge confidence, not raw thresholds.
+// TRITAN composites with band-edge confidence, not raw thresholds.
 
 const CONFIDENCE_LABELS: Record<
   IntelligenceMember["placementConfidence"],
@@ -122,14 +122,14 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
                 <div
                   className="h-full rounded-full"
                   style={{
-                    width: `${member.hexaco[k as keyof typeof member.hexaco]}%`,
+                    width: `${member.tritan[k as keyof typeof member.tritan]}%`,
                     background: DIM_COLORS[k],
                     opacity: 0.85,
                   }}
                 />
               </div>
               <span className="w-8 text-right font-mono text-[10px] text-ink-body">
-                {member.hexaco[k as keyof typeof member.hexaco]}%
+                {member.tritan[k as keyof typeof member.tritan]}%
               </span>
             </div>
           ))}

@@ -1,5 +1,6 @@
 'use client'
 
+import { estimateAssessmentMinutes } from "@/lib/questions/types";
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
@@ -29,6 +30,8 @@ interface AssessmentClientProps {
   initialDraft?: { answers: Record<string, number>; currentPage: number }
   clearDraft?: boolean
   guestMode?: boolean
+  /** Bejelentkezett user profil-id-ja — a localStorage-draft userhez kötéséhez */
+  draftScope?: string
 }
 
 export function AssessmentClient({
@@ -39,6 +42,7 @@ export function AssessmentClient({
   initialDraft,
   clearDraft = false,
   guestMode = false,
+  draftScope,
 }: AssessmentClientProps) {
   const router = useRouter()
   const { showToast } = useToast()
@@ -89,7 +93,7 @@ export function AssessmentClient({
   // After hydration, check localStorage for guest draft and resolve showIntro
   useEffect(() => {
     if (showIntro !== null) return
-    if (readAssessmentDraftFromStorage({ testType })) {
+    if (readAssessmentDraftFromStorage({ testType, scope: draftScope })) {
       setShowIntro(false)
       return
     }
@@ -145,11 +149,11 @@ export function AssessmentClient({
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
   useEffect(() => {
     if (clearDraft) {
-      clearAssessmentDraftFromStorage(testType)
+      clearAssessmentDraftFromStorage(testType, draftScope)
       return
     }
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
-      clearAssessmentDraftFromStorage(testType)
+      clearAssessmentDraftFromStorage(testType, draftScope)
       localDraftRevisionRef.current = 0
       const parsedAnswers: Record<number, number> = {}
       for (const [key, rawValue] of Object.entries(initialDraft.answers)) {
@@ -165,6 +169,7 @@ export function AssessmentClient({
     }
     const localDraft = readAssessmentDraftFromStorage({
       testType,
+      scope: draftScope,
       questionIds: questionIdSet,
       totalQuestions,
     })
@@ -197,6 +202,7 @@ export function AssessmentClient({
 
       const nextSnapshot = readAssessmentDraftFromStorage({
         testType,
+        scope: draftScope,
         questionIds: questionIdSet,
         totalQuestions,
       })
@@ -224,12 +230,13 @@ export function AssessmentClient({
   // Save draft to localStorage on every meaningful change.
   useEffect(() => {
     if (answeredCount === 0) {
-      clearAssessmentDraftFromStorage(testType)
+      clearAssessmentDraftFromStorage(testType, draftScope)
       return
     }
     localDraftRevisionRef.current += 1
     writeAssessmentDraftToStorage({
       testType,
+      scope: draftScope,
       answers,
       questionIndex,
       questionIds: questionIdSet,
@@ -369,7 +376,7 @@ export function AssessmentClient({
       }
 
       clearInterval(progressInterval)
-      clearAssessmentDraftFromStorage(testType)
+      clearAssessmentDraftFromStorage(testType, draftScope)
 
       const rampInterval = setInterval(() => {
         setEvaluationProgress((prev) => {
@@ -514,7 +521,7 @@ export function AssessmentClient({
 
   if (showIntro) {
     const steps = [
-      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-white", title: t("assessment.introStep1", locale), sub: t("assessment.introStep1Sub", locale) },
+      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-white", title: t("assessment.introStep1", locale), sub: tf("assessment.introStep1Sub", locale, { count: totalQuestions }) },
       { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
       { num: 3, style: "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
     ]
@@ -545,7 +552,7 @@ export function AssessmentClient({
                 </span>
               </div>
               <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-[var(--color-text-primary)] lg:text-[28px]">
-                {t("assessment.introHeadline1", locale)}
+                {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
                 <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
               <p className="mb-5 max-w-[360px] text-sm leading-relaxed text-[var(--color-text-muted)]">
@@ -564,7 +571,7 @@ export function AssessmentClient({
                 {t("assessment.introStart", locale)}
               </button>
               <p className="mt-2.5 text-center text-[11px] text-[var(--color-text-muted)] lg:text-left">
-                {t("assessment.introMeta", locale)}
+                {tf("assessment.introMeta", locale, { count: totalQuestions, minutes: estimateAssessmentMinutes(totalQuestions) })}
               </p>
             </div>
 

@@ -49,7 +49,7 @@ vi.mock("@/components/ui/Toast", () => ({
   }),
 }));
 
-const TEST_TYPE = "HEXACO" as TestType;
+const TEST_TYPE = "TRITAN" as TestType;
 const TOTAL_QUESTIONS = 10;
 const QUESTIONS = Array.from({ length: TOTAL_QUESTIONS }, (_, index) => ({
   id: 101 + index,
@@ -115,7 +115,7 @@ function renderAssessmentClient(
   return render(
     <AssessmentClient
       testType={TEST_TYPE}
-      testName="HEXACO"
+      testName="TRITAN"
       totalQuestions={TOTAL_QUESTIONS}
       questions={QUESTIONS}
       guestMode

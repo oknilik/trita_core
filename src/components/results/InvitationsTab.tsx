@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
@@ -269,10 +270,12 @@ export function InvitationsTab({
           </p>
           <div className="mt-3">
             <Link
-              href="/onboarding?intent=team"
+              href={isConsultingLed() ? "/contact" : "/onboarding?intent=team"}
               className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[#dcccb5] bg-white px-4 text-[11px] font-semibold text-[#7d5a40] transition hover:bg-[#fff7ec]"
             >
-              {locale === "hu" ? "Csapat út megnyitása" : "Open team path"}
+              {isConsultingLed()
+                ? (locale === "hu" ? "Beszéljünk a csapatodról" : "Talk to us about your team")
+                : (locale === "hu" ? "Csapat út megnyitása" : "Open team path")}
             </Link>
           </div>
         </div>

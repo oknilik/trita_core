@@ -24,18 +24,30 @@ const multiTeamContext: WorkspaceNavContext = {
   ],
 };
 
-test("admin topnav contains the full IA menu", () => {
+test("admin topnav is the simplified IA menu (no analytics)", () => {
   const navItems = buildWorkspaceNavigation("org_admin", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "teams", "hiring", "org", "analytics"]);
+  assert.deepEqual(ids, ["home", "teams", "hiring", "org"]);
+});
+
+test("admin teams and org entries are plain links into the simple org page", () => {
+  const navItems = buildWorkspaceNavigation("org_admin", baseContext);
+  const teamsItem = navItems.find((item) => item.id === "teams");
+  const orgItem = navItems.find((item) => item.id === "org");
+
+  assert.equal(teamsItem?.kind, "link");
+  assert.equal(teamsItem?.primaryHref, "/org/org_1?tab=teams");
+  assert.equal(orgItem?.kind, "link");
+  assert.equal(orgItem?.primaryHref, "/org/org_1");
+  assert.equal(orgItem?.badge, 2);
 });
 
 test("manager topnav omits admin-only organization menu", () => {
   const navItems = buildWorkspaceNavigation("org_manager", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "teams", "hiring", "analytics"]);
+  assert.deepEqual(ids, ["home", "teams", "hiring"]);
   assert.equal(ids.includes("org"), false);
 });
 
@@ -48,29 +60,21 @@ test("manager teams dropdown lists all accessible teams (member or manager)", ()
   assert.equal(teamsItem.primaryHref, "/team");
 
   const childLabels = teamsItem.items?.map((item) => item.label) ?? [];
-  assert.deepEqual(childLabels, ["Csapataim", "Alpha Team", "Beta Team", "Observer körök"]);
+  assert.deepEqual(childLabels, ["Csapataim", "Alpha Team", "Beta Team"]);
 
   const childHrefs = teamsItem.items?.map((item) => item.href) ?? [];
   assert.deepEqual(childHrefs, [
     "/team",
     "/team/team_1?tab=overview",
     "/team/team_2?tab=overview",
-    "/org/org_1?tab=campaigns",
   ]);
 });
 
-test("manager analytics dropdown includes report entry for each accessible team", () => {
-  const navItems = buildWorkspaceNavigation("org_manager", multiTeamContext);
-  const analyticsItem = navItems.find((item) => item.id === "analytics");
-
-  assert.ok(analyticsItem);
-  assert.equal(analyticsItem.kind, "dropdown");
-
-  const childLabels = analyticsItem.items?.map((item) => item.label) ?? [];
-  assert.deepEqual(childLabels, ["Csapatriportok", "Alpha Team", "Beta Team"]);
-
-  const childHrefs = analyticsItem.items?.map((item) => item.href) ?? [];
-  assert.deepEqual(childHrefs, ["/team", "/team/team_1?tab=overview", "/team/team_2?tab=overview"]);
+test("analytics menu is retired for every role", () => {
+  for (const role of ["org_admin", "org_manager", "self"] as const) {
+    const navItems = buildWorkspaceNavigation(role, multiTeamContext);
+    assert.equal(navItems.some((item) => item.id === "analytics"), false);
+  }
 });
 
 test("manager cannot see admin-only org features in visibility model", () => {

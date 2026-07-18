@@ -1,3 +1,4 @@
+import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -6,19 +7,22 @@ import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-auth";
+import { isPlatformAdminEmail } from "@/lib/measurement-auth";
+import {
+  getCurrentStepType,
+  CAMPAIGN_STEP_LABELS,
+  CAMPAIGN_STEP_LINKS,
+  isCampaignStepType,
+} from "@/lib/campaign-steps-core";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
-import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
 import {
   DashboardMetricCard,
   DashboardPanel,
   DashboardSectionHeader,
-  DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
-import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
-import { ProgressChecklist } from "@/components/journey/ProgressChecklist";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
@@ -35,7 +39,6 @@ import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
 import { TeamRoleSection } from "@/components/team/TeamRoleSection";
 import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
-import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import { TeamReportEditor } from "@/components/team/TeamReportEditor";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { TeamReportView } from "@/components/team/TeamReportView";
@@ -124,8 +127,10 @@ export default async function TeamDetailPage({
     : "overview";
   if (!userId) redirect("/sign-in");
 
+  await requireOnboardedByClerkId(userId);
+
   const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId }, select: { id: true },
+    where: { clerkId: userId }, select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
   const deepLinkFallback = await resolveJourneyFallbackForProfileId(profile.id);
@@ -143,12 +148,39 @@ export default async function TeamDetailPage({
     : null;
   const orgMemberRole = orgMembership?.role ?? null;
   if (!orgMemberRole) redirect(deepLinkFallback);
+
+  // A néző következő nyitott mérés-lépése a csapat aktív kampányaiban
+  // (több-lépéses kampány: a lépések sorban nyílnak meg).
+  const stepCandidates = await prisma.campaignParticipant.findMany({
+    where: {
+      userId: profile.id,
+      campaign: { teamId, status: "ACTIVE" },
+    },
+    orderBy: { addedAt: "asc" },
+    select: {
+      currentStep: true,
+      campaign: { select: { name: true, type: true, steps: true } },
+    },
+  });
+  const pendingMeasurement = stepCandidates
+    .map((p) => {
+      const stepType = getCurrentStepType(p.campaign, p);
+      return stepType && isCampaignStepType(stepType)
+        ? { campaignName: p.campaign.name, stepType }
+        : null;
+    })
+    .find((v): v is NonNullable<typeof v> => v !== null) ?? null;
   const orgId = team.orgId;
   if (!orgId) redirect(deepLinkFallback);
 
   const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
   if (!hasTeamAccess) redirect(deepLinkFallback);
-  const canViewRaw = canViewRawTeamResults(orgMemberRole);
+  // Tanácsadói felület: ORG_CONSULTANT szerep VAGY platform-admin fiók
+  // (konzultáció-vezérelt működés — lásd lib/measurement-auth.ts).
+  const canViewRaw =
+    canViewRawTeamResults(orgMemberRole) ||
+    profile.isConsultant ||
+    isPlatformAdminEmail(profile.email);
   // Raw-result tabs are consultant-only; everyone else gets the progress view.
   if (!canViewRaw && (activeTab === "intelligence" || activeTab === "profile" || activeTab === "teamRole")) {
     redirect(`/team/${teamId}?tab=overview`);
@@ -222,24 +254,24 @@ export default async function TeamDetailPage({
   if (!teamData) notFound();
 
   const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => {
-    const hexaco = m.scores
+    const tritan = m.scores
       ? {
-          H: Math.round(m.scores.H ?? 50),
-          E: Math.round(m.scores.E ?? 50),
-          X: Math.round(m.scores.X ?? 50),
-          A: Math.round(m.scores.A ?? 50),
-          C: Math.round(m.scores.C ?? 50),
-          O: Math.round(m.scores.O ?? 50),
+          INTE: Math.round(m.scores.INTE ?? 50),
+          RESO: Math.round(m.scores.RESO ?? 50),
+          TEMP: Math.round(m.scores.TEMP ?? 50),
+          ADAP: Math.round(m.scores.ADAP ?? 50),
+          THOR: Math.round(m.scores.THOR ?? 50),
+          OPEN: Math.round(m.scores.OPEN ?? 50),
         }
-      : { H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 };
+      : { INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 };
 
-    const placement = resolveContributionPlacement(hexaco);
+    const placement = resolveContributionPlacement(tritan);
 
     return {
       id: m.userId,
       name: m.displayName,
       initials: getAvatarMonogram(m.displayName, { length: 2 }),
-      hexaco,
+      tritan,
       hasAssessmentData: !!m.scores,
       skillLevel: placement.skillLevel,
       growthPotential: placement.growthPotential,
@@ -420,7 +452,7 @@ export default async function TeamDetailPage({
             </h1>
             <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-body">
               {isHu
-                ? "A stabil értelmezéshez legalább 3 kitöltött self assessment szükséges. Addig a nézet inkább adatgyűjtési fókuszban marad."
+                ? "A stabil értelmezéshez legalább 3 kitöltött önértékelés szükséges. Addig a nézet inkább adatgyűjtési fókuszban marad."
                 : "At least 3 completed self-assessments are required for stable interpretation. Until then, this view stays in data-collection mode."}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -735,7 +767,7 @@ export default async function TeamDetailPage({
           target: patternTarget,
         });
   const recommendedAction = (() => {
-    if (canManageTeamActions && teamData.orgId) {
+    if (canViewRaw && canManageTeamActions && teamData.orgId) {
       return {
         title: t("teamDetail.nextStep", locale),
         description: hasObserver
@@ -786,68 +818,9 @@ export default async function TeamDetailPage({
     pendingInviteCount: teamData.pendingInvites.length,
     recommendedAction,
   });
-  const teamLayerStatuses = evaluateProductLayersForScope(isHu ? "hu" : "en", {
-    hasSelfAssessmentStarted: teamData.memberCount > 0,
-    hasSelfAssessment: completedCount > 0,
-    hasTeamRoleStarted: completedCount > 0,
-    hasTeamRole: hasPattern,
-    hasStrengthProfile: completedCount > 0,
-    hasObserverFeedback:
-      hasObserver && teamData.activeCampaign!.teamObserverDoneCount > 0,
-    hasTeamInsights: hasPattern,
-    hasOrgCampaign: hasObserver,
-    hasValuesLayerStarted: false,
-    hasValuesLayer: false,
-    hasConflictLayerStarted: false,
-    hasConflictLayer: false,
-    hasPlusAccess: true,
-  }, "dashboard", "team");
-  const teamLayerCompletedCount = teamLayerStatuses.filter(
-    (layer) => layer.status === "COMPLETED",
-  ).length;
   const statusLine = teamDashboardVm.heroSummary.summary;
   const heroChips = teamDashboardVm.heroSummary.chips;
   const teamHeroTheme = SURFACE_HERO_THEME.team;
-  const teamChecklistItems = [
-    {
-      id: "team-membership",
-      title: t("teamDetail.checkCoreTeam", locale),
-      detail: tf("teamDetail.checkCoreTeamDetail", locale, { count: teamData.memberCount }),
-      done: teamData.memberCount >= 3,
-      cta: teamData.memberCount >= 3
-        ? undefined
-        : {
-            label: t("teamDetail.checkCoreTeamCta", locale),
-            href: `/team/${teamId}?tab=members`,
-          },
-    },
-    {
-      id: "team-assessment",
-      title: t("teamDetail.checkAssessments", locale),
-      detail: tf("teamDetail.checkAssessmentsDetail", locale, { done: completedCount }),
-      done: completedCount >= 3,
-      cta: completedCount >= 3
-        ? undefined
-        : {
-            label: t("teamDetail.checkAssessmentsCta", locale),
-            href: `/team/${teamId}?tab=members`,
-          },
-    },
-    {
-      id: "team-feedback-round",
-      title: t("teamDetail.checkFeedbackRound", locale),
-      detail: hasObserver
-        ? t("teamDetail.checkFeedbackActive", locale)
-        : t("teamDetail.checkFeedbackNone", locale),
-      done: hasObserver,
-      cta: hasObserver || !teamData.orgId
-        ? undefined
-        : {
-            label: t("teamDetail.checkFeedbackCta", locale),
-            href: `/org/${teamData.orgId}?tab=campaigns`,
-          },
-    },
-  ];
 
   return (
     <PlatformPageShell
@@ -901,7 +874,7 @@ export default async function TeamDetailPage({
                   {t("teamDetail.heroViewPattern", locale)}
                 </Link>
               ) : null}
-              {canManageTeamActions && teamData.orgId ? (
+              {canViewRaw && canManageTeamActions && teamData.orgId ? (
                 <Link
                   href={
                     hasObserver
@@ -915,7 +888,7 @@ export default async function TeamDetailPage({
                     : t("teamDetail.heroStartRound", locale)}
                 </Link>
               ) : null}
-              {!canManageTeamActions && isOrgManager && teamData.orgId ? (
+              {canViewRaw && !canManageTeamActions && isOrgManager && teamData.orgId ? (
                 <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.45]">
                   {hasObserver
                     ? t("teamDetail.heroManageRound", locale)
@@ -996,6 +969,43 @@ export default async function TeamDetailPage({
           />
         ) : null}
 
+        {/* A következő nyitott mérés-lépés — kitöltés-felhívás */}
+        {pendingMeasurement ? (
+          <section>
+            <div className="flex flex-col gap-3 rounded-[18px] border border-sage/35 bg-sage/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-sage-dark">
+                  {isHu
+                    ? CAMPAIGN_STEP_LABELS[pendingMeasurement.stepType].hu
+                    : CAMPAIGN_STEP_LABELS[pendingMeasurement.stepType].en}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-ink">
+                  {pendingMeasurement.campaignName}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                  {pendingMeasurement.stepType === "PSYCH_SAFETY"
+                    ? isHu
+                      ? "8 rövid állítás, ~2 perc. A válaszaid névtelenek — csak a csapatszintű összesítés látszik, legalább 3 kitöltéstől."
+                      : "8 short statements, ~2 minutes. Your answers are anonymous — only the team-level aggregate is shown, from at least 3 responses."
+                    : pendingMeasurement.stepType === "TEAM_ROLE"
+                      ? isHu
+                        ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban — a becslés helyett mért szerep-térkép készül."
+                        : "A short questionnaire about the roles you play in the team — a measured role map replaces the estimate."
+                      : isHu
+                        ? "Töltsd ki az önértékelést (~10 perc) — ez az alapja a csapatképnek, és utána nyílnak a további mérések."
+                        : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
+                </p>
+              </div>
+              <Link
+                href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
+                className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-ink px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
+              >
+                {isHu ? "Kitöltöm most" : "Fill it in now"}
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
           <DashboardSectionHeader label={t("teamDetail.sectionSnapshot", locale)} className="mb-4" />
@@ -1046,6 +1056,7 @@ export default async function TeamDetailPage({
           </div>
         </section>
 
+        {canViewRaw ? (
         <section id="team-intelligence">
           <DashboardSectionHeader
             label={t("teamComp.tabIntelligence", locale)}
@@ -1107,16 +1118,12 @@ export default async function TeamDetailPage({
             ))}
           </div>
         </section>
+        ) : null}
 
+        {!canViewRaw ? (
         <section>
           <DashboardSectionHeader label={t("teamComp.teamPatternEyebrow", locale)} className="mb-4" />
-          {canViewRaw ? (
-            <TeamPatternCard
-              patternResult={teamData.patternResult}
-              totalMembers={teamData.memberCount}
-              isHu={isHu}
-            />
-          ) : (
+          {(
             <DashboardPanel className="p-6">
               {publishedReport ? (
                 <div className="flex items-start gap-3">
@@ -1156,7 +1163,7 @@ export default async function TeamDetailPage({
                   </p>
                   <p className="mt-1 text-xs leading-relaxed text-ink-body">
                     {isHu
-                      ? "A csapat-szintű eredményeket a tanácsadó összesíti és validálja — a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
+                      ? "A csapatszintű eredményeket a tanácsadó összesíti és validálja — a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
                       : "Team-level results are aggregated and validated by your consultant — they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
                   </p>
                 </div>
@@ -1165,8 +1172,9 @@ export default async function TeamDetailPage({
             </DashboardPanel>
           )}
         </section>
+        ) : null}
 
-        {(canViewRaw || isOrgManager) && teamData.orgId ? (
+        {canViewRaw && teamData.orgId ? (
           <TeamMeasurementTimeline
             items={(
               await prisma.campaign.findMany({
@@ -1192,124 +1200,7 @@ export default async function TeamDetailPage({
           />
         ) : null}
 
-        <section>
-          <DashboardSectionHeader label={t("teamDetail.sectionJourney", locale)} className="mb-4" />
-          <ProgressChecklist
-            eyebrow={t("teamDetail.journeyProgress", locale)}
-            title={t("teamDetail.journeyTitle", locale)}
-            description={t("teamDetail.journeyDescription", locale)}
-            items={teamChecklistItems}
-            nextStepLabel={t("teamDetail.journeyNextStep", locale)}
-          />
-        </section>
 
-        <section>
-          <DashboardSectionHeader label={t("teamDetail.sectionLayers", locale)} className="mb-4" />
-          <DashboardPanel className="p-5">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                {t("teamDetail.layersLabel", locale)}
-              </p>
-              <DashboardStatusChip
-                label={`${teamLayerCompletedCount}/${teamLayerStatuses.length} ${t("teamDetail.layersDoneSuffix", locale)}`}
-                tone="sage"
-              />
-            </div>
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {teamLayerStatuses.map((layer) => {
-                const tone =
-                  layer.status === "COMPLETED"
-                    ? "sage"
-                    : layer.status === "IN_PROGRESS"
-                      ? "bronze"
-                      : layer.status === "AVAILABLE"
-                        ? "warm"
-                        : "muted";
-                const statusLabel = layer.status === "COMPLETED"
-                  ? t("teamDetail.statusCompleted", locale)
-                  : layer.status === "IN_PROGRESS"
-                    ? t("teamDetail.statusInProgress", locale)
-                    : layer.status === "AVAILABLE"
-                      ? t("teamDetail.statusAvailable", locale)
-                      : t("teamDetail.statusLocked", locale);
-
-                return (
-                  <div key={layer.id} className="rounded-[14px] border border-sand bg-cream px-3 py-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-[12px] font-semibold text-ink">{layer.label}</p>
-                      <DashboardStatusChip label={statusLabel} tone={tone} />
-                    </div>
-                    <p className="mt-1 text-[11px] leading-relaxed text-ink-body">
-                      {layer.description}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </DashboardPanel>
-        </section>
-
-        {/* ═══ TAGOK ═══ */}
-        <section>
-          <DashboardSectionHeader label={t("teamDetail.sectionPeople", locale)} className="mb-4" />
-          <p className="mb-2 text-[10px] font-medium uppercase tracking-[1px] text-ink-body">
-            {t("teamDetail.membersLabel", locale)}
-          </p>
-          <div className="divide-y divide-[var(--color-border-default)] rounded-[24px] border border-sand bg-white shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
-            {teamData.members.map((member) => {
-              const isDone = member.scores !== null;
-              const avgScore = isDone && member.scores
-                ? Math.round(Object.values(member.scores).reduce((s, v) => s + v, 0) / Object.values(member.scores).length)
-                : null;
-              const [from, to] = getAvatarGradient(member.displayName);
-              const initial = getAvatarMonogram(member.displayName, {
-                length: 1,
-              });
-
-              return (
-                <div key={member.id} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-cream/65">
-                  <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white"
-                    style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
-                  >
-                    {initial}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-medium text-ink">{member.displayName}</p>
-                    <p className="text-[10px] text-ink-body">{member.role}</p>
-                  </div>
-                  {/* Status badge */}
-                  {isDone ? (
-                    <DashboardStatusChip label={t("teamDetail.memberDone", locale)} tone="sage" />
-                  ) : member.joinedAt ? (
-                    <DashboardStatusChip label={t("teamDetail.memberInProgress", locale)} tone="warm" />
-                  ) : (
-                    <DashboardStatusChip label={t("teamDetail.memberWaiting", locale)} tone="bronze" />
-                  )}
-                  {/* Score */}
-                  <span className="w-8 text-right text-[11px] font-medium text-ink">
-                    {avgScore ?? "—"}
-                  </span>
-                  {/* TODO: wire member profile link and remind action when backend supports it */}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ═══ VISSZAJELZÉSI KÖR ═══ */}
-        <section>
-          <DashboardSectionHeader label={t("teamDetail.sectionNextStep", locale)} className="mb-4" />
-          <JourneyNextStepCard
-            eyebrow={teamDashboardVm.recommendedAction.title}
-            title={hasObserver
-              ? tf("teamDetail.nextStepActiveFeedback", locale, { count: teamData.activeCampaign!.teamObserverDoneCount })
-              : t("teamDetail.nextStepFocusInsight", locale)}
-            description={teamDashboardVm.recommendedAction.description}
-            primary={teamDashboardVm.recommendedAction.primary}
-            secondary={teamDashboardVm.recommendedAction.secondary}
-          />
-        </section>
 
     </PlatformPageShell>
   );

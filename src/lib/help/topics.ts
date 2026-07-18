@@ -51,8 +51,8 @@ const TOPICS: HelpTopic[] = [
           en: "Can I try it for free?",
         },
         answer: {
-          hu: "Igen. A vendégteszt regisztráció nélkül kitölthető, kb. 15 percet vesz igénybe, és a végén azonnal kapsz egy első személyiségképet.",
-          en: "Yes. The guest test requires no registration, takes about 15 minutes, and gives you a first personality profile right away.",
+          hu: "Igen. A vendégteszt regisztráció nélkül kitölthető, kb. 8-10 percet vesz igénybe, és a végén azonnal kapsz egy első személyiségképet.",
+          en: "Yes. The guest test requires no registration, takes about 8-10 minutes, and gives you a first personality profile right away.",
         },
         link: {
           href: "/try",
@@ -67,8 +67,8 @@ const TOPICS: HelpTopic[] = [
           en: "How does the assessment work?",
         },
         answer: {
-          hu: "A felmérés egy hatfaktoros személyiségmodellre épül, és kb. 15 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
-          en: "The assessment is based on a six-factor personality model and takes about 15 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
+          hu: "A felmérés egy hatfaktoros személyiségmodellre épül, és kb. 8-10 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
+          en: "The assessment is based on a six-factor personality model and takes about 8-10 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
         },
         audiences: ["public"],
       },
@@ -135,8 +135,8 @@ const TOPICS: HelpTopic[] = [
           en: "How long does it take? Can I pause?",
         },
         answer: {
-          hu: "A kitöltés kb. 15 perc. A válaszaid automatikusan mentődnek, így bármikor megszakíthatod és később ugyanonnan folytathatod.",
-          en: "It takes about 15 minutes. Your answers are saved automatically, so you can pause anytime and continue later from where you left off.",
+          hu: "A kitöltés kb. 8-10 perc. A válaszaid automatikusan mentődnek, így bármikor megszakíthatod és később ugyanonnan folytathatod.",
+          en: "It takes about 8-10 minutes. Your answers are saved automatically, so you can pause anytime and continue later from where you left off.",
         },
         link: {
           href: "/assessment",

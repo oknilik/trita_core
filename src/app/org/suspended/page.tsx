@@ -29,7 +29,7 @@ export default function OrgSuspendedPage() {
         </div>
 
         <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-3">
-          // inaktív
+          {"// inaktív"}
         </p>
         <h1 className="font-fraunces text-2xl text-ink mb-3">
           Szervezet inaktív

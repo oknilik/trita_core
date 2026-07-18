@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "16 csapatminta — Melyik a tiéd?",
     description:
-      "Interaktív csapatminta felfedező. 4 tengely, 16 mintázat, személyre szabott insightok.",
+      "Interaktív csapatminta felfedező. 4 tengely, 16 mintázat, személyre szabott meglátások.",
     url: "https://trita.io/patterns",
     siteName: "Trita",
     locale: "hu_HU",
