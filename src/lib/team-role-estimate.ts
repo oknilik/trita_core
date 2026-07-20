@@ -12,15 +12,15 @@ type WeightMap = Partial<Record<TritanDimCode, number>>;
 // Weights derived from personality-role literature
 // Each role gets a weighted sum of TRITAN dim scores (positive = boosted by high score)
 export const TRITAN_TEAM_ROLE_WEIGHTS: Record<TeamRoleCode, WeightMap> = {
-  PL: { OPEN: +0.45, THOR: -0.15, INTE: -0.10, TEMP: -0.10 }, // Creative, unconventional
-  RI: { TEMP: +0.45, ADAP: +0.20, OPEN: +0.15, RESO: -0.10 }, // Outgoing, networker
-  CO: { ADAP: +0.30, INTE: +0.30, THOR: +0.20, TEMP: +0.10 }, // Mature, trusting chair
-  SH: { TEMP: +0.40, ADAP: -0.30, RESO: -0.20, THOR: +0.10 }, // Drive, challenge, impatient
-  ME: { THOR: +0.30, OPEN: +0.25, TEMP: -0.20, RESO: -0.10 }, // Sober, strategic, critical
-  TW: { ADAP: +0.45, RESO: +0.15, TEMP: +0.10, INTE: +0.10 }, // Cooperative, diplomatic
-  IM: { THOR: +0.45, INTE: +0.25, OPEN: -0.15, RESO: -0.05 }, // Disciplined, reliable
-  CF: { THOR: +0.30, RESO: +0.25, TEMP: -0.20, OPEN: -0.05 }, // Painstaking, anxious
-  SP: { OPEN: +0.30, THOR: +0.25, TEMP: -0.15, ADAP: -0.05 }, // Single-minded, dedicated
+  OG: { OPEN: +0.45, THOR: -0.15, INTE: -0.10, TEMP: -0.10 }, // Creative, unconventional
+  KE: { TEMP: +0.45, ADAP: +0.20, OPEN: +0.15, RESO: -0.10 }, // Outgoing, networker
+  KO: { ADAP: +0.30, INTE: +0.30, THOR: +0.20, TEMP: +0.10 }, // Mature, trusting chair
+  HA: { TEMP: +0.40, ADAP: -0.30, RESO: -0.20, THOR: +0.10 }, // Drive, challenge, impatient
+  ER: { THOR: +0.30, OPEN: +0.25, TEMP: -0.20, RESO: -0.10 }, // Sober, strategic, critical
+  CS: { ADAP: +0.45, RESO: +0.15, TEMP: +0.10, INTE: +0.10 }, // Cooperative, diplomatic
+  MV: { THOR: +0.45, INTE: +0.25, OPEN: -0.15, RESO: -0.05 }, // Disciplined, reliable
+  MI: { THOR: +0.30, RESO: +0.25, TEMP: -0.20, OPEN: -0.05 }, // Painstaking, quality-focused
+  SZ: { OPEN: +0.30, THOR: +0.25, TEMP: -0.15, ADAP: -0.05 }, // Single-minded, dedicated
 };
 
 // Estimate TeamRole scores from TRITAN dimension scores (0-100 range)

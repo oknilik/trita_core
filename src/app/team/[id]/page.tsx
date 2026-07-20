@@ -16,6 +16,7 @@ import {
 } from "@/lib/campaign-steps-core";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
+import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
 import {
   DashboardMetricCard,
@@ -696,7 +697,11 @@ export default async function TeamDetailPage({
           canManage={isOrgManager}
           isHu={isHu}
         />
-        <TeamRoleSection members={teamData.members} isHu={isHu} />
+        <TeamRoleSection
+          members={teamData.members}
+          isHu={isHu}
+          peerProfiles={Object.fromEntries(await buildTeamPeerRoleProfiles(teamId))}
+        />
       </PlatformPageShell>
     );
   }

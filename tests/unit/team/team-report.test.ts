@@ -70,7 +70,7 @@ const richAggregates: TeamReportAggregates = {
     questionnaireCount: 1,
     estimateCount: 3,
   },
-  roleGaps: ["PL", "SH"],
+  roleGaps: ["OG", "HA"],
   evidence: { quality: "partial", observerEdgeCount: 0, estimatedEdgeCount: 6 },
   dynamics: {
     alignedCount: 1,

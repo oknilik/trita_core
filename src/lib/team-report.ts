@@ -19,6 +19,8 @@ import {
   getPsychSafetyItem,
   PSYCH_SAFETY_ACTIONS,
 } from "@/lib/psych-safety";
+import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
+import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -76,6 +78,22 @@ export interface TeamReportAggregates {
     campaignName: string;
     campaignStatus: string;
     measuredAt: string;
+  } | null;
+  /**
+   * Csapattársi szerep-visszajelzés (peer-kör) aggregátuma. Opcionális:
+   * régebbi pillanatképekben nem létezik; null, ha nem volt peer-kör.
+   * Kizárólag küszöb (3 értékelő) feletti, aggregált adat.
+   */
+  peerRoles?: {
+    /** Tagok, akiknél a csapatkép a küszöb felett összeállt */
+    ratedCount: number;
+    memberCount: number;
+    /** szerepkód → hányszor szerepel a peer-top3-ban (küszöb feletti tagoknál) */
+    topRoleCounts: Record<string, number>;
+    /** Hány tagnál tér el az önkép és a csapatkép top-3 halmaza (ahol mindkettő él) */
+    mismatchCount: number;
+    /** Hány tagnál élt mindkét oldal az összevetéshez */
+    comparedCount: number;
   } | null;
 }
 
@@ -255,6 +273,41 @@ export async function buildTeamReportAggregates(
     }
   }
 
+  // Csapattársi szerep-visszajelzés (peer-kör) — aggregált, küszöb feletti kép.
+  let peerRoles: TeamReportAggregates["peerRoles"] = null;
+  const peerProfiles = await buildTeamPeerRoleProfiles(teamId);
+  if (peerProfiles.size > 0) {
+    const topRoleCounts: Record<string, number> = {};
+    let ratedCount = 0;
+    let mismatchCount = 0;
+    let comparedCount = 0;
+    for (const member of teamData.members) {
+      const peer = peerProfiles.get(member.userId);
+      if (!peer || peer.raterCount < TEAM_ROLE_PEER_MIN_RATERS || !peer.scores) {
+        continue;
+      }
+      ratedCount += 1;
+      for (const r of peer.topRoles) {
+        topRoleCounts[r.role] = (topRoleCounts[r.role] ?? 0) + 1;
+      }
+      if (member.teamRoleScores && member.teamRoleSource === "questionnaire") {
+        const selfTop = getTopRoles(member.teamRoleScores as TeamRoleScores, 3);
+        comparedCount += 1;
+        const diff = compareSelfAndPeerTopRoles(selfTop, peer.topRoles);
+        if (diff.peerOnly.length > 0 || diff.selfOnly.length > 0) {
+          mismatchCount += 1;
+        }
+      }
+    }
+    peerRoles = {
+      ratedCount,
+      memberCount,
+      topRoleCounts,
+      mismatchCount,
+      comparedCount,
+    };
+  }
+
   return {
     generatedAt: new Date().toISOString(),
     memberCount,
@@ -275,6 +328,7 @@ export async function buildTeamReportAggregates(
     evidence,
     dynamics,
     psychSafety,
+    peerRoles,
   };
 }
 

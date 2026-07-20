@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { TeamRoleQuestionnaire } from "@/components/assessment/TeamRoleQuestionnaire";
-import type { TeamRoleAnswers } from "@/lib/team-role-scoring";
+import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import type { Locale } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
@@ -15,12 +15,12 @@ export function TeamRolesClient({ locale }: TeamRolesClientProps) {
   const router = useRouter();
 
   const handleComplete = useCallback(
-    async (answers: TeamRoleAnswers) => {
+    async (selections: TeamRoleSelections) => {
       try {
         await fetch("/api/team-roles/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ answers }),
+          body: JSON.stringify({ selections }),
         });
       } catch {
         // Non-critical: redirect regardless

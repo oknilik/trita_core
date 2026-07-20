@@ -29,14 +29,15 @@ interface CampaignWizardProps {
 }
 
 type Step = 1 | 2 | 3 | 4;
-type CampaignType = "OBSERVER_360" | "TEAM_ROLE" | "PSYCH_SAFETY";
+type CampaignType = "OBSERVER_360" | "TEAM_ROLE" | "TEAM_ROLE_360" | "PSYCH_SAFETY";
 
 // Kanonikus lépés-sorrend: személyiség → szerepek → biztonság.
-const STEP_ORDER: CampaignType[] = ["OBSERVER_360", "TEAM_ROLE", "PSYCH_SAFETY"];
+const STEP_ORDER: CampaignType[] = ["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "PSYCH_SAFETY"];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
   OBSERVER_360: "campaignWiz.typeObserverName",
   TEAM_ROLE: "campaignWiz.typeRoleName",
+  TEAM_ROLE_360: "campaignWiz.typeRole360Name",
   PSYCH_SAFETY: "campaignWiz.typePsychName",
 };
 
@@ -62,6 +63,13 @@ const TYPE_CARDS: Array<{
     descKey: "campaignWiz.typeRoleDesc",
     metaKey: "campaignWiz.typeRoleMeta",
     outKey: "campaignWiz.typeRoleOut",
+  },
+  {
+    type: "TEAM_ROLE_360",
+    nameKey: "campaignWiz.typeRole360Name",
+    descKey: "campaignWiz.typeRole360Desc",
+    metaKey: "campaignWiz.typeRole360Meta",
+    outKey: "campaignWiz.typeRole360Out",
   },
   {
     type: "PSYCH_SAFETY",
@@ -230,7 +238,7 @@ export function CampaignWizard({
   // Csapathoz kötött mérések: a szerep-kör és a pszich. biztonság pulse
   // egyetlen cél-csapaton él (az anonim aggregátum is csapatszintű).
   const isTeamLocked = chosenSteps.some(
-    (tp) => tp === "TEAM_ROLE" || tp === "PSYCH_SAFETY",
+    (tp) => tp === "TEAM_ROLE" || tp === "TEAM_ROLE_360" || tp === "PSYCH_SAFETY",
   );
   const canProceedTargeting = isTeamLocked ? targetTeamId !== null : true;
 

@@ -1021,8 +1021,15 @@ export const orgTranslations = {
       hu: "A csapat tagjai kitöltik a szerep-kérdőívet — a becsült szerepek helyett mért szerep-térkép készül.",
       en: "Team members fill out the role questionnaire — a measured role map replaces estimates.",
     },
-    typeRoleMeta: { hu: "~8 perc / fő · egy csapatra indítható", en: "~8 min per member · launched for one team" },
+    typeRoleMeta: { hu: "~4 perc / fő · egy csapatra indítható", en: "~4 min per member · launched for one team" },
     typeRoleOut: { hu: "Eredmény: mért szerep-lefedettség a csapatoldalon és a riportban", en: "Output: measured role coverage on the team page and in the report" },
+    typeRole360Name: { hu: "Csapattársi szerep-visszajelzés", en: "Team role peer feedback" },
+    typeRole360Desc: {
+      hu: "A tagok egymásról jelölik ki a legjellemzőbb viselkedéseket — az önkép mellé mért csapatkép kerül.",
+      en: "Members pick each other's most characteristic behaviours — a measured team view lands next to the self-image.",
+    },
+    typeRole360Meta: { hu: "~3-4 perc / értékelt fő · névtelen, összesített kép (min. 3 értékelő)", en: "~3-4 min per teammate · anonymous, aggregated view (min. 3 raters)" },
+    typeRole360Out: { hu: "Eredmény: önkép vs. csapatkép összevetés a csapatoldalon és a riportban", en: "Output: self-image vs. team view comparison on the team page and in the report" },
     typePsychName: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
     typePsychDesc: {
       hu: "Rövid, anonim csapat-kérdőív arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.",
@@ -1419,6 +1426,26 @@ export const orgTranslations = {
 
     // TeamRoleSection
     estimatedRolesEyebrow: { hu: "csapatszerepek becslése", en: "estimated team roles" },
+    peerEyebrow: { hu: "önkép vs. csapatkép", en: "self-image vs. team view" },
+    peerTitle: { hu: "Így látja a csapat", en: "How the team sees it" },
+    peerDesc: {
+      hu: "A csapattársi visszajelzés-kör összesített képe tagonként — az önkitöltés mellé mért csapatkép kerül. A pötty a csapatkép azon szerepét jelöli, amely az önképben nem szerepel.",
+      en: "The aggregated view from the peer feedback round, per member — a measured team view next to the self-report. The dot marks roles in the team view that don't appear in the self-image.",
+    },
+    peerCoverage: { hu: "{above} / {total} tagnál áll össze a csapatkép (legalább 3 értékelő)", en: "team view available for {above} / {total} members (at least 3 raters)" },
+    peerRaterCount: { hu: "{n} értékelő", en: "{n} raters" },
+    peerBelowThreshold: {
+      hu: "Még kevesebb mint {min} csapattárs adott visszajelzést — az összesített kép a névtelenség védelmében csak a küszöb felett jelenik meg.",
+      en: "Fewer than {min} teammates have responded so far — to protect anonymity, the aggregated view only appears above the threshold.",
+    },
+    peerSelfLabel: { hu: "Önkép (saját kitöltés)", en: "Self-image (own answers)" },
+    peerTeamLabel: { hu: "Csapatkép (társak szerint)", en: "Team view (per teammates)" },
+    peerNoSelf: { hu: "Nincs saját kitöltés — az összevetéshez töltsd ki a szerep-kérdőívet.", en: "No self-report yet — fill in the role questionnaire to compare." },
+    peerDiff: { hu: "Az önképben nem szerepel", en: "Not in the self-image" },
+    peerFootnote: {
+      hu: "A csapatkép névtelen: senki egyéni jelölése nem visszakereshető, és 3 értékelő alatt nem jelenik meg.",
+      en: "The team view is anonymous: no individual's answers can be traced, and nothing is shown below 3 raters.",
+    },
     teamRoleTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
     teamRoleDesc: {
       hu: "A személyiségprofilok alapján becsült csapatszerepkörök. A pontos méréshez minden tagnak ki kell töltenie a csapatszerep kérdőívet.",

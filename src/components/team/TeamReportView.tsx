@@ -31,22 +31,22 @@ const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
 // Hiányzó csapatszerep rövid következménye a vezető nyelvén.
 const ROLE_GAP_HINTS: Record<string, { hu: string; en: string }> = {
-  PL: { hu: "új ötletek külső impulzus nélkül elmaradhatnak", en: "fresh ideas may need outside stimulus" },
-  RI: { hu: "külső lehetőségek feltárása gyengülhet", en: "exploring outside opportunities may weaken" },
-  CO: { hu: "a célok összehangolása és a delegálás sérülhet", en: "goal alignment and delegation may suffer" },
-  SH: { hu: "akadályoknál hiányozhat a lendület", en: "momentum may stall at obstacles" },
-  ME: { hu: "a döntések kritikus mérlegelése gyengülhet", en: "critical evaluation of decisions may weaken" },
-  TW: { hu: "a feszültségoldás és a kohézió sérülhet", en: "tension defusing and cohesion may suffer" },
-  IM: { hu: "az ötletek gyakorlati megvalósítása lassulhat", en: "turning ideas into practice may slow down" },
-  CF: { hu: "a minőségi lezárás és a határidők csúszhatnak", en: "quality closure and deadlines may slip" },
-  SP: { hu: "a mély szakértői tudás hiányozhat", en: "deep specialist knowledge may be missing" },
+  OG: { hu: "új ötletek külső impulzus nélkül elmaradhatnak", en: "fresh ideas may need outside stimulus" },
+  KE: { hu: "külső lehetőségek feltárása gyengülhet", en: "exploring outside opportunities may weaken" },
+  KO: { hu: "a célok összehangolása és a delegálás sérülhet", en: "goal alignment and delegation may suffer" },
+  HA: { hu: "akadályoknál hiányozhat a lendület", en: "momentum may stall at obstacles" },
+  ER: { hu: "a döntések kritikus mérlegelése gyengülhet", en: "critical evaluation of decisions may weaken" },
+  CS: { hu: "a feszültségoldás és a kohézió sérülhet", en: "tension defusing and cohesion may suffer" },
+  MV: { hu: "az ötletek gyakorlati megvalósítása lassulhat", en: "turning ideas into practice may slow down" },
+  MI: { hu: "a minőségi lezárás és a határidők csúszhatnak", en: "quality closure and deadlines may slip" },
+  SZ: { hu: "a mély szakértői tudás hiányozhat", en: "deep specialist knowledge may be missing" },
 };
 
 // Szerep-mátrix oszlopok: gondolkodó / cselekvő / emberközpontú szerepek.
 const ROLE_MATRIX: Array<{ hu: string; en: string; roles: string[] }> = [
-  { hu: "Gondolkodó", en: "Thinking", roles: ["PL", "ME", "SP"] },
-  { hu: "Cselekvő", en: "Action", roles: ["SH", "IM", "CF"] },
-  { hu: "Emberközpontú", en: "People", roles: ["CO", "TW", "RI"] },
+  { hu: "Gondolkodó", en: "Thinking", roles: ["OG", "ER", "SZ"] },
+  { hu: "Cselekvő", en: "Action", roles: ["HA", "MV", "MI"] },
+  { hu: "Emberközpontú", en: "People", roles: ["KO", "CS", "KE"] },
 ];
 
 const QUALITY_LABELS: Record<string, { hu: string; en: string }> = {
@@ -400,6 +400,48 @@ export function TeamReportView({
                 ? `Tagonként a 3 legerősebb szerepet számoljuk: az 1. elsődlegesként, a 2-3. tartalékként. ${agg.roleDistribution.questionnaireCount} valódi kitöltés · ${agg.roleDistribution.estimateCount} becslés.`
                 : `We count each member's 3 strongest roles: the 1st as primary, the 2nd–3rd as backup. ${agg.roleDistribution.questionnaireCount} real fill-out · ${agg.roleDistribution.estimateCount} estimated.`}
             </p>
+
+            {agg.peerRoles && agg.peerRoles.ratedCount > 0 && (
+              <div className="mt-4 border-t border-sand pt-4">
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+                  {isHu
+                    ? "Csapatkép — társértékelésből (névtelen, összesített)"
+                    : "Team view — from peer feedback (anonymous, aggregated)"}
+                </p>
+                <p className="text-xs leading-relaxed text-ink-body">
+                  {isHu
+                    ? `${agg.peerRoles.ratedCount} / ${agg.peerRoles.memberCount} tagnál állt össze a csapatkép (legalább 3 értékelő).`
+                    : `Team view available for ${agg.peerRoles.ratedCount} / ${agg.peerRoles.memberCount} members (at least 3 raters).`}
+                  {agg.peerRoles.comparedCount > 0 && (
+                    <>
+                      {" "}
+                      {isHu
+                        ? `Önkép–csapatkép összevetés ${agg.peerRoles.comparedCount} tagnál: ${agg.peerRoles.mismatchCount} eltéréssel — az eltérések a vezetői debrief kiemelt beszélgetőpontjai.`
+                        : `Self-image vs. team view compared for ${agg.peerRoles.comparedCount} members: ${agg.peerRoles.mismatchCount} with differences — key talking points for the leadership debrief.`}
+                    </>
+                  )}
+                </p>
+                {Object.keys(agg.peerRoles.topRoleCounts).length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {Object.entries(agg.peerRoles.topRoleCounts)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([role, count]) => (
+                        <span
+                          key={role}
+                          className="inline-flex items-center gap-1 rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold text-ink-body"
+                        >
+                          {TEAM_ROLES[role as keyof typeof TEAM_ROLES]
+                            ? isHu
+                              ? TEAM_ROLES[role as keyof typeof TEAM_ROLES].hu
+                              : TEAM_ROLES[role as keyof typeof TEAM_ROLES].en
+                            : role}
+                          <span className="font-mono text-muted">×{count}</span>
+                        </span>
+                      ))}
+                  </div>
+                )}
+              </div>
+            )}
           </DashboardPanel>
         </section>
       )}

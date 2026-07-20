@@ -321,7 +321,7 @@ export function buildTeamIntelligencePriorities({
   );
 
   if (membersWithScores.length >= 4) {
-    const keyRoles: Array<keyof typeof TEAM_ROLES> = ["CO", "SH", "ME"];
+    const keyRoles: Array<keyof typeof TEAM_ROLES> = ["KO", "HA", "ER"];
     const presentTopRoles = new Set<keyof typeof TEAM_ROLES>();
     membersWithScores.forEach((member) => {
       // Prefer the real questionnaire result; estimate only as fallback

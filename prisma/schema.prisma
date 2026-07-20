@@ -118,6 +118,8 @@ model UserProfile {
   // Team role layer
   teamRoleAnswer TeamRoleAnswer?
   teamRoleScore  TeamRoleScore?
+  teamRoleObservationsAbout TeamRoleObservation[] @relation("TeamRoleObservationAbout")
+  teamRoleObservationsGiven TeamRoleObservation[] @relation("TeamRoleObservationRater")
 
   // Notifications
   notifications Notification[]
@@ -247,8 +249,8 @@ model Team {
   ownerId              String
   orgId                String?
   createdAt            DateTime  @default(now())
-  teamRoleRoundActive    Boolean   @default(false) @map("belbinRoundActive")
-  teamRoleRoundStartedAt DateTime? @map("belbinRoundStartedAt")
+  teamRoleRoundActive    Boolean   @default(false)
+  teamRoleRoundStartedAt DateTime?
 
   owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
   org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
@@ -256,6 +258,7 @@ model Team {
   pendingInvites   TeamPendingInvite[]
   reports          TeamReport[]
   candidateInvites CandidateInvite[]
+  teamRoleObservations TeamRoleObservation[]
 
   @@index([ownerId])
   @@index([orgId])
@@ -484,6 +487,7 @@ model Campaign {
   creator              UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
   participants         CampaignParticipant[]
   psychSafetyResponses PsychSafetyResponse[]
+  teamRoleObservations TeamRoleObservation[]
 
   @@index([orgId])
   @@index([createdBy])
@@ -598,22 +602,21 @@ model Purchase {
 model TeamRoleAnswer {
   id            String   @id @default(cuid())
   userProfileId String   @unique
-  answers       Json     // Record<groupIndex 0-6, Record<statementIndex 0-7, points>>
+  // TeamRoleSelections: itemId → 1 (jellemző) | 2 (kiemelt) — ld. team-role-questions.ts
+  answers       Json
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   userProfile UserProfile    @relation(fields: [userProfileId], references: [id])
   score       TeamRoleScore?
-
-  @@map("BelbinAnswer")
 }
 
 model TeamRoleScore {
   id               String   @id @default(cuid())
   userProfileId    String   @unique
-  scores           Json     // Record<roleCode, totalPoints>
+  scores           Json     // Record<TeamRoleCode, 0-100>
   source           String   // "questionnaire" | "estimate"
-  teamRoleAnswerId String?  @unique @map("belbinAnswerId")
+  teamRoleAnswerId String?  @unique
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -621,7 +624,32 @@ model TeamRoleScore {
   teamRoleAnswer TeamRoleAnswer? @relation(fields: [teamRoleAnswerId], references: [id])
 
   @@index([userProfileId])
-  @@map("BelbinScore")
+}
+
+// Csapattársi szerep-visszajelzés (peer-kör) — egy rater egy csapattársról,
+// egy kampány-körön belül. A raterUserId KIZÁRÓLAG dedupe-ra és a haladás
+// követésére szolgál; a felület mindig csak aggregált képet mutat, legalább
+// TEAM_ROLE_PEER_MIN_RATERS (3) értékelőnél. Terv:
+// docs/product/team-role-360-plan.md
+model TeamRoleObservation {
+  id          String   @id @default(cuid())
+  teamId      String
+  campaignId  String
+  aboutUserId String
+  raterUserId String
+  // TeamRoleSelections: itemId → 1 | 2 (peer-perspektívájú itemek)
+  selections  Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team     Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  about    UserProfile @relation("TeamRoleObservationAbout", fields: [aboutUserId], references: [id], onDelete: Cascade)
+  rater    UserProfile @relation("TeamRoleObservationRater", fields: [raterUserId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, aboutUserId, raterUserId])
+  @@index([teamId, aboutUserId])
+  @@index([campaignId, raterUserId])
 }
 
 model AdvisorySession {

@@ -22,15 +22,15 @@ interface MemberWithTeamRole {
 }
 
 const ROLE_COLORS: Record<TeamRoleCode, string> = {
-  PL: "var(--color-visual-gradient-indigo)",
-  RI: "#0ea5e9",
-  CO: "var(--color-state-success-strong)",
-  SH: "var(--color-state-warning-strong)",
-  ME: "var(--color-visual-gradient-violet)",
-  TW: "#ec4899",
-  IM: "#14b8a6",
-  CF: "#f97316",
-  SP: "#84cc16",
+  OG: "var(--color-visual-gradient-indigo)",
+  KE: "#0ea5e9",
+  KO: "var(--color-state-success-strong)",
+  HA: "var(--color-state-warning-strong)",
+  ER: "var(--color-visual-gradient-violet)",
+  CS: "#ec4899",
+  MV: "#14b8a6",
+  MI: "#f97316",
+  SZ: "#84cc16",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -313,9 +313,9 @@ function IndividualTeamRoleTable({
 // Thought-oriented roles: PL, ME, SP
 
 const ROLE_CATEGORY: Record<TeamRoleCode, "action" | "people" | "thought"> = {
-  SH: "action", IM: "action", CF: "action",
-  CO: "people", TW: "people", RI: "people",
-  PL: "thought", ME: "thought", SP: "thought",
+  HA: "action", MV: "action", MI: "action",
+  KO: "people", CS: "people", KE: "people",
+  OG: "thought", ER: "thought", SZ: "thought",
 };
 
 function CrossAnalysis({
@@ -341,19 +341,19 @@ function CrossAnalysis({
     {
       key: "action" as const,
       labelKey: "teamComp.actionOriented",
-      roles: ["SH", "IM", "CF"] as TeamRoleCode[],
+      roles: ["HA", "MV", "MI"] as TeamRoleCode[],
       color: "var(--color-state-warning-strong)",
     },
     {
       key: "people" as const,
       labelKey: "teamComp.peopleOriented",
-      roles: ["CO", "TW", "RI"] as TeamRoleCode[],
+      roles: ["KO", "CS", "KE"] as TeamRoleCode[],
       color: "var(--color-state-success-strong)",
     },
     {
       key: "thought" as const,
       labelKey: "teamComp.thoughtOriented",
-      roles: ["PL", "ME", "SP"] as TeamRoleCode[],
+      roles: ["OG", "ER", "SZ"] as TeamRoleCode[],
       color: "var(--color-visual-gradient-indigo)",
     },
   ];
@@ -392,14 +392,138 @@ function CrossAnalysis({
   );
 }
 
+// ── PeerComparison — önkép vs. csapatkép ────────────────────────────────────
+
+/** Szerializált peer-profil (team-role-peer.ts PeerRoleProfile alakja). */
+export interface SerializedPeerRoleProfile {
+  raterCount: number;
+  scores: TeamRoleScores | null;
+  topRoles: { role: TeamRoleCode; score: number }[];
+}
+
+const PEER_MIN_RATERS = 3;
+
+function PeerComparison({
+  members,
+  peerProfiles,
+  isHu,
+}: {
+  members: MemberWithTeamRole[];
+  peerProfiles: Record<string, SerializedPeerRoleProfile>;
+  isHu: boolean;
+}) {
+  const loc: Locale = isHu ? "hu" : "en";
+  const rated = members.filter((m) => peerProfiles[m.userId]);
+  if (rated.length === 0) return null;
+
+  const aboveThreshold = rated.filter(
+    (m) => (peerProfiles[m.userId]?.raterCount ?? 0) >= PEER_MIN_RATERS,
+  ).length;
+
+  return (
+    <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+      <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-[2px]">
+        {"// "}
+        {t("teamComp.peerEyebrow", loc)}
+      </SectionEyebrow>
+      <h4 className="mb-1 font-fraunces text-xl text-ink">
+        {t("teamComp.peerTitle", loc)}
+      </h4>
+      <p className="mb-2 max-w-lg text-sm leading-relaxed text-ink-body">
+        {t("teamComp.peerDesc", loc)}
+      </p>
+      <p className="mb-5 text-xs text-muted">
+        {t("teamComp.peerCoverage", loc)
+          .replace("{above}", String(aboveThreshold))
+          .replace("{total}", String(rated.length))}
+      </p>
+
+      <div className="flex flex-col divide-y divide-sand">
+        {rated.map((m) => {
+          const peer = peerProfiles[m.userId];
+          if (!peer) return null;
+          const belowThreshold = peer.raterCount < PEER_MIN_RATERS || !peer.scores;
+          const selfTop = m.source === "questionnaire" ? m.top3 : [];
+          const selfSet = new Set(selfTop.map((r) => r.role));
+          return (
+            <div key={m.userId} className="flex flex-col gap-2 py-4 first:pt-0 last:pb-0">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-ink">{m.displayName}</p>
+                <span className="font-mono text-[11px] text-muted">
+                  {t("teamComp.peerRaterCount", loc).replace(
+                    "{n}",
+                    String(peer.raterCount),
+                  )}
+                </span>
+              </div>
+              {belowThreshold ? (
+                <p className="text-xs leading-relaxed text-muted">
+                  {t("teamComp.peerBelowThreshold", loc).replace(
+                    "{min}",
+                    String(PEER_MIN_RATERS),
+                  )}
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <div>
+                    <p className="mb-1 font-mono text-[10px] uppercase tracking-wide text-muted">
+                      {t("teamComp.peerSelfLabel", loc)}
+                    </p>
+                    {selfTop.length > 0 ? (
+                      <div className="flex flex-wrap gap-1">
+                        {selfTop.map((r) => (
+                          <RoleChip key={r.role} role={r.role} isHu={isHu} size="xs" />
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-muted">
+                        {t("teamComp.peerNoSelf", loc)}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="mb-1 font-mono text-[10px] uppercase tracking-wide text-muted">
+                      {t("teamComp.peerTeamLabel", loc)}
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {peer.topRoles.map((r) => (
+                        <span key={r.role} className="inline-flex items-center gap-1">
+                          <RoleChip role={r.role} isHu={isHu} size="xs" />
+                          {selfTop.length > 0 && !selfSet.has(r.role) && (
+                            <span
+                              className="font-mono text-[10px] text-bronze"
+                              title={t("teamComp.peerDiff", loc)}
+                            >
+                              •
+                            </span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-4 text-[11px] leading-relaxed text-muted">
+        {t("teamComp.peerFootnote", loc)}
+      </p>
+    </section>
+  );
+}
+
 // ── Main: TeamRoleSection ───────────────────────────────────────────────────
 
 interface TeamRoleSectionProps {
   members: SerializedTeamMember[];
   isHu: boolean;
+  /** userId → peer-aggregátum (csapattársi visszajelzés); üres = nincs peer-kör. */
+  peerProfiles?: Record<string, SerializedPeerRoleProfile>;
 }
 
-export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
+export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSectionProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const membersWithTeamRole = useMemo<MemberWithTeamRole[]>(() => {
     return members.map((m) => {
@@ -466,6 +590,13 @@ export function TeamRoleSection({ members, isHu }: TeamRoleSectionProps) {
 
       {/* Completion status */}
       <TeamRoleCompletionStatus members={membersWithTeamRole} isHu={isHu} />
+
+      {/* Önkép vs. csapatkép (peer-kör) */}
+      <PeerComparison
+        members={membersWithTeamRole}
+        peerProfiles={peerProfiles}
+        isHu={isHu}
+      />
 
       {/* Role composition */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">

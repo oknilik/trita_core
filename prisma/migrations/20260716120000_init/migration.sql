@@ -143,8 +143,8 @@ CREATE TABLE "Team" (
     "ownerId" TEXT NOT NULL,
     "orgId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "belbinRoundActive" BOOLEAN NOT NULL DEFAULT false,
-    "belbinRoundStartedAt" TIMESTAMP(3),
+    "teamRoleRoundActive" BOOLEAN NOT NULL DEFAULT false,
+    "teamRoleRoundStartedAt" TIMESTAMP(3),
 
     CONSTRAINT "Team_pkey" PRIMARY KEY ("id")
 );
@@ -380,27 +380,27 @@ CREATE TABLE "Purchase" (
 );
 
 -- CreateTable
-CREATE TABLE "BelbinAnswer" (
+CREATE TABLE "TeamRoleAnswer" (
     "id" TEXT NOT NULL,
     "userProfileId" TEXT NOT NULL,
     "answers" JSONB NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "BelbinAnswer_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "TeamRoleAnswer_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "BelbinScore" (
+CREATE TABLE "TeamRoleScore" (
     "id" TEXT NOT NULL,
     "userProfileId" TEXT NOT NULL,
     "scores" JSONB NOT NULL,
     "source" TEXT NOT NULL,
-    "belbinAnswerId" TEXT,
+    "teamRoleAnswerId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "BelbinScore_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "TeamRoleScore_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -612,16 +612,16 @@ CREATE INDEX "Purchase_tier_idx" ON "Purchase"("tier");
 CREATE INDEX "Purchase_stripeCheckoutSessionId_idx" ON "Purchase"("stripeCheckoutSessionId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "BelbinAnswer_userProfileId_key" ON "BelbinAnswer"("userProfileId");
+CREATE UNIQUE INDEX "TeamRoleAnswer_userProfileId_key" ON "TeamRoleAnswer"("userProfileId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "BelbinScore_userProfileId_key" ON "BelbinScore"("userProfileId");
+CREATE UNIQUE INDEX "TeamRoleScore_userProfileId_key" ON "TeamRoleScore"("userProfileId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "BelbinScore_belbinAnswerId_key" ON "BelbinScore"("belbinAnswerId");
+CREATE UNIQUE INDEX "TeamRoleScore_teamRoleAnswerId_key" ON "TeamRoleScore"("teamRoleAnswerId");
 
 -- CreateIndex
-CREATE INDEX "BelbinScore_userProfileId_idx" ON "BelbinScore"("userProfileId");
+CREATE INDEX "TeamRoleScore_userProfileId_idx" ON "TeamRoleScore"("userProfileId");
 
 -- CreateIndex
 CREATE INDEX "AdvisorySession_orgId_idx" ON "AdvisorySession"("orgId");
@@ -732,14 +732,49 @@ ALTER TABLE "PsychSafetyResponse" ADD CONSTRAINT "PsychSafetyResponse_campaignId
 ALTER TABLE "Purchase" ADD CONSTRAINT "Purchase_userProfileId_fkey" FOREIGN KEY ("userProfileId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BelbinAnswer" ADD CONSTRAINT "BelbinAnswer_userProfileId_fkey" FOREIGN KEY ("userProfileId") REFERENCES "UserProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TeamRoleAnswer" ADD CONSTRAINT "TeamRoleAnswer_userProfileId_fkey" FOREIGN KEY ("userProfileId") REFERENCES "UserProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BelbinScore" ADD CONSTRAINT "BelbinScore_userProfileId_fkey" FOREIGN KEY ("userProfileId") REFERENCES "UserProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TeamRoleScore" ADD CONSTRAINT "TeamRoleScore_userProfileId_fkey" FOREIGN KEY ("userProfileId") REFERENCES "UserProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BelbinScore" ADD CONSTRAINT "BelbinScore_belbinAnswerId_fkey" FOREIGN KEY ("belbinAnswerId") REFERENCES "BelbinAnswer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "TeamRoleScore" ADD CONSTRAINT "TeamRoleScore_teamRoleAnswerId_fkey" FOREIGN KEY ("teamRoleAnswerId") REFERENCES "TeamRoleAnswer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+
+-- CreateTable (TeamRoleObservation — csapattársi szerep-visszajelzés, 2026-07-20)
+CREATE TABLE "TeamRoleObservation" (
+    "id" TEXT NOT NULL,
+    "teamId" TEXT NOT NULL,
+    "campaignId" TEXT NOT NULL,
+    "aboutUserId" TEXT NOT NULL,
+    "raterUserId" TEXT NOT NULL,
+    "selections" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "TeamRoleObservation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TeamRoleObservation_campaignId_aboutUserId_raterUserId_key" ON "TeamRoleObservation"("campaignId", "aboutUserId", "raterUserId");
+
+-- CreateIndex
+CREATE INDEX "TeamRoleObservation_teamId_aboutUserId_idx" ON "TeamRoleObservation"("teamId", "aboutUserId");
+
+-- CreateIndex
+CREATE INDEX "TeamRoleObservation_campaignId_raterUserId_idx" ON "TeamRoleObservation"("campaignId", "raterUserId");
+
+-- AddForeignKey
+ALTER TABLE "TeamRoleObservation" ADD CONSTRAINT "TeamRoleObservation_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeamRoleObservation" ADD CONSTRAINT "TeamRoleObservation_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeamRoleObservation" ADD CONSTRAINT "TeamRoleObservation_aboutUserId_fkey" FOREIGN KEY ("aboutUserId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TeamRoleObservation" ADD CONSTRAINT "TeamRoleObservation_raterUserId_fkey" FOREIGN KEY ("raterUserId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;

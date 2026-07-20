@@ -87,6 +87,14 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 - Dimenziókódok: H/E/X/A/C/O (E fordított: magasabb = érzelmesebb).
 - TestType enum a sémában: HEXACO | HEXACO_MODIFIED | BIG_FIVE (utóbbi
   kettőnek nincs kérdésbankja — örökség).
+- **Csapatszerep-modell (2026-07-20)**: saját 27 itemes bank
+  (`team-role-questions.ts`), self + peer perspektíva, kódok:
+  OG/KE/KO/HA/ER/CS/MV/MI/SZ. User-facing szövegben NE szerepeljen
+  „Belbin" (védjegy + licencelt instrumentum) — a mérés neve
+  „csapatszerep-kérdőív" / „csapattársi szerep-visszajelzés", a modell
+  „Trita csapatszerep-modell (9 szerep)". A peer-kép mindig aggregált,
+  min. 3 értékelő (TEAM_ROLE_PEER_MIN_RATERS). Tervek:
+  `docs/product/team-role-360-plan.md` + kiváltási terv.
 
 ## Route-térkép (fő felületek)
 

@@ -1,51 +1,61 @@
-// Team role scoring — standard Self-Perception Inventory mapping
-// 7 sections × 8 statements (a–h) × 10 points per section
+// ─────────────────────────────────────────────────────────────────────
+// Trita csapatszerep-modell — 9 szerep, saját névtér és scoring.
+//
+// A korábbi 7×8-as pontelosztásos SPI-scoring kivezetve (jogi kiváltás,
+// ld. docs/product/team-role-instrument-replacement-plan.md). Az új
+// formátum: 27 itemes kiválasztás (8–12 jelölés + 3 kiemelt, dupla
+// súllyal) — az itembank a team-role-questions.ts-ben él, és self + peer
+// perspektívában ugyanaz.
+// ─────────────────────────────────────────────────────────────────────
+
+import type { TeamRoleSelections } from "./team-role-questions";
 
 export const TEAM_ROLES = {
-  PL: { hu: "Ötletgazda",          en: "Plant" },
-  RI: { hu: "Erőforrás-felderítő", en: "Resource Investigator" },
-  CO: { hu: "Koordinátor",          en: "Coordinator" },
-  SH: { hu: "Formáló",             en: "Shaper" },
-  ME: { hu: "Értékelő-elemző",     en: "Monitor Evaluator" },
-  TW: { hu: "Csapatsegítő",        en: "Teamworker" },
-  IM: { hu: "Megvalósító",         en: "Implementer" },
-  CF: { hu: "Tökéletesítő",       en: "Completer Finisher" },
-  SP: { hu: "Szakember",           en: "Specialist" },
+  OG: { hu: "Ötletgazda", en: "Idea Generator" },
+  KE: { hu: "Kapcsolatépítő", en: "Opportunity Scout" },
+  KO: { hu: "Koordinátor", en: "Coordinator" },
+  HA: { hu: "Hajtóerő", en: "Driver" },
+  ER: { hu: "Értékelő-elemző", en: "Critical Evaluator" },
+  CS: { hu: "Csapatsegítő", en: "Team Supporter" },
+  MV: { hu: "Megvalósító", en: "Executor" },
+  MI: { hu: "Minőségőr", en: "Quality Guardian" },
+  SZ: { hu: "Szakértő", en: "Domain Expert" },
 } as const;
 
 export type TeamRoleCode = keyof typeof TEAM_ROLES;
 
-// [sectionIndex 0-6][statementIndex 0-7] → role code
-// Based on the standard team role SPI mapping
-export const TEAM_ROLE_SCORING_MAP: TeamRoleCode[][] = [
-  ["IM", "SH", "CO", "ME", "RI", "TW", "CF", "PL"], // Section 1
-  ["TW", "CF", "RI", "PL", "ME", "CO", "SH", "IM"], // Section 2
-  ["PL", "RI", "CO", "SH", "TW", "IM", "ME", "CF"], // Section 3
-  ["RI", "TW", "ME", "CO", "CF", "SH", "PL", "IM"], // Section 4
-  ["ME", "CO", "IM", "PL", "TW", "CF", "RI", "SH"], // Section 5
-  ["CO", "IM", "SH", "RI", "CF", "PL", "TW", "ME"], // Section 6
-  ["CF", "PL", "IM", "TW", "SH", "ME", "CO", "RI"], // Section 7
-];
-
-export type TeamRoleAnswers = Record<number, Record<number, number>>;
-// answers[groupIndex][statementIndex] = points (0-10 per group, sum must equal 10)
-
 export type TeamRoleScores = Record<TeamRoleCode, number>;
 
-export function calculateTeamRoleScores(answers: TeamRoleAnswers): TeamRoleScores {
+/** Item-id → szerep-kód (az id prefixe a szerep-kód: "OG1" → "OG"). */
+function itemRole(itemId: string): TeamRoleCode | null {
+  const prefix = itemId.slice(0, 2);
+  return prefix in TEAM_ROLES ? (prefix as TeamRoleCode) : null;
+}
+
+/**
+ * Szerep-pontszámok egy kiválasztás-halmazból, 0–100 skálán.
+ *
+ * Szerepenként az elméleti maximum: mind a 3 item kiemelt jelöléssel
+ * (3 × 2 = 6 súly) — a gyakorlatban a 3 kiemelt-limit miatt ritka, de a
+ * skála így stabil, és a self és peer profilok összevethetők rajta.
+ */
+export function calculateTeamRoleScores(
+  selections: TeamRoleSelections,
+): TeamRoleScores {
   const totals = Object.fromEntries(
     Object.keys(TEAM_ROLES).map((k) => [k, 0]),
   ) as TeamRoleScores;
 
-  for (let group = 0; group < 7; group++) {
-    const groupAnswers = answers[group] ?? {};
-    for (let stmt = 0; stmt < 8; stmt++) {
-      const points = groupAnswers[stmt] ?? 0;
-      const role = TEAM_ROLE_SCORING_MAP[group]?.[stmt];
-      if (role) {
-        totals[role] += points;
-      }
+  for (const [itemId, weight] of Object.entries(selections)) {
+    const role = itemRole(itemId);
+    if (role && (weight === 1 || weight === 2)) {
+      totals[role] += weight;
     }
+  }
+
+  const MAX_PER_ROLE = 6; // 3 item × 2 súly
+  for (const role of Object.keys(totals) as TeamRoleCode[]) {
+    totals[role] = Math.round((totals[role] / MAX_PER_ROLE) * 100);
   }
 
   return totals;

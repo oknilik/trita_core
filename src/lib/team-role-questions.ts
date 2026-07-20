@@ -1,137 +1,407 @@
-// TeamRole Self-Perception Inventory — 7 sections × 8 statements
-// Each section: distribute 10 points across the 8 statements
-// Based on TeamRole's original SPI questionnaire (adapted, publicly available version)
+// ─────────────────────────────────────────────────────────────────────
+// Trita csapatszerep-itembank v1 (2026-07-20)
+//
+// 27 saját megfogalmazású viselkedés-állítás (9 szerep × 3), két
+// perspektívában: self (E/1, önkitöltés) és peer (E/3, csapattársi
+// visszajelzés). A korábbi 7×8-as, pontelosztásos SPI-tükör kivezetve —
+// jogi indoklás és terv: docs/product/team-role-instrument-replacement-plan.md,
+// itemek forrása: docs/product/team-role-items-draft.md.
+//
+// Kitöltési formátum (mindkét perspektíva):
+//   - a kitöltő kiválasztja a leginkább jellemző 8–12 állítást,
+//   - közülük pontosan 3-at „kiemelten jellemző"-ként jelöl (dupla súly).
+// A pontozás a team-role-scoring.ts-ben él.
+// ─────────────────────────────────────────────────────────────────────
 
-export interface TeamRoleStatement {
-  index: number; // 0-7
-  hu: string;
-  en: string;
+import type { TeamRoleCode } from "./team-role-scoring";
+
+export interface TeamRoleItem {
+  /** Stabil item-azonosító (pl. "OG1") — a mentett selections kulcsa. */
+  id: string;
+  role: TeamRoleCode;
+  self: { hu: string; en: string };
+  peer: { hu: string; en: string };
 }
 
-export interface TeamRoleSection {
-  group: number; // 0-6
-  heading: { hu: string; en: string };
-  statements: TeamRoleStatement[];
-}
+export type TeamRolePerspective = "self" | "peer";
 
-export const TEAM_ROLE_SECTIONS: TeamRoleSection[] = [
+/** Kiválasztási súly: 1 = jellemző, 2 = kiemelten jellemző. */
+export type TeamRoleSelections = Record<string, 1 | 2>;
+
+export const TEAM_ROLE_MIN_SELECT = 8;
+export const TEAM_ROLE_MAX_SELECT = 12;
+export const TEAM_ROLE_TOP_SELECT = 3;
+
+export const TEAM_ROLE_ITEMS: TeamRoleItem[] = [
+  // ── Ötletgazda ──────────────────────────────────────────────────────
   {
-    group: 0,
-    heading: {
-      hu: "Azt hiszem, hogy hasznos tagja vagyok a csapatnak, mert...",
-      en: "I believe I can contribute to a team because I...",
+    id: "OG1",
+    role: "OG",
+    self: {
+      hu: "Amikor a csapat elakad, gyakran én állok elő szokatlan, új megközelítéssel.",
+      en: "When the team is stuck, I'm often the one who comes up with an unusual, fresh approach.",
     },
-    statements: [
-      { index: 0, hu: "Képes vagyok megvalósítani és kézzelfogható eredményt elérni.", en: "Can implement decisions and achieve tangible results." },
-      { index: 1, hu: "Fellelkesülök, ha megkérdőjelezhetek valamit és vitát indíthatok.", en: "Get excited when I can challenge assumptions and spark debate." },
-      { index: 2, hu: "Koordinálni tudom a különböző embereket egy közös cél érdekében.", en: "Can coordinate diverse people toward a common goal." },
-      { index: 3, hu: "Könnyen felmérem, mi az elvégzendő feladat, és pontosan elvégzem.", en: "Quickly assess what needs to be done and do it accurately." },
-      { index: 4, hu: "Értékelem mások véleményét, és a csoport harmóniáját erősítem.", en: "Value others' opinions and strengthen group harmony." },
-      { index: 5, hu: "Analitikus gondolkodásom segít megoldani az összetett problémákat.", en: "My analytical thinking helps solve complex problems." },
-      { index: 6, hu: "Széleskörű szakmai tudásom értéket hoz a csapatnak.", en: "My broad expertise brings value to the team." },
-      { index: 7, hu: "Megtalálom és kiaknázom a külső lehetőségeket a csapat számára.", en: "I find and exploit external opportunities for the team." },
-    ],
+    peer: {
+      hu: "Amikor a csapat elakad, gyakran ő áll elő szokatlan, új megközelítéssel.",
+      en: "When the team is stuck, they often come up with an unusual, fresh approach.",
+    },
   },
   {
-    group: 1,
-    heading: {
-      hu: "Ha gyengeségeim vannak a csapatmunkában, az azért van, mert...",
-      en: "If I have a weakness in team work, it can be because I...",
+    id: "OG2",
+    role: "OG",
+    self: {
+      hu: "Olyan megoldásokat vetek fel, amikre más nem gondolt.",
+      en: "I raise solutions no one else had thought of.",
     },
-    statements: [
-      { index: 0, hu: "Akkor érzem jól magam, ha az emberek közötti kapcsolatok harmonikusak.", en: "Am not at ease unless people relate to each other harmoniously." },
-      { index: 1, hu: "Hajlamos vagyok a részletekre és az egyértelműségre összpontosítani.", en: "Am inclined to focus on details and clarity." },
-      { index: 2, hu: "Hajlamos vagyok az ötletek generálásának kárára elveszni az öngondolatokban.", en: "Tend to lose myself in self-generated thoughts at the expense of new ideas." },
-      { index: 3, hu: "Néha mások rovására is igyekszem érvényesíteni az álláspontomat.", en: "Sometimes assert my position at others' expense." },
-      { index: 4, hu: "Néha nehéz ítélkeznem az általam közvetített elemzések fényében.", en: "Sometimes find it difficult to judge based on analyses I have conveyed." },
-      { index: 5, hu: "Nehéznek találom a haladást, ha a célok nem egyértelműek.", en: "Find it difficult to move forward unless objectives are clear." },
-      { index: 6, hu: "Előfordulhat, hogy ragaszkodom a saját megközelítésemhez, ha jobb megoldás nincs.", en: "May insist on my own approach if no better solution is proposed." },
-      { index: 7, hu: "Hajlamos vagyok elveszíteni az érdeklődésemet, amint az első lelkesedés elmúlik.", en: "Tend to lose interest once initial enthusiasm passes." },
-    ],
+    peer: {
+      hu: "Olyan megoldásokat vet fel, amikre más nem gondolt.",
+      en: "Raises solutions no one else had thought of.",
+    },
   },
   {
-    group: 2,
-    heading: {
-      hu: "Amikor más emberekkel közös projekten dolgozom...",
-      en: "When involved in a project with other people...",
+    id: "OG3",
+    role: "OG",
+    self: {
+      hu: "Szívesen gondolkodom hangosan merész, még kiforratlan ötleteken.",
+      en: "I enjoy thinking out loud about bold, half-formed ideas.",
     },
-    statements: [
-      { index: 0, hu: "Hajlamos vagyok befolyásolni az embereket anélkül, hogy megnyomásuk lenne.", en: "I can subtly influence people without pressuring them." },
-      { index: 1, hu: "Az éberen figyelő hozzáállásom megakadályozza, hogy hibákat kövessek el.", en: "My vigilance prevents errors from being made." },
-      { index: 2, hu: "Készen állok arra, hogy nyomást gyakoroljak a cselekvés meggyorsítása érdekében.", en: "I am ready to exert pressure to speed up action when needed." },
-      { index: 3, hu: "Valami eredetit hozok, amit képes vagyok továbbfejleszteni.", en: "I can offer something original and develop it further." },
-      { index: 4, hu: "Mindig kész vagyok pártoló hallgatóság számára egy jó ötletet tovább fejleszteni.", en: "I am always ready to develop a good idea for an interested audience." },
-      { index: 5, hu: "Hajlamos vagyok szorosan az eredeti tervhez tartani magam.", en: "I tend to adhere closely to the original plan." },
-      { index: 6, hu: "Elvárható tőlem, hogy figyelembe vegyek mindenkit és megőrizzem a csapat kohézióját.", en: "I take everyone's view into account and maintain team cohesion." },
-      { index: 7, hu: "Képes vagyok értékelni és felmérni a különböző javaslatokat.", en: "I can evaluate and appraise a range of proposals objectively." },
-    ],
+    peer: {
+      hu: "Szívesen gondolkodik hangosan merész, még kiforratlan ötleteken.",
+      en: "Enjoys thinking out loud about bold, half-formed ideas.",
+    },
+  },
+  // ── Kapcsolatépítő ──────────────────────────────────────────────────
+  {
+    id: "KE1",
+    role: "KE",
+    self: {
+      hu: "Gyorsan megtalálom, kihez érdemes fordulni egy kérdéssel a csapaton kívül.",
+      en: "I quickly find the right person to turn to outside the team.",
+    },
+    peer: {
+      hu: "Gyorsan megtalálja, kihez érdemes fordulni egy kérdéssel a csapaton kívül.",
+      en: "Quickly finds the right person to turn to outside the team.",
+    },
   },
   {
-    group: 3,
-    heading: {
-      hu: "Csapatmunkával való megközelítésem jellemzője az, hogy...",
-      en: "My approach to group work is characterized by...",
+    id: "KE2",
+    role: "KE",
+    self: {
+      hu: "Külső ötleteket, lehetőségeket és információkat hozok be a csapatba.",
+      en: "I bring outside ideas, opportunities and information into the team.",
     },
-    statements: [
-      { index: 0, hu: "Valóban érdekel a munkatársak megismerése.", en: "I have a real interest in getting to know my colleagues better." },
-      { index: 1, hu: "Nem hezitálok kihívást intézni mások nézeteivel szemben, ha szükséges.", en: "I do not hesitate to challenge others' views when necessary." },
-      { index: 2, hu: "Megcáfolhatatlan érvekkel alátámasztom az álláspontomat.", en: "I support my position with convincing arguments." },
-      { index: 3, hu: "Hatékonyan dolgozom, ha a csapat előtt egyértelmű célok állnak.", en: "I work efficiently when the team has clear goals ahead." },
-      { index: 4, hu: "Hajlamos vagyok elkerülni a rutinszerű munkát.", en: "I tend to avoid routine work." },
-      { index: 5, hu: "Ha szükséges, képes vagyok módszeresen és fegyelemmel megközelíteni a feladatot.", en: "When needed, I can tackle tasks methodically and with discipline." },
-      { index: 6, hu: "Biztosítom, hogy a csoport számára releváns ismeretek és készségek elérhetők legyenek.", en: "I ensure that relevant knowledge and skills are available to the group." },
-      { index: 7, hu: "Gondoskodóan járulok hozzá mások ötleteinek bővítéséhez.", en: "I contribute constructively to building on others' ideas." },
-    ],
+    peer: {
+      hu: "Külső ötleteket, lehetőségeket és információkat hoz be a csapatba.",
+      en: "Brings outside ideas, opportunities and information into the team.",
+    },
   },
   {
-    group: 4,
-    heading: {
-      hu: "A csapatmunkából a következőket szeretem...",
-      en: "I gain satisfaction in a job because I...",
+    id: "KE3",
+    role: "KE",
+    self: {
+      hu: "Könnyen teremtek kapcsolatot új emberekkel, és ezt a csapat javára fordítom.",
+      en: "I connect easily with new people and turn it to the team's advantage.",
     },
-    statements: [
-      { index: 0, hu: "Élvezem az elemzést, mivel sokféle lehetőséget és változatot mérlegelek.", en: "Enjoy analyzing situations and weighing up a variety of factors." },
-      { index: 1, hu: "Érdekelnek az elvont ötletek generálása és a problémák megoldása.", en: "Am interested in generating abstract ideas and solving problems." },
-      { index: 2, hu: "Hajlamos vagyok kreatív ötleteket kínálni, amelyek meglepik a csoportot.", en: "Am inclined to offer creative ideas that surprise the group." },
-      { index: 3, hu: "Szívesen gondoskodom arról, hogy a feladatok megfelelően legyenek kiosztva.", en: "Enjoy ensuring that tasks are properly allocated." },
-      { index: 4, hu: "Hajlamos vagyok kiépíteni és aktiválni az embereket a célok elérése érdekében.", en: "Tend to build on and activate people to achieve goals." },
-      { index: 5, hu: "Képes vagyok és szívesen fejlesztek technikai képességeket, és kapcsolatba lépek az emberekkel.", en: "Can develop technical skills and engage with people." },
-      { index: 6, hu: "Meg tudom ítélni, hogy a csapat erőfeszítései valóban a prioritásokra irányulnak-e.", en: "Can judge whether the team's efforts are truly directed at priorities." },
-      { index: 7, hu: "Hajlamos vagyok szorgalmasan és kitartóan dolgozni, amíg a munka el nem készül.", en: "Tend to work diligently and persistently until the job is done." },
-    ],
+    peer: {
+      hu: "Könnyen teremt kapcsolatot új emberekkel, és ezt a csapat javára fordítja.",
+      en: "Connects easily with new people and turns it to the team's advantage.",
+    },
+  },
+  // ── Koordinátor ─────────────────────────────────────────────────────
+  {
+    id: "KO1",
+    role: "KO",
+    self: {
+      hu: "Jó érzékkel osztom el a feladatokat aszerint, ki miben erős.",
+      en: "I distribute work with a good sense of who is strong at what.",
+    },
+    peer: {
+      hu: "Jó érzékkel osztja el a feladatokat aszerint, ki miben erős.",
+      en: "Distributes work with a good sense of who is strong at what.",
+    },
   },
   {
-    group: 5,
-    heading: {
-      hu: "Ha váratlanul feladatot kapok, amit be kell fejeznem korlátozott időn belül...",
-      en: "If I am suddenly given a difficult task with limited time and unfamiliar people...",
+    id: "KO2",
+    role: "KO",
+    self: {
+      hu: "Megbeszéléseken összefogom a szálakat, és közös irányt adok a csapatnak.",
+      en: "In meetings I pull the threads together and set a shared direction.",
     },
-    statements: [
-      { index: 0, hu: "Hajlamos vagyok visszahúzódni egy sarokba, és megoldást keresni, mielőtt kapcsolatba lépek.", en: "I tend to retreat to a corner and think up a solution before making contact." },
-      { index: 1, hu: "Hajlamos vagyok együttműködni a legerősebb akarattal rendelkező személlyel.", en: "I tend to collaborate with whoever has the most decisive will." },
-      { index: 2, hu: "Megtalálom azt, aki csökkenti a terhelést és elosztja a feladatokat.", en: "I find someone who can reduce the load and distribute the work." },
-      { index: 3, hu: "Természetes sürgősségem segít abban, hogy időben teljesítsünk.", en: "My natural sense of urgency ensures we keep to schedule." },
-      { index: 4, hu: "Megőrzöm a hidegvéremet és gondolkodom, ha az emberek megterhelnek.", en: "I retain my coolness and think clearly when people are under stress." },
-      { index: 5, hu: "Célirányos maradok a nyomás ellenére is.", en: "I remain purposeful despite the pressure." },
-      { index: 6, hu: "Hajlamos vagyok irányítani a megbeszélést, ha szükségesnek érzem a haladást.", en: "I tend to take charge of the discussion if I feel progress is needed." },
-      { index: 7, hu: "Rendelkezésre bocsátom a szaktudásomat, ahol az hasznos lehet a csoport számára.", en: "I offer my expertise wherever it may be useful to the group." },
-    ],
+    peer: {
+      hu: "Megbeszéléseken összefogja a szálakat, és közös irányt ad a csapatnak.",
+      en: "Pulls the threads together in meetings and sets a shared direction.",
+    },
   },
   {
-    group: 6,
-    heading: {
-      hu: "A csapatmunkával kapcsolatos általános érzéseim...",
-      en: "In general, the things I find most satisfying in team work are...",
+    id: "KO3",
+    role: "KO",
+    self: {
+      hu: "Teret adok másoknak, és elő tudom hívni a hozzájárulásukat.",
+      en: "I make room for others and draw out their contribution.",
     },
-    statements: [
-      { index: 0, hu: "Szívesen elvégzem a szükséges munkát, anélkül hogy az elismerés hajtana.", en: "I can do what is necessary without being driven by recognition." },
-      { index: 1, hu: "Olyan problémákon dolgozni, amelyek az én speciális területem.", en: "Working on problems that are specifically in my area." },
-      { index: 2, hu: "Szeretem, ha valóban fontos és releváns célra lehet összpontosítani.", en: "I like when I can focus on a truly important and relevant goal." },
-      { index: 3, hu: "Szeretem az emberekbe való befektetés és a valódi kapcsolatok kialakítását.", en: "I enjoy investing in people and building genuine relationships." },
-      { index: 4, hu: "Szívesen kezelem a részleteket és a pontosságot a végső eredményben.", en: "I enjoy managing details and precision in the final outcome." },
-      { index: 5, hu: "Szeretem, ha megmutathatom, hogy milyen jól el tudok végezni valami nehezet.", en: "I like showing that I can do something difficult really well." },
-      { index: 6, hu: "Örülök, ha tanácsot adhatok a csoport stratégiai irányával kapcsolatban.", en: "I am glad when I can give advice on the group's strategic direction." },
-      { index: 7, hu: "Élvezem, ha elősegíthetem az együttműködést és az emberek aktivizálását.", en: "I enjoy facilitating cooperation and getting people involved." },
-    ],
+    peer: {
+      hu: "Teret ad másoknak, és elő tudja hívni a hozzájárulásukat.",
+      en: "Makes room for others and draws out their contribution.",
+    },
+  },
+  // ── Hajtóerő ────────────────────────────────────────────────────────
+  {
+    id: "HA1",
+    role: "HA",
+    self: {
+      hu: "Nyomás alatt is lendületben tartom a csapatot.",
+      en: "I keep the team moving even under pressure.",
+    },
+    peer: {
+      hu: "Nyomás alatt is lendületben tartja a csapatot.",
+      en: "Keeps the team moving even under pressure.",
+    },
+  },
+  {
+    id: "HA2",
+    role: "HA",
+    self: {
+      hu: "Kimondom a kényelmetlen kérdéseket is, hogy előrébb jussunk.",
+      en: "I voice the uncomfortable questions so the team moves forward.",
+    },
+    peer: {
+      hu: "Kimondja a kényelmetlen kérdéseket is, hogy előrébb jussunk.",
+      en: "Voices the uncomfortable questions so the team moves forward.",
+    },
+  },
+  {
+    id: "HA3",
+    role: "HA",
+    self: {
+      hu: "Nem hagyom, hogy a csapat megelégedjen a legkényelmesebb megoldással.",
+      en: "I don't let the team settle for the most comfortable answer.",
+    },
+    peer: {
+      hu: "Nem hagyja, hogy a csapat megelégedjen a legkényelmesebb megoldással.",
+      en: "Doesn't let the team settle for the most comfortable answer.",
+    },
+  },
+  // ── Értékelő-elemző ─────────────────────────────────────────────────
+  {
+    id: "ER1",
+    role: "ER",
+    self: {
+      hu: "Döntés előtt higgadtan mérlegre teszem az opciók gyenge pontjait.",
+      en: "Before a decision I calmly weigh the weak points of each option.",
+    },
+    peer: {
+      hu: "Döntés előtt higgadtan mérlegre teszi az opciók gyenge pontjait.",
+      en: "Calmly weighs the weak points of each option before a decision.",
+    },
+  },
+  {
+    id: "ER2",
+    role: "ER",
+    self: {
+      hu: "Tényekre alapozva érvelek akkor is, ha a többség már lelkes.",
+      en: "I argue from facts even when the majority is already enthusiastic.",
+    },
+    peer: {
+      hu: "Tényekre alapozva érvel akkor is, ha a többség már lelkes.",
+      en: "Argues from facts even when the majority is already enthusiastic.",
+    },
+  },
+  {
+    id: "ER3",
+    role: "ER",
+    self: {
+      hu: "Észreveszem a tervek logikai buktatóit, mielőtt drágák lennének.",
+      en: "I spot the logical pitfalls in plans before they get expensive.",
+    },
+    peer: {
+      hu: "Észreveszi a tervek logikai buktatóit, mielőtt drágák lennének.",
+      en: "Spots the logical pitfalls in plans before they get expensive.",
+    },
+  },
+  // ── Csapatsegítő ────────────────────────────────────────────────────
+  {
+    id: "CS1",
+    role: "CS",
+    self: {
+      hu: "Odafigyelek rá, hogy mindenki szóhoz jusson és meghallgassák.",
+      en: "I make sure everyone gets a chance to speak and be heard.",
+    },
+    peer: {
+      hu: "Odafigyel rá, hogy mindenki szóhoz jusson és meghallgassák.",
+      en: "Makes sure everyone gets heard.",
+    },
+  },
+  {
+    id: "CS2",
+    role: "CS",
+    self: {
+      hu: "Feszültség esetén közvetítek, és oldom a hangulatot.",
+      en: "When there is tension, I mediate and ease the mood.",
+    },
+    peer: {
+      hu: "Feszültség esetén közvetít, és oldja a hangulatot.",
+      en: "Mediates when there is tension and eases the mood.",
+    },
+  },
+  {
+    id: "CS3",
+    role: "CS",
+    self: {
+      hu: "Észreveszem, ha valaki elakadt vagy túlterhelt, és magamtól segítek.",
+      en: "I notice when someone is stuck or overloaded and help unprompted.",
+    },
+    peer: {
+      hu: "Észreveszi, ha valaki elakadt vagy túlterhelt, és magától segít.",
+      en: "Notices when someone is stuck or overloaded and helps unprompted.",
+    },
+  },
+  // ── Megvalósító ─────────────────────────────────────────────────────
+  {
+    id: "MV1",
+    role: "MV",
+    self: {
+      hu: "A megbeszéltekből működő, kézzelfogható eredményt csinálok.",
+      en: "I turn what was agreed into tangible, working results.",
+    },
+    peer: {
+      hu: "A megbeszéltekből működő, kézzelfogható eredményt csinál.",
+      en: "Turns what was agreed into tangible, working results.",
+    },
+  },
+  {
+    id: "MV2",
+    role: "MV",
+    self: {
+      hu: "Amit elvállalok, azt megbízhatóan végig is viszem.",
+      en: "I reliably follow through on what I commit to.",
+    },
+    peer: {
+      hu: "Amit elvállal, azt megbízhatóan végig is viszi.",
+      en: "Reliably follows through on what they commit to.",
+    },
+  },
+  {
+    id: "MV3",
+    role: "MV",
+    self: {
+      hu: "Rendet és működő folyamatot viszek a kusza feladatokba.",
+      en: "I bring order and workable process to messy tasks.",
+    },
+    peer: {
+      hu: "Rendet és működő folyamatot visz a kusza feladatokba.",
+      en: "Brings order and workable process to messy tasks.",
+    },
+  },
+  // ── Minőségőr ───────────────────────────────────────────────────────
+  {
+    id: "MI1",
+    role: "MI",
+    self: {
+      hu: "Kiszúrom a hibákat, amik mások figyelmét elkerülték.",
+      en: "I catch the errors that slipped past everyone else.",
+    },
+    peer: {
+      hu: "Kiszúrja a hibákat, amik mások figyelmét elkerülték.",
+      en: "Catches the errors that slipped past everyone else.",
+    },
+  },
+  {
+    id: "MI2",
+    role: "MI",
+    self: {
+      hu: "A határidők és a részletek nálam biztos kezekben vannak.",
+      en: "Deadlines and details are safe in my hands.",
+    },
+    peer: {
+      hu: "A határidők és a részletek nála biztos kezekben vannak.",
+      en: "Deadlines and details are safe in their hands.",
+    },
+  },
+  {
+    id: "MI3",
+    role: "MI",
+    self: {
+      hu: "Addig nem engedem ki a kezemből a munkát, amíg az nem igényes.",
+      en: "I don't let work go out until it meets the bar.",
+    },
+    peer: {
+      hu: "Addig nem engedi ki a kezéből a munkát, amíg az nem igényes.",
+      en: "Doesn't let work go out until it meets the bar.",
+    },
+  },
+  // ── Szakértő ────────────────────────────────────────────────────────
+  {
+    id: "SZ1",
+    role: "SZ",
+    self: {
+      hu: "Mély szaktudást hozok, amire a csapat építeni tud.",
+      en: "I bring deep expertise the team can build on.",
+    },
+    peer: {
+      hu: "Mély szaktudást hoz, amire a csapat építeni tud.",
+      en: "Brings deep expertise the team can build on.",
+    },
+  },
+  {
+    id: "SZ2",
+    role: "SZ",
+    self: {
+      hu: "A szakterületemen naprakész vagyok, és a tudásomat megosztom.",
+      en: "I stay current in my field and share what I know.",
+    },
+    peer: {
+      hu: "A szakterületén naprakész, és a tudását megosztja.",
+      en: "Stays current in their field and shares what they know.",
+    },
+  },
+  {
+    id: "SZ3",
+    role: "SZ",
+    self: {
+      hu: "Bonyolult szakmai kérdésekben hozzám fordul a csapat.",
+      en: "The team turns to me on complex specialist questions.",
+    },
+    peer: {
+      hu: "Bonyolult szakmai kérdésekben hozzá fordul a csapat.",
+      en: "The team turns to them on complex specialist questions.",
+    },
   },
 ];
+
+export const TEAM_ROLE_ITEM_COUNT = TEAM_ROLE_ITEMS.length;
+
+const ITEM_ID_SET = new Set(TEAM_ROLE_ITEMS.map((i) => i.id));
+
+export function getTeamRoleItemText(
+  item: TeamRoleItem,
+  perspective: TeamRolePerspective,
+  locale: "hu" | "en",
+): string {
+  return item[perspective][locale];
+}
+
+/**
+ * Érvényes-e egy kiválasztás-halmaz: minden id létező item, a kijelölt
+ * itemek száma a [MIN, MAX] sávban van, és pontosan TOP darab kiemelt.
+ */
+export function isValidTeamRoleSelectionSet(
+  selections: unknown,
+): selections is TeamRoleSelections {
+  if (!selections || typeof selections !== "object" || Array.isArray(selections)) {
+    return false;
+  }
+  const entries = Object.entries(selections as Record<string, unknown>);
+  if (
+    entries.length < TEAM_ROLE_MIN_SELECT ||
+    entries.length > TEAM_ROLE_MAX_SELECT
+  ) {
+    return false;
+  }
+  let top = 0;
+  for (const [id, weight] of entries) {
+    if (!ITEM_ID_SET.has(id)) return false;
+    if (weight !== 1 && weight !== 2) return false;
+    if (weight === 2) top += 1;
+  }
+  return top === TEAM_ROLE_TOP_SELECT;
+}

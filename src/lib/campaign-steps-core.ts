@@ -11,6 +11,7 @@
 export const CAMPAIGN_STEP_ORDER = [
   "OBSERVER_360",
   "TEAM_ROLE",
+  "TEAM_ROLE_360",
   "PSYCH_SAFETY",
 ] as const;
 
@@ -19,6 +20,7 @@ export type CampaignStepType = (typeof CAMPAIGN_STEP_ORDER)[number];
 export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: string }> = {
   OBSERVER_360: { hu: "Önértékelés + kollégai visszajelzés", en: "Self-assessment + peer feedback" },
   TEAM_ROLE: { hu: "Csapatszerep-kérdőív", en: "Team role questionnaire" },
+  TEAM_ROLE_360: { hu: "Csapattársak szerep-visszajelzése", en: "Team role peer feedback" },
   PSYCH_SAFETY: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
 };
 
@@ -26,6 +28,7 @@ export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: st
 export const CAMPAIGN_STEP_LINKS: Record<CampaignStepType, string> = {
   OBSERVER_360: "/assessment",
   TEAM_ROLE: "/assessment/team-roles",
+  TEAM_ROLE_360: "/assessment/team-roles/peers",
   PSYCH_SAFETY: "/assessment/psych-safety",
 };
 

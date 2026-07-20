@@ -12,27 +12,27 @@ interface TeamRolesProps {
 }
 
 const ROLE_SUBTITLES: Record<TeamRoleCode, { hu: string; en: string }> = {
-  PL: { hu: "Kreatív ötletgazda a csapatban", en: "Creative ideas person in the team" },
-  RI: { hu: "Lelkes networker a csapatban", en: "Enthusiastic networker in the team" },
-  CO: { hu: "Érett koordinátor a csapatban", en: "Mature coordinator in the team" },
-  SH: { hu: "Dinamikus hajtóerő a csapatban", en: "Dynamic driver in the team" },
-  ME: { hu: "Stratégiai elemző a csapatban", en: "Strategic analyst in the team" },
-  TW: { hu: "Együttműködő támasz a csapatban", en: "Cooperative support in the team" },
-  IM: { hu: "Megbízható végrehajtó a csapatban", en: "Reliable implementer in the team" },
-  CF: { hu: "Aprólékos tökéletesítő a csapatban", en: "Painstaking finisher in the team" },
-  SP: { hu: "Szaktudású specialista a csapatban", en: "Expert specialist in the team" },
+  OG: { hu: "Kreatív ötletgazda a csapatban", en: "Creative ideas person in the team" },
+  KE: { hu: "Lelkes networker a csapatban", en: "Enthusiastic networker in the team" },
+  KO: { hu: "Érett koordinátor a csapatban", en: "Mature coordinator in the team" },
+  HA: { hu: "Dinamikus hajtóerő a csapatban", en: "Dynamic driver in the team" },
+  ER: { hu: "Stratégiai elemző a csapatban", en: "Strategic analyst in the team" },
+  CS: { hu: "Együttműködő támasz a csapatban", en: "Cooperative support in the team" },
+  MV: { hu: "Megbízható végrehajtó a csapatban", en: "Reliable implementer in the team" },
+  MI: { hu: "Aprólékos tökéletesítő a csapatban", en: "Painstaking finisher in the team" },
+  SZ: { hu: "Szaktudású specialista a csapatban", en: "Expert specialist in the team" },
 };
 
 const ROLE_DESCRIPTIONS: Record<TeamRoleCode, { hu: string; en: string }> = {
-  PL: { hu: "Eredeti gondolkodó, aki új megoldásokat hoz — de néha elszakad a gyakorlati megvalósítástól.", en: "Original thinker who brings new solutions — but can lose touch with practical implementation." },
-  RI: { hu: "Könnyen teremt kapcsolatokat és hoz külső lehetőségeket — de az utánkövetés nem az erőssége.", en: "Easily builds connections and brings external opportunities — but follow-through isn't their strength." },
-  CO: { hu: "Természetes facilitátor, aki célra fókuszálja a csapatot — de delegálhat túl sokat.", en: "Natural facilitator who focuses the team on goals — but may over-delegate." },
-  SH: { hu: "Hajtott, kihívásokat kereső típus. Nyomás alatt is teljesít, előre viszi a csapatot — de néha türelmetlenül.", en: "Driven, challenge-seeking type. Performs under pressure, pushes the team forward — but sometimes impatiently." },
-  ME: { hu: "Tárgyilagosan elemez, jó döntéseket hoz — de lassú reagálású és túl kritikus lehet.", en: "Analyzes objectively, makes good decisions — but can be slow to react and overly critical." },
-  TW: { hu: "Segítőkész és diplomata, enyhíti a feszültséget — de döntéshelyzetben határozatlan lehet.", en: "Helpful and diplomatic, eases tension — but can be indecisive in decision moments." },
-  IM: { hu: "Rendszeres és megbízható, terveket valósít meg — de rugalmatlan lehet új helyzetekben.", en: "Systematic and reliable, turns plans into action — but can be inflexible in new situations." },
-  CF: { hu: "Precíz és alapos, hibákat kiszűr a végén — de aggódhat a határidők miatt.", en: "Precise and thorough, catches errors at the end — but may worry about deadlines." },
-  SP: { hu: "Mélyreható szaktudás, nélkülözhetetlen egy területen — de szűk fókuszú lehet.", en: "Deep expertise, indispensable in one area — but can have a narrow focus." },
+  OG: { hu: "Eredeti gondolkodó, aki új megoldásokat hoz — de néha elszakad a gyakorlati megvalósítástól.", en: "Original thinker who brings new solutions — but can lose touch with practical implementation." },
+  KE: { hu: "Könnyen teremt kapcsolatokat és hoz külső lehetőségeket — de az utánkövetés nem az erőssége.", en: "Easily builds connections and brings external opportunities — but follow-through isn't their strength." },
+  KO: { hu: "Természetes facilitátor, aki célra fókuszálja a csapatot — de delegálhat túl sokat.", en: "Natural facilitator who focuses the team on goals — but may over-delegate." },
+  HA: { hu: "Hajtott, kihívásokat kereső típus. Nyomás alatt is teljesít, előre viszi a csapatot — de néha türelmetlenül.", en: "Driven, challenge-seeking type. Performs under pressure, pushes the team forward — but sometimes impatiently." },
+  ER: { hu: "Tárgyilagosan elemez, jó döntéseket hoz — de lassú reagálású és túl kritikus lehet.", en: "Analyzes objectively, makes good decisions — but can be slow to react and overly critical." },
+  CS: { hu: "Segítőkész és diplomata, enyhíti a feszültséget — de döntéshelyzetben határozatlan lehet.", en: "Helpful and diplomatic, eases tension — but can be indecisive in decision moments." },
+  MV: { hu: "Rendszeres és megbízható, terveket valósít meg — de rugalmatlan lehet új helyzetekben.", en: "Systematic and reliable, turns plans into action — but can be inflexible in new situations." },
+  MI: { hu: "Precíz és alapos, hibákat kiszűr a végén — de aggódhat a határidők miatt.", en: "Precise and thorough, catches errors at the end — but may worry about deadlines." },
+  SZ: { hu: "Mélyreható szaktudás, nélkülözhetetlen egy területen — de szűk fókuszú lehet.", en: "Deep expertise, indispensable in one area — but can have a narrow focus." },
 };
 
 const RANK_LABELS = [
