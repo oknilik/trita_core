@@ -312,6 +312,7 @@ CREATE TABLE "Campaign" (
     "steps" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "teamId" TEXT,
     "allowExternalObservers" BOOLEAN NOT NULL DEFAULT false,
+    "stepIntervalHours" INTEGER NOT NULL DEFAULT 24,
     "status" TEXT NOT NULL DEFAULT 'DRAFT',
     "createdBy" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -330,6 +331,7 @@ CREATE TABLE "CampaignParticipant" (
     "completedAt" TIMESTAMP(3),
     "currentStep" INTEGER NOT NULL DEFAULT 0,
     "stepCompletions" JSONB,
+    "nextStepOpensAt" TIMESTAMP(3),
 
     CONSTRAINT "CampaignParticipant_pkey" PRIMARY KEY ("id")
 );

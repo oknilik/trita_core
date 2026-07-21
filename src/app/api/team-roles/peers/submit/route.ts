@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
     where: { campaignId_userId: { campaignId, userId: profile.id } },
     select: {
       currentStep: true,
+      nextStepOpensAt: true,
       campaign: { select: { status: true, type: true, steps: true, teamId: true } },
     },
   });

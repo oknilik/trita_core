@@ -120,6 +120,8 @@ export function CampaignWizard({
   const [targetTeamId, setTargetTeamId] = useState<string | null>(preselectedTeamId);
   // Külső observer-meghívók jóváhagyás nélkül mehetnek-e ebben a kampányban.
   const [allowExternalObservers, setAllowExternalObservers] = useState(false);
+  // Lépés-ütem: a teljesített kérdőív után hány órával nyílik a következő.
+  const [stepIntervalHours, setStepIntervalHours] = useState(24);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -220,6 +222,7 @@ export function CampaignWizard({
           types: chosenSteps,
           teamId: targetTeamId ?? undefined,
           allowExternalObservers,
+          stepIntervalHours,
         }),
       });
       if (!createRes.ok) {
@@ -415,6 +418,38 @@ export function CampaignWizard({
               helpText={`${description.length}/500`}
               helpTextClassName="text-right font-mono text-[10px] text-muted"
             />
+            {chosenSteps.length > 1 ? (
+              <div className="rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
+                <p className="text-[13px] font-semibold text-ink">
+                  {t("campaignWiz.intervalLabel", locale)}
+                </p>
+                <p className="mt-0.5 text-[12px] leading-relaxed text-ink-body">
+                  {t("campaignWiz.intervalHint", locale)}
+                </p>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {[
+                    { value: 0, key: "campaignWiz.intervalNone" },
+                    { value: 12, key: "campaignWiz.interval12h" },
+                    { value: 24, key: "campaignWiz.interval24h" },
+                    { value: 48, key: "campaignWiz.interval48h" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setStepIntervalHours(opt.value)}
+                      className={[
+                        "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
+                        stepIntervalHours === opt.value
+                          ? "border-ink bg-ink text-white"
+                          : "border-sand bg-white text-ink-body hover:border-ink/40",
+                      ].join(" ")}
+                    >
+                      {t(opt.key, locale)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             {chosenSteps.includes("OBSERVER_360") ? (
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
                 <input

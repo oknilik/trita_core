@@ -43,7 +43,9 @@ export async function advanceCampaignStepForUser(
       id: true,
       currentStep: true,
       stepCompletions: true,
-      campaign: { select: { id: true, name: true, type: true, steps: true } },
+      campaign: {
+        select: { id: true, name: true, type: true, steps: true, stepIntervalHours: true },
+      },
     },
   });
 
@@ -52,16 +54,26 @@ export async function advanceCampaignStepForUser(
     if (steps[p.currentStep] !== completedType) continue;
 
     const nextStep = p.currentStep + 1;
+    const nextType = steps[nextStep];
+    // Ütemezés: a következő kérdőív ne azonnal érkezzen — default napi egy
+    // (stepIntervalHours, 0 = azonnal). A kapu-időpontig a lépés zárva,
+    // az értesítést a release (esedékesség / küldés-most) küldi ki.
+    const intervalHours = Math.max(0, p.campaign.stepIntervalHours ?? 0);
+    const gateUntil =
+      nextType && intervalHours > 0
+        ? new Date(Date.now() + intervalHours * 60 * 60 * 1000)
+        : null;
+
     await prisma.campaignParticipant.update({
       where: { id: p.id },
       data: {
         currentStep: nextStep,
         stepCompletions: withCompletion(p.stepCompletions, completedType),
+        nextStepOpensAt: gateUntil,
       },
     });
 
-    const nextType = steps[nextStep];
-    if (nextType) {
+    if (nextType && !gateUntil) {
       await handleMeasurementStepOpened({
         userId: profileId,
         campaignId: p.campaign.id,
@@ -70,6 +82,51 @@ export async function advanceCampaignStepForUser(
       }).catch(() => {});
     }
   }
+}
+
+/**
+ * Esedékes (vagy force-olt) ütemezett lépések kinyitása: a kapu törlődik,
+ * és kimegy a MEASUREMENT_STEP_OPENED értesítés (dedupe-kulcsos, így az
+ * ismételt futás biztonságos). Hívók: óránkénti cron, a kitöltő-oldalak
+ * user-szintű frissítése, és a „Küldés most" akció (force).
+ */
+export async function releaseDueCampaignSteps(options?: {
+  campaignId?: string;
+  userId?: string;
+  force?: boolean;
+}): Promise<number> {
+  const due = await prisma.campaignParticipant.findMany({
+    where: {
+      campaign: { status: "ACTIVE", ...(options?.campaignId ? { id: options.campaignId } : {}) },
+      ...(options?.userId ? { userId: options.userId } : {}),
+      nextStepOpensAt: options?.force ? { not: null } : { lte: new Date() },
+    },
+    select: {
+      id: true,
+      userId: true,
+      currentStep: true,
+      campaign: { select: { id: true, name: true, type: true, steps: true } },
+    },
+  });
+
+  let released = 0;
+  for (const p of due) {
+    const openType = getCampaignSteps(p.campaign)[p.currentStep];
+    await prisma.campaignParticipant.update({
+      where: { id: p.id },
+      data: { nextStepOpensAt: null },
+    });
+    released += 1;
+    if (openType) {
+      await handleMeasurementStepOpened({
+        userId: p.userId,
+        campaignId: p.campaign.id,
+        campaignName: p.campaign.name,
+        stepType: openType,
+      }).catch(() => {});
+    }
+  }
+  return released;
 }
 
 /**

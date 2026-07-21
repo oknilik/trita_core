@@ -9,6 +9,7 @@ import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
+import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
@@ -205,6 +206,72 @@ export default async function OrgDetailPage({
       },
     }),
   ]);
+
+  // ── Futó mérés-sorozat csempe (lépés-ütemezés) ────────────────────────────
+  // A legutóbbi aktív, csapat-célzású kampány: mi van épp nyitva, illetve
+  // mikor nyílik a következő ütemezett kérdőív (visszaszámlálóhoz).
+  const pacingCampaign = await prisma.campaign.findFirst({
+    where: { orgId, status: "ACTIVE", teamId: { not: null } },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      steps: true,
+      stepIntervalHours: true,
+      teamId: true,
+      participants: {
+        select: { currentStep: true, nextStepOpensAt: true },
+      },
+    },
+  });
+  const pacingTeam = pacingCampaign?.teamId
+    ? await prisma.team.findUnique({
+        where: { id: pacingCampaign.teamId },
+        select: { name: true },
+      })
+    : null;
+  let pacingTile = null;
+  if (pacingCampaign && pacingCampaign.participants.length > 0) {
+    const steps =
+      pacingCampaign.steps.length > 0 ? pacingCampaign.steps : [pacingCampaign.type];
+    const now = Date.now();
+    let doneCount = 0;
+    let scheduledCount = 0;
+    let nextReleaseAt: Date | null = null;
+    const openStepCounts = new Map<string, number>();
+    for (const p of pacingCampaign.participants) {
+      const stepType = steps[p.currentStep];
+      if (!stepType) {
+        doneCount += 1;
+        continue;
+      }
+      if (p.nextStepOpensAt && p.nextStepOpensAt.getTime() > now) {
+        scheduledCount += 1;
+        if (!nextReleaseAt || p.nextStepOpensAt < nextReleaseAt) {
+          nextReleaseAt = p.nextStepOpensAt;
+        }
+        continue;
+      }
+      openStepCounts.set(stepType, (openStepCounts.get(stepType) ?? 0) + 1);
+    }
+    const openStepType =
+      [...openStepCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    const openCount = [...openStepCounts.values()].reduce((a, b) => a + b, 0);
+    pacingTile = {
+      orgId,
+      campaignId: pacingCampaign.id,
+      campaignName: pacingCampaign.name,
+      teamName: pacingTeam?.name ?? null,
+      stepIntervalHours: pacingCampaign.stepIntervalHours,
+      totalParticipants: pacingCampaign.participants.length,
+      doneCount,
+      openCount,
+      openStepType,
+      scheduledCount,
+      nextReleaseAt: nextReleaseAt ? nextReleaseAt.toISOString() : null,
+    };
+  }
 
   const serializedMembers = members.map((m) => ({
     id: m.id,
@@ -404,6 +471,14 @@ export default async function OrgDetailPage({
           </>
         )}
       />
+
+      {pacingTile ? (
+        <CampaignPacingTile
+          data={pacingTile}
+          canManagePacing={isAdminForActions || isConsultantView}
+          isHu={isHu}
+        />
+      ) : null}
 
       <Suspense fallback={<div className="h-10 animate-pulse rounded-lg bg-sand/40" />}>
         <OrgPageShell

@@ -18,6 +18,7 @@ const createSchema = z.object({
     .optional(),
   teamId: z.string().min(1).optional(),
   allowExternalObservers: z.boolean().optional().default(false),
+  stepIntervalHours: z.number().int().min(0).max(168).optional().default(24),
 });
 
 // GET /api/org/[id]/campaigns — list org campaigns
@@ -146,6 +147,7 @@ export async function POST(
       steps,
       teamId: body.data.teamId,
       allowExternalObservers: body.data.allowExternalObservers,
+      stepIntervalHours: body.data.stepIntervalHours,
       createdBy: profile.id,
     },
     select: {

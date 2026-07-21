@@ -62,11 +62,31 @@ export function getCurrentStepType(
   return steps[participant.currentStep] ?? null;
 }
 
-/** Igaz, ha a résztvevő aktuális lépése a megadott típus. */
+/**
+ * Lépés-ütemezési kapu: az aktuális lépés csak akkor nyitott, ha nincs
+ * jövőbeli nyitási időpontja (nextStepOpensAt). A mező hiánya (régi hívók,
+ * régi rekordok) nyitottnak számít — visszafelé kompatibilis.
+ */
+export function isStepGateOpen(
+  participant: { nextStepOpensAt?: Date | string | null },
+  now: Date = new Date(),
+): boolean {
+  if (!participant.nextStepOpensAt) return true;
+  return new Date(participant.nextStepOpensAt).getTime() <= now.getTime();
+}
+
+/**
+ * Igaz, ha a résztvevő aktuális lépése a megadott típus ÉS az ütemezési
+ * kapu nyitva van (a hívó felelőssége a nextStepOpensAt select-elése —
+ * enélkül a kapu mindig nyitottnak számít).
+ */
 export function isStepOpenFor(
   campaign: { type: string; steps: string[] },
-  participant: { currentStep: number },
+  participant: { currentStep: number; nextStepOpensAt?: Date | string | null },
   stepType: string,
 ): boolean {
-  return getCurrentStepType(campaign, participant) === stepType;
+  return (
+    getCurrentStepType(campaign, participant) === stepType &&
+    isStepGateOpen(participant)
+  );
 }

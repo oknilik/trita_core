@@ -184,6 +184,44 @@ describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
   });
 });
 
+describe("lépés-ütemezési kapu (isStepGateOpen / isStepOpenFor)", () => {
+  it("gate: missing or past nextStepOpensAt is open, future is closed", async () => {
+    const { isStepGateOpen } = await import("@/lib/campaign-steps-core");
+    const now = new Date("2026-07-21T12:00:00Z");
+    assert.equal(isStepGateOpen({}, now), true);
+    assert.equal(isStepGateOpen({ nextStepOpensAt: null }, now), true);
+    assert.equal(
+      isStepGateOpen({ nextStepOpensAt: "2026-07-21T11:00:00Z" }, now),
+      true,
+    );
+    assert.equal(
+      isStepGateOpen({ nextStepOpensAt: "2026-07-21T13:00:00Z" }, now),
+      false,
+    );
+    assert.equal(
+      isStepGateOpen({ nextStepOpensAt: new Date("2026-07-22T00:00:00Z") }, now),
+      false,
+    );
+  });
+
+  it("isStepOpenFor respects the schedule gate", async () => {
+    const { isStepOpenFor } = await import("@/lib/campaign-steps-core");
+    const camp = { type: "OBSERVER_360", steps: ["OBSERVER_360", "PSYCH_SAFETY"] };
+    const future = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    const past = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    assert.equal(
+      isStepOpenFor(camp, { currentStep: 1, nextStepOpensAt: future }, "PSYCH_SAFETY"),
+      false,
+    );
+    assert.equal(
+      isStepOpenFor(camp, { currentStep: 1, nextStepOpensAt: past }, "PSYCH_SAFETY"),
+      true,
+    );
+    // régi hívó (mező nélkül) — visszafelé kompatibilis: nyitott
+    assert.equal(isStepOpenFor(camp, { currentStep: 1 }, "PSYCH_SAFETY"), true);
+  });
+});
+
 describe("kampánylépés-integráció (TRUST_360)", () => {
   it("normalizes TRUST_360 into canonical order between TEAM_ROLE_360 and PSYCH_SAFETY", async () => {
     const { normalizeCampaignSteps, CAMPAIGN_STEP_LABELS, CAMPAIGN_STEP_LINKS } =

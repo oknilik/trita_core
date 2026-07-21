@@ -10,10 +10,12 @@ import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import {
   getCurrentStepType,
+  isStepGateOpen,
   CAMPAIGN_STEP_LABELS,
   CAMPAIGN_STEP_LINKS,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
+import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
@@ -153,6 +155,9 @@ export default async function TeamDetailPage({
 
   // A néző következő nyitott mérés-lépése a csapat aktív kampányaiban
   // (több-lépéses kampány: a lépések sorban nyílnak meg).
+  // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
+  await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});
+
   const stepCandidates = await prisma.campaignParticipant.findMany({
     where: {
       userId: profile.id,
@@ -161,6 +166,7 @@ export default async function TeamDetailPage({
     orderBy: { addedAt: "asc" },
     select: {
       currentStep: true,
+      nextStepOpensAt: true,
       campaign: { select: { name: true, type: true, steps: true } },
     },
   });
@@ -168,7 +174,12 @@ export default async function TeamDetailPage({
     .map((p) => {
       const stepType = getCurrentStepType(p.campaign, p);
       return stepType && isCampaignStepType(stepType)
-        ? { campaignName: p.campaign.name, stepType }
+        ? {
+            campaignName: p.campaign.name,
+            stepType,
+            // Ütemezett (még zárt) lépés: időpontot mutatunk CTA helyett.
+            opensAt: !isStepGateOpen(p) ? p.nextStepOpensAt : null,
+          }
         : null;
     })
     .find((v): v is NonNullable<typeof v> => v !== null) ?? null;
@@ -1043,12 +1054,28 @@ export default async function TeamDetailPage({
                             : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
                 </p>
               </div>
-              <Link
-                href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
-                className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-ink px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
-              >
-                {isHu ? "Kitöltöm most" : "Fill it in now"}
-              </Link>
+              {pendingMeasurement.opensAt ? (
+                <div className="shrink-0 rounded-[10px] border border-sand bg-white px-4 py-2.5 text-center">
+                  <p className="font-mono text-[10px] uppercase tracking-wide text-muted">
+                    {isHu ? "Érkezik" : "Arriving"}
+                  </p>
+                  <p className="text-[13px] font-semibold tabular-nums text-ink">
+                    {pendingMeasurement.opensAt.toLocaleString(isHu ? "hu-HU" : "en-GB", {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              ) : (
+                <Link
+                  href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
+                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-ink px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
+                >
+                  {isHu ? "Kitöltöm most" : "Fill it in now"}
+                </Link>
+              )}
             </div>
           </section>
         ) : null}

@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       id: true,
       completedAt: true,
       currentStep: true,
+      nextStepOpensAt: true,
       campaign: { select: { type: true, status: true, steps: true } },
     },
   });

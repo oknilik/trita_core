@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
+import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
 import { PsychSafetyClient } from "./PsychSafetyClient";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,9 @@ export default async function PsychSafetyPage() {
   });
   if (!profile) redirect("/sign-in");
 
+  // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
+  await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});
+
   // Több-lépéses kampány: az a kör tölthető, ahol a user AKTUÁLIS lépése
   // a pszichológiai biztonság (a korábbi lépéseit már teljesítette).
   const candidates = await prisma.campaignParticipant.findMany({
@@ -42,6 +46,7 @@ export default async function PsychSafetyPage() {
     orderBy: { addedAt: "asc" },
     select: {
       currentStep: true,
+      nextStepOpensAt: true,
       campaign: { select: { id: true, name: true, type: true, steps: true } },
     },
   });
