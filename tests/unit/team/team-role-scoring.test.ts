@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import {
   TEAM_ROLES,
   calculateTeamRoleScores,
@@ -22,18 +23,18 @@ import {
 
 describe("team-role itembank", () => {
   it("has 27 items — 3 per role, ids prefixed with the role code", () => {
-    expect(TEAM_ROLE_ITEM_COUNT).toBe(27);
+    assert.equal(TEAM_ROLE_ITEM_COUNT, 27);
     const perRole = new Map<string, number>();
     for (const item of TEAM_ROLE_ITEMS) {
-      expect(item.id.startsWith(item.role)).toBe(true);
-      expect(item.self.hu.length).toBeGreaterThan(0);
-      expect(item.self.en.length).toBeGreaterThan(0);
-      expect(item.peer.hu.length).toBeGreaterThan(0);
-      expect(item.peer.en.length).toBeGreaterThan(0);
+      assert.ok(item.id.startsWith(item.role));
+      assert.ok(item.self.hu.length > 0);
+      assert.ok(item.self.en.length > 0);
+      assert.ok(item.peer.hu.length > 0);
+      assert.ok(item.peer.en.length > 0);
       perRole.set(item.role, (perRole.get(item.role) ?? 0) + 1);
     }
-    expect(perRole.size).toBe(Object.keys(TEAM_ROLES).length);
-    for (const count of perRole.values()) expect(count).toBe(3);
+    assert.equal(perRole.size, Object.keys(TEAM_ROLES).length);
+    for (const count of perRole.values()) assert.equal(count, 3);
   });
 
   it("validates selection sets: count band and exact top count", () => {
@@ -42,28 +43,29 @@ describe("team-role itembank", () => {
     ids.slice(0, TEAM_ROLE_MIN_SELECT).forEach((id, idx) => {
       valid[id] = idx < TEAM_ROLE_TOP_SELECT ? 2 : 1;
     });
-    expect(isValidTeamRoleSelectionSet(valid)).toBe(true);
+    assert.equal(isValidTeamRoleSelectionSet(valid), true);
 
     // túl kevés kijelölés
     const few = { ...valid };
     delete few[ids[TEAM_ROLE_MIN_SELECT - 1]];
-    expect(isValidTeamRoleSelectionSet(few)).toBe(false);
+    assert.equal(isValidTeamRoleSelectionSet(few), false);
 
     // túl sok kijelölés
     const many: TeamRoleSelections = {};
     ids.slice(0, TEAM_ROLE_MAX_SELECT + 1).forEach((id, idx) => {
       many[id] = idx < TEAM_ROLE_TOP_SELECT ? 2 : 1;
     });
-    expect(isValidTeamRoleSelectionSet(many)).toBe(false);
+    assert.equal(isValidTeamRoleSelectionSet(many), false);
 
     // rossz kiemelt-darabszám
     const wrongTop = { ...valid, [ids[0]]: 1 } as TeamRoleSelections;
-    expect(isValidTeamRoleSelectionSet(wrongTop)).toBe(false);
+    assert.equal(isValidTeamRoleSelectionSet(wrongTop), false);
 
     // ismeretlen item-id
-    expect(
+    assert.equal(
       isValidTeamRoleSelectionSet({ ...valid, NOPE1: 1 } as TeamRoleSelections),
-    ).toBe(false);
+      false,
+    );
   });
 });
 
@@ -81,12 +83,12 @@ describe("team-role scoring (selection-based)", () => {
       CS1: 1,
     };
     const scores = calculateTeamRoleScores(selections);
-    expect(scores.OG).toBe(100);
-    expect(scores.KE).toBe(Math.round((1 / 6) * 100));
-    expect(scores.MV).toBe(0);
+    assert.equal(scores.OG, 100);
+    assert.equal(scores.KE, Math.round((1 / 6) * 100));
+    assert.equal(scores.MV, 0);
     const top = getTopRoles(scores);
-    expect(top[0].role).toBe("OG");
-    expect(top).toHaveLength(3);
+    assert.equal(top[0].role, "OG");
+    assert.equal(top.length, 3);
   });
 
   it("ignores unknown item ids defensively", () => {
@@ -94,9 +96,9 @@ describe("team-role scoring (selection-based)", () => {
       OG1: 1,
       XX9: 2,
     } as TeamRoleSelections);
-    expect(scores.OG).toBe(Math.round((1 / 6) * 100));
+    assert.equal(scores.OG, Math.round((1 / 6) * 100));
     const sum = Object.values(scores).reduce((a, b) => a + b, 0);
-    expect(sum).toBe(scores.OG);
+    assert.equal(sum, scores.OG);
   });
 });
 
@@ -123,19 +125,19 @@ describe("peer aggregate (anonymity threshold)", () => {
 
   it("returns no scores below the rater threshold", () => {
     const agg = aggregatePeerRoleScores([raterA, raterB]);
-    expect(agg.raterCount).toBe(2);
-    expect(agg.raterCount).toBeLessThan(TEAM_ROLE_PEER_MIN_RATERS);
-    expect(agg.scores).toBeNull();
-    expect(agg.topRoles).toHaveLength(0);
+    assert.equal(agg.raterCount, 2);
+    assert.ok(agg.raterCount < TEAM_ROLE_PEER_MIN_RATERS);
+    assert.equal(agg.scores, null);
+    assert.equal(agg.topRoles.length, 0);
   });
 
   it("averages rater profiles at or above the threshold", () => {
     const agg = aggregatePeerRoleScores([raterA, raterB, raterC]);
-    expect(agg.raterCount).toBe(3);
-    expect(agg.scores).not.toBeNull();
-    expect(agg.topRoles[0].role).toBe("OG");
+    assert.equal(agg.raterCount, 3);
+    assert.notEqual(agg.scores, null);
+    assert.equal(agg.topRoles[0].role, "OG");
     // OG: A=100, B=(2+1+0? OG1=2,OG2=1 →3/6=50), C=(2+0+2 →4/6≈67) → átlag ~72
-    expect(agg.scores!.OG).toBeGreaterThan(agg.scores!.KE);
+    assert.ok(agg.scores!.OG > agg.scores!.KE);
   });
 
   it("compares self and peer top-3 sets", () => {
@@ -143,8 +145,8 @@ describe("peer aggregate (anonymity threshold)", () => {
       [{ role: "OG" as TeamRoleCode }, { role: "KE" as TeamRoleCode }, { role: "KO" as TeamRoleCode }],
       [{ role: "OG" as TeamRoleCode }, { role: "MV" as TeamRoleCode }, { role: "KO" as TeamRoleCode }],
     );
-    expect(diff.shared.sort()).toEqual(["KO", "OG"]);
-    expect(diff.selfOnly).toEqual(["KE"]);
-    expect(diff.peerOnly).toEqual(["MV"]);
+    assert.deepEqual([...diff.shared].sort(), ["KO", "OG"]);
+    assert.deepEqual(diff.selfOnly, ["KE"]);
+    assert.deepEqual(diff.peerOnly, ["MV"]);
   });
 });

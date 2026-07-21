@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import {
   PSYCH_SAFETY_ITEMS,
   PSYCH_SAFETY_ITEM_COUNT,
@@ -19,50 +20,57 @@ function answersWith(value: number): PsychSafetyAnswers {
 
 describe("psych-safety instrument", () => {
   it("has 8 items with unique ids and both locales", () => {
-    expect(PSYCH_SAFETY_ITEM_COUNT).toBe(8);
+    assert.equal(PSYCH_SAFETY_ITEM_COUNT, 8);
     const ids = new Set(PSYCH_SAFETY_ITEMS.map((i) => i.id));
-    expect(ids.size).toBe(8);
+    assert.equal(ids.size, 8);
     for (const item of PSYCH_SAFETY_ITEMS) {
-      expect(item.text.hu.length).toBeGreaterThan(10);
-      expect(item.text.en.length).toBeGreaterThan(10);
+      assert.ok(item.text.hu.length > 10);
+      assert.ok(item.text.en.length > 10);
     }
   });
 
   it("contains reversed items", () => {
-    expect(PSYCH_SAFETY_ITEMS.some((i) => i.reversed)).toBe(true);
-    expect(PSYCH_SAFETY_ITEMS.some((i) => !i.reversed)).toBe(true);
+    assert.ok(PSYCH_SAFETY_ITEMS.some((i) => i.reversed));
+    assert.ok(PSYCH_SAFETY_ITEMS.some((i) => !i.reversed));
   });
 });
 
 describe("isCompletePsychSafetyAnswerSet", () => {
   it("accepts a full 1..5 answer set", () => {
-    expect(isCompletePsychSafetyAnswerSet(answersWith(3))).toBe(true);
+    assert.equal(isCompletePsychSafetyAnswerSet(answersWith(3)), true);
   });
 
   it("rejects partial, out-of-range and non-integer sets", () => {
     const partial = answersWith(3);
     delete partial[PSYCH_SAFETY_ITEMS[0].id];
-    expect(isCompletePsychSafetyAnswerSet(partial)).toBe(false);
-    expect(isCompletePsychSafetyAnswerSet({ ...answersWith(3), [PSYCH_SAFETY_ITEMS[0].id]: 6 })).toBe(false);
-    expect(isCompletePsychSafetyAnswerSet({ ...answersWith(3), [PSYCH_SAFETY_ITEMS[0].id]: 2.5 })).toBe(false);
-    expect(isCompletePsychSafetyAnswerSet(null)).toBe(false);
-    expect(isCompletePsychSafetyAnswerSet([answersWith(3)])).toBe(false);
+    assert.equal(isCompletePsychSafetyAnswerSet(partial), false);
+    assert.equal(
+      isCompletePsychSafetyAnswerSet({ ...answersWith(3), [PSYCH_SAFETY_ITEMS[0].id]: 6 }),
+      false,
+    );
+    assert.equal(
+      isCompletePsychSafetyAnswerSet({ ...answersWith(3), [PSYCH_SAFETY_ITEMS[0].id]: 2.5 }),
+      false,
+    );
+    assert.equal(isCompletePsychSafetyAnswerSet(null), false);
+    assert.equal(isCompletePsychSafetyAnswerSet([answersWith(3)]), false);
     // extra kulcs sem megy át
-    expect(isCompletePsychSafetyAnswerSet({ ...answersWith(3), EXTRA: 3 })).toBe(false);
+    assert.equal(isCompletePsychSafetyAnswerSet({ ...answersWith(3), EXTRA: 3 }), false);
   });
 });
 
 describe("aggregatePsychSafety — anonimitás-küszöb", () => {
   it("returns null below the minimum response count", () => {
-    expect(aggregatePsychSafety([])).toBeNull();
-    expect(
+    assert.equal(aggregatePsychSafety([]), null);
+    assert.equal(
       aggregatePsychSafety(Array(PSYCH_SAFETY_MIN_RESPONSES - 1).fill(answersWith(4))),
-    ).toBeNull();
+      null,
+    );
   });
 
   it("ignores invalid responses when counting toward the threshold", () => {
     const responses = [answersWith(4), answersWith(4), { broken: true }];
-    expect(aggregatePsychSafety(responses)).toBeNull();
+    assert.equal(aggregatePsychSafety(responses), null);
   });
 });
 
@@ -73,12 +81,12 @@ describe("aggregatePsychSafety — pontozás", () => {
       PSYCH_SAFETY_ITEMS.map((i) => [i.id, i.reversed ? 1 : 5]),
     );
     const agg = aggregatePsychSafety([best, best, best]);
-    expect(agg).not.toBeNull();
-    expect(agg!.index).toBe(100);
-    expect(agg!.band).toBe("high");
-    expect(agg!.spread).toBe(0);
+    assert.notEqual(agg, null);
+    assert.equal(agg!.index, 100);
+    assert.equal(agg!.band, "high");
+    assert.equal(agg!.spread, 0);
     for (const item of PSYCH_SAFETY_ITEMS) {
-      expect(agg!.itemMeans[item.id]).toBe(5);
+      assert.equal(agg!.itemMeans[item.id], 5);
     }
   });
 
@@ -87,15 +95,15 @@ describe("aggregatePsychSafety — pontozás", () => {
       PSYCH_SAFETY_ITEMS.map((i) => [i.id, i.reversed ? 5 : 1]),
     );
     const agg = aggregatePsychSafety([worst, worst, worst]);
-    expect(agg!.index).toBe(0);
-    expect(agg!.band).toBe("low");
+    assert.equal(agg!.index, 0);
+    assert.equal(agg!.band, "low");
   });
 
   it("scores neutral (3) answers as 50 regardless of reversal", () => {
     const agg = aggregatePsychSafety([answersWith(3), answersWith(3), answersWith(3)]);
-    expect(agg!.index).toBe(50);
+    assert.equal(agg!.index, 50);
     for (const item of PSYCH_SAFETY_ITEMS) {
-      expect(agg!.itemMeans[item.id]).toBe(3);
+      assert.equal(agg!.itemMeans[item.id], 3);
     }
   });
 
@@ -107,19 +115,19 @@ describe("aggregatePsychSafety — pontozás", () => {
       PSYCH_SAFETY_ITEMS.map((i) => [i.id, i.reversed ? 5 : 1]),
     );
     const agg = aggregatePsychSafety([best, worst, answersWith(3)]);
-    expect(agg!.count).toBe(3);
-    expect(agg!.index).toBe(50);
-    expect(agg!.spread).toBeGreaterThan(30);
+    assert.equal(agg!.count, 3);
+    assert.equal(agg!.index, 50);
+    assert.ok(agg!.spread > 30);
   });
 });
 
 describe("riport-réteg: területek és akciók", () => {
   it("every item has an area label and an action suggestion in both locales", () => {
     for (const item of PSYCH_SAFETY_ITEMS) {
-      expect(item.area.hu.length).toBeGreaterThan(3);
-      expect(item.area.en.length).toBeGreaterThan(3);
-      expect(PSYCH_SAFETY_ACTIONS[item.id]?.hu.length).toBeGreaterThan(20);
-      expect(PSYCH_SAFETY_ACTIONS[item.id]?.en.length).toBeGreaterThan(20);
+      assert.ok(item.area.hu.length > 3);
+      assert.ok(item.area.en.length > 3);
+      assert.ok((PSYCH_SAFETY_ACTIONS[item.id]?.hu.length ?? 0) > 20);
+      assert.ok((PSYCH_SAFETY_ACTIONS[item.id]?.en.length ?? 0) > 20);
     }
   });
 
@@ -132,56 +140,59 @@ describe("riport-réteg: területek és akciók", () => {
     means.PS8 = 3.3;
     means.PS1 = 3.39;
     const weak = weakPsychSafetyItemIds(means);
-    expect(weak).toEqual(["PS2", "PS5", "PS8"]); // max 3, növekvő átlag
-    expect(weakPsychSafetyItemIds(means, 2)).toEqual(["PS2", "PS5"]);
+    assert.deepEqual(weak, ["PS2", "PS5", "PS8"]); // max 3, növekvő átlag
+    assert.deepEqual(weakPsychSafetyItemIds(means, 2), ["PS2", "PS5"]);
     // küszöbön lévő (3.4) nem gyenge
-    expect(weakPsychSafetyItemIds({ ...means, PS1: PSYCH_SAFETY_WEAK_THRESHOLD })).not.toContain("PS1");
+    assert.ok(
+      !weakPsychSafetyItemIds({ ...means, PS1: PSYCH_SAFETY_WEAK_THRESHOLD }).includes("PS1"),
+    );
   });
 
   it("returns empty list when everything is healthy", () => {
     const healthy = Object.fromEntries(PSYCH_SAFETY_ITEMS.map((i) => [i.id, 4.0]));
-    expect(weakPsychSafetyItemIds(healthy)).toEqual([]);
+    assert.deepEqual(weakPsychSafetyItemIds(healthy), []);
   });
 
   it("getPsychSafetyItem resolves ids", () => {
-    expect(getPsychSafetyItem("PS3")?.area.hu).toBe("Segítségkérés");
-    expect(getPsychSafetyItem("PS99")).toBeUndefined();
+    assert.equal(getPsychSafetyItem("PS3")?.area.hu, "Segítségkérés");
+    assert.equal(getPsychSafetyItem("PS99"), undefined);
   });
 });
 
 describe("campaign-steps-core (több-lépéses kampányok)", () => {
   it("normalizes step lists into canonical order without duplicates", async () => {
     const { normalizeCampaignSteps } = await import("@/lib/campaign-steps-core");
-    expect(normalizeCampaignSteps(["PSYCH_SAFETY", "OBSERVER_360"])).toEqual([
+    assert.deepEqual(normalizeCampaignSteps(["PSYCH_SAFETY", "OBSERVER_360"]), [
       "OBSERVER_360",
       "PSYCH_SAFETY",
     ]);
-    expect(normalizeCampaignSteps(["TEAM_ROLE", "TEAM_ROLE", "X"])).toEqual(["TEAM_ROLE"]);
+    assert.deepEqual(normalizeCampaignSteps(["TEAM_ROLE", "TEAM_ROLE", "X"]), ["TEAM_ROLE"]);
   });
 
   it("falls back to the legacy type when steps are empty", async () => {
     const { getCampaignSteps, isStepOpenFor } = await import("@/lib/campaign-steps-core");
-    expect(getCampaignSteps({ type: "PSYCH_SAFETY", steps: [] })).toEqual(["PSYCH_SAFETY"]);
-    expect(
+    assert.deepEqual(getCampaignSteps({ type: "PSYCH_SAFETY", steps: [] }), ["PSYCH_SAFETY"]);
+    assert.equal(
       isStepOpenFor({ type: "PSYCH_SAFETY", steps: [] }, { currentStep: 0 }, "PSYCH_SAFETY"),
-    ).toBe(true);
+      true,
+    );
   });
 
   it("opens steps strictly in order, per participant", async () => {
     const { getCurrentStepType, isStepOpenFor } = await import("@/lib/campaign-steps-core");
     const camp = { type: "OBSERVER_360", steps: ["OBSERVER_360", "TEAM_ROLE", "PSYCH_SAFETY"] };
-    expect(getCurrentStepType(camp, { currentStep: 1 })).toBe("TEAM_ROLE");
-    expect(isStepOpenFor(camp, { currentStep: 1 }, "PSYCH_SAFETY")).toBe(false);
-    expect(getCurrentStepType(camp, { currentStep: 3 })).toBeNull();
+    assert.equal(getCurrentStepType(camp, { currentStep: 1 }), "TEAM_ROLE");
+    assert.equal(isStepOpenFor(camp, { currentStep: 1 }, "PSYCH_SAFETY"), false);
+    assert.equal(getCurrentStepType(camp, { currentStep: 3 }), null);
   });
 });
 
 describe("psychSafetyBand", () => {
   it("maps thresholds", () => {
-    expect(psychSafetyBand(80)).toBe("high");
-    expect(psychSafetyBand(75)).toBe("high");
-    expect(psychSafetyBand(74)).toBe("mid");
-    expect(psychSafetyBand(55)).toBe("mid");
-    expect(psychSafetyBand(54)).toBe("low");
+    assert.equal(psychSafetyBand(80), "high");
+    assert.equal(psychSafetyBand(75), "high");
+    assert.equal(psychSafetyBand(74), "mid");
+    assert.equal(psychSafetyBand(55), "mid");
+    assert.equal(psychSafetyBand(54), "low");
   });
 });
