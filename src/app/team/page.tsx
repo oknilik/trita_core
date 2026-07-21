@@ -12,6 +12,8 @@ import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { hasOrgRole } from "@/lib/auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 
 export const dynamic = "force-dynamic";
@@ -32,22 +34,34 @@ export default async function TeamListPage() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const memberships = await prisma.organizationMember.findMany({
     where: { userId: profile.id, leftAt: null },
-    select: { orgId: true },
+    select: { orgId: true, role: true },
   });
   if (memberships.length === 0) {
     const fallback = await resolveJourneyFallbackForProfileId(profile.id);
     redirect(fallback);
   }
 
+  // Csapat-létrehozás: csak menedzser+ szerep (vagy tanácsadói felület) —
+  // sima tagnak a kártya meg sem jelenik, ő csak a saját csapatait látja.
+  const canCreateTeam = memberships.some((m) =>
+    isConsultantSurface(m.role, profile.email, profile.isConsultant) ||
+    hasOrgRole(m.role, "ORG_MANAGER"),
+  );
+
   const orgIds = memberships.map((m) => m.orgId);
   const teams = await prisma.team.findMany({
-    where: { orgId: { in: orgIds } },
+    where: canCreateTeam
+      ? { orgId: { in: orgIds } }
+      : {
+          orgId: { in: orgIds },
+          members: { some: { userId: profile.id } },
+        },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -73,30 +87,32 @@ export default async function TeamListPage() {
         subtitle: `${teams.length} ${
           teams.length === 1 ? t("team.memberTag", locale) : t("team.teamsLabel", locale)
         }`,
-        actions: (
+        actions: canCreateTeam ? (
           <Link
             href="#create-team"
             className={getButtonClassName({ size: "sm", variant: "secondary" })}
           >
             {t("team.createNew", locale)}
           </Link>
-        ),
+        ) : undefined,
       }}
     >
-        {/* Create new team */}
-        <Card as="section" spacing="lg" className="md:p-8" id="create-team">
-          <SectionEyebrow className="mb-1 text-[9px] tracking-[0.18em]">
-            {"// "}
-            {t("team.createNew", locale)}
-          </SectionEyebrow>
-          <h2 className="mb-1 font-fraunces text-xl text-ink">
-            {t("team.createNew", locale)}
-          </h2>
-          <p className="mb-5 text-sm text-ink-body">
-            {t("team.createNewDesc", locale)}
-          </p>
-          <TeamCreateForm locale={locale} />
-        </Card>
+        {/* Create new team — csak menedzser+ / tanácsadói felületen. */}
+        {canCreateTeam ? (
+          <Card as="section" spacing="lg" className="md:p-8" id="create-team">
+            <SectionEyebrow className="mb-1 text-[9px] tracking-[0.18em]">
+              {"// "}
+              {t("team.createNew", locale)}
+            </SectionEyebrow>
+            <h2 className="mb-1 font-fraunces text-xl text-ink">
+              {t("team.createNew", locale)}
+            </h2>
+            <p className="mb-5 text-sm text-ink-body">
+              {t("team.createNewDesc", locale)}
+            </p>
+            <TeamCreateForm locale={locale} />
+          </Card>
+        ) : null}
 
         {/* Team list */}
         <section className="flex flex-col gap-5">
