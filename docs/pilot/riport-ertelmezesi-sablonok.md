@@ -61,6 +61,37 @@ Hat dimenzió végigdarálása = elveszett hallgatóság.
    a napi feladata elcsúszik, ott gyakran motivációs téma van — ezt
    óvatosan, egyéni adat kiteregetése nélkül, mintázat-szinten hozd szóba.
 
+## 4/b. Önkép vs. csapatkép (peer-szekció)
+
+A csapatszerep-fejezet peer-rétege (csapattársi szerep-visszajelzés,
+n ≥ 3 értékelő) a debrief legerősebb beszélgetésindítója: MÉRT eltérés az
+önkép és a csapatkép között. Így vezesd:
+
+1. **Először az egyezés.** Ahol a top 3 self és peer oldalon közös, azt
+   mondd ki elsőnek — „a csapat ugyanazt látja, amit te" a legerősebb
+   megerősítés, és megágyaz az eltérések fogadásának.
+2. **Az eltérés nem hiba, hanem információ.** A „csak önkép" szerep
+   (self-only) tipikus olvasata: a szándék megvan, de a viselkedés nem
+   látszik ki — mi takarja el? A „csak csapatkép" szerep (peer-only):
+   olyan hozzájárulás, amit az érintett magától értetődőnek vesz, a
+   csapat viszont értékként lát — nevezd meg, ez azonnali megbecsülés.
+3. **Kérdés-nyelv, nem ítélet-nyelv.** „A csapat mástól várja a
+   koordinációt, mint amit te magadról gondolsz — mit gondolsz, miben
+   látnak mást?" A választ az érintett adja, nem a riport.
+4. **Egyéni delta csak a debrief-beszélgetésben** — a validált riport
+   csapatszintű marad (terv-döntés: `team-role-360-plan.md` 6. pont).
+   Vezetői üzenetbe egyéni önkép–csapatkép eltérés nem kerül.
+5. **Vezetői önkép-eltérésnél** (a vezető saját deltája) használd a
+   4 csapda keretét (ld. 5/b): a self-only szerep gyakran szó–tett rés
+   jelzés — a vezető hirdeti a szerepet, a csapat nem tapasztalja;
+   a defenzív első reakció pedig maga az érzelmi reaktivitás csapdája,
+   érdemes előre keretezni („az eltérés a mérés értéke, nem kritika").
+
+Halo/szépítés-gyanú: ha egy tagnál minden rater közel azonos, széles
+profilt jelölt (a kiválasztás-kényszer ellenére), az aggregátum lapos
+lesz — ilyenkor a top 3 kevésbé éles, ezt mondd ki, ne told túl az
+értelmezést.
+
 ## 5. Pszichológiai biztonság index — sávok és akciók
 
 Az index 0–100, csak n ≥ 3 válasznál létezik. Sávok: **alacsony < 55 ≤
@@ -86,6 +117,33 @@ akciójavaslattal.
 Anonimitás-szabály a beszélgetésben: soha ne találgassátok, „ki húzhatta
 le" — ha a vezető elkezdi, állítsd le; ez maga a pszichológiai biztonság
 teszthelyzete.
+
+## 5/b. Vezetői akciókártyák — a 4 csapda kerete
+
+A riport a gyenge pulse-területek mellé vezetői akciókártyákat is ad
+(`psych-safety.ts` → `PSYCH_SAFETY_LEADER_TRAPS`). Keret-forrás: Brady–
+Kliman–Smith: *4 Hidden Traps of Team Dynamics* (HBR, 2026. július) —
+négy vezetői csapda, hat ellenszer, a Trita saját adaptációjában:
+
+| Csapda | Tipikus tünet (pulse-terület) | Ellenszer |
+|---|---|---|
+| **Érzelmi reaktivitás** | kényes témák (PS1), nyílt egyet-nem-értés (PS8) | szünet a reakció előtt + visszatérés a tisztelethez |
+| **Bizonyosság-csapda** | eltérő gondolkodás (PS4), új ötletek kockázata (PS5) | teljes kép megismerése („mit nem látok?") + közös felelősség |
+| **Szó–tett rés** | hibázás kezelése (PS2), aláásás (PS6) | konzisztencia: az ígért normát az első éles helyzetben tettel hitelesíteni |
+| **Önigazolás** | segítségkérés (PS3), hibázás kezelése (PS2) | őszinte kommunikáció, a vezető saját bizonytalanságával kezdve |
+
+Debrief-használat:
+
+- A kártya a vezetőnek szól, ezért **négyszemközt** kerüljön elő, ne a
+  csapat előtt — a csapatriportban tünet-szinten (gyenge terület +
+  területi akció) marad a téma.
+- A felvezetés kerete: „ez nem diagnózis rólad, hanem tipikus mintázat,
+  amit ilyen pulse-képnél érdemes ellenőrizni — ráismersz-e?" A
+  „ráismersz?" kérdés itt is beszélgetésindító, mint a csapatmintázatnál.
+- A vezető VÁLASSZON egyet: melyik ellenszert vállalja megfigyelhető
+  viselkedésként a következő 30 napra — ez bekerülhet a 3 akció közé.
+- Az önkép vs. csapatkép vezetői deltájával összekapcsolható (4/b 5. pont):
+  a két jelzés együtt sokkal meggyőzőbb, mint külön-külön.
 
 ## 6. Narratíva-sablon (a riport szerkesztett szövegéhez)
 

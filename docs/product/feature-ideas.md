@@ -65,7 +65,11 @@ TrustResponse {
 
 ## 2. Csapat szerep teszt (Csapatszerep) menedzselése és riportba foglalása
 
-**Státusz:** backlog
+**Státusz:** ✅ MEGVALÓSULT (2026-07-20, `99236ac`) — sőt túlteljesült:
+a tervezett A–B–C fázisokon felül peer-réteg is épült (TEAM_ROLE_360
+kampánylépés, 27 itemes bank self+peer perspektívával, n≥3 aggregátum,
+önkép vs. csapatkép összevetés). Részletek:
+`docs/product/team-role-360-plan.md`. Az alábbi leírás archív.
 **Prioritás:** magas
 **Előfeltétel:** a Csapatszerep teszt kód megvan, a self-layer szinten kitölthető
 

@@ -11,6 +11,8 @@ import {
   psychSafetyBand,
   weakPsychSafetyItemIds,
   getPsychSafetyItem,
+  PSYCH_SAFETY_LEADER_TRAPS,
+  leaderTrapsForWeakItems,
   type PsychSafetyAnswers,
 } from "@/lib/psych-safety";
 
@@ -184,6 +186,56 @@ describe("campaign-steps-core (több-lépéses kampányok)", () => {
     assert.equal(getCurrentStepType(camp, { currentStep: 1 }), "TEAM_ROLE");
     assert.equal(isStepOpenFor(camp, { currentStep: 1 }, "PSYCH_SAFETY"), false);
     assert.equal(getCurrentStepType(camp, { currentStep: 3 }), null);
+  });
+});
+
+describe("vezetői csapda-kártyák (HBR 4 csapda keret)", () => {
+  it("defines 4 traps with both locales and valid item mappings", () => {
+    assert.equal(PSYCH_SAFETY_LEADER_TRAPS.length, 4);
+    const ids = new Set(PSYCH_SAFETY_LEADER_TRAPS.map((t) => t.id));
+    assert.equal(ids.size, 4);
+    const validItemIds = new Set(PSYCH_SAFETY_ITEMS.map((i) => i.id));
+    for (const trap of PSYCH_SAFETY_LEADER_TRAPS) {
+      assert.ok(trap.title.hu.length > 3);
+      assert.ok(trap.title.en.length > 3);
+      assert.ok(trap.trap.hu.length > 30);
+      assert.ok(trap.trap.en.length > 30);
+      assert.ok(trap.antidote.hu.length > 30);
+      assert.ok(trap.antidote.en.length > 30);
+      assert.ok(trap.itemIds.length > 0);
+      for (const id of trap.itemIds) assert.ok(validItemIds.has(id));
+    }
+  });
+
+  it("every pulse area maps to at most a handful of traps, and the report-mapped areas are covered", () => {
+    // A napi riport szerinti megfeleltetés: kényes témák + egyet-nem-értés
+    // → reaktivitás; aláásás → szó–tett rés.
+    const byId = Object.fromEntries(PSYCH_SAFETY_LEADER_TRAPS.map((t) => [t.id, t]));
+    assert.ok(byId.REACTIVITY.itemIds.includes("PS1"));
+    assert.ok(byId.REACTIVITY.itemIds.includes("PS8"));
+    assert.ok(byId.SAY_DO_GAP.itemIds.includes("PS6"));
+  });
+
+  it("leaderTrapsForWeakItems returns matching traps, deduped, in canonical order", () => {
+    assert.deepEqual(leaderTrapsForWeakItems([]), []);
+    const one = leaderTrapsForWeakItems(["PS6"]);
+    assert.deepEqual(one.map((t) => t.id), ["SAY_DO_GAP"]);
+    // PS2 két csapdához is tartozik — mindkettő jön, de mindegyik egyszer
+    const two = leaderTrapsForWeakItems(["PS2"]);
+    const idList = two.map((t) => t.id);
+    assert.equal(new Set(idList).size, idList.length);
+    assert.ok(idList.includes("SAY_DO_GAP"));
+    assert.ok(idList.includes("SELF_JUSTIFICATION"));
+    // sorrend a definíciós sorrend
+    const all = leaderTrapsForWeakItems(["PS1", "PS2", "PS4", "PS6"]);
+    assert.deepEqual(
+      all.map((t) => t.id),
+      PSYCH_SAFETY_LEADER_TRAPS.filter((t) => all.includes(t)).map((t) => t.id),
+    );
+  });
+
+  it("unknown item ids trigger nothing", () => {
+    assert.deepEqual(leaderTrapsForWeakItems(["PS99"]), []);
   });
 });
 

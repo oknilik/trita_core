@@ -18,6 +18,7 @@ import {
   weakPsychSafetyItemIds,
   getPsychSafetyItem,
   PSYCH_SAFETY_ACTIONS,
+  leaderTrapsForWeakItems,
 } from "@/lib/psych-safety";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
@@ -458,6 +459,13 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál a csapat magától teljesít.`,
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     getWeaknessInsight(bottomDim),
+    // Vezetői csapda-kártyák: a gyenge pulse-területek mögött tipikus
+    // vezetői mintázat + ellenszer (keret: HBR 2026/07, saját adaptáció).
+    ...(ps
+      ? leaderTrapsForWeakItems(ps.weakItemIds)
+          .slice(0, 2)
+          .map((trap) => `${trap.title.hu} — ${trap.antidote.hu}`)
+      : []),
   ]);
 
   const actionItems: TeamReportActionItem[] = [

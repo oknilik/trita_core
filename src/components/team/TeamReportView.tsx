@@ -2,6 +2,7 @@ import { TEAM_ROLES } from "@/lib/team-role-scoring";
 import {
   PSYCH_SAFETY_ITEMS,
   PSYCH_SAFETY_ACTIONS,
+  leaderTrapsForWeakItems,
   getPsychSafetyItem,
 } from "@/lib/psych-safety";
 import type { SerializedTeamReport } from "@/lib/team-report";
@@ -642,6 +643,41 @@ export function TeamReportView({
                     </div>
                   );
                 })}
+
+                {/* Vezetői akciókártyák — a gyenge területek mögött tipikus
+                    vezetői mintázat és ellenszere. Keret: HBR 2026/07
+                    („4 Hidden Traps of Team Dynamics"), saját adaptáció. */}
+                {leaderTrapsForWeakItems(agg.psychSafety.weakItemIds).length > 0 ? (
+                  <>
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
+                      {isHu ? "Vezetői akciókártyák" : "Leader action cards"}
+                    </p>
+                    {leaderTrapsForWeakItems(agg.psychSafety.weakItemIds).map((trap) => (
+                      <div
+                        key={trap.id}
+                        className="rounded-xl border border-sand bg-white px-4 py-3"
+                      >
+                        <p className="text-[13px] font-semibold text-ink">
+                          {isHu ? trap.title.hu : trap.title.en}
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-muted">
+                          {isHu ? trap.trap.hu : trap.trap.en}
+                        </p>
+                        <p className="mt-2 text-xs leading-relaxed text-ink-body">
+                          <span className="font-semibold text-ink">
+                            {isHu ? "Ellenszer: " : "Antidote: "}
+                          </span>
+                          {isHu ? trap.antidote.hu : trap.antidote.en}
+                        </p>
+                      </div>
+                    ))}
+                    <p className="text-[10px] text-muted">
+                      {isHu
+                        ? "Keret: Harvard Business Review (2026/07), a Trita saját adaptációjában."
+                        : "Framework: Harvard Business Review (2026/07), in Trita's own adaptation."}
+                    </p>
+                  </>
+                ) : null}
               </div>
             ) : (
               <p className="mt-5 rounded-xl bg-sage/5 px-4 py-3 text-xs leading-relaxed text-ink-body">

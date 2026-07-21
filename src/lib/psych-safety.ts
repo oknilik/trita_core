@@ -231,6 +231,107 @@ export const PSYCH_SAFETY_ACTIONS: Record<string, { hu: string; en: string }> = 
   },
 };
 
+// ── Vezetői csapda-kártyák (riport-réteg) ─────────────────────────────
+//
+// KERET-FORRÁS: Brady, S. M., Kliman, S. D. & Smith, L. C. (2026):
+// "4 Hidden Traps of Team Dynamics", Harvard Business Review, 2026. július.
+// A cikk négy vezetői csapdát és hat ellenszert ír le; itt a KERETET
+// vesszük át, a szövegek SAJÁT megfogalmazásúak és a pulse területeire
+// igazítottak. A hat ellenszer elosztása a kártyák közt:
+//   önismeret + tisztelethez való visszatérés → REACTIVITY
+//   teljes kép megismerése + közös felelősség → CERTAINTY
+//   őszinte kommunikáció                      → SELF_JUSTIFICATION
+//   szó–tett konzisztencia                    → SAY_DO_GAP
+//
+// A kártya akkor kerül a riportba, ha a hozzá rendelt pulse-területek
+// valamelyike gyenge (ld. leaderTrapsForWeakItems) — a gyenge terület a
+// TÜNET, a kártya a mögötte tipikus vezetői mintázatot és a kiutat adja.
+
+export type PsychSafetyLeaderTrapId =
+  | "CERTAINTY"
+  | "SAY_DO_GAP"
+  | "REACTIVITY"
+  | "SELF_JUSTIFICATION";
+
+export interface PsychSafetyLeaderTrap {
+  id: PsychSafetyLeaderTrapId;
+  title: { hu: string; en: string };
+  /** A csapda — hogyan néz ki a mindennapi vezetői működésben. */
+  trap: { hu: string; en: string };
+  /** Az ellenszer — konkrét, megfigyelhető vezetői lépés. */
+  antidote: { hu: string; en: string };
+  /** Mely pulse-területek gyengesége jelzi tipikusan ezt a csapdát. */
+  itemIds: string[];
+}
+
+export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
+  {
+    id: "REACTIVITY",
+    title: { hu: "Érzelmi reaktivitás", en: "Emotional reactivity" },
+    trap: {
+      hu: "A vezető az ellenvéleményre vagy a kényes felvetésre azonnal, érzelemből reagál — védekezéssel, éllel vagy türelmetlenséggel. A csapat ebből azt tanulja: nehéz témát felhozni kockázatos.",
+      en: "The leader reacts to dissent or a sensitive point instantly and emotionally — with defensiveness, edge or impatience. The team learns: raising hard topics is risky.",
+    },
+    antidote: {
+      hu: "Iktass be egy tudatos szünetet a reakció elé, és vitában térj vissza a tisztelethez: először ismerd el a felvetés jogosságát, csak utána vitatkozz a tartalmával. A saját trigger-helyzeteid ismerete (mikor csúszol reakcióba) az első lépés.",
+      en: "Insert a deliberate pause before reacting, and in conflict return to respect: first acknowledge the legitimacy of the point, only then debate its content. Knowing your own triggers (when you slip into reaction) is step one.",
+    },
+    itemIds: ["PS1", "PS8"],
+  },
+  {
+    id: "CERTAINTY",
+    title: { hu: "Bizonyosság-csapda", en: "The certainty trap" },
+    trap: {
+      hu: "A vezető annyira biztos a saját olvasatában, hogy az eltérő nézőpont zajnak tűnik. A csapat leszokik a másként gondolkodásról — minek, ha úgyis megvan a válasz.",
+      en: "The leader is so sure of their own read that differing viewpoints feel like noise. The team unlearns thinking differently — why bother, if the answer is already fixed.",
+    },
+    antidote: {
+      hu: "Döntés előtt szerezd meg a teljes képet: kérdezz rá célzottan a hiányzó nézőpontokra („mit nem látok?”), és oszd meg a döntés gazdáját is — ahol közös a felelősség, ott az eltérő nézet erőforrás, nem támadás.",
+      en: "Before deciding, get the full story: explicitly ask for the missing perspectives (“what am I not seeing?”), and share ownership of the decision — where responsibility is shared, a differing view is a resource, not an attack.",
+    },
+    itemIds: ["PS4", "PS5"],
+  },
+  {
+    id: "SAY_DO_GAP",
+    title: { hu: "Szó–tett rés", en: "Say–do gap" },
+    trap: {
+      hu: "A kimondott értékek és a napi gyakorlat elcsúszik: a vezető nyíltságot hirdet, de a hibázást felrója, vagy szó nélkül hagyja, ha valaki mások munkáját aláássa. A csapat nem a szavaknak hisz, hanem annak, amit következmények szintjén lát.",
+      en: "Stated values and daily practice drift apart: the leader preaches openness but holds mistakes against people, or lets undermining pass without a word. The team believes not the words but what it sees at the level of consequences.",
+    },
+    antidote: {
+      hu: "A biztonságot tettekkel kell hitelesíteni: ha hibát tanulságként kezelni ígértél, az első éles helyzetben pontosan azt tedd; az aláásást pedig következetesen, minden alkalommal címezd. Egyetlen ellenpélda többet rombol, mint tíz jó kijelentés.",
+      en: "Safety must be validated by action: if you promised to treat mistakes as lessons, do exactly that in the first live case; and address undermining consistently, every single time. One counterexample destroys more than ten good statements build.",
+    },
+    itemIds: ["PS2", "PS6"],
+  },
+  {
+    id: "SELF_JUSTIFICATION",
+    title: { hu: "Önigazolás", en: "Self-justification" },
+    trap: {
+      hu: "A vezető a saját döntéseit magyarázza ahelyett, hogy tanulna belőlük — a kérdésekre indoklás jön, nem kíváncsiság. A csapat ezt tükrözi: segítséget kérni vagy bizonytalanságot vállalni gyengeségnek kezd számítani.",
+      en: "The leader explains their decisions instead of learning from them — questions get justification, not curiosity. The team mirrors this: asking for help or admitting uncertainty starts to count as weakness.",
+    },
+    antidote: {
+      hu: "Kommunikálj őszintén, szépítés nélkül — kezdve magadon: mondd ki, miben vagy bizonytalan, és kérj te magad segítséget a csapattól. A vezetői „nem tudom, nézzük meg együtt” az a mondat, ami a segítségkérést mindenki másnak is rutinná teszi.",
+      en: "Communicate with candor, starting with yourself: say what you are uncertain about, and ask the team for help yourself. A leader's “I don't know — let's find out together” is the sentence that makes asking for help routine for everyone else.",
+    },
+    itemIds: ["PS3", "PS2"],
+  },
+];
+
+/**
+ * A gyenge pulse-területekhez tartozó vezetői csapda-kártyák, a
+ * PSYCH_SAFETY_LEADER_TRAPS sorrendjében, duplikátum nélkül.
+ */
+export function leaderTrapsForWeakItems(
+  weakItemIds: string[],
+): PsychSafetyLeaderTrap[] {
+  const weak = new Set(weakItemIds);
+  return PSYCH_SAFETY_LEADER_TRAPS.filter((trap) =>
+    trap.itemIds.some((id) => weak.has(id)),
+  );
+}
+
 /** Ez alatt az itemátlag alatt számít gyengének egy terület (1–5 skálán ≈ 60/100). */
 export const PSYCH_SAFETY_WEAK_THRESHOLD = 3.4;
 
