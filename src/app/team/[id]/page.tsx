@@ -204,7 +204,10 @@ export default async function TeamDetailPage({
     redirect(`/team/${teamId}?tab=overview`);
   }
   // A publikált riport BEFAGYASZTOTT (validált) mintázata — a nem-tanácsadói
-  // overview ezt mutatja „validálás alatt" helyett, ha már van riport.
+  // overview ezt mutatja „validálás alatt" helyett. A kaput maga a PUBLIKÁLT
+  // riport nyitja (nem a pillanatkép mező) — ha a snapshotból hiányzik a
+  // mintázat-címke, akkor is „elérhető" az állapot, link a riportra.
+  const hasPublishedReport = Boolean(publishedReport);
   const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
@@ -1111,10 +1114,10 @@ export default async function TeamDetailPage({
               title={t("teamDetail.teamPatternTitle", locale)}
               value={
                 hasPattern
-                  ? canViewRaw || publishedPattern
+                  ? canViewRaw || hasPublishedReport
                     ? t("teamDetail.teamPatternAvailable", locale)
                     : isHu ? "Validálás alatt" : "Pending validation"
-                  : publishedPattern
+                  : hasPublishedReport
                     ? t("teamDetail.teamPatternAvailable", locale)
                     : t("teamDetail.teamPatternNotYet", locale)
               }
@@ -1123,8 +1126,9 @@ export default async function TeamDetailPage({
                   ? hasPattern
                     ? teamData.patternResult?.fullLabel
                     : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
-                  : publishedPattern
-                    ? publishedPattern.label
+                  : hasPublishedReport
+                    ? publishedPattern?.label ??
+                      (isHu ? "A validált csapatképben" : "In the validated team picture")
                     : hasPattern
                       ? isHu ? "A tanácsadó véglegesítése után elérhető" : "Available after consultant validation"
                       : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
@@ -1137,7 +1141,7 @@ export default async function TeamDetailPage({
                 >
                   {t("teamDetail.teamPatternViewCta", locale)}
                 </Link>
-              ) : !canViewRaw && publishedPattern ? (
+              ) : !canViewRaw && hasPublishedReport ? (
                 <Link
                   href={`/team/${teamId}?tab=report`}
                   className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
