@@ -118,6 +118,8 @@ export function CampaignWizard({
     new Set(preselectedTeam ? preselectedTeam.members.map((m) => m.userId) : []),
   );
   const [targetTeamId, setTargetTeamId] = useState<string | null>(preselectedTeamId);
+  // Külső observer-meghívók jóváhagyás nélkül mehetnek-e ebben a kampányban.
+  const [allowExternalObservers, setAllowExternalObservers] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -217,6 +219,7 @@ export function CampaignWizard({
           type,
           types: chosenSteps,
           teamId: targetTeamId ?? undefined,
+          allowExternalObservers,
         }),
       });
       if (!createRes.ok) {
@@ -412,6 +415,22 @@ export function CampaignWizard({
               helpText={`${description.length}/500`}
               helpTextClassName="text-right font-mono text-[10px] text-muted"
             />
+            {chosenSteps.includes("OBSERVER_360") ? (
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
+                <input
+                  type="checkbox"
+                  checked={allowExternalObservers}
+                  onChange={(e) => setAllowExternalObservers(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
+                />
+                <span className="text-[13px] leading-relaxed text-ink-body">
+                  <span className="font-semibold text-ink">
+                    {t("campaignWiz.allowExternalLabel", locale)}
+                  </span>{" "}
+                  {t("campaignWiz.allowExternalHint", locale)}
+                </span>
+              </label>
+            ) : null}
           </div>
           <div className="mt-6 flex items-center justify-between gap-4">
             <Button type="button" onClick={() => setStep(1)} variant="secondary" iconLeft="←">

@@ -1030,6 +1030,8 @@ export const orgTranslations = {
     },
     typeRole360Meta: { hu: "~3-4 perc / értékelt fő · névtelen, összesített kép (min. 3 értékelő)", en: "~3-4 min per teammate · anonymous, aggregated view (min. 3 raters)" },
     typeRole360Out: { hu: "Eredmény: önkép vs. csapatkép összevetés a csapatoldalon és a riportban", en: "Output: self-image vs. team view comparison on the team page and in the report" },
+    allowExternalLabel: { hu: "Külső értékelők jóváhagyás nélkül.", en: "External observers without approval." },
+    allowExternalHint: { hu: "Ha bekapcsolod, a tagok szabadon hívhatnak meg szervezeten kívüli értékelőt. Kikapcsolva a külső meghívókat a menedzser / org admin / tanácsadó hagyja jóvá.", en: "If enabled, members can freely invite observers from outside the organization. If disabled, external invites need manager / org admin / consultant approval." },
     typeTrustName: { hu: "Bizalmi háló kör", en: "Trust network round" },
     typeTrustDesc: {
       hu: "Rövid páronkénti kérdéssor az együttműködés tényleges működéséről — a dinamika-térkép becslései helyére mért kapcsolati adat kerül.",

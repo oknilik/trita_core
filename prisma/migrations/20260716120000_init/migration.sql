@@ -5,7 +5,7 @@ CREATE TYPE "TestType" AS ENUM ('TRITAN');
 CREATE TYPE "RelationshipType" AS ENUM ('FRIEND', 'COLLEAGUE', 'FAMILY', 'PARTNER', 'OTHER');
 
 -- CreateEnum
-CREATE TYPE "InvitationStatus" AS ENUM ('PENDING', 'COMPLETED', 'EXPIRED', 'CANCELED');
+CREATE TYPE "InvitationStatus" AS ENUM ('AWAITING_APPROVAL', 'PENDING', 'COMPLETED', 'EXPIRED', 'CANCELED');
 
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('INDIVIDUAL', 'ORG_ADMIN', 'ORG_MEMBER');
@@ -14,10 +14,10 @@ CREATE TYPE "UserRole" AS ENUM ('INDIVIDUAL', 'ORG_ADMIN', 'ORG_MEMBER');
 CREATE TYPE "ScoreRange" AS ENUM ('LOW', 'MED', 'HIGH');
 
 -- CreateEnum
-CREATE TYPE "ObserverType" AS ENUM ('INTERNAL', 'EXTERNAL', 'ANONYMOUS');
+CREATE TYPE "ObserverType" AS ENUM ('INTERNAL', 'TEAM', 'ORG', 'EXTERNAL', 'ANONYMOUS');
 
 -- CreateEnum
-CREATE TYPE "NotificationType" AS ENUM ('OBSERVER_COMPLETED', 'OBSERVER_SUBMITTED', 'RESULT_READY', 'PURCHASE_CONFIRMED', 'ORG_INVITE_RECEIVED', 'CAMPAIGN_LAUNCHED', 'CAMPAIGN_CLOSED', 'TEAM_MEMBER_ADDED', 'ORG_INVITE_ACCEPTED', 'TRIAL_ENDING_SOON', 'TRIAL_EXPIRED', 'PAYMENT_FAILED', 'SUBSCRIPTION_FROZEN', 'LOW_CANDIDATE_CREDITS', 'MEMBER_COMPLETED_ASSESSMENT', 'CAMPAIGN_MILESTONE', 'TEAM_REPORT_PUBLISHED', 'MEASUREMENT_STEP_OPENED');
+CREATE TYPE "NotificationType" AS ENUM ('OBSERVER_COMPLETED', 'OBSERVER_SUBMITTED', 'RESULT_READY', 'PURCHASE_CONFIRMED', 'ORG_INVITE_RECEIVED', 'CAMPAIGN_LAUNCHED', 'CAMPAIGN_CLOSED', 'TEAM_MEMBER_ADDED', 'ORG_INVITE_ACCEPTED', 'TRIAL_ENDING_SOON', 'TRIAL_EXPIRED', 'PAYMENT_FAILED', 'SUBSCRIPTION_FROZEN', 'LOW_CANDIDATE_CREDITS', 'MEMBER_COMPLETED_ASSESSMENT', 'CAMPAIGN_MILESTONE', 'TEAM_REPORT_PUBLISHED', 'MEASUREMENT_STEP_OPENED', 'OBSERVER_COLLEAGUE_INVITED', 'OBSERVER_APPROVAL_REQUESTED', 'OBSERVER_INVITE_APPROVED', 'OBSERVER_INVITE_DECLINED');
 
 -- CreateTable
 CREATE TABLE "UserProfile" (
@@ -90,6 +90,9 @@ CREATE TABLE "ObserverInvitation" (
     "lastReminderSentAt" TIMESTAMP(3),
     "observerType" "ObserverType" NOT NULL DEFAULT 'INTERNAL',
     "externalContext" TEXT,
+    "campaignId" TEXT,
+    "approvedById" TEXT,
+    "approvedAt" TIMESTAMP(3),
 
     CONSTRAINT "ObserverInvitation_pkey" PRIMARY KEY ("id")
 );
@@ -308,6 +311,7 @@ CREATE TABLE "Campaign" (
     "type" TEXT NOT NULL DEFAULT 'OBSERVER_360',
     "steps" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "teamId" TEXT,
+    "allowExternalObservers" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT NOT NULL DEFAULT 'DRAFT',
     "createdBy" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -469,6 +473,9 @@ CREATE INDEX "ObserverInvitation_inviterId_idx" ON "ObserverInvitation"("inviter
 
 -- CreateIndex
 CREATE INDEX "ObserverInvitation_observerProfileId_idx" ON "ObserverInvitation"("observerProfileId");
+
+-- CreateIndex (observer jóváhagyási workflow, 2026-07-21)
+CREATE INDEX "ObserverInvitation_campaignId_status_idx" ON "ObserverInvitation"("campaignId", "status");
 
 -- CreateIndex
 CREATE INDEX "ObserverInvitation_token_idx" ON "ObserverInvitation"("token");
@@ -813,3 +820,9 @@ ALTER TABLE "TrustObservation" ADD CONSTRAINT "TrustObservation_aboutUserId_fkey
 
 -- AddForeignKey
 ALTER TABLE "TrustObservation" ADD CONSTRAINT "TrustObservation_raterUserId_fkey" FOREIGN KEY ("raterUserId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey (observer jóváhagyási workflow, 2026-07-21)
+ALTER TABLE "ObserverInvitation" ADD CONSTRAINT "ObserverInvitation_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ObserverInvitation" ADD CONSTRAINT "ObserverInvitation_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "UserProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -36,6 +36,7 @@ import {
 } from "@/lib/policy-service";
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
+import { ObserverApprovalCard } from "@/components/team/ObserverApprovalCard";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
 import { TeamRoleSection } from "@/components/team/TeamRoleSection";
@@ -398,6 +399,35 @@ export default async function TeamDetailPage({
       createdAt: inv.createdAt,
     }));
 
+    // Jóváhagyásra váró külső observer-meghívók (a csapat kampányaiban) —
+    // csak a jóváhagyó kör látja (menedzser / org admin / tanácsadó).
+    const pendingApprovals =
+      isOrgManager || canViewRaw
+        ? (
+            await prisma.observerInvitation.findMany({
+              where: {
+                status: "AWAITING_APPROVAL",
+                campaign: { teamId },
+              },
+              orderBy: { createdAt: "asc" },
+              select: {
+                id: true,
+                observerEmail: true,
+                observerName: true,
+                createdAt: true,
+                inviter: { select: { username: true, email: true } },
+                campaign: { select: { name: true } },
+              },
+            })
+          ).map((inv) => ({
+            id: inv.id,
+            inviterName: inv.inviter.username ?? inv.inviter.email ?? "—",
+            targetLabel: inv.observerName ?? inv.observerEmail ?? "—",
+            createdAt: inv.createdAt.toISOString(),
+            campaignName: inv.campaign?.name ?? "",
+          }))
+        : [];
+
     return (
       <PlatformPageShell
         surface="team"
@@ -412,6 +442,9 @@ export default async function TeamDetailPage({
           </svg>
           {backToOverviewLabel}
         </Link>
+        {pendingApprovals.length > 0 ? (
+          <ObserverApprovalCard approvals={pendingApprovals} isHu={isHu} />
+        ) : null}
         <TeamMembersTab
           members={membersForTab}
           pendingInvites={pendingForTab}

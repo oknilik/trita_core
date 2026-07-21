@@ -72,4 +72,8 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   MEMBER_COMPLETED_ASSESSMENT: { titleKey: "notifications.memberCompletedAssessment.title",  bodyKey: "notifications.memberCompletedAssessment.body",  category: "assessment",  defaultPriority: "low"    },
   CAMPAIGN_MILESTONE:          { titleKey: "notifications.campaignMilestone.title",          bodyKey: "notifications.campaignMilestone.body",          category: "campaign",    defaultPriority: "normal" },
   MEASUREMENT_STEP_OPENED:     { titleKey: "notifications.stepOpened.title",                  bodyKey: "notifications.stepOpened.body",                 category: "campaign",    defaultPriority: "normal" },
+  OBSERVER_COLLEAGUE_INVITED:  { titleKey: "notifications.observerColleagueInvited.title",   bodyKey: "notifications.observerColleagueInvited.body",   category: "observer",    defaultPriority: "normal" },
+  OBSERVER_APPROVAL_REQUESTED: { titleKey: "notifications.observerApprovalRequested.title",  bodyKey: "notifications.observerApprovalRequested.body",  category: "observer",    defaultPriority: "normal" },
+  OBSERVER_INVITE_APPROVED:    { titleKey: "notifications.observerInviteApproved.title",     bodyKey: "notifications.observerInviteApproved.body",     category: "observer",    defaultPriority: "normal" },
+  OBSERVER_INVITE_DECLINED:    { titleKey: "notifications.observerInviteDeclined.title",     bodyKey: "notifications.observerInviteDeclined.body",     category: "observer",    defaultPriority: "normal" },
 };

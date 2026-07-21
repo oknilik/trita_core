@@ -27,6 +27,8 @@ enum RelationshipType {
 }
 
 enum InvitationStatus {
+  // Külső observer-meghívó menedzseri jóváhagyásra vár (kampány-szabály).
+  AWAITING_APPROVAL
   PENDING
   COMPLETED
   EXPIRED
@@ -46,7 +48,12 @@ enum ScoreRange {
 }
 
 enum ObserverType {
+  // Örökség: 2026-07 előtti meghívók megkülönböztetés nélkül.
   INTERNAL
+  // Csapaton belüli kolléga (közös csapat az aktív org-ban).
+  TEAM
+  // Szervezeti kolléga (közös org, de nem közös csapat).
+  ORG
   EXTERNAL
   ANONYMOUS
 }
@@ -94,6 +101,7 @@ model UserProfile {
   consultantInvitesSent ConsultantInvite[] @relation("ConsultantInviter")
   sentInvitations      ObserverInvitation[] @relation("InviterInvitations")
   receivedInvitations  ObserverInvitation[] @relation("ObserverInvitations")
+  approvedObserverInvites ObserverInvitation[] @relation("ObserverInviteApprover")
   feedbacks            Feedback[]
 
   // Team layer (KKV)
@@ -180,15 +188,23 @@ model ObserverInvitation {
   lastReminderSentAt DateTime?
   observerType       ObserverType     @default(INTERNAL)
   externalContext    String?
+  // Kampány-kontextus: melyik mérés-kör alatt jött létre (jóváhagyási
+  // szabály + csapat-szintű jóváhagyó felület ehhez köt).
+  campaignId   String?
+  approvedById String?
+  approvedAt   DateTime?
 
   inviter    UserProfile         @relation("InviterInvitations", fields: [inviterId], references: [id])
   observer   UserProfile?        @relation("ObserverInvitations", fields: [observerProfileId], references: [id])
+  campaign   Campaign?           @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  approvedBy UserProfile?        @relation("ObserverInviteApprover", fields: [approvedById], references: [id], onDelete: SetNull)
   assessment ObserverAssessment?
   draft      ObserverDraft?
 
   @@index([inviterId])
   @@index([observerProfileId])
   @@index([token])
+  @@index([campaignId, status])
 }
 
 // Draft state for in-progress observer assessments
@@ -481,6 +497,10 @@ model Campaign {
   steps       String[]  @default([])
   // Csapat-célzású kampánynál a cél-csapat (riport-híd + idővonal ehhez köt)
   teamId      String?
+  // Külső (nem szervezeti) observer-meghívók jóváhagyás nélkül mehetnek-e
+  // ebben a kampányban. false → a külső meghívó AWAITING_APPROVAL állapotban
+  // jön létre, és menedzser/org admin/tanácsadó engedélyezi.
+  allowExternalObservers Boolean @default(false)
   status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
   createdBy   String
   createdAt   DateTime  @default(now())
@@ -493,6 +513,7 @@ model Campaign {
   psychSafetyResponses PsychSafetyResponse[]
   teamRoleObservations TeamRoleObservation[]
   trustObservations    TrustObservation[]
+  observerInvitations  ObserverInvitation[]
 
   @@index([orgId])
   @@index([createdBy])
@@ -738,6 +759,10 @@ enum NotificationType {
   CAMPAIGN_MILESTONE
   TEAM_REPORT_PUBLISHED
   MEASUREMENT_STEP_OPENED
+  OBSERVER_COLLEAGUE_INVITED
+  OBSERVER_APPROVAL_REQUESTED
+  OBSERVER_INVITE_APPROVED
+  OBSERVER_INVITE_DECLINED
 }
 
 model Notification {

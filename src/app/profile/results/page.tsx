@@ -107,6 +107,8 @@ export default async function ProfileResultsPage({
         createdAt: true,
         completedAt: true,
         observerEmail: true,
+        observerName: true,
+        observerType: true,
         assessment: { select: { relationshipType: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -341,6 +343,8 @@ export default async function ProfileResultsPage({
     createdAt: inv.createdAt.toISOString(),
     completedAt: inv.completedAt?.toISOString() ?? null,
     observerEmail: inv.observerEmail ?? null,
+    observerName: inv.observerName ?? null,
+    observerType: inv.observerType as string,
     relationship: inv.assessment?.relationshipType ?? null,
   }));
 

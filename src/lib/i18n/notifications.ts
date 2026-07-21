@@ -31,6 +31,34 @@ export const notificationTranslations = {
         en: "Your next measurement step in \"{campaignName}\" is now open — it only takes a few minutes.",
       },
     },
+    observerColleagueInvited: {
+      title: { hu: "Kollégád visszajelzést kér tőled", en: "A colleague asked for your feedback" },
+      body: {
+        hu: "{inviterName} arra kér, hogy adj visszajelzést a személyiségképéhez — ~10 perc, a válaszaid név nélkül, összesítve jelennek meg.",
+        en: "{inviterName} asked you for feedback on their personality picture — ~10 minutes; your answers appear anonymously, aggregated.",
+      },
+    },
+    observerApprovalRequested: {
+      title: { hu: "Külső értékelő-meghívó vár jóváhagyásra", en: "External observer invite awaits approval" },
+      body: {
+        hu: "{inviterName} külső értékelőt hívna meg ({targetLabel}) — a kampány szabálya szerint ehhez jóváhagyás kell.",
+        en: "{inviterName} wants to invite an external observer ({targetLabel}) — the campaign requires approval for this.",
+      },
+    },
+    observerInviteApproved: {
+      title: { hu: "Külső meghívód jóváhagyva", en: "Your external invite was approved" },
+      body: {
+        hu: "A(z) {targetLabel} címre szóló értékelő-meghívódat jóváhagyták — a meghívó e-mail kiment.",
+        en: "Your observer invite to {targetLabel} was approved — the invitation email has been sent.",
+      },
+    },
+    observerInviteDeclined: {
+      title: { hu: "Külső meghívód elutasítva", en: "Your external invite was declined" },
+      body: {
+        hu: "A(z) {targetLabel} címre szóló értékelő-meghívódat a vezetőd nem hagyta jóvá. Kérdés esetén egyeztess vele.",
+        en: "Your observer invite to {targetLabel} was not approved by your manager. Please check with them if needed.",
+      },
+    },
     campaignClosed: {
       title: { hu: "Kampány lezárva", en: "Campaign closed" },
       body: { hu: "A(z) \"{campaignName}\" kampány lezárult.", en: "The \"{campaignName}\" campaign has closed." },

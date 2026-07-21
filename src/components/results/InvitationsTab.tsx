@@ -80,6 +80,26 @@ export function InvitationsTab({
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Kollégalista (org-tagoknál) — csapattársak elöl, a szerver rendezi.
+  const [colleagues, setColleagues] = useState<
+    { userId: string; name: string; isTeammate: boolean; alreadyInvited: boolean }[]
+  >([]);
+  const [colleagueSearch, setColleagueSearch] = useState("");
+  const [invitingColleagueId, setInvitingColleagueId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/observer/colleagues")
+      .then((res) => (res.ok ? res.json() : { colleagues: [] }))
+      .then((data) => {
+        if (!cancelled) setColleagues(data.colleagues ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
     const active = invitations.filter((i) => i.status !== "CANCELED");
     const pendingCount = active.filter((i) => i.status === "PENDING").length;
@@ -109,11 +129,14 @@ export function InvitationsTab({
         return;
       }
       setInvitations((prev) => [{
-        id: data.id, token: data.token, status: "PENDING",
+        id: data.id, token: data.token, status: data.status ?? "PENDING",
         createdAt: new Date().toISOString(), completedAt: null,
-        observerEmail: hasEmail ? email.trim() : null, relationship: null,
+        observerEmail: hasEmail ? email.trim() : null, observerName: null,
+        observerType: data.observerType, relationship: null,
       }, ...prev]);
-      if (hasEmail && !data.emailSent) {
+      if (data.awaitingApproval) {
+        showToast(t("invitations.awaitingApprovalToast", locale), "info");
+      } else if (hasEmail && !data.emailSent) {
         showToast(t("error.EMAIL_SEND_FAILED", locale), "info");
       }
       setEmail("");
@@ -121,6 +144,40 @@ export function InvitationsTab({
       setCreateError(t("invitations.errorGeneric", locale));
     } finally {
       setIsCreating(false);
+    }
+  };
+
+  const handleInviteColleague = async (colleagueUserId: string) => {
+    if (invitingColleagueId) return;
+    setInvitingColleagueId(colleagueUserId);
+    setCreateError(null);
+    try {
+      const res = await fetch("/api/observer/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ colleagueUserId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const code = data.error ?? "";
+        const loc = t(`error.${code}`, locale);
+        setCreateError(loc !== `error.${code}` ? loc : t("invitations.errorGeneric", locale));
+        return;
+      }
+      const colleague = colleagues.find((c) => c.userId === colleagueUserId);
+      setInvitations((prev) => [{
+        id: data.id, token: data.token, status: data.status ?? "PENDING",
+        createdAt: new Date().toISOString(), completedAt: null,
+        observerEmail: null, observerName: colleague?.name ?? null,
+        observerType: data.observerType, relationship: null,
+      }, ...prev]);
+      setColleagues((prev) =>
+        prev.map((c) => (c.userId === colleagueUserId ? { ...c, alreadyInvited: true } : c)),
+      );
+    } catch {
+      setCreateError(t("invitations.errorGeneric", locale));
+    } finally {
+      setInvitingColleagueId(null);
     }
   };
 
@@ -152,8 +209,24 @@ export function InvitationsTab({
 
   const active = invitations.filter((i) => i.status !== "CANCELED");
   const completed = active.filter((i) => i.status === "COMPLETED");
-  const pending = active.filter((i) => i.status === "PENDING");
+  const pending = active.filter(
+    (i) => i.status === "PENDING" || i.status === "AWAITING_APPROVAL",
+  );
   const canCreate = active.length < 5;
+
+  const typeBadge = (observerType?: string): string | null => {
+    switch (observerType) {
+      case "TEAM": return t("invitations.typeTeam", locale);
+      case "ORG": return t("invitations.typeOrg", locale);
+      case "EXTERNAL": return t("invitations.typeExternal", locale);
+      case "INTERNAL": return t("invitations.typePersonal", locale);
+      default: return null;
+    }
+  };
+
+  const filteredColleagues = colleagues.filter((c) =>
+    c.name.toLowerCase().includes(colleagueSearch.trim().toLowerCase()),
+  );
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { year: "numeric", month: "short", day: "numeric" });
@@ -208,11 +281,79 @@ export function InvitationsTab({
         </p>
       </div>
 
+      {/* 4a. Kolléga-picker (org-tagoknál) */}
+      {colleagues.length > 0 && canCreate ? (
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
+          <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">
+            + {t("invitations.colleagueSectionTitle", locale)}
+          </p>
+          <p className="mt-1 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+            {t("invitations.colleagueSectionHint", locale)}
+          </p>
+          {colleagues.length > 6 ? (
+            <input
+              type="text"
+              value={colleagueSearch}
+              onChange={(e) => setColleagueSearch(e.target.value)}
+              placeholder={t("invitations.colleagueSearchPlaceholder", locale)}
+              className="mt-3 min-h-[40px] w-full rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-[13px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
+            />
+          ) : null}
+          <div className="mt-3 flex max-h-[260px] flex-col gap-1.5 overflow-y-auto">
+            {filteredColleagues.length === 0 ? (
+              <p className="py-2 text-center text-[12px] text-[var(--color-text-muted)]">
+                {t("invitations.colleagueEmpty", locale)}
+              </p>
+            ) : (
+              filteredColleagues.map((c) => (
+                <div
+                  key={c.userId}
+                  className="flex items-center gap-3 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3 py-2"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] text-[12px] font-bold text-[var(--color-action-primary-bg)]">
+                    {c.name.slice(0, 1).toUpperCase()}
+                  </div>
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-[var(--color-text-primary)]">
+                    {c.name}
+                  </span>
+                  {c.isTeammate ? (
+                    <span className="shrink-0 rounded-full bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[var(--color-action-primary-bg)]">
+                      {t("invitations.colleagueTeammateBadge", locale)}
+                    </span>
+                  ) : null}
+                  {c.alreadyInvited ? (
+                    <span className="shrink-0 text-[11px] text-[var(--color-text-muted)]">
+                      {t("invitations.colleagueInvitedBadge", locale)}
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleInviteColleague(c.userId)}
+                      disabled={invitingColleagueId !== null}
+                      className="min-h-[32px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3 py-1 text-[11px] font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
+                    >
+                      {invitingColleagueId === c.userId ? "…" : t("invitations.colleagueInviteButton", locale)}
+                    </button>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      ) : null}
+
       {/* 4. Create form */}
       <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
         <p className="mb-3 text-[13px] font-semibold text-[var(--color-text-primary)]">
-          + {t("invitations.formTitle", locale)}
+          + {colleagues.length > 0
+            ? t("invitations.externalSectionTitle", locale)
+            : t("invitations.formTitle", locale)}
         </p>
+        {colleagues.length > 0 ? (
+          <p className="-mt-1 mb-3 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+            {t("invitations.externalApprovalHint", locale)}
+          </p>
+        ) : null}
 
         {canCreate ? (
           <>
@@ -292,11 +433,13 @@ export function InvitationsTab({
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-action-primary-bg)" }}>✓</div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium text-[var(--color-text-primary)]">
-                      {inv.observerEmail ?? t("invitations.linkInvite", locale)}
+                      {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">
                       {t("invitations.receivedLabel", locale)}: {formatDate(inv.completedAt ?? inv.createdAt)}
-                      {" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}
+                      {typeBadge(inv.observerType)
+                        ? <>{" · "}{typeBadge(inv.observerType)}</>
+                        : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
                     </p>
                   </div>
                   <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}>
@@ -315,21 +458,25 @@ export function InvitationsTab({
               </p>
               {pending.map((inv) => (
                 <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
-                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
-                    {inv.observerEmail ? "⏳" : "🔗"}
+                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail || inv.observerName ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail || inv.observerName ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
+                    {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium text-[var(--color-text-primary)]">
-                      {inv.observerEmail ?? t("invitations.linkInvite", locale)}
+                      {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">
                       {t("invitations.sentLabel", locale)}: {formatDate(inv.createdAt)}
-                      {" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}
+                      {typeBadge(inv.observerType)
+                        ? <>{" · "}{typeBadge(inv.observerType)}</>
+                        : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
-                      {t("invitations.statusPending", locale)}
+                      {inv.status === "AWAITING_APPROVAL"
+                        ? t("invitations.statusAwaitingApproval", locale)
+                        : t("invitations.statusPending", locale)}
                     </span>
                     <button
                       type="button"

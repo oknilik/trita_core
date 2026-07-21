@@ -69,6 +69,8 @@ export interface SerializedSentInvitation {
   createdAt: string;
   completedAt: string | null;
   observerEmail: string | null;
+  observerName?: string | null;
+  observerType?: string;
   relationship: string | null;
 }
 

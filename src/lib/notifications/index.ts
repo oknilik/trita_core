@@ -17,6 +17,9 @@ export {
   handleMeasurementStepOpened,
   handleCampaignClosed,
   handleTeamReportPublished,
+  handleObserverColleagueInvited,
+  handleObserverApprovalRequested,
+  handleObserverInviteDecision,
   checkTrialNotifications,
 } from "./orchestrator";
 

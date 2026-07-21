@@ -343,3 +343,84 @@ export async function checkTrialNotifications(orgId: string) {
     );
   }
 }
+
+// ── Observer kollégalista + jóváhagyási workflow (2026-07-21) ───────────────
+
+/** Belső (csapat/szervezeti) kolléga értesítése, hogy visszajelzést kérnek tőle. */
+export async function handleObserverColleagueInvited(params: {
+  observerUserId: string;
+  inviterName: string;
+  invitationId: string;
+  token: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.OBSERVER_COLLEAGUE_INVITED;
+  await persistNotification({
+    userId: params.observerUserId,
+    type: "OBSERVER_COLLEAGUE_INVITED",
+    category: meta.category,
+    priority: meta.defaultPriority,
+    vars: { inviterName: params.inviterName },
+    link: `/observe/${params.token}`,
+    sourceType: "observer_invitation",
+    sourceId: params.invitationId,
+    dedupeKey: `OBSERVER_COLLEAGUE_INVITED:${params.invitationId}`,
+  });
+}
+
+/**
+ * Külső meghívó jóváhagyás-kérése: a szervezet menedzserei, adminjai és
+ * tanácsadói kapják (a jóváhagyó felület a cél-csapat oldalán él).
+ */
+export async function handleObserverApprovalRequested(params: {
+  orgId: string;
+  teamId: string | null;
+  invitationId: string;
+  inviterName: string;
+  targetLabel: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.OBSERVER_APPROVAL_REQUESTED;
+  const approvers = await prisma.organizationMember.findMany({
+    where: {
+      orgId: params.orgId,
+      leftAt: null,
+      role: { in: ["ORG_MANAGER", "ORG_ADMIN", "ORG_CONSULTANT"] },
+    },
+    select: { userId: true },
+  });
+  const link = params.teamId ? `/team/${params.teamId}?tab=members` : `/org/${params.orgId}`;
+  await persistNotificationBatch(
+    approvers.map((m) => ({
+      userId: m.userId,
+      type: "OBSERVER_APPROVAL_REQUESTED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { inviterName: params.inviterName, targetLabel: params.targetLabel },
+      link,
+      sourceType: "observer_invitation" as const,
+      sourceId: params.invitationId,
+      dedupeKey: `OBSERVER_APPROVAL_REQUESTED:${params.invitationId}:${m.userId}`,
+    })),
+  );
+}
+
+/** A meghívó tag értesítése a döntésről (jóváhagyva / elutasítva). */
+export async function handleObserverInviteDecision(params: {
+  inviterUserId: string;
+  invitationId: string;
+  approved: boolean;
+  targetLabel: string;
+}) {
+  const type = params.approved ? "OBSERVER_INVITE_APPROVED" : "OBSERVER_INVITE_DECLINED";
+  const meta = NOTIFICATION_TYPE_META[type];
+  await persistNotification({
+    userId: params.inviterUserId,
+    type,
+    category: meta.category,
+    priority: meta.defaultPriority,
+    vars: { targetLabel: params.targetLabel },
+    link: "/profile/results?tab=invites",
+    sourceType: "observer_invitation",
+    sourceId: params.invitationId,
+    dedupeKey: `${type}:${params.invitationId}`,
+  });
+}

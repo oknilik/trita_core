@@ -17,6 +17,7 @@ const createSchema = z.object({
     .max(3)
     .optional(),
   teamId: z.string().min(1).optional(),
+  allowExternalObservers: z.boolean().optional().default(false),
 });
 
 // GET /api/org/[id]/campaigns — list org campaigns
@@ -144,6 +145,7 @@ export async function POST(
       type: steps[0],
       steps,
       teamId: body.data.teamId,
+      allowExternalObservers: body.data.allowExternalObservers,
       createdBy: profile.id,
     },
     select: {
