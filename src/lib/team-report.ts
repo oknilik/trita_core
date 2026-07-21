@@ -245,7 +245,13 @@ export async function buildTeamReportAggregates(
   // A pillanatképbe fagy — a riport a publikáláskori állapotot őrzi.
   let psychSafety: TeamReportAggregates["psychSafety"] = null;
   const psCampaign = await prisma.campaign.findFirst({
-    where: { teamId, type: "PSYCH_SAFETY", status: { in: ["ACTIVE", "CLOSED"] } },
+    // Több-lépéses kampánynál a type az ELSŐ lépés (pl. OBSERVER_360) —
+    // a pulse-t a steps-ben kell keresni, a legacy type-ot fallbackként.
+    where: {
+      teamId,
+      status: { in: ["ACTIVE", "CLOSED"] },
+      OR: [{ steps: { has: "PSYCH_SAFETY" } }, { type: "PSYCH_SAFETY" }],
+    },
     orderBy: { createdAt: "desc" },
     select: {
       name: true,
