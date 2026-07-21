@@ -1,8 +1,12 @@
 import { prisma } from "./prisma";
 
 // Keep role hierarchy local to avoid importing redirect-bound auth helpers.
+// FONTOS: tartsd szinkronban az auth.ts ORG_ROLE_RANK térképével — az
+// ORG_CONSULTANT admin-paritású (a kimaradása okozta, hogy a tanácsadót a
+// csapat-nézet a journey-fallbackre, trita adminként az /admin-ra dobta).
 const ORG_ROLE_RANK: Record<string, number> = {
   ORG_ADMIN: 3,
+  ORG_CONSULTANT: 3,
   ORG_MANAGER: 2,
   ORG_MEMBER: 1,
 };
