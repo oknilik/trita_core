@@ -17,6 +17,8 @@ export interface TeamMeasurementItem {
 const TYPE_LABELS: Record<string, { hu: string; en: string }> = {
   OBSERVER_360: { hu: "Kollégai visszajelzés (360°)", en: "Peer feedback (360°)" },
   TEAM_ROLE: { hu: "Csapatszerep-kör", en: "Team role round" },
+  TEAM_ROLE_360: { hu: "Csapattársi szerep-visszajelzés", en: "Team role peer feedback" },
+  TRUST_360: { hu: "Bizalmi háló kör", en: "Trust network round" },
   PSYCH_SAFETY: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
 };
 

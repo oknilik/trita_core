@@ -34,6 +34,8 @@ export interface DynamicsEdge {
   from: string;
   to: string;
   type: "aligned" | "complementary" | "friction";
+  /** Az él adat-forrása — a "trust_round" MÉRT kapcsolati adat, a többi becslés. */
+  source?: "observer" | "profile_estimate" | "trust_round";
 }
 
 interface TeamIntelligenceProps {

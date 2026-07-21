@@ -186,6 +186,11 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     <span className="ml-auto text-[10px] text-muted">
                       {t(edgeLabelKey[e.type], loc)}
                     </span>
+                    {e.source === "trust_round" ? (
+                      <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wide text-sage-dark">
+                        {loc === "hu" ? "mért" : "measured"}
+                      </span>
+                    ) : null}
                     <svg
                       className={`h-3 w-3 text-muted transition-transform ${isExpanded ? "rotate-180" : ""}`}
                       viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
@@ -370,6 +375,21 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             <span className="text-[11px] text-ink-body">{t("teamComp.hubPerson", loc)}</span>
           </div>
         </div>
+
+        {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés. */}
+        {edges.some((e) => e.source === "trust_round") ? (
+          <p className="mt-2 text-[10px] leading-relaxed text-muted">
+            {loc === "hu"
+              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
+              : `Some connections are MEASURED from a trust round (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} connections); the rest are profile-based estimates.`}
+          </p>
+        ) : (
+          <p className="mt-2 text-[10px] leading-relaxed text-muted">
+            {loc === "hu"
+              ? "A kapcsolat-jelzések profil-alapú becslések — bizalmi kör indításával mért adatra cserélhetők."
+              : "Connection markers are profile-based estimates — run a trust round to replace them with measured data."}
+          </p>
+        )}
       </div>
 
       {/* Detail panel */}

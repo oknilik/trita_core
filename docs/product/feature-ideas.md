@@ -6,7 +6,15 @@ Validált ötletek, amik a backlogba kerültek. Minden bejegyzés tartalmazza a 
 
 ## 1. Csapaton belüli bizalmi háló — gyors 360° kör
 
-**Státusz:** backlog
+**Státusz:** ✅ MVP MEGVALÓSÍTVA (2026-07-21) — a TEAM_ROLE_360
+peer-infrastruktúra mintájára: `TrustObservation` séma, 5 kérdéses
+kérdéssor (`src/lib/trust-network.ts`), TRUST_360 kampánylépés,
+batch-upsert API (`/api/trust/peers`), kitöltő UI (`/assessment/trust`),
+és a dinamika-térkép edge-forrás cseréje (profile_estimate →
+trust_round, becslés-fallbackkel) mért/becsült jelöléssel. A tervezett
+outputokból él: páronkénti score + edge-típus, hub- és beágyazatlan-tag
+felismerés (aggregátum-libben; dedikált háló-vizualizáció még nincs).
+Az alábbi leírás az eredeti ötlet archívuma.
 **Prioritás:** közepes-magas
 **Előfeltétel:** működő campaign/feedback round infra (megvan)
 

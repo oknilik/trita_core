@@ -778,3 +778,38 @@ ALTER TABLE "TeamRoleObservation" ADD CONSTRAINT "TeamRoleObservation_aboutUserI
 
 -- AddForeignKey
 ALTER TABLE "TeamRoleObservation" ADD CONSTRAINT "TeamRoleObservation_raterUserId_fkey" FOREIGN KEY ("raterUserId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CreateTable (TrustObservation — bizalmi háló trust-kör, 2026-07-21)
+CREATE TABLE "TrustObservation" (
+    "id" TEXT NOT NULL,
+    "teamId" TEXT NOT NULL,
+    "campaignId" TEXT NOT NULL,
+    "aboutUserId" TEXT NOT NULL,
+    "raterUserId" TEXT NOT NULL,
+    "answers" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "TrustObservation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TrustObservation_campaignId_aboutUserId_raterUserId_key" ON "TrustObservation"("campaignId", "aboutUserId", "raterUserId");
+
+-- CreateIndex
+CREATE INDEX "TrustObservation_teamId_aboutUserId_idx" ON "TrustObservation"("teamId", "aboutUserId");
+
+-- CreateIndex
+CREATE INDEX "TrustObservation_campaignId_raterUserId_idx" ON "TrustObservation"("campaignId", "raterUserId");
+
+-- AddForeignKey
+ALTER TABLE "TrustObservation" ADD CONSTRAINT "TrustObservation_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrustObservation" ADD CONSTRAINT "TrustObservation_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrustObservation" ADD CONSTRAINT "TrustObservation_aboutUserId_fkey" FOREIGN KEY ("aboutUserId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrustObservation" ADD CONSTRAINT "TrustObservation_raterUserId_fkey" FOREIGN KEY ("raterUserId") REFERENCES "UserProfile"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -9,10 +9,10 @@ import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
 const createSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  type: z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "PSYCH_SAFETY"]).default("OBSERVER_360"),
+  type: z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]).default("OBSERVER_360"),
   // Több-lépéses kampány: a kiválasztott mérések (kanonikus sorrendbe rendezzük).
   types: z
-    .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "PSYCH_SAFETY"]))
+    .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]))
     .min(1)
     .max(3)
     .optional(),
@@ -124,7 +124,13 @@ export async function POST(
   // Szerep-kört vagy pszich. biztonságot tartalmazó kampány csak csapatra
   // indítható (a kör a csapaton él, az anonim aggregátum csapatszintű).
   if (
-    steps.some((st) => st === "TEAM_ROLE" || st === "TEAM_ROLE_360" || st === "PSYCH_SAFETY") &&
+    steps.some(
+      (st) =>
+        st === "TEAM_ROLE" ||
+        st === "TEAM_ROLE_360" ||
+        st === "TRUST_360" ||
+        st === "PSYCH_SAFETY",
+    ) &&
     !body.data.teamId
   ) {
     return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });

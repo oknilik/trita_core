@@ -292,6 +292,7 @@ export default async function TeamDetailPage({
     from: edge.fromUserId,
     to: edge.toUserId,
     type: edge.type as DynamicsEdge["type"],
+    source: edge.source,
   }));
   const hasDynamicsData = teamDynamicsEdges.length > 0;
   const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
@@ -992,13 +993,21 @@ export default async function TeamDetailPage({
                     ? isHu
                       ? "8 rövid állítás, ~2 perc. A válaszaid névtelenek — csak a csapatszintű összesítés látszik, legalább 3 kitöltéstől."
                       : "8 short statements, ~2 minutes. Your answers are anonymous — only the team-level aggregate is shown, from at least 3 responses."
-                    : pendingMeasurement.stepType === "TEAM_ROLE"
+                    : pendingMeasurement.stepType === "TRUST_360"
                       ? isHu
-                        ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban — a becslés helyett mért szerep-térkép készül."
-                        : "A short questionnaire about the roles you play in the team — a measured role map replaces the estimate."
-                      : isHu
-                        ? "Töltsd ki az önértékelést (~10 perc) — ez az alapja a csapatképnek, és utána nyílnak a további mérések."
-                        : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
+                        ? "5 rövid kérdés csapattársanként az együttműködésetekről (~2-3 perc) — a dinamika-térkép becslései helyére mért kapcsolati adat kerül."
+                        : "5 short questions per teammate about how you work together (~2-3 minutes) — measured relationship data replaces the dynamics map estimates."
+                      : pendingMeasurement.stepType === "TEAM_ROLE_360"
+                        ? isHu
+                          ? "Jelöld ki csapattársanként a rájuk leginkább jellemző állításokat (~3-4 perc/fő) — a csapatkép legalább 3 értékelőnél áll össze."
+                          : "Pick the statements that best describe each teammate (~3-4 minutes each) — the team view forms with at least 3 raters."
+                        : pendingMeasurement.stepType === "TEAM_ROLE"
+                          ? isHu
+                            ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban — a becslés helyett mért szerep-térkép készül."
+                            : "A short questionnaire about the roles you play in the team — a measured role map replaces the estimate."
+                          : isHu
+                            ? "Töltsd ki az önértékelést (~10 perc) — ez az alapja a csapatképnek, és utána nyílnak a további mérések."
+                            : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
                 </p>
               </div>
               <Link

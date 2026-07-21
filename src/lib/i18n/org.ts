@@ -1030,6 +1030,16 @@ export const orgTranslations = {
     },
     typeRole360Meta: { hu: "~3-4 perc / értékelt fő · névtelen, összesített kép (min. 3 értékelő)", en: "~3-4 min per teammate · anonymous, aggregated view (min. 3 raters)" },
     typeRole360Out: { hu: "Eredmény: önkép vs. csapatkép összevetés a csapatoldalon és a riportban", en: "Output: self-image vs. team view comparison on the team page and in the report" },
+    typeTrustName: { hu: "Bizalmi háló kör", en: "Trust network round" },
+    typeTrustDesc: {
+      hu: "Rövid páronkénti kérdéssor az együttműködés tényleges működéséről — a dinamika-térkép becslései helyére mért kapcsolati adat kerül.",
+      en: "Short pairwise questions on how collaboration actually works — measured relationship data replaces the dynamics map estimates.",
+    },
+    typeTrustMeta: { hu: "5 kérdés / csapattárs · ~2-3 perc / fő", en: "5 questions per teammate · ~2-3 min per member" },
+    typeTrustOut: {
+      hu: "Eredmény: mért kapcsolati kép a dinamika-térképen (páronként összevonva), összekötő és beágyazatlan tagok jelzése",
+      en: "Output: measured relationship view on the dynamics map (combined per pair), highlighting connectors and unembedded members",
+    },
     typePsychName: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
     typePsychDesc: {
       hu: "Rövid, anonim csapat-kérdőív arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.",

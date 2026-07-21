@@ -1,6 +1,8 @@
 import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from "./team-pattern";
+import { buildTeamTrustNetwork } from "./trust-network.server";
+import type { TrustEdgeType } from "./trust-network";
 
 const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 type DynamicsEdgeType = "aligned" | "complementary" | "friction";
@@ -62,7 +64,7 @@ export interface TeamDynamicsEdge {
   fromUserId: string;
   toUserId: string;
   type: DynamicsEdgeType;
-  source: "observer" | "profile_estimate";
+  source: "observer" | "profile_estimate" | "trust_round";
   relationshipType: string | null;
   confidence: number | null;
   dimensionDelta: number | null;
@@ -156,6 +158,53 @@ function buildProfileBasedEdges(
   }
 
   return edges;
+}
+
+/** Mért trust-él → dinamika-él típus (a térkép háromfokú skálájára). */
+const TRUST_TO_DYNAMICS: Record<TrustEdgeType, DynamicsEdgeType> = {
+  strong_trust: "aligned",
+  moderate: "complementary",
+  weak_trust: "friction",
+  disconnected: "friction",
+};
+
+function mergeTrustEdges(
+  profileEdges: TeamDynamicsEdge[],
+  trust: Awaited<ReturnType<typeof buildTeamTrustNetwork>> | null,
+): TeamDynamicsEdge[] {
+  if (!trust || trust.edges.length === 0) return profileEdges;
+
+  const measured = new Map(
+    trust.edges.map((e) => [[e.a, e.b].sort().join("|"), e]),
+  );
+  const merged = profileEdges.map((edge) => {
+    const key = [edge.fromUserId, edge.toUserId].sort().join("|");
+    const trustEdge = measured.get(key);
+    if (!trustEdge) return edge;
+    measured.delete(key);
+    return {
+      ...edge,
+      type: TRUST_TO_DYNAMICS[trustEdge.type],
+      source: "trust_round" as const,
+      confidence: trustEdge.mutual ? 100 : 50,
+    };
+  });
+
+  // Mért pár, amihez nincs profil-él (pl. hiányzó önértékelés) — így is
+  // felkerül a térképre, becslés nélkül.
+  for (const trustEdge of measured.values()) {
+    merged.push({
+      fromUserId: trustEdge.a,
+      toUserId: trustEdge.b,
+      type: TRUST_TO_DYNAMICS[trustEdge.type],
+      source: "trust_round",
+      relationshipType: null,
+      confidence: trustEdge.mutual ? 100 : 50,
+      dimensionDelta: null,
+      createdAt: new Date().toISOString(),
+    });
+  }
+  return merged;
 }
 
 export async function getTeamPageData(
@@ -308,7 +357,13 @@ export async function getTeamPageData(
   ]);
 
   // ── Profile-based friction edges (pairwise TRITAN gap analysis) ──────────
-  const dynamicsEdges = buildProfileBasedEdges(members);
+  // Ahol van mért trust-kör adat, az felülírja a profil-alapú becslést
+  // (feature-ideas #1: edge source csere profile_estimate → trust_round;
+  // a becslés fallbackként megmarad a nem mért párokra).
+  const dynamicsEdges = mergeTrustEdges(
+    buildProfileBasedEdges(members),
+    await buildTeamTrustNetwork(teamId).catch(() => null),
+  );
 
   // Compute active campaign stats
   let activeCampaign: TeamActiveCampaign | null = null;

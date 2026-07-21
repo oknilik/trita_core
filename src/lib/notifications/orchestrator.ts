@@ -6,6 +6,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { CAMPAIGN_STEP_LINKS } from "@/lib/campaign-steps-core";
 import { NOTIFICATION_TYPE_META } from "./types";
 import { persistNotification, persistNotificationBatch } from "./repository";
 import { resolveOrgRecipients } from "./policy";
@@ -210,11 +211,9 @@ export async function handleMeasurementStepOpened(params: {
   stepType: string;
 }) {
   const meta = NOTIFICATION_TYPE_META.MEASUREMENT_STEP_OPENED;
-  const STEP_LINKS: Record<string, string> = {
-    OBSERVER_360: "/assessment",
-    TEAM_ROLE: "/assessment/team-roles",
-    PSYCH_SAFETY: "/assessment/psych-safety",
-  };
+  // A kanonikus lépés→link térkép (campaign-steps-core) — így az új
+  // lépés-típusok (TEAM_ROLE_360, TRUST_360) linkje sem marad le.
+  const STEP_LINKS: Record<string, string> = CAMPAIGN_STEP_LINKS;
   await persistNotificationBatch([
     {
       userId: params.userId,

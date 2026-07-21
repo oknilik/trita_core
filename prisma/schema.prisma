@@ -121,6 +121,9 @@ model UserProfile {
   teamRoleObservationsAbout TeamRoleObservation[] @relation("TeamRoleObservationAbout")
   teamRoleObservationsGiven TeamRoleObservation[] @relation("TeamRoleObservationRater")
 
+  trustObservationsAbout TrustObservation[] @relation("TrustObservationAbout")
+  trustObservationsGiven TrustObservation[] @relation("TrustObservationRater")
+
   // Notifications
   notifications Notification[]
 
@@ -259,6 +262,7 @@ model Team {
   reports          TeamReport[]
   candidateInvites CandidateInvite[]
   teamRoleObservations TeamRoleObservation[]
+  trustObservations    TrustObservation[]
 
   @@index([ownerId])
   @@index([orgId])
@@ -488,6 +492,7 @@ model Campaign {
   participants         CampaignParticipant[]
   psychSafetyResponses PsychSafetyResponse[]
   teamRoleObservations TeamRoleObservation[]
+  trustObservations    TrustObservation[]
 
   @@index([orgId])
   @@index([createdBy])
@@ -646,6 +651,34 @@ model TeamRoleObservation {
   campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   about    UserProfile @relation("TeamRoleObservationAbout", fields: [aboutUserId], references: [id], onDelete: Cascade)
   rater    UserProfile @relation("TeamRoleObservationRater", fields: [raterUserId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, aboutUserId, raterUserId])
+  @@index([teamId, aboutUserId])
+  @@index([campaignId, raterUserId])
+}
+
+// Bizalmi háló megfigyelés (trust-kör) — egy rater egy csapattársról, egy
+// kampány-körön belül. A TeamRoleObservation mintája: a raterUserId dedupe-ra
+// és haladás-követésre szolgál; a megjelenítés PÁR-SZINTŰ (irányok átlaga) a
+// dinamika-térképen, és CSAK a vezető/tanácsadó látja — a consent-szöveg ezt
+// kimondja. Csomópont-szintű aggregátum (befelé irányuló bizalom) csak
+// TRUST_MIN_RATERS (3) értékelőtől. Ötlet-forrás: docs/product/feature-ideas.md #1.
+model TrustObservation {
+  id          String   @id @default(cuid())
+  teamId      String
+  campaignId  String
+  aboutUserId String
+  raterUserId String
+  // TrustAnswerSet: { trust: 1-5, help: 1-3, openness: 1-5, inclusion: 1-3, collaboration: 1-3 }
+  // — ld. src/lib/trust-network.ts
+  answers     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team     Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  about    UserProfile @relation("TrustObservationAbout", fields: [aboutUserId], references: [id], onDelete: Cascade)
+  rater    UserProfile @relation("TrustObservationRater", fields: [raterUserId], references: [id], onDelete: Cascade)
 
   @@unique([campaignId, aboutUserId, raterUserId])
   @@index([teamId, aboutUserId])
