@@ -14,6 +14,7 @@ import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
+import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { RadarChart } from "@/components/dashboard/RadarChart";
@@ -135,6 +136,10 @@ export interface ProfileTabsProps {
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
   careerBackground?: CareerBackground | null;
+  /** Kitöltött csapatszerep-kérdőív eredménye (mért) — ha van. */
+  teamRoleMeasuredScores?: Record<string, number> | null;
+  /** Csapattársi szerep-visszajelzés aggregátuma (kampányból). */
+  teamRolePeer?: TeamRolesPeerData | null;
 }
 
 // ─── Shared paywall components ──────────────────────────────────────────────
@@ -364,11 +369,15 @@ function WorkStyleTab({
   isPlus,
   locale,
   plusContent,
+  teamRoleMeasuredScores = null,
+  teamRolePeer = null,
 }: {
   dimensions: SerializedDimension[];
   isPlus: boolean;
   locale: Locale;
   plusContent?: ProfileTabsProps["plusContent"];
+  teamRoleMeasuredScores?: Record<string, number> | null;
+  teamRolePeer?: TeamRolesPeerData | null;
 }) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
@@ -404,6 +413,8 @@ function WorkStyleTab({
         <TeamRoles
           tritanScores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
           locale={locale}
+          measuredScores={teamRoleMeasuredScores}
+          peer={teamRolePeer}
         />
       </section>
     </div>
@@ -486,6 +497,8 @@ export function ProfileTabs({
   experienceHints,
   experienceHintDestination,
   careerBackground = null,
+  teamRoleMeasuredScores = null,
+  teamRolePeer = null,
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
@@ -511,7 +524,9 @@ export function ProfileTabs({
     return () => window.removeEventListener("resize", updateTabFade);
   }, [updateTabFade]);
 
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const [activeTab, setActiveTab] = useState<TabId>(
+    hasTeamOrOrgMembership && initialTab === "career" ? "results" : initialTab,
+  );
 
   // Az aktív tab úszik be a látótérbe (mount + tab-váltás).
   useEffect(() => {
@@ -573,7 +588,7 @@ export function ProfileTabs({
     [router],
   );
 
-  const TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
+  const ALL_TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
     {
       id: "results",
       label: t("results.tabResults", locale),
@@ -631,6 +646,11 @@ export function ProfileTabs({
       ),
     },
   ];
+  // Csapat-kontextusban (org/team tag) a Karrier tab nem releváns, sőt
+  // zavaró lehet — a konzultációs folyamat a csapat-működésről szól.
+  const TABS = hasTeamOrOrgMembership
+    ? ALL_TABS.filter((tab) => tab.id !== "career")
+    : ALL_TABS;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -907,6 +927,8 @@ export function ProfileTabs({
             isPlus={isPlus}
             locale={locale}
             plusContent={plusContent}
+            teamRoleMeasuredScores={teamRoleMeasuredScores}
+            teamRolePeer={teamRolePeer}
           />
         )}
         {activeTab === "career" && (

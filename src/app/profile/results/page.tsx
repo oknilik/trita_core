@@ -26,6 +26,8 @@ import {
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
+import { aggregatePeerRoleScores } from "@/lib/team-role-peer";
+import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
@@ -336,6 +338,37 @@ export default async function ProfileResultsPage({
   const growthFocusItems = growthItems.length >= 1 ? growthItems : growthFallback;
 
   // ── Serialize invitations ──────────────────────────────────────────────────
+  // ── Csapatszerep: mért self-eredmény + kampányból érkező társ-visszajelzés ─
+  const [teamRoleScoreRecord, teamRoleObservationsRaw] = await Promise.all([
+    prisma.teamRoleScore.findUnique({
+      where: { userProfileId: profile.id },
+      select: { scores: true, source: true },
+    }),
+    prisma.teamRoleObservation.findMany({
+      where: { aboutUserId: profile.id },
+      orderBy: { updatedAt: "asc" },
+      select: { raterUserId: true, selections: true },
+    }),
+  ]);
+  const teamRoleMeasuredScores =
+    teamRoleScoreRecord?.source === "questionnaire"
+      ? (teamRoleScoreRecord.scores as Record<string, number>)
+      : null;
+  // Raterenként a legfrissebb kör számít (ismételt körök felülírnak).
+  const latestByRater = new Map<string, TeamRoleSelections>();
+  for (const obs of teamRoleObservationsRaw) {
+    latestByRater.set(obs.raterUserId, obs.selections as TeamRoleSelections);
+  }
+  const peerAggregate = aggregatePeerRoleScores([...latestByRater.values()]);
+  const teamRolePeer =
+    peerAggregate.raterCount > 0
+      ? {
+          raterCount: peerAggregate.raterCount,
+          scores: peerAggregate.scores as Record<string, number> | null,
+          topRoles: peerAggregate.topRoles.map((r) => ({ role: r.role as string, score: r.score })),
+        }
+      : null;
+
   const sentInvitations = sentInvitationsRaw.map((inv) => ({
     id: inv.id,
     token: inv.token,
@@ -642,6 +675,8 @@ export default async function ProfileResultsPage({
             journeySnapshot.state.completionSummary.team.joined ||
             journeySnapshot.state.completionSummary.org.joined
           }
+          teamRoleMeasuredScores={teamRoleMeasuredScores}
+          teamRolePeer={teamRolePeer}
           experienceHints={journeySnapshot.resolution.experienceHints}
           experienceHintDestination={journeySnapshot.resolution.destination}
         />
