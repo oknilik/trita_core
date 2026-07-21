@@ -38,6 +38,7 @@
     "postinstall": "prisma generate",
     "seed:assessment": "npx tsx scripts/seed-assessment.ts",
     "seed:org-team": "npx tsx scripts/seed-org-team.ts",
+    "seed:banan": "npx tsx scripts/seed-banan-demo.ts",
     "seed:psych-safety": "npx tsx scripts/seed-psych-safety.ts",
     "seed:blocks": "npx tsx scripts/seed-recommendation-blocks.ts",
     "pregen:outputs": "npx tsx scripts/pre-generate-outputs.ts",
