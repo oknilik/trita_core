@@ -203,6 +203,9 @@ export default async function TeamDetailPage({
   if (!canViewRaw && activeTab === "report" && !publishedReport) {
     redirect(`/team/${teamId}?tab=overview`);
   }
+  // A publikált riport BEFAGYASZTOTT (validált) mintázata — a nem-tanácsadói
+  // overview ezt mutatja „validálás alatt" helyett, ha már van riport.
+  const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
   const policySnapshot = await resolveOrgPolicySnapshot({
@@ -1101,22 +1104,31 @@ export default async function TeamDetailPage({
               </div>
             </DashboardMetricCard>
 
-            {/* Csapatmintázat */}
+            {/* Csapatmintázat — publikált riport után a VALIDÁLT (befagyasztott)
+                mintázat látszik a nem-tanácsadóknak is; addig „validálás alatt". */}
             <DashboardMetricCard
               accent="var(--color-accent-primary)"
               title={t("teamDetail.teamPatternTitle", locale)}
               value={
                 hasPattern
-                  ? canViewRaw
+                  ? canViewRaw || publishedPattern
                     ? t("teamDetail.teamPatternAvailable", locale)
                     : isHu ? "Validálás alatt" : "Pending validation"
-                  : t("teamDetail.teamPatternNotYet", locale)
+                  : publishedPattern
+                    ? t("teamDetail.teamPatternAvailable", locale)
+                    : t("teamDetail.teamPatternNotYet", locale)
               }
-              sub={hasPattern
-                ? canViewRaw
-                  ? teamData.patternResult?.fullLabel
-                  : isHu ? "A tanácsadó véglegesítése után elérhető" : "Available after consultant validation"
-                : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })}
+              sub={
+                canViewRaw
+                  ? hasPattern
+                    ? teamData.patternResult?.fullLabel
+                    : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
+                  : publishedPattern
+                    ? publishedPattern.label
+                    : hasPattern
+                      ? isHu ? "A tanácsadó véglegesítése után elérhető" : "Available after consultant validation"
+                      : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
+              }
             >
               {hasPattern && canViewRaw ? (
                 <Link
@@ -1124,6 +1136,13 @@ export default async function TeamDetailPage({
                   className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
                 >
                   {t("teamDetail.teamPatternViewCta", locale)}
+                </Link>
+              ) : !canViewRaw && publishedPattern ? (
+                <Link
+                  href={`/team/${teamId}?tab=report`}
+                  className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
+                >
+                  {isHu ? "Validált csapatkép →" : "Validated team picture →"}
                 </Link>
               ) : null}
             </DashboardMetricCard>
