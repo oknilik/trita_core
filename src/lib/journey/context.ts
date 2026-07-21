@@ -203,21 +203,34 @@ export async function resolveJourneyContext(
 
   if (profile.email?.trim()) {
     const normalizedEmail = profile.email.trim();
+    // FONTOS: a már-tagsághoz tartozó függő meghívó NEM számít pending
+    // join-nak — különben a journey örökre a /join oldalra irányít, a
+    // join-oldal pedig (already accepted) vissza a journey-hoz: redirect-
+    // hurok. A lógva maradt sort az acceptance-réteg takarítja el.
+    const notAlreadyTeamMember = {
+      team: { is: { members: { none: { userId: profile.id } } } },
+    };
+    const notAlreadyOrgMember = {
+      org: { is: { members: { none: { userId: profile.id, leftAt: null } } } },
+    };
     [pendingTeamInvites, pendingOrgInvites, pendingTeamInvite, pendingOrgInvite] = await Promise.all([
       prisma.teamPendingInvite.count({
         where: {
           email: { equals: normalizedEmail, mode: "insensitive" },
+          ...notAlreadyTeamMember,
         },
       }),
       prisma.organizationPendingInvite.count({
         where: {
           email: { equals: normalizedEmail, mode: "insensitive" },
+          ...notAlreadyOrgMember,
         },
       }),
       prisma.teamPendingInvite
         .findFirst({
           where: {
             email: { equals: normalizedEmail, mode: "insensitive" },
+            ...notAlreadyTeamMember,
           },
           orderBy: { createdAt: "desc" },
           select: {
@@ -245,6 +258,7 @@ export async function resolveJourneyContext(
         .findFirst({
           where: {
             email: { equals: normalizedEmail, mode: "insensitive" },
+            ...notAlreadyOrgMember,
           },
           orderBy: { createdAt: "desc" },
           select: {

@@ -658,6 +658,15 @@ export async function resolveMembershipInviteResolution(params: {
         select: { id: true },
       });
       if (existingTeamMember) {
+        // A címzett már csapattag — a lógva maradt meghívó-sort eltakarítjuk,
+        // különben a journey pending-join prioritása redirect-hurkot okoz
+        // (join-oldal → journey → join-oldal). A next path-ot CSAK a törlés
+        // után oldjuk fel, hogy már a meghívó nélküli állapotot lássa.
+        if (!teamInvite.isReusableInvite) {
+          await prisma.teamPendingInvite
+            .delete({ where: { id: teamInvite.inviteId } })
+            .catch(() => {});
+        }
         return {
           kind: params.kind,
           inviteId: params.inviteId,
@@ -679,6 +688,15 @@ export async function resolveMembershipInviteResolution(params: {
     const inviteState: MembershipInviteState = existingMembership
       ? "INVITE_ACCEPTED"
       : "INVITED_READY_TO_JOIN";
+    if (inviteState === "INVITE_ACCEPTED") {
+      // A címzett már org-tag — a lógva maradt meghívó-sort eltakarítjuk,
+      // különben a journey pending-join prioritása redirect-hurkot okoz
+      // (join-oldal → journey → join-oldal). A next path-ot CSAK a törlés
+      // után oldjuk fel, hogy már a meghívó nélküli állapotot lássa.
+      await prisma.organizationPendingInvite
+        .delete({ where: { id: invite.inviteId } })
+        .catch(() => {});
+    }
     return {
       kind: params.kind,
       inviteId: params.inviteId,
