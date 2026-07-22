@@ -4,21 +4,18 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { FEATURE_INTEREST_LEAD_KEYS, featureInterestLabel } from "@/lib/feature-interest";
 
 export const runtime = "nodejs";
 
 // Bejelentkezett user érdeklődés-jelzése (meleg lead) — FeatureInterest
 // rekord + értesítő email. A user email/név a fiókból jön, nem az űrlapról.
+// Kulcsok/címkék közös forrása: src/lib/feature-interest.ts.
 
 const schema = z.object({
-  featureKey: z.enum(["team", "industry_role"]),
+  featureKey: z.enum(FEATURE_INTEREST_LEAD_KEYS),
   message: z.string().trim().max(2000).optional(),
 });
-
-const FEATURE_LABELS: Record<string, string> = {
-  team: "Csapatelemzés",
-  industry_role: "Hiányzó szakma / iparági szerep",
-};
 
 // Ezeknél a kulcsoknál egy user csak egyszer jelezhet; a többinél (pl.
 // szakma-javaslat) az ismételt beküldés is értékes — akkor csak emailt
@@ -76,7 +73,7 @@ export async function POST(req: Request) {
 
   const to = process.env.CONTACT_FORM_TO ?? "info@trita.io";
   const text = [
-    `Platformot használó, bejelentkezett felhasználó érdeklődik: ${FEATURE_LABELS[featureKey]}.`,
+    `Platformot használó, bejelentkezett felhasználó érdeklődik: ${featureInterestLabel(featureKey)}.`,
     "",
     `Név: ${profile.username ?? "-"}`,
     `Email: ${profile.email ?? "-"}`,
@@ -95,7 +92,7 @@ export async function POST(req: Request) {
       from: EMAIL_FROM,
       to: [to],
       ...(profile.email ? { replyTo: profile.email } : {}),
-      subject: `[trita lead] ${FEATURE_LABELS[featureKey]} — ${profile.email ?? profile.username ?? profile.id}`,
+      subject: `[trita lead] ${featureInterestLabel(featureKey)} — ${profile.email ?? profile.username ?? profile.id}`,
       text,
     });
     if (error) {

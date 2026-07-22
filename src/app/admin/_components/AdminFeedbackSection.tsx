@@ -1,4 +1,5 @@
 import { INDUSTRIES } from "@/lib/industry-fit";
+import { featureInterestLabel } from "@/lib/feature-interest";
 
 // Visszajelzések admin-nézet: szerep-kalibráció (RoleFitFeedback aggregát)
 // + érdeklődés-jelzések (FeatureInterest). Szerver-komponens, csak megjelenít.
@@ -18,11 +19,6 @@ export interface InterestRow {
   email: string | null;
   username: string | null;
 }
-
-const FEATURE_LABELS: Record<string, string> = {
-  team: "Csapatelemzés-érdeklődés",
-  industry_role: "Hiányzó szakma-javaslat",
-};
 
 function roleLabel(industryKey: string, roleKey: string): string {
   const industry = INDUSTRIES.find((i) => i.key === industryKey);
@@ -208,7 +204,7 @@ export function AdminFeedbackSection({
                             : "bg-amber-50 text-amber-700"
                         }`}
                       >
-                        {FEATURE_LABELS[row.featureKey] ?? row.featureKey}
+                        {featureInterestLabel(row.featureKey)}
                       </span>
                     </td>
                     <td className="py-2 pr-4 text-ink">

@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { FEATURE_INTEREST_WISHLIST_KEYS } from "@/lib/feature-interest";
 
+// Dashboard-kívánságlista — TOGGLE (add/remove) + GET-lista. Kulcsok/címkék
+// közös forrása: src/lib/feature-interest.ts.
 const schema = z.object({
-  featureKey: z.enum(["team", "comm", "360"]),
+  featureKey: z.enum(FEATURE_INTEREST_WISHLIST_KEYS),
 });
 
 export async function GET() {
