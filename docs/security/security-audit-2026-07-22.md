@@ -37,7 +37,7 @@ körben, először Report-Only módban (Clerk + inline style-ok miatt).
 
 ## Nyitott javaslatok (döntést igényel)
 
-### 🟠 P1 — Team/Org meghívó-elfogadás email-ellenőrzése — RÉSZBEN JAVÍTVA
+### 🟠 P1 — Team/Org meghívó-elfogadás email-ellenőrzése — JAVÍTVA ✅
 **(a) Email-egyezés — JAVÍTVA ✅.** A named (nem `__open__`) meghívó mostantól
 csak a címzett fiókjával fogadható el. A kapu a `runJoinTransaction`-ben ül —
 ez a mutáció egyetlen belépési pontja (shared + legacy + org-switch flow-k mind
@@ -46,13 +46,12 @@ ide futnak), így a kliens-állapottól függetlenül véd. Mismatch → 403
 (join-acceptance-matrix). Ez zárja a tényleges authz-lyukat (jogosulatlan
 csatlakozás).
 
-**(b) Random token az id helyett — NYITOTT.** A join-link még mindig a cuid
-`id`-t használja (id-enumeráció elleni védelem-mélység). Migráció-igény: `token`
-mező (nullable) + backfill-szkript + **átmeneti dupla-lookup** (id VAGY token),
-mert a már kiküldött meghívó-emailekben a régi cuid-linkek élnek — token-only
-lookup ezeket eltörné. Ezért külön, migráció-tudatos körben. Az (a) fix után a
-maradék kockázat alacsony (id ismeretében sem lehet csatlakozni, ha az email nem
-egyezik).
+**(b) Random token az id helyett — JAVÍTVA ✅ (döntés: B).** Új `token` mező
+mindkét pending-invite modellen, create-nél `crypto.randomBytes(16)`; a link és
+a lookup a tokent használja, a rekord id csak belső (delete/PK). Döntés szerint
+a már kiküldött, id-alapú régi linkek megszűnnek (nincs átmeneti dupla-lookup);
+bejelentkezett meghívottnak a journey friss token-linket ad. Verifikálva:
+token ≠ id, token-lookup talál, régi-id-lookup null.
 
 ### 🟠 P2 — CSP bevezetése
 `Content-Security-Policy-Report-Only` először, majd enforce. Clerk-domainek +
@@ -63,23 +62,25 @@ egyezik).
 (helyes), LAST_ADMIN-védelem él. Javasolt integrációs teszt-kör: consultant
 nem eszkalálhat, member nem PATCH-elhet.
 
-### 🟡 P4 — Cron secret timing-safe összehasonlítás
-`header !== Bearer secret` — elvi timing-oldalcsatorna. `crypto.timingSafeEqual`
-javasolt (gyakorlati kockázat alacsony).
+### 🟡 P4 — Cron secret timing-safe összehasonlítás — JAVÍTVA ✅
+`crypto.timingSafeEqual` + hossz-guard a Bearer-secret összevetésben.
 
-### 🟡 P5 — Duplikált feedback-végpontok
-`/api/feature-interest` és `/api/features/interest` átfedő funkció — egyiket
-érdemes kivezetni (támadási felület + karbantartás).
+### 🟡 P5 — Duplikált feedback-végpontok — RÉSZBEN
+`/api/feature-interest` (results-bannerek, admin-email) és
+`/api/features/interest` (dashboard CTA, GET-lista) VALÓJÁBAN külön fogyasztók,
+más kulcs-készlettel — törlés UI-t törne. Hardening: a védtelen
+`features/interest` POST rate limitet kapott. Egységesítés (közös enum + közös
+POST) külön refaktor-kör.
 
 ### 🟡 P6 — E2E auth bypass
 `TRITA_E2E_AUTH_BYPASS` + cookie: NODE_ENV=production alatt tiltva (helyes).
 Figyelendő: staging környezet production build-del fusson, különben a bypass
 elérhető.
 
-### ℹ️ P7 — requireOrgContext API-kontextusban redirectel
-Nem-belépett API-hívásnál 307-et ad JSON-hiba helyett (pl. org/[id]/remind).
-Funkcionálisan zárt, de API-konzisztencia szempontból NextResponse 401 lenne
-tiszta.
+### ℹ️ P7 — requireOrgContext API-kontextusban redirectel — JAVÍTVA (org/remind) ✅
+Az `org/[id]/remind` mostantól saját JSON-auth (401/403). Más API-route-ok is
+használják a `requireOrgContext`-et — ha valahol JSON kell redirect helyett,
+ugyanezt a mintát kövessük (nem globális csere, hogy a page-flow ne törjön).
 
 ### ℹ️ P8 — Resend domain-verify
 Prod előtt kötelező, különben admin-értesítő emailek némán elhalnak
