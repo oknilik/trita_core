@@ -26,6 +26,7 @@ export async function POST(
     select: {
       id: true,
       email: true,
+      token: true,
       team: { select: { id: true, name: true, orgId: true } },
     },
   });
@@ -45,7 +46,7 @@ export async function POST(
 
   const locale = await getServerLocale();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
-  const joinPath = `/join/${invite.id}`;
+  const joinPath = `/join/${invite.token}`;
   await sendTeamInviteEmail({
     to: invite.email,
     teamName: invite.team.name,

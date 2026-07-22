@@ -52,6 +52,7 @@ test("enforces pending join before team/org home", () => {
     pendingJoinInvite: {
       kind: "org",
       inviteId: "inv123",
+      token: "tok_inv123",
       email: "a@b.com",
       teamId: null,
       orgId: "o1",
@@ -69,7 +70,7 @@ test("enforces pending join before team/org home", () => {
     },
   });
 
-  assert.equal(result.home.destination, "/join/org/inv123");
+  assert.equal(result.home.destination, "/join/org/tok_inv123");
   assert.equal(result.home.reason, "pending_join");
   assert.equal(result.home.activeSurface, "continuation");
 });

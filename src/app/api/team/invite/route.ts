@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 import { hasOrgRole } from "@/lib/org-roles";
@@ -70,10 +71,14 @@ export async function POST(req: Request) {
   const invite = await prisma.teamPendingInvite.upsert({
     where: { teamId_email: { teamId: team.id, email: OPEN_INVITE_SENTINEL } },
     update: {},
-    create: { teamId: team.id, email: OPEN_INVITE_SENTINEL },
-    select: { id: true },
+    create: {
+      teamId: team.id,
+      email: OPEN_INVITE_SENTINEL,
+      token: crypto.randomBytes(16).toString("hex"),
+    },
+    select: { token: true },
   });
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
-  return NextResponse.json({ inviteUrl: `${baseUrl}/join/${invite.id}`, inviteId: invite.id });
+  return NextResponse.json({ inviteUrl: `${baseUrl}/join/${invite.token}`, inviteId: invite.token });
 }

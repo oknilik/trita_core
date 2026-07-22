@@ -13,6 +13,7 @@ test("pending join invite has highest priority", () => {
     pendingJoinInvite: {
       kind: "org",
       inviteId: "inv123",
+      token: "tok_inv123",
       email: "test@trita.app",
       teamId: null,
       orgId: "org2",
@@ -25,7 +26,7 @@ test("pending join invite has highest priority", () => {
   const result = resolveHome({ context, state });
   assert.equal(result.activeSurface, "continuation");
   assert.equal(result.home.reason, "pending_join");
-  assert.equal(result.home.destination, "/join/org/inv123");
+  assert.equal(result.home.destination, "/join/org/tok_inv123");
 });
 
 test("self in progress goes to assessment", () => {

@@ -15,6 +15,7 @@ test("buildJourneyObligationFlags captures pending join and assessment obligatio
       pendingJoinInvite: {
         kind: "team",
         inviteId: "inv1",
+        token: "tok_inv1",
         email: "test@trita.app",
         teamId: "t1",
         orgId: "o1",

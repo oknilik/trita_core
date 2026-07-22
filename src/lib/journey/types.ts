@@ -220,6 +220,8 @@ export interface JourneyTeamMembershipSnapshot {
 export interface JourneyPendingJoinInviteSnapshot {
   kind: "team" | "org";
   inviteId: string;
+  /** Publikus join-link token (a link ezt hordozza, nem az inviteId-t). */
+  token: string;
   email: string;
   teamId: string | null;
   orgId: string | null;

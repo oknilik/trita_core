@@ -77,6 +77,7 @@ async function createTeamInvite(teamId: string, email?: string) {
   return prisma.teamPendingInvite.create({
     data: {
       id: makeId("team_invite"),
+      token: makeId("team_invite_token"),
       teamId,
       email: email ?? `${makeId("invitee")}@integration.trita.app`,
       createdAt: NOW,
@@ -88,6 +89,7 @@ async function createOrgInvite(orgId: string, email?: string, role = "ORG_MEMBER
   return prisma.organizationPendingInvite.create({
     data: {
       id: makeId("org_invite"),
+      token: makeId("org_invite_token"),
       orgId,
       email: email ?? `${makeId("invitee")}@integration.trita.app`,
       role,
@@ -133,7 +135,7 @@ test("api.team.join valid token: creates org+team memberships and consumes invit
   const result = await joinMembershipFromInvite({
     clerkId: user.clerkId!,
     kind: "team",
-    inviteId: invite.id,
+    inviteId: invite.token,
   });
 
   assert.equal(result.ok, true);
@@ -170,7 +172,7 @@ test("api.org.join valid token: creates org membership with invite role and cons
   const result = await joinMembershipFromInvite({
     clerkId: user.clerkId!,
     kind: "org",
-    inviteId: invite.id,
+    inviteId: invite.token,
   });
 
   assert.equal(result.ok, true);
@@ -204,7 +206,7 @@ test("api.team.join email mismatch: named invite rejects a different account", a
       joinMembershipFromInvite({
         clerkId: intruder.clerkId!,
         kind: "team",
-        inviteId: invite.id,
+        inviteId: invite.token,
       }),
     (error: unknown) => {
       assert.ok(error instanceof MembershipOnboardingError);
@@ -247,7 +249,7 @@ test("api.team.join auth required: resolveAcceptance returns unauthorized state"
   const invite = await createTeamInvite(team.id);
 
   const result = await resolveAcceptance({
-    token: invite.id,
+    token: invite.token,
     routeSource: "api.team.join",
     authState: { clerkId: null, authenticated: false },
     targetContext: { kind: "team" },
@@ -280,7 +282,7 @@ test("api.team.join org mismatch: resolveAcceptance returns org_mismatch", async
   const invite = await createTeamInvite(secondGraph.team.id, user.email ?? undefined);
 
   const result = await resolveAcceptance({
-    token: invite.id,
+    token: invite.token,
     routeSource: "api.team.join",
     authState: { clerkId: user.clerkId!, authenticated: true },
     targetContext: { kind: "team" },
@@ -318,7 +320,7 @@ test("api.team.join already member: invite resolves as accepted without duplicat
   const invite = await createTeamInvite(team.id, user.email ?? undefined);
 
   const resolution = await resolveAcceptance({
-    token: invite.id,
+    token: invite.token,
     routeSource: "api.team.join",
     authState: { clerkId: user.clerkId!, authenticated: true },
     targetContext: { kind: "team" },
@@ -328,7 +330,7 @@ test("api.team.join already member: invite resolves as accepted without duplicat
   const result = await joinMembershipFromInvite({
     clerkId: user.clerkId!,
     kind: "team",
-    inviteId: invite.id,
+    inviteId: invite.token,
   });
   assert.equal(result.ok, true);
 
@@ -369,7 +371,7 @@ test("pending assessment + join: journey handoff keeps destination on /assessmen
   const result = await joinMembershipFromInvite({
     clerkId: user.clerkId!,
     kind: "team",
-    inviteId: invite.id,
+    inviteId: invite.token,
   });
 
   assert.equal(result.nextPath, "/assessment");

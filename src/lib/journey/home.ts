@@ -26,8 +26,8 @@ function buildHomeResolution(
 function resolvePendingJoinDestination(context: JourneyContextSnapshot): string | null {
   const invite = context.pendingJoinInvite;
   if (!invite) return null;
-  if (invite.kind === "org") return `/join/org/${invite.inviteId}`;
-  return `/join/${invite.inviteId}`;
+  if (invite.kind === "org") return `/join/org/${invite.token}`;
+  return `/join/${invite.token}`;
 }
 
 export function resolveHome(params: {

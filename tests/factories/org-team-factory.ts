@@ -79,6 +79,7 @@ export function createJourneyPendingJoinInvite(
   return {
     kind: "team",
     inviteId: "invite_test_1",
+    token: "invite_token_test_1",
     email: "invitee@trita.app",
     teamId: "team_test_1",
     orgId: "org_test_1",

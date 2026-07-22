@@ -342,12 +342,16 @@ model TeamPendingInvite {
   id        String   @id @default(cuid())
   teamId    String
   email     String
+  // Publikus join-link bearer tokenje — kripto-random a create-nél. A @default
+  // csak a meglévő sorok oszlop-hozzáadásához kell (db push backfill).
+  token     String   @unique @default(cuid())
   createdAt DateTime @default(now())
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, email])
   @@index([email])
+  @@index([token])
 }
 
 // ============================================
@@ -482,12 +486,16 @@ model OrganizationPendingInvite {
   orgId     String
   email     String
   role      String   @default("ORG_MEMBER") // "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER"
+  // Publikus join-link bearer tokenje — kripto-random a create-nél. A @default
+  // csak a meglévő sorok oszlop-hozzáadásához kell (db push backfill).
+  token     String   @unique @default(cuid())
   createdAt DateTime @default(now())
 
   org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@unique([orgId, email])
   @@index([email])
+  @@index([token])
 }
 
 // ── 360° Campaign layer ────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendOrgInviteEmail } from "@/lib/emails";
 import { hasOrgRole } from "@/lib/auth";
@@ -90,15 +91,15 @@ export async function POST(
     if (existing) return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
 
     const invite = await prisma.organizationPendingInvite.create({
-      data: { orgId, email, role },
-      select: { id: true },
+      data: { orgId, email, role, token: crypto.randomBytes(16).toString("hex") },
+      select: { token: true },
     });
 
     const emailSent = await sendOrgInviteEmail({
       to: email,
       orgName: org.name,
       role,
-      signUpUrl: `${APP_URL}/join/org/${invite.id}`,
+      signUpUrl: `${APP_URL}/join/org/${invite.token}`,
     });
 
     return NextResponse.json({ pending: true, emailSent }, { status: 201 });

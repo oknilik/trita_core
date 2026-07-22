@@ -47,6 +47,7 @@ test("continuation scope resolves to org when pending org invite exists", () => 
       pendingJoinInvite: {
         kind: "org",
         inviteId: "inv1",
+        token: "tok_inv1",
         email: "a@b.com",
         teamId: null,
         orgId: "o1",

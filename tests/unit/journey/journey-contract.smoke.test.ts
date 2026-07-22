@@ -161,6 +161,7 @@ const FIXTURES: SmokeFixture[] = [
       pendingJoinInvite: {
         kind: "team",
         inviteId: "join_team_1",
+        token: "tok_join_team_1",
         email: "team@trita.app",
         teamId: "team_1",
         orgId: "org_1",
@@ -174,7 +175,7 @@ const FIXTURES: SmokeFixture[] = [
       },
     },
     expected: {
-      destination: "/join/join_team_1",
+      destination: "/join/tok_join_team_1",
       activeSurface: "continuation",
       stage: "TEAM_NOT_JOINED",
       primaryCtaId: "JOIN_TEAM",

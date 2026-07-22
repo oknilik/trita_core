@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendTeamInviteEmail } from "@/lib/emails";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -92,8 +93,8 @@ export async function POST(
     }
 
     const invite = await prisma.teamPendingInvite.create({
-      data: { teamId, email },
-      select: { id: true },
+      data: { teamId, email, token: crypto.randomBytes(16).toString("hex") },
+      select: { token: true },
     });
 
     const locale = await getServerLocale();
@@ -101,7 +102,7 @@ export async function POST(
     await sendTeamInviteEmail({
       to: email,
       teamName: team.name,
-      signUpUrl: `${appUrl}/join/${invite.id}`,
+      signUpUrl: `${appUrl}/join/${invite.token}`,
       locale: (locale === "hu" || locale === "en") ? locale : "en",
     });
 

@@ -243,6 +243,7 @@ export async function resolveJourneyContext(
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
+            token: true,
             email: true,
             teamId: true,
             createdAt: true,
@@ -254,6 +255,7 @@ export async function resolveJourneyContext(
             ? {
                 kind: "team",
                 inviteId: invite.id,
+                token: invite.token,
                 email: invite.email,
                 teamId: invite.teamId,
                 orgId: invite.team.orgId,
@@ -271,6 +273,7 @@ export async function resolveJourneyContext(
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
+            token: true,
             email: true,
             orgId: true,
             role: true,
@@ -282,6 +285,7 @@ export async function resolveJourneyContext(
             ? {
                 kind: "org",
                 inviteId: invite.id,
+                token: invite.token,
                 email: invite.email,
                 teamId: null,
                 orgId: invite.orgId,

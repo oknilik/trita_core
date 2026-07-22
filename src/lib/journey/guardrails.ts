@@ -45,7 +45,7 @@ const WRITE_BLOCKED_ACTION_IDS = new Set<JourneyActionId>([
 function resolvePendingJoinDestination(context: JourneyContextSnapshot): string | null {
   const invite = context.pendingJoinInvite;
   if (!invite) return null;
-  return invite.kind === "org" ? `/join/org/${invite.inviteId}` : `/join/${invite.inviteId}`;
+  return invite.kind === "org" ? `/join/org/${invite.token}` : `/join/${invite.token}`;
 }
 
 function applyWriteRestrictions(

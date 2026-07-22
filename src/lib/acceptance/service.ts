@@ -466,8 +466,9 @@ export async function resolveMembershipJoinActor(clerkId: string): Promise<Membe
 export async function resolveTeamJoinInviteContext(
   inviteId: string,
 ): Promise<TeamJoinInviteContext | null> {
+  // A join-link kripto-random tokent hordoz (nem a rekord cuid id-ját).
   const invite = await prisma.teamPendingInvite.findUnique({
-    where: { id: inviteId },
+    where: { token: inviteId },
     select: {
       id: true,
       email: true,
@@ -499,8 +500,9 @@ export async function resolveTeamJoinInviteContext(
 export async function resolveOrgJoinInviteContext(
   inviteId: string,
 ): Promise<OrgJoinInviteContext | null> {
+  // A join-link kripto-random tokent hordoz (nem a rekord cuid id-ját).
   const invite = await prisma.organizationPendingInvite.findUnique({
-    where: { id: inviteId },
+    where: { token: inviteId },
     select: {
       id: true,
       orgId: true,
