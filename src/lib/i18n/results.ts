@@ -453,7 +453,19 @@ export const resultsTranslations = {
     },
     draftInProgressTitle: { hu: "A teszted folyamatban van", en: "Your assessment is in progress" },
     draftInProgressBody: { hu: "Mentettük a haladásodat — ott folytathatod, ahol abbahagytad.", en: "We saved your progress — you can continue where you left off." },
+    draftInProgressHint: {
+      hu: "A válaszaid automatikusan mentődnek, nem veszik el semmi — nyugodtan folytathatod később is.",
+      en: "Your answers are saved automatically, nothing is lost — feel free to continue later.",
+    },
     draftInProgressCta: { hu: "Folytatom a tesztet →", en: "Continue assessment →" },
+    nextStepTestTitle: {
+      hu: "Ismerd meg a munkastílusodat",
+      en: "Get to know your work style",
+    },
+    nextStepTestBody: {
+      hu: "Egy rövid, kb. 9 perces felmérés után letisztult képet kapsz arról, mi visz előre, mi ad stabilitást, és mire érdemes figyelned. Nem címkéz — rávilágít.",
+      en: "A short assessment of about 9 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you — it sheds light.",
+    },
     uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
     strengthsSuffix: { hu: " — ezek az erősségeid.", en: " — these are your strengths." },
     balancedProfile: { hu: "Kiegyensúlyozott profil, nincs kiugró erősség.", en: "Balanced profile, no standout strength." },

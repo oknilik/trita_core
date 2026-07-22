@@ -100,6 +100,10 @@ export const orgTranslations = {
       hu: "Átnézzük a szervezeted összes csapatának mintázatát, a cross-team feszültségeket, és a változásokat az előző negyedévhez képest. Ebből készül a szervezeti hőtérkép, ami a konzultáció kiindulópontja.",
       en: "We review all your org's team patterns, cross-team tensions, and changes since the last quarter. This produces the org heat map that serves as the consultation's starting point.",
     },
+    step2Title: {
+      hu: "Konzultációs hívás (60–90 perc)",
+      en: "Consultation call (60–90 minutes)",
+    },
     step2Body: {
       hu: "Személyes videóhívás veled (vezető / HR). Szervezeti szintű mintázat-értelmezés, cross-team dinamikák, feszültségpontok okai, 3-5 konkrét akció a következő negyedévre. Ha van konkrét kérdésed — arra mélyen válaszolunk.",
       en: "Personal video call with you (leader / HR). Org-level pattern interpretation, cross-team dynamics, root causes of tension points, 3-5 concrete actions for the next quarter. If you have a specific question — we go deep.",

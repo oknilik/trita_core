@@ -16,16 +16,53 @@ import { orgTranslations } from "./org";
 import { notificationTranslations } from "./notifications";
 
 // ── Merged dictionary ───────────────────────────────────────────────────────
-const translations = {
-  ...commonTranslations,
-  ...landingTranslations,
-  ...authTranslations,
-  ...assessmentTranslations,
-  ...resultsTranslations,
-  ...profileTranslations,
-  ...orgTranslations,
-  ...notificationTranslations,
-} as const;
+// MÉLY összefésülés — a korábbi sekély spread a top-level névtér-ütközésnél
+// (pl. results.ts és org.ts egyaránt definiált `dashboard` blokkot) a teljes
+// korábbi blokkot ELDOBTA: ~80 dashboard.* kulcs tűnt el, a felületen nyers
+// kulcsnevek jelentek meg (feedback form, journey-kártyák). A deep merge a
+// levél-rekordokat ({hu, en}) egyben tartja, a névtereket összefésüli.
+type TranslationNode = Record<string, unknown>;
+
+function isLeafRecord(value: unknown): boolean {
+  return value != null && typeof value === "object" && "hu" in (value as object);
+}
+
+function deepMergeTranslations(
+  target: TranslationNode,
+  source: TranslationNode,
+): TranslationNode {
+  for (const key of Object.keys(source)) {
+    const incoming = source[key];
+    const existing = target[key];
+    if (
+      incoming != null &&
+      typeof incoming === "object" &&
+      !isLeafRecord(incoming) &&
+      existing != null &&
+      typeof existing === "object" &&
+      !isLeafRecord(existing)
+    ) {
+      deepMergeTranslations(existing as TranslationNode, incoming as TranslationNode);
+    } else {
+      target[key] = incoming;
+    }
+  }
+  return target;
+}
+
+const translations = [
+  commonTranslations,
+  landingTranslations,
+  authTranslations,
+  assessmentTranslations,
+  resultsTranslations,
+  profileTranslations,
+  orgTranslations,
+  notificationTranslations,
+].reduce<TranslationNode>(
+  (merged, domain) => deepMergeTranslations(merged, domain as TranslationNode),
+  {},
+);
 
 // ── Resolver ────────────────────────────────────────────────────────────────
 
