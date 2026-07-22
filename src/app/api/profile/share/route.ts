@@ -38,3 +38,27 @@ export async function POST() {
 
   return NextResponse.json({ token });
 }
+
+/**
+ * DELETE /api/profile/share
+ * Revokes the share token — the public /share/[token] URL stops working.
+ */
+export async function DELETE() {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  if (!profile) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+  // Az összes self-eredmény tokenjét visszavonjuk (nem csak a legutóbbiét),
+  // hogy régebbi, még élő megosztás se maradjon kint.
+  await prisma.assessmentResult.updateMany({
+    where: { userProfileId: profile.id, isSelfAssessment: true, shareToken: { not: null } },
+    data: { shareToken: null },
+  });
+
+  return NextResponse.json({ ok: true });
+}

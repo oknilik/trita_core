@@ -23,6 +23,8 @@ test("defines all required capability keys centrally", () => {
     "orgAdminManage",
     "export",
     "observerInvite",
+    "teamManage",
+    "teamInviteEmail",
   ]);
 });
 

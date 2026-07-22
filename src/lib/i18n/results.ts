@@ -753,6 +753,36 @@ export const resultsTranslations = {
     },
     shareLinkCopied: { hu: "Link másolva a vágólapra!", en: "Link copied to clipboard!" },
     shareError: { hu: "Hiba történt", en: "An error occurred" },
+    // ShareModal
+    shareModalTitle: { hu: "Profil megosztása", en: "Share your profile" },
+    shareModalDesc: {
+      hu: "Aki megkapja a linket, látja az eredményed publikus nézetét: dimenziók, munkastílus és valószínű csapatszerepek. A megosztást bármikor visszavonhatod.",
+      en: "Anyone with the link sees the public view of your results: dimensions, work style, and likely team roles. You can revoke sharing at any time.",
+    },
+    shareLinkLabel: { hu: "Megosztható link", en: "Shareable link" },
+    shareCopyLink: { hu: "Link másolása", en: "Copy link" },
+    shareCopied: { hu: "Másolva", en: "Copied" },
+    shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
+    shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
+    shareEmailSend: { hu: "Küldés", en: "Send" },
+    shareEmailSending: { hu: "Küldés…", en: "Sending…" },
+    shareEmailSent: { hu: "Email elküldve", en: "Email sent" },
+    shareEmailInvalid: { hu: "Érvénytelen email-cím", en: "Invalid email address" },
+    shareRevoke: { hu: "Megosztás visszavonása", en: "Revoke sharing" },
+    shareRevoked: {
+      hu: "A megosztás visszavonva — a korábbi link már nem működik.",
+      en: "Sharing revoked — the previous link no longer works.",
+    },
+    shareCreateNew: { hu: "Új link létrehozása", en: "Create a new link" },
+    // Share page — revoked/expired link
+    shareExpiredEyebrow: { hu: "Megosztott profil", en: "Shared profile" },
+    shareExpiredTitle: { hu: "Ez a link már nem él", en: "This link is no longer active" },
+    shareExpiredDesc: {
+      hu: "A profil tulajdonosa visszavonta a megosztást, vagy a link érvénytelen. Ha kíváncsi vagy a saját profilodra, néhány perc alatt kitöltheted a felmérést.",
+      en: "The profile owner revoked sharing, or the link is invalid. If you're curious about your own profile, you can complete the assessment in a few minutes.",
+    },
+    shareExpiredCtaTry: { hu: "Kipróbálom a tesztet", en: "Try the assessment" },
+    shareExpiredCtaSignIn: { hu: "Bejelentkezés", en: "Sign in" },
     personalityProfileFallback: { hu: "Személyiségprofil", en: "Personality profile" },
     noLowDimension: { hu: "nincs kritikusan alacsony dimenzió", en: "no critically low dimension" },
     // TeamRoleTeaser

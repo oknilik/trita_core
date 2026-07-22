@@ -325,8 +325,10 @@ describe("E3 page action gating client tests", () => {
           />,
         );
 
+        // A PDF-gomb betöltés alatt is a címkéjét mutatja (spinnerrel),
+        // a korábbi "..." helyett — a gating lényege a disabled állapot.
         const exportButton = screen.getByRole("button", {
-          name: /\.\.\./i,
+          name: new RegExp(t("results.heroPdf", "en"), "i"),
         });
         expect(exportButton).toBeDisabled();
       },

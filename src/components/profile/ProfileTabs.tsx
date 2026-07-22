@@ -7,6 +7,7 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
+import { ShareModal } from "@/components/results/ShareModal";
 import { ProgressBar } from "@/components/results/ProgressBar";
 import { InsightPair } from "@/components/results/InsightPair";
 import { UpgradeButton } from "./UpgradeButton";
@@ -558,7 +559,7 @@ export function ProfileTabs({
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
   const [pdfLoading, setPdfLoading] = useState(false);
-  const [shareLoading, setShareLoading] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const stageKeyMap: Record<string, string> = {
     SELF_COMPLETED: "content.stageSelfCompleted",
@@ -687,23 +688,7 @@ export function ProfileTabs({
         accessLevel={accessLevel}
         topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
         watchDimensions={dimensions.filter((d) => d.code !== "I" && d.score < 40).map((d) => d.label)}
-        onShare={async () => {
-          setShareLoading(true);
-          try {
-            const res = await fetch("/api/profile/share", { method: "POST" });
-            const data = await res.json();
-            if (data.token) {
-              const url = `${window.location.origin}/share/${data.token}`;
-              await navigator.clipboard.writeText(url);
-              alert(t("content.shareLinkCopied", locale));
-            }
-          } catch {
-            alert(t("content.shareError", locale));
-          } finally {
-            setShareLoading(false);
-          }
-        }}
-        shareLoading={shareLoading}
+        onShare={() => setShareOpen(true)}
         onDownloadPdf={async () => {
           setPdfLoading(true);
           try {
@@ -871,6 +856,8 @@ export function ProfileTabs({
         }}
         pdfLoading={pdfLoading}
       />
+
+      <ShareModal isOpen={shareOpen} onClose={() => setShareOpen(false)} />
 
       {/* Progress bar — org-tagnál a lépés-sáv helyett állapot-csík: a saját
           út a kitöltéssel kész, az observer csapat-folyamat (nem hiány). */}

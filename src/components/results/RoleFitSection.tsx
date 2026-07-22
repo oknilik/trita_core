@@ -1,3 +1,5 @@
+"use client";
+
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 

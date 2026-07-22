@@ -57,6 +57,7 @@ export function ProfileHero({
     const was = wasPdfLoading.current;
     wasPdfLoading.current = Boolean(pdfLoading);
     if (was && !pdfLoading) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPdfDone(true);
       const id = setTimeout(() => setPdfDone(false), 2600);
       return () => clearTimeout(id);

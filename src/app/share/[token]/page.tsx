@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -9,6 +11,10 @@ import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
 import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
+import { buildWorkstyleContent } from "@/lib/workstyle-content";
+import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
+import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
+import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -48,7 +54,33 @@ export default async function SharedProfilePage({
     },
   });
 
-  if (!result) notFound();
+  // Visszavont vagy érvénytelen link: nem 404, hanem barátságos állapot-oldal
+  // — magyarázat + CTA a saját kitöltésre vagy bejelentkezésre.
+  if (!result) {
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+          <p className="mb-3 text-[10px] uppercase tracking-[2px] text-[var(--color-text-muted)]">
+            {t("content.shareExpiredEyebrow", locale)}
+          </p>
+          <h1 className="mb-3 font-fraunces text-[26px] tracking-tight text-ink">
+            {t("content.shareExpiredTitle", locale)}
+          </h1>
+          <p className="mb-7 text-sm leading-relaxed text-ink-body">
+            {t("content.shareExpiredDesc", locale)}
+          </p>
+          <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
+            <Link href="/try" className={getButtonClassName({ variant: "primary" })}>
+              {t("content.shareExpiredCtaTry", locale)}
+            </Link>
+            <Link href="/sign-in" className={getButtonClassName({ variant: "secondary" })}>
+              {t("content.shareExpiredCtaSignIn", locale)}
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   const scores = result.scores as ScoreResult;
   if (scores.type !== "likert") notFound();
@@ -85,6 +117,15 @@ export default async function SharedProfilePage({
       dimensions.map((d) => ({ code: d.code, score: d.score })),
       isHu ? "hu" : "en",
     ) ?? "";
+
+  // Munkastílus — ugyanabból a generátorból, mint a saját eredmény-oldal
+  // workstyle tabja (lib/workstyle-content.ts), hogy a megosztott nézet
+  // tartalma sose csússzon el a belső nézettől.
+  const workstyle = buildWorkstyleContent(
+    Object.fromEntries(dimensions.map((d) => [d.code, d.score])),
+    testType,
+    locale,
+  );
 
   // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));
@@ -180,6 +221,21 @@ export default async function SharedProfilePage({
               </div>
             );
           })}
+        </div>
+
+        {/* Munkastílus */}
+        <div className="flex flex-col">
+          <HowYouWorkSection paragraphs={workstyle.howYouWork} isUnlocked={true} />
+          <IdealEnvironmentSection items={workstyle.envItems} isUnlocked={true} />
+          <RoleFitSection
+            strongFit={workstyle.roleFit.strong}
+            mightWork={workstyle.roleFit.might}
+            needsPrep={workstyle.roleFit.prep}
+            strongRoles={workstyle.roleFit.strongRoles}
+            mightRoles={workstyle.roleFit.mightRoles}
+            prepRoles={workstyle.roleFit.prepRoles}
+            isUnlocked={true}
+          />
         </div>
 
         {/* TeamRole */}

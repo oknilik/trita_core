@@ -98,6 +98,30 @@ const translations = {
       team: "the trita team",
     },
   },
+  profileShare: {
+    hu: {
+      subject: "Megosztott személyiségprofil – trita",
+      greeting: "Szia,",
+      body: (sender: string) =>
+        `${sender} megosztotta veled a személyiségprofilját a tritán. A profil bemutatja a fő dimenzióit, a munkastílusát és a valószínű csapatszerepeit.`,
+      cta: "Profil megnyitása",
+      footer:
+        "A linket a küldő bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
+    },
+    en: {
+      subject: "A personality profile was shared with you – trita",
+      greeting: "Hi,",
+      body: (sender: string) =>
+        `${sender} shared their personality profile with you on trita. The profile shows their main dimensions, work style, and likely team roles.`,
+      cta: "Open the profile",
+      footer:
+        "The sender can revoke this link at any time. If you don't recognize the sender, you can ignore this email.",
+      thanks: "Best regards,",
+      team: "the trita team",
+    },
+  },
   verificationCode: {
     hu: {
       subject: "A regisztrációs kódod – trita",
@@ -487,6 +511,73 @@ export async function sendObserverInviteEmail(params: {
   } else {
     console.log("[Email] Observer invite sent to:", params.to);
   }
+}
+
+function buildProfileShareHtml(params: {
+  locale: Locale;
+  senderName: string;
+  token: string;
+}): string {
+  const t = translations.profileShare[params.locale];
+  const cta = renderCtaButton({
+    href: `${APP_URL}/share/${params.token}`,
+    label: t.cta,
+  });
+
+  const bodyContent = `
+    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+      ${t.greeting}
+    </p>
+    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+      ${t.body(params.senderName)}
+    </p>
+    ${cta}`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
+}
+
+export async function sendProfileShareEmail(params: {
+  to: string;
+  senderName: string;
+  token: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.profileShare[locale];
+  const link = `${APP_URL}/share/${params.token}`;
+
+  const text = [
+    t.greeting,
+    "",
+    t.body(params.senderName),
+    "",
+    `${t.cta}: ${link}`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html: buildProfileShareHtml({ locale, senderName: params.senderName, token: params.token }),
+    text,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send profile share:", error);
+    throw new Error("EMAIL_SEND_FAILED");
+  }
+  console.log("[Email] Profile share sent to:", params.to);
 }
 
 function buildObserverCompletionHtml(params: {
