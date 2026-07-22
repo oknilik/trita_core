@@ -328,18 +328,18 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {orgId && draft.aggregates?.evidence?.observerEdgeCount === 0 && (
+          {orgId && (draft.aggregates?.evidence?.measuredEdgeCount ?? 0) === 0 && (
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-amber-200 bg-amber-50/60 px-3.5 py-2.5">
               <p className="text-xs text-amber-800">
                 {isHu
-                  ? "A riport adatalapja most csak becslés — nincs mért kollégai visszajelzés."
-                  : "The report's data basis is estimate-only — no measured peer feedback yet."}
+                  ? "A riport kapcsolati adatalapja most csak becslés — nincs mért bizalmi kör."
+                  : "The report's relationship data basis is estimate-only — no measured trust round yet."}
               </p>
               <Link
                 href={`/org/${orgId}/campaigns/new?team=${teamId}`}
                 className="text-xs font-semibold text-amber-800 underline transition hover:text-amber-900"
               >
-                {isHu ? "Kollégai kör indítása →" : "Start a peer round →"}
+                {isHu ? "Bizalmi kör indítása →" : "Start a trust round →"}
               </Link>
             </div>
           )}

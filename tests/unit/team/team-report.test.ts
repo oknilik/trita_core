@@ -71,7 +71,7 @@ const richAggregates: TeamReportAggregates = {
     estimateCount: 3,
   },
   roleGaps: ["OG", "HA"],
-  evidence: { quality: "partial", observerEdgeCount: 0, estimatedEdgeCount: 6 },
+  evidence: { quality: "partial", measuredEdgeCount: 0, estimatedEdgeCount: 6 },
   dynamics: {
     alignedCount: 1,
     complementaryCount: 2,
@@ -91,13 +91,13 @@ test("prefill: rich aggregates produce every narrative field + action items", ()
   assert.ok(prefill!.recommendations.includes("működési normák"));
   // szerep-hiány bekerül név szerint
   assert.ok(prefill!.risks.includes("Ötletgazda"));
-  // observer hiányzik → visszajelzés-kör ajánlás + akció
-  assert.ok(prefill!.recommendations.includes("observer"));
+  // mért kapcsolati adat hiányzik → bizalmi kör ajánlás + akció
+  assert.ok(prefill!.recommendations.includes("bizalmi kör"));
   const titles = prefill!.actionItems.map((item) => item.title);
   assert.ok(titles.includes("Csapatkép-átbeszélő workshop"));
   assert.ok(titles.includes("Működési normák rögzítése"));
   assert.ok(titles.includes("Szerep-tisztázás"));
-  assert.ok(titles.includes("Kollégai visszajelzés-kör"));
+  assert.ok(titles.includes("Mért bizalmi kör"));
   assert.ok(titles.includes("Utánkövetés és riport-frissítés"));
   for (const item of prefill!.actionItems) {
     assert.ok(["30", "60", "90"].includes(item.timeframe));

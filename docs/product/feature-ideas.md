@@ -144,3 +144,74 @@ A csapat riportba a Csapatszerep szerep-eloszlás nem kerül bele.
 - Nem új kérdőív fejlesztés — a meglévő Csapatszerep teszt marad
 - Nem módosítja a TRITAN becslés logikát — az fallback marad
 - Nem ad egyéni coaching ajánlást — csak a szerep felismerés és csapat szintű eloszlás
+
+---
+
+## 3. Trust-háló minimál-vizualizáció a csapatriportban
+
+**Státusz:** ✅ MEGVALÓSÍTVA (2026-07-22) — az #1 (bizalmi háló 360°)
+follow-upja. A csapatriport (`TeamReportView`) kapott egy „Kapcsolati háló
+— kiemelések" blokkot, ami névvel jelöli a csapat összekötő(i)t (hub) és a
+beágyazatlan tag(oka)t, mért/becsült forrás-badge-dzsel. Fontos pontosítás
+az eredeti ötlethez: a hub/beágyazatlan detektort NEM a `DynamicsMap`-be
+kellett írni — a `trust-network.ts` `computeTrustNetwork()`-je már
+kiszámolja a `hubUserIds` és `isolatedUserIds` mezőket a mért trust-kör
+adatból (küszöb-szabályokkal). Így az implementáció ezt használja fel, nem
+új detektort. Az alábbi „Minimális scope" a megvalósult megoldást tükrözi.
+**Prioritás:** közepes (kis effort, magas debrief-érték)
+**Előfeltétel:** trust round mérés (megvan, #1), `computeTrustNetwork()`
+hub/isolated logika (megvolt)
+
+### Motiváció
+
+A tanácsadói debriefen a legértékesebb két állítás relációs szinten:
+"ki a csapat összekötője (hub)" és "ki nincs beágyazva (izolált tag)".
+Ez ma csak az interaktív intelligence tab dinamika-térképén látszik
+(kattintgatással), a letölthető / megosztható **csapatriportba** nem
+kerül bele. Egy statikus, egyszerű kiemelés a riportban azonnal
+beszédtémát ad a tanácsadónak, kattintás nélkül.
+
+### Megvalósult scope
+
+A `TeamReportView` egy tömör, összefoglaló-orientált blokkot kapott (nem új
+nehéz chart — a vizualizációs policy guardrailjével összhangban):
+
+- **Hub-kiemelés:** mért adatnál a `computeTrustNetwork().hubUserIds`
+  (legtöbb erős, kölcsönös bizalmi éllel, min. 2) — névvel. Mért adat híján
+  profil-alapú becslés fallback: a legtöbb „aligned" (hasonló profilú)
+  kapcsolattal rendelkező tag (aligned-fok ≥ 3), a dinamika-térkép
+  hub-definíciójával összhangban.
+- **Beágyazatlan-tag kiemelés:** a `computeTrustNetwork().isolatedUserIds`
+  (≥ 2 mért éllel, de egyetlen ≥ moderate/erős él nélkül) — névvel. Csak
+  mért trust-körből jelenik meg; becslésből tudatosan nem, hogy ne
+  állítsunk többet az adatnál.
+- **Forrás-jelölés:** a blokk fejlécében „mért" (sage) vagy „becsült"
+  (amber) badge, lábjegyzetben a mért párok száma és a lefedettség (%).
+
+Adatréteg: a `buildTeamReportAggregates` (`team-report.ts`) a publikáláskori
+pillanatképbe egy új, opcionális `trustHighlights` mezőt tesz (`source`,
+`measuredPairCount`, `possiblePairCount`, `coveragePct`, `hubs[]`,
+`isolated[]`, mind névvel feloldva). Régebbi pillanatképekben nincs → a
+render `agg?.trustHighlights`-tal guardol (a `psychSafety`/`peerRoles`
+mintájára). A tagok névvel szerepelnek, mert a debrief tárgya konkrét tag; a
+láthatóság a dinamika-térképpel azonos (vezető/tanácsadó).
+
+### Érintett fájlok
+
+- `src/lib/team-report.ts` — `TeamReportAggregates.trustHighlights` mező +
+  feltöltés a `buildTeamTrustNetwork()`-ből (becslés-fallbackkel).
+- `src/components/team/TeamReportView.tsx` — „Kapcsolati háló — kiemelések"
+  szekció (hub + beágyazatlan-tag chipek, forrás-badge, debrief-mondat).
+- Újrahasznált (változatlan): `src/lib/trust-network.ts`
+  (`computeTrustNetwork` hub/isolated), `src/lib/trust-network.server.ts`
+  (`buildTeamTrustNetwork`).
+- `docs/product/team-intelligence-visualization-policy.md` — guardrail:
+  a kiemelés summary-orientált maradt, nem duplikálja a deep-dive chartokat.
+
+### Nem scope (megtartva)
+
+- Nem új önálló háló-vizualizációs oldal — a meglévő `DynamicsMap` marad
+  az interaktív felület, a riport csak névvel jelölt kivonatot mutat.
+- Nem egyéni coaching-ajánlás — csapatszintű reláció-kiemelés.
+- Nem cseréli a becslés-fallbacket — ha nincs mért trust adat, a riport
+  a becsült hub-képet jelöli forrás-badge-dzsel, beágyazatlan-tag nélkül.

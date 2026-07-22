@@ -6,7 +6,7 @@ import {
   getPsychSafetyItem,
 } from "@/lib/psych-safety";
 import type { SerializedTeamReport } from "@/lib/team-report";
-import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
+import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
@@ -88,32 +88,184 @@ const DYNAMICS_SEGMENTS = [
   },
 ] as const;
 
-function NarrativeSection({
+// ── Narratíva-megjelenítés ──────────────────────────────────────────────────
+// A tanácsadói szöveg tipikusan „• " kezdetű felsorolás-sorokból áll (az
+// előtöltés így generálja). A bullet-sorokat ikonos sorokká/kártyákká
+// alakítjuk; a sima bekezdések változatlan prózaként jelennek meg — a
+// szabad kézzel írt szöveg így is jól néz ki.
+
+type NarrativeBlock =
+  | { type: "bullets"; items: string[] }
+  | { type: "para"; text: string };
+
+function parseNarrativeBlocks(text: string): NarrativeBlock[] {
+  const blocks: NarrativeBlock[] = [];
+  for (const raw of text.split("\n")) {
+    const line = raw.trim();
+    if (!line) continue;
+    const m = line.match(/^[•\-*]\s+(.*)$/);
+    if (m) {
+      const last = blocks[blocks.length - 1];
+      if (last?.type === "bullets") last.items.push(m[1]);
+      else blocks.push({ type: "bullets", items: [m[1]] });
+    } else {
+      blocks.push({ type: "para", text: line });
+    }
+  }
+  return blocks;
+}
+
+const NARRATIVE_TONES = {
+  sage: {
+    circle: "bg-sage/15 text-sage-dark",
+    path: "M3 8h10M9 4l4 4-4 4",
+  },
+  sky: {
+    circle: "bg-sky-100 text-sky-700",
+    path: "M4 13.5V3h7.5L10 5.5 11.5 8H4",
+  },
+  bronze: {
+    circle: "bg-bronze-soft/60 text-bronze-dark",
+    path: "M3 4h10v7H8.5L5.5 13.5V11H3z",
+  },
+  emerald: {
+    circle: "bg-emerald-100 text-emerald-700",
+    path: "M3 8.5l3 3 7-7",
+  },
+  amber: {
+    circle: "bg-amber-100 text-amber-700",
+    path: "M8 3v6M8 12.5v.5",
+  },
+} as const;
+
+function NarrativeRich({
   label,
   text,
+  tone,
+  card = true,
 }: {
-  label: string;
+  label?: string;
   text: string | null;
+  tone: keyof typeof NARRATIVE_TONES;
+  /** true → a bullet-sorok kártya-hátteret kapnak; false → könnyű ikonos sor. */
+  card?: boolean;
 }) {
   if (!text || text.trim().length === 0) return null;
+  const blocks = parseNarrativeBlocks(text);
+  const t = NARRATIVE_TONES[tone];
   return (
     <div>
-      <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">
-        {label}
-      </p>
-      <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-body">{text}</p>
+      {label ? (
+        <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+          {label}
+        </p>
+      ) : null}
+      <div className="flex flex-col gap-2">
+        {blocks.map((block, i) =>
+          block.type === "para" ? (
+            <p key={i} className="text-sm leading-relaxed text-ink-body">
+              {block.text}
+            </p>
+          ) : (
+            <ul key={i} className="flex flex-col gap-2">
+              {block.items.map((item, j) => (
+                <li
+                  key={j}
+                  className={`flex items-start gap-2.5 ${
+                    card
+                      ? "rounded-[12px] border border-sand bg-cream/40 px-3.5 py-2.5"
+                      : ""
+                  }`}
+                >
+                  <span
+                    className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full ${t.circle}`}
+                  >
+                    <svg
+                      viewBox="0 0 16 16"
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d={t.path} />
+                    </svg>
+                  </span>
+                  <span className="text-sm leading-relaxed text-ink-body">{item}</span>
+                </li>
+              ))}
+            </ul>
+          ),
+        )}
+      </div>
     </div>
   );
 }
 
-function KpiTile({ label, value, accent }: { label: string; value: string; accent?: string }) {
+function KpiTile({
+  label,
+  value,
+  accent,
+  progressPct,
+}: {
+  label: string;
+  value: string;
+  accent?: string;
+  /** Opcionális mini progress-sáv a szám alatt (0–100). */
+  progressPct?: number;
+}) {
   return (
     <div className="rounded-[14px] border border-sand bg-white p-3.5">
       <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
       <p className={`mt-1 font-fraunces text-2xl leading-none ${accent ?? "text-ink"}`}>{value}</p>
+      {typeof progressPct === "number" && (
+        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-sand">
+          <div
+            className="h-full rounded-full bg-sage"
+            style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }}
+          />
+        </div>
+      )}
     </div>
   );
 }
+
+// Számozott szekció-fejléc egy soros „mit nézz itt" alcímmel — a riport
+// olvasási útvonalát vezeti (a sorszám a renderelt szekciók sorrendjét követi).
+function SectionHead({
+  no,
+  label,
+  subtitle,
+}: {
+  no: string;
+  label: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-4 flex items-start gap-3">
+      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-white font-mono text-[11px] font-bold text-bronze shadow-sm ring-1 ring-sand">
+        {no}
+      </span>
+      <div className="min-w-0 pt-0.5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-bronze">
+          {label}
+        </p>
+        {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}
+      </div>
+    </div>
+  );
+}
+
+// A 30/60/90 akcióterv-oszlopok akcentus-színei — idővonal-érzet.
+const TIMEFRAME_TONES: Record<
+  "30" | "60" | "90",
+  { dot: string; text: string; edge: string }
+> = {
+  "30": { dot: "bg-sage", text: "text-sage-dark", edge: "border-l-sage/50" },
+  "60": { dot: "bg-sky-500", text: "text-sky-700", edge: "border-l-sky-400/50" },
+  "90": { dot: "bg-bronze", text: "text-bronze", edge: "border-l-bronze/50" },
+};
 
 export function TeamReportView({
   report,
@@ -148,42 +300,58 @@ export function TeamReportView({
       }))
     : [];
 
+  // A renderelt szekciók futó sorszáma — a fejlécekben olvasási útvonalat ad.
+  let sectionCounter = 0;
+  const secNo = () => String(++sectionCounter).padStart(2, "0");
+
   return (
-    <div className="flex flex-col gap-6">
-      {/* Fejléc + KPI-sáv */}
-      <DashboardPanel className="p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
-              {isDraft
-                ? isHu ? "// csapatkép — előnézet" : "// team picture — preview"
-                : isHu ? "// validált csapatkép" : "// validated team picture"}
-            </p>
-            <h2 className="mt-1 font-fraunces text-2xl text-ink">
-              {report.title ?? (isHu ? "Csapatkép" : "Team picture")}
-            </h2>
-            {publishedDate && (
-              <p className="mt-1 text-xs text-muted">
-                {isHu ? "Tanácsadó által validálva · " : "Validated by consultant · "}
-                {publishedDate}
+    <div className="flex flex-col gap-7">
+      {/* Fejléc + KPI-sáv — gradiens sáv adja meg a riport alaphangját */}
+      <DashboardPanel className="overflow-hidden p-0">
+        <div
+          className={`p-6 ${
+            isDraft
+              ? "bg-gradient-to-r from-amber-100/50 via-cream/70 to-white"
+              : "bg-gradient-to-r from-sage/15 via-cream/70 to-white"
+          }`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+                {isDraft
+                  ? isHu ? "// csapatkép — előnézet" : "// team picture — preview"
+                  : isHu ? "// validált csapatkép" : "// validated team picture"}
               </p>
+              <h2 className="mt-1 font-fraunces text-2xl text-ink">
+                {report.title ?? (isHu ? "Csapatkép" : "Team picture")}
+              </h2>
+              {publishedDate && (
+                <p className="mt-1 text-xs text-muted">
+                  {isHu ? "Tanácsadó által validálva · " : "Validated by consultant · "}
+                  {publishedDate}
+                </p>
+              )}
+            </div>
+            {isDraft ? (
+              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-amber-700 shadow-sm ring-1 ring-amber-200">
+                {isHu ? "Vázlat-előnézet" : "Draft preview"}
+              </span>
+            ) : (
+              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-200">
+                {isHu ? "Publikált" : "Published"}
+              </span>
             )}
           </div>
-          {isDraft ? (
-            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-              {isHu ? "Vázlat-előnézet" : "Draft preview"}
-            </span>
-          ) : (
-            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-              {isHu ? "Publikált" : "Published"}
-            </span>
-          )}
         </div>
 
         {agg && (
-          <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 p-6 pt-5 md:grid-cols-4">
             <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
-            <KpiTile label={isHu ? "Kitöltöttség" : "Completion"} value={`${agg.completionPct}%`} />
+            <KpiTile
+              label={isHu ? "Kitöltöttség" : "Completion"}
+              value={`${agg.completionPct}%`}
+              progressPct={agg.completionPct}
+            />
             {agg.evidence && (
               <KpiTile
                 label={isHu ? "Adatminőség" : "Data quality"}
@@ -217,9 +385,12 @@ export function TeamReportView({
       {/* Csapatprofil: radar + szórás-sávok */}
       {agg?.dimensionAverages && (
         <section>
-          <DashboardSectionHeader
+          <SectionHead
+            no={secNo()}
             label={isHu ? "Aggregált csapatprofil" : "Aggregate team profile"}
-            className="mb-4"
+            subtitle={isHu
+              ? "A csapat együttes karaktere — átlagok és a belső sokféleség."
+              : "The team's collective character — averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
             {agg.pattern && (
@@ -288,9 +459,12 @@ export function TeamReportView({
       {/* Szerep-lefedettség: 3×3 mátrix */}
       {agg?.roleDistribution && (
         <section>
-          <DashboardSectionHeader
+          <SectionHead
+            no={secNo()}
             label={isHu ? "Szerep-lefedettség" : "Role coverage"}
-            className="mb-4"
+            subtitle={isHu
+              ? "Mely szerepek vannak lefedve, és hol vannak valódi hiányok."
+              : "Which roles are covered and where the true gaps are."}
           />
           <DashboardPanel className="p-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -450,9 +624,12 @@ export function TeamReportView({
       {/* Együttműködési dinamika: stacked bar */}
       {agg?.dynamics && dynamicsTotal > 0 && (
         <section>
-          <DashboardSectionHeader
+          <SectionHead
+            no={secNo()}
             label={isHu ? "Együttműködési dinamika" : "Collaboration dynamics"}
-            className="mb-4"
+            subtitle={isHu
+              ? "Mennyire hasonlóan dolgoznak a tagpárok — összkép, egyéni párok nélkül."
+              : "How similarly member pairs work — an overview, without individual pairs."}
           />
           <DashboardPanel className="p-6">
             <p className="mb-3 text-sm text-ink-body">
@@ -461,14 +638,14 @@ export function TeamReportView({
                 : `A working-style comparison of all ${dynamicsTotal} member pairs — how similarly or differently two people work.`}
             </p>
 
-            <div className="flex h-4 w-full gap-[2px] overflow-hidden rounded-full">
+            <div className="flex h-5 w-full gap-[2px] overflow-hidden rounded-full">
               {DYNAMICS_SEGMENTS.map((segment) => {
                 const count = agg.dynamics![segment.key];
                 if (count === 0) return null;
                 return (
                   <div
                     key={segment.key}
-                    className="h-full rounded-[3px]"
+                    className="h-full rounded-[4px]"
                     style={{
                       width: `${(count / dynamicsTotal) * 100}%`,
                       backgroundColor: segment.color,
@@ -479,30 +656,40 @@ export function TeamReportView({
             </div>
 
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {DYNAMICS_SEGMENTS.map((segment) => (
-                <span
-                  key={segment.key}
-                  className={`rounded-full px-2.5 py-1 text-xs font-medium ${segment.chip}`}
-                >
-                  {isHu ? segment.hu : segment.en} · {agg.dynamics![segment.key]}
-                </span>
-              ))}
+              {DYNAMICS_SEGMENTS.map((segment) => {
+                const count = agg.dynamics![segment.key];
+                const pct = Math.round((count / dynamicsTotal) * 100);
+                return (
+                  <span
+                    key={segment.key}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${segment.chip}`}
+                  >
+                    {isHu ? segment.hu : segment.en} · {count} ({pct}%)
+                  </span>
+                );
+              })}
             </div>
 
-            <ul className="mt-4 flex flex-col gap-2 border-t border-sand pt-4">
-              {DYNAMICS_SEGMENTS.map((segment) => (
-                <li key={segment.key} className="flex items-start gap-2 text-xs text-ink-body">
-                  <span
-                    className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: segment.color }}
-                  />
-                  <span>
-                    <span className="font-semibold text-ink">{isHu ? segment.hu : segment.en}:</span>{" "}
-                    {isHu ? segment.explainHu : segment.explainEn}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {/* A kategória-magyarázó alapból csukva — a sűrűség csökkentésére. */}
+            <details className="mt-4 rounded-[12px] border border-sand bg-cream/40">
+              <summary className="cursor-pointer select-none px-4 py-2.5 text-xs font-semibold text-ink-body transition-colors hover:text-ink">
+                {isHu ? "Mit jelentenek a kategóriák?" : "What do the categories mean?"}
+              </summary>
+              <ul className="flex flex-col gap-2 px-4 pb-3.5">
+                {DYNAMICS_SEGMENTS.map((segment) => (
+                  <li key={segment.key} className="flex items-start gap-2 text-xs text-ink-body">
+                    <span
+                      className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: segment.color }}
+                    />
+                    <span>
+                      <span className="font-semibold text-ink">{isHu ? segment.hu : segment.en}:</span>{" "}
+                      {isHu ? segment.explainHu : segment.explainEn}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </details>
 
             <div className="mt-4 rounded-[12px] border border-sand bg-cream/60 p-3.5">
               <p className="text-xs leading-relaxed text-ink-body">
@@ -543,22 +730,149 @@ export function TeamReportView({
             </div>
 
             <p className="mt-2 text-[10px] text-muted">
-              {agg.dynamics.source === "observer"
-                ? isHu ? "Kollégai (observer) visszajelzésen alapul." : "Based on observer feedback."
+              {agg.dynamics.source === "trust_round"
+                ? isHu ? "Mért bizalmi körön (360°) alapul." : "Based on a measured trust round (360°)."
                 : agg.dynamics.source === "mixed"
-                  ? isHu ? "Részben kollégai visszajelzés, részben profil-alapú becslés." : "Partly observer feedback, partly profile-based estimate."
+                  ? isHu ? "Részben mért bizalmi kör, részben profil-alapú becslés." : "Partly a measured trust round, partly profile-based estimate."
                   : isHu ? "Profil-alapú becslés — kapcsolatpáronkénti adatok nem jelennek meg." : "Profile-based estimate — pair-level data is not shown."}
             </p>
           </DashboardPanel>
         </section>
       )}
 
+      {/* Kapcsolati háló kiemelések — hub / beágyazatlan tag a debriefhez.
+          Summary-orientált (viz-policy): névvel jelölt tagok, nem külön chart. */}
+      {agg?.trustHighlights &&
+        (agg.trustHighlights.hubs.length > 0 ||
+          agg.trustHighlights.isolated.length > 0) && (
+          <section>
+            <SectionHead
+              no={secNo()}
+              label={isHu ? "Kapcsolati háló — kiemelések" : "Relationship network — highlights"}
+              subtitle={isHu
+                ? "Ki köti össze a csapatot, és ki nincs még beágyazva."
+                : "Who connects the team, and who isn't embedded yet."}
+            />
+            <DashboardPanel className="p-6">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm text-ink-body">
+                  {isHu
+                    ? "Kik viszik a csapat kapcsolati szövetét — a tanácsadói debrief két kiemelt beszélgetőpontja."
+                    : "Who carries the team's relational fabric — two key talking points for the consultant debrief."}
+                </p>
+                {agg.trustHighlights.source === "trust_round" ? (
+                  <span className="rounded-full bg-sage/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-sage-dark">
+                    {isHu ? "mért" : "measured"}
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-amber-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-amber-700">
+                    {isHu ? "becsült" : "estimated"}
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {agg.trustHighlights.hubs.length > 0 && (
+                  <div className="rounded-[14px] border border-sage/35 bg-sage/10 p-4">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-sage-dark">
+                      {isHu
+                        ? agg.trustHighlights.hubs.length > 1
+                          ? "A csapat összekötői"
+                          : "A csapat összekötője"
+                        : agg.trustHighlights.hubs.length > 1
+                          ? "Team connectors"
+                          : "Team connector"}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {agg.trustHighlights.hubs.map((name) => (
+                        <span
+                          key={name}
+                          className="rounded-full bg-white px-2.5 py-1 text-[13px] font-semibold text-ink"
+                        >
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-ink-body">
+                      {agg.trustHighlights.source === "trust_round"
+                        ? isHu
+                          ? "A legtöbb erős, kölcsönös bizalmi kapcsolattal — rájuk támaszkodik a csapat információáramlása és összetartása."
+                          : "With the most strong, mutual trust connections — the team's information flow and cohesion rest on them."
+                        : isHu
+                          ? "A legtöbb hasonló-profilú kapcsolattal (profil-alapú becslés) — mért bizalmi kör pontosítaná a képet."
+                          : "With the most similar-profile connections (profile-based estimate) — a measured trust round would sharpen this."}
+                    </p>
+                  </div>
+                )}
+
+                {agg.trustHighlights.isolated.length > 0 && (
+                  <div className="rounded-[14px] border border-amber-200 bg-amber-50/60 p-4">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-amber-700">
+                      {isHu
+                        ? agg.trustHighlights.isolated.length > 1
+                          ? "Beágyazatlan tagok"
+                          : "Beágyazatlan tag"
+                        : agg.trustHighlights.isolated.length > 1
+                          ? "Not-yet-embedded members"
+                          : "Not-yet-embedded member"}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {agg.trustHighlights.isolated.map((name) => (
+                        <span
+                          key={name}
+                          className="rounded-full bg-white px-2.5 py-1 text-[13px] font-semibold text-ink"
+                        >
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-ink-body">
+                      {isHu
+                        ? "Több mért kapcsolatuk van, de egyetlen erős bizalmi él nélkül — érdemes megnézni, mi tartja őket a háló szélén. Nem teljesítmény-ítélet."
+                        : "They have several measured connections but no strong trust edge — worth exploring what keeps them at the network's edge. Not a performance judgment."}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <p className="mt-4 text-[10px] text-muted">
+                {agg.trustHighlights.source === "trust_round"
+                  ? isHu
+                    ? `Mért bizalmi körből${
+                        agg.trustHighlights.possiblePairCount
+                          ? `: ${agg.trustHighlights.measuredPairCount}/${agg.trustHighlights.possiblePairCount} lehetséges pár`
+                          : `: ${agg.trustHighlights.measuredPairCount} mért pár`
+                      }${
+                        agg.trustHighlights.coveragePct !== null
+                          ? ` (${agg.trustHighlights.coveragePct}% lefedettség)`
+                          : ""
+                      }. A kiemelés láthatósága a dinamika-térképpel azonos; egyéni válasz nem visszakereshető.`
+                    : `From a measured trust round${
+                        agg.trustHighlights.possiblePairCount
+                          ? `: ${agg.trustHighlights.measuredPairCount}/${agg.trustHighlights.possiblePairCount} possible pairs`
+                          : `: ${agg.trustHighlights.measuredPairCount} measured pairs`
+                      }${
+                        agg.trustHighlights.coveragePct !== null
+                          ? ` (${agg.trustHighlights.coveragePct}% coverage)`
+                          : ""
+                      }. Visibility matches the dynamics map; individual answers cannot be traced back.`
+                  : isHu
+                    ? "Profil-alapú becslés — bizalmi kör (360°) indításával mért adatra cserélhető, ami a beágyazatlan-tag felismerést is elérhetővé teszi."
+                    : "Profile-based estimate — running a 360° trust round replaces it with measured data and also unlocks not-yet-embedded member detection."}
+              </p>
+            </DashboardPanel>
+          </section>
+        )}
+
       {/* Pszichológiai biztonság — anonim pulse-aggregátum */}
       {agg?.psychSafety && (
         <section>
-          <DashboardSectionHeader
+          <SectionHead
+            no={secNo()}
             label={isHu ? "Pszichológiai biztonság" : "Psychological safety"}
-            className="mb-4"
+            subtitle={isHu
+              ? "Mennyire mernek a tagok őszintén megszólalni."
+              : "How safe members feel to speak up honestly."}
           />
           <DashboardPanel className="p-6">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -646,38 +960,47 @@ export function TeamReportView({
 
                 {/* Vezetői akciókártyák — a gyenge területek mögött tipikus
                     vezetői mintázat és ellenszere. Keret: HBR 2026/07
-                    („4 Hidden Traps of Team Dynamics"), saját adaptáció. */}
-                {leaderTrapsForWeakItems(agg.psychSafety.weakItemIds).length > 0 ? (
-                  <>
-                    <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
-                      {isHu ? "Vezetői akciókártyák" : "Leader action cards"}
-                    </p>
-                    {leaderTrapsForWeakItems(agg.psychSafety.weakItemIds).map((trap) => (
-                      <div
-                        key={trap.id}
-                        className="rounded-xl border border-sand bg-white px-4 py-3"
-                      >
-                        <p className="text-[13px] font-semibold text-ink">
-                          {isHu ? trap.title.hu : trap.title.en}
-                        </p>
-                        <p className="mt-1 text-xs leading-relaxed text-muted">
-                          {isHu ? trap.trap.hu : trap.trap.en}
-                        </p>
-                        <p className="mt-2 text-xs leading-relaxed text-ink-body">
-                          <span className="font-semibold text-ink">
-                            {isHu ? "Ellenszer: " : "Antidote: "}
-                          </span>
-                          {isHu ? trap.antidote.hu : trap.antidote.en}
+                    („4 Hidden Traps of Team Dynamics"), saját adaptáció.
+                    Alapból csukva — a sűrűség csökkentésére. */}
+                {(() => {
+                  const traps = leaderTrapsForWeakItems(agg.psychSafety!.weakItemIds);
+                  if (traps.length === 0) return null;
+                  return (
+                    <details className="mt-1 rounded-[12px] border border-sand bg-white">
+                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest text-bronze transition-colors hover:text-bronze-dark">
+                        {isHu
+                          ? `Vezetői akciókártyák (${traps.length})`
+                          : `Leader action cards (${traps.length})`}
+                      </summary>
+                      <div className="flex flex-col gap-3 px-4 pb-4">
+                        {traps.map((trap) => (
+                          <div
+                            key={trap.id}
+                            className="rounded-xl border border-sand bg-cream/40 px-4 py-3"
+                          >
+                            <p className="text-[13px] font-semibold text-ink">
+                              {isHu ? trap.title.hu : trap.title.en}
+                            </p>
+                            <p className="mt-1 text-xs leading-relaxed text-muted">
+                              {isHu ? trap.trap.hu : trap.trap.en}
+                            </p>
+                            <p className="mt-2 text-xs leading-relaxed text-ink-body">
+                              <span className="font-semibold text-ink">
+                                {isHu ? "Ellenszer: " : "Antidote: "}
+                              </span>
+                              {isHu ? trap.antidote.hu : trap.antidote.en}
+                            </p>
+                          </div>
+                        ))}
+                        <p className="text-[10px] text-muted">
+                          {isHu
+                            ? "Keret: Harvard Business Review (2026/07), a Trita saját adaptációjában."
+                            : "Framework: Harvard Business Review (2026/07), in Trita's own adaptation."}
                         </p>
                       </div>
-                    ))}
-                    <p className="text-[10px] text-muted">
-                      {isHu
-                        ? "Keret: Harvard Business Review (2026/07), a Trita saját adaptációjában."
-                        : "Framework: Harvard Business Review (2026/07), in Trita's own adaptation."}
-                    </p>
-                  </>
-                ) : null}
+                    </details>
+                  );
+                })()}
               </div>
             ) : (
               <p className="mt-5 rounded-xl bg-sage/5 px-4 py-3 text-xs leading-relaxed text-ink-body">
@@ -698,14 +1021,23 @@ export function TeamReportView({
 
       {/* Tanácsadói narratíva */}
       <section>
-        <DashboardSectionHeader
+        <SectionHead
+          no={secNo()}
           label={isHu ? "Tanácsadói értékelés" : "Consultant assessment"}
-          className="mb-4"
+          subtitle={isHu
+            ? "A tanácsadó összegzése: erősségek, kockázatok, ajánlások."
+            : "The consultant's synthesis: strengths, risks, recommendations."}
         />
         <div className="flex flex-col gap-4">
           {report.summary && (
-            <DashboardPanel className="p-6">
-              <NarrativeSection label={isHu ? "Összefoglaló" : "Summary"} text={report.summary} />
+            <DashboardPanel className="border-l-4 border-l-bronze/50 p-6">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
+                {isHu ? "Összefoglaló" : "Summary"}
+              </p>
+              {/* Lead-tipográfia: az összefoglaló a riport „első bekezdése". */}
+              <p className="whitespace-pre-wrap font-fraunces text-[16px] leading-relaxed text-ink">
+                {report.summary}
+              </p>
             </DashboardPanel>
           )}
           {(report.strengths || report.risks) && (
@@ -718,9 +1050,7 @@ export function TeamReportView({
                     </svg>
                     {isHu ? "Erősségek" : "Strengths"}
                   </p>
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-body">
-                    {report.strengths}
-                  </p>
+                  <NarrativeRich text={report.strengths} tone="emerald" card={false} />
                 </DashboardPanel>
               )}
               {report.risks && (
@@ -731,26 +1061,27 @@ export function TeamReportView({
                     </svg>
                     {isHu ? "Kockázatok" : "Risks"}
                   </p>
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-body">
-                    {report.risks}
-                  </p>
+                  <NarrativeRich text={report.risks} tone="amber" card={false} />
                 </DashboardPanel>
               )}
             </div>
           )}
           {(report.recommendations || report.interviewFindings || report.leadershipGuide || report.summary) ? (
-            <DashboardPanel className="flex flex-col gap-5 p-6">
-              <NarrativeSection
+            <DashboardPanel className="flex flex-col gap-6 p-6">
+              <NarrativeRich
                 label={isHu ? "Ajánlások" : "Recommendations"}
                 text={report.recommendations}
+                tone="sage"
               />
-              <NarrativeSection
+              <NarrativeRich
                 label={isHu ? "Interjúk tanulságai" : "Interview insights"}
                 text={report.interviewFindings}
+                tone="bronze"
               />
-              <NarrativeSection
+              <NarrativeRich
                 label={isHu ? "Hogyan vezesd ezt a csapatot" : "How to lead this team"}
                 text={report.leadershipGuide}
+                tone="sky"
               />
               {!report.recommendations && !report.interviewFindings && !report.leadershipGuide && (
                 <p className="text-sm text-muted">
@@ -771,19 +1102,24 @@ export function TeamReportView({
         </div>
       </section>
 
-      {/* Akcióterv: 30/60/90 napos idővonal */}
+      {/* Akcióterv: 30/60/90 napos idővonal — oszloponként saját akcentus */}
       {report.actionItems && report.actionItems.length > 0 && (
         <section>
-          <DashboardSectionHeader
+          <SectionHead
+            no={secNo()}
             label={isHu ? "Akcióterv" : "Action plan"}
-            className="mb-4"
+            subtitle={isHu
+              ? "Konkrét lépések 30 / 60 / 90 napos bontásban."
+              : "Concrete steps across 30 / 60 / 90 days."}
           />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {(["30", "60", "90"] as const).map((timeframe) => {
               const items = report.actionItems!.filter((item) => item.timeframe === timeframe);
+              const tone = TIMEFRAME_TONES[timeframe];
               return (
-                <DashboardPanel key={timeframe} className="p-5">
-                  <p className="mb-3 border-b border-sand pb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
+                <DashboardPanel key={timeframe} className={`border-l-4 p-5 ${tone.edge}`}>
+                  <p className={`mb-3 flex items-center gap-2 border-b border-sand pb-2 font-mono text-[10px] uppercase tracking-widest ${tone.text}`}>
+                    <span className={`h-2 w-2 rounded-full ${tone.dot}`} />
                     {timeframe} {isHu ? "napon belül" : "days"}
                   </p>
                   {items.length === 0 ? (
@@ -830,8 +1166,8 @@ export function TeamReportView({
             </span>
             <span className="text-xs text-ink-body">
               {isHu
-                ? `${agg.completedCount}/${agg.memberCount} kitöltött felmérés · ${agg.evidence.observerEdgeCount} mért és ${agg.evidence.estimatedEdgeCount} becsült kapcsolati adat`
-                : `${agg.completedCount}/${agg.memberCount} completed assessments · ${agg.evidence.observerEdgeCount} measured and ${agg.evidence.estimatedEdgeCount} estimated relationship data points`}
+                ? `${agg.completedCount}/${agg.memberCount} kitöltött felmérés · ${agg.evidence.measuredEdgeCount ?? 0} mért és ${agg.evidence.estimatedEdgeCount} becsült kapcsolati adat`
+                : `${agg.completedCount}/${agg.memberCount} completed assessments · ${agg.evidence.measuredEdgeCount ?? 0} measured and ${agg.evidence.estimatedEdgeCount} estimated relationship data points`}
             </span>
           </div>
           <p className="mt-2 text-[10px] text-muted">

@@ -22,6 +22,7 @@ import {
 } from "@/lib/psych-safety";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
+import { buildTeamTrustNetwork } from "@/lib/trust-network.server";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -50,7 +51,13 @@ export interface TeamReportAggregates {
   /** Mi mért, mi becsült — a riport adatalapja */
   evidence: {
     quality: TeamIntelligenceEvidenceQuality;
-    observerEdgeCount: number;
+    /**
+     * MÉRT kapcsolati élek száma — a mért bizalmi kör (`trust_round`), ill.
+     * a régi observer-forrás. Korábban `observerEdgeCount` néven csak az
+     * `"observer"` forrást számolta, de a dinamika-élek ma `trust_round` /
+     * `profile_estimate` forrásúak, ezért a mért kör adata is 0-nak látszott.
+     */
+    measuredEdgeCount: number;
     estimatedEdgeCount: number;
   } | null;
   /** Kapcsolati dinamika összképe — kizárólag aggregált, egyéni párok nélkül */
@@ -60,7 +67,31 @@ export interface TeamReportAggregates {
     frictionCount: number;
     /** A súrlódást leginkább hajtó dimenziók (magas szórás × friction-súly), max 2 */
     topFrictionDims: string[];
-    source: "observer" | "profile_estimate" | "mixed";
+    /** `trust_round` = mért bizalmi kör, `profile_estimate` = becslés, `mixed` = vegyes. */
+    source: "trust_round" | "profile_estimate" | "mixed";
+  } | null;
+  /**
+   * Kapcsolati háló kiemelések a tanácsadói debriefhez — ki a csapat
+   * összekötője (hub) és ki nincs még beágyazva (beágyazatlan tag).
+   * Elsődlegesen MÉRT trust-kör adatból (trust-network hub/isolated logika),
+   * mért adat híján profil-alapú becslésből (csak hub). Névvel szerepel, mert
+   * a debrief tárgya konkrét tag; a láthatóság a dinamika-térképpel azonos
+   * (vezető/tanácsadó). Opcionális: régebbi pillanatképekben nem létezik; null,
+   * ha nincs kiemelhető tag. Terv: docs/product/feature-ideas.md #3.
+   */
+  trustHighlights?: {
+    /** A kiemelés adatalapja: mért bizalmi kör vagy profil-alapú becslés. */
+    source: "trust_round" | "profile_estimate";
+    /** Mért párok száma (0, ha becslésből származik a kiemelés). */
+    measuredPairCount: number;
+    /** Az összes lehetséges pár (ha ismert a taglista), különben null. */
+    possiblePairCount: number | null;
+    /** Lefedettség: mért / lehetséges pár, 0–100 — null becslésnél. */
+    coveragePct: number | null;
+    /** A csapat összekötő(i) — megjelenítendő névvel. */
+    hubs: string[];
+    /** Beágyazatlan tag(ok) — megjelenítendő névvel; becslésnél mindig üres. */
+    isolated: string[];
   } | null;
   /**
    * Pszichológiai biztonság pulse — a legutóbbi kör anonim aggregátuma.
@@ -200,14 +231,15 @@ export async function buildTeamReportAggregates(
       )
     : null;
 
-  // Adatalap: mi mért (observer), mi becsült (profil-alapú).
-  const observerEdgeCount = teamData.dynamicsEdges.filter(
-    (e) => e.source === "observer",
+  // Adatalap: mi MÉRT, mi becsült. Mért = mért bizalmi kör (`trust_round`)
+  // vagy a régi observer-forrás; becsült = profil-alapú (`profile_estimate`).
+  const measuredEdgeCount = teamData.dynamicsEdges.filter(
+    (e) => e.source === "trust_round" || e.source === "observer",
   ).length;
-  const estimatedEdgeCount = teamData.dynamicsEdges.length - observerEdgeCount;
+  const estimatedEdgeCount = teamData.dynamicsEdges.length - measuredEdgeCount;
   const evidence = {
     quality: resolveTeamIntelligenceQuality(completedCount, memberCount),
-    observerEdgeCount,
+    measuredEdgeCount,
     estimatedEdgeCount,
   };
 
@@ -233,12 +265,80 @@ export async function buildTeamReportAggregates(
       frictionCount: counts.friction,
       topFrictionDims,
       source:
-        observerEdgeCount === 0
+        measuredEdgeCount === 0
           ? "profile_estimate"
           : estimatedEdgeCount === 0
-            ? "observer"
+            ? "trust_round"
             : "mixed",
     };
+  }
+
+  // Kapcsolati háló kiemelések — ki a hub, ki a beágyazatlan tag.
+  // Elsődlegesen MÉRT trust-kör alapján (a trust-network már számol
+  // hub/isolated-et a küszöb-szabályokkal); mért adat híján profil-alapú
+  // becslés hub (aligned-fok ≥ 3), beágyazatlan-tag nélkül — az csak mért
+  // adatból értelmezhető megbízhatóan. A láthatóság a dinamika-térképpel
+  // azonos: a debrifen névvel kell. Terv: feature-ideas.md #3.
+  let trustHighlights: TeamReportAggregates["trustHighlights"] = null;
+  {
+    const nameByUserId = new Map(
+      teamData.members.map((m) => [m.userId, m.displayName]),
+    );
+    const namesFor = (ids: string[]): string[] =>
+      ids
+        .map((id) => nameByUserId.get(id))
+        .filter((n): n is string => Boolean(n));
+
+    const trust = await buildTeamTrustNetwork(teamId).catch(() => null);
+    if (trust && trust.measuredPairCount > 0) {
+      const hubs = namesFor(trust.hubUserIds);
+      const isolated = namesFor(trust.isolatedUserIds);
+      if (hubs.length > 0 || isolated.length > 0) {
+        trustHighlights = {
+          source: "trust_round",
+          measuredPairCount: trust.measuredPairCount,
+          possiblePairCount: trust.possiblePairCount,
+          coveragePct:
+            trust.coverage !== null ? Math.round(trust.coverage * 100) : null,
+          hubs,
+          isolated,
+        };
+      }
+    } else if (hasMinimum && teamData.dynamicsEdges.length > 0) {
+      // Profil-alapú becslés fallback: a legtöbb "aligned" (hasonló profilú)
+      // kapcsolattal rendelkező tag(ok) — a dinamika-térkép hub-definíciójával
+      // összhangban (aligned-fok ≥ 3). Beágyazatlan-tag itt nincs.
+      const alignedDegree = new Map<string, number>();
+      for (const edge of teamData.dynamicsEdges) {
+        if (edge.type !== "aligned") continue;
+        alignedDegree.set(
+          edge.fromUserId,
+          (alignedDegree.get(edge.fromUserId) ?? 0) + 1,
+        );
+        alignedDegree.set(
+          edge.toUserId,
+          (alignedDegree.get(edge.toUserId) ?? 0) + 1,
+        );
+      }
+      const maxDegree = Math.max(0, ...alignedDegree.values());
+      if (maxDegree >= 3) {
+        const hubs = namesFor(
+          [...alignedDegree.entries()]
+            .filter(([, degree]) => degree === maxDegree)
+            .map(([id]) => id),
+        );
+        if (hubs.length > 0) {
+          trustHighlights = {
+            source: "profile_estimate",
+            measuredPairCount: 0,
+            possiblePairCount: trust?.possiblePairCount ?? null,
+            coveragePct: null,
+            hubs,
+            isolated: [],
+          };
+        }
+      }
+    }
   }
 
   // Pszichológiai biztonság: a legutóbbi kör anonim aggregátuma.
@@ -334,6 +434,7 @@ export async function buildTeamReportAggregates(
     roleGaps,
     evidence,
     dynamics,
+    trustHighlights,
     psychSafety,
     peerRoles,
   };
@@ -391,7 +492,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     .map((role) => TEAM_ROLES[role as keyof typeof TEAM_ROLES]?.hu ?? role)
     .join(", ");
   const evidenceWeak = agg.evidence ? agg.evidence.quality !== "sufficient" : false;
-  const observerMissing = agg.evidence ? agg.evidence.observerEdgeCount === 0 : true;
+  const measuredMissing = agg.evidence ? agg.evidence.measuredEdgeCount === 0 : true;
 
   // Pszich. biztonság: gyenge területek a narratívához és az akciólistához.
   const ps = agg.psychSafety ?? null;
@@ -444,8 +545,8 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     gapRoleNames
       ? `A hiányzó szerepek (${gapRoleNames}) tudatos pótlása: felelős kijelölése a csapaton belül vagy külső támogatás bevonása.`
       : "",
-    observerMissing
-      ? "Kollégai (observer) visszajelzés-kör indítása — a jelenlegi kép részben profil-alapú becslésen áll, a mért adat megerősíti vagy árnyalja."
+    measuredMissing
+      ? "Mért bizalmi kör (360°) indítása — a jelenlegi kapcsolati kép profil-alapú becslésen áll, a mért adat megerősíti vagy árnyalja."
       : "",
     alignedShare >= 0.5
       ? "Külső visszajelzés tudatos behozása (más csapat, ügyfél, mentor) a közös vakfoltok ellensúlyozására."
@@ -499,12 +600,12 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
           },
         ]
       : []),
-    ...(evidenceWeak || observerMissing
+    ...(evidenceWeak || measuredMissing
       ? [
           {
-            title: "Kollégai visszajelzés-kör",
+            title: "Mért bizalmi kör",
             description:
-              "Observer-kör indítása a csapatban — a becsült elemek megerősítése mért adattal, a következő riport pontosabb képet ad.",
+              "Bizalmi kör (360°) indítása a csapatban — a becsült kapcsolati elemek megerősítése mért adattal, a következő riport pontosabb képet ad.",
             timeframe: "60" as const,
           },
         ]
