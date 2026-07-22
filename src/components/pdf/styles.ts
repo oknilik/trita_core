@@ -37,7 +37,7 @@ export const s = StyleSheet.create({
   page: {
     backgroundColor: colors.canvas,
     fontFamily: "DM Sans",
-    fontSize: 8,
+    fontSize: 9.5,
     color: colors.ink,
     position: "relative",
     display: "flex",
@@ -119,7 +119,7 @@ export const s = StyleSheet.create({
     padding: "6 32",
     flexDirection: "row",
     justifyContent: "space-between",
-    fontSize: 5,
+    fontSize: 6,
     color: colors.ink300,
     borderTop: `0.5 solid ${colors.sand}`,
   },

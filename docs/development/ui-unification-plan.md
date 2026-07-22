@@ -89,3 +89,10 @@ Emoji ki a CTA-kból (📤→share-ikon, 📄→doc-ikon); a szórt inline SVG-k
   hero aside-ban, publikálás-rituálé a TeamReportEditorban. A radar-chart
   draw-in már korábban is élt (framer-motion scale+stagger) — változatlan.
   Mind reduced-motion-tisztelettel.
+- **Follow-up kör** ✅ (2026-07-22): PDF base 8→9.5pt + archetípus-borítóoldal
+  (sötét-sage SVG-gradiens hero, számozáson kívül); email-fejléc a sötét-sage
+  hero-nyelven (fehér cím, bronz szeriff-logó); közös ikon-készlet
+  (ui/icons.tsx — 20-as viewBox, 1.8 stroke) ProfileHero-adopcióval;
+  tabular-nums a numerikus gócokon (AdminStatCard, DimensionStrip, org hero).
+  Megjegyzés: a PDF belső 5–7pt explicit méretei külön, render-verifikált
+  kört igényelnek; „eredmény kész" email nem létezik (chips-terv okafogyott).

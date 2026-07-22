@@ -289,8 +289,8 @@ function buildEmailLayout(params: {
       .em-body      { background-color: #ffffff !important; }
       .em-body p,
       .em-body li   { color: #4a4a5e !important; }
-      .em-body h1,
-      .em-heading   { color: #1a1a2e !important; }
+      .em-body h1   { color: #1a1a2e !important; }
+      .em-heading   { color: #ffffff !important; }
       .em-muted     { color: #6b5e52 !important; }
       .em-foot      { background-color: ${FOOTER_BG} !important; background-image: ${FOOTER_GRADIENT} !important; }
       .em-code-box  { background-color: #f0ede6 !important; }
@@ -309,11 +309,11 @@ function buildEmailLayout(params: {
           <tr>
             <td class="em-head" bgcolor="${HEADER_BG}"
                 style="background-color:${HEADER_BG};background-image:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
-              <div style="padding:24px 32px 10px;text-align:center">
+              <div style="padding:26px 32px 12px;text-align:center">
                 <div style="display:inline-block;margin-bottom:10px">
-                  <span style="font-size:28px;font-weight:800;color:#c17f4a;letter-spacing:-0.03em;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">trita</span>
+                  <span style="font-size:28px;font-weight:800;color:#e8a96a;letter-spacing:-0.03em;font-family:Georgia,'Times New Roman',serif">trita</span>
                 </div>
-                ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#1a1a2e;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
+                ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#ffffff;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
               </div>
               <!--[if !mso]><!-->
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"

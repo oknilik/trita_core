@@ -36,7 +36,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
                 {dim.shortName}
               </p>
               <p
-                className={`mb-1.5 font-fraunces text-[22px] leading-none ${colors.text}`}
+                className={`mb-1.5 font-fraunces text-[22px] leading-none tabular-nums ${colors.text}`}
               >
                 <CountUp value={dim.value} delay={i * STAGGER_MS} />
               </p>

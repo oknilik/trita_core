@@ -44,12 +44,16 @@ export type ColorKey = keyof typeof COLORS;
 // Az email inline-style HTML — CSS-var kliens-támogatás megbízhatatlan, ezért
 // hexben fordul, de EBBŐL a modulból (nem kézzel szórt konstansokból).
 export const EMAIL_COLORS = {
-  headerBg: COLORS.cream,
+  // Fejléc: a sötét-sage hero-nyelv (az élő eredmény-oldal / share-kártya /
+  // PDF-borító arca) — a termék ismerős képe a postaládában (F3 follow-up).
+  headerBg: COLORS.sageDeep,
   footerBg: COLORS.warmMid,
   ctaBg: COLORS.sage,
-  headerGradient: `linear-gradient(135deg,#fde8dc 0%,${COLORS.cream} 60%,${COLORS.warmMid} 100%)`,
+  headerGradient: `linear-gradient(135deg,#2a5244 0%,${COLORS.sageDark} 55%,#152b24 100%)`,
   footerGradient: `linear-gradient(135deg,${COLORS.warmMid} 0%,${COLORS.cream} 60%,#fde8dc 100%)`,
   ctaGradient: `linear-gradient(135deg,${COLORS.sage} 0%,${COLORS.sageDark} 100%)`,
+  /** Fejléc-cím a sötét heron */
+  headerHeading: "#ffffff",
   heading: COLORS.ink,
   body: COLORS.inkBody,
 } as const;

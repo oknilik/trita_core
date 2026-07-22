@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { Button } from "@/components/ui/primitives/Button";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type AccessLevel = "start" | "plus";
@@ -191,10 +192,7 @@ export function ProfileHero({
             className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-white/[0.55] hover:bg-white/[0.12] hover:text-white/70"
           >
             <span className="inline-flex items-center gap-2">
-              <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10 12V3.5M6.5 6.5 10 3l3.5 3.5" />
-                <path d="M4 10.5v5A1.5 1.5 0 0 0 5.5 17h9a1.5 1.5 0 0 0 1.5-1.5v-5" />
-              </svg>
+              <ShareIcon />
               {shareLoading ? "..." : t("results.heroShare", locale)}
             </span>
           </Button>
@@ -226,10 +224,7 @@ export function ProfileHero({
               </span>
             ) : (
               <span className="inline-flex items-center gap-2">
-                <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11.5 2.5H6A1.5 1.5 0 0 0 4.5 4v12A1.5 1.5 0 0 0 6 17.5h8a1.5 1.5 0 0 0 1.5-1.5V6.5l-4-4Z" />
-                  <path d="M11.5 2.5v4h4M7.5 11h5M7.5 14h5" />
-                </svg>
+                <DocumentIcon />
                 {t("results.heroPdf", locale)}
               </span>
             )}

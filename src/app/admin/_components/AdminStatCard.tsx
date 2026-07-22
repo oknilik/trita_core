@@ -14,7 +14,7 @@ export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardPr
       <p className="font-mono text-xs uppercase tracking-widest text-muted">
         {title}
       </p>
-      <p className="mt-3 text-3xl font-bold text-ink">{value}</p>
+      <p className="mt-3 text-3xl font-bold tabular-nums text-ink">{value}</p>
       {subtitle && (
         <p className="mt-1.5 text-xs text-ink-body">{subtitle}</p>
       )}

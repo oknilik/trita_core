@@ -1,5 +1,6 @@
 import { Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
+import { CoverPage } from "./pages/CoverPage";
 import { StartPage } from "./pages/StartPage";
 import { PlusFacetsPage } from "./pages/PlusFacetsPage";
 import { PlusWorkStylePage } from "./pages/PlusWorkStylePage";
@@ -69,6 +70,8 @@ function TritaDocument({ data }: { data: PdfData }) {
 
   return (
     <Document>
+      {/* Archetípus-borító — számozáson kívül, a riport „arca" */}
+      <CoverPage data={data} />
       <StartPage data={data} pageNum={1} totalPages={totalPages} locale={locale} />
       {hasPlus && <PlusFacetsPage data={data} pageNum={2} totalPages={totalPages} locale={locale} />}
       {hasPlus && <PlusWorkStylePage data={data} pageNum={3} totalPages={totalPages} locale={locale} />}

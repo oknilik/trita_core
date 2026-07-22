@@ -445,15 +445,15 @@ export default async function OrgDetailPage({
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.membersLabel", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.memberCount}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{pageData.memberCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.teamsLabel", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.teamCount}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{pageData.teamCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.activeLabel", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.activeCampaignCount}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{pageData.activeCampaignCount}</p>
               </div>
             </div>
 
