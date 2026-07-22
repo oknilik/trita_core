@@ -102,7 +102,7 @@ function AccordionItem({
           >
             <div className="border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-[18px] pb-5">
               {/* 1. Mit jelent ez rólad? */}
-              <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                 {t("content.accPersonal", locale)}
               </p>
               <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
@@ -113,7 +113,7 @@ function AccordionItem({
               {!showUpsell && description && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
-                  <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+                  <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accWorkplace", locale)}
                   </p>
                   <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
@@ -126,7 +126,7 @@ function AccordionItem({
               {hasFacetData && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
-                  <p className="mb-2 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+                  <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accFacetDetail", locale)}
                   </p>
                   <div className="rounded-lg bg-white/60 p-3">

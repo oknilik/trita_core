@@ -42,7 +42,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             {tab.badge !== undefined && tab.badge !== null && (
               <span
                 className={[
-                  "rounded-full px-2 py-0.5 text-[9px] font-semibold leading-none",
+                  "rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none",
                   isActive
                     ? "bg-white text-sage-dark shadow-[0_1px_2px_rgba(26,26,46,0.06)]"
                     : "bg-warm text-bronze-dark",

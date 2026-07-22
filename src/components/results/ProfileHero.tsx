@@ -77,7 +77,7 @@ export function ProfileHero({
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
         SELF_PAYWALL_ENABLED ? (
-          <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+          <p className="text-[10px] uppercase tracking-[2px] text-white/[0.28]">
             {t("results.heroEyebrow", locale)}
           </p>
         ) : undefined
@@ -85,14 +85,14 @@ export function ProfileHero({
       badge={
         SELF_PAYWALL_ENABLED ? (
           <span
-            className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+            className="rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
             style={{ backgroundColor: level.bg, color: level.color }}
           >
             {level.label}
           </span>
         ) : (
           <span
-            className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+            className="rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
             style={{
               backgroundColor: "rgba(255,255,255,0.08)",
               color: "rgba(255,255,255,0.45)",
@@ -127,13 +127,13 @@ export function ProfileHero({
               {personalityType}
             </span>
             {percentile ? (
-              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[9px] text-white/[0.45]">
+              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[10px] text-white/[0.45]">
                 {percentile}
               </span>
             ) : null}
           </div>
           {percentile ? (
-            <p className="mt-1 text-right text-[9px] text-white/[0.28]">
+            <p className="mt-1 text-right text-[10px] text-white/[0.28]">
               {t("results.percentileNote", locale)}
             </p>
           ) : null}
@@ -147,7 +147,7 @@ export function ProfileHero({
             <div className="flex flex-wrap items-center gap-2">
               {topDimensions.length > 0 ? (
                 <>
-                  <span className="text-[9px] uppercase tracking-wide text-white/[0.25]">
+                  <span className="text-[10px] uppercase tracking-wide text-white/[0.25]">
                     {t("content.heroTopDims", locale)}:
                   </span>
                   {topDimensions.map((d) => (
@@ -163,7 +163,7 @@ export function ProfileHero({
               ) : null}
               {watchDimensions.length > 0 ? (
                 <>
-                  <span className="ml-2 text-[9px] uppercase tracking-wide text-white/[0.25]">
+                  <span className="ml-2 text-[10px] uppercase tracking-wide text-white/[0.25]">
                     {t("content.heroWatchDims", locale)}:
                   </span>
                   {watchDimensions.map((d) => (
@@ -190,7 +190,13 @@ export function ProfileHero({
             variant="ghost"
             className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-white/[0.55] hover:bg-white/[0.12] hover:text-white/70"
           >
-            📤 {shareLoading ? "..." : t("results.heroShare", locale)}
+            <span className="inline-flex items-center gap-2">
+              <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 12V3.5M6.5 6.5 10 3l3.5 3.5" />
+                <path d="M4 10.5v5A1.5 1.5 0 0 0 5.5 17h9a1.5 1.5 0 0 0 1.5-1.5v-5" />
+              </svg>
+              {shareLoading ? "..." : t("results.heroShare", locale)}
+            </span>
           </Button>
           <Button
             type="button"
@@ -212,14 +218,20 @@ export function ProfileHero({
               <span className="inline-flex items-center gap-2">
                 <span
                   aria-hidden
-                  className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-400 text-[9px] font-bold leading-none text-white"
+                  className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-400 text-[10px] font-bold leading-none text-white"
                 >
                   ✓
                 </span>
                 {t("results.heroPdf", locale)}
               </span>
             ) : (
-              <>📄 {t("results.heroPdf", locale)}</>
+              <span className="inline-flex items-center gap-2">
+                <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11.5 2.5H6A1.5 1.5 0 0 0 4.5 4v12A1.5 1.5 0 0 0 6 17.5h8a1.5 1.5 0 0 0 1.5-1.5V6.5l-4-4Z" />
+                  <path d="M11.5 2.5v4h4M7.5 11h5M7.5 14h5" />
+                </svg>
+                {t("results.heroPdf", locale)}
+              </span>
             )}
           </Button>
         </div>

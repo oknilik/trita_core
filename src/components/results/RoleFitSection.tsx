@@ -82,7 +82,7 @@ export function RoleFitSection({
               style={{ borderLeft: `4px solid ${tier.borderColor}` }}
             >
               <p
-                className={`mb-1 text-[9px] font-bold uppercase tracking-wide ${tier.labelColor}`}
+                className={`mb-1 text-[10px] font-bold uppercase tracking-wide ${tier.labelColor}`}
               >
                 {t(tier.i18nKey, locale)}
               </p>

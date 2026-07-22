@@ -120,7 +120,7 @@ function CandidateRow({
                   }}
                 />
               </div>
-              <span className="shrink-0 font-mono text-[9px] text-muted">
+              <span className="shrink-0 font-mono text-[10px] text-muted">
                 {invite.draftAnsweredCount}/{invite.totalQuestions}
               </span>
             </div>
@@ -287,12 +287,12 @@ export function HiringDashboard({
             </div>
 
             <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.08] p-4 lg:block">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/60">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/60">
                 Live snapshot
               </p>
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-lg bg-white/10 px-2.5 py-2">
-                  <p className="text-[9px] uppercase tracking-[0.12em] text-white/50">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-white/50">
                     {t("hiring.sectionInProgress", locale)}
                   </p>
                   <p className="mt-1 font-fraunces text-[20px] leading-none text-white">
@@ -300,7 +300,7 @@ export function HiringDashboard({
                   </p>
                 </div>
                 <div className="rounded-lg bg-white/10 px-2.5 py-2">
-                  <p className="text-[9px] uppercase tracking-[0.12em] text-white/50">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-white/50">
                     {t("hiring.sectionSent", locale)}
                   </p>
                   <p className="mt-1 font-fraunces text-[20px] leading-none text-white">
@@ -308,7 +308,7 @@ export function HiringDashboard({
                   </p>
                 </div>
                 <div className="rounded-lg bg-white/10 px-2.5 py-2">
-                  <p className="text-[9px] uppercase tracking-[0.12em] text-white/50">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-white/50">
                     {t("hiring.sectionCompleted", locale)}
                   </p>
                   <p className="mt-1 font-fraunces text-[20px] leading-none text-white">
@@ -424,7 +424,7 @@ export function HiringDashboard({
               className="absolute left-0 right-0 top-0 h-[3px]"
               style={{ background: s.color }}
             />
-            <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               {s.label}
             </p>
             <p className="mt-1 font-fraunces text-[30px] leading-none text-ink">
@@ -440,7 +440,7 @@ export function HiringDashboard({
         <section className="rounded-2xl border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.03)] sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-widest text-bronze">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
                 {`${t("hiring.sectionInProgress", locale)} · ${inProgressInvites.length} ${inProgressInvites.length !== 1 ? t("hiring.candidatesSuffix", locale) : t("hiring.candidateSuffix", locale)}`}
               </p>
               <p className="mt-1 text-[12px] text-ink-body">
@@ -472,7 +472,7 @@ export function HiringDashboard({
         <section className="rounded-2xl border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.03)] sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
                 {`${t("hiring.sectionSent", locale)} · ${sentInvites.length} ${sentInvites.length !== 1 ? t("hiring.candidatesSuffix", locale) : t("hiring.candidateSuffix", locale)}`}
               </p>
               <p className="mt-1 text-[12px] text-ink-body">
@@ -504,7 +504,7 @@ export function HiringDashboard({
         <section className="rounded-2xl border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.03)] sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
                 {`${t("hiring.sectionCompleted", locale)} · ${completed.length} ${completed.length !== 1 ? t("hiring.candidatesSuffix", locale) : t("hiring.candidateSuffix", locale)}`}
               </p>
               <p className="mt-1 text-[12px] text-ink-body">

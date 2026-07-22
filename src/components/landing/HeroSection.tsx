@@ -42,7 +42,7 @@ function SelfPanel() {
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
-        <p className="text-[9px] uppercase tracking-[2px] text-white/25">
+        <p className="text-[10px] uppercase tracking-[2px] text-white/25">
           {t("landing.selfPanelEyebrow", locale)}
         </p>
         <p className="mt-1.5 font-fraunces text-[15px] text-white/40">
@@ -52,7 +52,7 @@ function SelfPanel() {
           <p className="font-fraunces text-[22px] font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
-          <span className="rounded-md bg-white/10 px-2 py-0.5 text-[9px] font-medium text-white/45">
+          <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/45">
             Top 25%
           </span>
         </div>
@@ -72,9 +72,9 @@ function SelfPanel() {
                   key={dim.name}
                   className={`px-2 py-3.5 text-center ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
                 >
-                  <p className="mb-1 truncate text-[9px] text-[var(--color-text-muted)]">{dim.name}</p>
+                  <p className="mb-1 truncate text-[10px] text-[var(--color-text-muted)]">{dim.name}</p>
                   <p className={`mb-1 font-fraunces text-[20px] leading-none ${colors.text}`}>{dim.value}</p>
-                  <span className={`inline-block rounded px-1.5 py-[2px] text-[8px] font-semibold ${colors.tagBg} ${colors.tagText}`}>
+                  <span className={`inline-block rounded px-1.5 py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}>
                     {getDimensionLabel(dim.value, locale)}
                   </span>
                 </div>
@@ -85,7 +85,7 @@ function SelfPanel() {
 
         {/* Erősség / figyelendő chipek */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-[9px] uppercase tracking-wide text-[var(--color-text-muted)]">
+          <span className="text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
           {strengths.map((d) => (
@@ -93,7 +93,7 @@ function SelfPanel() {
               {d}
             </span>
           ))}
-          <span className="ml-1 text-[9px] uppercase tracking-wide text-[var(--color-text-muted)]">
+          <span className="ml-1 text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfWatchLabel", locale)}:
           </span>
           {watch.map((d) => (
@@ -105,14 +105,14 @@ function SelfPanel() {
 
         {/* Szerepkör-illeszkedés — a valódi RoleFitSection "erős" sora */}
         <div className="mb-1 mt-4">
-          <p className="mb-2 text-[9px] uppercase tracking-widest text-[var(--color-text-muted)]">
+          <p className="mb-2 text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
             {t("results.roleFitEyebrow", locale)}
           </p>
           <div
             className="rounded-r-[14px] bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4"
             style={{ borderLeft: "4px solid var(--color-action-primary-bg)" }}
           >
-            <p className="mb-2 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
               {t("content.roleFitStrong", locale)}
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -172,19 +172,19 @@ function TeamPanel() {
         {/* Aggregált statok */}
         <div className="mt-4 grid grid-cols-3 gap-3 border-t border-sand pt-4">
           <div>
-            <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               {t("landing.teamStatMembersLabel", locale)}
             </p>
             <p className="mt-0.5 font-fraunces text-xl text-ink">6</p>
           </div>
           <div>
-            <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               {t("landing.teamStatCompletionLabel", locale)}
             </p>
             <p className="mt-0.5 font-fraunces text-xl text-ink">100%</p>
           </div>
           <div>
-            <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
               {t("landing.teamPatternLabel", locale)}
             </p>
             <p className="mt-0.5 font-fraunces text-[15px] leading-tight text-ink">
@@ -212,7 +212,7 @@ function TeamPanel() {
 
         {/* Tanácsadói narratíva */}
         <div className="mt-4 border-t border-sand pt-4">
-          <p className="font-mono text-[9px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
             {t("landing.teamNarrativeLabel", locale)}
           </p>
           <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">

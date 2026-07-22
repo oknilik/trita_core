@@ -134,7 +134,7 @@ function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
       </div>
 
       <div>
-        <SectionEyebrow className="mb-1.5 text-[8px]">
+        <SectionEyebrow className="mb-1.5 text-[10px]">
           {t("teamComp.dominantDimsEyebrow", loc)}
         </SectionEyebrow>
         <div className="flex flex-col gap-1.5">

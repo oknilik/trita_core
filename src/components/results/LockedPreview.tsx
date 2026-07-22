@@ -19,7 +19,7 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
         <span className="flex-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
           {t("results.lockPreviewText", locale)}
         </span>
-        <span className="shrink-0 rounded-md bg-[var(--color-surface-highlight-warm)] px-2.5 py-[3px] text-[9px] font-semibold text-[var(--color-accent-primary-strong)]">
+        <span className="shrink-0 rounded-md bg-[var(--color-surface-highlight-warm)] px-2.5 py-[3px] text-[10px] font-semibold text-[var(--color-accent-primary-strong)]">
           Plus · €9
         </span>
       </div>

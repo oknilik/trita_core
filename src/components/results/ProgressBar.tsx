@@ -58,12 +58,12 @@ function PackageCard({
         .join(" ")}
     >
       {owned && (
-        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-action-primary-bg)] px-[7px] py-[2px] text-[8px] font-bold uppercase tracking-wide text-white">
+        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-action-primary-bg)] px-[7px] py-[2px] text-[10px] font-bold uppercase tracking-wide text-white">
           {t("progress.active", locale)}
         </span>
       )}
       {recommended && !owned && (
-        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-accent-primary)] px-[7px] py-[2px] text-[8px] font-bold uppercase tracking-wide text-white">
+        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-accent-primary)] px-[7px] py-[2px] text-[10px] font-bold uppercase tracking-wide text-white">
           {t("progress.recommended", locale)}
         </span>
       )}
@@ -257,7 +257,7 @@ export function ProgressBar({
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">{step.desc}</p>
                   </div>
-                  <span className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[9px] font-semibold text-[var(--color-accent-self-deep)]">
+                  <span className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--color-accent-self-deep)]">
                     {t("progress.stepDone", locale)}
                   </span>
                 </div>
@@ -269,7 +269,7 @@ export function ProgressBar({
                   {/* Divider */}
                   <div className="flex items-center gap-2.5 border-b border-[var(--color-border-soft)] px-5 py-2">
                     <div className="h-px flex-1 bg-[var(--color-border-default)]" />
-                    <span className="text-[9px] uppercase tracking-widest text-[var(--color-text-muted)]">
+                    <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
                       {t("progress.deepenDivider", locale)}
                     </span>
                     <div className="h-px flex-1 bg-[var(--color-border-default)]" />

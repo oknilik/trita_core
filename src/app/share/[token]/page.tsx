@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -60,9 +61,9 @@ export default async function SharedProfilePage({
     return (
       <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
         <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
-          <p className="mb-3 text-[10px] uppercase tracking-[2px] text-[var(--color-text-muted)]">
+          <SectionEyebrow variant="clean" tone="muted" className="mb-3">
             {t("content.shareExpiredEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mb-3 font-fraunces text-[26px] tracking-tight text-ink">
             {t("content.shareExpiredTitle", locale)}
           </h1>
@@ -150,7 +151,7 @@ export default async function SharedProfilePage({
         >
           <div className="px-9 pb-7 pt-8">
             <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
-            <p className="mb-1.5 text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+            <p className="mb-1.5 text-[10px] uppercase tracking-[2px] text-white/[0.28]">
               {t("results.sharedProfileLabel", locale)}
             </p>
             <h1 className="mb-0.5 font-fraunces text-[28px] tracking-tight text-white">
@@ -186,7 +187,7 @@ export default async function SharedProfilePage({
                     {dim.score}
                   </p>
                   <span
-                    className="inline-block rounded px-[7px] py-[2px] text-[8px] font-semibold"
+                    className="inline-block rounded px-[7px] py-[2px] text-[10px] font-semibold"
                     style={{ backgroundColor: tierBg, color: tierColor }}
                   >
                     {getDimensionLabel(dim.score, locale)}
@@ -258,7 +259,7 @@ export default async function SharedProfilePage({
                     }`}
                   >
                     <span
-                      className={`mb-2 self-start rounded px-[9px] py-[3px] text-[8px] font-bold uppercase tracking-wide ${
+                      className={`mb-2 self-start rounded px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-wide ${
                         isPrimary
                           ? "bg-[var(--color-action-primary-bg)] text-white"
                           : idx === 1

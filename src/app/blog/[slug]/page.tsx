@@ -242,7 +242,7 @@ export default async function BlogPostPage({
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className={`rounded-full px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
+                className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
               >
                 {tag}
               </span>
@@ -297,7 +297,7 @@ export default async function BlogPostPage({
                   {rel.tags.length > 0 && (
                     <div className="mb-1.5 flex flex-wrap gap-1">
                       {rel.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-[8px] uppercase tracking-wide text-[var(--color-text-muted)]">
+                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
                           {tag}
                         </span>
                       ))}

@@ -36,7 +36,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
                 {dim.value}
               </p>
               <span
-                className={`inline-block rounded px-[7px] py-[2px] text-[8px] font-semibold ${colors.tagBg} ${colors.tagText}`}
+                className={`inline-block rounded px-[7px] py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}
               >
                 {getDimensionLabel(dim.value, locale)}
               </span>

@@ -353,7 +353,7 @@ export default function ProfilePage() {
                 placeholder={t("onboarding.usernamePlaceholder", locale)} minLength={2} maxLength={20}
                 className={inputClass("username", usernameTouched, usernameValid, username)}
               />
-              <span className="text-[9px] text-[var(--color-text-muted)]">{t("onboarding.usernameHint", locale)}</span>
+              <span className="text-[10px] text-[var(--color-text-muted)]">{t("onboarding.usernameHint", locale)}</span>
             </label>
             <label className="flex flex-col gap-1 text-[11px] font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.birthYearLabel", locale)}
@@ -365,7 +365,7 @@ export default function ProfilePage() {
                 placeholder={t("onboarding.birthYearPlaceholder", locale)} min={minBirthYear} max={maxBirthYear}
                 className={`${inputClass("birthYear", birthYearTouched, birthYearValid, birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
               />
-              <span className="text-[9px] text-[var(--color-text-muted)]">{minBirthYear}–{maxBirthYear}</span>
+              <span className="text-[10px] text-[var(--color-text-muted)]">{minBirthYear}–{maxBirthYear}</span>
             </label>
           </div>
 
@@ -419,7 +419,7 @@ export default function ProfilePage() {
         {/* ═══ DANGER BOX ═══ */}
         <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
           <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
-            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-[9px] text-[#c0392b]">!</div>
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-[10px] text-[#c0392b]">!</div>
             <span className="text-xs font-semibold text-[#a93226]">{t("profile.sectionAccount", locale)}</span>
           </div>
           <div className="bg-white p-[18px]">

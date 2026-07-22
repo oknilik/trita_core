@@ -108,7 +108,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
 
       {/* Personality dimension bars */}
       <div>
-        <SectionEyebrow className="mb-2 text-[8px]">{"// személyiségprofil"}</SectionEyebrow>
+        <SectionEyebrow className="mb-2 text-[10px]">{"// személyiségprofil"}</SectionEyebrow>
         <div className="flex flex-col gap-1.5">
           {(Object.keys(DIM_COLORS) as Array<keyof typeof DIM_COLORS>).map((k) => (
             <div key={k} className="flex items-center gap-2">
@@ -139,12 +139,12 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
       {/* Delivery & growth composites */}
       <div className="flex gap-3 border-t border-sand pt-3">
         <div className="flex-1 text-center">
-          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
             {loc === "hu" ? "szállítás" : "delivery"}
           </p>
           <p className="mt-1 font-mono text-[13px] font-bold text-ink">
             {member.deliveryScore}
-            <span className="text-[9px] font-normal text-muted">/100</span>
+            <span className="text-[10px] font-normal text-muted">/100</span>
           </p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
@@ -159,12 +159,12 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
           </div>
         </div>
         <div className="flex-1 text-center">
-          <p className="font-mono text-[8px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
             {loc === "hu" ? "potenciál" : "growth"}
           </p>
           <p className="mt-1 font-mono text-[13px] font-bold text-ink">
             {member.growthScore}
-            <span className="text-[9px] font-normal text-muted">/100</span>
+            <span className="text-[10px] font-normal text-muted">/100</span>
           </p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
@@ -223,7 +223,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
         {/* Left: 3×3 grid */}
         <div className="flex-1">
           <div className="mb-1 text-center">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-muted">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
               {t("teamComp.growthPotentialAxis", loc)}
             </span>
           </div>
@@ -232,7 +232,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
             {/* Y-axis label */}
             <div className="flex w-4 items-center justify-center">
               <span
-                className="font-mono text-[8px] uppercase tracking-widest text-muted"
+                className="font-mono text-[10px] uppercase tracking-widest text-muted"
                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
               >
                 {t("teamComp.yAxisLabel", loc)}
@@ -255,7 +255,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                           className="relative min-h-[90px] rounded-xl border border-sand bg-[#f8f7f4] p-2"
                         >
                           {zoneLabel && (
-                            <span className="absolute left-2 top-2 font-mono text-[8px] leading-tight text-[#b0ada6]">
+                            <span className="absolute left-2 top-2 font-mono text-[10px] leading-tight text-[#b0ada6]">
                               {zoneLabel}
                             </span>
                           )}
@@ -267,7 +267,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                                 onClick={() => setSelected(selected === m.id ? null : m.id)}
                                 title={m.name}
                                 className={[
-                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-sage hover:ring-offset-1 cursor-pointer",
+                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-sage hover:ring-offset-1 cursor-pointer",
                                   selected === m.id
                                     ? "ring-2 ring-sage ring-offset-1"
                                     : "",
@@ -293,13 +293,13 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
               {/* X-axis labels */}
               <div className="mt-1.5 grid grid-cols-3 gap-1.5">
                 {(["xLow", "xMid", "xHigh"] as const).map((k) => (
-                  <div key={k} className="text-center font-mono text-[8px] text-muted">
+                  <div key={k} className="text-center font-mono text-[10px] text-muted">
                     {t(`teamComp.${k}`, loc)}
                   </div>
                 ))}
               </div>
               <div className="mt-0.5 text-center">
-                <span className="font-mono text-[9px] uppercase tracking-widest text-muted">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
                   {t("teamComp.skillLevelAxis", loc)}
                 </span>
               </div>
@@ -363,7 +363,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                 title={m.name}
               >
                 <span
-                  className="flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-semibold"
+                  className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold"
                   style={{ background: m.color, color: m.textColor }}
                 >
                   {m.initials}

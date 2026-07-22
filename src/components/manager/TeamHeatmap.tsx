@@ -145,7 +145,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                               {score}
                               <span className="text-[10px] font-semibold opacity-70">%</span>
                             </span>
-                            <span className={`text-[9px] font-semibold uppercase tracking-wide ${textClass} opacity-70`}>
+                            <span className={`text-[10px] font-semibold uppercase tracking-wide ${textClass} opacity-70`}>
                               {scoreZone(score, locale).label}
                             </span>
                           </>

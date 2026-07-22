@@ -31,7 +31,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)] p-[18px]">
-          <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+          <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
             {t("results.howYouWorkMain", locale)}
           </p>
           <p className="text-[13px] leading-[1.7] text-[var(--color-accent-self-deep)]">
@@ -41,7 +41,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
 
         {watchArea && (
           <div className="rounded-xl border-[1.5px] border-[var(--color-accent-primary)]/20 bg-[var(--color-surface-highlight-warm)] p-[18px]">
-            <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
+            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
               {t("results.howYouWorkWatch", locale)}
             </p>
             <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
@@ -52,7 +52,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
 
         {context && (
           <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]">
-            <p className="mb-1.5 text-[9px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
               {t("results.howYouWorkContext", locale)}
             </p>
             <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">

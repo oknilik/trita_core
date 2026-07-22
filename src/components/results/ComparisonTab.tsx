@@ -276,7 +276,7 @@ export function ComparisonTab({
             const insight = getInsight(bs.code, bs.self, bs.observer);
             return (
               <div key={bs.code} className="rounded-xl border-l-4 bg-[var(--color-surface-highlight-warm)] p-4 px-[18px]" style={{ borderLeftColor: "var(--color-accent-primary)" }}>
-                <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
                   {t("comparison.possibleBlindSpot", locale)}
                 </p>
                 <p className="font-fraunces text-[15px] text-[var(--color-text-primary)]">
@@ -303,7 +303,7 @@ export function ComparisonTab({
 
           {noBlindspotDims.length > 0 && (
             <div className="rounded-xl border-l-4 bg-[var(--color-surface-self-accent-soft)] p-4 px-[18px]" style={{ borderLeftColor: "var(--color-action-primary-bg)" }}>
-              <p className="mb-1 text-[9px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
                 {t("comparison.noBlindSpot", locale)}
               </p>
               <p className="font-fraunces text-[15px] text-[var(--color-text-primary)]">
@@ -322,7 +322,7 @@ export function ComparisonTab({
         className="rounded-2xl p-6 px-7"
         style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
       >
-        <p className="mb-2 text-[9px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
+        <p className="mb-2 text-[10px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
           {t("comparison.summaryEyebrow", locale)}
         </p>
         <p className="mb-3 font-fraunces text-lg text-white">

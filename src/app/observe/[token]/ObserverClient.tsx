@@ -832,7 +832,7 @@ export function ObserverClient({
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
             }`}
           >
-            {autoAdvance && <span className="text-[8px] leading-none text-white">✓</span>}
+            {autoAdvance && <span className="text-[10px] leading-none text-white">✓</span>}
           </div>
           <input
             type="checkbox"

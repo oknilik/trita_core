@@ -61,7 +61,7 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
         <path d="M8 16a2 2 0 0 0 4 0" />
       </svg>
       {count > 0 && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-accent-primary)] px-1 text-[9px] font-bold leading-none text-white">
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-accent-primary)] px-1 text-[10px] font-bold leading-none text-white">
           {count > 99 ? "99+" : count}
         </span>
       )}

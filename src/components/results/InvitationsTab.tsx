@@ -317,7 +317,7 @@ export function InvitationsTab({
                     {c.name}
                   </span>
                   {c.isTeammate ? (
-                    <span className="shrink-0 rounded-full bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[var(--color-action-primary-bg)]">
+                    <span className="shrink-0 rounded-full bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-action-primary-bg)]">
                       {t("invitations.colleagueTeammateBadge", locale)}
                     </span>
                   ) : null}
@@ -442,7 +442,7 @@ export function InvitationsTab({
                         : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
                     </p>
                   </div>
-                  <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}>
+                  <span className="rounded px-2 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}>
                     {t("invitations.statusCompleted", locale)}
                   </span>
                 </div>
@@ -473,7 +473,7 @@ export function InvitationsTab({
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <span className="rounded px-2 py-0.5 text-[9px] font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
+                    <span className="rounded px-2 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
                       {inv.status === "AWAITING_APPROVAL"
                         ? t("invitations.statusAwaitingApproval", locale)
                         : t("invitations.statusPending", locale)}

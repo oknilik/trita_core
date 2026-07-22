@@ -20,7 +20,7 @@ export function InlineUpsell() {
       style={{ background: "linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-strong-deep) 100%)" }}
     >
       <div className="flex-1">
-        <p className="mb-1.5 text-[9px] uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+        <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
           Plus
         </p>
         <h3 className="mb-1.5 font-fraunces text-xl leading-tight text-white">

@@ -352,7 +352,7 @@ export default async function OrgDetailPage({
       <SurfaceHero
         variant="org"
         eyebrow={(
-          <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+          <p className="text-[10px] uppercase tracking-[2px] text-white/[0.28]">
             {isConsultantView
               ? isHu
                 ? "Szervezet · tanácsadói nézet"
@@ -437,21 +437,21 @@ export default async function OrgDetailPage({
         }
         aside={(
           <>
-            <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
+            <p className="text-[10px] uppercase tracking-[2px] text-white/[0.34]">
               {t("orgHero.liveSnapshot", locale)}
             </p>
 
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.membersLabel", locale)}</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.membersLabel", locale)}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.memberCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.teamsLabel", locale)}</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.teamsLabel", locale)}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.teamCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.activeLabel", locale)}</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("orgHero.activeLabel", locale)}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{pageData.activeCampaignCount}</p>
               </div>
             </div>

@@ -547,7 +547,7 @@ export function AssessmentClient({
             <div>
               <div className="mb-2.5 flex items-center gap-2">
                 <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
-                <span className="text-[9px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
+                <span className="text-[10px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
@@ -784,7 +784,7 @@ export function AssessmentClient({
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
             }`}
           >
-            {autoAdvance && <span className="text-[8px] leading-none text-white">✓</span>}
+            {autoAdvance && <span className="text-[10px] leading-none text-white">✓</span>}
           </div>
           <input
             type="checkbox"

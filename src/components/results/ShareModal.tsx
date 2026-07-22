@@ -163,7 +163,7 @@ export function ShareModal({
                     <span className="inline-flex items-center gap-1.5 text-sage-dark">
                       <span
                         aria-hidden
-                        className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sage text-[9px] font-bold leading-none text-white"
+                        className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sage text-[10px] font-bold leading-none text-white"
                       >
                         ✓
                       </span>
@@ -218,7 +218,7 @@ export function ShareModal({
                 <p className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-sage-dark">
                   <span
                     aria-hidden
-                    className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sage text-[9px] font-bold leading-none text-white"
+                    className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sage text-[10px] font-bold leading-none text-white"
                   >
                     ✓
                   </span>

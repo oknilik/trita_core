@@ -429,7 +429,7 @@ export function NavHeaderUI({
                     >
                       <span className="truncate">{m.orgName ?? m.orgId}</span>
                       <span className="flex shrink-0 items-center gap-1.5">
-                        <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-[var(--color-text-muted)]">
+                        <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
                           {m.role === "ORG_ADMIN"
                             ? "Admin"
                             : m.role === "ORG_CONSULTANT"
@@ -559,7 +559,7 @@ export function NavHeaderUI({
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
                       {item.badge ? (
-                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[9px] text-white">
+                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[10px] text-white">
                           {item.badge}
                         </span>
                       ) : null}
@@ -575,7 +575,7 @@ export function NavHeaderUI({
                         {getItemIcon(item.id, "h-3.5 w-3.5")}
                         {item.label}
                         {item.badge ? (
-                          <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[9px] text-white">
+                          <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[10px] text-white">
                             {item.badge}
                           </span>
                         ) : null}

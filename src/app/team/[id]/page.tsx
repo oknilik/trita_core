@@ -942,14 +942,14 @@ export default async function TeamDetailPage({
         <SurfaceHero
           variant="team"
           eyebrow={(
-            <p className="text-[9px] uppercase tracking-[2px] text-white/[0.28]">
+            <p className="text-[10px] uppercase tracking-[2px] text-white/[0.28]">
               {t("teamDetail.heroEyebrow", locale)}
             </p>
           )}
           badge={
             hasPattern ? (
               <span
-                className="rounded-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide"
+                className="rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
                 style={{ backgroundColor: teamHeroTheme.badgeBg, color: teamHeroTheme.badgeText }}
               >
                 {t("teamDetail.heroPatternReady", locale)}
@@ -1017,21 +1017,21 @@ export default async function TeamDetailPage({
           }
           aside={(
             <>
-              <p className="text-[9px] uppercase tracking-[2px] text-white/[0.34]">
+              <p className="text-[10px] uppercase tracking-[2px] text-white/[0.34]">
                 {t("teamDetail.snapshotLabel", locale)}
               </p>
 
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{teamData.memberCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{completedCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{waitingCount}</p>
                 </div>
               </div>

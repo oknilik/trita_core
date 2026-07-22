@@ -19,7 +19,7 @@ export function InsightPair({ strengths, watchAreas }: InsightPairProps) {
   return (
     <div className="grid grid-cols-1 gap-2.5 py-5 md:grid-cols-2">
       <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/[0.18] bg-[var(--color-surface-self-accent-soft)] p-4 px-[18px]">
-        <p className="mb-2 text-[9px] font-semibold uppercase tracking-widest text-[var(--color-accent-self-deep)]">
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-self-deep)]">
           {t("results.insightStrengths", locale)}
         </p>
         <div className="flex flex-col gap-1.5">
@@ -38,7 +38,7 @@ export function InsightPair({ strengths, watchAreas }: InsightPairProps) {
         </div>
       </div>
       <div className="rounded-xl border-[1.5px] border-[var(--color-accent-primary)]/[0.18] bg-[var(--color-surface-highlight-warm)] p-4 px-[18px]">
-        <p className="mb-2 text-[9px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {t("results.insightWatch", locale)}
         </p>
         <div className="flex flex-col gap-1.5">

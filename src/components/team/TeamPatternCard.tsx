@@ -63,7 +63,7 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
           {"tooltip" in label && (
             <span
               title={label.tooltip as string}
-              className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-sand text-[9px] font-semibold text-ink-body"
+              className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-sand text-[10px] font-semibold text-ink-body"
             >
               i
             </span>
@@ -90,10 +90,10 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
 
       {/* Pole labels */}
       <div className="mt-0.5 flex items-center justify-between">
-        <span className="font-mono text-[9px] uppercase tracking-wider text-muted">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
           {label.low}
         </span>
-        <span className="font-mono text-[9px] uppercase tracking-wider text-muted">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
           {label.high}
         </span>
       </div>
@@ -184,7 +184,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {content && (
           <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-xl bg-[#f0fdf4] border border-[#a0d8c4] p-4">
-              <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#059669]">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#059669]">
                 {"// "}
                 {t("teamComp.strengthsEyebrow", loc)}
               </p>
@@ -198,7 +198,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
               </ul>
             </div>
             <div className="rounded-xl bg-[#fff8ee] border border-[#f5d99a] p-4">
-              <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#b45309]">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#b45309]">
                 {"// "}
                 {t("teamComp.blindSpotsEyebrow", loc)}
               </p>
@@ -217,7 +217,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {/* Next steps — 3 timed action cards */}
         {content && content.leaderActions.length >= 3 && (
           <div className="mb-5">
-            <SectionEyebrow className="mb-3 text-[9px]">
+            <SectionEyebrow className="mb-3 text-[10px]">
               {"// "}
               {t("teamComp.nextStepsEyebrow", loc)}
             </SectionEyebrow>
@@ -235,7 +235,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
                     className="absolute left-0 right-0 top-0 h-[3px]"
                     style={{ backgroundColor: accent }}
                   />
-                  <p className="mb-1 font-mono text-[9px] uppercase tracking-widest" style={{ color: accent }}>
+                  <p className="mb-1 font-mono text-[10px] uppercase tracking-widest" style={{ color: accent }}>
                     {timing}
                   </p>
                   <p className="text-xs leading-relaxed text-ink-body">{action}</p>

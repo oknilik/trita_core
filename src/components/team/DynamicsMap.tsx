@@ -158,7 +158,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
 
       {myEdges.length > 0 && (
         <div>
-          <SectionEyebrow className="mb-1.5 text-[8px]">
+          <SectionEyebrow className="mb-1.5 text-[10px]">
             {t("teamComp.connectionsEyebrow", loc)}
           </SectionEyebrow>
           <div className="flex flex-col gap-0.5">
@@ -187,7 +187,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                       {t(edgeLabelKey[e.type], loc)}
                     </span>
                     {e.source === "trust_round" ? (
-                      <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wide text-sage-dark">
+                      <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-sage-dark">
                         {loc === "hu" ? "mért" : "measured"}
                       </span>
                     ) : null}
@@ -226,7 +226,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                               </div>
                             </div>
                             {g.hint && (
-                              <p className="mt-0.5 text-[9px] leading-snug text-muted">{g.hint}</p>
+                              <p className="mt-0.5 text-[10px] leading-snug text-muted">{g.hint}</p>
                             )}
                           </div>
                         ))}

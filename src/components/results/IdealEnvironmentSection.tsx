@@ -111,8 +111,8 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
                   </div>
                 </div>
                 <div className="mt-1 flex justify-between">
-                  <span className="text-[9px] text-[var(--color-text-muted)]">{poles.low}</span>
-                  <span className="text-[9px] text-[var(--color-text-muted)]">{poles.high}</span>
+                  <span className="text-[10px] text-[var(--color-text-muted)]">{poles.low}</span>
+                  <span className="text-[10px] text-[var(--color-text-muted)]">{poles.high}</span>
                 </div>
               </div>
               <span className="text-[11px] text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">

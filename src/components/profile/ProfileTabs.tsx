@@ -289,7 +289,7 @@ function ResultsTab({
                           {d.label}
                         </span>
                         <span
-                          className={`shrink-0 rounded px-[7px] py-[2px] text-[8px] font-semibold ${colors.tagBg} ${colors.tagText}`}
+                          className={`shrink-0 rounded px-[7px] py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}
                         >
                           {getDimensionLabel(d.score, locale)}
                         </span>

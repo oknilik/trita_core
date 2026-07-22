@@ -87,19 +87,19 @@ export function TeamRoleRoundCard({
       <div className="mt-4 grid grid-cols-3 gap-2">
         <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
           <p className="font-fraunces text-[20px] leading-none text-sage-dark">{completedCount}</p>
-          <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-muted">
+          <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-muted">
             {isHu ? "kitöltötte" : "completed"}
           </p>
         </div>
         <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
           <p className="font-fraunces text-[20px] leading-none text-bronze">{estimateCount}</p>
-          <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-muted">
+          <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-muted">
             {isHu ? "becslésből" : "estimated"}
           </p>
         </div>
         <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
           <p className="font-fraunces text-[20px] leading-none text-ink">{totalMembers - completedCount - estimateCount}</p>
-          <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-muted">
+          <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-muted">
             {isHu ? "hiányzik" : "missing"}
           </p>
         </div>

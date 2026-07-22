@@ -607,20 +607,20 @@ export function CampaignWizard({
 
           <div className="flex flex-col gap-4">
             <div className="rounded-xl border border-sand bg-cream p-4">
-              <p className="mb-1 font-mono text-[9px] uppercase tracking-widest text-muted">
+              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-muted">
                 {t("campaignWiz.typeSummaryLabel", locale)}
               </p>
               <p className="text-[15px] font-semibold text-ink">{typeLabel}</p>
             </div>
 
             <div className="rounded-xl border border-sand bg-cream p-4">
-              <p className="mb-1 font-mono text-[9px] uppercase tracking-widest text-muted">
+              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-muted">
                 {t("campaignWiz.campaignNameLabel", locale)}
               </p>
               <p className="text-[15px] font-semibold text-ink">{name}</p>
               {description && <p className="mt-1 text-sm text-ink-body">{description}</p>}
               {targetTeam && (
-                <p className="mt-2 font-mono text-[9px] uppercase tracking-widest text-muted">
+                <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted">
                   {t("campaignWiz.targetTeamLabel", locale)}{" "}
                   <span className="font-sans text-[12px] normal-case tracking-normal text-ink-body">
                     {targetTeam.name}
@@ -630,7 +630,7 @@ export function CampaignWizard({
             </div>
 
             <div className="rounded-xl border border-sand bg-cream p-4">
-              <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-muted">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
                 {tf("campaignWiz.participantsLabel", locale, { count: selectedIds.size })}
               </p>
               {selectedIds.size === 0 ? (

@@ -80,7 +80,7 @@ export default async function BlogListPage() {
                   {/* Left: bronze visual with key stat */}
                   <div className="relative flex min-h-[180px] flex-col items-center justify-center bg-gradient-to-br from-[var(--color-accent-primary)] via-[var(--color-accent-primary-mid)] to-[var(--color-accent-primary-strong)] p-8 lg:min-h-[220px]">
                     <div className="pointer-events-none absolute -right-10 -top-10 h-[120px] w-[120px] rounded-full bg-white/[0.04]" />
-                    <span className="mb-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-[9px] font-semibold uppercase tracking-widest text-white/70">
+                    <span className="mb-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/70">
                       {t("blog.featured", locale)}
                     </span>
                     <p className="font-fraunces text-5xl leading-none text-white/85">
@@ -102,7 +102,7 @@ export default async function BlogListPage() {
                         {featured.tags.map((tag, i) => (
                           <span
                             key={tag}
-                            className={`rounded-full px-2.5 py-0.5 text-[9px] font-medium uppercase tracking-wide ${
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
                               i === 0 ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]" : "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]"
                             }`}
                           >
@@ -143,7 +143,7 @@ export default async function BlogListPage() {
                       {post.tags.map((tag) => (
                         <span
                           key={tag}
-                          className={`rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
                         >
                           {tag}
                         </span>

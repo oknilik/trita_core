@@ -189,7 +189,7 @@ function SuggestionCard({
           <p className="text-[11px] text-[var(--color-text-muted)]">
             {isHu ? suggestion.industryHu : suggestion.industryEn}
             {suggestion.eduBoosted && (
-              <span className="ml-1.5 rounded-full bg-sage/10 px-1.5 py-0.5 text-[9px] font-semibold text-sage-dark">
+              <span className="ml-1.5 rounded-full bg-sage/10 px-1.5 py-0.5 text-[10px] font-semibold text-sage-dark">
                 {t("results.ccEduBoostBadge", locale)}
               </span>
             )}
@@ -252,7 +252,7 @@ function SuggestionCard({
             <div key={`${entry.dim}-${entry.direction}`} className="flex items-center gap-2 sm:gap-3">
               <span className="w-24 shrink-0 text-[10px] leading-tight text-[var(--color-text-secondary)] sm:w-40 sm:text-[11px]">
                 {isHu ? DIM_LABELS[entry.dim].hu : DIM_LABELS[entry.dim].en}
-                <span className="block text-[9px] text-[var(--color-text-muted)]">
+                <span className="block text-[10px] text-[var(--color-text-muted)]">
                   {t(
                     entry.direction === "high"
                       ? "results.industryFitExpectedHigh"

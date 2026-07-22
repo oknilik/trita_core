@@ -521,7 +521,7 @@ export default async function CandidateResultPage({
                   {gapAnalysis.map((g) => (
                     <div key={g.dim} className="flex items-center gap-3">
                       <div
-                        className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-[8px] font-bold text-white"
+                        className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-[10px] font-bold text-white"
                         style={{ background: DIM_COLORS[g.dim] }}
                       >
                         {g.dim}
@@ -590,14 +590,14 @@ export default async function CandidateResultPage({
                     <div className="mb-2 flex items-center gap-2">
                       <div className="flex items-center gap-1">
                         <span
-                          className="rounded px-1.5 py-0.5 text-[9px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
                           {pair.dimA}
                         </span>
                         <span className="text-[10px] text-muted">+</span>
                         <span
-                          className="rounded px-1.5 py-0.5 text-[9px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
                           {pair.dimB}
@@ -625,14 +625,14 @@ export default async function CandidateResultPage({
                     <div className="mb-2 flex items-center gap-2">
                       <div className="flex items-center gap-1">
                         <span
-                          className="rounded px-1.5 py-0.5 text-[9px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
                           {pair.dimA}
                         </span>
                         <span className="text-[10px] text-muted">+</span>
                         <span
-                          className="rounded px-1.5 py-0.5 text-[9px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
                           {pair.dimB}
