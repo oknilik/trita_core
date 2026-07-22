@@ -1,0 +1,194 @@
+// ─────────────────────────────────────────────────────────────────────
+// Tag-nézet nézetmodell — a publikált (befagyasztott) csapat-aggregátum +
+// a néző SAJÁT eredménye alapján. Kizárólag pozitív/építő metszet: a tag
+// a saját adatát látja a csapat tükrében, más egyénről semmit.
+// Terv: docs/product/feature-ideas.md #4 (tag-riport metszet).
+//
+// A csapat-részek a publikált riport aggregátumából jönnek (konzisztens a
+// menedzser nézetével, tartja a kapuzást); a személyes részek a néző élő
+// eredményéből. Prisma-mentes, kliens-oldalon is importálható.
+// ─────────────────────────────────────────────────────────────────────
+
+import type { SerializedTeamReport } from "@/lib/team-report";
+import {
+  TEAM_ROLES,
+  getTopRoles,
+  type TeamRoleCode,
+  type TeamRoleScores,
+} from "@/lib/team-role-scoring";
+import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+
+const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+type Loc = "hu" | "en";
+
+export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
+  INTE: { hu: "Integritás", en: "Integrity" },
+  RESO: { hu: "Rezonancia", en: "Resonance" },
+  TEMP: { hu: "Társas energia", en: "Tempo" },
+  ADAP: { hu: "Alkalmazkodás", en: "Adaptability" },
+  THOR: { hu: "Tervezettség", en: "Thoroughness" },
+  OPEN: { hu: "Nyitottság", en: "Openness" },
+};
+
+// Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
+const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
+  THOR: {
+    hu: "Használd a tervezettségedet: te tudod a csapat ötleteit határidős, lezárt eredménnyé formálni — vállald be tudatosan ezt a szerepet.",
+    en: "Use your thoroughness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
+  },
+  INTE: {
+    hu: "Az egyenes, kiszámítható működésed bizalmat épít — támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
+    en: "Your straightforward, dependable style builds trust — lean on it in tough conversations and decisions.",
+  },
+  ADAP: {
+    hu: "A rugalmasságod hidat épít az eltérő stílusok között — vállalj közvetítő szerepet, ahol feszül a helyzet.",
+    en: "Your adaptability bridges different styles — take a connecting role where things get tense.",
+  },
+  RESO: {
+    hu: "Ráérzel mások állapotára — gyakran te veszed észre elsőként, ha valaki elakad; ilyenkor szólalj meg.",
+    en: "You sense how others are doing — you often notice first when someone is stuck; speak up then.",
+  },
+  TEMP: {
+    hu: "A lendületed viszi a csapatot — te tudod beindítani a közös munkát és tartani a tempót.",
+    en: "Your energy drives the team — you can kick off shared work and keep up the pace.",
+  },
+  OPEN: {
+    hu: "Az újra való nyitottságod frissíti a csapatot — hozz be tudatosan külső perspektívát, ötletet.",
+    en: "Your openness to new things refreshes the team — deliberately bring in outside perspectives and ideas.",
+  },
+};
+
+export interface MemberDim {
+  code: string;
+  label: string;
+  /** A néző saját értéke (0–100). */
+  self: number;
+  /** Csapatátlag (0–100). */
+  teamAvg: number;
+  /** Csapaton belüli szórás — a sáv szélessége. */
+  teamSpread: number;
+  /** Érdemben a csapatátlag felett (≥ 6 pont) — itt egészíti ki a csapatot. */
+  aboveTeam: boolean;
+}
+
+export interface MemberReportViewModel {
+  memberName: string;
+  /** Van-e saját + csapatátlag összevetés (mindkettő megvan). */
+  hasSelfComparison: boolean;
+  dims: MemberDim[];
+  /** A dimenziók, ahol a leginkább kiegészíti a csapatot (max 2, felirat). */
+  complementLabels: string[];
+  primaryRole: { code: TeamRoleCode; label: string } | null;
+  secondaryRole: { code: TeamRoleCode; label: string } | null;
+  /** A saját elsődleges szerep ritka (rá számítanak) vagy megosztott a csapatban. */
+  roleFit: "rare" | "shared" | null;
+  patternLabel: string | null;
+  /** Tanácsadó által írt, aggregált erősségek prózában (pozitív). */
+  strengths: string | null;
+  /** Tag-szemszögű, építő tippek (max 3). */
+  tips: string[];
+}
+
+export interface MemberViewerInput {
+  displayName: string;
+  scores: Record<string, number> | null;
+  teamRoleScores: Record<string, number> | null;
+  teamRoleSource: "questionnaire" | "estimate" | null;
+}
+
+export function buildMemberReportViewModel(
+  report: SerializedTeamReport,
+  viewer: MemberViewerInput | null,
+  loc: Loc,
+): MemberReportViewModel {
+  const agg = report.aggregates;
+  const averages = agg?.dimensionAverages ?? null;
+  const spread = agg?.dimensionSpread ?? null;
+  const selfScores = viewer?.scores ?? null;
+
+  const dims: MemberDim[] = [];
+  if (averages && selfScores) {
+    for (const code of DIMS) {
+      const teamAvg = averages[code];
+      const self = selfScores[code];
+      if (typeof teamAvg !== "number" || typeof self !== "number") continue;
+      const sp = spread?.[code];
+      dims.push({
+        code,
+        label: MEMBER_DIM_LABELS[code]?.[loc] ?? code,
+        self: Math.round(self),
+        teamAvg: Math.round(teamAvg),
+        teamSpread: typeof sp === "number" ? Math.round(sp) : 0,
+        aboveTeam: self - teamAvg >= 6,
+      });
+    }
+  }
+
+  const complementLabels = dims
+    .filter((d) => d.aboveTeam)
+    .sort((a, b) => b.self - b.teamAvg - (a.self - a.teamAvg))
+    .slice(0, 2)
+    .map((d) => d.label);
+
+  // A néző saját szerepe (élő): kitöltött kérdőívből, különben TRITAN-becslésből.
+  let roleScores: TeamRoleScores | null = null;
+  if (viewer?.teamRoleSource === "questionnaire" && viewer.teamRoleScores) {
+    roleScores = viewer.teamRoleScores as TeamRoleScores;
+  } else if (selfScores && "INTE" in selfScores && "TEMP" in selfScores) {
+    roleScores = estimateTeamRolesFromTritan(
+      selfScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
+    );
+  }
+  const top = roleScores ? getTopRoles(roleScores, 2) : [];
+  const primaryRole = top[0]
+    ? { code: top[0].role, label: TEAM_ROLES[top[0].role][loc] }
+    : null;
+  const secondaryRole = top[1]
+    ? { code: top[1].role, label: TEAM_ROLES[top[1].role][loc] }
+    : null;
+
+  // Szerep-illeszkedés a befagyasztott aggregátumból: a saját elsődleges
+  // szerep hány tagnak elsődleges? ≤1 → ritka (rá számítanak), ≥2 → megosztott.
+  let roleFit: "rare" | "shared" | null = null;
+  if (primaryRole && agg?.roleDistribution) {
+    const primaryCount = agg.roleDistribution.counts[primaryRole.code] ?? 0;
+    roleFit = primaryCount <= 1 ? "rare" : "shared";
+  }
+
+  const tips: string[] = [];
+  const topDim = [...dims].sort((a, b) => b.self - a.self)[0];
+  if (topDim && DIM_MEMBER_TIP[topDim.code]) {
+    tips.push(DIM_MEMBER_TIP[topDim.code][loc]);
+  }
+  if (primaryRole && roleFit === "rare") {
+    tips.push(
+      loc === "hu"
+        ? `A csapatban a(z) ${primaryRole.label} szerep ritka — rád ebben különösen számítanak, vállald fel tudatosan.`
+        : `The ${primaryRole.label} role is rare in this team — they especially rely on you here; own it deliberately.`,
+    );
+  } else if (primaryRole && roleFit === "shared") {
+    tips.push(
+      loc === "hu"
+        ? `A(z) ${primaryRole.label} szerepet többen is viszitek — osszátok meg a tudást és a terhet, támogassátok egymást.`
+        : `Several of you carry the ${primaryRole.label} role — share the knowledge and the load, support each other.`,
+    );
+  }
+  tips.push(
+    loc === "hu"
+      ? "Építs tudatosan az erősségeidre a közös munkában, és hozz be külső nézőpontot a közös vakfoltok ellen."
+      : "Build deliberately on your strengths in shared work, and bring in an outside perspective to guard against shared blind spots.",
+  );
+
+  return {
+    memberName: viewer?.displayName ?? "",
+    hasSelfComparison: dims.length > 0,
+    dims,
+    complementLabels,
+    primaryRole,
+    secondaryRole,
+    roleFit,
+    patternLabel: agg?.pattern?.label ?? null,
+    strengths: report.strengths,
+    tips: tips.slice(0, 3),
+  };
+}
