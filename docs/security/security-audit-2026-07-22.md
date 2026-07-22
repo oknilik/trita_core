@@ -53,14 +53,17 @@ a már kiküldött, id-alapú régi linkek megszűnnek (nincs átmeneti dupla-lo
 bejelentkezett meghívottnak a journey friss token-linket ad. Verifikálva:
 token ≠ id, token-lookup talál, régi-id-lookup null.
 
-### 🟠 P2 — CSP bevezetése
-`Content-Security-Policy-Report-Only` először, majd enforce. Clerk-domainek +
-`'unsafe-inline'` style szükséges lesz; a JSON-LD script statikus (biztonságos).
+### 🟠 P2 — CSP bevezetése — REPORT-ONLY ÉLESÍTVE ✅
+`Content-Security-Policy-Report-Only` a next.config.ts-ben (Clerk + Turnstile
+engedve, frame-ancestors 'none', object-src 'none'). Landing + sign-in
+sértés-jelentés nélkül fut. Következő lépés: éles reportok figyelése, majd a
+header átnevezése `Content-Security-Policy`-ra (enforce).
 
-### 🟠 P3 — Org-váltó / role-PATCH mélyteszt
-`org/[id]/members/[userId]` PATCH enum nem tartalmazza az ORG_CONSULTANT-ot
-(helyes), LAST_ADMIN-védelem él. Javasolt integrációs teszt-kör: consultant
-nem eszkalálhat, member nem PATCH-elhet.
+### 🟠 P3 — Org-váltó / role-PATCH mélyteszt — JAVÍTVA ✅
+7 unit-teszt rögzíti az invariánsokat (tests/unit/policy/
+org-member-patch-authz.test.ts): member/manager nem kap orgAdminManage-et,
+admin/consultant igen, de restricted/frozen/none előfizetés alatt nem; a PATCH
+enum nem tartalmazza az ORG_CONSULTANT-ot.
 
 ### 🟡 P4 — Cron secret timing-safe összehasonlítás — JAVÍTVA ✅
 `crypto.timingSafeEqual` + hossz-guard a Bearer-secret összevetésben.
@@ -82,9 +85,11 @@ Az `org/[id]/remind` mostantól saját JSON-auth (401/403). Más API-route-ok is
 használják a `requireOrgContext`-et — ha valahol JSON kell redirect helyett,
 ugyanezt a mintát kövessük (nem globális csere, hogy a page-flow ne törjön).
 
-### ℹ️ P8 — Resend domain-verify
-Prod előtt kötelező, különben admin-értesítő emailek némán elhalnak
-(CONTACT_FORM_TO).
+### ℹ️ P8 — Resend domain-verify — RÉSZBEN ✅ (ops-teendő marad)
+Kódoldal: prodban RESEND_FROM_EMAIL hiányánál induláskori warning (lib/resend).
+Ops-teendő: domain-verify a resend.com/domains alatt + RESEND_FROM_EMAIL env a
+verifikált domainre — enélkül az admin-értesítők (lead, inquiry, contact)
+némán elhalnak.
 
 ---
 
