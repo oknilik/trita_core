@@ -1,15 +1,31 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { requireOrgContext, hasOrgRole } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { hasOrgRole } from "@/lib/auth";
 
-// POST /api/org/[id]/remind — send reminders to members who haven't completed their assessment
+// POST /api/org/[id]/remind — send reminders to members who haven't completed
+// their assessment. API-konzisztens auth: JSON 401/403 (nem page-redirect,
+// mint a requireOrgContext).
 export async function POST(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
   const { id: orgId } = await params;
 
-  const { role } = await requireOrgContext(orgId);
-  if (!hasOrgRole(role, "ORG_MANAGER")) {
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const membership = await prisma.organizationMember.findUnique({
+    where: { orgId_userId: { orgId, userId: profile.id } },
+    select: { role: true },
+  });
+  if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 

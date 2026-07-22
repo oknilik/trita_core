@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
+
+// Konstans-idejű string-összevetés (timing-oldalcsatorna ellen).
+function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ab, bb);
+}
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +29,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
   if (secret) {
-    const header = req.headers.get("authorization");
-    if (header !== `Bearer ${secret}`) {
+    const header = req.headers.get("authorization") ?? "";
+    if (!safeEqual(header, `Bearer ${secret}`)) {
       return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
     }
   }

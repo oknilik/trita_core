@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const schema = z.object({
   featureKey: z.enum(["team", "comm", "360"]),
@@ -31,6 +32,10 @@ export async function POST(req: Request) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  // DB-írás user-inputból — rate limit az abúzus ellen
+  const rateLimited = await checkRateLimit("api", userId);
+  if (rateLimited) return rateLimited;
 
   const body = await req.json().catch(() => ({}));
   const parsed = schema.safeParse(body);
