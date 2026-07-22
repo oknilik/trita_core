@@ -40,6 +40,43 @@ export const COLORS = {
 
 export type ColorKey = keyof typeof COLORS;
 
+// ─── Email-paletta (2026-07-22 UI-egységesítés, F2) ─────────────────────────
+// Az email inline-style HTML — CSS-var kliens-támogatás megbízhatatlan, ezért
+// hexben fordul, de EBBŐL a modulból (nem kézzel szórt konstansokból).
+export const EMAIL_COLORS = {
+  headerBg: COLORS.cream,
+  footerBg: COLORS.warmMid,
+  ctaBg: COLORS.sage,
+  headerGradient: `linear-gradient(135deg,#fde8dc 0%,${COLORS.cream} 60%,${COLORS.warmMid} 100%)`,
+  footerGradient: `linear-gradient(135deg,${COLORS.warmMid} 0%,${COLORS.cream} 60%,#fde8dc 100%)`,
+  ctaGradient: `linear-gradient(135deg,${COLORS.sage} 0%,${COLORS.sageDark} 100%)`,
+  heading: COLORS.ink,
+  body: COLORS.inkBody,
+} as const;
+
+// ─── PDF-paletta (react-pdf Node-ban renderel, CSS-var nem működik) ────────
+// A pdf/styles.ts színobjektuma innen fordul; a PDF-specifikus árnyalatok
+// (canvas, világosított sage/bronze) itt vannak nevesítve.
+export const PDF_COLORS = {
+  sage: COLORS.sage,
+  sageDark: "#2d4f46",
+  sageLight: "#4a8b78",
+  sage100: "#e8f0ed",
+  bronze: COLORS.bronze,
+  bronzeLight: "#d4a67a",
+  bronze100: "#faf0e6",
+  bronzeDark: "#a0623a",
+  ink: COLORS.ink,
+  ink500: COLORS.inkBody,
+  ink300: COLORS.muted,
+  cream: "#faf9f6",
+  cream500: COLORS.sand,
+  cream300: "#f3f0eb",
+  white: "#ffffff",
+  canvas: "#f6f3ec",
+  sand: "#e7e1d5",
+} as const;
+
 /** CSS var() referenciák inline style-okhoz (automatikusan szinkronban a globals.css-sel) */
 export const CSS_VARS = {
   sage:       "var(--color-sage)",

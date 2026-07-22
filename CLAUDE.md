@@ -140,6 +140,11 @@ Lint: ~60 örökölt hiba van (no-explicit-any, `// eyebrow` jsx-comment) —
   (pl. `INVITE_LIMIT_REACHED`), kliens lokalizálja.
 - Mutáció után `router.refresh()`.
 - Mobile-first, `min-h-[44px]` touch targetek, csak `md:` breakpoint.
+- Tipográfia: a 7 szerep-utility (`text-display/title/heading/body/caption/
+  label/micro`) az arbitrary `text-[Npx]` helyett; 10px alatt lint-error.
+  Eyebrow: `SectionEyebrow` (mono=admin, clean=ügyfél). Gomb/input: Button/
+  TextField primitív. TS-oldali szín: `design-tokens.ts` (PDF/email is innen)
+  — részletek: `docs/development/ui-contribution-guide.md`.
 - Becsült vs mért adat: minden intelligence-kimeneten kötelező a forrás/
   confidence jelölés (badge, módszertani jegyzet) — ez a termék hitelességi
   alapelve.

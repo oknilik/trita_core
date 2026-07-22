@@ -1,4 +1,5 @@
 import { resend, EMAIL_FROM } from "./resend";
+import { EMAIL_COLORS } from "./design-tokens";
 
 type Locale = "hu" | "en";
 
@@ -218,14 +219,16 @@ function getLocale(email: string): Locale {
   return "en";
 }
 
-const HEADER_GRADIENT = "linear-gradient(135deg,#fde8dc 0%,#f7f4ef 60%,#f0ede6 100%)";
-const FOOTER_GRADIENT = "linear-gradient(135deg,#f0ede6 0%,#f7f4ef 60%,#fde8dc 100%)";
-const CTA_GRADIENT = "linear-gradient(135deg,#3d6b5e 0%,#2d5a4e 100%)";
+// A paletta a közös token-modulból fordul (2026-07-22, F2) — palettacsere a
+// design-tokens.ts-ben történik, itt nem.
+const HEADER_GRADIENT = EMAIL_COLORS.headerGradient;
+const FOOTER_GRADIENT = EMAIL_COLORS.footerGradient;
+const CTA_GRADIENT = EMAIL_COLORS.ctaGradient;
 // Outlook (Word rendering engine) doesn't support CSS gradients reliably.
 // Provide solid color fallbacks via background-color.
-const HEADER_BG = "#f7f4ef";
-const FOOTER_BG = "#f0ede6";
-const CTA_BG = "#3d6b5e";
+const HEADER_BG = EMAIL_COLORS.headerBg;
+const FOOTER_BG = EMAIL_COLORS.footerBg;
+const CTA_BG = EMAIL_COLORS.ctaBg;
 
 function escapeHtml(input: string): string {
   return input

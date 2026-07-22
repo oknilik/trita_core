@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/primitives/Button";
 
 // Tanácsadói Kérdések fül — a szervezethez kötött beérkezett kérdések
 // (contact form + in-app csatorna). Státusz-kezelés + jegyzet; a user/org
@@ -127,29 +128,29 @@ export function OrgInquiriesTab({
 
                 <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-sand/60 pt-3">
                   {STATUS_ORDER.filter((s) => s !== row.status).map((s) => (
-                    <button
+                    <Button
                       key={s}
                       type="button"
                       disabled={busy}
                       onClick={() => void patch({ inquiryId: row.id, action: "set_status", status: s })}
-                      className="min-h-[32px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink disabled:opacity-50"
+                      variant="secondary" size="sm" className="text-xs"
                     >
                       → {STATUS_META[s].label}
-                    </button>
+                    </Button>
                   ))}
-                  <button
+                  <Button
                     type="button"
                     disabled={busy}
                     onClick={() => {
                       setOpenId(isOpen ? null : row.id);
                       setNoteDraft(row.adminNote ?? "");
                     }}
-                    className="min-h-[32px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink disabled:opacity-50"
+                    variant="secondary" size="sm" className="text-xs"
                   >
                     {row.adminNote
                       ? isHu ? "Jegyzet szerkesztése" : "Edit note"
                       : isHu ? "Jegyzet" : "Note"}
-                  </button>
+                  </Button>
                   {row.adminNote && !isOpen && (
                     <span className="text-xs italic text-muted">„{row.adminNote}”</span>
                   )}
@@ -164,17 +165,17 @@ export function OrgInquiriesTab({
                       placeholder={isHu ? "Belső jegyzet…" : "Internal note…"}
                       className="w-full flex-1 rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none focus:border-sage/50"
                     />
-                    <button
+                    <Button
                       type="button"
                       disabled={busy}
                       onClick={async () => {
                         await patch({ inquiryId: row.id, action: "set_note", note: noteDraft });
                         setOpenId(null);
                       }}
-                      className="min-h-[36px] shrink-0 self-start rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                      variant="primary" size="sm" className="shrink-0 self-start text-xs"
                     >
                       {isHu ? "Mentés" : "Save"}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

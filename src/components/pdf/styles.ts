@@ -23,29 +23,11 @@ Font.register({
 // ─── Colors ──────────────────────────────────────────────────────────────────
 // IMPORTANT: react-pdf renders in Node.js, NOT in a browser.
 // CSS custom properties (var(--xxx)) do not work here — use hex values only.
-// A paletta az élő riport-felület tokenjeit tükrözi (globals.css):
-// meleg krém vászon, fehér kártyák, sand keret, sage/bronze akcentus.
+// A paletta a közös token-modulból fordul (2026-07-22, F2) — palettacsere a
+// design-tokens.ts-ben (a globals.css-sel szinkronban) történik, itt nem.
+import { PDF_COLORS } from "@/lib/design-tokens";
 
-export const colors = {
-  sage: "#3d6b5e",
-  sageDark: "#2d4f46",
-  sageLight: "#4a8b78",
-  sage100: "#e8f0ed",
-  bronze: "#c17f4a",
-  bronzeLight: "#d4a67a",
-  bronze100: "#faf0e6",
-  bronzeDark: "#a0623a",
-  ink: "#1a1a2e",
-  ink500: "#4a4a5e",
-  ink300: "#8a8a9a",
-  cream: "#faf9f6",
-  cream500: "#e8e0d3",
-  cream300: "#f3f0eb",
-  white: "#ffffff",
-  // Az élő felület vászna és kerete
-  canvas: "#f6f3ec",
-  sand: "#e7e1d5",
-};
+export const colors = PDF_COLORS;
 
 // ─── Shared styles ───────────────────────────────────────────────────────────
 // Az élő riport design-nyelve: krém vászon, fehér lekerekített kártyák,

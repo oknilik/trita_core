@@ -588,7 +588,11 @@ export function AssessmentClient({
                   </div>
                 </div>
               ))}
-              <div className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-4 py-3.5">
+              {/* Dekoratív miniatűr eredmény-teaser — a törpe, halvány szöveg
+                  szándékos „thumbnail"-hatás, nem olvasásra szánt tartalom,
+                  ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
+              <div aria-hidden className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-4 py-3.5">
+                {/* eslint-disable-next-line no-restricted-syntax */}
                 <p className="text-[6px] uppercase tracking-[1.5px] text-white/20">
                   {t("assessment.introPreviewEyebrow", locale)}
                 </p>
@@ -598,11 +602,13 @@ export function AssessmentClient({
                 <div className="mt-2 flex gap-1.5">
                   {previewDims.map((d) => (
                     <div key={d.name} className="flex-1 rounded bg-white/[0.05] px-1 py-1 text-center">
+                      {/* eslint-disable-next-line no-restricted-syntax */}
                       <p className="text-[5px] text-white/20">{d.name}</p>
                       <p className="font-fraunces text-xs text-white/[0.35]">{d.val}</p>
                     </div>
                   ))}
                 </div>
+                {/* eslint-disable-next-line no-restricted-syntax */}
                 <p className="mt-1.5 text-center text-[7px] text-white/[0.15]">
                   {t("assessment.introPreviewLabel", locale)}
                 </p>

@@ -113,7 +113,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
           {(Object.keys(DIM_COLORS) as Array<keyof typeof DIM_COLORS>).map((k) => (
             <div key={k} className="flex items-center gap-2">
               <div
-                className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-[7px] font-bold text-white"
+                className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-[10px] font-bold text-white"
                 style={{ background: DIM_COLORS[k] }}
               >
                 {k}

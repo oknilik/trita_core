@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/primitives/Button";
 
 // Kérdések / érdeklődések admin-nézet: contact formról érkező megkeresések
 // listája státusz-kezeléssel, jegyzettel és user/org hozzákötéssel.
@@ -184,27 +185,27 @@ export function AdminInquiriesSection({
                   {/* Jegyzet + akciók */}
                   <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-sand/60 pt-3">
                     {STATUS_ORDER.filter((s) => s !== row.status).map((s) => (
-                      <button
+                      <Button
                         key={s}
                         type="button"
                         disabled={busy}
                         onClick={() => void patch({ inquiryId: row.id, action: "set_status", status: s })}
-                        className="min-h-[32px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink disabled:opacity-50"
+                        variant="secondary" size="sm" className="text-xs"
                       >
                         → {STATUS_META[s].label}
-                      </button>
+                      </Button>
                     ))}
-                    <button
+                    <Button
                       type="button"
                       disabled={busy}
                       onClick={() => {
                         setOpenId(isOpen ? null : row.id);
                         setNoteDraft(row.adminNote ?? "");
                       }}
-                      className="min-h-[32px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink disabled:opacity-50"
+                      variant="secondary" size="sm" className="text-xs"
                     >
                       {row.adminNote ? "Jegyzet szerkesztése" : "Jegyzet"}
-                    </button>
+                    </Button>
                     {row.adminNote && !isOpen && (
                       <span className="text-xs italic text-muted">„{row.adminNote}”</span>
                     )}
@@ -219,17 +220,17 @@ export function AdminInquiriesSection({
                         placeholder="Belső jegyzet (csak admin látja)…"
                         className="w-full flex-1 rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none focus:border-sage/50"
                       />
-                      <button
+                      <Button
                         type="button"
                         disabled={busy}
                         onClick={async () => {
                           await patch({ inquiryId: row.id, action: "set_note", note: noteDraft });
                           setOpenId(null);
                         }}
-                        className="min-h-[36px] shrink-0 self-start rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                        variant="primary" size="sm" className="shrink-0 self-start text-xs"
                       >
                         Mentés
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

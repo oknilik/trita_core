@@ -103,3 +103,19 @@ CI:
 - Token truth: `src/app/globals.css` + token policy dokumentáció
 - Avatar truth: `src/lib/ui/avatar.ts`
 
+
+## Tipográfia és tokenek (2026-07-22, UI-egységesítés F1–F2)
+
+- **Típus-skála**: új kódban a 7 szerep-utility használandó — `text-display`,
+  `text-title`, `text-heading`, `text-body`, `text-caption`, `text-label`,
+  `text-micro`. Arbitrary `text-[Npx]` új kódban kerülendő; 10px alatti méret
+  lint-errort dob (kivétel: dekoratív, `aria-hidden` miniatűr, indokolt
+  eslint-disable-lel).
+- **Eyebrow**: `SectionEyebrow` primitív — `variant="mono"` (admin/belső,
+  „// szekció") vagy `variant="clean"` (ügyfél-felület, text-label token).
+- **Gomb/input**: `Button` és `TextField` primitív az inline `<button>`/
+  `<input>` helyett — boy scout rule: amihez nyúlsz, azt átállítod.
+- **Szín TS-oldalon**: `src/lib/design-tokens.ts` (COLORS / EMAIL_COLORS /
+  PDF_COLORS) — a globals.css-sel a szinkront unit-teszt őrzi
+  (tests/unit/design/design-tokens-sync.test.ts). PDF és email SOHA nem kap
+  kézzel szórt hexet.
