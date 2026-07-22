@@ -77,8 +77,15 @@ Emoji ki a CTA-kból (📤→share-ikon, 📄→doc-ikon); a szórt inline SVG-k
 
 ## Ütemterv
 
-- **F1 — Alapozás (1–2 nap):** típus-tokenek + Eyebrow-primitív + emoji→SVG a
-  fő CTA-kon + 8/9px kivezetés. Látható ugrás, nulla funkcionális kockázat.
-- **F2 — Konszolidáció (folyamatos):** primitív-adopció felületenként,
-  lint-szabály, közös token-modul (PDF/email rákötés).
-- **F3 — Élmény-réteg (feature-ütemben):** a 6 pillanat egyenként szállítva.
+- **F1 — Alapozás** ✅ (2026-07-22): típus-tokenek + Eyebrow-variánsok +
+  emoji→SVG a fő CTA-kon + 8/9px kivezetés (10px lint-padló).
+- **F2 — Konszolidáció** ✅ (2026-07-22): design-tokens.ts EMAIL/PDF exportok
+  + szinkron-teszt, sub-10px lint-error, primitív-adopció minta (inquiry
+  felületek). Folyamatos rész: boy scout rule a többi felületen.
+- **F3 — Élmény-réteg** ✅ (2026-07-22): CountUp + ProgressRing +
+  CelebrationBurst primitívek; eredmény-reveal a DimensionStripben
+  (stagger + sáv-felhúzás), observer-slotok az ObserverFlowStatusCardban
+  (≤8 küszöbig), archetípus-kártya a ShareModalban, haladás-gyűrűk az org
+  hero aside-ban, publikálás-rituálé a TeamReportEditorban. A radar-chart
+  draw-in már korábban is élt (framer-motion scale+stagger) — változatlan.
+  Mind reduced-motion-tisztelettel.

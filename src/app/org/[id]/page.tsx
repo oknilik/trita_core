@@ -9,6 +9,7 @@ import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -456,35 +457,34 @@ export default async function OrgDetailPage({
               </div>
             </div>
 
-            <div className="mt-4 space-y-3">
-              <div>
-                <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                  <span>{t("orgHero.orgCompletion", locale)}</span>
-                  <span className="font-semibold text-white/[0.7]">{orgCompletionPct}%</span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${orgCompletionPct}%`, backgroundColor: "#8ad0b4" }}
-                  />
-                </div>
-                <p className="mt-1.5 text-[10px] text-white/[0.45]">
+            {/* Haladás-gyűrűk (F3) — a kitöltöttség kör-formában: a 75%
+                látványa húz a 100% felé. */}
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
+                <ProgressRing
+                  percent={orgCompletionPct}
+                  size={76}
+                  label={`${orgCompletionPct}%`}
+                  color="#8ad0b4"
+                />
+                <p className="text-[10px] leading-tight text-white/[0.52]">
+                  {t("orgHero.orgCompletion", locale)}
+                </p>
+                <p className="text-[10px] text-white/[0.45]">
                   {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
                 </p>
               </div>
-
-              <div>
-                <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                  <span>{t("orgHero.activeCampaignCompletion", locale)}</span>
-                  <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${completionPct}%`, backgroundColor: orgHeroTheme.primary }}
-                  />
-                </div>
-                <p className="mt-1.5 text-[10px] text-white/[0.45]">
+              <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
+                <ProgressRing
+                  percent={completionPct}
+                  size={76}
+                  label={`${completionPct}%`}
+                  color={orgHeroTheme.primary}
+                />
+                <p className="text-[10px] leading-tight text-white/[0.52]">
+                  {t("orgHero.activeCampaignCompletion", locale)}
+                </p>
+                <p className="text-[10px] text-white/[0.45]">
                   {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
                 </p>
               </div>

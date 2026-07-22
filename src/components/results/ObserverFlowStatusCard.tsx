@@ -76,17 +76,51 @@ export function ObserverFlowStatusCard({
               ? "A szervezeted kampányában kollégáid most adnak rólad visszajelzést."
               : "Your colleagues are giving feedback about you in your organization's campaign."}
         </p>
-        <div className="mt-4 flex items-center gap-3">
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-sand">
-            <div
-              className="h-full rounded-full bg-sage transition-all duration-700"
-              style={{ width: `${pct}%` }}
-            />
+        {/* Gyűjtő-narratíva (F3): kis küszöbnél nem absztrakt sáv, hanem
+            látható helyek — a hiányzó slot maga a CTA. Nagy küszöbnél
+            (8+) marad az arányos sáv. */}
+        {flow.minForReveal <= 8 ? (
+          <div className="mt-4 flex items-center gap-3">
+            <div className="flex gap-2.5" role="img" aria-label={`${flow.receivedCount}/${flow.minForReveal}`}>
+              {Array.from({ length: flow.minForReveal }, (_, i) => {
+                const filled = i < flow.receivedCount;
+                return (
+                  <span
+                    key={i}
+                    className={`flex h-11 w-11 items-center justify-center rounded-full text-base transition-colors ${
+                      filled
+                        ? "border-2 border-sage bg-sage-soft font-bold text-sage"
+                        : "border-2 border-dashed border-sand text-muted"
+                    }`}
+                  >
+                    {filled ? (
+                      <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 8.5l3 3 7-7" />
+                      </svg>
+                    ) : (
+                      "·"
+                    )}
+                  </span>
+                );
+              })}
+            </div>
+            <span className="font-mono text-xs text-ink">
+              {flow.receivedCount}/{flow.minForReveal}
+            </span>
           </div>
-          <span className="font-mono text-xs text-ink">
-            {flow.receivedCount}/{flow.minForReveal}
-          </span>
-        </div>
+        ) : (
+          <div className="mt-4 flex items-center gap-3">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-sand">
+              <div
+                className="h-full rounded-full bg-sage transition-all duration-700"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <span className="font-mono text-xs text-ink">
+              {flow.receivedCount}/{flow.minForReveal}
+            </span>
+          </div>
+        )}
         <p className="mt-2 text-xs text-muted">
           {isHu
             ? `Az összevetés ${flow.minForReveal} beérkezett visszajelzésnél nyílik meg — így egyik kollégád válasza sem visszakereshető.`

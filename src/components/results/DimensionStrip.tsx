@@ -2,6 +2,11 @@
 
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { useLocale } from "@/components/LocaleProvider";
+import { CountUp } from "@/components/ui/CountUp";
+
+// Eredmény-reveal (F3): a dimenzió-értékek count-up animációval, egymás
+// után (stagger) érkeznek — a sávok velük együtt húzódnak fel.
+const STAGGER_MS = 130;
 
 interface Dimension {
   name: string;
@@ -33,7 +38,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
               <p
                 className={`mb-1.5 font-fraunces text-[22px] leading-none ${colors.text}`}
               >
-                {dim.value}
+                <CountUp value={dim.value} delay={i * STAGGER_MS} />
               </p>
               <span
                 className={`inline-block rounded px-[7px] py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}
@@ -42,8 +47,11 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
               </span>
               <div className="mx-auto mt-2 h-[3px] w-4/5 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                 <div
-                  className={`h-full rounded-sm ${colors.fill}`}
-                  style={{ width: `${dim.value}%` }}
+                  className={`h-full origin-left rounded-sm ${colors.fill} motion-safe:animate-[trita-grow-x_1.1s_cubic-bezier(0.2,0,0,1)_both]`}
+                  style={{
+                    width: `${dim.value}%`,
+                    animationDelay: `${i * STAGGER_MS}ms`,
+                  }}
                 />
               </div>
             </div>

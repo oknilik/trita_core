@@ -7,6 +7,7 @@ import type { SerializedTeamReport, TeamReportActionItem } from "@/lib/team-repo
 import type { ReportTranslationEn } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { TeamReportView } from "@/components/team/TeamReportView";
+import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 
 // Tanácsadói riport-szerkesztő. Csak ORG_CONSULTANT látja (a team page
 // szerver-oldalon kapuz). Vázlat → mentés → előnézet → publikálás; a
@@ -125,6 +126,9 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [preview, setPreview] = useState<SerializedTeamReport | null>(null);
+  // Publikálás-rituálé (F3): egyszeri, visszafogott szirom-animáció a
+  // sikeres publikálás pillanatában — a konzultánsi munka csúcspontja.
+  const [celebrating, setCelebrating] = useState(false);
   // Angol fordítás: gépi javaslat → tanácsadói szerkesztés → jóváhagyás.
   const [translation, setTranslation] = useState<ReportTranslationEn | null>(
     draft?.translationsEn?.en ?? null,
@@ -340,6 +344,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       }
       if (action === "publish") {
         setPreview(null);
+        setCelebrating(true);
         router.refresh();
       }
     } catch (err) {
@@ -386,6 +391,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
 
   return (
     <div className="flex flex-col gap-6">
+    {celebrating && <CelebrationBurst onDone={() => setCelebrating(false)} />}
     <DashboardPanel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>

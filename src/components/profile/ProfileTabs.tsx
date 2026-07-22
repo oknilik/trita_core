@@ -857,7 +857,19 @@ export function ProfileTabs({
         pdfLoading={pdfLoading}
       />
 
-      <ShareModal isOpen={shareOpen} onClose={() => setShareOpen(false)} />
+      <ShareModal
+        isOpen={shareOpen}
+        onClose={() => setShareOpen(false)}
+        preview={{
+          userName: name,
+          personalityType: personalityType ?? t("content.personalityProfileFallback", locale),
+          topDims: dimensions
+            .filter((d) => d.code !== "I")
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 2)
+            .map((d) => ({ label: d.label, score: d.score })),
+        }}
+      />
 
       {/* Progress bar — org-tagnál a lépés-sáv helyett állapot-csík: a saját
           út a kitöltéssel kész, az observer csapat-folyamat (nem hiány). */}

@@ -286,6 +286,16 @@ body {
   will-change: opacity, transform;
 }
 
+/* Sáv-felhúzás (eredmény-reveal, F3) — scaleX, hogy a width-del ne ütközzön */
+@keyframes trita-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @keyframes float {
   0%,
   100% {

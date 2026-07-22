@@ -12,12 +12,21 @@ type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 // Megosztás-kezelő modal: link létrehozás + vágólap-másolás inline
 // visszajelzéssel (nincs böngésző-alert), opcionális email-küldés és
 // visszavonás — mind egy helyen, a flow megszakítása nélkül.
+export interface ShareCardPreview {
+  userName: string;
+  personalityType: string;
+  topDims: Array<{ label: string; score: number }>;
+}
+
 export function ShareModal({
   isOpen,
   onClose,
+  preview = null,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  /** Archetípus-kártya előnézet (F3) — mit lát, aki megkapja a linket. */
+  preview?: ShareCardPreview | null;
 }) {
   const { locale } = useLocale();
 
@@ -139,6 +148,41 @@ export function ShareModal({
           </div>
         ) : (
           <>
+            {/* Archetípus-kártya előnézet (F3) — a megosztás „arca": ezt
+                látja először, aki megnyitja a linket. */}
+            {preview && (
+              <div
+                className="relative overflow-hidden rounded-2xl p-5"
+                style={{
+                  background:
+                    "linear-gradient(140deg, var(--color-accent-self-strong) 0%, var(--color-accent-self-deep) 55%, var(--color-accent-self-deeper) 100%)",
+                }}
+              >
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/[0.04]" />
+                <p className="text-[10px] uppercase tracking-[0.14em] text-white/[0.35]">
+                  {t("results.sharedProfileLabel", locale)}
+                </p>
+                <p className="mt-0.5 font-fraunces text-[17px] text-white">
+                  {preview.userName}
+                </p>
+                <p className="font-fraunces text-[15px] italic text-[var(--color-accent-primary-soft)]">
+                  {preview.personalityType}
+                </p>
+                {preview.topDims.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {preview.topDims.map((d) => (
+                      <span
+                        key={d.label}
+                        className="rounded-full bg-white/[0.12] px-2.5 py-1 text-[10px] font-medium text-white/[0.75]"
+                      >
+                        {d.label} {d.score}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Link + másolás */}
             <div>
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
