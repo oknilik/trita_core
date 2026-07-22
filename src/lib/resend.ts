@@ -21,5 +21,21 @@ export const resend = new Proxy({} as Resend, {
   }
 });
 
-export const EMAIL_FROM =
-  process.env.RESEND_FROM_EMAIL ?? "trita <noreply@trita.hu>";
+// Alapértelmezett feladó — csak akkor működik, ha a domain verifikálva van a
+// Resendben (resend.com/domains). Verifikálatlan domainről a küldés 403-mal
+// elhal, és a lead/inquiry admin-emailek némán elvesznek. Prodban ezért a
+// RESEND_FROM_EMAIL explicit beállítása kötelező; hiányát induláskor jelezzük.
+const DEFAULT_EMAIL_FROM = "trita <noreply@trita.hu>";
+
+export const EMAIL_FROM = process.env.RESEND_FROM_EMAIL ?? DEFAULT_EMAIL_FROM;
+
+if (
+  process.env.NODE_ENV === "production" &&
+  !process.env.RESEND_FROM_EMAIL
+) {
+  console.warn(
+    "[Resend] RESEND_FROM_EMAIL nincs beállítva — a küldés a(z) " +
+      `${DEFAULT_EMAIL_FROM} defaultra esik. Ha a domain nincs verifikálva ` +
+      "(resend.com/domains), az admin-értesítő emailek némán elhalnak.",
+  );
+}
