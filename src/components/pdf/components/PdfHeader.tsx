@@ -2,6 +2,10 @@ import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import { t } from "@/lib/i18n";
 
+// Világos, meleg fejléc — az élő riport hero-jának tükre: krém/fehér alap,
+// bronz eyebrow, Fraunces név, sage archetípus, chip-sor. (A korábbi sötét
+// sáv helyett; a felülettel azonos design-nyelv.)
+
 interface PdfHeaderProps {
   name: string;
   date: string;
@@ -14,77 +18,102 @@ interface PdfHeaderProps {
   watchDimensions?: string[];
 }
 
-const PLAN_LABELS: Record<string, string> = {
-  start: "Free",
-  plus: "Plus",
-};
-
-export function PdfHeader({ name, date, type, percentile, insight, plan, locale = "hu", topDimensions = [], watchDimensions = [] }: PdfHeaderProps) {
+function Chip({ label, dot }: { label: string; dot: string }) {
   return (
-    <View style={{ backgroundColor: colors.sageDark, padding: "24 32 16 32" }}>
-      <Text style={{ fontFamily: "Fraunces", fontSize: 11, color: "rgba(255,255,255,0.22)", marginBottom: 10 }}>
-        tri<Text style={{ color: "rgba(193,127,74,0.35)" }}>ta</Text>
-      </Text>
-      <Text style={{ fontSize: 6, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.18)", marginBottom: 3 }}>
-        {t("pdf.personalityProfile", locale)}
-      </Text>
-      <Text style={{ fontFamily: "Fraunces", fontSize: 20, color: colors.white, marginBottom: 1 }}>
-        {name}
-      </Text>
-      <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.15)", marginBottom: 6 }}>
-        {t("pdf.headerAssessment", locale)} {date}
-      </Text>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 2.5,
+        backgroundColor: colors.white,
+        border: `1 solid ${colors.sand}`,
+        borderRadius: 8,
+        padding: "2 6",
+      }}
+    >
+      <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: dot }} />
+      <Text style={{ fontSize: 6, color: colors.ink500 }}>{label}</Text>
+    </View>
+  );
+}
 
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 2 }}>
-        <Text style={{ fontFamily: "Fraunces", fontSize: 13, fontStyle: "italic", color: colors.bronzeLight }}>
-          {type}
-        </Text>
-        {percentile ? (
-          <Text style={{ fontSize: 6, backgroundColor: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.28)", padding: "1.5 5", borderRadius: 3 }}>
-            {percentile}
+export function PdfHeader({
+  name,
+  date,
+  type,
+  percentile,
+  insight,
+  locale = "hu",
+  topDimensions = [],
+  watchDimensions = [],
+}: PdfHeaderProps) {
+  return (
+    <View>
+      {/* Márka-akcentus csík */}
+      <View style={{ height: 4, backgroundColor: colors.sage }} />
+      <View
+        style={{
+          backgroundColor: colors.white,
+          padding: "18 32 14 32",
+          borderBottom: `1 solid ${colors.sand}`,
+        }}
+      >
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <View style={{ maxWidth: 380 }}>
+            <Text style={{ fontSize: 6, letterSpacing: 2, textTransform: "uppercase", color: colors.bronze, marginBottom: 4, fontWeight: 600 }}>
+              {"// "}{t("pdf.personalityProfile", locale)}
+            </Text>
+            <Text style={{ fontFamily: "Fraunces", fontSize: 21, color: colors.ink, marginBottom: 2 }}>
+              {name}
+            </Text>
+            <Text style={{ fontSize: 6.5, color: colors.ink300, marginBottom: 7 }}>
+              {t("pdf.headerAssessment", locale)} {date}
+            </Text>
+
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 3 }}>
+              <Text style={{ fontFamily: "Fraunces", fontSize: 13, fontStyle: "italic", color: colors.sageDark }}>
+                {type}
+              </Text>
+              {percentile ? (
+                <Text
+                  style={{
+                    fontSize: 6,
+                    backgroundColor: colors.sage100,
+                    color: colors.sageDark,
+                    padding: "1.5 6",
+                    borderRadius: 6,
+                    fontWeight: 600,
+                  }}
+                >
+                  {percentile}
+                </Text>
+              ) : null}
+            </View>
+
+            {insight ? (
+              <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.5, marginTop: 3 }}>
+                {insight}
+              </Text>
+            ) : null}
+          </View>
+
+          <Text style={{ fontFamily: "Fraunces", fontSize: 12, color: colors.sage }}>
+            tri<Text style={{ color: colors.bronze }}>ta</Text>
           </Text>
-        ) : null}
-      </View>
-
-      {insight ? (
-        <Text style={{ fontSize: 8, color: "rgba(255,255,255,0.28)", lineHeight: 1.45, marginTop: 4, maxWidth: 340 }}>
-          {insight}
-        </Text>
-      ) : null}
-
-      {/* Dimension chips */}
-      {(topDimensions.length > 0 || watchDimensions.length > 0) && (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 3, marginTop: 5 }}>
-          {topDimensions.length > 0 && (
-            <>
-              <Text style={{ fontSize: 5, textTransform: "uppercase", letterSpacing: 0.8, color: "rgba(255,255,255,0.2)" }}>
-                {t("pdf.headerTop", locale)}
-              </Text>
-              {topDimensions.map((d) => (
-                <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(61,107,94,0.3)", color: "#a8d5c5" }}>
-                  {d}
-                </Text>
-              ))}
-            </>
-          )}
-          {watchDimensions.length > 0 && (
-            <>
-              <Text style={{ fontSize: 5, textTransform: "uppercase", letterSpacing: 0.8, color: "rgba(255,255,255,0.2)", marginLeft: 4 }}>
-                {t("pdf.headerWatch", locale)}
-              </Text>
-              {watchDimensions.map((d) => (
-                <Text key={d} style={{ fontSize: 6, padding: "1.5 5", borderRadius: 3, backgroundColor: "rgba(193,127,74,0.2)", color: "#d4a67a" }}>
-                  {d}
-                </Text>
-              ))}
-            </>
-          )}
         </View>
-      )}
 
-      <Text style={{ fontSize: 5, backgroundColor: "rgba(193,127,74,0.15)", color: colors.bronzeLight, padding: "2 6", borderRadius: 3, marginTop: 5, alignSelf: "flex-start" }}>
-        {PLAN_LABELS[plan]}
-      </Text>
+        {/* Dimenzió-chipek — erősségek sage, figyelendők bronz ponttal */}
+        {(topDimensions.length > 0 || watchDimensions.length > 0) && (
+          <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 3, marginTop: 8 }}>
+            {topDimensions.map((d, i) => (
+              <Chip key={`t-${i}`} label={d} dot={colors.sage} />
+            ))}
+            {watchDimensions.map((d, i) => (
+              <Chip key={`w-${i}`} label={d} dot={colors.bronze} />
+            ))}
+          </View>
+        )}
+      </View>
     </View>
   );
 }

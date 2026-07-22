@@ -2,7 +2,11 @@ import Link from "next/link";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import type { SerializedTeamReport } from "@/lib/team-report";
-import { localizeTeamReport } from "@/lib/team-report-i18n";
+import {
+  hasApprovedEnTranslation,
+  localizeTeamReport,
+} from "@/lib/team-report-i18n";
+import { NarrativeRich } from "@/components/team/TeamReportView";
 import {
   buildMemberReportViewModel,
   type MemberViewerInput,
@@ -301,9 +305,15 @@ export function TeamReportMemberView({
                   </svg>
                   {isHu ? "A csapat erősségei" : "The team's strengths"}
                 </p>
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-body">
-                  {vm.strengths}
-                </p>
+                {/* EN lekérés jóváhagyott fordítás nélkül: jelezzük, hogy az
+                    eredeti magyar szöveg látszik. */}
+                {!isHu && !hasApprovedEnTranslation(reportInput) ? (
+                  <p className="mb-2 text-[10px] text-amber-700">
+                    Shown in the Hungarian original — English translation pending
+                    consultant approval.
+                  </p>
+                ) : null}
+                <NarrativeRich text={vm.strengths} tone="emerald" card={false} />
               </div>
             )}
           </DashboardPanel>

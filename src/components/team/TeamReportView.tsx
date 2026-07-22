@@ -6,7 +6,10 @@ import {
   getPsychSafetyItem,
 } from "@/lib/psych-safety";
 import type { SerializedTeamReport } from "@/lib/team-report";
-import { localizeTeamReport } from "@/lib/team-report-i18n";
+import {
+  hasApprovedEnTranslation,
+  localizeTeamReport,
+} from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 
@@ -139,7 +142,7 @@ const NARRATIVE_TONES = {
   },
 } as const;
 
-function NarrativeRich({
+export function NarrativeRich({
   label,
   text,
   tone,
@@ -1032,6 +1035,14 @@ export function TeamReportView({
             ? "A tanácsadó összegzése: erősségek, kockázatok, ajánlások."
             : "The consultant's synthesis: strengths, risks, recommendations."}
         />
+        {/* EN lekérés jóváhagyott fordítás nélkül: explicit jelzés, hogy a
+            tanácsadói szövegek magyar eredetiben jelennek meg. */}
+        {!isHu && !hasApprovedEnTranslation(reportInput) && report.summary ? (
+          <p className="mb-3 rounded-[10px] border border-amber-200 bg-amber-50/60 px-3.5 py-2 text-xs text-amber-800">
+            Consultant-written sections below appear in the Hungarian original — the
+            English translation hasn&apos;t been approved yet.
+          </p>
+        ) : null}
         <div className="flex flex-col gap-4">
           {report.summary && (
             <DashboardPanel className="border-l-4 border-l-bronze/50 p-6">

@@ -81,19 +81,43 @@ export async function POST(
     actionItems: Array.isArray(report.actionItems) ? report.actionItems : [],
   };
 
-  const prompt = `You are a professional Hungarian→English translator specialized in organizational psychology and management consulting. Translate the following team-report narrative fields from Hungarian to natural, professional business English.
+  // Tag-alapú kimenet — a JSON-kimenet törékeny volt (a modell escape-elési
+  // hibái parse-hibát okoztak); a tagek közti nyers szöveg soremelésekkel,
+  // idézőjelekkel együtt biztonságosan kinyerhető.
+  const actionsBlock = source.actionItems
+    .map(
+      (item, i) =>
+        `<action index="${i}" timeframe="${(item as { timeframe?: string }).timeframe ?? "30"}">\n<title>${(item as { title?: string }).title ?? ""}</title>\n<description>${(item as { description?: string }).description ?? ""}</description>\n</action>`,
+    )
+    .join("\n");
+
+  const prompt = `You are a professional Hungarian→English translator specialized in organizational psychology and management consulting. Translate the team-report narrative below from Hungarian to natural, professional business English.
 
 Rules:
-- Preserve the exact structure: keep "• " bullet prefixes and line breaks as-is.
+- Preserve the exact structure inside each field: keep "• " bullet prefixes and line breaks as-is.
 - Keep the tone: professional, warm, non-clinical; this is a consultant's assessment for leaders.
 - Do NOT translate proper nouns (team names, person names, product names like Trita, TRITAN).
 - Translate psychological/management terminology precisely (e.g. „pszichológiai biztonság" → "psychological safety").
-- Empty fields stay empty strings.
-- Return ONLY a JSON object, no code fences, with exactly these keys:
-  "summary", "strengths", "risks", "recommendations", "interviewFindings", "leadershipGuide" (strings) and "actionItems" (array of {"title","description","timeframe"} — translate title and description, keep timeframe unchanged).
+- Respond with ONLY the tags below, in this exact format, nothing else. Empty input fields → empty tag content.
 
-Input JSON:
-${JSON.stringify(source)}`;
+Output format:
+<summary>...</summary>
+<strengths>...</strengths>
+<risks>...</risks>
+<recommendations>...</recommendations>
+<interviewFindings>...</interviewFindings>
+<leadershipGuide>...</leadershipGuide>
+<action index="0" timeframe="30"><title>...</title><description>...</description></action>
+(one <action> per input action, same index and timeframe)
+
+Input fields (Hungarian):
+<summary>${source.summary}</summary>
+<strengths>${source.strengths}</strengths>
+<risks>${source.risks}</risks>
+<recommendations>${source.recommendations}</recommendations>
+<interviewFindings>${source.interviewFindings}</interviewFindings>
+<leadershipGuide>${source.leadershipGuide}</leadershipGuide>
+${actionsBlock}`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -117,35 +141,39 @@ ${JSON.stringify(source)}`;
       content?: Array<{ type: string; text?: string }>;
     };
     const text = data.content?.find((c) => c.type === "text")?.text ?? "";
-    const jsonText = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "");
-    const parsed = JSON.parse(jsonText) as Record<string, unknown>;
 
-    const str = (v: unknown): string | null =>
-      typeof v === "string" && v.trim().length > 0 ? v : null;
-    const items: TranslatedActionItem[] = Array.isArray(parsed.actionItems)
-      ? (parsed.actionItems as Array<Record<string, unknown>>)
-          .filter(
-            (i) =>
-              typeof i?.title === "string" &&
-              typeof i?.description === "string" &&
-              ["30", "60", "90"].includes(String(i?.timeframe)),
-          )
-          .map((i) => ({
-            title: i.title as string,
-            description: i.description as string,
-            timeframe: String(i.timeframe) as TranslatedActionItem["timeframe"],
-          }))
-      : [];
+    // Tag-kinyerés — újsor/idézőjel-biztos (a korábbi JSON-parse törékeny volt).
+    const tag = (name: string): string | null => {
+      const m = text.match(new RegExp(`<${name}>([\\s\\S]*?)</${name}>`));
+      const value = m?.[1]?.trim() ?? "";
+      return value.length > 0 ? value : null;
+    };
+
+    const items: TranslatedActionItem[] = [];
+    const actionRe =
+      /<action[^>]*timeframe="(30|60|90)"[^>]*>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<description>([\s\S]*?)<\/description>[\s\S]*?<\/action>/g;
+    let actionMatch: RegExpExecArray | null;
+    while ((actionMatch = actionRe.exec(text))) {
+      const title = actionMatch[2].trim();
+      const description = actionMatch[3].trim();
+      if (title.length > 0) {
+        items.push({
+          title,
+          description,
+          timeframe: actionMatch[1] as TranslatedActionItem["timeframe"],
+        });
+      }
+    }
 
     const translation: ReportTranslationEn = {
       status: "draft",
       translatedAt: new Date().toISOString(),
-      summary: str(parsed.summary),
-      strengths: str(parsed.strengths),
-      risks: str(parsed.risks),
-      recommendations: str(parsed.recommendations),
-      interviewFindings: str(parsed.interviewFindings),
-      leadershipGuide: str(parsed.leadershipGuide),
+      summary: tag("summary"),
+      strengths: tag("strengths"),
+      risks: tag("risks"),
+      recommendations: tag("recommendations"),
+      interviewFindings: tag("interviewFindings"),
+      leadershipGuide: tag("leadershipGuide"),
       actionItems: items.length > 0 ? items : null,
     };
 

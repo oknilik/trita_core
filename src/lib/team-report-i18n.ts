@@ -57,6 +57,13 @@ interface LocalizableReport {
   translationsEn?: ReportTranslations | null;
 }
 
+/** Van-e jóváhagyott angol fordítás — a nézetek „magyar eredeti" jelzéséhez. */
+export function hasApprovedEnTranslation(report: {
+  translationsEn?: ReportTranslations | null;
+}): boolean {
+  return report.translationsEn?.en?.status === "approved";
+}
+
 /**
  * A riport narratív mezőit a kért nyelvre oldja fel: angol lekérésnél a
  * JÓVÁHAGYOTT fordítás mezői lépnek a magyar eredeti helyére (mezőnként,

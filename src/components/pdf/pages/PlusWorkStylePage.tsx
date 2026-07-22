@@ -1,10 +1,11 @@
-import { Page, View, Text } from "@react-pdf/renderer";
-import { s, colors } from "../styles";
+import { Page, View } from "@react-pdf/renderer";
+import { s } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
 import { PdfHowYouWork } from "../components/PdfHowYouWork";
 import { PdfRoleFit } from "../components/PdfRoleFit";
 import { PdfTakeaways } from "../components/PdfTakeaways";
 import { PdfNextStep } from "../components/PdfNextStep";
+import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t, tf } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
 
@@ -23,32 +24,16 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
 
   return (
     <Page size="A4" style={s.page}>
-      {/* Mini header */}
-      <View style={{ padding: "10 32 0", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderBottom: `1 solid ${colors.cream500}`, paddingBottom: 5, marginBottom: 4 }}>
-        <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: "rgba(26,26,46,0.2)" }}>
-          tri<Text style={{ color: "rgba(193,127,74,0.5)" }}>ta</Text>
-        </Text>
-        <Text style={{ fontSize: 6, color: colors.ink300 }}>
-          {data.userName} · {t("pdf.personalityProfile", locale)} · {planLabel} · {data.completedAt}
-        </Text>
-      </View>
+      <PdfMiniHeader userName={data.userName} planLabel={planLabel} date={data.completedAt} locale={locale} />
 
-      <View style={{ flex: 1, padding: "0 32 12" }}>
-        {/* How you work */}
-        <View style={s.sectionDivider} />
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4 }}>
-          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage }} />
-          <Text style={s.sectionEyebrowFirst}>{t("pdf.howYouWork", locale)}</Text>
-        </View>
-        <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
+      <View style={{ flex: 1, padding: "0 28 12" }}>
+        {/* ── Hogyan dolgozol ── */}
+        <PdfCard eyebrow={t("pdf.howYouWork", locale)}>
+          <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
+        </PdfCard>
 
-        {/* Role fit */}
-        <View style={s.sectionDivider} />
-        <View wrap={false}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4 }}>
-            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage }} />
-            <Text style={s.sectionEyebrowFirst}>{t("pdf.roleFit", locale)}</Text>
-          </View>
+        {/* ── Szerep-illeszkedés ── */}
+        <PdfCard eyebrow={t("pdf.roleFit", locale)} wrap={false}>
           <PdfRoleFit
             strong={pc.roleFit.strong}
             might={pc.roleFit.might}
@@ -57,15 +42,14 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
             mightRoles={pc.roleFit.mightRoles}
             prepRoles={pc.roleFit.prepRoles}
           />
-        </View>
+        </PdfCard>
 
-        {/* Takeaways */}
+        {/* ── Kulcs-tanulságok ── */}
         <View wrap={false}>
-          <View style={s.sectionDivider} />
           <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
         </View>
 
-        {/* Next step */}
+        {/* ── Következő lépés ── */}
         <View wrap={false}>
           <PdfNextStep
             text={

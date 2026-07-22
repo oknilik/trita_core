@@ -4,6 +4,7 @@ import { PdfFooter } from "../components/PdfFooter";
 import { PdfComparisonOverview, PdfComparisonBars, PdfBlindspots } from "../components/PdfComparison";
 import { PdfTakeaways } from "../components/PdfTakeaways";
 import { PdfCalloutBox } from "../components/PdfCalloutBox";
+import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t, tf } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
 
@@ -50,54 +51,51 @@ export function ReflectPage({ data, pageNum, totalPages, locale }: Props) {
 
   return (
     <Page size="A4" style={s.page}>
-      <View style={{ padding: "10 32 0", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderBottom: `1 solid ${colors.cream500}`, paddingBottom: 5, marginBottom: 4 }}>
-        <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: "rgba(26,26,46,0.2)" }}>tri<Text style={{ color: "rgba(193,127,74,0.5)" }}>ta</Text></Text>
-        <Text style={{ fontSize: 6, color: colors.ink300 }}>
-          {data.userName} · {t("pdf.personalityProfile", locale)} · Plus · {data.completedAt}
-        </Text>
-      </View>
+      <PdfMiniHeader userName={data.userName} planLabel="Plus" date={data.completedAt} locale={locale} />
 
-      <View style={{ flex: 1, padding: "0 32 12" }}>
-        {/* Section header */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4 }}>
-          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.sage }} />
-          <Text style={s.sectionEyebrow}>{t("pdf.selfVsFeedback", locale)}</Text>
-        </View>
-        <Text style={{ fontFamily: "Fraunces", fontSize: 11, color: colors.ink, marginBottom: 6 }}>
-          {t("pdf.howDoOthersSeeYou", locale)}
-        </Text>
-
-        {/* Opening callout */}
-        <PdfCalloutBox variant="sage">
-          <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
-            {summarySentence}
+      <View style={{ flex: 1, padding: "0 28 12" }}>
+        {/* ── Önkép vs. visszajelzés ── */}
+        <PdfCard eyebrow={t("pdf.selfVsFeedback", locale)}>
+          <Text style={{ fontFamily: "Fraunces", fontSize: 11, color: colors.ink, marginBottom: 6 }}>
+            {t("pdf.howDoOthersSeeYou", locale)}
           </Text>
-        </PdfCalloutBox>
 
-        {/* Overview */}
-        <PdfComparisonOverview
-          isGoodMatch={isGoodMatch}
-          matchCount={matchCount}
-          diffCount={diffCount}
-          avgGap={avgGap}
-          observerCount={obs.count}
-          toplineSummary={toplineSummary}
-          locale={locale}
-        />
+          {/* Opening callout */}
+          <PdfCalloutBox variant="sage">
+            <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+              {summarySentence}
+            </Text>
+          </PdfCalloutBox>
 
-        {/* Bars */}
-        <PdfComparisonBars dimensions={obs.dimensions} locale={locale} />
+          {/* Overview */}
+          <PdfComparisonOverview
+            isGoodMatch={isGoodMatch}
+            matchCount={matchCount}
+            diffCount={diffCount}
+            avgGap={avgGap}
+            observerCount={obs.count}
+            toplineSummary={toplineSummary}
+            locale={locale}
+          />
 
-        {/* Blindspots */}
-        <PdfBlindspots blindspots={blindspots} noBlindspots={noBlindspots} locale={locale} />
+          {/* Bars */}
+          <PdfComparisonBars dimensions={obs.dimensions} locale={locale} />
+        </PdfCard>
 
-        {/* Summary */}
+        {/* ── Vakfoltok ── */}
+        <PdfCard>
+          <PdfBlindspots blindspots={blindspots} noBlindspots={noBlindspots} locale={locale} />
+        </PdfCard>
+
+        {/* ── Összegzés ── */}
         {obs.summaryPoints.length > 0 && (
-          <PdfTakeaways takeaways={obs.summaryPoints} locale={locale} />
+          <View wrap={false} style={{ marginBottom: 8 }}>
+            <PdfTakeaways takeaways={obs.summaryPoints} locale={locale} />
+          </View>
         )}
 
-        {/* What to do with this */}
-        <View style={{ borderTop: `1 solid ${colors.cream500}`, paddingTop: 6, marginTop: 8 }}>
+        {/* ── Mit kezdj ezzel ── */}
+        <View style={{ borderTop: `1 solid ${colors.sand}`, paddingTop: 6 }}>
           <Text style={{ fontSize: 6, letterSpacing: 1, textTransform: "uppercase", color: colors.ink300, fontWeight: 600, marginBottom: 3 }}>
             {t("pdf.whatToDoWithThis", locale)}
           </Text>
