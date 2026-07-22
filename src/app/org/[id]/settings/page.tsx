@@ -2,14 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { t, tf } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { requireOrgRole } from "@/lib/auth";
-import {
-  trialDaysLeft as calcTrialDaysLeft,
-  getPlanTier,
-  PLAN_SEAT_LIMITS,
-  calculateExtraSeats,
-} from "@/lib/subscription";
 import {
   resolveOrgPolicySnapshot,
   toOrgSubscriptionBannerState,
@@ -42,29 +36,21 @@ export default async function OrgSettingsPage({
     orgRole: role,
   });
 
-  const [members, memberCount, pendingCount] = await Promise.all([
-    prisma.organizationMember.findMany({
-      where: { orgId },
-      orderBy: { joinedAt: "asc" },
-      select: {
-        userId: true,
-        role: true,
-        user: { select: { id: true, email: true, username: true } },
-      },
-    }),
-    prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
-    prisma.organizationPendingInvite.count({ where: { orgId } }),
-  ]);
+  const members = await prisma.organizationMember.findMany({
+    where: { orgId },
+    orderBy: { joinedAt: "asc" },
+    select: {
+      userId: true,
+      role: true,
+      user: { select: { id: true, email: true, username: true } },
+    },
+  });
 
-  const sub = policySnapshot.subscription;
-  const daysLeft = calcTrialDaysLeft(sub);
-  const subStatus = sub?.status ?? "none";
+  // Az előfizetés-adatok (státusz, csomag, férőhelyek) nem jelennek meg itt —
+  // az előfizetést a platform-admin kezeli (konzultáció-vezérelt működés).
+  // A státusz-banner marad: az magyarázza, miért read-only a felület.
   const bannerState = toOrgSubscriptionBannerState(policySnapshot.policy.policyState);
   const isReadOnly = !policySnapshot.policy.capabilities.has("orgAdminManage");
-  const tier = getPlanTier(sub);
-  const includedSeats = PLAN_SEAT_LIMITS[tier];
-  const extraSeats = calculateExtraSeats(sub, memberCount);
-  const trialEnd = sub?.trialEndsAt?.toISOString() ?? null;
 
   return (
     <div className="min-h-dvh bg-cream">
@@ -116,135 +102,6 @@ export default async function OrgSettingsPage({
             <OrgRenameForm orgId={orgId} currentName={org.name} locale={locale} />
           )}
         </Card>
-
-        {/* Előfizetés */}
-        <Card as="section" spacing="lg" className="md:p-8">
-          <SectionEyebrow className="mb-1">
-            {t("org.settings.subscriptionEyebrow", locale)}
-          </SectionEyebrow>
-          <h2 className="font-fraunces text-xl text-ink mb-5">
-            {t("org.settings.subscriptionTitle", locale)}
-          </h2>
-
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                    subStatus === "active"
-                      ? "bg-[rgba(26,92,58,0.08)] text-sage"
-                      : subStatus === "trialing"
-                      ? "bg-[rgba(200,65,10,0.08)] text-bronze"
-                      : "bg-sand text-ink-body"
-                  }`}
-                >
-                  {subStatus === "active"
-                    ? t("org.settings.statusActive", locale)
-                    : subStatus === "trialing"
-                    ? "Trial"
-                    : subStatus === "past_due"
-                    ? t("org.settings.statusPastDue", locale)
-                    : subStatus === "canceled"
-                    ? t("org.settings.statusCanceled", locale)
-                    : t("org.settings.statusNone", locale)}
-                </span>
-                {subStatus === "trialing" && trialEnd && (
-                  <span className="text-xs text-ink-warm">
-                    {daysLeft !== null && daysLeft > 0
-                      ? tf("org.settings.trialDaysLeft", locale, { days: daysLeft })
-                      : t("org.settings.trialExpiresToday", locale)}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-muted">
-                {subStatus === "active"
-                  ? t("org.settings.accessActive", locale)
-                  : subStatus === "trialing"
-                  ? t("org.settings.trialInfo", locale)
-                  : t("org.settings.activatePrompt", locale)}
-              </p>
-            </div>
-
-            <div className="flex flex-shrink-0 gap-2">
-              <a
-                href="/contact"
-                className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white hover:bg-sage-dark transition-colors"
-              >
-                {isHu ? "Kapcsolatfelvétel →" : "Contact us →"}
-              </a>
-            </div>
-          </div>
-        </Card>
-
-        {/* Seat info — team / org plans only */}
-        {tier !== "scale" && tier !== "none" && includedSeats !== Infinity && (
-          <Card as="section" spacing="lg" className="md:p-8">
-            <SectionEyebrow className="mb-1">
-              {t("org.settings.seatsEyebrow", locale)}
-            </SectionEyebrow>
-            <h2 className="font-fraunces text-xl text-ink mb-5">
-              {t("org.settings.seatsTitle", locale)}
-            </h2>
-
-            <div className="flex items-start justify-between gap-6">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-2 mb-3">
-                  <span className="font-fraunces text-3xl text-ink">
-                    {memberCount}
-                  </span>
-                  <span className="text-sm text-ink-body">
-                    / {includedSeats} {t("org.settings.includedSeats", locale)}
-                  </span>
-                </div>
-
-                <div className="h-2 w-full max-w-xs rounded-full bg-sand overflow-hidden mb-3">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      memberCount > includedSeats ? "bg-sage" : "bg-sage"
-                    }`}
-                    style={{
-                      width: `${Math.min(100, Math.round((memberCount / includedSeats) * 100))}%`,
-                    }}
-                  />
-                </div>
-
-                {extraSeats > 0 ? (
-                  <p className="text-sm text-bronze">
-                    {tf("org.settings.extraSeatsInfo", locale, { extra: extraSeats, plural: extraSeats !== 1 && locale === "en" ? "s" : "" })}
-                  </p>
-                ) : (
-                  <p className="text-sm text-ink-body">
-                    {tf("org.settings.seatsAvailable", locale, { available: includedSeats - memberCount, plural: (includedSeats - memberCount) !== 1 && locale === "en" ? "s" : "" })}
-                  </p>
-                )}
-
-                {pendingCount > 0 && (
-                  <p className="text-xs text-muted mt-1">
-                    {tf("org.settings.pendingInvites", locale, { count: pendingCount, plural: pendingCount !== 1 && locale === "en" ? "s" : "" })}
-                  </p>
-                )}
-              </div>
-
-              {/* Upgrade hint for team plan near limit */}
-              {tier === "team" && memberCount >= includedSeats - 2 && (
-                <div className="shrink-0 rounded-xl border border-sand bg-cream p-4 text-xs max-w-[200px]">
-                  <p className="font-semibold text-ink mb-1">
-                    {t("org.settings.needMoreSeats", locale)}
-                  </p>
-                  <p className="text-ink-body mb-2">
-                    {t("org.settings.upgradeHint", locale)}
-                  </p>
-                  <a
-                    href="/contact"
-                    className="font-semibold text-bronze hover:underline"
-                  >
-                    {t("org.settings.upgradeLink", locale)}
-                  </a>
-                </div>
-                )}
-              </div>
-          </Card>
-        )}
 
         {/* Member roles */}
         <Card as="section" spacing="lg" className="md:p-8">
