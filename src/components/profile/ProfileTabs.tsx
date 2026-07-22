@@ -16,6 +16,8 @@ import {
   ObserverFlowStrip,
 } from "@/components/results/ObserverFlowStatusCard";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
+import { TRITAN_ORDER, TRITAN_DIM_ABBR } from "@/lib/tritan";
+import type { TritanDimCode } from "@/lib/tritan";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
@@ -706,7 +708,15 @@ export function ProfileTabs({
           setPdfLoading(true);
           try {
             const { downloadPdf } = await import("@/components/pdf/TritaPdf");
-            const mainDims = dimensions.filter((d) => d.code !== "I");
+            // Kanonikus TRITAN-sorrend (T·R·I·T·A·N) — a PDF radar, sávok és
+            // facet-oldalak is ebben a rendben jelennek meg, a felülettel egyezően.
+            const tritanIndex = (code: string) => {
+              const i = (TRITAN_ORDER as readonly string[]).indexOf(code);
+              return i === -1 ? TRITAN_ORDER.length : i;
+            };
+            const mainDims = dimensions
+              .filter((d) => d.code !== "I")
+              .sort((a, b) => tritanIndex(a.code) - tritanIndex(b.code));
             // Build bullet-based insights from dimension data
             const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
             const highDims = mainDims.filter((d) => d.score >= 70);
@@ -790,7 +800,9 @@ export function ProfileTabs({
               riskInsight,
               dimensions: mainDims.map((d) => ({
                 name: d.label,
-                shortName: d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label,
+                shortName:
+                  TRITAN_DIM_ABBR[d.code as TritanDimCode]?.[isHu ? "hu" : "en"] ??
+                  (d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label),
                 value: d.score,
                 description: d.insight,
               })),

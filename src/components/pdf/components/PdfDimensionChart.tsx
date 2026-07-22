@@ -1,0 +1,105 @@
+import { View, Text, Svg, Polygon, Line, Circle, Text as SvgText } from "@react-pdf/renderer";
+import { colors } from "../styles";
+import { getDimensionTier } from "@/lib/dimension-utils";
+
+// Az élő riport radar-chartjának PDF-megfelelője: hatszög-háló a
+// TRITAN-dimenziókkal + kompakt sávok. A dims tömb a kanonikus
+// TRITAN-sorrendben érkezik (TEMP · RESO · INTE · THOR · ADAP · OPEN).
+
+interface Dim {
+  name: string;
+  shortName: string;
+  value: number;
+}
+
+const tierColor = (tier: string) =>
+  tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
+
+function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
+  const n = dims.length || 6;
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 - 16;
+
+  const point = (i: number, r: number): [number, number] => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  };
+  const ringPoints = (r: number) =>
+    dims.map((_, i) => point(i, r).map((v) => v.toFixed(2)).join(",")).join(" ");
+  const valuePoints = dims
+    .map((d, i) => point(i, (R * Math.max(0, Math.min(100, d.value))) / 100).map((v) => v.toFixed(2)).join(","))
+    .join(" ");
+
+  return (
+    <Svg width={size} height={size}>
+      {/* Háló-gyűrűk */}
+      <Polygon points={ringPoints(R)} fill={colors.cream} stroke={colors.sand} strokeWidth={0.8} />
+      {[0.75, 0.5, 0.25].map((f) => (
+        <Polygon key={f} points={ringPoints(R * f)} fill="none" stroke={colors.sand} strokeWidth={0.6} />
+      ))}
+      {/* Tengelyek */}
+      {dims.map((_, i) => {
+        const [x, y] = point(i, R);
+        return <Line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke={colors.sand} strokeWidth={0.6} />;
+      })}
+      {/* Érték-poligon */}
+      <Polygon
+        points={valuePoints}
+        fill={colors.sage}
+        fillOpacity={0.16}
+        stroke={colors.sage}
+        strokeWidth={1.2}
+      />
+      {/* Csúcspontok */}
+      {dims.map((d, i) => {
+        const [x, y] = point(i, (R * Math.max(0, Math.min(100, d.value))) / 100);
+        return <Circle key={i} cx={x} cy={y} r={1.6} fill={colors.sage} />;
+      })}
+      {/* Tengely-címkék */}
+      {dims.map((d, i) => {
+        const [x, y] = point(i, R + 9);
+        return (
+          <SvgText
+            key={i}
+            x={x}
+            y={y + 2}
+            textAnchor="middle"
+            fill={colors.ink300}
+            style={{ fontFamily: "DM Sans", fontSize: 5.5 }}
+          >
+            {d.shortName}
+          </SvgText>
+        );
+      })}
+    </Svg>
+  );
+}
+
+export function PdfDimensionChart({ dims }: { dims: Dim[] }) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 4 }}>
+      {/* Radar — látványelem, az élő riporttal azonos */}
+      <RadarSvg dims={dims} size={128} />
+
+      {/* Kompakt sávok — dimenziónként érték + szint-szín */}
+      <View style={{ flex: 1 }}>
+        {dims.map((d) => {
+          const tier = getDimensionTier(d.value);
+          const tc = tierColor(tier);
+          return (
+            <View key={d.name} style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 5 }}>
+              <Text style={{ width: 62, fontSize: 6, color: colors.ink500 }}>{d.name}</Text>
+              <View style={{ flex: 1, height: 3, backgroundColor: colors.cream300, borderRadius: 1.5 }}>
+                <View style={{ width: `${Math.max(0, Math.min(100, d.value))}%`, height: 3, backgroundColor: tc, borderRadius: 1.5 }} />
+              </View>
+              <Text style={{ width: 16, fontFamily: "Fraunces", fontSize: 8, color: tc, textAlign: "right" }}>
+                {d.value}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+}

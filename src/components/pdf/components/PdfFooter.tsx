@@ -4,14 +4,20 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 interface PdfFooterProps {
-  pageNum: number;
-  totalPages: number;
+  /** @deprecated — az oldalszám dinamikus (render prop), a props csak kompatibilitás miatt marad. */
+  pageNum?: number;
+  /** @deprecated */
+  totalPages?: number;
   locale?: Locale;
 }
 
-export function PdfFooter({ pageNum, totalPages, locale = "hu" }: PdfFooterProps) {
+// Fixed lábléc dinamikus oldalszámmal: ha egy szekció átcsúszik a
+// következő oldalra, a számozás és a lábléc ott is helyes marad.
+
+export function PdfFooter({ locale = "hu" }: PdfFooterProps) {
   return (
     <View
+      fixed
       style={{
         position: "absolute",
         bottom: 0,
@@ -23,16 +29,14 @@ export function PdfFooter({ pageNum, totalPages, locale = "hu" }: PdfFooterProps
         alignItems: "center",
         fontSize: 5,
         color: colors.ink300,
-        borderTop: `0.5 solid ${colors.cream500}`,
+        borderTop: `0.5 solid ${colors.sand}`,
       }}
     >
-      <Text style={{ fontFamily: "Fraunces", fontSize: 6, color: "#3d6b5e" }}>
-        tri<Text style={{ color: "#c17f4a" }}>ta</Text>
+      <Text style={{ fontFamily: "Fraunces", fontSize: 6, color: colors.sage }}>
+        tri<Text style={{ color: colors.bronze }}>ta</Text>
       </Text>
       <Text>trita.io · {t("pdf.footerTagline", locale)}</Text>
-      <Text>
-        {pageNum} / {totalPages}
-      </Text>
+      <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
     </View>
   );
 }

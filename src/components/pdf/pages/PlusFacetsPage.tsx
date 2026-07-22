@@ -57,11 +57,12 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
       <PdfMiniHeader userName={data.userName} planLabel={planLabel} date={data.completedAt} locale={locale} />
 
       <View style={{ flex: 1, padding: "0 28 12" }}>
-        {/* ── Alskálák részletesen ── */}
-        <PdfCard eyebrow={t("pdf.subscalesInDetail", locale)}>
+        {/* ── Alskálák részletesen — hosszú blokk, ez az egyetlen kártya,
+            amely oldalhatáron törhet (wrap); a belső elemek egyben maradnak ── */}
+        <PdfCard eyebrow={t("pdf.subscalesInDetail", locale)} wrap>
           {/* Top facet highlight callout */}
           {allFacets.length > 0 && (
-            <View style={{ backgroundColor: colors.sage100, borderLeft: `2 solid ${colors.sage}`, borderTopRightRadius: 5, borderBottomRightRadius: 5, padding: "6 8", marginBottom: 8 }}>
+            <View wrap={false} style={{ backgroundColor: colors.sage100, borderLeft: `2 solid ${colors.sage}`, borderTopRightRadius: 5, borderBottomRightRadius: 5, padding: "6 8", marginBottom: 8 }}>
               <Text style={{ fontSize: 5.5, letterSpacing: 0.6, textTransform: "uppercase", fontWeight: 700, color: colors.sageDark, marginBottom: 4 }}>
                 {t("pdf.topSubscales", locale)}
               </Text>
@@ -101,7 +102,7 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
         )}
 
         {/* ── Összegzés — meleg zárókártya a korábbi sötét doboz helyett ── */}
-        <View style={{ backgroundColor: colors.sage100, borderRadius: 8, border: `1 solid rgba(61,107,94,0.15)`, padding: "8 10" }}>
+        <View wrap={false} style={{ backgroundColor: colors.sage100, borderRadius: 8, border: `1 solid rgba(61,107,94,0.15)`, padding: "8 10" }}>
           <Text style={{ fontSize: 5, letterSpacing: 1, textTransform: "uppercase", color: colors.sageDark, fontWeight: 600, marginBottom: 3 }}>
             {t("pdf.whatDoesThisMeanOverall", locale)}
           </Text>

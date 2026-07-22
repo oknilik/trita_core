@@ -3,16 +3,18 @@ import { s, colors } from "../styles";
 import { PdfHeader } from "../components/PdfHeader";
 import { PdfFooter } from "../components/PdfFooter";
 import { PdfInsightPair } from "../components/PdfInsightPair";
-import { PdfDimStrip } from "../components/PdfDimStrip";
+import { PdfDimensionChart } from "../components/PdfDimensionChart";
 import { PdfDimDetails } from "../components/PdfDimDetails";
 import { PdfTeamRoles } from "../components/PdfTeamRoles";
 import { PdfCalloutBox } from "../components/PdfCalloutBox";
-import { CardEyebrow } from "../components/PdfCard";
+import { PdfCard } from "../components/PdfCard";
 import { t } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
 
 // Az élő riport tükre: krém vásznon fehér kártya-szekciók, bronz
 // eyebrow-fejlécekkel (a felület DashboardPanel + SectionHeader párja).
+// Minden kártya egyben marad (wrap=false); túlcsordulásnál a fejléc
+// fixed-ként a folytatás-oldalon is megismétlődik.
 
 interface Props {
   data: PdfData;
@@ -26,28 +28,28 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
 
   return (
     <Page size="A4" style={s.page}>
-      <PdfHeader
-        name={data.userName}
-        date={data.completedAt}
-        type={data.personalityType}
-        percentile={data.percentile}
-        insight={data.heroInsight}
-        plan={data.plan}
-        locale={locale}
-        topDimensions={data.topDimensions}
-        watchDimensions={data.watchDimensions}
-      />
+      <View fixed>
+        <PdfHeader
+          name={data.userName}
+          date={data.completedAt}
+          type={data.personalityType}
+          percentile={data.percentile}
+          insight={data.heroInsight}
+          plan={data.plan}
+          locale={locale}
+          topDimensions={data.topDimensions}
+          watchDimensions={data.watchDimensions}
+        />
+      </View>
       <View style={s.body}>
         {/* ── Áttekintés ── */}
-        <View style={s.card}>
-          <CardEyebrow label={t("pdf.overview", locale)} />
+        <PdfCard eyebrow={t("pdf.overview", locale)}>
           <PdfInsightPair strengths={data.strengthBullets} watchAreas={data.watchBullets} locale={locale} />
-        </View>
+        </PdfCard>
 
-        {/* ── Dimenziók ── */}
-        <View style={s.card}>
-          <CardEyebrow label={t("pdf.personalityDimensions", locale)} />
-          <PdfDimStrip dimensions={data.dimensions} />
+        {/* ── Dimenziók — radar + sávok, TRITAN-sorrendben ── */}
+        <PdfCard eyebrow={t("pdf.personalityDimensions", locale)}>
+          <PdfDimensionChart dims={data.dimensions} />
 
           {/* Profil karakter callout */}
           {data.profileCharacter && (
@@ -57,23 +59,21 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
               </Text>
             </PdfCalloutBox>
           )}
-        </View>
+        </PdfCard>
 
         {/* ── Top 3 dimenzió részletesen ── */}
-        <View style={s.card}>
-          <CardEyebrow label={t("pdf.dimensionsInDetail", locale)} />
-          <PdfDimDetails dimensions={data.dimensions} />
-        </View>
+        <PdfCard eyebrow={t("pdf.dimensionsInDetail", locale)}>
+          <PdfDimDetails dimensions={data.dimensions} previewOnly hasPlus={hasPlus} locale={locale} />
+        </PdfCard>
 
         {/* ── Csapatszerepek ── */}
-        <View style={s.card}>
-          <CardEyebrow label={t("pdf.teamRoles", locale)} />
+        <PdfCard eyebrow={t("pdf.teamRoles", locale)}>
           <PdfTeamRoles roles={data.teamRoleRoles} />
-        </View>
+        </PdfCard>
 
         {/* ── Start upsell ── */}
         {!hasPlus && (
-          <View style={{ backgroundColor: colors.cream300, borderRadius: 8, border: `1 solid ${colors.sand}`, padding: "8 10" }}>
+          <View wrap={false} style={{ backgroundColor: colors.cream300, borderRadius: 8, border: `1 solid ${colors.sand}`, padding: "8 10" }}>
             <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: colors.ink, marginBottom: 3 }}>
               {t("pdf.wantToGoDeeper", locale)}
             </Text>

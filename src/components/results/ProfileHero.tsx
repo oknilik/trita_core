@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
@@ -47,6 +48,21 @@ export function ProfileHero({
   watchDimensions = [],
 }: ProfileHeroProps) {
   const { locale } = useLocale();
+
+  // PDF-gomb finom visszajelzése: generálás alatt pörgő progress,
+  // siker után zöld pipa, ami pár másodperc múlva magától eltűnik.
+  const [pdfDone, setPdfDone] = useState(false);
+  const wasPdfLoading = useRef(false);
+  useEffect(() => {
+    const was = wasPdfLoading.current;
+    wasPdfLoading.current = Boolean(pdfLoading);
+    if (was && !pdfLoading) {
+      setPdfDone(true);
+      const id = setTimeout(() => setPdfDone(false), 2600);
+      return () => clearTimeout(id);
+    }
+  }, [pdfLoading]);
+
   const level = LEVEL_CONFIG[accessLevel];
   const initial = getAvatarMonogram(userName, { length: 1 });
   const [avatarFrom, avatarTo] = getAvatarGradient(userName);
@@ -180,10 +196,30 @@ export function ProfileHero({
             onClick={onDownloadPdf}
             disabled={pdfLoading}
             variant="primary"
-            className="rounded-[9px] px-[18px] text-[11px] font-medium text-white hover:brightness-110"
+            className="rounded-[9px] px-[18px] text-[11px] font-medium text-white transition-all duration-300 hover:brightness-110"
             style={{ backgroundColor: selfTheme.primary }}
           >
-            📄 {pdfLoading ? "..." : t("results.heroPdf", locale)}
+            {pdfLoading ? (
+              <span className="inline-flex items-center gap-2">
+                <span
+                  aria-hidden
+                  className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                />
+                {t("results.heroPdf", locale)}
+              </span>
+            ) : pdfDone ? (
+              <span className="inline-flex items-center gap-2">
+                <span
+                  aria-hidden
+                  className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-400 text-[9px] font-bold leading-none text-white"
+                >
+                  ✓
+                </span>
+                {t("results.heroPdf", locale)}
+              </span>
+            ) : (
+              <>📄 {t("results.heroPdf", locale)}</>
+            )}
           </Button>
         </div>
       )}

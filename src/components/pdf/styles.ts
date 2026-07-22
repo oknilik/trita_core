@@ -69,15 +69,15 @@ export const s = StyleSheet.create({
   },
   body: {
     flex: 1,
-    padding: "12 28 10 28",
+    padding: "14 28 12 28",
   },
   // Fehér kártya — az élő felület DashboardPanel-jének megfelelője.
   card: {
     backgroundColor: colors.white,
     borderRadius: 8,
     border: `1 solid ${colors.sand}`,
-    padding: "10 12",
-    marginBottom: 8,
+    padding: "11 13",
+    marginBottom: 10,
   },
   // Kártya-fejléc: bronz vonal-jelzés + eyebrow (DashboardSectionHeader).
   cardEyebrowRow: {

@@ -17,10 +17,13 @@ export function CardEyebrow({ label }: { label: string }) {
   );
 }
 
+// Alapértelmezetten wrap={false}: egy kártya (összetartozó blokk) nem
+// törik ketté oldalhatáron — ha nem fér ki, egyben csúszik a következő
+// oldalra. Több oldalt igénylő, hosszú tartalomnál wrap={true} kérhető.
 export function PdfCard({
   eyebrow,
   children,
-  wrap = true,
+  wrap = false,
 }: {
   eyebrow?: string;
   children: ReactNode;
@@ -48,7 +51,9 @@ export function PdfMiniHeader({
   locale?: Locale;
 }) {
   return (
-    <View>
+    // fixed: ha az oldal tartalma átfolyik, a folytatás-oldalak tetején is
+    // megjelenik — egységes marad a kép többoldalas tördelésnél is.
+    <View fixed>
       <View style={{ height: 3, backgroundColor: colors.sage }} />
       <View
         style={{
@@ -58,7 +63,7 @@ export function PdfMiniHeader({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: 12,
         }}
       >
         <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: colors.sage }}>
