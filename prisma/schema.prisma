@@ -135,6 +135,9 @@ model UserProfile {
   // Notifications
   notifications Notification[]
 
+  // Beérkezett kérdések/érdeklődések (contact form), email-alapú auto-linkkel
+  inquiries Inquiry[]
+
   @@index([activeOrgId])
 }
 
@@ -410,6 +413,7 @@ model Organization {
   campaigns        Campaign[]
   subscription     Subscription?
   candidateCredits CandidateCredit[]
+  inquiries        Inquiry[]
 
   @@index([ownerId])
 }
@@ -773,6 +777,34 @@ enum NotificationType {
   OBSERVER_APPROVAL_REQUESTED
   OBSERVER_INVITE_APPROVED
   OBSERVER_INVITE_DECLINED
+  INQUIRY_RECEIVED
+}
+
+// Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).
+// A user/org link opcionális: beküldéskor email-alapú auto-link, az admin
+// felületen kézzel is köthető-oldható. Status: NEW | IN_PROGRESS | CLOSED
+// (string, a szerep-mintát követve — nem enum).
+model Inquiry {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  company        String?
+  topic          String
+  message        String
+  source         String   @default("contact_form")
+  status         String   @default("NEW")
+  adminNote      String?
+  userProfileId  String?
+  organizationId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  userProfile  UserProfile?  @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([organizationId])
+  @@index([email])
 }
 
 model Notification {

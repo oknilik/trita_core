@@ -59,6 +59,13 @@ export const notificationTranslations = {
         en: "Your observer invite to {targetLabel} was not approved by your manager. Please check with them if needed.",
       },
     },
+    inquiryReceived: {
+      title: { hu: "Új kérdés érkezett", en: "New inquiry received" },
+      body: {
+        hu: "{name} kérdést küldött ({topic}). Nézd meg és válaszolj rá.",
+        en: "{name} sent an inquiry ({topic}). Review and respond.",
+      },
+    },
     campaignClosed: {
       title: { hu: "Kampány lezárva", en: "Campaign closed" },
       body: { hu: "A(z) \"{campaignName}\" kampány lezárult.", en: "The \"{campaignName}\" campaign has closed." },

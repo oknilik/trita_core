@@ -273,6 +273,27 @@ export default async function OrgDetailPage({
     };
   }
 
+  // Beérkezett kérdések — csak tanácsadói felületen (Kérdések fül)
+  const inquiries = isConsultantView
+    ? await prisma.inquiry.findMany({
+        where: { organizationId: orgId },
+        orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+        take: 100,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          topic: true,
+          message: true,
+          status: true,
+          adminNote: true,
+          source: true,
+          createdAt: true,
+          userProfile: { select: { username: true, email: true } },
+        },
+      })
+    : null;
+
   const serializedMembers = members.map((m) => ({
     id: m.id,
     userId: m.userId,
@@ -499,6 +520,22 @@ export default async function OrgDetailPage({
           members={serializedMembers}
           pendingInvites={serializedPendingInvites}
           teams={serializedTeams}
+          inquiries={
+            inquiries
+              ? inquiries.map((row) => ({
+                  id: row.id,
+                  name: row.name,
+                  email: row.email,
+                  topic: row.topic,
+                  message: row.message,
+                  status: row.status,
+                  adminNote: row.adminNote,
+                  source: row.source,
+                  createdAt: row.createdAt.toISOString(),
+                  user: row.userProfile,
+                }))
+              : null
+          }
         />
       </Suspense>
     </PlatformPageShell>

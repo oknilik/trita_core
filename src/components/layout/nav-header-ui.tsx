@@ -128,6 +128,8 @@ interface NavHeaderUIProps {
   role: string;
   activeCampaignCount: number;
   hasHiringAccess: boolean;
+  /** Platform-admin (ADMIN_EMAILS) — az Admin vezérlő menüpont kapuja. */
+  isPlatformAdmin?: boolean;
 }
 
 export function NavHeaderUI({
@@ -138,6 +140,7 @@ export function NavHeaderUI({
   role,
   activeCampaignCount,
   hasHiringAccess,
+  isPlatformAdmin = false,
 }: NavHeaderUIProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -444,6 +447,26 @@ export function NavHeaderUI({
                 })}
               </div>
             </div>
+          ) : null}
+
+          {/* Platform-admin belépő — az org-váltó alatt, csak ADMIN_EMAILS usernek */}
+          {isPlatformAdmin ? (
+            <Link
+              href="/admin"
+              onClick={closeAll}
+              data-testid="nav-admin-dashboard"
+              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="5" height="5" rx="1" />
+                  <rect x="9" y="2" width="5" height="5" rx="1" />
+                  <rect x="2" y="9" width="5" height="5" rx="1" />
+                  <rect x="9" y="9" width="5" height="5" rx="1" />
+                </svg>
+              </span>
+              <span>Admin vezérlő</span>
+            </Link>
           ) : null}
 
           {/* Tanácsadói ügyfél-org létrehozás — csak consulting-led módban */}

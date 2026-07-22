@@ -20,6 +20,7 @@ export {
   handleObserverColleagueInvited,
   handleObserverApprovalRequested,
   handleObserverInviteDecision,
+  handleInquiryReceived,
   checkTrialNotifications,
 } from "./orchestrator";
 

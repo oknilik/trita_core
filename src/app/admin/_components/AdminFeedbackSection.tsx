@@ -31,12 +31,29 @@ function roleLabel(industryKey: string, roleKey: string): string {
   return `${role.hu} · ${industry.hu}`;
 }
 
+export interface SatisfactionSummary {
+  count: number;
+  avgAgreement: number;
+  avgObserverUsefulness: number;
+  avgSiteUsefulness: number;
+}
+
+export interface DimensionAverage {
+  dimensionCode: string;
+  avgRating: number;
+  count: number;
+}
+
 export function AdminFeedbackSection({
   roleFitAggregates,
   interests,
+  satisfactionSummary,
+  dimensionAverages,
 }: {
   roleFitAggregates: RoleFitAggregate[];
   interests: InterestRow[];
+  satisfactionSummary: SatisfactionSummary;
+  dimensionAverages: DimensionAverage[];
 }) {
   const totalVotes = roleFitAggregates.reduce(
     (sum, r) => sum + r.accurate + r.inaccurate,
@@ -45,6 +62,65 @@ export function AdminFeedbackSection({
 
   return (
     <div className="mt-8 flex flex-col gap-8">
+      {/* Elégedettség + dimenzió-pontosság (a megszűnt Kutatás fülről) */}
+      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+          {"// elégedettség"}
+        </p>
+        <h2 className="mt-1 font-fraunces text-xl text-ink">
+          Kitöltés utáni visszajelzések ({satisfactionSummary.count})
+        </h2>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-lg border border-sand bg-cream p-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              Egyetértés (átl.)
+            </p>
+            <p className="mt-2 text-2xl font-bold text-ink">
+              {satisfactionSummary.avgAgreement}/5
+            </p>
+          </div>
+          <div className="rounded-lg border border-sand bg-cream p-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              Observer-visszajelzés haszna (átl.)
+            </p>
+            <p className="mt-2 text-2xl font-bold text-ink">
+              {satisfactionSummary.avgObserverUsefulness}/5
+            </p>
+          </div>
+          <div className="rounded-lg border border-sand bg-cream p-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              Oldal haszna (átl.)
+            </p>
+            <p className="mt-2 text-2xl font-bold text-ink">
+              {satisfactionSummary.avgSiteUsefulness}/5
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">
+            Dimenzió-pontosság — TRITAN
+          </h3>
+          <div className="space-y-2">
+            {dimensionAverages.length > 0 ? (
+              dimensionAverages.map((dim) => (
+                <div
+                  key={dim.dimensionCode}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <span className="font-medium text-ink-body">{dim.dimensionCode}</span>
+                  <span className="text-ink">
+                    {dim.avgRating}/5{" "}
+                    <span className="text-muted">({dim.count})</span>
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-muted">Még nincs visszajelzés.</p>
+            )}
+          </div>
+        </div>
+      </section>
       {/* Szerep-kalibráció */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">

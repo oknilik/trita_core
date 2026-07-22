@@ -424,3 +424,48 @@ export async function handleObserverInviteDecision(params: {
     dedupeKey: `${type}:${params.invitationId}`,
   });
 }
+
+// ── Inquiry events ──────────────────────────────────────────────────────────
+
+/**
+ * Új kérdés/érdeklődés érkezett (contact form). Címzettek: a platform-adminok,
+ * és — ha a kérdés szervezethez kötött — az org tanácsadói (ORG_CONSULTANT).
+ */
+export async function handleInquiryReceived(params: {
+  inquiryId: string;
+  senderName: string;
+  topicLabel: string;
+  organizationId?: string | null;
+  adminUserIds: string[];
+}) {
+  const meta = NOTIFICATION_TYPE_META.INQUIRY_RECEIVED;
+
+  const consultantIds = params.organizationId
+    ? (
+        await prisma.organizationMember.findMany({
+          where: { orgId: params.organizationId, role: "ORG_CONSULTANT" },
+          select: { userId: true },
+        })
+      ).map((m) => m.userId)
+    : [];
+
+  // Szerep-szerinti link: admin az admin-felületre, tanácsadó a saját
+  // org-cockpitjának Kérdések fülére (az /admin-t nem éri el).
+  const adminIdSet = new Set(params.adminUserIds);
+  const recipientIds = [...new Set([...params.adminUserIds, ...consultantIds])];
+  await persistNotificationBatch(
+    recipientIds.map((userId) => ({
+      userId,
+      type: "INQUIRY_RECEIVED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { name: params.senderName, topic: params.topicLabel },
+      link: adminIdSet.has(userId)
+        ? "/admin?tab=inquiries"
+        : `/org/${params.organizationId}?tab=inquiries`,
+      sourceType: "inquiry" as const,
+      sourceId: params.inquiryId,
+      dedupeKey: `INQUIRY_RECEIVED:${params.inquiryId}:${userId}`,
+    })),
+  );
+}

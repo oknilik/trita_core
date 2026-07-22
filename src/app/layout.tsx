@@ -21,6 +21,7 @@ import { getMetadataBase } from "@/lib/seo";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { getServerAuth } from "@/lib/auth-server";
+import { isAdminEmail } from "@/lib/auth";
 import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
 import { HelpWidget } from "@/components/help/HelpWidget";
 import type { HelpAudience } from "@/lib/help/topics";
@@ -114,6 +115,7 @@ export default async function RootLayout({
         });
         signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
+        const isPlatformAdmin = isAdminEmail(profile.email);
         navData = {
           ...(navData ?? {
             user: { username: null, email: null },
@@ -124,6 +126,7 @@ export default async function RootLayout({
             hasHiringAccess: false,
           }),
           homeHref: signedInHomeHref,
+          isPlatformAdmin,
         };
 
         const membership = await getActiveOrgMembership(profile.id);
@@ -163,6 +166,7 @@ export default async function RootLayout({
             role: membership.role,
             activeCampaignCount,
             hasHiringAccess,
+            isPlatformAdmin,
           };
         }
       }

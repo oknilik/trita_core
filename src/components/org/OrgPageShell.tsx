@@ -8,6 +8,7 @@ import { PrimaryTabs } from "./PrimaryTabs";
 import { OrgCampaignsTab } from "./OrgCampaignsTab";
 import { OrgTeamsTab } from "./OrgTeamsTab";
 import { OrgMembersTab } from "./OrgMembersTab";
+import { OrgInquiriesTab, type OrgInquiryRow } from "./OrgInquiriesTab";
 import type {
   OrgPageData,
   SerializedMember,
@@ -39,6 +40,8 @@ interface OrgPageShellProps {
   members: SerializedMember[];
   pendingInvites: SerializedPendingInvite[];
   teams: SerializedTeam[];
+  /** Beérkezett kérdések — csak tanácsadói felületen (null = nincs fül). */
+  inquiries?: OrgInquiryRow[] | null;
 }
 
 export function OrgPageShell({
@@ -58,13 +61,14 @@ export function OrgPageShell({
   members,
   pendingInvites,
   teams,
+  inquiries = null,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
   // Egyszerű váz mindenkinek: Csapatok az alapfül; a Kampányok fül csak a
   // tanácsadói felületen létezik. (Az Áttekintés fül kivezetve — duplikált.)
   const defaultTab = "teams";
   const allowedTabs = canManageMeasurements
-    ? ["teams", "campaigns", "members"]
+    ? ["teams", "campaigns", "members", ...(inquiries ? ["inquiries"] : [])]
     : ["teams", "members"];
   const rawTabFromUrl = searchParams.get("tab") ?? defaultTab;
   const tabFromUrl = allowedTabs.includes(rawTabFromUrl) ? rawTabFromUrl : defaultTab;
@@ -108,6 +112,18 @@ export function OrgPageShell({
       label: t("org.shell.tabMembers", loc),
       badge: members.length + pendingInvites.length,
     },
+    ...(inquiries
+      ? [
+          {
+            key: "inquiries",
+            label: t("org.shell.tabInquiries", loc),
+            badge:
+              inquiries.filter((i) => i.status === "NEW").length > 0
+                ? inquiries.filter((i) => i.status === "NEW").length
+                : undefined,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -136,6 +152,10 @@ export function OrgPageShell({
             actionGateCopy={actionGateCopy}
             isHu={isHu}
           />
+        )}
+
+        {inquiries && activeTab === "inquiries" && (
+          <OrgInquiriesTab orgId={orgId} inquiries={inquiries} isHu={isHu} />
         )}
 
         {activeTab === "members" && (

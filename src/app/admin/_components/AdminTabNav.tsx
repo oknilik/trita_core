@@ -3,17 +3,20 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-// 4 fő fül (2026-07-17 racionalizálás): Vezérlő · Szervezetek · Tanácsadók ·
-// Működés. A régi feedback/reminders/research nézetek a Működés gyűjtőfül
+// 5 fő fül (2026-07-22 racionalizálás): Vezérlő · Kérdések · Szervezetek ·
+// Tanácsadók · Működés. A feedback/reminders nézetek a Működés gyűjtőfül
 // alól nyílnak (mélylinkjeik változatlanul élnek — ilyenkor a Működés aktív).
+// A Kutatás fül megszűnt; az elégedettség-aggregátumok a Visszajelzésekre
+// költöztek.
 const TABS = [
   { id: "overview", label: "Vezérlő" },
+  { id: "inquiries", label: "Kérdések" },
   { id: "orgs", label: "Szervezetek" },
   { id: "consultants", label: "Tanácsadók" },
   { id: "ops", label: "Működés" },
 ] as const;
 
-const OPS_SUBTABS = new Set(["ops", "feedback", "reminders", "research"]);
+const OPS_SUBTABS = new Set(["ops", "feedback", "reminders"]);
 
 export function AdminTabNav() {
   const searchParams = useSearchParams();

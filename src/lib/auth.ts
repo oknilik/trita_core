@@ -13,6 +13,16 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
+/** Platform-admin email-e? (ADMIN_EMAILS env alapján) */
+export function isAdminEmail(email: string | null | undefined): boolean {
+  return Boolean(email && ADMIN_EMAILS.includes(email.toLowerCase()));
+}
+
+/** A platform-admin emailek listája (pl. admin-értesítések címzettjeihez). */
+export function getAdminEmails(): string[] {
+  return ADMIN_EMAILS;
+}
+
 export async function requireAdmin() {
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
