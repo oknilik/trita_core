@@ -12,6 +12,17 @@ export const CAPABILITIES = [
   "orgAdminManage",
   "export",
   "observerInvite",
+  // Csapat-hatókörű tag-kezelés (tag-kezelés racionalizálás, 2026-07-22):
+  // teamManage — csapattag hozzáadása AZ ORG TAGLISTÁJÁBÓL, team-szerep
+  //   állítás, eltávolítás, a csapat vezetői riportja. Admin-paritás mindig;
+  //   egyébként KIZÁRÓLAG a csapat-szerep számít (context.teamRole =
+  //   manager): egy org-szinten sima ORG_MEMBER is lehet team-manager az
+  //   egyik csapatában, miközben a másikban sima tag. Két menedzser-szint
+  //   létezik: org-szintű (= admin) és csapat-szintű (team-manager).
+  // teamInviteEmail — e-mailes / nyílt linkes csapat-meghívó, ami org-
+  //   tagságot is keletkeztet → kizárólag admin-paritás (admin/consultant).
+  "teamManage",
+  "teamInviteEmail",
 ] as const;
 
 export type Capability = (typeof CAPABILITIES)[number];
@@ -43,6 +54,8 @@ export const SUBSCRIPTION_CAPABILITY_BASE_MAP: Record<
     "candidateEvaluate",
     "export",
     "observerInvite",
+    "teamManage",
+    "teamInviteEmail",
   ],
   active: [
     "read",
@@ -54,6 +67,8 @@ export const SUBSCRIPTION_CAPABILITY_BASE_MAP: Record<
     "candidateEvaluate",
     "export",
     "observerInvite",
+    "teamManage",
+    "teamInviteEmail",
   ],
   // Transitional state: keep visibility while blocking write paths.
   past_due: ["read", "list", "export"],
@@ -63,6 +78,9 @@ export const SUBSCRIPTION_CAPABILITY_BASE_MAP: Record<
 
 export interface OrgCapabilityContext {
   orgRole: string | null | undefined;
+  /** A hívó team-szerepe az aktív csapatban (member/manager) — a
+   * teamManage feloldásához. null/undefined = nem tagja a csapatnak. */
+  teamRole?: string | null;
   subscriptionState?: SubscriptionState | null;
   subscriptionStatus?: string | null;
   capabilityPolicyState?: SubscriptionCapabilityPolicyState | null;
@@ -157,6 +175,21 @@ export function resolveOrgCapabilities(context: OrgCapabilityContext): OrgCapabi
     }
   }
 
+  // Csapat-hatókörű tag-kezelés (racionalizálási döntések, 2026-07-22):
+  // - teamInviteEmail: csak admin-paritás (a normalizált consultant is az).
+  // - teamManage: admin-paritás mindig; egyébként KIZÁRÓLAG a csapat-szerep
+  //   dönt — team-manager a saját csapatában org-szereptől függetlenül
+  //   (ORG_MEMBER is lehet team-manager az egyik csapatban, sima tag a
+  //   másikban).
+  if (role !== "ORG_ADMIN") {
+    granted.delete("teamInviteEmail");
+    const isTeamManager =
+      context.teamRole === "manager" || context.teamRole === "admin";
+    if (!isTeamManager) {
+      granted.delete("teamManage");
+    }
+  }
+
   if (role === "ORG_ADMIN") {
     granted.add("billingManage");
     if (FULL_ACCESS_POLICY_STATES.has(policyState)) {
@@ -203,5 +236,7 @@ export function toCapabilityRecord(
     orgAdminManage: grantedSet.has("orgAdminManage"),
     export: grantedSet.has("export"),
     observerInvite: grantedSet.has("observerInvite"),
+    teamManage: grantedSet.has("teamManage"),
+    teamInviteEmail: grantedSet.has("teamInviteEmail"),
   };
 }

@@ -82,6 +82,8 @@ const ORG_SCOPED_CAPABILITIES = new Set<Capability>([
   "candidateEvaluate",
   "billingManage",
   "orgAdminManage",
+  "teamManage",
+  "teamInviteEmail",
 ]);
 
 const MANAGER_CAPABILITIES = new Set<Capability>([
@@ -90,9 +92,18 @@ const MANAGER_CAPABILITIES = new Set<Capability>([
   "invite",
   "launchCampaign",
   "candidateEvaluate",
+  // Elutasításkor manager-szintű hint jár: a manager a SAJÁT csapatában
+  // kapja meg (team-manager szereppel) — ld. capabilities.resolveOrgCapabilities.
+  "teamManage",
 ]);
 
-const ADMIN_ONLY_CAPABILITIES = new Set<Capability>(["billingManage", "orgAdminManage"]);
+const ADMIN_ONLY_CAPABILITIES = new Set<Capability>([
+  "billingManage",
+  "orgAdminManage",
+  // E-mailes / nyílt linkes csapat-meghívó org-tagságot keletkeztet →
+  // admin-paritás kell hozzá (racionalizálási döntés, 2026-07-22).
+  "teamInviteEmail",
+]);
 
 const SELF_PLUS_EQUIVALENT_TIERS = new Set([
   "self_plus",
@@ -235,6 +246,8 @@ export function resolveCapabilities(
   if (derived.hasOrgMembership) {
     const orgResolution = resolveOrgCapabilities({
       orgRole: derived.orgRole,
+      // A hívó team-szerepe az aktív csapatban — a teamManage feloldásához.
+      teamRole: user.teamRole ?? null,
       capabilityPolicyState: derived.policyState,
     });
     for (const capability of orgResolution.granted) {

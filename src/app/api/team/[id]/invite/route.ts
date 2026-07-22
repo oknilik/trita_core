@@ -4,14 +4,18 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendTeamInviteEmail } from "@/lib/emails";
 import { getServerLocale } from "@/lib/i18n-server";
-import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
+import { hasOrgRole } from "@/lib/org-roles";
 
 const inviteSchema = z.object({
   email: z.string().email(),
 });
 
 // POST /api/team/[id]/invite — add a member to the team by email
-// - Org team: requires ORG_MANAGER+ in the team's org
+// - Csak admin-paritás (teamInviteEmail capability: ORG_ADMIN / ORG_CONSULTANT) —
+//   az e-mailes meghívó org-tagságot is keletkeztet (előbb csendben org-tag,
+//   aztán team-tag; racionalizálási döntés, 2026-07-22). A manager a
+//   szervezeti taglistából ad hozzá tagot (POST /api/team/[id]/members).
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -45,13 +49,13 @@ export async function POST(
   if (!membership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
-  const policySnapshot = await resolveOrgPolicySnapshot({
+  const policySnapshot = await resolveTeamPolicySnapshot({
     orgId: team.orgId,
     orgRole: membership.role,
     teamId,
-    hasTeamMembership: true,
+    profileId: profile.id,
   });
-  const inviteDecision = resolveOrgCapabilityDecision(policySnapshot, "invite");
+  const inviteDecision = resolveOrgCapabilityDecision(policySnapshot, "teamInviteEmail");
   if (!inviteDecision.allowed) {
     return NextResponse.json(
       {
@@ -61,6 +65,12 @@ export async function POST(
       },
       { status: 403 },
     );
+  }
+
+  // Kemény szerep-háló (defense-in-depth): a policy-enforcement kill-switch
+  // kikapcsolása ne engedje az e-mailes meghívót admin-paritás alatt.
+  if (!hasOrgRole(membership.role, "ORG_ADMIN")) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
   const body = inviteSchema.safeParse(await req.json());

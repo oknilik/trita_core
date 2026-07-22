@@ -2,7 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
+import { hasOrgRole } from "@/lib/org-roles";
 
 const schema = z.object({ teamId: z.string().min(1) });
 
@@ -10,7 +11,9 @@ const schema = z.object({ teamId: z.string().min(1) });
 const OPEN_INVITE_SENTINEL = "__open__";
 
 // POST /api/team/invite — generate a reusable invite link for a team
-// Only ORG_ADMIN or ORG_MANAGER of the team's org may call this
+// Csak admin-paritás (teamInviteEmail): a nyílt link ugyanúgy szervezeten
+// kívülit hoz be (org-tagságot keletkeztet), mint az e-mailes meghívó —
+// a manager a szervezeti taglistából ad hozzá tagot.
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
@@ -39,13 +42,13 @@ export async function POST(req: Request) {
   if (!membership) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
-  const policySnapshot = await resolveOrgPolicySnapshot({
+  const policySnapshot = await resolveTeamPolicySnapshot({
     orgId: team.orgId,
     orgRole: membership.role,
     teamId: team.id,
-    hasTeamMembership: true,
+    profileId: profile.id,
   });
-  const inviteDecision = resolveOrgCapabilityDecision(policySnapshot, "invite");
+  const inviteDecision = resolveOrgCapabilityDecision(policySnapshot, "teamInviteEmail");
   if (!inviteDecision.allowed) {
     return NextResponse.json(
       {
@@ -55,6 +58,12 @@ export async function POST(req: Request) {
       },
       { status: 403 },
     );
+  }
+
+  // Kemény szerep-háló (defense-in-depth): a policy-enforcement kill-switch
+  // kikapcsolása ne engedje a nyílt linket admin-paritás alatt.
+  if (!hasOrgRole(membership.role, "ORG_ADMIN")) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
   // Upsert: keep existing token if already generated for this team

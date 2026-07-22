@@ -7,6 +7,7 @@ import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-auth";
+import { hasOrgRole } from "@/lib/org-roles";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import {
   getCurrentStepType,
@@ -33,7 +34,7 @@ import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.ser
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import {
   resolveOrgCapabilityDecision,
-  resolveOrgPolicySnapshot,
+  resolveTeamPolicySnapshot,
   toOrgSubscriptionBannerState,
 } from "@/lib/policy-service";
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
@@ -46,6 +47,8 @@ import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { TeamReportEditor } from "@/components/team/TeamReportEditor";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { TeamReportView } from "@/components/team/TeamReportView";
+import { TeamReportMemberView } from "@/components/team/TeamReportMemberView";
+import { RadarChart } from "@/components/dashboard/RadarChart";
 import { getLatestPublishedReport, listTeamReports } from "@/lib/team-report";
 import {
   buildTeamIntelligenceEvidence,
@@ -211,11 +214,13 @@ export default async function TeamDetailPage({
   const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
-  const policySnapshot = await resolveOrgPolicySnapshot({
+  // Csapat-hatókörű pillanatkép: a hívó VALÓS team-tagságával/szerepével —
+  // a teamManage/teamInviteEmail capability így helyesen oldódik fel.
+  const policySnapshot = await resolveTeamPolicySnapshot({
     orgId,
     orgRole: orgMemberRole,
     teamId,
-    hasTeamMembership: true,
+    profileId: profile.id,
   });
   const policy = policySnapshot.policy;
   const manageDecision = resolveOrgCapabilityDecision(policySnapshot, "manage");
@@ -223,7 +228,17 @@ export default async function TeamDetailPage({
   const isRestricted = toOrgSubscriptionBannerState(policy.policyState) === "restricted";
   const isNone = toOrgSubscriptionBannerState(policy.policyState) === "none";
   const isFrozen = policy.policyState === "frozen";
-  const canManageTeamActions = isOrgManager && policy.capabilities.has("manage");
+  const canManageTeamActions = policy.capabilities.has("teamManage");
+  // Org-szintű kampány-felületek (observer-kör az org oldalán): ez org-jog,
+  // nem csapat-jog — szerep-alapú láthatóság, a szerver kapuzza a műveletet.
+  const canReachOrgCampaigns = hasOrgRole(orgMemberRole, "ORG_MANAGER");
+  // UI-láthatóság SZEREP-alapon (a régi UX mintájára): a kezelő-felület
+  // látszik a jogosult szerepnek akkor is, ha az előfizetés-állapot épp
+  // korlátoz — a tényleges műveletet a szerver kapuzza (capability + kemény
+  // szerep-háló), és a gate-copy magyarázza. Így a manager nem „veszíti el"
+  // némán a tagkezelést restricted állapotban.
+  // E-mailes csapat-meghívó: csak admin-paritás (racionalizálás, 2026-07-22).
+  const canEmailInvite = hasOrgRole(orgMemberRole, "ORG_ADMIN");
   const manageGateCopy =
     isOrgManager && !canManageTeamActions
       ? getCapabilityGateCopy({
@@ -327,7 +342,8 @@ export default async function TeamDetailPage({
     teamId,
     orgId: teamData.orgId,
     hasObserverRound: !!teamData.activeCampaign,
-    canManageTeamActions,
+    // Az observer-CTA az org kampány-oldalára visz → org-szerep dönt.
+    canManageTeamActions: canReachOrgCampaigns,
     locale: locale as "hu" | "en",
   });
   const minimumIntelligenceAssessments = MIN_INTELLIGENCE_ASSESSMENTS;
@@ -416,6 +432,31 @@ export default async function TeamDetailPage({
       createdAt: inv.createdAt,
     }));
 
+    // A manager-út adatalapja: a szervezet aktív tagjai, akik még nincsenek
+    // a csapatban (tanácsadó nélkül) — a taglistából-hozzáadás választója.
+    const teamUserIds = new Set(teamData.members.map((m) => m.userId));
+    const addableOrgMembers = isOrgManager
+      ? (
+          await prisma.organizationMember.findMany({
+            where: {
+              orgId,
+              leftAt: null,
+              role: { not: "ORG_CONSULTANT" },
+            },
+            orderBy: { joinedAt: "asc" },
+            select: {
+              userId: true,
+              user: { select: { username: true, email: true } },
+            },
+          })
+        )
+          .filter((m) => !teamUserIds.has(m.userId))
+          .map((m) => ({
+            userId: m.userId,
+            label: m.user.username ?? m.user.email ?? m.userId,
+          }))
+      : [];
+
     // Jóváhagyásra váró külső observer-meghívók (a csapat kampányaiban) —
     // csak a jóváhagyó kör látja (menedzser / org admin / tanácsadó).
     const pendingApprovals =
@@ -469,6 +510,8 @@ export default async function TeamDetailPage({
           teamName={teamData.teamName}
           profileId={profile.id}
           isOrgManager={isOrgManager}
+          canEmailInvite={canEmailInvite}
+          addableOrgMembers={addableOrgMembers}
           isHu={isHu}
           locale={locale}
           dateLocale={isHu ? "hu-HU" : "en-US"}
@@ -530,7 +573,7 @@ export default async function TeamDetailPage({
               >
                 {isHu ? "Tagok és kitöltések kezelése" : "Manage members and completions"}
               </Link>
-              {canManageTeamActions && teamData.orgId ? (
+              {canReachOrgCampaigns && teamData.orgId ? (
                 <Link
                   href={`/org/${teamData.orgId}?tab=campaigns`}
                   className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
@@ -782,7 +825,19 @@ export default async function TeamDetailPage({
             isHu={isHu}
           />
         ) : publishedReport ? (
-          <TeamReportView report={publishedReport} isHu={isHu} />
+          // Szerep-metszet: menedzser/admin (teamManage) a teljes riportot
+          // látja; a sima ORG_MEMBER a szűkebb, saját szemszögű tag-nézetet.
+          // Terv: docs/product/feature-ideas.md #4.
+          isOrgManager ? (
+            <TeamReportView report={publishedReport} isHu={isHu} />
+          ) : (
+            <TeamReportMemberView
+              report={publishedReport}
+              viewer={teamData.members.find((m) => m.userId === profile.id) ?? null}
+              isHu={isHu}
+              teamName={teamData.teamName}
+            />
+          )
         ) : null}
       </PlatformPageShell>
     );
@@ -1134,19 +1189,14 @@ export default async function TeamDetailPage({
                       : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
               }
             >
+              {/* Nem-tanácsadónál a CTA a lenti vizuális csapatkép-blokkban él —
+                  itt csak info-csempe, hogy ne legyen kétszer ugyanaz a link. */}
               {hasPattern && canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=profile`}
                   className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
                 >
                   {t("teamDetail.teamPatternViewCta", locale)}
-                </Link>
-              ) : !canViewRaw && hasPublishedReport ? (
-                <Link
-                  href={`/team/${teamId}?tab=report`}
-                  className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
-                >
-                  {isHu ? "Validált csapatkép →" : "Validated team picture →"}
                 </Link>
               ) : null}
             </DashboardMetricCard>
@@ -1217,35 +1267,158 @@ export default async function TeamDetailPage({
         </section>
         ) : null}
 
+        {/* Team-manager gyorsműveletek — a menedzser belépői a saját csapatán
+            (két menedzser-szint modell, 2026-07-22). A tanácsadó fent kap
+            saját kártyákat; a sima tag ezt nem látja. */}
+        {!canViewRaw && isOrgManager ? (
+          <section>
+            <DashboardSectionHeader
+              label={isHu ? "Csapat kezelése" : "Manage team"}
+              className="mb-4"
+            />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Link
+                href={`/team/${teamId}?tab=members`}
+                className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-[13px] font-semibold text-ink">
+                    {isHu ? "Tagok kezelése" : "Manage members"}
+                  </p>
+                  <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
+                    {teamData.memberCount}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
+                  {isHu
+                    ? "Tag hozzáadása a szervezet taglistájából, szerepek állítása, eltávolítás."
+                    : "Add members from the organization's list, set roles, remove."}
+                </p>
+              </Link>
+              {hasPublishedReport ? (
+                <Link
+                  href={`/team/${teamId}?tab=report`}
+                  className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
+                >
+                  <p className="text-[13px] font-semibold text-ink">
+                    {isHu ? "Csapat riport" : "Team report"}
+                  </p>
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
+                    {isHu
+                      ? "A validált csapatkép vezetői nézete — erősségek, kockázatok, akcióterv."
+                      : "The leadership view of the validated team picture — strengths, risks, action plan."}
+                  </p>
+                </Link>
+              ) : (
+                <div className="rounded-[16px] border border-dashed border-sand bg-cream/40 p-4">
+                  <p className="text-[13px] font-semibold text-muted">
+                    {isHu ? "Csapat riport" : "Team report"}
+                  </p>
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-muted">
+                    {isHu
+                      ? "Még nincs publikált csapatkép — a tanácsadói validálás után itt nyílik meg."
+                      : "No published team picture yet — it opens here after consultant validation."}
+                  </p>
+                </div>
+              )}
+            </div>
+          </section>
+        ) : null}
+
         {!canViewRaw ? (
         <section>
           <DashboardSectionHeader label={t("teamComp.teamPatternEyebrow", locale)} className="mb-4" />
           {(
             <DashboardPanel className="p-6">
               {publishedReport ? (
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 8.5l3 3 7-7" />
-                    </svg>
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-ink">
-                      {isHu ? "A validált csapatkép elérhető" : "The validated team picture is available"}
-                    </p>
-                    <p className="mt-1 text-xs leading-relaxed text-ink-body">
-                      {isHu
-                        ? "A tanácsadó véglegesítette a csapatképet — aggregált eredmények és értékelés."
-                        : "Your consultant has finalized the team picture — aggregate results and assessment."}
-                    </p>
-                    <Link
-                      href={`/team/${teamId}?tab=report`}
-                      className="mt-2 inline-flex text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
-                    >
-                      {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
-                    </Link>
+                // Vizuális csapatkép-pillanatkép a publikált (befagyasztott)
+                // aggregátumból: mini radar + mintázat + kulcs-chipek. Ez az
+                // EGYETLEN mintázat-CTA a nem-tanácsadói overview-n (a fenti
+                // metric-csempe linkje ezért került ki — redundáns volt).
+                publishedReport.aggregates?.dimensionAverages ? (
+                  <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[220px_1fr]">
+                    <div className="mx-auto w-full max-w-[220px]">
+                      <RadarChart
+                        dimensions={teamData.dimConfigs
+                          .filter((dc) =>
+                            typeof publishedReport.aggregates!.dimensionAverages![dc.code] === "number",
+                          )
+                          .map((dc) => ({
+                            code: dc.code,
+                            color: dc.color,
+                            score: publishedReport.aggregates!.dimensionAverages![dc.code],
+                          }))}
+                        uid={`overview-${teamId}`}
+                      />
+                    </div>
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+                        {isHu ? "// validált csapatkép" : "// validated team picture"}
+                      </p>
+                      {publishedPattern?.label ? (
+                        <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
+                          {publishedPattern.label}
+                        </p>
+                      ) : (
+                        <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
+                          {isHu ? "A csapat validált profilja" : "The team's validated profile"}
+                        </p>
+                      )}
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
+                          {publishedReport.aggregates!.memberCount}{" "}
+                          {isHu ? "tag" : "members"}
+                        </span>
+                        <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
+                          {publishedReport.aggregates!.completionPct}%{" "}
+                          {isHu ? "kitöltöttség" : "completion"}
+                        </span>
+                        {typeof publishedReport.aggregates!.evidence?.measuredEdgeCount === "number" &&
+                          publishedReport.aggregates!.evidence!.measuredEdgeCount > 0 && (
+                            <span className="rounded-full bg-sage/15 px-2.5 py-1 text-[11px] font-medium text-sage-dark">
+                              {publishedReport.aggregates!.evidence!.measuredEdgeCount}{" "}
+                              {isHu ? "mért kapcsolati adat" : "measured relationship data points"}
+                            </span>
+                          )}
+                      </div>
+                      <p className="mt-2 text-xs leading-relaxed text-ink-body">
+                        {isHu
+                          ? "A tanácsadó által validált, aggregált kép — egyéni eredmények nélkül."
+                          : "Aggregate picture validated by your consultant — without individual results."}
+                      </p>
+                      <Link
+                        href={`/team/${teamId}?tab=report`}
+                        className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-sage px-4 text-[12px] font-semibold text-white transition hover:bg-sage-dark"
+                      >
+                        {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                      <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 8.5l3 3 7-7" />
+                      </svg>
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-ink">
+                        {isHu ? "A validált csapatkép elérhető" : "The validated team picture is available"}
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                        {isHu
+                          ? "A tanácsadó véglegesítette a csapatképet — aggregált eredmények és értékelés."
+                          : "Your consultant has finalized the team picture — aggregate results and assessment."}
+                      </p>
+                      <Link
+                        href={`/team/${teamId}?tab=report`}
+                        className="mt-2 inline-flex text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
+                      >
+                        {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
+                      </Link>
+                    </div>
+                  </div>
+                )
               ) : (
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600">

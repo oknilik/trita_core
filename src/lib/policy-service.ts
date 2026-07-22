@@ -13,11 +13,16 @@ import {
   type SubscriptionState,
 } from "@/lib/subscription";
 import { isPolicyEngineEnforcementEnabled } from "@/lib/rollout-guards.server";
+import { prisma } from "@/lib/prisma";
 
 export interface OrgPolicySubjectInput {
   orgId: string;
   orgRole?: string | null;
   teamId?: string | null;
+  /** A hívó team-szerepe az aktív csapatban (member/manager) — a teamManage
+   * capability feloldásához. Használd a resolveTeamPolicySnapshot-ot, ami
+   * ezt az adatbázisból tölti a korábbi hardcode-olt flag helyett. */
+  teamRole?: string | null;
   hasTeamMembership?: boolean;
   hasOrgMembership?: boolean;
   isAuthenticated?: boolean;
@@ -41,6 +46,7 @@ export function createOrgPolicyInputs(
   const subject: AccessPolicyUser = {
     isAuthenticated: params.isAuthenticated ?? true,
     orgRole: params.orgRole ?? null,
+    teamRole: params.teamRole ?? null,
     membership: {
       hasOrgMembership: params.hasOrgMembership ?? true,
       orgId: params.orgId,
@@ -69,6 +75,31 @@ export async function resolveOrgPolicySnapshot(
     context,
     policy: getAccessPolicy(subject, context),
   };
+}
+
+/**
+ * Csapat-hatókörű policy-pillanatkép: a hívó TÉNYLEGES team-tagságát és
+ * team-szerepét az adatbázisból tölti (a korábbi, hívónként hardcode-olt
+ * hasTeamMembership: true helyett) — így a teamManage capability helyesen
+ * oldódik fel: ORG_MANAGER csak a saját csapatában kapja meg.
+ */
+export async function resolveTeamPolicySnapshot(params: {
+  orgId: string;
+  orgRole?: string | null;
+  teamId: string;
+  profileId: string;
+}): Promise<OrgPolicySnapshot> {
+  const membership = await prisma.teamMember.findUnique({
+    where: { teamId_userId: { teamId: params.teamId, userId: params.profileId } },
+    select: { role: true },
+  });
+  return resolveOrgPolicySnapshot({
+    orgId: params.orgId,
+    orgRole: params.orgRole,
+    teamId: params.teamId,
+    hasTeamMembership: Boolean(membership),
+    teamRole: membership?.role ?? null,
+  });
 }
 
 export function resolveOrgCapabilityDecision(

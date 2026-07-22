@@ -63,16 +63,9 @@ export async function getUserRole(): Promise<UserRole | null> {
 // ORG_CONSULTANT is an externally assigned advisor (trita admin assigns it);
 // it carries admin-level visibility but is excluded from last-admin
 // safeguards and cannot be granted through the org invite flows.
-const ORG_ROLE_RANK: Record<string, number> = {
-  ORG_ADMIN: 3,
-  ORG_CONSULTANT: 3,
-  ORG_MANAGER: 2,
-  ORG_MEMBER: 1,
-};
-
-export function hasOrgRole(actual: string, minimum: string): boolean {
-  return (ORG_ROLE_RANK[actual] ?? 0) >= (ORG_ROLE_RANK[minimum] ?? 999);
-}
+// A rangsor EGYETLEN forrása az org-roles.ts — innen csak re-exportáljuk.
+import { hasOrgRole } from "@/lib/org-roles";
+export { hasOrgRole, ORG_ROLE_RANK } from "@/lib/org-roles";
 
 // Checks if current user is a member of the given org.
 // Redirects to /sign-in if unauthenticated, /org if not a member, /org/suspended if org is INACTIVE.

@@ -1,19 +1,8 @@
 import { prisma } from "./prisma";
-
-// Keep role hierarchy local to avoid importing redirect-bound auth helpers.
-// FONTOS: tartsd szinkronban az auth.ts ORG_ROLE_RANK térképével — az
-// ORG_CONSULTANT admin-paritású (a kimaradása okozta, hogy a tanácsadót a
-// csapat-nézet a journey-fallbackre, trita adminként az /admin-ra dobta).
-const ORG_ROLE_RANK: Record<string, number> = {
-  ORG_ADMIN: 3,
-  ORG_CONSULTANT: 3,
-  ORG_MANAGER: 2,
-  ORG_MEMBER: 1,
-};
-
-function hasOrgRole(actual: string, minimum: string): boolean {
-  return (ORG_ROLE_RANK[actual] ?? 0) >= (ORG_ROLE_RANK[minimum] ?? 999);
-}
+// A rangsor EGYETLEN forrása az org-roles.ts (függőség-mentes modul, nem
+// húz be redirect-kötött auth-helpereket) — a korábbi lokális duplikátum
+// egyszer már elcsúszott és bugot okozott.
+import { hasOrgRole, isTeamManagerRole } from "./org-roles";
 
 /**
  * Determines whether a user can access a specific team.
@@ -49,12 +38,14 @@ export async function canAccessTeam(
 }
 
 /**
- * Determines whether a user can manage a team (add/remove members, invite candidates, etc.)
+ * Determines whether a user can manage a team (add/remove members, set team
+ * roles, see the team's manager report, etc.)
  *
- * Rules:
- * - ORG_ADMIN → always
- * - ORG_MANAGER → only if they are a TeamMember with role "manager" or "admin" in this team
- * - ORG_MEMBER → never
+ * Két menedzser-szint (modell-döntés, 2026-07-22):
+ * - ORG_ADMIN / ORG_CONSULTANT (admin-paritás) → mindig
+ * - egyébként KIZÁRÓLAG a csapat-szerep dönt: team-manager a saját
+ *   csapatában, org-szereptől függetlenül — egy ORG_MEMBER is lehet
+ *   team-manager az egyik csapatban, miközben a másikban sima tag.
  */
 export async function canManageTeam(
   profileId: string,
@@ -63,14 +54,12 @@ export async function canManageTeam(
 ): Promise<boolean> {
   if (hasOrgRole(orgRole, "ORG_ADMIN")) return true;
 
-  if (orgRole !== "ORG_MANAGER") return false;
-
   const membership = await prisma.teamMember.findUnique({
     where: { teamId_userId: { teamId, userId: profileId } },
     select: { role: true },
   });
 
-  return membership?.role === "manager" || membership?.role === "admin";
+  return isTeamManagerRole(membership?.role);
 }
 
 /**
@@ -100,9 +89,9 @@ export async function getAccessibleTeamIds(
 
 /**
  * Returns the list of team IDs the user can manage (hiring, invites, etc.)
- * ORG_ADMIN: all teams in org.
- * ORG_MANAGER: teams where they have "manager" or "admin" role.
- * Others: none.
+ * ORG_ADMIN / consultant (admin-paritás): all teams in org.
+ * Egyébként: azok a csapatok, ahol team-manager a csapat-szerepe —
+ * org-szereptől függetlenül (két menedzser-szint modell, 2026-07-22).
  */
 export async function getManageableTeamIds(
   profileId: string,
@@ -116,8 +105,6 @@ export async function getManageableTeamIds(
     });
     return teams.map((t) => t.id);
   }
-
-  if (orgRole !== "ORG_MANAGER") return [];
 
   const memberships = await prisma.teamMember.findMany({
     where: {

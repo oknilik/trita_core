@@ -6,6 +6,10 @@ import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
 import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCancelButton";
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
 import { TeamMemberRoleEditor } from "@/components/team/TeamMemberRoleEditor";
+import {
+  TeamMemberAddPicker,
+  type AddableOrgMember,
+} from "@/components/team/TeamMemberAddPicker";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -34,6 +38,10 @@ interface TeamMembersTabProps {
   teamName: string;
   profileId: string;
   isOrgManager: boolean;
+  /** teamInviteEmail capability: e-mailes meghívó — csak admin-paritás. */
+  canEmailInvite: boolean;
+  /** A szervezet tagjai, akik még nincsenek a csapatban — a manager-út. */
+  addableOrgMembers: AddableOrgMember[];
   isHu: boolean;
   locale: string;
   dateLocale: string;
@@ -46,6 +54,8 @@ export function TeamMembersTab({
   teamName,
   profileId,
   isOrgManager,
+  canEmailInvite,
+  addableOrgMembers,
   isHu,
   locale,
   dateLocale,
@@ -151,10 +161,31 @@ export function TeamMembersTab({
             <h3 className="mb-3 text-sm font-semibold text-ink">
               {t("teamComp.addMember", loc)}
             </h3>
-            <p className="mb-4 text-xs text-ink-body/60">
-              {t("teamComp.addMemberDesc", loc)}
+
+            {/* Manager-út: meglévő szervezeti tag hozzáadása a taglistából. */}
+            <p className="mb-3 text-xs text-ink-body/60">
+              {isHu
+                ? "Adj hozzá tagot a szervezet meglévő tagjai közül."
+                : "Add a member from the organization's existing members."}
             </p>
-            <TeamInviteForm teamId={teamId} locale={locale as "hu" | "en"} />
+            <TeamMemberAddPicker
+              teamId={teamId}
+              candidates={addableOrgMembers}
+              isHu={isHu}
+            />
+
+            {/* Admin-út: e-mailes meghívó — org-tagságot is keletkeztet,
+                ezért csak admin-paritás (teamInviteEmail capability). */}
+            {canEmailInvite && (
+              <div className="mt-5 border-t border-dashed border-sand pt-5">
+                <p className="mb-3 text-xs text-ink-body/60">
+                  {isHu
+                    ? "Vagy hívj meg új tagot e-maillel — ő a szervezetnek is tagja lesz. (Csak admin jogosultsággal.)"
+                    : "Or invite a new member by email — they also join the organization. (Admin permission only.)"}
+                </p>
+                <TeamInviteForm teamId={teamId} locale={locale as "hu" | "en"} />
+              </div>
+            )}
           </div>
         )}
       </Card>
