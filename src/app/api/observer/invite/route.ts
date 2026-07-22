@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { after } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendObserverInviteEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
@@ -190,6 +191,9 @@ export async function POST(req: Request) {
 
   const invitation = await prisma.observerInvitation.create({
     data: {
+      // Kriptográfiailag véletlen bearer token — a séma cuid() defaultja
+      // részben megjósolható, publikus linkhez nem elég erős.
+      token: crypto.randomBytes(16).toString("hex"),
       inviterId: profile.id,
       observerProfileId,
       observerEmail: targetEmail,

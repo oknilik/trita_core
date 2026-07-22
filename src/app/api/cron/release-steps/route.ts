@@ -14,6 +14,11 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
+  // Prodban a secret kötelező — beállítatlan secret mellett az endpoint
+  // nem hívható (fail closed), dev-ben marad a nyitott viselkedés.
+  if (!secret && process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  }
   if (secret) {
     const header = req.headers.get("authorization");
     if (header !== `Bearer ${secret}`) {

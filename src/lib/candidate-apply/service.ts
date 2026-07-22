@@ -1,5 +1,6 @@
 import "server-only";
 
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { canManageTeam, getManageableTeamIds } from "@/lib/team-auth";
@@ -134,6 +135,9 @@ export async function createCandidateApplyInvite(
 
   const invite = await prisma.candidateInvite.create({
     data: {
+      // Kriptográfiailag véletlen bearer token — a séma cuid() defaultja
+      // részben megjósolható, publikus apply-linkhez nem elég erős.
+      token: crypto.randomBytes(16).toString("hex"),
       managerId: profile.id,
       teamId: input.teamId ?? null,
       email: input.email ?? null,

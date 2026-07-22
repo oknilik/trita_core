@@ -1,0 +1,1053 @@
+openapi: 3.1.0
+info:
+  title: Trita API
+  version: "2026-07-22"
+  description: |
+    Trita platform belső API-leírója — kézzel karbantartott, a route-fájlok
+    Zod-sémáiból származtatva. Auth: Clerk session cookie (böngésző-hívások),
+    kivéve a jelölt publikus, token-alapú végpontokat.
+
+    Csoportok (tags): Public · Assessment · Observer · Profile · Notifications
+    · Feedback · Team · TeamRoles/Trust/PsychSafety · Org · Manager/Hiring
+    · Admin · Inquiry · System.
+
+    Generálás: a projekt sima Next.js route-handlereket használ (nincs
+    dekorátor-réteg), ezért teljesen automatikus generátor nincs bekötve.
+    Ajánlott irány: zod-openapi (a meglévő Zod-sémák annotálása) vagy
+    next-rest-framework — lásd docs/security/security-audit-2026-07-22.md.
+
+servers:
+  - url: https://trita.io
+  - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    clerkSession:
+      type: apiKey
+      in: cookie
+      name: __session
+      description: Clerk session cookie — a böngésző automatikusan küldi.
+    cronBearer:
+      type: http
+      scheme: bearer
+      description: CRON_SECRET Bearer tokenként (Vercel cron).
+    svixSignature:
+      type: apiKey
+      in: header
+      name: svix-signature
+      description: Svix webhook aláírás (svix-id + svix-timestamp + svix-signature).
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string, description: "Rövid hibakód (pl. UNAUTHORIZED, INVALID_PAYLOAD)" }
+    Ok:
+      type: object
+      properties:
+        ok: { type: boolean }
+    Answer:
+      type: object
+      required: [questionId, value]
+      properties:
+        questionId: { type: integer, minimum: 1 }
+        value: { type: integer, minimum: 1, maximum: 5 }
+
+security:
+  - clerkSession: []
+
+tags:
+  - name: Public
+    description: Auth nélkül hívható végpontok (rate-limitelt / token-alapú)
+  - name: Assessment
+  - name: Observer
+  - name: Profile
+  - name: Notifications
+  - name: Feedback
+  - name: Team
+  - name: TeamRoles
+  - name: Org
+  - name: Manager
+  - name: Admin
+    description: Csak ADMIN_EMAILS (requireAdmin)
+  - name: Inquiry
+  - name: System
+
+paths:
+  # ── Public ────────────────────────────────────────────────────────────────
+  /api/contact:
+    post:
+      tags: [Public, Inquiry]
+      summary: Kapcsolat űrlap beküldése (Inquiry-pipeline + admin email)
+      security: []
+      description: Rate limit "contact" (3/perc/IP). Honeypot mező (website).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, topic, message]
+              additionalProperties: false
+              properties:
+                name: { type: string, minLength: 2, maxLength: 100 }
+                email: { type: string, format: email, maxLength: 320 }
+                company: { type: string, maxLength: 120 }
+                topic: { type: string, enum: [demo, pricing, support, partnership, other] }
+                message: { type: string, minLength: 20, maxLength: 4000 }
+                website: { type: string, description: "Honeypot — kitöltve csendben eldobjuk" }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/Ok" } } } }
+        "400": { description: Invalid payload }
+        "429": { description: Rate limited }
+        "502": { description: Persist failed }
+  /api/pilot-apply:
+    post:
+      tags: [Public]
+      summary: Pilot-jelentkezés (publikus űrlap)
+      security: []
+      responses: { "200": { description: OK } }
+  /api/candidate/{token}:
+    get:
+      tags: [Public, Manager]
+      summary: Jelölt-meghívó kontextus lekérése (publikus, token-alapú)
+      security: []
+      parameters:
+        - { name: token, in: path, required: true, schema: { type: string } }
+      responses:
+        "200": { description: Meghívó-kontextus }
+        "404": { description: Érvénytelen token }
+  /api/candidate/{token}/progress:
+    patch:
+      tags: [Public, Manager]
+      summary: Jelölt kitöltési progress mentése
+      security: []
+      parameters:
+        - { name: token, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [answeredCount]
+              properties:
+                answeredCount: { type: integer, minimum: 0, maximum: 500 }
+      responses: { "200": { description: OK } }
+  /api/candidate/{token}/submit:
+    post:
+      tags: [Public, Manager]
+      summary: Jelölt teszt beküldése
+      parameters:
+        - { name: token, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [answers]
+              properties:
+                answers:
+                  type: array
+                  items: { $ref: "#/components/schemas/Answer" }
+      responses: { "200": { description: OK } }
+
+  # ── Observer (token-alapú publikus + belépett meghívó-kezelés) ───────────
+  /api/observer/draft:
+    post:
+      tags: [Observer, Public]
+      summary: Observer kitöltés-piszkozat mentése (token-alapú, auth nélkül)
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, phase, relationshipType, knownDuration, answers, currentPage]
+              properties:
+                token: { type: string }
+                phase: { type: string, enum: [intro, assessment, confidence] }
+                relationshipType: { type: string }
+                knownDuration: { type: string }
+                answers: { type: object, additionalProperties: { type: integer, minimum: 1, maximum: 5 } }
+                currentPage: { type: integer, minimum: 0 }
+      responses: { "200": { description: OK } }
+    delete:
+      tags: [Observer, Public]
+      summary: Observer piszkozat törlése
+      security: []
+      responses: { "200": { description: OK } }
+  /api/observer/submit:
+    post:
+      tags: [Observer, Public]
+      summary: Observer értékelés beküldése (token-alapú, auth nélkül)
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, relationshipType, knownDuration, answers]
+              properties:
+                token: { type: string }
+                relationshipType: { type: string, enum: [FRIEND, COLLEAGUE, FAMILY, PARTNER, OTHER] }
+                knownDuration: { type: string }
+                answers:
+                  type: array
+                  items: { $ref: "#/components/schemas/Answer" }
+                confidence: { type: integer, minimum: 1, maximum: 5 }
+      responses:
+        "200": { description: OK }
+        "404": { description: INVALID_TOKEN }
+  /api/observer/invite:
+    get:
+      tags: [Observer]
+      summary: Saját observer-meghívók listája
+      responses: { "200": { description: Meghívó-lista } }
+    post:
+      tags: [Observer]
+      summary: Observer-meghívó létrehozása (email vagy kolléga)
+      description: Rate-limitelt; max 5 aktív meghívó; kolléga-meghívó jóváhagyást igényelhet.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                colleagueUserId: { type: string, description: "Kolléga-meghívó — email-lel kölcsönösen kizáró" }
+                email: { type: string, format: email }
+                name: { type: string, maxLength: 100 }
+                externalContext: { type: string, maxLength: 200 }
+      responses: { "200": { description: Meghívó + token } }
+  /api/observer/invite/{id}:
+    delete:
+      tags: [Observer]
+      summary: Saját meghívó visszavonása
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses: { "200": { description: OK } }
+  /api/observer/invite/{id}/decision:
+    post:
+      tags: [Observer, Org]
+      summary: Kolléga-meghívó jóváhagyása/elutasítása (manager)
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action: { type: string, enum: [approve, decline] }
+      responses: { "200": { description: OK } }
+  /api/observer/link:
+    post:
+      tags: [Observer]
+      summary: Observer-token hozzákötése a belépett profilhoz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties: { token: { type: string } }
+      responses:
+        "200": { description: OK }
+        "409": { description: OBSERVER_MISMATCH / ALREADY_USED }
+  /api/observer/colleagues:
+    get:
+      tags: [Observer, Org]
+      summary: Meghívható kollégák listája (org-tagság alapján)
+      responses: { "200": { description: Kolléga-lista } }
+
+  # ── Assessment ────────────────────────────────────────────────────────────
+  /api/assessment/questions:
+    get:
+      tags: [Assessment]
+      summary: Kérdésbank lekérése (belépett user testType-ja szerint)
+      responses: { "200": { description: Kérdéslista } }
+  /api/assessment/draft:
+    post:
+      tags: [Assessment]
+      summary: Kitöltés-piszkozat mentése (szerver-szinkron)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [answers, currentPage]
+              properties:
+                answers: { type: object, additionalProperties: { type: integer, minimum: 1, maximum: 5 } }
+                currentPage: { type: integer, minimum: 0 }
+      responses: { "200": { description: OK } }
+    delete:
+      tags: [Assessment]
+      summary: Piszkozat törlése
+      responses: { "200": { description: OK } }
+  /api/assessment/submit:
+    post:
+      tags: [Assessment]
+      summary: Önértékelő teszt beküldése (score-számítás)
+      description: Rate-limitelt.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [testType, answers]
+              properties:
+                testType: { type: string, enum: [TRITAN] }
+                answers:
+                  type: array
+                  items: { $ref: "#/components/schemas/Answer" }
+      responses: { "200": { description: Eredmény-azonosító } }
+  /api/assessment/claim-guest:
+    post:
+      tags: [Assessment]
+      summary: Vendég-kitöltés (/try) átvétele belépés után
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [answers]
+              properties:
+                answers:
+                  type: array
+                  items: { $ref: "#/components/schemas/Answer" }
+      responses: { "200": { description: OK } }
+  /api/assessment/skip:
+    post:
+      tags: [Assessment]
+      summary: Teszt kihagyása (org-tag onboarding)
+      responses: { "200": { description: OK } }
+
+  # ── Profile ───────────────────────────────────────────────────────────────
+  /api/profile/onboarding:
+    get:
+      tags: [Profile]
+      summary: Saját profil + tagságok lekérése
+      responses: { "200": { description: Profil }, "401": { description: Unauthorized } }
+    post:
+      tags: [Profile]
+      summary: Onboarding-adatok mentése
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, birthYear, gender]
+              properties:
+                username: { type: string, minLength: 2, maxLength: 20 }
+                birthYear: { type: integer }
+                gender: { type: string, enum: [male, female, other, prefer_not_to_say] }
+                country: { type: string, maxLength: 100 }
+                consentedAt: { type: string, format: date-time }
+                eduLevel: { type: string, enum: [primary, secondary, vocational, higher] }
+                eduField: { type: string }
+                currentIndustry: { type: string, maxLength: 50 }
+      responses: { "200": { description: OK } }
+  /api/profile/username:
+    patch:
+      tags: [Profile]
+      summary: Felhasználónév módosítása
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username]
+              properties:
+                username: { type: string, minLength: 2, maxLength: 20 }
+      responses: { "200": { description: OK } }
+  /api/profile/locale:
+    get: { tags: [Profile], summary: Nyelv lekérése, responses: { "200": { description: OK } } }
+    post:
+      tags: [Profile]
+      summary: Nyelv mentése (DB = source of truth)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [locale]
+              properties: { locale: { type: string, minLength: 2 } }
+      responses: { "200": { description: OK } }
+  /api/profile/career-background:
+    post:
+      tags: [Profile]
+      summary: Karrier-háttér mentése (Karrier-iránytű)
+      description: Rate-limitelt.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status, eduLevel, eduField, ageBand, currentIndustry, interests]
+              properties:
+                status: { type: string, enum: [studying, working, switching] }
+                eduLevel: { type: [string, "null"] }
+                eduField: { type: [string, "null"] }
+                ageBand: { type: [string, "null"], enum: [under20, 20s, 30s, 40s, 50plus, null] }
+                currentIndustry: { type: [string, "null"] }
+                interests: { type: array, maxItems: 3, items: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/profile/status:
+    get: { tags: [Profile], summary: Profil-állapot (journey-hez), responses: { "200": { description: OK } } }
+  /api/profile/delete:
+    post:
+      tags: [Profile]
+      summary: Fiók törlése (soft delete + Clerk user törlés)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [confirm]
+              properties:
+                confirm: { type: string, const: DELETE }
+      responses: { "200": { description: OK } }
+  /api/profile/share:
+    post:
+      tags: [Profile]
+      summary: Megosztási token létrehozása / visszaadása (legutóbbi self-eredmény)
+      responses: { "200": { description: "{ token }" } }
+    delete:
+      tags: [Profile]
+      summary: Megosztás visszavonása (minden self-eredmény tokenje törlődik)
+      responses: { "200": { description: OK } }
+  /api/profile/share/send:
+    post:
+      tags: [Profile]
+      summary: Megosztási link kiküldése emailben
+      description: Rate limit "contact" (userId-alapú).
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties: { email: { type: string, format: email, maxLength: 254 } }
+      responses:
+        "200": { description: OK }
+        "429": { description: Rate limited }
+        "500": { description: SEND_FAILED }
+
+  # ── Notifications ─────────────────────────────────────────────────────────
+  /api/notifications:
+    get: { tags: [Notifications], summary: Saját értesítések listája, responses: { "200": { description: OK } } }
+  /api/notifications/unread-count:
+    get: { tags: [Notifications], summary: Olvasatlan darabszám, responses: { "200": { description: OK } } }
+  /api/notifications/mark-read:
+    post:
+      tags: [Notifications]
+      summary: Értesítések olvasottra állítása
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required: [ids]
+                  properties: { ids: { type: array, items: { type: string } } }
+                - type: object
+                  required: [all]
+                  properties: { all: { type: boolean, const: true } }
+      responses: { "200": { description: OK } }
+  /api/notifications/{id}:
+    delete:
+      tags: [Notifications]
+      summary: Értesítés elrejtése (soft dismiss, csak sajátra hat)
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses: { "200": { description: OK } }
+
+  # ── Feedback ──────────────────────────────────────────────────────────────
+  /api/feedback:
+    post: { tags: [Feedback], summary: Elégedettség-visszajelzés (satisfaction), responses: { "200": { description: OK } } }
+  /api/feedback/dimension:
+    post:
+      tags: [Feedback]
+      summary: Dimenzió-pontosság visszajelzés
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assessmentResultId, dimensionCode, accuracyRating]
+              properties:
+                assessmentResultId: { type: string }
+                dimensionCode: { type: string, maxLength: 4 }
+                accuracyRating: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string, maxLength: 2000 }
+      responses: { "200": { description: OK } }
+  /api/industry-fit/feedback:
+    post:
+      tags: [Feedback]
+      summary: Szerep-illeszkedés kalibráció ("találó volt?")
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [industryKey, roleKey, fitScore, verdict]
+              properties:
+                industryKey: { type: string, maxLength: 40 }
+                roleKey: { type: string, maxLength: 40 }
+                fitScore: { type: integer, minimum: 0, maximum: 100 }
+                verdict: { type: string, enum: [accurate, inaccurate] }
+      responses: { "200": { description: OK } }
+  /api/feature-interest:
+    post:
+      tags: [Feedback]
+      summary: Érdeklődés-jelzés (meleg lead) + admin email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [featureKey]
+              properties:
+                featureKey: { type: string, enum: [team, industry_role] }
+                message: { type: string, maxLength: 2000 }
+      responses: { "200": { description: OK } }
+  /api/features/interest:
+    get: { tags: [Feedback], summary: Saját érdeklődés-jelzések, responses: { "200": { description: OK } } }
+    post:
+      tags: [Feedback]
+      summary: Feature-érdeklődés rögzítése
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [featureKey]
+              properties: { featureKey: { type: string, enum: [team, comm, "360"] } }
+      responses: { "200": { description: OK } }
+
+  # ── Inquiry (in-app kérdés) ───────────────────────────────────────────────
+  /api/inquiry:
+    post:
+      tags: [Inquiry]
+      summary: In-app kérdés beküldése (help-widget) — session-alapú user/org link
+      description: Rate limit "contact" (userId-alapú). Admin + org-tanácsadó notifot kap.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              additionalProperties: false
+              properties: { message: { type: string, minLength: 10, maxLength: 4000 } }
+      responses:
+        "200": { description: OK }
+        "429": { description: Rate limited }
+
+  # ── Team ──────────────────────────────────────────────────────────────────
+  /api/team:
+    get: { tags: [Team], summary: Saját csapatok, responses: { "200": { description: OK } } }
+    post:
+      tags: [Team]
+      summary: Csapat létrehozása (org-kontextusban, capability-gate)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string, maxLength: 80 }
+                orgId: { type: string }
+      responses: { "200": { description: OK } }
+  /api/team/{id}/members:
+    post:
+      tags: [Team]
+      summary: Org-tag hozzáadása csapathoz
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId]
+              properties: { userId: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/team/{id}/members/{userId}:
+    patch:
+      tags: [Team]
+      summary: Csapattag-szerep módosítása
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties: { role: { type: string, enum: [member, manager] } }
+      responses: { "200": { description: OK } }
+    delete: { tags: [Team], summary: Csapattag eltávolítása, responses: { "200": { description: OK } } }
+  /api/team/{id}/invite:
+    post:
+      tags: [Team]
+      summary: Email-meghívó csapatba (TeamPendingInvite + join-link)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties: { email: { type: string, format: email } }
+      responses: { "200": { description: "{ signUpUrl }" } }
+  /api/team/invite:
+    post:
+      tags: [Team]
+      summary: Nyílt (reusable) meghívó-link generálása
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [teamId]
+              properties: { teamId: { type: string } }
+      responses: { "200": { description: "{ inviteUrl, inviteId }" } }
+  /api/team/join:
+    post:
+      tags: [Team]
+      summary: Csatlakozás csapathoz meghívó-id-vel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inviteId]
+              properties: { inviteId: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/team/pending-invite/{id}:
+    delete: { tags: [Team], summary: Függő meghívó visszavonása, responses: { "200": { description: OK } } }
+  /api/team/pending-invite/{id}/resend:
+    post: { tags: [Team], summary: Függő meghívó újraküldése, responses: { "200": { description: OK } } }
+  /api/team/{id}/pattern:
+    get:
+      tags: [Team]
+      summary: Csapat-mintázat (TRITAN-aggregátum) — csapat-hozzáférés kell
+      responses: { "200": { description: OK }, "403": { description: FORBIDDEN } }
+  /api/team/{id}/report:
+    post: { tags: [Team], summary: Csapat-riport draft létrehozása (tanácsadó), responses: { "200": { description: OK } } }
+    patch:
+      tags: [Team]
+      summary: Riport mentés / előnézet / publikálás / visszavonás
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reportId]
+              properties:
+                reportId: { type: string }
+                action: { type: string, enum: [save, preview, publish, unpublish], default: save }
+      responses: { "200": { description: OK } }
+    delete: { tags: [Team], summary: Riport törlése, responses: { "200": { description: OK } } }
+  /api/team/{id}/report/translate:
+    post:
+      tags: [Team]
+      summary: Riport EN-fordítás flow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reportId]
+              properties: { reportId: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/team/role-round:
+    get: { tags: [TeamRoles], summary: Csapatszerep-kör állapota, responses: { "200": { description: OK } } }
+    post: { tags: [TeamRoles], summary: Csapatszerep-kör nyitása/zárása, responses: { "200": { description: OK } } }
+
+  # ── TeamRoles / Trust / PsychSafety ──────────────────────────────────────
+  /api/team-roles/submit:
+    post:
+      tags: [TeamRoles]
+      summary: Saját csapatszerep-kérdőív beküldése
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [selections]
+              properties:
+                selections: { type: object, additionalProperties: { type: number } }
+      responses: { "200": { description: OK } }
+  /api/team-roles/peers:
+    get:
+      tags: [TeamRoles]
+      summary: Értékelendő csapattársak (kampány-résztvevőnek, nyitott lépésnél)
+      parameters: [{ name: campaignId, in: query, required: true, schema: { type: string } }]
+      responses: { "200": { description: OK }, "409": { description: STEP_LOCKED } }
+  /api/team-roles/peers/submit:
+    post:
+      tags: [TeamRoles]
+      summary: Peer csapatszerep-értékelések beküldése
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [campaignId, observations]
+              properties:
+                campaignId: { type: string }
+                observations:
+                  type: array
+                  items:
+                    type: object
+                    required: [aboutUserId, selections]
+                    properties:
+                      aboutUserId: { type: string }
+                      selections: { type: object, additionalProperties: { type: number } }
+      responses: { "200": { description: OK } }
+  /api/trust/peers:
+    get:
+      tags: [TeamRoles]
+      summary: Bizalmi kör — értékelendő tagok
+      parameters: [{ name: campaignId, in: query, required: true, schema: { type: string } }]
+      responses: { "200": { description: OK } }
+  /api/trust/peers/submit:
+    post:
+      tags: [TeamRoles]
+      summary: Bizalmi visszajelzések beküldése
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [campaignId, observations]
+              properties:
+                campaignId: { type: string }
+                observations:
+                  type: array
+                  items:
+                    type: object
+                    required: [aboutUserId, answers]
+                    properties:
+                      aboutUserId: { type: string }
+                      answers: { type: object, additionalProperties: { type: number } }
+      responses: { "200": { description: OK } }
+  /api/psych-safety/submit:
+    post:
+      tags: [TeamRoles]
+      summary: Pszichológiai biztonság pulse beküldése (anonim aggregátumba)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [campaignId, answers]
+              properties:
+                campaignId: { type: string }
+                answers: { type: object, additionalProperties: { type: number } }
+      responses: { "200": { description: OK } }
+
+  # ── Org ───────────────────────────────────────────────────────────────────
+  /api/org:
+    get: { tags: [Org], summary: Saját szervezetek, responses: { "200": { description: OK } } }
+    post:
+      tags: [Org]
+      summary: Szervezet létrehozása (asConsultant = tanácsadói ügyfél-org)
+      description: Rate-limitelt.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string, maxLength: 100 }
+                asConsultant: { type: boolean }
+                billing: { type: object, additionalProperties: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/org/context:
+    get: { tags: [Org], summary: "Aktív org + tagságok (org-váltóhoz)", responses: { "200": { description: OK } } }
+    post:
+      tags: [Org]
+      summary: Aktív org-kontextus váltása (csak saját tagságra)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orgId]
+              properties: { orgId: { type: string } }
+      responses: { "200": { description: OK }, "403": { description: FORBIDDEN } }
+  /api/org/join:
+    post:
+      tags: [Org]
+      summary: Csatlakozás szervezethez meghívó-id-vel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inviteId]
+              properties: { inviteId: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/org/switch:
+    post:
+      tags: [Org]
+      summary: Org-váltás team-meghívó elfogadásakor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inviteId]
+              properties: { inviteId: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/org/{id}:
+    get: { tags: [Org], summary: Szervezet adatai (tagoknak), responses: { "200": { description: OK } } }
+    patch:
+      tags: [Org]
+      summary: Szervezet módosítása (admin)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, maxLength: 100 }
+                status: { type: string, enum: [ACTIVE, INACTIVE] }
+      responses: { "200": { description: OK } }
+  /api/org/{id}/invite:
+    post:
+      tags: [Org]
+      summary: Org-meghívó küldése (admin; ORG_CONSULTANT nem osztható így)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+                role: { type: string, enum: [ORG_ADMIN, ORG_MANAGER, ORG_MEMBER], default: ORG_MEMBER }
+      responses: { "200": { description: OK } }
+  /api/org/{id}/invite/{inviteId}:
+    delete: { tags: [Org], summary: Org-meghívó visszavonása, responses: { "200": { description: OK } } }
+  /api/org/{id}/members/{userId}:
+    patch:
+      tags: [Org]
+      summary: Tag-szerep módosítása (LAST_ADMIN-védelemmel)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties: { role: { type: string, enum: [ORG_ADMIN, ORG_MANAGER, ORG_MEMBER] } }
+      responses: { "200": { description: OK } }
+    delete: { tags: [Org], summary: Tag eltávolítása, responses: { "200": { description: OK } } }
+  /api/org/{id}/remind:
+    post: { tags: [Org], summary: Kitöltési emlékeztetők (stub), responses: { "200": { description: OK } } }
+  /api/org/{id}/inquiries:
+    patch:
+      tags: [Org, Inquiry]
+      summary: Org-hoz kötött kérdés kezelése (tanácsadó; státusz + jegyzet)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inquiryId, action]
+              properties:
+                inquiryId: { type: string }
+                action: { type: string, enum: [set_status, set_note] }
+                status: { type: string, enum: [NEW, IN_PROGRESS, CLOSED] }
+                note: { type: string, maxLength: 4000 }
+      responses: { "200": { description: OK }, "403": { description: FORBIDDEN } }
+  /api/org/{id}/campaigns:
+    get: { tags: [Org], summary: Kampányok listája (org-tag), responses: { "200": { description: OK } } }
+    post:
+      tags: [Org]
+      summary: Kampány létrehozása (tanácsadói felület + launchCampaign capability)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string, maxLength: 100 }
+                description: { type: string, maxLength: 500 }
+                type: { type: string, enum: [OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY] }
+                types:
+                  type: array
+                  maxItems: 3
+                  items: { type: string, enum: [OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY] }
+                teamId: { type: string }
+                allowExternalObservers: { type: boolean, default: false }
+                stepIntervalHours: { type: integer, minimum: 0, maximum: 168, default: 24 }
+      responses: { "200": { description: OK } }
+  /api/org/{id}/campaigns/{campaignId}:
+    get: { tags: [Org], summary: Kampány részletei, responses: { "200": { description: OK } } }
+    patch:
+      tags: [Org]
+      summary: Kampány-státusz váltás (DRAFT→ACTIVE→CLOSED, visszafordíthatatlan)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties: { status: { type: string, enum: [DRAFT, ACTIVE, CLOSED] } }
+      responses: { "200": { description: OK } }
+    post:
+      tags: [Org]
+      summary: Résztvevők hozzáadása
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userIds]
+              properties:
+                userIds: { type: array, minItems: 1, maxItems: 50, items: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/org/{id}/campaigns/{campaignId}/pacing:
+    post:
+      tags: [Org]
+      summary: Lépés-ütemezés (intervallum / azonnali nyitás)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required: [action, stepIntervalHours]
+                  properties:
+                    action: { type: string, const: interval }
+                    stepIntervalHours: { type: integer, minimum: 0, maximum: 168 }
+                - type: object
+                  required: [action]
+                  properties: { action: { type: string, const: release_now } }
+      responses: { "200": { description: OK } }
+  /api/org/{id}/campaigns/{campaignId}/remind:
+    post: { tags: [Org], summary: Kampány-emlékeztetők küldése, responses: { "200": { description: OK } } }
+
+  # ── Manager / Hiring ──────────────────────────────────────────────────────
+  /api/manager/candidates:
+    post:
+      tags: [Manager]
+      summary: Jelölt-meghívó létrehozása (kredit-fogyasztással)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                email: { type: string, format: email }
+                name: { type: string, maxLength: 100 }
+                position: { type: string, maxLength: 100 }
+                teamId: { type: string }
+                inviteLocale: { type: string, enum: [hu, en] }
+      responses: { "200": { description: "{ token, applyUrl }" } }
+  /api/manager/candidates/{id}:
+    delete: { tags: [Manager], summary: Jelölt-meghívó visszavonása, responses: { "200": { description: OK } } }
+  /api/manager/candidates/{id}/resend:
+    post: { tags: [Manager], summary: Jelölt-meghívó újraküldése, responses: { "200": { description: OK } } }
+  /api/hiring/request-credits:
+    post:
+      tags: [Manager]
+      summary: Kredit-igénylés (admin bírálja el)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orgId]
+              properties: { orgId: { type: string } }
+      responses: { "200": { description: OK } }
+  /api/advisory/request:
+    post: { tags: [Manager], summary: Tanácsadási igény jelzése, responses: { "200": { description: OK } } }
+
+  # ── Admin (requireAdmin — ADMIN_EMAILS) ──────────────────────────────────
+  /api/admin/org-access:
+    get: { tags: [Admin], summary: Összes org előfizetés-állapottal, responses: { "200": { description: OK }, "401": { description: Unauthorized } } }
+    post:
+      tags: [Admin]
+      summary: Org-hozzáférés kezelése (activate/trial/extend/…)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orgId, action]
+              properties:
+                orgId: { type: string }
+                action: { type: string, enum: [activate, trial, extend, deactivate, set_credits, assign_consultant, remove_consultant, update_billing] }
+                billing: { type: object, additionalProperties: { type: string } }
+                planType: { type: string, enum: [team, org, scale] }
+                months: { type: integer, minimum: 1, maximum: 36 }
+                candidateCredits: { type: integer, minimum: 0, maximum: 1000 }
+                consultantEmail: { type: string, format: email }
+      responses: { "200": { description: OK } }
+  /api/admin/consultants:
+    get: { tags: [Admin], summary: Tanácsadók + meghívók listája, responses: { "200": { description: OK } } }
+    post:
+      tags: [Admin]
+      summary: Tanácsadó-onboarding műveletek
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action: { type: string, enum: [invite, revoke_invite, remove_consultant, assign_org, unassign_org] }
+                email: { type: string, format: email }
+                note: { type: string, maxLength: 300 }
+                inviteId: { type: string }
+                profileId: { type: string }
+                orgId: { type: string }
+      responses: { "200": { description: OK } }
+  /api/admin/inquiries:
+    patch:
+      tags: [Admin, Inquiry]
+      summary: Kérdés kezelése (státusz, jegyzet, user/org link)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inquiryId, action]
+              properties:
+                inquiryId: { type: string }
+                action: { type: string, enum: [set_status, set_note, link_org, unlink_org, link_user, unlink_user] }
+                status: { type: string, enum: [NEW, IN_PROGRESS, CLOSED] }
+                note: { type: string, maxLength: 4000 }
+                organizationId: { type: string }
+                userProfileId: { type: string }
+      responses: { "200": { description: OK } }
+  /api/admin/send-reminder/{id}:
+    post: { tags: [Admin], summary: Observer-emlékeztető küldése, responses: { "200": { description: OK } } }
+  /api/admin/send-draft-reminder/{id}:
+    post: { tags: [Admin], summary: Piszkozat-emlékeztető küldése, responses: { "200": { description: OK } } }
+
+  # ── System ────────────────────────────────────────────────────────────────
+  /api/dashboard/status:
+    get: { tags: [System], summary: Dashboard polling-állapot, responses: { "200": { description: OK } } }
+  /api/journey/state:
+    get:
+      tags: [System]
+      summary: Journey-állapot + következő lépés
+      parameters:
+        - { name: teamId, in: query, schema: { type: string } }
+        - { name: orgId, in: query, schema: { type: string } }
+        - { name: locale, in: query, schema: { type: string, enum: [hu, en] } }
+      responses: { "200": { description: OK } }
+  /api/cron/release-steps:
+    get:
+      tags: [System]
+      summary: Ütemezett kampánylépések nyitása (Vercel cron, óránként)
+      security: [{ cronBearer: [] }]
+      responses: { "200": { description: "{ ok, released }" }, "401": { description: Unauthorized } }
+  /api/webhooks/clerk:
+    post:
+      tags: [System]
+      summary: Clerk webhook (user-szinkron, email-küldés) — Svix-aláírással
+      security: [{ svixSignature: [] }]
+      responses: { "200": { description: OK }, "400": { description: Bad signature } }
