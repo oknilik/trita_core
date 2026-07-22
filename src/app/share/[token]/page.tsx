@@ -7,6 +7,7 @@ import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
 import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { t } from "@/lib/i18n";
 
@@ -77,19 +78,13 @@ export default async function SharedProfilePage({
     { year: "numeric", month: "long", day: "numeric" },
   );
 
-  // Personality type
-  const topTwo = [...dimensions].sort((a, b) => b.score - a.score).slice(0, 2);
-  const typeLabels: Record<string, { hu: string; en: string }> = {
-    INTE: { hu: "Elvi", en: "Principled" },
-    RESO: { hu: "Érzékeny", en: "Sensitive" },
-    TEMP: { hu: "Energikus", en: "Energetic" },
-    ADAP: { hu: "Együttműködő", en: "Cooperative" },
-    THOR: { hu: "Rendszerező", en: "Systematic" },
-    OPEN: { hu: "Innovátor", en: "Innovator" },
-  };
-  const personalityType = topTwo.length >= 2
-    ? `${typeLabels[topTwo[0].code]?.[locale] ?? ""} ${typeLabels[topTwo[1].code]?.[locale] ?? ""}`
-    : "";
+  // Személyiség-típus — a közös archetípus-nyelvtanból (personality-type.ts),
+  // a korábban itt duplikált mechanikus címke-összefűzés helyett.
+  const personalityType =
+    resolvePersonalityTypeFromScores(
+      dimensions.map((d) => ({ code: d.code, score: d.score })),
+      isHu ? "hu" : "en",
+    ) ?? "";
 
   // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));

@@ -11,6 +11,10 @@ import { ProgressBar } from "@/components/results/ProgressBar";
 import { InsightPair } from "@/components/results/InsightPair";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
+import {
+  ObserverFlowStatusCard,
+  ObserverFlowStrip,
+} from "@/components/results/ObserverFlowStatusCard";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
@@ -108,6 +112,18 @@ export interface ProfileTabsProps {
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
   observerCount: number;
+  /**
+   * Observer-folyamat állapota (self/csapat szétválasztás, 2026-07-22).
+   * Org-tagnál ("locked" | "in_progress" | "available") a meghívó-tab
+   * állapot-kártyát mutat a személyes meghívó-flow helyett, és az
+   * összevetés a küszöbig zárva marad. null / "self_serve" → régi flow.
+   */
+  observerFlow?: {
+    state: "self_serve" | "locked" | "in_progress" | "available";
+    receivedCount: number;
+    minForReveal: number;
+    activeCampaignName: string | null;
+  } | null;
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   feedbackSubmitted: boolean;
@@ -479,6 +495,7 @@ export function ProfileTabs({
   growthFocusItems,
   hasObserverData,
   observerCount,
+  observerFlow = null,
   sentInvitations,
   receivedInvitations,
   feedbackSubmitted,
@@ -825,16 +842,31 @@ export function ProfileTabs({
         pdfLoading={pdfLoading}
       />
 
-      {/* Progress bar */}
-      <ProgressBar
-        hasSelfPlus={isPlus}
-        observersSent={sentInvitations.length > 0}
-        observersCompleted={hasObserverData}
-        sentCount={sentInvitations.length}
-        receivedCount={observerCount}
-        onNavigateToComparison={() => handleTabChange("comparison")}
-        onNavigateToInvites={() => handleTabChange("invites")}
-      />
+      {/* Progress bar — org-tagnál a lépés-sáv helyett állapot-csík: a saját
+          út a kitöltéssel kész, az observer csapat-folyamat (nem hiány). */}
+      {observerFlow && observerFlow.state !== "self_serve" ? (
+        <ObserverFlowStrip
+          flow={{
+            state: observerFlow.state,
+            receivedCount: observerFlow.receivedCount,
+            minForReveal: observerFlow.minForReveal,
+            activeCampaignName: observerFlow.activeCampaignName,
+          }}
+          isHu={locale === "hu"}
+          onOpenInvites={() => handleTabChange("invites")}
+          onOpenComparison={() => handleTabChange("comparison")}
+        />
+      ) : (
+        <ProgressBar
+          hasSelfPlus={isPlus}
+          observersSent={sentInvitations.length > 0}
+          observersCompleted={hasObserverData}
+          sentCount={sentInvitations.length}
+          receivedCount={observerCount}
+          onNavigateToComparison={() => handleTabChange("comparison")}
+          onNavigateToInvites={() => handleTabChange("invites")}
+        />
+      )}
 
       {/* Insight pair */}
       {strengths && watchAreas && (
@@ -942,7 +974,21 @@ export function ProfileTabs({
           />
         )}
         {activeTab === "comparison" && (
-          isPlus ? (
+          // Org-tagnál az összevetés a kampány-küszöbig zárva: állapot-kártya
+          // (nem hiány-nyelv). Self-serve-nél a régi flow változatlan.
+          observerFlow &&
+          observerFlow.state !== "self_serve" &&
+          observerFlow.state !== "available" ? (
+            <ObserverFlowStatusCard
+              flow={{
+                state: observerFlow.state,
+                receivedCount: observerFlow.receivedCount,
+                minForReveal: observerFlow.minForReveal,
+                activeCampaignName: observerFlow.activeCampaignName,
+              }}
+              isHu={locale === "hu"}
+            />
+          ) : isPlus ? (
             <ComparisonTabNew
               dimensions={dimensions}
               hasObserverData={hasObserverData}
@@ -959,11 +1005,30 @@ export function ProfileTabs({
           )
         )}
         {activeTab === "invites" && (
-          <InvitationsTab
-            sentInvitations={sentInvitations}
-            receivedInvitations={receivedInvitations}
-            isPlus={isPlus}
-          />
+          // Org-tagnál a meghívó-flow helyett a csapat-folyamat állapota:
+          // az observer kampány-vezérelt, nem személyes meghívás kérdése.
+          observerFlow && observerFlow.state !== "self_serve" ? (
+            <ObserverFlowStatusCard
+              flow={{
+                state: observerFlow.state,
+                receivedCount: observerFlow.receivedCount,
+                minForReveal: observerFlow.minForReveal,
+                activeCampaignName: observerFlow.activeCampaignName,
+              }}
+              isHu={locale === "hu"}
+              onOpenComparison={
+                observerFlow.state === "available"
+                  ? () => handleTabChange("comparison")
+                  : undefined
+              }
+            />
+          ) : (
+            <InvitationsTab
+              sentInvitations={sentInvitations}
+              receivedInvitations={receivedInvitations}
+              isPlus={isPlus}
+            />
+          )
         )}
       </div>
 

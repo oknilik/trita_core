@@ -41,6 +41,36 @@ function resolveProgressScope(
 function computePersonalScopeProgress(context: JourneyContextSnapshot): JourneyScopeProgress {
   const { self } = context.completionSummary;
 
+  // Consulting-led + org-tag: az observer csapat-folyamat (kampány-vezérelt),
+  // nem személyes hiány — a személyes út a kitöltéssel 100%-ra zárul, és a
+  // haladásjelző nem mutat olyan lépést, amire a tagnak nincs ráhatása.
+  // (Self/csapat szétválasztás, 2026-07-22.)
+  if (self.orgGoverned) {
+    const selfOnlyScore = context.assessment.completed
+      ? 100
+      : context.assessment.started
+        ? 50
+        : 0;
+    return {
+      scope: "personal",
+      label: {
+        hu: "Személyes haladás",
+        en: "Personal progress",
+      },
+      scopeProgress: clampProgress(selfOnlyScore),
+      substeps: [
+        {
+          id: "self_assessment",
+          label: {
+            hu: "Self assessment kész",
+            en: "Self assessment completed",
+          },
+          done: context.assessment.completed,
+        },
+      ],
+    };
+  }
+
   const selfScore = context.assessment.completed ? 70 : context.assessment.started ? 35 : 0;
   const observerTarget = Math.max(1, Math.min(OBSERVER_TARGET, Math.max(self.sentInvites, self.completedObservers)));
   const observerCoverage =

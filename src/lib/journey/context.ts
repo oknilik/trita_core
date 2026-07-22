@@ -2,6 +2,7 @@ import "server-only";
 
 import { InvitationStatus, UserRole } from "@prisma/client";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { isConsultingLed } from "@/lib/operating-mode";
 import { prisma } from "@/lib/prisma";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { JOURNEY_TEAM_INTENT_FEATURE_KEY } from "@/lib/journey/intent";
@@ -38,6 +39,7 @@ function createEmptyCompletionSummary(): JourneyCompletionSummary {
       pendingTeamInvites: 0,
       pendingOrgInvites: 0,
       explicitTeamIntent: false,
+      orgGoverned: false,
     },
     team: {
       joined: false,
@@ -106,7 +108,7 @@ export async function resolveJourneyContext(
 ): Promise<JourneyContextSnapshot> {
   const now = options.now ?? new Date();
 
-  const [profile, selfResult, draft, sentInvites, pendingInvites, completedObservers, orgMembership, teamIntentFlag] =
+  const [profile, selfResult, draft, sentInvites, pendingInvites, completedObservers, orgMembership, teamIntentFlag, anyOrgMembershipCount] =
     await Promise.all([
       prisma.userProfile.findUnique({
         where: { id: profileId },
@@ -154,6 +156,12 @@ export async function resolveJourneyContext(
           },
         },
         select: { userProfileId: true },
+      }),
+      // BÁRMELY aktív org-tagság (nem csak az options.orgId szerinti) — az
+      // orgGoverned flaghez: consulting-led módban az org-tag observer-útja
+      // kampány-vezérelt. A tanácsadói tagság nem számít (ő self-serve).
+      prisma.organizationMember.count({
+        where: { userId: profileId, leftAt: null, role: { not: "ORG_CONSULTANT" } },
       }),
     ]);
 
@@ -444,6 +452,7 @@ export async function resolveJourneyContext(
       pendingTeamInvites,
       pendingOrgInvites,
       explicitTeamIntent,
+      orgGoverned: isConsultingLed() && anyOrgMembershipCount > 0,
     },
     team: teamSummary,
     org: orgSummary,

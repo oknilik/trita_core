@@ -53,6 +53,7 @@ function createBaseCompletionSummary(): JourneyCompletionSummary {
       pendingTeamInvites: 0,
       pendingOrgInvites: 0,
       explicitTeamIntent: false,
+      orgGoverned: false,
     },
     team: {
       joined: false,

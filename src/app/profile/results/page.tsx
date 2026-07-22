@@ -14,6 +14,8 @@ import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import type { AccessLevel } from "@/lib/access";
 import { runProfileEngine } from "@/lib/profile-engine";
+import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
+import { resolveObserverFlowStatus } from "@/lib/observer-flow";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import {
@@ -409,22 +411,18 @@ export default async function ProfileResultsPage({
   const highDims = mainDimensions.filter((d) => d.score >= 70);
   const lowDims = mainDimensions.filter((d) => d.score < 40);
 
-  // Personality type label from top dimensions
-  const personalityType = (() => {
-    const topTwo = [...mainDimensions].sort((a, b) => b.score - a.score).slice(0, 2);
-    if (topTwo.length < 2) return t("results.uniqueProfile", locale);
-    const labels: Record<string, { hu: string; en: string }> = {
-      INTE: { hu: "Elvi", en: "Principled" },
-      RESO: { hu: "Érzékeny", en: "Sensitive" },
-      TEMP: { hu: "Energikus", en: "Energetic" },
-      ADAP: { hu: "Együttműködő", en: "Cooperative" },
-      THOR: { hu: "Rendszerező", en: "Systematic" },
-      OPEN: { hu: "Innovátor", en: "Innovator" },
-    };
-    const a = labels[topTwo[0].code]?.[locale] ?? topTwo[0].label;
-    const b = labels[topTwo[1].code]?.[locale] ?? topTwo[1].label;
-    return `${a} ${b}`;
-  })();
+  // Személyiség-típus címke a top-2 dimenzióból — a közös archetípus-
+  // nyelvtannal (melléknév + főnév, pl. „Energikus újító"); a korábbi
+  // mechanikus összefűzés („Innovátor Energikus") kivezetve.
+  const personalityType =
+    resolvePersonalityTypeFromScores(
+      mainDimensions.map((d) => ({ code: d.code, score: d.score })),
+      locale === "hu" ? "hu" : "en",
+    ) ?? t("results.uniqueProfile", locale);
+
+  // Observer-folyamat állapota (self/csapat szétválasztás): org-tagnál a
+  // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
+  const observerFlow = await resolveObserverFlowStatus(profile.id);
 
   // Percentile (approximate from average score)
   const avgScore = Math.round(
@@ -643,6 +641,7 @@ export default async function ProfileResultsPage({
           growthFocusItems={growthFocusItems}
           hasObserverData={hasObserverData}
           observerCount={completedObservers.length}
+          observerFlow={observerFlow}
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
           feedbackSubmitted={feedbackSubmitted}

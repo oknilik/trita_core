@@ -64,6 +64,12 @@ export interface JourneyCompletionSummary {
     pendingTeamInvites: number;
     pendingOrgInvites: number;
     explicitTeamIntent: boolean;
+    /**
+     * Consulting-led mód + aktív org-tagság: az observer csapat-folyamat
+     * (kampány), nem személyes feladat — a személyes haladás a kitöltéssel
+     * zárul, a hiány-keretezés tilos. (Self/csapat szétválasztás, 2026-07-22.)
+     */
+    orgGoverned: boolean;
   };
   team: {
     joined: boolean;
