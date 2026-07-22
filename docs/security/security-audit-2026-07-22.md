@@ -37,16 +37,22 @@ körben, először Report-Only módban (Clerk + inline style-ok miatt).
 
 ## Nyitott javaslatok (döntést igényel)
 
-### 🔴 P1 — Team/Org meghívó-elfogadás nem ellenőrzi az emailt
-`TeamPendingInvite` / `OrganizationPendingInvite`: a join-link a rekord `id`-ját
-(cuid) használja bearer tokenként, és az elfogadásnál **nincs email-egyezés
-ellenőrzés** (acceptance/service.ts) — bármely belépett user csatlakozhat, aki
-ismeri az id-t. A cuid-előrejelezhetőség + a szándékos link-továbbítás UX
-együtt teszi ezt kockázattá (jogosulatlan org/team tagság → csapat-adatok).
-**Javaslat:** (a) named-email meghívónál kötelező email-egyezés az elfogadáskor
-(`__open__` reusable meghívó marad szabad), ÉS (b) külön `token` mező
-crypto-random értékkel az id helyett. UX-döntés is (link-továbbítás ma
-működik) — ezért nem javítottam csendben.
+### 🟠 P1 — Team/Org meghívó-elfogadás email-ellenőrzése — RÉSZBEN JAVÍTVA
+**(a) Email-egyezés — JAVÍTVA ✅.** A named (nem `__open__`) meghívó mostantól
+csak a címzett fiókjával fogadható el. A kapu a `runJoinTransaction`-ben ül —
+ez a mutáció egyetlen belépési pontja (shared + legacy + org-switch flow-k mind
+ide futnak), így a kliens-állapottól függetlenül véd. Mismatch → 403
+`INVITE_EMAIL_MISMATCH`, lokalizált kliens-üzenettel. Integrációs teszt hozzáadva
+(join-acceptance-matrix). Ez zárja a tényleges authz-lyukat (jogosulatlan
+csatlakozás).
+
+**(b) Random token az id helyett — NYITOTT.** A join-link még mindig a cuid
+`id`-t használja (id-enumeráció elleni védelem-mélység). Migráció-igény: `token`
+mező (nullable) + backfill-szkript + **átmeneti dupla-lookup** (id VAGY token),
+mert a már kiküldött meghívó-emailekben a régi cuid-linkek élnek — token-only
+lookup ezeket eltörné. Ezért külön, migráció-tudatos körben. Az (a) fix után a
+maradék kockázat alacsony (id ismeretében sem lehet csatlakozni, ha az email nem
+egyezik).
 
 ### 🟠 P2 — CSP bevezetése
 `Content-Security-Policy-Report-Only` először, majd enforce. Clerk-domainek +

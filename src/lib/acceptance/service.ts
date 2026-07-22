@@ -39,6 +39,7 @@ export interface MembershipProfileStatus {
 export interface MembershipJoinActor {
   profileId: string;
   username: string | null;
+  email: string | null;
   profileStatus: MembershipProfileStatus;
   activeOrgMembership: {
     orgId: string;
@@ -63,6 +64,8 @@ export interface OrgJoinInviteContext {
   orgId: string;
   orgName: string;
   role: string;
+  email: string;
+  isReusableInvite: boolean;
 }
 
 export type MembershipJoinInviteContext = TeamJoinInviteContext | OrgJoinInviteContext;
@@ -104,6 +107,7 @@ export type MembershipOnboardingErrorCode =
   | "UNAUTHORIZED"
   | "INVALID_INPUT"
   | "INVITE_NOT_FOUND"
+  | "INVITE_EMAIL_MISMATCH"
   | "ALREADY_IN_ORG"
   | "PROFILE_INCOMPLETE";
 
@@ -430,6 +434,7 @@ export async function resolveMembershipJoinActor(clerkId: string): Promise<Membe
     select: {
       id: true,
       username: true,
+      email: true,
       birthYear: true,
       gender: true,
       consentedAt: true,
@@ -447,6 +452,7 @@ export async function resolveMembershipJoinActor(clerkId: string): Promise<Membe
   return {
     profileId: profile.id,
     username: profile.username,
+    email: profile.email,
     profileStatus: getProfileStatus(profile),
     activeOrgMembership: activeMembership && activeOrg
       ? {
@@ -499,6 +505,7 @@ export async function resolveOrgJoinInviteContext(
       id: true,
       orgId: true,
       role: true,
+      email: true,
       org: { select: { name: true } },
     },
   });
@@ -511,6 +518,8 @@ export async function resolveOrgJoinInviteContext(
     orgId: invite.orgId,
     orgName: invite.org.name,
     role: invite.role,
+    email: invite.email,
+    isReusableInvite: invite.email === "__open__",
   };
 }
 
@@ -536,11 +545,30 @@ async function resolveCandidateNextPath(clerkId: string | null): Promise<string 
   return resolution?.destination ?? JOURNEY_HOME_HANDOFF_PATH;
 }
 
+// Named (nem reusable) meghívó csak a címzett email-jével fogadható el.
+// A "__open__" reusable linkek szabadok. Case-insensitive összevetés.
+function inviteEmailMatches(
+  invite: MembershipJoinInviteContext,
+  actorEmail: string | null,
+): boolean {
+  if (invite.isReusableInvite) return true;
+  const target = invite.email.trim().toLowerCase();
+  if (!target || target === "__open__") return true;
+  return Boolean(actorEmail && actorEmail.trim().toLowerCase() === target);
+}
+
 async function runJoinTransaction(
   actor: MembershipJoinActor,
   invite: MembershipJoinInviteContext,
   options: { skipOrgMembershipCreate?: boolean } = {},
 ): Promise<AcceptanceMembershipMutationResult> {
+  // Jogosultság-kapu: a named meghívó a címzett fiókjához kötött. Ez a
+  // mutáció egyetlen belépési pontja (shared + legacy + org-switch flow-k
+  // mind ide futnak), így a kliens-oldali állapottól függetlenül véd.
+  if (!inviteEmailMatches(invite, actor.email)) {
+    throw new MembershipOnboardingError("INVITE_EMAIL_MISMATCH", 403);
+  }
+
   if (invite.kind === "team") {
     const tx: Prisma.PrismaPromise<unknown>[] = [];
     if (!options.skipOrgMembershipCreate) {
@@ -1497,6 +1525,7 @@ function throwMembershipOnboardingErrorFromErrorState(
         "UNAUTHORIZED",
         "INVALID_INPUT",
         "INVITE_NOT_FOUND",
+        "INVITE_EMAIL_MISMATCH",
         "ALREADY_IN_ORG",
         "PROFILE_INCOMPLETE",
       ] as const

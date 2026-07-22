@@ -189,5 +189,10 @@ export function getMembershipSubmitErrorMessage(
       ? "Már van aktív szervezeti tagságod."
       : "You already have an active organization context.";
   }
+  if (errorCode === "INVITE_EMAIL_MISMATCH") {
+    return locale === "hu"
+      ? "Ez a meghívó egy másik email-címre szól. Jelentkezz be azzal a fiókkal, amelyre a meghívót kaptad."
+      : "This invitation was sent to a different email address. Sign in with the account it was sent to.";
+  }
   return DEFAULT_SUBMIT_ERROR[locale];
 }

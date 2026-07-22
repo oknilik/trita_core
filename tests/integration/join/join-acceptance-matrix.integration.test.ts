@@ -189,6 +189,42 @@ test("api.org.join valid token: creates org membership with invite role and cons
   assert.equal(pendingInvite, null, "org invite should be consumed after successful join");
 });
 
+test("api.team.join email mismatch: named invite rejects a different account", async () => {
+  const { team } = await createOrgGraph();
+  const invite = await createTeamInvite(team.id, "invited-person@integration.trita.app");
+  // A belépő user MÁS email-lel — a named meghívó nem fogadható el.
+  const intruder = await createProfile({
+    clerkId: makeId("clerk_join_mismatch_team"),
+    email: "someone-else@integration.trita.app",
+    completeProfile: true,
+  });
+
+  await assert.rejects(
+    () =>
+      joinMembershipFromInvite({
+        clerkId: intruder.clerkId!,
+        kind: "team",
+        inviteId: invite.id,
+      }),
+    (error: unknown) => {
+      assert.ok(error instanceof MembershipOnboardingError);
+      assert.equal(error.code, "INVITE_EMAIL_MISMATCH");
+      assert.equal(error.status, 403);
+      return true;
+    },
+  );
+
+  // A meghívó és a csapat érintetlen marad
+  const [pendingInvite, teamMembership] = await Promise.all([
+    prisma.teamPendingInvite.findUnique({ where: { id: invite.id } }),
+    prisma.teamMember.findUnique({
+      where: { teamId_userId: { teamId: team.id, userId: intruder.id } },
+    }),
+  ]);
+  assert.ok(pendingInvite, "invite must survive a rejected join");
+  assert.equal(teamMembership, null, "no membership for a mismatched account");
+});
+
 test("api.team.join invalid token: throws INVITE_NOT_FOUND", async () => {
   await assert.rejects(
     () =>
