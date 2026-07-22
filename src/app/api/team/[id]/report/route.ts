@@ -33,9 +33,38 @@ const narrativeFields = {
   internalNotes: z.string().max(8000).nullish(),
 };
 
+// Angol fordítás-csomag (gépi fordítás + tanácsadói jóváhagyás) — a
+// TeamReport.translationsEn JSON-oszlopba kerül; szerkezet: team-report-i18n.ts.
+const translationsEnSchema = z
+  .object({
+    en: z.object({
+      status: z.enum(["draft", "approved"]),
+      translatedAt: z.string().max(64),
+      approvedAt: z.string().max(64).nullish(),
+      summary: z.string().max(8000).nullish(),
+      strengths: z.string().max(8000).nullish(),
+      risks: z.string().max(8000).nullish(),
+      recommendations: z.string().max(8000).nullish(),
+      interviewFindings: z.string().max(8000).nullish(),
+      leadershipGuide: z.string().max(8000).nullish(),
+      actionItems: z
+        .array(
+          z.object({
+            title: z.string().max(200),
+            description: z.string().max(2000),
+            timeframe: z.enum(["30", "60", "90"]),
+          }),
+        )
+        .max(20)
+        .nullish(),
+    }),
+  })
+  .nullish();
+
 const patchSchema = z.object({
   reportId: z.string().min(1),
   action: z.enum(["save", "preview", "publish", "unpublish"]).default("save"),
+  translationsEn: translationsEnSchema,
   ...narrativeFields,
 });
 
@@ -179,7 +208,7 @@ export async function PATCH(
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { reportId, action, ...fields } = parsed.data;
+  const { reportId, action, translationsEn, ...fields } = parsed.data;
 
   const existing = await prisma.teamReport.findFirst({
     where: { id: reportId, teamId },
@@ -229,9 +258,14 @@ export async function PATCH(
 
   // null-t is kiszűrjük: a kliens üres stringet/üres tömböt küld törléskor,
   // és a nullable Json mező (actionItems) plain null-t nem fogad.
-  const narrativeData = Object.fromEntries(
+  const narrativeData: Record<string, unknown> = Object.fromEntries(
     Object.entries(fields).filter(([, value]) => value !== undefined && value !== null),
   );
+  // Fordítás-csomag mentése (a régi Prisma-kliens típusa még nem ismeri a
+  // translationsEn oszlopot — a migráció + generate után szükségtelen a cast).
+  if (translationsEn !== undefined && translationsEn !== null) {
+    narrativeData.translationsEn = translationsEn as object;
+  }
 
   if (action === "publish") {
     // Publikáláskor frissítjük ÉS befagyasztjuk az aggregátumokat.

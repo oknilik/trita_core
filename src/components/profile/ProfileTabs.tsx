@@ -797,16 +797,27 @@ export function ProfileTabs({
               teamRoleRoles: (() => {
                 try {
                   // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { estimateTeamRolesFromTritan } = require("@/lib/team-role-estimate");
-                  // eslint-disable-next-line @typescript-eslint/no-require-imports
                   const { TEAM_ROLES, getTopRoles } = require("@/lib/team-role-scoring");
-                  const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
-                  if (!("INTE" in hexScores) || !("TEMP" in hexScores)) return [];
-                  const estimated = estimateTeamRolesFromTritan(hexScores);
-                  const top3 = getTopRoles(estimated, 3);
+                  // A riport-felülettel egyezően: a MÉRT kérdőíves eredmény az
+                  // elsődleges; TRITAN-becslés csak fallback (forrás-jelöléssel).
+                  let scores: Record<string, number> | null =
+                    teamRoleMeasuredScores ?? null;
+                  let measured = Boolean(scores);
+                  if (!scores) {
+                    // eslint-disable-next-line @typescript-eslint/no-require-imports
+                    const { estimateTeamRolesFromTritan } = require("@/lib/team-role-estimate");
+                    const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
+                    if (!("INTE" in hexScores) || !("TEMP" in hexScores)) return [];
+                    scores = estimateTeamRolesFromTritan(hexScores);
+                    measured = false;
+                  }
+                  const top3 = getTopRoles(scores, 3);
+                  const sourceLabel = measured
+                    ? locale === "hu" ? "kitöltött kérdőívből" : "from completed questionnaire"
+                    : locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
                   return top3.map((r: { role: string; score: number }, i: number) => ({
                     name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
-                    subtitle: "",
+                    subtitle: i === 0 ? sourceLabel : "",
                     score: r.score,
                     rank: i,
                   }));
@@ -825,7 +836,14 @@ export function ProfileTabs({
                 description: d.description,
                 facets: d.facets,
               })) : undefined,
-              observerData: hasObserverData && isPlus ? {
+              // A reflect-oldal a felülettel azonos kapuzást követi: org-tagnál
+              // csak a kampány-küszöb (min. 3) felett kerül a PDF-be.
+              observerData:
+                hasObserverData &&
+                isPlus &&
+                (!observerFlow ||
+                  observerFlow.state === "self_serve" ||
+                  observerFlow.state === "available") ? {
                 count: observerCount,
                 dimensions: mainDims.map((d) => ({
                   name: d.label,

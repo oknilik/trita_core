@@ -304,6 +304,10 @@ model TeamReport {
   actionItems       Json?
   // Csak a tanácsadó látja, sosem publikálódik az org felé.
   internalNotes     String?
+  // Jóváhagyott angol fordítás a narratívához (gépi fordítás + tanácsadói
+  // jóváhagyás; szerkezet: lib/team-report-i18n.ts). Külön az aggregates-től,
+  // mert azt a preview/publish újraépíti.
+  translationsEn    Json?
   createdById       String
   publishedAt       DateTime?
   publishedById     String?

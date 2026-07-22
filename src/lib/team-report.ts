@@ -23,6 +23,10 @@ import {
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { buildTeamTrustNetwork } from "@/lib/trust-network.server";
+import {
+  parseReportTranslations,
+  type ReportTranslations,
+} from "@/lib/team-report-i18n";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -151,6 +155,11 @@ export interface SerializedTeamReport {
   actionItems: TeamReportActionItem[] | null;
   /** Csak tanácsadói nézetben kerül kitöltésre */
   internalNotes: string | null;
+  /**
+   * Jóváhagyott angol fordítás a narratívához (lib/team-report-i18n.ts).
+   * A nézetek a localizeTeamReport()-tal oldják fel EN lekérésnél.
+   */
+  translationsEn: ReportTranslations | null;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -655,6 +664,8 @@ type TeamReportRecord = {
   leadershipGuide: string | null;
   actionItems: unknown;
   internalNotes: string | null;
+  /** Opcionális: a Prisma-kliens a migráció + generate után adja vissza. */
+  translationsEn?: unknown;
   publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -678,6 +689,9 @@ export function serializeTeamReport(
     leadershipGuide: report.leadershipGuide,
     actionItems: parseActionItems(report.actionItems),
     internalNotes: options.includeInternalNotes ? report.internalNotes : null,
+    translationsEn: parseReportTranslations(
+      (report as { translationsEn?: unknown }).translationsEn,
+    ),
     publishedAt: report.publishedAt?.toISOString() ?? null,
     createdAt: report.createdAt.toISOString(),
     updatedAt: report.updatedAt.toISOString(),

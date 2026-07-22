@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { SerializedTeamReport, TeamReportActionItem } from "@/lib/team-report";
+import type { ReportTranslationEn } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { TeamReportView } from "@/components/team/TeamReportView";
 
@@ -66,7 +67,38 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     hu: "Az aktuális publikált riport nem szerkeszthető és nem törölhető közvetlenül — előbb vond vissza.",
     en: "The current published report cannot be edited or deleted directly — unpublish it first.",
   },
+  TRANSLATE_FAILED: {
+    hu: "A fordítás nem sikerült — próbáld újra kicsit később.",
+    en: "Translation failed — try again in a moment.",
+  },
+  TRANSLATE_NOT_CONFIGURED: {
+    hu: "A fordítás-szolgáltatás nincs konfigurálva (hiányzó API-kulcs).",
+    en: "The translation service is not configured (missing API key).",
+  },
 };
+
+// A fordítás-panel szerkeszthető mezői (a belső jegyzet nem publikálódik,
+// ezért nem fordítjuk).
+const TRANSLATION_FIELDS: Array<{
+  key: keyof Pick<
+    ReportTranslationEn,
+    | "summary"
+    | "strengths"
+    | "risks"
+    | "recommendations"
+    | "interviewFindings"
+    | "leadershipGuide"
+  >;
+  label: string;
+  rows: number;
+}> = [
+  { key: "summary", label: "Summary", rows: 4 },
+  { key: "strengths", label: "Strengths", rows: 3 },
+  { key: "risks", label: "Risks", rows: 3 },
+  { key: "recommendations", label: "Recommendations", rows: 3 },
+  { key: "interviewFindings", label: "Interview insights", rows: 4 },
+  { key: "leadershipGuide", label: "How to lead this team", rows: 4 },
+];
 
 export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props) {
   const router = useRouter();
@@ -93,6 +125,11 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [preview, setPreview] = useState<SerializedTeamReport | null>(null);
+  // Angol fordítás: gépi javaslat → tanácsadói szerkesztés → jóváhagyás.
+  const [translation, setTranslation] = useState<ReportTranslationEn | null>(
+    draft?.translationsEn?.en ?? null,
+  );
+  const [translating, setTranslating] = useState(false);
 
   // A state-et a szervertől visszakapott riportból seedeljük, mert a
   // router.refresh() a már mountolt komponens useState-jét nem inicializálja
@@ -109,6 +146,65 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       internalNotes: report.internalNotes ?? "",
     });
     setActionItems(report.actionItems ?? []);
+    setTranslation(report.translationsEn?.en ?? null);
+  }
+
+  // Gépi fordítás-javaslat generálása (nem ment — a tanácsadó előbb átnézi).
+  async function generateTranslation() {
+    if (!draft) return;
+    setTranslating(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/team/${teamId}/report/translate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reportId: draft.id }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "TRANSLATE_FAILED");
+      const { translation: generated } = (await res.json()) as {
+        translation: ReportTranslationEn;
+      };
+      setTranslation(generated);
+    } catch (err) {
+      const code = err instanceof Error ? err.message : "";
+      const known = ERROR_LABELS[code];
+      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+    } finally {
+      setTranslating(false);
+    }
+  }
+
+  // Fordítás mentése; approve=true → jóváhagyás (ettől jelenik meg a
+  // felhasználónak angol lekérésnél).
+  async function saveTranslation(approve: boolean) {
+    if (!draft || !translation) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const payload: ReportTranslationEn = {
+        ...translation,
+        status: approve ? "approved" : "draft",
+        approvedAt: approve ? new Date().toISOString() : null,
+      };
+      const res = await fetch(`/api/team/${teamId}/report`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reportId: draft.id,
+          action: "save",
+          translationsEn: { en: payload },
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
+      setTranslation(payload);
+      setSavedAt(new Date().toLocaleTimeString(isHu ? "hu-HU" : "en-GB"));
+    } catch (err) {
+      const code = err instanceof Error ? err.message : "";
+      const known = ERROR_LABELS[code];
+      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function createDraft() {
@@ -465,6 +561,136 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                 />
               </div>
             ))}
+          </div>
+
+          {/* ── Angol fordítás — gépi javaslat + tanácsadói jóváhagyás ── */}
+          <div className="flex flex-col gap-3 rounded-xl border border-sand bg-cream/40 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-semibold text-ink">
+                  {isHu ? "Angol fordítás (EN)" : "English translation (EN)"}
+                </p>
+                {translation?.status === "approved" ? (
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-200">
+                    {isHu ? "jóváhagyva" : "approved"}
+                  </span>
+                ) : translation ? (
+                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                    {isHu ? "vázlat — jóváhagyásra vár" : "draft — awaiting approval"}
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-sand px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                    {isHu ? "nincs" : "none"}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                disabled={translating || busy}
+                onClick={generateTranslation}
+                className="inline-flex min-h-[38px] items-center rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              >
+                {translating
+                  ? isHu ? "Fordítás folyamatban…" : "Translating…"
+                  : translation
+                    ? isHu ? "Újragenerálás gépi fordítással" : "Regenerate machine translation"
+                    : isHu ? "Gépi fordítás generálása" : "Generate machine translation"}
+              </button>
+            </div>
+            <p className="text-xs text-muted">
+              {isHu
+                ? "A gépi fordítást nézd át és szükség szerint javítsd — a felhasználó CSAK a jóváhagyott fordítást látja, amikor angolul nyitja meg a riportot. Jóváhagyás nélkül angol lekérésnél is a magyar eredeti jelenik meg."
+                : "Review and adjust the machine translation — users only ever see the APPROVED translation when opening the report in English. Without approval, the Hungarian original is shown even for English requests."}
+            </p>
+
+            {translation ? (
+              <>
+                {TRANSLATION_FIELDS.map((field) => (
+                  <label key={field.key} className="flex flex-col gap-1">
+                    <span className="text-xs font-semibold text-ink-body">{field.label}</span>
+                    <textarea
+                      value={translation[field.key] ?? ""}
+                      rows={field.rows}
+                      onChange={(e) =>
+                        setTranslation((tr) =>
+                          tr ? { ...tr, status: "draft", [field.key]: e.target.value } : tr,
+                        )
+                      }
+                      className="rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink"
+                    />
+                  </label>
+                ))}
+
+                {translation.actionItems && translation.actionItems.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs font-semibold text-ink-body">Action plan</span>
+                    {translation.actionItems.map((item, index) => (
+                      <div key={index} className="flex flex-col gap-1.5 rounded-lg border border-sand bg-white p-3">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-cream px-2 py-0.5 font-mono text-[10px] text-muted">
+                            {item.timeframe}d
+                          </span>
+                          <input
+                            value={item.title}
+                            onChange={(e) =>
+                              setTranslation((tr) =>
+                                tr
+                                  ? {
+                                      ...tr,
+                                      status: "draft",
+                                      actionItems: (tr.actionItems ?? []).map((it, i) =>
+                                        i === index ? { ...it, title: e.target.value } : it,
+                                      ),
+                                    }
+                                  : tr,
+                              )
+                            }
+                            className="flex-1 rounded-lg border border-sand bg-white px-2 py-1 text-sm font-semibold text-ink"
+                          />
+                        </div>
+                        <textarea
+                          value={item.description}
+                          rows={2}
+                          onChange={(e) =>
+                            setTranslation((tr) =>
+                              tr
+                                ? {
+                                    ...tr,
+                                    status: "draft",
+                                    actionItems: (tr.actionItems ?? []).map((it, i) =>
+                                      i === index ? { ...it, description: e.target.value } : it,
+                                    ),
+                                  }
+                                : tr,
+                            )
+                          }
+                          className="rounded-lg border border-sand bg-white px-2 py-1 text-sm text-ink"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <button
+                    type="button"
+                    disabled={busy || translating}
+                    onClick={() => saveTranslation(false)}
+                    className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                  >
+                    {isHu ? "Mentés vázlatként" : "Save as draft"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy || translating}
+                    onClick={() => saveTranslation(true)}
+                    className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                  >
+                    {isHu ? "Jóváhagyás és mentés" : "Approve and save"}
+                  </button>
+                </div>
+              </>
+            ) : null}
           </div>
 
           {error && <p className="text-xs text-rose-600">{error}</p>}

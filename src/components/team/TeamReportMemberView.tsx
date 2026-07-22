@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import type { SerializedTeamReport } from "@/lib/team-report";
+import { localizeTeamReport } from "@/lib/team-report-i18n";
 import {
   buildMemberReportViewModel,
   type MemberViewerInput,
@@ -43,7 +44,7 @@ function initialsOf(name: string): string {
 }
 
 export function TeamReportMemberView({
-  report,
+  report: reportInput,
   viewer,
   isHu,
   teamName,
@@ -54,6 +55,8 @@ export function TeamReportMemberView({
   teamName?: string | null;
 }) {
   const loc: "hu" | "en" = isHu ? "hu" : "en";
+  // Angol lekérésnél a jóváhagyott tanácsadói fordítás (team-report-i18n).
+  const report = localizeTeamReport(reportInput, isHu);
   const vm = buildMemberReportViewModel(report, viewer, loc);
   const title = teamName ?? report.title ?? (isHu ? "Csapat" : "Team");
 

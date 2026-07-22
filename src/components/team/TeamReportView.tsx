@@ -6,6 +6,7 @@ import {
   getPsychSafetyItem,
 } from "@/lib/psych-safety";
 import type { SerializedTeamReport } from "@/lib/team-report";
+import { localizeTeamReport } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 
@@ -268,12 +269,15 @@ const TIMEFRAME_TONES: Record<
 };
 
 export function TeamReportView({
-  report,
+  report: reportInput,
   isHu,
 }: {
   report: SerializedTeamReport;
   isHu: boolean;
 }) {
+  // Angol lekérésnél a JÓVÁHAGYOTT tanácsadói fordítás mezői lépnek életbe
+  // (mezőnkénti fallback az eredetire) — ld. lib/team-report-i18n.ts.
+  const report = localizeTeamReport(reportInput, isHu);
   const agg = report.aggregates;
   const isDraft = report.status === "DRAFT";
   const publishedDate = report.publishedAt
