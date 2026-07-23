@@ -796,6 +796,7 @@ enum NotificationType {
   OBSERVER_INVITE_APPROVED
   OBSERVER_INVITE_DECLINED
   INQUIRY_RECEIVED
+  CANDIDATE_COMPLETED
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).

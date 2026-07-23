@@ -767,6 +767,62 @@ export async function resolveMembershipInviteResolution(params: {
   };
 }
 
+// Jelölt-kitöltés értesítései: in-app notif + email az org tanácsadóinak
+// (ORG_CONSULTANT) és adminjainak (ORG_ADMIN). Lazy importok, hogy a
+// levelezés/notif-réteg csak ilyenkor töltődjön.
+async function notifyCandidateCompleted(inviteId: string): Promise<void> {
+  const invite = await prisma.candidateInvite.findUnique({
+    where: { id: inviteId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      position: true,
+      orgId: true,
+      team: { select: { orgId: true } },
+    },
+  });
+  const orgId = invite?.orgId ?? invite?.team?.orgId ?? null;
+  if (!invite || !orgId) return;
+
+  const candidateName = invite.name ?? invite.email ?? "—";
+
+  const { handleCandidateCompleted } = await import("@/lib/notifications");
+  await handleCandidateCompleted({
+    inviteId: invite.id,
+    candidateName,
+    position: invite.position,
+    orgId,
+  });
+
+  const recipients = await prisma.organizationMember.findMany({
+    where: {
+      orgId,
+      leftAt: null,
+      role: { in: ["ORG_CONSULTANT", "ORG_ADMIN"] },
+    },
+    select: { user: { select: { email: true, locale: true } } },
+  });
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io").replace(/\/+$/, "");
+  const resultUrl = `${appUrl}/hiring/${orgId}/candidates/${invite.id}`;
+
+  const { sendCandidateCompletedEmail } = await import("@/lib/emails");
+  await Promise.allSettled(
+    recipients
+      .map((m) => m.user)
+      .filter((u): u is { email: string; locale: string | null } => Boolean(u.email))
+      .map((u) =>
+        sendCandidateCompletedEmail({
+          to: u.email,
+          candidateName,
+          position: invite.position,
+          resultUrl,
+          locale: u.locale === "en" ? "en" : "hu",
+        }),
+      ),
+  );
+}
+
 async function resolveCandidateInviteContext(
   token: string,
 ): Promise<CandidateInviteContext | null> {
@@ -1153,6 +1209,12 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
       errorState: { code: "INVALID_INPUT", status: 400 },
     };
   }
+
+  // Értesítés a tanácsadóknak + org adminoknak (notif + email) —
+  // fire-and-forget, a jelölt válaszát nem blokkolja és nem buktatja.
+  void notifyCandidateCompleted(candidateContext.id).catch((err) =>
+    console.error("[Candidate] completion notify error:", err),
+  );
 
   const nextPath = await resolveCandidateNextPath(resolveClerkId(input.authState));
 

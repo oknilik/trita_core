@@ -469,3 +469,45 @@ export async function handleInquiryReceived(params: {
     })),
   );
 }
+
+// ── Candidate events ────────────────────────────────────────────────────────
+
+/**
+ * Jelölt kitöltötte a felmérést — értesítés az org tanácsadóinak
+ * (ORG_CONSULTANT) és adminjainak (ORG_ADMIN). A link a jelölt-részletezőre
+ * mutat (kitöltés után az eredmény már él).
+ */
+export async function handleCandidateCompleted(params: {
+  inviteId: string;
+  candidateName: string;
+  position?: string | null;
+  orgId: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.CANDIDATE_COMPLETED;
+
+  const recipients = await prisma.organizationMember.findMany({
+    where: {
+      orgId: params.orgId,
+      leftAt: null,
+      role: { in: ["ORG_CONSULTANT", "ORG_ADMIN"] },
+    },
+    select: { userId: true },
+  });
+
+  await persistNotificationBatch(
+    recipients.map((m) => ({
+      userId: m.userId,
+      type: "CANDIDATE_COMPLETED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: {
+        name: params.candidateName,
+        position: params.position ? ` (${params.position})` : "",
+      },
+      link: `/hiring/${params.orgId}/candidates/${params.inviteId}`,
+      sourceType: "candidate_invite" as const,
+      sourceId: params.inviteId,
+      dedupeKey: `CANDIDATE_COMPLETED:${params.inviteId}:${m.userId}`,
+    })),
+  );
+}

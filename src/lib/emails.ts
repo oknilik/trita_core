@@ -99,6 +99,26 @@ const translations = {
       team: "the trita team",
     },
   },
+  candidateCompleted: {
+    hu: {
+      subject: "Jelölt-felmérés elkészült – trita",
+      greeting: "Szia,",
+      body: (name: string, position: string | null) =>
+        `${name}${position ? ` (${position})` : ""} kitöltötte a jelölt-felmérést. Az eredmény és a csapat-illesztés megnyitható a jelölt-részletezőn.`,
+      cta: "Eredmény megnyitása",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
+    },
+    en: {
+      subject: "Candidate assessment completed – trita",
+      greeting: "Hi,",
+      body: (name: string, position: string | null) =>
+        `${name}${position ? ` (${position})` : ""} completed the candidate assessment. The result and team fit are ready to review.`,
+      cta: "Open the result",
+      thanks: "Best regards,",
+      team: "the trita team",
+    },
+  },
   profileShare: {
     hu: {
       subject: "Megosztott személyiségprofil – trita",
@@ -513,6 +533,56 @@ export async function sendObserverInviteEmail(params: {
     console.error("[Email] Failed to send observer invite:", error);
   } else {
     console.log("[Email] Observer invite sent to:", params.to);
+  }
+}
+
+export async function sendCandidateCompletedEmail(params: {
+  to: string;
+  candidateName: string;
+  position?: string | null;
+  resultUrl: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.candidateCompleted[locale];
+
+  const cta = renderCtaButton({ href: params.resultUrl, label: t.cta });
+  const bodyContent = `
+    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+      ${t.greeting}
+    </p>
+    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+      ${escapeHtml(t.body(params.candidateName, params.position ?? null))}
+    </p>
+    ${cta}`;
+
+  const html = buildEmailLayout({
+    locale,
+    bodyContent,
+    thanks: t.thanks,
+    team: t.team,
+  });
+  const text = [
+    t.greeting,
+    "",
+    t.body(params.candidateName, params.position ?? null),
+    "",
+    `${t.cta}: ${params.resultUrl}`,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+    text,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send candidate completed:", error);
   }
 }
 

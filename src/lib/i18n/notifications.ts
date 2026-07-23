@@ -59,6 +59,13 @@ export const notificationTranslations = {
         en: "Your observer invite to {targetLabel} was not approved by your manager. Please check with them if needed.",
       },
     },
+    candidateCompleted: {
+      title: { hu: "Jelölt-felmérés elkészült", en: "Candidate assessment completed" },
+      body: {
+        hu: "{name} kitöltötte a felmérést{position} — az eredmény és a csapat-illesztés megnyitható.",
+        en: "{name} completed the assessment{position} — the result and team fit are ready to review.",
+      },
+    },
     inquiryReceived: {
       title: { hu: "Új kérdés érkezett", en: "New inquiry received" },
       body: {
