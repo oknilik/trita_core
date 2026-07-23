@@ -867,6 +867,180 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   },
 };
 
+// ─── Együttműködés-fejezet (P4.2 v1) ─────────────────────────────────────────
+// „Csapatban működve" oldal tartalma — dimenzió-szintű, nem archetípus-
+// mátrix (terv: docs/product/riport-egyuttmukodes-fejezet-terv.md).
+// A súrlódás-logika a team-stats FRICTION_WEIGHTS modelljének egyszemélyes
+// vetülete (THOR > ADAP > INTE a legerősebb súrlódás-jóslók). Hangnem:
+// hipotézis + puha ajánlás („sokat segíthet, ha…"), nem előírás.
+
+/** Kivel/milyen működés mellett erősödsz — a top-2 markáns dimenzióból. */
+export const COLLAB_CLICK: Record<string, LocalizedText> = {
+  INTE_high: {
+    hu: "Természetes közeged azok mellett van, akik kimondják, amit gondolnak, és tartják, amit vállalnak — az egyenes játék gyorsan kölcsönös bizalommá válik. Az erősen taktikázó működés mellett viszont sok energiád megy el a motívumok fürkészésére.",
+    en: "You're in your element alongside people who say what they think and honour what they commit to — straight dealing quickly becomes mutual trust. Next to highly tactical operators, much of your energy goes into second-guessing motives.",
+  },
+  INTE_low: {
+    hu: "Jól kattansz az ambiciózus, eredményre hajtó kollégákkal — a közös célszám és a gyors tempó összekapcsol. Egy elvhűbb társ jó ellensúly lehet: ő tartja a hosszú távú bizalmat, amíg te a lehetőségekre ugrasz.",
+    en: "You click with ambitious, results-driven colleagues — shared targets and fast tempo connect you. A more principled partner can be a good counterweight: they hold long-term trust while you jump on opportunities.",
+  },
+  RESO_high: {
+    hu: "Azok mellett működsz természetesen, akik odafigyelnek a másikra: ahol az emberi rezdüléseknek helye van, ott a ráhangolódásod erőforrás. Egy nyugodtabb, stabilabb társ jó kiegészítőd — ő adja a horgonyt, te a kapcsolati radart.",
+    en: "You work naturally alongside people who pay attention to others: where human signals matter, your attunement is an asset. A calmer, steadier partner complements you well — they provide the anchor, you the relational radar.",
+  },
+  RESO_low: {
+    hu: "Krízisben és nyomás alatt te vagy az, aki mellett mások megnyugszanak — a hasonlóan higgadt kollégákkal gyors, tárgyszerű munkakapcsolatod lesz. Az érzelmileg ráhangolódóbb társak azt hozzák, amit te ritkábban: a korai emberi jelzéseket.",
+    en: "In crisis and under pressure you're the one others calm down next to — with similarly composed colleagues you build fast, matter-of-fact working relationships. More emotionally attuned partners bring what you surface less often: early human signals.",
+  },
+  TEMP_high: {
+    hu: "Ott vagy elemedben, ahol pörög a közös munka: workshopok, gyors egyeztetések, közös terek. A csendesebb, mélyfókuszú kollégák jó párjaid — ők viszik a hosszú koncentrációt igénylő szálakat, te tartod a lendületet és a kapcsolatokat.",
+    en: "You're in your element where collaboration has tempo: workshops, quick alignments, shared spaces. Quieter, deep-focus colleagues pair well with you — they carry the long-concentration threads while you keep momentum and connections.",
+  },
+  TEMP_low: {
+    hu: "A legjobb párosaid azok, akikkel kevés, de tartalmas az egyeztetés — írásban is jól működő, önállóan dolgozó kollégák. Egy társasabb partner jól kiegészít: ő tartja a szervezet felé a kapcsolatokat, te a mélységet.",
+    en: "Your best pairings are people with whom alignment is infrequent but substantive — colleagues who work well in writing and independently. A more social partner complements you: they maintain organisation-facing connections, you bring the depth.",
+  },
+  ADAP_high: {
+    hu: "Te vagy az, aki mellett a nehéz emberekkel is működik a munka — a legtöbb stílussal összeférsz. Leginkább az egyenes, döntésre gyors társak mellett erősödsz: ők hozzák az élt, te a hidat.",
+    en: "You're the one work keeps functioning next to, even with difficult people — you fit most styles. You grow strongest alongside direct, decision-quick partners: they bring the edge, you bring the bridge.",
+  },
+  ADAP_low: {
+    hu: "Jól működsz azokkal, akik bírják az egyenes vitát, és nem sértődnek bele a kemény kérdésekbe — náluk vita után tisztább a levegő, nem nehezebb. A diplomatikusabb kollégák ott egészítenek ki, ahol a kapcsolat ápolása maga a feladat.",
+    en: "You work well with people who can take a straight debate and don't bruise from hard questions — with them the air is clearer after an argument, not heavier. More diplomatic colleagues complement you where maintaining the relationship is itself the job.",
+  },
+  THOR_high: {
+    hu: "Jól működsz azok mellett, akik tartják, amit vállalnak: a strukturáltan dolgozó, határidő-tartó kollégákkal gyorsan kialakul a kölcsönös bizalom. Jót tesz melléd egy-egy improvizatívabb társ is — ő hozza a fordulatot, te a végigvitelt, ha a szerepek kimondottak.",
+    en: "You work well alongside people who keep their commitments: with structured, deadline-honouring colleagues mutual trust forms quickly. An improvisational partner also does you good — they bring the twist, you bring the follow-through, as long as roles are explicit.",
+  },
+  THOR_low: {
+    hu: "A rugalmas, menet közben alakuló munkában vagy jó társ — a hasonlóan adaptív kollégákkal könnyen találjátok a ritmust. Egy rendszerezettebb partner sokat ad hozzád: ő fogja a szálakat, te hozod a mozgékonyságot.",
+    en: "You're a good partner in flexible, evolving work — with similarly adaptive colleagues you find rhythm easily. A more systematic partner adds a lot: they hold the threads, you bring the agility.",
+  },
+  OPEN_high: {
+    hu: "A kíváncsi, gondolkodni szerető emberekkel gyullad be nálad a közös munka — a jó vita neked nem konfliktus, hanem üzemanyag. A pragmatikusabb társak azt adják hozzá, amit az ötletek önmagukban nem: a földet érést.",
+    en: "Collaboration ignites for you with curious people who like to think — a good debate is fuel for you, not conflict. More pragmatic partners add what ideas alone don't: the landing.",
+  },
+  OPEN_low: {
+    hu: "A kiszámíthatóan, bevált módon dolgozó kollégákkal vagy a legjobb párban — közös nyelvetek a megbízhatóság. Az újító típusok mellett is jól működsz, ha te lehetsz az, aki a jó ötletet stabil gyakorlattá alakítja.",
+    en: "You pair best with colleagues who work predictably, in proven ways — reliability is your shared language. You also work well next to innovators, when you can be the one who turns a good idea into stable practice.",
+  },
+};
+
+/** Hol éleződhet — kétirányú megfogalmazás + egy oldó fél mondat. */
+export const COLLAB_FRICTION: Record<string, LocalizedText> = {
+  THOR_high: {
+    hu: "A legvalószínűbb súrlódásod a tempó és a minőség körül van: a lazábban tervező kollégák munkáját megbízhatatlannak érezheted, ők pedig merevnek a rendhez való ragaszkodásod. Sokat old, ha nem a módszert kéred számon, hanem közösen rögzített határidőt és minőségi minimumot.",
+    en: "Your most likely friction is around tempo and quality: looser planners can feel unreliable to you, while your hold on order can feel rigid to them. It defuses a lot to agree on shared deadlines and a quality minimum, rather than policing the method.",
+  },
+  THOR_low: {
+    hu: "Súrlódás ott keletkezhet, ahol a struktúra maga az elvárás: a rendszerezett kollégáknak a csúszó részletek bizalmi kérdéssé válhatnak, számodra az ő folyamataik fölösleges féknek tűnhetnek. Segíthet egy közös, minimális keret — kevés, de tényleg tartott vállalás.",
+    en: "Friction can arise where structure itself is the expectation: to systematic colleagues slipping details can become a trust issue, while their processes can feel like needless brakes to you. A shared minimal frame helps — few commitments, but truly kept.",
+  },
+  ADAP_high: {
+    hu: "Nálad a súrlódás gyakran láthatatlan: kerülöd az éles vitát, de a ki nem mondott feszültség felgyűlik, és a versengőbb kollégák dominálhatják a döntéseket. Sokaknak segít egy előre kért kör: „mielőtt döntünk, hadd mondjam el az ellenvetésem”.",
+    en: "Your friction is often invisible: you avoid sharp debate, but unspoken tension accumulates, and more competitive colleagues may dominate decisions. Many find it helps to request a turn in advance: 'before we decide, let me state my objection'.",
+  },
+  ADAP_low: {
+    hu: "A leggyakoribb súrlódási pont nálad a stílus: az egyenes, gyors visszajelzéseidet a harmónia-orientált kollégák élesnek érezhetik, te pedig az ő kerülgetésüket időhúzásnak. Sokat old, ha a vita elején elhangzik: a kritika a munkának szól, nem a személynek.",
+    en: "Your most common friction point is style: harmony-oriented colleagues can read your direct, fast feedback as sharp, while their circling can feel like stalling to you. It defuses a lot when the debate opens with: the critique is about the work, not the person.",
+  },
+  INTE_high: {
+    hu: "Súrlódás ott keletkezhet, ahol a játszma a norma: a taktikázó közegben a korrektséged kihasználhatónak tűnhet, te pedig gyanakvóvá válhatsz azokkal, akik csak rugalmasabban navigálnak. Segít a különbségtétel: nem minden érdekérvényesítés manipuláció.",
+    en: "Friction can arise where games are the norm: in tactical settings your fairness can look exploitable, and you may grow suspicious of people who simply navigate more flexibly. It helps to distinguish: not all self-advocacy is manipulation.",
+  },
+  INTE_low: {
+    hu: "A versengő működésed a bizalomra érzékeny kollégáknál válthat ki súrlódást: amit te egészséges harcnak élsz meg, ők átgázolásként olvashatják. Sokat számít a látható korrektség a kis dolgokban — az tartja meg a szövetségeseket a nagy helyzetekre.",
+    en: "Your competitive style can create friction with trust-sensitive colleagues: what you experience as healthy contest, they may read as steamrolling. Visible fairness in small things matters a lot — it keeps allies for the big moments.",
+  },
+  RESO_high: {
+    hu: "Feszültség ott keletkezhet, ahol a tárgyszerű, gyors működés a norma: a hűvösebb stílusú kollégák visszajelzés-hiánya bizonytalanságot szülhet nálad, ők pedig nem értik, mi hiányzik. Sokat segít, ha az igényed konkrét formát kap: rövid, rendszeres visszajelzési pontok.",
+    en: "Tension can arise where brisk, matter-of-fact operation is the norm: cooler colleagues' lack of feedback can breed uncertainty in you, while they don't see what's missing. It helps when the need takes concrete form: short, regular feedback moments.",
+  },
+  RESO_low: {
+    hu: "Az érzelmileg intenzívebb kollégáknak a nyugalmad távolságtartásnak tűnhet, az ő reakcióik neked túlzásnak. Ritkán maga a tartalom a vita — inkább az intenzitás-különbség; segít, ha ezt ki is mondjátok.",
+    en: "To more emotionally intense colleagues your calm can read as distance, while their reactions can look like overreaction to you. The dispute is rarely the content itself — more often the intensity gap; naming that helps.",
+  },
+  TEMP_high: {
+    hu: "A csendesebb kollégák melletti súrlódásod ritkán hangos: ők egyszerűen kikapcsolnak, ha minden szóban és gyorsan történik. Sokat segít az aszinkron tér — ha írásban is lehet hozzászólni, a legjobb gondolataik is megérkeznek.",
+    en: "Your friction next to quieter colleagues is rarely loud: they simply disengage when everything happens verbally and fast. Asynchronous space helps a lot — when input can come in writing, their best thinking arrives too.",
+  },
+  TEMP_low: {
+    hu: "A pörgős, meeting-vezérelt közeg neked energiavesztés, a társasabb kollégáknak viszont a visszahúzódásod tűnhet távolságtartásnak. Segíthet egy kimondott működési megállapodás: mikor vagy elérhető élőben, és mi megy írásban.",
+    en: "A fast, meeting-driven environment drains you, while to more social colleagues your withdrawal can look like distance. An explicit working agreement can help: when you're available live, and what goes in writing.",
+  },
+  OPEN_high: {
+    hu: "A pragmatikus végrehajtókkal ott súrlódhatsz, ahol az ötleteid az ő stabil folyamataikat borítják — számukra a gyakori irányváltás kockázat, számodra az állandóság stagnálás. Segít a kettéválasztás: kísérleti sáv az újnak, védett sáv a működőnek.",
+    en: "You may grate against pragmatic executors where your ideas upset their stable processes — to them frequent pivots are risk, to you constancy is stagnation. Separating lanes helps: an experimental track for the new, a protected track for what works.",
+  },
+  OPEN_low: {
+    hu: "Az újító kollégák tempója ellenállást válthat ki nálad — te a bizonyítottat véded, ők a lehetőséget. A súrlódás akkor csökken, ha a „miért váltsunk?” kérdésre valódi választ kapsz, nem lelkesedést.",
+    en: "The tempo of innovator colleagues can trigger resistance in you — you defend the proven, they the possible. Friction drops when 'why change?' gets a real answer, not just enthusiasm.",
+  },
+};
+
+/** Pszichológiai biztonság + vezetői közeg — puha framinggel („sokat segíthet, ha…"). */
+export const COLLAB_NEEDS: Record<string, LocalizedText> = {
+  INTE_high: {
+    hu: "Akkor hozod a legjobb formád, ahol a kimondott értékek és a napi gyakorlat egybeesnek. Sokaknak, akiknél ilyen erős az integritás, az segít, ha a vezetőjük átláthatóan dönt, és a kényes ügyek nem a folyosón dőlnek el.",
+    en: "You're at your best where stated values and daily practice match. For many with integrity this strong, it helps when their leader decides transparently and sensitive matters aren't settled in the corridor.",
+  },
+  INTE_low: {
+    hu: "Neked a tiszta célok és a valódi tét adják a hajtóerőt. Sokat segíthet egy olyan vezető, aki egyértelmű játékteret jelöl ki — mit szabad, hol a határ —, és az eredményt ismeri el, nem a látszatot.",
+    en: "Clear goals and real stakes are what drive you. A leader who marks out the playing field — what's allowed, where the line is — and recognises results over appearances can help a lot.",
+  },
+  RESO_high: {
+    hu: "Akkor hozod a legjobb formád, ha a hibázás nem jár megszégyenítéssel: a biztonságos, kiszámítható légkör nálad nem komfort, hanem teljesítmény-feltétel. Sokaknak hasonló profillal a rendszeres, rövid visszajelzési pontok válnak be — nyomás alatt is.",
+    en: "You're at your best when mistakes don't come with shaming: a safe, predictable climate isn't comfort for you, it's a performance condition. For many with a similar profile, regular short feedback moments work best — even under pressure.",
+  },
+  RESO_low: {
+    hu: "Neked a bizalom jele az önállóság: akkor működsz jól, ha nem kell folyamatos érzelmi visszaigazolást adnod vagy kapnod. Sokat segíthet, ha a környezeted tudja: a nyugalmad nem közöny — így nem olvassák félre.",
+    en: "For you, autonomy is the signal of trust: you work well when constant emotional reassurance isn't required in either direction. It helps when those around you know your calm isn't indifference — so it doesn't get misread.",
+  },
+  TEMP_high: {
+    hu: "Az energiád a közös térből jön: akkor virulsz, ha van élő munka, látható szerep és gyors visszacsatolás. Sokaknak hasonló profillal az segít, ha a vezetőjük teret ad a színpadra — miközben a csendes munkát is elismeri, nem csak a hangosat.",
+    en: "Your energy comes from shared space: you thrive with live collaboration, a visible role, and fast feedback. For many with this profile it helps when their leader gives stage room — while also recognising quiet work, not just the loud kind.",
+  },
+  TEMP_low: {
+    hu: "A mély fókusz a te üzemmódod: akkor teljesítesz, ha vannak megszakítás-mentes sávjaid, és nem a jelenlét számít, hanem az eredmény. Sokat segíthet, ha a láthatóság alacsony küszöbű formát kap — írásos összefoglaló, nem színpad.",
+    en: "Deep focus is your operating mode: you perform when you have uninterrupted stretches and results count over presence. It helps when visibility comes in low-threshold forms — a written summary, not a stage.",
+  },
+  ADAP_high: {
+    hu: "Akkor vagy elemedben, ahol az együttműködés nem harc: a kollegiális, egymást kisegítő közeg megsokszoroz. Sokaknak hasonló profillal az segít, ha a vezetőjük észreveszi a csendes engedményeket — és nem hagyja, hogy mindig ugyanaz engedjen.",
+    en: "You're in your element where collaboration isn't combat: a collegial, mutually supportive setting multiplies you. For many with this profile it helps when their leader notices the quiet concessions — and doesn't let the same person always be the one to yield.",
+  },
+  ADAP_low: {
+    hu: "Neked az őszinte vita a normális üzemmód: ott működsz jól, ahol az ellentmondás nem szentségtörés. Sokat segíthet egy olyan közeg, ahol a döntési szabályok tiszták — így az éles vita a döntésnél le tud zárulni.",
+    en: "Honest debate is your normal mode: you work well where disagreement isn't sacrilege. A setting with clear decision rules helps a lot — so a sharp debate can actually close at the decision.",
+  },
+  THOR_high: {
+    hu: "Akkor hozod a maximumod, ha a célok, felelősségek és határidők kimondottak — a homály neked nem szabadság, hanem kockázat. Sokaknak hasonló profillal az válik be, ha a változásokat indoklással kapják, nem kész tényként.",
+    en: "You deliver your best when goals, responsibilities, and deadlines are explicit — ambiguity isn't freedom to you, it's risk. For many with this profile, changes land best with reasoning attached, not as fait accompli.",
+  },
+  THOR_low: {
+    hu: "Neked a mozgástér a teljesítmény-feltétel: mikromenedzsment alatt gyorsan kopsz. Sokat segíthet, ha az elvárás eredmény-szinten rögzül — a hogyan maradhat nálad.",
+    en: "Room to manoeuvre is your performance condition: you wear down fast under micromanagement. It helps when expectations are fixed at the outcome level — leaving the how with you.",
+  },
+  OPEN_high: {
+    hu: "Akkor virulsz, ha van mit tanulni és van mit alakítani: a befagyott működés neked lassú kiégés. Sokaknak hasonló profillal az segít, ha a szerepükben van egy védett kísérleti sáv — akár kicsi, de valódi.",
+    en: "You thrive when there's something to learn and something to shape: frozen routines are slow burnout for you. For many with this profile it helps to have a protected experimental lane in the role — small, but real.",
+  },
+  OPEN_low: {
+    hu: "Neked a stabil alapok adják a biztonságot: akkor teljesítesz, ha a változás bevezetése átgondolt, nem hirtelen. Sokat segíthet, ha az újdonság lépcsőzetesen érkezik — idő a begyakorlásra, mielőtt a következő jön.",
+    en: "Stable foundations are your safety: you perform when change is introduced deliberately, not abruptly. It helps when novelty arrives in steps — time to consolidate before the next wave.",
+  },
+};
+
+/** Kiegyensúlyozott profil — nincs pólusos dimenzió. */
+export const COLLAB_BALANCED_CLICK: LocalizedText = {
+  hu: "Kiegyensúlyozott profillal sokféle működésmód mellett megtalálod a ritmust — az illeszkedésed kevésbé személyiség-, inkább szerep- és célfüggő.",
+  en: "With a balanced profile you find rhythm next to many working styles — your fit depends less on personality and more on role and goals.",
+};
+
+export const COLLAB_BALANCED_FRICTION: LocalizedText = {
+  hu: "Nálad ritkán a személyiség a súrlódás fő forrása — a profilod egyik irányban sem szélsőséges. Ha mégis feszültség keletkezik, érdemes először a szerepek és elvárások tisztaságát megnézni: az ilyen profiloknál többnyire ott a gyökér.",
+  en: "Personality is rarely the main source of friction for you — your profile isn't extreme in any direction. When tension does arise, look first at role and expectation clarity: for profiles like yours, that's usually where the root is.",
+};
+
 // ─── Growth tips (P2.4) ──────────────────────────────────────────────────────
 // A legalacsonyabb dimenzióhoz EGY konkrét, kipróbálható viselkedéses
 // javaslat — az „X területen van tér fejlődni" általánosság helyett.

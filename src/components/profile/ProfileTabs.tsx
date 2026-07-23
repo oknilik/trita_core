@@ -152,6 +152,8 @@ export interface ProfileTabsProps {
     pressureParts?: { stress: string; blindspot: string }[];
     /** Konkrét viselkedéses fejlődési javaslat (P2.4). */
     growthTip?: string;
+    /** „Csapatban működve" fejezet (P4.2). */
+    collaboration?: { click: string[]; friction: string[]; needs: string[] };
     envItems: { label: string; value: string }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
@@ -826,6 +828,7 @@ export function ProfileTabs({
                 pressure: plusContent.pressure,
                 pressureParts: plusContent.pressureParts,
                 growthTip: plusContent.growthTip,
+                collaboration: plusContent.collaboration,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,
                 closingText: plusContent.closingText,

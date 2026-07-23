@@ -45,6 +45,7 @@ import { SummaryPage } from "../src/components/pdf/pages/SummaryPage";
 import { StartPage } from "../src/components/pdf/pages/StartPage";
 import { PlusFacetsPage } from "../src/components/pdf/pages/PlusFacetsPage";
 import { PlusWorkStylePage } from "../src/components/pdf/pages/PlusWorkStylePage";
+import { CollabPage } from "../src/components/pdf/pages/CollabPage";
 import { colors } from "../src/components/pdf/styles";
 
 // ─── Fontok: a styles.ts /fonts/-ra regisztrál (böngésző-origin) — node-ban
@@ -236,6 +237,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       pressure: workstyle.pressure,
       pressureParts: workstyle.pressureParts,
       growthTip: workstyle.growthTip,
+      collaboration: workstyle.collaboration,
       roleFit: workstyle.roleFit,
       takeaways: workstyle.takeaways,
       closingText: BLOCK8[locale],
@@ -342,15 +344,16 @@ async function main() {
   const renderReport = (p: Persona) => {
     const data = buildPdfData(p, locale, plan);
     const bookmark = { title: `${p.label} · ${p.slug}`, expanded: false } as const;
-    const totalPages = plan === "plus" ? 4 : 1;
+    const totalPages = plan === "plus" ? 5 : 1;
     const pages = [<CoverPage key={`${p.slug}-c`} data={data} bookmark={bookmark} />];
     if (plan === "plus") {
-      // Executive summary a riport elejére (P3.1) — a TritaPdf dokumentum-
-      // sorrendjével szinkronban.
+      // Executive summary a riport elejére (P3.1) + Csapatban működve (P4.2)
+      // — a TritaPdf dokumentum-sorrendjével szinkronban.
       pages.push(<SummaryPage key={`${p.slug}-x`} data={data} pageNum={1} totalPages={totalPages} locale={locale} />);
       pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={2} totalPages={totalPages} locale={locale} />);
       pages.push(<PlusFacetsPage key={`${p.slug}-f`} data={data} pageNum={3} totalPages={totalPages} locale={locale} />);
       pages.push(<PlusWorkStylePage key={`${p.slug}-w`} data={data} pageNum={4} totalPages={totalPages} locale={locale} />);
+      pages.push(<CollabPage key={`${p.slug}-t`} data={data} pageNum={5} totalPages={totalPages} locale={locale} />);
     } else {
       pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={1} totalPages={totalPages} locale={locale} />);
     }

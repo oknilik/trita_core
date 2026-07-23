@@ -5,6 +5,7 @@ import { SummaryPage } from "./pages/SummaryPage";
 import { StartPage } from "./pages/StartPage";
 import { PlusFacetsPage } from "./pages/PlusFacetsPage";
 import { PlusWorkStylePage } from "./pages/PlusWorkStylePage";
+import { CollabPage } from "./pages/CollabPage";
 import { ReflectPage } from "./pages/ReflectPage";
 
 // ─── Data interface ──────────────────────────────────────────────────────────
@@ -44,6 +45,8 @@ export interface PdfData {
     pressureParts?: { stress: string; blindspot: string }[];
     /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
     growthTip?: string;
+    /** „Csapatban működve" fejezet (P4.2). */
+    collaboration?: { click: string[]; friction: string[]; needs: string[] };
     roleFit: {
       strong: string;
       might: string;
@@ -76,10 +79,9 @@ function TritaDocument({ data }: { data: PdfData }) {
   const hasObservers = hasPlus && data.observerData && data.observerData.count > 0;
   const locale = data.locale ?? "hu";
 
-  // Start: 1; Plus: 4 (summary + start + facets + workstyle); observerekkel: 5.
-  // A summary-oldal (P3.1) csak plus riportban él — a tartalma a plus
-  // content-pipeline-ból (pressure, growthTip) áll össze.
-  const totalPages = hasObservers ? 5 : hasPlus ? 4 : 1;
+  // Start: 1; Plus: 5 (summary + start + facets + workstyle + collab);
+  // observerekkel: 6. A summary- és collab-oldal csak plus riportban él.
+  const totalPages = hasObservers ? 6 : hasPlus ? 5 : 1;
   let pageNum = 0;
   const nextPage = () => ++pageNum;
 
@@ -91,6 +93,7 @@ function TritaDocument({ data }: { data: PdfData }) {
       <StartPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />
       {hasPlus && <PlusFacetsPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
       {hasPlus && <PlusWorkStylePage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
+      {hasPlus && <CollabPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
       {hasObservers && <ReflectPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
     </Document>
   );

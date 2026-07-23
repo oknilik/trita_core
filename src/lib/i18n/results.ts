@@ -924,6 +924,15 @@ export const resultsTranslations = {
       hu: "Ezek hipotézisek, nem ítéletek — stressz alatt sokféle működés megjelenhet. Akkor hasznosak, ha megfigyeled, mikor igazak rád, és mikor nem.",
       en: "These are hypotheses, not verdicts — many patterns can appear under stress. They're useful if you observe when they hold for you and when they don't.",
     },
+    // ── CollabPage (P4.2) ──────────────────────────────────────────────────
+    collabTitle: { hu: "Csapatban működve", en: "Working in a team" },
+    collabClick: { hu: "Természetes partnerek", en: "Natural partners" },
+    collabFriction: { hu: "Lehetséges súrlódások", en: "Possible frictions" },
+    collabNeeds: { hu: "Ami kihozza belőled a legjobbat", en: "What brings out your best" },
+    collabSourceNote: {
+      hu: "Ez a fejezet profil-alapú becslés: azt jelzi, milyen működésmódok mellett erősödsz vagy súrlódhatsz jellemzően. A valós csapat-dinamikát — a konkrét kollégáiddal — a Trita csapat-nézete méri.",
+      en: "This chapter is a profile-based estimate: it signals which working styles you typically strengthen next to, or grate against. Real team dynamics — with your actual colleagues — are measured in the Trita team view.",
+    },
     methodNoteTitle: { hu: "Hogyan olvasd ezt a riportot?", en: "How to read this report" },
     methodNoteBody: {
       hu: "Az eredmények önjellemzésen alapulnak: azt mutatják, ahogyan a kitöltéskor magadat láttad. A pontszámok viselkedési tendenciákat jeleznek, nem címkéket — a környezet, a szerep és a stressz jelentősen módosíthatja, hogyan jelennek meg a mindennapokban. A riport állításait ezért kezeld hipotézisként: vesd össze a saját tapasztalataiddal és mások visszajelzésével.",

@@ -5,6 +5,8 @@ import {
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
   PRESSURE_BLINDSPOT_PREFIX, type PressureText,
   SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS,
+  COLLAB_CLICK, COLLAB_FRICTION, COLLAB_NEEDS,
+  COLLAB_BALANCED_CLICK, COLLAB_BALANCED_FRICTION,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
 } from "@/lib/profile-content";
@@ -22,6 +24,8 @@ export interface WorkstyleContent {
   pressureParts: PressureText[];
   /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
   growthTip?: string;
+  /** „Csapatban működve" fejezet (P4.2): partnerek / súrlódások / feltételek. */
+  collaboration: { click: string[]; friction: string[]; needs: string[] };
   envItems: { label: string; value: string }[];
   roleFit: {
     strong: string;
@@ -181,6 +185,48 @@ export function buildWorkstyleContent(
     return DIMENSION_GROWTH_TIPS[lowestDim]?.[lang];
   })();
 
+  // „Csapatban működve" fejezet (P4.2) — dimenzió-szintű kompozíció:
+  //  - click: a top-2 markáns dimenzió;
+  //  - friction: pólusos dimenziók a legerősebb súrlódás-jóslók közül
+  //    (THOR > ADAP > INTE — a team-stats FRICTION_WEIGHTS sorrendje, hogy
+  //    a riport és a csapat-felület ugyanazt a modellt mondja);
+  //  - needs: a legmarkánsabb dimenzió + a legalacsonyabb (ha low sávos).
+  const collaboration = (() => {
+    const click: string[] = [];
+    for (const sd of engine.topSoloDims.slice(0, 2)) {
+      const text = COLLAB_CLICK[`${sd.dim}_${sd.level}`]?.[lang];
+      if (text) click.push(text);
+    }
+    if (click.length === 0) click.push(COLLAB_BALANCED_CLICK[lang]);
+
+    const FRICTION_DIM_ORDER = ["THOR", "ADAP", "INTE"] as const;
+    const friction: string[] = [];
+    for (const dim of FRICTION_DIM_ORDER) {
+      const level = engine.categories[dim];
+      if (level !== "high" && level !== "low") continue;
+      const text = COLLAB_FRICTION[`${dim}_${level}`]?.[lang];
+      if (text) friction.push(text);
+      if (friction.length === 2) break;
+    }
+    if (friction.length === 0) friction.push(COLLAB_BALANCED_FRICTION[lang]);
+
+    const needs: string[] = [];
+    const needKeys: string[] = [];
+    const topSolo = engine.topSoloDims[0];
+    if (topSolo) needKeys.push(`${topSolo.dim}_${topSolo.level}`);
+    const lowEntries = Object.entries(engine.categories).filter(([, lvl]) => lvl === "low");
+    for (const [dim] of lowEntries) {
+      const key = `${dim}_low`;
+      if (!needKeys.includes(key)) { needKeys.push(key); break; }
+    }
+    for (const key of needKeys.slice(0, 2)) {
+      const text = COLLAB_NEEDS[key]?.[lang];
+      if (text) needs.push(text);
+    }
+
+    return { click, friction, needs };
+  })();
+
   // Role fit texts
   const roleFitSource = engine.block6Pairs[0]?.contentKey
     ?? (engine.topSoloDims[0] ? `${engine.topSoloDims[0].dim}_${engine.topSoloDims[0].level}` : null);
@@ -241,6 +287,7 @@ export function buildWorkstyleContent(
     pressure,
     pressureParts,
     growthTip,
+    collaboration,
     envItems,
     roleFit: {
       strong: roleTexts?.strong ?? "",

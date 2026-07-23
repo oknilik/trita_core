@@ -459,6 +459,7 @@ export default async function ProfileResultsPage({
     pressure: workstyle.pressure,
     pressureParts: workstyle.pressureParts,
     growthTip: workstyle.growthTip,
+    collaboration: workstyle.collaboration,
     envItems: workstyle.envItems,
     roleFit: workstyle.roleFit,
     takeaways: workstyle.takeaways,
