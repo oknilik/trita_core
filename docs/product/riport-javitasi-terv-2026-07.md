@@ -115,4 +115,14 @@ Ellenőrzés: `tsc --noEmit` 0 hiba; content-pipeline harness futtatva
 - [x] P3.3 tördelés — 2026-07-23 (renderelt mintán ellenőrizve: a munkastílus-oldal a P2-blokkokkal megtelt, a legzsúfoltabb feszültség-pár eset is egy oldalon marad; külön tördelési változtatás nem kellett)
 - [x] P4.2 v1 együttműködés-fejezet — 2026-07-23 („Csapatban működve" oldal: természetes partnerek / lehetséges súrlódások / ami kihozza a legjobbat; 3×12 dimenzió-kulcsos készlet, a team-stats FRICTION_WEIGHTS modelljére hangolva; terv: `docs/product/riport-egyuttmukodes-fejezet-terv.md`) · commit 7bb6477. Későbbi fázis: valós pár-adat csapat-tagoknál, webes megjelenítés.
 - [ ] P3.4 középsávos dimenzió-szövegek variálása — elhalasztva: a kérdésbank-config insight-struktúrájának bővítését igényli (sávonként több változat + determinisztikus választás); copy-deck után érdemes.
+
+### P5 — a 2. külső kör (8,8–9/10) visszajelzései
+
+- [x] P5.1 integritás-szövegek viselkedési keretben — 2026-07-23 (a „manipulációmentes/tiszta játék" morális fordulatok cseréje; a kérdésbank INTE low-sáv insightja átírva előny+költség framingre; módszertani jegyzet: „egyik pólus sem jó vagy rossz") · commit ad1896d
+- [x] P5.2 „miért"-chipek — 2026-07-23 (forrás-dimenzió jelölés a vakfolt/nyomás és együttműködés-dobozokon) · commit 306997b
+- [x] P5.3 csapatszerep-indoklás — 2026-07-23 (`TEAM_ROLE_WHY`, csak becsült elsődleges szerepnél) · commit 306997b
+- [x] P5.4 „A gyakorlatban:" sor az alskála-oldalon — 2026-07-23 · commit 306997b
+- [ ] P5.5 háromlépcsős fejlődési fókusz (viselkedés → reflexiós kérdés → mérhető kihívás) — tartalommunka, 6×3 elem
+- [ ] P5.6 storytelling-felütés a summary-oldalon — moduláris (6 főnév + 6 melléknév építőelem), nem 30 kézi szöveg
+- [ ] P5.7 interakció-szimuláció („mit él át X, ha Y-nal dolgozik / Y a főnöke") — külön funkció, tervezési doksival indul; a dimenzió-kompozíciós architektúra (P4.2) az alapja
 - A becslő spread-je (P2.3 megjegyzés): a súlyozott becslő tendenciózusan Koordinátor/Megvalósító irányba húz — algoritmus-módosítást validációs adat nélkül nem tettünk; a sáv-megjelenítés ezt kommunikációs szinten kezeli. Újranézendő valós kérdőíves adatok birtokában.
