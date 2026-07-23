@@ -18,6 +18,7 @@ import { resolveObserverFlowStatus } from "@/lib/observer-flow";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
+import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { buildWorkstyleContent } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
@@ -418,11 +419,11 @@ export default async function ProfileResultsPage({
   // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
   const observerFlow = await resolveObserverFlowStatus(profile.id);
 
-  // Percentile (approximate from average score)
-  const avgScore = Math.round(
-    mainDimensions.reduce((s, d) => s + d.score, 0) / (mainDimensions.length || 1),
-  );
-  const percentile = avgScore >= 70 ? "Top 10%" : avgScore >= 60 ? "Top 25%" : "";
+  // Percentilis-badge KIVEZETVE (javítási terv 2026-07, P1.1): a korábbi
+  // „Top 10%/25%" a saját dimenzió-átlagból számolt ál-percentilis volt,
+  // valós normacsoport nélkül — ez sérti a „becsült vs mért adat mindig
+  // jelölve" alapelvet. Valós normaadattal térhet vissza (terv P4.3).
+  const percentile = "";
 
   // Hero insight — behavior-based sentence (not dimension names)
   const heroInsight = (() => {
@@ -431,25 +432,8 @@ export default async function ProfileResultsPage({
     const weakest = sorted[sorted.length - 1];
     if (!strongest || !weakest) return "";
 
-    const strengthVerbs: Record<string, { hu: string; en: string }> = {
-      INTE: { hu: "Hitelesen és manipulációmentesen működsz", en: "You operate with authenticity and integrity" },
-      RESO: { hu: "Mélyen és empatikusan kapcsolódsz másokhoz", en: "You connect deeply and empathetically with others" },
-      TEMP: { hu: "Energikusan és inspirálóan vagy jelen", en: "You bring energy and inspiration to your interactions" },
-      ADAP: { hu: "Rugalmasan és türelmesen kezeled a helyzeteket", en: "You handle situations with flexibility and patience" },
-      THOR: { hu: "Rendszerben és felelősen működsz", en: "You work systematically and responsibly" },
-      OPEN: { hu: "Kísérletezően és stratégiailag gondolkodsz", en: "You think experimentally and strategically" },
-    };
-    const weakVerbs: Record<string, { hu: string; en: string }> = {
-      INTE: { hu: "a státusz és pozíció természetesebb tereped", en: "status and positioning come more naturally to you" },
-      RESO: { hu: "az érzelmi bevonódás kevésbé természetes tereped", en: "emotional involvement is less natural for you" },
-      TEMP: { hu: "a társas láthatóság kevésbé természetes tereped", en: "social visibility is less natural for you" },
-      ADAP: { hu: "a konfliktusos helyzetekben élesebb reakciók jellemzőek", en: "you tend to react more sharply in conflict" },
-      THOR: { hu: "a strukturált végrehajtás kevésbé természetes tereped", en: "structured execution is less natural for you" },
-      OPEN: { hu: "a bevált módszereket részesíted előnyben", en: "you prefer established methods" },
-    };
-
-    const s = strengthVerbs[strongest.code]?.[locale] ?? strongest.label;
-    const w = weakVerbs[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
+    const s = DIMENSION_STRENGTH_VERBS[strongest.code]?.[locale] ?? strongest.label;
+    const w = DIMENSION_WEAK_VERBS[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
     return isHu
       ? `${s} — ${w}.`
       : `${s} — ${w}.`;

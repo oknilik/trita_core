@@ -5,6 +5,7 @@ import { PdfFacets } from "../components/PdfFacets";
 import { PdfAltruism } from "../components/PdfAltruism";
 import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t, tf } from "@/lib/i18n";
+import { withHuArticle } from "@/lib/hu-grammar";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
@@ -41,14 +42,20 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
     if (highDims.length === 0 && lowDims.length === 0) {
       return t("pdf.facetBalanced", locale);
     }
-    const highNames = highDims.map((d) => d.name.toLowerCase()).join(", ");
-    const lowNames = lowDims.map((d) => d.name.toLowerCase()).join(", ");
+    // HU-sablonokba kész névelős alakot adunk át („az integritás", „A nyitottság") —
+    // az „a(z)" sablon-műtermék helyett (hu-grammar.withHuArticle).
+    const hu = locale === "hu";
+    const highNamesRaw = highDims.map((d) => d.name.toLowerCase()).join(", ");
+    const lowNamesRaw = lowDims.map((d) => d.name.toLowerCase()).join(", ");
+    const highNames = hu ? withHuArticle(highNamesRaw) : highNamesRaw;
     if (highDims.length > 0 && lowDims.length > 0) {
+      const lowNames = hu ? withHuArticle(lowNamesRaw, { capitalize: true }) : lowNamesRaw;
       return tf("pdf.facetHighAndLow", locale, { highNames, lowNames });
     }
     if (highDims.length > 0) {
       return tf("pdf.facetHighOnly", locale, { highNames });
     }
+    const lowNames = hu ? withHuArticle(lowNamesRaw, { capitalize: true }) : lowNamesRaw;
     return tf("pdf.facetLowOnly", locale, { lowNames });
   })();
 

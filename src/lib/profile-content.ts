@@ -625,8 +625,8 @@ export const BLOCK4_EMPTY: LocalizedText = {
 
 export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
   INTE_high: {
-    hu: "Az etikai integritás és az őszinteség az egyik legdominánsabb jellemződ. Az őszinteségre törekszel, és hiteles akarsz lenni – ez a munkahelyi kapcsolataidban is erős, bizalomépítő alapot ad.",
-    en: "Ethical integrity and honesty are among your most dominant traits. You seek truthfulness and strive to be authentic — this provides a strong, trust-building foundation in your professional relationships.",
+    hu: "Válaszaid alapján az etikai integritás és az őszinteség az egyik legdominánsabb jellemződ. Az őszinteségre törekszel, és hiteles akarsz lenni – ez a munkahelyi kapcsolataidban is erős, bizalomépítő alapot ad.",
+    en: "Based on your responses, ethical integrity and honesty are among your most dominant traits. You seek truthfulness and strive to be authentic — this provides a strong, trust-building foundation in your professional relationships.",
   },
   INTE_low: {
     hu: "Ambiciózus és stratégiai gondolkodású vagy: nem riadsz vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő számodra – a versengés és az önérvényesítés természetes közeged.",
@@ -637,12 +637,12 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
     en: "Emotional sensitivity is one of your defining traits. You are empathetic and respond readily to events around you — this adds value to your relationships but calls for a supportive, well-structured environment.",
   },
   RESO_low: {
-    hu: "Kiemelkedő érzelmi stabilitás jellemez. Nyomás és bizonytalanság alatt is megőrzöd az egyensúlyodat – ez ritka és értékes képesség változékony közegekben.",
-    en: "You are characterized by outstanding emotional stability. You maintain your balance even under pressure and uncertainty — a rare and highly valuable ability in volatile environments.",
+    hu: "Válaszaid kiemelkedő érzelmi stabilitást jeleznek. Nyomás és bizonytalanság alatt is jellemzően megőrzöd az egyensúlyodat – ez ritka és értékes képesség változékony közegekben.",
+    en: "Your responses point to outstanding emotional stability. You typically maintain your balance even under pressure and uncertainty — a rare and highly valuable ability in volatile environments.",
   },
   TEMP_high: {
-    hu: "Erősen extravertált vagy – a kapcsolatokból és interakciókból nyersz energiát. A társas tér a természetes közeged, és aktívan alakítod a közeg dinamikáját.",
-    en: "You are strongly extraverted — you draw energy from relationships and interactions. Social space is your natural element, and you actively shape the dynamics around you.",
+    hu: "Erősen extravertált mintázat jellemez – a kapcsolatokból és interakciókból nyersz energiát. A társas tér a természetes közeged, és aktívan alakítod a közeg dinamikáját.",
+    en: "Your pattern is strongly extraverted — you draw energy from relationships and interactions. Social space is your natural element, and you actively shape the dynamics around you.",
   },
   TEMP_low: {
     hu: "Introvertált beállítottság jellemez – önálló vagy kiscsoportos munkában töltöd fel az energiáidat. A mély fókusz és az autonómia az erősséged tere.",
@@ -671,6 +671,63 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
   OPEN_low: {
     hu: "Kiszámítható, konkrét és pragmatikus beállítottságú. A bevált megoldásokat részesíted előnyben – a stabilitás, a megbízhatóság és az ismert módszerek az erősséged.",
     en: "Predictable, concrete, and pragmatic. You prefer proven solutions — stability, reliability, and familiar methods are your strengths.",
+  },
+};
+
+// ─── Solo dim summaries (Kulcs-tanulságok, ha nincs tension pár) ─────────────
+// Korábban a takeaways ugyanazokat a SOLO_DIM_NARRATIVES szövegeket kapta,
+// mint az „Ahogy működsz" blokk → szó szerinti duplikáció a riportban
+// (javítási terv 2026-07, P1.3). Ez a készlet rövid, tanulság-műfajú:
+// egy erőforrás + egy hipotézisként keretezett figyelő-pont (vakfolt-csíra).
+
+export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
+  INTE_high: {
+    hu: "Erőforrásod a bizalomépítés és a tiszta játék. Figyeld meg: nehezebb közegben hajlamos lehetsz túl sokáig korrekt maradni ott, ahol már határt kellene húzni.",
+    en: "Your asset is trust-building and fair play. Worth watching: in tougher settings you may stay fair a beat too long where a firm boundary is needed.",
+  },
+  INTE_low: {
+    hu: "Erőforrásod az ambíció és az érdekérvényesítés. Figyeld meg: éles versenyben a kapcsolati bizalom könnyen sérülhet — a közösen rögzített játékszabályok védik.",
+    en: "Your asset is ambition and self-assertion. Worth watching: in sharp competition relational trust can erode — shared ground rules protect it.",
+  },
+  RESO_high: {
+    hu: "Erőforrásod az érzelmi ráhangolódás és a mély kapcsolódás. Figyeld meg: tartós nyomás alatt gyorsabban merülhetsz ki — a stresszkezelő rutin nálad nem extra, hanem alapfelszerelés.",
+    en: "Your asset is emotional attunement and deep connection. Worth watching: sustained pressure may drain you faster — a stress routine is core equipment for you, not an extra.",
+  },
+  RESO_low: {
+    hu: "Erőforrásod a nyugalom nyomás alatt. Figyeld meg: mások ezt megélhetik távolságtartásnak — a támogató visszajelzést néha ki is kell mondanod, nem elég érezni.",
+    en: "Your asset is calm under pressure. Worth watching: others may read it as distance — supportive feedback sometimes needs to be said out loud, not just felt.",
+  },
+  TEMP_high: {
+    hu: "Erőforrásod az energia és a társas jelenlét. Figyeld meg: a csendesebb hangok melletted elhalkulhatnak — tudatosan érdemes teret nyitnod nekik.",
+    en: "Your asset is energy and social presence. Worth watching: quieter voices can fade around you — opening space for them takes intention.",
+  },
+  TEMP_low: {
+    hu: "Erőforrásod a mély fókusz és az önállóság. Figyeld meg: a kisebb láthatóság alulértékeltséghez vezethet — az eredményeidnek néha hangot kell adni.",
+    en: "Your asset is deep focus and autonomy. Worth watching: low visibility can lead to being undervalued — results sometimes need a voice.",
+  },
+  ADAP_high: {
+    hu: "Erőforrásod a harmónia és a kohézió építése. Figyeld meg: a nehéz konfrontációk halogatása hosszabb távon többe kerülhet, mint maga a konfliktus.",
+    en: "Your asset is building harmony and cohesion. Worth watching: postponing hard confrontations can cost more over time than the conflict itself.",
+  },
+  ADAP_low: {
+    hu: "Erőforrásod az egyenesség és a vitaképesség. Figyeld meg: az éles reakciók csökkenthetik a biztonságérzetet körülötted — a tempó lassítása gyakran többet hoz.",
+    en: "Your asset is directness and willingness to debate. Worth watching: sharp reactions can reduce the sense of safety around you — slowing the tempo often gains more.",
+  },
+  THOR_high: {
+    hu: "Erőforrásod a megbízható végrehajtás. Figyeld meg: a struktúra iránti igény rugalmatlanságba fordulhat, amikor a terep gyorsabban változik, mint a terv.",
+    en: "Your asset is dependable execution. Worth watching: the need for structure can turn rigid when the terrain changes faster than the plan.",
+  },
+  THOR_low: {
+    hu: "Erőforrásod az improvizáció és az adaptivitás. Figyeld meg: a részletek és határidők könnyebben csúszhatnak — egy külső struktúra (rendszer vagy társ) sokat segít.",
+    en: "Your asset is improvisation and adaptivity. Worth watching: details and deadlines slip more easily — external structure (a system or a partner) helps a lot.",
+  },
+  OPEN_high: {
+    hu: "Erőforrásod a kíváncsiság és az újító gondolkodás. Figyeld meg: az új ötletek vonzása elviheti a fókuszt a befejezésről — a lezárás tudatosságot igényel.",
+    en: "Your asset is curiosity and inventive thinking. Worth watching: the pull of new ideas can draw focus away from finishing — closure takes intention.",
+  },
+  OPEN_low: {
+    hu: "Erőforrásod a stabilitás és a bevált módszerek ismerete. Figyeld meg: gyors változás idején a megszokotthoz ragaszkodás lassíthat — kis, biztonságos kísérletek segítenek.",
+    en: "Your asset is stability and command of proven methods. Worth watching: in fast change, sticking to the familiar can slow you down — small, safe experiments help.",
   },
 };
 

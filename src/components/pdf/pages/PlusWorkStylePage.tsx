@@ -1,5 +1,5 @@
-import { Page, View } from "@react-pdf/renderer";
-import { s } from "../styles";
+import { Page, View, Text } from "@react-pdf/renderer";
+import { s, colors } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
 import { PdfHowYouWork } from "../components/PdfHowYouWork";
 import { PdfRoleFit } from "../components/PdfRoleFit";
@@ -46,6 +46,34 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
         {/* ── Kulcs-tanulságok ── */}
         <View wrap={false}>
           <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
+        </View>
+
+        {/* ── Módszertani jegyzet (javítási terv P1.6): önjellemzés,
+            tendencia nem címke, környezet/stressz módosít ── */}
+        <View
+          wrap={false}
+          style={{
+            marginTop: 10,
+            borderRadius: 8,
+            border: "1 solid rgba(43,42,51,0.12)",
+            padding: "8 10",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 5,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              color: colors.ink300,
+              fontWeight: 600,
+              marginBottom: 3,
+            }}
+          >
+            {t("pdf.methodNoteTitle", locale)}
+          </Text>
+          <Text style={{ fontSize: 7, color: colors.ink300, lineHeight: 1.45 }}>
+            {t("pdf.methodNoteBody", locale)}
+          </Text>
         </View>
 
       </View>

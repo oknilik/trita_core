@@ -6,6 +6,7 @@ import { PdfTakeaways } from "../components/PdfTakeaways";
 import { PdfCalloutBox } from "../components/PdfCalloutBox";
 import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t, tf } from "@/lib/i18n";
+import { withHuArticle } from "@/lib/hu-grammar";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
@@ -39,14 +40,25 @@ export function ReflectPage({ data, pageNum, totalPages, locale }: Props) {
       return t("pdf.toplineAligned", locale);
     }
     const joiner = locale === "hu" ? " és " : " and ";
-    const names = bigGaps.map((d) => d.name.toLowerCase()).join(joiner);
+    const namesRaw = bigGaps.map((d) => d.name.toLowerCase()).join(joiner);
+    // HU: kész névelős alak a sablonba („az integritás és a nyitottság").
+    const names = locale === "hu" ? withHuArticle(namesRaw) : namesRaw;
     return tf("pdf.toplineGapPrefix", locale, { names });
   })();
 
   // Build summary sentence
   const topDiff = blindspots[0];
   const summarySentence = isGoodMatch
-    ? t("pdf.summaryGoodMatch", locale) + (topDiff ? tf("pdf.summaryGoodMatchDeeper", locale, { name: topDiff.name.toLowerCase() }) : "")
+    ? t("pdf.summaryGoodMatch", locale) +
+      (topDiff
+        ? tf("pdf.summaryGoodMatchDeeper", locale, {
+            // HU: mondatkezdő, nagybetűs névelővel („Az integritás területén…").
+            name:
+              locale === "hu"
+                ? withHuArticle(topDiff.name.toLowerCase(), { capitalize: true })
+                : topDiff.name.toLowerCase(),
+          })
+        : "")
     : t("pdf.summaryMixed", locale);
 
   return (

@@ -38,6 +38,7 @@ import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { Card } from "@/components/ui/primitives/Card";
+import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 
 type ProfileLevel = "start" | "plus";
@@ -707,22 +708,10 @@ export function ProfileTabs({
             const highDims = mainDims.filter((d) => d.score >= 70);
             const lowDims = mainDims.filter((d) => d.score < 40);
 
-            const strengthDescs: Record<string, { hu: string; en: string }> = {
-              "INTE": { hu: "hiteles, manipulációmentes", en: "authentic, manipulation-free" },
-              "RESO": { hu: "erős empátia, mély kapcsolódás", en: "strong empathy, deep connection" },
-              "TEMP": { hu: "inspiráló, energikus jelenlét", en: "inspiring, energetic presence" },
-              "ADAP": { hu: "megbocsátó, rugalmas, türelmes", en: "forgiving, flexible, patient" },
-              "THOR": { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
-              "OPEN": { hu: "kísérletező, stratégiai gondolkodó", en: "experimental, strategic thinker" },
-            };
-            const watchDescs: Record<string, { hu: string; en: string }> = {
-              "INTE": { hu: "státuszorientáltabb, versengőbb", en: "more status-oriented, competitive" },
-              "RESO": { hu: "érzelmileg távolabb, kevesebb empátia", en: "emotionally distant, less empathy" },
-              "TEMP": { hu: "kisebb társas láthatóság, visszahúzódóbb", en: "lower social visibility, more reserved" },
-              "ADAP": { hu: "élesebb reakciók konfliktusban", en: "sharper reactions in conflict" },
-              "THOR": { hu: "kevésbé szervezett, rugalmasabb", en: "less organized, more flexible" },
-              "OPEN": { hu: "bevált módszereket preferálja", en: "prefers established methods" },
-            };
+            // Közös forrásból (dimension-insights.ts) — results-oldallal és
+            // persona-riport generátorral szinkronban (javítási terv P1.5).
+            const strengthDescs = DIMENSION_STRENGTH_DESCS;
+            const watchDescs = DIMENSION_WATCH_DESCS;
             const lang = locale;
             const strengthBullets = highDims.length > 0
               ? highDims.map((d) => {

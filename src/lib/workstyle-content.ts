@@ -2,7 +2,7 @@ import type { TestType } from "@prisma/client";
 import { runProfileEngine } from "@/lib/profile-engine";
 import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
-  SOLO_DIM_NARRATIVES,
+  SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
 } from "@/lib/profile-content";
@@ -171,9 +171,12 @@ export function buildWorkstyleContent(
     if (text) takeaways.push(text);
   }
   if (takeaways.length === 0) {
+    // Solo-dim ágon a rövid SOLO_DIM_SUMMARIES megy ide, NEM a narratívák —
+    // különben a „Kulcs-tanulságok" szó szerint megismételné az
+    // „Ahogy működsz" blokkot (javítási terv 2026-07, P1.3).
     for (const sd of engine.topSoloDims) {
       const key = `${sd.dim}_${sd.level}`;
-      const text = SOLO_DIM_NARRATIVES[key]?.[lang];
+      const text = SOLO_DIM_SUMMARIES[key]?.[lang];
       if (text) takeaways.push(text);
     }
   }

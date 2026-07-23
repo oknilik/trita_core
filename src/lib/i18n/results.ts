@@ -5,7 +5,7 @@ export const resultsTranslations = {
     continueDraftTitle: { hu: "Félbehagyott teszt", en: "Unfinished test" },
     continueDraftBody: { hu: "Folytasd onnan, ahol abbahagytad ({answered}/{total} kérdés kész).", en: "Continue where you left off ({answered}/{total} questions done)." },
     noResultTitle: { hu: "Még nincs kiértékelésed", en: "No results yet" },
-    noResultBody: { hu: "Töltsd ki a(z) {testName} tesztet, hogy lásd az eredményeidet.", en: "Complete the {testName} test to see your results." },
+    noResultBody: { hu: "Töltsd ki a {testName} tesztet, hogy lásd az eredményeidet.", en: "Complete the {testName} test to see your results." },
     latestEvaluation: { hu: "Legutóbbi kiértékelés", en: "Latest evaluation" },
     guidedTag: { hu: "A te utad", en: "Your journey" },
     nextStepTitle: { hu: "Következő lépés", en: "Next step" },
@@ -903,6 +903,11 @@ export const resultsTranslations = {
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     howYouWork: { hu: "Ahogy működsz", en: "How you work" },
     roleFit: { hu: "Szerepkör-illeszkedés", en: "Role fit" },
+    methodNoteTitle: { hu: "Hogyan olvasd ezt a riportot?", en: "How to read this report" },
+    methodNoteBody: {
+      hu: "Az eredmények önjellemzésen alapulnak: azt mutatják, ahogyan a kitöltéskor magadat láttad. A pontszámok viselkedési tendenciákat jeleznek, nem címkéket — a környezet, a szerep és a stressz jelentősen módosíthatja, hogyan jelennek meg a mindennapokban. A riport állításait ezért kezeld hipotézisként: vesd össze a saját tapasztalataiddal és mások visszajelzésével.",
+      en: "These results are based on self-report: they reflect how you saw yourself at the time of completion. Scores indicate behavioural tendencies, not labels — context, role, and stress can significantly change how they show up day to day. Treat the statements in this report as hypotheses: test them against your own experience and feedback from others.",
+    },
     // ── ReflectPage ────────────────────────────────────────────────────────
     selfVsFeedback: { hu: "Önkép és visszajelzés", en: "Self-image vs. Feedback" },
     howDoOthersSeeYou: { hu: "Hogyan látnak mások?", en: "How do others see you?" },
@@ -917,7 +922,8 @@ export const resultsTranslations = {
       en: "Your self-image and others' feedback align closely in most dimensions — you see yourself realistically.",
     },
     toplineGapPrefix: {
-      hu: "A legnagyobb eltérés a(z) {names} területén látszik. Érdemes ezekre különösen odafigyelni.",
+      // HU: a hívó már névelővel adja át a {names}-t (withHuArticle).
+      hu: "A legnagyobb eltérés {names} területén látszik. Érdemes ezekre különösen odafigyelni.",
       en: "The biggest gaps appear in {names}. These are worth paying close attention to.",
     },
     summaryGoodMatch: {
@@ -925,7 +931,8 @@ export const resultsTranslations = {
       en: "Overall, you see yourself realistically — your self-image and others' feedback are closely aligned in most dimensions.",
     },
     summaryGoodMatchDeeper: {
-      hu: " A(z) {name} területén érdemes mélyebbre nézni.",
+      // HU: a hívó nagybetűs névelővel adja át a {name}-et (withHuArticle).
+      hu: " {name} területén érdemes mélyebbre nézni.",
       en: " It's worth looking deeper at {name}.",
     },
     summaryMixed: {
@@ -949,15 +956,18 @@ export const resultsTranslations = {
       en: "Balanced profile — no extremely high or low dimensions. This means flexibility, but fewer natural 'superpowers'.",
     },
     facetHighAndLow: {
-      hu: "Profilod erőssége a(z) {highNames} területén koncentrálódik. A(z) {lowNames} alacsonyabb szintje nem probléma — inkább azt jelzi, hol érdemes tudatosabban működnöd.",
+      // HU: a hívó névelővel adja át a neveket (withHuArticle; {lowNames} nagybetűs).
+      hu: "Profilod erőssége {highNames} területén koncentrálódik. {lowNames} alacsonyabb szintje nem probléma — inkább azt jelzi, hol érdemes tudatosabban működnöd.",
       en: "Your profile's strength is concentrated in {highNames}. Lower {lowNames} isn't a problem — it signals where to operate more consciously.",
     },
     facetHighOnly: {
-      hu: "Erős, karakteres profil — a(z) {highNames} kiemelkedő, és nincs kritikusan alacsony dimenzió.",
+      // HU: a hívó névelővel adja át a {highNames}-t (withHuArticle).
+      hu: "Erős, karakteres profil — {highNames} kiemelkedő, és nincs kritikusan alacsony dimenzió.",
       en: "Strong, distinctive profile — {highNames} stands out, with no critically low dimensions.",
     },
     facetLowOnly: {
-      hu: "A(z) {lowNames} alacsonyabb szintje tudatos figyelmet érdemel — ezek a területek fejlődési lehetőséget rejtenek.",
+      // HU: a hívó nagybetűs névelővel adja át a {lowNames}-t (withHuArticle).
+      hu: "{lowNames} alacsonyabb szintje tudatos figyelmet érdemel — ezek a területek fejlődési lehetőséget rejtenek.",
       en: "Lower {lowNames} deserves conscious attention — these areas hold growth potential.",
     },
     // ── PdfHeader ──────────────────────────────────────────────────────────
