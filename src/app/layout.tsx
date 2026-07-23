@@ -197,6 +197,11 @@ export default async function RootLayout({
     <html lang={DEFAULT_LOCALE}>
       <body className={bodyClasses}>
         <ClerkProvider
+          // Clerk v6: alapból static provider — SSR-kor nem ismeri az
+          // auth-állapotot, a SignedIn/SignedOut üresen renderel, kliensen
+          // pedig feltöltődik → hydration mismatch. A layout már
+          // force-dynamic, így a dynamic mód nem veszít semmit.
+          dynamic
           signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
           signUpFallbackRedirectUrl="/onboarding"
         >
