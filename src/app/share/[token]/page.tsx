@@ -285,8 +285,8 @@ export default async function SharedProfilePage({
             usernek nincs értelme a "készíts profilt" felhívásnak) */}
         {!userId && (
           <div className="rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
-            <p className="font-fraunces text-sm text-[var(--color-text-muted)]">
-              <span style={{ color: "var(--color-action-primary-bg)" }}>t</span>rit<span style={{ color: "var(--color-accent-primary)" }}>a</span>
+            <p aria-hidden="true" className="text-3xl leading-none">
+              🧭
             </p>
             <h2 className="mt-2 font-fraunces text-[22px] tracking-tight text-ink">
               {t("content.shareCtaTitle", locale)}
