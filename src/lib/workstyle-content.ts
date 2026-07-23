@@ -4,7 +4,7 @@ import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
   PRESSURE_BLINDSPOT_PREFIX, type PressureText,
-  SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS,
+  SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS, type GrowthPlan,
   COLLAB_CLICK, COLLAB_FRICTION, COLLAB_NEEDS,
   COLLAB_BALANCED_CLICK, COLLAB_BALANCED_FRICTION,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
@@ -25,6 +25,8 @@ export interface WorkstyleContent {
   pressureParts: (PressureText & { source: string })[];
   /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
   growthTip?: string;
+  /** Háromlépcsős fejlődési ív (P5.5): viselkedés → reflexió → mérhető kihívás. */
+  growthPlan?: GrowthPlan & { source: string };
   /** „Csapatban működve" fejezet (P4.2): partnerek / súrlódások / feltételek.
    *  source: melyik dimenzió-pólusból következik az állítás (P5.2 „miért"-chip). */
   collaboration: {
@@ -186,14 +188,20 @@ export function buildWorkstyleContent(
     }
   }
 
-  // Fejlődési javaslat (P2.4) — a legalacsonyabb dimenzióhoz, csak ha
+  // Fejlődési javaslat (P2.4, P5.5) — a legalacsonyabb dimenzióhoz, csak ha
   // ténylegesen alacsony sávban van (kiegyensúlyozott profilnál nincs tipp).
-  const growthTip = (() => {
+  // growthTip: rövid forma (summary-oldal); growthPlan: háromlépcsős ív.
+  const { growthTip, growthPlan } = (() => {
     const entries = Object.entries(dimScores).filter(([code]) => code !== "I");
-    if (entries.length === 0) return undefined;
+    if (entries.length === 0) return { growthTip: undefined, growthPlan: undefined };
     const [lowestDim, lowestScore] = entries.reduce((min, cur) => (cur[1] < min[1] ? cur : min));
-    if (lowestScore >= 40) return undefined;
-    return DIMENSION_GROWTH_TIPS[lowestDim]?.[lang];
+    if (lowestScore >= 40) return { growthTip: undefined, growthPlan: undefined };
+    const plan = DIMENSION_GROWTH_TIPS[lowestDim]?.[lang];
+    if (!plan) return { growthTip: undefined, growthPlan: undefined };
+    return {
+      growthTip: plan.behavior,
+      growthPlan: { ...plan, source: sourceLabel(lowestDim, "low") },
+    };
   })();
 
   // „Csapatban működve" fejezet (P4.2) — dimenzió-szintű kompozíció:
@@ -299,6 +307,7 @@ export function buildWorkstyleContent(
     pressure,
     pressureParts,
     growthTip,
+    growthPlan,
     collaboration,
     envItems,
     roleFit: {

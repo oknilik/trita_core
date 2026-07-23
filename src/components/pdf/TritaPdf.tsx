@@ -16,6 +16,8 @@ export interface PdfData {
   personalityType: string;
   percentile: string;
   heroInsight: string;
+  /** Archetípus-történet felütés a summary-oldalra (P5.6). */
+  archetypeStory?: string;
   plan: "start" | "plus";
   locale?: "hu" | "en";
   // Bullet-based insights
@@ -45,6 +47,8 @@ export interface PdfData {
     pressureParts?: { stress: string; blindspot: string; source?: string }[];
     /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
     growthTip?: string;
+    /** Háromlépcsős fejlődési ív (P5.5). */
+    growthPlan?: { behavior: string; reflection: string; challenge: string; source?: string };
     /** „Csapatban működve" fejezet (P4.2); source = forrás-dimenzió chip (P5.2). */
     collaboration?: {
       click: { text: string; source?: string }[];

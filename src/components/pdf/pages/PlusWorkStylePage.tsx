@@ -92,8 +92,8 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
         </View>
 
-        {/* ── Fejlődési fókusz (P2.4): egy konkrét, kipróbálható javaslat ── */}
-        {pc.growthTip ? (
+        {/* ── Fejlődési fókusz (P2.4, P5.5): viselkedés → reflexió → mérés ── */}
+        {pc.growthPlan || pc.growthTip ? (
           <View
             wrap={false}
             style={{
@@ -116,10 +116,40 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
               }}
             >
               {t("pdf.growthTitle", locale)}
+              {pc.growthPlan?.source ? ` · ${pc.growthPlan.source}` : ""}
             </Text>
-            <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
-              {pc.growthTip}
-            </Text>
+            {pc.growthPlan ? (
+              (
+                [
+                  ["pdf.growthBehavior", pc.growthPlan.behavior],
+                  ["pdf.growthReflection", pc.growthPlan.reflection],
+                  ["pdf.growthChallenge", pc.growthPlan.challenge],
+                ] as const
+              ).map(([labelKey, text], i) => (
+                <View key={labelKey} style={{ flexDirection: "row", marginBottom: i === 2 ? 0 : 3 }}>
+                  <Text
+                    style={{
+                      width: 92,
+                      fontSize: 5.5,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.5,
+                      color: colors.sageDark,
+                      marginTop: 0.5,
+                    }}
+                  >
+                    {t(labelKey, locale)}
+                  </Text>
+                  <Text style={{ flex: 1, fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+                    {text}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+                {pc.growthTip}
+              </Text>
+            )}
           </View>
         ) : null}
 

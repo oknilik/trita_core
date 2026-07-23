@@ -39,6 +39,7 @@ import { ComparisonTab as ComparisonTabNew } from "@/components/results/Comparis
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { Card } from "@/components/ui/primitives/Card";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
+import { buildArchetypeStory } from "@/lib/profile-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 
 type ProfileLevel = "start" | "plus";
@@ -152,6 +153,8 @@ export interface ProfileTabsProps {
     pressureParts?: { stress: string; blindspot: string; source?: string }[];
     /** Konkrét viselkedéses fejlődési javaslat (P2.4). */
     growthTip?: string;
+    /** Háromlépcsős fejlődési ív (P5.5). */
+    growthPlan?: { behavior: string; reflection: string; challenge: string; source?: string };
     /** „Csapatban működve" fejezet (P4.2); source = forrás-dimenzió chip (P5.2). */
     collaboration?: {
       click: { text: string; source?: string }[];
@@ -770,6 +773,11 @@ export function ProfileTabs({
               personalityType: personalityType ?? "",
               percentile: percentile ?? "",
               heroInsight: heroInsight ?? "",
+              // P5.6: storytelling-felütés a summary-oldalra
+              archetypeStory:
+                sortedDims[0] && sortedDims[1]
+                  ? buildArchetypeStory(sortedDims[0].code, sortedDims[1].code, locale === "hu" ? "hu" : "en") ?? undefined
+                  : undefined,
               plan: accessLevel,
               strengths: strengths ?? "",
               watchAreas: watchAreas ?? "",
@@ -836,6 +844,7 @@ export function ProfileTabs({
                 pressure: plusContent.pressure,
                 pressureParts: plusContent.pressureParts,
                 growthTip: plusContent.growthTip,
+                growthPlan: plusContent.growthPlan,
                 collaboration: plusContent.collaboration,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,

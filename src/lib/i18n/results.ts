@@ -909,6 +909,9 @@ export const resultsTranslations = {
     },
     pressureTitle: { hu: "Vakfoltok és nyomás alatt", en: "Blind spots & under pressure" },
     growthTitle: { hu: "Fejlődési fókusz", en: "Growth focus" },
+    growthBehavior: { hu: "Próbáld ki", en: "Try this" },
+    growthReflection: { hu: "Kérdezd meg magadtól", en: "Ask yourself" },
+    growthChallenge: { hu: "Mérd le", en: "Measure it" },
     // ── SummaryPage (P3.1) ─────────────────────────────────────────────────
     summaryPageTitle: { hu: "Összefoglaló egy oldalon", en: "One-page summary" },
     summaryStrengths: { hu: "Erősségek", en: "Strengths" },

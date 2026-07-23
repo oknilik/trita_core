@@ -867,6 +867,79 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   },
 };
 
+// ─── Archetípus-történet (P5.6) ──────────────────────────────────────────────
+// Storytelling-felütés az executive summary tetejére: „az emberek
+// történeteket jegyeznek meg, nem adatokat" (2. külső kör). Moduláris:
+// a DOMINÁNS dimenzió adja a főnévi archetípus 2 mondatos karakterképét,
+// a MÁSODIK a személyes színezetet — 6+6 építőelem, nem 30 kézi szöveg.
+// Harmadik személyben indul (a típusról szól), majd másodikra vált (rólad).
+
+export const ARCHETYPE_STORY_NOUN: Record<string, LocalizedText> = {
+  INTE: {
+    hu: "Az értékőr ritkán a leghangosabb ember a szobában — inkább az, akiben a többiek ösztönösen megbíznak. Számára a nyílt lapok és a kapcsolatok minősége többet ér, mint a gyors győzelem.",
+    en: "The Value Guardian is rarely the loudest person in the room — more often the one others instinctively trust. Open cards and the quality of relationships matter more to them than a quick win.",
+  },
+  RESO: {
+    hu: "Az empata az, aki előbb veszi észre a feszültséget, mint hogy bárki kimondaná. A csapat érzelmi térképe nála van — akkor is, ha ezt senki nem kérte tőle.",
+    en: "The Empath notices tension before anyone says it out loud. They hold the team's emotional map — even when nobody asked them to.",
+  },
+  TEMP: {
+    hu: "A hajtóerő az, aki mellett beindulnak a dolgok: ahol ő van, ott tempó van. Az energiája ragadós — a csapat gyakran róla veszi a ritmust.",
+    en: "The Driving Force is the person things start moving around: where they are, there is tempo. Their energy is contagious — teams often take their rhythm from them.",
+  },
+  ADAP: {
+    hu: "A hídépítő ott dolgozik, ahol mások falakat látnak: emberek és álláspontok között. Ritkán övé a színpad — de nélküle sok megállapodás létre sem jönne.",
+    en: "The Bridge-Builder works where others see walls: between people and positions. The stage is rarely theirs — but without them many agreements would never happen.",
+  },
+  THOR: {
+    hu: "A rendszerépítő az, akinél a dolgok nem elvesznek, hanem elkészülnek. Ahol ő dolgozik, ott a káoszból folyamat lesz — és a folyamatból eredmény.",
+    en: "The Architect is the one with whom things don't get lost — they get done. Where they work, chaos becomes process, and process becomes results.",
+  },
+  OPEN: {
+    hu: "Az újító az, aki a „miért így csináljuk?” kérdést akkor is felteszi, amikor mindenki más már megszokta. A lehetőségeket hamarabb látja meg, mint a korlátokat.",
+    en: "The Innovator keeps asking 'why do we do it this way?' long after everyone else stopped. They see possibilities sooner than limits.",
+  },
+};
+
+export const ARCHETYPE_STORY_ADJ: Record<string, LocalizedText> = {
+  INTE: {
+    hu: "Nálad ezt erős belső iránytű egészíti ki: a hogyan legalább annyira számít, mint a mennyi.",
+    en: "In you this is paired with a strong inner compass: the how matters as much as the how much.",
+  },
+  RESO: {
+    hu: "Nálad ezt erős érzelmi ráhangolódás színezi: nemcsak látod a helyzeteket, érzed is, mi történik a másikkal.",
+    en: "In you this is coloured by strong emotional attunement: you don't just see situations, you feel what's happening in the other person.",
+  },
+  TEMP: {
+    hu: "Nálad ehhez lendület társul: nemcsak képviseled, amit fontosnak tartasz — energiát is adsz köré.",
+    en: "In you this comes with momentum: you don't just stand for what matters — you energise it.",
+  },
+  ADAP: {
+    hu: "Nálad ezt türelmes, együttműködő stílus egészíti ki: a közös nevező megtalálása nem engedmény, hanem módszer.",
+    en: "In you this is paired with a patient, collaborative style: finding common ground isn't a concession, it's a method.",
+  },
+  THOR: {
+    hu: "Nálad ehhez módszeresség társul: amit elkezdesz, annak szerkezete és vége is van.",
+    en: "In you this comes with method: what you start has structure — and an ending.",
+  },
+  OPEN: {
+    hu: "Nálad ezt kísérletező szemlélet színezi: a bevált mellé mindig odateszed a „mi lenne, ha” kérdést.",
+    en: "In you this is coloured by an experimental streak: next to the proven, you always place the 'what if'.",
+  },
+};
+
+/** Archetípus-történet a domináns + második dimenzióból (P5.6). */
+export function buildArchetypeStory(
+  primaryCode: string,
+  secondaryCode: string,
+  lang: Locale,
+): string | null {
+  const noun = ARCHETYPE_STORY_NOUN[primaryCode]?.[lang];
+  const adj = ARCHETYPE_STORY_ADJ[secondaryCode]?.[lang];
+  if (!noun || !adj) return null;
+  return `${noun} ${adj}`;
+}
+
 // ─── Együttműködés-fejezet (P4.2 v1) ─────────────────────────────────────────
 // „Csapatban működve" oldal tartalma — dimenzió-szintű, nem archetípus-
 // mátrix (terv: docs/product/riport-egyuttmukodes-fejezet-terv.md).
@@ -1041,35 +1114,86 @@ export const COLLAB_BALANCED_FRICTION: LocalizedText = {
   en: "Personality is rarely the main source of friction for you — your profile isn't extreme in any direction. When tension does arise, look first at role and expectation clarity: for profiles like yours, that's usually where the root is.",
 };
 
-// ─── Growth tips (P2.4) ──────────────────────────────────────────────────────
-// A legalacsonyabb dimenzióhoz EGY konkrét, kipróbálható viselkedéses
-// javaslat — az „X területen van tér fejlődni" általánosság helyett.
-// Kis szokások, nem személyiség-átalakítás; a hangnem meghívó, nem előíró.
+// ─── Growth tips (P2.4, P5.5-ben háromlépcsőssé bővítve) ─────────────────────
+// A legalacsonyabb dimenzióhoz konkrét, kipróbálható fejlődési ív:
+// viselkedés (mit próbálj ki) → reflexiós kérdés (mit figyelj meg magadon)
+// → mérhető kihívás (miből látod, hogy változott valami). Kis szokások,
+// nem személyiség-átalakítás; a hangnem meghívó, nem előíró.
 
-export const DIMENSION_GROWTH_TIPS: Record<string, LocalizedText> = {
+export type GrowthPlan = { behavior: string; reflection: string; challenge: string };
+
+export const DIMENSION_GROWTH_TIPS: Record<string, Record<Locale, GrowthPlan>> = {
   INTE: {
-    hu: "A következő versenyhelyzet előtt rögzítsd magadnak írásban, mi az a határ, amin nem mész túl — és utólag nézd meg, tartottad-e. Egy mondat elég.",
-    en: "Before your next competitive situation, write down the line you won't cross — and check afterwards whether you held it. One sentence is enough.",
+    hu: {
+      behavior: "A következő versenyhelyzet előtt rögzítsd magadnak írásban, mi az a határ, amin nem mész túl. Egy mondat elég.",
+      reflection: "Hol húztad meg utoljára a határt egy éles helyzetben — és utólag megérte?",
+      challenge: "Egy hónapon át vezesd: hány helyzetben tartottad a saját határodat. A cél nem a tökéletesség, hanem hogy lásd a mintát.",
+    },
+    en: {
+      behavior: "Before your next competitive situation, write down the line you won't cross. One sentence is enough.",
+      reflection: "Where did you last draw the line in a heated situation — and was it worth it in hindsight?",
+      challenge: "For one month, track how often you held your own line. The goal isn't perfection — it's seeing the pattern.",
+    },
   },
   RESO: {
-    hu: "Zárj le hetente egy beszélgetést egy kimondott érzelmi visszajelzéssel („örülök, hogy…”, „köszönöm, hogy…”). Apró gesztus, de mások számára sokat jelez a kapcsolódásról.",
-    en: "Once a week, close a conversation with an explicit emotional acknowledgement (\"I'm glad that…\", \"thank you for…\"). A small gesture that signals connection loudly to others.",
+    hu: {
+      behavior: "Zárj le hetente egy beszélgetést egy kimondott elismeréssel („örülök, hogy…”, „köszönöm, hogy…”).",
+      reflection: "Kinek jelezted vissza utoljára, hogy számít neked a munkája?",
+      challenge: "Két héten át heti egy kimondott elismerés — és figyeld meg, változik-e, ahogyan hozzád fordulnak.",
+    },
+    en: {
+      behavior: "Once a week, close a conversation with an explicit acknowledgement (\"I'm glad that…\", \"thank you for…\").",
+      reflection: "Who did you last tell that their work matters to you?",
+      challenge: "One spoken acknowledgement per week for two weeks — and notice whether the way people approach you changes.",
+    },
   },
   TEMP: {
-    hu: "Vállalj havonta egy kis láthatósági alkalmat: rövid demó, csapat-összefoglaló vagy írásos státusz — a formát te választod, a lényeg a rendszeresség.",
-    en: "Take on one small visibility moment per month: a short demo, a team recap, or a written status — you choose the format, the point is the rhythm.",
+    hu: {
+      behavior: "Vállalj havonta egy kis láthatósági alkalmat: rövid demó, csapat-összefoglaló vagy írásos státusz — a formát te választod.",
+      reflection: "Mi az a munkád, amiről a csapat nem is tud, pedig büszke vagy rá?",
+      challenge: "A következő hónapban egyszer mutasd meg a munkád 5 percben — és számold, hány visszajelzést, kérdést hoz.",
+    },
+    en: {
+      behavior: "Take on one small visibility moment per month: a short demo, a team recap, or a written status — you choose the format.",
+      reflection: "What work are you proud of that your team doesn't even know about?",
+      challenge: "Once next month, show your work in 5 minutes — and count the feedback and questions it brings.",
+    },
   },
   ADAP: {
-    hu: "Éles vita előtt kérj egy napot, és írd le előre a másik fél legjobb érvét. A konfrontáció így éles maradhat anélkül, hogy személyessé válna.",
-    en: "Before a heated debate, ask for a day and write down the other side's best argument first. The confrontation stays sharp without turning personal.",
+    hu: {
+      behavior: "Éles vita előtt kérj egy napot, és írd le előre a másik fél legjobb érvét.",
+      reflection: "Legutóbb mikor derült ki, hogy a másik fél érve jobb volt, mint az első reakciód?",
+      challenge: "A következő éles vitában előbb foglald össze a másik álláspontját, és kérdezd meg, pontos volt-e — csak utána érvelj.",
+    },
+    en: {
+      behavior: "Before a heated debate, ask for a day and write down the other side's best argument first.",
+      reflection: "When did it last turn out that the other side's argument was better than your first reaction?",
+      challenge: "In your next sharp debate, summarise the other position first and ask if you got it right — argue only after.",
+    },
   },
   THOR: {
-    hu: "Válassz egyetlen visszatérő bosszúságot (pl. csúszó határidő), és építs rá egy minimális rendszert: heti 15 perc tervezés vagy egy közös checklist. Egy szokás, nem teljes rendszerváltás.",
-    en: "Pick one recurring annoyance (e.g. slipping deadlines) and build a minimal system around it: 15 minutes of weekly planning or a shared checklist. One habit, not a full overhaul.",
+    hu: {
+      behavior: "Válassz egyetlen visszatérő bosszúságot (pl. csúszó határidő), és építs rá egy minimális rendszert: heti 15 perc tervezés vagy egy közös checklist.",
+      reflection: "Melyik elmaradt részlet okozta a legtöbb utómunkát az elmúlt hónapban?",
+      challenge: "Két hétig tartsd a heti 15 perces tervezőt — a végén nézd meg, hány vállalás csúszott a korábbi időszakhoz képest.",
+    },
+    en: {
+      behavior: "Pick one recurring annoyance (e.g. slipping deadlines) and build a minimal system around it: 15 minutes of weekly planning or a shared checklist.",
+      reflection: "Which missed detail caused the most rework last month?",
+      challenge: "Keep the 15-minute weekly planning slot for two weeks — then compare how many commitments slipped versus before.",
+    },
   },
   OPEN: {
-    hu: "Próbálj ki havonta egy alacsony tétű feladatban egy módszert vagy eszközt, amihez nincs kész recepted. Kis kísérletek — nem nagy váltások — edzik a rugalmasságot.",
-    en: "Once a month, try a method or tool you have no ready recipe for, on a low-stakes task. Small experiments — not big leaps — train flexibility.",
+    hu: {
+      behavior: "Próbálj ki havonta egy alacsony tétű feladatban egy módszert vagy eszközt, amihez nincs kész recepted.",
+      reflection: "Mikor hozott utoljára egy új megközelítés jobb eredményt nálad, mint a bevált út?",
+      challenge: "Egy hónapon belül vigyél végig egy kis feladatot új módszerrel — és írd fel, mit adott és mibe került.",
+    },
+    en: {
+      behavior: "Once a month, try a method or tool you have no ready recipe for, on a low-stakes task.",
+      reflection: "When did a new approach last get you a better result than the proven route?",
+      challenge: "Within a month, take one small task through a new method — and note what it gained and what it cost.",
+    },
   },
 };
 

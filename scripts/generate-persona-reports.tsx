@@ -27,7 +27,7 @@ import React from "react";
 import { buildAllPersonas, buildFacets, type Persona } from "./personas.shared";
 import { getTestConfig } from "../src/lib/questions";
 import { buildWorkstyleContent } from "../src/lib/workstyle-content";
-import { BLOCK8 } from "../src/lib/profile-content";
+import { BLOCK8, buildArchetypeStory } from "../src/lib/profile-content";
 import { resolvePersonalityTypeFromScores } from "../src/lib/personality-type";
 import {
   DIMENSION_STRENGTH_VERBS,
@@ -214,6 +214,10 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     personalityType,
     percentile,
     heroInsight,
+    archetypeStory:
+      sortedDims[0] && sortedDims[1]
+        ? buildArchetypeStory(sortedDims[0].code, sortedDims[1].code, locale) ?? undefined
+        : undefined,
     plan,
     strengths,
     watchAreas,
@@ -239,6 +243,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       pressure: workstyle.pressure,
       pressureParts: workstyle.pressureParts,
       growthTip: workstyle.growthTip,
+      growthPlan: workstyle.growthPlan,
       collaboration: workstyle.collaboration,
       roleFit: workstyle.roleFit,
       takeaways: workstyle.takeaways,
