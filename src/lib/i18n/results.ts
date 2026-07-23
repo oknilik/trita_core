@@ -474,7 +474,6 @@ export const resultsTranslations = {
     noLowDim: { hu: "Nincs kritikusan alacsony dimenzió.", en: "No critically low dimension." },
     sharedProfileLabel: { hu: "Megosztott profil", en: "Shared profile" },
     teamRoleHeading: { hu: "Csapatszerepek", en: "Team roles" },
-    platformTagline: { hu: "Személyiség és csapatintelligencia platform", en: "Personality and team intelligence platform" },
     howYouWorkEyebrow: { hu: "Ahogy működsz", en: "How you operate" },
     howYouWorkMain: { hu: "Fő mintázat", en: "Key pattern" },
     howYouWorkWatch: { hu: "Figyelendő", en: "Watch area" },
@@ -783,6 +782,13 @@ export const resultsTranslations = {
     },
     shareExpiredCtaTry: { hu: "Kipróbálom a tesztet", en: "Try the assessment" },
     shareExpiredCtaSignIn: { hu: "Bejelentkezés", en: "Sign in" },
+    // Share page — footer CTA kijelentkezett látogatónak
+    shareCtaTitle: { hu: "Még nincs trita profilod?", en: "Don't have a trita profile yet?" },
+    shareCtaDesc: {
+      hu: "Néhány perc alatt kitöltheted a felmérést, és megkapod a saját személyiség- és munkastílus-profilodat.",
+      en: "Complete the assessment in a few minutes and get your own personality and work-style profile.",
+    },
+    shareCtaButton: { hu: "Elkészítem a sajátomat", en: "Create my own" },
     personalityProfileFallback: { hu: "Személyiségprofil", en: "Personality profile" },
     noLowDimension: { hu: "nincs kritikusan alacsony dimenzió", en: "no critically low dimension" },
     // TeamRoleTeaser

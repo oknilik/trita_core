@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -41,6 +42,7 @@ export default async function SharedProfilePage({
   const { token } = await params;
   const locale = await getServerLocale();
   const isHu = locale === "hu";
+  const { userId } = await auth();
 
   const result = await prisma.assessmentResult.findUnique({
     where: { shareToken: token },
@@ -279,15 +281,26 @@ export default async function SharedProfilePage({
           </div>
         )}
 
-        {/* Footer */}
-        <div className="text-center">
-          <p className="font-fraunces text-sm text-[var(--color-text-muted)]">
-            <span style={{ color: "var(--color-action-primary-bg)" }}>t</span>rit<span style={{ color: "var(--color-accent-primary)" }}>a</span>
-          </p>
-          <p className="mt-1 text-[11px] text-[var(--color-text-muted)]">
-            {t("results.platformTagline", locale)}
-          </p>
-        </div>
+        {/* Footer CTA — csak kijelentkezett látogatónak (bejelentkezett
+            usernek nincs értelme a "készíts profilt" felhívásnak) */}
+        {!userId && (
+          <div className="rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+            <p className="font-fraunces text-sm text-[var(--color-text-muted)]">
+              <span style={{ color: "var(--color-action-primary-bg)" }}>t</span>rit<span style={{ color: "var(--color-accent-primary)" }}>a</span>
+            </p>
+            <h2 className="mt-2 font-fraunces text-[22px] tracking-tight text-ink">
+              {t("content.shareCtaTitle", locale)}
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-body">
+              {t("content.shareCtaDesc", locale)}
+            </p>
+            <div className="mt-6 flex justify-center">
+              <Link href="/try" className={getButtonClassName({ variant: "primary" })}>
+                {t("content.shareCtaButton", locale)}
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
