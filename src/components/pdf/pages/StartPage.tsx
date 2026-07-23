@@ -68,7 +68,11 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
 
         {/* ── Csapatszerepek ── */}
         <PdfCard eyebrow={t("pdf.teamRoles", locale)}>
-          <PdfTeamRoles roles={data.teamRoleRoles} />
+          <PdfTeamRoles
+            roles={data.teamRoleRoles}
+            locale={locale}
+            showScores={data.teamRoleEstimated === false}
+          />
         </PdfCard>
 
         {/* ── Start upsell ── */}

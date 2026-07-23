@@ -8,11 +8,22 @@ interface TeamRoleRole {
   rank: number;
 }
 
-export function PdfTeamRoles({ roles }: { roles: TeamRoleRole[] }) {
+interface PdfTeamRolesProps {
+  roles: TeamRoleRole[];
+  locale?: "hu" | "en";
+  /**
+   * Pontszám-kijelzés csak MÉRT (kérdőíves) eredménynél — a profil-alapú
+   * becslés pontszámai csak relatív rangsorra alkalmasak, az 1-2%-os
+   * különbségek álprecizitást sugallnának (javítási terv 2026-07, P2.3).
+   */
+  showScores?: boolean;
+}
+
+export function PdfTeamRoles({ roles, locale = "hu", showScores = false }: PdfTeamRolesProps) {
   const rankColors = [
     { bg: colors.sage, text: colors.white, label: { hu: "Elsődleges", en: "Primary" } },
-    { bg: colors.bronze100, text: colors.bronzeDark, label: { hu: "Másodlagos", en: "Secondary" } },
-    { bg: colors.cream300, text: colors.ink300, label: { hu: "Harmadik", en: "Tertiary" } },
+    { bg: colors.bronze100, text: colors.bronzeDark, label: { hu: "Jelentős", en: "Notable" } },
+    { bg: colors.cream300, text: colors.ink300, label: { hu: "Lehetséges", en: "Possible" } },
   ];
 
   return (
@@ -45,7 +56,8 @@ export function PdfTeamRoles({ roles }: { roles: TeamRoleRole[] }) {
                 marginBottom: 3,
               }}
             >
-              {rc.label.hu} · {role.score}%
+              {rc.label[locale]}
+              {showScores ? ` · ${role.score}%` : ""}
             </Text>
             <Text style={{ fontFamily: "Fraunces", fontSize: isPrimary ? 9 : 8.5, color: colors.ink, marginBottom: 1 }}>
               {role.name}

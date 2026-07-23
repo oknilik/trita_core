@@ -30,6 +30,8 @@ export interface PdfData {
   // Dimensions
   dimensions: { name: string; shortName: string; value: number; description: string }[];
   teamRoleRoles: { name: string; subtitle: string; score: number; rank: number }[];
+  /** true = profil-alapú becslés (pontszám rejtve, csak sáv-címke); false = mért kérdőíves eredmény. */
+  teamRoleEstimated?: boolean;
   // Altruism
   altruism?: { value: number; description: string };
   // Plus content

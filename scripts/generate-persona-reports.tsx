@@ -229,6 +229,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       description: d.insight,
     })),
     teamRoleRoles,
+    teamRoleEstimated: true, // persona-riport mindig profil-alapú becslés → sáv-címke, pontszám nélkül
     plusContent: plan === "plus" ? {
       howYouWork: workstyle.howYouWork,
       roleFit: workstyle.roleFit,

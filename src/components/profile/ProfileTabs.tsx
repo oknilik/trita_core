@@ -780,12 +780,13 @@ export function ProfileTabs({
                 value: d.score,
                 description: d.insight,
               })),
-              teamRoleRoles: (() => {
+              ...((): { teamRoleRoles: { name: string; subtitle: string; score: number; rank: number }[]; teamRoleEstimated: boolean } => {
                 try {
                   // eslint-disable-next-line @typescript-eslint/no-require-imports
                   const { TEAM_ROLES, getTopRoles } = require("@/lib/team-role-scoring");
                   // A riport-felülettel egyezően: a MÉRT kérdőíves eredmény az
                   // elsődleges; TRITAN-becslés csak fallback (forrás-jelöléssel).
+                  // Becslésnél a PDF sáv-címkét mutat pontszám nélkül (P2.3).
                   let scores: Record<string, number> | null =
                     teamRoleMeasuredScores ?? null;
                   let measured = Boolean(scores);
@@ -793,7 +794,9 @@ export function ProfileTabs({
                     // eslint-disable-next-line @typescript-eslint/no-require-imports
                     const { estimateTeamRolesFromTritan } = require("@/lib/team-role-estimate");
                     const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
-                    if (!("INTE" in hexScores) || !("TEMP" in hexScores)) return [];
+                    if (!("INTE" in hexScores) || !("TEMP" in hexScores)) {
+                      return { teamRoleRoles: [], teamRoleEstimated: true };
+                    }
                     scores = estimateTeamRolesFromTritan(hexScores);
                     measured = false;
                   }
@@ -801,13 +804,16 @@ export function ProfileTabs({
                   const sourceLabel = measured
                     ? locale === "hu" ? "kitöltött kérdőívből" : "from completed questionnaire"
                     : locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
-                  return top3.map((r: { role: string; score: number }, i: number) => ({
-                    name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
-                    subtitle: i === 0 ? sourceLabel : "",
-                    score: r.score,
-                    rank: i,
-                  }));
-                } catch { return []; }
+                  return {
+                    teamRoleRoles: top3.map((r: { role: string; score: number }, i: number) => ({
+                      name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
+                      subtitle: i === 0 ? sourceLabel : "",
+                      score: r.score,
+                      rank: i,
+                    })),
+                    teamRoleEstimated: !measured,
+                  };
+                } catch { return { teamRoleRoles: [], teamRoleEstimated: true }; }
               })(),
               plusContent: plusContent ? {
                 howYouWork: plusContent.howYouWork,
