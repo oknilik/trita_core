@@ -68,12 +68,15 @@ enum nem tartalmazza az ORG_CONSULTANT-ot.
 ### 🟡 P4 — Cron secret timing-safe összehasonlítás — JAVÍTVA ✅
 `crypto.timingSafeEqual` + hossz-guard a Bearer-secret összevetésben.
 
-### 🟡 P5 — Duplikált feedback-végpontok — RÉSZBEN
-`/api/feature-interest` (results-bannerek, admin-email) és
-`/api/features/interest` (dashboard CTA, GET-lista) VALÓJÁBAN külön fogyasztók,
-más kulcs-készlettel — törlés UI-t törne. Hardening: a védtelen
-`features/interest` POST rate limitet kapott. Egységesítés (közös enum + közös
-POST) külön refaktor-kör.
+### 🟡 P5 — Duplikált feedback-végpontok — JAVÍTVA ✅
+Egységesítve (2026-07-23): egyetlen POST a `/api/features/interest` alatt,
+közös discriminated-union Zod-sémával (`mode:"lead"` = meleg lead + admin
+email, idempotens; `mode:"wishlist"` = dashboard-toggle). Rate limitek
+megtartva módonként ("contact" auth előtt / "api" userId-kulccsal auth után).
+A régi `/api/feature-interest` 308-cal átirányít (`?legacy=lead`), a mode
+nélküli régi payloadok normalizálva. Kliensek (TeamInterestBanner,
+CareerCompass, UpcomingFeaturesCTA) az egységes útra állítva. Tesztek:
+tests/unit/policy/feature-interest-schema.test.ts.
 
 ### 🟡 P6 — E2E auth bypass
 `TRITA_E2E_AUTH_BYPASS` + cookie: NODE_ENV=production alatt tiltva (helyes).

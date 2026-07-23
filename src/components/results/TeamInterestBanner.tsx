@@ -22,10 +22,11 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/feature-interest", {
+      const res = await fetch("/api/features/interest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          mode: "lead",
           featureKey: "team",
           message: message.trim() || undefined,
         }),

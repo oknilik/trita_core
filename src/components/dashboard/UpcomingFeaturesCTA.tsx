@@ -61,7 +61,7 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
     fetch("/api/features/interest", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ featureKey: key }),
+      body: JSON.stringify({ mode: "wishlist", featureKey: key }),
     }).catch(() => {});
   };
 
