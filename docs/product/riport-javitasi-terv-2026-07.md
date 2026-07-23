@@ -122,7 +122,7 @@ Ellenőrzés: `tsc --noEmit` 0 hiba; content-pipeline harness futtatva
 - [x] P5.2 „miért"-chipek — 2026-07-23 (forrás-dimenzió jelölés a vakfolt/nyomás és együttműködés-dobozokon) · commit 306997b
 - [x] P5.3 csapatszerep-indoklás — 2026-07-23 (`TEAM_ROLE_WHY`, csak becsült elsődleges szerepnél) · commit 306997b
 - [x] P5.4 „A gyakorlatban:" sor az alskála-oldalon — 2026-07-23 · commit 306997b
-- [ ] P5.5 háromlépcsős fejlődési fókusz (viselkedés → reflexiós kérdés → mérhető kihívás) — tartalommunka, 6×3 elem
-- [ ] P5.6 storytelling-felütés a summary-oldalon — moduláris (6 főnév + 6 melléknév építőelem), nem 30 kézi szöveg
-- [ ] P5.7 interakció-szimuláció („mit él át X, ha Y-nal dolgozik / Y a főnöke") — külön funkció, tervezési doksival indul; a dimenzió-kompozíciós architektúra (P4.2) az alapja
+- [x] P5.5 háromlépcsős fejlődési fókusz — 2026-07-23 (viselkedés → reflexiós kérdés → mérhető kihívás, 6×3 HU+EN; summary-n a rövid forma marad) · commit 02f580e
+- [x] P5.6 storytelling-felütés — 2026-07-23 (6+6 moduláris építőelem: domináns dimenzió karakterképe + második dimenzió színezete; a summary-oldal történettel indul) · commit 70bd651
+- [~] P5.7 interakció-szimuláció — tervezési doksi kész: `docs/product/riport-interakcio-szimulacio-terv.md` (dimenzió-pár relációs motor ~30 atommal, web-first, 5 fázis). Implementáció külön körben, a nyitott kérdések (plus-only?, vezető-mód a v1-ben?, PDF-ízelítő?) eldöntése után.
 - A becslő spread-je (P2.3 megjegyzés): a súlyozott becslő tendenciózusan Koordinátor/Megvalósító irányba húz — algoritmus-módosítást validációs adat nélkül nem tettünk; a sáv-megjelenítés ezt kommunikációs szinten kezeli. Újranézendő valós kérdőíves adatok birtokában.
