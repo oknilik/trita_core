@@ -909,6 +909,17 @@ export const resultsTranslations = {
     },
     pressureTitle: { hu: "Vakfoltok és nyomás alatt", en: "Blind spots & under pressure" },
     growthTitle: { hu: "Fejlődési fókusz", en: "Growth focus" },
+    // ── SummaryPage (P3.1) ─────────────────────────────────────────────────
+    summaryPageTitle: { hu: "Összefoglaló egy oldalon", en: "One-page summary" },
+    summaryStrengths: { hu: "Erősségek", en: "Strengths" },
+    summaryBlindspots: { hu: "Lehetséges vakfoltok", en: "Possible blind spots" },
+    summaryUnderPressure: { hu: "Nyomás alatt", en: "Under pressure" },
+    summaryInTeam: { hu: "Csapatban", en: "In a team" },
+    summaryTeamLine: { hu: "Elsődleges csapatszereped jellemzően: {role}", en: "Your primary team role tends to be: {role}" },
+    summaryFootnote: {
+      hu: "Ez az oldal a riport sűrítménye — a részletek, az alskálák és a szerepkör-illeszkedés a következő oldalakon. Az állítások önjellemzésen alapuló hipotézisek.",
+      en: "This page is the condensed report — details, subscales, and role fit follow on the next pages. Statements are hypotheses based on self-report.",
+    },
     pressureDisclaimer: {
       hu: "Ezek hipotézisek, nem ítéletek — stressz alatt sokféle működés megjelenhet. Akkor hasznosak, ha megfigyeled, mikor igazak rád, és mikor nem.",
       en: "These are hypotheses, not verdicts — many patterns can appear under stress. They're useful if you observe when they hold for you and when they don't.",

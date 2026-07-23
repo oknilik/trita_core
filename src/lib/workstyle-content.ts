@@ -3,6 +3,7 @@ import { runProfileEngine } from "@/lib/profile-engine";
 import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
+  PRESSURE_BLINDSPOT_PREFIX, type PressureText,
   SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
@@ -17,6 +18,8 @@ export interface WorkstyleContent {
   howYouWork: string[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
+  /** Ugyanez strukturáltan (stress/blindspot külön) — az executive summary oldalhoz (P3.1). */
+  pressureParts: PressureText[];
   /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
   growthTip?: string;
   envItems: { label: string; value: string }[];
@@ -155,12 +158,17 @@ export function buildWorkstyleContent(
   }
 
   // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
-  // pároktól függetlenül, hipotézis-keretezéssel (P2.1).
+  // pároktól függetlenül, hipotézis-keretezéssel (P2.1). A részletes kártya
+  // összefűzött szöveget kap, az executive summary a strukturált részeket.
   const pressure: string[] = [];
+  const pressureParts: PressureText[] = [];
   for (const sd of engine.topSoloDims) {
     const key = `${sd.dim}_${sd.level}`;
-    const text = SOLO_DIM_PRESSURE[key]?.[lang];
-    if (text) pressure.push(text);
+    const part = SOLO_DIM_PRESSURE[key]?.[lang];
+    if (part) {
+      pressureParts.push(part);
+      pressure.push(`${part.stress} ${PRESSURE_BLINDSPOT_PREFIX[lang]} ${part.blindspot}`);
+    }
   }
 
   // Fejlődési javaslat (P2.4) — a legalacsonyabb dimenzióhoz, csak ha
@@ -231,6 +239,7 @@ export function buildWorkstyleContent(
   return {
     howYouWork,
     pressure,
+    pressureParts,
     growthTip,
     envItems,
     roleFit: {

@@ -457,6 +457,7 @@ export default async function ProfileResultsPage({
     introText: BLOCK1[lang],
     howYouWork: workstyle.howYouWork,
     pressure: workstyle.pressure,
+    pressureParts: workstyle.pressureParts,
     growthTip: workstyle.growthTip,
     envItems: workstyle.envItems,
     roleFit: workstyle.roleFit,

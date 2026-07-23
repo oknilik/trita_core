@@ -148,6 +148,8 @@ export interface ProfileTabsProps {
     howYouWork: string[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
+    /** Strukturált stress/vakfolt párok az executive summary PDF-oldalhoz (P3.1). */
+    pressureParts?: { stress: string; blindspot: string }[];
     /** Konkrét viselkedéses fejlődési javaslat (P2.4). */
     growthTip?: string;
     envItems: { label: string; value: string }[];
@@ -822,6 +824,7 @@ export function ProfileTabs({
               plusContent: plusContent ? {
                 howYouWork: plusContent.howYouWork,
                 pressure: plusContent.pressure,
+                pressureParts: plusContent.pressureParts,
                 growthTip: plusContent.growthTip,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,

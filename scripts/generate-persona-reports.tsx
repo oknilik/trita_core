@@ -41,6 +41,7 @@ import { TRITAN_ORDER, TRITAN_DIM_ABBR, type TritanDimCode } from "../src/lib/tr
 import { t, tf, type Locale } from "../src/lib/i18n";
 import type { PdfData } from "../src/components/pdf/TritaPdf";
 import { CoverPage } from "../src/components/pdf/pages/CoverPage";
+import { SummaryPage } from "../src/components/pdf/pages/SummaryPage";
 import { StartPage } from "../src/components/pdf/pages/StartPage";
 import { PlusFacetsPage } from "../src/components/pdf/pages/PlusFacetsPage";
 import { PlusWorkStylePage } from "../src/components/pdf/pages/PlusWorkStylePage";
@@ -233,6 +234,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     plusContent: plan === "plus" ? {
       howYouWork: workstyle.howYouWork,
       pressure: workstyle.pressure,
+      pressureParts: workstyle.pressureParts,
       growthTip: workstyle.growthTip,
       roleFit: workstyle.roleFit,
       takeaways: workstyle.takeaways,
@@ -340,11 +342,17 @@ async function main() {
   const renderReport = (p: Persona) => {
     const data = buildPdfData(p, locale, plan);
     const bookmark = { title: `${p.label} · ${p.slug}`, expanded: false } as const;
+    const totalPages = plan === "plus" ? 4 : 1;
     const pages = [<CoverPage key={`${p.slug}-c`} data={data} bookmark={bookmark} />];
-    pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={1} totalPages={plan === "plus" ? 3 : 1} locale={locale} />);
     if (plan === "plus") {
-      pages.push(<PlusFacetsPage key={`${p.slug}-f`} data={data} pageNum={2} totalPages={3} locale={locale} />);
-      pages.push(<PlusWorkStylePage key={`${p.slug}-w`} data={data} pageNum={3} totalPages={3} locale={locale} />);
+      // Executive summary a riport elejére (P3.1) — a TritaPdf dokumentum-
+      // sorrendjével szinkronban.
+      pages.push(<SummaryPage key={`${p.slug}-x`} data={data} pageNum={1} totalPages={totalPages} locale={locale} />);
+      pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={2} totalPages={totalPages} locale={locale} />);
+      pages.push(<PlusFacetsPage key={`${p.slug}-f`} data={data} pageNum={3} totalPages={totalPages} locale={locale} />);
+      pages.push(<PlusWorkStylePage key={`${p.slug}-w`} data={data} pageNum={4} totalPages={totalPages} locale={locale} />);
+    } else {
+      pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={1} totalPages={totalPages} locale={locale} />);
     }
     return pages;
   };

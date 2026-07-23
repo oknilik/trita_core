@@ -731,59 +731,139 @@ export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
   },
 };
 
-// ─── Solo dim pressure/blind-spot texts (P2.1) ───────────────────────────────
+// ─── Solo dim pressure/blind-spot texts (P2.1, P3.1-ben strukturálva) ────────
 // Nyomás alatti működés + vakfolt, HIPOTÉZISKÉNT keretezve („hajlamos
-// lehetsz", „vakfolt lehet") — a top-2 solo dimenzióból épül, és a riport
-// „Vakfoltok és nyomás alatt" blokkját táplálja (javítási terv 2026-07).
+// lehetsz", „vakfolt lehet") — a top-2 solo dimenzióból épül. A stress és
+// blindspot KÜLÖN mező, hogy a részletes kártya ÉS az executive summary
+// oldal is a saját formájában használhassa (parszolás nélkül).
 
-export const SOLO_DIM_PRESSURE: Record<string, LocalizedText> = {
+export type PressureText = { stress: string; blindspot: string };
+
+export const PRESSURE_BLINDSPOT_PREFIX: LocalizedText = {
+  hu: "Vakfolt lehet:",
+  en: "Possible blind spot:",
+};
+
+export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   INTE_high: {
-    hu: "Nyomás alatt hajlamos lehetsz még szigorúbban ragaszkodni az elvekhez, és nehezebben kötsz praktikus kompromisszumot. Vakfolt lehet: mások rugalmasabb megoldásait elvtelenségként olvashatod, pedig gyakran csak más a prioritásuk.",
-    en: "Under pressure you may hold to principles even more rigidly and find practical compromise harder. Possible blind spot: reading others' more flexible solutions as unprincipled, when they often just weigh priorities differently.",
+    hu: {
+      stress: "Nyomás alatt hajlamos lehetsz még szigorúbban ragaszkodni az elvekhez, és nehezebben kötsz praktikus kompromisszumot.",
+      blindspot: "Mások rugalmasabb megoldásait elvtelenségként olvashatod, pedig gyakran csak más a prioritásuk.",
+    },
+    en: {
+      stress: "Under pressure you may hold to principles even more rigidly and find practical compromise harder.",
+      blindspot: "You may read others' more flexible solutions as unprincipled, when they often just weigh priorities differently.",
+    },
   },
   INTE_low: {
-    hu: "Nyomás alatt az eredmény-fókusz felerősödhet, és a kapcsolati költségek könnyebben kicsúszhatnak a látóteredből. Vakfolt lehet: a környezeted óvatosabbá válhat veled, mielőtt ezt bármi jelezné.",
-    en: "Under pressure the focus on results can intensify, and relational costs slip out of view more easily. Possible blind spot: people may grow guarded around you before anything signals it.",
+    hu: {
+      stress: "Nyomás alatt az eredmény-fókusz felerősödhet, és a kapcsolati költségek könnyebben kicsúszhatnak a látóteredből.",
+      blindspot: "A környezeted óvatosabbá válhat veled, mielőtt ezt bármi jelezné.",
+    },
+    en: {
+      stress: "Under pressure the focus on results can intensify, and relational costs slip out of view more easily.",
+      blindspot: "People may grow guarded around you before anything signals it.",
+    },
   },
   RESO_high: {
-    hu: "Nyomás alatt az érzelmi terhelés gyorsabban összeadódik: a feszültség alvásban, döntéshalogatásban vagy túlpörgésben jelenhet meg. Vakfolt lehet: mások problémáit is a válladra veszed, és ez kívülről sokáig nem látszik.",
-    en: "Under pressure emotional load compounds quickly: tension may show up as poor sleep, delayed decisions, or overdrive. Possible blind spot: carrying others' problems as well — often invisible from the outside for a long time.",
+    hu: {
+      stress: "Nyomás alatt az érzelmi terhelés gyorsabban összeadódik: a feszültség alvásban, döntéshalogatásban vagy túlpörgésben jelenhet meg.",
+      blindspot: "Mások problémáit is a válladra veszed, és ez kívülről sokáig nem látszik.",
+    },
+    en: {
+      stress: "Under pressure emotional load compounds quickly: tension may show up as poor sleep, delayed decisions, or overdrive.",
+      blindspot: "You may carry others' problems as well — often invisible from the outside for a long time.",
+    },
   },
   RESO_low: {
-    hu: "Nyomás alatt a nyugalmad stabil marad, de a kommunikációd tömörebbé, tárgyszerűbbé válhat. Vakfolt lehet: a körülötted lévők ilyenkor több megnyugtatást igényelnének, mint amennyit magadtól adnál.",
-    en: "Under pressure your calm holds, but your communication can turn terse and purely factual. Possible blind spot: people around you may need more reassurance than you would naturally give.",
+    hu: {
+      stress: "Nyomás alatt a nyugalmad stabil marad, de a kommunikációd tömörebbé, tárgyszerűbbé válhat.",
+      blindspot: "A körülötted lévők ilyenkor több megnyugtatást igényelnének, mint amennyit magadtól adnál.",
+    },
+    en: {
+      stress: "Under pressure your calm holds, but your communication can turn terse and purely factual.",
+      blindspot: "People around you may need more reassurance than you would naturally give.",
+    },
   },
   TEMP_high: {
-    hu: "Nyomás alatt felpöröghet a tempód: több beszéd, gyorsabb döntés, kevesebb meghallgatás. Vakfolt lehet: a csend a csapatban ilyenkor nem egyetértés, hanem visszahúzódás is lehet.",
-    en: "Under pressure your tempo can spike: more talking, faster decisions, less listening. Possible blind spot: silence in the team may mean withdrawal rather than agreement.",
+    hu: {
+      stress: "Nyomás alatt felpöröghet a tempód: több beszéd, gyorsabb döntés, kevesebb meghallgatás.",
+      blindspot: "A csend a csapatban ilyenkor nem egyetértés, hanem visszahúzódás is lehet.",
+    },
+    en: {
+      stress: "Under pressure your tempo can spike: more talking, faster decisions, less listening.",
+      blindspot: "Silence in the team may mean withdrawal rather than agreement.",
+    },
   },
   TEMP_low: {
-    hu: "Nyomás alatt hajlamos lehetsz még inkább befelé fordulni és egyedül megoldani a dolgokat. Vakfolt lehet: a környezeted ezt távolságtartásnak vagy érdektelenségnek olvashatja.",
-    en: "Under pressure you may turn further inward and solve things alone. Possible blind spot: others can read this as distance or disinterest.",
+    hu: {
+      stress: "Nyomás alatt hajlamos lehetsz még inkább befelé fordulni és egyedül megoldani a dolgokat.",
+      blindspot: "A környezeted ezt távolságtartásnak vagy érdektelenségnek olvashatja.",
+    },
+    en: {
+      stress: "Under pressure you may turn further inward and solve things alone.",
+      blindspot: "Others can read this as distance or disinterest.",
+    },
   },
   ADAP_high: {
-    hu: "Nyomás alatt a béke megőrzése kerülhet előtérbe: engedhetsz ott is, ahol a saját határaid védelme lenne a dolgod. Vakfolt lehet: a felgyülemlett, ki nem mondott feszültség később váratlan helyen jön elő.",
-    en: "Under pressure keeping the peace can take over: you may yield even where guarding your own boundary is the job. Possible blind spot: unspoken tension accumulates and surfaces later in unexpected places.",
+    hu: {
+      stress: "Nyomás alatt a béke megőrzése kerülhet előtérbe: engedhetsz ott is, ahol a saját határaid védelme lenne a dolgod.",
+      blindspot: "A felgyülemlett, ki nem mondott feszültség később váratlan helyen jön elő.",
+    },
+    en: {
+      stress: "Under pressure keeping the peace can take over: you may yield even where guarding your own boundary is the job.",
+      blindspot: "Unspoken tension accumulates and surfaces later in unexpected places.",
+    },
   },
   ADAP_low: {
-    hu: "Nyomás alatt a reakcióid élesebbé válhatnak, és a vita hamarabb személyessé fordulhat, mint szeretnéd. Vakfolt lehet: amit te őszinteségnek élsz meg, azt mások támadásként dekódolhatják.",
-    en: "Under pressure your reactions can sharpen, and debate may turn personal sooner than you would like. Possible blind spot: what you experience as honesty, others may decode as attack.",
+    hu: {
+      stress: "Nyomás alatt a reakcióid élesebbé válhatnak, és a vita hamarabb személyessé fordulhat, mint szeretnéd.",
+      blindspot: "Amit te őszinteségnek élsz meg, azt mások támadásként dekódolhatják.",
+    },
+    en: {
+      stress: "Under pressure your reactions can sharpen, and debate may turn personal sooner than you would like.",
+      blindspot: "What you experience as honesty, others may decode as attack.",
+    },
   },
   THOR_high: {
-    hu: "Nyomás alatt a kontroll-igény nőhet: több ellenőrzés, nehezebb delegálás, merevebb tervek. Vakfolt lehet: a tökéletesítés gyakran az „elég jó, időben\" rovására megy.",
-    en: "Under pressure the need for control can grow: more checking, harder delegation, stiffer plans. Possible blind spot: polishing often comes at the cost of 'good enough, on time'.",
+    hu: {
+      stress: "Nyomás alatt a kontroll-igény nőhet: több ellenőrzés, nehezebb delegálás, merevebb tervek.",
+      blindspot: "A tökéletesítés gyakran az „elég jó, időben” rovására megy.",
+    },
+    en: {
+      stress: "Under pressure the need for control can grow: more checking, harder delegation, stiffer plans.",
+      blindspot: "Polishing often comes at the cost of 'good enough, on time'.",
+    },
   },
   THOR_low: {
-    hu: "Nyomás alatt a struktúra tartása még nehezebbé válhat: a határidők és részletek könnyebben csúsznak. Vakfolt lehet: a környezeted megbízhatósági kérdésként olvashatja azt, ami nálad prioritás-kérdés.",
-    en: "Under pressure holding structure gets even harder: deadlines and details slip more easily. Possible blind spot: others may read as a reliability issue what is, for you, a matter of priorities.",
+    hu: {
+      stress: "Nyomás alatt a struktúra tartása még nehezebbé válhat: a határidők és részletek könnyebben csúsznak.",
+      blindspot: "A környezeted megbízhatósági kérdésként olvashatja azt, ami nálad prioritás-kérdés.",
+    },
+    en: {
+      stress: "Under pressure holding structure gets even harder: deadlines and details slip more easily.",
+      blindspot: "Others may read as a reliability issue what is, for you, a matter of priorities.",
+    },
   },
   OPEN_high: {
-    hu: "Nyomás alatt vonzó menekülőút lehet egy új ötlet vagy irányváltás a nehéz végrehajtás helyett. Vakfolt lehet: a csapat számára a gyakori irányváltás bizonytalanságként csapódhat le.",
-    en: "Under pressure a new idea or pivot can become an appealing escape from hard execution. Possible blind spot: for the team, frequent pivots can land as instability.",
+    hu: {
+      stress: "Nyomás alatt vonzó menekülőút lehet egy új ötlet vagy irányváltás a nehéz végrehajtás helyett.",
+      blindspot: "A csapat számára a gyakori irányváltás bizonytalanságként csapódhat le.",
+    },
+    en: {
+      stress: "Under pressure a new idea or pivot can become an appealing escape from hard execution.",
+      blindspot: "For the team, frequent pivots can land as instability.",
+    },
   },
   OPEN_low: {
-    hu: "Nyomás alatt a bevált módszerekhez való ragaszkodás felerősödhet — akkor is, ha a helyzet újfajta választ kívánna. Vakfolt lehet: a „mindig így csináltuk\" biztonsága lassú reakciót adhat gyors változásban.",
-    en: "Under pressure reliance on proven methods can intensify — even when the situation calls for a new kind of answer. Possible blind spot: the safety of 'we've always done it this way' can mean slow response in fast change.",
+    hu: {
+      stress: "Nyomás alatt a bevált módszerekhez való ragaszkodás felerősödhet — akkor is, ha a helyzet újfajta választ kívánna.",
+      blindspot: "A „mindig így csináltuk” biztonsága lassú reakciót adhat gyors változásban.",
+    },
+    en: {
+      stress: "Under pressure reliance on proven methods can intensify — even when the situation calls for a new kind of answer.",
+      blindspot: "The safety of 'we've always done it this way' can mean slow response in fast change.",
+    },
   },
 };
 

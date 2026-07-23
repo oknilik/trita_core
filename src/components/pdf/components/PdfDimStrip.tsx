@@ -13,7 +13,7 @@ const tierColor = (tier: string) =>
 const tierBg = (tier: string) =>
   tier === "high" ? colors.sage100 : tier === "mid" ? colors.bronze100 : colors.cream300;
 
-export function PdfDimStrip({ dimensions }: { dimensions: Dim[] }) {
+export function PdfDimStrip({ dimensions, locale = "hu" }: { dimensions: Dim[]; locale?: "hu" | "en" }) {
   return (
     <View style={{ flexDirection: "row", marginBottom: 6, border: `1 solid ${colors.cream500}`, borderRadius: 4 }}>
       {dimensions.map((dim, i) => {
@@ -42,7 +42,7 @@ export function PdfDimStrip({ dimensions }: { dimensions: Dim[] }) {
                 marginBottom: 2,
               }}
             >
-              {getDimensionLabel(dim.value, "hu")}
+              {getDimensionLabel(dim.value, locale)}
             </Text>
             <View style={{ width: "80%", height: 2, backgroundColor: colors.cream500, borderRadius: 1 }}>
               <View

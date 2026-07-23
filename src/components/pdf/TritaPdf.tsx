@@ -1,6 +1,7 @@
 import { Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { CoverPage } from "./pages/CoverPage";
+import { SummaryPage } from "./pages/SummaryPage";
 import { StartPage } from "./pages/StartPage";
 import { PlusFacetsPage } from "./pages/PlusFacetsPage";
 import { PlusWorkStylePage } from "./pages/PlusWorkStylePage";
@@ -39,6 +40,8 @@ export interface PdfData {
     howYouWork: string[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
+    /** Strukturált stress/vakfolt párok az executive summary oldalhoz (P3.1). */
+    pressureParts?: { stress: string; blindspot: string }[];
     /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
     growthTip?: string;
     roleFit: {
@@ -73,17 +76,22 @@ function TritaDocument({ data }: { data: PdfData }) {
   const hasObservers = hasPlus && data.observerData && data.observerData.count > 0;
   const locale = data.locale ?? "hu";
 
-  // Start: 1, Plus: 3 (start + facets + workstyle), Plus with observers: 4
-  const totalPages = hasObservers ? 4 : hasPlus ? 3 : 1;
+  // Start: 1; Plus: 4 (summary + start + facets + workstyle); observerekkel: 5.
+  // A summary-oldal (P3.1) csak plus riportban él — a tartalma a plus
+  // content-pipeline-ból (pressure, growthTip) áll össze.
+  const totalPages = hasObservers ? 5 : hasPlus ? 4 : 1;
+  let pageNum = 0;
+  const nextPage = () => ++pageNum;
 
   return (
     <Document>
       {/* Archetípus-borító — számozáson kívül, a riport „arca" */}
       <CoverPage data={data} />
-      <StartPage data={data} pageNum={1} totalPages={totalPages} locale={locale} />
-      {hasPlus && <PlusFacetsPage data={data} pageNum={2} totalPages={totalPages} locale={locale} />}
-      {hasPlus && <PlusWorkStylePage data={data} pageNum={3} totalPages={totalPages} locale={locale} />}
-      {hasObservers && <ReflectPage data={data} pageNum={4} totalPages={totalPages} locale={locale} />}
+      {hasPlus && <SummaryPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
+      <StartPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />
+      {hasPlus && <PlusFacetsPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
+      {hasPlus && <PlusWorkStylePage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
+      {hasObservers && <ReflectPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
     </Document>
   );
 }
