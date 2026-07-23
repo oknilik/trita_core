@@ -61,9 +61,11 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
             strong={pc.roleFit.strong}
             might={pc.roleFit.might}
             prep={pc.roleFit.prep}
+            secondary={pc.roleFit.secondary}
             strongRoles={pc.roleFit.strongRoles}
             mightRoles={pc.roleFit.mightRoles}
             prepRoles={pc.roleFit.prepRoles}
+            locale={locale}
           />
         </PdfCard>
 

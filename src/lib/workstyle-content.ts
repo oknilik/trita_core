@@ -3,6 +3,7 @@ import { runProfileEngine } from "@/lib/profile-engine";
 import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
+  SOLO_DIM_ROLE_MODIFIERS,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
 } from "@/lib/profile-content";
@@ -21,6 +22,8 @@ export interface WorkstyleContent {
     strong: string;
     might: string;
     prep: string;
+    /** A második legerősebb dimenzió árnyaló mondata (P2.2) — solo-dim ágon. */
+    secondary?: string;
     strongRoles?: string[];
     mightRoles?: string[];
     prepRoles?: string[];
@@ -169,6 +172,27 @@ export function buildWorkstyleContent(
     ? (ROLE_TAGS[lang]?.[roleFitSource] ?? SOLO_ROLE_TAGS[lang]?.[roleFitSource])
     : null;
 
+  // P2.2 — a második legerősebb dimenzió árnyalása solo-dim ágon:
+  // (1) módosító mondat, (2) a másodlagos dimenzió top szereptagjaiból
+  // legfeljebb kettő a „Működhet" sávba (dedup). Pár-alapú ágon nem fut,
+  // ott a narratíva eleve két dimenzióból épül.
+  let roleFitSecondary: string | undefined;
+  let mergedMightRoles = roleTags?.might;
+  const isSoloRoleFit = !engine.block6Pairs[0]?.contentKey && Boolean(engine.topSoloDims[0]);
+  const secondarySolo = engine.topSoloDims[1];
+  if (isSoloRoleFit && secondarySolo) {
+    const secondaryKey = `${secondarySolo.dim}_${secondarySolo.level}`;
+    roleFitSecondary = SOLO_DIM_ROLE_MODIFIERS[secondaryKey]?.[lang];
+    const secondaryTags = SOLO_ROLE_TAGS[lang]?.[secondaryKey]?.strong ?? [];
+    if (secondaryTags.length > 0) {
+      const existing = new Set([...(roleTags?.strong ?? []), ...(roleTags?.might ?? [])]);
+      const additions = secondaryTags.filter((tag) => !existing.has(tag)).slice(0, 2);
+      if (additions.length > 0) {
+        mergedMightRoles = [...(roleTags?.might ?? []), ...additions];
+      }
+    }
+  }
+
   // Environment rows
   const envItems = getEnvRows(engine.categories).map((r) => ({
     label: r.label[lang],
@@ -200,8 +224,9 @@ export function buildWorkstyleContent(
       strong: roleTexts?.strong ?? "",
       might: roleTexts?.medium ?? "",
       prep: roleTexts?.watchOut ?? "",
+      secondary: roleFitSecondary,
       strongRoles: roleTags?.strong,
-      mightRoles: roleTags?.might,
+      mightRoles: mergedMightRoles,
       prepRoles: roleTags?.prep,
     },
     takeaways,

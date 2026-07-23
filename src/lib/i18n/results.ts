@@ -903,6 +903,10 @@ export const resultsTranslations = {
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     howYouWork: { hu: "Ahogy működsz", en: "How you work" },
     roleFit: { hu: "Szerepkör-illeszkedés", en: "Role fit" },
+    roleFitDisclaimer: {
+      hu: "A szerepkör-illeszkedés a személyiségprofilból készült becslés. A tényleges illeszkedést a kompetenciák, a motiváció, a tapasztalat és a szakmai érdeklődés együtt határozzák meg — a személyiség ezek közül csak egy tényező.",
+      en: "Role fit is an estimate based on your personality profile. Actual fit is determined jointly by competencies, motivation, experience, and professional interests — personality is only one of these factors.",
+    },
     pressureTitle: { hu: "Vakfoltok és nyomás alatt", en: "Blind spots & under pressure" },
     pressureDisclaimer: {
       hu: "Ezek hipotézisek, nem ítéletek — stressz alatt sokféle működés megjelenhet. Akkor hasznosak, ha megfigyeled, mikor igazak rád, és mikor nem.",

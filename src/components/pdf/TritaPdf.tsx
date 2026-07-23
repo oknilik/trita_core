@@ -43,6 +43,8 @@ export interface PdfData {
       strong: string;
       might: string;
       prep: string;
+      /** A második legerősebb dimenzió árnyaló mondata (P2.2). */
+      secondary?: string;
       strongRoles?: string[];
       mightRoles?: string[];
       prepRoles?: string[];

@@ -149,7 +149,7 @@ export interface ProfileTabsProps {
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
     envItems: { label: string; value: string }[];
-    roleFit: { strong: string; might: string; prep: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
+    roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
     closingText: string;
   };

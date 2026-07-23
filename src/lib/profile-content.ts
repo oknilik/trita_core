@@ -787,6 +787,63 @@ export const SOLO_DIM_PRESSURE: Record<string, LocalizedText> = {
   },
 };
 
+// ─── Solo dim role-fit modifiers (P2.2) ──────────────────────────────────────
+// A szerepkör-illeszkedést eddig csak a DOMINÁNS dimenzió hajtotta, ezért
+// egy archetípus-családon belül (pl. Empatikus/Együttműködő/Módszeres
+// értékőr) szó szerint azonos volt a blokk. Ez a készlet a MÁSODIK
+// legerősebb dimenzió árnyaló mondatát adja hozzá.
+
+export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
+  INTE_high: {
+    hu: "A magas integritásod emellett azt jelzi: hosszú távon olyan közegben maradsz meg, ahol a kimondott értékek és a napi gyakorlat egybeesnek.",
+    en: "Your high integrity adds a nuance: long term, you stay in settings where stated values and daily practice actually match.",
+  },
+  INTE_low: {
+    hu: "Az erős eredmény-orientációd emellé versengő, célszámokkal dolgozó közeget kíván — a tisztán konszenzusos kultúra lassú lehet neked.",
+    en: "Your strong results-orientation calls for a competitive, target-driven setting alongside this — purely consensus-based cultures may feel slow.",
+  },
+  RESO_high: {
+    hu: "Az erős rezonanciád emberközeli, támogató kultúrát igényel emellé — pusztán tranzakcionális közegben gyorsabban kopsz.",
+    en: "Your strong resonance needs a people-centred, supportive culture alongside this — in purely transactional settings you wear down faster.",
+  },
+  RESO_low: {
+    hu: "Az érzelmi stabilitásod miatt a magas téttel, nyomással járó változatok is jól működhetnek nálad.",
+    en: "Thanks to your emotional stability, high-stakes, high-pressure variants of these roles can also work well for you.",
+  },
+  TEMP_high: {
+    hu: "A magas társas energiád a látható, emberekkel sűrűn dolgozó változatok felé billent — a hosszú, izolált munka kevésbé táplál.",
+    en: "Your high social energy tilts this toward visible, people-facing variants — long isolated work feeds you less.",
+  },
+  TEMP_low: {
+    hu: "Az alacsonyabb társas energiád miatt a mély, önálló fókuszt engedő változatok illenek jobban, mint a folyamatos reprezentáció.",
+    en: "With lower social energy, variants that allow deep, independent focus fit better than constant representation.",
+  },
+  ADAP_high: {
+    hu: "Az erős alkalmazkodásod az együttműködés-intenzív, sok egyeztetéssel járó változatok felé billent.",
+    en: "Your strong adaptability tilts this toward collaboration-heavy, coordination-rich variants.",
+  },
+  ADAP_low: {
+    hu: "Az egyenes, konfrontációt vállaló stílusod ott érték, ahol vitatkozni és dönteni kell — harmónia-központú közegben súrlódhat.",
+    en: "Your direct, confrontation-ready style is an asset where debate and decisions are the job — it may grate in harmony-centred settings.",
+  },
+  THOR_high: {
+    hu: "A magas tervezettséged a strukturált, végigvihető folyamatokra épülő változatokban kamatozik leginkább.",
+    en: "Your high orderliness pays off most in structured variants built on processes you can see through to the end.",
+  },
+  THOR_low: {
+    hu: "Az alacsonyabb tervezettséged miatt a rugalmas, improvizációt engedő változatok természetesebbek, mint a szigorú folyamatkövetés.",
+    en: "With lower orderliness, flexible variants that allow improvisation feel more natural than strict process-following.",
+  },
+  OPEN_high: {
+    hu: "A magas nyitottságod az újdonságot és tanulást kínáló változatok felé húz — a tisztán rutin-alapú szerepek hamar szűkösek lehetnek.",
+    en: "Your high openness pulls toward variants offering novelty and learning — purely routine-based roles can feel narrow quickly.",
+  },
+  OPEN_low: {
+    hu: "A bevált módszerek iránti preferenciád a kiszámítható, stabil működésű változatokban erőforrás.",
+    en: "Your preference for proven methods is an asset in predictable, stable variants of these roles.",
+  },
+};
+
 // ─── Solo dim role texts (Block 5 ha nincs tension pár) ──────────────────────
 
 export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
