@@ -39,7 +39,7 @@ type TensionPairDef = {
   contentKey: string;
 };
 
-const TENSION_PAIRS: TensionPairDef[] = [
+export const TENSION_PAIRS: TensionPairDef[] = [
   { dimA: "INTE", levelA: "high", dimB: "TEMP", levelB: "high", risk: false, contentKey: "ethicalLeader" },
   { dimA: "INTE", levelA: "high", dimB: "ADAP", levelB: "low",  risk: false, contentKey: "principledConfronter" },
   { dimA: "INTE", levelA: "high", dimB: "OPEN", levelB: "high", risk: false, contentKey: "responsibleInnovator" },
