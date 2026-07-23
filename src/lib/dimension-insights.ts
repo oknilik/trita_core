@@ -68,22 +68,27 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
   },
 };
 
-/** Erősség-bullet kiegészítők („{dimenzió} — {leírás}" formához). */
+/**
+ * Erősség-bullet kiegészítők („{dimenzió} — {leírás}" formához).
+ * Nyelvi dedup (P3.2): a bullet szándékosan MÁS szókinccsel írja le a
+ * dimenziót, mint a hero-tagline — egy oldalon belül ne ismétlődjön
+ * ugyanaz a fordulat („hiteles… / hiteles…").
+ */
 export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = {
-  INTE: { hu: "hiteles, manipulációmentes", en: "authentic, manipulation-free" },
-  RESO: { hu: "erős empátia, mély kapcsolódás", en: "strong empathy, deep connection" },
-  TEMP: { hu: "inspiráló, energikus jelenlét", en: "inspiring, energetic presence" },
-  ADAP: { hu: "megbocsátó, rugalmas, türelmes", en: "forgiving, flexible, patient" },
+  INTE: { hu: "egyenesség, tiszta játék, bizalomépítés", en: "fair play, straight talk, trust-building" },
+  RESO: { hu: "érzelmi mélység, törődő jelenlét", en: "emotional depth, caring presence" },
+  TEMP: { hu: "lendület, társas magabiztosság", en: "momentum, social confidence" },
+  ADAP: { hu: "megbocsátás, higgadtság, kompromisszumkészség", en: "forgiveness, composure, willingness to compromise" },
   THOR: { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
-  OPEN: { hu: "kísérletező, stratégiai gondolkodó", en: "experimental, strategic thinker" },
+  OPEN: { hu: "felfedező szemlélet, komplex gondolkodás", en: "explorer mindset, complex thinking" },
 };
 
-/** Figyelendő-bullet kiegészítők. */
+/** Figyelendő-bullet kiegészítők — a tagline gyenge-felétől eltérő szókinccsel (P3.2). */
 export const DIMENSION_WATCH_DESCS: Record<string, Record<Locale, string>> = {
-  INTE: { hu: "státuszorientáltabb, versengőbb", en: "more status-oriented, competitive" },
-  RESO: { hu: "érzelmileg távolabb, kevesebb empátia", en: "emotionally distant, less empathy" },
-  TEMP: { hu: "kisebb társas láthatóság, visszahúzódóbb", en: "lower social visibility, more reserved" },
-  ADAP: { hu: "élesebb reakciók konfliktusban", en: "sharper reactions in conflict" },
-  THOR: { hu: "kevésbé szervezett, rugalmasabb", en: "less organized, more flexible" },
-  OPEN: { hu: "bevált módszereket preferálja", en: "prefers established methods" },
+  INTE: { hu: "erős versenyszellem, státusz-tudatosság", en: "strong competitive drive, status awareness" },
+  RESO: { hu: "tárgyilagos, érzelmileg visszafogott stílus", en: "matter-of-fact, emotionally reserved style" },
+  TEMP: { hu: "háttérben marad, ritkábban lép színre", en: "stays in the background, steps forward less often" },
+  ADAP: { hu: "gyorsabban éleződő viták, kevesebb kompromisszum", en: "debates sharpen quickly, fewer compromises" },
+  THOR: { hu: "lazább struktúra, improvizatívabb munkamód", en: "looser structure, more improvised workflow" },
+  OPEN: { hu: "az ismert utakat választja, ritkábban kísérletezik", en: "chooses familiar paths, experiments less" },
 };
