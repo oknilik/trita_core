@@ -6,12 +6,13 @@ export const metadata: Metadata = {
   title: "16 csapatminta — Trita Csapatminta Felfedező",
   description:
     "Fedezd fel a 16 csapatműködési mintázatot. Interaktív eszköz: húzd a csúszkákat, és nézd meg, melyik mintázat illik a csapatodra. Hatfaktoros személyiségmodellre épülő csapatdiagnosztika.",
+  alternates: { canonical: "/patterns" },
   openGraph: {
     title: "16 csapatminta — Melyik a tiéd?",
     description:
       "Interaktív csapatminta felfedező. 4 tengely, 16 mintázat, személyre szabott meglátások.",
-    url: "https://trita.io/patterns",
-    siteName: "Trita",
+    url: "/patterns",
+    siteName: "trita",
     locale: "hu_HU",
     type: "website",
   },

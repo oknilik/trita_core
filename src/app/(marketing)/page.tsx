@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "trita — személyiség- és csapatintelligencia platform",
   description:
     "A trita validált módszertanra épülő személyiség- és csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
+  alternates: { canonical: "/" },
 };
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey

@@ -35,7 +35,8 @@ export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: { default: "trita", template: "%s" },
   description: t("meta.description", DEFAULT_LOCALE),
-  alternates: { canonical: "/" },
+  // Canonical NINCS itt: a root layoutból minden aloldal örökölné a "/"-t,
+  // amitől a kereső duplikátumnak látná őket — oldal-szinten kell megadni.
   openGraph: {
     type: "website",
     siteName: "trita",
