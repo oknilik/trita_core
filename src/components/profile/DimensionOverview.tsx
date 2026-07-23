@@ -2,6 +2,7 @@ import { t } from "@/lib/i18n";
 import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { BLOCK1 } from "@/lib/profile-content";
 
@@ -46,6 +47,7 @@ export function DimensionOverview({
             showObserver={showObserver}
             uid="profile-overview"
           />
+          {showObserver ? <RadarLegendNote /> : null}
         </div>
 
         {/* Dimension score pills */}

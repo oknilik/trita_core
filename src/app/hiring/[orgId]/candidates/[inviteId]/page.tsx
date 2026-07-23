@@ -15,6 +15,7 @@ import {
 import type { Locale } from "@/lib/profile-content";
 import { t } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import { calculateTeamRoleScores, getTopRoles, TEAM_ROLES } from "@/lib/team-role-scoring";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 
@@ -532,6 +533,8 @@ export default async function CandidateResultPage({
                       observerScore: teamAvg![d],
                     }))}
                     showObserver={true}
+                  />
+                  <RadarLegendNote
                     selfLabel={displayName}
                     observerLabel={selectedTeam ? selectedTeam.name : t("hiring.teamAvgTooltip", locale)}
                   />

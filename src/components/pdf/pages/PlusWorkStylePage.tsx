@@ -4,9 +4,8 @@ import { PdfFooter } from "../components/PdfFooter";
 import { PdfHowYouWork } from "../components/PdfHowYouWork";
 import { PdfRoleFit } from "../components/PdfRoleFit";
 import { PdfTakeaways } from "../components/PdfTakeaways";
-import { PdfNextStep } from "../components/PdfNextStep";
 import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
-import { t, tf } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
@@ -49,17 +48,6 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
         </View>
 
-        {/* ── Következő lépés ── */}
-        <View wrap={false}>
-          <PdfNextStep
-            text={
-              data.observerData
-                ? tf("pdf.nextStepObserverPage", locale, { page: String(pageNum + 1) })
-                : t("pdf.nextStepSendInvite", locale)
-            }
-            locale={locale}
-          />
-        </View>
       </View>
       <PdfFooter pageNum={pageNum} totalPages={totalPages} locale={locale} />
     </Page>

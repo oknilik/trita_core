@@ -1,9 +1,12 @@
 # Pilot kampány-ütemterv és ops-checklist
 
-> Készült: 2026-07-20 · A `pilot-playbook.md` technikai melléklete.
+> Készült: 2026-07-20 · Frissítve: 2026-07-23 · A `pilot-playbook.md`
+> technikai melléklete.
 > A lépés-sorrend és a viselkedés a kódból: `src/lib/campaign-steps-core.ts`
-> (kanonikus sorrend: OBSERVER_360 → TEAM_ROLE → PSYCH_SAFETY, lépések
-> felhasználónként, sorban nyílnak, értesítéssel).
+> (kanonikus sorrend: OBSERVER_360 → TEAM_ROLE → TEAM_ROLE_360 → TRUST_360 →
+> PSYCH_SAFETY; lépések felhasználónként, sorban nyílnak, értesítéssel;
+> pacing: default napi egy kérdőív — `stepIntervalHours = 24`, a
+> kampány-oldalról 0–168 óra közt állítható, 0 = azonnal).
 
 ## 0. Előkészítés — org setup checklist (T–2 hét)
 
@@ -30,10 +33,11 @@ Sorrendben, a saját (admin/tanácsadói) fiókból:
 
 ## 1. Kampány beállítása (kickoff napján)
 
-- Wizard: **egyetlen kampányban mindhárom mérés** kiválasztása
+- Wizard: **egyetlen kampányban az összes mérés** kiválasztása
   (multi-select; a sorrendet a rendszer rögzíti: önértékelés+observer →
-  csapatszerep → pulse). Auto-név: „Mérés-sorozat (3)" — írjuk át beszédesre,
-  pl. „Őszi csapatprogram — 1. kör".
+  csapatszerep → csapattársi szerep-visszajelzés → bizalmi kör → pulse).
+  Auto-név: „Mérés-sorozat (N)" — írjuk át beszédesre, pl.
+  „Őszi csapatprogram — 1. kör".
 - Csapat-célzás kötelező a szerep- és pulse-lépés miatt.
 - **Aktiválás a kickoff zárásaként** — ekkor mindenki lépés-nyitó
   értesítést kap, és akinek már van self-eredménye (pl. /try-ról claimelt),
@@ -63,7 +67,27 @@ Sorrendben, a saját (admin/tanácsadói) fiókból:
 | Tanácsadó | 4. hét elején státusz-kör; akinél nincs valódi kitöltés, a riportban TRITAN-becslés fut forrás-badge-dzsel — ezt a debriefen jelezni kell |
 | Kilépési cél | ≥70% kérdőíves (nem becsült) lefedettség |
 
-### 3. lépés: Pszichológiai biztonság pulse (PSYCH_SAFETY)
+### 3. lépés: Csapattársi szerep-visszajelzés (TEAM_ROLE_360)
+
+| | |
+|---|---|
+| Kitöltő | `/assessment/team-roles/peers` — a csapattársak szerep-visszajelzése; napi egy kérdőív pacing mellett a self-szerep után nyílik |
+| Küszöb | aggregált peer-kép CSAK legalább 3 értékelőnél (`TEAM_ROLE_PEER_MIN_RATERS`); alatta küszöb-szöveg, egyéni válasz soha nem látszik |
+| Automatikus | lépés-nyitó értesítés; zárolt lépés közvetlen URL-en sem tölthető ki (409) |
+| Tanácsadó | „Önkép vs. csapatkép" a riportban — a debrief egyik legerősebb blokkja; 3 fő alatti értékelő-körnél előre jelezni, hogy nem lesz peer-kép |
+| Kilépési cél | tagonként ≥3 értékelő |
+
+### 4. lépés: Bizalmi háló kör (TRUST_360)
+
+| | |
+|---|---|
+| Kitöltő | `/assessment/trust` — páronkénti relációs kérdések (bizalom, segítségkérés, nyíltság, bevonás, együttműködés) |
+| Láthatóság | pár-szintű él (két irány átlaga) a dinamika-térképen; egyéni (irányított) válasz soha nem jelenik meg; csomópont-aggregátum csak ≥3 értékelőtől (`TRUST_MIN_RATERS`) — a consent-szöveg mondja ki |
+| Automatikus | a mért trust-adat kiváltja a dinamika-térkép profil-becslését (friction/support él „mért" jelöléssel); becslés fallbackként megmarad |
+| Tanácsadó | consent-keretezés a kickoffon; a mért vs. becsült él-különbség magyarázata a debriefen |
+| Kilépési cél | minden tag kitöltötte a saját körét |
+
+### 5. lépés: Pszichológiai biztonság pulse (PSYCH_SAFETY)
 
 | | |
 |---|---|

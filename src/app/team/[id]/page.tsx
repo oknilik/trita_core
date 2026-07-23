@@ -17,6 +17,7 @@ import {
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
@@ -1024,47 +1025,45 @@ export default async function TeamDetailPage({
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
-                  <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{teamData.memberCount}</p>
+                  <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{teamData.memberCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
-                  <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{completedCount}</p>
+                  <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{completedCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
-                  <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{waitingCount}</p>
+                  <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{waitingCount}</p>
                 </div>
               </div>
 
-              <div className="mt-4 space-y-3">
-                <div>
-                  <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                    <span>{t("teamDetail.snapshotCompletionRate", locale)}</span>
-                    <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
-                  </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${completionPct}%`, backgroundColor: "#8ad0b4" }}
-                    />
-                  </div>
-                  <p className="mt-1.5 text-[10px] text-white/[0.45]">
+              {/* Haladás-gyűrűk — az org-hero élő pillanatképével azonos nyelv */}
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
+                  <ProgressRing
+                    percent={completionPct}
+                    size={76}
+                    label={`${completionPct}%`}
+                    color="#8ad0b4"
+                  />
+                  <p className="text-[10px] leading-tight text-white/[0.52]">
+                    {t("teamDetail.snapshotCompletionRate", locale)}
+                  </p>
+                  <p className="text-[10px] text-white/[0.45]">
                     {tf("teamDetail.snapshotDoneInProgress", locale, { done: completedCount, inProgress: inProgressCount })}
                   </p>
                 </div>
-
-                <div>
-                  <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
-                    <span>{secondaryLabel}</span>
-                    <span className="font-semibold text-white/[0.7]">{secondaryPct}%</span>
-                  </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${secondaryPct}%`, backgroundColor: teamHeroTheme.primary }}
-                    />
-                  </div>
-                  <p className="mt-1.5 text-[10px] text-white/[0.45]">
+                <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
+                  <ProgressRing
+                    percent={secondaryPct}
+                    size={76}
+                    label={`${secondaryPct}%`}
+                    color={teamHeroTheme.primary}
+                  />
+                  <p className="text-[10px] leading-tight text-white/[0.52]">
+                    {secondaryLabel}
+                  </p>
+                  <p className="text-[10px] text-white/[0.45]">
                     {secondaryText}
                   </p>
                 </div>

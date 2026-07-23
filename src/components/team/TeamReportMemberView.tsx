@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import type { SerializedTeamReport } from "@/lib/team-report";
 import {
   hasApprovedEnTranslation,
@@ -122,9 +123,11 @@ export function TeamReportMemberView({
                   <RadarChart
                     dimensions={radarDims}
                     showObserver
+                    uid={`member-${report.id}`}
+                  />
+                  <RadarLegendNote
                     selfLabel={isHu ? "Te" : "You"}
                     observerLabel={isHu ? "Csapatátlag" : "Team average"}
-                    uid={`member-${report.id}`}
                   />
                 </div>
               )}

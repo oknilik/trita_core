@@ -2,6 +2,7 @@ import { t, tf } from "@/lib/i18n";
 import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 import type { Locale } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import Link from "next/link";
 
 interface DimCompareEntry {
@@ -94,6 +95,7 @@ export function ObserverComparison({
             showObserver
             uid="observer-comparison"
           />
+          <RadarLegendNote />
         </div>
 
         {/* Gap list */}

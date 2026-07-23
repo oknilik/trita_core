@@ -90,8 +90,12 @@ export function CoverPage({ data }: { data: PdfData }) {
 
   return (
     <Page size="A4" style={c.page}>
-      {/* Sötét-sage gradiens háttér + halvány dekor-körök */}
-      <Svg style={c.bg} width={595} height={842} viewBox="0 0 595 842">
+      {/* Sötét-sage gradiens háttér + halvány dekor-körök.
+          A position:absolute a wrapper View-n van, mert az Svg elem a
+          react-pdf-ben nem veszi fel — flow-ban maradva átlökné a
+          tartalmat a következő oldalra. */}
+      <View style={c.bg}>
+        <Svg style={{ width: 595, height: 842 }} width={595} height={842} viewBox="0 0 595 842">
         <Defs>
           <LinearGradient id="cover-bg" x1="0" y1="0" x2="1" y2="1">
             <Stop offset="0" stopColor="#2a5244" />
@@ -103,7 +107,8 @@ export function CoverPage({ data }: { data: PdfData }) {
         <Circle cx="520" cy="90" r="170" fill="#ffffff" fillOpacity="0.025" />
         <Circle cx="80" cy="760" r="220" fill="#ffffff" fillOpacity="0.02" />
         <Circle cx="540" cy="700" r="90" fill="#e8a96a" fillOpacity="0.04" />
-      </Svg>
+        </Svg>
+      </View>
 
       <View style={c.content}>
         <Text style={c.eyebrow}>

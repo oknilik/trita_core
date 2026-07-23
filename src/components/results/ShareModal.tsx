@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/primitives/Button";
+import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { TextField } from "@/components/ui/primitives/TextField";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
@@ -205,12 +206,7 @@ export function ShareModal({
                 >
                   {copied ? (
                     <span className="inline-flex items-center gap-1.5 text-sage-dark">
-                      <span
-                        aria-hidden
-                        className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sage text-[10px] font-bold leading-none text-white"
-                      >
-                        ✓
-                      </span>
+                      <SuccessCheck />
                       {t("content.shareCopied", locale)}
                     </span>
                   ) : (
@@ -260,12 +256,7 @@ export function ShareModal({
               </div>
               {emailState === "sent" && (
                 <p className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-sage-dark">
-                  <span
-                    aria-hidden
-                    className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sage text-[10px] font-bold leading-none text-white"
-                  >
-                    ✓
-                  </span>
+                  <SuccessCheck />
                   {t("content.shareEmailSent", locale)}
                 </p>
               )}

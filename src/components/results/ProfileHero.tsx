@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { Button } from "@/components/ui/primitives/Button";
+import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
@@ -214,12 +215,7 @@ export function ProfileHero({
               </span>
             ) : pdfDone ? (
               <span className="inline-flex items-center gap-2">
-                <span
-                  aria-hidden
-                  className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-400 text-[10px] font-bold leading-none text-white"
-                >
-                  ✓
-                </span>
+                <SuccessCheck />
                 {t("results.heroPdf", locale)}
               </span>
             ) : (

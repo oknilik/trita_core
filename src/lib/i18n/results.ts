@@ -897,15 +897,6 @@ export const resultsTranslations = {
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     howYouWork: { hu: "Ahogy működsz", en: "How you work" },
     roleFit: { hu: "Szerepkör-illeszkedés", en: "Role fit" },
-    // ── PlusWorkStylePage next step texts ──────────────────────────────────
-    nextStepObserverPage: {
-      hu: "Nézd meg az observer visszajelzéseket a {page}. oldalon.",
-      en: "See the observer feedback on page {page}.",
-    },
-    nextStepSendInvite: {
-      hu: "Küldj observer meghívót a Meghívók tabon, hogy lásd hogyan látnak mások.",
-      en: "Send an observer invite from the Invites tab to see how others see you.",
-    },
     // ── ReflectPage ────────────────────────────────────────────────────────
     selfVsFeedback: { hu: "Önkép és visszajelzés", en: "Self-image vs. Feedback" },
     howDoOthersSeeYou: { hu: "Hogyan látnak mások?", en: "How do others see you?" },
@@ -1015,7 +1006,5 @@ export const resultsTranslations = {
     keyTakeaways: { hu: "A legfontosabbak", en: "Key takeaways" },
     // ── PdfFooter ──────────────────────────────────────────────────────────
     footerTagline: { hu: "Személyiség és csapatintelligencia", en: "Personality and team intelligence" },
-    // ── PdfNextStep ────────────────────────────────────────────────────────
-    nextStep: { hu: "Következő lépés", en: "Next step" },
   },
 } as const;

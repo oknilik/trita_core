@@ -3,7 +3,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
 import { TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 
 const CX = 150;
@@ -11,7 +10,6 @@ const CY = 150;
 const MAX_R = 100;
 const LABEL_R = 114;
 const RINGS = [0.25, 0.5, 0.75, 1.0];
-const SELF_POINT_COLOR = "var(--color-visual-gradient-violet)";
 const OBSERVER_POINT_COLOR = "var(--color-state-success-strong)";
 
 interface RadarDimension {
@@ -21,11 +19,11 @@ interface RadarDimension {
   observerScore?: number;
 }
 
+// Szín-magyarázat: nincs SVG-belső legend — összehasonlító nézetben a
+// hívó tegye a RadarLegendNote-ot az ábra alá (HTML, nem csúszik el).
 interface RadarChartProps {
   dimensions: RadarDimension[];
   showObserver?: boolean;
-  selfLabel?: string;
-  observerLabel?: string;
   uid?: string;
 }
 
@@ -64,13 +62,9 @@ function getLabelOffset(index: number, total: number): { dx: number; dy: number 
 export const RadarChart = memo(function RadarChart({
   dimensions,
   showObserver = false,
-  selfLabel,
-  observerLabel,
   uid = "rc",
 }: RadarChartProps) {
   const { locale } = useLocale();
-  const resolvedSelfLabel = selfLabel ?? t("comparison.self", locale);
-  const resolvedObserverLabel = observerLabel ?? t("comparison.others", locale);
 
   // TRITAN-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
   // mozaikszót (T·R·I·T·A·N = X,E,H,C,A,O). A két T-t a pozíció
@@ -412,37 +406,6 @@ export const RadarChart = memo(function RadarChart({
         </g>
       ))}
 
-      {/* Legend */}
-      {showObserver && (
-        <motion.g
-          transform={`translate(${CX}, ${CY + MAX_R + 44})`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          {/* Legend background */}
-          <rect
-            x="-92"
-            y="-13"
-            width="204"
-            height="26"
-            rx="13"
-            fill="var(--color-neutral-white)"
-            opacity="0.88"
-            stroke="#E0E7FF"
-            strokeWidth="1"
-            filter={`url(#${shadowId})`}
-          />
-
-          {/* Self indicator */}
-          <circle cx="-49" cy="0" r="5" fill={SELF_POINT_COLOR} filter={`url(#${pointGlowId})`} />
-          <text x="-40" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{resolvedSelfLabel}</text>
-
-          {/* Observer indicator */}
-          <circle cx="28" cy="0" r="5" fill={OBSERVER_POINT_COLOR} filter={`url(#${pointGlowId})`} />
-          <text x="37" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{resolvedObserverLabel}</text>
-        </motion.g>
-      )}
     </svg>
   );
 });

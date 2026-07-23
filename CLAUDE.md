@@ -67,13 +67,17 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 
 ## Felmérés (instrumentum) — FONTOS
 
-- Jelenleg **egyetlen kérdésbank él**: a hivatalos HEXACO-PI-R
-  (`src/lib/questions/hexaco.ts`). Minden új user ezt kapja
-  (`assignTestType.ts` — fix, nem random).
-- ⚠️ **Licenc**: a HEXACO-PI-R kutatási célra szabad, kereskedelmi
-  használatra licencköteles. Fizető ügyfél előtt a saját **TSFI** (Trita
-  Six-Factor Inventory) kérdésbank beépítése kötelező — a tételsor forrása
-  valószínűleg a git historyban lévő Numbers-fájl (main, `621cdd0` commit).
+- Jelenleg **egyetlen kérdésbank él**: a **TSFI v2** (2026-07-16,
+  `src/lib/questions/tritan.ts`, `TestType.TRITAN`). Minden új user ezt
+  kapja (`assignTestType.ts` — fix, nem random). Alapértelmezett forma:
+  **TSFI-S** (60 item, ~9 perc; `DEFAULT_ASSESSMENT_FORM = "short"` az
+  operating-mode-ban, a 100 itemes full későbbi tanácsadói opció).
+- **Licenc rendezve**: a TSFI-itemek az IPIP public domain poolból jönnek
+  (92 IPIP–HEXACO + 8 kiegészítő) — kereskedelmi használatra is szabad,
+  engedély/díj nélkül. Provenance: `docs/product/tsfi-item-provenance.md`;
+  jogi audit: `tsfi-item-audit-2026-07.md` (EN-itemek IPIP-eredetének
+  tisztázása a B1 ügyvédi csomagban még nyitott szál). A korábbi
+  HEXACO-PI-R bank kivezetve.
 - User-facing szövegben NE szerepeljen „HEXACO"/„Big Five" — generikus
   megfogalmazást használj („hatfaktoros személyiségmodell", „Trita
   személyiségfelmérés"). Kivétel: külső tesztekre utaló kérdőív-opciók,
@@ -85,8 +89,8 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
   `docs/product/tritan-naming.md`. Új felületen NE vezess be saját
   dimenzió-címkét — a tritan.ts-ből dolgozz.
 - Dimenziókódok: H/E/X/A/C/O (E fordított: magasabb = érzelmesebb).
-- TestType enum a sémában: HEXACO | HEXACO_MODIFIED | BIG_FIVE (utóbbi
-  kettőnek nincs kérdésbankja — örökség).
+- TestType enum a sémában: **TRITAN** (egyedüli érték — a korábbi
+  HEXACO/HEXACO_MODIFIED/BIG_FIVE örökség törölve).
 - **Csapatszerep-modell (2026-07-20)**: saját 27 itemes bank
   (`team-role-questions.ts`), self + peer perspektíva, kódok:
   OG/KE/KO/HA/ER/CS/MV/MI/SZ. User-facing szövegben NE szerepeljen
@@ -152,8 +156,11 @@ Lint: ~60 örökölt hiba van (no-explicit-any, `// eyebrow` jsx-comment) —
 
 ## Fagyasztott / parkolt rétegek
 
-- **Hiring/candidate flow** (`/hiring`, CandidateInvite/Credit modellek):
-  működik, kreditet az admin ad kézzel; aktívan nem fejlesztjük.
+- ~~Hiring/candidate flow~~ — **2026-07-23-tól ÚJRA AKTÍV** (nem fagyasztott):
+  kapu ki (`CANDIDATE_GATING_ENABLED=false`, operating-mode), hozzáférés a
+  tanácsadói körnek (isConsultantSurface); opcionális csapatszerep-lépés a
+  jelöltnek, kitöltés-értesítés a tanácsadónak/org adminnak. Részletek:
+  changelog 2026-07-23.
 - **Billing (Stripe/Billingo)**: teljes implementáció a `billing-v1-parked`
   tagben; visszaállítási terv: `docs/development/billing-v1-launch-checklist.md`.
 - **Advisory oldal** (`/advisory`): él, CTA-k `/contact`-ra mutatnak.

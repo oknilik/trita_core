@@ -20,8 +20,8 @@ export const BLOCK1: LocalizedText = {
 // ─── Block 8 – Záró framing ───────────────────────────────────────────────────
 
 export const BLOCK8: LocalizedText = {
-  hu: "Gondolj rá iránytűként: segít tisztábban látni, hol működsz a legerősebben, és hol érdemes tudatosabban működni. A többi már rajtad múlik.",
-  en: "Treat it as a compass: it helps you see where you’re strongest, and where being more deliberate pays off. The rest is up to you.",
+  hu: "Gondolj rá iránytűként: segít tisztábban látni, miben vagy erős, és mire érdemes tudatosabban figyelned. Térj vissza hozzá bátran, amikor új helyzet vagy döntés előtt állsz.",
+  en: "Treat it as a compass: it helps you see where you're strong and what deserves more deliberate attention. Come back to it whenever you're facing a new situation or decision.",
 };
 
 // ─── Dimenzió nevek (Block 2 megjelenítőhöz) ─────────────────────────────────
