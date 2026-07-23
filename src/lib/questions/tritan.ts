@@ -60,20 +60,20 @@ export const tritanConfig: TestConfig = {
         hu: "Az integritás dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy alskálára bontható: Egyenesség (valódi, nem manipulatív viszonyulás másokhoz), Méltányosság (a csalás és korrupció kerülése), Mértékletesség (az anyagi javak és státusz iránti közömbösség), Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
       },
       insights: {
-        low: "Hajlamos vagy másokat hízelgéssel vagy tettetett barátsággal befolyásolni, szabályokat megszegni személyes haszonszerzés céljából, és erős anyagi, illetve státuszorientált motivációval rendelkezel.",
-        mid: "Általában becsületesen és igazságosan viszonyulsz másokhoz, bár bizonyos helyzetekben a személyes érdekek is befolyásolhatják a döntéseidet.",
-        high: "Kerülöd a manipulációt és a megtévesztést, kevéssé vonz az anyagi gazdagság és a státusz, és valódi szerénységgel, őszintén viszonyulsz másokhoz.",
+        low: "Az eredmény, az anyagi elismerés és a státusz erős motiváció számodra, és az érdekérvényesítésben rugalmasan válogatsz az eszközök között — a szabályokat inkább keretnek látod, mint korlátnak. Versengő közegben ez előny; a bizalmi kapcsolatok tudatosabb ápolást igényelnek.",
+        mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között — többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
+        high: "A nyílt, közvetlen működést választod: kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen élsz taktikai eszközökkel — mások gyorsan tudják, hányadán állnak veled.",
       },
       insightsByLocale: {
         en: {
-          low: "You tend to flatter others or pretend to like them to get what you want, are inclined to bend or break rules for personal gain, and are motivated by material wealth and a strong sense of entitlement.",
-          mid: "You generally act honestly and fairly toward others, though personal interests may influence your decisions in certain situations.",
-          high: "You avoid manipulating or deceiving others, feel little pull toward material wealth or elevated status, and engage with others with genuine sincerity and humility.",
+          low: "Results, material recognition, and status are strong motivators for you, and you choose flexibly among tools when advancing your interests — rules read more as frames than limits. In competitive settings this is an advantage; trust-based relationships need more deliberate upkeep.",
+          mid: "You balance between the direct route and advancing your own interests depending on the situation — mostly operating fairly, while able to be tactical when the moment calls for it.",
+          high: "You choose open, direct operation: status and material accumulation motivate you little, and you're reluctant to use tactical tools — people quickly know where they stand with you.",
         },
         hu: {
-          low: "Hajlamos vagy másokat hízelgéssel vagy tettetett barátsággal befolyásolni, szabályokat megszegni személyes haszonszerzés céljából, és erős anyagi, illetve státuszorientált motivációval rendelkezel.",
-          mid: "Általában becsületesen és igazságosan viszonyulsz másokhoz, bár bizonyos helyzetekben a személyes érdekek is befolyásolhatják a döntéseidet.",
-          high: "Kerülöd a manipulációt és a megtévesztést, kevéssé vonz az anyagi gazdagság és a státusz, és valódi szerénységgel, őszintén viszonyulsz másokhoz.",
+          low: "Az eredmény, az anyagi elismerés és a státusz erős motiváció számodra, és az érdekérvényesítésben rugalmasan válogatsz az eszközök között — a szabályokat inkább keretnek látod, mint korlátnak. Versengő közegben ez előny; a bizalmi kapcsolatok tudatosabb ápolást igényelnek.",
+          mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között — többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
+          high: "A nyílt, közvetlen működést választod: kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen élsz taktikai eszközökkel — mások gyorsan tudják, hányadán állnak veled.",
         },
       },
       facets: [

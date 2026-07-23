@@ -935,8 +935,8 @@ export const resultsTranslations = {
     },
     methodNoteTitle: { hu: "Hogyan olvasd ezt a riportot?", en: "How to read this report" },
     methodNoteBody: {
-      hu: "Az eredmények önjellemzésen alapulnak: azt mutatják, ahogyan a kitöltéskor magadat láttad. A pontszámok viselkedési tendenciákat jeleznek, nem címkéket — a környezet, a szerep és a stressz jelentősen módosíthatja, hogyan jelennek meg a mindennapokban. A riport állításait ezért kezeld hipotézisként: vesd össze a saját tapasztalataiddal és mások visszajelzésével.",
-      en: "These results are based on self-report: they reflect how you saw yourself at the time of completion. Scores indicate behavioural tendencies, not labels — context, role, and stress can significantly change how they show up day to day. Treat the statements in this report as hypotheses: test them against your own experience and feedback from others.",
+      hu: "Az eredmények önjellemzésen alapulnak: azt mutatják, ahogyan a kitöltéskor magadat láttad. A pontszámok viselkedési tendenciákat jeleznek, nem címkéket — és egyik dimenzió egyik pólusa sem „jó\" vagy „rossz\": mindegyiknek vannak előnyei és költségei, helyzettől függően. A környezet, a szerep és a stressz jelentősen módosíthatja, hogyan jelennek meg a mindennapokban — a riport állításait ezért kezeld hipotézisként: vesd össze a saját tapasztalataiddal és mások visszajelzésével.",
+      en: "These results are based on self-report: they reflect how you saw yourself at the time of completion. Scores indicate behavioural tendencies, not labels — and neither pole of any dimension is 'good' or 'bad': each has benefits and costs, depending on the situation. Context, role, and stress can significantly change how they show up day to day — treat the statements in this report as hypotheses: test them against your own experience and feedback from others.",
     },
     // ── ReflectPage ────────────────────────────────────────────────────────
     selfVsFeedback: { hu: "Önkép és visszajelzés", en: "Self-image vs. Feedback" },

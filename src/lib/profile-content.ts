@@ -625,8 +625,8 @@ export const BLOCK4_EMPTY: LocalizedText = {
 
 export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
   INTE_high: {
-    hu: "Válaszaid alapján az etikai integritás és az őszinteség az egyik legdominánsabb jellemződ. Az őszinteségre törekszel, és hiteles akarsz lenni – ez a munkahelyi kapcsolataidban is erős, bizalomépítő alapot ad.",
-    en: "Based on your responses, ethical integrity and honesty are among your most dominant traits. You seek truthfulness and strive to be authentic — this provides a strong, trust-building foundation in your professional relationships.",
+    hu: "Válaszaid alapján a nyílt, játszmamentes működés az egyik legdominánsabb preferenciád: az egyenes kommunikációt választod akkor is, amikor a taktikázás kifizetődőbb lenne – ez a munkakapcsolataidban erős, bizalomépítő alapot ad.",
+    en: "Based on your responses, open, game-free operation is one of your most dominant preferences: you choose direct communication even when manoeuvring would pay better — a strong, trust-building foundation in your working relationships.",
   },
   INTE_low: {
     hu: "Ambiciózus és stratégiai gondolkodású vagy: nem riadsz vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő számodra – a versengés és az önérvényesítés természetes közeged.",
@@ -682,8 +682,8 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
 
 export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
   INTE_high: {
-    hu: "Erőforrásod a bizalomépítés és a tiszta játék. Figyeld meg: nehezebb közegben hajlamos lehetsz túl sokáig korrekt maradni ott, ahol már határt kellene húzni.",
-    en: "Your asset is trust-building and fair play. Worth watching: in tougher settings you may stay fair a beat too long where a firm boundary is needed.",
+    hu: "Erőforrásod a kiszámíthatóság és a nyílt kommunikáció — mások gyorsan tudják, hányadán állnak veled. Figyeld meg: nehezebb közegben hajlamos lehetsz túl sokáig engedékeny maradni ott, ahol már határt kellene húzni.",
+    en: "Your asset is predictability and open communication — people quickly know where they stand with you. Worth watching: in tougher settings you may stay accommodating a beat too long where a firm boundary is needed.",
   },
   INTE_low: {
     hu: "Erőforrásod az ambíció és az érdekérvényesítés. Figyeld meg: éles versenyben a kapcsolati bizalom könnyen sérülhet — a közösen rögzített játékszabályok védik.",
@@ -877,8 +877,8 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
 /** Kivel/milyen működés mellett erősödsz — a top-2 markáns dimenzióból. */
 export const COLLAB_CLICK: Record<string, LocalizedText> = {
   INTE_high: {
-    hu: "Természetes közeged azok mellett van, akik kimondják, amit gondolnak, és tartják, amit vállalnak — az egyenes játék gyorsan kölcsönös bizalommá válik. Az erősen taktikázó működés mellett viszont sok energiád megy el a motívumok fürkészésére.",
-    en: "You're in your element alongside people who say what they think and honour what they commit to — straight dealing quickly becomes mutual trust. Next to highly tactical operators, much of your energy goes into second-guessing motives.",
+    hu: "Természetes közeged azok mellett van, akik kimondják, amit gondolnak, és tartják, amit vállalnak — a nyílt lapokkal játszott együttműködés gyorsan kölcsönös bizalommá válik. Az erősen taktikázó működés mellett viszont sok energiád megy el a motívumok fürkészésére.",
+    en: "You're in your element alongside people who say what they think and honour what they commit to — collaboration played with open cards quickly becomes mutual trust. Next to highly tactical operators, much of your energy goes into second-guessing motives.",
   },
   INTE_low: {
     hu: "Jól kattansz az ambiciózus, eredményre hajtó kollégákkal — a közös célszám és a gyors tempó összekapcsol. Egy elvhűbb társ jó ellensúly lehet: ő tartja a hosszú távú bizalmat, amíg te a lehetőségekre ugrasz.",
@@ -1135,7 +1135,7 @@ export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
 export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
   INTE_high: {
     hu: {
-      strong: "Magas bizalmat és etikai tisztaságot igénylő területek: megfelelőség (compliance), etikai tanácsadás, szabályozás, közszféra, nonprofit.",
+      strong: "Magas bizalmi elvárású, átláthatóságra épülő területek: megfelelőség (compliance), etikai tanácsadás, szabályozás, közszféra, nonprofit.",
       medium: "Bármely vezetői vagy szakértői szerep, ahol az átláthatóság és az integritás tényleges elvárás.",
       watchOut: "Fárasztó lehet, ha a kimondott értékek és a napi gyakorlat eltér. Már az elején érdemes tisztázni a határokat és alapelveket.",
     },

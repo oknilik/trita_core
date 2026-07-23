@@ -14,9 +14,11 @@ import type { Locale } from "@/lib/i18n";
 
 /** Hero-tagline erősség-fele: a legmagasabb dimenzióhoz. */
 export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = {
+  // P5.1: viselkedési preferencia, nem erkölcsi ítélet — a „manipulációmentes"
+  // implicit módon morálisan minősítette az alacsonyabb pólust.
   INTE: {
-    hu: "Jellemzően hitelesen és manipulációmentesen működsz",
-    en: "You tend to operate with authenticity and integrity",
+    hu: "Jellemzően nyílt lapokkal, közvetlen eszközökkel dolgozol",
+    en: "You tend to work with open cards and direct means",
   },
   RESO: {
     hu: "Többnyire mélyen és empatikusan kapcsolódsz másokhoz",
@@ -75,7 +77,7 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
  * ugyanaz a fordulat („hiteles… / hiteles…").
  */
 export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = {
-  INTE: { hu: "egyenesség, tiszta játék, bizalomépítés", en: "fair play, straight talk, trust-building" },
+  INTE: { hu: "nyílt működés, kiszámíthatóság, bizalomépítés", en: "open dealing, predictability, trust-building" },
   RESO: { hu: "érzelmi mélység, törődő jelenlét", en: "emotional depth, caring presence" },
   TEMP: { hu: "lendület, társas magabiztosság", en: "momentum, social confidence" },
   ADAP: { hu: "megbocsátás, higgadtság, kompromisszumkészség", en: "forgiveness, composure, willingness to compromise" },
