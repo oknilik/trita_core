@@ -480,13 +480,13 @@ export function getEnvRows(
 ): EnvRow[] {
   const rows: EnvRow[] = [];
 
-  // Struktúra (C alapján)
-  if (categories.C === "high") {
+  // Struktúra (THOR alapján)
+  if (categories.THOR === "high") {
     rows.push({
       label: { hu: "Struktúra", en: "Structure" },
       value: { hu: "Magas – egyértelmű keretek, folyamatok, szabályok", en: "High – clear structure, processes, rules" },
     });
-  } else if (categories.C === "low") {
+  } else if (categories.THOR === "low") {
     rows.push({
       label: { hu: "Struktúra", en: "Structure" },
       value: { hu: "Alacsony – rugalmas, önirányított", en: "Low – flexible, self-directed" },
@@ -498,13 +498,13 @@ export function getEnvRows(
     });
   }
 
-  // Társas intenzitás (X alapján)
-  if (categories.X === "high") {
+  // Társas intenzitás (TEMP alapján)
+  if (categories.TEMP === "high") {
     rows.push({
       label: { hu: "Társas intenzitás", en: "Social intensity" },
       value: { hu: "Magas – csapatmunka, sok interakció", en: "High – teamwork, frequent interaction" },
     });
-  } else if (categories.X === "low") {
+  } else if (categories.TEMP === "low") {
     rows.push({
       label: { hu: "Társas intenzitás", en: "Social intensity" },
       value: { hu: "Alacsony – önálló munka, kiscsapat", en: "Low – independent work, small team" },
@@ -516,13 +516,13 @@ export function getEnvRows(
     });
   }
 
-  // Változásgyakoriság (O és C alapján)
-  if (categories.O === "high" && categories.C === "high") {
+  // Változásgyakoriság (OPEN és THOR alapján)
+  if (categories.OPEN === "high" && categories.THOR === "high") {
     rows.push({
       label: { hu: "Változásgyakoriság", en: "Change frequency" },
       value: { hu: "Közepes – evolúció strukturált keretek közt", en: "Medium – gradual change within clear boundaries" },
     });
-  } else if (categories.O === "high") {
+  } else if (categories.OPEN === "high") {
     rows.push({
       label: { hu: "Változásgyakoriság", en: "Change frequency" },
       value: { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – comfortable with shifting, novel environments" },
@@ -534,13 +534,13 @@ export function getEnvRows(
     });
   }
 
-  // Döntési sebesség (C és O alapján)
-  if (categories.C === "high" && categories.O === "low") {
+  // Döntési sebesség (THOR és OPEN alapján)
+  if (categories.THOR === "high" && categories.OPEN === "low") {
     rows.push({
       label: { hu: "Döntési sebesség", en: "Decision pace" },
       value: { hu: "Közepes – átgondolt, szabályalapú döntések", en: "Medium – deliberate, rule-based decisions" },
     });
-  } else if (categories.C === "low" && categories.O === "high") {
+  } else if (categories.THOR === "low" && categories.OPEN === "high") {
     rows.push({
       label: { hu: "Döntési sebesség", en: "Decision pace" },
       value: { hu: "Gyors – intuitív, rugalmas döntéshozatal", en: "Fast – intuitive, flexible decision-making" },
@@ -552,26 +552,26 @@ export function getEnvRows(
     });
   }
 
-  // Kultúra (H alapján – ha elérhető)
-  if (categories.H === "high") {
+  // Kultúra (INTE alapján)
+  if (categories.INTE === "high") {
     rows.push({
       label: { hu: "Kultúra", en: "Culture" },
       value: { hu: "Értékvezérelt, etikailag következetes", en: "Values-driven, ethically consistent" },
     });
-  } else if (categories.H === "low") {
+  } else if (categories.INTE === "low") {
     rows.push({
       label: { hu: "Kultúra", en: "Culture" },
       value: { hu: "Teljesítményalapú, versengős kultúra tolerálható", en: "Performance-based, competitive culture acceptable" },
     });
   }
 
-  // Projektciklus (C és O alapján)
-  if (categories.C === "high") {
+  // Projektciklus (THOR és OPEN alapján)
+  if (categories.THOR === "high") {
     rows.push({
       label: { hu: "Projektciklus", en: "Project cycle" },
       value: { hu: "Hosszú, mélyülő – alapos kivitelezés", en: "Long, deepening – thorough execution" },
     });
-  } else if (categories.O === "high") {
+  } else if (categories.OPEN === "high") {
     rows.push({
       label: { hu: "Projektciklus", en: "Project cycle" },
       value: { hu: "Rövid-közepes – felfedező, nehezebben zár le", en: "Short to medium – enjoys exploring, struggles to close" },
@@ -583,13 +583,13 @@ export function getEnvRows(
     });
   }
 
-  // Stressz-tolerancia (E alapján)
-  if (categories.E === "high") {
+  // Stressz-tolerancia (RESO alapján)
+  if (categories.RESO === "high") {
     rows.push({
       label: { hu: "Stressztűrés", en: "Stress tolerance" },
       value: { hu: "Alacsony-közepes – kiszámítható, alacsony nyomású közeg szükséges", en: "Low to medium – predictable, low-pressure environment needed" },
     });
-  } else if (categories.E === "low") {
+  } else if (categories.RESO === "low") {
     rows.push({
       label: { hu: "Stressztűrés", en: "Stress tolerance" },
       value: { hu: "Magas – jól tűri a nyomást és a bizonytalanságot", en: "High – handles pressure and uncertainty well" },
@@ -624,51 +624,51 @@ export const BLOCK4_EMPTY: LocalizedText = {
 // ─── Solo dim narratives (Block 3 ha nincs tension pár) ──────────────────────
 
 export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
-  H_high: {
+  INTE_high: {
     hu: "Az etikai integritás és az őszinteség az egyik legdominánsabb jellemződ. Az őszinteségre törekszel, és hiteles akarsz lenni – ez a munkahelyi kapcsolataidban is erős, bizalomépítő alapot ad.",
     en: "Ethical integrity and honesty are among your most dominant traits. You seek truthfulness and strive to be authentic — this provides a strong, trust-building foundation in your professional relationships.",
   },
-  H_low: {
+  INTE_low: {
     hu: "Ambiciózus és stratégiai gondolkodású vagy: nem riadsz vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő számodra – a versengés és az önérvényesítés természetes közeged.",
     en: "Ambitious and strategic, you don't shy away from challenges or competition. Achieving goals is what drives you — competition and self-assertion are your natural environment.",
   },
-  E_high: {
+  RESO_high: {
     hu: "Az érzelmi érzékenység az egyik meghatározó jellemződ. Empatikus vagy, és könnyen reagálsz a körülötted zajló eseményekre – ez értéket ad kapcsolataidnak, de igényli a megfelelő, támogató keretet.",
     en: "Emotional sensitivity is one of your defining traits. You are empathetic and respond readily to events around you — this adds value to your relationships but calls for a supportive, well-structured environment.",
   },
-  E_low: {
+  RESO_low: {
     hu: "Kiemelkedő érzelmi stabilitás jellemez. Nyomás és bizonytalanság alatt is megőrzöd az egyensúlyodat – ez ritka és értékes képesség változékony közegekben.",
     en: "You are characterized by outstanding emotional stability. You maintain your balance even under pressure and uncertainty — a rare and highly valuable ability in volatile environments.",
   },
-  X_high: {
+  TEMP_high: {
     hu: "Erősen extravertált vagy – a kapcsolatokból és interakciókból nyersz energiát. A társas tér a természetes közeged, és aktívan alakítod a közeg dinamikáját.",
     en: "You are strongly extraverted — you draw energy from relationships and interactions. Social space is your natural element, and you actively shape the dynamics around you.",
   },
-  X_low: {
+  TEMP_low: {
     hu: "Introvertált beállítottság jellemez – önálló vagy kiscsoportos munkában töltöd fel az energiáidat. A mély fókusz és az autonómia az erősséged tere.",
     en: "You have an introverted disposition — you recharge through independent or small-group work. Deep focus and autonomy are where your strengths unfold.",
   },
-  A_high: {
+  ADAP_high: {
     hu: "Együttműködő, alkalmazkodó és kapcsolatorientált. A csapatkohézió és a harmónia természetes értéked – aktívan dolgozol a jó kapcsolatok fenntartásán.",
     en: "Cooperative, adaptable, and relationship-oriented. Team cohesion and harmony are values that come naturally to you — you actively work at maintaining good relationships.",
   },
-  A_low: {
+  ADAP_low: {
     hu: "Egyenes, elvhű és önálló. A döntéseket nem a béke, hanem az igazság alapján hozod – ez erős véleményvezér és tárgyalópartner-profilt ad.",
     en: "Direct, principled, and independent. You make decisions based on truth, not comfort — this creates a strong opinion-leader and negotiating-partner profile.",
   },
-  C_high: {
+  THOR_high: {
     hu: "Szervezett, megbízható és következetes – a lelkiismeretesség erős bázist ad a teljesítményhez. A vállalt feladatokat gondosan kivitelezed, és értékeled a tiszta struktúrát.",
     en: "Organized, reliable, and consistent — conscientiousness provides a strong foundation for performance. You execute your commitments carefully and value clear structure.",
   },
-  C_low: {
+  THOR_low: {
     hu: "Rugalmas és adaptív, inkább intuitív irányítású. A spontán megközelítés és az improvizáció az erősségeid – a folyamatos struktúra kevésbé motivál.",
     en: "Flexible and adaptive, you tend to operate more intuitively. Spontaneous approaches and improvisation are your strengths — rigid ongoing structure motivates you less.",
   },
-  O_high: {
+  OPEN_high: {
     hu: "Az újdonságra és a komplex gondolkodásra nyitott, kíváncsi személyiség. Az ismeretlen nem riaszt, hanem vonz – az innováció, a kreativitás és a feltárás természetes közeged.",
     en: "Curious and open to novelty and complex thinking. The unknown doesn't discourage you — it draws you in. Innovation, creativity, and discovery are your natural domains.",
   },
-  O_low: {
+  OPEN_low: {
     hu: "Kiszámítható, konkrét és pragmatikus beállítottságú. A bevált megoldásokat részesíted előnyben – a stabilitás, a megbízhatóság és az ismert módszerek az erősséged.",
     en: "Predictable, concrete, and pragmatic. You prefer proven solutions — stability, reliability, and familiar methods are your strengths.",
   },
@@ -677,7 +677,7 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
 // ─── Solo dim role texts (Block 5 ha nincs tension pár) ──────────────────────
 
 export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
-  H_high: {
+  INTE_high: {
     hu: {
       strong: "Magas bizalmat és etikai tisztaságot igénylő területek: megfelelőség (compliance), etikai tanácsadás, szabályozás, közszféra, nonprofit.",
       medium: "Bármely vezetői vagy szakértői szerep, ahol az átláthatóság és az integritás tényleges elvárás.",
@@ -689,7 +689,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "It can be draining when stated values and day-to-day practice don't match. Align early on boundaries and shared principles.",
     },
   },
-  H_low: {
+  INTE_low: {
     hu: {
       strong: "Versengő, eredményorientált közegek: üzletfejlesztés, értékesítés, növekedés (growth), vállalkozás, tárgyalásintenzív szerepek.",
       medium: "Vezetői, projekt- vagy stratégiai szerepek, ahol az ambíció és az önbizalom húzóerő.",
@@ -701,7 +701,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "If competition turns into people-versus-people, team dynamics can suffer. Keep it aimed at shared goals and clear rules of play.",
     },
   },
-  E_high: {
+  RESO_high: {
     hu: {
       strong: "Emberközeli, támogató szerepek: HR, coaching/mentoring, egészségügy vagy szociális terület, ügyfélélmény.",
       medium: "Kapcsolati szerepek (ügyfélmunka, oktatás, tárgyalás), ahol az empátia kézzelfogható értéket teremt.",
@@ -713,7 +713,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Sustained pressure and unpredictability can wear you down. Plan recovery time and keep a simple stress-management routine.",
     },
   },
-  E_low: {
+  RESO_low: {
     hu: {
       strong: "Nagy nyomású döntési és krízishelyzetek, ahol a nyugalom versenyelőny.",
       medium: "Változásvezetés, transzformáció, startup: ahol a bizonytalanság a munka része.",
@@ -725,7 +725,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Your steadiness can be read as coldness. Name your intent and empathy explicitly, not only the facts.",
     },
   },
-  X_high: {
+  TEMP_high: {
     hu: {
       strong: "Kapcsolati és „látható” szerepek: vezetés, értékesítés, ügyfélmunka, facilitáció, közösségépítés.",
       medium: "Projekt- és változásvezetés, ahol a mozgósítás és a motiválás kulcs.",
@@ -737,7 +737,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Too much isolated work can drain you. Build regular, high-quality human contact into your week.",
     },
   },
-  X_low: {
+  TEMP_low: {
     hu: {
       strong: "Mély fókuszt adó, önálló szerepek: elemzés, fejlesztés, kutatás, stratégia, technikai szakértői munka.",
       medium: "Kis csapat, aszinkron együttműködés is jól működhet, ha marad elég csendes/időzített fókuszidő.",
@@ -749,7 +749,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Highly social, always-on visibility roles can exhaust you. Set boundaries around meetings and public-facing moments.",
     },
   },
-  A_high: {
+  ADAP_high: {
     hu: {
       strong: "Együttműködés- és bizalomépítő szerepek: facilitáció, HR, tanácsadás, mediáció, ügyfélmenedzsment.",
       medium: "Partnerségi szerepek, ahol a stabil kapcsolat hozza az eredményt.",
@@ -761,7 +761,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "In conflict, you may delay directness and tensions can accumulate. Practice short, respectful, assertive check-ins.",
     },
   },
-  A_low: {
+  ADAP_low: {
     hu: {
       strong: "Tárgyalások, vitás helyzetek, kritikus felülvizsgálatok: jog, audit, stratégia, szakértői ellenőrzés.",
       medium: "Egyéni szakértői vagy vezetői szerepek, ahol az egyenes visszajelzés kifejezetten érték.",
@@ -773,7 +773,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Directness can strain the team. Keep feedback specific and constructive: critique situations and ideas, not people.",
     },
   },
-  C_high: {
+  THOR_high: {
     hu: {
       strong: "Hosszabb, komplex projektek és üzemeltetés: programvezetés, minőségbiztosítás, szabályozás/compliance.",
       medium: "Strukturált szakértői szerepek, ahol a pontosság és a következetes kivitelezés alap.",
@@ -785,7 +785,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "It's frustrating when work never closes or decisions drag on. Define what done means and by when.",
     },
   },
-  C_low: {
+  THOR_low: {
     hu: {
       strong: "Gyors, kísérletezős közegek: startup, kreatív ipar, agilis csapatok, prototípus-készítés.",
       medium: "Felfedező, ötletelő szerepek, ahol a gyors iteráció és a váltás érték.",
@@ -797,7 +797,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Long, detail-heavy execution can be draining. Pair with someone (or a process) that carries structure to the finish.",
     },
   },
-  O_high: {
+  OPEN_high: {
     hu: {
       strong: "Új ötleteket és komplex gondolkodást igénylő szerepek: kutatás, stratégia, design, termék/innováció, vállalkozás.",
       medium: "Oktatás, tanácsadás, coaching, ahol a perspektívaváltás és kíváncsiság hozza a pluszt.",
@@ -809,7 +809,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
       watchOut: "Closing can be harder than exploring. Use timeboxes and set clear endpoints upfront.",
     },
   },
-  O_low: {
+  OPEN_low: {
     hu: {
       strong: "Stabil, végrehajtás- és megbízhatóság-központú szerepek: üzemeltetés, bevezetés, folyamatműködtetés.",
       medium: "Optimalizálás és rendszerszintű problémamegoldás, ahol a tapasztalatból jön a minőség.",

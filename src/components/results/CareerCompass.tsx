@@ -402,10 +402,10 @@ export function CareerCompass({
     if (!missingText.trim()) return;
     setMissingState("busy");
     try {
-      const res = await fetch("/api/feature-interest", {
+      const res = await fetch("/api/features/interest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ featureKey: "industry_role", message: missingText.trim() }),
+        body: JSON.stringify({ mode: "lead", featureKey: "industry_role", message: missingText.trim() }),
       });
       if (!res.ok) throw new Error("SEND_FAILED");
       setMissingState("sent");

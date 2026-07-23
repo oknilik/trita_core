@@ -497,30 +497,33 @@ paths:
   /api/feature-interest:
     post:
       tags: [Feedback]
-      summary: Érdeklődés-jelzés (meleg lead) + admin email
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [featureKey]
-              properties:
-                featureKey: { type: string, enum: [team, industry_role] }
-                message: { type: string, maxLength: 2000 }
-      responses: { "200": { description: OK } }
+      summary: "Deprecated — 308 átirányítás: /api/features/interest?legacy=lead"
+      deprecated: true
+      responses: { "308": { description: Permanent Redirect } }
   /api/features/interest:
     get: { tags: [Feedback], summary: Saját érdeklődés-jelzések, responses: { "200": { description: OK } } }
     post:
       tags: [Feedback]
-      summary: Feature-érdeklődés rögzítése
+      summary: "Feature-érdeklődés — mode:lead (meleg lead + admin email) / mode:wishlist (toggle)"
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              required: [featureKey]
-              properties: { featureKey: { type: string, enum: [team, comm, "360"] } }
-      responses: { "200": { description: OK } }
+              oneOf:
+                - type: object
+                  required: [mode, featureKey]
+                  properties:
+                    mode: { type: string, enum: [lead] }
+                    featureKey: { type: string, enum: [team, industry_role] }
+                    message: { type: string, maxLength: 2000 }
+                - type: object
+                  required: [mode, featureKey]
+                  properties:
+                    mode: { type: string, enum: [wishlist] }
+                    featureKey: { type: string, enum: [team, comm, "360"] }
+      responses:
+        "200": { description: OK }
+        "429": { description: Rate limited }
 
   # ── Inquiry (in-app kérdés) ───────────────────────────────────────────────
   /api/inquiry:
