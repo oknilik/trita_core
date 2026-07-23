@@ -105,4 +105,9 @@ Jelmagyarázat: becslés S (≤ fél nap) / M (1–2 nap) / L (több nap).
 Ellenőrzés: `tsc --noEmit` 0 hiba; content-pipeline harness futtatva
 (duplikáció-mentes takeaways, helyes névelők, tagline-ok). A dosszié
 újragenerálása: `pnpm report:personas` (a seed-personák változatlanok).
-- [ ] P2.x — ütemezés után
+- [x] P2.1 vakfolt + nyomás alatt — 2026-07-23 (`SOLO_DIM_PRESSURE` 12 db, „Vakfoltok és nyomás alatt" kártya a PDF-en, hipotézis-disclaimerrel) · commit c3fd286
+- [x] P2.2 roleFit differenciálás — 2026-07-23 (`SOLO_DIM_ROLE_MODIFIERS` 12 db + tag-merge a „Működhet" sávba + „a személyiség csak egy tényező" disclaimer; mellékjavítás: a PdfRoleFit sáv-címkék EN-riportban eddig magyarul jelentek meg) · commit 70d2db2
+- [x] P2.3 csapatszerep-sávok — 2026-07-23 (becslésnél sáv-címke pontszám nélkül: Elsődleges/Jelentős/Lehetséges; mért kérdőívnél marad a pontszám; mellékjavítás: PdfTeamRoles locale) · commit 49432c7
+- [x] P2.4 fejlődési javaslat — 2026-07-23 (`DIMENSION_GROWTH_TIPS` 6 db; „Fejlődési fókusz" kártya, csak <40 pontos legalacsonyabb dimenziónál) · commit f600fdc
+- [~] P2.5 Segítőkészség-szövegek — részben okafogyott: a skálának már van low/mid/high sávszövege a kérdésbank-configban; a dossziéban látott ismétlődés a fix 50-es persona-pontszám műterméke. Teendő később: a sávszövegek gazdagítása (P3.4-gyel együtt).
+- A becslő spread-je (P2.3 megjegyzés): a súlyozott becslő tendenciózusan Koordinátor/Megvalósító irányba húz — algoritmus-módosítást validációs adat nélkül nem tettünk; a sáv-megjelenítés ezt kommunikációs szinten kezeli. Újranézendő valós kérdőíves adatok birtokában.
