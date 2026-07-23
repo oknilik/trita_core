@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AdminFeedbackSection } from "@/app/admin/_components/AdminFeedbackSection";
+import { AdminFeedbackSection } from "@/app/(app)/admin/_components/AdminFeedbackSection";
 
 // Visszajelzések fül — szerep-kalibráció + érdeklődés-jelzések + elégedettség
 // (utóbbi a megszűnt Kutatás fülről költözött ide)

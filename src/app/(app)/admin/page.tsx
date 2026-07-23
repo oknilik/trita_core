@@ -4,14 +4,14 @@ import { t } from "@/lib/i18n";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FadeIn } from "@/components/landing/FadeIn";
-import { AdminTabNav } from "@/app/admin/_components/AdminTabNav";
-import { OverviewTab } from "@/app/admin/_tabs/OverviewTab";
-import { InquiriesTab } from "@/app/admin/_tabs/InquiriesTab";
-import { OrgsTab } from "@/app/admin/_tabs/OrgsTab";
-import { ConsultantsTab } from "@/app/admin/_tabs/ConsultantsTab";
-import { OpsTab } from "@/app/admin/_tabs/OpsTab";
-import { FeedbackTab } from "@/app/admin/_tabs/FeedbackTab";
-import { RemindersTab } from "@/app/admin/_tabs/RemindersTab";
+import { AdminTabNav } from "@/app/(app)/admin/_components/AdminTabNav";
+import { OverviewTab } from "@/app/(app)/admin/_tabs/OverviewTab";
+import { InquiriesTab } from "@/app/(app)/admin/_tabs/InquiriesTab";
+import { OrgsTab } from "@/app/(app)/admin/_tabs/OrgsTab";
+import { ConsultantsTab } from "@/app/(app)/admin/_tabs/ConsultantsTab";
+import { OpsTab } from "@/app/(app)/admin/_tabs/OpsTab";
+import { FeedbackTab } from "@/app/(app)/admin/_tabs/FeedbackTab";
+import { RemindersTab } from "@/app/(app)/admin/_tabs/RemindersTab";
 
 export const dynamic = "force-dynamic";
 

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AdminConsultantsSection } from "@/app/admin/_components/AdminConsultantsSection";
+import { AdminConsultantsSection } from "@/app/(app)/admin/_components/AdminConsultantsSection";
 
 // Tanácsadók fül — platform-szintű tanácsadó-onboarding
 export async function ConsultantsTab() {

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
 import { t, type Locale } from "@/lib/i18n";
-import { AdminStatCard } from "@/app/admin/_components/AdminStatCard";
-import { AdminMetricsGrid } from "@/app/admin/_components/AdminMetricsGrid";
+import { AdminStatCard } from "@/app/(app)/admin/_components/AdminStatCard";
+import { AdminMetricsGrid } from "@/app/(app)/admin/_components/AdminMetricsGrid";
 
 // Kérés-idejű időbélyegek a statisztika-ablakokhoz — szándékos.
 function getStatWindows() {

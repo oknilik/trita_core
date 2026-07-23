@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
 import { resolveStaffDestination } from "@/lib/journey/guardrails.server";
 import { getServerAuth } from "@/lib/auth-server";
+import { ClientRedirect } from "@/components/navigation/ClientRedirect";
 
 export const dynamic = "force-dynamic";
 
@@ -26,8 +27,10 @@ export default async function DashboardPage({
   if (!profile) redirect("/sign-in");
 
   // Platform-stáb (admin/tanácsadó): egyből a munkafelületére — nincs teszt-kapu.
+  // Kliens-oldali redirect: a page-szintű szerver-redirect() Next 16 alatt
+  // "Rendered more hooks" kliens-hibát dob (ld. ClientRedirect komment).
   const staffDestination = await resolveStaffDestination(profile.id);
-  if (staffDestination) redirect(staffDestination);
+  if (staffDestination) return <ClientRedirect to={staffDestination} />;
 
   const journey = await resolveJourney(profile.id, { entryPoint });
 
@@ -45,5 +48,5 @@ export default async function DashboardPage({
     destination = `/profile/results${qs ? `?${qs}` : ""}`;
   }
 
-  redirect(destination);
+  return <ClientRedirect to={destination} />;
 }

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AdminOrgAccessSection } from "@/app/admin/_components/AdminOrgAccessSection";
+import { AdminOrgAccessSection } from "@/app/(app)/admin/_components/AdminOrgAccessSection";
 import { sanitizeOrgBillingProfile } from "@/lib/org-billing";
 
 // Szervezetek fül — kézi hozzáférés-kiosztás (consulting mode)

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
-import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/seo";
+import { TranslationRedirect } from "../TranslationRedirect";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -203,16 +203,12 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const locale = await getServerLocale();
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  // Nyelvváltásnál a cikk átirányít a saját fordítás-párjára,
-  // hogy a tartalom is nyelvet váltson, ne csak a keret.
-  if (post.locale !== locale && post.translationSlug) {
-    redirect(`/blog/${post.translationSlug}`);
-  }
-
+  // Statikus oldal: a keret is a cikk nyelvén renderel; nyelvváltásnál a
+  // TranslationRedirect kliens-oldalon visz a fordítás-párra.
+  const locale = post.locale;
 
   // Related posts (same tags, excluding current)
   const allPosts = getAllPosts(locale as "hu" | "en");
@@ -222,6 +218,10 @@ export default async function BlogPostPage({
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
+      <TranslationRedirect
+        postLocale={post.locale}
+        translationSlug={post.translationSlug}
+      />
       {/* Header */}
       <div className="mx-auto max-w-[840px] px-7 pb-0 pt-6">
         <Link

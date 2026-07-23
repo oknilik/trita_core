@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { AdminInquiriesSection } from "@/app/admin/_components/AdminInquiriesSection";
+import { AdminInquiriesSection } from "@/app/(app)/admin/_components/AdminInquiriesSection";
 
 // Kérdések fül — beérkezett megkeresések (contact form + in-app csatorna)
 export async function InquiriesTab() {

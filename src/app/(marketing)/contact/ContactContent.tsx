@@ -1,31 +1,12 @@
-import type { Metadata } from "next";
+"use client";
+
 import type { ReactNode } from "react";
-import { getServerLocale } from "@/lib/i18n-server";
-import { getLanguageAlternates } from "@/lib/seo";
+import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { ContactForm } from "./ContactForm";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
-
-  const title = t("contact.metaTitle", locale);
-  const description = t("contact.metaDescription", locale);
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: "/contact",
-      languages: getLanguageAlternates("/contact"),
-    },
-    openGraph: { title, description, url: "/contact", type: "website", siteName: "trita" },
-    twitter: { card: "summary_large_image", title, description },
-    robots: { index: true, follow: true },
-  };
-}
-
-export default async function ContactPage() {
-  const locale = await getServerLocale();
+export function ContactContent() {
+  const { locale } = useLocale();
 
   return (
     <main className="min-h-dvh bg-cream text-ink">

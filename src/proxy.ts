@@ -67,6 +67,17 @@ const handler = clerkMiddleware(async (auth, req) => {
     return nextWithPathname(req);
   }
 
+  // Bejelentkezett user a root-on: HTTP-redirect a journey-kapura még a
+  // render előtt. A page-szintű szerver-redirect() Next 16 alatt kliens-
+  // oldali "Rendered more hooks" hibát dob (vercel/next.js#63121, #78396) —
+  // a middleware-redirect sima 307, nem érinti a kliens Routert.
+  if (req.nextUrl.pathname === "/") {
+    const { userId } = await auth();
+    if (userId || e2eBypass) {
+      return NextResponse.redirect(new URL(JOURNEY_HOME_HANDOFF_PATH, req.url));
+    }
+  }
+
   if (isPublicRoute(req)) {
     return nextWithPathname(req);
   }

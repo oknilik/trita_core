@@ -1,8 +1,8 @@
 import { FadeIn } from "@/components/landing/FadeIn";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
-import { AdminReminderSection } from "@/app/admin/_components/AdminReminderSection";
-import { AdminDraftReminderSection } from "@/app/admin/_components/AdminDraftReminderSection";
+import { AdminReminderSection } from "@/app/(app)/admin/_components/AdminReminderSection";
+import { AdminDraftReminderSection } from "@/app/(app)/admin/_components/AdminDraftReminderSection";
 
 // Kérés-idejű időbélyegek a szűrő-ablakokhoz — szándékos.
 function getFilterWindows() {

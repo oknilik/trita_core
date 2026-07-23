@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut, useAuth, useClerk } from "@clerk/nextjs";
+import { useAuth, useClerk } from "@clerk/nextjs";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { t } from "@/lib/i18n";
@@ -44,14 +44,21 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
 interface NavBarProps {
   signedInHomeHref?: string;
   signedInExperienceHints?: JourneyExperienceHints | null;
+  initialIsSignedIn?: boolean;
 }
 
 export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
+  initialIsSignedIn = false,
 }: NavBarProps) {
   const { locale } = useLocale();
-  const { isSignedIn } = useAuth();
+  // SSR-kor a szerver által ismert auth-állapotot használjuk (a static
+  // ClerkProvider alatt a useAuth() a clerk-js betöltéséig undefined) —
+  // így a szerver- és az első kliens-render megegyezik, nincs hydration
+  // mismatch a sign-in link körül.
+  const { isSignedIn: clientIsSignedIn } = useAuth();
+  const isSignedIn = clientIsSignedIn ?? initialIsSignedIn;
   const { signOut } = useClerk();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -143,26 +150,26 @@ export function NavBar({
 
           {/* ═══ RIGHT SIDE ═══ */}
           <div className="flex items-center gap-2">
-            <SignedOut>
-              {/* Sign in — desktop only */}
-              <Link
-                href="/sign-in"
-                className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-[13px] text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
-              >
-                {t("nav.signIn", locale)}
-              </Link>
-              {/* CTA — always visible */}
-              <Link
-                href="/try"
-                className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-[13px]"
-              >
-                {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
-              </Link>
-            </SignedOut>
+            {!isSignedIn && (
+              <>
+                {/* Sign in — desktop only */}
+                <Link
+                  href="/sign-in"
+                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-[13px] text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
+                >
+                  {t("nav.signIn", locale)}
+                </Link>
+                {/* CTA — always visible */}
+                <Link
+                  href="/try"
+                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-[13px]"
+                >
+                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+                </Link>
+              </>
+            )}
 
-            <SignedIn>
-              <UserMenu />
-            </SignedIn>
+            {isSignedIn && <UserMenu />}
 
             {/* Separator + Language — always visible */}
             <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
@@ -219,7 +226,7 @@ export function NavBar({
               <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
             </Link>
             <div className="flex items-center gap-3">
-              <SignedOut>
+              {!isSignedIn && (
                 <Link
                   href="/try"
                   onClick={() => setDrawerOpen(false)}
@@ -227,7 +234,7 @@ export function NavBar({
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
-              </SignedOut>
+              )}
               <LanguageSwitcher />
               <button
                 type="button"
@@ -263,7 +270,7 @@ export function NavBar({
 
           {/* Bottom buttons */}
           <div className="shrink-0 px-5 pb-8 pt-4">
-            <SignedOut>
+            {!isSignedIn && (
               <div className="flex gap-3">
                 <Link
                   href="/sign-in"
@@ -280,8 +287,8 @@ export function NavBar({
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
               </div>
-            </SignedOut>
-            <SignedIn>
+            )}
+            {isSignedIn && (
               <button
                 type="button"
                 onClick={() => { signOut(); setDrawerOpen(false); }}
@@ -289,7 +296,7 @@ export function NavBar({
               >
                 {t("nav.signOut", locale)}
               </button>
-            </SignedIn>
+            )}
           </div>
         </div>
       )}

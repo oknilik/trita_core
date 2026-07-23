@@ -1,25 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
-import { getLanguageAlternates } from "@/lib/seo";
-import { getServerLocale } from "@/lib/i18n-server";
+import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
-  const title = t("pricing.metaTitle", locale);
-  const description = t("pricing.metaDescription", locale);
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: "/pricing",
-      languages: getLanguageAlternates("/pricing"),
-    },
-    openGraph: { title, description, url: "/pricing", type: "website", siteName: "trita" },
-    twitter: { card: "summary_large_image", title, description },
-  };
-}
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -32,8 +16,8 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default async function PricingPage() {
-  const locale = await getServerLocale();
+export function PricingContent() {
+  const { locale } = useLocale();
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">

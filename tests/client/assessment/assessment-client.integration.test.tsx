@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { TestType } from "@prisma/client";
-import { AssessmentClient } from "@/app/assessment/AssessmentClient";
+import { AssessmentClient } from "@/app/(app)/assessment/AssessmentClient";
 import { getAssessmentDraftKey } from "@/lib/assessment-draft";
 import { t } from "@/lib/i18n";
 import { createLocalStorageMock } from "../../helpers/local-storage-mock";

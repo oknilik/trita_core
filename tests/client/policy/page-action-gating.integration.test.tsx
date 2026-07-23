@@ -6,7 +6,7 @@ import { OrgMembersTab } from "@/components/org/OrgMembersTab";
 import { OrgCampaignsTab } from "@/components/org/OrgCampaignsTab";
 import { OrgTeamsTab } from "@/components/org/OrgTeamsTab";
 import { ProfileHero } from "@/components/results/ProfileHero";
-import { HiringDashboard } from "@/app/hiring/[orgId]/_components/HiringDashboard";
+import { HiringDashboard } from "@/app/(app)/hiring/[orgId]/_components/HiringDashboard";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({

@@ -10,7 +10,7 @@ import type { ComponentProps } from "react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import { ObserverClient } from "@/app/observe/[token]/ObserverClient";
+import { ObserverClient } from "@/app/(app)/observe/[token]/ObserverClient";
 import { t } from "@/lib/i18n";
 import { createLocalStorageMock } from "../../helpers/local-storage-mock";
 

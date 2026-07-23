@@ -1,25 +1,11 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { getServerLocale } from "@/lib/i18n-server";
-import { t } from "@/lib/i18n";
-import { getAllPosts } from "@/lib/blog";
+"use client";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Blog | trita",
-    description:
-      "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",
-    alternates: { canonical: "/blog" },
-    openGraph: {
-      title: "Blog | trita",
-      description:
-        "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",
-      url: "/blog",
-      type: "website",
-      siteName: "trita",
-    },
-  };
-}
+import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
+import type { BlogPost } from "@/lib/blog";
+
+type PostMeta = Omit<BlogPost, "content">;
 
 // Tag color helper
 function getTagStyle(tag: string): string {
@@ -31,9 +17,15 @@ function getTagStyle(tag: string): string {
   return "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]";
 }
 
-export default async function BlogListPage() {
-  const locale = await getServerLocale();
-  const posts = getAllPosts(locale as "hu" | "en");
+// A posztlista mindkét nyelven build-time készül (a page tölti fs-ből);
+// a kliens csak a megjelenítendő nyelvet választja ki.
+export function BlogListContent({
+  postsByLocale,
+}: {
+  postsByLocale: { hu: PostMeta[]; en: PostMeta[] };
+}) {
+  const { locale } = useLocale();
+  const posts = postsByLocale[locale === "en" ? "en" : "hu"];
   const featured = posts[0];
   const rest = posts.slice(1);
 

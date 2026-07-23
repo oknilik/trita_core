@@ -1,84 +1,58 @@
-import type { Metadata } from "next";
-import { getServerLocale } from "@/lib/i18n-server";
+"use client";
+
+import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { getLanguageAlternates } from "@/lib/seo";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
-  const title = `${t("privacy.title", locale)} | trita`;
-  const description = t("privacy.introBody", locale);
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: "/privacy",
-      languages: getLanguageAlternates("/privacy"),
-    },
-    openGraph: {
-      title,
-      description,
-      url: "/privacy",
-      type: "article",
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
-}
+const sections = [
+  { id: "intro", index: "01", title: "privacy.introTitle", body: "privacy.introBody" },
+  {
+    id: "data-collected",
+    index: "02",
+    title: "privacy.dataCollectedTitle",
+    items: [
+      "privacy.dataAuth",
+      "privacy.dataDemographic",
+      "privacy.dataAssessment",
+      "privacy.dataTechnical",
+    ],
+  },
+  {
+    id: "purpose",
+    index: "03",
+    title: "privacy.purposeTitle",
+    items: ["privacy.purposeResearch", "privacy.purposeService"],
+  },
+  { id: "cookies", index: "04", title: "privacy.cookiesTitle", body: "privacy.cookiesBody" },
+  { id: "storage", index: "05", title: "privacy.storageTitle", body: "privacy.storageBody" },
+  { id: "analytics", index: "06", title: "privacy.analyticsTitle", body: "privacy.analyticsBody" },
+  {
+    id: "processors",
+    index: "07",
+    title: "privacy.processorsTitle",
+    items: [
+      "privacy.processorsClerk",
+      "privacy.processorsNeon",
+      "privacy.processorsVercel",
+      "privacy.processorsResend",
+    ],
+  },
+  {
+    id: "rights",
+    index: "08",
+    title: "privacy.rightsTitle",
+    items: [
+      "privacy.rightsAccess",
+      "privacy.rightsDeletion",
+      "privacy.rightsWithdraw",
+    ],
+  },
+  { id: "contact", index: "09", title: "privacy.contactTitle", body: "privacy.contactBody" },
+] as const;
 
-export default async function PrivacyPage() {
-  const locale = await getServerLocale();
+export function PrivacyContent() {
+  const { locale } = useLocale();
   const legalLabel = locale === "hu" ? "// jogi" : "// legal";
   const tocLabel = locale === "hu" ? "Tartalom" : "Contents";
-
-  const sections = [
-    { id: "intro", index: "01", title: "privacy.introTitle", body: "privacy.introBody" },
-    {
-      id: "data-collected",
-      index: "02",
-      title: "privacy.dataCollectedTitle",
-      items: [
-        "privacy.dataAuth",
-        "privacy.dataDemographic",
-        "privacy.dataAssessment",
-        "privacy.dataTechnical",
-      ],
-    },
-    {
-      id: "purpose",
-      index: "03",
-      title: "privacy.purposeTitle",
-      items: ["privacy.purposeResearch", "privacy.purposeService"],
-    },
-    { id: "cookies", index: "04", title: "privacy.cookiesTitle", body: "privacy.cookiesBody" },
-    { id: "storage", index: "05", title: "privacy.storageTitle", body: "privacy.storageBody" },
-    { id: "analytics", index: "06", title: "privacy.analyticsTitle", body: "privacy.analyticsBody" },
-    {
-      id: "processors",
-      index: "07",
-      title: "privacy.processorsTitle",
-      items: [
-        "privacy.processorsClerk",
-        "privacy.processorsNeon",
-        "privacy.processorsVercel",
-        "privacy.processorsResend",
-      ],
-    },
-    {
-      id: "rights",
-      index: "08",
-      title: "privacy.rightsTitle",
-      items: [
-        "privacy.rightsAccess",
-        "privacy.rightsDeletion",
-        "privacy.rightsWithdraw",
-      ],
-    },
-    { id: "contact", index: "09", title: "privacy.contactTitle", body: "privacy.contactBody" },
-  ] as const;
 
   return (
     <main className="min-h-dvh bg-cream">
