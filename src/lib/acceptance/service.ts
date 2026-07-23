@@ -8,6 +8,7 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getTestConfig } from "@/lib/questions";
 import { calculateScores } from "@/lib/scoring";
 import { isSharedAcceptanceServiceEnabled } from "@/lib/rollout-guards.server";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 
 export type MembershipJoinKind = "team" | "org";
 
@@ -138,6 +139,8 @@ export interface CandidateInviteContext {
   position: string | null;
   name: string | null;
   status: CandidateInviteStatus;
+  /** Opcionális 2. lépés: csapatszerep-kérdőív az apply-flow-ban */
+  includeTeamRole: boolean;
   expiresAt: Date;
   draftStartedAt: Date | null;
   draftAnsweredCount: number;
@@ -776,6 +779,7 @@ async function resolveCandidateInviteContext(
       position: true,
       name: true,
       status: true,
+      includeTeamRole: true,
       expiresAt: true,
       draftStartedAt: true,
       draftAnsweredCount: true,
@@ -790,6 +794,7 @@ async function resolveCandidateInviteContext(
     position: invite.position,
     name: invite.name,
     status: invite.status as CandidateInviteStatus,
+    includeTeamRole: invite.includeTeamRole,
     expiresAt: invite.expiresAt,
     draftStartedAt: invite.draftStartedAt,
     draftAnsweredCount: invite.draftAnsweredCount,
@@ -1090,7 +1095,11 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
   }
 
   const testType = candidateContext.testType as TestType;
-  const config = getTestConfig(testType);
+  // A jelölt a kiszolgált formot tölti ki (DEFAULT_ASSESSMENT_FORM — short),
+  // a teljesség-ellenőrzés is ahhoz mérendő. A korábbi form-nélküli hívás a
+  // teljes 100 itemes bankot várta, így a 60 itemes beadás mindig
+  // MISSING_ANSWER-rel bukott. A pontozás formától független.
+  const config = getTestConfig(testType, "hu", DEFAULT_ASSESSMENT_FORM);
   const expectedIds = new Set(config.questions.map((q) => q.id));
   const relevantAnswers = input.answers.filter((a) => expectedIds.has(a.questionId));
 

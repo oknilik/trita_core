@@ -445,6 +445,7 @@ export const orgTranslations = {
       tabTeams: { hu: "Csapatok", en: "Teams" },
       tabMembers: { hu: "Tagok", en: "Members" },
       tabInquiries: { hu: "Kérdések", en: "Inquiries" },
+      tabCandidates: { hu: "Jelöltek", en: "Candidates" },
       tabBilling: { hu: "Számlázás", en: "Billing" },
     },
 

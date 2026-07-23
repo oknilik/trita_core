@@ -14,6 +14,7 @@ const bodySchema = z.object({
   name: z.string().min(1).max(100),
   position: z.string().max(100).optional(),
   teamId: z.string().optional(),
+  includeTeamRole: z.boolean().optional(),
   inviteLocale: z.enum(["hu", "en"]).optional(),
 });
 
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  const { email, name, position, teamId, inviteLocale } = parsed.data;
+  const { email, name, position, teamId, includeTeamRole, inviteLocale } = parsed.data;
   let serviceResult;
   try {
     serviceResult = await createCandidateApplyInvite({
@@ -34,6 +35,7 @@ export async function POST(req: Request) {
       name,
       position,
       teamId,
+      includeTeamRole,
     });
   } catch (error) {
     if (error instanceof CandidateApplyServiceError) {

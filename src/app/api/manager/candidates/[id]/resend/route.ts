@@ -1,13 +1,14 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
-import { canManageTeam } from "@/lib/team-auth";
 import { sendCandidateInviteEmail } from "@/lib/emails";
-import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
+// POST /api/manager/candidates/[id]/resend — jelölt-meghívó újraküldése.
+// Guard (2026-07-23): csak a tanácsadói kör (ORG_CONSULTANT / platform-
+// tanácsadó / trita-admin) — a meghívó orgjának hatókörében.
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -17,7 +18,7 @@ export async function POST(
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, username: true, email: true },
+    select: { id: true, username: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -28,6 +29,7 @@ export async function POST(
     select: {
       id: true,
       managerId: true,
+      orgId: true,
       teamId: true,
       status: true,
       expiresAt: true,
@@ -40,42 +42,19 @@ export async function POST(
 
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-  let orgMembershipRole: string | null = null;
-  if (invite.team?.orgId) {
-    const orgMembership = await prisma.organizationMember.findFirst({
-      where: { userId: profile.id, orgId: invite.team.orgId },
-      select: { role: true },
-    });
-    orgMembershipRole = orgMembership?.role ?? null;
-    const evaluateSnapshot = await resolveOrgPolicySnapshot({
-      orgId: invite.team.orgId,
-      orgRole: orgMembershipRole,
-      teamId: invite.teamId,
-      hasTeamMembership: Boolean(invite.teamId),
-      hasOrgMembership: Boolean(orgMembershipRole),
-    });
-    const evaluateDecision = resolveOrgCapabilityDecision(
-      evaluateSnapshot,
-      "candidateEvaluate",
-    );
-    if (!evaluateDecision.allowed) {
-      return NextResponse.json(
-        {
-          error: "CAPABILITY_DENIED",
-          reason: evaluateDecision.reason,
-          upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
-        },
-        { status: 403 },
-      );
-    }
-  }
-
-  let canResend = invite.managerId === profile.id;
-  if (!canResend && invite.teamId && orgMembershipRole) {
-    canResend = hasOrgRole(orgMembershipRole, "ORG_ADMIN")
-      || await canManageTeam(profile.id, invite.teamId, orgMembershipRole);
-  }
-  if (!canResend) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  const inviteOrgId = invite.orgId ?? invite.team?.orgId ?? null;
+  const orgMembership = inviteOrgId
+    ? await prisma.organizationMember.findFirst({
+        where: { userId: profile.id, orgId: inviteOrgId },
+        select: { role: true },
+      })
+    : null;
+  const allowed = isConsultantSurface(
+    orgMembership?.role ?? null,
+    profile.email,
+    profile.isConsultant,
+  );
+  if (!allowed) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
   if (invite.status !== "PENDING") return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   if (!invite.email) return NextResponse.json({ error: "NO_EMAIL" }, { status: 400 });

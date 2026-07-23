@@ -211,9 +211,6 @@ export function HiringDashboard({
   const completionPct = invites.length > 0
     ? Math.round((completed.length / invites.length) * 100)
     : 0;
-  const creditUsagePct = creditBalance && creditBalance.totalPurchased > 0
-    ? Math.min(100, Math.round((creditBalance.totalUsed / creditBalance.totalPurchased) * 100))
-    : 0;
 
   return (
     <div className="flex flex-col gap-6">

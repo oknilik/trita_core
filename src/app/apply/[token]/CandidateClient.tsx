@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
+import { TeamRoleQuestionnaire } from "@/components/assessment/TeamRoleQuestionnaire";
 import { useToast } from "@/components/ui/Toast";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { t, tf } from "@/lib/i18n";
@@ -19,6 +20,8 @@ interface CandidateClientProps {
   testName: string;
   questions: Question[];
   locale: Locale;
+  /** Opcionális 2. lépés: csapatszerep-kérdőív a TRITAN után (átugorható). */
+  includeTeamRole?: boolean;
 }
 
 function sanitizeAnswers(
@@ -53,13 +56,15 @@ export function CandidateClient({
   testName,
   questions,
   locale,
+  includeTeamRole = false,
 }: CandidateClientProps) {
   const router = useRouter();
   const { showToast } = useToast();
 
   const DRAFT_KEY = `trita_candidate_draft_${token}`;
 
-  const [phase, setPhase] = useState<"intro" | "assessment" | "done" | "revoked">("intro");
+  const [phase, setPhase] = useState<"intro" | "assessment" | "teamRole" | "done" | "revoked">("intro");
+  const [teamRoleSubmitting, setTeamRoleSubmitting] = useState(false);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [currentPage, setCurrentPage] = useState(0);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
@@ -293,6 +298,12 @@ export function CandidateClient({
         throw new Error(data.error ?? "SUBMIT_ERROR");
       }
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
+      // Opcionális 2. lépés: csapatszerep-kérdőív (átugorható) — a
+      // nextPath-redirect előtt, hogy a válasz még ehhez a tokenhez kösse.
+      if (includeTeamRole) {
+        setPhase("teamRole");
+        return;
+      }
       if (data.nextPath) {
         router.push(data.nextPath);
         return;
@@ -348,6 +359,54 @@ export function CandidateClient({
               {t("candidate.introStartCta", locale)}
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Opcionális csapatszerep-kérdőív (2. lépés) — átugorható
+  if (phase === "teamRole") {
+    const submitTeamRole = async (selections: Record<string, 1 | 2>) => {
+      setTeamRoleSubmitting(true);
+      try {
+        const res = await fetch(`/api/candidate/${token}/team-role`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ selections }),
+        });
+        if (!res.ok) {
+          const data = (await res.json()) as { error?: string };
+          // Már beküldött / visszavont állapotnál csendben zárunk —
+          // a jelölt szempontjából a folyamat kész.
+          if (data.error !== "ALREADY_USED" && data.error !== "REVOKED") {
+            throw new Error(data.error ?? "SUBMIT_ERROR");
+          }
+        }
+        setPhase("done");
+      } catch (err) {
+        console.error(err);
+        showToast(t("candidate.submitError", locale), "error");
+      } finally {
+        setTeamRoleSubmitting(false);
+      }
+    };
+
+    return (
+      <div className="min-h-dvh bg-cream">
+        <div className="mx-auto max-w-3xl px-4 py-10 md:py-14">
+          <div className="mb-5 rounded-xl border border-sage-ring bg-sage-ghost px-4 py-3 text-sm leading-relaxed text-ink-body">
+            {locale === "en"
+              ? "Thanks — your assessment is in! One optional step remains: a short team-role questionnaire (~3 minutes). You can skip it."
+              : "Köszönjük — a felmérésed megérkezett! Egy opcionális lépés maradt: egy rövid csapatszerep-kérdőív (~3 perc). Ki is hagyhatod."}
+          </div>
+          <TeamRoleQuestionnaire
+            locale={locale}
+            perspective="self"
+            withIntro
+            submitting={teamRoleSubmitting}
+            onComplete={(selections) => void submitTeamRole(selections)}
+            onSkip={() => setPhase("done")}
+          />
         </div>
       </div>
     );

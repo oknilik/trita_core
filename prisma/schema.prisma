@@ -362,12 +362,18 @@ model CandidateInvite {
   id          String    @id @default(cuid())
   token       String    @unique @default(cuid())
   managerId   String
+  // Szervezet-hatókör (2026-07-23, jelölt-flow újraélesztés): a team
+  // opcionális, de az org-kötés fix — e nélkül a team-nélküli meghívott
+  // nem volt listázható/megnyitható.
+  orgId       String?
   teamId      String?
   email       String?
   name        String?
   position    String?
   status      String    @default("PENDING")   // PENDING | COMPLETED | EXPIRED
   testType    String    @default("TRITAN")
+  // Opcionális 2. lépés a kitöltésben: csapatszerep-kérdőív (átugorható)
+  includeTeamRole Boolean @default(false)
   expiresAt   DateTime
   createdAt   DateTime  @default(now())
   completedAt        DateTime?
@@ -381,6 +387,7 @@ model CandidateInvite {
   @@index([managerId])
   @@index([token])
   @@index([teamId])
+  @@index([orgId])
 }
 
 model CandidateResult {
@@ -388,6 +395,9 @@ model CandidateResult {
   inviteId  String   @unique
   testType  String
   scores    Json
+  // Csapatszerep-kérdőív válaszok (TeamRoleSelections) — ha a jelölt
+  // kitöltötte az opcionális 2. lépést
+  teamRoleSelections Json?
   createdAt DateTime @default(now())
 
   invite CandidateInvite @relation(fields: [inviteId], references: [id])

@@ -34,3 +34,15 @@ export const DEFAULT_ASSESSMENT_FORM: "short" | "full" = "short";
 // VISSZAÁLLÍTÁS: állítsd true-ra — a Purchase/tagság-alapú szintlogika
 // érintetlenül a helyén van, azonnal újra élesedik.
 export const SELF_PAYWALL_ENABLED = false;
+
+// Jelölt-flow kapu (2026-07-23, jelölt-flow újraélesztés). false = a
+// jelölt-meghívás nem fogyaszt kreditet és nem előfizetés-függő
+// (candidateEvaluate capability-t nem ellenőrizzük) — a hozzáférést a
+// tanácsadói kör adja (isConsultantSurface: ORG_CONSULTANT / platform-
+// tanácsadó / trita-admin). VISSZAÁLLÍTÁS: állítsd true-ra — a kredit- és
+// capability-logika érintetlenül a helyén van, azonnal újra élesedik.
+export const CANDIDATE_GATING_ENABLED = false;
+
+export function isCandidateGatingEnabled(): boolean {
+  return CANDIDATE_GATING_ENABLED;
+}

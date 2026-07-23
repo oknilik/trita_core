@@ -3,7 +3,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { requireOrgContext, hasOrgRole } from "@/lib/auth";
+import { requireOrgContext } from "@/lib/auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 import { extractDimensionScores } from "@/lib/scoring";
 import { runProfileEngine } from "@/lib/profile-engine";
 import {
@@ -14,6 +15,8 @@ import {
 import type { Locale } from "@/lib/profile-content";
 import { t } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { calculateTeamRoleScores, getTopRoles, TEAM_ROLES } from "@/lib/team-role-scoring";
+import type { TeamRoleSelections } from "@/lib/team-role-questions";
 
 export const dynamic = "force-dynamic";
 
@@ -138,8 +141,16 @@ export default async function CandidateResultPage({
     searchParams,
   ]);
 
-  const { role: memberRole } = await requireOrgContext(orgId);
-  if (!hasOrgRole(memberRole, "ORG_MANAGER")) notFound();
+  // Guard (2026-07-23): csak a tanácsadói kör (ORG_CONSULTANT / platform-
+  // tanácsadó / trita-admin).
+  const { profileId, role: memberRole } = await requireOrgContext(orgId);
+  const viewer = await prisma.userProfile.findUnique({
+    where: { id: profileId },
+    select: { email: true, isConsultant: true },
+  });
+  if (!isConsultantSurface(memberRole, viewer?.email, viewer?.isConsultant)) {
+    notFound();
+  }
 
   const isHu = locale !== "en";
   const contentLocale: Locale = locale === "en" ? "en" : "hu";
@@ -151,8 +162,10 @@ export default async function CandidateResultPage({
     orderBy: { name: "asc" },
   });
 
+  // Team nélkül meghívott jelölt is megnyitható — az org-kötés az orgId
+  // mezőn (régi sorokon a team.orgId-n) keresztül.
   const invite = await prisma.candidateInvite.findFirst({
-    where: { id: inviteId, team: { orgId } },
+    where: { id: inviteId, OR: [{ orgId }, { team: { orgId } }] },
     select: {
       id: true,
       name: true,
@@ -160,8 +173,9 @@ export default async function CandidateResultPage({
       position: true,
       status: true,
       teamId: true,
+      includeTeamRole: true,
       team: { select: { id: true, name: true } },
-      result: { select: { scores: true, testType: true } },
+      result: { select: { scores: true, testType: true, teamRoleSelections: true } },
     },
   });
 
@@ -237,6 +251,18 @@ export default async function CandidateResultPage({
         }))
         .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap))
     : null;
+
+  // Mért csapatszerepek — ha a jelölt kitöltötte az opcionális kérdőívet.
+  // Forrás-jelölés kötelező (mért vs. becsült) — termék-hitelességi elv.
+  const teamRoleSelections =
+    (invite.result.teamRoleSelections as TeamRoleSelections | null) ?? null;
+  const measuredRoles =
+    teamRoleSelections && Object.keys(teamRoleSelections).length > 0
+      ? getTopRoles(calculateTeamRoleScores(teamRoleSelections), 3)
+      : null;
+  const roleRankLabels = isHu
+    ? ["Elsődleges", "Másodlagos", "Harmadik"]
+    : ["Primary", "Secondary", "Tertiary"];
 
   const displayName =
     invite.name ?? invite.email ?? t("hiring.unnamedCandidateFull", locale);
@@ -564,6 +590,54 @@ export default async function CandidateResultPage({
                   {t("hiring.deviationExplanation", locale)}
                 </p>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Mért csapatszerepek — opcionális 2. lépés eredménye */}
+        {measuredRoles && measuredRoles.length > 0 && (
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              <div>
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                  {isHu ? "// csapatszerepek" : "// team roles"}
+                </p>
+                <h2 className="font-fraunces text-xl text-ink">
+                  {isHu ? "Csapatszerep-kérdőív eredménye" : "Team-role questionnaire result"}
+                </h2>
+              </div>
+              <span className="ml-auto rounded-full bg-sage/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-sage-dark">
+                {isHu ? "Mért" : "Measured"}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
+              {measuredRoles.map(({ role, score }, idx) => {
+                const roleMeta = TEAM_ROLES[role];
+                const isPrimary = idx === 0;
+                return (
+                  <div
+                    key={role}
+                    className={`flex flex-col rounded-xl p-[18px] ${
+                      isPrimary
+                        ? "border-2 border-sage bg-sage-soft"
+                        : "border border-sand bg-white"
+                    }`}
+                  >
+                    <span
+                      className={`mb-2 self-start rounded px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide ${
+                        isPrimary
+                          ? "bg-sage text-white"
+                          : "bg-cream text-muted"
+                      }`}
+                    >
+                      {roleRankLabels[idx]} · {score}%
+                    </span>
+                    <p className={`font-fraunces text-ink ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
+                      {roleMeta[contentLocale]}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}

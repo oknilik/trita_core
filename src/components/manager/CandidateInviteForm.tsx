@@ -33,6 +33,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
   const [position, setPosition] = useState("");
   const [teamId, setTeamId] = useState(preselectedTeamId ?? "");
   const [inviteLocale, setInviteLocale] = useState<"hu" | "en">(locale === "en" ? "en" : "hu");
+  const [includeTeamRole, setIncludeTeamRole] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(null);
@@ -53,11 +54,12 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
     }
     setLoading(true);
     try {
-      const body: Record<string, string> = {};
+      const body: Record<string, string | boolean> = {};
       if (email.trim()) body.email = email.trim();
       if (name.trim()) body.name = name.trim();
       if (position.trim()) body.position = position.trim();
       if (teamId) body.teamId = teamId;
+      if (includeTeamRole) body.includeTeamRole = true;
       body.inviteLocale = inviteLocale;
 
       const res = await fetch("/api/manager/candidates", {
@@ -164,6 +166,26 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
             </label>
           )}
         </div>
+        {/* Opcionális 2. lépés: csapatszerep-kérdőív a TRITAN után */}
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-white px-4 py-3 transition hover:border-sage/40">
+          <input
+            type="checkbox"
+            checked={includeTeamRole}
+            onChange={(e) => setIncludeTeamRole(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[var(--color-sage)]"
+          />
+          <span>
+            <span className="block text-[13px] font-semibold text-ink">
+              {isHu ? "Csapatszerep-kérdőív is" : "Include team-role questionnaire"}
+            </span>
+            <span className="mt-0.5 block text-[12px] leading-relaxed text-ink-body">
+              {isHu
+                ? "A teszt után a jelölt egy rövid (~3 perces) csapatszerep-kérdőívet is kap — átugorhatja."
+                : "After the assessment the candidate also gets a short (~3 min) team-role questionnaire — they can skip it."}
+            </span>
+          </span>
+        </label>
+
         <div className="rounded-xl border border-sand bg-white px-4 py-3">
           <p className={labelClass}>{t("manager.candidateInvite.emailLang", loc)}</p>
           <div className="mt-2 grid grid-cols-2 gap-2 sm:max-w-[280px]">

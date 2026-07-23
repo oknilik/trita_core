@@ -3,10 +3,11 @@ import "server-only";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
-import { canManageTeam, getManageableTeamIds } from "@/lib/team-auth";
 import { getPlanTier } from "@/lib/subscription";
 import { useCredit as consumeCredit } from "@/lib/candidate-credits";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { isConsultantSurface } from "@/lib/measurement-auth";
+import { isCandidateGatingEnabled } from "@/lib/operating-mode";
 
 export interface CreateCandidateApplyInviteInput {
   clerkId: string;
@@ -14,6 +15,7 @@ export interface CreateCandidateApplyInviteInput {
   name: string;
   position?: string;
   teamId?: string;
+  includeTeamRole?: boolean;
 }
 
 export interface CreateCandidateApplyInviteResult {
@@ -60,12 +62,14 @@ export async function createCandidateApplyInvite(
 ): Promise<CreateCandidateApplyInviteResult> {
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: input.clerkId },
-    select: { id: true, username: true, email: true },
+    select: { id: true, username: true, email: true, isConsultant: true },
   });
   if (!profile) {
     throw new CandidateApplyServiceError("UNAUTHORIZED", 401);
   }
 
+  // Jelölt-kezelés (2026-07-23): csak a tanácsadói kör — ORG_CONSULTANT
+  // szerep, platform-tanácsadó vagy trita-admin (isConsultantSurface).
   let orgId: string | null = null;
   let orgRole: string | null = null;
   if (input.teamId) {
@@ -76,19 +80,11 @@ export async function createCandidateApplyInvite(
     if (!orgMembership) {
       throw new CandidateApplyServiceError("FORBIDDEN", 403);
     }
-    const allowed = await canManageTeam(profile.id, input.teamId, orgMembership.role);
-    if (!allowed) {
-      throw new CandidateApplyServiceError("FORBIDDEN", 403);
-    }
     orgId = orgMembership.orgId;
     orgRole = orgMembership.role;
   } else {
     const orgMembership = await getActiveOrgMembership(profile.id);
     if (!orgMembership) {
-      throw new CandidateApplyServiceError("FORBIDDEN", 403);
-    }
-    const manageableIds = await getManageableTeamIds(profile.id, orgMembership.orgId, orgMembership.role);
-    if (manageableIds.length === 0) {
       throw new CandidateApplyServiceError("FORBIDDEN", 403);
     }
     orgId = orgMembership.orgId;
@@ -98,36 +94,43 @@ export async function createCandidateApplyInvite(
   if (!orgId || !orgRole) {
     throw new CandidateApplyServiceError("FORBIDDEN", 403);
   }
-
-  const policySnapshot = await resolveOrgPolicySnapshot({
-    orgId,
-    orgRole,
-    teamId: input.teamId,
-    hasTeamMembership: Boolean(input.teamId),
-  });
-  const evaluateDecision = resolveOrgCapabilityDecision(
-    policySnapshot,
-    "candidateEvaluate",
-  );
-  if (!evaluateDecision.allowed) {
-    throw new CandidateApplyServiceError("CAPABILITY_DENIED", 403, {
-      reason: evaluateDecision.reason,
-      upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
-    });
+  if (!isConsultantSurface(orgRole, profile.email, profile.isConsultant)) {
+    throw new CandidateApplyServiceError("FORBIDDEN", 403);
   }
 
-  const sub = policySnapshot.subscription;
-  const tier = getPlanTier(sub);
-  const isUnlimited = tier === "org" || tier === "scale";
-  if (!isUnlimited) {
-    const candidateLabel = input.name ?? input.email ?? "unknown";
-    const newBalance = await consumeCredit({
+  // Kredit/előfizetés-kapu — kapcsolóval kivezetve (operating-mode,
+  // CANDIDATE_GATING_ENABLED). Visszakapcsoláskor változatlanul élesedik.
+  if (isCandidateGatingEnabled()) {
+    const policySnapshot = await resolveOrgPolicySnapshot({
       orgId,
-      actorId: profile.id,
-      note: `Jelölt: ${candidateLabel}${input.position ? ` (${input.position})` : ""}`,
+      orgRole,
+      teamId: input.teamId,
+      hasTeamMembership: Boolean(input.teamId),
     });
-    if (newBalance === null) {
-      throw new CandidateApplyServiceError("NO_CANDIDATE_CREDITS", 402);
+    const evaluateDecision = resolveOrgCapabilityDecision(
+      policySnapshot,
+      "candidateEvaluate",
+    );
+    if (!evaluateDecision.allowed) {
+      throw new CandidateApplyServiceError("CAPABILITY_DENIED", 403, {
+        reason: evaluateDecision.reason,
+        upgradeHint: evaluateDecision.upgradeHint?.code ?? null,
+      });
+    }
+
+    const sub = policySnapshot.subscription;
+    const tier = getPlanTier(sub);
+    const isUnlimited = tier === "org" || tier === "scale";
+    if (!isUnlimited) {
+      const candidateLabel = input.name ?? input.email ?? "unknown";
+      const newBalance = await consumeCredit({
+        orgId,
+        actorId: profile.id,
+        note: `Jelölt: ${candidateLabel}${input.position ? ` (${input.position})` : ""}`,
+      });
+      if (newBalance === null) {
+        throw new CandidateApplyServiceError("NO_CANDIDATE_CREDITS", 402);
+      }
     }
   }
 
@@ -139,10 +142,12 @@ export async function createCandidateApplyInvite(
       // részben megjósolható, publikus apply-linkhez nem elég erős.
       token: crypto.randomBytes(16).toString("hex"),
       managerId: profile.id,
+      orgId,
       teamId: input.teamId ?? null,
       email: input.email ?? null,
       name: input.name ?? null,
       position: input.position ?? null,
+      includeTeamRole: input.includeTeamRole ?? false,
       expiresAt,
     },
     select: { id: true, token: true, email: true, name: true, position: true },

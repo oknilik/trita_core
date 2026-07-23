@@ -9,6 +9,7 @@ import { OrgCampaignsTab } from "./OrgCampaignsTab";
 import { OrgTeamsTab } from "./OrgTeamsTab";
 import { OrgMembersTab } from "./OrgMembersTab";
 import { OrgInquiriesTab, type OrgInquiryRow } from "./OrgInquiriesTab";
+import { OrgCandidatesTab, type OrgCandidateRow } from "./OrgCandidatesTab";
 import type {
   OrgPageData,
   SerializedMember,
@@ -42,6 +43,8 @@ interface OrgPageShellProps {
   teams: SerializedTeam[];
   /** Beérkezett kérdések — csak tanácsadói felületen (null = nincs fül). */
   inquiries?: OrgInquiryRow[] | null;
+  /** Jelöltek — csak tanácsadói felületen (null = nincs fül). */
+  candidates?: OrgCandidateRow[] | null;
 }
 
 export function OrgPageShell({
@@ -62,13 +65,20 @@ export function OrgPageShell({
   pendingInvites,
   teams,
   inquiries = null,
+  candidates = null,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
   // Egyszerű váz mindenkinek: Csapatok az alapfül; a Kampányok fül csak a
   // tanácsadói felületen létezik. (Az Áttekintés fül kivezetve — duplikált.)
   const defaultTab = "teams";
   const allowedTabs = canManageMeasurements
-    ? ["teams", "campaigns", "members", ...(inquiries ? ["inquiries"] : [])]
+    ? [
+        "teams",
+        "campaigns",
+        "members",
+        ...(candidates ? ["candidates"] : []),
+        ...(inquiries ? ["inquiries"] : []),
+      ]
     : ["teams", "members"];
   const rawTabFromUrl = searchParams.get("tab") ?? defaultTab;
   const tabFromUrl = allowedTabs.includes(rawTabFromUrl) ? rawTabFromUrl : defaultTab;
@@ -112,6 +122,15 @@ export function OrgPageShell({
       label: t("org.shell.tabMembers", loc),
       badge: members.length + pendingInvites.length,
     },
+    ...(candidates
+      ? [
+          {
+            key: "candidates",
+            label: t("org.shell.tabCandidates", loc),
+            badge: candidates.length > 0 ? candidates.length : undefined,
+          },
+        ]
+      : []),
     ...(inquiries
       ? [
           {
@@ -151,6 +170,15 @@ export function OrgPageShell({
             canCreateTeam={canCreateTeam}
             actionGateCopy={actionGateCopy}
             isHu={isHu}
+          />
+        )}
+
+        {candidates && activeTab === "candidates" && (
+          <OrgCandidatesTab
+            orgId={orgId}
+            candidates={candidates}
+            isHu={isHu}
+            dateLocale={dateLocale}
           />
         )}
 

@@ -99,6 +99,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
       testName={config.name}
       questions={config.questions}
       locale={locale}
+      includeTeamRole={invite.includeTeamRole}
     />
   );
 }

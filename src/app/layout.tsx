@@ -22,6 +22,7 @@ import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { getServerAuth } from "@/lib/auth-server";
 import { isAdminEmail } from "@/lib/auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
 import { HelpWidget } from "@/components/help/HelpWidget";
 import type { HelpAudience } from "@/lib/help/topics";
@@ -106,7 +107,7 @@ export default async function RootLayout({
     if (userId) {
       const profile = await prisma.userProfile.findUnique({
         where: { clerkId: userId },
-        select: { id: true, username: true, email: true },
+        select: { id: true, username: true, email: true, isConsultant: true },
       });
       if (profile) {
         const journey = await resolveJourney(profile.id, {
@@ -154,7 +155,13 @@ export default async function RootLayout({
               })
             : [];
 
-          const hasHiringAccess = policySnapshot.policy.capabilities.has("candidateEvaluate");
+          // Jelölt-felület (2026-07-23): a tanácsadói kör kapja — nem
+          // előfizetés-capability (a gating az operating-mode kapcsolón).
+          const hasHiringAccess = isConsultantSurface(
+            membership.role,
+            profile.email,
+            profile.isConsultant,
+          );
           navData = {
             user: {
               username: profile.username ?? null,
