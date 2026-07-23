@@ -2,7 +2,7 @@ import type { TestType } from "@prisma/client";
 import { runProfileEngine } from "@/lib/profile-engine";
 import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
-  SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES,
+  SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
 } from "@/lib/profile-content";
@@ -14,6 +14,8 @@ import type { Locale } from "@/lib/i18n";
 
 export interface WorkstyleContent {
   howYouWork: string[];
+  /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
+  pressure: string[];
   envItems: { label: string; value: string }[];
   roleFit: {
     strong: string;
@@ -147,6 +149,15 @@ export function buildWorkstyleContent(
     if (summary) howYouWork.push(summary);
   }
 
+  // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
+  // pároktól függetlenül, hipotézis-keretezéssel (P2.1).
+  const pressure: string[] = [];
+  for (const sd of engine.topSoloDims) {
+    const key = `${sd.dim}_${sd.level}`;
+    const text = SOLO_DIM_PRESSURE[key]?.[lang];
+    if (text) pressure.push(text);
+  }
+
   // Role fit texts
   const roleFitSource = engine.block6Pairs[0]?.contentKey
     ?? (engine.topSoloDims[0] ? `${engine.topSoloDims[0].dim}_${engine.topSoloDims[0].level}` : null);
@@ -183,6 +194,7 @@ export function buildWorkstyleContent(
 
   return {
     howYouWork,
+    pressure,
     envItems,
     roleFit: {
       strong: roleTexts?.strong ?? "",

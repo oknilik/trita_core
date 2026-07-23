@@ -903,6 +903,11 @@ export const resultsTranslations = {
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     howYouWork: { hu: "Ahogy működsz", en: "How you work" },
     roleFit: { hu: "Szerepkör-illeszkedés", en: "Role fit" },
+    pressureTitle: { hu: "Vakfoltok és nyomás alatt", en: "Blind spots & under pressure" },
+    pressureDisclaimer: {
+      hu: "Ezek hipotézisek, nem ítéletek — stressz alatt sokféle működés megjelenhet. Akkor hasznosak, ha megfigyeled, mikor igazak rád, és mikor nem.",
+      en: "These are hypotheses, not verdicts — many patterns can appear under stress. They're useful if you observe when they hold for you and when they don't.",
+    },
     methodNoteTitle: { hu: "Hogyan olvasd ezt a riportot?", en: "How to read this report" },
     methodNoteBody: {
       hu: "Az eredmények önjellemzésen alapulnak: azt mutatják, ahogyan a kitöltéskor magadat láttad. A pontszámok viselkedési tendenciákat jeleznek, nem címkéket — a környezet, a szerep és a stressz jelentősen módosíthatja, hogyan jelennek meg a mindennapokban. A riport állításait ezért kezeld hipotézisként: vesd össze a saját tapasztalataiddal és mások visszajelzésével.",

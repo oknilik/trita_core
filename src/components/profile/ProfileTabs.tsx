@@ -146,6 +146,8 @@ export interface ProfileTabsProps {
   plusContent?: {
     introText: string;
     howYouWork: string[];
+    /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
+    pressure?: string[];
     envItems: { label: string; value: string }[];
     roleFit: { strong: string; might: string; prep: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
@@ -817,6 +819,7 @@ export function ProfileTabs({
               })(),
               plusContent: plusContent ? {
                 howYouWork: plusContent.howYouWork,
+                pressure: plusContent.pressure,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,
                 closingText: plusContent.closingText,

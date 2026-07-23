@@ -37,6 +37,8 @@ export interface PdfData {
   // Plus content
   plusContent?: {
     howYouWork: string[];
+    /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
+    pressure?: string[];
     roleFit: {
       strong: string;
       might: string;

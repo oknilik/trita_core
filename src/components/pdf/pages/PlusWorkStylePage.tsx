@@ -31,6 +31,30 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
         </PdfCard>
 
+        {/* ── Vakfoltok és nyomás alatti működés (P2.1) — hipotézisek ── */}
+        {(pc.pressure?.length ?? 0) > 0 && (
+          <PdfCard eyebrow={t("pdf.pressureTitle", locale)} wrap={false}>
+            {pc.pressure!.map((text, i) => (
+              <View
+                key={i}
+                style={{
+                  backgroundColor: "rgba(193,127,74,0.06)",
+                  borderLeft: `2 solid ${colors.bronzeDark}`,
+                  borderTopRightRadius: 5,
+                  borderBottomRightRadius: 5,
+                  padding: "6 8",
+                  marginBottom: i === (pc.pressure!.length - 1) ? 0 : 5,
+                }}
+              >
+                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{text}</Text>
+              </View>
+            ))}
+            <Text style={{ fontSize: 5.5, color: colors.ink300, marginTop: 4, lineHeight: 1.4 }}>
+              {t("pdf.pressureDisclaimer", locale)}
+            </Text>
+          </PdfCard>
+        )}
+
         {/* ── Szerep-illeszkedés ── */}
         <PdfCard eyebrow={t("pdf.roleFit", locale)} wrap={false}>
           <PdfRoleFit

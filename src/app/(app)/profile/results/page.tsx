@@ -456,6 +456,7 @@ export default async function ProfileResultsPage({
   const plusContent = accessLevel !== "start" ? {
     introText: BLOCK1[lang],
     howYouWork: workstyle.howYouWork,
+    pressure: workstyle.pressure,
     envItems: workstyle.envItems,
     roleFit: workstyle.roleFit,
     takeaways: workstyle.takeaways,
