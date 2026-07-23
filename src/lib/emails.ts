@@ -1,5 +1,16 @@
 import { resend, EMAIL_FROM } from "./resend";
-import { EMAIL_COLORS } from "./design-tokens";
+import {
+  buildEmailLayout,
+  escapeHtml,
+  renderCtaButton,
+  renderCodeBox,
+  renderInfoTable,
+  EMAIL_P,
+  EMAIL_P_MUTED,
+  EMAIL_EYEBROW,
+  EMAIL_UL,
+  EMAIL_LI,
+} from "./email-layout";
 
 type Locale = "hu" | "en";
 
@@ -239,164 +250,27 @@ function getLocale(email: string): Locale {
   return "en";
 }
 
-// A paletta a közös token-modulból fordul (2026-07-22, F2) — palettacsere a
-// design-tokens.ts-ben történik, itt nem.
-const HEADER_GRADIENT = EMAIL_COLORS.headerGradient;
-const FOOTER_GRADIENT = EMAIL_COLORS.footerGradient;
-const CTA_GRADIENT = EMAIL_COLORS.ctaGradient;
-// Outlook (Word rendering engine) doesn't support CSS gradients reliably.
-// Provide solid color fallbacks via background-color.
-const HEADER_BG = EMAIL_COLORS.headerBg;
-const FOOTER_BG = EMAIL_COLORS.footerBg;
-const CTA_BG = EMAIL_COLORS.ctaBg;
-
-function escapeHtml(input: string): string {
-  return input
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function renderCtaButton(params: { href: string; label: string }): string {
-  // Bulletproof button: table + td bgcolor works in Outlook.
-  // Other clients can still get the gradient via background-image.
-  return `
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0 auto">
-      <tr>
-        <td bgcolor="${CTA_BG}"
-            style="background-color:${CTA_BG};background-image:${CTA_GRADIENT};border-radius:10px;text-align:center">
-          <a href="${params.href}" class="em-cta"
-             style="display:inline-block;color:#ffffff;font-size:14px;font-weight:600;padding:13px 32px;text-decoration:none;border-radius:10px;line-height:1.2">
-            ${params.label}
-          </a>
-        </td>
-      </tr>
-    </table>`.trim();
-}
-
-function buildEmailLayout(params: {
-  locale: Locale;
-  heading?: string;
-  bodyContent: string;
-  footerDisclaimer?: string;
-  thanks: string;
-  team: string;
-}): string {
-  return `<!DOCTYPE html>
-<html lang="${params.locale}" style="color-scheme:light only">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light only">
-  <meta name="supported-color-schemes" content="light">
-  <style>
-    /* Basic email resets (Outlook-friendly). */
-    table { border-collapse: collapse; }
-    img { border: 0; outline: none; text-decoration: none; }
-    .ExternalClass { width: 100%; }
-    .ExternalClass * { line-height: 100%; }
-    a { text-decoration: none; }
-    :root { color-scheme: light only; }
-    html, body { color-scheme: light only !important; }
-    @media (prefers-color-scheme: dark) {
-      html, body    { background-color: #f0ede6 !important; }
-      .em-wrap      { background-color: #f0ede6 !important; }
-      .em-head      { background-color: ${HEADER_BG} !important; background-image: ${HEADER_GRADIENT} !important; }
-      .em-wave-top  { fill: #ffffff !important; }
-      .em-wave-bot  { fill: #ffffff !important; }
-      .em-body      { background-color: #ffffff !important; }
-      .em-body p,
-      .em-body li   { color: #4a4a5e !important; }
-      .em-body h1   { color: #1a1a2e !important; }
-      .em-heading   { color: #ffffff !important; }
-      .em-muted     { color: #6b5e52 !important; }
-      .em-foot      { background-color: ${FOOTER_BG} !important; background-image: ${FOOTER_GRADIENT} !important; }
-      .em-code-box  { background-color: #f0ede6 !important; }
-      .em-code-lbl  { color: #6b5e52 !important; }
-      .em-code-val  { color: #1a1a2e !important; }
-      .em-cta       { background-color: ${CTA_BG} !important; background-image: ${CTA_GRADIENT} !important; color: #ffffff !important; }
-    }
-  </style>
-</head>
-<body bgcolor="#f0ede6" style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#f0ede6;color-scheme:light only">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f0ede6" style="background-color:#f0ede6">
-    <tr>
-      <td align="center" style="padding:32px 16px 24px">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
-               class="em-wrap" style="width:600px;max-width:600px">
-          <tr>
-            <td class="em-head" bgcolor="${HEADER_BG}"
-                style="background-color:${HEADER_BG};background-image:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
-              <div style="padding:26px 32px 12px;text-align:center">
-                <div style="display:inline-block;margin-bottom:10px">
-                  <span style="font-size:28px;font-weight:800;color:#e8a96a;letter-spacing:-0.03em;font-family:Georgia,'Times New Roman',serif">trita</span>
-                </div>
-                ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#ffffff;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
-              </div>
-              <!--[if !mso]><!-->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
-                   style="display:block;width:100%;height:28px">
-                <path class="em-wave-top" d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
-              </svg>
-              <!--<![endif]-->
-            </td>
-          </tr>
-
-          <tr>
-            <td class="em-body" bgcolor="#ffffff" style="background-color:#ffffff;padding:16px 32px 32px">
-              ${params.bodyContent}
-            </td>
-          </tr>
-
-          <tr>
-            <td class="em-foot" bgcolor="${FOOTER_BG}"
-                style="background-color:${FOOTER_BG};background-image:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
-              <!--[if !mso]><!-->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
-                   style="display:block;width:100%;height:28px">
-                <path class="em-wave-bot" d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
-              </svg>
-              <!--<![endif]-->
-              <div style="padding:4px 32px 24px;text-align:center">
-                ${params.footerDisclaimer ? `<p class="em-muted" style="font-size:11px;color:#6b5e52;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
-                <p class="em-muted" style="font-size:12px;color:#6b5e52;line-height:1.5;margin:0">
-                  ${params.thanks}<br>${params.team}
-                </p>
-              </div>
-            </td>
-          </tr>
-        </table>
-
-        <p class="em-muted" style="text-align:center;font-size:11px;color:#8c8078;margin:16px 0 0">
-          &copy; trita 2026
-        </p>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`.trim();
-}
+// A vizuális keret és a bekezdés-stílusok a közös email-layout modulból
+// jönnek (2026-07-23 egységesítés) — palettacsere a design-tokens.ts-ben.
 
 function buildOrderConfirmationHtml(locale: Locale, name: string): string {
   const t = translations.orderConfirmation[locale];
   const features = t.featureList
-    .map((f) => `<li style="padding:4px 0;color:#4a4a5e">${f}</li>`)
+    .map((f) => `<li style="${EMAIL_LI}">${f}</li>`)
     .join("");
   const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 4px">
+    <p style="${EMAIL_P}">
       ${t.greeting(name)}
     </p>
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P}">
       ${t.body}
     </p>
-    <p style="font-size:13px;font-weight:600;color:#1a1a2e;margin:0 0 8px">
+    <p style="${EMAIL_EYEBROW}">
       ${t.features}
     </p>
-    <ul style="font-size:13px;line-height:1.7;margin:0 0 28px;padding-left:20px">
+    <ul style="${EMAIL_UL};margin-bottom:24px">
       ${features}
     </ul>
     ${cta}`;
@@ -468,11 +342,10 @@ function buildObserverInviteHtml(params: {
     .replaceAll("\n", "<br>");
 
   const bodyContent = `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 4px">
+    <p style="${EMAIL_P}">
       ${t.greeting(escapeHtml(params.recipientName))}
     </p>
-    <div style="height:12px;line-height:12px;font-size:12px">&nbsp;</div>
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${bodyHtml}
     </p>
     ${cta}`;
@@ -548,10 +421,10 @@ export async function sendCandidateCompletedEmail(params: {
 
   const cta = renderCtaButton({ href: params.resultUrl, label: t.cta });
   const bodyContent = `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P}">
       ${t.greeting}
     </p>
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${escapeHtml(t.body(params.candidateName, params.position ?? null))}
     </p>
     ${cta}`;
@@ -598,10 +471,10 @@ function buildProfileShareHtml(params: {
   });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P}">
       ${t.greeting}
     </p>
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${t.body(params.senderName)}
     </p>
     ${cta}`;
@@ -661,10 +534,10 @@ function buildObserverCompletionHtml(params: {
   const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P}">
       ${t.greeting(params.inviterName)}
     </p>
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${t.body}
     </p>
     ${cta}`;
@@ -727,18 +600,11 @@ function buildVerificationCodeHtml(params: {
     : translations.verificationCode[params.locale];
 
   const bodyContent = `
-    <div class="em-code-box" style="background:#f3f4f6;border-radius:12px;padding:20px;text-align:center;margin:0 0 16px">
-      <p class="em-code-lbl" style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#6b5e52;margin:0 0 8px">
-        ${t.codeLabel}
-      </p>
-      <div class="em-code-val" style="font-size:32px;font-weight:700;letter-spacing:.25em;color:#1a1a2e">
-        ${params.code}
-      </div>
-    </div>
-    <p style="font-size:12px;color:#6b5e52;line-height:1.6;margin:0 0 16px">
+    ${renderCodeBox({ label: t.codeLabel, code: params.code })}
+    <p style="${EMAIL_P_MUTED}">
       ${t.ttl(params.ttlMinutes)}
     </p>
-    <p style="font-size:12px;color:#6b5e52;line-height:1.6;margin:0">
+    <p style="${EMAIL_P_MUTED};margin-bottom:0">
       ${t.footer}
     </p>`;
 
@@ -813,10 +679,10 @@ function buildAssessmentDraftReminderHtml(params: {
     .replaceAll("\n", "<br>");
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 16px">
+    <p style="${EMAIL_P}">
       ${t.greeting(escapeHtml(params.name))}
     </p>
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 24px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${bodyHtml}
     </p>
     ${cta}`;
@@ -884,7 +750,7 @@ function buildMagicLinkHtml(params: {
   const cta = renderCtaButton({ href: params.magicLinkUrl, label: t.cta });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${t.body}
     </p>
     ${cta}`;
@@ -912,32 +778,21 @@ export async function sendCoachApplicationNotification(params: {
     return;
   }
 
-  const rows = [
-    ["Név", params.applicantName],
-    ["Email", params.applicantEmail],
-    ["Szakterületek", params.specializations ?? "–"],
-  ]
-    .map(
-      ([label, value]) =>
-        `<tr><td style="padding:6px 12px 6px 0;font-size:13px;font-weight:600;color:#4a4a5e;white-space:nowrap;vertical-align:top">${label}:</td><td style="padding:6px 0;font-size:13px;color:#4a4a5e">${escapeHtml(String(value))}</td></tr>`
-    )
-    .join("");
-
   const bodyContent = `
-    <p style="font-size:15px;font-weight:600;color:#1a1a2e;margin:0 0 16px">
-      Új coach jelentkezés érkezett
-    </p>
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 20px">
-      ${rows}
-    </table>
-    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#6b5e52;margin:0 0 6px">Szakmai háttér</p>
-    <p style="font-size:13px;color:#4a4a5e;line-height:1.6;margin:0 0 16px;white-space:pre-line">${escapeHtml(params.background)}</p>
-    <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#6b5e52;margin:0 0 6px">Motiváció</p>
-    <p style="font-size:13px;color:#4a4a5e;line-height:1.6;margin:0 0 24px;white-space:pre-line">${escapeHtml(params.motivation)}</p>
+    ${renderInfoTable([
+      ["Név", escapeHtml(params.applicantName)],
+      ["Email", escapeHtml(params.applicantEmail)],
+      ["Szakterületek", escapeHtml(params.specializations ?? "–")],
+    ])}
+    <p style="${EMAIL_EYEBROW}">Szakmai háttér</p>
+    <p style="${EMAIL_P};white-space:pre-line">${escapeHtml(params.background)}</p>
+    <p style="${EMAIL_EYEBROW}">Motiváció</p>
+    <p style="${EMAIL_P};margin-bottom:24px;white-space:pre-line">${escapeHtml(params.motivation)}</p>
     ${renderCtaButton({ href: `${APP_URL}/admin`, label: "Admin felület megnyitása" })}`;
 
   const html = buildEmailLayout({
     locale: "hu",
+    heading: "Új coach jelentkezés érkezett",
     bodyContent,
     thanks: "Üdvözlettel,",
     team: "a trita rendszer",
@@ -1082,7 +937,7 @@ export async function sendCandidateInviteEmail(params: {
     locale,
     heading: tr.heading(params.position),
     bodyContent: `
-    <p style="font-size:14px;color:#4a4a5e;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${escapeHtml(tr.body(params.managerName))}
     </p>
     ${renderCtaButton({ href: params.applyUrl, label: tr.cta })}`,
@@ -1131,27 +986,17 @@ export async function sendTeamInviteEmail(params: {
   const locale = params.locale ?? "en";
   const t = teamInviteTranslations[locale];
 
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f0ede6;font-family:'Segoe UI',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede6;padding:40px 0">
-<tr><td align="center">
-<table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
-<tr><td style="background:#3d6b5e;padding:32px 40px;text-align:center">
-<h1 style="margin:0;color:#fff;font-size:22px;font-weight:700">${t.heading(params.teamName)}</h1>
-</td></tr>
-<tr><td style="padding:32px 40px">
-<p style="margin:0 0 24px;color:#4a4a5e;font-size:15px;line-height:1.6">${t.body}</p>
-<div style="text-align:center;margin:28px 0">
-<a href="${params.signUpUrl}" style="display:inline-block;background:#3d6b5e;color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:10px;text-decoration:none">${t.cta}</a>
-</div>
-<p style="margin:24px 0 0;color:#8c8078;font-size:13px">${t.footer}</p>
-</td></tr>
-<tr><td style="padding:16px 40px 28px;border-top:1px solid #f3f4f6;text-align:center">
-<p style="margin:0;color:#8c8078;font-size:13px">${t.thanks}<br><strong>${t.team}</strong></p>
-</td></tr>
-</table>
-</td></tr>
-</table>
-</body></html>`;
+  const html = buildEmailLayout({
+    locale,
+    heading: t.heading(escapeHtml(params.teamName)),
+    preheader: t.body,
+    bodyContent: `
+    <p style="${EMAIL_P};margin-bottom:24px">${t.body}</p>
+    ${renderCtaButton({ href: params.signUpUrl, label: t.cta })}`,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
 
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,
@@ -1202,27 +1047,17 @@ export async function sendOrgInviteEmail(params: {
   const locale = params.locale ?? "en";
   const t = orgInviteTranslations[locale];
 
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f0ede6;font-family:'Segoe UI',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede6;padding:40px 0">
-<tr><td align="center">
-<table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
-<tr><td style="background:#3d6b5e;padding:32px 40px;text-align:center">
-<h1 style="margin:0;color:#fff;font-size:22px;font-weight:700">${t.heading(params.orgName)}</h1>
-</td></tr>
-<tr><td style="padding:32px 40px">
-<p style="margin:0 0 24px;color:#4a4a5e;font-size:15px;line-height:1.6">${t.body}</p>
-<div style="text-align:center;margin:28px 0">
-<a href="${params.signUpUrl}" style="display:inline-block;background:#3d6b5e;color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:10px;text-decoration:none">${t.cta}</a>
-</div>
-<p style="margin:24px 0 0;color:#8c8078;font-size:13px">${t.footer}</p>
-</td></tr>
-<tr><td style="padding:16px 40px 28px;border-top:1px solid #f3f4f6;text-align:center">
-<p style="margin:0;color:#8c8078;font-size:13px">${t.thanks}<br><strong>${t.team}</strong></p>
-</td></tr>
-</table>
-</td></tr>
-</table>
-</body></html>`;
+  const html = buildEmailLayout({
+    locale,
+    heading: t.heading(escapeHtml(params.orgName)),
+    preheader: t.body,
+    bodyContent: `
+    <p style="${EMAIL_P};margin-bottom:24px">${t.body}</p>
+    ${renderCtaButton({ href: params.signUpUrl, label: t.cta })}`,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
 
   const { error } = await resend.emails.send({
     from: EMAIL_FROM,

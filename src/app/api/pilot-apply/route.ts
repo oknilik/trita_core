@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { checkRateLimit } from "@/lib/rate-limit";
+import {
+  buildEmailLayout,
+  escapeHtml,
+  renderInfoTable,
+  EMAIL_P,
+  EMAIL_P_MUTED,
+} from "@/lib/email-layout";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = process.env.ADMIN_EMAILS?.split(",")[0] || "hello@trita.io";
@@ -21,33 +28,35 @@ export async function POST(req: NextRequest) {
       from: "Trita Pilot <noreply@trita.io>",
       to: ADMIN_EMAIL,
       subject: `Pilot jelentkezes: ${company} – ${name}`,
-      html: `
-        <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0;">
-          <h1 style="font-size: 22px; color: #c17f4a; margin-bottom: 24px;">Új pilotprogram jelentkezés</h1>
-          <table style="width: 100%; border-collapse: collapse; font-size: 15px; color: #2C2420;">
-            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; width: 140px;">Név</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${esc(name)}</td></tr>
-            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Email</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="mailto:${esc(email)}" style="color: #c17f4a;">${esc(email)}</a></td></tr>
-            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Cég</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${esc(company)}</td></tr>
-            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Csapatméret</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;">${size ? esc(size) : "Nem adta meg"}</td></tr>
-            ${message ? `<tr><td style="padding: 10px 0; font-weight: bold; vertical-align: top;">Kérdés</td><td style="padding: 10px 0;">${esc(message)}</td></tr>` : ""}
-          </table>
-          <p style="margin-top: 24px; font-size: 13px; color: #999;">Válaszolj 24 órán belül · trita.io/pilot</p>
-        </div>
-      `,
+      html: buildEmailLayout({
+        locale: "hu",
+        heading: "Új pilotprogram jelentkezés",
+        bodyContent: `
+          ${renderInfoTable([
+            ["Név", escapeHtml(name)],
+            ["Email", `<a href="mailto:${escapeHtml(email)}" style="color:#c17f4a">${escapeHtml(email)}</a>`],
+            ["Cég", escapeHtml(company)],
+            ["Csapatméret", size ? escapeHtml(size) : "Nem adta meg"],
+            ...(message ? [["Kérdés", escapeHtml(message)] as [string, string]] : []),
+          ])}
+          <p style="${EMAIL_P_MUTED};margin-bottom:0">Válaszolj 24 órán belül · trita.io/pilot</p>`,
+      }),
     });
 
     await resend.emails.send({
       from: "Trita <hello@trita.io>",
       to: email,
       subject: "Megkaptuk a jelentkezésed – Trita Pilotprogram",
-      html: `
-        <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #2C2420;">
-          <p style="font-size: 16px; line-height: 1.7;">Kedves ${esc(name.split(" ")[0] ?? name)},</p>
-          <p style="font-size: 16px; line-height: 1.7;">Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!</p>
-          <p style="font-size: 16px; line-height: 1.7;">24 órán belül személyesen kereslek, hogy megbeszéljük a részleteket és egyeztessünk egy rövid, kötelezettségmentes bevezető beszélgetést.</p>
-          <p style="font-size: 16px; line-height: 1.7; margin-top: 24px;">Üdvözlettel,<br/><strong>Leinad</strong><br/><span style="color: #c17f4a;">Trita</span> · trita.io</p>
-        </div>
-      `,
+      html: buildEmailLayout({
+        locale: "hu",
+        preheader: "Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!",
+        bodyContent: `
+          <p style="${EMAIL_P}">Kedves ${escapeHtml(name.split(" ")[0] ?? name)},</p>
+          <p style="${EMAIL_P}">Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!</p>
+          <p style="${EMAIL_P};margin-bottom:0">24 órán belül személyesen kereslek, hogy megbeszéljük a részleteket és egyeztessünk egy rövid, kötelezettségmentes bevezető beszélgetést.</p>`,
+        thanks: "Üdvözlettel,",
+        team: "Leinad · Trita",
+      }),
     });
 
     return NextResponse.json({ ok: true });
@@ -55,13 +64,4 @@ export async function POST(req: NextRequest) {
     console.error("Pilot application error:", error);
     return NextResponse.json({ error: "Szerverhiba. Kérjük próbáld újra." }, { status: 500 });
   }
-}
-
-function esc(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }

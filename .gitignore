@@ -47,3 +47,9 @@ next-env.d.ts
 # Playwright artifacts
 /playwright-report/
 /test-results/
+
+# email előnézet-generátor kimenete (scripts/preview-emails.ts)
+.email-previews/
+
+# generált persona-riport PDF (regenerálható: pnpm report:personas)
+docs/testing/persona-riportok*.pdf

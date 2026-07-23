@@ -4,6 +4,13 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { resend, EMAIL_FROM } from "@/lib/resend";
+import {
+  buildEmailLayout,
+  escapeHtml,
+  renderCtaButton,
+  EMAIL_P,
+  EMAIL_P_MUTED,
+} from "@/lib/email-layout";
 
 const schema = z.object({ orgId: z.string() });
 
@@ -55,24 +62,20 @@ export async function POST(req: Request) {
       from: EMAIL_FROM,
       to: adminEmail,
       subject: `Jelölt kredit igénylés – ${orgName}`,
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:20px">
-          <p style="font-size:14px;color:#4a4a5e">
-            <strong>${requesterName}</strong> jelölt értékelési krediteket kér a
-            <strong>${orgName}</strong> szervezethez.
+      html: buildEmailLayout({
+        locale: "hu",
+        heading: "Jelölt kredit igénylés",
+        bodyContent: `
+          <p style="${EMAIL_P}">
+            <strong>${escapeHtml(requesterName)}</strong> jelölt értékelési krediteket kér a
+            <strong>${escapeHtml(orgName)}</strong> szervezethez.
           </p>
-          <p style="font-size:13px;color:#7a756e;margin-top:12px">
+          <p style="${EMAIL_P_MUTED};margin-bottom:24px">
             A jelenlegi kreditkeret üres. Tölts fel krediteket, hogy a csapat
             folytathassa a jelöltértékelést.
           </p>
-          <div style="margin-top:20px">
-            <a href="${APP_URL}/hiring/${orgId}"
-               style="display:inline-block;background:#3d6b5e;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">
-              Kreditek vásárlása →
-            </a>
-          </div>
-        </div>
-      `,
+          ${renderCtaButton({ href: `${APP_URL}/hiring/${orgId}`, label: "Kreditek vásárlása" })}`,
+      }),
       text: `${requesterName} jelölt értékelési krediteket kér a ${orgName} szervezethez. Töltsd fel a poolt: ${APP_URL}/hiring/${orgId}`,
     });
   }

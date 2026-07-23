@@ -3,6 +3,13 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { Resend } from "resend";
+import {
+  buildEmailLayout,
+  escapeHtml,
+  renderInfoTable,
+  EMAIL_P,
+  EMAIL_P_MUTED,
+} from "@/lib/email-layout";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = process.env.RESEND_FROM_EMAIL ?? "hello@trita.io";
@@ -43,40 +50,25 @@ export async function POST(req: NextRequest) {
         from: "Trita Advisory <noreply@trita.io>",
         to: ADMIN_EMAIL,
         subject: `🟢 Konzultáció igény: ${orgName} – ${displayName}`,
-        html: `
-          <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1a2e;">
-            <h1 style="font-size: 20px; color: #c17f4a; margin: 0 0 24px;">Tanácsadói konzultáció igény</h1>
-            <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
-              <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3; font-weight: bold; width: 120px;">Név</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3;">${displayName}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3; font-weight: bold;">Email</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3;">
-                  <a href="mailto:${userEmail}" style="color: #c17f4a;">${userEmail}</a>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3; font-weight: bold;">Szervezet</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #e8e0d3;">${orgName}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px 0; font-weight: bold; vertical-align: top;">Csapatok</td>
-                <td style="padding: 10px 0;">
-                  ${
-                    teamsSummary.length > 0
-                      ? teamsSummary.map((t) => `${t.name}: ${t.pattern}`).join("<br/>")
-                      : "—"
-                  }
-                </td>
-              </tr>
-            </table>
-            <p style="margin-top: 24px; font-size: 13px; color: #8a8a9a;">
+        html: buildEmailLayout({
+          locale: "hu",
+          heading: "Tanácsadói konzultáció igény",
+          bodyContent: `
+            ${renderInfoTable([
+              ["Név", escapeHtml(displayName)],
+              ["Email", `<a href="mailto:${escapeHtml(userEmail)}" style="color:#c17f4a">${escapeHtml(userEmail)}</a>`],
+              ["Szervezet", escapeHtml(orgName)],
+              [
+                "Csapatok",
+                teamsSummary.length > 0
+                  ? teamsSummary.map((t) => `${escapeHtml(t.name)}: ${escapeHtml(t.pattern)}`).join("<br/>")
+                  : "—",
+              ],
+            ])}
+            <p style="${EMAIL_P_MUTED};margin-bottom:0">
               Válaszolj 24 órán belül időpont-egyeztetéssel.
-            </p>
-          </div>
-        `,
+            </p>`,
+        }),
       }),
 
       // User confirmation (only if email is available)
@@ -86,23 +78,21 @@ export async function POST(req: NextRequest) {
               from: "Trita <hello@trita.io>",
               to: userEmail,
               subject: "Megkaptuk a konzultáció-igényed — Trita Advisory",
-              html: `
-                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; padding: 32px 0; color: #1a1a2e;">
-                  <p style="font-size: 16px; line-height: 1.7;">Kedves ${firstName},</p>
-                  <p style="font-size: 16px; line-height: 1.7;">
+              html: buildEmailLayout({
+                locale: "hu",
+                preheader: "24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
+                bodyContent: `
+                  <p style="${EMAIL_P}">Kedves ${escapeHtml(firstName)},</p>
+                  <p style="${EMAIL_P}">
                     Megkaptuk a jelentkezésedet a tanácsadói konzultációra!
                     24 órán belül személyesen kereslek az időpont-egyeztetéssel.
                   </p>
-                  <p style="font-size: 16px; line-height: 1.7;">
+                  <p style="${EMAIL_P};margin-bottom:0">
                     A konzultáción a csapataid aktuális mintázataiból indulunk ki — nem kell semmit előkészítened.
-                  </p>
-                  <p style="font-size: 16px; line-height: 1.7; margin-top: 24px;">
-                    Üdvözlettel,<br/>
-                    <strong>Leinad</strong><br/>
-                    <span style="color: #c17f4a;">Trita</span>
-                  </p>
-                </div>
-              `,
+                  </p>`,
+                thanks: "Üdvözlettel,",
+                team: "Leinad · Trita",
+              }),
             }),
           ]
         : []),

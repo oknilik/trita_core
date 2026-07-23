@@ -3,6 +3,10 @@ import { StyleSheet } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import type { PdfData } from "../TritaPdf";
 
+// A react-pdf Bookmark-típusa (a @react-pdf/types csak transitive dep, ezért
+// inline): a Page bookmark propja PDF-outline bejegyzést hoz létre.
+type Bookmark = string | { title: string; expanded?: boolean; top?: number; left?: number; zoom?: number };
+
 // Archetípus-borítóoldal (UI-egységesítés F3 follow-up) — a riport „arca":
 // a sötét-sage hero-nyelv (az élő eredmény-oldal és a share-kártya nyelve)
 // nyomtatásban. React-pdf nem tud CSS-gradienst — SVG-vel oldjuk meg.
@@ -85,11 +89,11 @@ const c = StyleSheet.create({
   },
 });
 
-export function CoverPage({ data }: { data: PdfData }) {
+export function CoverPage({ data, bookmark }: { data: PdfData; bookmark?: Bookmark }) {
   const topDims = (data.topDimensions ?? []).slice(0, 3);
 
   return (
-    <Page size="A4" style={c.page}>
+    <Page size="A4" style={c.page} bookmark={bookmark}>
       {/* Sötét-sage gradiens háttér + halvány dekor-körök.
           A position:absolute a wrapper View-n van, mert az Svg elem a
           react-pdf-ben nem veszi fel — flow-ban maradva átlökné a

@@ -44,18 +44,23 @@ export type ColorKey = keyof typeof COLORS;
 // Az email inline-style HTML — CSS-var kliens-támogatás megbízhatatlan, ezért
 // hexben fordul, de EBBŐL a modulból (nem kézzel szórt konstansokból).
 export const EMAIL_COLORS = {
-  // Fejléc: a sötét-sage hero-nyelv (az élő eredmény-oldal / share-kártya /
-  // PDF-borító arca) — a termék ismerős képe a postaládában (F3 follow-up).
-  headerBg: COLORS.sageDeep,
-  footerBg: COLORS.warmMid,
-  ctaBg: COLORS.sage,
-  headerGradient: `linear-gradient(135deg,#2a5244 0%,${COLORS.sageDark} 55%,#152b24 100%)`,
-  footerGradient: `linear-gradient(135deg,${COLORS.warmMid} 0%,${COLORS.cream} 60%,#fde8dc 100%)`,
-  ctaGradient: `linear-gradient(135deg,${COLORS.sage} 0%,${COLORS.sageDark} 100%)`,
-  /** Fejléc-cím a sötét heron */
-  headerHeading: "#ffffff",
+  // 2026-07-23 egységesítés: fehér canvas + homok fejléc-kártya a színes
+  // wordmarkkal (sage t · ink rit · bronz a) — a főoldali brand képe.
+  canvas: "#ffffff",
+  headerBg: COLORS.sand,
+  /** Wordmark-betűszínek a fejléc-kártyán (NavBar-paritás) */
+  wordmarkT: COLORS.sage,
+  wordmarkBody: COLORS.ink,
+  wordmarkA: COLORS.bronze,
+  /** CTA: a főoldali bronz gomb (rounded-xl, fehér felirat, nyíl) */
+  ctaBg: COLORS.bronze,
   heading: COLORS.ink,
   body: COLORS.inkBody,
+  muted: COLORS.inkWarm,
+  faint: COLORS.mutedWarm,
+  border: COLORS.sand,
+  /** Kód-doboz / kiemelt felület háttere a fehér canvason */
+  surface: COLORS.cream,
 } as const;
 
 // ─── PDF-paletta (react-pdf Node-ban renderel, CSS-var nem működik) ────────

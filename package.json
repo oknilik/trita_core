@@ -37,6 +37,8 @@
     "test:acceptance": "NODE_OPTIONS='--conditions=react-server' npx tsx --test tests/integration/acceptance/*.test.ts",
     "postinstall": "prisma generate",
     "seed:assessment": "npx tsx scripts/seed-assessment.ts",
+    "seed:personas": "npx tsx scripts/seed-personas.ts",
+    "report:personas": "npx tsx scripts/generate-persona-reports.tsx",
     "seed:org-team": "npx tsx scripts/seed-org-team.ts",
     "seed:banan": "npx tsx scripts/seed-banan-demo.ts",
     "seed:psych-safety": "npx tsx scripts/seed-psych-safety.ts",
