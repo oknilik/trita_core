@@ -908,6 +908,7 @@ export const resultsTranslations = {
       en: "Role fit is an estimate based on your personality profile. Actual fit is determined jointly by competencies, motivation, experience, and professional interests — personality is only one of these factors.",
     },
     pressureTitle: { hu: "Vakfoltok és nyomás alatt", en: "Blind spots & under pressure" },
+    growthTitle: { hu: "Fejlődési fókusz", en: "Growth focus" },
     pressureDisclaimer: {
       hu: "Ezek hipotézisek, nem ítéletek — stressz alatt sokféle működés megjelenhet. Akkor hasznosak, ha megfigyeled, mikor igazak rád, és mikor nem.",
       en: "These are hypotheses, not verdicts — many patterns can appear under stress. They're useful if you observe when they hold for you and when they don't.",

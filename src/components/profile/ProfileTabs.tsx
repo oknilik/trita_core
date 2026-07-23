@@ -148,6 +148,8 @@ export interface ProfileTabsProps {
     howYouWork: string[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
+    /** Konkrét viselkedéses fejlődési javaslat (P2.4). */
+    growthTip?: string;
     envItems: { label: string; value: string }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
@@ -820,6 +822,7 @@ export function ProfileTabs({
               plusContent: plusContent ? {
                 howYouWork: plusContent.howYouWork,
                 pressure: plusContent.pressure,
+                growthTip: plusContent.growthTip,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,
                 closingText: plusContent.closingText,

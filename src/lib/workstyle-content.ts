@@ -3,7 +3,7 @@ import { runProfileEngine } from "@/lib/profile-engine";
 import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
-  SOLO_DIM_ROLE_MODIFIERS,
+  SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
   getEnvRows,
 } from "@/lib/profile-content";
@@ -17,6 +17,8 @@ export interface WorkstyleContent {
   howYouWork: string[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
+  /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
+  growthTip?: string;
   envItems: { label: string; value: string }[];
   roleFit: {
     strong: string;
@@ -161,6 +163,16 @@ export function buildWorkstyleContent(
     if (text) pressure.push(text);
   }
 
+  // Fejlődési javaslat (P2.4) — a legalacsonyabb dimenzióhoz, csak ha
+  // ténylegesen alacsony sávban van (kiegyensúlyozott profilnál nincs tipp).
+  const growthTip = (() => {
+    const entries = Object.entries(dimScores).filter(([code]) => code !== "I");
+    if (entries.length === 0) return undefined;
+    const [lowestDim, lowestScore] = entries.reduce((min, cur) => (cur[1] < min[1] ? cur : min));
+    if (lowestScore >= 40) return undefined;
+    return DIMENSION_GROWTH_TIPS[lowestDim]?.[lang];
+  })();
+
   // Role fit texts
   const roleFitSource = engine.block6Pairs[0]?.contentKey
     ?? (engine.topSoloDims[0] ? `${engine.topSoloDims[0].dim}_${engine.topSoloDims[0].level}` : null);
@@ -219,6 +231,7 @@ export function buildWorkstyleContent(
   return {
     howYouWork,
     pressure,
+    growthTip,
     envItems,
     roleFit: {
       strong: roleTexts?.strong ?? "",

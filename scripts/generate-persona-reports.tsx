@@ -233,6 +233,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     plusContent: plan === "plus" ? {
       howYouWork: workstyle.howYouWork,
       pressure: workstyle.pressure,
+      growthTip: workstyle.growthTip,
       roleFit: workstyle.roleFit,
       takeaways: workstyle.takeaways,
       closingText: BLOCK8[locale],

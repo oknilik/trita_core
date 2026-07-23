@@ -787,6 +787,38 @@ export const SOLO_DIM_PRESSURE: Record<string, LocalizedText> = {
   },
 };
 
+// ─── Growth tips (P2.4) ──────────────────────────────────────────────────────
+// A legalacsonyabb dimenzióhoz EGY konkrét, kipróbálható viselkedéses
+// javaslat — az „X területen van tér fejlődni" általánosság helyett.
+// Kis szokások, nem személyiség-átalakítás; a hangnem meghívó, nem előíró.
+
+export const DIMENSION_GROWTH_TIPS: Record<string, LocalizedText> = {
+  INTE: {
+    hu: "A következő versenyhelyzet előtt rögzítsd magadnak írásban, mi az a határ, amin nem mész túl — és utólag nézd meg, tartottad-e. Egy mondat elég.",
+    en: "Before your next competitive situation, write down the line you won't cross — and check afterwards whether you held it. One sentence is enough.",
+  },
+  RESO: {
+    hu: "Zárj le hetente egy beszélgetést egy kimondott érzelmi visszajelzéssel („örülök, hogy…”, „köszönöm, hogy…”). Apró gesztus, de mások számára sokat jelez a kapcsolódásról.",
+    en: "Once a week, close a conversation with an explicit emotional acknowledgement (\"I'm glad that…\", \"thank you for…\"). A small gesture that signals connection loudly to others.",
+  },
+  TEMP: {
+    hu: "Vállalj havonta egy kis láthatósági alkalmat: rövid demó, csapat-összefoglaló vagy írásos státusz — a formát te választod, a lényeg a rendszeresség.",
+    en: "Take on one small visibility moment per month: a short demo, a team recap, or a written status — you choose the format, the point is the rhythm.",
+  },
+  ADAP: {
+    hu: "Éles vita előtt kérj egy napot, és írd le előre a másik fél legjobb érvét. A konfrontáció így éles maradhat anélkül, hogy személyessé válna.",
+    en: "Before a heated debate, ask for a day and write down the other side's best argument first. The confrontation stays sharp without turning personal.",
+  },
+  THOR: {
+    hu: "Válassz egyetlen visszatérő bosszúságot (pl. csúszó határidő), és építs rá egy minimális rendszert: heti 15 perc tervezés vagy egy közös checklist. Egy szokás, nem teljes rendszerváltás.",
+    en: "Pick one recurring annoyance (e.g. slipping deadlines) and build a minimal system around it: 15 minutes of weekly planning or a shared checklist. One habit, not a full overhaul.",
+  },
+  OPEN: {
+    hu: "Próbálj ki havonta egy alacsony tétű feladatban egy módszert vagy eszközt, amihez nincs kész recepted. Kis kísérletek — nem nagy váltások — edzik a rugalmasságot.",
+    en: "Once a month, try a method or tool you have no ready recipe for, on a low-stakes task. Small experiments — not big leaps — train flexibility.",
+  },
+};
+
 // ─── Solo dim role-fit modifiers (P2.2) ──────────────────────────────────────
 // A szerepkör-illeszkedést eddig csak a DOMINÁNS dimenzió hajtotta, ezért
 // egy archetípus-családon belül (pl. Empatikus/Együttműködő/Módszeres

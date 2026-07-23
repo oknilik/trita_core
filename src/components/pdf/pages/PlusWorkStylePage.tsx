@@ -74,6 +74,37 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
         </View>
 
+        {/* ── Fejlődési fókusz (P2.4): egy konkrét, kipróbálható javaslat ── */}
+        {pc.growthTip ? (
+          <View
+            wrap={false}
+            style={{
+              backgroundColor: colors.sage100,
+              borderLeft: `2 solid ${colors.sage}`,
+              borderTopRightRadius: 5,
+              borderBottomRightRadius: 5,
+              padding: "6 8",
+              marginTop: 8,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 5,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                color: colors.sageDark,
+                fontWeight: 600,
+                marginBottom: 3,
+              }}
+            >
+              {t("pdf.growthTitle", locale)}
+            </Text>
+            <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+              {pc.growthTip}
+            </Text>
+          </View>
+        ) : null}
+
         {/* ── Módszertani jegyzet (javítási terv P1.6): önjellemzés,
             tendencia nem címke, környezet/stressz módosít ── */}
         <View

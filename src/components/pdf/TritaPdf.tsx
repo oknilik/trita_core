@@ -39,6 +39,8 @@ export interface PdfData {
     howYouWork: string[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
+    /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
+    growthTip?: string;
     roleFit: {
       strong: string;
       might: string;
