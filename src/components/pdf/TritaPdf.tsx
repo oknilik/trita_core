@@ -31,7 +31,7 @@ export interface PdfData {
   watchDimensions?: string[];
   // Dimensions
   dimensions: { name: string; shortName: string; value: number; description: string }[];
-  teamRoleRoles: { name: string; subtitle: string; score: number; rank: number }[];
+  teamRoleRoles: { name: string; subtitle: string; score: number; rank: number; why?: string }[];
   /** true = profil-alapú becslés (pontszám rejtve, csak sáv-címke); false = mért kérdőíves eredmény. */
   teamRoleEstimated?: boolean;
   // Altruism
@@ -41,12 +41,16 @@ export interface PdfData {
     howYouWork: string[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
-    /** Strukturált stress/vakfolt párok az executive summary oldalhoz (P3.1). */
-    pressureParts?: { stress: string; blindspot: string }[];
+    /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
+    pressureParts?: { stress: string; blindspot: string; source?: string }[];
     /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
     growthTip?: string;
-    /** „Csapatban működve" fejezet (P4.2). */
-    collaboration?: { click: string[]; friction: string[]; needs: string[] };
+    /** „Csapatban működve" fejezet (P4.2); source = forrás-dimenzió chip (P5.2). */
+    collaboration?: {
+      click: { text: string; source?: string }[];
+      friction: { text: string; source?: string }[];
+      needs: { text: string; source?: string }[];
+    };
     roleFit: {
       strong: string;
       might: string;

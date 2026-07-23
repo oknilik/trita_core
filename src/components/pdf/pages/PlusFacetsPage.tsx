@@ -98,7 +98,7 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
             </View>
           )}
 
-          <PdfFacets dimensions={facetDims} compact />
+          <PdfFacets dimensions={facetDims} compact locale={locale} />
         </PdfCard>
 
         {/* ── Altruizmus kiegészítő skála ── */}

@@ -24,6 +24,51 @@ export const TEAM_ROLES = {
 
 export type TeamRoleCode = keyof typeof TEAM_ROLES;
 
+/**
+ * Egy mondatos indoklás a PROFIL-ALAPÚ becsléshez (P5.3) — miért ez a
+ * szerep következik a TRITAN-profilból. A megfogalmazás a becslő
+ * (team-role-estimate) súlyait tükrözi; MÉRT kérdőíves eredménynél nem
+ * használjuk (ott a kitöltés maga az indok).
+ */
+export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
+  OG: {
+    hu: "Mert az újító, rendhagyó gondolkodás hajt, és nem ragadsz le a bevett keretekben.",
+    en: "Because inventive, unconventional thinking drives you, and set frames don't hold you.",
+  },
+  KE: {
+    hu: "Mert a társas energia és a nyitottság nálad természetes kapunyitás mások és új lehetőségek felé.",
+    en: "Because social energy and openness make you a natural door-opener to people and opportunities.",
+  },
+  KO: {
+    hu: "Mert az emberek és az elvek összehangolása egyszerre fontos számodra.",
+    en: "Because aligning people and principles matters to you at the same time.",
+  },
+  HA: {
+    hu: "Mert a lendület és a közvetlen, nyomás alatt is toló stílus nálad együtt jár.",
+    en: "Because momentum and a direct, pressure-proof pushing style go together in you.",
+  },
+  ER: {
+    hu: "Mert az alapos, kritikus mérlegelés erősebb nálad, mint a rivaldafény igénye.",
+    en: "Because thorough, critical weighing is stronger in you than the need for the spotlight.",
+  },
+  CS: {
+    hu: "Mert az alkalmazkodás és a másokra hangolódás a profilod erős vonása.",
+    en: "Because adaptability and attunement to others are strong threads in your profile.",
+  },
+  MV: {
+    hu: "Mert a megbízható, következetes végrehajtás a profilod magja.",
+    en: "Because dependable, consistent execution is the core of your profile.",
+  },
+  MI: {
+    hu: "Mert a precizitás és a hibákra való érzékenység együtt mozog nálad.",
+    en: "Because precision and sensitivity to errors move together in you.",
+  },
+  SZ: {
+    hu: "Mert a mély, fókuszált tudásépítés vonz jobban, mint a széles színpad.",
+    en: "Because deep, focused expertise-building draws you more than a broad stage.",
+  },
+};
+
 export type TeamRoleScores = Record<TeamRoleCode, number>;
 
 /** Item-id → szerep-kód (az id prefixe a szerep-kód: "OG1" → "OG"). */

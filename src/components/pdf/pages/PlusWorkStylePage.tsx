@@ -31,10 +31,14 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
         </PdfCard>
 
-        {/* ── Vakfoltok és nyomás alatti működés (P2.1) — hipotézisek ── */}
+        {/* ── Vakfoltok és nyomás alatti működés (P2.1) — hipotézisek,
+            forrás-dimenzió chippel (P5.2: a „miért" kimondása) ── */}
         {(pc.pressure?.length ?? 0) > 0 && (
           <PdfCard eyebrow={t("pdf.pressureTitle", locale)} wrap={false}>
-            {pc.pressure!.map((text, i) => (
+            {/* pressure és pressureParts párhuzamos tömbök (ugyanabból a
+                ciklusból épülnek) — a szöveg a teljes, prefixelt mondatpár,
+                a chip a strukturált forrásból jön */}
+            {pc.pressure!.map((text, idx) => ({ text, source: pc.pressureParts?.[idx]?.source })).map((item, i, arr) => (
               <View
                 key={i}
                 style={{
@@ -43,10 +47,24 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
                   borderTopRightRadius: 5,
                   borderBottomRightRadius: 5,
                   padding: "6 8",
-                  marginBottom: i === (pc.pressure!.length - 1) ? 0 : 5,
+                  marginBottom: i === arr.length - 1 ? 0 : 5,
                 }}
               >
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{text}</Text>
+                {item.source ? (
+                  <Text
+                    style={{
+                      fontSize: 5,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.6,
+                      color: colors.bronzeDark,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {item.source}
+                  </Text>
+                ) : null}
+                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
             <Text style={{ fontSize: 5.5, color: colors.ink300, marginTop: 4, lineHeight: 1.4 }}>

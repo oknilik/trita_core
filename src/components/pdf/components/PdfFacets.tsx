@@ -1,6 +1,7 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import { getDimensionTier } from "@/lib/dimension-utils";
+import { t } from "@/lib/i18n";
 
 interface Facet {
   label: string;
@@ -15,7 +16,7 @@ interface Dim {
   facets: Facet[];
 }
 
-export function PdfFacets({ dimensions, compact = false }: { dimensions: Dim[]; compact?: boolean }) {
+export function PdfFacets({ dimensions, compact = false, locale = "hu" }: { dimensions: Dim[]; compact?: boolean; locale?: "hu" | "en" }) {
   return (
     <View style={{ marginBottom: 6 }}>
       {dimensions.map((dim, idx) => {
@@ -69,6 +70,15 @@ export function PdfFacets({ dimensions, compact = false }: { dimensions: Dim[]; 
                 );
               })}
             </View>
+
+            {/* „So what?" sor (P5.4): kompakt módban a számok alá kerül a
+                gyakorlati jelentés — az adatlap-jelleg oldása */}
+            {compact && dim.insight ? (
+              <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4, marginTop: 3 }}>
+                <Text style={{ fontWeight: 600, color: colors.ink }}>{t("pdf.facetSoWhat", locale)} </Text>
+                {dim.insight}
+              </Text>
+            ) : null}
           </View>
         );
       })}

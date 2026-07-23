@@ -8,6 +8,7 @@ import {
   COLLAB_CLICK, COLLAB_FRICTION, COLLAB_NEEDS,
   COLLAB_BALANCED_CLICK, COLLAB_BALANCED_FRICTION,
   ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS,
+  DIM_LABELS, CATEGORY_LABELS,
   getEnvRows,
 } from "@/lib/profile-content";
 import type { Locale } from "@/lib/i18n";
@@ -20,12 +21,17 @@ export interface WorkstyleContent {
   howYouWork: string[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
-  /** Ugyanez strukturáltan (stress/blindspot külön) — az executive summary oldalhoz (P3.1). */
-  pressureParts: PressureText[];
+  /** Ugyanez strukturáltan (stress/blindspot külön + forrás-dimenzió, P5.2). */
+  pressureParts: (PressureText & { source: string })[];
   /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
   growthTip?: string;
-  /** „Csapatban működve" fejezet (P4.2): partnerek / súrlódások / feltételek. */
-  collaboration: { click: string[]; friction: string[]; needs: string[] };
+  /** „Csapatban működve" fejezet (P4.2): partnerek / súrlódások / feltételek.
+   *  source: melyik dimenzió-pólusból következik az állítás (P5.2 „miért"-chip). */
+  collaboration: {
+    click: { text: string; source?: string }[];
+    friction: { text: string; source?: string }[];
+    needs: { text: string; source?: string }[];
+  };
   envItems: { label: string; value: string }[];
   roleFit: {
     strong: string;
@@ -164,13 +170,18 @@ export function buildWorkstyleContent(
   // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
   // pároktól függetlenül, hipotézis-keretezéssel (P2.1). A részletes kártya
   // összefűzött szöveget kap, az executive summary a strukturált részeket.
+  // Forrás-jelölés (P5.2): melyik dimenzió-pólusból következik az állítás —
+  // a „miért" kimondása összeköti a hipotézist az adattal.
+  const sourceLabel = (dim: string, level: "high" | "medium" | "low") =>
+    `${DIM_LABELS[dim]?.[lang] ?? dim} · ${CATEGORY_LABELS[level][lang]}`;
+
   const pressure: string[] = [];
-  const pressureParts: PressureText[] = [];
+  const pressureParts: (PressureText & { source: string })[] = [];
   for (const sd of engine.topSoloDims) {
     const key = `${sd.dim}_${sd.level}`;
     const part = SOLO_DIM_PRESSURE[key]?.[lang];
     if (part) {
-      pressureParts.push(part);
+      pressureParts.push({ ...part, source: sourceLabel(sd.dim, sd.level) });
       pressure.push(`${part.stress} ${PRESSURE_BLINDSPOT_PREFIX[lang]} ${part.blindspot}`);
     }
   }
@@ -192,36 +203,37 @@ export function buildWorkstyleContent(
   //    a riport és a csapat-felület ugyanazt a modellt mondja);
   //  - needs: a legmarkánsabb dimenzió + a legalacsonyabb (ha low sávos).
   const collaboration = (() => {
-    const click: string[] = [];
+    type CollabItem = { text: string; source?: string };
+    const click: CollabItem[] = [];
     for (const sd of engine.topSoloDims.slice(0, 2)) {
       const text = COLLAB_CLICK[`${sd.dim}_${sd.level}`]?.[lang];
-      if (text) click.push(text);
+      if (text) click.push({ text, source: sourceLabel(sd.dim, sd.level) });
     }
-    if (click.length === 0) click.push(COLLAB_BALANCED_CLICK[lang]);
+    if (click.length === 0) click.push({ text: COLLAB_BALANCED_CLICK[lang] });
 
     const FRICTION_DIM_ORDER = ["THOR", "ADAP", "INTE"] as const;
-    const friction: string[] = [];
+    const friction: CollabItem[] = [];
     for (const dim of FRICTION_DIM_ORDER) {
       const level = engine.categories[dim];
       if (level !== "high" && level !== "low") continue;
       const text = COLLAB_FRICTION[`${dim}_${level}`]?.[lang];
-      if (text) friction.push(text);
+      if (text) friction.push({ text, source: sourceLabel(dim, level) });
       if (friction.length === 2) break;
     }
-    if (friction.length === 0) friction.push(COLLAB_BALANCED_FRICTION[lang]);
+    if (friction.length === 0) friction.push({ text: COLLAB_BALANCED_FRICTION[lang] });
 
-    const needs: string[] = [];
-    const needKeys: string[] = [];
+    const needs: CollabItem[] = [];
+    const needKeys: { key: string; dim: string; level: "high" | "low" }[] = [];
     const topSolo = engine.topSoloDims[0];
-    if (topSolo) needKeys.push(`${topSolo.dim}_${topSolo.level}`);
+    if (topSolo) needKeys.push({ key: `${topSolo.dim}_${topSolo.level}`, dim: topSolo.dim, level: topSolo.level as "high" | "low" });
     const lowEntries = Object.entries(engine.categories).filter(([, lvl]) => lvl === "low");
     for (const [dim] of lowEntries) {
       const key = `${dim}_low`;
-      if (!needKeys.includes(key)) { needKeys.push(key); break; }
+      if (!needKeys.some((k) => k.key === key)) { needKeys.push({ key, dim, level: "low" }); break; }
     }
-    for (const key of needKeys.slice(0, 2)) {
-      const text = COLLAB_NEEDS[key]?.[lang];
-      if (text) needs.push(text);
+    for (const nk of needKeys.slice(0, 2)) {
+      const text = COLLAB_NEEDS[nk.key]?.[lang];
+      if (text) needs.push({ text, source: sourceLabel(nk.dim, nk.level) });
     }
 
     return { click, friction, needs };

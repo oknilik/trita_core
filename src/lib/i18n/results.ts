@@ -980,6 +980,7 @@ export const resultsTranslations = {
       hu: " Az alacsonyabb {bottomName} nem hiányosság — inkább azt jelzi, merre van még tér a fejlődésre.",
       en: " Lower {bottomName} isn't a weakness — it signals where there's room for growth.",
     },
+    facetSoWhat: { hu: "A gyakorlatban:", en: "In practice:" },
     whatDoesThisMeanOverall: { hu: "Mit jelent ez összességében?", en: "What does this mean overall?" },
     facetBalanced: {
       hu: "Kiegyensúlyozott profil — nincs szélsőségesen magas vagy alacsony dimenzió. Ez rugalmasságot jelent, de kevesebb természetes szupererőt.",

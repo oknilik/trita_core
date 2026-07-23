@@ -20,6 +20,24 @@ interface Props {
   locale: "hu" | "en";
 }
 
+function SourceChip({ label, color }: { label?: string; color: string }) {
+  if (!label) return null;
+  return (
+    <Text
+      style={{
+        fontSize: 5,
+        fontWeight: 600,
+        textTransform: "uppercase",
+        letterSpacing: 0.6,
+        color,
+        marginBottom: 2,
+      }}
+    >
+      {label}
+    </Text>
+  );
+}
+
 export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
   const collab = data.plusContent?.collaboration;
   if (!collab) return null;
@@ -32,7 +50,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
         {/* ── Természetes partnerek ── */}
         {collab.click.length > 0 && (
           <PdfCard eyebrow={t("pdf.collabClick", locale)}>
-            {collab.click.map((text, i) => (
+            {collab.click.map((item, i) => (
               <View
                 key={i}
                 style={{
@@ -44,7 +62,8 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
                   marginBottom: i === collab.click.length - 1 ? 0 : 5,
                 }}
               >
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{text}</Text>
+                <SourceChip label={item.source} color={colors.sageDark} />
+                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
           </PdfCard>
@@ -53,7 +72,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
         {/* ── Lehetséges súrlódások ── */}
         {collab.friction.length > 0 && (
           <PdfCard eyebrow={t("pdf.collabFriction", locale)}>
-            {collab.friction.map((text, i) => (
+            {collab.friction.map((item, i) => (
               <View
                 key={i}
                 style={{
@@ -65,7 +84,8 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
                   marginBottom: i === collab.friction.length - 1 ? 0 : 5,
                 }}
               >
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{text}</Text>
+                <SourceChip label={item.source} color={colors.bronzeDark} />
+                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
           </PdfCard>
@@ -74,18 +94,11 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
         {/* ── Ami kihozza belőled a legjobbat ── */}
         {collab.needs.length > 0 && (
           <PdfCard eyebrow={t("pdf.collabNeeds", locale)}>
-            {collab.needs.map((text, i) => (
-              <Text
-                key={i}
-                style={{
-                  fontSize: 7,
-                  color: colors.ink,
-                  lineHeight: 1.45,
-                  marginBottom: i === collab.needs.length - 1 ? 0 : 4,
-                }}
-              >
-                {text}
-              </Text>
+            {collab.needs.map((item, i) => (
+              <View key={i} style={{ marginBottom: i === collab.needs.length - 1 ? 0 : 5 }}>
+                <SourceChip label={item.source} color={colors.sageDark} />
+                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
+              </View>
             ))}
           </PdfCard>
         )}

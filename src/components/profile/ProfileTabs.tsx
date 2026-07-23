@@ -148,12 +148,16 @@ export interface ProfileTabsProps {
     howYouWork: string[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
-    /** Strukturált stress/vakfolt párok az executive summary PDF-oldalhoz (P3.1). */
-    pressureParts?: { stress: string; blindspot: string }[];
+    /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
+    pressureParts?: { stress: string; blindspot: string; source?: string }[];
     /** Konkrét viselkedéses fejlődési javaslat (P2.4). */
     growthTip?: string;
-    /** „Csapatban működve" fejezet (P4.2). */
-    collaboration?: { click: string[]; friction: string[]; needs: string[] };
+    /** „Csapatban működve" fejezet (P4.2); source = forrás-dimenzió chip (P5.2). */
+    collaboration?: {
+      click: { text: string; source?: string }[];
+      friction: { text: string; source?: string }[];
+      needs: { text: string; source?: string }[];
+    };
     envItems: { label: string; value: string }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
@@ -809,6 +813,8 @@ export function ProfileTabs({
                     measured = false;
                   }
                   const top3 = getTopRoles(scores, 3);
+                  // eslint-disable-next-line @typescript-eslint/no-require-imports
+                  const { TEAM_ROLE_WHY } = require("@/lib/team-role-scoring");
                   const sourceLabel = measured
                     ? locale === "hu" ? "kitöltött kérdőívből" : "from completed questionnaire"
                     : locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
@@ -818,6 +824,8 @@ export function ProfileTabs({
                       subtitle: i === 0 ? sourceLabel : "",
                       score: r.score,
                       rank: i,
+                      // P5.3: indoklás csak becsült elsődleges szerepnél
+                      why: i === 0 && !measured ? TEAM_ROLE_WHY[r.role][locale === "hu" ? "hu" : "en"] : undefined,
                     })),
                     teamRoleEstimated: !measured,
                   };

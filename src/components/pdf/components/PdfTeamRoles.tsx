@@ -6,6 +6,8 @@ interface TeamRoleRole {
   subtitle: string;
   score: number;
   rank: number;
+  /** Egy mondatos indoklás a becsült elsődleges szerephez (P5.3). */
+  why?: string;
 }
 
 interface PdfTeamRolesProps {
@@ -62,6 +64,11 @@ export function PdfTeamRoles({ roles, locale = "hu", showScores = false }: PdfTe
             <Text style={{ fontFamily: "Fraunces", fontSize: isPrimary ? 9 : 8.5, color: colors.ink, marginBottom: 1 }}>
               {role.name}
             </Text>
+            {role.why ? (
+              <Text style={{ fontSize: 5.5, color: colors.ink500, lineHeight: 1.35, marginBottom: 1.5 }}>
+                {role.why}
+              </Text>
+            ) : null}
             {role.subtitle ? (
               <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.3 }}>{role.subtitle}</Text>
             ) : null}

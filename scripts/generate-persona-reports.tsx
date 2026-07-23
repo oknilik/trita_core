@@ -36,7 +36,7 @@ import {
   DIMENSION_WATCH_DESCS,
 } from "../src/lib/dimension-insights";
 import { estimateTeamRolesFromTritan } from "../src/lib/team-role-estimate";
-import { TEAM_ROLES, getTopRoles } from "../src/lib/team-role-scoring";
+import { TEAM_ROLES, TEAM_ROLE_WHY, getTopRoles } from "../src/lib/team-role-scoring";
 import { TRITAN_ORDER, TRITAN_DIM_ABBR, type TritanDimCode } from "../src/lib/tritan";
 import { t, tf, type Locale } from "../src/lib/i18n";
 import type { PdfData } from "../src/components/pdf/TritaPdf";
@@ -195,6 +195,8 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       subtitle: i === 0 ? sourceLabel : "",
       score: r.score,
       rank: i,
+      // P5.3: egy mondatos indoklás az elsődleges BECSÜLT szerephez
+      why: i === 0 ? TEAM_ROLE_WHY[r.role][locale] : undefined,
     }));
   })();
 
