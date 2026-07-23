@@ -77,11 +77,25 @@ export function SummaryPage({ data, pageNum, totalPages, locale }: Props) {
 
       <View style={{ flex: 1, padding: "0 28 12" }}>
         <PdfCard eyebrow={t("pdf.summaryPageTitle", locale)}>
-          {/* Archetípus + tagline felütés */}
+          {/* Archetípus + felütés: történet (P5.6), fallbackként tagline —
+              „az emberek történeteket jegyeznek meg, nem adatokat" */}
           <Text style={{ fontFamily: "Fraunces", fontSize: 13, color: colors.ink, marginBottom: 2 }}>
             {data.personalityType}
           </Text>
-          {data.heroInsight ? (
+          {data.archetypeStory ? (
+            <Text
+              style={{
+                fontFamily: "Fraunces",
+                fontStyle: "italic",
+                fontSize: 8,
+                color: colors.ink500,
+                lineHeight: 1.5,
+                marginBottom: 8,
+              }}
+            >
+              {data.archetypeStory}
+            </Text>
+          ) : data.heroInsight ? (
             <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.45, marginBottom: 8 }}>
               {data.heroInsight}
             </Text>
