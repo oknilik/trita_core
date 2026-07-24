@@ -8,11 +8,27 @@ import { t } from "@/lib/i18n";
 import { AssessmentClient } from "@/app/(app)/assessment/AssessmentClient";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
+// SEO 2. kör: a /try a sitemapben 0.9 prioritással szerepel (lead magnet) —
+// az addigi robots:{index:false} ezzel ellentmondott; feloldás az indexelés
+// irányába, teljes metadatával. A tartalom nyelve a szerver-locale-t követi.
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: t("meta.assessmentTitle", locale),
-    robots: { index: false },
+    title: t("meta.tryTitle", locale),
+    description: t("meta.tryDescription", locale),
+    alternates: { canonical: "/try" },
+    openGraph: {
+      title: t("meta.tryTitle", locale),
+      description: t("meta.tryDescription", locale),
+      url: "/try",
+      type: "website",
+      siteName: "trita",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("meta.tryTitle", locale),
+      description: t("meta.tryDescription", locale),
+    },
   };
 }
 

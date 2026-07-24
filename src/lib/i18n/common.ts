@@ -12,6 +12,14 @@ export const commonTranslations = {
       hu: "Teszt kitöltése | Trita",
       en: "Take the test | Trita",
     },
+    tryTitle: {
+      hu: "Ingyenes személyiségteszt — 60 kérdés, kb. 10 perc | Trita",
+      en: "Free personality test — 60 questions, about 10 minutes | Trita",
+    },
+    tryDescription: {
+      hu: "Töltsd ki a Trita személyiségtesztet regisztráció nélkül: 60 kérdés, körülbelül 10 perc, azonnali visszajelzés a hat személyiségdimenzió mentén.",
+      en: "Take the Trita personality assessment without registration: 60 questions, about 10 minutes, instant feedback across six personality dimensions.",
+    },
     dashboardTitle: {
       hu: "Vezérlő | Trita",
       en: "Dashboard | Trita",

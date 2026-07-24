@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { getPostBySlug, getAllPosts } from "@/lib/blog";
+import { getPostBySlug, getAllPosts, extractHeadings, slugifyHeading } from "@/lib/blog";
 import { t } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/seo";
 import { TranslationRedirect } from "../TranslationRedirect";
+import { ReadingProgress } from "@/components/blog/ReadingProgress";
+import { ArticleToc } from "@/components/blog/ArticleToc";
+import { ShareRow } from "@/components/blog/ShareRow";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -21,6 +24,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
+  if (post.status === "draft" && process.env.NODE_ENV !== "development") return {};
 
   const baseUrl = getSiteUrl();
   const languages = post.translationSlug
@@ -136,6 +140,21 @@ function CompareTable({
   );
 }
 
+// PullQuote — Fraunces italic idézet bronz vonallal, a szövegritmus
+// tördelésére (MDX-ben: <PullQuote source="kulcsgondolat">…</PullQuote>)
+function PullQuote({ children, source }: { children: React.ReactNode; source?: string }) {
+  return (
+    <div className="my-8 border-l-[2.5px] border-[var(--color-accent-primary)] py-1.5 pl-6">
+      <p className="font-fraunces text-[22px] italic leading-[1.45] text-ink">{children}</p>
+      {source && (
+        <span className="mt-2 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
+          {source}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
     <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
@@ -153,9 +172,24 @@ const makeComponents = (isHu: boolean) => ({
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1 className="mb-5 mt-14 font-fraunces text-[30px] leading-[1.22] tracking-tight text-ink" {...props} />
   ),
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="mb-4 mt-12 font-fraunces text-[25px] leading-[1.22] tracking-tight text-ink" {...props} />
-  ),
+  h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+    // A TOC-hoz azonos módon képzett horgony-id (ld. slugifyHeading)
+    const text =
+      typeof children === "string"
+        ? children
+        : Array.isArray(children)
+          ? children.filter((c) => typeof c === "string").join("")
+          : "";
+    return (
+      <h2
+        id={text ? slugifyHeading(text) : undefined}
+        className="mb-4 mt-12 scroll-mt-20 font-fraunces text-[25px] leading-[1.22] tracking-tight text-ink"
+        {...props}
+      >
+        {children}
+      </h2>
+    );
+  },
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3 className="mb-3 mt-10 text-xl font-semibold text-[var(--color-text-primary)]" {...props} />
   ),
@@ -188,6 +222,7 @@ const makeComponents = (isHu: boolean) => ({
     <a className="text-[var(--color-action-primary-bg)] underline underline-offset-2 hover:text-[var(--color-accent-self-deep)]" {...props} />
   ),
   Callout,
+  PullQuote,
   StatCard,
   StatRow,
   DimBadge,
@@ -205,10 +240,36 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) notFound();
+  // Piszkozat élesben nem elérhető (dev-ben igen — ott az előnézet)
+  if (post.status === "draft" && process.env.NODE_ENV !== "development") notFound();
 
   // Statikus oldal: a keret is a cikk nyelvén renderel; nyelvváltásnál a
   // TranslationRedirect kliens-oldalon visz a fordítás-párra.
   const locale = post.locale;
+
+  // Article JSON-LD (SEO 2. kör) — a landing Organization/WebSite sémáinak
+  // mintájára; az image a per-cikk opengraph-image route-ra mutat.
+  const baseUrl = getSiteUrl();
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.publishedAt,
+    inLanguage: post.locale,
+    image: [`${baseUrl}/blog/${post.slug}/opengraph-image`],
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/blog/${post.slug}`,
+    },
+    author: { "@type": "Organization", name: "trita", url: baseUrl },
+    publisher: {
+      "@type": "Organization",
+      name: "trita",
+      url: baseUrl,
+      logo: { "@type": "ImageObject", url: `${baseUrl}/favicon.svg` },
+    },
+  };
 
   // Related posts (same tags, excluding current)
   const allPosts = getAllPosts(locale as "hu" | "en");
@@ -216,14 +277,32 @@ export default async function BlogPostPage({
     .filter((p) => p.slug !== slug && p.tags.some((t) => post.tags.includes(t)))
     .slice(0, 2);
 
+  // Előző/következő cikk (az allPosts dátum szerint csökkenő)
+  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
+  const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+  const olderPost =
+    currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+
+  // TOC a h2-kből (az MDX h2-override azonos slugifyHeading-gel képzi az id-t)
+  const headings = extractHeadings(post.content);
+  const tocLabels = {
+    inThisArticle: t("blog.inThisArticle", locale),
+    minutesLeft: t("blog.minutesLeft", locale),
+  };
+
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <ReadingProgress />
       <TranslationRedirect
         postLocale={post.locale}
         translationSlug={post.translationSlug}
       />
       {/* Header */}
-      <div className="mx-auto max-w-[840px] px-7 pb-0 pt-6">
+      <div className="mx-auto max-w-[1080px] px-7 pb-0 pt-6">
         <Link
           href="/blog"
           className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
@@ -235,7 +314,8 @@ export default async function BlogPostPage({
         </Link>
       </div>
 
-      <article className="mx-auto max-w-[840px] px-7 pb-14 pt-4">
+      <div className="mx-auto max-w-[1080px] px-7 pb-14 pt-4 md:grid md:grid-cols-[minmax(0,1fr)_250px] md:items-start md:gap-10">
+      <article className="min-w-0 max-w-[840px]">
         {/* Tags */}
         {post.tags.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-1.5">
@@ -259,24 +339,88 @@ export default async function BlogPostPage({
         </h1>
 
         {/* Description */}
-        <p className="mb-3 text-[17px] font-light leading-relaxed text-ink-body">
+        <p className="mb-4 text-[17px] font-light leading-relaxed text-ink-body">
           {post.description}
         </p>
 
-        {/* Meta */}
-        <div className="mb-9 flex items-center gap-2 border-b border-[var(--color-border-default)] pb-5 text-xs text-[var(--color-text-muted)]">
-          <span>
-            {new Date(post.publishedAt).toLocaleDateString(
-              locale === "en" ? "en-GB" : "hu-HU",
-              { year: "numeric", month: "long", day: "numeric" },
-            )}
+        {/* Szerző-blokk + megosztás (E-E-A-T — összhangban az Article JSON-LD-vel) */}
+        <div className="mb-8 flex items-center gap-3 border-b border-t border-[var(--color-border-default)] py-3.5">
+          <span
+            aria-hidden
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-[15px] text-white"
+          >
+            t
           </span>
-          <span className="h-[3px] w-[3px] rounded-full bg-[var(--color-border-default)]" />
-          <span>{post.readingTime}</span>
+          <span className="min-w-0">
+            <span className="block text-caption font-semibold text-ink">
+              {t("blog.authorTeam", locale)}
+            </span>
+            <span className="block text-micro text-[var(--color-text-muted)]">
+              {new Date(post.publishedAt).toLocaleDateString(
+                locale === "en" ? "en-GB" : "hu-HU",
+                { year: "numeric", month: "long", day: "numeric" },
+              )}{" "}
+              · {post.readingTime}
+            </span>
+          </span>
+          <span className="ml-auto">
+            <ShareRow
+              title={post.title}
+              labels={{
+                copyLink: t("blog.copyLink", locale),
+                copied: t("blog.linkCopied", locale),
+                share: t("blog.share", locale),
+              }}
+            />
+          </span>
         </div>
 
-        {/* MDX Content */}
-        <MDXRemote source={post.content} components={makeComponents(post.locale !== "en")} />
+        {/* Mobil TOC */}
+        <ArticleToc
+          variant="mobile"
+          headings={headings}
+          totalMinutes={post.readingMinutes}
+          labels={tocLabels}
+        />
+
+        {/* MDX Content — .blog-prose: iniciálé az első bekezdésen */}
+        <div className="blog-prose">
+          <MDXRemote source={post.content} components={makeComponents(post.locale !== "en")} />
+        </div>
+
+        {/* Előző / következő cikk */}
+        {(olderPost || newerPost) && (
+          <div className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-2">
+            {olderPost ? (
+              <Link
+                href={`/blog/${olderPost.slug}`}
+                className="rounded-xl border border-sand bg-white px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+              >
+                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
+                  {t("blog.prevArticle", locale)}
+                </span>
+                <span className="font-fraunces text-[15px] leading-[1.3] text-ink">
+                  {olderPost.title}
+                </span>
+              </Link>
+            ) : (
+              <span className="hidden md:block" />
+            )}
+            {newerPost && (
+              <Link
+                href={`/blog/${newerPost.slug}`}
+                className="rounded-xl border border-sand bg-white px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+              >
+                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
+                  {t("blog.nextArticle", locale)}
+                </span>
+                <span className="font-fraunces text-[15px] leading-[1.3] text-ink">
+                  {newerPost.title}
+                </span>
+              </Link>
+            )}
+          </div>
+        )}
 
         {/* Related posts */}
         {relatedPosts.length > 0 && (
@@ -340,6 +484,33 @@ export default async function BlogPostPage({
           </Link>
         </div>
       </article>
+
+      {/* Oldalsáv: sticky TOC + halk mini-CTA */}
+      <aside className="hidden md:block">
+        <div className="sticky top-6 space-y-4">
+          <ArticleToc
+            variant="desktop"
+            headings={headings}
+            totalMinutes={post.readingMinutes}
+            labels={tocLabels}
+          />
+          <div className="rounded-xl border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] px-5 py-4">
+            <p className="mb-1 text-caption font-semibold text-[var(--color-accent-self-deep)]">
+              {t("blog.tryTitle", locale)}
+            </p>
+            <p className="mb-3 text-micro leading-relaxed text-[var(--color-text-secondary)]">
+              {t("blog.trySub", locale)}
+            </p>
+            <Link
+              href="/try"
+              className="inline-block rounded-lg bg-[var(--color-action-primary-bg)] px-4 py-2 text-caption font-semibold text-white transition-colors hover:bg-[var(--color-action-primary-bg-hover)]"
+            >
+              {t("blog.tryCta", locale)}
+            </Link>
+          </div>
+        </div>
+      </aside>
+      </div>
     </main>
   );
 }
