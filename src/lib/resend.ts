@@ -25,7 +25,10 @@ export const resend = new Proxy({} as Resend, {
 // Resendben (resend.com/domains). Verifikálatlan domainről a küldés 403-mal
 // elhal, és a lead/inquiry admin-emailek némán elvesznek. Prodban ezért a
 // RESEND_FROM_EMAIL explicit beállítása kötelező; hiányát induláskor jelezzük.
-const DEFAULT_EMAIL_FROM = "trita <noreply@trita.hu>";
+// 2026-07-24: a default a trita.hu-ról trita.io-ra váltott — a Resend
+// DNS-rekordok (MX/SPF/DKIM a send.trita.io-n) a .io domainen élnek, a
+// trita.hu-n nincsenek kint, onnan a küldés eleve elhalna.
+const DEFAULT_EMAIL_FROM = "trita <noreply@trita.io>";
 
 export const EMAIL_FROM = process.env.RESEND_FROM_EMAIL ?? DEFAULT_EMAIL_FROM;
 

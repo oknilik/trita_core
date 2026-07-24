@@ -870,7 +870,7 @@ const teamInviteTranslations = {
   hu: {
     subject: (teamName: string) => `Meghívtak a(z) ${teamName} csapatba – Trita`,
     heading: (teamName: string) => `Meghívtak a(z) ${teamName} csapatba`,
-    body: "Személyiséges profilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadjuk!",
+    body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadunk!",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
     thanks: "Üdvözlettel,",
