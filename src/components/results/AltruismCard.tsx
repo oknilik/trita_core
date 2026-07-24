@@ -2,7 +2,7 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
+import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 
 interface AltruismCardProps {
   value: number;
@@ -36,8 +36,14 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
           <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
             {t("content.altruismName", locale)}
           </span>
+          {/* Szöveges besorolás — 0 közeli értéknél a szám önmagában
+              adathibának tűnne (design-akciólista #13). */}
+          <span className={`shrink-0 rounded px-1.5 py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}>
+            {getDimensionLabel(value, locale)}
+          </span>
           <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
-            <div className={`h-full rounded-sm ${colors.fill}`} style={{ width: `${value}%` }} />
+            {/* Min. 2% sávszélesség, hogy a 0 is szándékos értéknek látsszon */}
+            <div className={`h-full rounded-sm ${colors.fill}`} style={{ width: `${Math.max(value, 2)}%` }} />
           </div>
           <span className={`w-10 shrink-0 text-right font-fraunces text-base ${colors.text}`}>
             {value}%
