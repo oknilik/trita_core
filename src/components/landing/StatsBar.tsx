@@ -8,13 +8,13 @@ export function StatsBar({ mode }: { mode: SiteMode }) {
 
   const stats = mode === "self"
     ? [
-        { value: "~15", suffix: t("landing.statMinSuffix", locale), label: t("landing.statMinLabel", locale) },
+        { value: t("landing.statMinValue", locale), suffix: t("landing.statMinSuffix", locale), label: t("landing.statMinLabel", locale) },
         { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
         { value: t("landing.statResultValue", locale), suffix: "", label: t("landing.statResultLabel", locale), isText: true },
         { value: t("landing.statSelfValue", locale), suffix: "", label: t("landing.statSelfLabel", locale), isText: true },
       ]
     : [
-        { value: "~15", suffix: t("landing.statMinSuffix", locale), label: t("landing.statTeamMinLabel", locale) },
+        { value: t("landing.statMinValue", locale), suffix: t("landing.statMinSuffix", locale), label: t("landing.statTeamMinLabel", locale) },
         { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
         { value: t("landing.statTeamPictureValue", locale), suffix: "", label: t("landing.statTeamPictureLabel", locale), isText: true },
         { value: "16", suffix: "", label: t("landing.statTeamPatternLabel", locale) },

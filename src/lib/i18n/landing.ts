@@ -130,6 +130,9 @@ export const landingTranslations = {
     trustTeam3: { hu: "Tudományos", en: "Scientific" },
     trustTeam4: { hu: "Biztonságos", en: "Secure" },
     // StatsBar
+    // Egységes kitöltési idő (design-akciólista #4): a hero chip, a
+    // StatsBar és a marketing copy ugyanazt az értéket használja.
+    statMinValue: { hu: "~10", en: "~10" },
     statMinSuffix: { hu: " perc", en: " min" },
     statMinLabel: { hu: "átlagos kitöltés", en: "average completion" },
     statDimLabel: { hu: "személyiség dimenzió", en: "personality dimensions" },
