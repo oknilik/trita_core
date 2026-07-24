@@ -9,6 +9,7 @@ import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
+import { DraftCampaignEditor } from "@/components/org/DraftCampaignEditor";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import {
   StatusChip,
@@ -150,7 +151,7 @@ export default async function CampaignDetailPage({
       : null;
   const dateLocale = locale === "en" ? "en-GB" : "hu-HU";
 
-  const [campaign, orgMembers] = await Promise.all([
+  const [campaign, orgMembers, orgTeams] = await Promise.all([
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
       select: {
@@ -161,6 +162,7 @@ export default async function CampaignDetailPage({
         type: true,
         steps: true,
         teamId: true,
+        stepIntervalHours: true,
         createdAt: true,
         closedAt: true,
         creator: { select: { username: true } },
@@ -184,6 +186,11 @@ export default async function CampaignDetailPage({
         userId: true,
         user: { select: { username: true, email: true } },
       },
+    }),
+    prisma.team.findMany({
+      where: { orgId },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, _count: { select: { members: true } } },
     }),
   ]);
 
@@ -775,6 +782,31 @@ export default async function CampaignDetailPage({
             </div>
           ) : null}
         </section>
+
+        {/* DRAFT-szerkesztő: mérések + célzás + ütem, aktiválás előtt */}
+        {canManageCampaign && campaign.status === "DRAFT" && (
+          <DraftCampaignEditor
+            orgId={orgId}
+            campaignId={campaign.id}
+            initialSteps={
+              (campaign.steps.length > 0 ? campaign.steps : [campaign.type]) as (
+                | "OBSERVER_360"
+                | "TEAM_ROLE"
+                | "TEAM_ROLE_360"
+                | "TRUST_360"
+                | "PSYCH_SAFETY"
+              )[]
+            }
+            initialTeamId={campaign.teamId}
+            initialIntervalHours={campaign.stepIntervalHours}
+            teams={orgTeams.map((team) => ({
+              id: team.id,
+              name: team.name,
+              memberCount: team._count.members,
+            }))}
+            locale={locale}
+          />
+        )}
 
         {/* Status transition */}
         {canManageCampaign && nextStatus && (

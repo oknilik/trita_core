@@ -4,10 +4,29 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { canManageMeasurements } from "@/lib/measurement-auth";
+import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
 
-const patchSchema = z.object({
-  status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
-});
+const patchSchema = z.union([
+  z.object({
+    status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
+  }),
+  // DRAFT-kampány szerkesztése: mérések, cél-csapat, ütem, név — aktiválás
+  // előtt bármi módosítható; aktiválás után a kampány összetétele fix.
+  z.object({
+    action: z.literal("edit_draft"),
+    types: z
+      .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]))
+      .min(1)
+      .max(3)
+      .optional(),
+    teamId: z.string().min(1).nullable().optional(),
+    stepIntervalHours: z.number().int().min(0).max(168).optional(),
+    name: z.string().min(1).max(100).optional(),
+    description: z.string().max(500).nullable().optional(),
+  }),
+]);
+
+const TEAM_LOCKED_STEPS = new Set(["TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]);
 
 const addParticipantsSchema = z.object({
   userIds: z.array(z.string().min(1)).min(1).max(50),
@@ -116,6 +135,63 @@ export async function PATCH(
 
   const body = patchSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+
+  // ── DRAFT-szerkesztés ág ──────────────────────────────────────────────
+  if ("action" in body.data) {
+    if (ctx.campaign.status !== "DRAFT") {
+      return NextResponse.json({ error: "CAMPAIGN_NOT_DRAFT" }, { status: 409 });
+    }
+    const edit = body.data;
+
+    const steps = edit.types
+      ? normalizeCampaignSteps(edit.types)
+      : ctx.campaign.steps.length > 0
+        ? ctx.campaign.steps
+        : [ctx.campaign.type];
+    if (steps.length === 0) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
+
+    // teamId: undefined = marad, null = célzás törlése, string = új csapat
+    const nextTeamId =
+      edit.teamId === undefined ? ctx.campaign.teamId : edit.teamId;
+    if (steps.some((st) => TEAM_LOCKED_STEPS.has(st)) && !nextTeamId) {
+      return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });
+    }
+    if (nextTeamId && nextTeamId !== ctx.campaign.teamId) {
+      const team = await prisma.team.findUnique({
+        where: { id: nextTeamId },
+        select: { orgId: true },
+      });
+      if (!team || team.orgId !== orgId) {
+        return NextResponse.json({ error: "INVALID_TEAM" }, { status: 400 });
+      }
+    }
+
+    const updated = await prisma.campaign.update({
+      where: { id: campaignId },
+      data: {
+        steps,
+        type: steps[0],
+        teamId: nextTeamId,
+        ...(edit.stepIntervalHours !== undefined
+          ? { stepIntervalHours: edit.stepIntervalHours }
+          : {}),
+        ...(edit.name ? { name: edit.name } : {}),
+        ...(edit.description !== undefined ? { description: edit.description } : {}),
+      },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        type: true,
+        steps: true,
+        teamId: true,
+        stepIntervalHours: true,
+      },
+    });
+    return NextResponse.json({ campaign: updated });
+  }
 
   const campaign = await prisma.campaign.update({
     where: { id: campaignId },
