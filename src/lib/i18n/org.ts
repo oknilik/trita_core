@@ -1011,6 +1011,24 @@ export const orgTranslations = {
     },
     creating: { hu: "Létrehozás...", en: "Creating..." },
     createCampaign: { hu: "Kampány létrehozása", en: "Create campaign" },
+    createAndActivate: { hu: "Létrehozás és aktiválás", en: "Create and activate" },
+    activateNowLabel: { hu: "Aktiválás azonnal a létrehozás után.", en: "Activate immediately after creation." },
+    activateNowHint: {
+      hu: "A résztvevők azonnal lépés-nyitó értesítést kapnak, és indul az első kérdőív. Csak akkor pipáld be, ha a névsor végleges — az aktiválás nem vonható vissza.",
+      en: "Participants get their step-opening notification right away and the first questionnaire starts. Only check this if the roster is final — activation cannot be undone.",
+    },
+    activateNowNoParticipants: {
+      hu: "Résztvevő nélkül nem aktiválható — előbb válassz résztvevőket, vagy aktiváld később a kampány oldaláról.",
+      en: "Cannot activate without participants — select participants first, or activate later from the campaign page.",
+    },
+    activateNowNote: {
+      hu: "A kampány létrejön ÉS azonnal aktiválódik: mindenki értesítést kap, az életciklus (DRAFT → ACTIVE → CLOSED) nem fordítható vissza.",
+      en: "The campaign is created AND activated immediately: everyone is notified, and the lifecycle (DRAFT → ACTIVE → CLOSED) cannot be reversed.",
+    },
+    activateFailed: {
+      hu: "A kampány létrejött (piszkozatként), de az aktiválás nem sikerült — aktiváld a kampány oldaláról.",
+      en: "The campaign was created (as draft), but activation failed — activate it from the campaign page.",
+    },
 
     // Típusválasztó (0. lépés)
     stepType: { hu: "Mérés típusa", en: "Measurement type" },

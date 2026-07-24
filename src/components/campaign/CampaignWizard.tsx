@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -122,8 +122,13 @@ export function CampaignWizard({
   const [allowExternalObservers, setAllowExternalObservers] = useState(false);
   // Lépés-ütem: a teljesített kérdőív után hány órával nyílik a következő.
   const [stepIntervalHours, setStepIntervalHours] = useState(24);
+  // Azonnali aktiválás a létrehozás után (DRAFT→ACTIVE visszafordíthatatlan!)
+  const [activateNow, setActivateNow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Újrapróbálás-védelem: ha a létrehozás sikerült, de egy későbbi hívás
+  // (résztvevők / aktiválás) elhasal, a retry NEM hoz létre duplikát kampányt.
+  const createdRef = useRef<{ campaignId: string; participantsAdded: boolean } | null>(null);
 
   const STEP_LABELS: Record<Step, string> = {
     1: t("campaignWiz.stepType", locale),
@@ -212,27 +217,33 @@ export function CampaignWizard({
     setLoading(true);
     setError(null);
     try {
-      const createRes = await fetch(`/api/org/${orgId}/campaigns`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || undefined,
-          type,
-          types: chosenSteps,
-          teamId: targetTeamId ?? undefined,
-          allowExternalObservers,
-          stepIntervalHours,
-        }),
-      });
-      if (!createRes.ok) {
-        const data = await createRes.json().catch(() => ({}));
-        throw new Error(data.error ?? "CREATE_FAILED");
-      }
-      const { campaign } = await createRes.json();
+      let campaignId = createdRef.current?.campaignId ?? null;
 
-      if (selectedIds.size > 0) {
-        const addRes = await fetch(`/api/org/${orgId}/campaigns/${campaign.id}`, {
+      if (!campaignId) {
+        const createRes = await fetch(`/api/org/${orgId}/campaigns`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.trim(),
+            description: description.trim() || undefined,
+            type,
+            types: chosenSteps,
+            teamId: targetTeamId ?? undefined,
+            allowExternalObservers,
+            stepIntervalHours,
+          }),
+        });
+        if (!createRes.ok) {
+          const data = await createRes.json().catch(() => ({}));
+          throw new Error(data.error ?? "CREATE_FAILED");
+        }
+        const { campaign } = await createRes.json();
+        campaignId = campaign.id as string;
+        createdRef.current = { campaignId, participantsAdded: false };
+      }
+
+      if (selectedIds.size > 0 && !createdRef.current?.participantsAdded) {
+        const addRes = await fetch(`/api/org/${orgId}/campaigns/${campaignId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userIds: Array.from(selectedIds) }),
@@ -241,12 +252,32 @@ export function CampaignWizard({
           const data = await addRes.json().catch(() => ({}));
           throw new Error(data.error ?? "ADD_PARTICIPANTS_FAILED");
         }
+        if (createdRef.current) createdRef.current.participantsAdded = true;
+      }
+
+      // Azonnali aktiválás — a meglévő PATCH útvonalon, hogy minden
+      // mellékhatás (lépés-inicializálás, értesítések, szerep-kör flag)
+      // ugyanúgy fusson, mint a kampány-oldali aktiválásnál.
+      if (activateNow) {
+        const activateRes = await fetch(`/api/org/${orgId}/campaigns/${campaignId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "ACTIVE" }),
+        });
+        if (!activateRes.ok) {
+          throw new Error("ACTIVATE_FAILED");
+        }
       }
 
       router.push(`/org/${orgId}?tab=campaigns`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("campaignWiz.unknownError", locale));
+      const code = err instanceof Error ? err.message : "";
+      setError(
+        code === "ACTIVATE_FAILED"
+          ? t("campaignWiz.activateFailed", locale)
+          : code || t("campaignWiz.unknownError", locale),
+      );
       setLoading(false);
     }
   }
@@ -649,6 +680,32 @@ export function CampaignWizard({
               )}
             </div>
 
+            {/* Azonnali aktiválás opció */}
+            <label
+              className={[
+                "flex items-start gap-3 rounded-xl border px-4 py-3.5",
+                selectedIds.size === 0
+                  ? "cursor-not-allowed border-sand bg-cream/50 opacity-60"
+                  : "cursor-pointer border-sand bg-cream/60",
+              ].join(" ")}
+            >
+              <input
+                type="checkbox"
+                checked={activateNow}
+                disabled={selectedIds.size === 0}
+                onChange={(e) => setActivateNow(e.target.checked)}
+                className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
+              />
+              <span className="text-[13px] leading-relaxed text-ink-body">
+                <span className="font-semibold text-ink">
+                  {t("campaignWiz.activateNowLabel", locale)}
+                </span>{" "}
+                {selectedIds.size === 0
+                  ? t("campaignWiz.activateNowNoParticipants", locale)
+                  : t("campaignWiz.activateNowHint", locale)}
+              </span>
+            </label>
+
             <div className="flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2.5">
               <span className="mt-0.5 text-amber-600">
                 <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -656,7 +713,11 @@ export function CampaignWizard({
                   <path d="M8 5v3.5M8 11v.5" />
                 </svg>
               </span>
-              <p className="text-[11px] text-amber-800">{t("campaignWiz.draftNote", locale)}</p>
+              <p className="text-[11px] text-amber-800">
+                {activateNow
+                  ? t("campaignWiz.activateNowNote", locale)
+                  : t("campaignWiz.draftNote", locale)}
+              </p>
             </div>
           </div>
 
@@ -679,7 +740,9 @@ export function CampaignWizard({
             <Button type="button" onClick={handleSubmit} loading={loading} variant="primary">
               {loading
                 ? t("campaignWiz.creating", locale)
-                : t("campaignWiz.createCampaign", locale)}
+                : activateNow
+                  ? t("campaignWiz.createAndActivate", locale)
+                  : t("campaignWiz.createCampaign", locale)}
             </Button>
           </div>
         </Card>
