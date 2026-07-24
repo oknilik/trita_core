@@ -50,7 +50,7 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
         <h2 className="mt-4 font-fraunces text-2xl text-white lg:text-3xl">
           {t("pricing.quickAskSuccessTitle", locale)}
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-white/[0.55]">
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-white/[0.7]">
           {t("pricing.quickAskSuccessBody", locale)}
         </p>
       </div>
@@ -65,7 +65,7 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
       <h2 className="mt-2 text-center font-fraunces text-2xl text-white lg:text-3xl">
         {t("pricing.quickAskTitle", locale)}
       </h2>
-      <p className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-white/[0.55]">
+      <p className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-white/[0.7]">
         {t("pricing.quickAskBody", locale)}
       </p>
 
@@ -76,14 +76,14 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t("pricing.quickAskName", locale)}
-            className="min-h-[46px] rounded-lg border border-white/15 bg-white/10 px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/40 focus:bg-white/15"
+            className="min-h-[46px] rounded-lg border border-white/15 bg-white/10 px-4 text-sm text-white placeholder:text-white/55 outline-none transition focus:border-white/40 focus:bg-white/15"
           />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("pricing.quickAskEmail", locale)}
-            className="min-h-[46px] rounded-lg border border-white/15 bg-white/10 px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-white/40 focus:bg-white/15"
+            className="min-h-[46px] rounded-lg border border-white/15 bg-white/10 px-4 text-sm text-white placeholder:text-white/55 outline-none transition focus:border-white/40 focus:bg-white/15"
           />
         </div>
         <textarea
@@ -91,10 +91,10 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
           onChange={(e) => setMessage(e.target.value)}
           rows={3}
           placeholder={t("pricing.quickAskPlaceholder", locale)}
-          className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white placeholder:text-white/40 outline-none transition focus:border-white/40 focus:bg-white/15"
+          className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white placeholder:text-white/55 outline-none transition focus:border-white/40 focus:bg-white/15"
         />
         {messageTooShort && (
-          <p className="text-xs text-white/50">{t("pricing.quickAskMinHint", locale)}</p>
+          <p className="text-xs text-white/65">{t("pricing.quickAskMinHint", locale)}</p>
         )}
         {state === "error" && (
           <p className="text-xs text-rose-300">{t("pricing.quickAskError", locale)}</p>
@@ -105,14 +105,14 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
           className={`min-h-[48px] rounded-[10px] px-8 text-sm font-semibold transition-all ${
             canSend
               ? "bg-[var(--color-accent-primary)] text-white hover:-translate-y-px hover:brightness-[1.06]"
-              : "cursor-not-allowed bg-white/15 text-white/40"
+              : "cursor-not-allowed border border-white/25 bg-white/10 text-white/70"
           }`}
         >
           {state === "sending"
             ? t("pricing.quickAskSending", locale)
             : t("pricing.quickAskSend", locale)}
         </button>
-        <p className="text-center text-[11px] text-white/[0.35]">
+        <p className="text-center text-[11px] text-white/[0.6]">
           {t("pricing.ctaTrust", locale)}
         </p>
       </form>

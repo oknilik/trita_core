@@ -1006,7 +1006,7 @@ export default async function TeamDetailPage({
           chips={heroChips.map((chip) => (
             <span
               key={chip}
-              className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]"
+              className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]"
             >
               {chip}
             </span>
@@ -1039,14 +1039,14 @@ export default async function TeamDetailPage({
               {/* Tagok — mindenkinek */}
               <Link
                 href={`/team/${teamId}?tab=members`}
-                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
+                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.78] transition hover:bg-white/[0.12]"
               >
                 {isHu ? "Tagok" : "Members"}
               </Link>
               {canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=report`}
-                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
+                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.78] transition hover:bg-white/[0.12]"
                 >
                   {isHu ? "Riport" : "Report"}
                 </Link>
@@ -1067,7 +1067,7 @@ export default async function TeamDetailPage({
                       ? `/org/${teamData.orgId}?tab=campaigns`
                       : `/org/${teamData.orgId}/campaigns/new?team=${teamId}`
                   }
-                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
+                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.78] transition hover:bg-white/[0.12]"
                 >
                   {hasObserver
                     ? t("teamDetail.heroManageRound", locale)
@@ -1075,7 +1075,7 @@ export default async function TeamDetailPage({
                 </Link>
               ) : null}
               {canViewRaw && !canManageTeamActions && isOrgManager && teamData.orgId ? (
-                <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.45]">
+                <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.65]">
                   {hasObserver
                     ? t("teamDetail.heroManageRound", locale)
                     : t("teamDetail.heroStartRound", locale)}
@@ -1120,10 +1120,10 @@ export default async function TeamDetailPage({
                     label={`${completionPct}%`}
                     color="#8ad0b4"
                   />
-                  <p className="text-[10px] leading-tight text-white/[0.52]">
+                  <p className="text-[10px] leading-tight text-white/[0.72]">
                     {t("teamDetail.snapshotCompletionRate", locale)}
                   </p>
-                  <p className="text-[10px] text-white/[0.45]">
+                  <p className="text-[10px] text-white/[0.65]">
                     {tf("teamDetail.snapshotDoneInProgress", locale, { done: completedCount, inProgress: inProgressCount })}
                   </p>
                 </div>
@@ -1134,10 +1134,10 @@ export default async function TeamDetailPage({
                     label={`${secondaryPct}%`}
                     color={teamHeroTheme.primary}
                   />
-                  <p className="text-[10px] leading-tight text-white/[0.52]">
+                  <p className="text-[10px] leading-tight text-white/[0.72]">
                     {secondaryLabel}
                   </p>
-                  <p className="text-[10px] text-white/[0.45]">
+                  <p className="text-[10px] text-white/[0.65]">
                     {secondaryText}
                   </p>
                 </div>

@@ -80,7 +80,7 @@ export function Footer() {
           {/* Link columns */}
           {columns.map((col) => (
             <div key={col.heading}>
-              <p className="mb-3 font-dm-sans text-[10px] font-semibold uppercase tracking-widest text-cream/30">
+              <p className="mb-3 font-dm-sans text-[10px] font-semibold uppercase tracking-widest text-cream/55">
                 {col.heading}
               </p>
               <ul className="flex flex-col gap-2">
@@ -88,7 +88,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-[13px] text-cream/60 underline-offset-4 transition-colors hover:text-bronze hover:underline"
+                      className="text-[13px] text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -101,7 +101,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-cream/10 pt-5">
-          <p className="text-[12px] text-cream/60">{t("footer.copyright", locale)}</p>
+          <p className="text-[12px] text-cream/70">{t("footer.copyright", locale)}</p>
         </div>
       </div>
     </footer>

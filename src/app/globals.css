@@ -43,8 +43,8 @@
   --color-ink:          #1a1a2e;
   --color-ink-body:     #4a4a5e;
   --color-ink-warm:     #7a756e;
-  --color-muted:        #8a8a9a;
-  --color-muted-warm:   #a09c96;
+  --color-muted:        #6e6e80; /* volt: #8a8a9a — 3.2:1, AA bukó (akciólista #8) */
+  --color-muted-warm:   #7c786f; /* volt: #a09c96 — 2.6:1 (akciólista #8) */
 
   /* Surface */
   --color-cream:        #f7f4ef;
