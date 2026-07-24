@@ -1,23 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-
-interface NotificationItem {
-  id: string;
-  type: string;
-  category: string;
-  priority: string;
-  titleKey: string;
-  bodyKey: string;
-  vars: Record<string, string | number> | null;
-  link: string | null;
-  read: boolean;
-  createdAt: string;
-}
+import { useNotifications } from "./NotificationsProvider";
 
 interface NotificationPanelProps {
   onClose: () => void;
@@ -110,8 +98,10 @@ function NotifIcon({ type }: { type: string }) {
 export function NotificationPanel({ onClose }: NotificationPanelProps) {
   const { locale } = useLocale();
   const loc = locale as Locale;
-  const [items, setItems] = useState<NotificationItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  // A lekérés a providerben él (a harang nyitáskor hívja az ensureList-et) —
+  // így a duplikált panel-mount nem jelent duplikált API-hívást.
+  const { items: cached, loading, markAllRead, dismiss } = useNotifications();
+  const items = cached ?? [];
 
   // Escape key closes panel
   useEffect(() => {
@@ -122,30 +112,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  useEffect(() => {
-    fetch("/api/notifications")
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data.notifications ?? []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  async function handleMarkAllRead() {
-    await fetch("/api/notifications/mark-read", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ all: true }),
-    });
-    setItems((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
-
-  async function handleDismiss(id: string) {
-    await fetch(`/api/notifications/${id}`, { method: "DELETE" });
-    setItems((prev) => prev.filter((n) => n.id !== id));
-  }
-
+  const showLoader = cached === null && loading;
   const hasUnread = items.some((n) => !n.read);
 
   return (
@@ -161,7 +128,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
         {hasUnread && (
           <button
             type="button"
-            onClick={handleMarkAllRead}
+            onClick={() => void markAllRead()}
             className="text-[11px] font-medium text-[var(--color-accent-primary)] transition-colors hover:underline"
           >
             {t("notifications.markAllRead", loc)}
@@ -171,7 +138,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
 
       {/* List */}
       <div className="max-h-[400px] overflow-y-auto">
-        {loading ? (
+        {showLoader ? (
           <div className="flex items-center justify-center py-10">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--color-border-default)] border-t-[var(--color-accent-primary)]" />
           </div>
@@ -228,7 +195,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleDismiss(item.id);
+                    void dismiss(item.id);
                   }}
                   className="mt-1 shrink-0 rounded p-0.5 text-[var(--color-text-faint)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-muted)]"
                   aria-label="Dismiss"

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-
-const POLL_INTERVAL = 30_000;
+import { useNotifications } from "./NotificationsProvider";
 
 interface NotificationBellProps {
   isOpen: boolean;
@@ -10,41 +8,17 @@ interface NotificationBellProps {
 }
 
 export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
-  const [count, setCount] = useState(0);
+  const { count, ensureList } = useNotifications();
 
-  const poll = useCallback(async () => {
-    if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
-    try {
-      const res = await fetch("/api/notifications/unread-count");
-      if (res.ok) {
-        const data = await res.json();
-        setCount(data.count ?? 0);
-      }
-    } catch {
-      // silent
-    }
-  }, []);
-
-  useEffect(() => {
-    // Külső rendszerrel (API) szinkronizáló polling — az azonnali első
-    // lekérés szándékos, nem kaszkád-render.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    poll();
-    const timer = setInterval(poll, POLL_INTERVAL);
-    return () => clearInterval(timer);
-  }, [poll]);
-
-  // Re-poll when panel closes (user may have read notifications)
-  useEffect(() => {
-    // Panel-záráskor frissítés a szerverről — külső állapot szinkron, szándékos.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!isOpen) poll();
-  }, [isOpen, poll]);
+  function handleClick() {
+    if (!isOpen) ensureList();
+    onToggle();
+  }
 
   return (
     <button
       type="button"
-      onClick={onToggle}
+      onClick={handleClick}
       aria-label="Notifications"
       className="relative flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-surface-subtle)]"
     >

@@ -12,15 +12,10 @@ export async function DELETE(
 
   const { id } = await params;
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-    select: { id: true },
-  });
-  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
-
+  // Tulajdonos-ellenőrzés a relation-filteren: nem kell külön profil-lookup.
   await prisma.notification.updateMany({
-    where: { id, userId: profile.id },
-    data: { dismissed: true },
+    where: { id, user: { clerkId: userId } },
+    data: { dismissed: true, dismissedAt: new Date() },
   });
 
   return NextResponse.json({ ok: true });

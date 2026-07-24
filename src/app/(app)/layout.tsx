@@ -50,10 +50,17 @@ export default async function AppLayout({
         select: { id: true, username: true, email: true, isConsultant: true },
       });
       if (profile) {
-        const journey = await resolveJourney(profile.id, {
-          locale,
-          entryPoint: "root_layout_nav",
-        });
+        // Kezdő értesítés-számláló a fejlécnek — a harang így mountkor nem
+        // indít API-hívást (indexelt count: @@index([userId, read])).
+        const [journey, unreadNotificationCount] = await Promise.all([
+          resolveJourney(profile.id, {
+            locale,
+            entryPoint: "root_layout_nav",
+          }),
+          prisma.notification.count({
+            where: { userId: profile.id, read: false, dismissed: false },
+          }),
+        ]);
         signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
         const isPlatformAdmin = isAdminEmail(profile.email);
@@ -68,6 +75,7 @@ export default async function AppLayout({
           }),
           homeHref: signedInHomeHref,
           isPlatformAdmin,
+          unreadNotificationCount,
         };
 
         const membership = await getActiveOrgMembership(profile.id);
@@ -114,6 +122,7 @@ export default async function AppLayout({
             activeCampaignCount,
             hasHiringAccess,
             isPlatformAdmin,
+            unreadNotificationCount,
           };
         }
       }

@@ -15,6 +15,7 @@ import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { NotificationBell } from "./NotificationBell";
 import { NotificationPanel } from "./NotificationPanel";
+import { NotificationsProvider } from "./NotificationsProvider";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -130,9 +131,26 @@ interface NavHeaderUIProps {
   hasHiringAccess: boolean;
   /** Platform-admin (ADMIN_EMAILS) — az Admin vezérlő menüpont kapuja. */
   isPlatformAdmin?: boolean;
+  /** Szerverről jövő kezdőérték — így a harang mountkor nem hív API-t. */
+  unreadNotificationCount?: number;
 }
 
+/**
+ * A harang és a panel két helyen renderelődik (desktop + mobil ág), ezért a
+ * notification-állapot egy providerben él — egy poll, egy lista-lekérés.
+ */
 export function NavHeaderUI({
+  unreadNotificationCount = 0,
+  ...props
+}: NavHeaderUIProps) {
+  return (
+    <NotificationsProvider initialCount={unreadNotificationCount}>
+      <NavHeaderContent {...props} />
+    </NotificationsProvider>
+  );
+}
+
+function NavHeaderContent({
   user,
   org,
   teams,
@@ -141,7 +159,7 @@ export function NavHeaderUI({
   activeCampaignCount,
   hasHiringAccess,
   isPlatformAdmin = false,
-}: NavHeaderUIProps) {
+}: Omit<NavHeaderUIProps, "unreadNotificationCount">) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
