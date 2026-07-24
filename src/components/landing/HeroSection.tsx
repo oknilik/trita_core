@@ -213,7 +213,7 @@ function TeamPanel() {
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-sand">
                 <div className="h-full rounded-full bg-sage" style={{ width: `${d.mean}%` }} />
               </div>
-              <span className="w-14 shrink-0 text-right font-mono text-[11px] text-ink">
+              <span className="w-14 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink">
                 {d.mean}
                 <span className="text-muted"> ±{d.spread}</span>
               </span>

@@ -45,7 +45,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
             {/* Min. 2% sávszélesség, hogy a 0 is szándékos értéknek látsszon */}
             <div className={`h-full rounded-sm ${colors.fill}`} style={{ width: `${Math.max(value, 2)}%` }} />
           </div>
-          <span className={`w-10 shrink-0 text-right font-fraunces text-base ${colors.text}`}>
+          <span className={`w-10 shrink-0 text-right font-fraunces text-base tabular-nums ${colors.text}`}>
             {value}%
           </span>
         </div>

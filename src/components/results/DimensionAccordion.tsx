@@ -79,7 +79,7 @@ function AccordionItem({
           />
         </div>
         <span
-          className={`w-10 shrink-0 text-right font-fraunces text-base ${colors.text}`}
+          className={`w-10 shrink-0 text-right font-fraunces text-base tabular-nums ${colors.text}`}
         >
           {value}%
         </span>
@@ -150,7 +150,7 @@ function AccordionItem({
                               />
                             </div>
                             <span
-                              className={`w-6 shrink-0 text-right text-[11px] font-semibold ${fColors.text}`}
+                              className={`w-6 shrink-0 text-right text-[11px] font-semibold tabular-nums ${fColors.text}`}
                             >
                               {f.score}
                             </span>
