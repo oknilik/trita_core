@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
+import { useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   buildWorkspaceNavigation,
@@ -163,6 +164,7 @@ function NavHeaderContent({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
+  const { locale } = useLocale();
 
   type DropdownKey = WorkspaceNavItem["id"] | "user" | "notifications" | null;
   type MobileMenuState = "closed" | "quickview" | "expanded";
@@ -307,7 +309,31 @@ function NavHeaderContent({
     return () => window.removeEventListener("profile-updated", handler);
   }, [refreshIdentity]);
 
-  if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) return null;
+  // Fókusz-mód a kitöltő felületeken: a teljes navigáció zavaró lenne,
+  // de vissza-út mindig kell (design-akciólista #3) — minimál fejléc:
+  // logó + „Vissza a vezérlőre" link.
+  if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) {
+    return (
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+        <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5 lg:px-8">
+          <Link
+            href={homeHref}
+            aria-label="trita"
+            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+          >
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          </Link>
+          <Link
+            href={homeHref}
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-[13px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
+          >
+            <span aria-hidden="true">←</span>
+            {locale === "hu" ? "Vissza a vezérlőre" : "Back to dashboard"}
+          </Link>
+        </div>
+      </header>
+    );
+  }
 
   const navItemBase =
     "inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium transition-all cursor-pointer select-none rounded-lg";
