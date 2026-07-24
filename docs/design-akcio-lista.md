@@ -134,3 +134,14 @@ Használat: a feladatok önállóan, egyenként átadhatók Claude Code-nak. Min
 - Kijelentkezett landing vizuális ellenőrzése böngészőben (kód alapján néztem át) — érdemes inkognitóban is megnézni.
 - Mobil nézet (a tesztkörnyezetben nem sikerült átméretezni) — a landing `clamp()` tipográfiája és a grid váltások kódszinten rendben vannak, de vizuális ellenőrzés kell.
 - Admin, org, hiring, onboarding felületek; billentyűzetes navigáció és fókuszállapotok végig az appon.
+
+
+---
+
+## Állapot — 2026-07-24 (Claude, lépésenkénti commitok a consulting_cleanup branchen)
+
+- ✅ #1–#19: kész, feladatonként külön commitban (`git log --oneline | grep akciólista` helyett ld. a commit-üzenetek "Design-akciólista: #n" sorát).
+- ℹ️ #20 (seed-szövegek): a kifogásolt szöveg NEM a repóban van — a dev adatbázis egyik kézzel felvitt visszajelzés-kérésében él. Kód-változás nem kellett; az adatbázis-sor törlése/átírása külön döntés.
+- ✅ #21 (banner-CTA): ellenőrizve — a CTA Next `Link` (valódi `<a href>`), az első kattintás elakadása dev-módú route-fordítás volt, prodban nem jelentkezik. Javítás nem szükséges.
+- Megjegyzés #17-hez: a névtelen testimonial megmaradt; erősebb social proof a pilot-visszajelzésekből pótolható.
+- Minden commit után `tsc --noEmit` zöld; az érintett fájlokra eslint lefuttatva.
