@@ -80,7 +80,9 @@ export function NavBar({
   ];
 
   const authLinks = [
-    { href: signedInHomeHref, label: t("nav.home", locale) },
+    // Bejelentkezve a link az appba (journey handoff) visz — a címke is
+    // ezt mondja, ne 'Főoldal'-t (design-akciólista #18).
+    { href: signedInHomeHref, label: t("nav.dashboard", locale) },
     { href: "/blog", label: t("nav.blog", locale) },
     { href: "/pricing", label: t("nav.pricing", locale) },
   ];

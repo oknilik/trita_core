@@ -75,7 +75,7 @@ export function UserMenu() {
       {showIdentityLoader ? (
         <span className="hidden h-3 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)] lg:block" />
       ) : (
-        <span className="hidden max-w-[120px] truncate text-sm text-[var(--color-text-secondary)] lg:block">
+        <span className="hidden min-w-[80px] max-w-[120px] truncate text-sm text-[var(--color-text-secondary)] lg:block">
           {displayName ?? t("userMenu.profile", locale)}
         </span>
       )}
