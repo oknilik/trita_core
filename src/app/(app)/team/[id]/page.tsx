@@ -994,6 +994,13 @@ export default async function TeamDetailPage({
           ))}
           actions={(
             <>
+              {/* Tagok — mindenkinek (a peer feedback belépője sima tagnak is) */}
+              <Link
+                href={`/team/${teamId}?tab=members`}
+                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
+              >
+                {isHu ? "Tagok" : "Members"}
+              </Link>
               {canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=report`}
