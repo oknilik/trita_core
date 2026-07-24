@@ -1050,6 +1050,16 @@ export const orgTranslations = {
       en: "You have no active campaign where the peer feedback round is your current step.",
     },
     backToDashboard: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
+    progressLabel: { hu: "Kész: {done}/{total}", en: "Done: {done}/{total}" },
+    personDoneBadge: { hu: "Kész", en: "Done" },
+    personMissingBadge: { hu: "{count} mező hiányzik", en: "{count} fields missing" },
+    jumpToMissing: { hu: "Ugrás a következő hiányzóhoz", en: "Jump to next incomplete" },
+    draftSaved: { hu: "Piszkozat mentve ezen az eszközön", en: "Draft saved on this device" },
+    fieldMissing: { hu: "Ez a mező még kitöltésre vár.", en: "This field still needs to be filled in." },
+    missingSummary: {
+      hu: "Még {count} csapattársnál hiányzik a két kötelező mező: {names}",
+      en: "Both required fields are still missing for {count} teammates: {names}",
+    },
   },
   campaignWiz: {
     stepDetails: { hu: "Részletek", en: "Details" },
