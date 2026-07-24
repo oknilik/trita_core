@@ -67,21 +67,44 @@ Adatvédelem: konkrét kolléga csak explicit profil-megosztás vagy közös
 csapat-tagság esetén választható; a kimenet soha nem címkézi a másikat
 („ő ilyen”), hanem a KETTŐTÖK dinamikájáról beszél.
 
-## 5. Ütemezés-javaslat
+## 5. Ütemezés — DÖNTÖTT (2026-07-24)
+
+A v1 scope-ja a 6. pont döntései szerint: atomok + motor + web UI +
+**vezető-mód** + **PDF-ízelítő**. Naptári terv (a szept 7-i heti
+pilot-kickoff előtt bőven lezárva, augusztus közepe = tartalék):
 
 1. **F1 — reláció-atomok content-készlete** (18 azonos-dimenziós + ~12
-   kereszt-atom, HU+EN, mindkét nézőponttal): a legnagyobb munka, ~M-L.
-   Guardrail-teszt a lefedettségre.
+   kereszt-atom + 6×2 vezető-kiegészítő, HU+EN, mindkét nézőponttal):
+   a legnagyobb munka, ~M-L. Guardrail-teszt a lefedettségre.
+   → **júl 27 – júl 31** (a leghosszabb átfutású tartalmi munka, ezért
+   indul először; napi ~6–8 atom ütemben).
 2. **F2 — motor** (`src/lib/interaction-engine.ts`): tiszta függvény
    (profilA, profilB) → {easy, friction, discuss}; unit-tesztekkel. S-M.
-3. **F3 — web UI** a results-oldalon archetípus-választóval. M.
-4. **F4 — team view integráció** (valós párok) + vezető-mód. M.
-5. **F5 — guest/marketing változat.** S-M.
+   → **aug 3 – aug 4** (az F1 alatt véglegesedő atom-sémára épül).
+3. **F3 — web UI** a results-oldalon archetípus-választóval, vezető-mód
+   kapcsolóval. M. → **aug 5 – aug 7**.
+4. **PDF-ízelítő** — statikus „3 leggyakoribb partner-típus" blokk a
+   Csapatban működve oldal mellé, az F1-atomokból derivált rövid formában.
+   S. → **aug 10** (csak a webes v1 verifikálása után, hogy a PDF-tördelés
+   ne csússzon vissza a QA-ba).
+5. **F4 — team view integráció** (valós párok, valós pontszámból). M.
+   → **aug 11 – aug 13** — így a pilot debriefeken már használható.
+6. **F5 — guest/marketing változat** (/patterns lead-magnet). S-M.
+   → pilot-indulás utánra ütemezve (szeptember vége), a pilot-tapasztalat
+   copy-tanulságaival.
 
-## 6. Nyitott kérdések
+## 6. Nyitott kérdések — DÖNTÖTT (2026-07-24)
 
-1. Plus-only vagy részben ingyenes (marketing-érték vs. upsell)?
-2. A vezető-mód a v1-be kerüljön, vagy F4-be? (A külső kör kifejezetten
-   említette a „mit él át, ha X a főnöke" esetet.)
-3. Kell-e a PDF-be egy statikus ízelítő (pl. a 3 leggyakoribb partner-típus
-   dinamikája), vagy a PDF marad a mostani Csapatban működve oldallal?
+1. ~~Plus-only vagy részben ingyenes?~~ → **Teljesen ingyenes.** A funkció
+   terjedés-hajtóerő (lead magnet), a tanácsadás-vezérelt modellben a
+   bevétel a tanácsadói munkából jön, nem feature-kapuból. Az adatvédelmi
+   korlátok (profil × profil csak megosztás/közös csapat esetén)
+   változatlanul élnek — az ingyenesség a hozzáférésre vonatkozik, nem a
+   láthatósági szabályokra.
+2. ~~Vezető-mód v1-be vagy F4-be?~~ → **V1-be kerül.** A külső kör
+   kifejezetten a „mit él át, ha X a főnöke" esetet emelte ki; a 6×2
+   vezető-kiegészítő szöveg az atomokkal együtt megírva olcsóbb, mint
+   utólag felvenni.
+3. ~~PDF-ízelítő?~~ → **Igen, kerül a PDF-be** — statikus, rövid formában
+   (3 leggyakoribb partner-típus dinamikája), a webes v1 után ütemezve,
+   hogy a PDF-tördelési kockázat ne előzze meg a QA-t.
