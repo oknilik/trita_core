@@ -31,9 +31,9 @@ export function HowItWorks({ mode }: { mode: SiteMode }) {
         <div className="mb-8 text-center md:mb-16">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
             {mode === "self" ? (
-              <>{t("landing.howSelfTitleBefore", locale)}<em className="not-italic italic text-[var(--color-accent-self)]">{t("landing.howSelfTitleEm", locale)}</em></>
+              <>{t("landing.howSelfTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howSelfTitleEm", locale)}</em></>
             ) : (
-              <>{t("landing.howTeamTitleBefore", locale)}<em className="not-italic italic text-[var(--color-accent-self)]">{t("landing.howTeamTitleEm", locale)}</em></>
+              <>{t("landing.howTeamTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howTeamTitleEm", locale)}</em></>
             )}
           </h2>
         </div>

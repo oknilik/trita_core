@@ -286,7 +286,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               style={{ fontSize: "clamp(2.75rem, 8vw, 3.75rem)", lineHeight: 1.06 }}
             >
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
-              <em className="not-italic italic" style={{ color: accentColor }}>
+              <em className="italic" style={{ color: accentColor }}>
                 {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
               </em>
             </motion.h1>

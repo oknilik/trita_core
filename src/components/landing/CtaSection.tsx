@@ -32,7 +32,12 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
           {headlineBefore}
-          <em className="not-italic italic text-[var(--color-accent-self)]">{headlineEm}</em>
+          <em
+            className="italic"
+            style={{ color: isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)" }}
+          >
+            {headlineEm}
+          </em>
         </h2>
         <p className="mb-9 text-base leading-relaxed text-ink-body">{sub}</p>
         <Link

@@ -12,6 +12,7 @@ const fadeUp = {
 export function ProofSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
+  const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
 
   const cards = isSelf
     ? [
@@ -31,7 +32,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
         <div className="mb-8 text-center md:mb-16">
           <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
             {isSelf ? t("landing.proofTitleBefore", locale) : t("landing.proofTeamTitleBefore", locale)}
-            <em className="not-italic italic text-[var(--color-accent-self)]">
+            <em className="italic" style={{ color: accentColor }}>
               {isSelf ? t("landing.proofTitleEm", locale) : t("landing.proofTeamTitleEm", locale)}
             </em>
           </h2>
