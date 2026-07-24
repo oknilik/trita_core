@@ -117,3 +117,31 @@ A „Visszajelzés az eredményről" kártya 5 fokozatú emoji-skálát használ
 ## Kiegészített javasolt sorrend
 
 A korábbi 1–6. lépés után: **7.** riport-szövegek olvasási hasábja (#11 — a legnagyobb érzékelt minőség-ugrás a felhasználónak), **8.** eyebrow/badge szétválasztás + hosszú címkék trackingje (#13, #14), **9.** apróságok (#12, #15–18).
+
+
+---
+
+## Állapot — 2026-07-24 este (javítási kör, lépésenkénti commitok)
+
+| # | Lelet | Állapot |
+|---|---|---|
+| 1 | font-mono = DM Sans alias | ✅ DM Mono betöltve (next/font), token átkötve |
+| 2 | PDF: minden súly Regular | ✅ Statikus Medium/SemiBold instance-ok (fonttools) + regisztráció |
+| 3 | Három méret-rendszer | ✅ Codemod: 10px→micro (422), 13px→caption (171), 15px→body (38); a 11/12px a #4 döntésre vár |
+| 4 | text-sm (14px) nincs a skálában | ⏳ **Termék-döntés kell**: (a) a 661 text-sm fokozatos szétválása body(15)/caption(13) szerepekre — javasolt; vagy (b) 14px-es szerep felvétele a skálába. Enélkül a 11/12px migráció sem egyértelmű. |
+| 5 | 12+ tracking-variáns | ✅ Minden pozitív arbitrary → widest/wider (49 fájl) |
+| 6 | Admin gray-* + címsorok | ✅ ~300 gray-osztály token-palettára, admin h2-k Fraunces heading |
+| 7 | 8 clamp() képlet | ✅ @utility text-fluid-title / text-fluid-display; landing+blog+pricing átvezetve (pilot/contact hero-léptéke szándékosan egyedi maradt) |
+| 8 | Címsor-súly keveredés | ✅ Marketing h1/h2 → Fraunces 500 (font-medium) |
+| 9 | Kézi leading-értékek | ✅ [1.25]→tight, [1.7]→relaxed (9 fájl); a maradék display-értékek szándékosak |
+| 10 | PDF 6–7pt szövegek | ✅ 7.5pt padló |
+| 11 | Riport-szövegek olvashatósága | ✅ Dimenzió/munkastílus/tanulság-blokkok: text-body + max-w-prose |
+| 12 | Sötét hero-metaadatok | ✅ ProfileHero 25–45% → 60–80% fehér |
+| 13 | Eyebrow/badge összeolvadás | ✅ Állapot-pötty a team hero és a results forrás-badge-ben |
+| 14 | Hosszú kapitális címkék | ✅ a #5-tel: egységes, mérsékeltebb ritkítás |
+| 15 | Pull-quote/callout billegés | ✅ Belső <p> margók semlegesítve |
+| 16 | Drop cap névelő-leválás | ✅ Iniciálé eltávolítva |
+| 17 | Proporcionális szám-oszlopok | ✅ tabular-nums a jobbra zárt értékeken |
+| 18 | Emoji-skála | ✅ 1–5 számgombok végpont-címkékkel; 🙏/👍/👎 kivezetve |
+
+Megjegyzés: a Turbopack a globals.css-változásokat időnként nem töltötte újra menet közben — ha a dev szerveren régi stílus látszik, egy újraindítás rendezi.
