@@ -1051,6 +1051,13 @@ export const orgTranslations = {
     },
     backToDashboard: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
     progressLabel: { hu: "Kész: {done}/{total}", en: "Done: {done}/{total}" },
+    stepLabel: { hu: "{current}. / {total} csapattárs", en: "Teammate {current} of {total}" },
+    nextPerson: { hu: "Tovább", en: "Next" },
+    prevPerson: { hu: "Vissza", en: "Back" },
+    nextPersonHint: {
+      hu: "A továbblépéshez töltsd ki a két visszajelzés-mezőt.",
+      en: "Fill in both feedback fields to continue.",
+    },
     personDoneBadge: { hu: "Kész", en: "Done" },
     personMissingBadge: { hu: "{count} mező hiányzik", en: "{count} fields missing" },
     jumpToMissing: { hu: "Ugrás a következő hiányzóhoz", en: "Jump to next incomplete" },
