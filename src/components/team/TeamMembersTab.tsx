@@ -4,6 +4,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
 import { PendingInviteCancelButton } from "@/components/manager/PendingInviteCancelButton";
+import { PendingInviteResendButton } from "@/components/manager/PendingInviteResendButton";
 import { TeamMemberRemoveButton } from "@/components/manager/TeamMemberRemoveButton";
 import { TeamMemberRoleEditor } from "@/components/team/TeamMemberRoleEditor";
 import {
@@ -110,7 +111,7 @@ export function TeamMembersTab({
                       {t("teamComp.noTest", loc)}
                     </StatusChip>
                   )}
-                  <span className="text-xs text-ink-body/50">
+                  <span className="pr-0.5 text-xs tabular-nums text-ink-body/50">
                     {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
                   </span>
                   {isOrgManager && m.userId !== profileId && (
@@ -142,7 +143,10 @@ export function TeamMembersTab({
                     {t("teamComp.pendingStatus", loc)}
                   </StatusChip>
                   {isOrgManager && (
-                    <PendingInviteCancelButton inviteId={inv.id} isHu={isHu} />
+                    <>
+                      <PendingInviteResendButton inviteId={inv.id} isHu={isHu} />
+                      <PendingInviteCancelButton inviteId={inv.id} isHu={isHu} />
+                    </>
                   )}
                 </div>
               </div>
