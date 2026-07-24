@@ -2,11 +2,15 @@ import { StyleSheet, Font } from "@react-pdf/renderer";
 
 // ─── Font registration (local TTF files) ─────────────────────────────────────
 
+// A forrásfájlok VARIABLE fontok — a react-pdf a default (400-as)
+// példányt rendereli, akárhány súlyt regisztrálunk ugyanarról a fájlról.
+// Ezért a Medium/SemiBold statikus instance-ok külön fájlból jönnek
+// (fonttools varLib.instancer, tipográfiai audit #2).
 Font.register({
   family: "Fraunces",
   fonts: [
     { src: "/fonts/Fraunces-Regular.ttf", fontWeight: 400 },
-    { src: "/fonts/Fraunces-Regular.ttf", fontWeight: 600 },
+    { src: "/fonts/Fraunces-SemiBold.ttf", fontWeight: 600 },
     { src: "/fonts/Fraunces-Italic.ttf", fontStyle: "italic" },
   ],
 });
@@ -15,8 +19,8 @@ Font.register({
   family: "DM Sans",
   fonts: [
     { src: "/fonts/DMSans-Regular.ttf", fontWeight: 400 },
-    { src: "/fonts/DMSans-Regular.ttf", fontWeight: 500 },
-    { src: "/fonts/DMSans-Regular.ttf", fontWeight: 600 },
+    { src: "/fonts/DMSans-Medium.ttf", fontWeight: 500 },
+    { src: "/fonts/DMSans-SemiBold.ttf", fontWeight: 600 },
   ],
 });
 
@@ -75,14 +79,14 @@ export const s = StyleSheet.create({
     opacity: 0.7,
   },
   cardEyebrow: {
-    fontSize: 7,
+    fontSize: 7.5,
     letterSpacing: 1.6,
     textTransform: "uppercase",
     color: colors.bronze,
     fontWeight: 600,
   },
   sectionEyebrow: {
-    fontSize: 7,
+    fontSize: 7.5,
     letterSpacing: 1.6,
     textTransform: "uppercase",
     color: colors.bronze,
@@ -92,7 +96,7 @@ export const s = StyleSheet.create({
   },
   // First eyebrow after header — no top margin
   sectionEyebrowFirst: {
-    fontSize: 7,
+    fontSize: 7.5,
     letterSpacing: 1.6,
     textTransform: "uppercase",
     color: colors.bronze,
@@ -119,7 +123,7 @@ export const s = StyleSheet.create({
     padding: "6 32",
     flexDirection: "row",
     justifyContent: "space-between",
-    fontSize: 6,
+    fontSize: 7.5,
     color: colors.ink300,
     borderTop: `0.5 solid ${colors.sand}`,
   },
