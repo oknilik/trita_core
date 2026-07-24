@@ -994,9 +994,11 @@ export default async function TeamDetailPage({
           badge={
             hasPattern ? (
               <span
-                className="rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
+                className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
                 style={{ backgroundColor: teamHeroTheme.badgeBg, color: teamHeroTheme.badgeText }}
               >
+                {/* Állapot-pötty: vizuálisan elválik a mellette álló eyebrow-tól (audit #13) */}
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
                 {t("teamDetail.heroPatternReady", locale)}
               </span>
             ) : undefined

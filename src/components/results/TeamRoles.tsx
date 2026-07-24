@@ -100,12 +100,13 @@ export function TeamRoles({
         </h2>
         {/* Forrás-badge: mért kitöltés vs. személyiség-alapú becslés. */}
         <span
-          className={`rounded-full px-2.5 py-0.5 text-micro font-bold uppercase tracking-wide ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-micro font-bold uppercase tracking-wide ${
             isMeasured
               ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
               : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
           }`}
         >
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
           {isMeasured
             ? t("results.teamRoleSourceMeasured", locale)
             : t("results.teamRoleSourceEstimate", locale)}
