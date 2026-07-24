@@ -27,7 +27,7 @@ function getRelationshipColor(relationship?: string | null): string {
   if (rel === "COLLEAGUE") return "bg-sage-soft text-bronze-dark border-sage-ring";
   if (rel === "FAMILY") return "bg-warm text-[#5b4a3c] border-[#dfd3c5]";
   if (rel === "PARTNER") return "bg-[#f7efe8] text-[#9a4a2b] border-[#e8d2c3]";
-  return "bg-gray-50 text-gray-600 border-gray-200"; // OTHER
+  return "bg-surface-subtle text-ink-body border-sand"; // OTHER
 }
 
 function getRelationshipLabel(relationship: string, locale: Locale): string {
@@ -199,7 +199,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
   }
 
   return (
-    <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+    <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg">
       {/* Modern header with decorative bar */}
       <div className="flex items-center gap-3 mb-6">
         <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
@@ -208,7 +208,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
         </h2>
       </div>
 
-      <p className="text-sm text-gray-600 mb-6">
+      <p className="text-sm text-ink-body mb-6">
         {t("invite.body", locale)}
       </p>
 
@@ -248,7 +248,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
           <svg className="h-5 w-5 text-bronze" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          <p className="text-sm font-semibold text-gray-900">
+          <p className="text-sm font-semibold text-ink">
             {t("invite.createNew", locale) || "Új meghívó létrehozása"}
           </p>
         </div>
@@ -259,7 +259,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
             value={email}
             onChange={(event) => { setEmail(event.target.value); setCreateError(null); }}
             placeholder={t("invite.emailPlaceholder", locale) || "Email cím (opcionális)"}
-            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-gray-900 focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-sage-ring focus:border-bronze-edge focus:ring-bronze-soft"}`}
+            className={`min-h-[48px] flex-1 rounded-lg border bg-white px-4 text-sm text-ink focus:outline-none focus:ring-2 transition-all ${createError ? "border-amber-400 focus:border-amber-400 focus:ring-amber-100" : "border-sage-ring focus:border-bronze-edge focus:ring-bronze-soft"}`}
           />
           <button
             type="button"
@@ -295,12 +295,12 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
           <svg className="h-4 w-4 text-bronze mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p className="text-xs text-gray-600 leading-relaxed">
+          <p className="text-xs text-ink-body leading-relaxed">
             {t("invite.helpText", locale)}
           </p>
         </div>
 
-        <p className="mt-2 text-xs text-gray-600">
+        <p className="mt-2 text-xs text-ink-body">
           {t("invite.privacyNote", locale)}
         </p>
 
@@ -317,7 +317,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
           {activeInvitations.map((inv) => (
             <div
               key={inv.id}
-              className="group rounded-lg border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md"
+              className="group rounded-lg border border-sand/50 bg-gradient-to-br from-white to-gray-50/30 px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -327,7 +327,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
                       inv.status === "COMPLETED"
                         ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
                         : inv.status === "CANCELED"
-                          ? "bg-gray-100 text-gray-500 border border-gray-200"
+                          ? "bg-sand/50 text-muted border border-sand"
                           : "bg-amber-50 text-amber-600 border border-amber-200"
                     }`}
                   >
@@ -336,7 +336,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
                         inv.status === "COMPLETED"
                           ? "bg-emerald-500"
                           : inv.status === "CANCELED"
-                            ? "bg-gray-400"
+                            ? "bg-muted/60"
                             : "bg-amber-400"
                       }`}
                     />
@@ -349,7 +349,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
 
                   {/* Email address - only for pending invitations */}
                   {inv.status === "PENDING" && inv.observerEmail && (
-                    <span className="text-sm text-gray-600 truncate">
+                    <span className="text-sm text-ink-body truncate">
                       {inv.observerEmail}
                     </span>
                   )}
@@ -412,19 +412,19 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
               </div>
             </div>
           ))}
-          <p className="mt-4 text-xs text-gray-400 text-center">
+          <p className="mt-4 text-xs text-muted text-center">
             {tf("invite.stats", locale, { completed: completed.length, pending: pending.length, canceled: canceledCount })}
           </p>
         </div>
       ) : (
-        <div className="mt-8 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-12 text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="mt-8 rounded-2xl border-2 border-dashed border-sand bg-surface-subtle/50 p-12 text-center">
+          <svg className="mx-auto h-12 w-12 text-muted/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
           </svg>
-          <p className="mt-4 text-sm font-medium text-gray-600">
+          <p className="mt-4 text-sm font-medium text-ink-body">
             {t("invite.noInvitations", locale) || "Még nincs meghívásod"}
           </p>
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-muted">
             {t("invite.createPrompt", locale) || "Hozz létre egyet a fenti űrlappal"}
           </p>
         </div>

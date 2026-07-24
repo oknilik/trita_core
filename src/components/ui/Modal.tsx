@@ -94,7 +94,7 @@ export function Modal({
                 : "max-w-md rounded-2xl bg-white shadow-2xl",
               variant === "danger"
                 ? (isBrand ? "border-[#eadccf]" : "border-rose-200/70")
-                : (isBrand ? "border-sand" : "border-gray-100"),
+                : (isBrand ? "border-sand" : "border-sand/70"),
             ].join(" ")}
           >
             <div
@@ -118,7 +118,7 @@ export function Modal({
                   "absolute right-4 top-5 rounded-lg p-1 transition",
                   isBrand
                     ? "text-ink-body/55 hover:bg-cream hover:text-ink-body"
-                    : "text-gray-400 hover:bg-gray-100 hover:text-gray-600",
+                    : "text-muted hover:bg-sand/50 hover:text-ink-body",
                 ].join(" ")}
               >
                 <svg
@@ -176,7 +176,7 @@ export function Modal({
                         isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
                         variant === "danger"
                           ? (isBrand ? "text-ink" : "text-rose-900")
-                          : (isBrand ? "text-ink" : "text-gray-900"),
+                          : (isBrand ? "text-ink" : "text-ink"),
                       ].join(" ")}
                     >
                       {title}
@@ -192,7 +192,7 @@ export function Modal({
                             "mt-2 text-sm leading-relaxed",
                             variant === "danger"
                               ? (isBrand ? "text-ink-body" : "text-rose-700")
-                              : (isBrand ? "text-ink-body" : "text-gray-600"),
+                              : (isBrand ? "text-ink-body" : "text-ink-body"),
                           ].join(" ")}
                         >
                           {description}

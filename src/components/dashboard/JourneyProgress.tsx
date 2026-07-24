@@ -157,7 +157,7 @@ export function JourneyProgress({
           {stepsCompleted}/{totalSteps}
         </div>
       </div>
-      <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-gray-100 shadow-inner">
+      <div className="mt-6 h-3 w-full overflow-hidden rounded-full bg-sand/50 shadow-inner">
         <div
           className="h-full rounded-full bg-gradient-to-r from-sage via-sage-dark to-sage-deep shadow-lg transition-all duration-700 ease-out"
           style={{
@@ -176,7 +176,7 @@ export function JourneyProgress({
               ? "text-emerald-500"
               : hasDraft
                 ? "text-amber-500"
-                : "text-gray-300"
+                : "text-muted/60"
           }
         >
           {selfCompleted ? (
@@ -208,11 +208,11 @@ export function JourneyProgress({
               <path d="M12 6v6l4 2" />
             </svg>
           ) : (
-            <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
+            <div className="mx-auto h-8 w-8 rounded-full border-2 border-sand"></div>
           )}
         </span>
         {/* Step 2: Invites */}
-        <span className={stepsCompleted >= 2 ? "text-emerald-500" : "text-gray-300"}>
+        <span className={stepsCompleted >= 2 ? "text-emerald-500" : "text-muted/60"}>
           {stepsCompleted >= 2 ? (
             <svg
               viewBox="0 0 24 24"
@@ -228,7 +228,7 @@ export function JourneyProgress({
               <path d="M8.5 12.5l2.5 2.5 4.5-5" />
             </svg>
           ) : (
-            <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
+            <div className="mx-auto h-8 w-8 rounded-full border-2 border-sand"></div>
           )}
         </span>
         {/* Step 3: Observer feedback */}
@@ -240,7 +240,7 @@ export function JourneyProgress({
                 : "text-emerald-500"
               : feedbackInProgress
                 ? "text-amber-500"
-                : "text-gray-300"
+                : "text-muted/60"
           }
         >
           {stepsCompleted >= 3 ? (
@@ -272,12 +272,12 @@ export function JourneyProgress({
               <path d="M12 6v6l4 2" />
             </svg>
           ) : (
-            <div className="mx-auto h-8 w-8 rounded-full border-2 border-gray-200"></div>
+            <div className="mx-auto h-8 w-8 rounded-full border-2 border-sand"></div>
           )}
         </span>
       </div>
 
-      <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-gray-500">
+      <div className="mt-3 grid grid-cols-3 text-center text-xs font-semibold text-muted">
         <span
           className={
             selfCompleted
@@ -325,10 +325,10 @@ export function JourneyProgress({
               </svg>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-sm font-semibold text-ink">
                 {t("dashboard.nextStepSurveyTitle", locale)}
               </p>
-              <p className="mt-1 text-sm text-gray-700">
+              <p className="mt-1 text-sm text-ink-body">
                 {t("dashboard.nextStepSurveyBody", locale)}
               </p>
               <button
@@ -348,8 +348,8 @@ export function JourneyProgress({
         <div className="mt-6 rounded-2xl border border-amber-200/50 bg-gradient-to-br from-amber-50/80 via-white to-white p-6 md:p-8 shadow-md">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-semibold text-gray-900">{nextStep.title}</p>
-              <p className="mt-1 text-sm text-gray-600">{nextStep.body}</p>
+              <p className="text-sm font-semibold text-ink">{nextStep.title}</p>
+              <p className="mt-1 text-sm text-ink-body">{nextStep.body}</p>
               {draftTotalQuestions > 0 && (
                 <div className="mt-3">
                   <p className="text-xs text-amber-700 font-medium mb-1">

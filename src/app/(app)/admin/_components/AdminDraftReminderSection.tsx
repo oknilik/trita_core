@@ -141,19 +141,19 @@ export function AdminDraftReminderSection({ drafts }: Props) {
 
   if (drafts.length === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-gray-900">Félbehagyott tesztek</h2>
-        <p className="mt-4 text-sm text-gray-500">Nincs 1+ napja félbehagyott teszt.</p>
+      <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
+        <h2 className="font-fraunces text-heading text-ink">Félbehagyott tesztek</h2>
+        <p className="mt-4 text-sm text-muted">Nincs 1+ napja félbehagyott teszt.</p>
       </div>
     );
   }
 
   return (
-    <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+    <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
       <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Félbehagyott tesztek</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <h2 className="font-fraunces text-heading text-ink">Félbehagyott tesztek</h2>
+          <p className="mt-1 text-sm text-muted">
             1+ napja félbehagyott kitöltők ({drafts.length} db · {activeCount} kiküldendő)
           </p>
         </div>
@@ -163,11 +163,11 @@ export function AdminDraftReminderSection({ drafts }: Props) {
             className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
               onlyActive
                 ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                : "border-sand bg-white text-ink-body hover:bg-surface-subtle"
             }`}
           >
             {onlyActive ? "Csak kiküldendők" : "Összes"}
-            <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-indigo-200 text-indigo-800" : "bg-gray-100 text-gray-500"}`}>
+            <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-indigo-200 text-indigo-800" : "bg-sand/50 text-muted"}`}>
               {onlyActive ? activeCount : drafts.length}
             </span>
           </button>
@@ -184,13 +184,13 @@ export function AdminDraftReminderSection({ drafts }: Props) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <tr className="border-b border-sand/70 text-left text-xs font-semibold text-muted uppercase tracking-wide">
               <th className="pb-3 pr-3">
                 <input
                   type="checkbox"
                   checked={selectAll}
                   onChange={(e) => handleSelectAll(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-sand text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
               </th>
               <th className="pb-3 pr-4">Felhasználó</th>
@@ -202,7 +202,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
               <th className="pb-3"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-sand/60">
             {pageDrafts.map((draft) => {
               const s = getState(draft.id);
               const sent = s.sentAt !== null;
@@ -213,7 +213,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
               return (
                 <tr
                   key={draft.id}
-                  className={`transition-colors ${s.completed ? "bg-gray-50 opacity-60" : isInactive ? "opacity-50" : ""}`}
+                  className={`transition-colors ${s.completed ? "bg-surface-subtle opacity-60" : isInactive ? "opacity-50" : ""}`}
                 >
                   <td className="py-3 pr-3">
                     <input
@@ -221,17 +221,17 @@ export function AdminDraftReminderSection({ drafts }: Props) {
                       checked={isChecked && !s.completed}
                       disabled={s.completed}
                       onChange={() => !s.completed && toggleRow(draft.id)}
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-default"
+                      className="h-4 w-4 rounded border-sand text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-default"
                     />
                   </td>
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
                       <div>
-                        <p className={`font-medium ${s.completed ? "text-gray-400 line-through" : "text-gray-800"}`}>
+                        <p className={`font-medium ${s.completed ? "text-muted line-through" : "text-ink"}`}>
                           {draft.email}
                         </p>
                         {draft.username && (
-                          <p className="text-xs text-gray-400">{draft.username}</p>
+                          <p className="text-xs text-muted">{draft.username}</p>
                         )}
                       </div>
                       {s.completed && (
@@ -246,29 +246,29 @@ export function AdminDraftReminderSection({ drafts }: Props) {
                       )}
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-gray-600 text-xs font-medium">{draft.testType}</td>
+                  <td className="py-3 pr-4 text-ink-body text-xs font-medium">{draft.testType}</td>
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-16 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                      <div className="w-16 h-1.5 rounded-full bg-sand/50 overflow-hidden">
                         <div
                           className={`h-1.5 rounded-full ${s.completed ? "bg-emerald-400" : "bg-indigo-400"}`}
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">
+                      <span className="text-xs text-muted whitespace-nowrap">
                         {draft.answeredCount}/{draft.totalCount}
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-gray-500 text-xs">{relativeTime(draft.updatedAt)}</td>
-                  <td className="py-3 pr-4 text-gray-500 text-xs">
+                  <td className="py-3 pr-4 text-muted text-xs">{relativeTime(draft.updatedAt)}</td>
+                  <td className="py-3 pr-4 text-muted text-xs">
                     {s.sentAt
                       ? `${relativeTime(s.sentAt)} (most)`
                       : draft.lastDraftReminderSentAt
                         ? relativeTime(draft.lastDraftReminderSentAt)
                         : "–"}
                   </td>
-                  <td className="py-3 pr-4 text-gray-500 text-xs">
+                  <td className="py-3 pr-4 text-muted text-xs">
                     {draft.draftReminderCount + (sent ? 1 : 0)}
                   </td>
                   <td className="py-3">
@@ -278,11 +278,11 @@ export function AdminDraftReminderSection({ drafts }: Props) {
                       disabled={s.sending || sent || s.completed}
                       className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                         s.completed
-                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          ? "bg-sand/50 text-muted cursor-default"
                           : sent
                             ? "bg-emerald-100 text-emerald-700 cursor-default"
                             : s.sending
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              ? "bg-sand/50 text-muted cursor-not-allowed"
                               : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
                       }`}
                     >
@@ -297,22 +297,22 @@ export function AdminDraftReminderSection({ drafts }: Props) {
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <p className="text-xs text-gray-500">
+        <div className="mt-4 flex items-center justify-between border-t border-sand/70 pt-4">
+          <p className="text-xs text-muted">
             {safePage + 1} / {totalPages} oldal · {visibleDrafts.length} sor
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => goToPage(safePage - 1)}
               disabled={safePage === 0}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               ← Előző
             </button>
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages - 1}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Következő →
             </button>

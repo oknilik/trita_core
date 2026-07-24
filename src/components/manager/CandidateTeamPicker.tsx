@@ -47,7 +47,7 @@ export function CandidateTeamPicker({
       <select
         value={selected}
         onChange={(e) => { setSelected(e.target.value); setSaved(false); }}
-        className="flex-1 min-w-[180px] rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+        className="flex-1 min-w-[180px] rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
       >
         <option value="">{t("manager.candidateTeamPicker.noTeam", locale)}</option>
         {teams.map((tm) => (

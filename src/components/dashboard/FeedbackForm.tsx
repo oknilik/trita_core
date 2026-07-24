@@ -89,7 +89,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
       <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8 text-center">
         <div className="flex items-center justify-center gap-3">
           <span className="text-2xl">🙏</span>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-ink-body">
             {t("dashboard.feedbackThanks", locale)}
           </span>
         </div>
@@ -101,14 +101,14 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-ink">
             {t("dashboard.feedbackTitle", locale)}
           </h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-ink-body">
             {t("dashboard.feedbackBody", locale)}
           </p>
         </div>
-        <span className="text-xs font-medium text-gray-500">
+        <span className="text-xs font-medium text-muted">
           {hasObserverFeedback ? currentQuestion : (currentQuestion <= 1 ? currentQuestion : currentQuestion - 1)}/{hasObserverFeedback ? 5 : 4}
         </span>
       </div>
@@ -123,7 +123,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 1: Recognition */}
         {currentQuestion === 1 && (
           <div>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackAgreementLabel", locale)}
             </p>
             <div className="mt-4 grid grid-cols-5 gap-2">
@@ -136,7 +136,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                   className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                     agreementScore === item.value
                       ? "border-2 border-sage bg-sage-soft"
-                      : "border-gray-200 hover:border-bronze-edge"
+                      : "border-sand hover:border-bronze-edge"
                   }`}
                 >
                   {item.emoji}
@@ -149,7 +149,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 2: Observer feedback usefulness (only for users with observer feedback) */}
         {currentQuestion === 2 && hasObserverFeedback && (
           <div>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackObserverUsefulnessLabel", locale)}
             </p>
             <div className="mt-4 grid grid-cols-5 gap-2">
@@ -162,7 +162,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                   className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                     observerUsefulness === item.value
                       ? "border-2 border-sage bg-sage-soft"
-                      : "border-gray-200 hover:border-bronze-edge"
+                      : "border-sand hover:border-bronze-edge"
                   }`}
                 >
                   {item.emoji}
@@ -175,7 +175,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 3: Site usefulness */}
         {currentQuestion === 3 && (
           <div>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackSiteUsefulnessLabel", locale)}
             </p>
             <div className="mt-4 grid grid-cols-5 gap-2">
@@ -188,7 +188,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                   className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                     siteUsefulness === item.value
                       ? "border-2 border-sage bg-sage-soft"
-                      : "border-gray-200 hover:border-bronze-edge"
+                      : "border-sand hover:border-bronze-edge"
                   }`}
                 >
                   {item.emoji}
@@ -201,7 +201,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 4: Want updates */}
         {currentQuestion === 4 && (
           <div>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackUpdatesLabel", locale)}
             </p>
             <div className="mt-4 grid grid-cols-2 gap-3">
@@ -211,7 +211,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                 className={`flex min-h-[44px] items-center justify-center gap-2 rounded-lg border text-lg transition ${
                   interested === true
                     ? "border-2 border-sage bg-sage-soft"
-                    : "border-gray-200 hover:border-bronze-edge"
+                    : "border-sand hover:border-bronze-edge"
                 }`}
               >
                 <span className="text-2xl">👍</span>
@@ -223,7 +223,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                 className={`flex min-h-[44px] items-center justify-center gap-2 rounded-lg border text-lg transition ${
                   interested === false
                     ? "border-2 border-sage bg-sage-soft"
-                    : "border-gray-200 hover:border-bronze-edge"
+                    : "border-sand hover:border-bronze-edge"
                 }`}
               >
                 <span className="text-2xl">👎</span>
@@ -236,7 +236,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 5: Free text feedback */}
         {currentQuestion === 5 && (
           <div>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackFreeformLabel", locale)}
             </p>
             <textarea
@@ -244,7 +244,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
               onChange={(e) => setFreeform(e.target.value)}
               rows={4}
               placeholder={t("dashboard.feedbackFreeformPlaceholder", locale)}
-              className="mt-3 w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 focus:border-bronze-edge focus:outline-none"
+              className="mt-3 w-full resize-none rounded-lg border border-sand bg-surface-subtle px-3 py-2 text-sm text-ink focus:border-bronze-edge focus:outline-none"
             />
           </div>
         )}
@@ -259,7 +259,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
             (currentQuestion === 3 && siteUsefulness == null) ||
             (currentQuestion === 4 && interested == null)
           }
-          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
         >
           {isSubmitting
             ? t("dashboard.feedbackSubmitLoading", locale)

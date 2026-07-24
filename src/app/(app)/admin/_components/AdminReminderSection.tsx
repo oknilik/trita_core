@@ -137,19 +137,19 @@ export function AdminReminderSection({ invitations }: Props) {
 
   if (invitations.length === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-gray-900">Emlékeztető küldés</h2>
-        <p className="mt-4 text-sm text-gray-500">Nincs 3+ napja kitöltetlen emailes meghívó.</p>
+      <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
+        <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
+        <p className="mt-4 text-sm text-muted">Nincs 3+ napja kitöltetlen emailes meghívó.</p>
       </div>
     );
   }
 
   return (
-    <div className="mt-8 rounded-xl border border-gray-100 bg-white p-6 md:p-8">
+    <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
       <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">Emlékeztető küldés</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
+          <p className="mt-1 text-sm text-muted">
             3+ napja kitöltetlen emailes meghívók ({invitations.length} db · {activeCount} kiküldendő)
           </p>
         </div>
@@ -159,11 +159,11 @@ export function AdminReminderSection({ invitations }: Props) {
             className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
               onlyActive
                 ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                : "border-sand bg-white text-ink-body hover:bg-surface-subtle"
             }`}
           >
             {onlyActive ? "Csak kiküldendők" : "Összes"}
-            <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-indigo-200 text-indigo-800" : "bg-gray-100 text-gray-500"}`}>
+            <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-indigo-200 text-indigo-800" : "bg-sand/50 text-muted"}`}>
               {onlyActive ? activeCount : invitations.length}
             </span>
           </button>
@@ -180,13 +180,13 @@ export function AdminReminderSection({ invitations }: Props) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <tr className="border-b border-sand/70 text-left text-xs font-semibold text-muted uppercase tracking-wide">
               <th className="pb-3 pr-3">
                 <input
                   type="checkbox"
                   checked={selectAll}
                   onChange={(e) => handleSelectAll(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-sand text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
               </th>
               <th className="pb-3 pr-4">Observer</th>
@@ -197,7 +197,7 @@ export function AdminReminderSection({ invitations }: Props) {
               <th className="pb-3"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-sand/60">
             {pageInvitations.map((inv) => {
               const s = getState(inv.id);
               const sent = s.sentAt !== null;
@@ -207,7 +207,7 @@ export function AdminReminderSection({ invitations }: Props) {
               return (
                 <tr
                   key={inv.id}
-                  className={`transition-colors ${s.completed ? "bg-gray-50 opacity-60" : isInactive ? "opacity-50" : ""}`}
+                  className={`transition-colors ${s.completed ? "bg-surface-subtle opacity-60" : isInactive ? "opacity-50" : ""}`}
                 >
                   <td className="py-3 pr-3">
                     <input
@@ -215,17 +215,17 @@ export function AdminReminderSection({ invitations }: Props) {
                       checked={isChecked && !s.completed}
                       disabled={s.completed}
                       onChange={() => !s.completed && toggleRow(inv.id)}
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-default"
+                      className="h-4 w-4 rounded border-sand text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-default"
                     />
                   </td>
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
                       <div>
-                        <p className={`font-medium ${s.completed ? "text-gray-400 line-through" : "text-gray-800"}`}>
+                        <p className={`font-medium ${s.completed ? "text-muted line-through" : "text-ink"}`}>
                           {inv.observerEmail}
                         </p>
                         {inv.observerName && (
-                          <p className="text-xs text-gray-400">{inv.observerName}</p>
+                          <p className="text-xs text-muted">{inv.observerName}</p>
                         )}
                       </div>
                       {s.completed && (
@@ -240,18 +240,18 @@ export function AdminReminderSection({ invitations }: Props) {
                       )}
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-gray-600">
+                  <td className="py-3 pr-4 text-ink-body">
                     {inv.inviter.username ?? inv.inviter.email}
                   </td>
-                  <td className="py-3 pr-4 text-gray-600">{daysSince(inv.createdAt)} napja</td>
-                  <td className="py-3 pr-4 text-gray-500">
+                  <td className="py-3 pr-4 text-ink-body">{daysSince(inv.createdAt)} napja</td>
+                  <td className="py-3 pr-4 text-muted">
                     {s.sentAt
                       ? `${relativeTime(s.sentAt)} (most)`
                       : inv.lastReminderSentAt
                         ? relativeTime(inv.lastReminderSentAt)
                         : "–"}
                   </td>
-                  <td className="py-3 pr-4 text-gray-500">
+                  <td className="py-3 pr-4 text-muted">
                     {inv.reminderCount + (sent ? 1 : 0)}
                   </td>
                   <td className="py-3">
@@ -261,11 +261,11 @@ export function AdminReminderSection({ invitations }: Props) {
                       disabled={s.sending || sent || s.completed}
                       className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                         s.completed
-                          ? "bg-gray-100 text-gray-400 cursor-default"
+                          ? "bg-sand/50 text-muted cursor-default"
                           : sent
                             ? "bg-emerald-100 text-emerald-700 cursor-default"
                             : s.sending
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              ? "bg-sand/50 text-muted cursor-not-allowed"
                               : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
                       }`}
                     >
@@ -280,22 +280,22 @@ export function AdminReminderSection({ invitations }: Props) {
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-          <p className="text-xs text-gray-500">
+        <div className="mt-4 flex items-center justify-between border-t border-sand/70 pt-4">
+          <p className="text-xs text-muted">
             {safePage + 1} / {totalPages} oldal · {visibleInvitations.length} sor
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => goToPage(safePage - 1)}
               disabled={safePage === 0}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               ← Előző
             </button>
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages - 1}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Következő →
             </button>

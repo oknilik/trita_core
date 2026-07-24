@@ -30,7 +30,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'A'
                 ? 'border-sage bg-sage'
-                : 'border-gray-300 bg-white'
+                : 'border-sand bg-white'
             }`}
           >
             {value === 'A' && (
@@ -41,7 +41,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
               />
             )}
           </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
             A
           </span>
         </div>
@@ -66,7 +66,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'B'
                 ? 'border-sage bg-sage'
-                : 'border-gray-300 bg-white'
+                : 'border-sand bg-white'
             }`}
           >
             {value === 'B' && (
@@ -77,7 +77,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
               />
             )}
           </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
             B
           </span>
         </div>

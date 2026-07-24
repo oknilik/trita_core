@@ -37,13 +37,13 @@ interface ProfileInsightsProps {
 
 function categoryColor(cat: ProfileCategory): string {
   if (cat === "high") return "bg-sage";
-  if (cat === "low") return "bg-gray-300";
+  if (cat === "low") return "bg-sand";
   return "bg-[#d7c9be]";
 }
 
 function categoryTextColor(cat: ProfileCategory): string {
   if (cat === "high") return "text-bronze-dark bg-sage-soft";
-  if (cat === "low") return "text-gray-500 bg-gray-100";
+  if (cat === "low") return "text-muted bg-sand/50";
   return "text-[#6f5b4a] bg-warm";
 }
 
@@ -101,7 +101,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
     {
       num: "01",
       node: (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+        <section className="rounded-2xl border border-sand/70 bg-white p-6">
           <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-4">
             {BLOCK2_TITLE[l]}
           </h3>
@@ -111,10 +111,10 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
               const score = dimensions[code] ?? 0;
               return (
                 <div key={code} className="flex items-center gap-3">
-                  <span className="w-[130px] shrink-0 text-xs font-medium text-gray-700 truncate">
+                  <span className="w-[130px] shrink-0 text-xs font-medium text-ink-body truncate">
                     {DIM_LABELS[code]?.[l] ?? code}
                   </span>
-                  <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                  <div className="flex-1 h-2 rounded-full bg-sand/50 overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all ${categoryColor(cat)}`}
                       style={{ width: `${score}%` }}
@@ -133,33 +133,33 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
     {
       num: "02",
       node: (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+        <section className="rounded-2xl border border-sand/70 bg-white p-6">
           <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-3">
             {BLOCK3_TITLE[l]}
           </h3>
-          <p className="text-sm text-gray-700 leading-relaxed">{block3Text}</p>
+          <p className="text-sm text-ink-body leading-relaxed">{block3Text}</p>
         </section>
       ),
     },
     {
       num: "03",
       node: envRows.length > 0 ? (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
+        <section className="rounded-2xl border border-sand/70 bg-white p-6">
           <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-4">
             {BLOCK4_TITLE[l]}
           </h3>
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-sand/60">
             {envRows.map((row, i) => (
               <div key={i} className="flex gap-4 py-2.5 first:pt-0 last:pb-0">
-                <span className="w-36 shrink-0 text-xs font-semibold text-gray-500">{row.label[l]}</span>
-                <span className="text-xs text-gray-700">{row.value[l]}</span>
+                <span className="w-36 shrink-0 text-xs font-semibold text-muted">{row.label[l]}</span>
+                <span className="text-xs text-ink-body">{row.value[l]}</span>
               </div>
             ))}
           </div>
         </section>
       ) : (
-        <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <p className="text-sm text-gray-500 italic">{BLOCK4_EMPTY[l]}</p>
+        <section className="rounded-2xl border border-sand/70 bg-white p-6">
+          <p className="text-sm text-muted italic">{BLOCK4_EMPTY[l]}</p>
         </section>
       ),
     },
@@ -168,22 +168,22 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
           {
             num: "04",
             node: (
-              <section className="rounded-2xl border border-gray-100 bg-white p-6">
+              <section className="rounded-2xl border border-sand/70 bg-white p-6">
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-4">
                   {BLOCK5_TITLE[l]}
                 </h3>
                 <div className="space-y-3">
                   <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "var(--color-state-success-strong)" }}>
                     <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1.5">{BLOCK5_STRONG[l]}</p>
-                    <p className="text-sm text-gray-700 leading-relaxed">{roleData.strong}</p>
+                    <p className="text-sm text-ink-body leading-relaxed">{roleData.strong}</p>
                   </div>
                   <div className="rounded-xl border border-amber-100 bg-amber-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "var(--color-state-warning-strong)" }}>
                     <p className="text-[11px] font-semibold text-amber-600 uppercase tracking-wide mb-1.5">{BLOCK5_MEDIUM[l]}</p>
-                    <p className="text-sm text-gray-700 leading-relaxed">{roleData.medium}</p>
+                    <p className="text-sm text-ink-body leading-relaxed">{roleData.medium}</p>
                   </div>
                   <div className="rounded-xl border border-rose-100 bg-rose-50/40 p-4" style={{ borderLeftWidth: "3px", borderLeftColor: "#f43f5e" }}>
                     <p className="text-[11px] font-semibold text-rose-500 uppercase tracking-wide mb-1.5">{BLOCK5_WATCH[l]}</p>
-                    <p className="text-sm text-gray-700 leading-relaxed">{roleData.watchOut}</p>
+                    <p className="text-sm text-ink-body leading-relaxed">{roleData.watchOut}</p>
                   </div>
                 </div>
               </section>

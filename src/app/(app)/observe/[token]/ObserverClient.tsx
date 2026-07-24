@@ -583,7 +583,7 @@ export function ObserverClient({
               type="button"
               onClick={() => setPhase("assessment")}
               disabled={!canStart}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:shadow-none"
             >
               {t("observer.start", locale)}
             </button>

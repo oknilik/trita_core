@@ -72,8 +72,8 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
       <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-bronze">
         {texts.tag[l]}
       </div>
-      <h2 className="mb-2 text-xl font-bold text-gray-900">{texts.title[l]}</h2>
-      <p className="mb-6 text-sm text-gray-500">{texts.subtitle[l]}</p>
+      <h2 className="mb-2 text-xl font-bold text-ink">{texts.title[l]}</h2>
+      <p className="mb-6 text-sm text-muted">{texts.subtitle[l]}</p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {features.map((f) => {
@@ -86,7 +86,7 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
               className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all disabled:opacity-50 ${
                 isClicked
                   ? "border-sage-ring bg-sage-soft text-bronze-dark"
-                  : "border-gray-200 bg-white text-gray-700 hover:border-sage-ring hover:bg-sage-soft hover:text-bronze-dark"
+                  : "border-sand bg-white text-ink-body hover:border-sage-ring hover:bg-sage-soft hover:text-bronze-dark"
               }`}
             >
               <span className="text-base">{f.icon}</span>

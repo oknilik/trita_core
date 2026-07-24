@@ -32,10 +32,10 @@ function scoreToAlpha(score: number | null): number {
 import { t, type Locale } from "@/lib/i18n";
 
 function scoreZone(score: number | null, locale: Locale): { label: string; textClass: string } {
-  if (score == null) return { label: "–", textClass: "text-gray-400" };
-  if (score >= 70) return { label: t("manager.teamHeatmap.scoreHigh", locale), textClass: "text-gray-800" };
-  if (score >= 40) return { label: t("manager.teamHeatmap.scoreMid", locale), textClass: "text-gray-700" };
-  return { label: t("manager.teamHeatmap.scoreLow", locale), textClass: "text-gray-700" };
+  if (score == null) return { label: "–", textClass: "text-muted" };
+  if (score >= 70) return { label: t("manager.teamHeatmap.scoreHigh", locale), textClass: "text-ink" };
+  if (score >= 40) return { label: t("manager.teamHeatmap.scoreMid", locale), textClass: "text-ink-body" };
+  return { label: t("manager.teamHeatmap.scoreLow", locale), textClass: "text-ink-body" };
 }
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
@@ -80,7 +80,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="pb-4 pr-6 text-left text-xs font-semibold text-gray-400 min-w-[130px]">
+              <th className="pb-4 pr-6 text-left text-xs font-semibold text-muted min-w-[130px]">
                 {t("manager.teamHeatmap.member", locale)}
               </th>
               {dims.map((dim) => (
@@ -92,7 +92,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                     >
                       {dim.code}
                     </span>
-                    <span className="text-micro font-semibold text-gray-500 max-w-[72px] leading-tight text-center">
+                    <span className="text-micro font-semibold text-muted max-w-[72px] leading-tight text-center">
                       {dim.label}
                     </span>
                   </div>
@@ -104,11 +104,11 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
             {rows.map((row, rowIdx) => (
               <tr
                 key={row.memberId}
-                className={rowIdx === 0 ? "border-t border-gray-100" : "border-t border-gray-100"}
+                className={rowIdx === 0 ? "border-t border-sand/70" : "border-t border-sand/70"}
               >
                 <td className="py-2.5 pr-6">
                   <span
-                    className="text-sm font-semibold text-gray-800"
+                    className="text-sm font-semibold text-ink"
                     title={row.displayName}
                   >
                     {row.displayName.length > maxNameLen
@@ -150,7 +150,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                             </span>
                           </>
                         ) : (
-                          <span className="text-xs text-gray-300">–</span>
+                          <span className="text-xs text-muted/60">–</span>
                         )}
                       </div>
                     </td>
@@ -163,7 +163,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-400">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <div className="h-4 w-10 rounded-md bg-indigo-100" />
@@ -173,14 +173,14 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
           <span>{t("manager.teamHeatmap.legendRange", locale)}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="h-4 w-10 rounded-md border border-gray-200 bg-gray-50" />
+          <div className="h-4 w-10 rounded-md border border-sand bg-surface-subtle" />
           <span>{t("manager.teamHeatmap.legendNoAssessment", locale)}</span>
         </div>
       </div>
 
       {/* Dimension descriptions */}
       <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted">
           {t("manager.teamHeatmap.dimensionGuide", locale)}
         </p>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -189,7 +189,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
             return (
               <div
                 key={dim.code}
-                className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50/60 p-3"
+                className="flex items-start gap-3 rounded-xl border border-sand/70 bg-surface-subtle/60 p-3"
               >
                 <span
                   className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
@@ -198,8 +198,8 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                   {dim.code}
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold text-gray-700">{dim.label}</p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
+                  <p className="text-xs font-semibold text-ink-body">{dim.label}</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-muted">
                     {desc?.[locale] ?? desc?.en ?? ""}
                   </p>
                 </div>

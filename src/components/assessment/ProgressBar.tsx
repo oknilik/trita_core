@@ -17,7 +17,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
     <div className="w-full">
       {/* Progress text */}
       <div className="mb-2 flex items-center justify-between gap-2 text-xs">
-        <span className="truncate whitespace-nowrap font-medium text-gray-700">
+        <span className="truncate whitespace-nowrap font-medium text-ink-body">
           {tf("assessment.questionCounter", locale, { current, total })}
         </span>
         <span className="inline-flex shrink-0 items-center rounded-full bg-sage-soft px-2 py-0.5 font-semibold text-bronze-dark">
@@ -26,7 +26,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
       </div>
 
       {/* Progress bar track */}
-      <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200">
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-sand/80">
         <motion.div
           className="h-full bg-gradient-to-r from-sage to-sage-deep"
           initial={{ width: 0 }}

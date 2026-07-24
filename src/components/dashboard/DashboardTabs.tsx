@@ -201,7 +201,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
   return (
     <div className="flex flex-col gap-8 md:gap-12">
       {/* Tab bar */}
-      <div ref={tabBarRef} className="scroll-mt-24 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
+      <div ref={tabBarRef} className="scroll-mt-24 rounded-2xl border border-sand/70 bg-white p-2 shadow-sm">
         <div
           className="grid grid-cols-3 gap-1.5"
           role="tablist"
@@ -216,7 +216,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
                 className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-3 py-3 text-xs font-semibold transition-all duration-200 md:flex-row md:gap-2 md:text-sm ${
                 activeTab === tab.id
                   ? "bg-gradient-to-r from-sage to-sage-deep text-white shadow-md shadow-sage/25"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  : "text-muted hover:bg-surface-subtle hover:text-ink-body"
               }`}
             >
               {tab.icon}
@@ -317,14 +317,14 @@ function ResultsTabPanel({
     <>
       {/* Chart overview + highlights */}
       <FadeIn delay={0.05}>
-        <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+        <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
             <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
               {tf("dashboard.profileOverview", locale, { testName: profileOverviewTestName })}
             </h2>
           </div>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-ink-body">
             {tf("dashboard.overviewLikert", locale, {
               count: mainScores?.length ?? 0,
             })}
@@ -366,14 +366,14 @@ function ResultsTabPanel({
       {/* Detailed dimension cards */}
       {isLikert && mainScores && (
         <FadeIn delay={0.1}>
-          <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+          <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
               <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
               <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 {t("dashboard.detailedTitle", locale)}
               </h2>
             </div>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-ink-body">
               {t("dashboard.detailedBody", locale)}
             </p>
 
@@ -407,7 +407,7 @@ function ResultsTabPanel({
             {altruismScore && (() => {
               const dimConfig = dimConfigs["I"];
               return (
-                <div className="mt-8 border-t border-gray-100 pt-8">
+                <div className="mt-8 border-t border-sand/70 pt-8">
                   <div className="mb-4 flex items-start gap-3 rounded-lg border border-emerald-100 bg-emerald-50/50 px-4 py-3">
                     <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500">
                       <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clipRule="evenodd" />
@@ -451,7 +451,7 @@ function ResultsTabPanel({
 
       {/* Retake CTA */}
       <FadeIn delay={0.15}>
-        <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
+        <section className="relative overflow-hidden rounded-2xl border border-sand/70 bg-white p-6 md:p-8">
           <div className="flex flex-col items-center gap-2 text-center">
             {hasDraft ? (
               <Link
@@ -497,7 +497,7 @@ function ComparisonTabPanel({
   if (completedObserversCount < 2) {
     return (
       <FadeIn>
-        <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg text-center">
+        <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg text-center">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-sage-soft">
             <svg className="h-7 w-7 text-bronze" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
@@ -506,10 +506,10 @@ function ComparisonTabPanel({
           <p className="text-xs font-semibold uppercase tracking-widest text-bronze">
             {t("comparison.title", locale)}
           </p>
-          <h2 className="mt-3 text-2xl font-semibold text-gray-900">
+          <h2 className="mt-3 text-2xl font-semibold text-ink">
             {t("comparison.anonGateTitle", locale)}
           </h2>
-          <p className="mt-3 text-sm text-gray-600 max-w-sm mx-auto">
+          <p className="mt-3 text-sm text-ink-body max-w-sm mx-auto">
             {t("comparison.anonGateBody", locale)}
           </p>
           <p className="mt-3 text-sm font-semibold text-bronze">
@@ -585,11 +585,11 @@ function InvitesTabPanel({
       {/* Received invitations */}
       {receivedInvitations.length > 0 && (
         <FadeIn delay={0.15}>
-          <section className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-            <h2 className="text-2xl font-semibold text-gray-900">
+          <section className="rounded-2xl border border-sand/70 bg-white p-6 md:p-8">
+            <h2 className="text-2xl font-semibold text-ink">
               {t("dashboard.invitesReceivedTitle", locale)}
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-ink-body">
               {t("dashboard.invitesReceivedBody", locale)}
             </p>
             <div className="mt-6 flex flex-col gap-2">
@@ -600,7 +600,7 @@ function InvitesTabPanel({
                 return (
                   <div
                     key={inv.id}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-gray-100 px-4 py-3"
+                    className="flex items-center justify-between gap-3 rounded-lg border border-sand/70 px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       <span
@@ -608,13 +608,13 @@ function InvitesTabPanel({
                           inv.status === "COMPLETED"
                             ? "bg-emerald-500"
                             : inv.status === "CANCELED" || isExpired
-                              ? "bg-gray-300"
+                              ? "bg-sand"
                               : "bg-amber-400"
                         }`}
                       />
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{inviterName}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-semibold text-ink">{inviterName}</p>
+                        <p className="text-xs text-muted">
                           {inv.status === "COMPLETED"
                             ? t("common.statusCompleted", locale)
                             : inv.status === "CANCELED"

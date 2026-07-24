@@ -65,14 +65,14 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center text-sm text-gray-600 md:hidden"
+          className="text-center text-sm text-ink-body md:hidden"
         >
           {labels[value - 1]}
         </motion.div>
       )}
 
       {/* Scale labels (desktop) */}
-      <div className="hidden items-center justify-between text-xs text-gray-500 md:flex">
+      <div className="hidden items-center justify-between text-xs text-muted md:flex">
         <span>{t("assessment.scale1", locale)}</span>
         <span>{t("assessment.scale5", locale)}</span>
       </div>

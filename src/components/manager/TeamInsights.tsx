@@ -203,7 +203,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
     <div className="flex flex-col gap-6">
       {/* Average profile bars */}
       <div>
-        <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
           {t("manager.teamInsights.avgByDimension", locale)}
         </p>
         <div className="flex flex-col gap-3">
@@ -219,7 +219,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                   {dim.code}
                 </span>
                 <div className="flex-1">
-                  <div className="relative h-7 overflow-hidden rounded-lg bg-gray-100">
+                  <div className="relative h-7 overflow-hidden rounded-lg bg-sand/50">
                     {avg !== null && (
                       <div
                         className="absolute inset-y-0 left-0 rounded-lg transition-all"
@@ -231,7 +231,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                       />
                     )}
                     <div className="absolute inset-0 flex items-center px-2.5">
-                      <span className="text-xs font-semibold text-gray-600">
+                      <span className="text-xs font-semibold text-ink-body">
                         {dim.label}
                       </span>
                     </div>
@@ -239,15 +239,15 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="w-16 shrink-0 text-right">
                   {avg !== null ? (
-                    <span className="text-sm font-bold tabular-nums text-gray-800">
+                    <span className="text-sm font-bold tabular-nums text-ink">
                       {avg}
-                      <span className="text-xs font-semibold text-gray-400">%</span>
+                      <span className="text-xs font-semibold text-muted">%</span>
                     </span>
                   ) : (
-                    <span className="text-xs text-gray-300">–</span>
+                    <span className="text-xs text-muted/60">–</span>
                   )}
                   {stdDev !== undefined && scored.length > 1 && (
-                    <p className="text-micro text-gray-400">
+                    <p className="text-micro text-muted">
                       ±{stdDev}
                     </p>
                   )}
@@ -257,7 +257,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
           })}
         </div>
         {scored.length > 1 && (
-          <p className="mt-2 text-micro text-gray-400">
+          <p className="mt-2 text-micro text-muted">
             {t("manager.teamInsights.stdDevHint", locale)}
           </p>
         )}
@@ -266,7 +266,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
       {/* Insight cards */}
       {rankedDims.length >= 2 && (
         <div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
             {t("manager.teamInsights.teamDynamics", locale)}
           </p>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -286,14 +286,14 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                   >
                     {topStrength.code}
                   </span>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-ink">
                     {topStrength.label}
-                    <span className="ml-1.5 text-xs font-normal text-gray-400">
+                    <span className="ml-1.5 text-xs font-normal text-muted">
                       {teamAvg[topStrength.code]}%
                     </span>
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed text-gray-600">
+                <p className="text-xs leading-relaxed text-ink-body">
                   {DIM_INSIGHTS[topStrength.code]?.[getLevel(teamAvg[topStrength.code]!)]?.[lang] ?? ""}
                 </p>
               </div>
@@ -315,14 +315,14 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                   >
                     {topGap.code}
                   </span>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-ink">
                     {topGap.label}
-                    <span className="ml-1.5 text-xs font-normal text-gray-400">
+                    <span className="ml-1.5 text-xs font-normal text-muted">
                       {teamAvg[topGap.code]}%
                     </span>
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed text-gray-600">
+                <p className="text-xs leading-relaxed text-ink-body">
                   {DIM_INSIGHTS[topGap.code]?.[getLevel(teamAvg[topGap.code]!)]?.[lang] ?? ""}
                 </p>
               </div>
@@ -344,14 +344,14 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                   >
                     {mostDiverseDim.code}
                   </span>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-ink">
                     {mostDiverseDim.label}
-                    <span className="ml-1.5 text-xs font-normal text-gray-400">
+                    <span className="ml-1.5 text-xs font-normal text-muted">
                       ±{mostDiverse[1]}
                     </span>
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed text-gray-600">
+                <p className="text-xs leading-relaxed text-ink-body">
                   {t("manager.teamInsights.diversityDesc", locale)}
                 </p>
               </div>
@@ -361,7 +361,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
       )}
 
       {scored.length < rows.length && (
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-muted">
           {tf("manager.teamInsights.analysisBasis", locale, { scored: scored.length, remaining: rows.length - scored.length })}
         </p>
       )}

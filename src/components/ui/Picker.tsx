@@ -220,21 +220,21 @@ export function PickerTrigger({
   onClick,
 }: PickerTriggerProps) {
   return (
-    <label className="flex flex-col gap-2 text-sm font-semibold text-gray-700">
+    <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
       {label}
       <button
         type="button"
         onClick={onClick}
-        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-gray-200 bg-gray-50 px-3 text-left text-sm transition hover:border-gray-300 focus:border-indigo-300 focus:outline-none"
+        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus:border-indigo-300 focus:outline-none"
       >
-        <span className={value ? "text-gray-900" : "text-gray-400"}>
+        <span className={value ? "text-ink" : "text-muted"}>
           {value || placeholder}
         </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          className="h-4 w-4 text-gray-400"
+          className="h-4 w-4 text-muted"
         >
           <path
             fillRule="evenodd"

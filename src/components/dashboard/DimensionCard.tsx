@@ -186,7 +186,7 @@ export const DimensionCard = memo(function DimensionCard({
       <button
         type="button"
         onClick={() => { setShowFeedback(false); setIsOpen(true); }}
-        className="ambient-glow group w-full cursor-pointer rounded-2xl border border-gray-100/50 bg-gradient-to-br from-white to-gray-50/30 p-6 text-left shadow-sm transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-ring/60 focus-visible:ring-offset-2"
+        className="ambient-glow group w-full cursor-pointer rounded-2xl border border-sand/50 bg-gradient-to-br from-white to-gray-50/30 p-6 text-left shadow-sm transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-ring/60 focus-visible:ring-offset-2"
         style={{ borderLeftWidth: "4px", borderLeftColor: color }}
         aria-label={`${t("dashboard.openDetails", locale)}: ${resolvedLabel}`}
       >
@@ -199,7 +199,7 @@ export const DimensionCard = memo(function DimensionCard({
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
-              <p className="truncate text-sm font-semibold text-gray-900">
+              <p className="truncate text-sm font-semibold text-ink">
                 {resolvedLabel}
               </p>
               <div className="flex shrink-0 items-center gap-2">
@@ -208,7 +208,7 @@ export const DimensionCard = memo(function DimensionCard({
                 </p>
                 <svg
                   viewBox="0 0 16 16"
-                  className="h-4 w-4 text-gray-300 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-bronze"
+                  className="h-4 w-4 text-muted/60 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-bronze"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -225,9 +225,9 @@ export const DimensionCard = memo(function DimensionCard({
             </div>
           </div>
         </div>
-        <p className="mt-3 text-sm text-gray-600">{resolvedInsight}</p>
+        <p className="mt-3 text-sm text-ink-body">{resolvedInsight}</p>
         <div className="mt-3 flex items-center justify-end">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 transition group-hover:bg-sage-soft group-hover:text-bronze-dark">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-sand/50 px-3 py-1 text-xs font-semibold text-ink-body transition group-hover:bg-sage-soft group-hover:text-bronze-dark">
             {t("dashboard.openDetails", locale)}
             <svg
               viewBox="0 0 16 16"
@@ -268,11 +268,11 @@ export const DimensionCard = memo(function DimensionCard({
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: "100%", opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.8 }}
-                className="relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-white/95 glass-effect md:max-h-[85vh] md:max-w-lg md:rounded-2xl md:border md:border-gray-100/50 md:shadow-2xl"
+                className="relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-white/95 glass-effect md:max-h-[85vh] md:max-w-lg md:rounded-2xl md:border md:border-sand/50 md:shadow-2xl"
               >
                 {/* Drag handle (mobile only) */}
                 <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center pt-3 md:hidden">
-                  <div className="h-1 w-10 rounded-full bg-gray-300" />
+                  <div className="h-1 w-10 rounded-full bg-sand" />
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto">
                 <AnimatePresence mode="wait">
@@ -289,7 +289,7 @@ export const DimensionCard = memo(function DimensionCard({
                       <button
                         type="button"
                         onClick={handleClose}
-                        className="absolute right-4 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-all duration-300 hover:bg-gray-100 hover:text-gray-600 hover:scale-110 hover:rotate-90"
+                        className="absolute right-4 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-muted transition-all duration-300 hover:bg-sand/50 hover:text-ink-body hover:scale-110 hover:rotate-90"
                       >
                         <svg
                           viewBox="0 0 24 24"
@@ -314,7 +314,7 @@ export const DimensionCard = memo(function DimensionCard({
                             {code}
                           </span>
                           <div>
-                            <h2 className="text-lg font-bold text-gray-900">
+                            <h2 className="text-lg font-bold text-ink">
                               {resolvedLabel}
                             </h2>
                             <p className="text-2xl font-bold" style={{ color }}>
@@ -332,22 +332,22 @@ export const DimensionCard = memo(function DimensionCard({
                           <>
                             {/* First ~2 lines of description visible, rest fades */}
                             <div className="relative mt-6 overflow-hidden" style={{ maxHeight: "6rem" }}>
-                              <h3 className="text-sm font-semibold text-gray-900">
+                              <h3 className="text-sm font-semibold text-ink">
                                 {t("dashboard.dimensionWhat", locale)}
                               </h3>
-                              <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                              <p className="mt-2 text-sm leading-relaxed text-ink-body">
                                 {resolvedDescription}
                               </p>
                               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent" />
                             </div>
 
                             {/* Lock CTA */}
-                            <div className="mt-5 flex flex-col items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-6 text-center">
+                            <div className="mt-5 flex flex-col items-center gap-3 rounded-xl border border-sand/70 bg-white px-4 py-6 text-center">
                               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--color-accent-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="3" y="9" width="14" height="10" rx="2" />
                                 <path d="M7 9V6a3 3 0 0 1 6 0v3" />
                               </svg>
-                              <p className="text-xs leading-relaxed text-gray-500">
+                              <p className="text-xs leading-relaxed text-muted">
                                 {locale === "hu"
                                   ? "A részletes alskála-bontás Self Plus csomaggal érhető el."
                                   : "Detailed subscale breakdown is available with Self Plus."}
@@ -360,18 +360,18 @@ export const DimensionCard = memo(function DimensionCard({
                           <>
                         {/* Description */}
                         <div className="mt-6">
-                          <h3 className="text-sm font-semibold text-gray-900">
+                          <h3 className="text-sm font-semibold text-ink">
                             {t("dashboard.dimensionWhat", locale)}
                           </h3>
-                          <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                          <p className="mt-2 text-sm leading-relaxed text-ink-body">
                             {resolvedDescription}
                           </p>
                         </div>
 
-                        <div className="my-6 h-px bg-gray-100" />
+                        <div className="my-6 h-px bg-sand/50" />
 
                         {/* All insight levels */}
-                        <h3 className="text-sm font-semibold text-gray-900">
+                        <h3 className="text-sm font-semibold text-ink">
                           {t("dashboard.dimensionInterpretation", locale)}
                         </h3>
                         <div className="mt-4 flex flex-col gap-3">
@@ -382,14 +382,14 @@ export const DimensionCard = memo(function DimensionCard({
                                 key={l.key}
                                 className={`rounded-lg border p-3 transition ${
                                   isActive
-                                    ? "border-l-4 bg-gray-50"
-                                    : "border-gray-100 opacity-50"
+                                    ? "border-l-4 bg-surface-subtle"
+                                    : "border-sand/70 opacity-50"
                                 }`}
                                 style={isActive ? { borderLeftColor: color } : undefined}
                               >
                                 <p
                                   className={`text-xs font-semibold uppercase tracking-wider ${
-                                    isActive ? "text-gray-900" : "text-gray-400"
+                                    isActive ? "text-ink" : "text-muted"
                                   }`}
                                   style={isActive ? { color } : undefined}
                                 >
@@ -397,7 +397,7 @@ export const DimensionCard = memo(function DimensionCard({
                                 </p>
                                 <p
                                   className={`mt-1 text-sm ${
-                                    isActive ? "font-medium text-gray-700" : "text-gray-500"
+                                    isActive ? "font-medium text-ink-body" : "text-muted"
                                   }`}
                                 >
                                   {resolvedInsights[l.key]}
@@ -410,8 +410,8 @@ export const DimensionCard = memo(function DimensionCard({
                         {/* Facets / Aspects section */}
                         {hasSubScales && (
                           <>
-                            <div className="my-6 h-px bg-gray-100" />
-                            <h3 className="text-sm font-semibold text-gray-900">
+                            <div className="my-6 h-px bg-sand/50" />
+                            <h3 className="text-sm font-semibold text-ink">
                               {t(
                                 subScaleType === "facets"
                                   ? "dashboard.facetsTitle"
@@ -424,10 +424,10 @@ export const DimensionCard = memo(function DimensionCard({
                                   <div key={sub.code} className="flex items-center gap-3">
                                     <div className="min-w-0 flex-1">
                                       <div className="mb-1 flex items-center justify-between gap-2">
-                                        <p className="truncate text-xs font-medium text-gray-700">
+                                        <p className="truncate text-xs font-medium text-ink-body">
                                           {sub.label}
                                         </p>
-                                        <p className="shrink-0 text-xs font-semibold text-gray-500">
+                                        <p className="shrink-0 text-xs font-semibold text-muted">
                                           {sub.score}%
                                         </p>
                                       </div>
@@ -480,8 +480,8 @@ export const DimensionCard = memo(function DimensionCard({
                               {code}
                             </span>
                             <div>
-                              <p className="text-xs text-gray-400">{resolvedLabel}</p>
-                              <h2 className="text-base font-bold text-gray-900">
+                              <p className="text-xs text-muted">{resolvedLabel}</p>
+                              <h2 className="text-base font-bold text-ink">
                                 {t("dashboard.dimension.feedbackTitle", locale)}
                               </h2>
                             </div>
@@ -496,7 +496,7 @@ export const DimensionCard = memo(function DimensionCard({
                           <p className="mt-4 text-base font-semibold text-bronze-dark">
                             {t("dashboard.dimension.feedbackThankYou", locale)}
                           </p>
-                          <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-gray-100">
+                          <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-sand/50">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: "100%" }}
@@ -507,12 +507,12 @@ export const DimensionCard = memo(function DimensionCard({
                         </div>
                       ) : (
                         <>
-                          <p className="mb-4 text-sm text-gray-600">
+                          <p className="mb-4 text-sm text-ink-body">
                             {t("dashboard.dimension.feedbackPrompt", locale)}
                           </p>
 
                           {/* Preset tags */}
-                          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">
                             {t("dashboard.dimension.feedbackTagsLabel", locale)}
                           </p>
                           <div className="mb-5 flex flex-wrap gap-2">
@@ -524,7 +524,7 @@ export const DimensionCard = memo(function DimensionCard({
                                 className={`min-h-[36px] rounded-full border px-4 py-1.5 text-sm font-medium transition ${
                                   selectedTags.includes(tag)
                                     ? "border-transparent bg-gradient-to-r from-sage to-sage-deep text-white"
-                                    : "border-gray-200 bg-white text-gray-600 hover:border-bronze-edge hover:text-bronze"
+                                    : "border-sand bg-white text-ink-body hover:border-bronze-edge hover:text-bronze"
                                 }`}
                               >
                                 {tag}
@@ -533,7 +533,7 @@ export const DimensionCard = memo(function DimensionCard({
                           </div>
 
                           {/* Emoji rating */}
-                          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">
                             {t("dashboard.dimension.feedbackRatingLabel", locale)}
                           </p>
                           <div className="grid grid-cols-5 gap-2">
@@ -546,7 +546,7 @@ export const DimensionCard = memo(function DimensionCard({
                                 className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
                                   feedbackRating === item.value
                                     ? "border-transparent bg-gradient-to-r from-sage to-sage-deep"
-                                    : "border-gray-200 hover:border-bronze-edge"
+                                    : "border-sand hover:border-bronze-edge"
                                 }`}
                               >
                                 {item.emoji}
@@ -575,7 +575,7 @@ export const DimensionCard = memo(function DimensionCard({
                                   "dashboard.dimension.feedbackCommentPlaceholder",
                                   locale
                                 )}
-                                className="mt-2 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 focus:border-bronze-edge focus:outline-none"
+                                className="mt-2 w-full rounded-lg border border-sand bg-surface-subtle px-3 py-2 text-sm text-ink focus:border-bronze-edge focus:outline-none"
                               />
                             )}
                           </div>
@@ -585,7 +585,7 @@ export const DimensionCard = memo(function DimensionCard({
                             type="button"
                             onClick={handleSubmitFeedback}
                             disabled={feedbackRating === null || selectedTags.length === 0 || isSubmittingFeedback}
-                            className="mt-5 inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+                            className="mt-5 inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
                           >
                             {isSubmittingFeedback
                               ? t("dashboard.dimension.feedbackSubmitting", locale)
