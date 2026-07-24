@@ -74,3 +74,46 @@ A `leading-relaxed` dominancia mellett 8+ arbitrary érték (`[1.7]` 8× · `[1.
 ---
 
 *Megjegyzés: a fenti számok a 2026-07-24-i állapotot mérik (`consulting_cleanup` branch, a mai 22 commit után). A saját 07-22-es auditotok 263× `text-[10px]`-et mért — ma 422 van, tehát a kézi méretek a terv ellenére tovább szaporodnak; az adopciót valószínűleg csak codemod + szigorúbb lint (meglévő fájlokra is) fordítja meg.*
+
+
+---
+
+# Kiegészítés — élő oldalas UX-vizsgálat (Chrome, localhost:3000, 2026-07-24)
+
+Bejárt oldalak: csapat-vezérlő, Eredményeim (Eredmények + Munkastílus), blog-lista + cikkoldal, pricing, patterns, peer-feedback stepper. A hangsúly azon, hogy a tipográfia *használat közben* hogyan viselkedik.
+
+## Ami élőben kifejezetten jól működik
+
+- **A blogcikk olvasási tipográfiája a projekt legjobbja:** ~640px-es szedéstükör (~75–85 karakter/sor), 16–17px törzs, nyugodt sorköz, Fraunces H2-k, oldalsó tartalomjegyzék „még ~3 perc olvasás" jelzéssel, mentazöld pull-quote panel. Ez a mérce.
+- Az archetípus-sor („Elvhű rendszerépítő" — Fraunces italic bronz) élőben is erős tipográfiai szignatúra; a radar új 3 betűs tengelycímkéi (TÁR/TER…) olvashatók.
+- A metrika-kártyák (Fraunces érték + kapitális mikro-címke) ritmusa egységes a vezérlőn.
+
+## További leletek (11–18)
+
+### 🟡 11. Az app hosszú szövegei a blognál jóval rosszabb olvasási élményt adnak
+Az Eredményeim magyarázó blokkjai („Mit jelent ez rólad?", „Munkahelyi helyzetekben", munkastílus-szekciók) **13–14px-en, ~700px széles hasábban (~105–115 karakter/sor)** futnak — ugyanaz a tartalomtípus a blogon 16–17px / ~80 karakter. A termék legértékesebb szövege (a riport) kapja a legszűkebb tipográfiát. Javaslat: a riport-magyarázatokra `text-body` (15px) + `max-w-prose` (~65ch) hasáb.
+
+### 🟡 12. Sötét hero-metaadatok még mindig halványak (app-oldal)
+A results-hero „Felmérés: 2026. július 24." sora és a „LEGERŐSEBB:" címke kis méret + alacsony fehér-opacitás kombinációban fut — ugyanaz a minta, amit a landing paneleken már javítottunk (#7). Emelés `white/70`-re; a dátum mehetne a név mellé captionként.
+
+### 🟡 13. Eyebrow és státusz-badge összeolvad
+A team hero-ban „CSAPATNÉZET" (szekció-eyebrow) és közvetlenül mellette „CSAPATKÉP ELÉRHETŐ" (státusz-badge) azonos kapitális mikro-stílusban áll — egy sornak olvasható („csapatnézet csapatkép elérhető"). Ugyanez a minta a Munkastílus fülön: „Így jelenhetsz meg csapatban" cím + „BECSLÉS A SZEMÉLYISÉGPROFILBÓL" badge egy sorban. A két szerep váljon szét: a státusz-badge kapjon pont-előtagot/tone-hátteret, vagy kerüljön a sor másik végére.
+
+### 🟡 14. Hosszú magyar kifejezések széles ritkítású kapitálisban
+„CSAPATMINTÁZAT", „KOLLÉGAI VISSZAJELZÉS KÖR", „BECSLÉS A SZEMÉLYISÉGPROFILBÓL", „PSZICHOLÓGIAI BIZTONSÁG PULSE" — 0.14–0.2em tracking + uppercase 2–4 szavas összetett kifejezéseknél élőben láthatóan rontja a szóalak-felismerést (a magyar hosszú szavaknál ez érzékenyebb, mint angolban). Rövid címkére jó a label-stílus; 2+ szavas kifejezésnél kisebb tracking (~0.08em) vagy sentence case caption.
+
+### 🟢 15. Pull-quote panel kompozíciója billeg
+A blogcikk idézet-panelje (Fraunces italic, mentazöld háttér) alul ~60–70px üres sávot hagy — a szöveg a panel felső felébe tapad. Auto-magasság / szimmetrikus padding.
+
+### 🟢 16. Drop cap a magyar névelővel
+A cikk iniciáléja az „A" névelőt emeli ki („**A** SHRM 2026-os…") — magyarban a leváló egybetűs névelő-iniciálé kétes hatású, és csak az első szekció kapja. Vagy következetes iniciálé minden szekció-nyitó bekezdésre, vagy elhagyás.
+
+### 🟢 17. Szám-oszlopok proporcionális Fraunces számjegyekkel
+A facet-kártyák és accordion-fejlécek jobbra zárt értékei (49 · 53 · 58 · 62, 55%…) Fraunces/DM proporcionális számjegyekkel futnak — oszlopban enyhén egyenetlen. `tabular-nums` (a Tagok listán már bevezettük) az összes szám-oszlopra.
+
+### 🟢 18. Emoji-skála a visszajelzés-widgetben
+A „Visszajelzés az eredményről" kártya 5 fokozatú emoji-skálát használ (😕…🤩) — a #6-ban emoji-mentesített felületen ez az utolsó emoji-sziget, és platformonként másképp renderel. SVG arc-ikonok vagy számozott skála címkékkel; a letiltott „Tovább" gomb itt is nagyon halvány (ld. #8 disabled-minta).
+
+## Kiegészített javasolt sorrend
+
+A korábbi 1–6. lépés után: **7.** riport-szövegek olvasási hasábja (#11 — a legnagyobb érzékelt minőség-ugrás a felhasználónak), **8.** eyebrow/badge szétválasztás + hosszú címkék trackingje (#13, #14), **9.** apróságok (#12, #15–18).
