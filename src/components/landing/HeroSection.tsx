@@ -48,7 +48,7 @@ function SelfPanel() {
             {t("landing.selfPanelEyebrow", locale)}
           </p>
           {/* Minta-jelölés — a kártya illusztráció, ne tűnjön valós adatnak */}
-          <span className="rounded border border-white/25 px-1.5 py-[2px] text-[9px] uppercase tracking-wide text-white/70">
+          <span className="rounded border border-white/25 px-1.5 py-[2px] text-micro uppercase tracking-wide text-white/70">
             {t("landing.sampleBadge", locale)}
           </span>
         </div>
@@ -172,7 +172,7 @@ function TeamPanel() {
             <p className="mt-0.5 text-[11px] text-muted">{t("landing.teamPanelValidated", locale)}</p>
           </div>
           <div className="flex shrink-0 items-center gap-1.5">
-            <span className="rounded border border-sand px-1.5 py-[2px] text-[9px] uppercase tracking-wide text-muted">
+            <span className="rounded border border-sand px-1.5 py-[2px] text-micro uppercase tracking-wide text-muted">
               {t("landing.sampleBadge", locale)}
             </span>
             <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
