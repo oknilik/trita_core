@@ -29,7 +29,7 @@ export function HowItWorks({ mode }: { mode: SiteMode }) {
     <section className="px-7 py-12 md:py-20">
       <div className="mx-auto max-w-[1120px]">
         <div className="mb-8 text-center md:mb-16">
-          <h2 className="font-fraunces text-[clamp(28px,3.5vw,42px)] font-normal leading-[1.1] tracking-tight text-ink">
+          <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
             {mode === "self" ? (
               <>{t("landing.howSelfTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howSelfTitleEm", locale)}</em></>
             ) : (

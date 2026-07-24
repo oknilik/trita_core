@@ -332,8 +332,7 @@ export default async function BlogPostPage({
 
         {/* Title — a landing headline léptékével */}
         <h1
-          className="mb-3 font-fraunces font-normal tracking-tight text-ink"
-          style={{ fontSize: "clamp(28px, 4.5vw, 42px)", lineHeight: 1.12 }}
+          className="mb-3 font-fraunces text-fluid-title font-medium tracking-tight text-ink"
         >
           {post.title}
         </h1>

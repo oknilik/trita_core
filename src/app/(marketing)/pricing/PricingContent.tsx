@@ -26,7 +26,7 @@ export function PricingContent() {
         <p className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {t("pricing.heroEyebrow", locale)}
         </p>
-        <h1 className="mx-auto mt-3 max-w-2xl font-fraunces text-[clamp(30px,5vw,44px)] leading-[1.15] tracking-tight text-[var(--color-text-primary)]">
+        <h1 className="mx-auto mt-3 max-w-2xl font-fraunces text-fluid-title tracking-tight text-[var(--color-text-primary)]">
           {t("pricing.heroHeading", locale)}
           <em className="text-[var(--color-action-primary-bg)]">{t("pricing.heroHeadingEm", locale)}</em>
         </h1>

@@ -294,8 +294,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
 
             <motion.h1
               variants={fadeUp}
-              className="font-fraunces font-normal tracking-tight text-ink"
-              style={{ fontSize: "clamp(2.75rem, 8vw, 3.75rem)", lineHeight: 1.06 }}
+              className="font-fraunces text-fluid-display font-medium tracking-tight text-ink"
             >
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
               <em className="italic" style={{ color: accentColor }}>

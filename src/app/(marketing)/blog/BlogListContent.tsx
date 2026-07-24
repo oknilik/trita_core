@@ -126,11 +126,10 @@ export function BlogListContent({
             </span>
           </div>
           <h1
-            className="mb-4 font-fraunces font-normal tracking-tight text-ink"
-            style={{ fontSize: "clamp(28px, 5vw, 42px)", lineHeight: 1.1 }}
+            className="mb-4 font-fraunces text-fluid-title font-medium tracking-tight text-ink"
           >
             {t("blog.heroTitle", locale)}
-            <em className="not-italic italic text-[var(--color-accent-primary)]">
+            <em className="italic text-[var(--color-accent-primary)]">
               {t("blog.heroTitleEm", locale)}
             </em>
           </h1>
@@ -226,7 +225,7 @@ export function BlogListContent({
                         href={`/blog/${post.slug}`}
                         className="flex items-start gap-3 rounded-xl border border-sand bg-white px-4 py-3 transition-colors hover:border-[var(--color-surface-self-border)]"
                       >
-                        <span className="font-fraunces text-[22px] italic leading-none text-[var(--color-accent-primary)]">
+                        <span className="text-fluid-title font-fraunces text-[22px] italic leading-none text-[var(--color-accent-primary)]">
                           {i + 1}
                         </span>
                         <span>
