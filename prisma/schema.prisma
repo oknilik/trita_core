@@ -130,6 +130,7 @@ model UserProfile {
   teamRoleObservationsGiven TeamRoleObservation[] @relation("TeamRoleObservationRater")
   peerFeedbackGiven    PeerFeedbackItem[] @relation("PeerFeedbackFrom")
   peerFeedbackReceived PeerFeedbackItem[] @relation("PeerFeedbackTo")
+  feedbackRequests     FeedbackRequest[]  @relation("FeedbackRequestAsker")
 
   trustObservationsAbout TrustObservation[] @relation("TrustObservationAbout")
   trustObservationsGiven TrustObservation[] @relation("TrustObservationRater")
@@ -284,6 +285,7 @@ model Team {
   candidateInvites CandidateInvite[]
   teamRoleObservations TeamRoleObservation[]
   peerFeedbackItems    PeerFeedbackItem[]
+  feedbackRequests     FeedbackRequest[]
   trustObservations    TrustObservation[]
 
   @@index([ownerId])
@@ -533,6 +535,9 @@ model Campaign {
   // Lépés-ütemezés: a teljesített lépés után ennyi órával nyílik a
   // következő kérdőív (0 = azonnal, egymás után). Default: napi egy.
   stepIntervalHours Int @default(24)
+  // Peer feedback lépés módja: true = a feedforward-elemek anonim-aggregáltan
+  // jelennek meg a címzettnél (n>=3 küszöbbel); false = nevesített.
+  peerFeedbackAnonymous Boolean @default(false)
   status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
   createdBy   String
   createdAt   DateTime  @default(now())
@@ -729,8 +734,10 @@ model PeerFeedbackItem {
   kind       String   @default("appreciation")
   visibility String   @default("named")
   payload    Json
+  requestId  String?
   createdAt  DateTime @default(now())
 
+  request  FeedbackRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
   team     Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
   campaign Campaign?   @relation(fields: [campaignId], references: [id], onDelete: SetNull)
   from     UserProfile @relation("PeerFeedbackFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
@@ -739,6 +746,28 @@ model PeerFeedbackItem {
   @@index([teamId, toUserId, createdAt])
   @@index([fromUserId, createdAt])
   @@index([campaignId])
+  @@index([requestId])
+}
+
+// Visszajelzés-kérés (peer feedback F2): a címzett indítja, ő választ
+// témát/kört, és ő dönt az anonim-opcióról. A válaszok PeerFeedbackItem-ek
+// (kind: feedforward, requestId-vel). Terv: docs/product/peer-feedback-terv.md
+model FeedbackRequest {
+  id             String   @id @default(cuid())
+  teamId         String
+  askerId        String
+  topic          String
+  allowAnonymous Boolean  @default(false)
+  status         String   @default("open") // "open" | "closed"
+  audienceIds    Json     // string[] — a felkért csapattagok userProfile id-i
+  createdAt      DateTime @default(now())
+
+  team  Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  asker UserProfile @relation("FeedbackRequestAsker", fields: [askerId], references: [id], onDelete: Cascade)
+  items PeerFeedbackItem[]
+
+  @@index([teamId, status])
+  @@index([askerId, createdAt])
 }
 
 // Bizalmi háló megfigyelés (trust-kör) — egy rater egy csapattársról, egy
@@ -829,6 +858,8 @@ enum NotificationType {
   INQUIRY_RECEIVED
   CANDIDATE_COMPLETED
   PEER_KUDOS_RECEIVED
+  PEER_FEEDBACK_REQUESTED
+  PEER_FEEDBACK_RESPONSE
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).

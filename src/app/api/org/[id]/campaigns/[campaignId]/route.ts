@@ -15,18 +15,19 @@ const patchSchema = z.union([
   z.object({
     action: z.literal("edit_draft"),
     types: z
-      .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]))
+      .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
       .min(1)
-      .max(3)
+      .max(4)
       .optional(),
     teamId: z.string().min(1).nullable().optional(),
     stepIntervalHours: z.number().int().min(0).max(168).optional(),
+    peerFeedbackAnonymous: z.boolean().optional(),
     name: z.string().min(1).max(100).optional(),
     description: z.string().max(500).nullable().optional(),
   }),
 ]);
 
-const TEAM_LOCKED_STEPS = new Set(["TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]);
+const TEAM_LOCKED_STEPS = new Set(["TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]);
 
 const addParticipantsSchema = z.object({
   userIds: z.array(z.string().min(1)).min(1).max(50),
@@ -176,6 +177,9 @@ export async function PATCH(
         teamId: nextTeamId,
         ...(edit.stepIntervalHours !== undefined
           ? { stepIntervalHours: edit.stepIntervalHours }
+          : {}),
+        ...(edit.peerFeedbackAnonymous !== undefined
+          ? { peerFeedbackAnonymous: edit.peerFeedbackAnonymous }
           : {}),
         ...(edit.name ? { name: edit.name } : {}),
         ...(edit.description !== undefined ? { description: edit.description } : {}),

@@ -9,16 +9,17 @@ import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
 const createSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  type: z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]).default("OBSERVER_360"),
+  type: z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]).default("OBSERVER_360"),
   // Több-lépéses kampány: a kiválasztott mérések (kanonikus sorrendbe rendezzük).
   types: z
-    .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"]))
+    .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
     .min(1)
-    .max(3)
+    .max(4)
     .optional(),
   teamId: z.string().min(1).optional(),
   allowExternalObservers: z.boolean().optional().default(false),
   stepIntervalHours: z.number().int().min(0).max(168).optional().default(24),
+  peerFeedbackAnonymous: z.boolean().optional().default(false),
 });
 
 // GET /api/org/[id]/campaigns — list org campaigns
@@ -131,7 +132,8 @@ export async function POST(
         st === "TEAM_ROLE" ||
         st === "TEAM_ROLE_360" ||
         st === "TRUST_360" ||
-        st === "PSYCH_SAFETY",
+        st === "PSYCH_SAFETY" ||
+        st === "PEER_FEEDBACK",
     ) &&
     !body.data.teamId
   ) {
@@ -148,6 +150,7 @@ export async function POST(
       teamId: body.data.teamId,
       allowExternalObservers: body.data.allowExternalObservers,
       stepIntervalHours: body.data.stepIntervalHours,
+      peerFeedbackAnonymous: body.data.peerFeedbackAnonymous,
       createdBy: profile.id,
     },
     select: {

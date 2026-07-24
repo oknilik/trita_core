@@ -41,6 +41,7 @@ import {
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { TeamKudos } from "@/components/team/TeamKudos";
+import { TeamFeedbackRequests } from "@/components/team/TeamFeedbackRequests";
 import { ObserverApprovalCard } from "@/components/team/ObserverApprovalCard";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
@@ -520,6 +521,15 @@ export default async function TeamDetailPage({
         />
         {/* Peer feedback F1: kudos-kártya a tagok füle alatt */}
         <TeamKudos
+          teamId={teamId}
+          members={membersForTab.map((m) => ({
+            userId: m.userId,
+            displayName: m.displayName,
+          }))}
+          locale={locale}
+        />
+        {/* Peer feedback F2+F3: visszajelzés-kérések + kapott javaslatok */}
+        <TeamFeedbackRequests
           teamId={teamId}
           members={membersForTab.map((m) => ({
             userId: m.userId,

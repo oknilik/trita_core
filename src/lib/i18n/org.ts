@@ -431,7 +431,7 @@ export const orgTranslations = {
         hu: "Amíg a kampány piszkozat, a mérés-lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után a kampány összetétele rögzül.",
         en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
       },
-      editTypesLabel: { hu: "Mérések (max 3, sorrendjük kanonikus)", en: "Measurements (max 3, canonical order)" },
+      editTypesLabel: { hu: "Mérések (max 4, sorrendjük kanonikus)", en: "Measurements (max 4, canonical order)" },
       editTeamLabel: { hu: "Cél-csapat", en: "Target team" },
       editNoTeam: { hu: "Nincs csapat-célzás (egyénileg kiválasztott résztvevők)", en: "No team targeting (individually selected participants)" },
       editTeamNote: {
@@ -441,6 +441,16 @@ export const orgTranslations = {
       editSave: { hu: "Módosítások mentése", en: "Save changes" },
       editSaved: { hu: "Elmentve.", en: "Saved." },
       editFailed: { hu: "Mentés sikertelen — próbáld újra.", en: "Save failed — try again." },
+      peerFbStatsEyebrow: { hu: "// kollégai visszajelzés kör", en: "// peer feedback round" },
+      peerFbStatsTitle: { hu: "Részvétel", en: "Participation" },
+      peerFbStatsBody: {
+        hu: "{givers} tag küldött be, összesen {items} javaslat; {covered} címzettnél van meg a legalább 3 beküldős küszöb.",
+        en: "{givers} members submitted, {items} suggestions in total; {covered} recipients have reached the 3-sender threshold.",
+      },
+      peerFbStatsNote: {
+        hu: "A tartalmat a tanácsadói felület nem mutatja — a visszajelzés a tagok közti kommunikáció, itt csak a részvétel követhető.",
+        en: "Content is not shown on the consultant surface — feedback is member-to-member communication; only participation is tracked here.",
+      },
       editTeamRequired: {
         hu: "A kiválasztott mérésekhez cél-csapat kell (a szerep-, bizalmi és pulse-kör csapaton él).",
         en: "The selected measurements need a target team (role, trust and pulse rounds live on a team).",
@@ -1004,6 +1014,43 @@ export const orgTranslations = {
   },
 
   // ── Campaign Wizard ─────────────────────────────────────────────────────
+  peerFb: {
+    title: { hu: "Kollégai visszajelzés kör", en: "Peer feedback round" },
+    introNamed: {
+      hu: "Adj minden csapattársadnak egy rövid, jövő-irányú visszajelzést — és ha van, egy elismerést. A visszajelzések nevesítettek: a címzett látja, kitől jöttek.",
+      en: "Give each teammate a short, forward-looking piece of feedback — and, if you have one, an appreciation. Feedback is named: recipients see who it came from.",
+    },
+    introAnon: {
+      hu: "Adj minden csapattársadnak egy rövid, jövő-irányú visszajelzést. A javaslatok név nélkül, összesítve jutnak el a címzetthez (legalább 3 beküldőnél); az elismerések nevesítettek.",
+      en: "Give each teammate a short, forward-looking piece of feedback. Suggestions reach recipients anonymously and aggregated (with at least 3 senders); appreciations are named.",
+    },
+    alreadyDone: { hu: "{count} csapattársnak már beküldted.", en: "Already submitted for {count} teammates." },
+    appreciationLabel: { hu: "Elismerés", en: "Appreciation" },
+    appreciationPlaceholder: { hu: "Pl. „Köszönöm, hogy a demó előtt átnézted a prezimet.”", en: "E.g. \"Thanks for reviewing my deck before the demo.\"" },
+    continueLabel: { hu: "Folytasd, mert…", en: "Keep doing, because…" },
+    continuePlaceholder: { hu: "Egy konkrét viselkedés, ami működik — és miért.", en: "A specific behaviour that works — and why." },
+    tryLabel: { hu: "Jövőre próbáld…", en: "Next time, try…" },
+    tryPlaceholder: { hu: "Egy konkrét, jövő-irányú javaslat.", en: "One specific, forward-looking suggestion." },
+    optional: { hu: "(opcionális)", en: "(optional)" },
+    toneNudge: {
+      hu: "Tipp: a visszajelzés akkor hasznosul, ha konkrét helyzetről és viselkedésről szól — a „mindig/soha” és a személyre irányuló ítélet jellemzően védekezést vált ki.",
+      en: "Tip: feedback lands when it is about a specific situation and behaviour — \"always/never\" and person-level judgements typically trigger defensiveness.",
+    },
+    submit: { hu: "Beküldés", en: "Submit" },
+    fillAllHint: { hu: "Minden csapattársnál töltsd ki a két visszajelzés-mezőt.", en: "Fill in both feedback fields for every teammate." },
+    submitError: { hu: "A beküldés nem sikerült — próbáld újra.", en: "Submitting failed — try again." },
+    doneTitle: { hu: "Kész — köszönjük!", en: "Done — thank you!" },
+    doneBody: {
+      hu: "A visszajelzéseidet rögzítettük. Az elismerések azonnal megjelennek a címzetteknél; a javaslatok a kör szabályai szerint jutnak el hozzájuk.",
+      en: "Your feedback has been recorded. Appreciations appear immediately; suggestions reach recipients according to the round's rules.",
+    },
+    nonePendingTitle: { hu: "Nincs nyitott visszajelzés-köröd", en: "No open feedback round" },
+    nonePendingBody: {
+      hu: "Most nincs olyan aktív kampányod, ahol a kollégai visszajelzés kör lenne az aktuális lépés.",
+      en: "You have no active campaign where the peer feedback round is your current step.",
+    },
+    backToDashboard: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
+  },
   campaignWiz: {
     stepDetails: { hu: "Részletek", en: "Details" },
     stepMembers: { hu: "Tagok", en: "Members" },
@@ -1091,6 +1138,21 @@ export const orgTranslations = {
     typeTrustOut: {
       hu: "Eredmény: mért kapcsolati kép a dinamika-térképen (páronként összevonva), összekötő és beágyazatlan tagok jelzése",
       en: "Output: measured relationship view on the dynamics map (combined per pair), highlighting connectors and unembedded members",
+    },
+    typePeerFbName: { hu: "Kollégai visszajelzés kör", en: "Peer feedback round" },
+    typePeerFbDesc: {
+      hu: "A tagok strukturált lapon adnak egymásnak elismerést és egy jövő-irányú javaslatot — a kör zárja a mérés-sorozatot, amikor már felépült a bizalom.",
+      en: "Members give each other structured appreciation and one forward-looking suggestion — this round closes the series, once trust has been built.",
+    },
+    typePeerFbMeta: { hu: "tagonként ~1-2 perc / csapattárs · a sor végén nyílik", en: "~1-2 min per teammate · opens at the end of the sequence" },
+    typePeerFbOut: {
+      hu: "Kimenet: nevesített köszönetek + fejlesztő javaslatok (anonim-aggregált opcióval)",
+      en: "Output: named kudos + development suggestions (with anonymous-aggregated option)",
+    },
+    peerFbAnonLabel: { hu: "Anonim-aggregált javaslatok.", en: "Anonymous, aggregated suggestions." },
+    peerFbAnonHint: {
+      hu: "A fejlesztő javaslatok a címzettnél név nélkül, összekeverve jelennek meg, és csak legalább 3 beküldőnél. Az elismerések mindig nevesítettek.",
+      en: "Development suggestions appear to the recipient without names, shuffled, and only with at least 3 senders. Appreciations are always named.",
     },
     typePsychName: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
     typePsychDesc: {
@@ -1679,6 +1741,42 @@ export const orgTranslations = {
 
   // ── Team pages (/team, /team/[id]) ──────────────────────────────────────
   team: {
+    fb: {
+      eyebrow: { hu: "// visszajelzés", en: "// feedback" },
+      title: { hu: "Fejlesztő visszajelzés", en: "Development feedback" },
+      hint: {
+        hu: "Kérj visszajelzést a csapattársaidtól egy konkrét témában — te döntesz, ki és név nélkül válaszolhat-e. A válaszok csak neked jelennek meg.",
+        en: "Ask your teammates for feedback on a specific topic — you decide who can answer and whether anonymously. Responses are visible only to you.",
+      },
+      forMeLabel: { hu: "Rád váró kérések ({count})", en: "Requests waiting for you ({count})" },
+      asksAbout: { hu: "visszajelzést kér:", en: "asks for feedback on:" },
+      respond: { hu: "Válaszolok", en: "Respond" },
+      cancel: { hu: "Mégse", en: "Cancel" },
+      continueLabel: { hu: "Folytasd, mert…", en: "Keep doing, because…" },
+      tryLabel: { hu: "Jövőre próbáld…", en: "Next time, try…" },
+      commentLabel: { hu: "Szabad megjegyzés", en: "Free comment" },
+      optional: { hu: "(opcionális)", en: "(optional)" },
+      respondAnonymously: { hu: "Név nélkül válaszolok", en: "Respond anonymously" },
+      sendResponse: { hu: "Válasz küldése", en: "Send response" },
+      respondError: { hu: "A válasz küldése nem sikerült — próbáld újra.", en: "Sending the response failed — try again." },
+      newRequestTitle: { hu: "Kérek visszajelzést", en: "Request feedback" },
+      topicPlaceholder: { hu: "Miről kérsz visszajelzést? Pl. „Hasznosak a meetingjeim?”", en: "What do you want feedback on? E.g. \"Are my meetings useful?\"" },
+      allowAnonymous: { hu: "Név nélküli válaszokat is elfogadok", en: "I also accept anonymous responses" },
+      create: { hu: "Kérés elküldése", en: "Send request" },
+      createdOk: { hu: "Elküldve", en: "Sent" },
+      createError: { hu: "A kérés létrehozása nem sikerült.", en: "Creating the request failed." },
+      mineLabel: { hu: "Kéréseim és a válaszok", en: "My requests and responses" },
+      requestMeta: { hu: "{count}/{total} válasz érkezett", en: "{count}/{total} responses received" },
+      anonBadge: { hu: "név nélküli válaszok engedélyezve", en: "anonymous responses allowed" },
+      continueShort: { hu: "Folytasd", en: "Keep" },
+      tryShort: { hu: "Próbáld", en: "Try" },
+      anonymousResponder: { hu: "névtelen válaszadó", en: "anonymous responder" },
+      suggestionsLabel: { hu: "Kampány-körből kapott javaslataid", en: "Suggestions from campaign rounds" },
+      pendingAnonymous: {
+        hu: "{count} név nélküli javaslat vár még — legalább 3 beküldőnél jelenik meg, összesítve.",
+        en: "{count} anonymous suggestions pending — shown aggregated once there are at least 3 senders.",
+      },
+    },
     kudos: {
       eyebrow: { hu: "// köszönet", en: "// kudos" },
       title: { hu: "Köszönetek", en: "Kudos" },

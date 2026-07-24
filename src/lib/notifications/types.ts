@@ -81,5 +81,7 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   OBSERVER_INVITE_DECLINED:    { titleKey: "notifications.observerInviteDeclined.title",     bodyKey: "notifications.observerInviteDeclined.body",     category: "observer",    defaultPriority: "normal" },
   INQUIRY_RECEIVED:            { titleKey: "notifications.inquiryReceived.title",            bodyKey: "notifications.inquiryReceived.body",            category: "system",      defaultPriority: "high"   },
   PEER_KUDOS_RECEIVED:         { titleKey: "notifications.peerKudosReceived.title",           bodyKey: "notifications.peerKudosReceived.body",          category: "org",         defaultPriority: "normal" },
+  PEER_FEEDBACK_REQUESTED:     { titleKey: "notifications.peerFeedbackRequested.title",       bodyKey: "notifications.peerFeedbackRequested.body",      category: "org",         defaultPriority: "normal" },
+  PEER_FEEDBACK_RESPONSE:      { titleKey: "notifications.peerFeedbackResponse.title",        bodyKey: "notifications.peerFeedbackResponse.body",       category: "org",         defaultPriority: "normal" },
   CANDIDATE_COMPLETED:         { titleKey: "notifications.candidateCompleted.title",         bodyKey: "notifications.candidateCompleted.body",         category: "org",         defaultPriority: "normal" },
 };

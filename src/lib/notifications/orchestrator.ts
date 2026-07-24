@@ -455,6 +455,55 @@ export async function handlePeerKudosReceived(params: {
   ]);
 }
 
+/** Visszajelzés-kérés: a felkért csapattagok kapnak értesítést. */
+export async function handlePeerFeedbackRequested(params: {
+  requestId: string;
+  teamId: string;
+  askerName: string;
+  topic: string;
+  audienceIds: string[];
+}) {
+  const meta = NOTIFICATION_TYPE_META.PEER_FEEDBACK_REQUESTED;
+  await persistNotificationBatch(
+    params.audienceIds.map((userId) => ({
+      userId,
+      type: "PEER_FEEDBACK_REQUESTED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { name: params.askerName, topic: params.topic },
+      link: `/team/${params.teamId}?tab=members`,
+      sourceType: "peer_feedback" as const,
+      sourceId: params.requestId,
+      dedupeKey: `PEER_FEEDBACK_REQUESTED:${params.requestId}:${userId}`,
+    })),
+  );
+}
+
+/** Válasz érkezett a visszajelzés-kérésre — a szöveg nem nevesít
+ * (anonim válasznál a feladó kiléte az értesítésből sem derülhet ki). */
+export async function handlePeerFeedbackResponse(params: {
+  itemId: string;
+  requestId: string;
+  askerId: string;
+  teamId: string;
+  teamName: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.PEER_FEEDBACK_RESPONSE;
+  await persistNotificationBatch([
+    {
+      userId: params.askerId,
+      type: "PEER_FEEDBACK_RESPONSE" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { team: params.teamName },
+      link: `/team/${params.teamId}?tab=members`,
+      sourceType: "peer_feedback" as const,
+      sourceId: params.itemId,
+      dedupeKey: `PEER_FEEDBACK_RESPONSE:${params.itemId}`,
+    },
+  ]);
+}
+
 export async function handleInquiryReceived(params: {
   inquiryId: string;
   senderName: string;

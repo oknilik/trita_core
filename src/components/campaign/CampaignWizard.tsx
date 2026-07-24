@@ -34,7 +34,8 @@ type CampaignType =
   | "TEAM_ROLE"
   | "TEAM_ROLE_360"
   | "TRUST_360"
-  | "PSYCH_SAFETY";
+  | "PSYCH_SAFETY"
+  | "PEER_FEEDBACK";
 
 // Kanonikus lépés-sorrend: személyiség → szerepek → reláció → biztonság.
 const STEP_ORDER: CampaignType[] = [
@@ -43,6 +44,7 @@ const STEP_ORDER: CampaignType[] = [
   "TEAM_ROLE_360",
   "TRUST_360",
   "PSYCH_SAFETY",
+  "PEER_FEEDBACK",
 ];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
@@ -51,6 +53,7 @@ const TYPE_NAME_KEYS: Record<CampaignType, string> = {
   TEAM_ROLE_360: "campaignWiz.typeRole360Name",
   TRUST_360: "campaignWiz.typeTrustName",
   PSYCH_SAFETY: "campaignWiz.typePsychName",
+  PEER_FEEDBACK: "campaignWiz.typePeerFbName",
 };
 
 // A mérés-katalógus: mit mér, mennyi idő, mit kapsz belőle.
@@ -97,6 +100,13 @@ const TYPE_CARDS: Array<{
     metaKey: "campaignWiz.typePsychMeta",
     outKey: "campaignWiz.typePsychOut",
   },
+  {
+    type: "PEER_FEEDBACK",
+    nameKey: "campaignWiz.typePeerFbName",
+    descKey: "campaignWiz.typePeerFbDesc",
+    metaKey: "campaignWiz.typePeerFbMeta",
+    outKey: "campaignWiz.typePeerFbOut",
+  },
 ];
 
 export function CampaignWizard({
@@ -120,6 +130,8 @@ export function CampaignWizard({
   const [targetTeamId, setTargetTeamId] = useState<string | null>(preselectedTeamId);
   // Külső observer-meghívók jóváhagyás nélkül mehetnek-e ebben a kampányban.
   const [allowExternalObservers, setAllowExternalObservers] = useState(false);
+  // Peer feedback kör: a feedforward-elemek anonim-aggregált módban menjenek-e.
+  const [peerFeedbackAnonymous, setPeerFeedbackAnonymous] = useState(false);
   // Lépés-ütem: a teljesített kérdőív után hány órával nyílik a következő.
   const [stepIntervalHours, setStepIntervalHours] = useState(24);
   // Azonnali aktiválás a létrehozás után (DRAFT→ACTIVE visszafordíthatatlan!)
@@ -298,7 +310,8 @@ export function CampaignWizard({
       tp === "TEAM_ROLE" ||
       tp === "TEAM_ROLE_360" ||
       tp === "TRUST_360" ||
-      tp === "PSYCH_SAFETY",
+      tp === "PSYCH_SAFETY" ||
+      tp === "PEER_FEEDBACK",
   );
   const canProceedTargeting = isTeamLocked ? targetTeamId !== null : true;
 
@@ -480,6 +493,22 @@ export function CampaignWizard({
                   ))}
                 </div>
               </div>
+            ) : null}
+            {chosenSteps.includes("PEER_FEEDBACK") ? (
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
+                <input
+                  type="checkbox"
+                  checked={peerFeedbackAnonymous}
+                  onChange={(e) => setPeerFeedbackAnonymous(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
+                />
+                <span className="text-[13px] leading-relaxed text-ink-body">
+                  <span className="font-semibold text-ink">
+                    {t("campaignWiz.peerFbAnonLabel", locale)}
+                  </span>{" "}
+                  {t("campaignWiz.peerFbAnonHint", locale)}
+                </span>
+              </label>
             ) : null}
             {chosenSteps.includes("OBSERVER_360") ? (
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">

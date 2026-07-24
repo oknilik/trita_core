@@ -15,7 +15,8 @@ type CampaignType =
   | "TEAM_ROLE"
   | "TEAM_ROLE_360"
   | "TRUST_360"
-  | "PSYCH_SAFETY";
+  | "PSYCH_SAFETY"
+  | "PEER_FEEDBACK";
 
 const STEP_ORDER: CampaignType[] = [
   "OBSERVER_360",
@@ -23,6 +24,7 @@ const STEP_ORDER: CampaignType[] = [
   "TEAM_ROLE_360",
   "TRUST_360",
   "PSYCH_SAFETY",
+  "PEER_FEEDBACK",
 ];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
@@ -31,6 +33,7 @@ const TYPE_NAME_KEYS: Record<CampaignType, string> = {
   TEAM_ROLE_360: "campaignWiz.typeRole360Name",
   TRUST_360: "campaignWiz.typeTrustName",
   PSYCH_SAFETY: "campaignWiz.typePsychName",
+  PEER_FEEDBACK: "campaignWiz.typePeerFbName",
 };
 
 const TEAM_LOCKED = new Set<CampaignType>([
@@ -38,6 +41,7 @@ const TEAM_LOCKED = new Set<CampaignType>([
   "TEAM_ROLE_360",
   "TRUST_360",
   "PSYCH_SAFETY",
+  "PEER_FEEDBACK",
 ]);
 
 export function DraftCampaignEditor({
@@ -67,14 +71,14 @@ export function DraftCampaignEditor({
   const chosenSteps = STEP_ORDER.filter((tp) => selected.has(tp));
   const needsTeam = chosenSteps.some((tp) => TEAM_LOCKED.has(tp));
   const teamMissing = needsTeam && !teamId;
-  // Max 3 mérés / kampány (a create-séma limitje).
-  const atLimit = chosenSteps.length >= 3;
+  // Max 4 mérés / kampány (a create-séma limitje).
+  const atLimit = chosenSteps.length >= 4;
 
   const toggleType = (tp: CampaignType) => {
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(tp)) next.delete(tp);
-      else if (next.size < 3) next.add(tp);
+      else if (next.size < 4) next.add(tp);
       return next;
     });
     setNotice(null);

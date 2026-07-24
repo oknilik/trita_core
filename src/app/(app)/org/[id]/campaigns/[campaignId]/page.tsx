@@ -783,6 +783,47 @@ export default async function CampaignDetailPage({
           ) : null}
         </section>
 
+        {/* Peer feedback kör — részvételi statisztika (F4, tartalom nélkül) */}
+        {(campaign.steps.length > 0 ? campaign.steps : [campaign.type]).includes(
+          "PEER_FEEDBACK",
+        ) &&
+          (await (async () => {
+            const [givers, receivedCounts] = await Promise.all([
+              prisma.peerFeedbackItem.groupBy({
+                by: ["fromUserId"],
+                where: { campaignId: campaign.id, kind: "feedforward" },
+                _count: { _all: true },
+              }),
+              prisma.peerFeedbackItem.groupBy({
+                by: ["toUserId"],
+                where: { campaignId: campaign.id, kind: "feedforward" },
+                _count: { _all: true },
+              }),
+            ]);
+            const totalItems = givers.reduce((sum, g) => sum + g._count._all, 0);
+            const atLeastThree = receivedCounts.filter((r) => r._count._all >= 3).length;
+            return (
+              <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                  {t("org.campaign.peerFbStatsEyebrow", locale)}
+                </p>
+                <h2 className="mb-3 text-sm font-semibold text-ink">
+                  {t("org.campaign.peerFbStatsTitle", locale)}
+                </h2>
+                <p className="text-sm text-ink-body">
+                  {tf("org.campaign.peerFbStatsBody", locale, {
+                    givers: givers.length,
+                    items: totalItems,
+                    covered: atLeastThree,
+                  })}
+                </p>
+                <p className="mt-2 text-xs text-muted">
+                  {t("org.campaign.peerFbStatsNote", locale)}
+                </p>
+              </section>
+            );
+          })())}
+
         {/* DRAFT-szerkesztő: mérések + célzás + ütem, aktiválás előtt */}
         {canManageCampaign && campaign.status === "DRAFT" && (
           <DraftCampaignEditor

@@ -14,6 +14,7 @@ export const CAMPAIGN_STEP_ORDER = [
   "TEAM_ROLE_360",
   "TRUST_360",
   "PSYCH_SAFETY",
+  "PEER_FEEDBACK",
 ] as const;
 
 export type CampaignStepType = (typeof CAMPAIGN_STEP_ORDER)[number];
@@ -24,6 +25,7 @@ export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: st
   TEAM_ROLE_360: { hu: "Csapattársak szerep-visszajelzése", en: "Team role peer feedback" },
   TRUST_360: { hu: "Bizalmi háló kör", en: "Trust network round" },
   PSYCH_SAFETY: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
+  PEER_FEEDBACK: { hu: "Kollégai visszajelzés kör", en: "Peer feedback round" },
 };
 
 /** Az adott lépés kitöltő-felülete (értesítés-link és banner-CTA). */
@@ -33,6 +35,7 @@ export const CAMPAIGN_STEP_LINKS: Record<CampaignStepType, string> = {
   TEAM_ROLE_360: "/assessment/team-roles/peers",
   TRUST_360: "/assessment/trust",
   PSYCH_SAFETY: "/assessment/psych-safety",
+  PEER_FEEDBACK: "/assessment/peer-feedback",
 };
 
 export function isCampaignStepType(value: string): value is CampaignStepType {

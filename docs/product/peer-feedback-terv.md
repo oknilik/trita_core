@@ -94,6 +94,11 @@
 
 ## 4. Ütemezés-javaslat (fázisok)
 
+> **Állapot (2026-07-24 este): F1–F4 IMPLEMENTÁLVA** — kudos + kérés-flow +
+> PEER_FEEDBACK kampány-lépés (anonim-aggregált opcióval, max lépés 3→4) +
+> részvételi statisztika és tone-nudge. Hátravan: prisma migrate a gépen,
+> kézi átkattintás dev-en, éles pilot-próba tanácsadói kísérettel.
+
 | Fázis | Mit | Becslés | Mikor |
 |---|---|---|---|
 | F1 | Kudos (nevesített, team-oldalról, értesítéssel) | S–M | pilot előtt belefér — a pilotban normaépítő |

@@ -1,5 +1,13 @@
 export const notificationTranslations = {
   notifications: {
+    peerFeedbackRequested: {
+      title: { hu: "Visszajelzést kérnek tőled", en: "Feedback requested from you" },
+      body: { hu: "{name} visszajelzést kér tőled: „{topic}”. Pár percet vesz igénybe.", en: "{name} is asking for your feedback: \"{topic}\". It only takes a few minutes." },
+    },
+    peerFeedbackResponse: {
+      title: { hu: "Válasz érkezett a kérésedre", en: "A response to your request arrived" },
+      body: { hu: "Új válasz érkezett a visszajelzés-kérésedre a(z) {team} csapatban.", en: "A new response arrived to your feedback request in the {team} team." },
+    },
     peerKudosReceived: {
       title: { hu: "Köszönetet kaptál", en: "You received kudos" },
       body: { hu: "{name} köszönetet küldött neked a(z) {team} csapatban.", en: "{name} sent you kudos in the {team} team." },
