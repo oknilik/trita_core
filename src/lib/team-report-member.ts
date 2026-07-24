@@ -10,6 +10,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 import type { SerializedTeamReport } from "@/lib/team-report";
+import { withHuArticle } from "@/lib/hu-grammar";
 import {
   TEAM_ROLES,
   getTopRoles,
@@ -163,7 +164,7 @@ export function buildMemberReportViewModel(
   if (primaryRole && roleFit === "rare") {
     tips.push(
       loc === "hu"
-        ? `A csapatban a(z) ${primaryRole.label} szerep ritka — rád ebben különösen számítanak, vállald fel tudatosan.`
+        ? `A csapatban ${withHuArticle(primaryRole.label)} szerep ritka — rád ebben különösen számítanak, vállald fel tudatosan.`
         : `The ${primaryRole.label} role is rare in this team — they especially rely on you here; own it deliberately.`,
     );
   } else if (primaryRole && roleFit === "shared") {

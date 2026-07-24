@@ -1,4 +1,5 @@
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
+import { withHuArticle } from "@/lib/hu-grammar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -108,7 +109,7 @@ export default async function ManagerCockpitPage() {
     nextStep = {
       title: isHu ? "Feedback kör nyomon követése" : "Track feedback round",
       description: isHu
-        ? `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer visszajelzés érkezett a(z) ${teamWithCampaign.teamName} csapatban.`
+        ? `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer visszajelzés érkezett ${withHuArticle(teamWithCampaign.teamName)} csapatban.`
         : `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer responses received in ${teamWithCampaign.teamName}.`,
       primary: {
         label: isHu ? "Kör megtekintése" : "View round",

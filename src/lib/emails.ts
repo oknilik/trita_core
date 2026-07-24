@@ -1,4 +1,5 @@
 import { resend, EMAIL_FROM } from "./resend";
+import { withHuArticle } from "@/lib/hu-grammar";
 import {
   buildEmailLayout,
   escapeHtml,
@@ -868,8 +869,8 @@ export async function sendMagicLinkEmail(params: {
 
 const teamInviteTranslations = {
   hu: {
-    subject: (teamName: string) => `Meghívtak a(z) ${teamName} csapatba – Trita`,
-    heading: (teamName: string) => `Meghívtak a(z) ${teamName} csapatba`,
+    subject: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba – Trita`,
+    heading: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba`,
     body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadunk!",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
@@ -1018,8 +1019,8 @@ export async function sendTeamInviteEmail(params: {
 
 const orgInviteTranslations = {
   hu: {
-    subject: (orgName: string) => `Meghívtak a(z) ${orgName} szervezetbe – Trita`,
-    heading: (orgName: string) => `Meghívtak a(z) ${orgName} szervezetbe`,
+    subject: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe – Trita`,
+    heading: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe`,
     body: "Regisztrálj a Tritára, és automatikusan csatlakozol a szervezethez. Kitöltheted a személyiségtesztet, és láthatod, hogyan illesz a csapatba.",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
