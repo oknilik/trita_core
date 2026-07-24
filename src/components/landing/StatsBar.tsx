@@ -30,7 +30,7 @@ export function StatsBar({ mode }: { mode: SiteMode }) {
                 {s.value}
                 {s.suffix && <span style={{ color: "var(--color-accent-primary-soft)" }}>{s.suffix}</span>}
               </div>
-              <div className="mt-1 text-xs text-white/40">{s.label}</div>
+              <div className="mt-1 text-xs text-white/70">{s.label}</div>
             </div>
           ))}
         </div>

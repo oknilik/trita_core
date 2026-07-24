@@ -43,21 +43,21 @@ function SelfPanel() {
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
-        <p className="text-[10px] uppercase tracking-[2px] text-white/25">
+        <p className="text-[10px] uppercase tracking-[2px] text-white/70">
           {t("landing.selfPanelEyebrow", locale)}
         </p>
-        <p className="mt-1.5 font-fraunces text-[15px] text-white/40">
+        <p className="mt-1.5 font-fraunces text-[15px] text-white/80">
           {t("landing.selfPanelName", locale)}
         </p>
         <div className="mt-0.5 flex items-center gap-2.5">
           <p className="font-fraunces text-[22px] font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
-          <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/45">
+          <span className="rounded-md bg-white/15 px-2 py-0.5 text-[10px] font-medium text-white/85">
             Top 25%
           </span>
         </div>
-        <p className="mt-2 max-w-[360px] text-[11px] leading-[1.55] text-white/30">
+        <p className="mt-2 max-w-[360px] text-[11px] leading-[1.55] text-white/75">
           {t("landing.selfPanelInsight", locale)}
         </p>
       </div>
