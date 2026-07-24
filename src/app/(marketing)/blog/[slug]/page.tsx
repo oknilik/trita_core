@@ -446,7 +446,7 @@ export default async function BlogPostPage({
                       ))}
                     </div>
                   )}
-                  <h3 className="mb-1 font-fraunces text-body leading-[1.25] text-ink">
+                  <h3 className="mb-1 font-fraunces text-body leading-tight text-ink">
                     {rel.title}
                   </h3>
                   <span className="text-micro text-[var(--color-text-muted)]">

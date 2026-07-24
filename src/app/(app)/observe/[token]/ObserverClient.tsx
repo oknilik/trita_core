@@ -754,7 +754,7 @@ export function ObserverClient({
                     <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
                     {t("assessment.journeyMilestone", locale)}
                   </div>
-                  <h2 className="mb-3 font-fraunces text-[24px] leading-[1.25] text-[var(--color-text-primary)] lg:text-[26px]">
+                  <h2 className="mb-3 font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] lg:text-[26px]">
                     {t(
                       checkpoint === 25 ? "assessment.journeyMilestone25"
                       : checkpoint === 50 ? "assessment.journeyMilestone50"

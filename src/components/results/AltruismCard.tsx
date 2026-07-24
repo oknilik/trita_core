@@ -49,7 +49,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
             {value}%
           </span>
         </div>
-        <p className="mt-2.5 text-caption leading-[1.7] text-[var(--color-text-secondary)]">{description}</p>
+        <p className="mt-2.5 max-w-prose text-body text-[var(--color-text-secondary)]">{description}</p>
       </div>
     </div>
   );

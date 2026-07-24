@@ -34,7 +34,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
           <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
             {t("results.howYouWorkMain", locale)}
           </p>
-          <p className="text-caption leading-[1.7] text-[var(--color-accent-self-deep)]">
+          <p className="max-w-prose text-body text-[var(--color-accent-self-deep)]">
             {mainPattern}
           </p>
         </div>
@@ -44,7 +44,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
             <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
               {t("results.howYouWorkWatch", locale)}
             </p>
-            <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
+            <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
               {watchArea}
             </p>
           </div>
@@ -55,7 +55,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
             <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
               {t("results.howYouWorkContext", locale)}
             </p>
-            <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
+            <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
               {context}
             </p>
           </div>

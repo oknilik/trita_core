@@ -105,7 +105,7 @@ function AccordionItem({
               <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                 {t("content.accPersonal", locale)}
               </p>
-              <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
+              <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
                 {insight}
               </p>
 
@@ -116,7 +116,7 @@ function AccordionItem({
                   <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accWorkplace", locale)}
                   </p>
-                  <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
+                  <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
                     {description}
                   </p>
                 </>

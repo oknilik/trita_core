@@ -698,7 +698,7 @@ export function AssessmentClient({
                   </div>
 
                   {/* Title */}
-                  <h2 className="mb-3 font-fraunces text-[24px] leading-[1.25] text-[var(--color-text-primary)] lg:text-[26px]">
+                  <h2 className="mb-3 font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] lg:text-[26px]">
                     {t(
                       checkpoint === 25 ? 'assessment.journeyMilestone25'
                       : checkpoint === 50 ? 'assessment.journeyMilestone50'

@@ -220,7 +220,7 @@ export default async function SharedProfilePage({
                   </div>
                   <span className="font-fraunces text-base" style={{ color: tierColor }}>{dim.score}%</span>
                 </div>
-                <p className="text-caption font-medium leading-[1.7] text-[var(--color-text-primary)]">{dim.insight}</p>
+                <p className="text-caption font-medium leading-relaxed text-[var(--color-text-primary)]">{dim.insight}</p>
               </div>
             );
           })}

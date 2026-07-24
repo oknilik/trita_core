@@ -26,12 +26,12 @@ export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: Key
         {paragraphs.map((para, i) => (
           <div key={i} className="flex items-start gap-3">
             <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-            <p className="text-caption leading-[1.7] text-white/[0.55]">{para}</p>
+            <p className="max-w-prose text-body text-white/[0.72]">{para}</p>
           </div>
         ))}
       </div>
       {closingText && (
-        <p className="mt-4 border-t border-white/[0.06] pt-3.5 font-fraunces text-sm italic leading-relaxed text-white/[0.35]">
+        <p className="mt-4 border-t border-white/[0.06] pt-3.5 font-fraunces text-sm italic leading-relaxed text-white/[0.6]">
           {closingText}
         </p>
       )}

@@ -256,7 +256,7 @@ export function BlogListContent({
                       </div>
                       <div className="p-5">
                         <TagRow tags={post.tags} />
-                        <h3 className="mb-1.5 font-fraunces text-lg leading-[1.25] tracking-tight text-ink">
+                        <h3 className="mb-1.5 font-fraunces text-lg leading-tight tracking-tight text-ink">
                           {post.title}
                         </h3>
                         <p className="mb-2.5 text-caption leading-relaxed text-ink-body">
@@ -286,7 +286,7 @@ export function BlogListContent({
                   </span>
                   <span className="min-w-0 flex-1">
                     <TagRow tags={post.tags} />
-                    <h2 className="mb-1.5 font-fraunces text-xl leading-[1.25] tracking-tight text-ink">
+                    <h2 className="mb-1.5 font-fraunces text-xl leading-tight tracking-tight text-ink">
                       {post.title}
                     </h2>
                     <p className="max-w-[640px] text-sm leading-relaxed text-ink-body">

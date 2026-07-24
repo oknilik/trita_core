@@ -79,7 +79,7 @@ export function ProfileHero({
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
         SELF_PAYWALL_ENABLED ? (
-          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
+          <p className="text-micro uppercase tracking-widest text-white/[0.65]">
             {t("results.heroEyebrow", locale)}
           </p>
         ) : undefined
@@ -118,7 +118,7 @@ export function ProfileHero({
         </div>
       )}
       meta={(
-        <p className="text-[11px] text-white/[0.25]">
+        <p className="text-[11px] text-white/[0.65]">
           {t("results.heroAssessment", locale)} {completedAt}
         </p>
       )}
@@ -129,27 +129,27 @@ export function ProfileHero({
               {personalityType}
             </span>
             {percentile ? (
-              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-micro text-white/[0.45]">
+              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-micro text-white/[0.8]">
                 {percentile}
               </span>
             ) : null}
           </div>
           {percentile ? (
-            <p className="mt-1 text-right text-micro text-white/[0.28]">
+            <p className="mt-1 text-right text-micro text-white/[0.6]">
               {t("results.percentileNote", locale)}
             </p>
           ) : null}
         </div>
       )}
       summary={insight}
-      summaryClassName="max-w-[480px] text-white/[0.42]"
+      summaryClassName="max-w-[480px] text-white/[0.75]"
       chips={(
         <>
           {(topDimensions.length > 0 || watchDimensions.length > 0) ? (
             <div className="flex flex-wrap items-center gap-2">
               {topDimensions.length > 0 ? (
                 <>
-                  <span className="text-micro uppercase tracking-wide text-white/[0.25]">
+                  <span className="text-micro uppercase tracking-wide text-white/[0.65]">
                     {t("content.heroTopDims", locale)}:
                   </span>
                   {topDimensions.map((d) => (
@@ -165,7 +165,7 @@ export function ProfileHero({
               ) : null}
               {watchDimensions.length > 0 ? (
                 <>
-                  <span className="ml-2 text-micro uppercase tracking-wide text-white/[0.25]">
+                  <span className="ml-2 text-micro uppercase tracking-wide text-white/[0.65]">
                     {t("content.heroWatchDims", locale)}:
                   </span>
                   {watchDimensions.map((d) => (
@@ -190,7 +190,7 @@ export function ProfileHero({
             onClick={onShare}
             disabled={shareLoading}
             variant="ghost"
-            className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-white/[0.55] hover:bg-white/[0.12] hover:text-white/70"
+            className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-white/[0.75] hover:bg-white/[0.12] hover:text-white"
           >
             <span className="inline-flex items-center gap-2">
               <ShareIcon />
