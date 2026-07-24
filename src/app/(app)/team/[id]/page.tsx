@@ -40,6 +40,7 @@ import {
 } from "@/lib/policy-service";
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
+import { TeamKudos } from "@/components/team/TeamKudos";
 import { ObserverApprovalCard } from "@/components/team/ObserverApprovalCard";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import type { DynamicsEdge, IntelligenceMember } from "@/components/team/TeamIntelligence";
@@ -516,6 +517,15 @@ export default async function TeamDetailPage({
           isHu={isHu}
           locale={locale}
           dateLocale={isHu ? "hu-HU" : "en-US"}
+        />
+        {/* Peer feedback F1: kudos-kártya a tagok füle alatt */}
+        <TeamKudos
+          teamId={teamId}
+          members={membersForTab.map((m) => ({
+            userId: m.userId,
+            displayName: m.displayName,
+          }))}
+          locale={locale}
         />
       </PlatformPageShell>
     );

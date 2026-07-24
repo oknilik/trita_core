@@ -29,6 +29,7 @@ export type NotificationSourceType =
   | "stripe_subscription"
   | "subscription_trial"
   | "inquiry"
+  | "peer_feedback"
   | "candidate_invite";
 
 // ── Notification intent (orchestrator output → repository input) ────────────
@@ -79,5 +80,6 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   OBSERVER_INVITE_APPROVED:    { titleKey: "notifications.observerInviteApproved.title",     bodyKey: "notifications.observerInviteApproved.body",     category: "observer",    defaultPriority: "normal" },
   OBSERVER_INVITE_DECLINED:    { titleKey: "notifications.observerInviteDeclined.title",     bodyKey: "notifications.observerInviteDeclined.body",     category: "observer",    defaultPriority: "normal" },
   INQUIRY_RECEIVED:            { titleKey: "notifications.inquiryReceived.title",            bodyKey: "notifications.inquiryReceived.body",            category: "system",      defaultPriority: "high"   },
+  PEER_KUDOS_RECEIVED:         { titleKey: "notifications.peerKudosReceived.title",           bodyKey: "notifications.peerKudosReceived.body",          category: "org",         defaultPriority: "normal" },
   CANDIDATE_COMPLETED:         { titleKey: "notifications.candidateCompleted.title",         bodyKey: "notifications.candidateCompleted.body",         category: "org",         defaultPriority: "normal" },
 };

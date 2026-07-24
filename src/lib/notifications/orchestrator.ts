@@ -431,6 +431,30 @@ export async function handleObserverInviteDecision(params: {
  * Új kérdés/érdeklődés érkezett (contact form). Címzettek: a platform-adminok,
  * és — ha a kérdés szervezethez kötött — az org tanácsadói (ORG_CONSULTANT).
  */
+/** Kudos érkezett: a címzett kap in-app értesítést (a feladó nevével). */
+export async function handlePeerKudosReceived(params: {
+  itemId: string;
+  toUserId: string;
+  fromName: string;
+  teamId: string;
+  teamName: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.PEER_KUDOS_RECEIVED;
+  await persistNotificationBatch([
+    {
+      userId: params.toUserId,
+      type: "PEER_KUDOS_RECEIVED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { name: params.fromName, team: params.teamName },
+      link: `/team/${params.teamId}?tab=members`,
+      sourceType: "peer_feedback" as const,
+      sourceId: params.itemId,
+      dedupeKey: `PEER_KUDOS_RECEIVED:${params.itemId}`,
+    },
+  ]);
+}
+
 export async function handleInquiryReceived(params: {
   inquiryId: string;
   senderName: string;

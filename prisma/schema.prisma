@@ -128,6 +128,8 @@ model UserProfile {
   teamRoleScore  TeamRoleScore?
   teamRoleObservationsAbout TeamRoleObservation[] @relation("TeamRoleObservationAbout")
   teamRoleObservationsGiven TeamRoleObservation[] @relation("TeamRoleObservationRater")
+  peerFeedbackGiven    PeerFeedbackItem[] @relation("PeerFeedbackFrom")
+  peerFeedbackReceived PeerFeedbackItem[] @relation("PeerFeedbackTo")
 
   trustObservationsAbout TrustObservation[] @relation("TrustObservationAbout")
   trustObservationsGiven TrustObservation[] @relation("TrustObservationRater")
@@ -281,6 +283,7 @@ model Team {
   reports          TeamReport[]
   candidateInvites CandidateInvite[]
   teamRoleObservations TeamRoleObservation[]
+  peerFeedbackItems    PeerFeedbackItem[]
   trustObservations    TrustObservation[]
 
   @@index([ownerId])
@@ -541,6 +544,7 @@ model Campaign {
   participants         CampaignParticipant[]
   psychSafetyResponses PsychSafetyResponse[]
   teamRoleObservations TeamRoleObservation[]
+  peerFeedbackItems    PeerFeedbackItem[]
   trustObservations    TrustObservation[]
   observerInvitations  ObserverInvitation[]
 
@@ -710,6 +714,33 @@ model TeamRoleObservation {
   @@index([campaignId, raterUserId])
 }
 
+// Kollégai visszajelzés (peer feedback, 2026-07-24 terv F1: kudos).
+// kind: "appreciation" | "feedforward" · visibility: "named" |
+// "anonymous_aggregated" (string, a szerep-mintát követve — nem enum).
+// Anonim elemnél a fromUserId tárolva marad (dedupe + moderáció), de a
+// felület soha nem mutatja. payload: strukturált mezők (message, roleTag…).
+// Terv: docs/product/peer-feedback-terv.md
+model PeerFeedbackItem {
+  id         String   @id @default(cuid())
+  teamId     String
+  campaignId String?
+  fromUserId String
+  toUserId   String
+  kind       String   @default("appreciation")
+  visibility String   @default("named")
+  payload    Json
+  createdAt  DateTime @default(now())
+
+  team     Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campaign Campaign?   @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  from     UserProfile @relation("PeerFeedbackFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  to       UserProfile @relation("PeerFeedbackTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, toUserId, createdAt])
+  @@index([fromUserId, createdAt])
+  @@index([campaignId])
+}
+
 // Bizalmi háló megfigyelés (trust-kör) — egy rater egy csapattársról, egy
 // kampány-körön belül. A TeamRoleObservation mintája: a raterUserId dedupe-ra
 // és haladás-követésre szolgál; a megjelenítés PÁR-SZINTŰ (irányok átlaga) a
@@ -797,6 +828,7 @@ enum NotificationType {
   OBSERVER_INVITE_DECLINED
   INQUIRY_RECEIVED
   CANDIDATE_COMPLETED
+  PEER_KUDOS_RECEIVED
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).

@@ -1,5 +1,9 @@
 export const notificationTranslations = {
   notifications: {
+    peerKudosReceived: {
+      title: { hu: "Köszönetet kaptál", en: "You received kudos" },
+      body: { hu: "{name} köszönetet küldött neked a(z) {team} csapatban.", en: "{name} sent you kudos in the {team} team." },
+    },
     observerCompleted: {
       title: { hu: "Megfigyelői visszajelzés érkezett", en: "Observer feedback received" },
       body: { hu: "{name} kitöltötte a megfigyelői értékelést.", en: "{name} completed the observer assessment." },

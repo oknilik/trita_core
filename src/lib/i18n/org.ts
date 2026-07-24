@@ -1679,6 +1679,21 @@ export const orgTranslations = {
 
   // ── Team pages (/team, /team/[id]) ──────────────────────────────────────
   team: {
+    kudos: {
+      eyebrow: { hu: "// köszönet", en: "// kudos" },
+      title: { hu: "Köszönetek", en: "Kudos" },
+      hint: {
+        hu: "Küldj nevesített köszönetet egy csapattársadnak — egy konkrét helyzetért vagy viselkedésért. A köszönet csak a címzettnek jelenik meg.",
+        en: "Send named kudos to a teammate — for a specific situation or behaviour. Kudos are visible only to the recipient.",
+      },
+      pickMember: { hu: "Válassz csapattársat…", en: "Pick a teammate…" },
+      placeholder: { hu: "Pl. „Köszönöm, hogy a keddi demó előtt átnézted a prezimet — sokat dobott rajta.”", en: "E.g. \"Thanks for reviewing my deck before Tuesday's demo — it made a real difference.\"" },
+      send: { hu: "Köszönet küldése", en: "Send kudos" },
+      sentOk: { hu: "Elküldve", en: "Sent" },
+      sendError: { hu: "A küldés nem sikerült — próbáld újra.", en: "Sending failed — try again." },
+      receivedLabel: { hu: "Kapott köszöneteid ({count})", en: "Kudos you received ({count})" },
+      empty: { hu: "Még nincs kapott köszöneted — lehet, hogy te küldesz elsőként?", en: "No kudos received yet — maybe you'll be the first to send one?" },
+    },
     eyebrow: { hu: "HR & Csapat", en: "HR & Team" },
     title: { hu: "Csapataim", en: "My Teams" },
     createNew: { hu: "Új csapat létrehozása", en: "Create a new team" },
