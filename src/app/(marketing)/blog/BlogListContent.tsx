@@ -40,7 +40,7 @@ function TagRow({ tags, firstAccent = false }: { tags: string[]; firstAccent?: b
       {tags.map((tag, i) => (
         <span
           key={tag}
-          className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
+          className={`rounded-full px-2.5 py-0.5 text-micro font-medium uppercase tracking-wide ${
             firstAccent
               ? i === 0
                 ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]"
@@ -184,7 +184,7 @@ export function BlogListContent({
                     <div className="absolute inset-0">
                       <BlogArtVisual slug={featured.slug} tags={featured.tags} seed={featured.artSeed} motif={featured.artMotif} variant="featured" />
                     </div>
-                    <span className="relative mb-3 inline-flex self-start rounded-full bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/70">
+                    <span className="relative mb-3 inline-flex self-start rounded-full bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
                       {t("blog.featured", locale)}
                     </span>
                     <p className="relative font-fraunces text-[21px] font-light italic leading-[1.35] text-white">
@@ -260,7 +260,7 @@ export function BlogListContent({
                         <h3 className="mb-1.5 font-fraunces text-lg leading-[1.25] tracking-tight text-ink">
                           {post.title}
                         </h3>
-                        <p className="mb-2.5 text-[13px] leading-relaxed text-ink-body">
+                        <p className="mb-2.5 text-caption leading-relaxed text-ink-body">
                           {post.description}
                         </p>
                         <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">

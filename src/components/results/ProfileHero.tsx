@@ -79,7 +79,7 @@ export function ProfileHero({
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
         SELF_PAYWALL_ENABLED ? (
-          <p className="text-[10px] uppercase tracking-[2px] text-white/[0.28]">
+          <p className="text-micro uppercase tracking-[2px] text-white/[0.28]">
             {t("results.heroEyebrow", locale)}
           </p>
         ) : undefined
@@ -87,14 +87,14 @@ export function ProfileHero({
       badge={
         SELF_PAYWALL_ENABLED ? (
           <span
-            className="rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+            className="rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
             style={{ backgroundColor: level.bg, color: level.color }}
           >
             {level.label}
           </span>
         ) : (
           <span
-            className="rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+            className="rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
             style={{
               backgroundColor: "rgba(255,255,255,0.08)",
               color: "rgba(255,255,255,0.45)",
@@ -129,13 +129,13 @@ export function ProfileHero({
               {personalityType}
             </span>
             {percentile ? (
-              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-[10px] text-white/[0.45]">
+              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-micro text-white/[0.45]">
                 {percentile}
               </span>
             ) : null}
           </div>
           {percentile ? (
-            <p className="mt-1 text-right text-[10px] text-white/[0.28]">
+            <p className="mt-1 text-right text-micro text-white/[0.28]">
               {t("results.percentileNote", locale)}
             </p>
           ) : null}
@@ -149,13 +149,13 @@ export function ProfileHero({
             <div className="flex flex-wrap items-center gap-2">
               {topDimensions.length > 0 ? (
                 <>
-                  <span className="text-[10px] uppercase tracking-wide text-white/[0.25]">
+                  <span className="text-micro uppercase tracking-wide text-white/[0.25]">
                     {t("content.heroTopDims", locale)}:
                   </span>
                   {topDimensions.map((d) => (
                     <span
                       key={d}
-                      className="rounded px-2 py-0.5 text-[10px] font-medium"
+                      className="rounded px-2 py-0.5 text-micro font-medium"
                       style={{ backgroundColor: SELF_TOP_DIM_BG, color: SELF_TOP_DIM_TEXT }}
                     >
                       {d}
@@ -165,13 +165,13 @@ export function ProfileHero({
               ) : null}
               {watchDimensions.length > 0 ? (
                 <>
-                  <span className="ml-2 text-[10px] uppercase tracking-wide text-white/[0.25]">
+                  <span className="ml-2 text-micro uppercase tracking-wide text-white/[0.25]">
                     {t("content.heroWatchDims", locale)}:
                   </span>
                   {watchDimensions.map((d) => (
                     <span
                       key={d}
-                      className="rounded px-2 py-0.5 text-[10px] font-medium"
+                      className="rounded px-2 py-0.5 text-micro font-medium"
                       style={{ backgroundColor: selfTheme.badgeBg, color: "var(--color-accent-primary-soft)" }}
                     >
                       {d}

@@ -547,7 +547,7 @@ export function AssessmentClient({
             <div>
               <div className="mb-2.5 flex items-center gap-2">
                 <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
-                <span className="text-[10px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
+                <span className="text-micro font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
@@ -566,7 +566,7 @@ export function AssessmentClient({
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-[15px] font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
               >
                 {t("assessment.introStart", locale)}
               </button>
@@ -579,11 +579,11 @@ export function AssessmentClient({
             <div className="flex flex-col gap-2.5">
               {steps.map((s) => (
                 <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-white p-3 px-3.5">
-                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-[13px] font-medium ${s.style}`}>
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${s.style}`}>
                     {s.num}
                   </div>
                   <div>
-                    <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">{s.title}</p>
+                    <p className="text-caption font-semibold text-[var(--color-text-primary)]">{s.title}</p>
                     <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{s.sub}</p>
                   </div>
                 </div>
@@ -629,7 +629,7 @@ export function AssessmentClient({
           <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
         <div className="flex items-center gap-3">
-          <span className="text-[10px] text-[var(--color-action-primary-bg)]">
+          <span className="text-micro text-[var(--color-action-primary-bg)]">
             ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
           </span>
           <a
@@ -739,7 +739,7 @@ export function AssessmentClient({
                   {/* Tip callout */}
                   <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
                     <span className="mt-px shrink-0 text-sm">💡</span>
-                    <p className="text-[13px] leading-[1.45] text-[var(--color-accent-self-deep)]">
+                    <p className="text-caption leading-[1.45] text-[var(--color-accent-self-deep)]">
                       {t(
                         checkpoint === 25 ? 'assessment.journeyMilestone25Hint'
                         : checkpoint === 50 ? 'assessment.journeyMilestone50Hint'
@@ -775,7 +775,7 @@ export function AssessmentClient({
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-[13px] transition-all ${
+          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-caption transition-all ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -790,7 +790,7 @@ export function AssessmentClient({
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
             }`}
           >
-            {autoAdvance && <span className="text-[10px] leading-none text-white">✓</span>}
+            {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}
           </div>
           <input
             type="checkbox"
@@ -806,7 +806,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleNextStep()}
             disabled={!canProceed || isSavingDraft}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
               canProceed && !isSavingDraft
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -819,7 +819,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleFinish()}
             disabled={isSubmitting}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
               !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

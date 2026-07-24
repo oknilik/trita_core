@@ -178,7 +178,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
   if (!hasObserverAccess) {
     return (
       <section className="rounded-2xl border border-sand bg-white p-8 md:p-12">
-        <p className="font-dm-sans mb-3 text-[10px] uppercase tracking-[2px] text-bronze">
+        <p className="font-dm-sans mb-3 text-micro uppercase tracking-[2px] text-bronze">
           {"// observer meghívók"}
         </p>
         <p className="font-fraunces mb-2 text-xl text-ink">

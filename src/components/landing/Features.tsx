@@ -52,13 +52,13 @@ export function Features({ mode }: { mode: SiteMode }) {
               ].join(" ")}
             >
               <span
-                className="mb-4 self-start rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                className="mb-4 self-start rounded px-2 py-0.5 text-micro font-semibold uppercase tracking-wide"
                 style={{ background: `${accentColor}15`, color: accentColor }}
               >
                 {f.badge}
               </span>
               <h3 className="font-fraunces mb-2 text-lg text-ink">{f.title}</h3>
-              <p className="flex-1 text-[13px] leading-relaxed text-ink-body">{f.desc}</p>
+              <p className="flex-1 text-caption leading-relaxed text-ink-body">{f.desc}</p>
             </motion.div>
           ))}
         </div>

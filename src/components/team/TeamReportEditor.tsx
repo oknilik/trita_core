@@ -395,7 +395,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     <DashboardPanel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+          <p className="font-mono text-micro uppercase tracking-widest text-bronze">
             {isHu ? "// tanácsadói riport" : "// consultant report"}
           </p>
           <h3 className="mt-1 font-fraunces text-xl text-ink">
@@ -577,15 +577,15 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   {isHu ? "Angol fordítás (EN)" : "English translation (EN)"}
                 </p>
                 {translation?.status === "approved" ? (
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-200">
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-200">
                     {isHu ? "jóváhagyva" : "approved"}
                   </span>
                 ) : translation ? (
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
                     {isHu ? "vázlat — jóváhagyásra vár" : "draft — awaiting approval"}
                   </span>
                 ) : (
-                  <span className="rounded-full bg-sand px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                  <span className="rounded-full bg-sand px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
                     {isHu ? "nincs" : "none"}
                   </span>
                 )}
@@ -633,7 +633,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     {translation.actionItems.map((item, index) => (
                       <div key={index} className="flex flex-col gap-1.5 rounded-lg border border-sand bg-white p-3">
                         <div className="flex items-center gap-2">
-                          <span className="rounded-full bg-cream px-2 py-0.5 font-mono text-[10px] text-muted">
+                          <span className="rounded-full bg-cream px-2 py-0.5 font-mono text-micro text-muted">
                             {item.timeframe}d
                           </span>
                           <input
@@ -742,7 +742,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     {latestPublished && (
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {isHu
               ? "// aktuális publikált riport — ezt látja a szervezet"
               : "// current published report — this is what the organization sees"}
@@ -769,7 +769,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
 
     {olderPublished.length > 0 && (
       <section className="flex flex-col gap-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+        <p className="font-mono text-micro uppercase tracking-widest text-muted">
           {isHu
             ? "// korábbi riportok — csak tanácsadói nézetben"
             : "// earlier reports — consultant view only"}

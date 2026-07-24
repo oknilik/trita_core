@@ -109,7 +109,7 @@ interface EvidenceSummaryProps {
 function EvidenceSummary({ evidence, loc }: EvidenceSummaryProps) {
   return (
     <div className="rounded-xl border border-sand bg-cream/65 px-3 py-2.5">
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+      <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
         {t("teamComp.evidenceEyebrow", loc)}
       </p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -166,7 +166,7 @@ export function TeamIntelligence({
           <p className="font-dm-sans text-[14px] font-semibold text-ink">
             {isHu ? "Ki mit hoz a csapatba" : "Who brings what to the team"}
           </p>
-          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
             {membersWithData.length}/{members.length}{" "}
             {isHu ? "tag értelmezhető adattal" : "members with usable data"}
           </span>
@@ -192,7 +192,7 @@ export function TeamIntelligence({
                     {member.initials}
                   </div>
                   <div>
-                    <p className="text-[13px] font-semibold text-ink">{member.name}</p>
+                    <p className="text-caption font-semibold text-ink">{member.name}</p>
                     <p className="text-[11px] text-muted">
                       {isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
                     </p>
@@ -272,10 +272,10 @@ export function TeamIntelligence({
 
         <div className="mt-3 rounded-xl border border-sand bg-white p-3">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="font-dm-sans text-[13px] font-semibold text-ink">
+            <p className="font-dm-sans text-caption font-semibold text-ink">
               {t("teamComp.subDynamics", loc)}
             </p>
-            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
               {isHu ? "profil alapú becslés" : "profile-based estimate"}
             </span>
           </div>
@@ -315,7 +315,7 @@ export function TeamIntelligence({
           <p className="font-dm-sans text-[14px] font-semibold text-ink">
             {isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
           </p>
-          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
             {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
           </span>
         </div>

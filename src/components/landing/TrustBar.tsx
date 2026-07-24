@@ -23,7 +23,7 @@ export function TrustBar({ mode }: { mode: SiteMode }) {
         {items.map((item) => (
           <div key={item.text} className="flex items-center gap-2">
             <item.Icon className="h-4 w-4 shrink-0 text-[var(--color-action-primary-bg)]" />
-            <span className="text-[13px] text-[var(--color-text-muted)]">{item.text}</span>
+            <span className="text-caption text-[var(--color-text-muted)]">{item.text}</span>
           </div>
         ))}
       </div>

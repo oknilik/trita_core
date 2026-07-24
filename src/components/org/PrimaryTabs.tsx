@@ -25,7 +25,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             type="button"
             onClick={() => onTabChange(tab.key)}
             className={[
-              "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] whitespace-nowrap transition-all",
+              "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-caption whitespace-nowrap transition-all",
               isActive
                 ? "bg-sage-soft text-ink font-semibold shadow-[inset_0_0_0_1px_rgba(61,107,94,0.12)]"
                 : "text-muted font-medium hover:bg-cream hover:text-ink-body",
@@ -42,7 +42,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
             {tab.badge !== undefined && tab.badge !== null && (
               <span
                 className={[
-                  "rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none",
+                  "rounded-full px-2 py-0.5 text-micro font-semibold leading-none",
                   isActive
                     ? "bg-white text-sage-dark shadow-[0_1px_2px_rgba(26,26,46,0.06)]"
                     : "bg-warm text-bronze-dark",

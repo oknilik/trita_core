@@ -515,7 +515,7 @@ export function AdminBlogSection({
             onChange={(e) => set({ body: e.target.value })}
             rows={18}
             placeholder={"Markdown + komponensek: ## fejezetcímek adják a tartalomjegyzéket.\n\nA sablon-gombokkal Callout / StatRow / KeyInsight / PullQuote / CompareTable szúrható be."}
-            className="w-full rounded-xl border border-sand bg-white p-4 font-mono text-[13px] leading-relaxed text-ink outline-none transition focus:border-sage-ring focus:ring-2 focus:ring-sage-ring/40"
+            className="w-full rounded-xl border border-sand bg-white p-4 font-mono text-caption leading-relaxed text-ink outline-none transition focus:border-sage-ring focus:ring-2 focus:ring-sage-ring/40"
           />
         </div>
 

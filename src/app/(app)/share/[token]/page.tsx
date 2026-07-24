@@ -153,7 +153,7 @@ export default async function SharedProfilePage({
         >
           <div className="px-9 pb-7 pt-8">
             <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
-            <p className="mb-1.5 text-[10px] uppercase tracking-[2px] text-white/[0.28]">
+            <p className="mb-1.5 text-micro uppercase tracking-[2px] text-white/[0.28]">
               {t("results.sharedProfileLabel", locale)}
             </p>
             <h1 className="mb-0.5 font-fraunces text-[28px] tracking-tight text-white">
@@ -182,14 +182,14 @@ export default async function SharedProfilePage({
                   key={dim.code}
                   className={`px-2.5 py-4 text-center ${i < dimensions.length - 1 ? "border-r border-[var(--color-border-default)]" : ""}`}
                 >
-                  <p className="mb-1.5 text-[10px] text-[var(--color-text-muted)]">
+                  <p className="mb-1.5 text-micro text-[var(--color-text-muted)]">
                     {dim.label.length > 10 ? dim.label.slice(0, 10) + "." : dim.label}
                   </p>
                   <p className="mb-1.5 font-fraunces text-[22px] leading-none" style={{ color: tierColor }}>
                     {dim.score}
                   </p>
                   <span
-                    className="inline-block rounded px-[7px] py-[2px] text-[10px] font-semibold"
+                    className="inline-block rounded px-[7px] py-[2px] text-micro font-semibold"
                     style={{ backgroundColor: tierBg, color: tierColor }}
                   >
                     {getDimensionLabel(dim.score, locale)}
@@ -220,7 +220,7 @@ export default async function SharedProfilePage({
                   </div>
                   <span className="font-fraunces text-base" style={{ color: tierColor }}>{dim.score}%</span>
                 </div>
-                <p className="text-[13px] font-medium leading-[1.7] text-[var(--color-text-primary)]">{dim.insight}</p>
+                <p className="text-caption font-medium leading-[1.7] text-[var(--color-text-primary)]">{dim.insight}</p>
               </div>
             );
           })}
@@ -244,7 +244,7 @@ export default async function SharedProfilePage({
         {/* TeamRole */}
         {teamRoleTop3.length > 0 && (
           <div>
-            <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+            <p className="mb-1.5 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
               {t("results.teamRoleHeading", locale)}
             </p>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
@@ -261,7 +261,7 @@ export default async function SharedProfilePage({
                     }`}
                   >
                     <span
-                      className={`mb-2 self-start rounded px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-wide ${
+                      className={`mb-2 self-start rounded px-[9px] py-[3px] text-micro font-bold uppercase tracking-wide ${
                         isPrimary
                           ? "bg-[var(--color-action-primary-bg)] text-white"
                           : idx === 1

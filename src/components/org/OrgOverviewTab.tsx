@@ -139,10 +139,10 @@ export function OrgOverviewTab({
             <div className="flex flex-col gap-4 rounded-xl border border-sand bg-cream p-5">
               <div>
                 <div className="mb-1.5 flex items-center justify-between gap-2">
-                  <p className="text-[13px] font-semibold text-ink">
+                  <p className="text-caption font-semibold text-ink">
                     {tf("org.overview.completionProgress", loc, { count: completedMemberCount })}
                   </p>
-                  <span className="font-mono text-[10px] text-muted">
+                  <span className="font-mono text-micro text-muted">
                     {Math.round((completedMemberCount / 3) * 100)}%
                   </span>
                 </div>

@@ -46,7 +46,7 @@ export default async function AssessmentLayersPage() {
                 {layer.label[langKey]}
               </p>
               <span
-                className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${
+                className={`rounded-full px-2.5 py-0.5 text-micro font-semibold uppercase tracking-[0.12em] ${
                   layer.type === "core"
                     ? "bg-sage-soft text-sage-dark"
                     : "bg-bronze/15 text-bronze-dark"

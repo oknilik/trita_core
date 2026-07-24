@@ -39,13 +39,13 @@ export function ProgressChecklist({
     <DashboardPanel tone="warm" className="p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bronze/80">
+          <p className="font-mono text-micro uppercase tracking-[0.18em] text-bronze/80">
             {eyebrow}
           </p>
           <h2 className="mt-2 font-fraunces text-[28px] leading-none tracking-tight text-ink">
             {title}
           </h2>
-          <p className="mt-2 max-w-[680px] text-[13px] leading-[1.65] text-ink-body">
+          <p className="mt-2 max-w-[680px] text-caption leading-[1.65] text-ink-body">
             {description}
           </p>
         </div>
@@ -99,9 +99,9 @@ export function ProgressChecklist({
 
       {nextItem?.cta ? (
         <div className="mt-4 rounded-[14px] border border-sand bg-white px-4 py-3">
-          <p className="text-[10px] uppercase tracking-[0.12em] text-muted">{nextStepLabel}</p>
+          <p className="text-micro uppercase tracking-[0.12em] text-muted">{nextStepLabel}</p>
           <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[13px] text-ink">{nextItem.title}</p>
+            <p className="text-caption text-ink">{nextItem.title}</p>
             <Link
               href={nextItem.cta.href}
               className="inline-flex min-h-[36px] items-center rounded-[9px] bg-sage px-3 text-[11px] font-semibold text-white no-underline transition hover:bg-sage-dark"

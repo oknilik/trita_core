@@ -160,7 +160,7 @@ export function NarrativeRich({
   return (
     <div>
       {label ? (
-        <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+        <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
           {label}
         </p>
       ) : null}
@@ -221,7 +221,7 @@ function KpiTile({
 }) {
   return (
     <div className="rounded-[14px] border border-sand bg-white p-3.5">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
+      <p className="font-mono text-micro uppercase tracking-widest text-muted">{label}</p>
       <p className={`mt-1 font-fraunces text-2xl leading-none ${accent ?? "text-ink"}`}>{value}</p>
       {typeof progressPct === "number" && (
         <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-sand">
@@ -324,7 +324,7 @@ export function TeamReportView({
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <p className="font-mono text-micro uppercase tracking-widest text-bronze">
                 {isDraft
                   ? isHu ? "// csapatkép — előnézet" : "// team picture — preview"
                   : isHu ? "// validált csapatkép" : "// validated team picture"}
@@ -402,7 +402,7 @@ export function TeamReportView({
           <DashboardPanel className="p-6">
             {agg.pattern && (
               <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+                <p className="font-mono text-micro uppercase tracking-widest text-muted">
                   {isHu ? "Csapatmintázat" : "Team pattern"}
                 </p>
                 <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
@@ -452,7 +452,7 @@ export function TeamReportView({
                     </div>
                   );
                 })}
-                <p className="mt-1 text-[10px] text-muted">
+                <p className="mt-1 text-micro text-muted">
                   {isHu
                     ? "Pont = csapatátlag, sáv = szórás (a csapaton belüli eltérés). Egyéni értékek nem jelennek meg."
                     : "Dot = team average, band = spread (in-team variation). Individual values are not shown."}
@@ -477,7 +477,7 @@ export function TeamReportView({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {ROLE_MATRIX.map((column) => (
                 <div key={column.hu} className="flex flex-col gap-2">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+                  <p className="font-mono text-micro uppercase tracking-widest text-muted">
                     {isHu ? column.hu : column.en}
                   </p>
                   {column.roles.map((role) => {
@@ -498,7 +498,7 @@ export function TeamReportView({
                         }`}
                       >
                         <span
-                          className={`text-[13px] ${
+                          className={`text-caption ${
                             state === "primary"
                               ? "font-semibold text-ink"
                               : state === "secondary"
@@ -524,7 +524,7 @@ export function TeamReportView({
                             +{secondaryCount}
                           </span>
                         ) : (
-                          <span className="text-[10px] uppercase tracking-wide text-muted">
+                          <span className="text-micro uppercase tracking-wide text-muted">
                             {isHu ? "hiányzik" : "missing"}
                           </span>
                         )}
@@ -552,7 +552,7 @@ export function TeamReportView({
 
             {agg.roleGaps && agg.roleGaps.length > 0 && (
               <div className="mt-4 border-t border-sand pt-4">
-                <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+                <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
                   {isHu ? "Valódi hiányok — mit jelenthet" : "True gaps — what it may mean"}
                 </p>
                 <ul className="flex flex-col gap-1">
@@ -577,7 +577,7 @@ export function TeamReportView({
               </div>
             )}
 
-            <p className="mt-3 text-[10px] text-muted">
+            <p className="mt-3 text-micro text-muted">
               {isHu
                 ? `Tagonként a 3 legerősebb szerepet számoljuk: az 1. elsődlegesként, a 2-3. tartalékként. ${agg.roleDistribution.questionnaireCount} valódi kitöltés · ${agg.roleDistribution.estimateCount} becslés.`
                 : `We count each member's 3 strongest roles: the 1st as primary, the 2nd–3rd as backup. ${agg.roleDistribution.questionnaireCount} real fill-out · ${agg.roleDistribution.estimateCount} estimated.`}
@@ -585,7 +585,7 @@ export function TeamReportView({
 
             {agg.peerRoles && agg.peerRoles.ratedCount > 0 && (
               <div className="mt-4 border-t border-sand pt-4">
-                <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+                <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
                   {isHu
                     ? "Csapatkép — társértékelésből (névtelen, összesített)"
                     : "Team view — from peer feedback (anonymous, aggregated)"}
@@ -736,7 +736,7 @@ export function TeamReportView({
               )}
             </div>
 
-            <p className="mt-2 text-[10px] text-muted">
+            <p className="mt-2 text-micro text-muted">
               {agg.dynamics.source === "trust_round"
                 ? isHu ? "Mért bizalmi körön (360°) alapul." : "Based on a measured trust round (360°)."
                 : agg.dynamics.source === "mixed"
@@ -768,11 +768,11 @@ export function TeamReportView({
                     : "Who carries the team's relational fabric — two key talking points for the consultant debrief."}
                 </p>
                 {agg.trustHighlights.source === "trust_round" ? (
-                  <span className="rounded-full bg-sage/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-sage-dark">
+                  <span className="rounded-full bg-sage/15 px-2.5 py-1 font-mono text-micro uppercase tracking-wide text-sage-dark">
                     {isHu ? "mért" : "measured"}
                   </span>
                 ) : (
-                  <span className="rounded-full bg-amber-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-amber-700">
+                  <span className="rounded-full bg-amber-50 px-2.5 py-1 font-mono text-micro uppercase tracking-wide text-amber-700">
                     {isHu ? "becsült" : "estimated"}
                   </span>
                 )}
@@ -781,7 +781,7 @@ export function TeamReportView({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {agg.trustHighlights.hubs.length > 0 && (
                   <div className="rounded-[14px] border border-sage/35 bg-sage/10 p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-sage-dark">
+                    <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
                       {isHu
                         ? agg.trustHighlights.hubs.length > 1
                           ? "A csapat összekötői"
@@ -794,7 +794,7 @@ export function TeamReportView({
                       {agg.trustHighlights.hubs.map((name) => (
                         <span
                           key={name}
-                          className="rounded-full bg-white px-2.5 py-1 text-[13px] font-semibold text-ink"
+                          className="rounded-full bg-white px-2.5 py-1 text-caption font-semibold text-ink"
                         >
                           {name}
                         </span>
@@ -814,7 +814,7 @@ export function TeamReportView({
 
                 {agg.trustHighlights.isolated.length > 0 && (
                   <div className="rounded-[14px] border border-amber-200 bg-amber-50/60 p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-amber-700">
+                    <p className="font-mono text-micro uppercase tracking-widest text-amber-700">
                       {isHu
                         ? agg.trustHighlights.isolated.length > 1
                           ? "Beágyazatlan tagok"
@@ -827,7 +827,7 @@ export function TeamReportView({
                       {agg.trustHighlights.isolated.map((name) => (
                         <span
                           key={name}
-                          className="rounded-full bg-white px-2.5 py-1 text-[13px] font-semibold text-ink"
+                          className="rounded-full bg-white px-2.5 py-1 text-caption font-semibold text-ink"
                         >
                           {name}
                         </span>
@@ -842,7 +842,7 @@ export function TeamReportView({
                 )}
               </div>
 
-              <p className="mt-4 text-[10px] text-muted">
+              <p className="mt-4 text-micro text-muted">
                 {agg.trustHighlights.source === "trust_round"
                   ? isHu
                     ? `Mért bizalmi körből${
@@ -940,7 +940,7 @@ export function TeamReportView({
 
             {agg.psychSafety.weakItemIds.length > 0 ? (
               <div className="mt-5 flex flex-col gap-3">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-amber-700">
+                <p className="font-mono text-micro uppercase tracking-widest text-amber-700">
                   {isHu ? "Gyenge területek — javasolt lépések" : "Weak areas — suggested steps"}
                 </p>
                 {agg.psychSafety.weakItemIds.map((id) => {
@@ -952,7 +952,7 @@ export function TeamReportView({
                       key={id}
                       className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3"
                     >
-                      <p className="text-[13px] font-semibold text-ink">
+                      <p className="text-caption font-semibold text-ink">
                         {isHu ? item.area.hu : item.area.en}
                         <span className="ml-2 font-normal tabular-nums text-amber-700">
                           {agg.psychSafety!.itemMeans[id]?.toFixed(1)} / 5
@@ -974,7 +974,7 @@ export function TeamReportView({
                   if (traps.length === 0) return null;
                   return (
                     <details className="mt-1 rounded-[12px] border border-sand bg-white">
-                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest text-bronze transition-colors hover:text-bronze-dark">
+                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-bronze transition-colors hover:text-bronze-dark">
                         {isHu
                           ? `Vezetői akciókártyák (${traps.length})`
                           : `Leader action cards (${traps.length})`}
@@ -985,7 +985,7 @@ export function TeamReportView({
                             key={trap.id}
                             className="rounded-xl border border-sand bg-cream/40 px-4 py-3"
                           >
-                            <p className="text-[13px] font-semibold text-ink">
+                            <p className="text-caption font-semibold text-ink">
                               {isHu ? trap.title.hu : trap.title.en}
                             </p>
                             <p className="mt-1 text-xs leading-relaxed text-muted">
@@ -999,7 +999,7 @@ export function TeamReportView({
                             </p>
                           </div>
                         ))}
-                        <p className="text-[10px] text-muted">
+                        <p className="text-micro text-muted">
                           {isHu
                             ? "Keret: Harvard Business Review (2026/07), a Trita saját adaptációjában."
                             : "Framework: Harvard Business Review (2026/07), in Trita's own adaptation."}
@@ -1017,7 +1017,7 @@ export function TeamReportView({
               </p>
             )}
 
-            <p className="mt-4 text-[10px] text-muted">
+            <p className="mt-4 text-micro text-muted">
               {isHu
                 ? "Névtelen mérés: csak csapatszintű összesítés, egyéni válasz nem visszakereshető (min. 3 kitöltés)."
                 : "Anonymous measurement: team-level aggregate only, individual answers cannot be traced back (min. 3 responses)."}
@@ -1046,7 +1046,7 @@ export function TeamReportView({
         <div className="flex flex-col gap-4">
           {report.summary && (
             <DashboardPanel className="border-l-4 border-l-bronze/50 p-6">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
                 {isHu ? "Összefoglaló" : "Summary"}
               </p>
               {/* Lead-tipográfia: az összefoglaló a riport „első bekezdése". */}
@@ -1059,7 +1059,7 @@ export function TeamReportView({
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {report.strengths && (
                 <DashboardPanel className="border-l-4 border-l-emerald-500/60 p-5">
-                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-emerald-700">
+                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-emerald-700">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 8.5l3 3 7-7" />
                     </svg>
@@ -1070,7 +1070,7 @@ export function TeamReportView({
               )}
               {report.risks && (
                 <DashboardPanel className="border-l-4 border-l-amber-500/60 p-5">
-                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-amber-700">
+                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-amber-700">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M8 3v6M8 12.5v.5" />
                     </svg>
@@ -1133,7 +1133,7 @@ export function TeamReportView({
               const tone = TIMEFRAME_TONES[timeframe];
               return (
                 <DashboardPanel key={timeframe} className={`border-l-4 p-5 ${tone.edge}`}>
-                  <p className={`mb-3 flex items-center gap-2 border-b border-sand pb-2 font-mono text-[10px] uppercase tracking-widest ${tone.text}`}>
+                  <p className={`mb-3 flex items-center gap-2 border-b border-sand pb-2 font-mono text-micro uppercase tracking-widest ${tone.text}`}>
                     <span className={`h-2 w-2 rounded-full ${tone.dot}`} />
                     {timeframe} {isHu ? "napon belül" : "days"}
                   </p>
@@ -1185,7 +1185,7 @@ export function TeamReportView({
                 : `${agg.completedCount}/${agg.memberCount} completed assessments · ${agg.evidence.measuredEdgeCount ?? 0} measured and ${agg.evidence.estimatedEdgeCount} estimated relationship data points`}
             </span>
           </div>
-          <p className="mt-2 text-[10px] text-muted">
+          <p className="mt-2 text-micro text-muted">
             {isHu
               ? "A riport a publikáláskor rögzített aggregált adatokon alapul; egyéni eredmények nem jelennek meg. A becsült elemek profil-alapú modellből származnak."
               : "This report is based on aggregate data frozen at publication; individual results are not shown. Estimated elements come from a profile-based model."}

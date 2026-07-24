@@ -205,7 +205,7 @@ function TabPaywall({ tier, tierLabel, price, teaser, locale }: {
         <LockIcon />
       </div>
       <div className="max-w-sm">
-        <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+        <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
           {tierLabel} · {price}
         </p>
         <p className="text-sm leading-relaxed text-ink-body">{teaser}</p>
@@ -305,7 +305,7 @@ function ResultsTab({
                           {d.label}
                         </span>
                         <span
-                          className={`shrink-0 rounded px-[7px] py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}
+                          className={`shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}
                         >
                           {getDimensionLabel(d.score, locale)}
                         </span>
@@ -326,7 +326,7 @@ function ResultsTab({
                   );
                 })}
             </div>
-            <p className="mt-3 text-[10px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
               {t("results.radarNote", locale)}
             </p>
           </div>
@@ -374,7 +374,7 @@ function ResultsTab({
             <p className="text-sm font-semibold text-[var(--color-text-primary)]">
               {t("results.observerCtaTitle", locale)}
             </p>
-            <p className="mt-1 text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+            <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-secondary)]">
               {t("results.observerCtaBody", locale)}
             </p>
           </div>

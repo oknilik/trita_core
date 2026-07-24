@@ -87,16 +87,16 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
         <div>
           <p className="text-[14px] font-bold text-ink">{member.name}</p>
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="inline-block rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-medium text-ink-body">
+            <span className="inline-block rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
               {member.zone}
             </span>
             {member.isEstimated && (
-              <span className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+              <span className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-700">
                 {t("teamComp.estimatedTag", loc)}
               </span>
             )}
             <span
-              className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${CONFIDENCE_LABELS[member.placementConfidence].className}`}
+              className={`inline-block rounded-full px-2 py-0.5 text-micro font-medium ${CONFIDENCE_LABELS[member.placementConfidence].className}`}
             >
               {loc === "hu"
                 ? CONFIDENCE_LABELS[member.placementConfidence].hu
@@ -108,12 +108,12 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
 
       {/* Personality dimension bars */}
       <div>
-        <SectionEyebrow className="mb-2 text-[10px]">{"// személyiségprofil"}</SectionEyebrow>
+        <SectionEyebrow className="mb-2 text-micro">{"// személyiségprofil"}</SectionEyebrow>
         <div className="flex flex-col gap-1.5">
           {(Object.keys(DIM_COLORS) as Array<keyof typeof DIM_COLORS>).map((k) => (
             <div key={k} className="flex items-center gap-2">
               <div
-                className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-[10px] font-bold text-white"
+                className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-micro font-bold text-white"
                 style={{ background: DIM_COLORS[k] }}
               >
                 {k}
@@ -128,7 +128,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
                   }}
                 />
               </div>
-              <span className="w-8 text-right font-mono text-[10px] text-ink-body">
+              <span className="w-8 text-right font-mono text-micro text-ink-body">
                 {member.tritan[k as keyof typeof member.tritan]}%
               </span>
             </div>
@@ -139,12 +139,12 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
       {/* Delivery & growth composites */}
       <div className="flex gap-3 border-t border-sand pt-3">
         <div className="flex-1 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {loc === "hu" ? "szállítás" : "delivery"}
           </p>
-          <p className="mt-1 font-mono text-[13px] font-bold text-ink">
+          <p className="mt-1 font-mono text-caption font-bold text-ink">
             {member.deliveryScore}
-            <span className="text-[10px] font-normal text-muted">/100</span>
+            <span className="text-micro font-normal text-muted">/100</span>
           </p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
@@ -159,12 +159,12 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
           </div>
         </div>
         <div className="flex-1 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {loc === "hu" ? "potenciál" : "growth"}
           </p>
-          <p className="mt-1 font-mono text-[13px] font-bold text-ink">
+          <p className="mt-1 font-mono text-caption font-bold text-ink">
             {member.growthScore}
-            <span className="text-[10px] font-normal text-muted">/100</span>
+            <span className="text-micro font-normal text-muted">/100</span>
           </p>
           <div className="mt-1 flex justify-center gap-0.5">
             {[1, 2, 3].map((v) => (
@@ -181,7 +181,7 @@ function MemberDetailPanel({ member, loc }: MemberDetailPanelProps) {
       </div>
 
       {/* Model explainer */}
-      <p className="text-[10px] leading-relaxed text-muted">
+      <p className="text-micro leading-relaxed text-muted">
         {loc === "hu"
           ? "Súlyozott becslés a saját személyiségprofilból (szállítás: C·H·érzelmi stabilitás; potenciál: O·X·érzelmi stabilitás). Nem mért teljesítményadat."
           : "Weighted estimate from the self personality profile (delivery: C·H·emotional stability; growth: O·X·emotional stability). Not measured performance data."}
@@ -223,7 +223,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
         {/* Left: 3×3 grid */}
         <div className="flex-1">
           <div className="mb-1 text-center">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+            <span className="font-mono text-micro uppercase tracking-widest text-muted">
               {t("teamComp.growthPotentialAxis", loc)}
             </span>
           </div>
@@ -232,7 +232,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
             {/* Y-axis label */}
             <div className="flex w-4 items-center justify-center">
               <span
-                className="font-mono text-[10px] uppercase tracking-widest text-muted"
+                className="font-mono text-micro uppercase tracking-widest text-muted"
                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
               >
                 {t("teamComp.yAxisLabel", loc)}
@@ -255,7 +255,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                           className="relative min-h-[90px] rounded-xl border border-sand bg-[#f8f7f4] p-2"
                         >
                           {zoneLabel && (
-                            <span className="absolute left-2 top-2 font-mono text-[10px] leading-tight text-[#b0ada6]">
+                            <span className="absolute left-2 top-2 font-mono text-micro leading-tight text-[#b0ada6]">
                               {zoneLabel}
                             </span>
                           )}
@@ -267,7 +267,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                                 onClick={() => setSelected(selected === m.id ? null : m.id)}
                                 title={m.name}
                                 className={[
-                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-sage hover:ring-offset-1 cursor-pointer",
+                                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-micro font-bold transition-transform hover:scale-110 hover:ring-2 hover:ring-sage hover:ring-offset-1 cursor-pointer",
                                   selected === m.id
                                     ? "ring-2 ring-sage ring-offset-1"
                                     : "",
@@ -293,13 +293,13 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
               {/* X-axis labels */}
               <div className="mt-1.5 grid grid-cols-3 gap-1.5">
                 {(["xLow", "xMid", "xHigh"] as const).map((k) => (
-                  <div key={k} className="text-center font-mono text-[10px] text-muted">
+                  <div key={k} className="text-center font-mono text-micro text-muted">
                     {t(`teamComp.${k}`, loc)}
                   </div>
                 ))}
               </div>
               <div className="mt-0.5 text-center">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+                <span className="font-mono text-micro uppercase tracking-widest text-muted">
                   {t("teamComp.skillLevelAxis", loc)}
                 </span>
               </div>
@@ -363,7 +363,7 @@ export function TeamMap({ members, isHu = true }: TeamMapProps) {
                 title={m.name}
               >
                 <span
-                  className="flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold"
+                  className="flex h-5 w-5 items-center justify-center rounded-full text-micro font-semibold"
                   style={{ background: m.color, color: m.textColor }}
                 >
                   {m.initials}

@@ -160,13 +160,13 @@ export function ShareModal({
                 }}
               >
                 <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/[0.04]" />
-                <p className="text-[10px] uppercase tracking-[0.14em] text-white/[0.35]">
+                <p className="text-micro uppercase tracking-[0.14em] text-white/[0.35]">
                   {t("results.sharedProfileLabel", locale)}
                 </p>
                 <p className="mt-0.5 font-fraunces text-[17px] text-white">
                   {preview.userName}
                 </p>
-                <p className="font-fraunces text-[15px] italic text-[var(--color-accent-primary-soft)]">
+                <p className="font-fraunces text-body italic text-[var(--color-accent-primary-soft)]">
                   {preview.personalityType}
                 </p>
                 {preview.topDims.length > 0 && (
@@ -174,7 +174,7 @@ export function ShareModal({
                     {preview.topDims.map((d) => (
                       <span
                         key={d.label}
-                        className="rounded-full bg-white/[0.12] px-2.5 py-1 text-[10px] font-medium text-white/[0.75]"
+                        className="rounded-full bg-white/[0.12] px-2.5 py-1 text-micro font-medium text-white/[0.75]"
                       >
                         {d.label} {d.score}
                       </span>
@@ -195,7 +195,7 @@ export function ShareModal({
                   readOnly
                   value={shareUrl ?? "…"}
                   onFocus={(e) => e.currentTarget.select()}
-                  className="min-h-[44px] w-full flex-1 truncate rounded-[10px] border border-sand bg-cream px-3 text-[13px] text-ink-body outline-none"
+                  className="min-h-[44px] w-full flex-1 truncate rounded-[10px] border border-sand bg-cream px-3 text-caption text-ink-body outline-none"
                 />
                 <Button
                   type="button"
@@ -255,7 +255,7 @@ export function ShareModal({
                 </Button>
               </div>
               {emailState === "sent" && (
-                <p className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-sage-dark">
+                <p className="mt-1.5 inline-flex items-center gap-1.5 text-caption font-medium text-sage-dark">
                   <SuccessCheck />
                   {t("content.shareEmailSent", locale)}
                 </p>

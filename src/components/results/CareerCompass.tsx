@@ -177,7 +177,7 @@ function SuggestionCard({
       style={{ animation: "fadeIn 0.3s ease-out both", animationDelay: `${delayMs}ms` }}
     >
       {hero && (
-        <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-sage-dark">
+        <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-sage-dark">
           {t("results.ccTopMatch", locale)}
         </p>
       )}
@@ -189,7 +189,7 @@ function SuggestionCard({
           <p className="text-[11px] text-[var(--color-text-muted)]">
             {isHu ? suggestion.industryHu : suggestion.industryEn}
             {suggestion.eduBoosted && (
-              <span className="ml-1.5 rounded-full bg-sage/10 px-1.5 py-0.5 text-[10px] font-semibold text-sage-dark">
+              <span className="ml-1.5 rounded-full bg-sage/10 px-1.5 py-0.5 text-micro font-semibold text-sage-dark">
                 {t("results.ccEduBoostBadge", locale)}
               </span>
             )}
@@ -198,7 +198,7 @@ function SuggestionCard({
         {/* Mobilon (sortöréskor) balra igazítva folyik a cím alá, sm-től jobbra. */}
         <div className="text-left sm:text-right">
           <p className={`text-[12px] font-semibold ${tier.tone}`}>{t(tier.key, locale)}</p>
-          <p className="font-mono text-[10px] text-[var(--color-text-muted)]">
+          <p className="font-mono text-micro text-[var(--color-text-muted)]">
             {suggestion.score}%
             {suggestion.prefMatch !== null && (
               <> · {suggestion.prefMatch}% {t("results.industryFitPrefMatchLabel", locale)}</>
@@ -208,7 +208,7 @@ function SuggestionCard({
       </div>
 
       {heroLine && (
-        <p className="mt-2 text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+        <p className="mt-2 text-caption leading-relaxed text-[var(--color-text-secondary)]">
           {heroLine}
         </p>
       )}
@@ -250,9 +250,9 @@ function SuggestionCard({
         <div className="mt-3 flex flex-col gap-2 border-t border-[var(--color-border-soft)] pt-3">
           {breakdown.map((entry) => (
             <div key={`${entry.dim}-${entry.direction}`} className="flex items-center gap-2 sm:gap-3">
-              <span className="w-24 shrink-0 text-[10px] leading-tight text-[var(--color-text-secondary)] sm:w-40 sm:text-[11px]">
+              <span className="w-24 shrink-0 text-micro leading-tight text-[var(--color-text-secondary)] sm:w-40 sm:text-[11px]">
                 {isHu ? DIM_LABELS[entry.dim].hu : DIM_LABELS[entry.dim].en}
-                <span className="block text-[10px] text-[var(--color-text-muted)]">
+                <span className="block text-micro text-[var(--color-text-muted)]">
                   {t(
                     entry.direction === "high"
                       ? "results.industryFitExpectedHigh"
@@ -268,12 +268,12 @@ function SuggestionCard({
                   style={{ width: `${entry.alignment}%`, backgroundColor: fitBarColor(entry.alignment) }}
                 />
               </div>
-              <span className="w-12 shrink-0 text-right font-mono text-[10px] text-[var(--color-text-muted)] sm:w-16">
+              <span className="w-12 shrink-0 text-right font-mono text-micro text-[var(--color-text-muted)] sm:w-16">
                 {entry.userValue}→{entry.alignment}
               </span>
             </div>
           ))}
-          <p className="text-[10px] text-[var(--color-text-muted)]">
+          <p className="text-micro text-[var(--color-text-muted)]">
             {t("results.industryFitBreakdownNote", locale)}
           </p>
 
@@ -456,7 +456,7 @@ export function CareerCompass({
   const stepHeader = (titleKey: string, whyKey: string) => (
     <div className="mb-3">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+        <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {tf("results.ccStepOf", locale, { current: stepIndex + 1, total: flow.length })}
         </p>
         <div className="flex items-center gap-1">
@@ -507,7 +507,7 @@ export function CareerCompass({
     <div className="rounded-[14px] border border-[var(--color-border-soft)] bg-white p-5">
       {/* Forrás-badge */}
       <div className="mb-3 flex justify-end">
-        <span className="rounded-full bg-[var(--color-surface-subtle)] px-2.5 py-1 text-[10px] text-[var(--color-text-muted)]">
+        <span className="rounded-full bg-[var(--color-surface-subtle)] px-2.5 py-1 text-micro text-[var(--color-text-muted)]">
           {t(
             hasMeasured ? "results.industryFitSourceMeasured" : "results.industryFitSourceSelf",
             locale,
@@ -517,7 +517,7 @@ export function CareerCompass({
 
       {step === "intro" && (
         <div>
-          <p className="max-w-2xl text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+          <p className="max-w-2xl text-caption leading-relaxed text-[var(--color-text-secondary)]">
             {t("results.ccIntro", locale)}
           </p>
           <button
@@ -790,7 +790,7 @@ export function CareerCompass({
 
           {currentIndustryExtra.length > 0 && (
             <div className="mt-5">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
                 {t("results.ccResultCurrent", locale)}
               </p>
               <div className="flex flex-col gap-3">
@@ -810,7 +810,7 @@ export function CareerCompass({
           {/* Fejlődési terv — a top-irányok watch-dimenzióihoz kötve */}
           {(result.developDims.length > 0 || devPlanItems.length > 0) && (
             <div className="mt-5 rounded-[12px] border border-amber-200 bg-amber-50/50 p-4">
-              <p className="text-[13px] font-semibold text-amber-900">
+              <p className="text-caption font-semibold text-amber-900">
                 {t("results.ccDevPlanTitle", locale)}
               </p>
               <p className="mt-1 text-[12px] leading-relaxed text-amber-900/80">
@@ -831,7 +831,7 @@ export function CareerCompass({
                   {devPlanItems.map((item) => (
                     <div key={item.code} className="rounded-[12px] border border-amber-200/70 bg-white p-3.5">
                       <span
-                        className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-micro font-semibold"
                         style={{ backgroundColor: `${item.dimColor}1a`, color: item.dimColor }}
                       >
                         {item.dimLabel}
@@ -901,7 +901,7 @@ export function CareerCompass({
         </div>
       )}
 
-      <p className="mt-4 border-t border-[var(--color-border-soft)] pt-3 text-[10px] leading-relaxed text-[var(--color-text-muted)]">
+      <p className="mt-4 border-t border-[var(--color-border-soft)] pt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
         {t("results.industryFitNote", locale)}
       </p>
     </div>

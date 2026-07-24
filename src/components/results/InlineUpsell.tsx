@@ -20,13 +20,13 @@ export function InlineUpsell() {
       style={{ background: "linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-strong-deep) 100%)" }}
     >
       <div className="flex-1">
-        <p className="mb-1.5 text-[10px] uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+        <p className="mb-1.5 text-micro uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
           Plus
         </p>
         <h3 className="mb-1.5 font-fraunces text-xl leading-tight text-white">
           {t("results.upsellTitle", locale)}
         </h3>
-        <p className="mb-3 text-[13px] leading-relaxed text-white/[0.38]">
+        <p className="mb-3 text-caption leading-relaxed text-white/[0.38]">
           {t("results.upsellDesc", locale)}
         </p>
         <div className="flex flex-wrap gap-4">
@@ -39,7 +39,7 @@ export function InlineUpsell() {
       </div>
       <div className="flex shrink-0 flex-col items-center gap-2">
         <span className="font-fraunces text-[32px] tracking-tight text-white">€9</span>
-        <span className="text-[10px] text-white/[0.25]">
+        <span className="text-micro text-white/[0.25]">
           {t("results.upsellOnetime", locale)}
         </span>
         <UpgradeButton tier="self_plus" label={t("results.upsellBuy", locale)} />

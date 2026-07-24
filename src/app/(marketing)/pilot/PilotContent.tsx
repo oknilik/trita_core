@@ -129,7 +129,7 @@ export function PilotContent() {
                 </div>
 
                 <div className="rounded-2xl border border-sage/15 bg-sage-soft px-5 py-5">
-                  <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+                  <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
                     {t("pilot.aside90Eyebrow", locale)}
                   </p>
                   <p className="mt-2 text-sm leading-7 text-ink-body">
@@ -196,7 +196,7 @@ export function PilotContent() {
               {t("pilot.formBody", locale)}
             </p>
             <div className="mt-7 rounded-2xl border border-sand bg-warm px-5 py-5">
-              <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+              <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
                 {t("pilot.fitEyebrow", locale)}
               </p>
               <p className="mt-2 text-sm leading-7 text-ink-body">
@@ -412,7 +412,7 @@ function StepCard({ step, title, desc }: { step: string; title: string; desc: st
 function CommitmentCard({ title, desc, commitmentLabel }: { title: string; desc: string; commitmentLabel: string }) {
   return (
     <article className="rounded-[24px] border border-sand bg-warm px-6 py-6">
-      <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
         {commitmentLabel}
       </p>
       <h3 className="mt-2 font-fraunces text-[28px] leading-tight text-ink">{title}</h3>

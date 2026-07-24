@@ -73,7 +73,7 @@ export function ObserverApprovalCard({
               className="flex flex-col gap-2 rounded-xl border border-sand bg-cream/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="min-w-0">
-                <p className="text-[13px] text-ink">
+                <p className="text-caption text-ink">
                   <span className="font-semibold">{a.inviterName}</span>
                   {" → "}
                   <span className="font-semibold">{a.targetLabel}</span>

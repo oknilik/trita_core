@@ -105,7 +105,7 @@ export function ComparisonTab({
         <h3 className="mb-1.5 font-fraunces text-[18px] text-[var(--color-text-primary)]">
           {t("comparison.noDataTitle", locale)}
         </h3>
-        <p className="mx-auto max-w-[380px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+        <p className="mx-auto max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.noDataBody", locale)}
         </p>
         <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-relaxed text-[#7a6f63]">
@@ -131,14 +131,14 @@ export function ComparisonTab({
       <div>
         <div className="mb-1.5 flex items-center gap-2">
           <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-          <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+          <span className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
             {t("comparison.headerEyebrow", locale)}
           </span>
         </div>
         <h2 className="font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
           {t("comparison.headerTitle", locale)}
         </h2>
-        <p className="mt-1 text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+        <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.headerBody", locale)}
         </p>
         <span className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-accent-self-deep)]">
@@ -174,15 +174,15 @@ export function ComparisonTab({
         <div className="grid grid-cols-3 gap-2.5">
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
             <p className="font-fraunces text-[22px] leading-none" style={{ color: "var(--color-action-primary-bg)" }}>{matchingCount}</p>
-            <p className="mt-1 text-[10px] text-[var(--color-text-muted)]">{t("comparison.matchingDims", locale)}</p>
+            <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.matchingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
             <p className="font-fraunces text-[22px] leading-none" style={{ color: "var(--color-accent-primary)" }}>{differingCount}</p>
-            <p className="mt-1 text-[10px] text-[var(--color-text-muted)]">{t("comparison.differingDims", locale)}</p>
+            <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.differingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
             <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">{avgGapPct}%</p>
-            <p className="mt-1 text-[10px] text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
+            <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
           </div>
         </div>
       </div>
@@ -214,7 +214,7 @@ export function ComparisonTab({
                 }`}
               >
                 <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">
-                  <span className="text-[13px] font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
+                  <span className="text-caption font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
                   <span
                     className="rounded px-2 py-0.5 text-[11px] font-medium"
                     style={{
@@ -228,18 +228,18 @@ export function ComparisonTab({
 
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-[50px] shrink-0 text-[10px] text-[var(--color-text-muted)]">{t("comparison.self", locale)}</span>
+                    <span className="w-[50px] shrink-0 text-micro text-[var(--color-text-muted)]">{t("comparison.self", locale)}</span>
                     <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                       <div className="h-full rounded-sm" style={{ width: `${dim.self}%`, backgroundColor: "var(--color-action-primary-bg)" }} />
                     </div>
-                    <span className="w-7 shrink-0 text-right text-[10px] font-semibold" style={{ color: "var(--color-action-primary-bg)" }}>{dim.self}</span>
+                    <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-action-primary-bg)" }}>{dim.self}</span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <span className="w-[50px] shrink-0 text-[10px] text-[var(--color-text-muted)]">{t("comparison.others", locale)}</span>
+                    <span className="w-[50px] shrink-0 text-micro text-[var(--color-text-muted)]">{t("comparison.others", locale)}</span>
                     <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                       <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "var(--color-accent-primary-soft)" }} />
                     </div>
-                    <span className="w-7 shrink-0 text-right text-[10px] font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
+                    <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
                   </div>
                 </div>
 
@@ -259,14 +259,14 @@ export function ComparisonTab({
       <div>
         <div className="mb-1.5 flex items-center gap-2">
           <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-          <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+          <span className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
             {t("comparison.blindSpotEyebrow", locale)}
           </span>
         </div>
         <h3 className="font-fraunces text-lg text-[var(--color-text-primary)]">
           {t("comparison.blindSpotTitle", locale)}
         </h3>
-        <p className="mb-3 mt-1 text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+        <p className="mb-3 mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.blindSpotBody", locale)}
         </p>
 
@@ -276,10 +276,10 @@ export function ComparisonTab({
             const insight = getInsight(bs.code, bs.self, bs.observer);
             return (
               <div key={bs.code} className="rounded-xl border-l-4 bg-[var(--color-surface-highlight-warm)] p-4 px-[18px]" style={{ borderLeftColor: "var(--color-accent-primary)" }}>
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
+                <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
                   {t("comparison.possibleBlindSpot", locale)}
                 </p>
-                <p className="font-fraunces text-[15px] text-[var(--color-text-primary)]">
+                <p className="font-fraunces text-body text-[var(--color-text-primary)]">
                   {bs.name} — {dir
                     ? t("comparison.blindSpotStronger", locale)
                     : t("comparison.blindSpotWeaker", locale)}
@@ -303,10 +303,10 @@ export function ComparisonTab({
 
           {noBlindspotDims.length > 0 && (
             <div className="rounded-xl border-l-4 bg-[var(--color-surface-self-accent-soft)] p-4 px-[18px]" style={{ borderLeftColor: "var(--color-action-primary-bg)" }}>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+              <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
                 {t("comparison.noBlindSpot", locale)}
               </p>
-              <p className="font-fraunces text-[15px] text-[var(--color-text-primary)]">
+              <p className="font-fraunces text-body text-[var(--color-text-primary)]">
                 {noBlindspotDims.join(", ")}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-[var(--color-accent-self-deep)]">
@@ -322,7 +322,7 @@ export function ComparisonTab({
         className="rounded-2xl p-6 px-7"
         style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
       >
-        <p className="mb-2 text-[10px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
+        <p className="mb-2 text-micro uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
           {t("comparison.summaryEyebrow", locale)}
         </p>
         <p className="mb-3 font-fraunces text-lg text-white">
@@ -332,7 +332,7 @@ export function ComparisonTab({
           {summaryPoints.map((point, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <div className="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-accent-self)" }} />
-              <p className="text-[13px] leading-[1.6] text-white/[0.55]">{point}</p>
+              <p className="text-caption leading-[1.6] text-white/[0.55]">{point}</p>
             </div>
           ))}
         </div>

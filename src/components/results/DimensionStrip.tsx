@@ -32,7 +32,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
                 i < dimensions.length - 1 ? "border-r" : ""
               }`}
             >
-              <p className="mb-1.5 text-[10px] text-[var(--color-text-muted)]">
+              <p className="mb-1.5 text-micro text-[var(--color-text-muted)]">
                 {dim.shortName}
               </p>
               <p
@@ -41,7 +41,7 @@ export function DimensionStrip({ dimensions }: { dimensions: Dimension[] }) {
                 <CountUp value={dim.value} delay={i * STAGGER_MS} />
               </p>
               <span
-                className={`inline-block rounded px-[7px] py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}
+                className={`inline-block rounded px-[7px] py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}
               >
                 {getDimensionLabel(dim.value, locale)}
               </span>

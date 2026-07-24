@@ -254,7 +254,7 @@ export function CampaignCard({
                     p.selfDone ? "border-emerald-200" : "border-white",
                   ].join(" ")}
                 >
-                  <span className="flex h-full w-full items-center justify-center bg-sand text-[10px] font-bold text-ink-body">
+                  <span className="flex h-full w-full items-center justify-center bg-sand text-micro font-bold text-ink-body">
                     {getInitials(p.username ?? p.email ?? "?")}
                   </span>
                 </div>

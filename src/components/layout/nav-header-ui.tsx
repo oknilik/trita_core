@@ -112,7 +112,7 @@ function MegaItem({
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">{title}</p>
+        <p className="text-caption font-semibold text-[var(--color-text-primary)]">{title}</p>
         <p className="text-[11px] leading-snug text-[var(--color-text-muted)]">{desc}</p>
       </div>
       <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -325,7 +325,7 @@ function NavHeaderContent({
           </Link>
           <Link
             href={homeHref}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-[13px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
           >
             <span aria-hidden="true">←</span>
             {locale === "hu" ? "Vissza a vezérlőre" : "Back to dashboard"}
@@ -336,7 +336,7 @@ function NavHeaderContent({
   }
 
   const navItemBase =
-    "inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium transition-all cursor-pointer select-none rounded-lg";
+    "inline-flex items-center gap-1.5 px-3 py-1.5 text-caption font-medium transition-all cursor-pointer select-none rounded-lg";
   const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary)] font-semibold`;
   const navItemInactive =
     `${navItemBase} text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-canvas)]`;
@@ -408,7 +408,7 @@ function NavHeaderContent({
         style={{ animation: "fade-in 150ms ease-out" }}
       >
         <div className="rounded-xl bg-white/80 px-3.5 py-3">
-          <p className="truncate text-[13px] font-semibold text-[var(--color-text-primary)]">
+          <p className="truncate text-caption font-semibold text-[var(--color-text-primary)]">
             {displayName ?? "Saját profil"}
           </p>
           <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
@@ -421,7 +421,7 @@ function NavHeaderContent({
                 href="/profile"
                 onClick={closeAll}
                 data-testid="nav-user-menu-profile"
-                className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -436,7 +436,7 @@ function NavHeaderContent({
                 href="/profile/results"
                 onClick={closeAll}
                 data-testid="nav-user-menu-results"
-                className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -473,7 +473,7 @@ function NavHeaderContent({
                     >
                       <span className="truncate">{m.orgName ?? m.orgId}</span>
                       <span className="flex shrink-0 items-center gap-1.5">
-                        <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
+                        <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
                           {m.role === "ORG_ADMIN"
                             ? "Admin"
                             : m.role === "ORG_CONSULTANT"
@@ -499,7 +499,7 @@ function NavHeaderContent({
               href="/admin"
               onClick={closeAll}
               data-testid="nav-admin-dashboard"
-              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -520,7 +520,7 @@ function NavHeaderContent({
               href="/org/new"
               onClick={closeAll}
               data-testid="nav-new-client-org"
-              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -548,7 +548,7 @@ function NavHeaderContent({
                   closeAll();
                   signOut({ redirectUrl: "/" });
                 }}
-                className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-[13px] font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+                className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-caption font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -583,7 +583,7 @@ function NavHeaderContent({
               const isActive = isNavItemActive(item);
               const itemClass =
                 item.id === "home"
-                  ? `${isActive ? "rounded-lg bg-[var(--color-text-primary)] text-white px-4 py-1.5 text-[13px] font-medium inline-flex items-center gap-2" : navItemInactive}`
+                  ? `${isActive ? "rounded-lg bg-[var(--color-text-primary)] text-white px-4 py-1.5 text-caption font-medium inline-flex items-center gap-2" : navItemInactive}`
                   : isActive || openDropdown === item.id
                     ? navItemActive
                     : navItemInactive;
@@ -603,7 +603,7 @@ function NavHeaderContent({
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
                       {item.badge ? (
-                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[10px] text-white">
+                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-micro text-white">
                           {item.badge}
                         </span>
                       ) : null}
@@ -619,7 +619,7 @@ function NavHeaderContent({
                         {getItemIcon(item.id, "h-3.5 w-3.5")}
                         {item.label}
                         {item.badge ? (
-                          <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-[10px] text-white">
+                          <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-micro text-white">
                             {item.badge}
                           </span>
                         ) : null}
@@ -731,7 +731,7 @@ function NavHeaderContent({
                 <Link
                   href={homeDestination}
                   onClick={() => setMobileMenu("closed")}
-                  className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-medium text-white"
+                  className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-caption font-medium text-white"
                 >
                   <GridIcon className="h-3.5 w-3.5" />
                   {homeLabel}
@@ -807,7 +807,7 @@ function NavHeaderContent({
                   <Link
                     href={homeDestination}
                     onClick={() => setMobileMenu("closed")}
-                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-[13px] font-medium text-white"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-caption font-medium text-white"
                   >
                     <GridIcon className="h-3.5 w-3.5" />
                     {homeLabel}
@@ -815,7 +815,7 @@ function NavHeaderContent({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("quickview")}
-                    className="flex items-center gap-1.5 text-[13px] text-[var(--color-text-muted)]"
+                    className="flex items-center gap-1.5 text-caption text-[var(--color-text-muted)]"
                   >
                     Bezárás
                     <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -829,7 +829,7 @@ function NavHeaderContent({
                     <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-white/70" />
                   ) : (
                     <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-[15px] font-medium text-white"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-body font-medium text-white"
                       style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
                     >
                       {initial}
@@ -855,7 +855,7 @@ function NavHeaderContent({
                       key={item.id}
                       className={index === 0 ? "mt-3" : "mt-2 border-t border-[var(--color-border-default)] pt-2"}
                     >
-                      <p className="px-4 pb-1 pt-3 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
+                      <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                         {item.label}
                       </p>
                       {item.items?.map((child) => (
@@ -873,7 +873,7 @@ function NavHeaderContent({
 
                 {showProfileMenuItem || showLanguageMenuItem ? (
                   <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
-                    <p className="pb-2 text-[10px] font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
+                    <p className="pb-2 text-micro font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
                       Fiók
                     </p>
                     {showProfileMenuItem ? (
@@ -929,7 +929,7 @@ function NavHeaderContent({
                         signOut({ redirectUrl: "/" });
                         setMobileMenu("closed");
                       }}
-                      className="flex items-center gap-2 text-[13px] text-[var(--color-text-muted)]"
+                      className="flex items-center gap-2 text-caption text-[var(--color-text-muted)]"
                     >
                       <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />

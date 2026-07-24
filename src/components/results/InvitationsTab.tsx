@@ -49,12 +49,12 @@ function LockedInvitations() {
       <h3 className="mb-1.5 font-fraunces text-[18px] text-[var(--color-text-primary)]">
         {t("invitations.lockedTitle", locale)}
       </h3>
-      <p className="mx-auto mb-4 max-w-[380px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+      <p className="mx-auto mb-4 max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
         {t("invitations.lockedSub", locale)}
       </p>
       <button
         type="button"
-        className="min-h-[44px] rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-110"
+        className="min-h-[44px] rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-white transition hover:brightness-110"
       >
         {t("invitations.lockedCta", locale)}
       </button>
@@ -237,14 +237,14 @@ export function InvitationsTab({
       <div>
         <div className="mb-1.5 flex items-center gap-2">
           <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-          <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+          <span className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
             {t("invitations.eyebrow", locale)}
           </span>
         </div>
         <h2 className="font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
           {t("invitations.title", locale)}
         </h2>
-        <p className="mt-1 max-w-[480px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+        <p className="mt-1 max-w-[480px] text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("invitations.sub", locale)}
         </p>
       </div>
@@ -255,17 +255,17 @@ export function InvitationsTab({
           <p className="font-fraunces text-2xl" style={{ color: completed.length > 0 ? "var(--color-action-primary-bg)" : "var(--color-text-primary)" }}>
             {completed.length}
           </p>
-          <p className="text-[10px] text-[var(--color-text-muted)]">{t("invitations.statReceived", locale)}</p>
+          <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statReceived", locale)}</p>
         </div>
         <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: pending.length > 0 ? "var(--color-accent-primary)" : "var(--color-text-primary)" }}>
             {pending.length}
           </p>
-          <p className="text-[10px] text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
+          <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
         </div>
         <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
           <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}/5</p>
-          <p className="text-[10px] text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
+          <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
         </div>
       </div>
 
@@ -284,7 +284,7 @@ export function InvitationsTab({
       {/* 4a. Kolléga-picker (org-tagoknál) */}
       {colleagues.length > 0 && canCreate ? (
         <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
-          <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">
+          <p className="text-caption font-semibold text-[var(--color-text-primary)]">
             + {t("invitations.colleagueSectionTitle", locale)}
           </p>
           <p className="mt-1 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
@@ -296,7 +296,7 @@ export function InvitationsTab({
               value={colleagueSearch}
               onChange={(e) => setColleagueSearch(e.target.value)}
               placeholder={t("invitations.colleagueSearchPlaceholder", locale)}
-              className="mt-3 min-h-[40px] w-full rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-[13px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
+              className="mt-3 min-h-[40px] w-full rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-caption text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
             />
           ) : null}
           <div className="mt-3 flex max-h-[260px] flex-col gap-1.5 overflow-y-auto">
@@ -313,11 +313,11 @@ export function InvitationsTab({
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] text-[12px] font-bold text-[var(--color-action-primary-bg)]">
                     {c.name.slice(0, 1).toUpperCase()}
                   </div>
-                  <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-[var(--color-text-primary)]">
+                  <span className="min-w-0 flex-1 truncate text-caption font-medium text-[var(--color-text-primary)]">
                     {c.name}
                   </span>
                   {c.isTeammate ? (
-                    <span className="shrink-0 rounded-full bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-action-primary-bg)]">
+                    <span className="shrink-0 rounded-full bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-[var(--color-action-primary-bg)]">
                       {t("invitations.colleagueTeammateBadge", locale)}
                     </span>
                   ) : null}
@@ -344,7 +344,7 @@ export function InvitationsTab({
 
       {/* 4. Create form */}
       <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
-        <p className="mb-3 text-[13px] font-semibold text-[var(--color-text-primary)]">
+        <p className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
           + {colleagues.length > 0
             ? t("invitations.externalSectionTitle", locale)
             : t("invitations.formTitle", locale)}
@@ -364,13 +364,13 @@ export function InvitationsTab({
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 placeholder={t("invitations.formPlaceholder", locale)}
-                className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-[13px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
+                className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-caption text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
               />
               <button
                 type="button"
                 onClick={handleCreate}
                 disabled={isCreating}
-                className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
+                className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-caption font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
               >
                 {isCreating ? "..." : t("invitations.formSubmit", locale)}
               </button>
@@ -388,7 +388,7 @@ export function InvitationsTab({
             </div>
           </>
         ) : (
-          <p className="text-[13px] text-[var(--color-text-muted)]">
+          <p className="text-caption text-[var(--color-text-muted)]">
             {t("invitations.limitReached", locale)}
           </p>
         )}
@@ -432,7 +432,7 @@ export function InvitationsTab({
                 <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-action-primary-bg)]/30 hover:shadow-sm">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-action-primary-bg)" }}>✓</div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-[var(--color-text-primary)]">
+                    <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
                       {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">
@@ -442,7 +442,7 @@ export function InvitationsTab({
                         : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
                     </p>
                   </div>
-                  <span className="rounded px-2 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}>
+                  <span className="rounded px-2 py-0.5 text-micro font-semibold" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}>
                     {t("invitations.statusCompleted", locale)}
                   </span>
                 </div>
@@ -462,7 +462,7 @@ export function InvitationsTab({
                     {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-[var(--color-text-primary)]">
+                    <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
                       {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">
@@ -473,7 +473,7 @@ export function InvitationsTab({
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <span className="rounded px-2 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
+                    <span className="rounded px-2 py-0.5 text-micro font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
                       {inv.status === "AWAITING_APPROVAL"
                         ? t("invitations.statusAwaitingApproval", locale)
                         : t("invitations.statusPending", locale)}
@@ -522,7 +522,7 @@ export function InvitationsTab({
                   {isDone ? "✓" : "📩"}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-medium text-[var(--color-text-primary)]">{name}</p>
+                  <p className="text-caption font-medium text-[var(--color-text-primary)]">{name}</p>
                   <p className="text-[11px] text-[var(--color-text-muted)]">
                     {isDone
                       ? t("invitations.statusCompleted", locale)

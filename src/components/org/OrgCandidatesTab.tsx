@@ -68,15 +68,15 @@ export function OrgCandidatesTab({
       <div className="mt-4 grid grid-cols-3 gap-3">
         <div className="rounded-xl border border-sand bg-cream p-3 text-center">
           <p className="font-fraunces text-[22px] leading-none tabular-nums text-ink">{candidates.length}</p>
-          <p className="mt-1 text-[10px] uppercase tracking-wide text-muted">{isHu ? "Összes" : "Total"}</p>
+          <p className="mt-1 text-micro uppercase tracking-wide text-muted">{isHu ? "Összes" : "Total"}</p>
         </div>
         <div className="rounded-xl border border-sand bg-cream p-3 text-center">
           <p className="font-fraunces text-[22px] leading-none tabular-nums text-ink">{pending}</p>
-          <p className="mt-1 text-[10px] uppercase tracking-wide text-muted">{isHu ? "Folyamatban" : "Pending"}</p>
+          <p className="mt-1 text-micro uppercase tracking-wide text-muted">{isHu ? "Folyamatban" : "Pending"}</p>
         </div>
         <div className="rounded-xl border border-sand bg-cream p-3 text-center">
           <p className="font-fraunces text-[22px] leading-none tabular-nums text-sage">{completed}</p>
-          <p className="mt-1 text-[10px] uppercase tracking-wide text-muted">{isHu ? "Kész" : "Done"}</p>
+          <p className="mt-1 text-micro uppercase tracking-wide text-muted">{isHu ? "Kész" : "Done"}</p>
         </div>
       </div>
 

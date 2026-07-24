@@ -44,13 +44,13 @@ export default async function AssessmentLayerDetailPage({
       <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-sand bg-cream p-4">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
+            <p className="text-micro uppercase tracking-[0.16em] text-muted">
               {t("assessmentLayers.type", locale)}
             </p>
             <p className="mt-1 text-sm font-semibold text-ink">{layer.type}</p>
           </div>
           <div className="rounded-xl border border-sand bg-cream p-4">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
+            <p className="text-micro uppercase tracking-[0.16em] text-muted">
               {t("assessmentLayers.order", locale)}
             </p>
             <p className="mt-1 text-sm font-semibold text-ink">{layer.order}</p>
@@ -58,7 +58,7 @@ export default async function AssessmentLayerDetailPage({
         </div>
 
         <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
+          <p className="text-micro uppercase tracking-[0.16em] text-muted">
             {t("assessmentLayers.dependencies", locale)}
           </p>
           {layer.dependencies.length === 0 ? (
@@ -71,7 +71,7 @@ export default async function AssessmentLayerDetailPage({
         </div>
 
         <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
-          <p className="text-[10px] uppercase tracking-[0.16em] text-muted">
+          <p className="text-micro uppercase tracking-[0.16em] text-muted">
             {t("assessmentLayers.renderTargets", locale)}
           </p>
           <p className="mt-1 text-sm text-ink-body">
@@ -85,7 +85,7 @@ export default async function AssessmentLayerDetailPage({
         <div className="mt-6">
           <Link
             href="/assessment-layers"
-            className="inline-flex min-h-[42px] items-center rounded-lg bg-action-primary-bg px-4 text-[13px] font-semibold text-white"
+            className="inline-flex min-h-[42px] items-center rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white"
           >
             {t("assessmentLayers.backToLayers", locale)}
           </Link>

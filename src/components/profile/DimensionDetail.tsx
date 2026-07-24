@@ -60,7 +60,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
                 <div className="shrink-0 flex items-center gap-2">
                   <span className="font-mono text-xs text-ink-body">{dim.score}%</span>
                   <span
-                    className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                    className="rounded-full px-2 py-0.5 text-micro font-semibold uppercase tracking-wide"
                     style={{
                       backgroundColor: `${dim.color}18`,
                       color: dim.color,

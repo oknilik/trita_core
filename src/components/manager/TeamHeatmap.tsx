@@ -92,7 +92,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                     >
                       {dim.code}
                     </span>
-                    <span className="text-[10px] font-semibold text-gray-500 max-w-[72px] leading-tight text-center">
+                    <span className="text-micro font-semibold text-gray-500 max-w-[72px] leading-tight text-center">
                       {dim.label}
                     </span>
                   </div>
@@ -143,9 +143,9 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                           <>
                             <span className={`text-sm font-bold tabular-nums ${textClass}`}>
                               {score}
-                              <span className="text-[10px] font-semibold opacity-70">%</span>
+                              <span className="text-micro font-semibold opacity-70">%</span>
                             </span>
-                            <span className={`text-[10px] font-semibold uppercase tracking-wide ${textClass} opacity-70`}>
+                            <span className={`text-micro font-semibold uppercase tracking-wide ${textClass} opacity-70`}>
                               {scoreZone(score, locale).label}
                             </span>
                           </>
@@ -192,7 +192,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                 className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50/60 p-3"
               >
                 <span
-                  className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                  className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                   style={{ backgroundColor: dim.color }}
                 >
                   {dim.code}

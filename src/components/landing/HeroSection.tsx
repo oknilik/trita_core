@@ -44,7 +44,7 @@ function SelfPanel() {
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-[10px] uppercase tracking-[2px] text-white/70">
+          <p className="text-micro uppercase tracking-[2px] text-white/70">
             {t("landing.selfPanelEyebrow", locale)}
           </p>
           {/* Minta-jelölés — a kártya illusztráció, ne tűnjön valós adatnak */}
@@ -52,14 +52,14 @@ function SelfPanel() {
             {t("landing.sampleBadge", locale)}
           </span>
         </div>
-        <p className="mt-1.5 font-fraunces text-[15px] text-white/80">
+        <p className="mt-1.5 font-fraunces text-body text-white/80">
           {t("landing.selfPanelName", locale)}
         </p>
         <div className="mt-0.5 flex items-center gap-2.5">
           <p className="font-fraunces text-[22px] font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
-          <span className="rounded-md bg-white/15 px-2 py-0.5 text-[10px] font-medium text-white/85">
+          <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
             Top 25%
           </span>
         </div>
@@ -79,9 +79,9 @@ function SelfPanel() {
                   key={dim.name}
                   className={`px-2 py-3.5 text-center ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
                 >
-                  <p className="mb-1 truncate text-[10px] text-[var(--color-text-muted)]">{dim.name}</p>
+                  <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
                   <p className={`mb-1 font-fraunces text-[20px] leading-none ${colors.text}`}>{dim.value}</p>
-                  <span className={`inline-block rounded px-1.5 py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}>
+                  <span className={`inline-block rounded px-1.5 py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}>
                     {getDimensionLabel(dim.value, locale)}
                   </span>
                 </div>
@@ -92,19 +92,19 @@ function SelfPanel() {
 
         {/* Erősség / figyelendő chipek */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
+          <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
           {strengths.map((d) => (
-            <span key={d} className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-accent-self-deep)]">
+            <span key={d} className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-medium text-[var(--color-accent-self-deep)]">
               {d}
             </span>
           ))}
-          <span className="ml-1 text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
+          <span className="ml-1 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfWatchLabel", locale)}:
           </span>
           {watch.map((d) => (
-            <span key={d} className="rounded bg-[var(--color-surface-highlight-warm)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-accent-primary-strong)]">
+            <span key={d} className="rounded bg-[var(--color-surface-highlight-warm)] px-2 py-0.5 text-micro font-medium text-[var(--color-accent-primary-strong)]">
               {d}
             </span>
           ))}
@@ -112,21 +112,21 @@ function SelfPanel() {
 
         {/* Szerepkör-illeszkedés — a valódi RoleFitSection "erős" sora */}
         <div className="mb-1 mt-4">
-          <p className="mb-2 text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+          <p className="mb-2 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
             {t("results.roleFitEyebrow", locale)}
           </p>
           <div
             className="rounded-r-[14px] bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4"
             style={{ borderLeft: "4px solid var(--color-action-primary-bg)" }}
           >
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+            <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
               {t("content.roleFitStrong", locale)}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {[t("landing.selfRole1", locale), t("landing.selfRole2", locale), t("landing.selfRole3", locale)].map((role) => (
                 <span
                   key={role}
-                  className="rounded-full bg-[var(--color-action-primary-bg)]/[0.15] px-2.5 py-1 text-[10px] text-[var(--color-action-primary-bg)]"
+                  className="rounded-full bg-[var(--color-action-primary-bg)]/[0.15] px-2.5 py-1 text-micro text-[var(--color-action-primary-bg)]"
                 >
                   {role}
                 </span>
@@ -165,7 +165,7 @@ function TeamPanel() {
       <div className="rounded-2xl border border-sand bg-white p-5 shadow-lg shadow-black/[0.06] md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+            <p className="font-mono text-micro uppercase tracking-widest text-bronze">
               {t("landing.teamPanelEyebrow", locale)}
             </p>
             <p className="mt-1 font-fraunces text-xl text-ink">{t("landing.teamPanelTitle", locale)}</p>
@@ -175,7 +175,7 @@ function TeamPanel() {
             <span className="rounded border border-sand px-1.5 py-[2px] text-micro uppercase tracking-wide text-muted">
               {t("landing.sampleBadge", locale)}
             </span>
-            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
+            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-micro font-semibold text-emerald-700">
               {t("landing.teamPanelPublished", locale)}
             </span>
           </div>
@@ -184,22 +184,22 @@ function TeamPanel() {
         {/* Aggregált statok */}
         <div className="mt-4 grid grid-cols-3 gap-3 border-t border-sand pt-4">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatMembersLabel", locale)}
             </p>
             <p className="mt-0.5 font-fraunces text-xl text-ink">6</p>
           </div>
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatCompletionLabel", locale)}
             </p>
             <p className="mt-0.5 font-fraunces text-xl text-ink">100%</p>
           </div>
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+            <p className="font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamPatternLabel", locale)}
             </p>
-            <p className="mt-0.5 font-fraunces text-[15px] leading-tight text-ink">
+            <p className="mt-0.5 font-fraunces text-body leading-tight text-ink">
               {t("landing.teamPatternName", locale)}
             </p>
           </div>
@@ -219,12 +219,12 @@ function TeamPanel() {
               </span>
             </div>
           ))}
-          <p className="mt-0.5 text-[10px] text-muted">{t("landing.teamPrivacyNote", locale)}</p>
+          <p className="mt-0.5 text-micro text-muted">{t("landing.teamPrivacyNote", locale)}</p>
         </div>
 
         {/* Tanácsadói narratíva */}
         <div className="mt-4 border-t border-sand pt-4">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {t("landing.teamNarrativeLabel", locale)}
           </p>
           <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
@@ -239,13 +239,13 @@ function TeamPanel() {
         className="flex items-center justify-between gap-3 rounded-xl border border-bronze/20 bg-bronze/8 p-3.5 transition-colors hover:bg-bronze/15"
       >
         <div>
-          <p className="font-dm-sans text-[10px] uppercase tracking-wide text-bronze">
+          <p className="font-dm-sans text-micro uppercase tracking-wide text-bronze">
             {t("landing.teamPilotLabel", locale)}
           </p>
-          <p className="text-[13px] font-semibold text-ink">{t("landing.teamPilotTitle", locale)}</p>
+          <p className="text-caption font-semibold text-ink">{t("landing.teamPilotTitle", locale)}</p>
           <p className="text-[11px] text-muted">{t("landing.teamPilotDesc", locale)}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-[10px] font-semibold text-white">
+        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-micro font-semibold text-white">
           {t("landing.teamPilotCta", locale)}
         </span>
       </Link>
@@ -361,7 +361,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 ))}
               </motion.div>
             ) : (
-              <motion.p variants={fadeUp} className="text-center text-[13px] text-[var(--color-text-muted)] sm:text-left">
+              <motion.p variants={fadeUp} className="text-center text-caption text-[var(--color-text-muted)] sm:text-left">
                 {t("landing.teamMicrocopy", locale)}
               </motion.p>
             )}

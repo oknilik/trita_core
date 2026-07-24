@@ -213,7 +213,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
             return (
               <div key={dim.code} className="flex items-center gap-3">
                 <span
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                   style={{ backgroundColor: dim.color }}
                 >
                   {dim.code}
@@ -247,7 +247,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     <span className="text-xs text-gray-300">–</span>
                   )}
                   {stdDev !== undefined && scored.length > 1 && (
-                    <p className="text-[10px] text-gray-400">
+                    <p className="text-micro text-gray-400">
                       ±{stdDev}
                     </p>
                   )}
@@ -257,7 +257,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
           })}
         </div>
         {scored.length > 1 && (
-          <p className="mt-2 text-[10px] text-gray-400">
+          <p className="mt-2 text-micro text-gray-400">
             {t("manager.teamInsights.stdDevHint", locale)}
           </p>
         )}
@@ -281,7 +281,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: topStrength.color }}
                   >
                     {topStrength.code}
@@ -310,7 +310,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: topGap.color }}
                   >
                     {topGap.code}
@@ -339,7 +339,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: mostDiverseDim.color }}
                   >
                     {mostDiverseDim.code}

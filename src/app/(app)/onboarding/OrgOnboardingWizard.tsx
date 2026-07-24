@@ -353,7 +353,7 @@ export function OrgOnboardingWizard() {
         </div>
 
         <div className="mb-6 rounded-xl border border-sand bg-white/70 p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
+          <p className="text-micro font-semibold uppercase tracking-[0.16em] text-muted">
             {t("orgOnboarding.layerRoadmap", locale)}
           </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -376,7 +376,7 @@ export function OrgOnboardingWizard() {
               return (
                 <div key={layer.id} className="flex items-center justify-between rounded-lg border border-sand/80 bg-cream px-3 py-2">
                   <span className="text-[12px] font-medium text-ink">{layer.label}</span>
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${statusClasses}`}>
+                  <span className={`rounded-full px-2 py-0.5 text-micro font-semibold ${statusClasses}`}>
                     {statusLabel}
                   </span>
                 </div>

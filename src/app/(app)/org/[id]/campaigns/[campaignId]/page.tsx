@@ -456,7 +456,7 @@ export default async function CampaignDetailPage({
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage/15 font-mono text-[11px] font-bold text-sage-dark">
                       {idx + 1}
                     </span>
-                    <span className="w-56 shrink-0 text-[13px] font-medium text-ink md:w-72">
+                    <span className="w-56 shrink-0 text-caption font-medium text-ink md:w-72">
                       {label}
                     </span>
                     <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
@@ -488,7 +488,7 @@ export default async function CampaignDetailPage({
                 style={{ backgroundColor: "var(--color-sage)" }}
               />
               <p
-                className="font-mono text-[10px] uppercase tracking-widest"
+                className="font-mono text-micro uppercase tracking-widest"
                 style={{ color: "var(--color-muted)" }}
               >
                 {t("org.campaign.selfAssessment", locale)}
@@ -512,7 +512,7 @@ export default async function CampaignDetailPage({
                 style={{ backgroundColor: "#059669" }}
               />
               <p
-                className="font-mono text-[10px] uppercase tracking-widest"
+                className="font-mono text-micro uppercase tracking-widest"
                 style={{ color: "var(--color-muted)" }}
               >
                 {t("org.campaign.observerDone", locale)}
@@ -536,7 +536,7 @@ export default async function CampaignDetailPage({
                 style={{ backgroundColor: "var(--color-visual-gradient-indigo)" }}
               />
               <p
-                className="font-mono text-[10px] uppercase tracking-widest"
+                className="font-mono text-micro uppercase tracking-widest"
                 style={{ color: "var(--color-muted)" }}
               >
                 {t("org.campaign.fullyComplete", locale)}
@@ -599,7 +599,7 @@ export default async function CampaignDetailPage({
                 </div>
 
                 <div>
-                  <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-muted">
+                  <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
                     {t("org.campaign.psItemsTitle", locale)}
                   </p>
                   <div className="flex flex-col gap-2.5">

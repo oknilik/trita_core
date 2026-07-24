@@ -91,7 +91,7 @@ export function TeamRoles({
 
   return (
     <section>
-      <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+      <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
         {t("results.teamRoleEyebrow", locale)}
       </p>
       <div className="mt-1.5 mb-2 flex flex-wrap items-center gap-2.5">
@@ -100,7 +100,7 @@ export function TeamRoles({
         </h2>
         {/* Forrás-badge: mért kitöltés vs. személyiség-alapú becslés. */}
         <span
-          className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+          className={`rounded-full px-2.5 py-0.5 text-micro font-bold uppercase tracking-wide ${
             isMeasured
               ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
               : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
@@ -111,7 +111,7 @@ export function TeamRoles({
             : t("results.teamRoleSourceEstimate", locale)}
         </span>
       </div>
-      <p className="mb-4 max-w-lg text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+      <p className="mb-4 max-w-lg text-caption leading-relaxed text-[var(--color-text-secondary)]">
         {t("content.teamRoleSub", locale)}
       </p>
 
@@ -154,7 +154,7 @@ export function TeamRoles({
             >
               {/* Badge */}
               <span
-                className={`mb-2 self-start rounded px-[9px] py-[3px] text-[10px] font-bold uppercase tracking-wide ${
+                className={`mb-2 self-start rounded px-[9px] py-[3px] text-micro font-bold uppercase tracking-wide ${
                   isPrimary
                     ? "bg-[var(--color-action-primary-bg)] text-white"
                     : idx === 1
@@ -192,10 +192,10 @@ export function TeamRoles({
       {peer && peer.raterCount > 0 ? (
         <div className="mt-6 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-5">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">
+            <p className="text-caption font-semibold text-[var(--color-text-primary)]">
               {t("results.teamRolePeerTitle", locale)}
             </p>
-            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 font-mono text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
               {tf("results.teamRolePeerCount", locale, { n: peer.raterCount })}
             </span>
           </div>

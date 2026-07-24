@@ -20,7 +20,7 @@ export function EmojiRow({
           type="button"
           tabIndex={-1}
           onClick={() => onPick(emoji)}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-[15px] transition hover:bg-cream"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-body transition hover:bg-cream"
         >
           {emoji}
         </button>

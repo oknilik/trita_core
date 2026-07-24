@@ -83,7 +83,7 @@ export function TeamReportMemberView({
                 {initialsOf(vm.memberName)}
               </div>
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+                <p className="font-mono text-micro uppercase tracking-widest text-bronze">
                   {isHu ? "// a te nézeted" : "// your view"}
                 </p>
                 <h2 className="mt-0.5 font-fraunces text-2xl text-ink">
@@ -167,7 +167,7 @@ export function TeamReportMemberView({
                       </span>
                       <span className="w-12 shrink-0 text-right">
                         {d.aboveTeam ? (
-                          <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-sage-dark">
+                          <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro font-semibold text-sage-dark">
                             +{delta}
                           </span>
                         ) : null}
@@ -175,7 +175,7 @@ export function TeamReportMemberView({
                     </div>
                   );
                 })}
-                <p className="mt-1 text-[10px] text-muted">
+                <p className="mt-1 text-micro text-muted">
                   {isHu
                     ? "Színes pont = a te értéked · halvány sáv = a csapat átlaga ± szórása."
                     : "Colored dot = your value · faint band = team average ± spread."}
@@ -239,11 +239,11 @@ export function TeamReportMemberView({
                   {vm.primaryRole.code}
                 </div>
                 {vm.roleFit === "rare" ? (
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
                     {isHu ? "kulcsszerep" : "key role"}
                   </span>
                 ) : vm.roleFit === "shared" ? (
-                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-700 ring-1 ring-sky-200">
+                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-sky-700 ring-1 ring-sky-200">
                     {isHu ? "közös erő" : "shared strength"}
                   </span>
                 ) : null}
@@ -292,7 +292,7 @@ export function TeamReportMemberView({
           <DashboardPanel className="p-6">
             {vm.patternLabel && (
               <div className="mb-5 rounded-[14px] bg-gradient-to-br from-cream to-sage/10 p-4 ring-1 ring-sand">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+                <p className="font-mono text-micro uppercase tracking-widest text-muted">
                   {isHu ? "Csapatmintázat" : "Team pattern"}
                 </p>
                 <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
@@ -302,7 +302,7 @@ export function TeamReportMemberView({
             )}
             {vm.strengths && (
               <div className="rounded-[14px] border-l-4 border-l-emerald-500/60 bg-emerald-50/40 p-4">
-                <p className="mb-1.5 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-emerald-700">
+                <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-emerald-700">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 8.5l3 3 7-7" />
                   </svg>
@@ -311,7 +311,7 @@ export function TeamReportMemberView({
                 {/* EN lekérés jóváhagyott fordítás nélkül: jelezzük, hogy az
                     eredeti magyar szöveg látszik. */}
                 {!isHu && !hasApprovedEnTranslation(reportInput) ? (
-                  <p className="mb-2 text-[10px] text-amber-700">
+                  <p className="mb-2 text-micro text-amber-700">
                     Shown in the Hungarian original — English translation pending
                     consultant approval.
                   </p>
@@ -363,7 +363,7 @@ export function TeamReportMemberView({
             </Link>
           </span>
         </div>
-        <p className="mt-2 text-[10px] text-muted">
+        <p className="mt-2 text-micro text-muted">
           {isHu
             ? "A menedzsered egy bővebb, vezetői nézetet lát ugyanerről a csapatképről. Egyéni adatot másokról sehol nem mutatunk."
             : "Your manager sees a fuller, leadership view of the same team picture. We never show individual data about others anywhere."}

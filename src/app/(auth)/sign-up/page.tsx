@@ -319,7 +319,7 @@ function SignUpContent() {
             {/* Divider — compact */}
             <div className="mb-3 flex items-center gap-3">
               <div className="h-px flex-1 bg-[var(--color-border-default)]" />
-              <span className="text-[10px] text-[var(--color-text-muted)]">{t("common.or", locale)}</span>
+              <span className="text-micro text-[var(--color-text-muted)]">{t("common.or", locale)}</span>
               <div className="h-px flex-1 bg-[var(--color-border-default)]" />
             </div>
 

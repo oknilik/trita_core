@@ -169,12 +169,12 @@ export function TeamFeedbackRequests({
         {t("team.fb.eyebrow", locale)}
       </p>
       <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.fb.title", locale)}</h2>
-      <p className="mb-4 text-[13px] leading-relaxed text-ink-body">{t("team.fb.hint", locale)}</p>
+      <p className="mb-4 text-caption leading-relaxed text-ink-body">{t("team.fb.hint", locale)}</p>
 
       {/* Rám váró kérések */}
       {forMe.length > 0 && (
         <div className="mb-5">
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
             {tf("team.fb.forMeLabel", locale, { count: forMe.length })}
           </p>
           <div className="flex flex-col gap-3">
@@ -312,7 +312,7 @@ export function TeamFeedbackRequests({
       {/* Saját kéréseim + válaszok */}
       {loaded && mine.length > 0 && (
         <div className="mb-5">
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
             {t("team.fb.mineLabel", locale)}
           </p>
           <div className="flex flex-col gap-3">
@@ -361,7 +361,7 @@ export function TeamFeedbackRequests({
       {/* Kampány-körből kapott javaslataim */}
       {loaded && (suggestions.length > 0 || pendingAnonymous > 0) && (
         <div>
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+          <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
             {t("team.fb.suggestionsLabel", locale)}
           </p>
           {suggestions.length > 0 && (

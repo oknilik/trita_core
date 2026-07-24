@@ -104,7 +104,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
         {c ? (
           <>
             {/* Tag */}
-            <p className="mb-3 text-[10px] font-medium uppercase tracking-[2px] text-[var(--color-accent-primary-soft)]">
+            <p className="mb-3 text-micro font-medium uppercase tracking-[2px] text-[var(--color-accent-primary-soft)]">
               {c.tag}
             </p>
 
@@ -115,7 +115,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
 
             {/* Subtitle */}
             {c.subtitle && (
-              <p className="mb-6 text-[13px] leading-relaxed text-white/40">
+              <p className="mb-6 text-caption leading-relaxed text-white/40">
                 {c.subtitle}
               </p>
             )}
@@ -123,7 +123,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
             {/* Value preview */}
             {c.valueLabel && c.valueItems && (
               <div className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3.5">
-                <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[1.5px] text-white/30">
+                <p className="mb-2.5 text-micro font-semibold uppercase tracking-[1.5px] text-white/30">
                   {c.valueLabel}
                 </p>
                 <ul className="space-y-2">
@@ -140,14 +140,14 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
         ) : (
           /* No intent selected yet */
           <>
-            <p className="mb-3 text-[10px] font-medium uppercase tracking-[2px] text-white/20">
+            <p className="mb-3 text-micro font-medium uppercase tracking-[2px] text-white/20">
               első lépés
             </p>
             <h2 className="mb-2 font-fraunces text-[22px] leading-snug text-white">
               Válaszd ki, mire{" "}
               <span className="text-[var(--color-accent-primary-soft)]">használnád.</span>
             </h2>
-            <p className="text-[13px] leading-relaxed text-white/40">
+            <p className="text-caption leading-relaxed text-white/40">
               A választásod alapján személyre szabjuk a regisztrációt és az első lépéseket.
             </p>
           </>

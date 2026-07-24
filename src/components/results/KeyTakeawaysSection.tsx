@@ -19,14 +19,14 @@ export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: Key
       className="mt-6 rounded-2xl p-6 px-7"
       style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
     >
-      <p className="mb-3 text-[10px] uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
+      <p className="mb-3 text-micro uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
         {t("results.takeawaysEyebrow", locale)}
       </p>
       <div className="flex flex-col gap-3">
         {paragraphs.map((para, i) => (
           <div key={i} className="flex items-start gap-3">
             <div className="mt-[6px] h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-            <p className="text-[13px] leading-[1.7] text-white/[0.55]">{para}</p>
+            <p className="text-caption leading-[1.7] text-white/[0.55]">{para}</p>
           </div>
         ))}
       </div>

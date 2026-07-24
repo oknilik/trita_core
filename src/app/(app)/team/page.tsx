@@ -100,7 +100,7 @@ export default async function TeamListPage() {
         {/* Create new team — csak menedzser+ / tanácsadói felületen. */}
         {canCreateTeam ? (
           <Card as="section" spacing="lg" className="md:p-8" id="create-team">
-            <SectionEyebrow className="mb-1 text-[10px] tracking-[0.18em]">
+            <SectionEyebrow className="mb-1 text-micro tracking-[0.18em]">
               {"// "}
               {t("team.createNew", locale)}
             </SectionEyebrow>
@@ -118,7 +118,7 @@ export default async function TeamListPage() {
         <section className="flex flex-col gap-5">
           <div className="flex items-center gap-2">
             <div className="h-px w-4 bg-bronze" />
-            <SectionEyebrow as="h2" className="text-[10px] tracking-[0.18em]">
+            <SectionEyebrow as="h2" className="text-micro tracking-[0.18em]">
               {t("team.teamsLabel", locale)} ({teams.length})
             </SectionEyebrow>
           </div>

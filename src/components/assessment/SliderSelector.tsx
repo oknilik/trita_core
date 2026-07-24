@@ -40,7 +40,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               onMouseLeave={() => setHoveredMark(null)}
               whileTap={{ scale: 0.94 }}
               className={[
-                "flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-[15px] font-medium transition-all",
+                "flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-body font-medium transition-all",
                 isSelected
                   ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/25"
                   : isHovered
@@ -60,7 +60,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
       {/* End labels with center dot */}
       <div className="mb-4 flex w-[320px] items-center justify-between">
         <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endLeft', locale)}</span>
-        <span className="text-[10px] text-[var(--color-border-default)]">·</span>
+        <span className="text-micro text-[var(--color-border-default)]">·</span>
         <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endRight', locale)}</span>
       </div>
 

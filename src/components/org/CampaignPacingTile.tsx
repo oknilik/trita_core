@@ -88,7 +88,7 @@ export function CampaignPacingTile({
     <section className="rounded-[18px] border border-sage/35 bg-sage/5 p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-sage-dark">
+          <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
             {isHu ? "Futó mérés-sorozat" : "Running measurement series"}
           </p>
           <p className="mt-1 truncate text-sm font-semibold text-ink">
@@ -97,7 +97,7 @@ export function CampaignPacingTile({
           </p>
 
           {data.openCount > 0 && stepLabel ? (
-            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-body">
+            <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu ? (
                 <>Éppen kitölthető: <span className="font-semibold text-ink">{stepLabel}</span> — {data.openCount} tagnál nyitva, {data.doneCount}/{data.totalParticipants} teljesen végzett.</>
               ) : (
@@ -105,13 +105,13 @@ export function CampaignPacingTile({
               )}
             </p>
           ) : data.scheduledCount > 0 ? (
-            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-body">
+            <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu
                 ? `Most nincs nyitott kérdőív — a következő ${data.scheduledCount} tagnak ütemezve.`
                 : `No questionnaire open right now — the next is scheduled for ${data.scheduledCount} member(s).`}
             </p>
           ) : (
-            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-body">
+            <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu
                 ? `Minden résztvevő végzett (${data.doneCount}/${data.totalParticipants}).`
                 : `All participants are done (${data.doneCount}/${data.totalParticipants}).`}
@@ -140,7 +140,7 @@ export function CampaignPacingTile({
               </button>
             ) : null}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] uppercase tracking-wide text-muted">
+              <span className="text-micro uppercase tracking-wide text-muted">
                 {isHu ? "Ütem" : "Pace"}
               </span>
               {[0, 12, 24, 48].map((h) => (

@@ -156,7 +156,7 @@ export default async function ProfileResultsPage({
             <h1 className="font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)] md:text-3xl">
               {t("results.draftInProgressTitle", locale)}
             </h1>
-            <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mx-auto mt-3 max-w-xs text-body leading-relaxed text-[var(--color-text-muted)]">
               {t("results.draftInProgressBody", locale)}
             </p>
             <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[var(--color-text-muted)]">
@@ -167,7 +167,7 @@ export default async function ProfileResultsPage({
               className={getButtonClassName({
                 size: "lg",
                 className:
-                  "mt-8 rounded-xl px-8 text-[15px] shadow-md shadow-[var(--color-action-primary-bg)]/20 hover:-translate-y-px hover:brightness-[1.06]",
+                  "mt-8 rounded-xl px-8 text-body shadow-md shadow-[var(--color-action-primary-bg)]/20 hover:-translate-y-px hover:brightness-[1.06]",
               })}
             >
               {t("results.draftInProgressCta", locale)}
@@ -190,7 +190,7 @@ export default async function ProfileResultsPage({
           <h1 className="font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)] md:text-3xl">
             {t("results.nextStepTestTitle", locale)}
           </h1>
-          <p className="mx-auto mt-3 max-w-xs text-[15px] leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mx-auto mt-3 max-w-xs text-body leading-relaxed text-[var(--color-text-muted)]">
             {t("results.nextStepTestBody", locale)}
           </p>
           <Link
@@ -198,7 +198,7 @@ export default async function ProfileResultsPage({
             className={getButtonClassName({
               size: "lg",
               className:
-                "mt-8 rounded-xl px-8 text-[15px] shadow-md shadow-[var(--color-action-primary-bg)]/20 hover:-translate-y-px hover:brightness-[1.06]",
+                "mt-8 rounded-xl px-8 text-body shadow-md shadow-[var(--color-action-primary-bg)]/20 hover:-translate-y-px hover:brightness-[1.06]",
             })}
           >
             {t("actions.startTest", locale)}

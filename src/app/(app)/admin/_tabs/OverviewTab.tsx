@@ -145,7 +145,7 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
           href="/org/new"
           className="group rounded-2xl border border-sage/40 bg-sage/5 p-5 transition hover:-translate-y-0.5 hover:border-sage"
         >
-          <p className="text-[15px] font-semibold text-ink group-hover:text-sage-dark">
+          <p className="text-body font-semibold text-ink group-hover:text-sage-dark">
             + Új szervezet
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">
@@ -160,7 +160,7 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
               : "border-sand bg-white hover:border-sage/40"
           }`}
         >
-          <p className="text-[15px] font-semibold text-ink group-hover:text-bronze">
+          <p className="text-body font-semibold text-ink group-hover:text-bronze">
             Kérdések{newInquiryCount > 0 ? ` (${newInquiryCount} új)` : ""}
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">
@@ -171,7 +171,7 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
           href="/admin?tab=orgs"
           className="group rounded-2xl border border-sand bg-white p-5 transition hover:-translate-y-0.5 hover:border-sage/40"
         >
-          <p className="text-[15px] font-semibold text-ink group-hover:text-bronze">
+          <p className="text-body font-semibold text-ink group-hover:text-bronze">
             Szervezetek kezelése
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">
@@ -182,7 +182,7 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
       {!adminHasSelfResult && (
         <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-[15px] font-semibold text-ink">
+            <p className="text-body font-semibold text-ink">
               A saját TRITAN-profilod még nincs kitöltve
             </p>
             <p className="mt-1 text-xs leading-relaxed text-ink-body">
@@ -191,7 +191,7 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
           </div>
           <Link
             href="/assessment"
-            className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg border border-sand bg-white px-4 text-[13px] font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink"
+            className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg border border-sand bg-white px-4 text-caption font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink"
           >
             Teszt indítása →
           </Link>

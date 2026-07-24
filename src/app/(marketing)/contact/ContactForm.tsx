@@ -66,7 +66,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   if (success) {
     return (
       <div className="rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-8">
-        <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+        <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
           {t("contact.successTitle", locale)}
         </p>
         <h3 className="mt-3 font-fraunces text-[32px] leading-tight text-ink">
@@ -84,7 +84,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   }
 
   const inputClass =
-    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-[15px] focus:border-bronze/40 focus:bg-white focus:ring-2 focus:ring-bronze/12";
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-white focus:ring-2 focus:ring-bronze/12";
   const labelClass = "block text-sm font-medium text-ink";
 
   return (

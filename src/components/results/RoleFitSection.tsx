@@ -64,7 +64,7 @@ export function RoleFitSection({
     <div className="py-8">
       <div className="mb-4 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
-        <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+        <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {t("results.roleFitEyebrow", locale)}
         </p>
       </div>
@@ -82,11 +82,11 @@ export function RoleFitSection({
               style={{ borderLeft: `4px solid ${tier.borderColor}` }}
             >
               <p
-                className={`mb-1 text-[10px] font-bold uppercase tracking-wide ${tier.labelColor}`}
+                className={`mb-1 text-micro font-bold uppercase tracking-wide ${tier.labelColor}`}
               >
                 {t(tier.i18nKey, locale)}
               </p>
-              <p className="mb-2.5 text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+              <p className="mb-2.5 text-caption leading-relaxed text-[var(--color-text-secondary)]">
                 {text}
               </p>
               {tierRoles.length > 0 && (
@@ -94,7 +94,7 @@ export function RoleFitSection({
                   {tierRoles.map((role) => (
                     <span
                       key={role}
-                      className={`rounded-full px-2.5 py-1 text-[10px] ${tier.pillClass}`}
+                      className={`rounded-full px-2.5 py-1 text-micro ${tier.pillClass}`}
                     >
                       {role}
                     </span>

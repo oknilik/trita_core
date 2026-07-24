@@ -123,17 +123,17 @@ function CompareTable({
   return (
     <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
       <div className="grid grid-cols-2">
-        <div className="bg-white px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.5px] text-[var(--color-text-secondary)]">
+        <div className="bg-white px-5 py-3 text-micro font-semibold uppercase tracking-[0.5px] text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
-        <div className="bg-[var(--color-text-primary)] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.5px] text-white/60">
+        <div className="bg-[var(--color-text-primary)] px-5 py-3 text-micro font-semibold uppercase tracking-[0.5px] text-white/60">
           {rightLabel}
         </div>
       </div>
       {rows.map(([left, right], i) => (
         <div key={i} className="grid grid-cols-2 border-t border-[var(--color-border-default)]">
-          <div className="bg-white px-5 py-3 text-[13px] text-[var(--color-text-secondary)]">{left}</div>
-          <div className="bg-[var(--color-text-primary)] px-5 py-3 text-[13px] text-white/80">{right}</div>
+          <div className="bg-white px-5 py-3 text-caption text-[var(--color-text-secondary)]">{left}</div>
+          <div className="bg-[var(--color-text-primary)] px-5 py-3 text-caption text-white/80">{right}</div>
         </div>
       ))}
     </div>
@@ -158,7 +158,7 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
     <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
-      <div className="font-dm-sans mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+      <div className="font-dm-sans mb-2 text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
         {"//"} {isHu ? "kulcsgondolat" : "key insight"}
       </div>
       <div className="text-[16px] leading-[1.75] text-white/85">{children}</div>
@@ -305,7 +305,7 @@ export default async function BlogPostPage({
       <div className="mx-auto max-w-[1080px] px-7 pb-0 pt-6">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
+          className="inline-flex items-center gap-1.5 text-caption text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
         >
           <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -322,7 +322,7 @@ export default async function BlogPostPage({
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
+                className={`rounded-full px-2.5 py-0.5 text-micro font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
               >
                 {tag}
               </span>
@@ -347,7 +347,7 @@ export default async function BlogPostPage({
         <div className="mb-8 flex items-center gap-3 border-b border-t border-[var(--color-border-default)] py-3.5">
           <span
             aria-hidden
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-[15px] text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-body text-white"
           >
             t
           </span>
@@ -399,7 +399,7 @@ export default async function BlogPostPage({
                 <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
                   {t("blog.prevArticle", locale)}
                 </span>
-                <span className="font-fraunces text-[15px] leading-[1.3] text-ink">
+                <span className="font-fraunces text-body leading-[1.3] text-ink">
                   {olderPost.title}
                 </span>
               </Link>
@@ -414,7 +414,7 @@ export default async function BlogPostPage({
                 <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
                   {t("blog.nextArticle", locale)}
                 </span>
-                <span className="font-fraunces text-[15px] leading-[1.3] text-ink">
+                <span className="font-fraunces text-body leading-[1.3] text-ink">
                   {newerPost.title}
                 </span>
               </Link>
@@ -441,16 +441,16 @@ export default async function BlogPostPage({
                   {rel.tags.length > 0 && (
                     <div className="mb-1.5 flex flex-wrap gap-1">
                       {rel.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-[var(--color-text-muted)]">
+                        <span key={tag} className="rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
                           {tag}
                         </span>
                       ))}
                     </div>
                   )}
-                  <h3 className="mb-1 font-fraunces text-[15px] leading-[1.25] text-ink">
+                  <h3 className="mb-1 font-fraunces text-body leading-[1.25] text-ink">
                     {rel.title}
                   </h3>
-                  <span className="text-[10px] text-[var(--color-text-muted)]">
+                  <span className="text-micro text-[var(--color-text-muted)]">
                     {new Date(rel.publishedAt).toLocaleDateString(
                       locale === "en" ? "en-GB" : "hu-HU",
                       { year: "numeric", month: "long", day: "numeric" },
@@ -466,13 +466,13 @@ export default async function BlogPostPage({
         {/* CTA block */}
         <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           <div className="flex-1 text-center sm:text-left">
-            <p className="mb-1.5 font-dm-sans text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+            <p className="mb-1.5 font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
               {t("blog.tryEyebrow", locale)}
             </p>
             <h3 className="mb-1.5 font-fraunces text-xl leading-snug text-white">
               {t("blog.tryTitle", locale)}
             </h3>
-            <p className="text-[13px] leading-relaxed text-white/[0.45]">
+            <p className="text-caption leading-relaxed text-white/[0.45]">
               {t("blog.trySub", locale)}
             </p>
           </div>

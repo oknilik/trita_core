@@ -139,7 +139,7 @@ export default async function ManagerCockpitPage() {
       <SurfaceHero
         variant="team"
         eyebrow={
-          <p className="text-[10px] uppercase tracking-[2px] text-white/[0.28]">
+          <p className="text-micro uppercase tracking-[2px] text-white/[0.28]">
             {isHu ? "// csapatvezető cockpit" : "// manager cockpit"}
           </p>
         }
@@ -181,25 +181,25 @@ export default async function ManagerCockpitPage() {
         }
         aside={
           <>
-            <p className="text-[10px] uppercase tracking-[2px] text-white/[0.34]">
+            <p className="text-micro uppercase tracking-[2px] text-white/[0.34]">
               {isHu ? "Összesítés" : "Summary"}
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Kitöltöttség" : "Completion"}</p>
+                <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Kitöltöttség" : "Completion"}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{totalCompletionPct}%</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Függő" : "Pending"}</p>
+                <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Függő" : "Pending"}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalMembers - data.totalCompleted}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Meghívók" : "Invites"}</p>
+                <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Meghívók" : "Invites"}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalPendingInvites}</p>
               </div>
             </div>
             <div className="mt-4">
-              <div className="mb-1.5 flex items-center justify-between text-[10px] text-white/[0.52]">
+              <div className="mb-1.5 flex items-center justify-between text-micro text-white/[0.52]">
                 <span>{isHu ? "Összesített kitöltöttség" : "Overall completion"}</span>
                 <span className="font-semibold text-white/[0.7]">{totalCompletionPct}%</span>
               </div>
@@ -268,8 +268,8 @@ export default async function ManagerCockpitPage() {
                     {initial}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-medium text-ink">{member.displayName}</p>
-                    <p className="text-[10px] text-ink-body">{member.role}</p>
+                    <p className="text-caption font-medium text-ink">{member.displayName}</p>
+                    <p className="text-micro text-ink-body">{member.role}</p>
                   </div>
                   {isDone ? (
                     <DashboardStatusChip label={isHu ? "Kitöltve" : "Done"} tone="sage" />
@@ -281,7 +281,7 @@ export default async function ManagerCockpitPage() {
                       {member.top3Dims.map((d) => (
                         <span
                           key={d.code}
-                          className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold text-white"
+                          className="rounded-full px-1.5 py-0.5 text-micro font-semibold text-white"
                           style={{ backgroundColor: d.color }}
                         >
                           {d.code} {d.value}
@@ -356,9 +356,9 @@ export default async function ManagerCockpitPage() {
                       <span className="font-semibold">{event.memberName}</span>{" "}
                       {label}
                     </p>
-                    <p className="text-[10px] text-ink-body">{event.teamName}</p>
+                    <p className="text-micro text-ink-body">{event.teamName}</p>
                   </div>
-                  <span className="shrink-0 text-[10px] text-muted">{ago}</span>
+                  <span className="shrink-0 text-micro text-muted">{ago}</span>
                 </div>
               );
             })}

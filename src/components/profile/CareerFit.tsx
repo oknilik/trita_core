@@ -156,7 +156,7 @@ export function CareerFit({ dimensions, locale }: CareerFitProps) {
               <h3 className="text-sm font-semibold text-ink">
                 {locale === "hu" ? role.hu : role.en}
               </h3>
-              <span className="shrink-0 rounded-full bg-sage-ghost px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-bronze">
+              <span className="shrink-0 rounded-full bg-sage-ghost px-2 py-0.5 font-mono text-micro uppercase tracking-wide text-bronze">
                 #{idx + 1}
               </span>
             </div>
@@ -171,7 +171,7 @@ export function CareerFit({ dimensions, locale }: CareerFitProps) {
                   style={{ width: `${Math.max(20, strength)}%` }}
                 />
               </div>
-              <span className="shrink-0 font-mono text-[10px] text-muted">
+              <span className="shrink-0 font-mono text-micro text-muted">
                 {t("content.careerFitLabel", locale)}
               </span>
             </div>

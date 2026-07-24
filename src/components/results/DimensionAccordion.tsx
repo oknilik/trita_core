@@ -102,10 +102,10 @@ function AccordionItem({
           >
             <div className="border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-[18px] pb-5">
               {/* 1. Mit jelent ez rólad? */}
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+              <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                 {t("content.accPersonal", locale)}
               </p>
-              <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
+              <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
                 {insight}
               </p>
 
@@ -113,10 +113,10 @@ function AccordionItem({
               {!showUpsell && description && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
-                  <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+                  <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accWorkplace", locale)}
                   </p>
-                  <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
+                  <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
                     {description}
                   </p>
                 </>
@@ -126,7 +126,7 @@ function AccordionItem({
               {hasFacetData && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
-                  <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+                  <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accFacetDetail", locale)}
                   </p>
                   <div className="rounded-lg bg-white/60 p-3">
@@ -172,7 +172,7 @@ function AccordionItem({
                     <p className="text-xs font-semibold text-white">
                       {facetNames.length} {t("results.facetLabel", locale)}
                     </p>
-                    <p className="truncate text-[10px] text-white/[0.35]">
+                    <p className="truncate text-micro text-white/[0.35]">
                       {facetNames.join(" · ")}
                     </p>
                   </div>
@@ -199,13 +199,13 @@ export function DimensionAccordion({
 
   return (
     <section>
-      <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+      <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
         {t("results.dimSectionEyebrow", locale)}
       </p>
       <h2 className="mt-1.5 font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
         {t("results.dimSectionTitle", locale)}
       </h2>
-      <p className="mb-6 mt-2 max-w-[540px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+      <p className="mb-6 mt-2 max-w-[540px] text-caption leading-relaxed text-[var(--color-text-muted)]">
         {t("results.dimSectionDesc", locale)}
       </p>
 

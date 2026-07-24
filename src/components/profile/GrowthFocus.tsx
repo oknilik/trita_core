@@ -81,7 +81,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-ink">{item.label}</span>
                 <span
-                  className="rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest"
+                  className="rounded-full px-2 py-0.5 font-mono text-micro uppercase tracking-widest"
                   style={{
                     backgroundColor: `${item.dimColor}18`,
                     color: item.dimColor,

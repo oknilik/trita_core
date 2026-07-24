@@ -137,7 +137,7 @@ export function AdminFeedbackSection({
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-sand font-mono text-[10px] uppercase tracking-widest text-muted">
+                <tr className="border-b border-sand font-mono text-micro uppercase tracking-widest text-muted">
                   <th className="py-2 pr-4">Szerep</th>
                   <th className="py-2 pr-4">Találó</th>
                   <th className="py-2 pr-4">Nem találó</th>
@@ -187,7 +187,7 @@ export function AdminFeedbackSection({
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-sand font-mono text-[10px] uppercase tracking-widest text-muted">
+                <tr className="border-b border-sand font-mono text-micro uppercase tracking-widest text-muted">
                   <th className="py-2 pr-4">Típus</th>
                   <th className="py-2 pr-4">Felhasználó</th>
                   <th className="py-2">Mikor</th>

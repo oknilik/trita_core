@@ -51,7 +51,7 @@ export default function TryCompletePage() {
           <h1 className="font-fraunces text-2xl text-ink">
             {t("tryComplete.doneTitle", locale)}
           </h1>
-          <p className="mt-2 text-[15px] leading-relaxed text-ink-body">
+          <p className="mt-2 text-body leading-relaxed text-ink-body">
             {t("tryComplete.doneBody", locale)}
           </p>
         </div>
@@ -60,14 +60,14 @@ export default function TryCompletePage() {
         <div className="flex flex-col gap-3">
           <Link
             href="/sign-up?redirect_url=/try/claim"
-            className="flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-[15px] font-bold text-white shadow-md shadow-[var(--color-accent-primary)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            className="flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-white shadow-md shadow-[var(--color-accent-primary)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
           >
             {t("tryComplete.registerCta", locale)}
           </Link>
 
           <Link
             href="/sign-in?redirect_url=/try/claim"
-            className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white px-6 text-[15px] font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
+            className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
           >
             {t("tryComplete.loginCta", locale)}
           </Link>

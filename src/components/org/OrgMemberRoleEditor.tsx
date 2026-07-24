@@ -94,7 +94,7 @@ export function OrgMemberRoleEditor({
         ))}
       </select>
       {role === "ORG_MANAGER" && (
-        <p className="text-[10px] text-muted">
+        <p className="text-micro text-muted">
           {t("org.forms.teamPermissionsHint", loc)}
         </p>
       )}

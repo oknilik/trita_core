@@ -676,7 +676,7 @@ export function ObserverClient({
         <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
           <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
-        <span className="text-[10px] text-[var(--color-action-primary-bg)]">
+        <span className="text-micro text-[var(--color-action-primary-bg)]">
           ✓ {t("assessment.savedState", locale)}
         </span>
       </nav>
@@ -781,7 +781,7 @@ export function ObserverClient({
                   </div>
                   <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
                     <span className="mt-px shrink-0 text-sm">💡</span>
-                    <p className="text-[13px] leading-[1.45] text-[var(--color-accent-self-deep)]">
+                    <p className="text-caption leading-[1.45] text-[var(--color-accent-self-deep)]">
                       {t(
                         checkpoint === 25 ? "assessment.journeyMilestone25Hint"
                         : checkpoint === 50 ? "assessment.journeyMilestone50Hint"
@@ -817,7 +817,7 @@ export function ObserverClient({
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-[13px] transition-all ${
+          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-caption transition-all ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -832,7 +832,7 @@ export function ObserverClient({
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
             }`}
           >
-            {autoAdvance && <span className="text-[10px] leading-none text-white">✓</span>}
+            {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}
           </div>
           <input
             type="checkbox"
@@ -848,7 +848,7 @@ export function ObserverClient({
             type="button"
             onClick={handleFinish}
             disabled={isSubmitting}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
               !isSubmitting && confidence !== null
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -862,7 +862,7 @@ export function ObserverClient({
             onClick={handleNextStep}
             disabled={isSubmitting}
             aria-disabled={!canProceed || isSubmitting}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-[13px] font-semibold transition-all ${
+            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
               canProceed && !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

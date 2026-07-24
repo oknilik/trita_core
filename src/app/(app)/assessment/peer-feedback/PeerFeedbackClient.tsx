@@ -199,7 +199,7 @@ export function PeerFeedbackClient({
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
           >
             {t("peerFb.backToDashboard", locale)}
           </Link>
@@ -302,7 +302,7 @@ export function PeerFeedbackClient({
         className="mt-5 scroll-mt-24 rounded-2xl border border-sand bg-white p-5 shadow-sm"
       >
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 className="text-[15px] font-semibold text-ink">{current.name}</h2>
+          <h2 className="text-body font-semibold text-ink">{current.name}</h2>
           {entryComplete(entry) && (
             <span className="rounded-full bg-sage/15 px-2.5 py-0.5 text-[11px] font-semibold text-sage-dark">
               {t("peerFb.personDoneBadge", locale)}

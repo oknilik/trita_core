@@ -62,7 +62,7 @@ export function BlindSpotAnalysis({
       {/* Hidden strengths — observer > self */}
       {hiddenOnly.length > 0 && (
         <div>
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-sage">
+          <p className="mb-3 font-mono text-micro uppercase tracking-widest text-sage">
             {isHu
               ? "// erősségek, amiket nem látsz"
               : "// strengths you don't see in yourself"}
@@ -101,7 +101,7 @@ export function BlindSpotAnalysis({
       {/* Overestimated — self > observer */}
       {overOnly.length > 0 && (
         <div>
-          <SectionEyebrow className="mb-3 text-[10px]">
+          <SectionEyebrow className="mb-3 text-micro">
             {isHu
               ? "// figyelmet érdemlő területek"
               : "// areas worth more attention"}

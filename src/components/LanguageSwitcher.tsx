@@ -70,7 +70,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
                 type="button"
                 onClick={() => { setLocale(loc as Locale); setOpen(false); }}
                 className={[
-                  "flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[13px] transition-colors",
+                  "flex w-full items-center justify-between px-3.5 py-2.5 text-left text-caption transition-colors",
                   isActive
                     ? "bg-[var(--color-surface-self-accent-soft)] font-medium text-[var(--color-action-primary-bg)]"
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]",

@@ -61,7 +61,7 @@ export function ObserverFlowStatusCard({
     );
     return (
       <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+        <p className="font-mono text-micro uppercase tracking-widest text-bronze">
           {isHu ? "// csapat-folyamat" : "// team process"}
         </p>
         <h2 className="mt-1 font-fraunces text-xl text-ink">

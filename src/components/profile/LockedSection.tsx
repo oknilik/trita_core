@@ -78,7 +78,7 @@ export function LockedSection({
             </svg>
           </div>
           <div className="max-w-sm text-center">
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+            <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
               {upgradeTier} · {upgradePrice}
             </p>
             <p className="text-sm leading-relaxed text-ink-body">{teaser}</p>

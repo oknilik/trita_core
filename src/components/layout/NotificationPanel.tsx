@@ -122,7 +122,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[var(--color-border-default)] px-4 py-3">
-        <p className="text-[13px] font-semibold text-[var(--color-text-primary)]">
+        <p className="text-caption font-semibold text-[var(--color-text-primary)]">
           {t("notifications.bellLabel", loc)}
         </p>
         {hasUnread && (
@@ -186,7 +186,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
                     {body}
                   </p>
-                  <p className="mt-1 text-[10px] text-[var(--color-text-faint)]">
+                  <p className="mt-1 text-micro text-[var(--color-text-faint)]">
                     {relativeTime(item.createdAt, locale)}
                   </p>
                 </div>

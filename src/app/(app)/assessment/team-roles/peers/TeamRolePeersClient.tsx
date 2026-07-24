@@ -98,7 +98,7 @@ export function TeamRolePeersClient({
           {tf("teamRolePeers.introBody", locale, { count: TEAM_ROLE_ITEM_COUNT })}
         </p>
         <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
-          <p className="text-[13px] leading-relaxed text-ink-body">
+          <p className="text-caption leading-relaxed text-ink-body">
             <span className="font-semibold text-ink">
               {t("teamRolePeers.anonTitle", locale)}
             </span>{" "}
@@ -112,7 +112,7 @@ export function TeamRolePeersClient({
         >
           {t("teamRolePeers.start", locale)}
         </button>
-        <p className="mt-3 font-mono text-[10px] uppercase tracking-wide text-muted">
+        <p className="mt-3 font-mono text-micro uppercase tracking-wide text-muted">
           {tf("teamRolePeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
@@ -135,7 +135,7 @@ export function TeamRolePeersClient({
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
         >
           {t("teamRolePeers.backToDashboard", locale)}
         </button>
@@ -160,7 +160,7 @@ export function TeamRolePeersClient({
               void submitOne(lastFailed.aboutUserId, lastFailed.selections);
             }
           }}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
         >
           {t("teamRolePeers.retry", locale)}
         </button>

@@ -88,7 +88,7 @@ export function TeamKudos({
         {t("team.kudos.eyebrow", locale)}
       </p>
       <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.kudos.title", locale)}</h2>
-      <p className="mb-4 text-[13px] leading-relaxed text-ink-body">
+      <p className="mb-4 text-caption leading-relaxed text-ink-body">
         {t("team.kudos.hint", locale)}
       </p>
 
@@ -159,7 +159,7 @@ export function TeamKudos({
       </div>
 
       {/* Kapott köszönetek */}
-      <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+      <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
         {tf("team.kudos.receivedLabel", locale, { count: received.length })}
       </p>
       {!loaded ? (

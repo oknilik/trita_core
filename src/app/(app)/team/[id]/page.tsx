@@ -401,7 +401,7 @@ export default async function TeamDetailPage({
       >
         <Link
           href={`/team/${teamId}?tab=overview`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -497,7 +497,7 @@ export default async function TeamDetailPage({
       >
         <Link
           href={`/team/${teamId}?tab=overview`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -539,7 +539,7 @@ export default async function TeamDetailPage({
       >
         <Link
           href={`/team/${teamId}?tab=overview`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -575,7 +575,7 @@ export default async function TeamDetailPage({
         >
           <Link
             href={`/team/${teamId}?tab=overview`}
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+            className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
           >
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 3L5 8l5 5" />
@@ -584,13 +584,13 @@ export default async function TeamDetailPage({
           </Link>
 
           <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+            <p className="font-mono text-micro uppercase tracking-[0.16em] text-muted">
               {t("teamComp.tabIntelligence", locale)}
             </p>
             <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
               {isHu ? "Még nincs elég adat a csapatintelligenciához" : "Not enough data yet for team intelligence"}
             </h1>
-            <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-body">
+            <p className="mt-2 max-w-3xl text-caption leading-relaxed text-ink-body">
               {isHu
                 ? "A stabil értelmezéshez legalább 3 kitöltött önértékelés szükséges. Addig a nézet inkább adatgyűjtési fókuszban marad."
                 : "At least 3 completed self-assessments are required for stable interpretation. Until then, this view stays in data-collection mode."}
@@ -630,7 +630,7 @@ export default async function TeamDetailPage({
           </section>
 
           <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+            <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
               {isHu ? "Kiknél hiányzik még adat" : "Members still missing data"}
             </p>
             {membersWithoutAssessment.length > 0 ? (
@@ -663,7 +663,7 @@ export default async function TeamDetailPage({
       >
         <Link
           href={`/team/${teamId}?tab=overview`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -671,13 +671,13 @@ export default async function TeamDetailPage({
           {backToOverviewLabel}
         </Link>
         <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+          <p className="font-mono text-micro uppercase tracking-[0.16em] text-muted">
             {t("teamComp.tabIntelligence", locale)}
           </p>
           <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
             {isHu ? "Csapatintelligencia nézet" : "Team intelligence view"}
           </h1>
-          <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-body">
+          <p className="mt-2 max-w-3xl text-caption leading-relaxed text-ink-body">
             {isHu
               ? "Összefoglaló nézet arról, ki mit hoz a csapatba, hol vannak hiányok, és mi a következő legjobb lépés."
               : "Executive summary of who brings what to the team, where the gaps are, and what the next best action is."}
@@ -699,7 +699,7 @@ export default async function TeamDetailPage({
         </section>
 
         <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+          <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
             {isHu ? "Csapat-összefoglaló" : "Team summary"}
           </p>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -753,7 +753,7 @@ export default async function TeamDetailPage({
         />
 
         <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+          <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
             {isHu ? "Fejlesztési prioritások" : "Development priorities"}
           </p>
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -768,7 +768,7 @@ export default async function TeamDetailPage({
                       : "border-emerald-200 bg-emerald-50";
               return (
                 <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>
-                  <p className="text-[13px] font-semibold text-ink">{priority.title}</p>
+                  <p className="text-caption font-semibold text-ink">{priority.title}</p>
                   <p className="mt-1 text-[12px] leading-relaxed text-ink-body">{priority.reason}</p>
                   <Link
                     href={priority.ctaHref}
@@ -819,7 +819,7 @@ export default async function TeamDetailPage({
       >
         <Link
           href={`/team/${teamId}?tab=overview`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -854,7 +854,7 @@ export default async function TeamDetailPage({
       >
         <Link
           href={`/team/${teamId}?tab=overview`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-caption font-medium text-ink-body transition-colors hover:text-ink"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
@@ -987,14 +987,14 @@ export default async function TeamDetailPage({
         <SurfaceHero
           variant="team"
           eyebrow={(
-            <p className="text-[10px] uppercase tracking-[2px] text-white/[0.28]">
+            <p className="text-micro uppercase tracking-[2px] text-white/[0.28]">
               {t("teamDetail.heroEyebrow", locale)}
             </p>
           )}
           badge={
             hasPattern ? (
               <span
-                className="rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                className="rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
                 style={{ backgroundColor: teamHeroTheme.badgeBg, color: teamHeroTheme.badgeText }}
               >
                 {t("teamDetail.heroPatternReady", locale)}
@@ -1092,21 +1092,21 @@ export default async function TeamDetailPage({
           }
           aside={(
             <>
-              <p className="text-[10px] uppercase tracking-[2px] text-white/[0.34]">
+              <p className="text-micro uppercase tracking-[2px] text-white/[0.34]">
                 {t("teamDetail.snapshotLabel", locale)}
               </p>
 
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
+                  <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{teamData.memberCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
+                  <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{completedCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
+                  <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{waitingCount}</p>
                 </div>
               </div>
@@ -1120,10 +1120,10 @@ export default async function TeamDetailPage({
                     label={`${completionPct}%`}
                     color="#8ad0b4"
                   />
-                  <p className="text-[10px] leading-tight text-white/[0.72]">
+                  <p className="text-micro leading-tight text-white/[0.72]">
                     {t("teamDetail.snapshotCompletionRate", locale)}
                   </p>
-                  <p className="text-[10px] text-white/[0.65]">
+                  <p className="text-micro text-white/[0.65]">
                     {tf("teamDetail.snapshotDoneInProgress", locale, { done: completedCount, inProgress: inProgressCount })}
                   </p>
                 </div>
@@ -1134,10 +1134,10 @@ export default async function TeamDetailPage({
                     label={`${secondaryPct}%`}
                     color={teamHeroTheme.primary}
                   />
-                  <p className="text-[10px] leading-tight text-white/[0.72]">
+                  <p className="text-micro leading-tight text-white/[0.72]">
                     {secondaryLabel}
                   </p>
-                  <p className="text-[10px] text-white/[0.65]">
+                  <p className="text-micro text-white/[0.65]">
                     {secondaryText}
                   </p>
                 </div>
@@ -1158,7 +1158,7 @@ export default async function TeamDetailPage({
           <section>
             <div className="flex flex-col gap-3 rounded-[18px] border border-sage/35 bg-sage/5 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-sage-dark">
+                <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
                   {isHu
                     ? CAMPAIGN_STEP_LABELS[pendingMeasurement.stepType].hu
                     : CAMPAIGN_STEP_LABELS[pendingMeasurement.stepType].en}
@@ -1194,10 +1194,10 @@ export default async function TeamDetailPage({
               </div>
               {pendingMeasurement.opensAt ? (
                 <div className="shrink-0 rounded-[10px] border border-sand bg-white px-4 py-2.5 text-center">
-                  <p className="font-mono text-[10px] uppercase tracking-wide text-muted">
+                  <p className="font-mono text-micro uppercase tracking-wide text-muted">
                     {isHu ? "Érkezik" : "Arriving"}
                   </p>
-                  <p className="text-[13px] font-semibold tabular-nums text-ink">
+                  <p className="text-caption font-semibold tabular-nums text-ink">
                     {pendingMeasurement.opensAt.toLocaleString(isHu ? "hu-HU" : "en-GB", {
                       month: "short",
                       day: "numeric",
@@ -1209,7 +1209,7 @@ export default async function TeamDetailPage({
               ) : (
                 <Link
                   href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
-                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
+                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-white transition hover:brightness-110"
                 >
                   {pendingMeasurement.stepType === "PEER_FEEDBACK"
                     ? isHu ? "Visszajelzést adok" : "Give feedback"
@@ -1223,7 +1223,7 @@ export default async function TeamDetailPage({
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
           <DashboardSectionHeader label={t("teamDetail.sectionSnapshot", locale)} className="mb-4" />
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[1px] text-ink-body">
+          <p className="mb-3 text-micro font-medium uppercase tracking-[1px] text-ink-body">
             {t("teamDetail.summaryLabel", locale)}
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1294,13 +1294,13 @@ export default async function TeamDetailPage({
           >
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div className="max-w-2xl">
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                <p className="font-mono text-micro uppercase tracking-[0.16em] text-muted">
                   {isHu ? "Külön nézet" : "Dedicated view"}
                 </p>
                 <h3 className="mt-1 font-fraunces text-[26px] leading-tight text-ink md:text-[31px]">
                   {t("teamComp.tabIntelligence", locale)}
                 </h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-ink-body">
+                <p className="mt-2 text-caption leading-relaxed text-ink-body">
                   {isHu
                     ? "Potenciál- és szerepilleszkedési térkép egy oldalon, adatminőség-jelzéssel. A nézetet külön oldalon nyithatod meg, hogy fókuszáltan elemezhető legyen."
                     : "Potential and role-fit maps in one dedicated view with data-quality markers. Open separately for focused analysis."}
@@ -1330,9 +1330,9 @@ export default async function TeamDetailPage({
                 className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-[13px] font-semibold text-ink">{card.title}</p>
+                  <p className="text-caption font-semibold text-ink">{card.title}</p>
                   {card.badge ? (
-                    <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
+                    <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-semibold text-ink">
                       {card.badge}
                     </span>
                   ) : null}
@@ -1361,10 +1361,10 @@ export default async function TeamDetailPage({
                 className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-[13px] font-semibold text-ink">
+                  <p className="text-caption font-semibold text-ink">
                     {isHu ? "Tagok kezelése" : "Manage members"}
                   </p>
-                  <span className="rounded-full bg-warm-mid px-2 py-0.5 text-[10px] font-semibold text-ink">
+                  <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-semibold text-ink">
                     {teamData.memberCount}
                   </span>
                 </div>
@@ -1379,7 +1379,7 @@ export default async function TeamDetailPage({
                   href={`/team/${teamId}?tab=report`}
                   className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
                 >
-                  <p className="text-[13px] font-semibold text-ink">
+                  <p className="text-caption font-semibold text-ink">
                     {isHu ? "Csapat riport" : "Team report"}
                   </p>
                   <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
@@ -1390,7 +1390,7 @@ export default async function TeamDetailPage({
                 </Link>
               ) : (
                 <div className="rounded-[16px] border border-dashed border-sand bg-cream/40 p-4">
-                  <p className="text-[13px] font-semibold text-muted">
+                  <p className="text-caption font-semibold text-muted">
                     {isHu ? "Csapat riport" : "Team report"}
                   </p>
                   <p className="mt-1.5 text-[12px] leading-relaxed text-muted">
@@ -1431,7 +1431,7 @@ export default async function TeamDetailPage({
                       />
                     </div>
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+                      <p className="font-mono text-micro uppercase tracking-widest text-bronze">
                         {isHu ? "// validált csapatkép" : "// validated team picture"}
                       </p>
                       {publishedPattern?.label ? (

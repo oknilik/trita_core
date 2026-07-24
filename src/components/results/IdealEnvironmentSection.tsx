@@ -76,7 +76,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
     <div className="py-8">
       <div className="mb-4 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
-        <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+        <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {t("results.envEyebrow", locale)}
         </p>
       </div>
@@ -111,8 +111,8 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
                   </div>
                 </div>
                 <div className="mt-1 flex justify-between">
-                  <span className="text-[10px] text-[var(--color-text-muted)]">{poles.low}</span>
-                  <span className="text-[10px] text-[var(--color-text-muted)]">{poles.high}</span>
+                  <span className="text-micro text-[var(--color-text-muted)]">{poles.low}</span>
+                  <span className="text-micro text-[var(--color-text-muted)]">{poles.high}</span>
                 </div>
               </div>
               <span className="text-[11px] text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">

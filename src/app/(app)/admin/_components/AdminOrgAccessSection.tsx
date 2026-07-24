@@ -240,7 +240,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                   </div>
                 </div>
                 <div className="mt-3 border-t border-sand pt-3">
-                  <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">
+                  <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-muted">
                     Tanácsadó
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
@@ -307,11 +307,11 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                     <span>{billingOpen[org.id] ? "▾" : "▸"}</span>
                     Cégadatok (számlázás)
                     {Object.keys(org.billingProfile).length > 0 ? (
-                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-semibold text-emerald-700">
                         kitöltve
                       </span>
                     ) : (
-                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold text-amber-700">
                         hiányzik
                       </span>
                     )}

@@ -265,7 +265,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
       {/* ── CTA — advisory / custom ──────────────────────── */}
       {isAdvisory && !requestSent && (
         <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
+          <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
             {"// "}{tier === "custom"
               ? t("advisory.ctaCustomEyebrow", locale)
               : t("advisory.ctaAdvisoryEyebrow", locale)}
@@ -309,7 +309,7 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
         <div className="mb-10 rounded-2xl border-2 border-sage/20 bg-white p-8 shadow-sm">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
             <div>
-              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <p className="mb-1 font-mono text-micro uppercase tracking-widest text-bronze">
                 {"// advisory"}
               </p>
               <h2 className="mb-3 font-fraunces text-2xl text-ink">

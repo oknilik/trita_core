@@ -305,7 +305,7 @@ export default async function CandidateResultPage({
         {/* Team selector */}
         {orgTeams.length > 0 && (
           <div className="mb-8">
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+            <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
               {t("hiring.compareWithTeam", locale)}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -324,7 +324,7 @@ export default async function CandidateResultPage({
                   >
                     {team.name}
                     {team.id === invite.teamId && (
-                      <span className={`ml-1.5 text-[10px] ${isSelected ? "opacity-70" : "text-muted"}`}>
+                      <span className={`ml-1.5 text-micro ${isSelected ? "opacity-70" : "text-muted"}`}>
                         ★
                       </span>
                     )}
@@ -352,7 +352,7 @@ export default async function CandidateResultPage({
           <div className="grid gap-4 md:grid-cols-3">
             {/* Erősségek */}
             <div className="rounded-xl bg-[rgba(26,92,58,0.06)] p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-sage">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-sage">
                 {t("hiring.strengthsEyebrow", locale)}
               </p>
               <div className="space-y-1.5">
@@ -375,7 +375,7 @@ export default async function CandidateResultPage({
 
             {/* Figyelendő területek */}
             <div className="rounded-xl bg-[rgba(200,65,10,0.06)] p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
                 {t("hiring.watchAreasEyebrow", locale)}
               </p>
               <div className="space-y-1.5">
@@ -398,7 +398,7 @@ export default async function CandidateResultPage({
 
             {/* Team Fit */}
             <div className="rounded-xl bg-[rgba(99,102,241,0.06)] p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[var(--color-visual-gradient-indigo)]">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-visual-gradient-indigo)]">
                 {t("hiring.teamFitEyebrow", locale)}
               </p>
               {gapAnalysis ? (() => {
@@ -465,7 +465,7 @@ export default async function CandidateResultPage({
                 >
                   <div className="mb-2 flex items-center gap-3">
                     <div
-                      className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-[10px] font-bold text-white"
+                      className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-micro font-bold text-white"
                       style={{ background: color }}
                     >
                       {d}
@@ -473,7 +473,7 @@ export default async function CandidateResultPage({
                     <span className="text-sm font-semibold text-ink">{dimLabel}</span>
                     <span
                       className={[
-                        "ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                        "ml-auto rounded-full px-2 py-0.5 text-micro font-semibold",
                         category === "high"
                           ? "bg-[rgba(26,92,58,0.08)] text-sage"
                           : category === "low"
@@ -543,14 +543,14 @@ export default async function CandidateResultPage({
 
               {/* Gap analysis */}
               <div>
-                <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-ink-body">
+                <p className="mb-3 font-mono text-micro uppercase tracking-widest text-ink-body">
                   {t("hiring.deviationsFromTeam", locale)}
                 </p>
                 <div className="space-y-2">
                   {gapAnalysis.map((g) => (
                     <div key={g.dim} className="flex items-center gap-3">
                       <div
-                        className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-[10px] font-bold text-white"
+                        className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-micro font-bold text-white"
                         style={{ background: DIM_COLORS[g.dim] }}
                       >
                         {g.dim}
@@ -609,7 +609,7 @@ export default async function CandidateResultPage({
                   {isHu ? "Csapatszerep-kérdőív eredménye" : "Team-role questionnaire result"}
                 </h2>
               </div>
-              <span className="ml-auto rounded-full bg-sage/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-sage-dark">
+              <span className="ml-auto rounded-full bg-sage/10 px-2.5 py-1 text-micro font-semibold uppercase tracking-wide text-sage-dark">
                 {isHu ? "Mért" : "Measured"}
               </span>
             </div>
@@ -627,7 +627,7 @@ export default async function CandidateResultPage({
                     }`}
                   >
                     <span
-                      className={`mb-2 self-start rounded px-2 py-[3px] text-[10px] font-bold uppercase tracking-wide ${
+                      className={`mb-2 self-start rounded px-2 py-[3px] text-micro font-bold uppercase tracking-wide ${
                         isPrimary
                           ? "bg-sage text-white"
                           : "bg-cream text-muted"
@@ -667,20 +667,20 @@ export default async function CandidateResultPage({
                     <div className="mb-2 flex items-center gap-2">
                       <div className="flex items-center gap-1">
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
                           {pair.dimA}
                         </span>
-                        <span className="text-[10px] text-muted">+</span>
+                        <span className="text-micro text-muted">+</span>
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
                           {pair.dimB}
                         </span>
                       </div>
-                      <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-[10px] font-semibold text-sage">
+                      <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-micro font-semibold text-sage">
                         {t("hiring.strengthBadge", locale)}
                       </span>
                     </div>
@@ -702,20 +702,20 @@ export default async function CandidateResultPage({
                     <div className="mb-2 flex items-center gap-2">
                       <div className="flex items-center gap-1">
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
                           {pair.dimA}
                         </span>
-                        <span className="text-[10px] text-muted">+</span>
+                        <span className="text-micro text-muted">+</span>
                         <span
-                          className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
                           {pair.dimB}
                         </span>
                       </div>
-                      <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-[10px] font-semibold text-bronze">
+                      <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-micro font-semibold text-bronze">
                         {t("hiring.watchAreaBadge", locale)}
                       </span>
                     </div>

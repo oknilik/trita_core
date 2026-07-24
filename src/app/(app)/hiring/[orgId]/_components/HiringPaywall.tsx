@@ -64,7 +64,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
             className="rounded-xl border border-sand bg-white p-4"
           >
             <div className="mb-2 text-xl">{f.icon}</div>
-            <p className="mb-1 text-[13px] font-semibold text-ink">{f.title}</p>
+            <p className="mb-1 text-caption font-semibold text-ink">{f.title}</p>
             <p className="text-[11px] text-muted leading-relaxed">{f.desc}</p>
           </div>
         ))}

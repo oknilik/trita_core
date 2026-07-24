@@ -342,7 +342,7 @@ export function CampaignWizard({
               </div>
               <span
                 className={[
-                  "text-[13px] font-medium",
+                  "text-caption font-medium",
                   step === s ? "text-ink" : "text-muted",
                 ].join(" ")}
               >
@@ -360,7 +360,7 @@ export function CampaignWizard({
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("campaignWiz.typeTitle", locale)}
           </h2>
-          <p className="mb-4 text-[13px] leading-relaxed text-ink-body">
+          <p className="mb-4 text-caption leading-relaxed text-ink-body">
             {t("campaignWiz.typeMultiHint", locale)}
           </p>
           <div className="flex flex-col gap-3">
@@ -383,22 +383,22 @@ export function CampaignWizard({
                 ].join(" ")}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-[15px] font-semibold text-ink">{t(card.nameKey, locale)}</p>
+                  <p className="text-body font-semibold text-ink">{t(card.nameKey, locale)}</p>
                   {isSelected ? (
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
                       {orderIndex + 1}
                     </span>
                   ) : card.comingSoon ? (
-                    <span className="rounded-full bg-sand px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                    <span className="rounded-full bg-sand px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
                       {t("campaignWiz.typeComingSoon", locale)}
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-1 text-[13px] leading-relaxed text-ink-body">
+                <p className="mt-1 text-caption leading-relaxed text-ink-body">
                   {t(card.descKey, locale)}
                 </p>
                 {card.metaKey && (
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-wide text-muted">
+                  <p className="mt-2 font-mono text-micro uppercase tracking-wide text-muted">
                     {t(card.metaKey, locale)}
                   </p>
                 )}
@@ -460,11 +460,11 @@ export function CampaignWizard({
               placeholder={t("campaignWiz.descPlaceholder", locale)}
               textareaClassName="resize-none"
               helpText={`${description.length}/500`}
-              helpTextClassName="text-right font-mono text-[10px] text-muted"
+              helpTextClassName="text-right font-mono text-micro text-muted"
             />
             {chosenSteps.length > 1 ? (
               <div className="rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
-                <p className="text-[13px] font-semibold text-ink">
+                <p className="text-caption font-semibold text-ink">
                   {t("campaignWiz.intervalLabel", locale)}
                 </p>
                 <p className="mt-0.5 text-[12px] leading-relaxed text-ink-body">
@@ -502,7 +502,7 @@ export function CampaignWizard({
                   onChange={(e) => setPeerFeedbackAnonymous(e.target.checked)}
                   className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
                 />
-                <span className="text-[13px] leading-relaxed text-ink-body">
+                <span className="text-caption leading-relaxed text-ink-body">
                   <span className="font-semibold text-ink">
                     {t("campaignWiz.peerFbAnonLabel", locale)}
                   </span>{" "}
@@ -518,7 +518,7 @@ export function CampaignWizard({
                   onChange={(e) => setAllowExternalObservers(e.target.checked)}
                   className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
                 />
-                <span className="text-[13px] leading-relaxed text-ink-body">
+                <span className="text-caption leading-relaxed text-ink-body">
                   <span className="font-semibold text-ink">
                     {t("campaignWiz.allowExternalLabel", locale)}
                   </span>{" "}
@@ -566,12 +566,12 @@ export function CampaignWizard({
           </div>
 
           {isTeamLocked && (
-            <p className="mb-4 text-[13px] text-ink-body">{t("campaignWiz.roleTeamHint", locale)}</p>
+            <p className="mb-4 text-caption text-ink-body">{t("campaignWiz.roleTeamHint", locale)}</p>
           )}
 
           {teams.length > 0 && (
             <div className="mb-5">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
                 {t("campaignWiz.teamsTitle", locale)}
               </p>
               <div className="flex flex-col gap-2">
@@ -613,7 +613,7 @@ export function CampaignWizard({
               {teams.length === 0 && (
                 <p className="mb-3 text-sm text-muted">{t("campaignWiz.noTeams", locale)}</p>
               )}
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
                 {t("campaignWiz.individualTitle", locale)}
               </p>
               {members.length === 0 ? (
@@ -667,20 +667,20 @@ export function CampaignWizard({
 
           <div className="flex flex-col gap-4">
             <div className="rounded-xl border border-sand bg-cream p-4">
-              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-muted">
+              <p className="mb-1 font-mono text-micro uppercase tracking-widest text-muted">
                 {t("campaignWiz.typeSummaryLabel", locale)}
               </p>
-              <p className="text-[15px] font-semibold text-ink">{typeLabel}</p>
+              <p className="text-body font-semibold text-ink">{typeLabel}</p>
             </div>
 
             <div className="rounded-xl border border-sand bg-cream p-4">
-              <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-muted">
+              <p className="mb-1 font-mono text-micro uppercase tracking-widest text-muted">
                 {t("campaignWiz.campaignNameLabel", locale)}
               </p>
-              <p className="text-[15px] font-semibold text-ink">{name}</p>
+              <p className="text-body font-semibold text-ink">{name}</p>
               {description && <p className="mt-1 text-sm text-ink-body">{description}</p>}
               {targetTeam && (
-                <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+                <p className="mt-2 font-mono text-micro uppercase tracking-widest text-muted">
                   {t("campaignWiz.targetTeamLabel", locale)}{" "}
                   <span className="font-sans text-[12px] normal-case tracking-normal text-ink-body">
                     {targetTeam.name}
@@ -690,7 +690,7 @@ export function CampaignWizard({
             </div>
 
             <div className="rounded-xl border border-sand bg-cream p-4">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
                 {tf("campaignWiz.participantsLabel", locale, { count: selectedIds.size })}
               </p>
               {selectedIds.size === 0 ? (
@@ -725,7 +725,7 @@ export function CampaignWizard({
                 onChange={(e) => setActivateNow(e.target.checked)}
                 className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
               />
-              <span className="text-[13px] leading-relaxed text-ink-body">
+              <span className="text-caption leading-relaxed text-ink-body">
                 <span className="font-semibold text-ink">
                   {t("campaignWiz.activateNowLabel", locale)}
                 </span>{" "}

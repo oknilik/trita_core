@@ -38,7 +38,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
           </span>
           {/* Szöveges besorolás — 0 közeli értéknél a szám önmagában
               adathibának tűnne (design-akciólista #13). */}
-          <span className={`shrink-0 rounded px-1.5 py-[2px] text-[10px] font-semibold ${colors.tagBg} ${colors.tagText}`}>
+          <span className={`shrink-0 rounded px-1.5 py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}>
             {getDimensionLabel(value, locale)}
           </span>
           <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
@@ -49,7 +49,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
             {value}%
           </span>
         </div>
-        <p className="mt-2.5 text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">{description}</p>
+        <p className="mt-2.5 text-caption leading-[1.7] text-[var(--color-text-secondary)]">{description}</p>
       </div>
     </div>
   );

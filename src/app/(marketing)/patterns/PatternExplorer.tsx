@@ -55,7 +55,7 @@ function AxisSlider({
         </span>
         {bal && (
           <span
-            className="rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest"
+            className="rounded-full px-2 py-0.5 font-mono text-micro uppercase tracking-widest"
             style={{ backgroundColor: T.card, color: T.muted }}
           >
             Kiegyensúlyozott
@@ -127,7 +127,7 @@ function PatternCard({
       <div className="p-6">
         {/* Match badge */}
         <span
-          className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider"
+          className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-micro uppercase tracking-wider"
           style={{ backgroundColor: matchLabel.bg, color: matchLabel.color }}
         >
           {matchLabel.label}
@@ -156,7 +156,7 @@ function PatternCard({
             style={{ backgroundColor: "rgba(46,107,80,0.07)", border: "1px solid rgba(46,107,80,0.15)" }}
           >
             <p
-              className="mb-2 font-mono text-[10px] uppercase tracking-widest"
+              className="mb-2 font-mono text-micro uppercase tracking-widest"
               style={{ color: "#2e6b50" }}
             >
               {"// erősségek"}
@@ -175,7 +175,7 @@ function PatternCard({
             style={{ backgroundColor: "rgba(181,101,29,0.07)", border: "1px solid rgba(181,101,29,0.15)" }}
           >
             <p
-              className="mb-2 font-mono text-[10px] uppercase tracking-widest"
+              className="mb-2 font-mono text-micro uppercase tracking-widest"
               style={{ color: "#b5651d" }}
             >
               {"// vakfoltok"}
@@ -230,7 +230,7 @@ function HybridCard({
       <div className="h-1" style={{ background: `linear-gradient(to right, ${best.color}, ${second.color})` }} />
       <div className="p-6">
         <span
-          className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider"
+          className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-micro uppercase tracking-wider"
           style={{ backgroundColor: "rgba(107,107,107,0.08)", color: "#6b6b6b" }}
         >
           Kontextusfüggő működés
@@ -264,7 +264,7 @@ function HybridCard({
               <p className="mt-1.5 text-xs leading-relaxed" style={{ color: T.muted }}>
                 {pattern.description}
               </p>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-wider" style={{ color: T.accent }}>
+              <p className="mt-2 font-mono text-micro uppercase tracking-wider" style={{ color: T.accent }}>
                 Részletek →
               </p>
             </button>
@@ -307,7 +307,7 @@ const QUADRANTS = [
 function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
   return (
     <div className="mt-10 border-t pt-10" style={{ borderColor: T.border }}>
-      <p className="mb-1 font-mono text-[10px] uppercase tracking-widest" style={{ color: T.muted }}>
+      <p className="mb-1 font-mono text-micro uppercase tracking-widest" style={{ color: T.muted }}>
         {"// mind a 16 mintázat"}
       </p>
       <h3 className="mb-8 font-fraunces text-xl" style={{ color: T.heading }}>
@@ -349,7 +349,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
                     <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed" style={{ color: T.muted }}>
                       {pattern.description}
                     </p>
-                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-wider" style={{ color: q.accent }}>
+                    <p className="mt-1.5 font-mono text-micro uppercase tracking-wider" style={{ color: q.accent }}>
                       Részletek →
                     </p>
                   </button>
@@ -386,7 +386,7 @@ function AlternativeSection({
       style={{ backgroundColor: T.bg, borderColor: T.border }}
     >
       <p
-        className="mb-2 font-mono text-[10px] uppercase tracking-widest"
+        className="mb-2 font-mono text-micro uppercase tracking-widest"
         style={{ color: T.muted }}
       >
         {"// közeli alternatív mintázat"}
@@ -502,7 +502,7 @@ export function PatternExplorer() {
               style={{ backgroundColor: "white", borderColor: T.border }}
             >
               <p
-                className="mb-6 font-mono text-[10px] uppercase tracking-widest"
+                className="mb-6 font-mono text-micro uppercase tracking-widest"
                 style={{ color: T.muted }}
               >
                 {"// 4 tengelyen beállítható"}
@@ -531,7 +531,7 @@ export function PatternExplorer() {
               }}
             >
               <span
-                className="mr-1 font-mono text-[10px] uppercase tracking-wider"
+                className="mr-1 font-mono text-micro uppercase tracking-wider"
                 style={{ color: T.accent }}
               >
                 {"// tipp"}

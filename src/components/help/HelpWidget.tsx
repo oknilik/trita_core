@@ -98,7 +98,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               </button>
             )}
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+              <p className="font-mono text-micro uppercase tracking-widest text-bronze">
                 {isHu ? "// segítség" : "// help"}
               </p>
               <p className="truncate font-fraunces text-base text-ink">

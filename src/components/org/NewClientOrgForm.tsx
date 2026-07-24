@@ -74,7 +74,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
           <button
             type="button"
             onClick={() => setBillingOpen((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink-body transition hover:text-bronze"
+            className="inline-flex items-center gap-1.5 text-caption font-semibold text-ink-body transition hover:text-bronze"
           >
             <span>{billingOpen ? "▾" : "▸"}</span>
             {isHu ? "Cégadatok — opcionális" : "Company details — optional"}

@@ -30,7 +30,7 @@ export function PricingContent() {
           {t("pricing.heroHeading", locale)}
           <em className="text-[var(--color-action-primary-bg)]">{t("pricing.heroHeadingEm", locale)}</em>
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--color-text-muted)]">
+        <p className="mx-auto mt-4 max-w-xl text-body leading-relaxed text-[var(--color-text-muted)]">
           {t("pricing.heroSub", locale)}
         </p>
       </section>
@@ -47,7 +47,7 @@ export function PricingContent() {
           </p>
           <Link
             href="/try"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-border-default)] bg-white px-5 text-[13px] font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)]"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-border-default)] bg-white px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)]"
           >
             {t("pricing.selfCta", locale)}
           </Link>
@@ -72,20 +72,20 @@ export function PricingContent() {
                 className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-3.5"
               >
                 <span className="font-fraunces text-lg text-[var(--color-action-primary-bg)]">{i + 1}</span>
-                <p className="mt-1 text-[13px] leading-snug text-[var(--color-text-secondary)]">
+                <p className="mt-1 text-caption leading-snug text-[var(--color-text-secondary)]">
                   {t(`pricing.${key}`, locale)}
                 </p>
               </li>
             ))}
           </ol>
 
-          <p className="mt-6 rounded-xl bg-[var(--color-surface-self-accent-soft)]/60 px-4 py-3.5 text-[13px] leading-relaxed text-[var(--color-accent-self-deep)]">
+          <p className="mt-6 rounded-xl bg-[var(--color-surface-self-accent-soft)]/60 px-4 py-3.5 text-caption leading-relaxed text-[var(--color-accent-self-deep)]">
             {t("pricing.teamPriceNote", locale)}
           </p>
 
           <Link
             href="/contact"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-[13px] font-semibold text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-caption font-semibold text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
           >
             {t("pricing.teamCta", locale)}
           </Link>
@@ -107,7 +107,7 @@ export function PricingContent() {
           </p>
           <Link
             href="/pilot"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-white px-5 text-[13px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-white px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
           >
             {t("pricing.pilotCta", locale)}
           </Link>
@@ -128,7 +128,7 @@ export function PricingContent() {
               <summary className="cursor-pointer list-none text-[14px] font-semibold text-[var(--color-text-primary)]">
                 {t(`pricing.faqQ${i}`, locale)}
               </summary>
-              <p className="mt-2 text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+              <p className="mt-2 text-caption leading-relaxed text-[var(--color-text-muted)]">
                 {t(`pricing.faqA${i}`, locale)}
               </p>
             </details>

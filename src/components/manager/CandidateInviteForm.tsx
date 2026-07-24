@@ -97,9 +97,9 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
   }
 
   const labelClass =
-    "font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted";
+    "font-dm-sans text-micro font-semibold uppercase tracking-[0.18em] text-muted";
   const inputClass =
-    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-[13px] text-ink outline-none transition focus:border-sage/55 focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]";
+    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-caption text-ink outline-none transition focus:border-sage/55 focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]";
 
   return (
     <div className="flex flex-col gap-5">
@@ -175,7 +175,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
             className="mt-0.5 h-4 w-4 accent-[var(--color-sage)]"
           />
           <span>
-            <span className="block text-[13px] font-semibold text-ink">
+            <span className="block text-caption font-semibold text-ink">
               {isHu ? "Csapatszerep-kérdőív is" : "Include team-role questionnaire"}
             </span>
             <span className="mt-0.5 block text-[12px] leading-relaxed text-ink-body">
@@ -217,7 +217,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
         </div>
 
         {error && (
-          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-[13px] text-rose-700">
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-caption text-rose-700">
             {error}
           </p>
         )}
@@ -240,10 +240,10 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
 
       {createdInvite && (
         <div className="rounded-2xl border border-sage/20 bg-[#eef6f2] p-4 sm:p-5">
-          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-sage-dark/70">
+          <p className="mb-1 text-micro font-semibold uppercase tracking-[0.18em] text-sage-dark/70">
             {isHu ? "Sikeres meghívó" : "Invite created"}
           </p>
-          <p className="mb-2 text-[15px] font-semibold text-sage-dark">
+          <p className="mb-2 text-body font-semibold text-sage-dark">
             {t("manager.candidateInvite.inviteCreated", loc)}
           </p>
           <p className="mb-3 text-[12px] text-sage-dark/80">

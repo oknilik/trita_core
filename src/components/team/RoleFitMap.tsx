@@ -118,12 +118,12 @@ function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
         <div>
           <p className="text-[14px] font-bold text-ink">{member.name}</p>
           <span
-            className="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
+            className="inline-block rounded-full px-2 py-0.5 text-micro font-semibold"
             style={{ background: zone.bg, color: zone.tc, border: `1px solid ${zone.stroke}` }}
           >
             {t(zone.labelKey, loc)}
           </span>
-          <p className="mt-1 text-[10px] text-ink-body">
+          <p className="mt-1 text-micro text-ink-body">
             {t("teamComp.roleFitScore", loc)}:{" "}
             <span className="font-semibold text-ink">{Math.round(fit.primaryScore)}%</span>
             {" · "}
@@ -134,7 +134,7 @@ function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
       </div>
 
       <div>
-        <SectionEyebrow className="mb-1.5 text-[10px]">
+        <SectionEyebrow className="mb-1.5 text-micro">
           {t("teamComp.dominantDimsEyebrow", loc)}
         </SectionEyebrow>
         <div className="flex flex-col gap-1.5">
@@ -144,7 +144,7 @@ function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
             .map(([k, v]) => (
               <div key={k} className="flex items-center gap-2">
                 <div
-                  className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-[10px] font-bold text-white"
+                  className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded text-micro font-bold text-white"
                   style={{ background: DIM_COLORS[k] ?? "#888" }}
                 >
                   {k}
@@ -155,7 +155,7 @@ function RoleDetailPanel({ member, zone, fit, loc }: RoleDetailPanelProps) {
                     style={{ width: `${v}%`, background: DIM_COLORS[k] ?? "#888", opacity: 0.85 }}
                   />
                 </div>
-                <span className="w-8 text-right font-mono text-[10px] text-ink-body">{v}%</span>
+                <span className="w-8 text-right font-mono text-micro text-ink-body">{v}%</span>
               </div>
             ))}
         </div>
@@ -312,11 +312,11 @@ export function RoleFitMap({ members, isHu = true }: RoleFitMapProps) {
                 className="h-3 w-3 rounded"
                 style={{ background: z.bg, border: `1px solid ${z.stroke}` }}
               />
-              <span className="text-[10px] text-ink-body">{t(z.labelKey, loc)}</span>
+              <span className="text-micro text-ink-body">{t(z.labelKey, loc)}</span>
             </div>
           ))}
           {missingZones.length > 0 && (
-            <div className="ml-auto text-[10px] text-muted">
+            <div className="ml-auto text-micro text-muted">
               {t("teamComp.missingRoleLabel", loc)}{" "}
               {missingZones.map((z) => t(z.labelKey, loc)).join(", ")}
             </div>

@@ -83,7 +83,7 @@ export function PrivacyContent() {
                   href={`#${section.id}`}
                   className="group flex items-baseline gap-2 rounded px-2 py-1.5 transition-colors hover:bg-[#faf5ef]"
                 >
-                  <span className="font-dm-sans text-[10px] text-bronze">
+                  <span className="font-dm-sans text-micro text-bronze">
                     {section.index}
                   </span>
                   <span className="text-sm text-ink-body transition-colors group-hover:text-ink">
@@ -108,7 +108,7 @@ export function PrivacyContent() {
                   {t(section.title, locale)}
                 </h2>
                 {"body" in section && section.body ? (
-                  <p className="text-[15px] leading-[1.75] text-ink-body">
+                  <p className="text-body leading-[1.75] text-ink-body">
                     {t(section.body, locale)}
                   </p>
                 ) : null}
@@ -117,7 +117,7 @@ export function PrivacyContent() {
                     {section.items.map((item) => (
                       <li
                         key={item}
-                        className="relative pl-5 text-[15px] leading-[1.75] text-ink-body before:absolute before:left-0 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-bronze"
+                        className="relative pl-5 text-body leading-[1.75] text-ink-body before:absolute before:left-0 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-bronze"
                       >
                         {t(item, locale)}
                       </li>

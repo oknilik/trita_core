@@ -227,7 +227,7 @@ export default function ProfilePage() {
   };
 
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>
-    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-[13px] text-[var(--color-text-primary)] outline-none transition-all ${
+    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-caption text-[var(--color-text-primary)] outline-none transition-all ${
       touched && value !== "" && !valid
         ? "border-rose-300 bg-rose-50/50"
         : "border-[var(--color-border-default)] bg-white focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
@@ -304,19 +304,19 @@ export default function ProfilePage() {
                   <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-white p-4">
                     <div className="flex flex-wrap items-center gap-2">
                       {canOpenOrg ? (
-                        <Link href={`/org/${m.orgId}`} className="text-[13px] font-semibold text-[var(--color-text-primary)] hover:underline">
+                        <Link href={`/org/${m.orgId}`} className="text-caption font-semibold text-[var(--color-text-primary)] hover:underline">
                           {m.orgName ?? m.orgId}
                         </Link>
                       ) : (
-                        <span className="text-[13px] font-semibold text-[var(--color-text-primary)]">{m.orgName ?? m.orgId}</span>
+                        <span className="text-caption font-semibold text-[var(--color-text-primary)]">{m.orgName ?? m.orgId}</span>
                       )}
-                      <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-[10px] font-semibold text-[var(--color-text-secondary)]">
+                      <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-secondary)]">
                         {roleLabel}
                       </span>
                     </div>
                     {orgTeams.length > 0 && (
                       <div className="mt-2.5">
-                        <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[1px] text-[var(--color-text-muted)]">
+                        <p className="mb-1.5 text-micro font-medium uppercase tracking-[1px] text-[var(--color-text-muted)]">
                           {t("profile.orgTeamsLabel", locale)}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
@@ -353,7 +353,7 @@ export default function ProfilePage() {
                 placeholder={t("onboarding.usernamePlaceholder", locale)} minLength={2} maxLength={20}
                 className={inputClass("username", usernameTouched, usernameValid, username)}
               />
-              <span className="text-[10px] text-[var(--color-text-muted)]">{t("onboarding.usernameHint", locale)}</span>
+              <span className="text-micro text-[var(--color-text-muted)]">{t("onboarding.usernameHint", locale)}</span>
             </label>
             <label className="flex flex-col gap-1 text-[11px] font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.birthYearLabel", locale)}
@@ -365,7 +365,7 @@ export default function ProfilePage() {
                 placeholder={t("onboarding.birthYearPlaceholder", locale)} min={minBirthYear} max={maxBirthYear}
                 className={`${inputClass("birthYear", birthYearTouched, birthYearValid, birthYear)} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
               />
-              <span className="text-[10px] text-[var(--color-text-muted)]">{minBirthYear}–{maxBirthYear}</span>
+              <span className="text-micro text-[var(--color-text-muted)]">{minBirthYear}–{maxBirthYear}</span>
             </label>
           </div>
 
@@ -410,7 +410,7 @@ export default function ProfilePage() {
           </div>
           <button
             type="button" onClick={handleSave} disabled={!canSubmitDemo}
-            className={`rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-[13px] font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
+            className={`rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-caption font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
           >
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </button>
@@ -419,15 +419,15 @@ export default function ProfilePage() {
         {/* ═══ DANGER BOX ═══ */}
         <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
           <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
-            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-[10px] text-[#c0392b]">!</div>
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-micro text-[#c0392b]">!</div>
             <span className="text-xs font-semibold text-[#a93226]">{t("profile.sectionAccount", locale)}</span>
           </div>
           <div className="bg-white p-[18px]">
             {/* Sign out */}
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[13px] text-[var(--color-text-secondary)]">{t("profile.logoutTitle", locale)}</p>
-                <p className="text-[10px] text-[var(--color-text-muted)]">{t("profile.logoutSub", locale)}</p>
+                <p className="text-caption text-[var(--color-text-secondary)]">{t("profile.logoutTitle", locale)}</p>
+                <p className="text-micro text-[var(--color-text-muted)]">{t("profile.logoutSub", locale)}</p>
               </div>
               <button type="button" onClick={() => signOut()} className="shrink-0 rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
                 {t("profile.logoutButton", locale)}
@@ -437,8 +437,8 @@ export default function ProfilePage() {
             {/* Delete */}
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[13px] text-[#a93226]">{t("profile.deleteTitle", locale)}</p>
-                <p className="text-[10px] text-[var(--color-text-muted)]">{t("profile.deleteBody", locale)}</p>
+                <p className="text-caption text-[#a93226]">{t("profile.deleteTitle", locale)}</p>
+                <p className="text-micro text-[var(--color-text-muted)]">{t("profile.deleteBody", locale)}</p>
               </div>
               <button type="button" onClick={() => setShowDeleteModal(true)} disabled={isDeleting}
                 className="shrink-0 rounded-lg border border-[#e8b4b4] bg-[#fdf0f0] px-[18px] py-[7px] text-xs text-[#c0392b] transition-all hover:border-[#d4a0a0] hover:bg-[#f5dede] disabled:opacity-50"

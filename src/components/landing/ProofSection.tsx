@@ -61,7 +61,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
                 <card.Icon className="h-8 w-8" />
               </div>
               <h3 className="font-fraunces mb-2 text-lg text-ink">{card.title}</h3>
-              <p className="text-[13px] leading-relaxed text-ink-body">{card.desc}</p>
+              <p className="text-caption leading-relaxed text-ink-body">{card.desc}</p>
             </motion.div>
           ))}
         </div>

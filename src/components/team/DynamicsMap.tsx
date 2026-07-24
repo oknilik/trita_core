@@ -158,7 +158,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
 
       {myEdges.length > 0 && (
         <div>
-          <SectionEyebrow className="mb-1.5 text-[10px]">
+          <SectionEyebrow className="mb-1.5 text-micro">
             {t("teamComp.connectionsEyebrow", loc)}
           </SectionEyebrow>
           <div className="flex flex-col gap-0.5">
@@ -183,11 +183,11 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                       style={{ background: EDGE_COLORS[e.type] }}
                     />
                     <span className="text-[11px] text-ink-body">{target.name}</span>
-                    <span className="ml-auto text-[10px] text-muted">
+                    <span className="ml-auto text-micro text-muted">
                       {t(edgeLabelKey[e.type], loc)}
                     </span>
                     {e.source === "trust_round" ? (
-                      <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-sage-dark">
+                      <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wide text-sage-dark">
                         {loc === "hu" ? "mért" : "measured"}
                       </span>
                     ) : null}
@@ -205,8 +205,8 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                         {breakdown.gaps.slice(0, 4).map((g) => (
                           <div key={g.code}>
                             <div className="flex items-center justify-between gap-2">
-                              <span className="text-[10px] font-semibold text-ink">{g.label}</span>
-                              <span className="text-[10px] text-muted">
+                              <span className="text-micro font-semibold text-ink">{g.label}</span>
+                              <span className="text-micro text-muted">
                                 {g.gap < 15
                                   ? (loc === "hu" ? "hasonló" : "similar")
                                   : g.gap < 30
@@ -226,7 +226,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                               </div>
                             </div>
                             {g.hint && (
-                              <p className="mt-0.5 text-[10px] leading-snug text-muted">{g.hint}</p>
+                              <p className="mt-0.5 text-micro leading-snug text-muted">{g.hint}</p>
                             )}
                           </div>
                         ))}
@@ -378,13 +378,13 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
         {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés. */}
         {edges.some((e) => e.source === "trust_round") ? (
-          <p className="mt-2 text-[10px] leading-relaxed text-muted">
+          <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
               ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
               : `Some connections are MEASURED from a trust round (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} connections); the rest are profile-based estimates.`}
           </p>
         ) : (
-          <p className="mt-2 text-[10px] leading-relaxed text-muted">
+          <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
               ? "A kapcsolat-jelzések profil-alapú becslések — bizalmi kör indításával mért adatra cserélhetők."
               : "Connection markers are profile-based estimates — run a trust round to replace them with measured data."}

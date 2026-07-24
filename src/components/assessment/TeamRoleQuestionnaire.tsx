@@ -218,7 +218,7 @@ export function TeamRoleQuestionnaire({
                 phase === "select" ? toggleSelect(item.id) : toggleHighlight(item.id)
               }
               aria-pressed={active}
-              className={`min-h-[44px] rounded-xl border px-3.5 py-2.5 text-left text-[13px] leading-snug transition ${
+              className={`min-h-[44px] rounded-xl border px-3.5 py-2.5 text-left text-caption leading-snug transition ${
                 phase === "highlight" && isTop
                   ? "border-bronze bg-bronze/10 font-semibold text-ink"
                   : active

@@ -27,7 +27,7 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
     <Link
       href={href}
       className={[
-        "relative py-4 text-[13px] transition-colors",
+        "relative py-4 text-caption transition-colors",
         active ? "font-medium text-[var(--color-text-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]",
       ].join(" ")}
     >
@@ -157,14 +157,14 @@ export function NavBar({
                 {/* Sign in — desktop only */}
                 <Link
                   href="/sign-in"
-                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-[13px] text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
+                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
                 >
                   {t("nav.signIn", locale)}
                 </Link>
                 {/* CTA — always visible */}
                 <Link
                   href="/try"
-                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-[13px]"
+                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>

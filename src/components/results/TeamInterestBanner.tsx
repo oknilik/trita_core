@@ -61,7 +61,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
 
   return (
     <DashboardPanel className="p-6">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+      <p className="font-mono text-micro uppercase tracking-widest text-bronze">
         {t("results.teamInterestEyebrow", locale)}
       </p>
       <h3 className="mt-1 font-fraunces text-xl text-ink">

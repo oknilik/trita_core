@@ -10,13 +10,13 @@ export default function DashboardError({
   return (
     <div className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
       <div className="w-full max-w-xl rounded-[24px] border border-sand bg-white px-6 py-8 text-center shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:px-8">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-bronze/85">
+        <p className="text-micro font-semibold uppercase tracking-[0.2em] text-bronze/85">
           Szervezeti cockpit
         </p>
         <h2 className="mt-3 font-fraunces text-[30px] leading-none tracking-tight text-ink md:text-[34px]">
           Hiba a betöltés közben
         </h2>
-        <p className="mx-auto mt-3 max-w-md text-[13px] leading-relaxed text-ink-body">
+        <p className="mx-auto mt-3 max-w-md text-caption leading-relaxed text-ink-body">
           {error.message || "Valami megszakította a dashboard betöltését."}
         </p>
         <button

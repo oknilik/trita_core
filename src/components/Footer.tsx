@@ -72,7 +72,7 @@ export function Footer() {
               <span style={{ color: "var(--color-accent-self)" }}>t</span>{"rit"}
               <span style={{ color: "var(--color-accent-primary)" }}>a</span>
             </Link>
-            <p className="mt-2 max-w-[180px] text-[13px] leading-relaxed text-cream/70">
+            <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-cream/70">
               {t("footer.tagline", locale)}
             </p>
           </div>
@@ -80,7 +80,7 @@ export function Footer() {
           {/* Link columns */}
           {columns.map((col) => (
             <div key={col.heading}>
-              <p className="mb-3 font-dm-sans text-[10px] font-semibold uppercase tracking-widest text-cream/55">
+              <p className="mb-3 font-dm-sans text-micro font-semibold uppercase tracking-widest text-cream/55">
                 {col.heading}
               </p>
               <ul className="flex flex-col gap-2">
@@ -88,7 +88,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-[13px] text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
+                      className="text-caption text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
                     >
                       {link.label}
                     </Link>

@@ -23,7 +23,7 @@ export function StatStrip({ cells }: StatStripProps) {
             style={{ backgroundColor: cell.accentColor ?? "var(--color-action-primary-bg)" }}
           />
 
-          <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+          <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.18em] text-muted">
             {cell.label}
           </p>
 

@@ -50,7 +50,7 @@ function RoleChip({
     <span
       className={`inline-flex items-center rounded-full font-semibold ${
         size === "xs"
-          ? "px-2 py-0.5 text-[10px]"
+          ? "px-2 py-0.5 text-micro"
           : "px-2.5 py-1 text-xs"
       }`}
       style={{ backgroundColor: `${color}18`, color }}
@@ -270,11 +270,11 @@ function IndividualTeamRoleTable({
                   {m.displayName}
                 </span>
                 {m.source === "questionnaire" ? (
-                  <span className="ml-2 inline-block rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                  <span className="ml-2 inline-block rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-medium text-emerald-700">
                     {isHu ? "kitöltött" : "completed"}
                   </span>
                 ) : m.source === "estimate" ? (
-                  <span className="ml-2 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                  <span className="ml-2 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-700">
                     {isHu ? "becslés" : "estimate"}
                   </span>
                 ) : null}
@@ -466,7 +466,7 @@ function PeerComparison({
               ) : (
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                   <div>
-                    <p className="mb-1 font-mono text-[10px] uppercase tracking-wide text-muted">
+                    <p className="mb-1 font-mono text-micro uppercase tracking-wide text-muted">
                       {t("teamComp.peerSelfLabel", loc)}
                     </p>
                     {selfTop.length > 0 ? (
@@ -482,7 +482,7 @@ function PeerComparison({
                     )}
                   </div>
                   <div>
-                    <p className="mb-1 font-mono text-[10px] uppercase tracking-wide text-muted">
+                    <p className="mb-1 font-mono text-micro uppercase tracking-wide text-muted">
                       {t("teamComp.peerTeamLabel", loc)}
                     </p>
                     <div className="flex flex-wrap gap-1">
@@ -491,7 +491,7 @@ function PeerComparison({
                           <RoleChip role={r.role} isHu={isHu} size="xs" />
                           {selfTop.length > 0 && !selfSet.has(r.role) && (
                             <span
-                              className="font-mono text-[10px] text-bronze"
+                              className="font-mono text-micro text-bronze"
                               title={t("teamComp.peerDiff", loc)}
                             >
                               •

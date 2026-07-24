@@ -118,7 +118,7 @@ export function ObserverComparison({
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2">
                       <div
-                        className="flex h-6 w-6 items-center justify-center rounded-md font-mono text-[10px] font-semibold text-white"
+                        className="flex h-6 w-6 items-center justify-center rounded-md font-mono text-micro font-semibold text-white"
                         style={{ backgroundColor: dim.color }}
                       >
                         {TRITAN_DIM_ABBR[dim.code as TritanDimCode]?.[isHu ? "hu" : "en"] ?? dim.code}

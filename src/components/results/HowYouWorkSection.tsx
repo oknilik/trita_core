@@ -21,7 +21,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
     <div className="py-8">
       <div className="mb-1.5 flex items-center gap-2.5">
         <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
-        <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+        <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {t("results.howYouWorkEyebrow", locale)}
         </p>
       </div>
@@ -31,20 +31,20 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)] p-[18px]">
-          <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+          <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
             {t("results.howYouWorkMain", locale)}
           </p>
-          <p className="text-[13px] leading-[1.7] text-[var(--color-accent-self-deep)]">
+          <p className="text-caption leading-[1.7] text-[var(--color-accent-self-deep)]">
             {mainPattern}
           </p>
         </div>
 
         {watchArea && (
           <div className="rounded-xl border-[1.5px] border-[var(--color-accent-primary)]/20 bg-[var(--color-surface-highlight-warm)] p-[18px]">
-            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
+            <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
               {t("results.howYouWorkWatch", locale)}
             </p>
-            <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
+            <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
               {watchArea}
             </p>
           </div>
@@ -52,10 +52,10 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
 
         {context && (
           <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]">
-            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+            <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
               {t("results.howYouWorkContext", locale)}
             </p>
-            <p className="text-[13px] leading-[1.7] text-[var(--color-text-secondary)]">
+            <p className="text-caption leading-[1.7] text-[var(--color-text-secondary)]">
               {context}
             </p>
           </div>

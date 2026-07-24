@@ -58,22 +58,22 @@ function PackageCard({
         .join(" ")}
     >
       {owned && (
-        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-action-primary-bg)] px-[7px] py-[2px] text-[10px] font-bold uppercase tracking-wide text-white">
+        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-action-primary-bg)] px-[7px] py-[2px] text-micro font-bold uppercase tracking-wide text-white">
           {t("progress.active", locale)}
         </span>
       )}
       {recommended && !owned && (
-        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-accent-primary)] px-[7px] py-[2px] text-[10px] font-bold uppercase tracking-wide text-white">
+        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-accent-primary)] px-[7px] py-[2px] text-micro font-bold uppercase tracking-wide text-white">
           {t("progress.recommended", locale)}
         </span>
       )}
 
-      <p className="font-fraunces text-[15px] text-[var(--color-text-primary)]">{name}</p>
+      <p className="font-fraunces text-body text-[var(--color-text-primary)]">{name}</p>
 
       {price && (
         <p className="font-fraunces text-lg text-[var(--color-text-primary)]">
           {oldPrice && (
-            <span className="mr-1 text-[13px] text-[var(--color-text-muted)] line-through">
+            <span className="mr-1 text-caption text-[var(--color-text-muted)] line-through">
               {oldPrice}
             </span>
           )}
@@ -87,7 +87,7 @@ function PackageCard({
       )}
 
       {includes && (
-        <span className="mt-1.5 inline-flex self-start rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-1 text-[10px] font-medium text-[var(--color-action-primary-bg)]">
+        <span className="mt-1.5 inline-flex self-start rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-1 text-micro font-medium text-[var(--color-action-primary-bg)]">
           {includes}
         </span>
       )}
@@ -248,16 +248,16 @@ export function ProgressBar({
                   key={step.name}
                   className="flex items-center gap-3 border-b border-[var(--color-border-soft)] px-5 py-3 opacity-65"
                 >
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] text-[10px] text-white">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] text-micro text-white">
                     ✓
                   </div>
                   <div className="flex-1">
-                    <p className="text-[13px] font-medium text-[var(--color-text-muted)] line-through">
+                    <p className="text-caption font-medium text-[var(--color-text-muted)] line-through">
                       {step.name}
                     </p>
                     <p className="text-[11px] text-[var(--color-text-muted)]">{step.desc}</p>
                   </div>
-                  <span className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--color-accent-self-deep)]">
+                  <span className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-self-deep)]">
                     {t("progress.stepDone", locale)}
                   </span>
                 </div>
@@ -269,7 +269,7 @@ export function ProgressBar({
                   {/* Divider */}
                   <div className="flex items-center gap-2.5 border-b border-[var(--color-border-soft)] px-5 py-2">
                     <div className="h-px flex-1 bg-[var(--color-border-default)]" />
-                    <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">
+                    <span className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
                       {t("progress.deepenDivider", locale)}
                     </span>
                     <div className="h-px flex-1 bg-[var(--color-border-default)]" />
@@ -304,7 +304,7 @@ export function ProgressBar({
                   className={[
                     "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                     observersSent
-                      ? "bg-[var(--color-action-primary-bg)] text-[10px] text-white"
+                      ? "bg-[var(--color-action-primary-bg)] text-micro text-white"
                       : hasSelfPlus
                         ? "border-2 border-[var(--color-accent-primary)]"
                         : "border-[1.5px] border-dashed border-[var(--color-border-soft)]",
@@ -315,7 +315,7 @@ export function ProgressBar({
                   {observersSent && "✓"}
                 </div>
                 <div className="flex-1">
-                  <p className="text-[13px] font-medium text-[var(--color-text-primary)]">
+                  <p className="text-caption font-medium text-[var(--color-text-primary)]">
                     {t("progress.sendInvitations", locale)}
                   </p>
                   <p className="text-[11px] text-[var(--color-text-muted)]">
@@ -352,7 +352,7 @@ export function ProgressBar({
                   className={[
                     "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                     observersCompleted
-                      ? "bg-[var(--color-action-primary-bg)] text-[10px] text-white"
+                      ? "bg-[var(--color-action-primary-bg)] text-micro text-white"
                       : observersSent
                         ? "border-2 border-[var(--color-accent-primary)]"
                         : "border-[1.5px] border-dashed border-[var(--color-border-soft)]",
@@ -363,7 +363,7 @@ export function ProgressBar({
                   {observersCompleted && "✓"}
                 </div>
                 <div className="flex-1">
-                  <p className="text-[13px] font-medium text-[var(--color-text-primary)]">
+                  <p className="text-caption font-medium text-[var(--color-text-primary)]">
                     {t("progress.receiveFeedback", locale)}
                   </p>
                   <p className="text-[11px] text-[var(--color-text-muted)]">

@@ -118,7 +118,7 @@ function InfoCard({
 }) {
   return (
     <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-white"}`}>
-      <p className="font-dm-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-bronze/80">
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-bronze/80">
         {number}
       </p>
       <h3 className="mt-2 font-fraunces text-xl leading-tight text-ink">{title}</h3>
