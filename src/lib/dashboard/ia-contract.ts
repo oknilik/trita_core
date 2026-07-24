@@ -339,14 +339,23 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
     heroSummary: {
       eyebrow: txt(input.locale, "Csapat cockpit", "Team cockpit"),
       title: input.teamName,
-      summary: txt(
-        input.locale,
-        `${input.memberCount} tagból ${input.completedCount} kész, ${input.waitingCount} várakozik.`,
-        `${input.completedCount} of ${input.memberCount} members are done, ${input.waitingCount} are waiting.`,
-      ),
+      // Teljes kitöltésnél kvalitatív összefoglaló — a számok az Élő
+      // pillanatkép gyűrűkben élnek, itt nem ismételjük (akciólista #14).
+      summary:
+        input.completedCount === input.memberCount && input.memberCount > 0
+          ? txt(
+              input.locale,
+              "Mindenki kitöltötte az önértékelést — a csapatkép él.",
+              "Everyone has completed the assessment — the team picture is live.",
+            )
+          : txt(
+              input.locale,
+              `${input.memberCount} tagból ${input.completedCount} kész, ${input.waitingCount} várakozik.`,
+              `${input.completedCount} of ${input.memberCount} members are done, ${input.waitingCount} are waiting.`,
+            ),
+      // Egyetlen állapot-chip — a tag-szám és a kitöltési % a hero
+      // pillanatkép-kártyáin már látszik, a chipsor csak duplikálta.
       chips: [
-        `${input.memberCount} ${txt(input.locale, "tag", "members")}`,
-        `${completionPct}% ${txt(input.locale, "kitöltés", "completion")}`,
         input.hasPattern
           ? txt(input.locale, "csapatkép elérhető", "pattern available")
           : txt(input.locale, "csapatkép zárolt", "pattern locked"),
