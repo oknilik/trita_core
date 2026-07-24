@@ -67,8 +67,7 @@ export const RadarChart = memo(function RadarChart({
   const { locale } = useLocale();
 
   // TRITAN-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
-  // mozaikszót (T·R·I·T·A·N = X,E,H,C,A,O). A két T-t a pozíció
-  // különbözteti meg. Nem-standard kódoknál marad az eredeti sorrend.
+  // mozaikszót (T·R·I·T·A·N). Nem-standard kódoknál marad az eredeti sorrend.
   const TRITAN_RADAR_ORDER: readonly string[] = ["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"];
   const isTritanSet = dimensions.every((d) => TRITAN_RADAR_ORDER.includes(d.code));
   const orderedDimensions = isTritanSet
@@ -76,14 +75,13 @@ export const RadarChart = memo(function RadarChart({
         (a, b) => TRITAN_RADAR_ORDER.indexOf(a.code) - TRITAN_RADAR_ORDER.indexOf(b.code),
       )
     : dimensions;
-  const axisLabel = (code: string): string => {
-    if (isTritanSet && TRITAN_DIMENSIONS[code as TritanDimCode]) {
-      return TRITAN_DIMENSIONS[code as TritanDimCode].letter;
-    }
-    return (
-      TRITAN_DIM_ABBR[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code
-    );
-  };
+  // Tengelycímke: mindig a 3 betűs, EGYEDI rövidítés (TÁR/TER stb.) —
+  // az egybetűs változatban két „T" is volt, ami önmagában nem
+  // azonosította a dimenziót (design-akciólista #9).
+  const axisLabel = (code: string): string =>
+    TRITAN_DIM_ABBR[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
+  const axisTitle = (code: string): string =>
+    TRITAN_DIMENSIONS[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
 
   const n = orderedDimensions.length;
   const radarFillId = `radar-fill-${uid}`;
@@ -364,7 +362,7 @@ export const RadarChart = memo(function RadarChart({
               textAnchor={getTextAnchor(i, n)}
               dominantBaseline="middle"
               fill={dim.color}
-              fontSize="13"
+              fontSize="10.5"
               fontWeight="700"
               stroke="rgba(255, 255, 255, 0.95)"
               strokeWidth="2.25"
@@ -375,6 +373,7 @@ export const RadarChart = memo(function RadarChart({
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 + i * 0.05, duration: 0.4 }}
             >
+              <title>{axisTitle(dim.code)}</title>
               {axisLabel(dim.code)}
             </motion.text>
           </g>
