@@ -12,6 +12,7 @@ import { ConsultantsTab } from "@/app/(app)/admin/_tabs/ConsultantsTab";
 import { OpsTab } from "@/app/(app)/admin/_tabs/OpsTab";
 import { FeedbackTab } from "@/app/(app)/admin/_tabs/FeedbackTab";
 import { RemindersTab } from "@/app/(app)/admin/_tabs/RemindersTab";
+import { BlogTab } from "@/app/(app)/admin/_tabs/BlogTab";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Admin oldal — vékony elosztó: fejléc + fülnavigáció + aktív fül.
 // A fülök tartalma és lekérdezései a _tabs/ könyvtárban élnek.
-const TAB_IDS = ["overview", "inquiries", "orgs", "consultants", "ops", "feedback", "reminders"] as const;
+const TAB_IDS = ["overview", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
 type TabId = (typeof TAB_IDS)[number];
 
 export default async function AdminPage({
@@ -74,6 +75,7 @@ export default async function AdminPage({
           {activeTab === "ops" && <OpsTab />}
           {activeTab === "feedback" && <FeedbackTab />}
           {activeTab === "reminders" && <RemindersTab />}
+          {activeTab === "blog" && <BlogTab />}
         </FadeIn>
       </div>
     </main>

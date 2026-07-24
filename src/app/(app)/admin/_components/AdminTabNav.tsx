@@ -13,6 +13,7 @@ const TABS = [
   { id: "inquiries", label: "Kérdések" },
   { id: "orgs", label: "Szervezetek" },
   { id: "consultants", label: "Tanácsadók" },
+  { id: "blog", label: "Blog" },
   { id: "ops", label: "Működés" },
 ] as const;
 

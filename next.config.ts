@@ -28,6 +28,14 @@ const CSP_REPORT_ONLY = [
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["iridaceous-rickie-overloath.ngrok-free.dev", "192.168.173.183"],
 
+  // Az admin Blog fül és az /api/admin/blog futásidőben olvassa a
+  // content/blog .mdx fájlokat — a file-tracing ezekre nem következtet
+  // automatikusan, ezért explicit becsomagoljuk őket.
+  outputFileTracingIncludes: {
+    "/admin": ["./content/blog/**/*"],
+    "/api/admin/blog": ["./content/blog/**/*"],
+  },
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "doodleipsum.com" },
