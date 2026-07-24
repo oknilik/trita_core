@@ -1171,9 +1171,13 @@ export default async function TeamDetailPage({
                           ? isHu
                             ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban — a becslés helyett mért szerep-térkép készül."
                             : "A short questionnaire about the roles you play in the team — a measured role map replaces the estimate."
-                          : isHu
-                            ? "Töltsd ki az önértékelést (~10 perc) — ez az alapja a csapatképnek, és utána nyílnak a további mérések."
-                            : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
+                          : pendingMeasurement.stepType === "PEER_FEEDBACK"
+                            ? isHu
+                              ? "Adj rövid, jövő-irányú visszajelzést a csapattársaidnak (~5-10 perc) — a visszajelzés nevesített, a címzett látja, kitől jött."
+                              : "Give each teammate a short, future-focused piece of feedback (~5-10 minutes) — feedback is attributed, recipients see who it came from."
+                            : isHu
+                              ? "Töltsd ki az önértékelést (~10 perc) — ez az alapja a csapatképnek, és utána nyílnak a további mérések."
+                              : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
                 </p>
               </div>
               {pendingMeasurement.opensAt ? (
@@ -1195,7 +1199,9 @@ export default async function TeamDetailPage({
                   href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
                   className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-ink px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
                 >
-                  {isHu ? "Kitöltöm most" : "Fill it in now"}
+                  {pendingMeasurement.stepType === "PEER_FEEDBACK"
+                    ? isHu ? "Visszajelzést adok" : "Give feedback"
+                    : isHu ? "Kitöltöm most" : "Fill it in now"}
                 </Link>
               )}
             </div>
