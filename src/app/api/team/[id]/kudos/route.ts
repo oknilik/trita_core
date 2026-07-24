@@ -8,9 +8,12 @@ import { checkRateLimit } from "@/lib/rate-limit";
 // docs/product/peer-feedback-terv.md). Nevesített, csapaton belüli,
 // címzett-privát elismerés; a fejlesztő visszajelzés (F2/F3) külön kör.
 
+const KUDOS_EMOJIS = ["🙌", "👏", "🙏", "🚀", "💡", "❤️", "🎯", "🏆"] as const;
+
 const postSchema = z.object({
   toUserId: z.string().min(1),
   message: z.string().trim().min(3).max(400),
+  emoji: z.enum(KUDOS_EMOJIS).optional(),
 });
 
 async function resolveMember(teamId: string, clerkId: string) {
@@ -66,6 +69,7 @@ export async function GET(
       fromName: item.from.username ?? item.from.email ?? "—",
       toName: item.to.username ?? item.to.email ?? "—",
       message: (item.payload as { message?: string }).message ?? "",
+      emoji: (item.payload as { emoji?: string }).emoji ?? null,
       createdAt: item.createdAt.toISOString(),
     })),
   });
@@ -111,7 +115,7 @@ export async function POST(
       toUserId: body.data.toUserId,
       kind: "appreciation",
       visibility: "named",
-      payload: { message: body.data.message },
+      payload: { message: body.data.message, ...(body.data.emoji ? { emoji: body.data.emoji } : {}) },
     },
     select: { id: true, createdAt: true },
   });

@@ -1785,6 +1785,7 @@ export const orgTranslations = {
         en: "Send named kudos to a teammate — for a specific situation or behaviour. Kudos are visible only to the recipient.",
       },
       pickMember: { hu: "Válassz csapattársat…", en: "Pick a teammate…" },
+      badgeLabel: { hu: "Jelvény", en: "Badge" },
       placeholder: { hu: "Pl. „Köszönöm, hogy a keddi demó előtt átnézted a prezimet — sokat dobott rajta.”", en: "E.g. \"Thanks for reviewing my deck before Tuesday's demo — it made a real difference.\"" },
       send: { hu: "Köszönet küldése", en: "Send kudos" },
       sentOk: { hu: "Elküldve", en: "Sent" },

@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { hasJudgmentTone } from "@/lib/feedback-tone";
+import { EmojiRow } from "@/components/team/EmojiRow";
 
 // Visszajelzés-kérések és fejlesztő javaslatok (peer feedback F2 + F3
 // címzett-oldala) a csapat-oldal Tagok fülén.
@@ -194,6 +195,7 @@ export function TeamFeedbackRequests({
                       {t("team.fb.tryLabel", locale)}
                     </label>
                     <textarea rows={2} maxLength={400} value={tryText} onChange={(e) => setTryText(e.target.value)} className={textareaClass} />
+                    <EmojiRow onPick={(emoji) => setTryText((prev) => `${prev}${emoji}`)} />
                     {!respondAnonymous && (
                       <>
                         <label className="text-caption font-semibold text-ink-body">

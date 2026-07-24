@@ -5,10 +5,10 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
+import { EmojiRow, KUDOS_BADGES, type KudosBadge } from "@/components/team/EmojiRow";
 
-// Kudos-kártya a csapat-oldal Tagok fülén (peer feedback F1) —
-// nevesített köszönet csapattársnak + a saját kapott/küldött lista.
-// Terv: docs/product/peer-feedback-terv.md
+// Kudos-kártya (peer feedback F1) — nevesített köszönet csapattársnak,
+// emoji-jelvénnyel; a saját kapott lista. Terv: docs/product/peer-feedback-terv.md
 
 interface KudosItem {
   id: string;
@@ -16,6 +16,7 @@ interface KudosItem {
   fromName: string;
   toName: string;
   message: string;
+  emoji: string | null;
   createdAt: string;
 }
 
@@ -25,7 +26,6 @@ export function TeamKudos({
   locale,
 }: {
   teamId: string;
-  /** A csapat tagjai a küldés-választóhoz (a saját profil kiszűrve szerveroldalt nem — itt jelöljük). */
   members: Array<{ userId: string; displayName: string }>;
   locale: Locale;
 }) {
@@ -34,6 +34,7 @@ export function TeamKudos({
   const [loaded, setLoaded] = useState(false);
   const [toUserId, setToUserId] = useState("");
   const [message, setMessage] = useState("");
+  const [badge, setBadge] = useState<KudosBadge>("🙌");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +66,7 @@ export function TeamKudos({
       const res = await fetch(`/api/team/${teamId}/kudos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toUserId, message: message.trim() }),
+        body: JSON.stringify({ toUserId, message: message.trim(), emoji: badge }),
       });
       if (!res.ok) {
         setError(t("team.kudos.sendError", locale));
@@ -105,6 +106,28 @@ export function TeamKudos({
             </option>
           ))}
         </select>
+
+        {/* Emoji-jelvény választó */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-micro uppercase tracking-widest text-muted">
+            {t("team.kudos.badgeLabel", locale)}
+          </span>
+          {KUDOS_BADGES.map((candidate) => (
+            <button
+              key={candidate}
+              type="button"
+              onClick={() => setBadge(candidate)}
+              className={`flex h-9 w-9 items-center justify-center rounded-lg border text-[17px] transition ${
+                badge === candidate
+                  ? "border-sage bg-sage-soft"
+                  : "border-sand bg-white hover:border-sage-ring"
+              }`}
+            >
+              {candidate}
+            </button>
+          ))}
+        </div>
+
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -113,6 +136,8 @@ export function TeamKudos({
           placeholder={t("team.kudos.placeholder", locale)}
           className="rounded-lg border border-sand bg-white p-3 text-sm text-ink outline-none focus:border-sage-ring"
         />
+        <EmojiRow onPick={(emoji) => setMessage((prev) => `${prev}${emoji}`)} />
+
         <div className="flex items-center gap-3">
           <Button
             type="button"
@@ -133,7 +158,7 @@ export function TeamKudos({
         </div>
       </div>
 
-      {/* Kapott köszönetek — csak a sajátjaim */}
+      {/* Kapott köszönetek */}
       <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">
         {tf("team.kudos.receivedLabel", locale, { count: received.length })}
       </p>
@@ -144,14 +169,19 @@ export function TeamKudos({
       ) : (
         <ul className="flex flex-col divide-y divide-sand">
           {received.slice(0, 8).map((item) => (
-            <li key={item.id} className="py-2.5">
-              <p className="text-sm leading-relaxed text-ink">„{item.message}”</p>
-              <p className="mt-0.5 text-micro text-muted">
-                {item.fromName} ·{" "}
-                {new Date(item.createdAt).toLocaleDateString(
-                  locale === "en" ? "en-GB" : "hu-HU",
-                )}
-              </p>
+            <li key={item.id} className="flex items-start gap-3 py-2.5">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage-soft text-[17px]">
+                {item.emoji ?? "🙌"}
+              </span>
+              <span className="min-w-0">
+                <p className="text-sm leading-relaxed text-ink">„{item.message}”</p>
+                <p className="mt-0.5 text-micro text-muted">
+                  {item.fromName} ·{" "}
+                  {new Date(item.createdAt).toLocaleDateString(
+                    locale === "en" ? "en-GB" : "hu-HU",
+                  )}
+                </p>
+              </span>
             </li>
           ))}
         </ul>

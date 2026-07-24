@@ -71,6 +71,7 @@ const TEAM_TAB_KEYS = [
   "members",
   "teamRole",
   "report",
+  "feedback",
 ] as const;
 
 type TeamTabKey = (typeof TEAM_TAB_KEYS)[number];
@@ -519,29 +520,47 @@ export default async function TeamDetailPage({
           locale={locale}
           dateLocale={isHu ? "hu-HU" : "en-US"}
         />
-        {/* Peer feedback (F1–F3): tagok közti kommunikáció — csak annak
-            jelenik meg, aki maga is tagja a csapatnak (tanácsadó/org admin
-            kívülről nézve nem küldhet és nem is látná a sajátjait: 403). */}
-        {membersForTab.some((m) => m.userId === profile.id) && (
-          <>
-            <TeamKudos
-              teamId={teamId}
-              members={membersForTab.map((m) => ({
-                userId: m.userId,
-                displayName: m.displayName,
-              }))}
-              locale={locale}
-            />
-            <TeamFeedbackRequests
-              teamId={teamId}
-              members={membersForTab.map((m) => ({
-                userId: m.userId,
-                displayName: m.displayName,
-              }))}
-              locale={locale}
-            />
-          </>
-        )}
+      </PlatformPageShell>
+    );
+  }
+
+  // ── Visszajelzés fül (peer feedback): kitüntetett hely, csak csapattagnak ──
+  if (activeTab === "feedback") {
+    const isTeamMemberSelf = teamData.members.some((m) => m.userId === profile.id);
+    if (!isTeamMemberSelf) redirect(`/team/${teamId}?tab=overview`);
+    const feedbackMembers = teamData.members.map((m) => ({
+      userId: m.userId,
+      displayName: m.displayName,
+    }));
+    return (
+      <PlatformPageShell
+        surface="team"
+        contentClassName="max-w-3xl gap-6 px-4 py-8 md:px-6"
+      >
+        <Link
+          href={`/team/${teamId}?tab=overview`}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-body transition-colors hover:text-ink"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 3L5 8l5 5" />
+          </svg>
+          {teamData.teamName}
+        </Link>
+        <div>
+          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+            {isHu ? "// visszajelzés" : "// feedback"}
+          </p>
+          <h1 className="mt-1 font-fraunces text-3xl text-ink">
+            {isHu ? "Visszajelzések" : "Feedback"}
+          </h1>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-body">
+            {isHu
+              ? "Köszönet és fejlesztő visszajelzés a csapattársaidnak — nevesítve épít, kérésre érkezve hasznosul."
+              : "Kudos and development feedback for your teammates — named feedback builds, requested feedback lands."}
+          </p>
+        </div>
+        <TeamKudos teamId={teamId} members={feedbackMembers} locale={locale} />
+        <TeamFeedbackRequests teamId={teamId} members={feedbackMembers} locale={locale} />
       </PlatformPageShell>
     );
   }
@@ -994,7 +1013,18 @@ export default async function TeamDetailPage({
           ))}
           actions={(
             <>
-              {/* Tagok — mindenkinek (a peer feedback belépője sima tagnak is) */}
+              {/* Visszajelzés — kitüntetett belépő, csak csapattagnak */}
+              {teamData.members.some((m) => m.userId === profile.id) ? (
+                <Link
+                  href={`/team/${teamId}?tab=feedback`}
+                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                  style={{ backgroundColor: teamHeroTheme.primary }}
+                >
+                  <span aria-hidden>🙌</span>
+                  {isHu ? "Visszajelzés" : "Feedback"}
+                </Link>
+              ) : null}
+              {/* Tagok — mindenkinek */}
               <Link
                 href={`/team/${teamId}?tab=members`}
                 className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.62] transition hover:bg-white/[0.12]"
