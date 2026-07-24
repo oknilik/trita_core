@@ -519,24 +519,29 @@ export default async function TeamDetailPage({
           locale={locale}
           dateLocale={isHu ? "hu-HU" : "en-US"}
         />
-        {/* Peer feedback F1: kudos-kártya a tagok füle alatt */}
-        <TeamKudos
-          teamId={teamId}
-          members={membersForTab.map((m) => ({
-            userId: m.userId,
-            displayName: m.displayName,
-          }))}
-          locale={locale}
-        />
-        {/* Peer feedback F2+F3: visszajelzés-kérések + kapott javaslatok */}
-        <TeamFeedbackRequests
-          teamId={teamId}
-          members={membersForTab.map((m) => ({
-            userId: m.userId,
-            displayName: m.displayName,
-          }))}
-          locale={locale}
-        />
+        {/* Peer feedback (F1–F3): tagok közti kommunikáció — csak annak
+            jelenik meg, aki maga is tagja a csapatnak (tanácsadó/org admin
+            kívülről nézve nem küldhet és nem is látná a sajátjait: 403). */}
+        {membersForTab.some((m) => m.userId === profile.id) && (
+          <>
+            <TeamKudos
+              teamId={teamId}
+              members={membersForTab.map((m) => ({
+                userId: m.userId,
+                displayName: m.displayName,
+              }))}
+              locale={locale}
+            />
+            <TeamFeedbackRequests
+              teamId={teamId}
+              members={membersForTab.map((m) => ({
+                userId: m.userId,
+                displayName: m.displayName,
+              }))}
+              locale={locale}
+            />
+          </>
+        )}
       </PlatformPageShell>
     );
   }
