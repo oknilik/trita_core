@@ -543,13 +543,13 @@ export const DimensionCard = memo(function DimensionCard({
                                 type="button"
                                 onClick={() => setFeedbackRating(item.value)}
                                 aria-label={item.label}
-                                className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
+                                className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
                                   feedbackRating === item.value
-                                    ? "border-transparent bg-gradient-to-r from-sage to-sage-deep"
+                                    ? "border-transparent bg-gradient-to-r from-sage to-sage-deep text-white"
                                     : "border-sand hover:border-bronze-edge"
                                 }`}
                               >
-                                {item.emoji}
+                                {item.value}
                               </button>
                             ))}
                           </div>

@@ -88,7 +88,6 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     return (
       <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8 text-center">
         <div className="flex items-center justify-center gap-3">
-          <span className="text-2xl">🙏</span>
           <span className="text-sm text-ink-body">
             {t("dashboard.feedbackThanks", locale)}
           </span>
@@ -133,15 +132,19 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                   type="button"
                   onClick={() => setAgreementScore(item.value)}
                   aria-label={item.label}
-                  className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
+                  className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
                     agreementScore === item.value
                       ? "border-2 border-sage bg-sage-soft"
                       : "border-sand hover:border-bronze-edge"
                   }`}
                 >
-                  {item.emoji}
+                  {item.value}
                 </button>
               ))}
+            </div>
+            <div className="mt-1.5 flex justify-between text-micro text-muted">
+              <span>{emojiScale[0].label}</span>
+              <span>{emojiScale[emojiScale.length - 1].label}</span>
             </div>
           </div>
         )}
@@ -159,15 +162,19 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                   type="button"
                   onClick={() => setObserverUsefulness(item.value)}
                   aria-label={item.label}
-                  className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
+                  className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
                     observerUsefulness === item.value
                       ? "border-2 border-sage bg-sage-soft"
                       : "border-sand hover:border-bronze-edge"
                   }`}
                 >
-                  {item.emoji}
+                  {item.value}
                 </button>
               ))}
+            </div>
+            <div className="mt-1.5 flex justify-between text-micro text-muted">
+              <span>{emojiScale[0].label}</span>
+              <span>{emojiScale[emojiScale.length - 1].label}</span>
             </div>
           </div>
         )}
@@ -185,15 +192,19 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                   type="button"
                   onClick={() => setSiteUsefulness(item.value)}
                   aria-label={item.label}
-                  className={`flex min-h-[44px] items-center justify-center rounded-lg border text-2xl transition ${
+                  className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
                     siteUsefulness === item.value
                       ? "border-2 border-sage bg-sage-soft"
                       : "border-sand hover:border-bronze-edge"
                   }`}
                 >
-                  {item.emoji}
+                  {item.value}
                 </button>
               ))}
+            </div>
+            <div className="mt-1.5 flex justify-between text-micro text-muted">
+              <span>{emojiScale[0].label}</span>
+              <span>{emojiScale[emojiScale.length - 1].label}</span>
             </div>
           </div>
         )}
@@ -214,7 +225,6 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                     : "border-sand hover:border-bronze-edge"
                 }`}
               >
-                <span className="text-2xl">👍</span>
                 <span className="text-sm font-semibold">{t("dashboard.feedbackWantsUpdatesYes", locale)}</span>
               </button>
               <button
@@ -226,7 +236,6 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
                     : "border-sand hover:border-bronze-edge"
                 }`}
               >
-                <span className="text-2xl">👎</span>
                 <span className="text-sm font-semibold">{t("dashboard.feedbackWantsUpdatesNo", locale)}</span>
               </button>
             </div>
