@@ -68,7 +68,7 @@ export default async function PeerFeedbackPage() {
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-ink px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
           >
             {t("peerFb.backToDashboard", locale as Locale)}
           </Link>

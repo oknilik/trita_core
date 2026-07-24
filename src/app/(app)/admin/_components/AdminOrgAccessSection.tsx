@@ -359,7 +359,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                           type="button"
                           disabled={billingState[org.id]?.saving}
                           onClick={() => saveBilling(org.id)}
-                          className="min-h-[38px] rounded-lg bg-ink px-5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                          className="min-h-[38px] rounded-lg bg-action-primary-bg px-5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
                         >
                           {billingState[org.id]?.saving ? "Mentés…" : "Cégadatok mentése"}
                         </button>

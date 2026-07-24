@@ -1209,7 +1209,7 @@ export default async function TeamDetailPage({
               ) : (
                 <Link
                   href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
-                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-ink px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
+                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-[13px] font-semibold text-white transition hover:brightness-110"
                 >
                   {pendingMeasurement.stepType === "PEER_FEEDBACK"
                     ? isHu ? "Visszajelzést adok" : "Give feedback"
@@ -1316,7 +1316,7 @@ export default async function TeamDetailPage({
                   </span>
                 </div>
               </div>
-              <span className="inline-flex min-h-[44px] items-center justify-center rounded-[12px] bg-ink px-5 py-2 text-[12px] font-semibold text-white transition-colors group-hover:bg-ink/90">
+              <span className="inline-flex min-h-[44px] items-center justify-center rounded-[12px] bg-action-primary-bg px-5 py-2 text-[12px] font-semibold text-white transition-colors group-hover:bg-action-primary-bg-hover">
                 {isHu ? "Csapatintelligencia megnyitása" : "Open team intelligence"}
               </span>
             </div>

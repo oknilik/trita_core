@@ -97,7 +97,7 @@ export function PsychSafetyClient({
         <button
           type="button"
           onClick={() => setPhase("answering")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-ink px-8 text-sm font-semibold text-white transition hover:brightness-110"
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-white transition hover:brightness-110"
         >
           {t("psafety.start", locale)}
         </button>
@@ -121,7 +121,7 @@ export function PsychSafetyClient({
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-ink px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
         >
           {t("psafety.backToDashboard", locale)}
         </button>
@@ -141,7 +141,7 @@ export function PsychSafetyClient({
         <button
           type="button"
           onClick={() => submit(answersRef.current)}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-ink px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
         >
           {t("psafety.retry", locale)}
         </button>

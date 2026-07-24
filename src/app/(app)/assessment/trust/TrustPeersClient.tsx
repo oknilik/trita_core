@@ -114,7 +114,7 @@ export function TrustPeersClient({
         <button
           type="button"
           onClick={() => setPhase("rating")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-ink px-8 text-sm font-semibold text-white transition hover:brightness-110"
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-white transition hover:brightness-110"
         >
           {t("trustPeers.start", locale)}
         </button>
@@ -141,7 +141,7 @@ export function TrustPeersClient({
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-ink px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
         >
           {t("trustPeers.backToDashboard", locale)}
         </button>
@@ -166,7 +166,7 @@ export function TrustPeersClient({
               void submitOne(lastFailed.aboutUserId, lastFailed.answers);
             }
           }}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-ink px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-[13px] font-semibold text-white transition hover:brightness-110"
         >
           {t("trustPeers.retry", locale)}
         </button>
@@ -290,7 +290,7 @@ export function TrustPeersClient({
           }
           void submitOne(current.userId, answers);
         }}
-        className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-[10px] bg-ink px-8 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-60"
+        className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-white transition hover:brightness-110 disabled:opacity-60"
       >
         {submitting
           ? t("trustPeers.submitting", locale)

@@ -85,7 +85,7 @@ export default async function AssessmentLayerDetailPage({
         <div className="mt-6">
           <Link
             href="/assessment-layers"
-            className="inline-flex min-h-[42px] items-center rounded-lg bg-ink px-4 text-[13px] font-semibold text-white"
+            className="inline-flex min-h-[42px] items-center rounded-lg bg-action-primary-bg px-4 text-[13px] font-semibold text-white"
           >
             {t("assessmentLayers.backToLayers", locale)}
           </Link>

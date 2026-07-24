@@ -75,7 +75,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
+          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
         >
           {t("contact.sendAnother", locale)}
         </button>

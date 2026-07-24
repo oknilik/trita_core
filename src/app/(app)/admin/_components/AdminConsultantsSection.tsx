@@ -155,7 +155,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
           <button
             type="submit"
             disabled={inviteBusy || !inviteEmail.trim()}
-            className="min-h-[44px] rounded-lg bg-ink px-6 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-[44px] rounded-lg bg-action-primary-bg px-6 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {inviteBusy ? "Meghívás…" : "Meghívás"}
           </button>

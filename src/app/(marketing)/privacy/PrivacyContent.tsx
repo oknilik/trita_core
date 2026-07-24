@@ -56,7 +56,7 @@ export function PrivacyContent() {
 
   return (
     <main className="min-h-dvh bg-cream">
-      <section className="border-b border-sand bg-ink px-6 py-14 lg:px-16 lg:py-16">
+      <section className="border-b border-sand bg-action-primary-bg px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
           <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-[2px] text-bronze">
             {legalLabel}

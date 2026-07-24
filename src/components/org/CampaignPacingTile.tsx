@@ -134,7 +134,7 @@ export function CampaignPacingTile({
                 type="button"
                 disabled={busy !== null}
                 onClick={() => call({ action: "release_now" }, "release")}
-                className="inline-flex min-h-[38px] items-center rounded-[10px] bg-ink px-4 text-[12px] font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                className="inline-flex min-h-[38px] items-center rounded-[10px] bg-action-primary-bg px-4 text-[12px] font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
               >
                 {busy === "release" ? "…" : isHu ? "Küldés most" : "Send now"}
               </button>
