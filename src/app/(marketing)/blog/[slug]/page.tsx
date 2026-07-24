@@ -69,7 +69,7 @@ function getTagStyle(tag: string): string {
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-[19px] italic leading-[1.65] text-[var(--color-accent-self-deep)]">
+    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-[19px] italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
       {children}
     </div>
   );
@@ -210,7 +210,7 @@ const makeComponents = (isHu: boolean) => ({
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
-      className="my-8 rounded-r-[10px] border-l-[2.5px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-4 pl-6 pr-5 italic text-[var(--color-accent-self-deep)]"
+      className="my-8 rounded-r-[10px] border-l-[2.5px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-4 pl-6 pr-5 italic text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit"
       {...props}
     />
   ),
