@@ -29,8 +29,10 @@ function ModeSwitcherInner() {
             key={m}
             type="button"
             onClick={() => switchTo(m)}
+            aria-pressed={isActive}
             className={[
               "flex min-h-[44px] items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium transition-all duration-200",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action-primary-bg)] focus-visible:ring-offset-2",
               isActive
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]",
