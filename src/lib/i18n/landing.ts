@@ -274,6 +274,18 @@ export const landingTranslations = {
       en: "~10 minutes to your first career profile — for free.",
     },
     tryCta: { hu: "Teszt indítása →", en: "Start assessment →" },
+    // ── Blog UX 2. kör (2026-07-24) ──
+    filterAll: { hu: "Mind", en: "All" },
+    newBadge: { hu: "Új", en: "New" },
+    startHere: { hu: "Új itt? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
+    inThisArticle: { hu: "Ebben a cikkben", en: "In this article" },
+    minutesLeft: { hu: "még ~{m} perc olvasás", en: "~{m} min left" },
+    authorTeam: { hu: "a trita módszertani csapata", en: "the trita methodology team" },
+    share: { hu: "Megosztás", en: "Share" },
+    copyLink: { hu: "Link másolása", en: "Copy link" },
+    linkCopied: { hu: "Másolva", en: "Copied" },
+    prevArticle: { hu: "← Előző cikk", en: "← Previous article" },
+    nextArticle: { hu: "Következő cikk →", en: "Next article →" },
   },
   pilot: {
     // Hero

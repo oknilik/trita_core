@@ -20,9 +20,12 @@ export const metadata: Metadata = {
 // Statikus oldal: a posztlista mindkét nyelven build-time készül, a nyelvet
 // a kliens-oldali LocaleProvider választja.
 export default function BlogListPage() {
+  // Dev-ben a piszkozatok is látszanak (ott íródnak-ellenőrződnek);
+  // élesben csak a publikált cikkek kerülnek a listába.
+  const includeDrafts = process.env.NODE_ENV === "development";
   const postsByLocale = {
-    hu: getAllPosts("hu"),
-    en: getAllPosts("en"),
+    hu: getAllPosts("hu", { includeDrafts }),
+    en: getAllPosts("en", { includeDrafts }),
   };
 
   return <BlogListContent postsByLocale={postsByLocale} />;

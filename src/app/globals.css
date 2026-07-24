@@ -400,3 +400,15 @@ input[type="range"].pattern-range::-moz-range-track {
   background: transparent;
   border-radius: 9999px;
 }
+
+/* ─── Blog cikk (2026-07-24 UX-kör) ───────────────────────────────────── */
+/* Iniciálé az első bekezdésen — Fraunces, sage; csak a cikk-törzsre hat. */
+.blog-prose > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 54px;
+  line-height: 0.85;
+  padding: 6px 10px 0 0;
+  color: var(--color-sage);
+}
