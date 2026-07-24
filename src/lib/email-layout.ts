@@ -22,7 +22,7 @@ export const EMAIL_P = `font-size:16px;line-height:26px;color:${EMAIL_COLORS.bod
 /** Halkabb kísérőszöveg (jogi/disclaimer jellegű, de még a törzsben). */
 export const EMAIL_P_MUTED = `font-size:14px;line-height:22px;color:${EMAIL_COLORS.muted};margin:0 0 12px`;
 /** Szekció-felirat (eyebrow) a törzsben. */
-export const EMAIL_EYEBROW = `font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:${EMAIL_COLORS.muted};margin:0 0 6px`;
+export const EMAIL_EYEBROW = `font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:${EMAIL_COLORS.muted};margin:0 0 6px`;
 /** Lista a törzsben. */
 export const EMAIL_UL = `font-size:16px;line-height:26px;color:${EMAIL_COLORS.body};margin:0 0 16px;padding:0 0 0 20px`;
 export const EMAIL_LI = `padding:2px 0;color:${EMAIL_COLORS.body}`;
@@ -163,7 +163,7 @@ export function buildEmailLayout(params: {
           ${params.heading ? `
           <tr>
             <td class="padding-mobile" style="padding:32px 40px 0">
-              <h1 class="em-heading" style="font-size:22px;line-height:30px;font-weight:700;color:${EMAIL_COLORS.heading};margin:0;font-family:${FONT_STACK}">${params.heading}</h1>
+              <h1 class="em-heading" style="font-size:24px;line-height:32px;font-weight:600;color:${EMAIL_COLORS.heading};margin:0;font-family:Fraunces,Georgia,'Times New Roman',serif">${params.heading}</h1>
             </td>
           </tr>` : ""}
 

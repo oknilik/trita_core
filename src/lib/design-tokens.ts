@@ -27,8 +27,8 @@ export const COLORS = {
   ink:         "#1a1a2e",
   inkBody:     "#4a4a5e",
   inkWarm:     "#7a756e",
-  muted:       "#8a8a9a",
-  mutedWarm:   "#a09c96",
+  muted:       "#6e6e80", // 3.4:1→5.0:1 fehéren — globals.css-szinkron (tipó-audit #8)
+  mutedWarm:   "#7c786f", // 2.7:1→4.4:1 fehéren — globals.css-szinkron (tipó-audit #8)
 
   // Surface
   cream:       "#f7f4ef",
