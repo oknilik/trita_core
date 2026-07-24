@@ -398,6 +398,11 @@ export default async function ProfileResultsPage({
     tabParam === "career" ? "career" :
     "results";
 
+  // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma
+  // redirect helyett explicit sáv magyarázza, mi történt, és innen
+  // indítható az újratöltés (design-akciólista #12).
+  const showRetakeBanner = resolvedParams?.retake === "true";
+
   const displayName =
     profile.username ?? profile.email ?? t("common.userFallback", locale);
 
@@ -479,6 +484,36 @@ export default async function ProfileResultsPage({
       {/* A ProfileTabs belső ritmusával (gap-8 md:gap-12) azonos térköz a
           tabokon kívüli elemeknek (pl. csapat-érdeklődés banner) is. */}
       <div className="flex flex-col gap-8 md:gap-12">
+        {showRetakeBanner && (
+          <section className="flex flex-col gap-3 rounded-[18px] border border-sage/35 bg-sage/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-ink">
+                {locale === "hu"
+                  ? "A mérésed már készen van — ezt az eredményt látod itt."
+                  : "Your assessment is already complete — this is that result."}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                {locale === "hu"
+                  ? "Ha újra kitöltöd, a mostani profilod frissül az új válaszaid alapján."
+                  : "If you retake it, your profile will be updated based on your new answers."}
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <Link
+                href="/assessment?confirmed=true"
+                className={getButtonClassName({ variant: "primary", size: "sm" })}
+              >
+                {locale === "hu" ? "Újratöltés indítása" : "Start retake"}
+              </Link>
+              <Link
+                href="/profile/results"
+                className={getButtonClassName({ variant: "ghost", size: "sm" })}
+              >
+                {locale === "hu" ? "Maradok az eredményeknél" : "Keep my results"}
+              </Link>
+            </div>
+          </section>
+        )}
         <ProfileTabs
           name={displayName}
           assessmentDate={latestResult.createdAt.toISOString()}
