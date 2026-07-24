@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
+import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon } from "@/components/landing/icons";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -337,13 +338,13 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             {isSelf ? (
               <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
                 {[
-                  { icon: "⏱", text: t("landing.selfMetaTime", locale) },
-                  { icon: "🔬", text: t("landing.selfMetaMethod", locale) },
-                  { icon: "⚡", text: t("landing.selfMetaInstant", locale) },
-                  { icon: "🆓", text: t("landing.selfMetaFree", locale) },
+                  { Icon: ClockIcon, text: t("landing.selfMetaTime", locale) },
+                  { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
+                  { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
+                  { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
                 ].map((m) => (
                   <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
-                    <span className="text-[10px]">{m.icon}</span>
+                    <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
                     {m.text}
                   </span>
                 ))}

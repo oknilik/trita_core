@@ -1020,7 +1020,19 @@ export default async function TeamDetailPage({
                   className="inline-flex min-h-[44px] items-center gap-1.5 rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
                   style={{ backgroundColor: teamHeroTheme.primary }}
                 >
-                  <span aria-hidden>🙌</span>
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 shrink-0"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M14 10a1.5 1.5 0 0 1-1.5 1.5H8l-3 3v-3H3.5A1.5 1.5 0 0 1 2 10V4a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 14 4v6Z" />
+                    <path d="M5.5 6h5M5.5 8.5H9" />
+                  </svg>
                   {isHu ? "Visszajelzés" : "Feedback"}
                 </Link>
               ) : null}

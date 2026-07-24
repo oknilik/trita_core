@@ -3,6 +3,14 @@ import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import {
+  FlaskIcon,
+  CompassIcon,
+  ChatIcon,
+  NodesIcon,
+  EyeIcon,
+  SearchIcon,
+} from "@/components/landing/icons";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -16,14 +24,14 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
 
   const cards = isSelf
     ? [
-        { icon: "🔬", title: t("landing.proof1Title", locale), desc: t("landing.proof1Desc", locale) },
-        { icon: "🧭", title: t("landing.proof2Title", locale), desc: t("landing.proof2Desc", locale) },
-        { icon: "💬", title: t("landing.proof3Title", locale), desc: t("landing.proof3Desc", locale) },
+        { Icon: FlaskIcon, title: t("landing.proof1Title", locale), desc: t("landing.proof1Desc", locale) },
+        { Icon: CompassIcon, title: t("landing.proof2Title", locale), desc: t("landing.proof2Desc", locale) },
+        { Icon: ChatIcon, title: t("landing.proof3Title", locale), desc: t("landing.proof3Desc", locale) },
       ]
     : [
-        { icon: "🧬", title: t("landing.proofTeam1Title", locale), desc: t("landing.proofTeam1Desc", locale) },
-        { icon: "👁", title: t("landing.proofTeam2Title", locale), desc: t("landing.proofTeam2Desc", locale) },
-        { icon: "🔍", title: t("landing.proofTeam3Title", locale), desc: t("landing.proofTeam3Desc", locale) },
+        { Icon: NodesIcon, title: t("landing.proofTeam1Title", locale), desc: t("landing.proofTeam1Desc", locale) },
+        { Icon: EyeIcon, title: t("landing.proofTeam2Title", locale), desc: t("landing.proofTeam2Desc", locale) },
+        { Icon: SearchIcon, title: t("landing.proofTeam3Title", locale), desc: t("landing.proofTeam3Desc", locale) },
       ];
 
   return (
@@ -49,7 +57,9 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
               transition={{ delay: i * 0.1 } as Parameters<typeof motion.div>[0]["transition"]}
               className="rounded-2xl border border-[var(--color-border-default)] bg-white p-7 text-center"
             >
-              <div className="mb-4 text-3xl">{card.icon}</div>
+              <div className="mb-4 flex justify-center" style={{ color: accentColor }}>
+                <card.Icon className="h-8 w-8" />
+              </div>
               <h3 className="font-fraunces mb-2 text-lg text-ink">{card.title}</h3>
               <p className="text-[13px] leading-relaxed text-ink-body">{card.desc}</p>
             </motion.div>
