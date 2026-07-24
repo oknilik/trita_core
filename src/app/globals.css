@@ -11,7 +11,7 @@
 
   /* ─── Fonts ────────────────────────────────────────────────────────── */
   --font-sans:    var(--font-dm-sans);
-  --font-mono:    var(--font-dm-sans);
+  --font-mono:    var(--font-dm-mono); /* volt: dm-sans alias — audit #1 */
   --font-display: var(--font-fraunces);
   --font-serif:   var(--font-fraunces);
   --font-fraunces: var(--font-fraunces);

@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Fraunces, DM_Sans } from "next/font/google";
+import { Fraunces, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -26,6 +26,16 @@ const dmSans = DM_Sans({
   axes: ["opsz"],
   weight: "variable",
   style: ["normal", "italic"],
+});
+
+// Valódi mono a „// szekció" dev-esztétikához — a --font-mono eddig a
+// DM Sans-ra volt aliasolva, így a font-mono osztály nem monóval
+// renderelt (tipográfiai audit #1).
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500"],
 });
 
 // Statikus metadata a DEFAULT_LOCALE-lal — a root layout nem olvashat
@@ -66,7 +76,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang={DEFAULT_LOCALE}>
-      <body className={`${fraunces.variable} ${dmSans.variable} antialiased`}>
+      <body className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}>
         <ClerkProvider
           signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
           signUpFallbackRedirectUrl="/onboarding"
