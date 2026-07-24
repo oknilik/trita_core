@@ -44,7 +44,7 @@ function SelfPanel() {
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-micro uppercase tracking-[2px] text-white/70">
+          <p className="text-micro uppercase tracking-widest text-white/70">
             {t("landing.selfPanelEyebrow", locale)}
           </p>
           {/* Minta-jelölés — a kártya illusztráció, ne tűnjön valós adatnak */}

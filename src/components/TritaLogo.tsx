@@ -23,7 +23,7 @@ export function TritaLogo({
       </span>
       {showText ? (
         <span
-          className="font-dm-sans mt-1 tracking-[0.16em] uppercase text-ink-body"
+          className="font-dm-sans mt-1 tracking-widest uppercase text-ink-body"
           style={{ fontSize: taglineSize }}
         >
           team intelligence

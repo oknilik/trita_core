@@ -750,7 +750,7 @@ export function ObserverClient({
                 </>
               ) : checkpointActive ? (
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-action-primary-bg)]">
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-action-primary-bg)]">
                     <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
                     {t("assessment.journeyMilestone", locale)}
                   </div>

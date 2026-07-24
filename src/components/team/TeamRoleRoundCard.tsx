@@ -56,7 +56,7 @@ export function TeamRoleRoundCard({
     <div className="rounded-2xl border border-sand bg-white p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.18em] text-muted">
+          <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted">
             {isHu ? "// csapat szerep teszt" : "// team role assessment"}
           </p>
           <h3 className="mt-1 font-fraunces text-[18px] text-ink">
@@ -87,19 +87,19 @@ export function TeamRoleRoundCard({
       <div className="mt-4 grid grid-cols-3 gap-2">
         <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
           <p className="font-fraunces text-[20px] leading-none text-sage-dark">{completedCount}</p>
-          <p className="mt-1 text-micro uppercase tracking-[0.12em] text-muted">
+          <p className="mt-1 text-micro uppercase tracking-widest text-muted">
             {isHu ? "kitöltötte" : "completed"}
           </p>
         </div>
         <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
           <p className="font-fraunces text-[20px] leading-none text-bronze">{estimateCount}</p>
-          <p className="mt-1 text-micro uppercase tracking-[0.12em] text-muted">
+          <p className="mt-1 text-micro uppercase tracking-widest text-muted">
             {isHu ? "becslésből" : "estimated"}
           </p>
         </div>
         <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
           <p className="font-fraunces text-[20px] leading-none text-ink">{totalMembers - completedCount - estimateCount}</p>
-          <p className="mt-1 text-micro uppercase tracking-[0.12em] text-muted">
+          <p className="mt-1 text-micro uppercase tracking-widest text-muted">
             {isHu ? "hiányzik" : "missing"}
           </p>
         </div>

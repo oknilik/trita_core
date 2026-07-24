@@ -15,7 +15,7 @@ export function ContactContent() {
         <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px w-8 bg-bronze" />
-            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
               {t("contact.eyebrow", locale)}
             </span>
           </div>
@@ -55,7 +55,7 @@ export function ContactContent() {
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
           {/* Left label */}
           <div>
-            <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+            <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
               {t("contact.sectionEyebrow", locale)}
             </p>
             <h2 className="mt-3 max-w-[12ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
@@ -118,7 +118,7 @@ function InfoCard({
 }) {
   return (
     <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-white"}`}>
-      <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-bronze/80">
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-bronze/80">
         {number}
       </p>
       <h3 className="mt-2 font-fraunces text-xl leading-tight text-ink">{title}</h3>

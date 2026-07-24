@@ -74,7 +74,7 @@ export function ObserverComparison({
       {sortedEntries.length > 0 && (
         <div className="mt-10">
           <div className="mb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bronze">
+            <p className="text-xs font-semibold uppercase tracking-widest text-bronze">
               {t("comparison.facetMapTitle", locale)}
             </p>
             <p className="mt-1 text-sm text-gray-500">

@@ -584,7 +584,7 @@ export default async function TeamDetailPage({
           </Link>
 
           <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-            <p className="font-mono text-micro uppercase tracking-[0.16em] text-muted">
+            <p className="font-mono text-micro uppercase tracking-widest text-muted">
               {t("teamComp.tabIntelligence", locale)}
             </p>
             <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
@@ -630,7 +630,7 @@ export default async function TeamDetailPage({
           </section>
 
           <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-            <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
+            <p className="font-mono text-micro uppercase tracking-widest text-muted">
               {isHu ? "Kiknél hiányzik még adat" : "Members still missing data"}
             </p>
             {membersWithoutAssessment.length > 0 ? (
@@ -671,7 +671,7 @@ export default async function TeamDetailPage({
           {backToOverviewLabel}
         </Link>
         <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-          <p className="font-mono text-micro uppercase tracking-[0.16em] text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {t("teamComp.tabIntelligence", locale)}
           </p>
           <h1 className="mt-1 font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
@@ -699,7 +699,7 @@ export default async function TeamDetailPage({
         </section>
 
         <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {isHu ? "Csapat-összefoglaló" : "Team summary"}
           </p>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -753,7 +753,7 @@ export default async function TeamDetailPage({
         />
 
         <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {isHu ? "Fejlesztési prioritások" : "Development priorities"}
           </p>
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -987,7 +987,7 @@ export default async function TeamDetailPage({
         <SurfaceHero
           variant="team"
           eyebrow={(
-            <p className="text-micro uppercase tracking-[2px] text-white/[0.28]">
+            <p className="text-micro uppercase tracking-widest text-white/[0.28]">
               {t("teamDetail.heroEyebrow", locale)}
             </p>
           )}
@@ -1092,21 +1092,21 @@ export default async function TeamDetailPage({
           }
           aside={(
             <>
-              <p className="text-micro uppercase tracking-[2px] text-white/[0.34]">
+              <p className="text-micro uppercase tracking-widest text-white/[0.34]">
                 {t("teamDetail.snapshotLabel", locale)}
               </p>
 
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
+                  <p className="text-micro uppercase tracking-widest text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{teamData.memberCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
+                  <p className="text-micro uppercase tracking-widest text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{completedCount}</p>
                 </div>
                 <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                  <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
+                  <p className="text-micro uppercase tracking-widest text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
                   <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{waitingCount}</p>
                 </div>
               </div>
@@ -1223,7 +1223,7 @@ export default async function TeamDetailPage({
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
           <DashboardSectionHeader label={t("teamDetail.sectionSnapshot", locale)} className="mb-4" />
-          <p className="mb-3 text-micro font-medium uppercase tracking-[1px] text-ink-body">
+          <p className="mb-3 text-micro font-medium uppercase tracking-widest text-ink-body">
             {t("teamDetail.summaryLabel", locale)}
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1294,7 +1294,7 @@ export default async function TeamDetailPage({
           >
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div className="max-w-2xl">
-                <p className="font-mono text-micro uppercase tracking-[0.16em] text-muted">
+                <p className="font-mono text-micro uppercase tracking-widest text-muted">
                   {isHu ? "Külön nézet" : "Dedicated view"}
                 </p>
                 <h3 className="mt-1 font-fraunces text-[26px] leading-tight text-ink md:text-[31px]">

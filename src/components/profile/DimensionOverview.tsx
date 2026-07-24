@@ -29,7 +29,7 @@ export function DimensionOverview({
 
   return (
     <section>
-      <SectionEyebrow className="text-[11px] tracking-[2px]">
+      <SectionEyebrow className="text-[11px] tracking-widest">
         {t("content.overviewEyebrow", locale)}
       </SectionEyebrow>
       <h2 className="mt-2 font-fraunces text-2xl text-ink">

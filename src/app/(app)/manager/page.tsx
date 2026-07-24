@@ -139,7 +139,7 @@ export default async function ManagerCockpitPage() {
       <SurfaceHero
         variant="team"
         eyebrow={
-          <p className="text-micro uppercase tracking-[2px] text-white/[0.28]">
+          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
             {isHu ? "// csapatvezető cockpit" : "// manager cockpit"}
           </p>
         }
@@ -181,20 +181,20 @@ export default async function ManagerCockpitPage() {
         }
         aside={
           <>
-            <p className="text-micro uppercase tracking-[2px] text-white/[0.34]">
+            <p className="text-micro uppercase tracking-widest text-white/[0.34]">
               {isHu ? "Összesítés" : "Summary"}
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Kitöltöttség" : "Completion"}</p>
+                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{isHu ? "Kitöltöttség" : "Completion"}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{totalCompletionPct}%</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Függő" : "Pending"}</p>
+                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{isHu ? "Függő" : "Pending"}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalMembers - data.totalCompleted}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-[0.18em] text-white/[0.35]">{isHu ? "Meghívók" : "Invites"}</p>
+                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{isHu ? "Meghívók" : "Invites"}</p>
                 <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalPendingInvites}</p>
               </div>
             </div>

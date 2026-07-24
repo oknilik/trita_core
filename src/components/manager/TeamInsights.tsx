@@ -203,7 +203,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
     <div className="flex flex-col gap-6">
       {/* Average profile bars */}
       <div>
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
           {t("manager.teamInsights.avgByDimension", locale)}
         </p>
         <div className="flex flex-col gap-3">
@@ -266,7 +266,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
       {/* Insight cards */}
       {rankedDims.length >= 2 && (
         <div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
             {t("manager.teamInsights.teamDynamics", locale)}
           </p>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -275,7 +275,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
               <div className="flex flex-col gap-2 rounded-xl border border-green-100 bg-green-50/60 p-4">
                 <div className="flex items-center gap-2 text-green-700">
                   <StrengthIcon />
-                  <span className="text-xs font-semibold uppercase tracking-[0.1em]">
+                  <span className="text-xs font-semibold uppercase tracking-widest">
                     {t("manager.teamInsights.teamStrength", locale)}
                   </span>
                 </div>
@@ -304,7 +304,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
               <div className="flex flex-col gap-2 rounded-xl border border-amber-100 bg-amber-50/60 p-4">
                 <div className="flex items-center gap-2 text-amber-700">
                   <GapIcon />
-                  <span className="text-xs font-semibold uppercase tracking-[0.1em]">
+                  <span className="text-xs font-semibold uppercase tracking-widest">
                     {t("manager.teamInsights.growthArea", locale)}
                   </span>
                 </div>
@@ -333,7 +333,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
               <div className="flex flex-col gap-2 rounded-xl border border-indigo-100 bg-indigo-50/60 p-4">
                 <div className="flex items-center gap-2 text-indigo-700">
                   <DiversityIcon />
-                  <span className="text-xs font-semibold uppercase tracking-[0.1em]">
+                  <span className="text-xs font-semibold uppercase tracking-widest">
                     {t("manager.teamInsights.mostDiverse", locale)}
                   </span>
                 </div>

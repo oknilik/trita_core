@@ -316,7 +316,7 @@ export default function ProfilePage() {
                     </div>
                     {orgTeams.length > 0 && (
                       <div className="mt-2.5">
-                        <p className="mb-1.5 text-micro font-medium uppercase tracking-[1px] text-[var(--color-text-muted)]">
+                        <p className="mb-1.5 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
                           {t("profile.orgTeamsLabel", locale)}
                         </p>
                         <div className="flex flex-wrap gap-1.5">

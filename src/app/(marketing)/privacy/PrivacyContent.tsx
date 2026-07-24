@@ -58,13 +58,13 @@ export function PrivacyContent() {
     <main className="min-h-dvh bg-cream">
       <section className="border-b border-sand bg-action-primary-bg px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
-          <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-[2px] text-bronze">
+          <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-widest text-bronze">
             {legalLabel}
           </p>
           <h1 className="font-fraunces text-4xl leading-tight text-cream lg:text-[52px]">
             {t("privacy.title", locale)}
           </h1>
-          <p className="font-dm-sans mt-4 text-[11px] uppercase tracking-[1px] text-cream/55">
+          <p className="font-dm-sans mt-4 text-[11px] uppercase tracking-widest text-cream/55">
             {t("privacy.lastUpdated", locale)}
           </p>
         </div>
@@ -73,7 +73,7 @@ export function PrivacyContent() {
       <section className="px-6 py-10 lg:px-16 lg:py-14">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
           <aside className="h-fit rounded border border-sand bg-white p-4 lg:sticky lg:top-28">
-            <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-ink-body">
+            <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-widest text-ink-body">
               {tocLabel}
             </p>
             <nav className="space-y-2">
@@ -101,7 +101,7 @@ export function PrivacyContent() {
                 id={section.id}
                 className="scroll-mt-28 rounded border border-sand bg-white p-5 md:p-7"
               >
-                <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-[1px] text-bronze">
+                <p className="font-dm-sans mb-3 text-[11px] uppercase tracking-widest text-bronze">
                   {section.index}
                 </p>
                 <h2 className="font-fraunces mb-3 text-2xl leading-tight text-ink md:text-[30px]">

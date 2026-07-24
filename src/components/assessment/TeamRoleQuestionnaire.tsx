@@ -111,7 +111,7 @@ export function TeamRoleQuestionnaire({
   if (showIntro) {
     return (
       <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
           {t("teamRole.eyebrow", resolvedLocale)}
         </p>
         <div>
@@ -160,7 +160,7 @@ export function TeamRoleQuestionnaire({
     <div className="flex flex-col gap-5 rounded-2xl border border-sand bg-white p-6 md:p-10">
       {/* Fejléc + állapot */}
       <div>
-        <p className="font-mono text-[11px] uppercase tracking-[2px] text-bronze">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
           {t("teamRole.eyebrow", resolvedLocale)}
         </p>
         <h3 className="mt-1 font-fraunces text-xl text-ink">

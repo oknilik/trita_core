@@ -41,7 +41,7 @@ export function ProfileHeader({
 
   return (
     <div>
-      <SectionEyebrow className="text-[11px] tracking-[2px]">{"// profil"}</SectionEyebrow>
+      <SectionEyebrow className="text-[11px] tracking-widest">{"// profil"}</SectionEyebrow>
       <div className="mt-3 flex flex-row items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="font-fraunces text-3xl text-ink md:text-4xl">{name}</h1>

@@ -31,7 +31,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
 
   return (
     <section>
-      <SectionEyebrow className="text-[11px] tracking-[2px]">
+      <SectionEyebrow className="text-[11px] tracking-widest">
         {t("content.detailEyebrow", locale)}
       </SectionEyebrow>
       <h2 className="mt-2 mb-6 font-fraunces text-2xl text-ink">

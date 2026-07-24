@@ -252,7 +252,7 @@ function SectionHead({
         {no}
       </span>
       <div className="min-w-0 pt-0.5">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-bronze">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-bronze">
           {label}
         </p>
         {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}

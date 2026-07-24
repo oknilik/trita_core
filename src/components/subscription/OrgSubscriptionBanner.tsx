@@ -49,7 +49,7 @@ export function OrgSubscriptionBanner({
     >
       <p
         className={cn(
-          "font-mono text-micro uppercase tracking-[0.18em]",
+          "font-mono text-micro uppercase tracking-widest",
           isNone
             ? "text-slate-700"
             : isFrozen

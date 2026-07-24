@@ -453,7 +453,7 @@ function NavHeaderContent({
 
           {orgMemberships && orgMemberships.length > 1 ? (
             <div className="mt-1 rounded-lg px-2.5 py-2.5">
-              <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+              <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
                 Szervezeteim ({orgMemberships.length})
               </p>
               <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1" data-testid="nav-org-switcher">
@@ -533,7 +533,7 @@ function NavHeaderContent({
 
           {showLanguageMenuItem ? (
             <div className="mt-1 rounded-lg px-2.5 py-2.5">
-              <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+              <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
                 Nyelv
               </p>
               <LanguageSwitcher variant="pills" />
@@ -855,7 +855,7 @@ function NavHeaderContent({
                       key={item.id}
                       className={index === 0 ? "mt-3" : "mt-2 border-t border-[var(--color-border-default)] pt-2"}
                     >
-                      <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
+                      <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
                         {item.label}
                       </p>
                       {item.items?.map((child) => (
@@ -873,7 +873,7 @@ function NavHeaderContent({
 
                 {showProfileMenuItem || showLanguageMenuItem ? (
                   <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
-                    <p className="pb-2 text-micro font-medium uppercase tracking-[1.5px] text-[var(--color-text-muted)]">
+                    <p className="pb-2 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
                       Fiók
                     </p>
                     {showProfileMenuItem ? (
@@ -912,7 +912,7 @@ function NavHeaderContent({
 
                     {showLanguageMenuItem ? (
                       <div className="rounded-lg px-3 py-3">
-                        <p className="pb-2 text-[11px] font-medium uppercase tracking-[1.3px] text-[var(--color-text-muted)]">
+                        <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
                           Nyelv
                         </p>
                         <LanguageSwitcher variant="pills" />

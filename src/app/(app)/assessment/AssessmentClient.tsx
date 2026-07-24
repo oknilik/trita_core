@@ -547,7 +547,7 @@ export function AssessmentClient({
             <div>
               <div className="mb-2.5 flex items-center gap-2">
                 <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
-                <span className="text-micro font-medium uppercase tracking-[2px] text-[var(--color-accent-primary)]">
+                <span className="text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary)]">
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
@@ -593,7 +593,7 @@ export function AssessmentClient({
                   ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
               <div aria-hidden className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-4 py-3.5">
                 {/* eslint-disable-next-line no-restricted-syntax */}
-                <p className="text-[6px] uppercase tracking-[1.5px] text-white/20">
+                <p className="text-[6px] uppercase tracking-widest text-white/20">
                   {t("assessment.introPreviewEyebrow", locale)}
                 </p>
                 <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[var(--color-accent-primary-soft)]">
@@ -692,7 +692,7 @@ export function AssessmentClient({
               {checkpointActive ? (
                 <div className="flex flex-col items-center text-center">
                   {/* Sage pill badge */}
-                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[1px] text-[var(--color-action-primary-bg)]">
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-action-primary-bg)]">
                     <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
                     {t('assessment.journeyMilestone', locale)}
                   </div>

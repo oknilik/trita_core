@@ -153,7 +153,7 @@ export default async function SharedProfilePage({
         >
           <div className="px-9 pb-7 pt-8">
             <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.02]" />
-            <p className="mb-1.5 text-micro uppercase tracking-[2px] text-white/[0.28]">
+            <p className="mb-1.5 text-micro uppercase tracking-widest text-white/[0.28]">
               {t("results.sharedProfileLabel", locale)}
             </p>
             <h1 className="mb-0.5 font-fraunces text-[28px] tracking-tight text-white">

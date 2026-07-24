@@ -66,7 +66,7 @@ export function PilotContent() {
             <div>
               <div className="mb-5 flex items-center gap-3">
                 <div className="h-px w-8 bg-bronze" />
-                <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+                <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
                   {t("pilot.eyebrow", locale)}
                 </span>
               </div>
@@ -107,7 +107,7 @@ export function PilotContent() {
 
             <aside className="overflow-hidden rounded-[24px] border border-sand bg-white shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
               <div className="border-b border-sand bg-warm px-6 py-6">
-                <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-bronze">
+                <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
                   {t("pilot.asideEyebrow", locale)}
                 </p>
                 <p className="mt-3 font-fraunces text-[28px] leading-tight text-ink">
@@ -129,7 +129,7 @@ export function PilotContent() {
                 </div>
 
                 <div className="rounded-2xl border border-sage/15 bg-sage-soft px-5 py-5">
-                  <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+                  <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
                     {t("pilot.aside90Eyebrow", locale)}
                   </p>
                   <p className="mt-2 text-sm leading-7 text-ink-body">
@@ -185,7 +185,7 @@ export function PilotContent() {
           <div>
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px w-8 bg-bronze" />
-              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
                 {t("pilot.formEyebrow", locale)}
               </span>
             </div>
@@ -196,7 +196,7 @@ export function PilotContent() {
               {t("pilot.formBody", locale)}
             </p>
             <div className="mt-7 rounded-2xl border border-sand bg-warm px-5 py-5">
-              <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+              <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
                 {t("pilot.fitEyebrow", locale)}
               </p>
               <p className="mt-2 text-sm leading-7 text-ink-body">
@@ -225,7 +225,7 @@ export function PilotContent() {
                       {t("pilot.formSubheading", locale)}
                     </p>
                   </div>
-                  <span className="rounded-full border border-bronze/15 bg-bronze/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-bronze">
+                  <span className="rounded-full border border-bronze/15 bg-bronze/8 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-bronze">
                     {t("pilot.formSpotsLabel", locale)}
                   </span>
                 </div>
@@ -337,7 +337,7 @@ function EditorialSection({
     <section id={id} className="border-t border-sand">
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
-          <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-bronze">
+          <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
             {eyebrow}
           </p>
         </div>
@@ -384,7 +384,7 @@ function FeatureCard({ number, title, desc }: { number: string; title: string; d
   return (
     <article className="rounded-[24px] border border-sand bg-white p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
       <div className="mb-4 flex items-center gap-3">
-        <span className="font-dm-sans text-xs font-semibold uppercase tracking-[0.2em] text-bronze/70">
+        <span className="font-dm-sans text-xs font-semibold uppercase tracking-widest text-bronze/70">
           {number}
         </span>
         <div className="h-px flex-1 bg-sand" />
@@ -412,7 +412,7 @@ function StepCard({ step, title, desc }: { step: string; title: string; desc: st
 function CommitmentCard({ title, desc, commitmentLabel }: { title: string; desc: string; commitmentLabel: string }) {
   return (
     <article className="rounded-[24px] border border-sand bg-warm px-6 py-6">
-      <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
         {commitmentLabel}
       </p>
       <h3 className="mt-2 font-fraunces text-[28px] leading-tight text-ink">{title}</h3>

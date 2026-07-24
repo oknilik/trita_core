@@ -113,7 +113,7 @@ export function PlatformPageShell({
             ) : null}
 
             {chromeEyebrow ? (
-              <div className="mb-2 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-text-secondary">
+              <div className="mb-2 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-text-secondary">
                 <span
                   aria-hidden
                   className="h-1.5 w-1.5 rounded-full bg-[var(--platform-surface-accent)]"

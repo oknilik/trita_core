@@ -66,7 +66,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   if (success) {
     return (
       <div className="rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-8">
-        <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.22em] text-sage-dark/70">
+        <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
           {t("contact.successTitle", locale)}
         </p>
         <h3 className="mt-3 font-fraunces text-[32px] leading-tight text-ink">
@@ -182,7 +182,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       ) : null}
 
       <div className="flex flex-col gap-3 border-t border-sand pt-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-dm-sans text-[11px] uppercase tracking-[1px] text-ink-body">
+        <p className="font-dm-sans text-[11px] uppercase tracking-widest text-ink-body">
           {t("contact.requiredHint", locale)}
         </p>
         <button

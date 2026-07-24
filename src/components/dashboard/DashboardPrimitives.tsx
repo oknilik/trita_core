@@ -15,7 +15,7 @@ export function DashboardSectionHeader({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className="h-px w-4 bg-bronze/70" />
-      <p className="text-micro font-semibold uppercase tracking-[0.22em] text-bronze/90">
+      <p className="text-micro font-semibold uppercase tracking-widest text-bronze/90">
         {label}
       </p>
     </div>
@@ -75,7 +75,7 @@ export function DashboardMetricCard({
         className="absolute left-5 right-5 top-0 h-[3px] rounded-b-full"
         style={{ background: accent }}
       />
-      <p className="mb-2 font-dm-sans text-micro font-semibold uppercase tracking-[0.18em] text-muted">
+      <p className="mb-2 font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted">
         {title}
       </p>
       <p
@@ -155,7 +155,7 @@ export function DashboardActionCard({
 }) {
   return (
     <DashboardPanel tone={tone} className={cn("p-5", className)}>
-      <p className="font-dm-sans text-micro font-semibold uppercase tracking-[0.2em] text-bronze/80">
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-bronze/80">
         {eyebrow}
       </p>
       <h2 className="mt-2 font-fraunces text-[24px] leading-none tracking-tight text-ink">

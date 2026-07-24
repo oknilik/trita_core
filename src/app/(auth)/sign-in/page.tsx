@@ -215,7 +215,7 @@ function SignInContent() {
                 maxLength={6}
                 placeholder="000000"
                 autoFocus
-                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-white px-3 text-center text-lg font-semibold tracking-[0.3em] text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-white px-3 text-center text-lg font-semibold tracking-widest text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
               />
 
               <button

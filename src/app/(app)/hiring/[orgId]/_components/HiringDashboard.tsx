@@ -224,7 +224,7 @@ export function HiringDashboard({
         <div className="px-6 py-6 sm:px-7 sm:py-7">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
             <div>
-              <p className="font-mono text-micro uppercase tracking-[0.18em] text-white/65">
+              <p className="font-mono text-micro uppercase tracking-widest text-white/65">
                 {`${t("hiring.eyebrow", locale)} · ${orgName}`}
               </p>
               <h1 className="mt-2 font-fraunces text-[34px] leading-none text-white md:text-[40px]">
@@ -237,7 +237,7 @@ export function HiringDashboard({
               </p>
 
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-[0.14em] text-white/85">
+                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/85">
                   {locale === "en" ? `Plan · ${planTierLabel}` : `Csomag · ${planTierLabel}`}
                 </span>
                 <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-white/80">
@@ -284,12 +284,12 @@ export function HiringDashboard({
             </div>
 
             <aside className="hidden rounded-2xl border border-white/15 bg-white/[0.08] p-4 lg:block">
-              <p className="font-mono text-micro uppercase tracking-[0.18em] text-white/60">
+              <p className="font-mono text-micro uppercase tracking-widest text-white/60">
                 Live snapshot
               </p>
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-lg bg-white/10 px-2.5 py-2">
-                  <p className="text-micro uppercase tracking-[0.12em] text-white/50">
+                  <p className="text-micro uppercase tracking-widest text-white/50">
                     {t("hiring.sectionInProgress", locale)}
                   </p>
                   <p className="mt-1 font-fraunces text-[20px] leading-none text-white">
@@ -297,7 +297,7 @@ export function HiringDashboard({
                   </p>
                 </div>
                 <div className="rounded-lg bg-white/10 px-2.5 py-2">
-                  <p className="text-micro uppercase tracking-[0.12em] text-white/50">
+                  <p className="text-micro uppercase tracking-widest text-white/50">
                     {t("hiring.sectionSent", locale)}
                   </p>
                   <p className="mt-1 font-fraunces text-[20px] leading-none text-white">
@@ -305,7 +305,7 @@ export function HiringDashboard({
                   </p>
                 </div>
                 <div className="rounded-lg bg-white/10 px-2.5 py-2">
-                  <p className="text-micro uppercase tracking-[0.12em] text-white/50">
+                  <p className="text-micro uppercase tracking-widest text-white/50">
                     {t("hiring.sectionCompleted", locale)}
                   </p>
                   <p className="mt-1 font-fraunces text-[20px] leading-none text-white">
@@ -335,7 +335,7 @@ export function HiringDashboard({
       {creditBalance && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sand bg-white px-5 py-3">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-micro font-semibold uppercase tracking-[0.14em] text-sage-dark">
+            <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-micro font-semibold uppercase tracking-widest text-sage-dark">
               {creditBalance.available} {t("hiring.creditsAvailable", locale)}
             </span>
             <span className="text-[11px] text-muted">

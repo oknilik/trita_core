@@ -503,7 +503,7 @@ function ComparisonTabPanel({
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
           </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bronze">
+          <p className="text-xs font-semibold uppercase tracking-widest text-bronze">
             {t("comparison.title", locale)}
           </p>
           <h2 className="mt-3 text-2xl font-semibold text-gray-900">

@@ -353,7 +353,7 @@ export function OrgOnboardingWizard() {
         </div>
 
         <div className="mb-6 rounded-xl border border-sand bg-white/70 p-4">
-          <p className="text-micro font-semibold uppercase tracking-[0.16em] text-muted">
+          <p className="text-micro font-semibold uppercase tracking-widest text-muted">
             {t("orgOnboarding.layerRoadmap", locale)}
           </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">

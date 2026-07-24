@@ -160,7 +160,7 @@ export function ShareModal({
                 }}
               >
                 <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/[0.04]" />
-                <p className="text-micro uppercase tracking-[0.14em] text-white/[0.35]">
+                <p className="text-micro uppercase tracking-widest text-white/[0.35]">
                   {t("results.sharedProfileLabel", locale)}
                 </p>
                 <p className="mt-0.5 font-fraunces text-[17px] text-white">

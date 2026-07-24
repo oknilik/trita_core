@@ -10,7 +10,7 @@ export default function DashboardError({
   return (
     <div className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
       <div className="w-full max-w-xl rounded-[24px] border border-sand bg-white px-6 py-8 text-center shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:px-8">
-        <p className="text-micro font-semibold uppercase tracking-[0.2em] text-bronze/85">
+        <p className="text-micro font-semibold uppercase tracking-widest text-bronze/85">
           Szervezeti cockpit
         </p>
         <h2 className="mt-3 font-fraunces text-[30px] leading-none tracking-tight text-ink md:text-[34px]">

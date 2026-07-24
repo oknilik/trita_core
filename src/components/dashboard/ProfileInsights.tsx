@@ -102,7 +102,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "01",
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-4">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-4">
             {BLOCK2_TITLE[l]}
           </h3>
           <div className="space-y-3">
@@ -134,7 +134,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "02",
       node: (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-3">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-3">
             {BLOCK3_TITLE[l]}
           </h3>
           <p className="text-sm text-gray-700 leading-relaxed">{block3Text}</p>
@@ -145,7 +145,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       num: "03",
       node: envRows.length > 0 ? (
         <section className="rounded-2xl border border-gray-100 bg-white p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-4">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-4">
             {BLOCK4_TITLE[l]}
           </h3>
           <div className="divide-y divide-gray-50">
@@ -169,7 +169,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
             num: "04",
             node: (
               <section className="rounded-2xl border border-gray-100 bg-white p-6">
-                <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-4">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-4">
                   {BLOCK5_TITLE[l]}
                 </h3>
                 <div className="space-y-3">
@@ -233,7 +233,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
       {/* ── Block 6: Kombináció-insight ── */}
       {showBlock6 && (
         <section className="rounded-2xl border border-sage-ring bg-sage-soft p-6">
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-bronze mb-3">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-bronze mb-3">
             {BLOCK6_TITLE[l]}
           </h3>
           <div className="space-y-3">
@@ -254,7 +254,7 @@ export function ProfileInsights({ dimensions, testType }: ProfileInsightsProps) 
               <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
             </svg>
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-700">{BLOCK7_TITLE[l]}</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-amber-700">{BLOCK7_TITLE[l]}</h3>
               {block7Pairs.map((pair) => (
                 <p key={pair.contentKey} className="text-sm text-amber-900 leading-relaxed">
                   {RISK_TEXTS[pair.contentKey]?.[l]}

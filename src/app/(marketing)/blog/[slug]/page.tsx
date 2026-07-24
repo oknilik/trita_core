@@ -123,10 +123,10 @@ function CompareTable({
   return (
     <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
       <div className="grid grid-cols-2">
-        <div className="bg-white px-5 py-3 text-micro font-semibold uppercase tracking-[0.5px] text-[var(--color-text-secondary)]">
+        <div className="bg-white px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
-        <div className="bg-[var(--color-text-primary)] px-5 py-3 text-micro font-semibold uppercase tracking-[0.5px] text-white/60">
+        <div className="bg-[var(--color-text-primary)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-white/60">
           {rightLabel}
         </div>
       </div>

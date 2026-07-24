@@ -69,7 +69,7 @@ export function UpcomingFeaturesCTA({ locale }: { locale: string }) {
 
   return (
     <section className="rounded-2xl border border-sage-ring bg-gradient-to-br from-sage-soft via-cream to-warm p-6 md:p-8">
-      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-bronze">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-bronze">
         {texts.tag[l]}
       </div>
       <h2 className="mb-2 text-xl font-bold text-gray-900">{texts.title[l]}</h2>

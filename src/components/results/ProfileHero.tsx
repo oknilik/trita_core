@@ -79,7 +79,7 @@ export function ProfileHero({
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
         SELF_PAYWALL_ENABLED ? (
-          <p className="text-micro uppercase tracking-[2px] text-white/[0.28]">
+          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
             {t("results.heroEyebrow", locale)}
           </p>
         ) : undefined

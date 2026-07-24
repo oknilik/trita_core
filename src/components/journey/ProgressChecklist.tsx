@@ -39,7 +39,7 @@ export function ProgressChecklist({
     <DashboardPanel tone="warm" className="p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="font-mono text-micro uppercase tracking-[0.18em] text-bronze/80">
+          <p className="font-mono text-micro uppercase tracking-widest text-bronze/80">
             {eyebrow}
           </p>
           <h2 className="mt-2 font-fraunces text-[28px] leading-none tracking-tight text-ink">
@@ -99,7 +99,7 @@ export function ProgressChecklist({
 
       {nextItem?.cta ? (
         <div className="mt-4 rounded-[14px] border border-sand bg-white px-4 py-3">
-          <p className="text-micro uppercase tracking-[0.12em] text-muted">{nextStepLabel}</p>
+          <p className="text-micro uppercase tracking-widest text-muted">{nextStepLabel}</p>
           <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
             <p className="text-caption text-ink">{nextItem.title}</p>
             <Link

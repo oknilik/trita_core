@@ -109,7 +109,7 @@ interface EvidenceSummaryProps {
 function EvidenceSummary({ evidence, loc }: EvidenceSummaryProps) {
   return (
     <div className="rounded-xl border border-sand bg-cream/65 px-3 py-2.5">
-      <p className="font-mono text-micro uppercase tracking-[0.14em] text-muted">
+      <p className="font-mono text-micro uppercase tracking-widest text-muted">
         {t("teamComp.evidenceEyebrow", loc)}
       </p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">

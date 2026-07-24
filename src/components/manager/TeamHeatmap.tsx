@@ -180,7 +180,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
 
       {/* Dimension descriptions */}
       <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
           {t("manager.teamHeatmap.dimensionGuide", locale)}
         </p>
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
