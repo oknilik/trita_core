@@ -43,9 +43,15 @@ function SelfPanel() {
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
-        <p className="text-[10px] uppercase tracking-[2px] text-white/70">
-          {t("landing.selfPanelEyebrow", locale)}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[10px] uppercase tracking-[2px] text-white/70">
+            {t("landing.selfPanelEyebrow", locale)}
+          </p>
+          {/* Minta-jelölés — a kártya illusztráció, ne tűnjön valós adatnak */}
+          <span className="rounded border border-white/25 px-1.5 py-[2px] text-[9px] uppercase tracking-wide text-white/70">
+            {t("landing.sampleBadge", locale)}
+          </span>
+        </div>
         <p className="mt-1.5 font-fraunces text-[15px] text-white/80">
           {t("landing.selfPanelName", locale)}
         </p>
@@ -165,9 +171,14 @@ function TeamPanel() {
             <p className="mt-1 font-fraunces text-xl text-ink">{t("landing.teamPanelTitle", locale)}</p>
             <p className="mt-0.5 text-[11px] text-muted">{t("landing.teamPanelValidated", locale)}</p>
           </div>
-          <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
-            {t("landing.teamPanelPublished", locale)}
-          </span>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <span className="rounded border border-sand px-1.5 py-[2px] text-[9px] uppercase tracking-wide text-muted">
+              {t("landing.sampleBadge", locale)}
+            </span>
+            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
+              {t("landing.teamPanelPublished", locale)}
+            </span>
+          </div>
         </div>
 
         {/* Aggregált statok */}

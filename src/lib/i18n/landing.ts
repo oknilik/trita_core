@@ -19,6 +19,7 @@ export const landingTranslations = {
     selfMetaInstant: { hu: "Azonnali eredmény", en: "Instant results" },
     selfMetaFree: { hu: "Ingyenes indulás", en: "Free to start" },
     selfPanelEyebrow: { hu: "A te profilod", en: "Your profile" },
+    sampleBadge: { hu: "minta", en: "sample" },
     selfPanelName: { hu: "Péter", en: "Peter" },
     selfPanelType: { hu: "Stratégiai Innovátor", en: "Strategic Innovator" },
     selfPanelInsight: { hu: "Az összkép átlátása és mások inspirálása az erősséged — az aprólékos végrehajtás kevésbé a te tereped.", en: "Seeing the big picture and inspiring others are your strengths — meticulous execution is less your territory." },
