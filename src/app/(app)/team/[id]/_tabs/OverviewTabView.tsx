@@ -14,6 +14,7 @@ import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscription
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { TeamTabBar } from "./TeamTabBar";
 import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
 
@@ -207,21 +208,9 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   {isHu ? "Visszajelzés" : "Feedback"}
                 </Link>
               ) : null}
-              {/* Tagok — mindenkinek */}
-              <Link
-                href={`/team/${teamId}?tab=members`}
-                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.78] transition hover:bg-white/[0.12]"
-              >
-                {isHu ? "Tagok" : "Members"}
-              </Link>
-              {canViewRaw ? (
-                <Link
-                  href={`/team/${teamId}?tab=report`}
-                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.78] transition hover:bg-white/[0.12]"
-                >
-                  {isHu ? "Riport" : "Report"}
-                </Link>
-              ) : null}
+              {/* Tagok/Riport gombok KIVEZETVE (UX-audit #15): a belső
+                  navigáció a hero alatti fül-soron él — a hero csak a
+                  valódi elsődleges akciókat tartja. */}
               {hasPattern && canViewRaw ? (
                 <Link
                   href={`/team/${teamId}?tab=profile`}
@@ -307,6 +296,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           )}
         />
 
+        <TeamTabBar ctx={ctx} active="overview" />
+
         {isRestricted || isNone ? (
           <OrgSubscriptionBanner
             state={isNone ? "none" : "restricted"}
@@ -387,7 +378,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           <p className="mb-3 text-micro font-medium uppercase tracking-widest text-ink-body">
             {t("teamDetail.summaryLabel", locale)}
           </p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className={`grid grid-cols-1 gap-3 ${canViewRaw ? "sm:grid-cols-2" : ""}`}>
             {/* Kitöltési arány */}
             <DashboardMetricCard
               accent="var(--color-action-primary-bg)"
@@ -402,8 +393,10 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               </div>
             </DashboardMetricCard>
 
-            {/* Csapatmintázat — publikált riport után a VALIDÁLT (befagyasztott)
-                mintázat látszik a nem-tanácsadóknak is; addig „validálás alatt". */}
+            {/* Csapatmintázat info-csempe CSAK tanácsadónak (UX-audit #7):
+                a tag/manager a lenti validált-csapatkép panelen kapja ugyanezt
+                az állapotot — a három mintázat-blokk egyre olvadt. */}
+            {canViewRaw ? (
             <DashboardMetricCard
               accent="var(--color-accent-primary)"
               title={t("teamDetail.teamPatternTitle", locale)}
@@ -433,6 +426,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   tanácsadónál a hero elsődleges gombja, tagnál a lenti
                   validált-csapatkép panel — ez a csempe csak információ. */}
             </DashboardMetricCard>
+            ) : null}
           </div>
         </section>
 
@@ -597,10 +591,13 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                           {isHu ? "A csapat validált profilja" : "The team's validated profile"}
                         </p>
                       )}
+                      {/* Szám-definíció (UX-audit #8): a chipek a PUBLIKÁLÁSKOR
+                          befagyasztott aggregátumot mutatják — az élő taglétszám
+                          (hero) ettől eltérhet, a címke ezt kimondja. */}
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.memberCount}{" "}
-                          {isHu ? "tag" : "members"}
+                          {isHu ? "tag a validált képben" : "members in the validated picture"}
                         </span>
                         <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.completionPct}%{" "}
@@ -616,8 +613,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </div>
                       <p className="mt-2 text-xs leading-relaxed text-ink-body">
                         {isHu
-                          ? "A tanácsadó által validált, aggregált kép — egyéni eredmények nélkül."
-                          : "Aggregate picture validated by your consultant — without individual results."}
+                          ? "A tanácsadó által validált, aggregált kép — egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
+                          : "Aggregate picture validated by your consultant — without individual results, frozen at publication."}
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}

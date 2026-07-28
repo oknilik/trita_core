@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -31,9 +32,37 @@ export function OrgTeamsTab({
   actionGateCopy = null,
 }: OrgTeamsTabProps) {
   const loc = locale as Locale;
+  // Fejléc-gombos létrehozás (UX-audit #18): az űrlap nem a lista alján ül,
+  // hanem a szekció-fejléc „+ Új csapat" gombjára nyíló panelben.
+  const [createOpen, setCreateOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Fejléc: cím + elsődleges akció egy sorban */}
+      {isManager && canCreateTeam ? (
+        <div className="flex items-center justify-between gap-3">
+          <SectionEyebrow>{t("org.teams.newEyebrow", loc)}</SectionEyebrow>
+          <button
+            type="button"
+            onClick={() => setCreateOpen((v) => !v)}
+            aria-expanded={createOpen}
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110"
+          >
+            <span aria-hidden>{createOpen ? "×" : "+"}</span>
+            {t("org.teams.newTitle", loc)}
+          </button>
+        </div>
+      ) : null}
+
+      {isManager && canCreateTeam && createOpen && (
+        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <h3 className="mb-4 text-sm font-semibold text-ink">
+            {t("org.teams.newTitle", loc)}
+          </h3>
+          <TeamCreateForm locale={locale as import("@/lib/i18n").Locale} orgId={orgId} />
+        </div>
+      )}
+
       {/* Teams grid */}
       {teams.length === 0 ? (
         <div className="rounded-xl border border-sand bg-cream p-8 text-center">
@@ -63,19 +92,6 @@ export function OrgTeamsTab({
               </span>
             </Link>
           ))}
-        </div>
-      )}
-
-      {/* Create form for managers */}
-      {isManager && canCreateTeam && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <SectionEyebrow className="mb-1">
-            {t("org.teams.newEyebrow", loc)}
-          </SectionEyebrow>
-          <h3 className="mb-4 text-sm font-semibold text-ink">
-            {t("org.teams.newTitle", loc)}
-          </h3>
-          <TeamCreateForm locale={locale as import("@/lib/i18n").Locale} orgId={orgId} />
         </div>
       )}
 

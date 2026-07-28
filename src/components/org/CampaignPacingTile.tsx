@@ -57,6 +57,7 @@ export function CampaignPacingTile({
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState(false);
+  const [saved, setSaved] = useState<string | null>(null);
   const countdown = useCountdown(data.nextReleaseAt);
 
   const pacingUrl = `/api/org/${data.orgId}/campaigns/${data.campaignId}/pacing`;
@@ -65,10 +66,11 @@ export function CampaignPacingTile({
       ? CAMPAIGN_STEP_LABELS[data.openStepType][isHu ? "hu" : "en"]
       : null;
 
-  const call = async (body: object, key: string) => {
+  const call = async (body: object, key: string, confirmation: string) => {
     if (busy) return;
     setBusy(key);
     setError(false);
+    setSaved(null);
     try {
       const res = await fetch(pacingUrl, {
         method: "POST",
@@ -76,6 +78,9 @@ export function CampaignPacingTile({
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error();
+      // Visszajelzés a beavatkozásról (UX-audit #19) — a kattintás élesben
+      // átütemezi a függő lépéseket, ezt ki is mondjuk.
+      setSaved(confirmation);
       router.refresh();
     } catch {
       setError(true);
@@ -97,11 +102,14 @@ export function CampaignPacingTile({
           </p>
 
           {data.openCount > 0 && stepLabel ? (
+            // Szám-definíció kimondva (UX-audit #14): a „teljes" itt a TELJES
+            // SOROZAT végigvitele — a kampánykártya lépés-számaival nem
+            // keverendő, ezért a címke megnevezi, mire vonatkozik.
             <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu ? (
-                <>Éppen kitölthető: <span className="font-semibold text-ink">{stepLabel}</span> — {data.openCount} tagnál nyitva, {data.doneCount}/{data.totalParticipants} teljesen végzett.</>
+                <>Éppen kitölthető: <span className="font-semibold text-ink">{stepLabel}</span> — {data.openCount} tagnál nyitva. A teljes sorozattal {data.doneCount}/{data.totalParticipants} tag végzett.</>
               ) : (
-                <>Currently open: <span className="font-semibold text-ink">{stepLabel}</span> — open for {data.openCount} member(s), {data.doneCount}/{data.totalParticipants} fully done.</>
+                <>Currently open: <span className="font-semibold text-ink">{stepLabel}</span> — open for {data.openCount} member(s). {data.doneCount}/{data.totalParticipants} members have finished the full series.</>
               )}
             </p>
           ) : data.scheduledCount > 0 ? (
@@ -133,7 +141,13 @@ export function CampaignPacingTile({
               <button
                 type="button"
                 disabled={busy !== null}
-                onClick={() => call({ action: "release_now" }, "release")}
+                onClick={() =>
+                  call(
+                    { action: "release_now" },
+                    "release",
+                    isHu ? "Kiküldve — a nyitott lépés mindenkinél elérhető." : "Sent — the open step is now available to everyone.",
+                  )
+                }
                 className="inline-flex min-h-[38px] items-center rounded-[10px] bg-action-primary-bg px-4 text-[12px] font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
               >
                 {busy === "release" ? "…" : isHu ? "Küldés most" : "Send now"}
@@ -148,7 +162,15 @@ export function CampaignPacingTile({
                   key={h}
                   type="button"
                   disabled={busy !== null}
-                  onClick={() => call({ action: "interval", stepIntervalHours: h }, `int${h}`)}
+                  onClick={() =>
+                    call(
+                      { action: "interval", stepIntervalHours: h },
+                      `int${h}`,
+                      isHu
+                        ? `Ütem átállítva (${h === 0 ? "azonnal" : `${h}h`}) — a függő lépések újraütemezve.`
+                        : `Pace updated (${h === 0 ? "immediate" : `${h}h`}) — pending steps rescheduled.`,
+                    )
+                  }
                   className={[
                     "min-h-[30px] rounded-lg border px-2 text-[11px] font-semibold transition disabled:opacity-50",
                     data.stepIntervalHours === h
@@ -160,6 +182,15 @@ export function CampaignPacingTile({
                 </button>
               ))}
             </div>
+            {/* Kontextus a kapcsolósorhoz (UX-audit #19): mit állít az ütem. */}
+            <p className="max-w-[260px] text-right text-[11px] leading-snug text-muted">
+              {isHu
+                ? "A teljesített kérdőív után ennyivel nyílik (és értesít) a következő lépés."
+                : "The next step opens (and notifies) this long after the previous one is completed."}
+            </p>
+            {saved ? (
+              <p className="text-[11px] font-semibold text-sage-dark">{saved}</p>
+            ) : null}
             {error ? (
               <p className="text-[11px] font-semibold text-amber-700">
                 {isHu ? "Nem sikerült — próbáld újra." : "Failed — please retry."}

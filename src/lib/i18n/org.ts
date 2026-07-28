@@ -1946,7 +1946,7 @@ export const orgTranslations = {
     // Hero
     heroEyebrow: { hu: "Csapatnézet", en: "Team view" },
     heroPatternReady: { hu: "Csapatkép elérhető", en: "Pattern ready" },
-    heroViewPattern: { hu: "Csapatkép megtekintése", en: "View team pattern" },
+    heroViewPattern: { hu: "Csapatkép megnyitása", en: "Open team picture" },
     heroManageRound: { hu: "Visszajelzési kör kezelése", en: "Manage feedback round" },
     heroStartRound: { hu: "Kör indítása", en: "Start round" },
 
@@ -1972,10 +1972,10 @@ export const orgTranslations = {
     actionCloseMissing: { hu: "Előbb zárjátok le a hiányzó kitöltéseket, utána indítsatok kört.", en: "Close missing assessments first, then launch the round." },
     actionManageRound: { hu: "Kör kezelése", en: "Manage round" },
     actionStartRound: { hu: "Kör indítása", en: "Start round" },
-    actionViewPattern: { hu: "Csapatkép megnyitása", en: "View team pattern" },
+    actionViewPattern: { hu: "Csapatkép megnyitása", en: "Open team picture" },
     actionPatternAvailable: { hu: "A csapatkép már elérhető, nézd át a mintázatokat a következő döntés előtt.", en: "Team pattern is available. Review it before your next decision." },
     actionNeedMore: { hu: "A csapatkép feloldásához még kitöltések szükségesek.", en: "More completed assessments are needed to unlock team pattern." },
-    actionViewPatternAlt: { hu: "Csapatkép megtekintése", en: "View team pattern" },
+    actionViewPatternAlt: { hu: "Csapatkép megnyitása", en: "Open team picture" },
     actionOpenMembers: { hu: "Tagok megnyitása", en: "Open members" },
 
     // Summary section

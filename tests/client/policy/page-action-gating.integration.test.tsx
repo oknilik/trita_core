@@ -168,9 +168,15 @@ beforeEach(() => {
 
 describe("E3 page action gating client tests", () => {
   describe("invite button gating", () => {
-    it("active: renders invite form and no upsell gate", () => {
+    it("active: invite form opens from the header button, no upsell gate (UX audit #18)", async () => {
+      const user = userEvent.setup();
       renderMembersTab(true);
 
+      // Az űrlap a fejléc „+ Tag meghívása" gombjára nyílik (nem a lista alján ül).
+      expect(screen.queryByTestId("org-invite-form")).not.toBeInTheDocument();
+      await user.click(
+        screen.getByRole("button", { name: new RegExp(t("org.members.inviteTitle", "en"), "i") }),
+      );
       expect(screen.getByTestId("org-invite-form")).toBeInTheDocument();
       expect(screen.queryByRole("link", { name: actionGateCopy.ctaLabel })).not.toBeInTheDocument();
     });
@@ -223,9 +229,15 @@ describe("E3 page action gating client tests", () => {
   });
 
   describe("org settings actions gating", () => {
-    it("active: can access team creation action", () => {
+    it("active: team creation opens from the header button (UX audit #18)", async () => {
+      const user = userEvent.setup();
       renderTeamsTab(true);
 
+      // Az űrlap a fejléc „+ Új csapat" gombjára nyílik (nem a lista alján ül).
+      expect(screen.queryByTestId("team-create-form")).not.toBeInTheDocument();
+      await user.click(
+        screen.getByRole("button", { name: new RegExp(t("org.teams.newTitle", "en"), "i") }),
+      );
       expect(screen.getByTestId("team-create-form")).toBeInTheDocument();
       expect(screen.queryByRole("link", { name: actionGateCopy.ctaLabel })).not.toBeInTheDocument();
     });

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -67,6 +68,9 @@ export function TeamMembersTab({
   dateLocale,
 }: TeamMembersTabProps) {
   const loc: Locale = isHu ? "hu" : "en";
+  // Fejléc-gombos tag-felvétel (UX-audit #18): az űrlap nem a lista alján ül,
+  // hanem a fejléc „+ Tag hozzáadása" gombjára nyíló panelben.
+  const [addOpen, setAddOpen] = useState(false);
   return (
     <div className="flex flex-col gap-8 pt-6">
       {/* Members section */}
@@ -74,12 +78,56 @@ export function TeamMembersTab({
         <SectionEyebrow className="mb-1">
           {t("teamComp.membersTabEyebrow", loc)}
         </SectionEyebrow>
-        <h2 className="font-fraunces text-xl text-ink mb-0.5">
-          {t("teamComp.membersTabTitle", loc)}{" "}
-          <span className="font-sans text-sm font-normal text-ink-body/50">
-            ({members.length})
-          </span>
-        </h2>
+        <div className="mb-0.5 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-fraunces text-xl text-ink">
+            {t("teamComp.membersTabTitle", loc)}{" "}
+            <span className="font-sans text-sm font-normal text-ink-body/50">
+              ({members.length})
+            </span>
+          </h2>
+          {isOrgManager ? (
+            <button
+              type="button"
+              onClick={() => setAddOpen((v) => !v)}
+              aria-expanded={addOpen}
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110"
+            >
+              <span aria-hidden>{addOpen ? "×" : "+"}</span>
+              {t("teamComp.addMember", loc)}
+            </button>
+          ) : null}
+        </div>
+
+        {isOrgManager && addOpen && (
+          <div className="mt-4 rounded-xl border border-sand bg-cream/40 p-4">
+            {/* Manager-út: meglévő szervezeti tag hozzáadása a taglistából. */}
+            <p className="mb-3 text-xs text-ink-body/60">
+              {isHu
+                ? "Adj hozzá tagot a szervezet meglévő tagjai közül."
+                : "Add a member from the organization's existing members."}
+            </p>
+            <TeamMemberAddPicker
+              teamId={teamId}
+              candidates={addableOrgMembers}
+              isHu={isHu}
+            />
+
+            {/* Admin-út: e-mailes meghívó — org-tagságot is keletkeztet, ezért
+                csak admin-paritás. A mellékhatás KIMONDVA (UX-audit #17-copy);
+                a „(Csak admin jogosultsággal.)" megjegyzés törölve — aki látta,
+                annak megvolt a joga, csak zavart. */}
+            {canEmailInvite && (
+              <div className="mt-5 border-t border-dashed border-sand pt-5">
+                <p className="mb-3 text-xs text-ink-body/60">
+                  {isHu
+                    ? "Vagy hívj meg új tagot e-maillel. Fontos: az e-mailes meghívott a szervezethez is csatlakozik, nem csak ehhez a csapathoz."
+                    : "Or invite a new member by email. Note: an email invitee joins the organization too, not just this team."}
+                </p>
+                <TeamInviteForm teamId={teamId} locale={locale as "hu" | "en"} />
+              </div>
+            )}
+          </div>
+        )}
 
         {(members.length > 0 || pendingInvites.length > 0) && (
           <div className="mt-5 flex flex-col divide-y divide-sand">
@@ -175,38 +223,6 @@ export function TeamMembersTab({
           </p>
         )}
 
-        {isOrgManager && (
-          <div className="border-t border-sand mt-5 pt-5">
-            <h3 className="mb-3 text-sm font-semibold text-ink">
-              {t("teamComp.addMember", loc)}
-            </h3>
-
-            {/* Manager-út: meglévő szervezeti tag hozzáadása a taglistából. */}
-            <p className="mb-3 text-xs text-ink-body/60">
-              {isHu
-                ? "Adj hozzá tagot a szervezet meglévő tagjai közül."
-                : "Add a member from the organization's existing members."}
-            </p>
-            <TeamMemberAddPicker
-              teamId={teamId}
-              candidates={addableOrgMembers}
-              isHu={isHu}
-            />
-
-            {/* Admin-út: e-mailes meghívó — org-tagságot is keletkeztet,
-                ezért csak admin-paritás (teamInviteEmail capability). */}
-            {canEmailInvite && (
-              <div className="mt-5 border-t border-dashed border-sand pt-5">
-                <p className="mb-3 text-xs text-ink-body/60">
-                  {isHu
-                    ? "Vagy hívj meg új tagot e-maillel — ő a szervezetnek is tagja lesz. (Csak admin jogosultsággal.)"
-                    : "Or invite a new member by email — they also join the organization. (Admin permission only.)"}
-                </p>
-                <TeamInviteForm teamId={teamId} locale={locale as "hu" | "en"} />
-              </div>
-            )}
-          </div>
-        )}
       </Card>
 
     </div>

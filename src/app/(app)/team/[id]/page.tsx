@@ -241,7 +241,8 @@ export default async function TeamDetailPage({
   if (!teamData) notFound();
 
   // Visszajelzés fül: csak csapattagnak (kitüntetett hely).
-  if (activeTab === "feedback" && !teamData.members.some((m) => m.userId === profile.id)) {
+  const isTeamMemberSelf = teamData.members.some((m) => m.userId === profile.id);
+  if (activeTab === "feedback" && !isTeamMemberSelf) {
     redirect(`/team/${teamId}?tab=overview`);
   }
 
@@ -254,6 +255,7 @@ export default async function TeamDetailPage({
     profile: { id: profile.id, email: profile.email, isConsultant: profile.isConsultant },
     orgMemberRole,
     canViewRaw,
+    isTeamMemberSelf,
     isOrgManager,
     canManageTeamActions,
     canReachOrgCampaigns,

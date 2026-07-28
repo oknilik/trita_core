@@ -22,6 +22,8 @@ export interface TeamTabContext {
   orgMemberRole: string;
   /** Tanácsadói felület (nyers eredmények): consultant / platform-admin. */
   canViewRaw: boolean;
+  /** A néző maga is tagja-e a csapatnak (feedback-fül láthatósága). */
+  isTeamMemberSelf: boolean;
   isOrgManager: boolean;
   canManageTeamActions: boolean;
   canReachOrgCampaigns: boolean;

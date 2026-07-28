@@ -3,7 +3,7 @@ import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamRoleSection } from "@/components/team/TeamRoleSection";
 import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
-import { BackLink, backToOverviewLabel } from "./BackLink";
+import { TeamTabBar } from "./TeamTabBar";
 import type { TeamTabContext } from "./types";
 
 // ── TeamRole tab ───────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <BackLink teamId={teamId} label={backToOverviewLabel(isHu)} />
+      <TeamTabBar ctx={ctx} active="teamRole" />
       <TeamRoleRoundCard
         teamId={teamId}
         isRoundActive={teamRoleTeam?.teamRoleRoundActive ?? false}

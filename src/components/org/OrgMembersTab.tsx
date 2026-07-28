@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -63,6 +64,9 @@ export function OrgMembersTab({
   dateLocale,
 }: OrgMembersTabProps) {
   const loc = locale as Locale;
+  // Fejléc-gombos meghívó (UX-audit #18): az űrlap nem a lista alatt ül,
+  // hanem a fejléc „+ Tag meghívása" gombjára nyíló panelben.
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-6">
@@ -71,12 +75,34 @@ export function OrgMembersTab({
         <SectionEyebrow className="mb-1">
           {t("org.members.eyebrow", loc)}
         </SectionEyebrow>
-        <SectionHeading className="mb-5">
-          {t("org.members.title", loc)}{" "}
-          <span className="font-sans text-sm font-normal text-ink-body/50">
-            ({members.length + pendingInvites.length})
-          </span>
-        </SectionHeading>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <SectionHeading>
+            {t("org.members.title", loc)}{" "}
+            <span className="font-sans text-sm font-normal text-ink-body/50">
+              ({members.length})
+            </span>
+          </SectionHeading>
+          {isManager && canInviteMembers ? (
+            <button
+              type="button"
+              onClick={() => setInviteOpen((v) => !v)}
+              aria-expanded={inviteOpen}
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110"
+            >
+              <span aria-hidden>{inviteOpen ? "×" : "+"}</span>
+              {t("org.members.inviteTitle", loc)}
+            </button>
+          ) : null}
+        </div>
+
+        {isManager && canInviteMembers && inviteOpen && (
+          <div className="mb-5 rounded-xl border border-sand bg-cream/40 p-4">
+            <p className="mb-3 text-xs text-ink-body/60">
+              {t("org.members.inviteDescription", loc)}
+            </p>
+            <OrgInviteForm orgId={orgId} locale={locale} canInviteManager={isAdmin} />
+          </div>
+        )}
 
         <div className="flex flex-col divide-y divide-sand">
           {members.map((m) => {
@@ -140,22 +166,6 @@ export function OrgMembersTab({
           )}
         </div>
       </Card>
-
-      {/* Invite form */}
-      {isManager && canInviteMembers && (
-        <Card spacing="lg" className="md:p-8">
-          <SectionEyebrow className="mb-1">
-            {t("org.members.inviteEyebrow", loc)}
-          </SectionEyebrow>
-          <h3 className="mb-3 text-sm font-semibold text-ink">
-            {t("org.members.inviteTitle", loc)}
-          </h3>
-          <p className="mb-4 text-xs text-ink-body/60">
-            {t("org.members.inviteDescription", loc)}
-          </p>
-          <OrgInviteForm orgId={orgId} locale={locale} canInviteManager={isAdmin} />
-        </Card>
-      )}
 
       {isManager && !canInviteMembers && actionGateCopy && (
         <Card spacing="lg" className="md:p-8">

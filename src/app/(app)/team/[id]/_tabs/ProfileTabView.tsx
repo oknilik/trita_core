@@ -1,6 +1,6 @@
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamProfileTab } from "@/components/team/TeamProfileTab";
-import { BackLink, backToOverviewLabel } from "./BackLink";
+import { TeamTabBar } from "./TeamTabBar";
 import type { TeamTabContext } from "./types";
 
 // ── Profile tab: heatmap + insights ──────────────────────────────────────
@@ -11,7 +11,7 @@ export function ProfileTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <BackLink teamId={teamId} label={backToOverviewLabel(isHu)} />
+      <TeamTabBar ctx={ctx} active="profile" />
       <TeamProfileTab
         heatmapRows={teamData.heatmapRows}
         dimConfigs={teamData.dimConfigs}
