@@ -147,7 +147,10 @@ export async function handleOrgInviteReceived(params: {
     category: meta.category,
     priority: meta.defaultPriority,
     vars: { orgName: params.orgName },
-    link: `/org/${params.orgId}`,
+    // A journey-elosztóra mutatunk, nem közvetlenül /org/[id]-re: a cockpit
+    // ORG_MANAGER+ only, a tag-jogú meghívottat a /dashboard szerep-helyesen
+    // a saját eredményeire viszi (a manager/admin meghívott a cockpitra jut).
+    link: `/dashboard`,
     sourceType: "org_invite",
     sourceId: params.inviteId,
     dedupeKey: params.inviteId ? `ORG_INVITE_RECEIVED:${params.inviteId}` : undefined,

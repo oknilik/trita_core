@@ -94,6 +94,21 @@ test("org member with completed self can land on team home", () => {
   assert.equal(result.home.destination, "/team/team42");
 });
 
+test("org member with completed self but no team goes to personal home (nem az org-cockpitra — redirect-loop guard)", () => {
+  const context = buildJourneyContext({
+    currentContext: "org-member",
+    orgId: "org_1",
+    assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },
+  });
+  // org.joined miatt a stage ORG_PARTIAL — de plain member SOHA nem mehet /org/[id]-re.
+  const state = buildJourneyState("ORG_PARTIAL");
+  const result = resolveHome({ context, state });
+
+  assert.equal(result.activeSurface, "personal");
+  assert.equal(result.home.reason, "personal_home");
+  assert.equal(result.home.destination, "/profile/results");
+});
+
 test("self completed goes to profile results", () => {
   const context = buildJourneyContext({
     assessment: { started: true, completed: true, skipped: false, hasDraft: false, hasResult: true },

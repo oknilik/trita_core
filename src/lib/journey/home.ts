@@ -90,6 +90,18 @@ export function resolveHome(params: {
     };
   }
 
+  // 5b) Org member with completed self but no team → personal home.
+  // FONTOS: a plain ORG_MEMBER-t SOHA nem küldjük az org-cockpitra (/org/[id]):
+  // az az oldal ORG_MANAGER+ only, és a tag-jogú látogatót visszadobja a journey
+  // fallbackre → az meg (ORG_PARTIAL/ORG_READY stage miatt) ismét /org/[id] →
+  // végtelen redirect-loop = befagyott képernyő. (Org-invite notifikáció kattintás.)
+  if (context.currentContext === "org-member" && context.assessment.completed) {
+    return {
+      activeSurface: "personal",
+      home: buildHomeResolution("/profile/results", "personal_home", primaryAction),
+    };
+  }
+
   // 6) Personal home after completed self.
   if (
     state.currentStage === "SELF_COMPLETED" ||
