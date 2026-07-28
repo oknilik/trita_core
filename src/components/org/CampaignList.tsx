@@ -224,7 +224,7 @@ export function CampaignList({
         <EmptyState
           className="mb-6"
           title={t("org.list.noCampaigns", loc)}
-          description={isHu ? "Hozz létre egy új kampányt az első felméréshez." : "Create a new campaign to launch your first assessment."}
+          description={isHu ? "Hozz létre egy új mérést az első felméréshez." : "Create a new measurement to launch your first assessment."}
         />
       ) : (
         <div className="mb-6 flex flex-col divide-y divide-sand">

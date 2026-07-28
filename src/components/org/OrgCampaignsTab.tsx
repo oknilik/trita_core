@@ -58,7 +58,7 @@ export function OrgCampaignsTab({
         {activeCampaigns.length === 0 ? (
           <EmptyState
             title={t("org.campaigns.noActive", loc)}
-            description={isHu ? "Indíts egy új kampányt, hogy megjelenjen itt." : "Create a new campaign and it will appear here."}
+            description={isHu ? "Indíts egy új mérést, hogy megjelenjen itt." : "Create a new measurement and it will appear here."}
           />
         ) : (
           <div className="flex flex-col gap-4">
@@ -142,7 +142,7 @@ export function OrgCampaignsTab({
         <section>
           <Card spacing="lg" className="md:p-8">
             <SectionEyebrow className="mb-1">
-              {isHu ? "Kampány akciók" : "Campaign actions"}
+              {isHu ? "Mérés akciók" : "Measurement actions"}
             </SectionEyebrow>
             <SectionHeading>{actionGateCopy.title}</SectionHeading>
             <p className="mt-2 text-sm text-ink-body">{actionGateCopy.description}</p>

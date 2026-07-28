@@ -19,13 +19,17 @@ export const CAMPAIGN_STEP_ORDER = [
 
 export type CampaignStepType = (typeof CAMPAIGN_STEP_ORDER)[number];
 
+// Névtan (UX-audit #13): az OBSERVER_360 „külső visszajelzés" (kollégák
+// KÍVÜLRŐL jellemeznek), a PEER_FEEDBACK „elismerés-kör" (csapaton BELÜLI
+// köszönet + javaslat) — a két lépés neve korábban majdnem azonos volt
+// („kollégai visszajelzés…"), ami összetéveszthetővé tette őket.
 export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: string }> = {
-  OBSERVER_360: { hu: "Önértékelés + kollégai visszajelzés", en: "Self-assessment + peer feedback" },
+  OBSERVER_360: { hu: "Önértékelés + külső visszajelzés", en: "Self-assessment + external feedback" },
   TEAM_ROLE: { hu: "Csapatszerep-kérdőív", en: "Team role questionnaire" },
   TEAM_ROLE_360: { hu: "Csapattársak szerep-visszajelzése", en: "Team role peer feedback" },
   TRUST_360: { hu: "Bizalmi háló kör", en: "Trust network round" },
   PSYCH_SAFETY: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
-  PEER_FEEDBACK: { hu: "Kollégai visszajelzés kör", en: "Peer feedback round" },
+  PEER_FEEDBACK: { hu: "Elismerés-kör", en: "Recognition round" },
 };
 
 /** Az adott lépés kitöltő-felülete (értesítés-link és banner-CTA). */

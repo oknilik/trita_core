@@ -73,7 +73,7 @@ export function ObserverFlowStatusCard({
               ? `A(z) „${flow.activeCampaignName}" kampányban kollégáid most adnak rólad visszajelzést.`
               : `In the "${flow.activeCampaignName}" campaign your colleagues are giving feedback about you.`
             : isHu
-              ? "A szervezeted kampányában kollégáid most adnak rólad visszajelzést."
+              ? "A szervezeted mérésében kollégáid most adnak rólad visszajelzést."
               : "Your colleagues are giving feedback about you in your organization's campaign."}
         </p>
         {/* Gyűjtő-narratíva (F3): kis küszöbnél nem absztrakt sáv, hanem
@@ -146,7 +146,7 @@ export function ObserverFlowStatusCard({
           </h2>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
             {isHu
-              ? "Szervezeti tagként nem kell külön meghívnod senkit: a kollégai visszajelzést a szervezeted következő mérési kampánya gyűjti be. Amikor elindul, itt követheted a beérkezést, és a küszöb elérésekor itt nyílik meg az önkép–külső kép összevetésed."
+              ? "Szervezeti tagként nem kell külön meghívnod senkit: a kollégai visszajelzést a szervezeted következő mérése gyűjti be. Amikor elindul, itt követheted a beérkezést, és a küszöb elérésekor itt nyílik meg az önkép–külső kép összevetésed."
               : "As an organization member you don't need to invite anyone yourself: colleague feedback is collected by your organization's next measurement campaign. Once it starts, you can follow it here, and your self-image vs. outside view comparison opens here when the threshold is reached."}
           </p>
           <p className="mt-2 text-xs text-muted">

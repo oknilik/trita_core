@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
+import { CAMPAIGN_STEP_LABELS } from "@/lib/campaign-steps-core";
 
 // Mérés-idővonal — a csapathoz kötött kampányok listája (tanácsadó/vezető).
 // A tanácsadói narratíva gerince: mi futott, mikor, mi aktív éppen.
@@ -14,13 +15,9 @@ export interface TeamMeasurementItem {
   closedAt: string | null;
 }
 
-const TYPE_LABELS: Record<string, { hu: string; en: string }> = {
-  OBSERVER_360: { hu: "Kollégai visszajelzés (360°)", en: "Peer feedback (360°)" },
-  TEAM_ROLE: { hu: "Csapatszerep-kör", en: "Team role round" },
-  TEAM_ROLE_360: { hu: "Csapattársi szerep-visszajelzés", en: "Team role peer feedback" },
-  TRUST_360: { hu: "Bizalmi háló kör", en: "Trust network round" },
-  PSYCH_SAFETY: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
-};
+// A lépés-címkék kanonikus forrása a campaign-steps-core (UX-audit #13:
+// egy fogalom = egy szó, egy helyről) — itt nincs saját másolat.
+const TYPE_LABELS: Record<string, { hu: string; en: string }> = CAMPAIGN_STEP_LABELS;
 
 const STATUS_CHIPS: Record<string, { hu: string; en: string; cls: string }> = {
   DRAFT: { hu: "Vázlat", en: "Draft", cls: "bg-sand text-ink-body" },

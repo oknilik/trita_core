@@ -13,7 +13,7 @@ import { TeamRolePeersClient } from "./TeamRolePeersClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Csapattársi visszajelzés | Trita", robots: { index: false } };
+  return { title: "Csapattársi visszajelzés | trita", robots: { index: false } };
 }
 
 // Csapattársi szerep-visszajelzés kitöltő — a bejelentkezett tag azon

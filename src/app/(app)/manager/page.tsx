@@ -17,6 +17,7 @@ import {
 } from "@/components/dashboard/DashboardPrimitives";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { getActiveOrgMembership } from "@/lib/org-context";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 function formatTimeAgo(date: Date, isHu: boolean): string {
@@ -55,7 +56,16 @@ export default async function ManagerCockpitPage() {
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const data = await getManagerCockpitData(profile.id, locale as "hu" | "en");
-  if (!data) redirect(JOURNEY_HOME_HANDOFF_PATH);
+  if (!data) {
+    // Nincs kezelhető csapat (pl. frissen meghívott ORG_MANAGER, még csapat
+    // nélkül). NEM a /dashboard-ra dobunk vissza: a journey a manager-kontextust
+    // ismét ide (/manager) irányítaná → /dashboard ↔ /manager végtelen loop
+    // (befagyott képernyő, org-invite notifikáció kattintás). Konkrét, nem-loopoló
+    // célra megyünk: org-cockpit (a manager látja, ott jönnek létre a csapatok),
+    // vagy ha nincs org-tagság, a személyes eredmények.
+    const membership = await getActiveOrgMembership(profile.id);
+    redirect(membership ? `/org/${membership.orgId}` : "/profile/results");
+  }
 
   const isHu = locale !== "en";
   const teamCount = data.teams.length;

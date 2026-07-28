@@ -294,7 +294,7 @@ export const orgTranslations = {
     membersLabel: { hu: "Tagok", en: "Members" },
     pendingSuffix: { hu: "függőben", en: "pending" },
     teamsLabel: { hu: "Csapatok", en: "Teams" },
-    activeCampaigns: { hu: "Aktív kampány", en: "Active campaigns" },
+    activeCampaigns: { hu: "Aktív mérés", en: "Active measurements" },
     closedSuffix: { hu: "lezárt", en: "closed" },
     completionRate: { hu: "Befejezési arány", en: "Completion rate" },
 
@@ -311,7 +311,7 @@ export const orgTranslations = {
     insightFeedbackNone: { hu: "Nincs futó visszajelzési kör — érdemes újat indítani", en: "No active feedback round — consider starting one" },
     insightActionTitle: { hu: "Következő lépés", en: "Next step" },
     insightActionInvite: { hu: "Meghívóra váró tagok: {count}", en: "Members awaiting invitation: {count}" },
-    insightActionStart: { hu: "Indíts új kampányt vagy hívj meg tagokat", en: "Start a new campaign or invite members" },
+    insightActionStart: { hu: "Indíts új mérést vagy hívj meg tagokat", en: "Start a new measurement or invite members" },
 
     stateEyebrow: { hu: "Szervezeti állapot", en: "Organization status" },
     stateMembersTitle: { hu: "Aktív tagok", en: "Active members" },
@@ -320,7 +320,7 @@ export const orgTranslations = {
     stateTeamsSub: { hu: "{count} csapat regisztrálva", en: "{count} teams registered" },
     stateCompletionTitle: { hu: "Kitöltöttség", en: "Completion" },
     stateCompletionSub: { hu: "{done}/{total} tag fejezte be az értékelést", en: "{done}/{total} members completed their assessment" },
-    stateCampaignsTitle: { hu: "Kampányok", en: "Campaigns" },
+    stateCampaignsTitle: { hu: "Mérések", en: "Measurements" },
     stateCampaignsSub: { hu: "{active} aktív, {closed} lezárt", en: "{active} active, {closed} closed" },
 
     teamsEyebrow: { hu: "Csapatok áttekintése", en: "Teams overview" },
@@ -373,13 +373,13 @@ export const orgTranslations = {
     campaign: {
       // New campaign page
       backWithName: { hu: "Vissza · {orgName}", en: "Back · {orgName}" },
-      newEyebrow: { hu: "// új kampány", en: "// new campaign" },
-      newTitle: { hu: "Kampány létrehozása", en: "Create campaign" },
+      newEyebrow: { hu: "// új mérés", en: "// new measurement" },
+      newTitle: { hu: "Mérés létrehozása", en: "Create measurement" },
 
       // Campaign detail page
-      eyebrowActive: { hu: "// aktív kampány", en: "// active campaign" },
-      eyebrowClosed: { hu: "// lezárt kampány", en: "// closed campaign" },
-      eyebrowDraft: { hu: "// kampány – tervezés alatt", en: "// campaign – draft" },
+      eyebrowActive: { hu: "// aktív mérés", en: "// active measurement" },
+      eyebrowClosed: { hu: "// lezárt mérés", en: "// closed measurement" },
+      eyebrowDraft: { hu: "// mérés – tervezés alatt", en: "// measurement – draft" },
       statusActive: { hu: "Aktív", en: "Active" },
       statusClosed: { hu: "Lezárva", en: "Closed" },
       statusDraft: { hu: "Vázlat", en: "Draft" },
@@ -423,12 +423,12 @@ export const orgTranslations = {
       participantSelfDone: { hu: "Önért. kész", en: "Self done" },
       participantNotStarted: { hu: "Nem kezdte", en: "Not started" },
       statusEyebrow: { hu: "// státusz", en: "// status" },
-      managementTitle: { hu: "Kampány kezelése", en: "Campaign management" },
+      managementTitle: { hu: "Mérés kezelése", en: "Measurement management" },
       activateDescription: { hu: "Az aktiválás után a résztvevők értesítést kapnak és megkezdhetik az értékeléseket.", en: "After activation, participants will be notified and can begin evaluations." },
       editDraftEyebrow: { hu: "// piszkozat", en: "// draft" },
       editDraftTitle: { hu: "Mérések és célzás szerkesztése", en: "Edit measurements and targeting" },
       editDraftHint: {
-        hu: "Amíg a kampány piszkozat, a mérés-lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után a kampány összetétele rögzül.",
+        hu: "Amíg a mérés piszkozat, a lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után az összetétel rögzül.",
         en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
       },
       editTypesLabel: { hu: "Mérések (max 4, sorrendjük kanonikus)", en: "Measurements (max 4, canonical order)" },
@@ -456,8 +456,8 @@ export const orgTranslations = {
         en: "The selected measurements need a target team (role, trust and pulse rounds live on a team).",
       },
       closeDescription: { hu: "A lezárás végleges — az értékelések leállnak és az eredmények rögzülnek.", en: "Closing is permanent — evaluations stop and results are recorded." },
-      activateCampaign: { hu: "Kampány aktiválása", en: "Activate campaign" },
-      closeCampaign: { hu: "Kampány lezárása", en: "Close campaign" },
+      activateCampaign: { hu: "Mérés aktiválása", en: "Activate measurement" },
+      closeCampaign: { hu: "Mérés lezárása", en: "Close measurement" },
 
       // Personality dimension labels (campaign detail)
       tritanINTE: { hu: "Integritás", en: "Integrity" },
@@ -471,7 +471,7 @@ export const orgTranslations = {
     // ── Shell / tabs ───────────────────────────────────────────────────────
     shell: {
       tabOverview: { hu: "Áttekintés", en: "Overview" },
-      tabCampaigns: { hu: "Kampányok", en: "Campaigns" },
+      tabCampaigns: { hu: "Mérések", en: "Measurements" },
       tabTeams: { hu: "Csapatok", en: "Teams" },
       tabMembers: { hu: "Tagok", en: "Members" },
       tabInquiries: { hu: "Kérdések", en: "Inquiries" },
@@ -563,10 +563,10 @@ export const orgTranslations = {
 
     // ── Overview tab ─────────────────────────────────────────────────────
     overview: {
-      activeCampaignSingle: { hu: "Aktív kampány: {name}", en: "Active campaign: {name}" },
-      activeCampaignMultiple: { hu: "{count} aktív kampány folyamatban", en: "{count} active campaigns in progress" },
+      activeCampaignSingle: { hu: "Aktív mérés: {name}", en: "Active measurement: {name}" },
+      activeCampaignMultiple: { hu: "{count} aktív mérés folyamatban", en: "{count} active measurements in progress" },
       selfAssessmentsDone: { hu: "önértékelés kész", en: "self-assessments done" },
-      campaignsLink: { hu: "Kampányok →", en: "Campaigns →" },
+      campaignsLink: { hu: "Mérések →", en: "Measurements →" },
       profileEyebrow: { hu: "// szervezeti profil", en: "// org profile" },
       profileTitle: { hu: "Szervezeti személyiség", en: "Org personality" },
       completionProgress: { hu: "{count} / 3 kitöltés", en: "{count} / 3 completions" },
@@ -605,22 +605,22 @@ export const orgTranslations = {
 
     // ── Campaigns tab ────────────────────────────────────────────────────
     campaigns: {
-      activeEyebrow: { hu: "// aktív körök", en: "// active rounds" },
-      activeTitle: { hu: "Aktív kampányok", en: "Active campaigns" },
-      noActive: { hu: "Nincs aktív kampány. Indíts egy vázlatból, vagy hozz létre újat!", en: "No active campaigns. Activate a draft or create a new one!" },
+      activeEyebrow: { hu: "// aktív mérések", en: "// active measurements" },
+      activeTitle: { hu: "Aktív mérések", en: "Active measurements" },
+      noActive: { hu: "Nincs aktív mérés. Indíts egy vázlatból, vagy hozz létre újat!", en: "No active measurements. Activate a draft or create a new one!" },
       draftsDivider: { hu: "vázlatok", en: "drafts" },
       closedDivider: { hu: "lezárt körök", en: "closed rounds" },
-      newCta: { hu: "Új 360° kampány", en: "New 360° campaign" },
+      newCta: { hu: "Új mérés", en: "New measurement" },
       newCtaDesc: { hu: "Szervezett 360° visszajelzési kör indítása a csapatban", en: "Launch a structured 360° feedback round for your team" },
       createLink: { hu: "Létrehozás →", en: "Create →" },
-      newEyebrow: { hu: "// új kampány", en: "// new campaign" },
-      createTitle: { hu: "Kampány létrehozása", en: "Create campaign" },
-      nameLabel: { hu: "Kampány neve", en: "Campaign name" },
+      newEyebrow: { hu: "// új mérés", en: "// new measurement" },
+      createTitle: { hu: "Mérés létrehozása", en: "Create measurement" },
+      nameLabel: { hu: "Mérés neve", en: "Measurement name" },
       namePlaceholder: { hu: "pl. Q1 2026 értékelés", en: "e.g. Q1 2026 review" },
       descLabel: { hu: "Leírás (opcionális)", en: "Description (optional)" },
-      descPlaceholder: { hu: "Rövid leírás a kampányról…", en: "Brief description…" },
+      descPlaceholder: { hu: "Rövid leírás a mérésről…", en: "Brief description…" },
       creating: { hu: "Létrehozás…", en: "Creating…" },
-      createButton: { hu: "Kampány létrehozása", en: "Create campaign" },
+      createButton: { hu: "Mérés létrehozása", en: "Create measurement" },
       cancel: { hu: "Mégse", en: "Cancel" },
       networkError: { hu: "Hálózati hiba. Próbáld újra.", en: "Network error. Please try again." },
     },
@@ -644,7 +644,7 @@ export const orgTranslations = {
       fullyDoneLabel: { hu: "teljes", en: "complete" },
       inProgress: { hu: "folyamatban", en: "in progress" },
       notStarted: { hu: "nem kezdte", en: "not started" },
-      viewLink: { hu: "Kampány nézete →", en: "View campaign →" },
+      viewLink: { hu: "Mérés megnyitása →", en: "Open measurement →" },
       sending: { hu: "Küldés…", en: "Sending…" },
       remindButton: { hu: "Emlékeztető ({count})", en: "Remind ({count})" },
       remindedResult: { hu: "{count} személynek küldtünk emlékeztetőt", en: "Reminded {count} participant" },
@@ -655,7 +655,7 @@ export const orgTranslations = {
 
     // ── Campaign list (legacy) ───────────────────────────────────────────
     list: {
-      noCampaigns: { hu: "Még nincs 360° kampány. Hozz létre egyet lentebb!", en: "No 360° campaigns yet. Create one below!" },
+      noCampaigns: { hu: "Még nincs mérés. Hozz létre egyet lentebb!", en: "No measurements yet. Create one below!" },
       participantCount: { hu: "résztvevő", en: "participant" },
       participantsCount: { hu: "résztvevő", en: "participants" },
       manageTitle: { hu: "Résztvevők kezelése", en: "Manage participants" },
@@ -664,12 +664,12 @@ export const orgTranslations = {
       adding: { hu: "Hozzáadás…", en: "Adding…" },
       addButton: { hu: "Hozzáadás ({count})", en: "Add ({count})" },
       cancel: { hu: "Mégse", en: "Cancel" },
-      newEyebrow: { hu: "// új kampány", en: "// new campaign" },
-      newTitle: { hu: "Új 360° kampány", en: "New 360° campaign" },
-      namePlaceholder: { hu: "Kampány neve", en: "Campaign name" },
+      newEyebrow: { hu: "// új mérés", en: "// new measurement" },
+      newTitle: { hu: "Új mérés", en: "New measurement" },
+      namePlaceholder: { hu: "Mérés neve", en: "Measurement name" },
       descPlaceholder: { hu: "Leírás (opcionális)", en: "Description (optional)" },
       creating: { hu: "Létrehozás…", en: "Creating…" },
-      createButton: { hu: "Kampány létrehozása", en: "Create campaign" },
+      createButton: { hu: "Mérés létrehozása", en: "Create measurement" },
       statusActive: { hu: "Aktív", en: "Active" },
       statusClosed: { hu: "Lezárva", en: "Closed" },
       statusDraft: { hu: "Vázlat", en: "Draft" },
@@ -773,9 +773,9 @@ export const orgTranslations = {
       inviteTitle: { hu: "Hívj meg legalább 3 tagot a szervezetbe", en: "Invite at least 3 members to your org" },
       inviteSub: { hu: "Minimum 3 kitöltés szükséges a szervezeti profil megjelenítéséhez.", en: "At least 3 completions are needed to display the org personality profile." },
       inviteCta: { hu: "Tagok →", en: "Members →" },
-      campaignTitle: { hu: "Hozz létre egy kampányt", en: "Create your first campaign" },
-      campaignSub: { hu: "Indíts egy 360° kampányt, hogy a tagok megkezdhessék a kitöltést.", en: "Start a 360° campaign so members can begin their assessments." },
-      campaignCta: { hu: "Kampány →", en: "Campaign →" },
+      campaignTitle: { hu: "Hozz létre egy mérést", en: "Create your first measurement" },
+      campaignSub: { hu: "Indíts egy mérést, hogy a tagok megkezdhessék a kitöltést.", en: "Start a measurement so members can begin their assessments." },
+      campaignCta: { hu: "Mérés →", en: "Measurement →" },
       awaitTitle: { hu: "Várakozás kitöltésekre · {completed}/3", en: "Waiting for completions · {completed}/3" },
       awaitSub: { hu: "A szervezeti profil 3 befejezett értékelés után jelenik meg.", en: "The org personality profile appears after 3 completed assessments." },
     },
@@ -793,8 +793,8 @@ export const orgTranslations = {
     recommendedPendingDesc: { hu: "Zárd le a függő meghívásokat, hogy stabilabb legyen a szervezeti kép.", en: "Close pending invites to improve org-level signal quality." },
     recommendedPendingPrimary: { hu: "Tagok kezelése", en: "Manage members" },
     recommendedPendingSecondary: { hu: "Csapatok áttekintése", en: "Review teams" },
-    recommendedCampaignDesc: { hu: "A következő szervezeti mérési körhöz indíts új kampányt.", en: "Launch a new campaign for the next org insight cycle." },
-    recommendedCampaignPrimary: { hu: "Új kampány indítása", en: "Start new campaign" },
+    recommendedCampaignDesc: { hu: "A következő szervezeti mérési ciklushoz indíts új mérést.", en: "Launch a new measurement for the next org insight cycle." },
+    recommendedCampaignPrimary: { hu: "Új mérés indítása", en: "Start new measurement" },
     recommendedCampaignSecondary: { hu: "Csapatok áttekintése", en: "Review teams" },
     teamUpdated: { hu: "Csapat frissítve: {name}", en: "Team updated: {name}" },
     teamMembersMeta: { hu: "{count} tag", en: "{count} members" },
@@ -807,7 +807,7 @@ export const orgTranslations = {
     orgCompletion: { hu: "Szervezeti kitöltés", en: "Org completion" },
     done: { hu: "kész", en: "done" },
     remaining: { hu: "hátra", en: "remaining" },
-    activeCampaignCompletion: { hu: "Aktív kampány kitöltés", en: "Active campaign completion" },
+    activeCampaignCompletion: { hu: "Aktív mérés kitöltés", en: "Active measurement completion" },
   },
   orgLayers: {
     eyebrow: { hu: "4+2 rétegkészültség", en: "4+2 layer readiness" },
@@ -1015,7 +1015,7 @@ export const orgTranslations = {
 
   // ── Campaign Wizard ─────────────────────────────────────────────────────
   peerFb: {
-    title: { hu: "Kollégai visszajelzés kör", en: "Peer feedback round" },
+    title: { hu: "Elismerés-kör", en: "Recognition round" },
     introNamed: {
       hu: "Adj minden csapattársadnak egy rövid, jövő-irányú visszajelzést — és ha van, egy elismerést. A visszajelzések nevesítettek: a címzett látja, kitől jöttek.",
       en: "Give each teammate a short, forward-looking piece of feedback — and, if you have one, an appreciation. Feedback is named: recipients see who it came from.",
@@ -1046,7 +1046,7 @@ export const orgTranslations = {
     },
     nonePendingTitle: { hu: "Nincs nyitott visszajelzés-köröd", en: "No open feedback round" },
     nonePendingBody: {
-      hu: "Most nincs olyan aktív kampányod, ahol a kollégai visszajelzés kör lenne az aktuális lépés.",
+      hu: "Most nincs olyan aktív mérésed, ahol az elismerés-kör lenne az aktuális lépés.",
       en: "You have no active campaign where the peer feedback round is your current step.",
     },
     backToDashboard: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
@@ -1073,12 +1073,12 @@ export const orgTranslations = {
     stepMembers: { hu: "Tagok", en: "Members" },
     stepConfirm: { hu: "Megerősítés", en: "Confirm" },
     unknownError: { hu: "Ismeretlen hiba", en: "Unknown error" },
-    detailsTitle: { hu: "Kampány adatai", en: "Campaign details" },
-    nameLabel: { hu: "Kampány neve", en: "Campaign name" },
+    detailsTitle: { hu: "Mérés adatai", en: "Measurement details" },
+    nameLabel: { hu: "Mérés neve", en: "Measurement name" },
     namePlaceholder: { hu: "pl. Q2 360° visszajelzés", en: "e.g. Q2 360° feedback" },
     descLabel: { hu: "Leírás", en: "Description" },
     optional: { hu: "(opcionális)", en: "(optional)" },
-    descPlaceholder: { hu: "Rövid leírás a kampányról...", en: "Brief description..." },
+    descPlaceholder: { hu: "Rövid leírás a mérésről...", en: "Brief description..." },
     next: { hu: "Tovább →", en: "Next →" },
     selectParticipants: { hu: "Résztvevők kiválasztása", en: "Select participants" },
     deselectAll: { hu: "Mind törlése", en: "Deselect all" },
@@ -1086,15 +1086,15 @@ export const orgTranslations = {
     noMembers: { hu: "Nincsenek tagok a szervezetben.", en: "No members in this organization." },
     back: { hu: "Vissza", en: "Back" },
     summary: { hu: "Összefoglalás", en: "Summary" },
-    campaignNameLabel: { hu: "// kampány neve", en: "// campaign name" },
+    campaignNameLabel: { hu: "// mérés neve", en: "// measurement name" },
     participantsLabel: { hu: "// résztvevők · {count} fő", en: "// participants · {count}" },
     noneSelected: { hu: "Nincs kiválasztva — később is hozzáadhatók.", en: "None selected — can be added later." },
     draftNote: {
-      hu: "A kampány DRAFT státuszban jön létre. Az aktiválást a kampány oldalán végezheted el.",
+      hu: "A mérés piszkozatként jön létre. Az aktiválást a mérés oldalán végezheted el.",
       en: "Campaign is created in DRAFT status. You can activate it from the campaign page.",
     },
     creating: { hu: "Létrehozás...", en: "Creating..." },
-    createCampaign: { hu: "Kampány létrehozása", en: "Create campaign" },
+    createCampaign: { hu: "Mérés létrehozása", en: "Create measurement" },
     createAndActivate: { hu: "Létrehozás és aktiválás", en: "Create and activate" },
     activateNowLabel: { hu: "Aktiválás azonnal a létrehozás után.", en: "Activate immediately after creation." },
     activateNowHint: {
@@ -1102,22 +1102,22 @@ export const orgTranslations = {
       en: "Participants get their step-opening notification right away and the first questionnaire starts. Only check this if the roster is final — activation cannot be undone.",
     },
     activateNowNoParticipants: {
-      hu: "Résztvevő nélkül nem aktiválható — előbb válassz résztvevőket, vagy aktiváld később a kampány oldaláról.",
+      hu: "Résztvevő nélkül nem aktiválható — előbb válassz résztvevőket, vagy aktiváld később a mérés oldaláról.",
       en: "Cannot activate without participants — select participants first, or activate later from the campaign page.",
     },
     activateNowNote: {
-      hu: "A kampány létrejön ÉS azonnal aktiválódik: mindenki értesítést kap, az életciklus (DRAFT → ACTIVE → CLOSED) nem fordítható vissza.",
+      hu: "A mérés létrejön ÉS azonnal aktiválódik: mindenki értesítést kap, az életciklus (piszkozat → aktív → lezárt) nem fordítható vissza.",
       en: "The campaign is created AND activated immediately: everyone is notified, and the lifecycle (DRAFT → ACTIVE → CLOSED) cannot be reversed.",
     },
     activateFailed: {
-      hu: "A kampány létrejött (piszkozatként), de az aktiválás nem sikerült — aktiváld a kampány oldaláról.",
+      hu: "A mérés létrejött (piszkozatként), de az aktiválás nem sikerült — aktiváld a mérés oldaláról.",
       en: "The campaign was created (as draft), but activation failed — activate it from the campaign page.",
     },
 
     // Típusválasztó (0. lépés)
     stepType: { hu: "Mérés típusa", en: "Measurement type" },
     typeTitle: { hu: "Mit szeretnél mérni?", en: "What do you want to measure?" },
-    typeObserverName: { hu: "Kollégai visszajelzés (360°)", en: "Peer feedback (360°)" },
+    typeObserverName: { hu: "Külső visszajelzés (360°)", en: "External feedback (360°)" },
     typeObserverDesc: {
       hu: "A tagok kollégákat hívnak meg, akik kívülről jellemzik őket — az önkép és a külső kép összevethetővé válik.",
       en: "Members invite colleagues who describe them from the outside — self-image and outside image become comparable.",
@@ -1156,7 +1156,7 @@ export const orgTranslations = {
       hu: "Eredmény: mért kapcsolati kép a dinamika-térképen (páronként összevonva), összekötő és beágyazatlan tagok jelzése",
       en: "Output: measured relationship view on the dynamics map (combined per pair), highlighting connectors and unembedded members",
     },
-    typePeerFbName: { hu: "Kollégai visszajelzés kör", en: "Peer feedback round" },
+    typePeerFbName: { hu: "Elismerés-kör", en: "Recognition round" },
     typePeerFbDesc: {
       hu: "A tagok strukturált lapon adnak egymásnak elismerést és egy jövő-irányú javaslatot — a kör zárja a mérés-sorozatot, amikor már felépült a bizalom.",
       en: "Members give each other structured appreciation and one forward-looking suggestion — this round closes the series, once trust has been built.",
@@ -1204,11 +1204,11 @@ export const orgTranslations = {
 
     // Életciklus megerősítések
     activateConfirm: {
-      hu: "Aktiválod a kampányt?\n\n• A résztvevők e-mail értesítést kapnak.\n• Aktív kampányhoz később is adhatsz résztvevőt.\n• A későbbi lezárás végleges — a kampány nem nyitható újra.",
+      hu: "Aktiválod a mérést?\n\n• A résztvevők e-mail értesítést kapnak.\n• Aktív méréshez később is adhatsz résztvevőt.\n• A későbbi lezárás végleges — a mérés nem nyitható újra.",
       en: "Activate this campaign?\n\n• Participants will receive an email notification.\n• You can still add participants while active.\n• Closing later is final — the campaign cannot be reopened.",
     },
     closeConfirm: {
-      hu: "Lezárod a kampányt?\n\n• A kitöltés leáll, több visszajelzés nem érkezik.\n• A lezárás végleges — a kampány nem nyitható újra.\n• Az eddig beérkezett adatok megmaradnak és a riportban felhasználhatók.",
+      hu: "Lezárod a mérést?\n\n• A kitöltés leáll, több visszajelzés nem érkezik.\n• A lezárás végleges — a mérés nem nyitható újra.\n• Az eddig beérkezett adatok megmaradnak és a riportban felhasználhatók.",
       en: "Close this campaign?\n\n• Filling stops; no more responses will arrive.\n• Closing is final — the campaign cannot be reopened.\n• Data collected so far is kept and usable in the report.",
     },
     closedReportCta: { hu: "Mért adat érkezett — riport frissítése →", en: "Measured data arrived — update the report →" },
@@ -1500,16 +1500,16 @@ export const orgTranslations = {
     selfAssessmentLabel: { hu: "önértékelés", en: "self-assessment" },
     observerLabel: { hu: "observer", en: "observer" },
     daysLabel: { hu: "nap", en: "days" },
-    viewCampaign: { hu: "Kampány nézete →", en: "View campaign →" },
+    viewCampaign: { hu: "Mérés megnyitása →", en: "Open measurement →" },
 
     // TeamOverviewTab — empty state
     noDataEyebrow: { hu: "nincs adat", en: "no data yet" },
     noAssessmentsTitle: { hu: "Még nincs kitöltött értékelés", en: "No completed assessments yet" },
     noAssessmentsDesc: {
-      hu: "Indíts egy 360° kampányt, hogy a csapattagok megkezdhessék az értékeléseket.",
+      hu: "Indíts egy mérést, hogy a csapattagok megkezdhessék az értékeléseket.",
       en: "Start a 360° campaign so team members can begin their assessments.",
     },
-    startCampaign: { hu: "Kampány indítása", en: "Start a campaign" },
+    startCampaign: { hu: "Mérés indítása", en: "Start a measurement" },
 
     // TeamOverviewTab — personality profile card
     teamAvgSelfEyebrow: { hu: "csapat átlag · önkép", en: "team avg · self" },
@@ -1626,7 +1626,7 @@ export const orgTranslations = {
     // TeamMembersTab
     membersTabEyebrow: { hu: "// tagok", en: "// members" },
     membersTabTitle: { hu: "Tagok", en: "Members" },
-    doneTest: { hu: "Kész", en: "Done" },
+    doneTest: { hu: "Kitöltve", en: "Completed" },
     noTest: { hu: "Nincs teszt", en: "No test" },
     inviteSent: { hu: "Meghívó elküldve", en: "Invite sent" },
     pendingStatus: { hu: "Függőben", en: "Pending" },
@@ -1788,7 +1788,7 @@ export const orgTranslations = {
       continueShort: { hu: "Folytasd", en: "Keep" },
       tryShort: { hu: "Próbáld", en: "Try" },
       anonymousResponder: { hu: "névtelen válaszadó", en: "anonymous responder" },
-      suggestionsLabel: { hu: "Kampány-körből kapott javaslataid", en: "Suggestions from campaign rounds" },
+      suggestionsLabel: { hu: "Mérés-körből kapott javaslataid", en: "Suggestions from measurement rounds" },
       pendingAnonymous: {
         hu: "{count} név nélküli javaslat vár még — legalább 3 beküldőnél jelenik meg, összesítve.",
         en: "{count} anonymous suggestions pending — shown aggregated once there are at least 3 senders.",
@@ -1831,21 +1831,21 @@ export const orgTranslations = {
     detailEyebrowPrefix: { hu: "// csapat", en: "// team" },
     roleManager: { hu: "Menedzser", en: "Manager" },
     roleMember: { hu: "Tag", en: "Member" },
-    campaignButton: { hu: "Kampány", en: "Campaign" },
+    campaignButton: { hu: "Mérés", en: "Measurement" },
 
     // stat strip labels
     statMembers: { hu: "Tagok", en: "Members" },
     statCompleted: { hu: "kitöltötte", en: "completed" },
     statObserverCoverage: { hu: "Observer lefedettség", en: "Observer coverage" },
-    statNoCampaign: { hu: "nincs aktív kampány", en: "no active campaign" },
+    statNoCampaign: { hu: "nincs aktív mérés", en: "no active measurement" },
     statCampaignDaysActive: { hu: "{days} napja aktív", en: "Active for {days} days" },
     statStartCampaign: {
-      hu: "Indíts 360° kampányt az összehasonlításhoz",
+      hu: "Indíts mérést az összehasonlításhoz",
       en: "Start a 360° campaign to compare",
     },
     statTeamStrength: { hu: "Csapat erőssége", en: "Team strength" },
     statGrowthArea: { hu: "Fejlesztési terület", en: "Growth area" },
-    statActiveCampaign: { hu: "Aktív kampány", en: "Active campaign" },
+    statActiveCampaign: { hu: "Aktív mérés", en: "Active measurement" },
     statInProgress: { hu: "folyamatban", en: "in progress" },
   },
 

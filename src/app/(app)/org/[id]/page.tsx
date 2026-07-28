@@ -160,7 +160,7 @@ export default async function OrgDetailPage({
             />
             <DashboardMetricCard
               accent="#74877d"
-              title={isHu ? "Aktív kampány" : "Active campaigns"}
+              title={isHu ? "Aktív mérés" : "Active measurements"}
               value={String(activeCampaignCount)}
               sub={isHu ? "Futó observer körök" : "Running observer rounds"}
             />
@@ -408,7 +408,11 @@ export default async function OrgDetailPage({
                 {pageData.activeCampaignCount} {isHu ? "aktív mérés" : "active measurements"}
               </span>
             ) : null}
-            {org.status === "PENDING_SETUP" ? (
+            {/* „Beállítás folyamatban" csak VALÓDI hiánynál (UX-audit #21a):
+                működő, tagokkal-csapatokkal élő orgon a stale státusz-badge
+                zavaró volt. */}
+            {org.status === "PENDING_SETUP" &&
+            (pageData.teamCount === 0 || pageData.memberCount <= 1) ? (
               <span
                 className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
                 style={{ backgroundColor: orgHeroTheme.badgeBg, color: orgHeroTheme.badgeText }}

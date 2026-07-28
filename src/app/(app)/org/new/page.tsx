@@ -11,7 +11,7 @@ import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Új ügyfél-szervezet | Trita", robots: { index: false } };
+  return { title: "Új ügyfél-szervezet | trita", robots: { index: false } };
 }
 
 // Tanácsadói ügyfél-org létrehozás — csak consulting-led módban, csak

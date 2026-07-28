@@ -30,7 +30,7 @@ import { CAMPAIGN_STEP_LABELS, isCampaignStepType } from "@/lib/campaign-steps-c
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Kampány | Trita", robots: { index: false } };
+  return { title: "Mérés | trita", robots: { index: false } };
 }
 
 const STATUS_TRANSITIONS: Record<string, string | null> = {
@@ -203,7 +203,7 @@ export default async function CampaignDetailPage({
           <OrgSubscriptionBanner state="frozen" locale={locale} />
           <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              {isHu ? "Kampány összegző" : "Campaign summary"}
+              {isHu ? "Mérés összegző" : "Measurement summary"}
             </p>
             <h1 className="mt-2 font-fraunces text-3xl text-ink">{campaign.name}</h1>
             <p className="mt-2 text-sm text-ink-body">

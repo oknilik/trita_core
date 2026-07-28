@@ -13,7 +13,7 @@ import { TrustPeersClient } from "./TrustPeersClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Bizalmi háló kör | Trita", robots: { index: false } };
+  return { title: "Bizalmi háló kör | trita", robots: { index: false } };
 }
 
 // Bizalmi háló kitöltő — a bejelentkezett tag azon aktív kampányát keresi

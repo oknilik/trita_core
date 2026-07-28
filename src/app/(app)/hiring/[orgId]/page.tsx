@@ -20,7 +20,7 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Jelöltek | Trita", robots: { index: false } };
+  return { title: "Jelöltek | trita", robots: { index: false } };
 }
 
 // Jelölt-felület (2026-07-23 újraélesztés): csak a tanácsadói kör éri el

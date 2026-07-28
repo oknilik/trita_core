@@ -18,7 +18,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Szervezet beállítások | Trita", robots: { index: false } };
+  return { title: "Szervezet beállítások | trita", robots: { index: false } };
 }
 
 export default async function OrgSettingsPage({

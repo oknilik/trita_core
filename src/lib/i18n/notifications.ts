@@ -33,7 +33,7 @@ export const notificationTranslations = {
       body: { hu: "Meghívást kaptál a(z) {orgName} szervezetbe.", en: "You've been invited to join {orgName}." },
     },
     campaignLaunched: {
-      title: { hu: "Kampány elindítva", en: "Campaign launched" },
+      title: { hu: "Mérés elindítva", en: "Measurement launched" },
       body: { hu: "A(z) \"{campaignName}\" kampány aktív.", en: "The \"{campaignName}\" campaign is now active." },
     },
     stepOpened: {
@@ -53,7 +53,7 @@ export const notificationTranslations = {
     observerApprovalRequested: {
       title: { hu: "Külső értékelő-meghívó vár jóváhagyásra", en: "External observer invite awaits approval" },
       body: {
-        hu: "{inviterName} külső értékelőt hívna meg ({targetLabel}) — a kampány szabálya szerint ehhez jóváhagyás kell.",
+        hu: "{inviterName} külső értékelőt hívna meg ({targetLabel}) — a mérés szabálya szerint ehhez jóváhagyás kell.",
         en: "{inviterName} wants to invite an external observer ({targetLabel}) — the campaign requires approval for this.",
       },
     },
@@ -86,7 +86,7 @@ export const notificationTranslations = {
       },
     },
     campaignClosed: {
-      title: { hu: "Kampány lezárva", en: "Campaign closed" },
+      title: { hu: "Mérés lezárva", en: "Measurement closed" },
       body: { hu: "A(z) \"{campaignName}\" kampány lezárult.", en: "The \"{campaignName}\" campaign has closed." },
     },
     teamReportPublished: {
@@ -126,7 +126,7 @@ export const notificationTranslations = {
       body: { hu: "{name} elvégezte az önértékelést.", en: "{name} completed their self-assessment." },
     },
     campaignMilestone: {
-      title: { hu: "Kampány mérföldkő", en: "Campaign milestone" },
+      title: { hu: "Mérés mérföldkő", en: "Measurement milestone" },
       body: { hu: "A(z) \"{campaignName}\" kampány {percent}%-os kitöltöttséget ért el.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
     },
 

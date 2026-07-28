@@ -22,7 +22,7 @@ import type { TeamRoleSelections } from "@/lib/team-role-questions";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Jelölt eredménye | Trita", robots: { index: false } };
+  return { title: "Jelölt eredménye | trita", robots: { index: false } };
 }
 
 const DIM_COLORS: Record<string, string> = {

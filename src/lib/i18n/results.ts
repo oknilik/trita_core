@@ -137,7 +137,7 @@ export const resultsTranslations = {
     feedbackTitle: { hu: "Visszajelzés az eredményről", en: "Feedback on your results" },
     feedbackBody: { hu: "Mondd el, mennyire érzed találónak a kiértékelést.", en: "Tell us how accurate the results feel." },
     feedbackOpenCta: { hu: "Visszajelzés megadása", en: "Give feedback" },
-    feedbackThanks: { hu: "Köszönjük!", en: "Thank you!" },
+    feedbackThanks: { hu: "Köszönjük a visszajelzést!", en: "Thanks for your feedback!" },
     feedbackAgreementLabel: { hu: "Mennyire ismertél magadra az eredményekben?", en: "How well did you recognize yourself in the results?" },
     feedbackObserverUsefulnessLabel: { hu: "Mennyire voltak hasznosak számodra a visszajelzések a meghívottaktól?", en: "How useful was the feedback from the people you invited?" },
     feedbackSiteUsefulnessLabel: { hu: "Hasznosnak találtad-e az oldalt?", en: "Did you find the site useful?" },

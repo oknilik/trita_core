@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Fraunces, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
@@ -6,7 +5,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
-import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
@@ -77,14 +75,12 @@ export default function RootLayout({
   return (
     <html lang={DEFAULT_LOCALE}>
       <body className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}>
-        <ClerkProvider
-          signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
-          signUpFallbackRedirectUrl="/onboarding"
-        >
-          <LocaleProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </LocaleProvider>
-        </ClerkProvider>
+        {/* ClerkProvider NEM itt van: a marketing-fa (landing/blog/…) így nem
+            szállít clerk-js bundle-t. A Clerk a (app) és (auth) zóna
+            layoutjában él; a publikus nav auth-állapotát a nav-context adja. */}
+        <LocaleProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

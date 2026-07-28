@@ -108,8 +108,10 @@ export function TeamMembersTab({
                     locale={locale}
                   />
                   {m.hasAssessment ? (
+                    // Státusz-címke, nem típusnév — a belső TestType enum
+                    // ("TRITAN") nem user-facing (UX-audit #16).
                     <StatusChip variant="success">
-                      {m.testType ?? t("teamComp.doneTest", loc)}
+                      {t("teamComp.doneTest", loc)}
                     </StatusChip>
                   ) : (
                     <StatusChip variant="neutral" className="text-ink-body/60">

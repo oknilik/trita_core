@@ -10,7 +10,7 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Assessment Layers | Trita",
+  title: "Assessment Layers | trita",
   robots: { index: false, follow: false },
 };
 

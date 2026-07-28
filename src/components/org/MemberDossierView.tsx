@@ -42,6 +42,20 @@ const EDGE_LABELS: Record<DossierEdgeType, { hu: string; en: string }> = {
   friction: { hu: "súrlódás", en: "friction" },
 };
 
+// Szerep-címke a nyers enum helyett (UX-audit #21b) — az OrgMembersTab
+// roleLabel-fordítójával azonos szótár, isHu-alapon.
+const ORG_ROLE_LABELS: Record<string, { hu: string; en: string }> = {
+  ORG_ADMIN: { hu: "Admin", en: "Admin" },
+  ORG_CONSULTANT: { hu: "Tanácsadó", en: "Consultant" },
+  ORG_MANAGER: { hu: "Menedzser", en: "Manager" },
+  ORG_MEMBER: { hu: "Tag", en: "Member" },
+};
+
+function orgRoleLabel(role: string, isHu: boolean): string {
+  const l = ORG_ROLE_LABELS[role];
+  return l ? (isHu ? l.hu : l.en) : role;
+}
+
 function fmtDate(iso: string | null, isHu: boolean): string {
   if (!iso) return isHu ? "még nincs" : "none yet";
   return new Date(iso).toLocaleDateString(isHu ? "hu-HU" : "en-US");
@@ -75,7 +89,7 @@ export function MemberDossierView({
             ) : null}
           </div>
           <span className="rounded-full border border-sand bg-cream px-3 py-1 text-micro font-semibold uppercase tracking-wide text-ink-body">
-            {header.orgRole}
+            {orgRoleLabel(header.orgRole, isHu)}
           </span>
         </div>
 

@@ -164,7 +164,7 @@ const BLOCKING_CODE_LABELS: Record<string, { hu: string; en: string }> = {
   TEAM_MEMBER_ASSESSMENTS_PENDING: { hu: "Csapattagok kitöltései folyamatban", en: "Team member assessments in progress" },
   ORG_TEAM_MISSING: { hu: "Szervezeti csapat hiányzik", en: "Org team missing" },
   ORG_MEMBER_ASSESSMENTS_PENDING: { hu: "Szervezeti kitöltések folyamatban", en: "Org member assessments in progress" },
-  ORG_CAMPAIGN_MISSING: { hu: "Szervezeti kampány hiányzik", en: "Org campaign missing" },
+  ORG_CAMPAIGN_MISSING: { hu: "Szervezeti mérés hiányzik", en: "Org measurement missing" },
 };
 
 function localizeBlockingCode(locale: DashboardLocale, code: string): string {

@@ -18,7 +18,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Új kampány | Trita", robots: { index: false } };
+  return { title: "Új mérés | trita", robots: { index: false } };
 }
 
 export default async function NewCampaignPage({
@@ -87,7 +87,7 @@ export default async function NewCampaignPage({
                 href={`/org/${orgId}?tab=campaigns`}
                 className="inline-flex min-h-[42px] items-center rounded-lg border border-sand px-4 text-sm font-semibold text-ink-body transition hover:bg-cream"
               >
-                {isHu ? "Vissza a kampányokhoz" : "Back to campaigns"}
+                {isHu ? "Vissza a mérésekhez" : "Back to measurements"}
               </Link>
             </div>
           </div>

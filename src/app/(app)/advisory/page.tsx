@@ -11,7 +11,7 @@ import { AdvisoryPageClient, type AdvisoryTier } from "./AdvisoryPageClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Advisory | Trita", robots: { index: false } };
+  return { title: "Advisory | trita", robots: { index: false } };
 }
 
 export default async function AdvisoryPage() {

@@ -13,7 +13,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Szervezet beállítása | Trita", robots: { index: false } };
+  return { title: "Szervezet beállítása | trita", robots: { index: false } };
 }
 
 export default async function OrgSetupPage({

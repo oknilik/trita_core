@@ -50,11 +50,14 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
     );
   }
 
+  // Diszkrét trigger (UX-audit #16): a destruktív akció ne versenyezzen a
+  // sor többi elemével — halvány szöveg-link, hover-re válik piros hangsúlyúvá.
+  // A megerősítő lépés (fenti confirm-ág) változatlanul kötelező.
   return (
     <button
       type="button"
       onClick={() => setConfirm(true)}
-      className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-50"
+      className="min-h-[36px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition hover:bg-rose-50 hover:text-rose-600"
     >
       {t("manager.teamMemberRemove.remove", locale)}
     </button>

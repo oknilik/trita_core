@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Szervezet inaktív | Trita",
+  title: "Szervezet inaktív | trita",
   robots: { index: false },
 };
 

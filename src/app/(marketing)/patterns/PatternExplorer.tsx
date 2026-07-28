@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuthState } from "@/components/auth/auth-state";
 import {
   AXIS_META,
   PATTERNS,
@@ -427,6 +427,7 @@ function AlternativeSection({
 
 export function PatternExplorer() {
   const searchParams = useSearchParams();
+  const { isSignedIn } = useAuthState();
 
   const initialValues = useMemo(() => {
     const keys = ["drive", "cohesion", "discipline", "openness"] as const;
@@ -627,7 +628,8 @@ export function PatternExplorer() {
             Kíváncsi vagy a csapatod valódi mintázatára?
           </h2>
 
-          <SignedOut>
+          {!isSignedIn && (
+            <>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
               A Trita felmérése ~10 perc — és az eredmény nem egy csúszka, hanem a
               csapatod valódi adata. Csapatprofilok, heatmap, tension pair elemzés.
@@ -648,9 +650,11 @@ export function PatternExplorer() {
             <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
               Nincs kártyaadathoz kötés. Az első felmérés ingyenes.
             </p>
-          </SignedOut>
+            </>
+          )}
 
-          <SignedIn>
+          {isSignedIn && (
+            <>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
               Ez az interaktív eszköz csak a lehetőségeket mutatja meg. A csapatod valódi
               mintázatát objektív személyiségmérésből számoljuk — adatokból, nem becslésből.
@@ -668,7 +672,8 @@ export function PatternExplorer() {
             >
               Megnézem a fejlesztési lehetőségeket →
             </a>
-          </SignedIn>
+            </>
+          )}
         </div>
       </section>
 

@@ -13,7 +13,7 @@ import { PeerFeedbackClient } from "./PeerFeedbackClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Kollégai visszajelzés | Trita", robots: { index: false } };
+  return { title: "Elismerés-kör | trita", robots: { index: false } };
 }
 
 // Kollégai visszajelzés kör kitöltő (peer feedback F3) — a bejelentkezett

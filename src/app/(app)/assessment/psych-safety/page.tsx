@@ -13,7 +13,7 @@ import { PsychSafetyClient } from "./PsychSafetyClient";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Pszichológiai biztonság | Trita", robots: { index: false } };
+  return { title: "Pszichológiai biztonság | trita", robots: { index: false } };
 }
 
 // Pszichológiai biztonság pulse kitöltő — a bejelentkezett tag aktív,
