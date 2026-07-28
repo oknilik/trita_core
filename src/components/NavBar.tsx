@@ -284,6 +284,20 @@ export function NavBar({
             })}
           </div>
 
+          {isSignedIn ? (
+            <div className="mt-3 border-t border-[var(--color-border-soft)] pt-3">
+              {/* Kijelentkezés — a „Belépés" gombbal azonos stílusban és
+                  pozícióban. A /sign-out route-on fut (ott van ClerkProvider). */}
+              <Link
+                href="/sign-out"
+                onClick={() => setDrawerOpen(false)}
+                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              >
+                {t("nav.signOut", locale)}
+              </Link>
+            </div>
+          ) : null}
+
           {!isSignedIn ? (
             <div className="mt-3 flex gap-2 border-t border-[var(--color-border-soft)] pt-3">
               <Link
@@ -310,22 +324,6 @@ export function NavBar({
             <LanguageSwitcher variant="pills" />
           </div>
 
-          {isSignedIn ? (
-            <div className="mt-2 border-t border-[var(--color-border-soft)] px-3 pb-2 pt-3">
-              {/* Kijelentkezés a (auth) zóna /sign-out route-ján fut (ott van
-                  ClerkProvider) — a publikus nav nem függ clerk-js-től. */}
-              <Link
-                href="/sign-out"
-                onClick={() => setDrawerOpen(false)}
-                className="flex items-center gap-2 text-caption text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text-primary)]"
-              >
-                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
-                </svg>
-                {t("nav.signOut", locale)}
-              </Link>
-            </div>
-          ) : null}
         </div>
       </MobileMenuShell>
 

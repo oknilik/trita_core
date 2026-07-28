@@ -910,6 +910,24 @@ function NavHeaderContent({
                       </Link>
                     ) : null}
 
+                    {/* Kijelentkezés — a no-auth menü „Belépés" gombjának
+                        stílusában és pozíciójában (a Nyelv-szekció előtt):
+                        teljes szélességű keretes gomb, azonos anatómia. */}
+                    {showSignOutMenuItem ? (
+                      <div className="mt-2 border-t border-[var(--color-border-soft)] px-3 pt-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            signOut({ redirectUrl: "/" });
+                            setMobileMenu("closed");
+                          }}
+                          className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                        >
+                          Kijelentkezés
+                        </button>
+                      </div>
+                    ) : null}
+
                     {showLanguageMenuItem ? (
                       <div className="rounded-lg px-3 py-3">
                         <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
@@ -918,24 +936,6 @@ function NavHeaderContent({
                         <LanguageSwitcher variant="pills" />
                       </div>
                     ) : null}
-                  </div>
-                ) : null}
-
-                {showSignOutMenuItem ? (
-                  <div className="border-t border-[var(--color-border-soft)] px-4 pb-4 pt-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        signOut({ redirectUrl: "/" });
-                        setMobileMenu("closed");
-                      }}
-                      className="flex items-center gap-2 text-caption text-[var(--color-text-muted)]"
-                    >
-                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
-                      </svg>
-                      Kijelentkezés
-                    </button>
                   </div>
                 ) : null}
         </>
