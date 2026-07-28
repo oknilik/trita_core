@@ -49,7 +49,9 @@ export function AdminTrendChart({
   const x = (i: number) => PAD.left + (n <= 1 ? innerW / 2 : (i / (n - 1)) * innerW);
   const y = (v: number) => PAD.top + innerH - (v / yMax) * innerH;
 
-  const gridLines = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(yMax * f));
+  // Dedupe: kis yMax-nál (1-2) a kerekített rácsértékek ütköznek — a
+  // duplikátum React-kulcs hibát ÉS felesleges dupla vonalat adna.
+  const gridLines = [...new Set([0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(yMax * f)))];
   // Max 6 x-tengely felirat — a többi bucket címke a tooltipben él.
   const tickEvery = Math.max(1, Math.ceil(n / 6));
 
