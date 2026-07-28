@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
@@ -14,16 +14,17 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   const { locale } = useLocale();
   const router = useRouter();
 
-  // Emoji scale for overall feedback (same as dimension feedback)
-  const emojiScale = [
-    { value: 1, emoji: "😕", label: t("dashboard.feedbackScaleVeryLow", locale) },
-    { value: 2, emoji: "😐", label: t("dashboard.feedbackScaleLow", locale) },
-    { value: 3, emoji: "🙂", label: t("dashboard.feedbackScaleNeutral", locale) },
-    { value: 4, emoji: "😊", label: t("dashboard.feedbackScaleHigh", locale) },
-    { value: 5, emoji: "🤩", label: t("dashboard.feedbackScaleVeryHigh", locale) },
+  const scale = [
+    { value: 1, label: t("dashboard.feedbackScaleVeryLow", locale) },
+    { value: 2, label: t("dashboard.feedbackScaleLow", locale) },
+    { value: 3, label: t("dashboard.feedbackScaleNeutral", locale) },
+    { value: 4, label: t("dashboard.feedbackScaleHigh", locale) },
+    { value: 5, label: t("dashboard.feedbackScaleVeryHigh", locale) },
   ];
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(initialSubmitted);
+  const [submitted, setSubmitted] = useState(false);
+  // Köszönet pár másodperc után eltűnik; visszatéréskor amúgy sem renderelődik.
+  const [thanksHidden, setThanksHidden] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(1);
 
   // Question responses
@@ -34,6 +35,32 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   const [interested, setInterested] = useState<boolean | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+
+  // Beküldés után a köszönet ~5 mp-ig látszik, majd eltűnik.
+  useEffect(() => {
+    if (!submitted) return;
+    const timer = setTimeout(() => setThanksHidden(true), 5000);
+    return () => clearTimeout(timer);
+  }, [submitted]);
+
+  // Korábbi látogatáskor már beküldte → nem mutatjuk többé a szekciót.
+  // (A `submitted` kivétel: közvetlenül beküldés után még látszik a köszönet,
+  // akkor is, ha a router.refresh() már frissítette az initialSubmitted-et.)
+  if (initialSubmitted && !submitted) {
+    return null;
+  }
+
+  // Beküldés utáni köszönet lejárt → szekció eltűnik (nem esik vissza a formra).
+  if (submitted && thanksHidden) {
+    return null;
+  }
+
+  const totalSteps = hasObserverFeedback ? 5 : 4;
+  const displayStep = hasObserverFeedback
+    ? currentQuestion
+    : currentQuestion <= 1
+      ? currentQuestion
+      : currentQuestion - 1;
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,12 +110,60 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     }
   };
 
-  // Final submitted state
-  if (submitted) {
+  const optionButtonClass = (selected: boolean) =>
+    `flex min-h-[44px] items-center justify-center rounded-lg border transition-all duration-200 ${
+      selected
+        ? "border-sage bg-sage text-white shadow-md"
+        : "border-sand bg-white text-ink hover:-translate-y-0.5 hover:border-sage-ring hover:bg-sage-ghost hover:shadow-sm"
+    }`;
+
+  const renderScale = (
+    selectedValue: number | null,
+    onSelect: (value: number) => void,
+  ) => (
+    <>
+      <div className="mt-4 grid grid-cols-5 gap-2">
+        {scale.map((item) => (
+          <button
+            key={item.value}
+            type="button"
+            onClick={() => onSelect(item.value)}
+            aria-label={item.label}
+            className={`${optionButtonClass(selectedValue === item.value)} font-fraunces text-lg tabular-nums`}
+          >
+            {item.value}
+          </button>
+        ))}
+      </div>
+      <div className="mt-1.5 flex justify-between text-micro text-muted">
+        <span>{scale[0].label}</span>
+        <span>{scale[scale.length - 1].label}</span>
+      </div>
+    </>
+  );
+
+  // Köszönő állapot — csak közvetlenül a beküldés után, majd pár mp múlva eltűnik
+  if (submitted && !thanksHidden) {
     return (
-      <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8 text-center">
+      <div className="animate-fade-in rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-white p-6 md:p-8">
         <div className="flex items-center justify-center gap-3">
-          <span className="text-sm text-ink-body">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage text-white shadow-sm">
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+              className="h-[18px] w-[18px]"
+            >
+              <path
+                d="M4.5 10.5l3.5 3.5 7.5-8"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+          <span className="text-sm font-medium text-ink">
             {t("dashboard.feedbackThanks", locale)}
           </span>
         </div>
@@ -97,7 +172,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   }
 
   return (
-    <div className="rounded-xl border border-sage-ring bg-sage-soft p-6 md:p-8">
+    <div className="rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-white p-6 md:p-8">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-ink">
@@ -107,9 +182,27 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
             {t("dashboard.feedbackBody", locale)}
           </p>
         </div>
-        <span className="text-xs font-medium text-muted">
-          {hasObserverFeedback ? currentQuestion : (currentQuestion <= 1 ? currentQuestion : currentQuestion - 1)}/{hasObserverFeedback ? 5 : 4}
-        </span>
+        {/* Lépésjelző pöttyök */}
+        <div
+          className="mt-1.5 flex shrink-0 items-center gap-1.5"
+          aria-label={`${displayStep}/${totalSteps}`}
+        >
+          {Array.from({ length: totalSteps }, (_, i) => {
+            const step = i + 1;
+            return (
+              <span
+                key={step}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  step === displayStep
+                    ? "w-6 bg-sage"
+                    : step < displayStep
+                      ? "w-1.5 bg-sage-ring"
+                      : "w-1.5 bg-sand"
+                }`}
+              />
+            );
+          })}
+        </div>
       </div>
 
       <form onSubmit={handleNext} className="mt-6 flex flex-col gap-5">
@@ -121,97 +214,37 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
 
         {/* Question 1: Recognition */}
         {currentQuestion === 1 && (
-          <div>
+          <div key="q1" className="animate-fade-in">
             <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackAgreementLabel", locale)}
             </p>
-            <div className="mt-4 grid grid-cols-5 gap-2">
-              {emojiScale.map((item) => (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setAgreementScore(item.value)}
-                  aria-label={item.label}
-                  className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
-                    agreementScore === item.value
-                      ? "border-2 border-sage bg-sage-soft"
-                      : "border-sand hover:border-bronze-edge"
-                  }`}
-                >
-                  {item.value}
-                </button>
-              ))}
-            </div>
-            <div className="mt-1.5 flex justify-between text-micro text-muted">
-              <span>{emojiScale[0].label}</span>
-              <span>{emojiScale[emojiScale.length - 1].label}</span>
-            </div>
+            {renderScale(agreementScore, setAgreementScore)}
           </div>
         )}
 
         {/* Question 2: Observer feedback usefulness (only for users with observer feedback) */}
         {currentQuestion === 2 && hasObserverFeedback && (
-          <div>
+          <div key="q2" className="animate-fade-in">
             <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackObserverUsefulnessLabel", locale)}
             </p>
-            <div className="mt-4 grid grid-cols-5 gap-2">
-              {emojiScale.map((item) => (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setObserverUsefulness(item.value)}
-                  aria-label={item.label}
-                  className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
-                    observerUsefulness === item.value
-                      ? "border-2 border-sage bg-sage-soft"
-                      : "border-sand hover:border-bronze-edge"
-                  }`}
-                >
-                  {item.value}
-                </button>
-              ))}
-            </div>
-            <div className="mt-1.5 flex justify-between text-micro text-muted">
-              <span>{emojiScale[0].label}</span>
-              <span>{emojiScale[emojiScale.length - 1].label}</span>
-            </div>
+            {renderScale(observerUsefulness, setObserverUsefulness)}
           </div>
         )}
 
         {/* Question 3: Site usefulness */}
         {currentQuestion === 3 && (
-          <div>
+          <div key="q3" className="animate-fade-in">
             <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackSiteUsefulnessLabel", locale)}
             </p>
-            <div className="mt-4 grid grid-cols-5 gap-2">
-              {emojiScale.map((item) => (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setSiteUsefulness(item.value)}
-                  aria-label={item.label}
-                  className={`flex min-h-[44px] items-center justify-center rounded-lg border font-fraunces text-lg tabular-nums transition ${
-                    siteUsefulness === item.value
-                      ? "border-2 border-sage bg-sage-soft"
-                      : "border-sand hover:border-bronze-edge"
-                  }`}
-                >
-                  {item.value}
-                </button>
-              ))}
-            </div>
-            <div className="mt-1.5 flex justify-between text-micro text-muted">
-              <span>{emojiScale[0].label}</span>
-              <span>{emojiScale[emojiScale.length - 1].label}</span>
-            </div>
+            {renderScale(siteUsefulness, setSiteUsefulness)}
           </div>
         )}
 
         {/* Question 4: Want updates */}
         {currentQuestion === 4 && (
-          <div>
+          <div key="q4" className="animate-fade-in">
             <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackUpdatesLabel", locale)}
             </p>
@@ -219,22 +252,14 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
               <button
                 type="button"
                 onClick={() => setInterested(true)}
-                className={`flex min-h-[44px] items-center justify-center gap-2 rounded-lg border text-lg transition ${
-                  interested === true
-                    ? "border-2 border-sage bg-sage-soft"
-                    : "border-sand hover:border-bronze-edge"
-                }`}
+                className={optionButtonClass(interested === true)}
               >
                 <span className="text-sm font-semibold">{t("dashboard.feedbackWantsUpdatesYes", locale)}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setInterested(false)}
-                className={`flex min-h-[44px] items-center justify-center gap-2 rounded-lg border text-lg transition ${
-                  interested === false
-                    ? "border-2 border-sage bg-sage-soft"
-                    : "border-sand hover:border-bronze-edge"
-                }`}
+                className={optionButtonClass(interested === false)}
               >
                 <span className="text-sm font-semibold">{t("dashboard.feedbackWantsUpdatesNo", locale)}</span>
               </button>
@@ -244,7 +269,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
 
         {/* Question 5: Free text feedback */}
         {currentQuestion === 5 && (
-          <div>
+          <div key="q5" className="animate-fade-in">
             <p className="text-sm font-semibold text-ink">
               {t("dashboard.feedbackFreeformLabel", locale)}
             </p>
@@ -253,7 +278,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
               onChange={(e) => setFreeform(e.target.value)}
               rows={4}
               placeholder={t("dashboard.feedbackFreeformPlaceholder", locale)}
-              className="mt-3 w-full resize-none rounded-lg border border-sand bg-surface-subtle px-3 py-2 text-sm text-ink focus:border-bronze-edge focus:outline-none"
+              className="mt-3 w-full resize-none rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink transition-colors focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage-ring/60"
             />
           </div>
         )}
