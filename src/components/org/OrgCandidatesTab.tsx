@@ -31,7 +31,8 @@ export function OrgCandidatesTab({
 }) {
   const pending = candidates.filter((c) => c.status === "PENDING").length;
   const completed = candidates.filter((c) => c.status === "COMPLETED").length;
-  const recent = candidates.slice(0, 6);
+  // Összegző nézet (UX-audit #20): 3 friss sor — a teljes lista a /hiring-en.
+  const recent = candidates.slice(0, 3);
 
   const statusMeta = (status: string): { label: string; className: string } => {
     if (status === "COMPLETED")
@@ -53,8 +54,8 @@ export function OrgCandidatesTab({
           </h2>
           <p className="mt-1 text-xs text-ink-body">
             {isHu
-              ? "TRITAN-teszt (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek — kitöltés után szabadon illeszthető bármely csapathoz."
-              : "TRITAN assessment (with optional team-role questionnaire) for external candidates — freely matched to any team after completion."}
+              ? "Személyiség-felmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek — kitöltés után szabadon illeszthető bármely csapathoz."
+              : "Personality assessment (with optional team-role questionnaire) for external candidates — freely matched to any team after completion."}
           </p>
         </div>
         <Link
@@ -117,16 +118,15 @@ export function OrgCandidatesTab({
         </div>
       )}
 
-      {candidates.length > recent.length && (
-        <Link
-          href={`/hiring/${orgId}`}
-          className="mt-3 inline-flex text-xs font-semibold text-bronze hover:underline"
-        >
-          {isHu
-            ? `Mind a ${candidates.length} jelölt megnyitása →`
-            : `Open all ${candidates.length} candidates →`}
-        </Link>
-      )}
+      {/* A kanonikus jelölt-munkafelület a /hiring — innen mindig egy link visz oda. */}
+      <Link
+        href={`/hiring/${orgId}`}
+        className="mt-3 inline-flex text-xs font-semibold text-bronze hover:underline"
+      >
+        {isHu
+          ? `Jelölt-felület megnyitása (${candidates.length}) →`
+          : `Open candidate workspace (${candidates.length}) →`}
+      </Link>
     </div>
   );
 }

@@ -173,7 +173,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               </span>
             ) : undefined
           }
-          title={<h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">{teamData.teamName}</h1>}
+          title={<h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">{teamData.teamName}</h1>}
           summary={statusLine}
           chips={heroChips.map((chip) => (
             <span

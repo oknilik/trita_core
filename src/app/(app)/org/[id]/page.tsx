@@ -381,7 +381,7 @@ export default async function OrgDetailPage({
           </p>
         )}
         title={(
-          <h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">
+          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">
             {org.name}
           </h1>
         )}

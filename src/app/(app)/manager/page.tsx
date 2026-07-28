@@ -67,6 +67,13 @@ export default async function ManagerCockpitPage() {
     redirect(membership ? `/org/${membership.orgId}` : "/profile/results");
   }
 
+  // Egyetlen kezelt csapatnál NINCS külön cockpit (UX-audit #10): a /manager
+  // tartalma a /team/[id] oldalt duplikálta — a manager közvetlenül a
+  // csapatoldalra kerül. A cockpit a TÖBB csapatot kezelő manager összegzője.
+  if (data.teams.length === 1) {
+    redirect(`/team/${data.teams[0].teamId}`);
+  }
+
   const isHu = locale !== "en";
   const teamCount = data.teams.length;
   const isSingleTeam = teamCount === 1;
@@ -154,7 +161,7 @@ export default async function ManagerCockpitPage() {
           </p>
         }
         title={
-          <h1 className="font-fraunces text-[34px] tracking-tight text-white md:text-[40px]">
+          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">
             {isHu ? `Szia, ${profile.username?.split(" ")[0] ?? "Menedzser"}!` : `Hi, ${profile.username?.split(" ")[0] ?? "Manager"}!`}
           </h1>
         }

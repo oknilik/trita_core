@@ -84,7 +84,10 @@ export function SurfaceHero({
         <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[#d48e62]/12" />
       ) : null}
 
-      <div className={cn("relative px-6 pb-7 pt-7 md:px-8 md:pb-8 md:pt-9", contentClassName)}>
+      {/* Mobil-karcsúsítás (UX-audit #9): kisebb padding és térközök < md —
+          a hero ne egye meg az első képernyőt; a fülek/tartalom a hajtás
+          közelébe kerül. Desktopon változatlan. */}
+      <div className={cn("relative px-5 pb-5 pt-5 md:px-8 md:pb-8 md:pt-9", contentClassName)}>
         <div
           className={cn(
             "grid gap-6",
@@ -99,21 +102,21 @@ export function SurfaceHero({
               </div>
             ) : null}
 
-            <div className="mt-3">{title}</div>
+            <div className="mt-2 md:mt-3">{title}</div>
             {meta ? <div className="mt-1">{meta}</div> : null}
             {body ? <div className="mt-3">{body}</div> : null}
             {summary ? (
               <p
                 className={cn(
-                  "mt-3 max-w-[620px] text-[14px] leading-relaxed text-white/[0.42]",
+                  "mt-2 max-w-[620px] text-[14px] leading-relaxed text-white/[0.42] md:mt-3",
                   summaryClassName,
                 )}
               >
                 {summary}
               </p>
             ) : null}
-            {chips ? <div className="mt-5 flex flex-wrap gap-2">{chips}</div> : null}
-            {actions ? <div className="mt-6 flex flex-wrap gap-2">{actions}</div> : null}
+            {chips ? <div className="mt-4 flex flex-wrap gap-2 md:mt-5">{chips}</div> : null}
+            {actions ? <div className="mt-4 flex flex-wrap gap-2 md:mt-6">{actions}</div> : null}
             {footer ? <div className="mt-2">{footer}</div> : null}
           </div>
 
