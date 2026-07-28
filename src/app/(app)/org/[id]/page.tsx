@@ -11,7 +11,7 @@ import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
-import { isConsultantSurface } from "@/lib/measurement-auth";
+import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -532,6 +532,11 @@ export default async function OrgDetailPage({
           canManageCampaigns={isConsultantView && canLaunchCampaignActions}
           canManageMeasurements={isConsultantView}
           actionGateCopy={actionGateCopy}
+          dossierBaseHref={
+            canViewMemberDossier(memberRole, viewer?.email, viewer?.isConsultant)
+              ? `/org/${orgId}/members`
+              : null
+          }
           isHu={isHu}
           locale={locale}
           dateLocale={dateLocale}

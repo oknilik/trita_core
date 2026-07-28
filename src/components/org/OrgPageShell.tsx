@@ -45,6 +45,8 @@ interface OrgPageShellProps {
   inquiries?: OrgInquiryRow[] | null;
   /** Jelöltek — csak tanácsadói felületen (null = nincs fül). */
   candidates?: OrgCandidateRow[] | null;
+  /** Tag-dossié bázis-URL VAGY null — a page számolja (canViewMemberDossier). */
+  dossierBaseHref?: string | null;
 }
 
 export function OrgPageShell({
@@ -66,6 +68,7 @@ export function OrgPageShell({
   teams,
   inquiries = null,
   candidates = null,
+  dossierBaseHref = null,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
   // Egyszerű váz mindenkinek: Csapatok az alapfül; a Kampányok fül csak a
@@ -196,6 +199,7 @@ export function OrgPageShell({
             isAdmin={isAdmin}
             canInviteMembers={canInviteMembers}
             actionGateCopy={actionGateCopy}
+            dossierBaseHref={dossierBaseHref}
             isHu={isHu}
             locale={locale}
             dateLocale={dateLocale}

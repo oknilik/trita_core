@@ -8,7 +8,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-auth";
 import { hasOrgRole } from "@/lib/org-roles";
-import { isPlatformAdminEmail } from "@/lib/measurement-auth";
+import { isPlatformAdminEmail, canViewMemberDossier } from "@/lib/measurement-auth";
 import {
   getCurrentStepType,
   isStepGateOpen,
@@ -516,6 +516,11 @@ export default async function TeamDetailPage({
           isOrgManager={isOrgManager}
           canEmailInvite={canEmailInvite}
           addableOrgMembers={addableOrgMembers}
+          dossierBaseHref={
+            canViewMemberDossier(orgMemberRole, profile.email, profile.isConsultant)
+              ? `/org/${orgId}/members`
+              : null
+          }
           isHu={isHu}
           locale={locale}
           dateLocale={isHu ? "hu-HU" : "en-US"}

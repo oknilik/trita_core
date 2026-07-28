@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TeamInviteForm } from "@/components/manager/TeamInviteForm";
@@ -43,6 +44,9 @@ interface TeamMembersTabProps {
   canEmailInvite: boolean;
   /** A szervezet tagjai, akik még nincsenek a csapatban — a manager-út. */
   addableOrgMembers: AddableOrgMember[];
+  /** Tag-dossié bázis-URL (`/org/[id]/members`) VAGY null — a page számolja
+   *  ki a canViewMemberDossier-t (env-t olvas); a kliens sosem hívja. */
+  dossierBaseHref?: string | null;
   isHu: boolean;
   locale: string;
   dateLocale: string;
@@ -57,6 +61,7 @@ export function TeamMembersTab({
   isOrgManager,
   canEmailInvite,
   addableOrgMembers,
+  dossierBaseHref = null,
   isHu,
   locale,
   dateLocale,
@@ -114,6 +119,14 @@ export function TeamMembersTab({
                   <span className="pr-0.5 text-xs tabular-nums text-ink-body/50">
                     {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
                   </span>
+                  {dossierBaseHref && (
+                    <Link
+                      href={`${dossierBaseHref}/${m.userId}`}
+                      className="rounded-full border border-sand bg-cream px-2.5 py-0.5 text-xs text-ink-body transition-colors hover:border-sage-ring hover:text-ink"
+                    >
+                      {isHu ? "Dossié" : "Dossier"}
+                    </Link>
+                  )}
                   {isOrgManager && m.userId !== profileId && (
                     <TeamMemberRemoveButton
                       teamId={teamId}
