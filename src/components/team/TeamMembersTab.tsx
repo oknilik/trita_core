@@ -188,33 +188,46 @@ export function TeamMembersTab({
               </div>
             ))}
 
-            {pendingInvites.map((inv) => (
-              <div
-                key={inv.id}
-                className="flex items-center justify-between gap-3 py-3"
-              >
-                <div className="min-w-0 opacity-60">
-                  <p className="truncate text-sm font-semibold text-ink">
-                    {inv.email}
-                  </p>
-                  <p className="text-xs text-ink-body/60">
-                    {t("teamComp.inviteSent", loc)}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <StatusChip variant="warning">
-                    {t("teamComp.pendingStatus", loc)}
-                  </StatusChip>
-                  {isOrgManager && (
-                    <>
-                      <PendingInviteResendButton inviteId={inv.id} isHu={isHu} />
-                      <PendingInviteCancelButton inviteId={inv.id} isHu={isHu} />
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
+        )}
+
+        {/* Függő meghívók KÜLÖN, alapból zárt szekcióban (UX-audit #27). */}
+        {pendingInvites.length > 0 && (
+          <details className="mt-4 rounded-xl border border-sand bg-cream/40">
+            <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-ink-body">
+              {isHu
+                ? `Függő meghívók (${pendingInvites.length})`
+                : `Pending invites (${pendingInvites.length})`}
+            </summary>
+            <div className="flex flex-col divide-y divide-sand border-t border-sand px-4">
+              {pendingInvites.map((inv) => (
+                <div
+                  key={inv.id}
+                  className="flex items-center justify-between gap-3 py-3"
+                >
+                  <div className="min-w-0 opacity-60">
+                    <p className="truncate text-sm font-semibold text-ink">
+                      {inv.email}
+                    </p>
+                    <p className="text-xs text-ink-body/60">
+                      {t("teamComp.inviteSent", loc)}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <StatusChip variant="warning">
+                      {t("teamComp.pendingStatus", loc)}
+                    </StatusChip>
+                    {isOrgManager && (
+                      <>
+                        <PendingInviteResendButton inviteId={inv.id} isHu={isHu} />
+                        <PendingInviteCancelButton inviteId={inv.id} isHu={isHu} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </details>
         )}
 
         {members.length === 0 && pendingInvites.length === 0 && (

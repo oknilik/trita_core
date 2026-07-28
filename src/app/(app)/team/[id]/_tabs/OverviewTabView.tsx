@@ -393,39 +393,34 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               </div>
             </DashboardMetricCard>
 
-            {/* Csapatmintázat info-csempe CSAK tanácsadónak (UX-audit #7):
-                a tag/manager a lenti validált-csapatkép panelen kapja ugyanezt
-                az állapotot — a három mintázat-blokk egyre olvadt. */}
+            {/* Csapatmintázat-állapot CSAK tanácsadónak (UX-audit #7) —
+                és NEM metrika-kártyaként (UX-audit #28): az „Elérhető" nem
+                mennyiség, hanem státusz, ezért chip hordozza, nem nagy szám.
+                CTA nincs (UX-audit #3): a megnyitás útja a hero gombja. */}
             {canViewRaw ? (
-            <DashboardMetricCard
-              accent="var(--color-accent-primary)"
-              title={t("teamDetail.teamPatternTitle", locale)}
-              value={
-                hasPattern
-                  ? canViewRaw || hasPublishedReport
-                    ? t("teamDetail.teamPatternAvailable", locale)
-                    : isHu ? "Validálás alatt" : "Pending validation"
-                  : hasPublishedReport
-                    ? t("teamDetail.teamPatternAvailable", locale)
-                    : t("teamDetail.teamPatternNotYet", locale)
-              }
-              sub={
-                canViewRaw
-                  ? hasPattern
+              <div className="rounded-[24px] border border-sand bg-white p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
+                    {t("teamDetail.teamPatternTitle", locale)}
+                  </p>
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-micro font-semibold ${
+                      hasPattern
+                        ? "bg-sage/15 text-sage-dark"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    {hasPattern
+                      ? t("teamDetail.teamPatternAvailable", locale)
+                      : t("teamDetail.teamPatternNotYet", locale)}
+                  </span>
+                </div>
+                <p className="mt-2 text-caption leading-relaxed text-ink-body">
+                  {hasPattern
                     ? teamData.patternResult?.fullLabel
-                    : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
-                  : hasPublishedReport
-                    ? publishedPattern?.label ??
-                      (isHu ? "A validált csapatképben" : "In the validated team picture")
-                    : hasPattern
-                      ? isHu ? "A tanácsadó véglegesítése után elérhető" : "Available after consultant validation"
-                      : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
-              }
-            >
-              {/* CTA NINCS (UX-audit #3): a csapatkép-megnyitás egyetlen útja
-                  tanácsadónál a hero elsődleges gombja, tagnál a lenti
-                  validált-csapatkép panel — ez a csempe csak információ. */}
-            </DashboardMetricCard>
+                    : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })}
+                </p>
+              </div>
             ) : null}
           </div>
         </section>

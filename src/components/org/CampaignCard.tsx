@@ -216,61 +216,80 @@ export function CampaignCard({
         {t(campaign.totalCount === 1 ? "org.card.participantSingular" : "org.card.participantPlural", loc)}
       </p>
 
-      {/* Progress bars */}
+      {/* Egy pillantásos állapot (UX-audit #23): a három párhuzamos számláló
+          helyett EGY szegmentált sáv + egy szám; a lépésenkénti bontás és az
+          avatar-sor lenyílóban él — a kártya magassága feleződik. */}
       {campaign.totalCount > 0 && (
-        <div className="mb-5 flex flex-col gap-2.5">
-          <ProgressBar
-            label={t("org.card.selfDone", loc)}
-            count={campaign.selfDoneCount}
-            total={campaign.totalCount}
-            fillColor="var(--color-action-primary-bg)"
-          />
-          <ProgressBar
-            label={t("org.card.observerDone", loc)}
-            count={campaign.observerDoneCount}
-            total={campaign.totalCount}
-            fillColor="#059669"
-          />
-          <ProgressBar
-            label={t("org.card.fullyComplete", loc)}
-            count={fullyDoneCount}
-            total={campaign.totalCount}
-            fillColor="var(--color-visual-gradient-indigo)"
-          />
-        </div>
-      )}
-
-      {/* Avatar stack */}
-      {campaign.participants.length > 0 && (
         <div className="mb-4">
-          <div className="flex items-center mb-2">
-            <div className="flex -space-x-1.5">
-              {campaign.participants.slice(0, 6).map((p) => (
-                <div
-                  key={p.userId}
-                  title={p.username ?? p.email ?? "?"}
-                  className={[
-                    "inline-block h-8 w-8 rounded-full border-2 overflow-hidden",
-                    p.selfDone ? "border-emerald-200" : "border-white",
-                  ].join(" ")}
-                >
-                  <span className="flex h-full w-full items-center justify-center bg-sand text-micro font-bold text-ink-body">
-                    {getInitials(p.username ?? p.email ?? "?")}
-                  </span>
-                </div>
-              ))}
-              {campaign.participants.length > 6 && (
-                <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-sand text-xs font-semibold text-ink-body">
-                  +{campaign.participants.length - 6}
+          <div className="mb-1.5 flex items-center justify-between text-xs">
+            <span className="font-semibold tabular-nums text-ink">
+              {fullyDoneCount}/{campaign.totalCount} {t("org.card.fullyDoneLabel", loc)}
+            </span>
+            <span className="text-muted">
+              {inProgressCount} {t("org.card.inProgress", loc)} · {notStartedCount}{" "}
+              {t("org.card.notStarted", loc)}
+            </span>
+          </div>
+          <div className="flex h-2 gap-0.5 overflow-hidden rounded-full">
+            {fullyDoneCount > 0 && (
+              <div className="rounded-full bg-sage" style={{ flex: fullyDoneCount }} />
+            )}
+            {inProgressCount > 0 && (
+              <div className="rounded-full bg-[#d8a253]" style={{ flex: inProgressCount }} />
+            )}
+            {notStartedCount > 0 && (
+              <div className="rounded-full bg-sand" style={{ flex: notStartedCount }} />
+            )}
+          </div>
+
+          <details className="mt-3">
+            <summary className="cursor-pointer select-none text-xs font-medium text-muted transition-colors hover:text-ink-body">
+              {isHu ? "Részletek lépésenként" : "Step-by-step detail"}
+            </summary>
+            <div className="mt-3 flex flex-col gap-2.5">
+              <ProgressBar
+                label={t("org.card.selfDone", loc)}
+                count={campaign.selfDoneCount}
+                total={campaign.totalCount}
+                fillColor="var(--color-action-primary-bg)"
+              />
+              <ProgressBar
+                label={t("org.card.observerDone", loc)}
+                count={campaign.observerDoneCount}
+                total={campaign.totalCount}
+                fillColor="#059669"
+              />
+              <ProgressBar
+                label={t("org.card.fullyComplete", loc)}
+                count={fullyDoneCount}
+                total={campaign.totalCount}
+                fillColor="var(--color-visual-gradient-indigo)"
+              />
+              {campaign.participants.length > 0 && (
+                <div className="mt-1 flex -space-x-1.5">
+                  {campaign.participants.slice(0, 6).map((p) => (
+                    <div
+                      key={p.userId}
+                      title={p.username ?? p.email ?? "?"}
+                      className={[
+                        "inline-block h-8 w-8 rounded-full border-2 overflow-hidden",
+                        p.selfDone ? "border-emerald-200" : "border-white",
+                      ].join(" ")}
+                    >
+                      <span className="flex h-full w-full items-center justify-center bg-sand text-micro font-bold text-ink-body">
+                        {getInitials(p.username ?? p.email ?? "?")}
+                      </span>
+                    </div>
+                  ))}
+                  {campaign.participants.length > 6 && (
+                    <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-sand text-xs font-semibold text-ink-body">
+                      +{campaign.participants.length - 6}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          </div>
-          <p className="text-xs text-muted">
-            {fullyDoneCount} {t("org.card.fullyDoneLabel", loc)} ·{" "}
-            {inProgressCount} {t("org.card.inProgress", loc)} ·{" "}
-            {notStartedCount} {t("org.card.notStarted", loc)}
-          </p>
+          </details>
         </div>
       )}
 

@@ -101,6 +101,19 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): Worksp
 
   if (ctx.teams.length === 0) return null;
 
+  // Egyetlen csapatnál nincs dropdown (UX-audit #25): a menü nagyobb lenne,
+  // mint a mögötte lévő világ — közvetlen link a csapatra.
+  if (ctx.teams.length === 1) {
+    const only = ctx.teams[0];
+    return {
+      id: "teams",
+      label: role === "org_manager" ? "Csapatom" : (only.name || "Csapatom"),
+      kind: "link",
+      primaryHref: `/team/${only.id}?tab=overview`,
+      matchPrefixes: uniqueMatchPrefixes("/team", `/team/${only.id}`),
+    };
+  }
+
   const items: WorkspaceNavDestination[] = [
     {
       id: "team-overview",
@@ -126,68 +139,18 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): Worksp
   };
 }
 
-// Jelöltek (candidate flow) — változatlan.
-function buildHiringDestinations(
-  ctx: WorkspaceNavContext,
-  role: WorkspaceNavRole,
-): WorkspaceNavDestination[] {
-  if (!ctx.org || !ctx.hasHiringAccess) return [];
-
-  if (role === "org_admin") {
-    return [
-      {
-        id: "hiring-overview",
-        label: "Jelöltfolyamat",
-        description: "Aktív és lezárt jelöltek",
-        href: `/hiring/${ctx.org.id}`,
-      },
-      {
-        id: "hiring-add",
-        label: "Új jelölt",
-        description: "Meghívó küldése új jelöltnek",
-        href: `/hiring/${ctx.org.id}?invite=true`,
-      },
-      {
-        id: "hiring-credits",
-        label: "Kreditek",
-        description: "Kreditkeret és csomagok",
-        href: `/org/${ctx.org.id}/settings`,
-      },
-    ];
-  }
-
-  return [
-    {
-      id: "hiring-my-candidates",
-      label: "Jelöltjeim",
-      description: "A kezelt jelöltfolyamatok",
-      href: `/hiring/${ctx.org.id}`,
-    },
-    {
-      id: "hiring-add",
-      label: "Új jelölt",
-      description: "Új jelölt meghívása értékelésre",
-      href: `/hiring/${ctx.org.id}?invite=true`,
-    },
-    {
-      id: "hiring-credits-available",
-      label: "Kreditek",
-      description: "Elérhető kreditkeret",
-      href: `/hiring/${ctx.org.id}`,
-    },
-  ];
-}
-
+// Jelöltek: sima link (UX-audit #25) — a korábbi 3-elemű dropdown minden
+// tétele gyakorlatilag ugyanarra az oldalra vitt; az „Új jelölt" és a
+// „Kreditek" akciók a /hiring felület fejlécében élnek.
 function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole): WorkspaceNavItem | null {
-  const items = buildHiringDestinations(ctx, role);
-  if (items.length === 0 || !ctx.org) return null;
+  void role;
+  if (!ctx.org || !ctx.hasHiringAccess) return null;
   return {
     id: "hiring",
     label: "Jelöltek",
-    kind: "dropdown",
+    kind: "link",
     primaryHref: `/hiring/${ctx.org.id}`,
     matchPrefixes: uniqueMatchPrefixes(`/hiring/${ctx.org.id}`),
-    items,
   };
 }
 

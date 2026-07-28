@@ -638,17 +638,6 @@ export function ProfileTabs({
       ),
     },
     {
-      id: "workstyle",
-      label: t("results.tabWorkstyle", locale),
-      locked: false,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="6" width="14" height="10" rx="1.5" />
-          <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h3A1.5 1.5 0 0 1 13 4.5V6M3 10.5h14" />
-        </svg>
-      ),
-    },
-    {
       id: "career",
       label: t("results.tabCareer", locale),
       locked: false,
@@ -666,18 +655,6 @@ export function ProfileTabs({
       icon: (
         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 10h14M3 5h7M3 15h7M13 5l4 5-4 5" />
-        </svg>
-      ),
-    },
-    {
-      id: "invites",
-      label: t("results.tabInvites", locale),
-      locked: !isPlus,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="7" cy="7" r="3" />
-          <path d="M1 17c0-3.3 2.7-6 6-6" />
-          <path d="M13 11v6M10 14h6" />
         </svg>
       ),
     },
@@ -996,25 +973,27 @@ export function ProfileTabs({
         className="flex flex-col gap-10 md:gap-14"
         style={{ animation: "fadeIn 0.25s ease-out" }}
       >
+        {/* Fül-dieta (UX-audit #22): a Munkastílus az Eredmények folytatása —
+            egy fülön, szekcióként; a Meghívók a Külső kép fül része. */}
         {activeTab === "results" && (
-          <ResultsTab
-            dimensions={dimensions}
-            onOpenInvites={() => handleTabChange("invites")}
-            isPlus={isPlus}
-            hasObserverData={hasObserverData}
-            locale={locale}
-            plusContent={plusContent}
-          />
-        )}
-        {activeTab === "workstyle" && (
-          <WorkStyleTab
-            dimensions={dimensions}
-            isPlus={isPlus}
-            locale={locale}
-            plusContent={plusContent}
-            teamRoleMeasuredScores={teamRoleMeasuredScores}
-            teamRolePeer={teamRolePeer}
-          />
+          <>
+            <ResultsTab
+              dimensions={dimensions}
+              onOpenInvites={() => handleTabChange("comparison")}
+              isPlus={isPlus}
+              hasObserverData={hasObserverData}
+              locale={locale}
+              plusContent={plusContent}
+            />
+            <WorkStyleTab
+              dimensions={dimensions}
+              isPlus={isPlus}
+              locale={locale}
+              plusContent={plusContent}
+              teamRoleMeasuredScores={teamRoleMeasuredScores}
+              teamRolePeer={teamRolePeer}
+            />
+          </>
         )}
         {activeTab === "career" && (
           <CareerTab
@@ -1023,12 +1002,14 @@ export function ProfileTabs({
             hasObserverData={hasObserverData}
             careerBackground={careerBackground}
             locale={locale}
-            onOpenInvites={() => handleTabChange("invites")}
+            onOpenInvites={() => handleTabChange("comparison")}
           />
         )}
         {activeTab === "comparison" && (
-          // Org-tagnál az összevetés a kampány-küszöbig zárva: állapot-kártya
-          // (nem hiány-nyelv). Self-serve-nél a régi flow változatlan.
+          // „Külső kép" (UX-audit #22): az összevetés ÉS a meghívó-kezelés egy
+          // folyamat két fele — egy fülön. Org-tagnál az összevetés a kampány-
+          // küszöbig zárva: állapot-kártya (nem hiány-nyelv); a meghívó-blokk
+          // csak self-serve módban él (org-tagnál a kampány hozza az observert).
           observerFlow &&
           observerFlow.state !== "self_serve" &&
           observerFlow.state !== "available" ? (
@@ -1042,11 +1023,20 @@ export function ProfileTabs({
               isHu={locale === "hu"}
             />
           ) : isPlus ? (
-            <ComparisonTabNew
-              dimensions={dimensions}
-              hasObserverData={hasObserverData}
-              observerCount={observerCount}
-            />
+            <>
+              <ComparisonTabNew
+                dimensions={dimensions}
+                hasObserverData={hasObserverData}
+                observerCount={observerCount}
+              />
+              {(!observerFlow || observerFlow.state === "self_serve") ? (
+                <InvitationsTab
+                  sentInvitations={sentInvitations}
+                  receivedInvitations={receivedInvitations}
+                  isPlus={isPlus}
+                />
+              ) : null}
+            </>
           ) : (
             <TabPaywall
               tier="self_plus"
@@ -1054,32 +1044,6 @@ export function ProfileTabs({
               price="€9"
               locale={locale}
               teaser={t("content.paywallComparisonTeaser", locale)}
-            />
-          )
-        )}
-        {activeTab === "invites" && (
-          // Org-tagnál a meghívó-flow helyett a csapat-folyamat állapota:
-          // az observer kampány-vezérelt, nem személyes meghívás kérdése.
-          observerFlow && observerFlow.state !== "self_serve" ? (
-            <ObserverFlowStatusCard
-              flow={{
-                state: observerFlow.state,
-                receivedCount: observerFlow.receivedCount,
-                minForReveal: observerFlow.minForReveal,
-                activeCampaignName: observerFlow.activeCampaignName,
-              }}
-              isHu={locale === "hu"}
-              onOpenComparison={
-                observerFlow.state === "available"
-                  ? () => handleTabChange("comparison")
-                  : undefined
-              }
-            />
-          ) : (
-            <InvitationsTab
-              sentInvitations={sentInvitations}
-              receivedInvitations={receivedInvitations}
-              isPlus={isPlus}
             />
           )
         )}

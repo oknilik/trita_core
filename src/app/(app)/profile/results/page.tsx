@@ -391,10 +391,13 @@ export default async function ProfileResultsPage({
   // ── Active tab from searchParams ───────────────────────────────────────────
   const resolvedParams = await searchParams;
   const tabParam = resolvedParams?.tab;
+  // Fül-dieta (UX-audit #22): 5 fül → 3. A régi linkek nem törnek:
+  // workstyle → results (szekcióként ott él), invites → comparison
+  // (a meghívó-kezelés a Külső kép fül része).
   const initialTab: TabId =
     tabParam === "comparison" ? "comparison" :
-    tabParam === "invites" ? "invites" :
-    tabParam === "workstyle" ? "workstyle" :
+    tabParam === "invites" ? "comparison" :
+    tabParam === "workstyle" ? "results" :
     tabParam === "career" ? "career" :
     "results";
 

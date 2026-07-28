@@ -261,7 +261,7 @@ export const resultsTranslations = {
     },
     discardDraftConfirm: { hu: "Elvetem", en: "Discard" },
     tabResults: { hu: "Eredmények", en: "Results" },
-    tabComparison: { hu: "Összehasonlítás", en: "Comparison" },
+    tabComparison: { hu: "Külső kép", en: "Outside view" },
     tabInvites: { hu: "Meghívók", en: "Invites" },
     tabComparisonEmptyTitle: { hu: "Még nincs összehasonlítás", en: "No comparison yet" },
     tabComparisonEmptyBody: { hu: "Hívj meg ismerősöket, hogy lásd, hogyan látnak mások.", en: "Invite people you know to see how others see you." },

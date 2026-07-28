@@ -363,53 +363,91 @@ export function CampaignWizard({
           <p className="mb-4 text-caption leading-relaxed text-ink-body">
             {t("campaignWiz.typeMultiHint", locale)}
           </p>
-          <div className="flex flex-col gap-3">
+          {/* Kompakt checkbox-sorok (UX-audit #24): a nagy leírás-kártya
+              olvasásra hívott, nem kijelölésre — a valódi checkbox mutatja,
+              hogy TÖBB mérés is választható. A hosszú leírás lenyílóban. */}
+          <div className="flex flex-col gap-2">
             {TYPE_CARDS.map((card) => {
               const isSelected = selectedTypes.has(card.type as CampaignType);
               const orderIndex = chosenSteps.indexOf(card.type as CampaignType);
               return (
-              <button
-                key={card.type}
-                type="button"
-                disabled={card.comingSoon}
-                onClick={() => !card.comingSoon && toggleType(card.type as CampaignType)}
-                className={[
-                  "rounded-[14px] border p-4 text-left transition",
-                  card.comingSoon
-                    ? "cursor-not-allowed border-dashed border-sand bg-cream/40 opacity-70"
-                    : isSelected
-                    ? "border-sage bg-sage/5"
-                    : "border-sand bg-white hover:border-sage/50 hover:bg-sage/5",
-                ].join(" ")}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-body font-semibold text-ink">{t(card.nameKey, locale)}</p>
-                  {isSelected ? (
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
-                      {orderIndex + 1}
-                    </span>
-                  ) : card.comingSoon ? (
-                    <span className="rounded-full bg-sand px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
-                      {t("campaignWiz.typeComingSoon", locale)}
-                    </span>
-                  ) : null}
+                <div
+                  key={card.type}
+                  className={[
+                    "rounded-[14px] border transition",
+                    card.comingSoon
+                      ? "border-dashed border-sand bg-cream/40 opacity-70"
+                      : isSelected
+                      ? "border-sage bg-sage/5"
+                      : "border-sand bg-white hover:border-sage/50",
+                  ].join(" ")}
+                >
+                  <label
+                    className={[
+                      "flex items-center gap-3 p-3.5",
+                      card.comingSoon ? "cursor-not-allowed" : "cursor-pointer",
+                    ].join(" ")}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      disabled={card.comingSoon}
+                      onChange={() => !card.comingSoon && toggleType(card.type as CampaignType)}
+                      className="h-4.5 w-4.5 shrink-0 accent-[var(--color-accent-primary)]"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-body font-semibold text-ink">{t(card.nameKey, locale)}</p>
+                      {card.metaKey && (
+                        <p className="mt-0.5 font-mono text-micro uppercase tracking-wide text-muted">
+                          {t(card.metaKey, locale)}
+                        </p>
+                      )}
+                    </div>
+                    {isSelected ? (
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
+                        {orderIndex + 1}
+                      </span>
+                    ) : card.comingSoon ? (
+                      <span className="rounded-full bg-sand px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
+                        {t("campaignWiz.typeComingSoon", locale)}
+                      </span>
+                    ) : null}
+                  </label>
+                  <details className="border-t border-sand/60 px-3.5 pb-3">
+                    <summary className="cursor-pointer select-none pt-2 text-[11px] font-medium text-muted transition-colors hover:text-ink-body">
+                      {locale === "hu" ? "Részletek" : "Details"}
+                    </summary>
+                    <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
+                      {t(card.descKey, locale)}
+                    </p>
+                    {card.outKey && (
+                      <p className="mt-1 text-[11px] text-bronze">{t(card.outKey, locale)}</p>
+                    )}
+                  </details>
                 </div>
-                <p className="mt-1 text-caption leading-relaxed text-ink-body">
-                  {t(card.descKey, locale)}
-                </p>
-                {card.metaKey && (
-                  <p className="mt-2 font-mono text-micro uppercase tracking-wide text-muted">
-                    {t(card.metaKey, locale)}
-                  </p>
-                )}
-                {card.outKey && (
-                  <p className="mt-1 text-[11px] text-bronze">{t(card.outKey, locale)}</p>
-                )}
-              </button>
               );
             })}
           </div>
-          <div className="mt-6 flex justify-end">
+
+          {/* Élő sorrend-előnézet (UX-audit #24): a lényeg — a tagoknak
+              EBBEN a sorrendben nyílnak a lépések — ne fejben álljon össze. */}
+          <div className="mt-5 flex flex-col gap-3 border-t border-sand pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="min-w-0 text-caption text-ink-body">
+              {chosenSteps.length === 0 ? (
+                <span className="text-muted">
+                  {locale === "hu" ? "Válassz legalább egy mérést." : "Pick at least one measurement."}
+                </span>
+              ) : (
+                <>
+                  <span className="font-semibold text-ink">
+                    {locale === "hu" ? "Sorozatod: " : "Your sequence: "}
+                  </span>
+                  {chosenSteps
+                    .map((tp, i) => `${i + 1}. ${t(TYPE_NAME_KEYS[tp], locale)}`)
+                    .join(" → ")}
+                </>
+              )}
+            </p>
             <Button
               type="button"
               disabled={chosenSteps.length === 0}
@@ -418,6 +456,7 @@ export function CampaignWizard({
                 setStep(2);
               }}
               variant="primary"
+              className="shrink-0"
             >
               {t("campaignWiz.next", locale)}
             </Button>

@@ -167,7 +167,9 @@ function NavHeaderContent({
   const { locale } = useLocale();
 
   type DropdownKey = WorkspaceNavItem["id"] | "user" | "notifications" | null;
-  type MobileMenuState = "closed" | "quickview" | "expanded";
+  // Egy menüszint (UX-audit #26): a korábbi quickview→expanded kétlépcső
+  // plusz koppintást és tanulást kért — a hamburger egyből a teljes menüt nyitja.
+  type MobileMenuState = "closed" | "open";
 
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
   const [mobileMenu, setMobileMenu] = useState<MobileMenuState>("closed");
@@ -697,7 +699,7 @@ function NavHeaderContent({
             </div>
             <button
               type="button"
-              onClick={() => setMobileMenu((prev) => (prev === "closed" ? "quickview" : "closed"))}
+              onClick={() => setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"))}
               className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-primary)]"
             >
               {mobileMenu !== "closed" ? (
@@ -726,82 +728,9 @@ function NavHeaderContent({
             className="fixed inset-x-0 top-14 z-40 lg:hidden"
             style={{ animation: "fade-in 200ms ease-out" }}
           >
-            {mobileMenu === "quickview" ? (
-              <div className="mx-4 mt-2 rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-4 shadow-lg shadow-black/[0.04]">
-                <Link
-                  href={homeDestination}
-                  onClick={() => setMobileMenu("closed")}
-                  className="mb-3 inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-caption font-medium text-white"
-                >
-                  <GridIcon className="h-3.5 w-3.5" />
-                  {homeLabel}
-                </Link>
-
-                <div className="flex flex-col gap-0.5">
-                  {navItems
-                    .filter((item) => item.id !== "home")
-                    .map((item) => (
-                      <Link
-                        key={item.id}
-                        href={item.primaryHref}
-                        onClick={() => setMobileMenu("closed")}
-                        className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-                      >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                          {getItemIcon(item.id, "h-3.5 w-3.5")}
-                        </span>
-                        {item.label}
-                      </Link>
-                    ))}
-
-                  <button
-                    type="button"
-                    onClick={() => setMobileMenu("expanded")}
-                    className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-[14px] font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                      <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="1" y="2" width="14" height="12" rx="2" />
-                        <path d="M1 6h14" />
-                      </svg>
-                    </span>
-                    Menü
-                    <ChevronDown />
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setMobileMenu("expanded")}
-                  className="mt-2 flex w-full items-center gap-3 rounded-lg border-t border-[var(--color-border-default)] px-2 pt-3 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
-                >
-                  {showIdentityLoader ? (
-                    <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
-                  ) : (
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-[14px] font-medium text-white"
-                      style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-                    >
-                      {initial}
-                    </div>
-                  )}
-                  {showIdentityLoader ? (
-                    <div className="flex-1 space-y-1.5">
-                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
-                      <div className="h-2 w-14 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
-                    </div>
-                  ) : (
-                    <div className="flex-1">
-                      <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{displayName ?? "Profil"}</p>
-                      <p className="text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
-                    </div>
-                  )}
-                  <svg className="h-4 w-4 text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                    <path d="M4 2l4 4-4 4" />
-                  </svg>
-                </button>
-              </div>
-            ) : (
+            {/* Egyetlen menüszint (UX-audit #26): a hamburger egyből a
+                teljes menüt nyitja — a korábbi quickview-köztes törölve. */}
+            {(
               <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.04]">
                 <div className="flex items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-3">
                   <Link
@@ -814,7 +743,7 @@ function NavHeaderContent({
                   </Link>
                   <button
                     type="button"
-                    onClick={() => setMobileMenu("quickview")}
+                    onClick={() => setMobileMenu("closed")}
                     className="flex items-center gap-1.5 text-caption text-[var(--color-text-muted)]"
                   >
                     Bezárás

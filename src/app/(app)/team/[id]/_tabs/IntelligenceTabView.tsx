@@ -152,19 +152,37 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
             <p className="mt-1 font-fraunces text-[26px] text-ink">{Math.round((assessedCount / Math.max(totalCount, 1)) * 100)}%</p>
             <p className="text-[11px] text-muted">{assessedCount}/{totalCount}</p>
           </div>
+          {/* Státusz-csempék chipekkel, nem nagy-szám tipográfiával
+              (UX-audit #28): az „Aktív"/„Elérhető" állapot, nem mennyiség. */}
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
-            <p className="text-[11px] text-ink-body">{isHu ? "Observer kör státusz" : "Observer round status"}</p>
-            <p className="mt-1 font-fraunces text-[26px] text-ink">{teamData.activeCampaign ? (isHu ? "Aktív" : "Active") : (isHu ? "Nincs" : "None")}</p>
-            <p className="text-[11px] text-muted">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] text-ink-body">{isHu ? "Observer kör státusz" : "Observer round status"}</p>
+              <span
+                className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
+                  teamData.activeCampaign ? "bg-sage/15 text-sage-dark" : "bg-sand text-ink-body"
+                }`}
+              >
+                {teamData.activeCampaign ? (isHu ? "Aktív" : "Active") : (isHu ? "Nincs" : "None")}
+              </span>
+            </div>
+            <p className="mt-2 text-[11px] text-muted">
               {teamData.activeCampaign
                 ? (isHu ? "Visszajelzések gyűjtése folyamatban" : "Feedback collection in progress")
                 : (isHu ? "A dinamika adatokhoz szükséges" : "Required for dynamics data")}
             </p>
           </div>
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
-            <p className="text-[11px] text-ink-body">{isHu ? "Csapatminta státusz" : "Pattern status"}</p>
-            <p className="mt-1 font-fraunces text-[26px] text-ink">{teamData.patternResult ? (isHu ? "Elérhető" : "Ready") : (isHu ? "Folyamatban" : "In progress")}</p>
-            <p className="text-[11px] text-muted">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] text-ink-body">{isHu ? "Csapatminta státusz" : "Pattern status"}</p>
+              <span
+                className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
+                  teamData.patternResult ? "bg-sage/15 text-sage-dark" : "bg-amber-50 text-amber-700"
+                }`}
+              >
+                {teamData.patternResult ? (isHu ? "Elérhető" : "Ready") : (isHu ? "Folyamatban" : "In progress")}
+              </span>
+            </div>
+            <p className="mt-2 text-[11px] text-muted">
               {teamData.patternResult
                 ? teamData.patternResult.fullLabel
                 : isHu
