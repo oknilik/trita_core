@@ -777,6 +777,10 @@ function NavHeaderContent({
                   )}
                 </div>
 
+                {/* Link-típusú nav-elem (pl. Jelöltek, Szervezet, egy-csapatos
+                    Csapatom) KATTINTHATÓ sorként renderel — a dropdown-elem
+                    szekció-cím + gyerek-linkek. (Bugfix: a #26-os összevonás
+                    után a link-elemek csak címkeként jelentek meg.) */}
                 {navItems
                   .filter((item) => item.id !== "home")
                   .map((item, index) => (
@@ -784,19 +788,31 @@ function NavHeaderContent({
                       key={item.id}
                       className={index === 0 ? "mt-3" : "mt-2 border-t border-[var(--color-border-default)] pt-2"}
                     >
-                      <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
-                        {item.label}
-                      </p>
-                      {item.items?.map((child) => (
+                      {item.kind === "link" ? (
                         <MobileMenuItem
-                          key={child.id}
-                          href={child.href}
+                          href={item.primaryHref}
                           icon={getItemIcon(item.id, "h-4 w-4")}
-                          title={child.label}
-                          desc={child.description}
+                          title={item.label}
+                          desc=""
                           onClick={() => setMobileMenu("closed")}
                         />
-                      ))}
+                      ) : (
+                        <>
+                          <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+                            {item.label}
+                          </p>
+                          {item.items?.map((child) => (
+                            <MobileMenuItem
+                              key={child.id}
+                              href={child.href}
+                              icon={getItemIcon(item.id, "h-4 w-4")}
+                              title={child.label}
+                              desc={child.description}
+                              onClick={() => setMobileMenu("closed")}
+                            />
+                          ))}
+                        </>
+                      )}
                     </div>
                   ))}
 
@@ -900,7 +916,9 @@ function MobileMenuItem({
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{title}</p>
-        <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
+        {desc ? (
+          <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
+        ) : null}
       </div>
       <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M4 2l4 4-4 4" />
