@@ -47,22 +47,29 @@ export function Footer() {
   ];
 
   return (
-    <footer
-      // A hullám-él a MEGELŐZŐ oldal saját háttere fölé húzódik (-mt-10): a
-      // kivágott rész az oldal valódi hátterét mutatja, nem egy üres sávot —
-      // így bármilyen (krém/árnyalt/fehér) oldal-vég varrat nélkül találkozik
-      // a footerrel. Az oldal-gyökerek pb-je adja a tartalom-távolságot.
-      className="relative -mt-10 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
-      style={{ clipPath: "url(#footer-wave)" }}
-    >
-      <svg width="0" height="0" className="absolute" aria-hidden="true">
-        <defs>
-          <clipPath id="footer-wave" clipPathUnits="objectBoundingBox">
-            <path d="M0,0.1 C0.25,0.04 0.5,0.12 0.75,0.06 C0.9,0.03 0.97,0.08 1,0.06 L1,1 L0,1 Z" />
-          </clipPath>
-        </defs>
+    // ── Hullám-él: FIX magasságú SVG (nem arányos clip-path!) ────────────
+    // A korábbi objectBoundingBox-os kivágás a footer MAGASSÁGÁVAL skálázott:
+    // mobilon (magas footer) a hullám-zóna nagyobb lett, mint az átfedés, és
+    // a különbözet body-krém sávként látszott az oldal háttere és a hullám
+    // között. Most a hullám fix px-magasságú SVG, a footer pontosan ennyivel
+    // (-mt) húzódik az oldal saját háttere fölé — a hullám fölött MINDIG az
+    // oldal valódi háttere van, minden viewporton. A varrat-mentességhez a
+    // footer-háttér FÜGGŐLEGES gradiens (to-b): így az SVG tömör ink-kitöltése
+    // pixelre egyezik a törzs tetejével.
+    <footer className="relative -mt-10 w-full md:-mt-14">
+      <svg
+        viewBox="0 0 1440 56"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        className="block h-10 w-full md:h-14"
+      >
+        <path
+          d="M0,26 C240,10 480,34 720,22 C960,10 1120,30 1280,18 C1360,12 1410,20 1440,16 L1440,56 L0,56 Z"
+          fill="#1a1a2e"
+        />
       </svg>
 
+      <div className="w-full bg-gradient-to-b from-ink to-ink-body pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
       <div className="mx-auto w-full max-w-[1120px] px-7">
         <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
 
@@ -107,6 +114,7 @@ export function Footer() {
         <div className="mt-10 border-t border-cream/10 pt-5">
           <p className="text-[12px] text-cream/70">{t("footer.copyright", locale)}</p>
         </div>
+      </div>
       </div>
     </footer>
   );
