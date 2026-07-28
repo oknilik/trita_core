@@ -4,6 +4,8 @@ import { getServerAuth } from "@/lib/auth-server";
 import { t, type Locale } from "@/lib/i18n";
 import { AdminStatCard } from "@/app/(app)/admin/_components/AdminStatCard";
 import { AdminMetricsGrid } from "@/app/(app)/admin/_components/AdminMetricsGrid";
+import { AdminTrendChart } from "@/app/(app)/admin/_components/AdminTrendChart";
+import { AdminRangeFilter, type AdminRange } from "@/app/(app)/admin/_components/AdminRangeFilter";
 
 // Kérés-idejű időbélyegek a statisztika-ablakokhoz — szándékos.
 function getStatWindows() {
@@ -15,7 +17,59 @@ function getStatWindows() {
 }
 
 // Vezérlő fül — KPI-k + gyorsműveletek
-export async function OverviewTab({ locale }: { locale: Locale }) {
+// Időszak-bucketolás a trend-charthoz: 7d/30d napi, 90d heti, all havi.
+function buildBuckets(range: AdminRange, earliest: Date) {
+  const DAY = 24 * 60 * 60 * 1000;
+  const now = new Date();
+  const fmtDay = (d: Date) => d.toLocaleDateString("hu-HU", { month: "short", day: "numeric" });
+  const fmtMonth = (d: Date) => d.toLocaleDateString("hu-HU", { year: "2-digit", month: "short" });
+
+  if (range === "7d" || range === "30d") {
+    const days = range === "7d" ? 7 : 30;
+    const starts = Array.from({ length: days }, (_, i) => {
+      const d = new Date(now.getTime() - (days - 1 - i) * DAY);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    });
+    return { starts, labels: starts.map(fmtDay), windowStart: starts[0] };
+  }
+  if (range === "90d") {
+    const weeks = 13;
+    const starts = Array.from({ length: weeks }, (_, i) => {
+      const d = new Date(now.getTime() - (weeks - 1 - i) * 7 * DAY);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    });
+    return { starts, labels: starts.map(fmtDay), windowStart: starts[0] };
+  }
+  // all: havi bucketok az első rekordtól (max 24 hónap vissza).
+  const first = new Date(Math.max(earliest.getTime(), now.getTime() - 24 * 30 * DAY));
+  const starts: Date[] = [];
+  const cursor = new Date(first.getFullYear(), first.getMonth(), 1);
+  const end = new Date(now.getFullYear(), now.getMonth(), 1);
+  while (cursor <= end) {
+    starts.push(new Date(cursor));
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+  if (starts.length === 0) starts.push(end);
+  return { starts, labels: starts.map(fmtMonth), windowStart: starts[0] };
+}
+
+function bucketCounts(dates: Date[], starts: Date[]): number[] {
+  const counts = new Array(starts.length).fill(0);
+  for (const d of dates) {
+    // Az utolsó olyan bucket, aminek a kezdete <= d.
+    let idx = -1;
+    for (let i = 0; i < starts.length; i++) {
+      if (starts[i].getTime() <= d.getTime()) idx = i;
+      else break;
+    }
+    if (idx >= 0) counts[idx] += 1;
+  }
+  return counts;
+}
+
+export async function OverviewTab({ locale, range }: { locale: Locale; range: AdminRange }) {
   const { sevenDaysAgo, thirtyDaysAgo } = getStatWindows();
 
   const [userStats, assessmentStats, invitationStats, feedbackStats, newInquiryCount] =
@@ -103,6 +157,41 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
       prisma.inquiry.count({ where: { status: "NEW" } }),
     ]);
 
+  // ── Trend-adatok az időszak-szűrő szerint ──────────────────────────
+  const [firstUser, firstResult] = await Promise.all([
+    prisma.userProfile.findFirst({
+      where: { deleted: false },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }),
+    prisma.assessmentResult.findFirst({
+      where: { isSelfAssessment: true },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }),
+  ]);
+  const earliest = new Date(
+    Math.min(
+      firstUser?.createdAt.getTime() ?? Date.now(),
+      firstResult?.createdAt.getTime() ?? Date.now(),
+    ),
+  );
+  const { starts, labels, windowStart } = buildBuckets(range, earliest);
+  const [regDates, resultDates] = await Promise.all([
+    prisma.userProfile.findMany({
+      where: { deleted: false, createdAt: { gte: windowStart } },
+      select: { createdAt: true },
+    }),
+    prisma.assessmentResult.findMany({
+      where: { isSelfAssessment: true, createdAt: { gte: windowStart } },
+      select: { createdAt: true },
+    }),
+  ]);
+  const regSeries = bucketCounts(regDates.map((r) => r.createdAt), starts);
+  const resultSeries = bucketCounts(resultDates.map((r) => r.createdAt), starts);
+  const regInWindow = regSeries.reduce((a, b) => a + b, 0);
+  const resultsInWindow = resultSeries.reduce((a, b) => a + b, 0);
+
   // Derived metrics
   const growthRate =
     userStats.total > 0
@@ -173,7 +262,36 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
         />
       </AdminMetricsGrid>
 
-      <p className="mb-3 mt-8 font-mono text-micro uppercase tracking-widest text-muted">
+      {/* ── Trend-szekció: időszak-szűrő + idősor-chart ── */}
+      <div className="mb-3 mt-8 flex flex-wrap items-center justify-between gap-3">
+        <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          {"// trendek"}
+        </p>
+        <AdminRangeFilter active={range} />
+      </div>
+      <div className="mb-6 rounded-2xl border border-sand bg-white p-5">
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <p className="text-body font-semibold text-ink">
+            Regisztrációk és kitöltések
+          </p>
+          <p className="text-xs text-muted">
+            Az időszakban:{" "}
+            <span className="font-semibold tabular-nums text-ink">{regInWindow}</span>{" "}
+            regisztráció ·{" "}
+            <span className="font-semibold tabular-nums text-ink">{resultsInWindow}</span>{" "}
+            kitöltés
+          </p>
+        </div>
+        <AdminTrendChart
+          labels={labels}
+          series={[
+            { name: "Regisztráció", color: "#217a55", values: regSeries },
+            { name: "Kitöltés", color: "#c17f4a", values: resultSeries },
+          ]}
+        />
+      </div>
+
+      <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
         {"// gyorsműveletek"}
       </p>
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
