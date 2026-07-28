@@ -62,7 +62,9 @@ export function PlatformPageShell({
   return (
     <div
       data-platform-surface={surface}
-      className={cn("min-h-dvh", SURFACE_ROOT_CLASS[surface], className)}
+      // pb-16: a hullámos footer -mt-10-zel EBBE a színes sávba húzódik —
+      // az él mögött így a felület saját háttere látszik (footer-varrat fix).
+      className={cn("min-h-dvh pb-16", SURFACE_ROOT_CLASS[surface], className)}
       style={rootStyle}
     >
       <main

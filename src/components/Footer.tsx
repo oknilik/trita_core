@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 
 export function Footer() {
   const { locale } = useLocale();
   const currentPath = usePathname();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn } = useAuthState();
 
   // Hide footer on assessment/try pages
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
@@ -48,7 +48,11 @@ export function Footer() {
 
   return (
     <footer
-      className="relative -mt-16 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
+      // A hullám-él a MEGELŐZŐ oldal saját háttere fölé húzódik (-mt-10): a
+      // kivágott rész az oldal valódi hátterét mutatja, nem egy üres sávot —
+      // így bármilyen (krém/árnyalt/fehér) oldal-vég varrat nélkül találkozik
+      // a footerrel. Az oldal-gyökerek pb-je adja a tartalom-távolságot.
+      className="relative -mt-10 w-full bg-gradient-to-br from-ink via-[#2a2722] to-ink-body pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
       style={{ clipPath: "url(#footer-wave)" }}
     >
       <svg width="0" height="0" className="absolute" aria-hidden="true">

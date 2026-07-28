@@ -74,7 +74,7 @@ export default async function AdminPage({
     .catch(() => 0);
 
   return (
-    <main className="min-h-dvh bg-cream px-4 py-6 md:px-6 md:py-8">
+    <main className="min-h-dvh bg-cream px-4 pt-6 pb-24 md:px-6 md:pt-8">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
           <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 lg:mb-6">

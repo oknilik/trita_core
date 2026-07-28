@@ -40,7 +40,7 @@ export default async function AppLayout({
         {userId && navData ? (
           <>
             <NavHeaderUI {...navData} />
-            <div className="pb-16">{children}</div>
+            <div>{children}</div>
             <Footer />
           </>
         ) : (
@@ -49,7 +49,7 @@ export default async function AppLayout({
               signedInHomeHref={signedInHomeHref}
               signedInExperienceHints={signedInExperienceHints}
             />
-            <div className="pb-16">{children}</div>
+            <div>{children}</div>
             <Footer />
           </Suspense>
         )}

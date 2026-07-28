@@ -17,7 +17,7 @@ export default function MarketingLayout({
     <FetchAuthStateProvider>
       <Suspense>
         <MarketingHeader />
-        <div className="pb-16">{children}</div>
+        <div>{children}</div>
         <Footer />
       </Suspense>
       <Suspense>
