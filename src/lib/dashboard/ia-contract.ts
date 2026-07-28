@@ -353,13 +353,12 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
               `${input.memberCount} tagból ${input.completedCount} kész, ${input.waitingCount} várakozik.`,
               `${input.completedCount} of ${input.memberCount} members are done, ${input.waitingCount} are waiting.`,
             ),
-      // Egyetlen állapot-chip — a tag-szám és a kitöltési % a hero
-      // pillanatkép-kártyáin már látszik, a chipsor csak duplikálta.
-      chips: [
-        input.hasPattern
-          ? txt(input.locale, "csapatkép elérhető", "pattern available")
-          : txt(input.locale, "csapatkép zárolt", "pattern locked"),
-      ],
+      // Állapot-chip csak zárolt mintázatnál (UX-audit #2): elérhető
+      // csapatképnél a hero badge-e („CSAPATKÉP ELÉRHETŐ") már közli az
+      // állapotot — a chip ugyanazt duplikálta közvetlenül alatta.
+      chips: input.hasPattern
+        ? []
+        : [txt(input.locale, "csapatkép zárolt", "pattern locked")],
       updatedAtLabel: input.updatedAtLabel,
     },
     completionStatusCards: [

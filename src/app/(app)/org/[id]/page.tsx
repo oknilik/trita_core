@@ -9,7 +9,7 @@ import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
-import { ProgressRing } from "@/components/ui/ProgressRing";
+import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -395,33 +395,21 @@ export default async function OrgDetailPage({
               : "Your teams and published team pictures in one place."
         }
         summaryClassName="max-w-[560px] text-white/[0.4]"
-        chips={(
-          <>
-            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
-              {pageData.memberCount} {isHu ? "tag" : "members"}
+        badge={
+          // Szám-chipek TÖRÖLVE (UX-audit #1): a tag/csapat/aktív mérés hármas
+          // már ott van az aside „ÉLŐ PILLANATKÉP" csempéin — a heroban minden
+          // szám pontosan egyszer szerepel. A setup-badge itt a badge-slotban
+          // él, és csak VALÓDI hiánynál látszik (UX-audit #21a).
+          org.status === "PENDING_SETUP" &&
+          (pageData.teamCount === 0 || pageData.memberCount <= 1) ? (
+            <span
+              className="inline-flex items-center rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
+              style={{ backgroundColor: orgHeroTheme.badgeBg, color: orgHeroTheme.badgeText }}
+            >
+              {t("org.setupPending", locale)}
             </span>
-            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
-              {pageData.teamCount} {isHu ? "csapat" : "teams"}
-            </span>
-            {isConsultantView && pageData.activeCampaignCount > 0 ? (
-              <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
-                {pageData.activeCampaignCount} {isHu ? "aktív mérés" : "active measurements"}
-              </span>
-            ) : null}
-            {/* „Beállítás folyamatban" csak VALÓDI hiánynál (UX-audit #21a):
-                működő, tagokkal-csapatokkal élő orgon a stale státusz-badge
-                zavaró volt. */}
-            {org.status === "PENDING_SETUP" &&
-            (pageData.teamCount === 0 || pageData.memberCount <= 1) ? (
-              <span
-                className="rounded-full px-3 py-1.5 text-[11px] font-semibold"
-                style={{ backgroundColor: orgHeroTheme.badgeBg, color: orgHeroTheme.badgeText }}
-              >
-                {t("org.setupPending", locale)}
-              </span>
-            ) : null}
-          </>
-        )}
+          ) : undefined
+        }
         actions={(
           <>
             {isConsultantView ? (
@@ -484,12 +472,7 @@ export default async function OrgDetailPage({
                 látványa húz a 100% felé. */}
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <ProgressRing
-                  percent={orgCompletionPct}
-                  size={76}
-                  label={`${orgCompletionPct}%`}
-                  color="#8ad0b4"
-                />
+                <CompletionIndicator percent={orgCompletionPct} size={76} color="#8ad0b4" />
                 <p className="text-micro leading-tight text-white/[0.52]">
                   {t("orgHero.orgCompletion", locale)}
                 </p>
@@ -498,12 +481,7 @@ export default async function OrgDetailPage({
                 </p>
               </div>
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <ProgressRing
-                  percent={completionPct}
-                  size={76}
-                  label={`${completionPct}%`}
-                  color={orgHeroTheme.primary}
-                />
+                <CompletionIndicator percent={completionPct} size={76} color={orgHeroTheme.primary} />
                 <p className="text-micro leading-tight text-white/[0.52]">
                   {t("orgHero.activeCampaignCompletion", locale)}
                 </p>

@@ -68,7 +68,9 @@ const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
 const SELF_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
-    results: true,
+    // „Eredményeim" a user-menü kanonikus tétele (UX-audit #6) — a felső
+    // nav-ban duplikálta; tagnál ráadásul a Vezérlő is gyakran ide vezet.
+    results: false,
     teams: true,
     hiring: false,
     org: false,

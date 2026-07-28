@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { t, tf } from "@/lib/i18n";
 import { CAMPAIGN_STEP_LABELS, CAMPAIGN_STEP_LINKS } from "@/lib/campaign-steps-core";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
-import { ProgressRing } from "@/components/ui/ProgressRing";
+import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import {
   DashboardMetricCard,
   DashboardPanel,
@@ -285,12 +285,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               {/* Haladás-gyűrűk — az org-hero élő pillanatképével azonos nyelv */}
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                  <ProgressRing
-                    percent={completionPct}
-                    size={76}
-                    label={`${completionPct}%`}
-                    color="#8ad0b4"
-                  />
+                  <CompletionIndicator percent={completionPct} size={76} color="#8ad0b4" />
                   <p className="text-micro leading-tight text-white/[0.72]">
                     {t("teamDetail.snapshotCompletionRate", locale)}
                   </p>
@@ -299,12 +294,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   </p>
                 </div>
                 <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                  <ProgressRing
-                    percent={secondaryPct}
-                    size={76}
-                    label={`${secondaryPct}%`}
-                    color={teamHeroTheme.primary}
-                  />
+                  <CompletionIndicator percent={secondaryPct} size={76} color={teamHeroTheme.primary} />
                   <p className="text-micro leading-tight text-white/[0.72]">
                     {secondaryLabel}
                   </p>
@@ -439,16 +429,9 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })
               }
             >
-              {/* Nem-tanácsadónál a CTA a lenti vizuális csapatkép-blokkban él —
-                  itt csak info-csempe, hogy ne legyen kétszer ugyanaz a link. */}
-              {hasPattern && canViewRaw ? (
-                <Link
-                  href={`/team/${teamId}?tab=profile`}
-                  className="inline-flex text-[11px] font-semibold text-sage transition-colors hover:text-sage-dark"
-                >
-                  {t("teamDetail.teamPatternViewCta", locale)}
-                </Link>
-              ) : null}
+              {/* CTA NINCS (UX-audit #3): a csapatkép-megnyitás egyetlen útja
+                  tanácsadónál a hero elsődleges gombja, tagnál a lenti
+                  validált-csapatkép panel — ez a csempe csak információ. */}
             </DashboardMetricCard>
           </div>
         </section>

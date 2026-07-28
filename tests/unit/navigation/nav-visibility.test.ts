@@ -101,11 +101,11 @@ test("dashboard block visibility is role-aware", () => {
   assert.equal(canViewDashboardBlock("org_manager", "analytics_teaser"), true);
 });
 
-test("member topnav shows results and own teams, no manager sections", () => {
+test("member topnav shows own teams only — results lives in the user menu (UX audit #6)", () => {
   const navItems = buildWorkspaceNavigation("self", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "teams"]);
+  assert.deepEqual(ids, ["home", "teams"]);
 });
 
 test("member team dropdown omits manager-only observer rounds entry", () => {
@@ -120,7 +120,7 @@ test("member without teams gets no teams dropdown", () => {
   const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results"]);
+  assert.deepEqual(ids, ["home"]);
 });
 
 test("admin org dropdown no longer contains the dead billing entry", () => {
