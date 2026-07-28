@@ -5,7 +5,7 @@ import { buildTeamTrustNetwork } from "./trust-network.server";
 import type { TrustEdgeType } from "./trust-network";
 
 const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
-type DynamicsEdgeType = "aligned" | "complementary" | "friction";
+export type DynamicsEdgeType = "aligned" | "complementary" | "friction";
 
 const DIM_COLORS: Record<string, string> = {
   INTE: "#6366F1",
@@ -111,7 +111,7 @@ export const FRICTION_WEIGHTS: Record<string, number> = {
   OPEN: 0.05,  // innovation vs pragmatism
 };
 
-function calculatePairFriction(
+export function calculatePairFriction(
   scoresA: Record<string, number>,
   scoresB: Record<string, number>,
 ): number {
@@ -125,7 +125,7 @@ function calculatePairFriction(
   return Math.round(weightedSum);
 }
 
-function frictionToEdgeType(frictionScore: number): DynamicsEdgeType {
+export function frictionToEdgeType(frictionScore: number): DynamicsEdgeType {
   if (frictionScore < 12) return "aligned";
   if (frictionScore < 22) return "complementary";
   return "friction";
