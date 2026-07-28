@@ -1,0 +1,151 @@
+import "server-only";
+
+import type { NavHeaderUI } from "@/components/layout/nav-header-ui";
+import { prisma } from "@/lib/prisma";
+import { getAccessibleTeamIds } from "@/lib/team-auth";
+import { getActiveOrgMembership } from "@/lib/org-context";
+import { resolveJourney } from "@/lib/journey/engine";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import type { JourneyExperienceHints } from "@/lib/journey/types";
+import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { isAdminEmail } from "@/lib/auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
+import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
+import type { HelpAudience } from "@/lib/help/topics";
+import type { Locale } from "@/lib/i18n";
+
+export type NavData = React.ComponentProps<typeof NavHeaderUI>;
+
+export interface WorkspaceNavContext {
+  navData: NavData | null;
+  signedInHomeHref: string;
+  signedInExperienceHints: JourneyExperienceHints | null;
+  helpAudience: HelpAudience;
+}
+
+const NAV_ROLE_TO_HELP_AUDIENCE = {
+  org_admin: "admin",
+  org_manager: "manager",
+  self: "member",
+} as const satisfies Record<string, HelpAudience>;
+
+/**
+ * A belépett munkaterület-fejléc (NavHeaderUI) teljes adatcsomagja: auth +
+ * journey + org-kontextus. Egy helyen, hogy a (app) layout ÉS a marketing
+ * zóna belépett fejléce (/api/nav/context) UGYANAZT a headert kapja —
+ * a felhasználó a nem védett oldalakon (blog stb.) is a megszokott app-
+ * fejlécet lássa.
+ */
+export async function resolveWorkspaceNavContext(
+  userId: string | null,
+  locale: Locale,
+): Promise<WorkspaceNavContext> {
+  let signedInHomeHref: string = JOURNEY_HOME_HANDOFF_PATH;
+  let signedInExperienceHints: JourneyExperienceHints | null = null;
+  let navData: NavData | null = userId
+    ? {
+        user: { username: null, email: null },
+        org: null,
+        teams: [],
+        homeHref: signedInHomeHref,
+        role: "SELF",
+        activeCampaignCount: 0,
+        hasHiringAccess: false,
+      }
+    : null;
+
+  try {
+    if (userId) {
+      const profile = await prisma.userProfile.findUnique({
+        where: { clerkId: userId },
+        select: { id: true, username: true, email: true, isConsultant: true },
+      });
+      if (profile) {
+        // Kezdő értesítés-számláló a fejlécnek — a harang így mountkor nem
+        // indít API-hívást (indexelt count: @@index([userId, read])).
+        const [journey, unreadNotificationCount] = await Promise.all([
+          resolveJourney(profile.id, {
+            locale,
+            entryPoint: "root_layout_nav",
+          }),
+          prisma.notification.count({
+            where: { userId: profile.id, read: false, dismissed: false },
+          }),
+        ]);
+        signedInHomeHref = journey.destination;
+        signedInExperienceHints = journey.experienceHints;
+        const isPlatformAdmin = isAdminEmail(profile.email);
+        navData = {
+          ...(navData ?? {
+            user: { username: null, email: null },
+            org: null,
+            teams: [],
+            role: "SELF",
+            activeCampaignCount: 0,
+            hasHiringAccess: false,
+          }),
+          homeHref: signedInHomeHref,
+          isPlatformAdmin,
+          unreadNotificationCount,
+        };
+
+        const membership = await getActiveOrgMembership(profile.id);
+        if (membership) {
+          const [org, accessibleTeamIds, activeCampaignCount, policySnapshot] = await Promise.all([
+            prisma.organization.findUnique({
+              where: { id: membership.orgId },
+              select: { id: true, name: true },
+            }),
+            getAccessibleTeamIds(profile.id, membership.orgId, membership.role),
+            prisma.campaign.count({
+              where: { orgId: membership.orgId, status: "ACTIVE" },
+            }),
+            resolveOrgPolicySnapshot({
+              orgId: membership.orgId,
+              orgRole: membership.role,
+            }),
+          ]);
+          void policySnapshot;
+
+          const teams = accessibleTeamIds.length > 0
+            ? await prisma.team.findMany({
+                where: { id: { in: accessibleTeamIds } },
+                select: { id: true, name: true },
+                orderBy: { name: "asc" },
+              })
+            : [];
+
+          // Jelölt-felület (2026-07-23): a tanácsadói kör kapja — nem
+          // előfizetés-capability (a gating az operating-mode kapcsolón).
+          const hasHiringAccess = isConsultantSurface(
+            membership.role,
+            profile.email,
+            profile.isConsultant,
+          );
+          navData = {
+            user: {
+              username: profile.username ?? null,
+              email: profile.email ?? null,
+            },
+            org: org ?? null,
+            teams,
+            homeHref: signedInHomeHref,
+            role: membership.role,
+            activeCampaignCount,
+            hasHiringAccess,
+            isPlatformAdmin,
+            unreadNotificationCount,
+          };
+        }
+      }
+    }
+  } catch {
+    // Signed-in users keep the lightweight NavHeader fallback config.
+  }
+
+  const helpAudience: HelpAudience = userId
+    ? NAV_ROLE_TO_HELP_AUDIENCE[resolveWorkspaceNavRole(navData?.role ?? "SELF")]
+    : "public";
+
+  return { navData, signedInHomeHref, signedInExperienceHints, helpAudience };
+}

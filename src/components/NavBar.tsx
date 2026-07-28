@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth, useClerk } from "@clerk/nextjs";
+import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { t } from "@/lib/i18n";
@@ -44,22 +44,17 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
 interface NavBarProps {
   signedInHomeHref?: string;
   signedInExperienceHints?: JourneyExperienceHints | null;
-  initialIsSignedIn?: boolean;
 }
 
 export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
-  initialIsSignedIn = false,
 }: NavBarProps) {
   const { locale } = useLocale();
-  // SSR-kor a szerver által ismert auth-állapotot használjuk (a static
-  // ClerkProvider alatt a useAuth() a clerk-js betöltéséig undefined) —
-  // így a szerver- és az első kliens-render megegyezik, nincs hydration
-  // mismatch a sign-in link körül.
-  const { isSignedIn: clientIsSignedIn } = useAuth();
-  const isSignedIn = clientIsSignedIn ?? initialIsSignedIn;
-  const { signOut } = useClerk();
+  // Az auth-állapot a nav-context-ből jön (Clerk kliens-hook nélkül): a
+  // marketing zónában egy könnyű lekérés, az app zónában a szerver-érték
+  // adja — így a marketing-fa nem szállít clerk-js bundle-t.
+  const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [hasDraft] = useState(() => hasAssessmentDraftInStorage("TRITAN"));
@@ -291,13 +286,15 @@ export function NavBar({
               </div>
             )}
             {isSignedIn && (
-              <button
-                type="button"
-                onClick={() => { signOut(); setDrawerOpen(false); }}
-                className="w-full rounded-xl border border-[var(--color-border-default)] py-3.5 text-center text-[14px] text-[var(--color-text-muted)]"
+              // Kijelentkezés a (auth) zóna /sign-out route-ján fut (ott van
+              // ClerkProvider) — így a publikus nav nem függ clerk-js-től.
+              <Link
+                href="/sign-out"
+                onClick={() => setDrawerOpen(false)}
+                className="block w-full rounded-xl border border-[var(--color-border-default)] py-3.5 text-center text-[14px] text-[var(--color-text-muted)]"
               >
                 {t("nav.signOut", locale)}
-              </button>
+              </Link>
             )}
           </div>
         </div>

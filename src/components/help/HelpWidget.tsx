@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
 import {
   getHelpTopics,
@@ -21,7 +21,7 @@ const HIDDEN_PREFIXES = ["/observe", "/pilot", "/assessment", "/onboarding"];
 export function HelpWidget({ audience }: { audience: HelpAudience }) {
   const pathname = usePathname();
   const { locale } = useLocale();
-  const { isSignedIn } = useUser();
+  const { isSignedIn } = useAuthState();
   const isHu = locale === "hu";
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState<HelpTopic | null>(null);
