@@ -806,7 +806,7 @@ function NavHeaderContent({
 
                 {showProfileMenuItem || showLanguageMenuItem ? (
                   <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
-                    <p className="pb-2 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+                    <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
                       Fiók
                     </p>
                     {showProfileMenuItem ? (
@@ -848,7 +848,7 @@ function NavHeaderContent({
                         váltani — a mobilmenüből teljesen hiányzott. */}
                     {orgMemberships && orgMemberships.length > 1 ? (
                       <div className="mt-1 rounded-lg px-3 py-3">
-                        <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+                        <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
                           Szervezeteim ({orgMemberships.length})
                         </p>
                         <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1">
@@ -912,7 +912,7 @@ function NavHeaderContent({
 
                     {showLanguageMenuItem ? (
                       <div className="rounded-lg px-3 py-3">
-                        <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+                        <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
                           Nyelv
                         </p>
                         <LanguageSwitcher variant="pills" />

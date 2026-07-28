@@ -22,16 +22,14 @@ export function MobileMenuShell({
   if (!open) return null;
   return (
     <>
+      {/* Puha backdrop (stílus-transzfer a marketing-menüből): finom blur,
+          kevesebb sötétítés — a lap érezhetően "mögötte" marad. */}
       <div
-        className="fixed inset-0 z-30 bg-black/20 lg:hidden"
+        className="fixed inset-0 z-30 bg-[rgba(26,26,46,0.12)] backdrop-blur-[2px] lg:hidden"
         onClick={onClose}
-        style={{ animation: "fade-in 150ms ease-out" }}
       />
-      <div
-        className="fixed inset-x-0 top-14 z-40 lg:hidden"
-        style={{ animation: "fade-in 200ms ease-out" }}
-      >
-        <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.04]">
+      <div className="animate-menu-in fixed inset-x-0 top-14 z-40 lg:hidden">
+        <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-xl shadow-black/[0.07]">
           {children}
         </div>
       </div>
@@ -57,13 +55,13 @@ export function MobileMenuRow({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-[var(--color-surface-subtle)]"
+      className="group flex items-center gap-3.5 rounded-xl px-3.5 py-3.5 transition-colors hover:bg-[var(--color-surface-subtle)]"
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{title}</p>
+        <p className="text-[15px] font-medium text-[var(--color-text-primary)]">{title}</p>
         {desc ? (
           <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
         ) : null}
@@ -76,8 +74,10 @@ export function MobileMenuRow({
 }
 
 export function MobileMenuSectionLabel({ children }: { children: React.ReactNode }) {
+  // Fraunces szekció-cím (stílus-transzfer): a mono-eyebrow helyett a
+  // marketing-oldal szerkesztőségi karaktere — a szerkezet utility marad.
   return (
-    <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+    <p className="px-4 pb-1.5 pt-4 font-fraunces text-[16px] text-[var(--color-text-primary)]">
       {children}
     </p>
   );
