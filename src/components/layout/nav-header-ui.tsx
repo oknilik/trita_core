@@ -855,6 +855,73 @@ function NavHeaderContent({
                       </>
                     ) : null}
 
+                    {/* Org-váltó mobilon is (bugfix): több tagságnál eddig
+                        csak a desktop user-dropdownban lehetett szervezetet
+                        váltani — a mobilmenüből teljesen hiányzott. */}
+                    {orgMemberships && orgMemberships.length > 1 ? (
+                      <div className="mt-1 rounded-lg px-3 py-3">
+                        <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+                          Szervezeteim ({orgMemberships.length})
+                        </p>
+                        <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1">
+                          {orgMemberships.map((m) => {
+                            const isActive = m.orgId === activeOrgId;
+                            return (
+                              <button
+                                key={m.orgId}
+                                type="button"
+                                disabled={orgSwitchBusy}
+                                onClick={() => {
+                                  setMobileMenu("closed");
+                                  void switchOrg(m.orgId, m.role);
+                                }}
+                                className={`flex min-h-[44px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors ${
+                                  isActive
+                                    ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-text-primary)]"
+                                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
+                                } disabled:opacity-50`}
+                              >
+                                <span className="truncate">{m.orgName ?? m.orgId}</span>
+                                <span className="flex shrink-0 items-center gap-1.5">
+                                  <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
+                                    {m.role === "ORG_ADMIN"
+                                      ? "Admin"
+                                      : m.role === "ORG_CONSULTANT"
+                                        ? "Tanácsadó"
+                                        : m.role === "ORG_MANAGER"
+                                          ? "Manager"
+                                          : "Tag"}
+                                  </span>
+                                  {isActive && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-action-primary-bg)]" />
+                                  )}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* Platform-admin belépő mobilon is — desktop-paritás. */}
+                    {isPlatformAdmin ? (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileMenu("closed")}
+                        className="mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                      >
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
+                          <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="2" width="5" height="5" rx="1" />
+                            <rect x="9" y="2" width="5" height="5" rx="1" />
+                            <rect x="2" y="9" width="5" height="5" rx="1" />
+                            <rect x="9" y="9" width="5" height="5" rx="1" />
+                          </svg>
+                        </span>
+                        <span>Admin vezérlő</span>
+                      </Link>
+                    ) : null}
+
                     {showLanguageMenuItem ? (
                       <div className="rounded-lg px-3 py-3">
                         <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
