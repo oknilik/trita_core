@@ -5,7 +5,7 @@ import { t } from "@/lib/i18n";
 import type { Metadata } from "next";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { AdminNav, type AdminTabId } from "@/app/(app)/admin/_components/AdminNav";
-import { isAdminRange, type AdminRange } from "@/app/(app)/admin/_components/AdminRangeFilter";
+import { isAdminRange, isAdminSegment, type AdminRange, type AdminSegment } from "@/app/(app)/admin/_components/AdminRangeFilter";
 import { OverviewTab } from "@/app/(app)/admin/_tabs/OverviewTab";
 import { InquiriesTab } from "@/app/(app)/admin/_tabs/InquiriesTab";
 import { OrgsTab } from "@/app/(app)/admin/_tabs/OrgsTab";
@@ -57,12 +57,13 @@ const TAB_TITLES: Record<AdminTabId, string> = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; range?: string }>;
+  searchParams: Promise<{ tab?: string; range?: string; seg?: string }>;
 }) {
   await requireAdmin();
   const locale = await getServerLocale();
-  const { tab, range: rangeParam } = await searchParams;
+  const { tab, range: rangeParam, seg: segParam } = await searchParams;
   const range: AdminRange = isAdminRange(rangeParam) ? rangeParam : "30d";
+  const segment: AdminSegment = isAdminSegment(segParam) ? segParam : "all";
   const activeTab: AdminTabId = (TAB_IDS as readonly string[]).includes(tab ?? "")
     ? (tab as AdminTabId)
     : "overview";
@@ -92,7 +93,7 @@ export default async function AdminPage({
 
           <FadeIn delay={0.1}>
             <div className="min-w-0">
-              {activeTab === "overview" && <OverviewTab locale={locale} range={range} />}
+              {activeTab === "overview" && <OverviewTab locale={locale} range={range} segment={segment} />}
               {activeTab === "inquiries" && <InquiriesTab />}
               {activeTab === "orgs" && <OrgsTab />}
               {activeTab === "consultants" && <ConsultantsTab />}

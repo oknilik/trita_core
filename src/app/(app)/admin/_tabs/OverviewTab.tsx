@@ -5,7 +5,7 @@ import { t, type Locale } from "@/lib/i18n";
 import { AdminStatCard } from "@/app/(app)/admin/_components/AdminStatCard";
 import { AdminMetricsGrid } from "@/app/(app)/admin/_components/AdminMetricsGrid";
 import { AdminTrendChart } from "@/app/(app)/admin/_components/AdminTrendChart";
-import { AdminRangeFilter, type AdminRange } from "@/app/(app)/admin/_components/AdminRangeFilter";
+import { AdminRangeFilter, AdminSegmentFilter, type AdminRange, type AdminSegment } from "@/app/(app)/admin/_components/AdminRangeFilter";
 
 // Legkorábbi rekord-dátum (fallback: most) — kérés-idejű, szándékos.
 function resolveEarliest(a?: Date, b?: Date): Date {
@@ -75,7 +75,7 @@ function bucketCounts(dates: Date[], starts: Date[]): number[] {
   return counts;
 }
 
-export async function OverviewTab({ locale, range }: { locale: Locale; range: AdminRange }) {
+export async function OverviewTab({ locale, range, segment }: { locale: Locale; range: AdminRange; segment: AdminSegment }) {
   const { sevenDaysAgo, thirtyDaysAgo } = getStatWindows();
 
   const [userStats, assessmentStats, invitationStats, feedbackStats, newInquiryCount] =
@@ -178,20 +178,39 @@ export async function OverviewTab({ locale, range }: { locale: Locale; range: Ad
   ]);
   const earliest = resolveEarliest(firstUser?.createdAt, firstResult?.createdAt);
   const { starts, labels, windowStart } = buildBuckets(range, earliest);
-  const [regDates, resultDates] = await Promise.all([
+  // Kohorsz-bontás (self vs szervezeti): aktív org-tagság dönt.
+  const [regRows, resultRows, orgMemberRows] = await Promise.all([
     prisma.userProfile.findMany({
       where: { deleted: false, createdAt: { gte: windowStart } },
-      select: { createdAt: true },
+      select: { id: true, createdAt: true },
     }),
     prisma.assessmentResult.findMany({
       where: { isSelfAssessment: true, createdAt: { gte: windowStart } },
-      select: { createdAt: true },
+      select: { userProfileId: true, createdAt: true },
+    }),
+    prisma.organizationMember.findMany({
+      where: { leftAt: null },
+      select: { userId: true },
     }),
   ]);
-  const regSeries = bucketCounts(regDates.map((r) => r.createdAt), starts);
-  const resultSeries = bucketCounts(resultDates.map((r) => r.createdAt), starts);
+  const orgUserIds = new Set(orgMemberRows.map((m) => m.userId));
+  const inSegment = (profileId: string | null) => {
+    if (segment === "all") return true;
+    const isOrg = profileId !== null && orgUserIds.has(profileId);
+    return segment === "org" ? isOrg : !isOrg;
+  };
+  const regDatesSeg = regRows.filter((r) => inSegment(r.id)).map((r) => r.createdAt);
+  const resultDatesSeg = resultRows
+    .filter((r) => inSegment(r.userProfileId))
+    .map((r) => r.createdAt);
+  const regSeries = bucketCounts(regDatesSeg, starts);
+  const resultSeries = bucketCounts(resultDatesSeg, starts);
   const regInWindow = regSeries.reduce((a, b) => a + b, 0);
   const resultsInWindow = resultSeries.reduce((a, b) => a + b, 0);
+  // Bontott összegek a fejléc-összegzőhöz (mindig láthatók, szegmenstől
+  // függetlenül — így az „egyben" nézetben is látszik a self/szervezeti arány).
+  const regSelfTotal = regRows.filter((r) => !orgUserIds.has(r.id)).length;
+  const regOrgTotal = regRows.length - regSelfTotal;
 
   // Derived metrics
   const growthRate =
@@ -268,17 +287,29 @@ export async function OverviewTab({ locale, range }: { locale: Locale; range: Ad
         <p className="font-mono text-micro uppercase tracking-widest text-muted">
           {"// trendek"}
         </p>
-        <AdminRangeFilter active={range} />
+        <div className="flex flex-wrap gap-2">
+          <AdminSegmentFilter active={segment} range={range} />
+          <AdminRangeFilter active={range} segment={segment} />
+        </div>
       </div>
       <div className="mb-6 rounded-2xl border border-sand bg-white p-5">
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
           <p className="text-body font-semibold text-ink">
             Regisztrációk és kitöltések
+            {segment !== "all" ? (
+              <span className="ml-2 rounded-full bg-cream px-2 py-0.5 text-xs font-medium text-ink-body">
+                {segment === "self" ? "csak self" : "csak szervezeti"}
+              </span>
+            ) : null}
           </p>
           <p className="text-xs text-muted">
             Az időszakban:{" "}
             <span className="font-semibold tabular-nums text-ink">{regInWindow}</span>{" "}
-            regisztráció ·{" "}
+            regisztráció{" "}
+            <span className="tabular-nums">
+              ({regSelfTotal} self · {regOrgTotal} szervezeti)
+            </span>{" "}
+            ·{" "}
             <span className="font-semibold tabular-nums text-ink">{resultsInWindow}</span>{" "}
             kitöltés
           </p>
