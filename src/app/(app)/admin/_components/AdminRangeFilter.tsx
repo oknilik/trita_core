@@ -47,6 +47,9 @@ function Pills<T extends string>({
         <Link
           key={r.id}
           href={makeHref(r.id)}
+          // Szűrő-váltás ne ugorjon az oldal tetejére — a görgetési
+          // pozíció marad, csak a chart-adat frissül.
+          scroll={false}
           aria-current={active === r.id ? "true" : undefined}
           className={`min-h-[34px] rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
             active === r.id
