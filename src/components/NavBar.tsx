@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
@@ -20,21 +21,80 @@ function isLinkActive(pathname: string, href: string): boolean {
   return pathname.startsWith(normalizedHref);
 }
 
-// ─── Nav link ─────────────────────────────────────────────────────────────────
+// ─── Link-ikonok (menü-konvergencia: az app-nav ikonos nyelvét követik) ──────
 
-function NavLink({ href, label, active }: { href: string; label: string; active: boolean }) {
+function HomeIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2.5 7L8 2l5.5 5" />
+      <path d="M4 6.5V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.5" />
+    </svg>
+  );
+}
+
+function BlogIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" />
+      <path d="M5 5.5h6M5 8h6M5 10.5h3.5" />
+    </svg>
+  );
+}
+
+function CollabIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="5" r="2.5" />
+      <path d="M1.5 14a4.5 4.5 0 0 1 9 0" />
+      <circle cx="11.5" cy="6" r="2" />
+      <path d="M11.5 10.5a3.5 3.5 0 0 1 3 3.5" />
+    </svg>
+  );
+}
+
+function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3">
+      <rect x="1" y="1" width="6" height="6" rx="1.5" />
+      <rect x="9" y="1" width="6" height="6" rx="1.5" />
+      <rect x="1" y="9" width="6" height="6" rx="1.5" />
+      <rect x="9" y="9" width="6" height="6" rx="1.5" />
+    </svg>
+  );
+}
+
+const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
+  home: HomeIcon,
+  dashboard: GridIcon,
+  blog: BlogIcon,
+  pricing: CollabIcon,
+};
+
+// ─── Nav link — az app-nav (NavHeaderUI) aktív/inaktív stílusával ────────────
+
+function NavLink({
+  href,
+  label,
+  icon,
+  active,
+}: {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  active: boolean;
+}) {
   return (
     <Link
       href={href}
       className={[
-        "relative py-4 text-caption transition-colors",
-        active ? "font-medium text-[var(--color-text-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]",
+        "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-caption transition-all",
+        active
+          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-accent-primary)]"
+          : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]",
       ].join(" ")}
     >
+      {icon}
       {label}
-      {active && (
-        <span className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-[var(--color-action-primary-bg)]" />
-      )}
     </Link>
   );
 }
@@ -59,27 +119,21 @@ export function NavBar({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [hasDraft] = useState(() => hasAssessmentDraftInStorage("TRITAN"));
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    document.body.style.overflow = drawerOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [drawerOpen]);
-
   // Hide on assessment/try pages (they have their own minimal nav)
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
   const publicLinks = [
-    { href: "/", label: t("nav.home", locale) },
-    { href: "/blog", label: t("nav.blog", locale) },
-    { href: "/pricing", label: t("nav.pricing", locale) },
+    { id: "home", href: "/", label: t("nav.home", locale) },
+    { id: "blog", href: "/blog", label: t("nav.blog", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
   const authLinks = [
     // Bejelentkezve a link az appba (journey handoff) visz — a címke is
     // ezt mondja, ne 'Főoldal'-t (design-akciólista #18).
-    { href: signedInHomeHref, label: t("nav.dashboard", locale) },
-    { href: "/blog", label: t("nav.blog", locale) },
-    { href: "/pricing", label: t("nav.pricing", locale) },
+    { id: "dashboard", href: signedInHomeHref, label: t("nav.dashboard", locale) },
+    { id: "blog", href: "/blog", label: t("nav.blog", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;
@@ -134,15 +188,19 @@ export function NavBar({
           </Link>
 
           {/* ═══ CENTER LINKS — desktop only ═══ */}
-          <nav className="hidden items-center gap-6 lg:flex">
-            {links.map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                label={link.label}
-                active={isLinkActive(currentPath, link.href)}
-              />
-            ))}
+          <nav className="hidden items-center gap-1 lg:flex">
+            {links.map((link) => {
+              const Icon = LINK_ICONS[link.id] ?? HomeIcon;
+              return (
+                <NavLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  icon={<Icon className="h-3.5 w-3.5" />}
+                  active={isLinkActive(currentPath, link.href)}
+                />
+              );
+            })}
           </nav>
 
           {/* ═══ RIGHT SIDE ═══ */}
@@ -207,98 +265,69 @@ export function NavBar({
         </div>
       ) : null}
 
-      {/* ═══ MOBILE MENU — full screen ═══ */}
-      {drawerOpen && (
-        <div
-          className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden"
-          style={{ animation: "fade-in 150ms ease-out" }}
-        >
-          {/* Top bar — matches main navbar exactly */}
-          <div className="flex h-14 shrink-0 items-center justify-between border-b border-[var(--color-border-default)] bg-[rgba(250,249,246,0.95)] px-5">
-            <Link
-              href={isSignedIn ? signedInHomeHref : "/"}
-              onClick={() => setDrawerOpen(false)}
-              className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
-            >
-              <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
-            </Link>
-            <div className="flex items-center gap-3">
-              {!isSignedIn && (
-                <Link
-                  href="/try"
+      {/* ═══ MOBIL MENÜ — közös kártya-panel (menü-konvergencia): ugyanaz a
+          váz, mint a belépett NavHeaderUI menüje. ═══ */}
+      <MobileMenuShell open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <div className="p-3">
+          <div className="flex flex-col gap-0.5">
+            {links.map((link) => {
+              const Icon = LINK_ICONS[link.id] ?? HomeIcon;
+              return (
+                <MobileMenuRow
+                  key={link.href}
+                  href={link.href}
+                  icon={<Icon className="h-4 w-4" />}
+                  title={link.label}
                   onClick={() => setDrawerOpen(false)}
-                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white"
-                >
-                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
-                </Link>
-              )}
-              <LanguageSwitcher />
-              <button
-                type="button"
-                onClick={() => setDrawerOpen(false)}
-                className="flex h-8 w-8 items-center justify-center text-lg text-[var(--color-text-muted)]"
-              >
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
-                  <path d="M4 4l12 12" /><path d="M16 4L4 16" />
-                </svg>
-              </button>
-            </div>
+                />
+              );
+            })}
           </div>
 
-          {/* Center links */}
-          <div className="flex flex-1 flex-col items-center justify-center gap-1 px-8">
-            {links.map((link) => (
+          {!isSignedIn ? (
+            <div className="mt-3 flex gap-2 border-t border-[var(--color-border-soft)] pt-3">
               <Link
-                key={link.href}
-                href={link.href}
+                href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className={[
-                  "py-5 text-center font-fraunces text-xl transition-colors",
-                  isLinkActive(currentPath, link.href)
-                    ? "text-[var(--color-action-primary-bg)]"
-                    : "text-[var(--color-text-secondary)]",
-                ].join(" ")}
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
-                {link.label}
+                {t("nav.signIn", locale)}
               </Link>
-            ))}
+              <Link
+                href="/try"
+                onClick={() => setDrawerOpen(false)}
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-accent-primary)] text-[14px] font-semibold text-white transition-all hover:brightness-[1.06]"
+              >
+                {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+              </Link>
+            </div>
+          ) : null}
 
+          <MobileMenuSectionLabel>
+            {locale === "hu" ? "Nyelv" : "Language"}
+          </MobileMenuSectionLabel>
+          <div className="px-3 pb-1">
+            <LanguageSwitcher variant="pills" />
           </div>
 
-          {/* Bottom buttons */}
-          <div className="shrink-0 px-5 pb-8 pt-4">
-            {!isSignedIn && (
-              <div className="flex gap-3">
-                <Link
-                  href="/sign-in"
-                  onClick={() => setDrawerOpen(false)}
-                  className="flex flex-1 items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white py-3.5 text-[14px] font-medium text-[var(--color-text-secondary)]"
-                >
-                  {t("nav.signIn", locale)}
-                </Link>
-                <Link
-                  href="/try"
-                  onClick={() => setDrawerOpen(false)}
-                  className="flex flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] py-3.5 text-[14px] font-semibold text-white"
-                >
-                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
-                </Link>
-              </div>
-            )}
-            {isSignedIn && (
-              // Kijelentkezés a (auth) zóna /sign-out route-ján fut (ott van
-              // ClerkProvider) — így a publikus nav nem függ clerk-js-től.
+          {isSignedIn ? (
+            <div className="mt-2 border-t border-[var(--color-border-soft)] px-3 pb-2 pt-3">
+              {/* Kijelentkezés a (auth) zóna /sign-out route-ján fut (ott van
+                  ClerkProvider) — a publikus nav nem függ clerk-js-től. */}
               <Link
                 href="/sign-out"
                 onClick={() => setDrawerOpen(false)}
-                className="block w-full rounded-xl border border-[var(--color-border-default)] py-3.5 text-center text-[14px] text-[var(--color-text-muted)]"
+                className="flex items-center gap-2 text-caption text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text-primary)]"
               >
+                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
+                </svg>
                 {t("nav.signOut", locale)}
               </Link>
-            )}
-          </div>
+            </div>
+          ) : null}
         </div>
-      )}
+      </MobileMenuShell>
 
     </>
   );

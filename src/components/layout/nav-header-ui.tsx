@@ -14,6 +14,7 @@ import {
 import { getUserMenuItemIds } from "@/lib/navigation/visibility";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { isConsultingLed } from "@/lib/operating-mode";
+import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "./mobile-menu";
 import { NotificationBell } from "./NotificationBell";
 import { NotificationPanel } from "./NotificationPanel";
 import { NotificationsProvider } from "./NotificationsProvider";
@@ -716,22 +717,11 @@ function NavHeaderContent({
         </div>
       </header>
 
-      {mobileMenu !== "closed" && (
+      {/* Egyetlen menüszint (UX-audit #26) — a közös MobileMenuShell
+          kártya-panelben (menü-konvergencia: a kijelentkezett NavBar
+          ugyanezt a vázat használja). */}
+      <MobileMenuShell open={mobileMenu !== "closed"} onClose={() => setMobileMenu("closed")}>
         <>
-          <div
-            className="fixed inset-0 z-30 bg-black/20 lg:hidden"
-            onClick={() => setMobileMenu("closed")}
-            style={{ animation: "fade-in 150ms ease-out" }}
-          />
-
-          <div
-            className="fixed inset-x-0 top-14 z-40 lg:hidden"
-            style={{ animation: "fade-in 200ms ease-out" }}
-          >
-            {/* Egyetlen menüszint (UX-audit #26): a hamburger egyből a
-                teljes menüt nyitja — a korábbi quickview-köztes törölve. */}
-            {(
-              <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.04]">
                 <div className="flex items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-3">
                   <Link
                     href={homeDestination}
@@ -789,7 +779,7 @@ function NavHeaderContent({
                       className={index === 0 ? "mt-3" : "mt-2 border-t border-[var(--color-border-default)] pt-2"}
                     >
                       {item.kind === "link" ? (
-                        <MobileMenuItem
+                        <MobileMenuRow
                           href={item.primaryHref}
                           icon={getItemIcon(item.id, "h-4 w-4")}
                           title={item.label}
@@ -798,11 +788,9 @@ function NavHeaderContent({
                         />
                       ) : (
                         <>
-                          <p className="px-4 pb-1 pt-3 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
-                            {item.label}
-                          </p>
+                          <MobileMenuSectionLabel>{item.label}</MobileMenuSectionLabel>
                           {item.items?.map((child) => (
-                            <MobileMenuItem
+                            <MobileMenuRow
                               key={child.id}
                               href={child.href}
                               icon={getItemIcon(item.id, "h-4 w-4")}
@@ -950,46 +938,8 @@ function NavHeaderContent({
                     </button>
                   </div>
                 ) : null}
-              </div>
-            )}
-          </div>
         </>
-      )}
+      </MobileMenuShell>
     </>
-  );
-}
-
-function MobileMenuItem({
-  href,
-  icon,
-  title,
-  desc,
-  onClick,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-  onClick: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className="group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-[var(--color-surface-subtle)]"
-    >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
-        {icon}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{title}</p>
-        {desc ? (
-          <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
-        ) : null}
-      </div>
-      <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M4 2l4 4-4 4" />
-      </svg>
-    </Link>
   );
 }
