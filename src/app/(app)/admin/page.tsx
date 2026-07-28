@@ -1,10 +1,10 @@
 import { requireAdmin } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { FadeIn } from "@/components/landing/FadeIn";
-import { AdminTabNav } from "@/app/(app)/admin/_components/AdminTabNav";
+import { AdminNav, type AdminTabId } from "@/app/(app)/admin/_components/AdminNav";
 import { OverviewTab } from "@/app/(app)/admin/_tabs/OverviewTab";
 import { InquiriesTab } from "@/app/(app)/admin/_tabs/InquiriesTab";
 import { OrgsTab } from "@/app/(app)/admin/_tabs/OrgsTab";
@@ -33,10 +33,25 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Admin oldal — vékony elosztó: fejléc + fülnavigáció + aktív fül.
-// A fülök tartalma és lekérdezései a _tabs/ könyvtárban élnek.
+// ─────────────────────────────────────────────────────────────────────
+// Admin oldal — modern dashboard-váz (2026-07-28 átrendezés):
+//   · desktopon bal oldalsáv (csoportosított navigáció) + tartalom,
+//   · mobilon görgethető pill-sor (a régi egyenlő-szélességű fülsor
+//     kilógott és eltörte a UI-t).
+// A fülök tartalma és lekérdezései változatlanul a _tabs/ könyvtárban.
+// ─────────────────────────────────────────────────────────────────────
 const TAB_IDS = ["overview", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
-type TabId = (typeof TAB_IDS)[number];
+
+const TAB_TITLES: Record<AdminTabId, string> = {
+  overview: "Vezérlő",
+  inquiries: "Kérdések",
+  orgs: "Szervezetek",
+  consultants: "Tanácsadók",
+  blog: "Blog",
+  ops: "Rendszer",
+  feedback: "Visszajelzések",
+  reminders: "Emlékeztetők",
+};
 
 export default async function AdminPage({
   searchParams,
@@ -46,37 +61,46 @@ export default async function AdminPage({
   await requireAdmin();
   const locale = await getServerLocale();
   const { tab } = await searchParams;
-  const activeTab: TabId = (TAB_IDS as readonly string[]).includes(tab ?? "")
-    ? (tab as TabId)
+  const activeTab: AdminTabId = (TAB_IDS as readonly string[]).includes(tab ?? "")
+    ? (tab as AdminTabId)
     : "overview";
 
+  // Új megkeresések száma a nav-badge-hez (olcsó indexelt count).
+  const newInquiryCount = await prisma.inquiry
+    .count({ where: { status: "NEW" } })
+    .catch(() => 0);
+
   return (
-    <main className="min-h-dvh bg-cream px-4 py-10 md:px-6">
+    <main className="min-h-dvh bg-cream px-4 py-6 md:px-6 md:py-8">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
-          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
-            {t("admin.title", locale)}
-          </h1>
-          <p className="mt-2 text-sm text-ink-body">{t("admin.subtitle", locale)}</p>
+          <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 lg:mb-6">
+            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
+            <h1 className="font-fraunces text-2xl text-ink md:text-3xl">
+              {TAB_TITLES[activeTab]}
+            </h1>
+            <p className="w-full text-sm text-ink-body lg:w-auto">{t("admin.subtitle", locale)}</p>
+          </div>
         </FadeIn>
 
-        <FadeIn delay={0.05}>
-          <Suspense>
-            <AdminTabNav />
-          </Suspense>
-        </FadeIn>
+        <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[230px_minmax(0,1fr)] lg:items-start lg:gap-6">
+          <FadeIn delay={0.05}>
+            <AdminNav active={activeTab} newInquiryCount={newInquiryCount} />
+          </FadeIn>
 
-        <FadeIn delay={0.1}>
-          {activeTab === "overview" && <OverviewTab locale={locale} />}
-          {activeTab === "inquiries" && <InquiriesTab />}
-          {activeTab === "orgs" && <OrgsTab />}
-          {activeTab === "consultants" && <ConsultantsTab />}
-          {activeTab === "ops" && <OpsTab />}
-          {activeTab === "feedback" && <FeedbackTab />}
-          {activeTab === "reminders" && <RemindersTab />}
-          {activeTab === "blog" && <BlogTab />}
-        </FadeIn>
+          <FadeIn delay={0.1}>
+            <div className="min-w-0">
+              {activeTab === "overview" && <OverviewTab locale={locale} />}
+              {activeTab === "inquiries" && <InquiriesTab />}
+              {activeTab === "orgs" && <OrgsTab />}
+              {activeTab === "consultants" && <ConsultantsTab />}
+              {activeTab === "ops" && <OpsTab />}
+              {activeTab === "feedback" && <FeedbackTab />}
+              {activeTab === "reminders" && <RemindersTab />}
+              {activeTab === "blog" && <BlogTab />}
+            </div>
+          </FadeIn>
+        </div>
       </div>
     </main>
   );

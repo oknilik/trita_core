@@ -33,8 +33,8 @@ export const commonTranslations = {
       en: "Personal details | Trita",
     },
     adminTitle: {
-      hu: "Admin | Trita",
-      en: "Admin | Trita",
+      hu: "Admin | trita",
+      en: "Admin | trita",
     },
   },
   nav: {

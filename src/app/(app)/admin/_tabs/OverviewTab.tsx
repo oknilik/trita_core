@@ -140,6 +140,42 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
 
   return (
     <>
+      {/* Dashboard-sorrend (2026-07-28): a legfontosabb metrikák FELÜL,
+          kiemelve — a gyorsműveletek és a teszt-CTA alattuk. */}
+      <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
+        {"// kulcs-metrikák"}
+      </p>
+      <AdminMetricsGrid>
+        <AdminStatCard
+          title={t("admin.totalUsers", locale)}
+          value={userStats.total}
+          subtitle={
+            userStats.avgAge !== null
+              ? `${t("admin.avgAge", locale)}: ${userStats.avgAge} | ${t("admin.medianAge", locale)}: ${userStats.medianAge} | ${t("admin.ageRange", locale)}: ${userStats.minAge}-${userStats.maxAge}`
+              : `${t("admin.new7days", locale)}: ${userStats.new7d} | ${t("admin.new30days", locale)}: ${userStats.new30d}`
+          }
+          trend={{ value: growthRate, period: "30d" }}
+        />
+        <AdminStatCard
+          title={t("admin.totalAssessments", locale)}
+          value={assessmentStats.total}
+          subtitle={`Self: ${selfCount} | Observer: ${observerCount}`}
+        />
+        <AdminStatCard
+          title="Összes élő meghívó"
+          value={invitationStats.total}
+          subtitle={`${t("admin.conversionRate", locale)}: ${conversionRate}%`}
+        />
+        <AdminStatCard
+          title={t("admin.totalFeedback", locale)}
+          value={feedbackStats.satisfactionCount + feedbackStats.dimensionCount}
+          subtitle={`Satisfaction: ${feedbackStats.satisfactionCount} | Dimension: ${feedbackStats.dimensionCount}`}
+        />
+      </AdminMetricsGrid>
+
+      <p className="mb-3 mt-8 font-mono text-micro uppercase tracking-widest text-muted">
+        {"// gyorsműveletek"}
+      </p>
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Link
           href="/org/new"
@@ -180,7 +216,7 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
         </Link>
       </div>
       {!adminHasSelfResult && (
-        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-2xl border border-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-body font-semibold text-ink">
               A saját TRITAN-profilod még nincs kitöltve
@@ -197,33 +233,6 @@ export async function OverviewTab({ locale }: { locale: Locale }) {
           </Link>
         </div>
       )}
-      <AdminMetricsGrid>
-        <AdminStatCard
-          title={t("admin.totalUsers", locale)}
-          value={userStats.total}
-          subtitle={
-            userStats.avgAge !== null
-              ? `${t("admin.avgAge", locale)}: ${userStats.avgAge} | ${t("admin.medianAge", locale)}: ${userStats.medianAge} | ${t("admin.ageRange", locale)}: ${userStats.minAge}-${userStats.maxAge}`
-              : `${t("admin.new7days", locale)}: ${userStats.new7d} | ${t("admin.new30days", locale)}: ${userStats.new30d}`
-          }
-          trend={{ value: growthRate, period: "30d" }}
-        />
-        <AdminStatCard
-          title={t("admin.totalAssessments", locale)}
-          value={assessmentStats.total}
-          subtitle={`Self: ${selfCount} | Observer: ${observerCount}`}
-        />
-        <AdminStatCard
-          title="Összes élő meghívó"
-          value={invitationStats.total}
-          subtitle={`${t("admin.conversionRate", locale)}: ${conversionRate}%`}
-        />
-        <AdminStatCard
-          title={t("admin.totalFeedback", locale)}
-          value={feedbackStats.satisfactionCount + feedbackStats.dimensionCount}
-          subtitle={`Satisfaction: ${feedbackStats.satisfactionCount} | Dimension: ${feedbackStats.dimensionCount}`}
-        />
-      </AdminMetricsGrid>
     </>
   );
 }
