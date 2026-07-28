@@ -7,6 +7,12 @@ import { AdminMetricsGrid } from "@/app/(app)/admin/_components/AdminMetricsGrid
 import { AdminTrendChart } from "@/app/(app)/admin/_components/AdminTrendChart";
 import { AdminRangeFilter, type AdminRange } from "@/app/(app)/admin/_components/AdminRangeFilter";
 
+// Legkorábbi rekord-dátum (fallback: most) — kérés-idejű, szándékos.
+function resolveEarliest(a?: Date, b?: Date): Date {
+  const now = Date.now();
+  return new Date(Math.min(a?.getTime() ?? now, b?.getTime() ?? now));
+}
+
 // Kérés-idejű időbélyegek a statisztika-ablakokhoz — szándékos.
 function getStatWindows() {
   const now = Date.now();
@@ -170,12 +176,7 @@ export async function OverviewTab({ locale, range }: { locale: Locale; range: Ad
       select: { createdAt: true },
     }),
   ]);
-  const earliest = new Date(
-    Math.min(
-      firstUser?.createdAt.getTime() ?? Date.now(),
-      firstResult?.createdAt.getTime() ?? Date.now(),
-    ),
-  );
+  const earliest = resolveEarliest(firstUser?.createdAt, firstResult?.createdAt);
   const { starts, labels, windowStart } = buildBuckets(range, earliest);
   const [regDates, resultDates] = await Promise.all([
     prisma.userProfile.findMany({
