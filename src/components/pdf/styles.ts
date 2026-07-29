@@ -46,6 +46,9 @@ export const s = StyleSheet.create({
     position: "relative",
     display: "flex",
     flexDirection: "column",
+    // A lábléc helyét a LAP foglalja (a react-pdf a lap-paddinget töréskor
+    // helyesen kezeli) — konténer-szintű bottom-padding túlcsordulna és
+    // üres folytatás-oldalt szülne.
     paddingBottom: 30,
   },
   header: {
@@ -54,8 +57,7 @@ export const s = StyleSheet.create({
     borderBottom: `1 solid ${colors.sand}`,
   },
   body: {
-    flex: 1,
-    padding: "14 28 12 28",
+    padding: "14 28 0 28",
   },
   // Fehér kártya — az élő felület DashboardPanel-jének megfelelője.
   card: {
@@ -79,14 +81,14 @@ export const s = StyleSheet.create({
     opacity: 0.7,
   },
   cardEyebrow: {
-    fontSize: 7.5,
+    fontSize: 8,
     letterSpacing: 1.6,
     textTransform: "uppercase",
     color: colors.bronze,
     fontWeight: 600,
   },
   sectionEyebrow: {
-    fontSize: 7.5,
+    fontSize: 8,
     letterSpacing: 1.6,
     textTransform: "uppercase",
     color: colors.bronze,
@@ -96,7 +98,7 @@ export const s = StyleSheet.create({
   },
   // First eyebrow after header — no top margin
   sectionEyebrowFirst: {
-    fontSize: 7.5,
+    fontSize: 8,
     letterSpacing: 1.6,
     textTransform: "uppercase",
     color: colors.bronze,
@@ -123,7 +125,7 @@ export const s = StyleSheet.create({
     padding: "6 32",
     flexDirection: "row",
     justifyContent: "space-between",
-    fontSize: 7.5,
+    fontSize: 8,
     color: colors.ink300,
     borderTop: `0.5 solid ${colors.sand}`,
   },

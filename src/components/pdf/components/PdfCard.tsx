@@ -69,7 +69,7 @@ export function PdfMiniHeader({
         <Text style={{ fontFamily: "Fraunces", fontSize: 9, color: colors.sage }}>
           tri<Text style={{ color: colors.bronze }}>ta</Text>
         </Text>
-        <Text style={{ fontSize: 6, color: colors.ink300 }}>
+        <Text style={{ fontSize: 6.5, color: colors.ink300 }}>
           {userName} · {t("pdf.personalityProfile", locale)} · {planLabel} · {date}
         </Text>
       </View>

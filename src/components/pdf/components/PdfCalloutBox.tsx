@@ -41,7 +41,7 @@ export function PdfCalloutBox({ variant, title, children }: PdfCalloutBoxProps) 
       {title && (
         <Text
           style={{
-            fontSize: 6,
+            fontSize: 6.5,
             fontWeight: 700,
             letterSpacing: 0.8,
             textTransform: "uppercase",

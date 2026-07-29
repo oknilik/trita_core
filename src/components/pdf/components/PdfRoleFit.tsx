@@ -47,7 +47,7 @@ export function PdfRoleFit({ strong, might, prep, secondary, strongRoles, mightR
               marginBottom: 3,
             }}
           >
-            <Text style={{ fontSize: 5, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: tier.labelColor, marginBottom: 1.5 }}>
+            <Text style={{ fontSize: 5.5, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: tier.labelColor, marginBottom: 1.5 }}>
               {tier.label[locale]}
             </Text>
             <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.35, marginBottom: tierRoles.length > 0 ? 3 : 0 }}>
@@ -56,7 +56,7 @@ export function PdfRoleFit({ strong, might, prep, secondary, strongRoles, mightR
             {tierRoles.length > 0 && (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 2 }}>
                 {tierRoles.map((r) => (
-                  <Text key={r} style={{ fontSize: 5.5, backgroundColor: tier.pillBg, color: tier.pillText, padding: "1.5 4", borderRadius: 6 }}>
+                  <Text key={r} style={{ fontSize: 6, backgroundColor: tier.pillBg, color: tier.pillText, padding: "1.5 4", borderRadius: 6 }}>
                     {r}
                   </Text>
                 ))}
@@ -66,7 +66,7 @@ export function PdfRoleFit({ strong, might, prep, secondary, strongRoles, mightR
         );
       })}
       {/* Disclaimer (P2.2): a személyiség csak egy tényező */}
-      <Text style={{ fontSize: 5.5, color: colors.ink300, lineHeight: 1.4, marginTop: 3 }}>
+      <Text style={{ fontSize: 6, color: colors.ink300, lineHeight: 1.4, marginTop: 3 }}>
         {t("pdf.roleFitDisclaimer", locale)}
       </Text>
     </View>

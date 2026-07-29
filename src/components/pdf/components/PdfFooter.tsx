@@ -27,12 +27,12 @@ export function PdfFooter({ locale = "hu" }: PdfFooterProps) {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        fontSize: 5,
+        fontSize: 5.5,
         color: colors.ink300,
         borderTop: `0.5 solid ${colors.sand}`,
       }}
     >
-      <Text style={{ fontFamily: "Fraunces", fontSize: 6, color: colors.sage }}>
+      <Text style={{ fontFamily: "Fraunces", fontSize: 6.5, color: colors.sage }}>
         tri<Text style={{ color: colors.bronze }}>ta</Text>
       </Text>
       <Text>trita.io · {t("pdf.footerTagline", locale)}</Text>

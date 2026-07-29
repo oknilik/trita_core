@@ -27,7 +27,7 @@ export function PdfEnvironment({ items }: { items: EnvItem[] }) {
             marginBottom: 3,
           }}
         >
-          <Text style={{ width: 78, fontSize: 7, fontWeight: 500, color: colors.ink }}>{item.label}</Text>
+          <Text style={{ width: 78, fontSize: 7.5, fontWeight: 500, color: colors.ink }}>{item.label}</Text>
           <View style={{ flex: 1 }}>
             <View style={{ height: 2, backgroundColor: colors.cream500, borderRadius: 1, position: "relative" }}>
               <View

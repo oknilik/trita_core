@@ -29,11 +29,11 @@ export function PdfDimStrip({ dimensions, locale = "hu" }: { dimensions: Dim[]; 
               borderRight: i < dimensions.length - 1 ? `1 solid ${colors.cream500}` : undefined,
             }}
           >
-            <Text style={{ fontSize: 5, color: colors.ink300, marginBottom: 2 }}>{dim.shortName}</Text>
+            <Text style={{ fontSize: 5.5, color: colors.ink300, marginBottom: 2 }}>{dim.shortName}</Text>
             <Text style={{ fontFamily: "Fraunces", fontSize: 13, color: tc, marginBottom: 2 }}>{dim.value}</Text>
             <Text
               style={{
-                fontSize: 5,
+                fontSize: 5.5,
                 fontWeight: 600,
                 backgroundColor: tierBg(tier),
                 color: tc,

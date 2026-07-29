@@ -13,7 +13,7 @@ export function PdfInsightPair({ strengths, watchAreas, locale = "hu" }: PdfInsi
   return (
     <View style={{ flexDirection: "row", gap: 5, marginBottom: 6 }}>
       <View style={{ flex: 1, backgroundColor: colors.sage100, borderRadius: 5, padding: "6 8", border: `1 solid rgba(61,107,94,0.1)` }}>
-        <Text style={{ fontSize: 5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700, color: colors.sageDark, marginBottom: 3 }}>
+        <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700, color: colors.sageDark, marginBottom: 3 }}>
           {t("pdf.yourStrengths", locale)}
         </Text>
         {strengths.map((s, i) => (
@@ -24,7 +24,7 @@ export function PdfInsightPair({ strengths, watchAreas, locale = "hu" }: PdfInsi
         ))}
       </View>
       <View style={{ flex: 1, backgroundColor: colors.bronze100, borderRadius: 5, padding: "6 8", border: `1 solid rgba(193,127,74,0.1)` }}>
-        <Text style={{ fontSize: 5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700, color: colors.bronzeDark, marginBottom: 3 }}>
+        <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700, color: colors.bronzeDark, marginBottom: 3 }}>
           {t("pdf.watchAreas", locale)}
         </Text>
         {watchAreas.map((w, i) => (

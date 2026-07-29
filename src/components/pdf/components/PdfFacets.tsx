@@ -24,7 +24,7 @@ export function PdfFacets({ dimensions, compact = false, locale = "hu" }: { dime
         const dotColor = tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
         const isLast = idx === dimensions.length - 1;
         return (
-          <View key={dim.name} wrap={false} style={{ marginBottom: isLast ? 0 : (compact ? 6 : 10), paddingBottom: isLast ? 0 : (compact ? 4 : 8), borderBottom: isLast ? undefined : `1 solid ${colors.cream500}` }}>
+          <View key={dim.name} wrap={false} style={{ marginBottom: isLast ? 0 : (compact ? 4 : 10), paddingBottom: isLast ? 0 : (compact ? 3 : 8), borderBottom: isLast ? undefined : `1 solid ${colors.cream500}` }}>
             {/* Dimension header */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: compact ? 2 : 3 }}>
               <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: dotColor }} />
@@ -35,7 +35,7 @@ export function PdfFacets({ dimensions, compact = false, locale = "hu" }: { dime
 
             {/* Short insight — hidden in compact mode to save space */}
             {!compact && dim.insight && (
-              <Text style={{ fontSize: 7, fontWeight: 500, color: colors.ink, lineHeight: 1.35, marginBottom: 3 }}>
+              <Text style={{ fontSize: 7.5, fontWeight: 500, color: colors.ink, lineHeight: 1.35, marginBottom: 3 }}>
                 {dim.insight}
               </Text>
             )}
@@ -53,7 +53,7 @@ export function PdfFacets({ dimensions, compact = false, locale = "hu" }: { dime
                       flexDirection: "row",
                       alignItems: "center",
                       gap: 5,
-                      padding: "4 6",
+                      padding: "3 6",
                       backgroundColor: colors.cream300,
                       border: `1 solid ${colors.cream500}`,
                       borderRadius: 4,

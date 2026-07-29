@@ -46,7 +46,7 @@ export function PdfTeamRoles({ roles, locale = "hu", showScores = false }: PdfTe
           >
             <Text
               style={{
-                fontSize: 5,
+                fontSize: 5.5,
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: 0.8,
@@ -65,12 +65,12 @@ export function PdfTeamRoles({ roles, locale = "hu", showScores = false }: PdfTe
               {role.name}
             </Text>
             {role.why ? (
-              <Text style={{ fontSize: 5.5, color: colors.ink500, lineHeight: 1.35, marginBottom: 1.5 }}>
+              <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.35, marginBottom: 1.5 }}>
                 {role.why}
               </Text>
             ) : null}
             {role.subtitle ? (
-              <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.3 }}>{role.subtitle}</Text>
+              <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.3 }}>{role.subtitle}</Text>
             ) : null}
           </View>
         );

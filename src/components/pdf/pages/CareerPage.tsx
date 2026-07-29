@@ -56,12 +56,12 @@ export function CareerPage({ data, pageNum, totalPages, locale }: Props) {
                     <Text style={{ fontFamily: "Fraunces", fontSize: 10.5, color: colors.ink }}>
                       {i + 1}. {role.name}
                     </Text>
-                    <Text style={{ fontSize: 7, color: colors.ink500, marginTop: 1 }}>
+                    <Text style={{ fontSize: 7.5, color: colors.ink500, marginTop: 1 }}>
                       {role.industry}
                     </Text>
                   </View>
                   <View style={{ alignItems: "flex-end" }}>
-                    <Text style={{ fontSize: 7.5, fontWeight: 600, color: tier.color }}>
+                    <Text style={{ fontSize: 8, fontWeight: 600, color: tier.color }}>
                       {tier.text}
                     </Text>
                     <Text style={{ fontSize: 6.5, color: colors.ink500, marginTop: 1 }}>
@@ -101,7 +101,7 @@ export function CareerPage({ data, pageNum, totalPages, locale }: Props) {
                   />
                 </View>
                 {role.why ? (
-                  <Text style={{ fontSize: 7, color: colors.ink500, lineHeight: 1.45, marginTop: 3 }}>
+                  <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.45, marginTop: 3 }}>
                     {role.why}
                   </Text>
                 ) : null}
@@ -112,7 +112,7 @@ export function CareerPage({ data, pageNum, totalPages, locale }: Props) {
 
         {career.developNote ? (
           <PdfCard eyebrow={t("pdf.careerDevelop", locale)}>
-            <Text style={{ fontSize: 7.5, color: colors.ink, lineHeight: 1.5 }}>
+            <Text style={{ fontSize: 8, color: colors.ink, lineHeight: 1.5 }}>
               {career.developNote}
             </Text>
           </PdfCard>

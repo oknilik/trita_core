@@ -65,7 +65,7 @@ export function ReflectPage({ data, pageNum, totalPages, locale }: Props) {
     <Page size="A4" style={s.page}>
       <PdfMiniHeader userName={data.userName} planLabel="Plus" date={data.completedAt} locale={locale} />
 
-      <View style={{ flex: 1, padding: "0 28 12" }}>
+      <View style={{ padding: "0 28 0" }}>
         {/* ── Önkép vs. visszajelzés ── */}
         <PdfCard eyebrow={t("pdf.selfVsFeedback", locale)}>
           <Text style={{ fontFamily: "Fraunces", fontSize: 11, color: colors.ink, marginBottom: 6 }}>
@@ -74,7 +74,7 @@ export function ReflectPage({ data, pageNum, totalPages, locale }: Props) {
 
           {/* Opening callout */}
           <PdfCalloutBox variant="sage">
-            <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+            <Text style={{ fontSize: 7.5, color: colors.sageDark, lineHeight: 1.45 }}>
               {summarySentence}
             </Text>
           </PdfCalloutBox>
@@ -108,10 +108,10 @@ export function ReflectPage({ data, pageNum, totalPages, locale }: Props) {
 
         {/* ── Mit kezdj ezzel ── */}
         <View style={{ borderTop: `1 solid ${colors.sand}`, paddingTop: 6 }}>
-          <Text style={{ fontSize: 6, letterSpacing: 1, textTransform: "uppercase", color: colors.ink300, fontWeight: 600, marginBottom: 3 }}>
+          <Text style={{ fontSize: 6.5, letterSpacing: 1, textTransform: "uppercase", color: colors.ink300, fontWeight: 600, marginBottom: 3 }}>
             {t("pdf.whatToDoWithThis", locale)}
           </Text>
-          <Text style={{ fontSize: 7, color: colors.ink500, lineHeight: 1.45 }}>
+          <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.45 }}>
             {t("pdf.whatToDoDescription", locale)}
           </Text>
         </View>

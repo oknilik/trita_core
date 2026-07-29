@@ -54,17 +54,21 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
           {/* Profil karakter callout */}
           {data.profileCharacter && (
             <PdfCalloutBox variant="sage" title={t("pdf.keyProfileCharacter", locale)}>
-              <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+              <Text style={{ fontSize: 7.5, color: colors.sageDark, lineHeight: 1.45 }}>
                 {data.profileCharacter}
               </Text>
             </PdfCalloutBox>
           )}
         </PdfCard>
 
-        {/* ── Top 3 dimenzió részletesen ── */}
-        <PdfCard eyebrow={t("pdf.dimensionsInDetail", locale)}>
-          <PdfDimDetails dimensions={data.dimensions} previewOnly hasPlus={hasPlus} locale={locale} />
-        </PdfCard>
+        {/* ── Top 3 dimenzió részletesen — csak start-planban: a plus riport
+            külön alskála-oldala teljes bontást ad, itt redundáns lenne, és a
+            csapatszerep-kártyát lökné át üres folytatás-oldalra ── */}
+        {!hasPlus && (
+          <PdfCard eyebrow={t("pdf.dimensionsInDetail", locale)}>
+            <PdfDimDetails dimensions={data.dimensions} previewOnly hasPlus={hasPlus} locale={locale} />
+          </PdfCard>
+        )}
 
         {/* ── Csapatszerepek ── */}
         <PdfCard eyebrow={t("pdf.teamRoles", locale)}>
@@ -82,12 +86,12 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
               {t("pdf.wantToGoDeeper", locale)}
             </Text>
             <View>
-              <Text style={{ fontSize: 6, fontWeight: 600, color: colors.bronze, marginBottom: 2 }}>Plus · €9</Text>
-              <Text style={{ fontSize: 6, color: colors.ink500, lineHeight: 1.4 }}>
+              <Text style={{ fontSize: 6.5, fontWeight: 600, color: colors.bronze, marginBottom: 2 }}>Plus · €9</Text>
+              <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4 }}>
                 {t("pdf.upsellDescription", locale)}
               </Text>
             </View>
-            <Text style={{ fontSize: 5, color: colors.ink300, marginTop: 3 }}>trita.io/profile → {t("pdf.upsellUnlock", locale)}</Text>
+            <Text style={{ fontSize: 5.5, color: colors.ink300, marginTop: 3 }}>trita.io/profile → {t("pdf.upsellUnlock", locale)}</Text>
           </View>
         )}
       </View>

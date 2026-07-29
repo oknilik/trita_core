@@ -32,7 +32,7 @@ function Chip({ label, dot }: { label: string; dot: string }) {
       }}
     >
       <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: dot }} />
-      <Text style={{ fontSize: 6, color: colors.ink500 }}>{label}</Text>
+      <Text style={{ fontSize: 6.5, color: colors.ink500 }}>{label}</Text>
     </View>
   );
 }
@@ -60,7 +60,7 @@ export function PdfHeader({
       >
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View style={{ maxWidth: 380 }}>
-            <Text style={{ fontSize: 6, letterSpacing: 2, textTransform: "uppercase", color: colors.bronze, marginBottom: 4, fontWeight: 600 }}>
+            <Text style={{ fontSize: 6.5, letterSpacing: 2, textTransform: "uppercase", color: colors.bronze, marginBottom: 4, fontWeight: 600 }}>
               {"// "}{t("pdf.personalityProfile", locale)}
             </Text>
             <Text style={{ fontFamily: "Fraunces", fontSize: 21, color: colors.ink, marginBottom: 2 }}>
@@ -77,7 +77,7 @@ export function PdfHeader({
               {percentile ? (
                 <Text
                   style={{
-                    fontSize: 6,
+                    fontSize: 6.5,
                     backgroundColor: colors.sage100,
                     color: colors.sageDark,
                     padding: "1.5 6",
@@ -91,7 +91,7 @@ export function PdfHeader({
             </View>
 
             {insight ? (
-              <Text style={{ fontSize: 7.5, color: colors.ink500, lineHeight: 1.5, marginTop: 3 }}>
+              <Text style={{ fontSize: 8, color: colors.ink500, lineHeight: 1.5, marginTop: 3 }}>
                 {insight}
               </Text>
             ) : null}

@@ -19,7 +19,7 @@ function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
   const n = dims.length || 6;
   const cx = size / 2;
   const cy = size / 2;
-  const R = size / 2 - 16;
+  const R = size / 2 - 15;
 
   const point = (i: number, r: number): [number, number] => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
@@ -56,17 +56,17 @@ function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
         const [x, y] = point(i, (R * Math.max(0, Math.min(100, d.value))) / 100);
         return <Circle key={i} cx={x} cy={y} r={1.6} fill={colors.sage} />;
       })}
-      {/* Tengely-címkék */}
+      {/* Tengely-címkék — a felület radarjának egybetűs HEXACO-jelei */}
       {dims.map((d, i) => {
-        const [x, y] = point(i, R + 9);
+        const [x, y] = point(i, R + 10);
         return (
           <SvgText
             key={i}
             x={x}
-            y={y + 2}
+            y={y + 2.5}
             textAnchor="middle"
-            fill={colors.ink300}
-            style={{ fontFamily: "DM Sans", fontSize: 5.5 }}
+            fill={colors.ink500}
+            style={{ fontFamily: "Fraunces", fontSize: 8, fontWeight: 600 }}
           >
             {d.shortName}
           </SvgText>
@@ -80,7 +80,7 @@ export function PdfDimensionChart({ dims }: { dims: Dim[] }) {
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 4 }}>
       {/* Radar — látványelem, az élő riporttal azonos */}
-      <RadarSvg dims={dims} size={128} />
+      <RadarSvg dims={dims} size={150} />
 
       {/* Kompakt sávok — dimenziónként érték + szint-szín */}
       <View style={{ flex: 1 }}>
@@ -89,7 +89,7 @@ export function PdfDimensionChart({ dims }: { dims: Dim[] }) {
           const tc = tierColor(tier);
           return (
             <View key={d.name} style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 5 }}>
-              <Text style={{ width: 62, fontSize: 6, color: colors.ink500 }}>{d.name}</Text>
+              <Text style={{ width: 62, fontSize: 6.5, color: colors.ink500 }}>{d.name}</Text>
               <View style={{ flex: 1, height: 3, backgroundColor: colors.cream300, borderRadius: 1.5 }}>
                 <View style={{ width: `${Math.max(0, Math.min(100, d.value))}%`, height: 3, backgroundColor: tc, borderRadius: 1.5 }} />
               </View>

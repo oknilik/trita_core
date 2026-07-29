@@ -46,10 +46,10 @@ export function PdfDimDetails({ dimensions, previewOnly = false, hasPlus = false
           >
             <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: dotColor, marginTop: 3 }} />
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 7, fontWeight: 500, color: colors.ink }}>
+              <Text style={{ fontSize: 7.5, fontWeight: 500, color: colors.ink }}>
                 {dim.name} · {dim.value}%
               </Text>
-              <Text style={{ fontSize: 6, color: colors.ink300, lineHeight: 1.35, marginTop: 1 }}>
+              <Text style={{ fontSize: 6.5, color: colors.ink300, lineHeight: 1.35, marginTop: 1 }}>
                 {dim.description}
               </Text>
             </View>

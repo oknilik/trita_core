@@ -1,7 +1,6 @@
 import { Page, View, Text } from "@react-pdf/renderer";
 import { s, colors } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
-import { PdfHowYouWork } from "../components/PdfHowYouWork";
 import { PdfRoleFit } from "../components/PdfRoleFit";
 import { PdfTakeaways } from "../components/PdfTakeaways";
 import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
@@ -25,12 +24,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
     <Page size="A4" style={s.page}>
       <PdfMiniHeader userName={data.userName} planLabel={planLabel} date={data.completedAt} locale={locale} />
 
-      <View style={{ flex: 1, padding: "0 28 12" }}>
-        {/* ── Hogyan dolgozol ── */}
-        <PdfCard eyebrow={t("pdf.howYouWork", locale)}>
-          <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
-        </PdfCard>
-
+      <View style={{ padding: "0 28 0" }}>
         {/* ── Vakfoltok és nyomás alatti működés (P2.1) — hipotézisek,
             forrás-dimenzió chippel (P5.2: a „miért" kimondása) ── */}
         {(pc.pressure?.length ?? 0) > 0 && (
@@ -53,7 +47,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
                 {item.source ? (
                   <Text
                     style={{
-                      fontSize: 5,
+                      fontSize: 5.5,
                       fontWeight: 600,
                       textTransform: "uppercase",
                       letterSpacing: 0.6,
@@ -64,10 +58,10 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
                     {item.source}
                   </Text>
                 ) : null}
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
+                <Text style={{ fontSize: 7.5, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
-            <Text style={{ fontSize: 5.5, color: colors.ink300, marginTop: 4, lineHeight: 1.4 }}>
+            <Text style={{ fontSize: 6, color: colors.ink300, marginTop: 4, lineHeight: 1.4 }}>
               {t("pdf.pressureDisclaimer", locale)}
             </Text>
           </PdfCard>
@@ -107,7 +101,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           >
             <Text
               style={{
-                fontSize: 5,
+                fontSize: 5.5,
                 letterSpacing: 1,
                 textTransform: "uppercase",
                 color: colors.sageDark,
@@ -130,7 +124,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
                   <Text
                     style={{
                       width: 92,
-                      fontSize: 5.5,
+                      fontSize: 6,
                       fontWeight: 600,
                       textTransform: "uppercase",
                       letterSpacing: 0.5,
@@ -140,13 +134,13 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
                   >
                     {t(labelKey, locale)}
                   </Text>
-                  <Text style={{ flex: 1, fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+                  <Text style={{ flex: 1, fontSize: 7.5, color: colors.sageDark, lineHeight: 1.45 }}>
                     {text}
                   </Text>
                 </View>
               ))
             ) : (
-              <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.45 }}>
+              <Text style={{ fontSize: 7.5, color: colors.sageDark, lineHeight: 1.45 }}>
                 {pc.growthTip}
               </Text>
             )}
@@ -166,7 +160,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
         >
           <Text
             style={{
-              fontSize: 5,
+              fontSize: 5.5,
               letterSpacing: 1,
               textTransform: "uppercase",
               color: colors.ink300,
@@ -176,7 +170,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
           >
             {t("pdf.methodNoteTitle", locale)}
           </Text>
-          <Text style={{ fontSize: 7, color: colors.ink300, lineHeight: 1.45 }}>
+          <Text style={{ fontSize: 7.5, color: colors.ink300, lineHeight: 1.45 }}>
             {t("pdf.methodNoteBody", locale)}
           </Text>
         </View>

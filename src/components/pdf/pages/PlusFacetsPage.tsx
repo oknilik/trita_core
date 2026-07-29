@@ -63,20 +63,20 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
     <Page size="A4" style={s.page}>
       <PdfMiniHeader userName={data.userName} planLabel={planLabel} date={data.completedAt} locale={locale} />
 
-      <View style={{ flex: 1, padding: "0 28 12" }}>
+      <View style={{ padding: "0 28 0" }}>
         {/* ── Alskálák részletesen — hosszú blokk, ez az egyetlen kártya,
             amely oldalhatáron törhet (wrap); a belső elemek egyben maradnak ── */}
         <PdfCard eyebrow={t("pdf.subscalesInDetail", locale)} wrap>
           {/* Top facet highlight callout */}
           {allFacets.length > 0 && (
-            <View wrap={false} style={{ backgroundColor: colors.sage100, borderLeft: `2 solid ${colors.sage}`, borderTopRightRadius: 5, borderBottomRightRadius: 5, padding: "6 8", marginBottom: 8 }}>
-              <Text style={{ fontSize: 5.5, letterSpacing: 0.6, textTransform: "uppercase", fontWeight: 700, color: colors.sageDark, marginBottom: 4 }}>
+            <View wrap={false} style={{ backgroundColor: colors.sage100, borderLeft: `2 solid ${colors.sage}`, borderTopRightRadius: 5, borderBottomRightRadius: 5, padding: "5 8", marginBottom: 6 }}>
+              <Text style={{ fontSize: 6, letterSpacing: 0.6, textTransform: "uppercase", fontWeight: 700, color: colors.sageDark, marginBottom: 4 }}>
                 {t("pdf.topSubscales", locale)}
               </Text>
               {/* High facets — sage pills */}
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 3, marginBottom: 3 }}>
                 {topFacets.map((f) => (
-                  <Text key={f.name} style={{ fontSize: 6, padding: "2 6", borderRadius: 999, backgroundColor: "rgba(61,107,94,0.12)", color: colors.sage, fontWeight: 500 }}>
+                  <Text key={f.name} style={{ fontSize: 6.5, padding: "2 6", borderRadius: 999, backgroundColor: "rgba(61,107,94,0.12)", color: colors.sage, fontWeight: 500 }}>
                     {f.name} {f.value}
                   </Text>
                 ))}
@@ -84,14 +84,14 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
               {/* Low facets — bronze pills */}
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 3, marginBottom: 4 }}>
                 {bottomFacets.map((f) => (
-                  <Text key={f.name} style={{ fontSize: 6, padding: "2 6", borderRadius: 999, backgroundColor: "rgba(193,127,74,0.1)", color: colors.bronzeDark, fontWeight: 500 }}>
+                  <Text key={f.name} style={{ fontSize: 6.5, padding: "2 6", borderRadius: 999, backgroundColor: "rgba(193,127,74,0.1)", color: colors.bronzeDark, fontWeight: 500 }}>
                     {f.name} {f.value}
                   </Text>
                 ))}
               </View>
               {/* Summary sentence */}
               {facetSummaryText && (
-                <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.35 }}>
+                <Text style={{ fontSize: 7.5, color: colors.sageDark, lineHeight: 1.35 }}>
                   {facetSummaryText}
                 </Text>
               )}
@@ -110,10 +110,10 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
 
         {/* ── Összegzés — meleg zárókártya a korábbi sötét doboz helyett ── */}
         <View wrap={false} style={{ backgroundColor: colors.sage100, borderRadius: 8, border: `1 solid rgba(61,107,94,0.15)`, padding: "8 10" }}>
-          <Text style={{ fontSize: 5, letterSpacing: 1, textTransform: "uppercase", color: colors.sageDark, fontWeight: 600, marginBottom: 3 }}>
+          <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", color: colors.sageDark, fontWeight: 600, marginBottom: 3 }}>
             {t("pdf.whatDoesThisMeanOverall", locale)}
           </Text>
-          <Text style={{ fontSize: 7, color: colors.sageDark, lineHeight: 1.4 }}>
+          <Text style={{ fontSize: 7.5, color: colors.sageDark, lineHeight: 1.4 }}>
             {overallSummary}
           </Text>
         </View>

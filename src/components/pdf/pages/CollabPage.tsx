@@ -25,7 +25,7 @@ function SourceChip({ label, color }: { label?: string; color: string }) {
   return (
     <Text
       style={{
-        fontSize: 5,
+        fontSize: 5.5,
         fontWeight: 600,
         textTransform: "uppercase",
         letterSpacing: 0.6,
@@ -46,7 +46,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
     <Page size="A4" style={s.page}>
       <PdfMiniHeader userName={data.userName} planLabel="Plus" date={data.completedAt} locale={locale} />
 
-      <View style={{ flex: 1, padding: "0 28 12" }}>
+      <View style={{ padding: "0 28 0" }}>
         {/* ── Természetes partnerek ── */}
         {collab.click.length > 0 && (
           <PdfCard eyebrow={t("pdf.collabClick", locale)}>
@@ -63,7 +63,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
                 }}
               >
                 <SourceChip label={item.source} color={colors.sageDark} />
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
+                <Text style={{ fontSize: 7.5, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
           </PdfCard>
@@ -85,7 +85,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
                 }}
               >
                 <SourceChip label={item.source} color={colors.bronzeDark} />
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
+                <Text style={{ fontSize: 7.5, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
           </PdfCard>
@@ -97,7 +97,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
             {collab.needs.map((item, i) => (
               <View key={i} style={{ marginBottom: i === collab.needs.length - 1 ? 0 : 5 }}>
                 <SourceChip label={item.source} color={colors.sageDark} />
-                <Text style={{ fontSize: 7, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
+                <Text style={{ fontSize: 7.5, color: colors.ink, lineHeight: 1.45 }}>{item.text}</Text>
               </View>
             ))}
           </PdfCard>
@@ -113,7 +113,7 @@ export function CollabPage({ data, pageNum, totalPages, locale }: Props) {
             padding: "8 10",
           }}
         >
-          <Text style={{ fontSize: 7, color: colors.ink300, lineHeight: 1.45 }}>
+          <Text style={{ fontSize: 7.5, color: colors.ink300, lineHeight: 1.45 }}>
             {t("pdf.collabSourceNote", locale)}
           </Text>
         </View>
