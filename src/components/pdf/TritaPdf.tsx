@@ -7,6 +7,7 @@ import { PlusFacetsPage } from "./pages/PlusFacetsPage";
 import { PlusWorkStylePage } from "./pages/PlusWorkStylePage";
 import { CollabPage } from "./pages/CollabPage";
 import { ReflectPage } from "./pages/ReflectPage";
+import { CareerPage } from "./pages/CareerPage";
 
 // ─── Data interface ──────────────────────────────────────────────────────────
 
@@ -38,6 +39,11 @@ export interface PdfData {
   teamRoleEstimated?: boolean;
   // Altruism
   altruism?: { value: number; description: string };
+  /** Karrier-iránytű export — csak kitöltött wizard után kerül a riportba. */
+  career?: {
+    roles: { name: string; industry: string; score: number; bandLow: number; bandHigh: number; why?: string }[];
+    developNote?: string;
+  };
   // Plus content
   plusContent?: {
     howYouWork: string[];
@@ -89,7 +95,8 @@ function TritaDocument({ data }: { data: PdfData }) {
 
   // Start: 1; Plus: 5 (summary + start + facets + workstyle + collab);
   // observerekkel: 6. A summary- és collab-oldal csak plus riportban él.
-  const totalPages = hasObservers ? 6 : hasPlus ? 5 : 1;
+  const hasCareer = hasPlus && Boolean(data.career?.roles.length);
+  const totalPages = (hasObservers ? 6 : hasPlus ? 5 : 1) + (hasCareer ? 1 : 0);
   let pageNum = 0;
   const nextPage = () => ++pageNum;
 
@@ -102,6 +109,7 @@ function TritaDocument({ data }: { data: PdfData }) {
       {hasPlus && <PlusFacetsPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
       {hasPlus && <PlusWorkStylePage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
       {hasPlus && <CollabPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
+      {hasCareer && <CareerPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
       {hasObservers && <ReflectPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
     </Document>
   );

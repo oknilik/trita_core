@@ -624,6 +624,75 @@ export const resultsTranslations = {
       en: "Motivation isn't personality — these only refine the ordering.",
     },
     ccTopMatch: { hu: "A legerősebb irányod", en: "Your strongest direction" },
+    ccBandHint: {
+      hu: "Konfidencia-sáv: a pontszám önértékelés-alapú becslés — a sáv a mérési bizonytalanságot jelzi.",
+      en: "Confidence band: the score is a self-report estimate — the band shows measurement uncertainty.",
+    },
+    ccFacetBadge: { hu: "facet-pontosított", en: "facet-refined" },
+    ccFacetBadgeHint: {
+      hu: "Ennél a szerepnél nem a dimenzió-átlag, hanem a szerepet ténylegesen jósló facetek számítanak.",
+      en: "For this role, the facets that actually predict it are scored — not the dimension average.",
+    },
+    ccObserverBadge: { hu: "külső képpel megerősítve", en: "observer-backed" },
+    ccObserverBadgeHint: {
+      hu: "Az illeszkedés az önkép és a külső értékelések átlagából számolódik — a sáv ezért szűkebb.",
+      en: "Fit is computed from the blend of self-image and observer ratings — hence the narrower band.",
+    },
+    ccRiasecRoleHint: {
+      hu: "A szerep Holland-kódja (RIASEC érdeklődés-típusok)",
+      en: "The role's Holland code (RIASEC interest types)",
+    },
+    ccRiasecUserLabel: { hu: "Becsült érdeklődés-kódod:", en: "Your estimated interest code:" },
+    ccRiasecEstimateNote: {
+      hu: "(Holland/RIASEC — a személyiséged és a preferenciáid alapján becsülve, nem mért érdeklődés-kérdőív)",
+      en: "(Holland/RIASEC — estimated from your personality and preferences, not a measured interest inventory)",
+    },
+    ccCompareCta: { hu: "Összevetés", en: "Compare" },
+    ccCompareSelected: { hu: "Kiválasztva ✓", en: "Selected ✓" },
+    ccCompareHint: {
+      hu: "Válassz ki még egy irányt az összevetéshez.",
+      en: "Select one more direction to compare.",
+    },
+    ccCompareTitle: { hu: "Két irány egymás mellett", en: "Two directions side by side" },
+    ccCompareClear: { hu: "Bezárás", en: "Close" },
+    ccCompareNote: {
+      hu: "A sávok azt mutatják, az adott komponens mennyire támogatja nálad a szerepet (0–100).",
+      en: "Bars show how strongly each component supports the role for you (0–100).",
+    },
+    ccPlan30Eyebrow: { hu: "30 napos mini-terv", en: "30-day mini plan" },
+    ccPlan30Title: {
+      hu: "A legtöbb top-irányodnál a(z) {dim} a szűk keresztmetszet — ezzel érdemes kezdeni:",
+      en: "Across your top directions, {dim} is the bottleneck — start here:",
+    },
+    ccPlan30Behavior: { hu: "Viselkedés", en: "Behavior" },
+    ccPlan30Reflection: { hu: "Reflexió", en: "Reflection" },
+    ccPlan30Challenge: { hu: "30 napos kihívás", en: "30-day challenge" },
+    ccLeaderEyebrow: { hu: "Tipikus vezetési közeg", en: "Typical leadership context" },
+    ccLeaderTitle: {
+      hu: "A(z) {industry} területen gyakran ilyen vezetéssel találkozol:",
+      en: "In {industry}, you'll often encounter this kind of leadership:",
+    },
+    ccLeaderNote: {
+      hu: "Iparági tipikus mintázat, nem szabály — a konkrét vezető ettől eltérhet.",
+      en: "A typical industry pattern, not a rule — your actual manager may differ.",
+    },
+    ccMethodTitle: { hu: "Mire épül ez a becslés?", en: "What is this estimate based on?" },
+    ccMethodBody1: {
+      hu: "Az illeszkedés a HEXACO hatfaktoros személyiségmodellre épül: minden szerephez a szakirodalom alapján kulcs-dimenziók és facetek tartoznak iránnyal és súllyal, az illeszkedés ezek súlyozott átlaga (0–100).",
+      en: "Fit is based on the HEXACO six-factor personality model: each role has key dimensions and facets with direction and weight, and fit is their weighted average (0–100).",
+    },
+    ccMethodBody2: {
+      hu: "A meta-analízisek szerint a lelkiismeretesség és a becsületesség-alázat a legerősebb általános munkahelyi prediktorok; a többi dimenzió szereptől függően számít. A preferenciáid (ember/adat, változatosság, önállóság, alkotás) a rangsort árnyalják, a Holland-kód becslés döntetlen-bontó.",
+      en: "Meta-analyses show conscientiousness and honesty-humility are the strongest general workplace predictors; other dimensions matter role by role. Your preferences (people/data, variety, autonomy, creation) shade the ranking; the Holland-code estimate breaks ties.",
+    },
+    ccMethodBody3: {
+      hu: "A pontszám önértékelés-alapú BECSLÉS, nem alkalmasság-ítélet: a konfidencia-sáv a mérési bizonytalanságot mutatja (rövid kérdőívnél szélesebb, külső értékeléssel szűkebb). Alacsony illeszkedés nem jelenti, hogy egy pálya nem való neked — azt jelzi, mi igényel több tudatos energiát.",
+      en: "The score is a self-report ESTIMATE, not a verdict on suitability: the confidence band shows measurement uncertainty (wider on the short form, narrower with observer backing). A low fit doesn't mean a path isn't for you — it signals what will take more deliberate energy.",
+    },
+    ccMethodRefs: {
+      hu: "Irodalom: Ashton & Lee (2007) — HEXACO-modell; Barrick & Mount (1991) és Sackett et al. (2022) — személyiség–teljesítmény meta-analízisek; Holland (1997) — RIASEC.",
+      en: "References: Ashton & Lee (2007) — HEXACO model; Barrick & Mount (1991) and Sackett et al. (2022) — personality–performance meta-analyses; Holland (1997) — RIASEC.",
+    },
     ccHeroLine: {
       hu: "Erős {d1} és {d2} profilod ebbe az irányba mutat.",
       en: "Your strong {d1} and {d2} point in this direction.",
@@ -915,6 +984,10 @@ export const resultsTranslations = {
     // ── SummaryPage (P3.1) ─────────────────────────────────────────────────
     summaryPageTitle: { hu: "Összefoglaló egy oldalon", en: "One-page summary" },
     summaryStrengths: { hu: "Erősségek", en: "Strengths" },
+    careerPageTitle: { hu: "Karrier-iránytű", en: "Career compass" },
+    careerTopDirections: { hu: "A legerősebb irányaid", en: "Your strongest directions" },
+    careerDevelop: { hu: "Fejlődési fókusz", en: "Development focus" },
+    careerMethod: { hu: "Módszertani keret", en: "Methodological frame" },
     summaryBlindspots: { hu: "Lehetséges vakfoltok", en: "Possible blind spots" },
     summaryUnderPressure: { hu: "Nyomás alatt", en: "Under pressure" },
     summaryInTeam: { hu: "Csapatban", en: "In a team" },

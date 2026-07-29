@@ -11,6 +11,12 @@ export type DimCode = "INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN";
 
 interface RoleWeight {
   dim: DimCode;
+  /**
+   * Facet-szintű finomítás: ha meg van adva ÉS a hívó átadott facet-
+   * pontszámokat, az illeszkedés a facet értékéből számolódik (a dim csak
+   * fallback). Kódok a kérdésbank facet-kódjai + "altruism".
+   */
+  facet?: string;
   /** "high": magas érték illeszkedik; "low": alacsony érték illeszkedik */
   direction: "high" | "low";
   weight: number;
@@ -46,6 +52,10 @@ export interface RoleFitResult {
   role: IndustryRole;
   /** 0-100 személyiség-illeszkedés */
   score: number;
+  /** Konfidencia-sáv a pontszám körül (forma + observer-megerősítés szerint) */
+  band: { low: number; high: number };
+  /** Facet-pontosított súlykészlettel számolt-e */
+  facetPrecision: boolean;
   /** A legerősebben támogató dimenzió kódja */
   topDriver: DimCode;
   /** A leginkább hátráltató dimenzió kódja (ha van 55 alatti komponens) */
@@ -247,6 +257,177 @@ function dimAlignment(score: number, direction: "high" | "low"): number {
   return direction === "high" ? score : 100 - score;
 }
 
+// ── Facet-szintű finomítások ────────────────────────────────────────────────
+// A dimenzió-átlag elmossa, hogy a szerepet a dimenzión BELÜL mi jósolja:
+// a Fejlesztőt a Perfekcionizmus+Körültekintés, nem az egész C; az
+// Értékesítőt a Társas merészség+Élénkség, nem az egész X. A kulcs-
+// szerepekhez itt facet-pontosított súlykészlet él — ha a hívó átad
+// facet-pontszámokat, ez SZÁMÍT a role.weights helyett. A segítő
+// szerepeknél az altruizmus intersticiális skála is súlyt kap.
+const fw = (
+  dim: DimCode,
+  facet: string,
+  direction: "high" | "low",
+  weight: number,
+): RoleWeight => ({ dim, facet, direction, weight });
+
+export const FACET_REFINEMENTS: Record<string, RoleWeight[]> = {
+  // tech
+  dev: [fw("THOR", "perfectionism", "high", 0.3), fw("THOR", "prudence", "high", 0.2), fw("OPEN", "inquisitiveness", "high", 0.3), w("TEMP", "low", 0.2)],
+  qa: [fw("THOR", "perfectionism", "high", 0.45), fw("THOR", "organization", "high", 0.15), w("INTE", "high", 0.2), w("OPEN", "low", 0.2)],
+  pm: [fw("TEMP", "social_boldness", "high", 0.2), fw("TEMP", "liveliness", "high", 0.15), fw("OPEN", "creativity", "high", 0.35), fw("THOR", "organization", "high", 0.3)],
+  ux: [fw("OPEN", "aesthetic_appreciation", "high", 0.25), fw("OPEN", "creativity", "high", 0.2), fw("ADAP", "gentleness", "high", 0.3), fw("RESO", "sentimentality", "high", 0.25)],
+  data: [fw("OPEN", "inquisitiveness", "high", 0.4), fw("THOR", "perfectionism", "high", 0.25), fw("THOR", "prudence", "high", 0.15), w("TEMP", "low", 0.2)],
+  // sales
+  sales: [fw("TEMP", "social_boldness", "high", 0.3), fw("TEMP", "liveliness", "high", 0.2), fw("RESO", "anxiety", "low", 0.25), w("ADAP", "low", 0.25)],
+  bizdev: [fw("TEMP", "social_boldness", "high", 0.25), fw("OPEN", "creativity", "high", 0.35), fw("RESO", "fearfulness", "low", 0.2), fw("TEMP", "liveliness", "high", 0.2)],
+  support: [fw("ADAP", "patience", "high", 0.35), fw("RESO", "anxiety", "low", 0.3), fw("THOR", "organization", "high", 0.35)],
+  // finance
+  accounting: [fw("THOR", "organization", "high", 0.35), fw("THOR", "perfectionism", "high", 0.25), fw("INTE", "fairness", "high", 0.25), w("OPEN", "low", 0.15)],
+  audit: [fw("THOR", "perfectionism", "high", 0.3), fw("THOR", "prudence", "high", 0.15), fw("INTE", "fairness", "high", 0.35), w("ADAP", "low", 0.2)],
+  risk: [fw("THOR", "prudence", "high", 0.35), fw("RESO", "anxiety", "low", 0.3), fw("INTE", "fairness", "high", 0.35)],
+  // health / segítő szerepek — altruizmus intersticiális skálával
+  care: [fw("ADAP", "patience", "high", 0.3), fw("RESO", "sentimentality", "high", 0.2), fw("THOR", "diligence", "high", 0.25), fw("INTE", "altruism", "high", 0.25)],
+  therapy: [fw("ADAP", "gentleness", "high", 0.25), fw("RESO", "sentimentality", "high", 0.25), fw("INTE", "sincerity", "high", 0.2), fw("INTE", "altruism", "high", 0.3)],
+  clinical: [fw("THOR", "diligence", "high", 0.3), fw("RESO", "fearfulness", "low", 0.3), fw("ADAP", "patience", "high", 0.2), fw("INTE", "altruism", "high", 0.2)],
+  emergency: [fw("RESO", "fearfulness", "low", 0.3), fw("RESO", "anxiety", "low", 0.2), fw("THOR", "prudence", "high", 0.3), fw("TEMP", "liveliness", "high", 0.2)],
+  nonprofit: [fw("INTE", "sincerity", "high", 0.25), fw("ADAP", "forgiveness", "high", 0.25), fw("INTE", "altruism", "high", 0.3), fw("RESO", "sentimentality", "high", 0.2)],
+  specialed: [fw("ADAP", "patience", "high", 0.35), fw("THOR", "diligence", "high", 0.25), fw("INTE", "altruism", "high", 0.4)],
+  mentor: [fw("ADAP", "gentleness", "high", 0.3), fw("INTE", "sincerity", "high", 0.25), fw("RESO", "sentimentality", "high", 0.2), fw("INTE", "altruism", "high", 0.25)],
+  // education
+  teacher: [fw("TEMP", "social_boldness", "high", 0.3), fw("ADAP", "patience", "high", 0.35), fw("THOR", "organization", "high", 0.35)],
+  trainer: [fw("TEMP", "social_boldness", "high", 0.35), fw("TEMP", "liveliness", "high", 0.15), fw("OPEN", "creativity", "high", 0.25), fw("ADAP", "flexibility", "high", 0.25)],
+  // creative
+  creative: [fw("OPEN", "creativity", "high", 0.35), fw("OPEN", "aesthetic_appreciation", "high", 0.25), fw("TEMP", "liveliness", "high", 0.2), w("THOR", "low", 0.2)],
+  visual: [fw("OPEN", "aesthetic_appreciation", "high", 0.35), fw("OPEN", "creativity", "high", 0.2), fw("THOR", "perfectionism", "high", 0.25), w("TEMP", "low", 0.2)],
+  // people
+  recruiter: [fw("TEMP", "sociability", "high", 0.3), fw("TEMP", "liveliness", "high", 0.15), fw("ADAP", "gentleness", "high", 0.25), fw("THOR", "organization", "high", 0.3)],
+  hrbp: [fw("ADAP", "flexibility", "high", 0.25), fw("INTE", "fairness", "high", 0.35), fw("TEMP", "social_boldness", "high", 0.25), fw("RESO", "sentimentality", "high", 0.15)],
+};
+
+/** A szerep effektív súlykészlete: facet-finomítás, ha van; lead-fókusszal. */
+export function resolveRoleWeights(
+  role: IndustryRole,
+  options?: { leadFocus?: boolean; useFacets?: boolean },
+): RoleWeight[] {
+  const base =
+    options?.useFacets !== false && FACET_REFINEMENTS[role.key]
+      ? FACET_REFINEMENTS[role.key]
+      : role.weights;
+  return options?.leadFocus ? applyLeadFocus(base) : base;
+}
+
+/** A súly-bejegyzés értéke: facet-pontszám, ha elérhető; különben dimenzió. */
+function weightValue(
+  entry: RoleWeight,
+  scores: Partial<Record<DimCode, number>>,
+  facetScores?: Record<string, number>,
+): number | null {
+  if (entry.facet && typeof facetScores?.[entry.facet] === "number") {
+    return facetScores[entry.facet];
+  }
+  const dimValue = scores[entry.dim];
+  return typeof dimValue === "number" ? dimValue : null;
+}
+
+// ── Konfidencia-sáv ─────────────────────────────────────────────────────────
+// A pontszám önértékelés-alapú BECSLÉS — a sáv a mérési bizonytalanságot
+// jelzi: rövid formánál (TSFI-S, 2-3 item/facet) szélesebb, teljes formánál
+// szűkebb, observer-megerősítésnél tovább szűkül.
+export interface FitBand {
+  low: number;
+  high: number;
+}
+
+export function computeFitBand(
+  score: number,
+  options?: { form?: "short" | "full"; observerBacked?: boolean },
+): FitBand {
+  let halfWidth = options?.form === "full" ? 5 : 8;
+  if (options?.observerBacked) halfWidth = Math.max(4, halfWidth - 2);
+  return {
+    low: Math.max(0, score - halfWidth),
+    high: Math.min(100, score + halfWidth),
+  };
+}
+
+// ── RIASEC (Holland-kód) becslés ────────────────────────────────────────────
+// A szerepekhez irodalmi alapon 2 betűs Holland-kód tartozik; a user kódja a
+// személyiség + preferenciák alapján BECSÜLT (nem mért érdeklődés-kérdőív) —
+// a UI kötelezően „becslés" kerettel mutatja. A rangsorban kis döntetlen-
+// bontó bónusz (±3) az átfedés szerint.
+export type RiasecLetter = "R" | "I" | "A" | "S" | "E" | "C";
+
+const INDUSTRY_RIASEC_DEFAULT: Record<string, string> = {
+  tech: "IC", health: "SI", education: "SA", finance: "CE", sales: "EC",
+  creative: "AE", media: "AE", operations: "CR", people: "SE", public: "CS",
+  engineering: "RI", hospitality: "ES", science: "IR",
+};
+
+const ROLE_RIASEC_OVERRIDE: Record<string, string> = {
+  dev: "IR", pm: "EI", ux: "AI", data: "IC", devops: "RC", itsupport: "SC",
+  qa: "CI", therapy: "SA", emergency: "RS", healthadmin: "CS",
+  teacher: "SA", trainer: "SE", edtech: "AI", mentor: "SA",
+  analyst: "IC", advisor: "ES", sales: "EC", bizdev: "EA", support: "SC",
+  creative: "AR", visual: "AR", content: "AE", research: "IC",
+  recruiter: "ES", hrbp: "SE", od: "AE", payroll: "CS", lnd: "SA",
+  legal: "CI", policy: "IA", nonprofit: "SA", lawenforce: "RC",
+  design: "RI", sitemgr: "ER", estimator: "CI",
+  chef: "RA", events: "EA", opsmgr: "EC", planning: "CI",
+};
+
+export function roleRiasec(industryKey: string, roleKey: string): string {
+  return ROLE_RIASEC_OVERRIDE[roleKey] ?? INDUSTRY_RIASEC_DEFAULT[industryKey] ?? "";
+}
+
+/** Becsült user Holland-kód (top-2 betű) a személyiség + preferenciák alapján. */
+export function estimateUserRiasec(
+  scores: Partial<Record<DimCode, number>>,
+  prefs: UserPrefs,
+): RiasecLetter[] {
+  const v = (dim: DimCode) => scores[dim] ?? 50;
+  const p = (axis: PrefAxis) => prefs[axis] ?? 0;
+  const weights: Record<RiasecLetter, number> = {
+    E: v("TEMP") * 0.6 + (p("people") + 1) * 15 + (p("variety") + 1) * 5,
+    S: v("ADAP") * 0.5 + v("RESO") * 0.2 + (p("people") + 1) * 15,
+    I: v("OPEN") * 0.5 + (1 - p("people")) * 15 + v("THOR") * 0.2,
+    A: v("OPEN") * 0.5 + (p("creation") + 1) * 20,
+    C: v("THOR") * 0.6 + (1 - p("variety")) * 15,
+    R: (1 - p("people")) * 20 + (1 - p("creation")) * 10 + v("THOR") * 0.3,
+  };
+  return (Object.entries(weights) as Array<[RiasecLetter, number]>)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([letter]) => letter);
+}
+
+const RIASEC_TIEBREAK = 3;
+
+function riasecBonus(userLetters: RiasecLetter[], roleCode: string): number {
+  if (userLetters.length === 0 || !roleCode) return 0;
+  const overlap = userLetters.filter((letter) => roleCode.includes(letter)).length;
+  return overlap >= 2 ? RIASEC_TIEBREAK : overlap === 1 ? Math.round(RIASEC_TIEBREAK / 2) : -RIASEC_TIEBREAK;
+}
+
+// ── Tipikus vezetési közeg iparáganként ─────────────────────────────────────
+// Az interakció-szimuláció vezető-kiegészítőihez (LEADER_SUPPLEMENTS) kötve:
+// „ebben a közegben tipikusan ilyen vezetéssel találkozol".
+export const INDUSTRY_LEADER_CONTEXT: Record<string, { dim: DimCode; pole: "high" | "low" }> = {
+  tech: { dim: "OPEN", pole: "high" },
+  health: { dim: "THOR", pole: "high" },
+  education: { dim: "ADAP", pole: "high" },
+  finance: { dim: "THOR", pole: "high" },
+  sales: { dim: "TEMP", pole: "high" },
+  creative: { dim: "OPEN", pole: "high" },
+  media: { dim: "TEMP", pole: "high" },
+  operations: { dim: "THOR", pole: "high" },
+  people: { dim: "ADAP", pole: "high" },
+  public: { dim: "INTE", pole: "high" },
+  engineering: { dim: "THOR", pole: "high" },
+  hospitality: { dim: "TEMP", pole: "high" },
+  science: { dim: "OPEN", pole: "high" },
+};
+
 /**
  * Vezetői fókusz: a szerep alap-súlyai mellé vezetői komponensek kerülnek
  * (társas energia, nyomásállóság, delegáláshoz kellő együttműködés), majd
@@ -280,28 +461,36 @@ export function scorePrefMatch(prefs: UserPrefs, role: IndustryRole): number | n
 
 export interface RoleFitBreakdownEntry {
   dim: DimCode;
+  /** Facet-kód, ha a komponens facet-szintű (label a TRITAN_FACETS-ből) */
+  facet: string | null;
   direction: "high" | "low";
   weight: number;
   userValue: number;
   alignment: number;
 }
 
-/** Dimenziónkénti bontás az „miért ennyi?" nézethez. */
+/** Komponensenkénti bontás az „miért ennyi?" nézethez (facet-tudatos). */
 export function explainRoleFit(
   scores: Partial<Record<DimCode, number>>,
   role: IndustryRole,
-  options?: { leadFocus?: boolean },
+  options?: { leadFocus?: boolean; facetScores?: Record<string, number> },
 ): RoleFitBreakdownEntry[] {
-  const weights = options?.leadFocus ? applyLeadFocus(role.weights) : role.weights;
+  const useFacets = Boolean(FACET_REFINEMENTS[role.key]) && Boolean(options?.facetScores);
+  const weights = resolveRoleWeights(role, { leadFocus: options?.leadFocus, useFacets });
   return weights
-    .filter((entry) => typeof scores[entry.dim] === "number")
-    .map((entry) => ({
-      dim: entry.dim,
-      direction: entry.direction,
-      weight: entry.weight,
-      userValue: scores[entry.dim] as number,
-      alignment: Math.round(dimAlignment(scores[entry.dim] as number, entry.direction)),
-    }))
+    .map((entry) => {
+      const value = weightValue(entry, scores, options?.facetScores);
+      if (typeof value !== "number") return null;
+      return {
+        dim: entry.dim,
+        facet: entry.facet && typeof options?.facetScores?.[entry.facet] === "number" ? entry.facet : null,
+        direction: entry.direction,
+        weight: entry.weight,
+        userValue: value,
+        alignment: Math.round(dimAlignment(value, entry.direction)),
+      };
+    })
+    .filter((e): e is RoleFitBreakdownEntry => e !== null)
     .sort((a, b) => b.weight - a.weight);
 }
 
@@ -317,9 +506,14 @@ export function scoreRoleFit(
   let watchDim: DimCode | null = null;
   let worstAlignment = 101;
 
-  const weights = options?.leadFocus ? applyLeadFocus(role.weights) : role.weights;
+  const hasFacetRefinement = Boolean(FACET_REFINEMENTS[role.key]);
+  const useFacets = hasFacetRefinement && Boolean(options?.facetScores);
+  const weights = resolveRoleWeights(role, {
+    leadFocus: options?.leadFocus,
+    useFacets,
+  });
   for (const entry of weights) {
-    const value = scores[entry.dim];
+    const value = weightValue(entry, scores, options?.facetScores);
     if (typeof value !== "number") continue;
     const alignment = dimAlignment(value, entry.direction);
     weighted += alignment * entry.weight;
@@ -340,6 +534,11 @@ export function scoreRoleFit(
   return {
     role,
     score,
+    band: computeFitBand(score, {
+      form: options?.form,
+      observerBacked: options?.observerBacked,
+    }),
+    facetPrecision: useFacets,
     topDriver,
     watchDim: worstAlignment < 55 ? watchDim : null,
     prefMatch,
@@ -351,6 +550,12 @@ export function scoreRoleFit(
 export interface RankOptions {
   leadFocus?: boolean;
   prefs?: UserPrefs;
+  /** Facet-pontszámok (facet-kód → 0-100) — facet-finomított súlyokhoz */
+  facetScores?: Record<string, number>;
+  /** Kérdőív-forma a konfidencia-sávhoz (default: short) */
+  form?: "short" | "full";
+  /** Observer-átlaggal kevert pontszámokból számolunk-e (sáv szűkül) */
+  observerBacked?: boolean;
 }
 
 // ── Karrier-háttér (Karrier-iránytű wizard) ─────────────────────────────────
@@ -407,6 +612,10 @@ export interface CareerSuggestion extends RoleFitResult {
   industryEn: string;
   /** A végzettség-affinitás emelte-e a rangsorban */
   eduBoosted: boolean;
+  /** A szerep Holland-kódja (2 betű) */
+  riasec: string;
+  /** Átfedés a user becsült Holland-kódjával (0-2 betű) */
+  riasecOverlap: number;
 }
 
 export interface CareerSuggestionResult {
@@ -416,6 +625,8 @@ export interface CareerSuggestionResult {
   currentIndustryTop: CareerSuggestion[];
   /** A top javaslatok leggyakoribb figyelendő dimenziói (max 2) */
   developDims: DimCode[];
+  /** A user becsült Holland-kódja (top-2 betű) — „becslés" kerettel mutatandó */
+  userRiasec: RiasecLetter[];
 }
 
 export function rankCareerSuggestions(
@@ -427,15 +638,22 @@ export function rankCareerSuggestions(
     ? new Set(EDU_INDUSTRY_AFFINITY[background.eduField])
     : new Set<string>();
 
+  const userRiasec = estimateUserRiasec(scores, options?.prefs ?? {});
+
   const toSuggestion = (industry: Industry) => (result: RoleFitResult): CareerSuggestion => {
     const eduBoosted = affinity.has(industry.key);
+    const riasec = roleRiasec(industry.key, result.role.key);
+    const riasecOverlap = userRiasec.filter((letter) => riasec.includes(letter)).length;
     return {
       ...result,
-      combined: result.combined + (eduBoosted ? EDU_BOOST : 0),
+      combined:
+        result.combined + (eduBoosted ? EDU_BOOST : 0) + riasecBonus(userRiasec, riasec),
       industryKey: industry.key,
       industryHu: industry.hu,
       industryEn: industry.en,
       eduBoosted,
+      riasec,
+      riasecOverlap,
     };
   };
 
@@ -478,7 +696,7 @@ export function rankCareerSuggestions(
     .slice(0, 2)
     .map(([dim]) => dim);
 
-  return { suggestions, currentIndustryTop, developDims };
+  return { suggestions, currentIndustryTop, developDims, userRiasec };
 }
 
 /** Egy iparág szerepei kombinált pontszám szerint csökkenő sorrendben. */

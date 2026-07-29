@@ -161,3 +161,96 @@ test("explainRoleFit: súly szerint rendezett, alignment konzisztens", () => {
   const oEntry = breakdown.find((b) => b.dim === "OPEN")!;
   assert.equal(oEntry.alignment, 70); // low irány: 100-30
 });
+
+// ── Karrier-modul felújítás (2026-07-29): facet, sáv, RIASEC, vezetői közeg ──
+
+test("FACET_REFINEMENTS: súlyok 1-re összegződnek, kódok validak", async () => {
+  const { FACET_REFINEMENTS, INDUSTRIES: inds } = await import("@/lib/industry-fit");
+  const { TRITAN_FACETS } = await import("@/lib/tritan");
+  const validFacets = new Set([...Object.keys(TRITAN_FACETS), "altruism"]);
+  const roleKeys = new Set(inds.flatMap((i) => i.roles.map((r) => r.key)));
+  for (const [roleKey, weights] of Object.entries(FACET_REFINEMENTS)) {
+    assert.ok(roleKeys.has(roleKey), `ismeretlen szerep: ${roleKey}`);
+    const total = weights.reduce((sum, w) => sum + w.weight, 0);
+    assert.ok(Math.abs(total - 1) < 0.001, `${roleKey} súlyösszeg: ${total}`);
+    for (const w of weights) {
+      if (w.facet) assert.ok(validFacets.has(w.facet), `${roleKey}: érvénytelen facet ${w.facet}`);
+    }
+  }
+});
+
+test("facet-pontszám felülírja a dimenzió-átlagot a finomított szerepeknél", () => {
+  const dev = INDUSTRIES.find((i) => i.key === "tech")!.roles.find((r) => r.key === "dev")!;
+  // Ugyanaz a C-átlag (70), de az egyiknél a perfekcionizmus viszi (90),
+  // a másiknál a szorgalom (a perfekcionizmus gyenge, 50).
+  const scores = { INTE: 50, RESO: 50, TEMP: 40, ADAP: 50, THOR: 70, OPEN: 60 };
+  const precise = scoreRoleFit(scores, dev, {
+    facetScores: { perfectionism: 90, prudence: 80, inquisitiveness: 70 },
+  })!;
+  const sloppy = scoreRoleFit(scores, dev, {
+    facetScores: { perfectionism: 50, prudence: 55, inquisitiveness: 70 },
+  })!;
+  assert.ok(precise.facetPrecision && sloppy.facetPrecision);
+  assert.ok(precise.score > sloppy.score + 5, `${precise.score} vs ${sloppy.score}`);
+  // Facet-pontszám nélkül a dim-súlyokra esik vissza
+  const fallback = scoreRoleFit(scores, dev)!;
+  assert.equal(fallback.facetPrecision, false);
+});
+
+test("altruizmus beszámít a segítő szerepeknél", () => {
+  const care = INDUSTRIES.find((i) => i.key === "health")!.roles.find((r) => r.key === "care")!;
+  const scores = { INTE: 50, RESO: 60, TEMP: 45, ADAP: 65, THOR: 55, OPEN: 50 };
+  const helper = scoreRoleFit(scores, care, {
+    facetScores: { patience: 65, sentimentality: 60, diligence: 55, altruism: 95 },
+  })!;
+  const nonHelper = scoreRoleFit(scores, care, {
+    facetScores: { patience: 65, sentimentality: 60, diligence: 55, altruism: 30 },
+  })!;
+  assert.ok(helper.score > nonHelper.score + 8, `${helper.score} vs ${nonHelper.score}`);
+});
+
+test("konfidencia-sáv: rövid forma szélesebb, observer szűkíti", async () => {
+  const { computeFitBand } = await import("@/lib/industry-fit");
+  const short = computeFitBand(70, { form: "short" });
+  const full = computeFitBand(70, { form: "full" });
+  const backed = computeFitBand(70, { form: "short", observerBacked: true });
+  assert.deepEqual(short, { low: 62, high: 78 });
+  assert.deepEqual(full, { low: 65, high: 75 });
+  assert.deepEqual(backed, { low: 64, high: 76 });
+  // Skála-határ levágás
+  assert.equal(computeFitBand(97, { form: "short" }).high, 100);
+});
+
+test("RIASEC: szerep-kód létezik, user-becslés determinisztikus, bónusz rangsorol", async () => {
+  const { roleRiasec, estimateUserRiasec } = await import("@/lib/industry-fit");
+  assert.equal(roleRiasec("tech", "dev"), "IR");
+  assert.equal(roleRiasec("health", "care"), "SI"); // iparági default
+  const letters = estimateUserRiasec(socialExplorer, { people: 1, creation: 1 });
+  assert.equal(letters.length, 2);
+  assert.ok(letters.includes("E") || letters.includes("A"), `kapott: ${letters.join(",")}`);
+  const result = rankCareerSuggestions(socialExplorer, baseBackground, {
+    prefs: { people: 1, creation: 1 },
+  });
+  assert.equal(result.userRiasec.length, 2);
+  for (const s of result.suggestions) {
+    assert.ok(typeof s.riasec === "string");
+    assert.ok(s.riasecOverlap >= 0 && s.riasecOverlap <= 2);
+  }
+});
+
+test("vezetői közeg: minden iparághoz van kontextus", async () => {
+  const { INDUSTRY_LEADER_CONTEXT, INDUSTRIES: inds } = await import("@/lib/industry-fit");
+  for (const industry of inds) {
+    assert.ok(INDUSTRY_LEADER_CONTEXT[industry.key], `hiányzó vezető-kontextus: ${industry.key}`);
+  }
+});
+
+test("explainRoleFit facet-tudatos: facet-komponens jelölve", () => {
+  const dev = INDUSTRIES.find((i) => i.key === "tech")!.roles.find((r) => r.key === "dev")!;
+  const scores = { INTE: 50, RESO: 50, TEMP: 40, ADAP: 50, THOR: 70, OPEN: 60 };
+  const breakdown = explainRoleFit(scores, dev, {
+    facetScores: { perfectionism: 90, prudence: 80, inquisitiveness: 70 },
+  });
+  assert.ok(breakdown.some((e) => e.facet === "perfectionism"));
+  assert.ok(breakdown.every((e) => e.facet === null || typeof e.userValue === "number"));
+});

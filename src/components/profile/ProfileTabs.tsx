@@ -27,7 +27,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { CareerCompass } from "@/components/results/CareerCompass";
-import type { CareerBackground } from "@/lib/industry-fit";
+import { rankCareerSuggestions, type CareerBackground, type DimCode } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
 import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
@@ -171,6 +171,8 @@ export interface ProfileTabsProps {
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
   careerBackground?: CareerBackground | null;
+  /** Kérdőív-forma a karrier-modul konfidencia-sávjához. */
+  assessmentForm?: "short" | "full";
   /** Kitöltött csapatszerep-kérdőív eredménye (mért) — ha van. */
   teamRoleMeasuredScores?: Record<string, number> | null;
   /** Csapattársi szerep-visszajelzés aggregátuma (kampányból). */
@@ -462,6 +464,7 @@ function CareerTab({
   growthFocusItems,
   hasObserverData,
   careerBackground,
+  assessmentForm,
   locale,
   onOpenInvites,
 }: {
@@ -469,6 +472,7 @@ function CareerTab({
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
   careerBackground: CareerBackground | null;
+  assessmentForm: "short" | "full";
   locale: Locale;
   onOpenInvites: () => void;
 }) {
@@ -483,6 +487,10 @@ function CareerTab({
         />
         <CareerCompass
           scores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
+          facetScores={Object.fromEntries(
+            dimensions.flatMap((d) => d.facets.map((f) => [f.code, f.score])),
+          )}
+          assessmentForm={assessmentForm}
           observerScores={
             hasObserverData
               ? Object.fromEntries(
@@ -533,6 +541,7 @@ export function ProfileTabs({
   experienceHints,
   experienceHintDestination,
   careerBackground = null,
+  assessmentForm = "short",
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
 }: ProfileTabsProps) {
@@ -740,6 +749,39 @@ export function ProfileTabs({
             const workplaceInsight = plusContent?.howYouWork[0] ?? "";
             const riskInsight = plusContent?.howYouWork[1] ?? "";
 
+            // Karrier-iránytű export — csak kitöltött wizard (van háttér) után
+            const career = (() => {
+              if (!careerBackground?.status) return undefined;
+              const dimScores = Object.fromEntries(
+                mainDims.map((d) => [d.code, d.score]),
+              ) as Partial<Record<DimCode, number>>;
+              const facetScores = Object.fromEntries(
+                dimensions.flatMap((d) => d.facets.map((f) => [f.code, f.score])),
+              );
+              const ranked = rankCareerSuggestions(dimScores, careerBackground, {
+                facetScores,
+                form: assessmentForm,
+              });
+              if (ranked.suggestions.length === 0) return undefined;
+              const dimLabel = (code: string) =>
+                mainDims.find((d) => d.code === code)?.label ?? code;
+              return {
+                roles: ranked.suggestions.slice(0, 3).map((sug) => ({
+                  name: isHu ? sug.role.hu : sug.role.en,
+                  industry: isHu ? sug.industryHu : sug.industryEn,
+                  score: sug.score,
+                  bandLow: sug.band.low,
+                  bandHigh: sug.band.high,
+                })),
+                developNote:
+                  ranked.developDims.length > 0
+                    ? (isHu
+                        ? `A top irányaidnál a leggyakoribb fejlesztendő terület: ${ranked.developDims.map(dimLabel).join(", ")}.`
+                        : `Across your top directions, the most common area to develop: ${ranked.developDims.map(dimLabel).join(", ")}.`)
+                    : undefined,
+              };
+            })();
+
             await downloadPdf({
               locale,
               userName: name,
@@ -769,6 +811,7 @@ export function ProfileTabs({
               })(),
               workplaceInsight,
               riskInsight,
+              career,
               dimensions: mainDims.map((d) => ({
                 name: d.label,
                 shortName:
@@ -1001,6 +1044,7 @@ export function ProfileTabs({
             growthFocusItems={growthFocusItems}
             hasObserverData={hasObserverData}
             careerBackground={careerBackground}
+            assessmentForm={assessmentForm}
             locale={locale}
             onOpenInvites={() => handleTabChange("comparison")}
           />

@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import {
   INDUSTRIES,
+  INDUSTRY_LEADER_CONTEXT,
   explainRoleFit,
   rankCareerSuggestions,
   type AgeBand,
@@ -18,6 +19,10 @@ import {
   type PrefValue,
   type UserPrefs,
 } from "@/lib/industry-fit";
+import { TRITAN_FACETS, TRITAN_ALTRUISM } from "@/lib/tritan";
+import { LEADER_SUPPLEMENTS } from "@/lib/interaction-atoms";
+import { DIMENSION_GROWTH_TIPS } from "@/lib/profile-content";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 
 // Karrier-iránytű — rövid kérdéssor (lépés-számlálóval, auto-továbblépéssel),
 // majd reveal-eredmény: hero-kártya a legerősebb iránynak, szint-címkék,
@@ -31,6 +36,18 @@ const DIM_LABELS: Record<DimCode, { hu: string; en: string }> = {
   THOR: { hu: "lelkiismeretesség", en: "conscientiousness" },
   OPEN: { hu: "nyitottság", en: "openness" },
 };
+
+/** Breakdown-komponens címkéje: facet-név, ha facet-szintű; különben dimenzió. */
+function componentLabel(
+  entry: { dim: DimCode; facet: string | null },
+  isHu: boolean,
+): string {
+  if (entry.facet === "altruism") return isHu ? TRITAN_ALTRUISM.hu : TRITAN_ALTRUISM.en;
+  if (entry.facet && TRITAN_FACETS[entry.facet]) {
+    return isHu ? TRITAN_FACETS[entry.facet].hu : TRITAN_FACETS[entry.facet].en;
+  }
+  return isHu ? DIM_LABELS[entry.dim].hu : DIM_LABELS[entry.dim].en;
+}
 
 const PREF_AXES: Array<{ axis: PrefAxis; lowKey: string; highKey: string }> = [
   { axis: "people", lowKey: "results.industryFitPrefPeopleLow", highKey: "results.industryFitPrefPeopleHigh" },
@@ -116,15 +133,23 @@ function Chip({
 function SuggestionCard({
   suggestion,
   scores,
+  facetScores,
   leadFocus,
   hero = false,
   delayMs = 0,
+  observerBacked = false,
+  compareSelected = false,
+  onToggleCompare,
 }: {
   suggestion: CareerSuggestion;
   scores: Partial<Record<DimCode, number>>;
+  facetScores?: Record<string, number>;
   leadFocus: boolean;
   hero?: boolean;
   delayMs?: number;
+  observerBacked?: boolean;
+  compareSelected?: boolean;
+  onToggleCompare?: () => void;
 }) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
@@ -150,19 +175,21 @@ function SuggestionCard({
     }
   }
 
-  const breakdown = open ? explainRoleFit(scores, suggestion.role, { leadFocus }) : [];
+  const breakdown = open
+    ? explainRoleFit(scores, suggestion.role, { leadFocus, facetScores })
+    : [];
 
-  // A hero-mondat: a két legjobban illeszkedő dimenzió a szerep súlyaiból.
+  // A hero-mondat: a két legjobban illeszkedő komponens (facet-pontos, ha van).
   const heroLine = hero
     ? (() => {
-        const top2 = explainRoleFit(scores, suggestion.role, { leadFocus })
+        const top2 = explainRoleFit(scores, suggestion.role, { leadFocus, facetScores })
           .slice()
           .sort((a, b) => b.alignment - a.alignment)
           .slice(0, 2);
         if (top2.length < 2) return null;
         return tf("results.ccHeroLine", locale, {
-          d1: isHu ? DIM_LABELS[top2[0].dim].hu : DIM_LABELS[top2[0].dim].en,
-          d2: isHu ? DIM_LABELS[top2[1].dim].hu : DIM_LABELS[top2[1].dim].en,
+          d1: componentLabel(top2[0], isHu),
+          d2: componentLabel(top2[1], isHu),
         });
       })()
     : null;
@@ -193,19 +220,77 @@ function SuggestionCard({
                 {t("results.ccEduBoostBadge", locale)}
               </span>
             )}
-          </p>
-        </div>
-        {/* Mobilon (sortöréskor) balra igazítva folyik a cím alá, sm-től jobbra. */}
-        <div className="text-left sm:text-right">
-          <p className={`text-[12px] font-semibold ${tier.tone}`}>{t(tier.key, locale)}</p>
-          <p className="font-mono text-micro text-[var(--color-text-muted)]">
-            {suggestion.score}%
-            {suggestion.prefMatch !== null && (
-              <> · {suggestion.prefMatch}% {t("results.industryFitPrefMatchLabel", locale)}</>
+            {suggestion.riasec && (
+              <span
+                className="ml-1.5 rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 font-mono text-micro font-semibold text-[var(--color-text-muted)]"
+                title={t("results.ccRiasecRoleHint", locale)}
+              >
+                {suggestion.riasec}
+              </span>
             )}
           </p>
         </div>
+        {/* Hero: gyűrű a sáv közepével; egyébként szöveges sáv-tartomány. */}
+        {hero ? (
+          <div className="flex items-center gap-3">
+            <div className="text-left sm:text-right">
+              <p className={`text-[12px] font-semibold ${tier.tone}`}>{t(tier.key, locale)}</p>
+              <p
+                className="font-mono text-micro text-[var(--color-text-muted)]"
+                title={t("results.ccBandHint", locale)}
+              >
+                {suggestion.band.low}–{suggestion.band.high}%
+                {suggestion.prefMatch !== null && (
+                  <> · {suggestion.prefMatch}% {t("results.industryFitPrefMatchLabel", locale)}</>
+                )}
+              </p>
+            </div>
+            <ProgressRing
+              percent={suggestion.score}
+              size={64}
+              strokeWidth={6}
+              trackColor="var(--color-border-soft)"
+              color={fitBarColor(suggestion.score)}
+              label={`${suggestion.score}%`}
+              labelClassName="fill-[var(--color-text-primary)]"
+            />
+          </div>
+        ) : (
+          <div className="text-left sm:text-right">
+            <p className={`text-[12px] font-semibold ${tier.tone}`}>{t(tier.key, locale)}</p>
+            <p
+              className="font-mono text-micro text-[var(--color-text-muted)]"
+              title={t("results.ccBandHint", locale)}
+            >
+              {suggestion.band.low}–{suggestion.band.high}%
+              {suggestion.prefMatch !== null && (
+                <> · {suggestion.prefMatch}% {t("results.industryFitPrefMatchLabel", locale)}</>
+              )}
+            </p>
+          </div>
+        )}
       </div>
+
+      {(suggestion.facetPrecision || observerBacked) && (
+        <p className="mt-1.5 flex flex-wrap gap-1.5">
+          {suggestion.facetPrecision && (
+            <span
+              className="rounded-full bg-sage/10 px-2 py-0.5 text-micro font-semibold text-sage-dark"
+              title={t("results.ccFacetBadgeHint", locale)}
+            >
+              {t("results.ccFacetBadge", locale)}
+            </span>
+          )}
+          {observerBacked && (
+            <span
+              className="rounded-full bg-[var(--color-surface-highlight-warm)] px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]"
+              title={t("results.ccObserverBadgeHint", locale)}
+            >
+              {t("results.ccObserverBadge", locale)}
+            </span>
+          )}
+        </p>
+      )}
 
       {heroLine && (
         <p className="mt-2 text-caption leading-relaxed text-[var(--color-text-secondary)]">
@@ -213,7 +298,16 @@ function SuggestionCard({
         </p>
       )}
 
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--color-border-soft)]">
+      {/* Sáv-vizualizáció: a kitöltés a pontszámig, halvány zóna a sáv széléig */}
+      <div className="relative mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--color-border-soft)]">
+        <div
+          className="absolute inset-y-0 rounded-full opacity-30"
+          style={{
+            left: `${suggestion.band.low}%`,
+            width: `${suggestion.band.high - suggestion.band.low}%`,
+            backgroundColor: fitBarColor(suggestion.score),
+          }}
+        />
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{ width: `${suggestion.score}%`, backgroundColor: fitBarColor(suggestion.score) }}
@@ -245,13 +339,28 @@ function SuggestionCard({
       >
         {t("results.industryFitWhy", locale)} {open ? "▴" : "▾"}
       </button>
+      {onToggleCompare && (
+        <button
+          type="button"
+          onClick={onToggleCompare}
+          className={`ml-3 mt-2 rounded-full border px-2.5 py-0.5 text-micro font-semibold transition ${
+            compareSelected
+              ? "border-sage bg-sage text-white"
+              : "border-[var(--color-border-default)] bg-white text-[var(--color-text-muted)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
+          }`}
+        >
+          {compareSelected
+            ? t("results.ccCompareSelected", locale)
+            : t("results.ccCompareCta", locale)}
+        </button>
+      )}
 
       {open && (
         <div className="mt-3 flex flex-col gap-2 border-t border-[var(--color-border-soft)] pt-3">
           {breakdown.map((entry) => (
-            <div key={`${entry.dim}-${entry.direction}`} className="flex items-center gap-2 sm:gap-3">
+            <div key={`${entry.dim}-${entry.facet ?? "dim"}-${entry.direction}`} className="flex items-center gap-2 sm:gap-3">
               <span className="w-24 shrink-0 text-micro leading-tight text-[var(--color-text-secondary)] sm:w-40 sm:text-[11px]">
-                {isHu ? DIM_LABELS[entry.dim].hu : DIM_LABELS[entry.dim].en}
+                {componentLabel(entry, isHu)}
                 <span className="block text-micro text-[var(--color-text-muted)]">
                   {t(
                     entry.direction === "high"
@@ -327,6 +436,8 @@ const EMPTY_BACKGROUND: CareerBackground = {
 export function CareerCompass({
   scores,
   observerScores = null,
+  facetScores,
+  assessmentForm = "short",
   initialBackground = null,
   growthFocusItems = [],
   onRequestObserver,
@@ -334,6 +445,10 @@ export function CareerCompass({
   scores: Partial<Record<DimCode, number>>;
   /** Observer-átlagok dimenziónként, ha van külső visszajelzés */
   observerScores?: Partial<Record<DimCode, number>> | null;
+  /** Facet-pontszámok (facet-kód → 0-100) — facet-finomított illeszkedéshez */
+  facetScores?: Record<string, number>;
+  /** Kérdőív-forma a konfidencia-sávhoz */
+  assessmentForm?: "short" | "full";
   initialBackground?: CareerBackground | null;
   /** Facet-szintű fejlődési elemek — a fejlődési terv blokk alapja */
   growthFocusItems?: CompassGrowthItem[];
@@ -357,6 +472,9 @@ export function CareerCompass({
   const [showMore, setShowMore] = useState(false);
   const [missingText, setMissingText] = useState("");
   const [missingState, setMissingState] = useState<"idle" | "busy" | "sent">("idle");
+  // Összevetés: max 2 kiválasztott javaslat kulcsa (industry:role)
+  const [compareKeys, setCompareKeys] = useState<string[]>([]);
+  const [methodOpen, setMethodOpen] = useState(false);
 
   // A wizard lépéssorrendje — tanulóknál a „jelenlegi terület" kimarad.
   const flow: Step[] = [
@@ -432,8 +550,32 @@ export function CareerCompass({
 
   const result =
     step === "result"
-      ? rankCareerSuggestions(effectiveScores, background, { prefs, leadFocus })
+      ? rankCareerSuggestions(effectiveScores, background, {
+          prefs,
+          leadFocus,
+          facetScores,
+          form: assessmentForm,
+          observerBacked: hasMeasured,
+        })
       : null;
+
+  const suggestionKey = (s: CareerSuggestion) => `${s.industryKey}:${s.role.key}`;
+  const allSuggestions = [
+    ...(result?.suggestions ?? []),
+    ...(result?.currentIndustryTop ?? []),
+  ];
+  const compareItems = compareKeys
+    .map((key) => allSuggestions.find((s) => suggestionKey(s) === key))
+    .filter((s): s is CareerSuggestion => Boolean(s));
+
+  function toggleCompare(s: CareerSuggestion) {
+    const key = suggestionKey(s);
+    setCompareKeys((prev) =>
+      prev.includes(key)
+        ? prev.filter((k) => k !== key)
+        : [...prev.slice(-1), key],
+    );
+  }
 
   // „A mostani területeden" blokk deduplikálva: csak azok a szerepek,
   // amik a fő javaslat-listában nem szerepelnek — ha mind átfed (pl. az
@@ -743,6 +885,17 @@ export function CareerCompass({
             </button>
           </div>
 
+          {/* Becsült érdeklődés-kód (Holland/RIASEC) — explicit becslés-keret */}
+          {result.userRiasec.length > 0 && (
+            <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-micro text-[var(--color-text-muted)]">
+              {t("results.ccRiasecUserLabel", locale)}
+              <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 font-mono font-semibold text-[var(--color-text-secondary)]">
+                {result.userRiasec.join("")}
+              </span>
+              <span>{t("results.ccRiasecEstimateNote", locale)}</span>
+            </p>
+          )}
+
           {/* Reveal: hero + 2 normál + a többi összecsukva */}
           <div className="mt-3 flex flex-col gap-3">
             {result.suggestions.slice(0, 1).map((suggestion) => (
@@ -750,7 +903,11 @@ export function CareerCompass({
                 key={`${suggestion.industryKey}-${suggestion.role.key}-${leadFocus}`}
                 suggestion={suggestion}
                 scores={effectiveScores}
+                facetScores={facetScores}
                 leadFocus={leadFocus}
+                observerBacked={hasMeasured}
+                compareSelected={compareKeys.includes(suggestionKey(suggestion))}
+                onToggleCompare={() => toggleCompare(suggestion)}
                 hero
               />
             ))}
@@ -759,7 +916,11 @@ export function CareerCompass({
                 key={`${suggestion.industryKey}-${suggestion.role.key}-${leadFocus}`}
                 suggestion={suggestion}
                 scores={effectiveScores}
+                facetScores={facetScores}
                 leadFocus={leadFocus}
+                observerBacked={hasMeasured}
+                compareSelected={compareKeys.includes(suggestionKey(suggestion))}
+                onToggleCompare={() => toggleCompare(suggestion)}
                 delayMs={120 + i * 80}
               />
             ))}
@@ -771,7 +932,11 @@ export function CareerCompass({
                       key={`${suggestion.industryKey}-${suggestion.role.key}-${leadFocus}`}
                       suggestion={suggestion}
                       scores={effectiveScores}
+                      facetScores={facetScores}
                       leadFocus={leadFocus}
+                      observerBacked={hasMeasured}
+                      compareSelected={compareKeys.includes(suggestionKey(suggestion))}
+                      onToggleCompare={() => toggleCompare(suggestion)}
                       delayMs={i * 80}
                     />
                   ))}
@@ -788,6 +953,71 @@ export function CareerCompass({
             )}
           </div>
 
+          {/* Összevetés — két kiválasztott irány komponensenként egymás mellett */}
+          {compareItems.length === 2 && (
+            <div className="mt-4 rounded-[12px] border border-sage/40 bg-white p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-caption font-semibold text-[var(--color-text-primary)]">
+                  {t("results.ccCompareTitle", locale)}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setCompareKeys([])}
+                  className="text-micro font-semibold text-[var(--color-text-muted)] hover:text-ink"
+                >
+                  {t("results.ccCompareClear", locale)} ✕
+                </button>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-4">
+                {compareItems.map((s) => {
+                  const breakdown = explainRoleFit(effectiveScores, s.role, {
+                    leadFocus,
+                    facetScores,
+                  });
+                  return (
+                    <div key={suggestionKey(s)} className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[var(--color-text-primary)]">
+                        {isHu ? s.role.hu : s.role.en}
+                      </p>
+                      <p className="font-mono text-micro text-[var(--color-text-muted)]">
+                        {s.band.low}–{s.band.high}%
+                      </p>
+                      <div className="mt-2 flex flex-col gap-1.5">
+                        {breakdown.map((entry) => (
+                          <div key={`${entry.dim}-${entry.facet ?? "dim"}`} className="flex items-center gap-2">
+                            <span className="w-24 shrink-0 truncate text-micro text-[var(--color-text-secondary)]">
+                              {componentLabel(entry, isHu)}
+                            </span>
+                            <div className="h-1.5 min-w-[30px] flex-1 overflow-hidden rounded-full bg-[var(--color-border-soft)]">
+                              <div
+                                className="h-full rounded-full"
+                                style={{
+                                  width: `${entry.alignment}%`,
+                                  backgroundColor: fitBarColor(entry.alignment),
+                                }}
+                              />
+                            </div>
+                            <span className="w-7 shrink-0 text-right font-mono text-micro text-[var(--color-text-muted)]">
+                              {entry.alignment}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-micro text-[var(--color-text-muted)]">
+                {t("results.ccCompareNote", locale)}
+              </p>
+            </div>
+          )}
+          {compareItems.length === 1 && (
+            <p className="mt-3 text-micro text-[var(--color-text-muted)]">
+              {t("results.ccCompareHint", locale)}
+            </p>
+          )}
+
           {currentIndustryExtra.length > 0 && (
             <div className="mt-5">
               <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
@@ -799,7 +1029,11 @@ export function CareerCompass({
                     key={`current-${suggestion.role.key}-${leadFocus}`}
                     suggestion={suggestion}
                     scores={effectiveScores}
+                    facetScores={facetScores}
                     leadFocus={leadFocus}
+                    observerBacked={hasMeasured}
+                    compareSelected={compareKeys.includes(suggestionKey(suggestion))}
+                    onToggleCompare={() => toggleCompare(suggestion)}
                     delayMs={i * 80}
                   />
                 ))}
@@ -852,6 +1086,74 @@ export function CareerCompass({
             </div>
           )}
 
+          {/* 30 napos mini-terv — a fő fejlesztendő dimenzióhoz */}
+          {result.developDims.length > 0 &&
+            (() => {
+              const dim = result.developDims[0];
+              const plan = DIMENSION_GROWTH_TIPS[dim]?.[isHu ? "hu" : "en"];
+              if (!plan) return null;
+              return (
+                <div className="mt-4 rounded-[12px] border border-[var(--color-border-soft)] bg-white p-4">
+                  <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+                    {t("results.ccPlan30Eyebrow", locale)}
+                  </p>
+                  <p className="mt-1 text-caption font-semibold text-[var(--color-text-primary)]">
+                    {tf("results.ccPlan30Title", locale, {
+                      dim: isHu ? DIM_LABELS[dim].hu : DIM_LABELS[dim].en,
+                    })}
+                  </p>
+                  <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+                    {(
+                      [
+                        ["results.ccPlan30Behavior", plan.behavior],
+                        ["results.ccPlan30Reflection", plan.reflection],
+                        ["results.ccPlan30Challenge", plan.challenge],
+                      ] as const
+                    ).map(([labelKey, text]) => (
+                      <div
+                        key={labelKey}
+                        className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3"
+                      >
+                        <p className="text-micro font-semibold uppercase tracking-wide text-sage-dark">
+                          {t(labelKey, locale)}
+                        </p>
+                        <p className="mt-1 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                          {text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+          {/* Tipikus vezetési közeg — a top irány iparágához kötve */}
+          {result.suggestions.length > 0 &&
+            (() => {
+              const top = result.suggestions[0];
+              const ctx = INDUSTRY_LEADER_CONTEXT[top.industryKey];
+              if (!ctx) return null;
+              const text = LEADER_SUPPLEMENTS[ctx.dim][ctx.pole];
+              return (
+                <div className="mt-4 rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
+                  <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+                    {t("results.ccLeaderEyebrow", locale)}
+                  </p>
+                  <p className="mt-1 text-caption font-semibold text-[var(--color-text-primary)]">
+                    {tf("results.ccLeaderTitle", locale, {
+                      industry: isHu ? top.industryHu : top.industryEn,
+                    })}
+                  </p>
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                    {isHu ? text.hu : text.en}
+                  </p>
+                  <p className="mt-1.5 text-micro text-[var(--color-text-muted)]">
+                    {t("results.ccLeaderNote", locale)}
+                  </p>
+                </div>
+              );
+            })()}
+
           {/* Observer-pontosítás — ha még csak önértékelésen áll a kép */}
           {!hasMeasured && onRequestObserver && (
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
@@ -901,9 +1203,27 @@ export function CareerCompass({
         </div>
       )}
 
-      <p className="mt-4 border-t border-[var(--color-border-soft)] pt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
-        {t("results.industryFitNote", locale)}
-      </p>
+      {/* Módszertani lap — mire épül a becslés */}
+      <div className="mt-4 border-t border-[var(--color-border-soft)] pt-3">
+        <button
+          type="button"
+          onClick={() => setMethodOpen((v) => !v)}
+          className="text-micro font-semibold text-[var(--color-text-muted)] transition hover:text-ink"
+        >
+          {t("results.ccMethodTitle", locale)} {methodOpen ? "▴" : "▾"}
+        </button>
+        {methodOpen && (
+          <div className="mt-2 flex flex-col gap-2 text-micro leading-relaxed text-[var(--color-text-muted)]">
+            <p>{t("results.ccMethodBody1", locale)}</p>
+            <p>{t("results.ccMethodBody2", locale)}</p>
+            <p>{t("results.ccMethodBody3", locale)}</p>
+            <p className="font-mono">{t("results.ccMethodRefs", locale)}</p>
+          </div>
+        )}
+        <p className="mt-2 text-micro leading-relaxed text-[var(--color-text-muted)]">
+          {t("results.industryFitNote", locale)}
+        </p>
+      </div>
     </div>
   );
 }
