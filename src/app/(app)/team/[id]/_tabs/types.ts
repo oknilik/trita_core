@@ -41,4 +41,11 @@ export interface TeamTabContext {
     /** Megkezdte a lépést (rész-beadás vagy observer-piszkozat) — CTA „folytatás". */
     started: boolean;
   } | null;
+  /** Futó observer-kör gyűjtés-állapota (self-kész után is), küszöb alatt. */
+  observerGathering: {
+    campaignName: string;
+    sent: number;
+    received: number;
+    min: number;
+  } | null;
 }

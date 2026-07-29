@@ -9,11 +9,13 @@ import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-
 import { hasOrgRole } from "@/lib/org-roles";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import {
+  getCampaignSteps,
   getCurrentStepType,
   isStepGateOpen,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { hasStartedStep, releaseDueCampaignSteps } from "@/lib/campaign-steps";
+import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import {
@@ -136,7 +138,16 @@ export default async function TeamDetailPage({
       currentStep: true,
       nextStepOpensAt: true,
       campaign: {
-        select: { id: true, name: true, type: true, steps: true, teamId: true, teamIds: true },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          steps: true,
+          teamId: true,
+          teamIds: true,
+          requireFreshResults: true,
+          activatedAt: true,
+        },
       },
     },
   });
@@ -170,6 +181,49 @@ export default async function TeamDetailPage({
           )),
       }
     : null;
+  // Futó observer-kör: a self-kitöltés után a meghívó-gyűjtés még tart —
+  // a csapat-nézeten is kiemeljük (n/3 beérkezett + meghívó-CTA), amíg a
+  // küszöb (OBSERVER_MIN_FOR_REVEAL) nincs meg.
+  const observerCampaign = stepCandidates.find((p) =>
+    getCampaignSteps(p.campaign).includes("OBSERVER_360"),
+  );
+  let observerGathering: {
+    campaignName: string;
+    sent: number;
+    received: number;
+    min: number;
+  } | null = null;
+  if (observerCampaign) {
+    const freshFrom =
+      observerCampaign.campaign.requireFreshResults && observerCampaign.campaign.activatedAt
+        ? observerCampaign.campaign.activatedAt.getTime()
+        : null;
+    const invitations = await prisma.observerInvitation.findMany({
+      where: {
+        inviterId: profile.id,
+        status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
+      },
+      select: { status: true, createdAt: true, completedAt: true },
+    });
+    const sent = invitations.filter(
+      (inv) => freshFrom === null || inv.createdAt.getTime() >= freshFrom,
+    ).length;
+    const received = invitations.filter(
+      (inv) =>
+        inv.status === "COMPLETED" &&
+        (freshFrom === null ||
+          (inv.completedAt && inv.completedAt.getTime() >= freshFrom)),
+    ).length;
+    if (received < OBSERVER_MIN_FOR_REVEAL) {
+      observerGathering = {
+        campaignName: observerCampaign.campaign.name,
+        sent,
+        received,
+        min: OBSERVER_MIN_FOR_REVEAL,
+      };
+    }
+  }
+
   const orgId = team.orgId;
   if (!orgId) redirect(deepLinkFallback);
 
@@ -290,6 +344,7 @@ export default async function TeamDetailPage({
     publishedReport,
     hasPublishedReport,
     pendingMeasurement,
+    observerGathering,
   };
 
   switch (activeTab) {

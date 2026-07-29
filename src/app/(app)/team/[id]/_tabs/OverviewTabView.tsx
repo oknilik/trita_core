@@ -24,7 +24,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     teamId, teamData, locale, isHu, profile,
     canViewRaw, isOrgManager, canManageTeamActions, canReachOrgCampaigns,
     isRestricted, isNone, manageGateCopy,
-    publishedReport, hasPublishedReport, pendingMeasurement,
+    publishedReport, hasPublishedReport, pendingMeasurement, observerGathering,
   } = ctx;
 
   const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
@@ -377,9 +377,44 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 href="/assessment/measurements"
                 className="text-xs font-semibold text-sage-dark transition hover:text-ink"
               >
-                {isHu ? "Összes mérési feladatom →" : "All my measurement tasks →"}
+                {isHu ? "Összes mérési feladatom" : "All my measurement tasks"}
               </Link>
             </p>
+          </section>
+        ) : null}
+
+        {/* Futó observer-kör: a self-kitöltés után is látszik a gyűjtés
+            állapota — a meghívó-küldés a tag feladata, ne vesszen el. */}
+        {observerGathering ? (
+          <section>
+            <div className="flex flex-col gap-3 rounded-[18px] border border-bronze/35 bg-bronze/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+                  {isHu ? "Külső visszajelzés — gyűjtés alatt" : "Outside feedback — collecting"}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-ink">
+                  {observerGathering.campaignName}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                  {isHu
+                    ? `Te kéred fel az értékelőidet: küldj meghívót legalább ${observerGathering.min} kollégának vagy külső partnernek — az önkép–külső kép összevetésed ${observerGathering.min} beérkezett visszajelzésnél nyílik meg.`
+                    : `You choose your raters: invite at least ${observerGathering.min} colleagues or external partners — your self vs. outside view comparison opens at ${observerGathering.min} received responses.`}
+                </p>
+                <p className="mt-2 font-mono text-xs tabular-nums text-bronze">
+                  {isHu
+                    ? `${observerGathering.received}/${observerGathering.min} beérkezett · ${observerGathering.sent} meghívó elküldve`
+                    : `${observerGathering.received}/${observerGathering.min} received · ${observerGathering.sent} invites sent`}
+                </p>
+              </div>
+              <Link
+                href="/profile/results?tab=comparison"
+                className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-white transition hover:brightness-110"
+              >
+                {observerGathering.sent < observerGathering.min
+                  ? isHu ? "Kérek visszajelzést" : "Request feedback"
+                  : isHu ? "Meghívók kezelése" : "Manage invites"}
+              </Link>
+            </div>
           </section>
         ) : null}
 
