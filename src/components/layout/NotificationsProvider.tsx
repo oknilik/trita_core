@@ -43,6 +43,8 @@ interface NotificationsContextValue {
   /** Panel-nyitáskor: lekéri a listát, ha nincs vagy elavult. */
   ensureList: () => void;
   markAllRead: () => Promise<void>;
+  /** Egy elem olvasottra állítása (pl. kattintás + navigáció előtt). */
+  markRead: (id: string) => Promise<void>;
   dismiss: (id: string) => Promise<void>;
 }
 
@@ -165,27 +167,47 @@ export function NotificationsProvider({
     }
   }, [refreshCount]);
 
+  const markRead = useCallback(
+    async (id: string) => {
+      // FONTOS: a wasUnread-et NEM az updater-en belül számoljuk — a
+      // funkcionális state-updater nem garantáltan fut szinkron, így az
+      // utána olvasott flag hamis maradna (a badge nem csökkenne).
+      const wasUnread = Boolean(items?.some((n) => n.id === id && !n.read));
+      setItems((prev) =>
+        prev ? prev.map((n) => (n.id === id ? { ...n, read: true } : n)) : prev,
+      );
+      if (wasUnread) setCount((c) => Math.max(0, c - 1));
+      try {
+        await fetch("/api/notifications/mark-read", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: [id] }),
+        });
+      } catch {
+        void refreshCount();
+      }
+    },
+    [items, refreshCount],
+  );
+
   const dismiss = useCallback(
     async (id: string) => {
-      let wasUnread = false;
-      setItems((prev) => {
-        if (!prev) return prev;
-        wasUnread = prev.some((n) => n.id === id && !n.read);
-        return prev.filter((n) => n.id !== id);
-      });
-      setCount((c) => (wasUnread ? Math.max(0, c - 1) : c));
+      // Ld. markRead: a wasUnread updater-en kívül számolódik.
+      const wasUnread = Boolean(items?.some((n) => n.id === id && !n.read));
+      setItems((prev) => (prev ? prev.filter((n) => n.id !== id) : prev));
+      if (wasUnread) setCount((c) => Math.max(0, c - 1));
       try {
         await fetch(`/api/notifications/${id}`, { method: "DELETE" });
       } catch {
         void refreshCount();
       }
     },
-    [refreshCount],
+    [items, refreshCount],
   );
 
   return (
     <NotificationsContext.Provider
-      value={{ count, items, loading, ensureList, markAllRead, dismiss }}
+      value={{ count, items, loading, ensureList, markAllRead, markRead, dismiss }}
     >
       {children}
     </NotificationsContext.Provider>

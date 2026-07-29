@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -100,7 +101,8 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
   const loc = locale as Locale;
   // A lekérés a providerben él (a harang nyitáskor hívja az ensureList-et) —
   // így a duplikált panel-mount nem jelent duplikált API-hívást.
-  const { items: cached, loading, markAllRead, dismiss } = useNotifications();
+  const router = useRouter();
+  const { markRead, items: cached, loading, markAllRead, dismiss } = useNotifications();
   const items = cached ?? [];
 
   // Escape key closes panel
@@ -211,7 +213,18 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
               <Link
                 key={item.id}
                 href={item.link}
-                onClick={onClose}
+                onClick={(e) => {
+                  // Kattintás + navigáció = olvasott. A mark-read a navigáció
+                  // ELŐTT fut le, különben az új oldal SSR-je még olvasatlan
+                  // countot szerializál (badge-verseny).
+                  e.preventDefault();
+                  const target = item.link as string;
+                  void (async () => {
+                    if (!item.read) await markRead(item.id).catch(() => {});
+                    onClose();
+                    router.push(target);
+                  })();
+                }}
                 className={`block border-b border-[var(--color-border-default)]/50 px-4 py-3 transition-colors last:border-b-0 hover:bg-[var(--color-surface-subtle)] ${
                   !item.read ? "bg-white" : ""
                 }`}
