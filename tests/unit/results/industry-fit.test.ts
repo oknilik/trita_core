@@ -293,3 +293,73 @@ test("env-tengelyek beszámítanak a preferencia-egyezésbe", () => {
   const dev = INDUSTRIES.find((i) => i.key === "tech")!.roles.find((r) => r.key === "dev")!;
   assert.ok(scorePrefMatch({ setting: 1 }, electrician)! > scorePrefMatch({ setting: 1 }, dev)!);
 });
+
+// ── 3. ütem: címkék, mért RIASEC, eduFields ─────────────────────────────────
+
+test("resolveUserRiasec lépcső: mért > címkék > becslés", async () => {
+  const { resolveUserRiasec } = await import("@/lib/industry-fit");
+  const scores = { INTE: 50, RESO: 50, TEMP: 80, ADAP: 50, THOR: 50, OPEN: 50 };
+  const estimated = resolveUserRiasec(scores, {}, {});
+  assert.equal(estimated.source, "estimated");
+  const tagged = resolveUserRiasec(scores, {}, { interestTags: ["building", "nature"] });
+  assert.equal(tagged.source, "tags");
+  assert.ok(tagged.letters.includes("R"), `címkés kód: ${tagged.letters.join("")}`);
+  const measured = resolveUserRiasec(scores, {}, {
+    interestTags: ["building"],
+    riasecScores: { R: 10, I: 20, A: 95, S: 90, E: 30, C: 40 },
+  });
+  assert.equal(measured.source, "measured");
+  assert.deepEqual(measured.letters, ["A", "S"]);
+});
+
+test("mért interest-match valódi komponensként rangsorol", async () => {
+  const { measuredInterestMatch } = await import("@/lib/industry-fit");
+  assert.equal(measuredInterestMatch({ I: 90, R: 70 }, "IR"), 80);
+  assert.equal(measuredInterestMatch({}, "IR"), null);
+  const background = {
+    ...baseBackground,
+    riasecScores: { R: 5, I: 10, A: 95, S: 90, E: 20, C: 15 },
+  };
+  const result = rankCareerSuggestions(socialExplorer, background, {});
+  assert.equal(result.riasecSource, "measured");
+  for (const s of result.suggestions) {
+    assert.ok(typeof s.interestMatch === "number", `${s.role.key}: nincs interestMatch`);
+  }
+  // A/S-nehéz mért profil mellett a top-lista elején A/S-kódú szerep álljon
+  assert.ok(
+    result.suggestions[0].riasec.split("").some((l) => "AS".includes(l)),
+    `top: ${result.suggestions[0].role.key} (${result.suggestions[0].riasec})`,
+  );
+});
+
+test("címke-boost megjelöli és emeli az affin iparág szerepeit", () => {
+  const background = { ...baseBackground, interestTags: ["building"] };
+  const result = rankCareerSuggestions(detailOriented, background, {});
+  const boosted = result.suggestions.filter((s) => s.tagBoosted);
+  assert.ok(boosted.length > 0);
+  for (const s of boosted) {
+    assert.ok(["trades", "engineering", "transport"].includes(s.industryKey));
+  }
+});
+
+test("normalizedEduFields: örökölt egyérték + több terület uniós boost", async () => {
+  const { normalizedEduFields } = await import("@/lib/industry-fit");
+  assert.deepEqual(
+    normalizedEduFields({ ...baseBackground, eduField: "health" }),
+    ["health"],
+  );
+  assert.deepEqual(
+    normalizedEduFields({ ...baseBackground, eduField: "health", eduFields: ["arts", "trade"] }),
+    ["arts", "trade"],
+  );
+});
+
+test("scoreRiasec: teljes kitöltésből betűnkénti 0-100, hiányosból null", async () => {
+  const { RIASEC_ITEMS, scoreRiasec } = await import("@/lib/questions/riasec");
+  assert.equal(RIASEC_ITEMS.length, 30);
+  const full = Object.fromEntries(RIASEC_ITEMS.map((item) => [item.id, item.letter === "A" ? 5 : 1]));
+  const scores = scoreRiasec(full)!;
+  assert.equal(scores.A, 100);
+  assert.equal(scores.R, 0);
+  assert.equal(scoreRiasec({ 1: 3 }), null);
+});

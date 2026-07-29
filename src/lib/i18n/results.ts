@@ -674,6 +674,36 @@ export const resultsTranslations = {
       en: "The role's Holland code (RIASEC interest types)",
     },
     ccRiasecUserLabel: { hu: "Becsült érdeklődés-kódod:", en: "Your estimated interest code:" },
+    ccRiasecUserLabelTags: { hu: "Érdeklődés-kódod:", en: "Your interest code:" },
+    ccRiasecUserLabelMeasured: { hu: "Mért érdeklődés-kódod:", en: "Your measured interest code:" },
+    ccRiasecTagsNote: {
+      hu: "(Holland/RIASEC — a választott érdeklődés-címkéid alapján)",
+      en: "(Holland/RIASEC — based on your chosen interest tags)",
+    },
+    ccRiasecMeasuredNote: {
+      hu: "(Holland/RIASEC — a kitöltött érdeklődés-kérdőívből mérve)",
+      en: "(Holland/RIASEC — measured from your completed interest inventory)",
+    },
+    ccRiasecCta: {
+      hu: "Pontosítsd az érdeklődés-kódod: 30 gyors kérdés (~3 perc), és a becslés helyett mért kód rangsorol.",
+      en: "Sharpen your interest code: 30 quick questions (~3 min) — a measured code replaces the estimate in ranking.",
+    },
+    ccRiasecCtaBtn: { hu: "Kitöltöm", en: "Take it" },
+    ccRiasecProgress: { hu: "{current} / {total}", en: "{current} / {total}" },
+    ccRiasecCancel: { hu: "Később", en: "Later" },
+    ccRiasecScale1: { hu: "Egyáltalán nem", en: "Not at all" },
+    ccRiasecScale3: { hu: "Talán", en: "Maybe" },
+    ccRiasecScale5: { hu: "Nagyon szívesen", en: "Very much" },
+    ccStepTags: { hu: "Mi érdekel igazán?", en: "What genuinely interests you?" },
+    ccWhyTags: {
+      hu: "Válassz legfeljebb 4 területet — az érdeklődésed a személyiségednél is közvetlenebbül jelzi, mi való neked.",
+      en: "Pick up to 4 — your interests signal fit even more directly than personality.",
+    },
+    ccTagsCount: { hu: "{count} / 4 kiválasztva (át is ugorhatod)", en: "{count} / 4 selected (you can skip this)" },
+    ccFieldLabelMulti: {
+      hu: "Terület (legfeljebb 3 választható)",
+      en: "Field (choose up to 3)",
+    },
     ccRiasecEstimateNote: {
       hu: "(Holland/RIASEC — a személyiséged és a preferenciáid alapján becsülve, nem mért érdeklődés-kérdőív)",
       en: "(Holland/RIASEC — estimated from your personality and preferences, not a measured interest inventory)",

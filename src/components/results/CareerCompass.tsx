@@ -6,6 +6,7 @@ import { t, tf } from "@/lib/i18n";
 import {
   INDUSTRIES,
   INDUSTRY_LEADER_CONTEXT,
+  INTEREST_TAGS,
   explainRoleFit,
   rankCareerSuggestions,
   type AgeBand,
@@ -23,6 +24,7 @@ import { TRITAN_FACETS, TRITAN_ALTRUISM } from "@/lib/tritan";
 import { LEADER_SUPPLEMENTS } from "@/lib/interaction-atoms";
 import { DIMENSION_GROWTH_TIPS } from "@/lib/profile-content";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { RIASEC_ITEMS, scoreRiasec } from "@/lib/questions/riasec";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 
 // Karrier-iránytű — rövid kérdéssor (lépés-számlálóval, auto-továbblépéssel),
@@ -174,6 +176,114 @@ function OptionCard({
         )}
       </span>
     </button>
+  );
+}
+
+/** Mért érdeklődés-kérdőív (Mini-IP mintájára) — 30 gyors item, egyenként,
+ *  1-5 skálán, auto-advance-szel. A wizard vizuális nyelvét követi. */
+function RiasecProfiler({
+  onComplete,
+  onCancel,
+}: {
+  onComplete: (scores: Record<string, number>) => void;
+  onCancel: () => void;
+}) {
+  const { locale } = useLocale();
+  const isHu = locale === "hu";
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [picked, setPicked] = useState<number | null>(null);
+  const advanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const item = RIASEC_ITEMS[index];
+
+  function answer(value: number) {
+    if (advanceRef.current) return;
+    setPicked(value);
+    const next = { ...answers, [item.id]: value };
+    setAnswers(next);
+    advanceRef.current = setTimeout(() => {
+      advanceRef.current = null;
+      setPicked(null);
+      if (index + 1 < RIASEC_ITEMS.length) {
+        setIndex(index + 1);
+      } else {
+        const scores = scoreRiasec(next);
+        if (scores) onComplete(scores);
+      }
+    }, 240);
+  }
+
+  const scaleLabels = [
+    t("results.ccRiasecScale1", locale),
+    "",
+    t("results.ccRiasecScale3", locale),
+    "",
+    t("results.ccRiasecScale5", locale),
+  ];
+
+  return (
+    <div className="rounded-[12px] border border-sage/40 bg-white p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+          {tf("results.ccRiasecProgress", locale, {
+            current: index + 1,
+            total: RIASEC_ITEMS.length,
+          })}
+        </p>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-micro font-semibold text-[var(--color-text-muted)] hover:text-ink"
+        >
+          {t("results.ccRiasecCancel", locale)} ✕
+        </button>
+      </div>
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--color-border-soft)]">
+        <div
+          className="h-full rounded-full bg-sage transition-all duration-300"
+          style={{ width: `${Math.round(((index + 1) / RIASEC_ITEMS.length) * 100)}%` }}
+        />
+      </div>
+      <p
+        key={item.id}
+        className="mt-4 min-h-[48px] text-body font-medium leading-relaxed text-[var(--color-text-primary)]"
+        style={{ animation: "cc-step-in 0.25s ease-out both" }}
+      >
+        {isHu ? item.hu : item.en}
+      </p>
+      <div className="mt-3 flex items-center gap-2">
+        {[1, 2, 3, 4, 5].map((value) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => answer(value)}
+            aria-label={`${value}/5`}
+            className={`flex h-11 flex-1 items-center justify-center rounded-xl border-2 text-sm font-semibold transition ${
+              picked === value
+                ? "border-sage bg-sage text-white"
+                : "border-[var(--color-border-soft)] bg-white text-[var(--color-text-secondary)] hover:border-sage/50"
+            }`}
+            style={picked === value ? { animation: "cc-pop 0.25s ease-out" } : undefined}
+          >
+            {value}
+          </button>
+        ))}
+      </div>
+      <div className="mt-1.5 flex justify-between text-micro text-[var(--color-text-muted)]">
+        <span>{scaleLabels[0]}</span>
+        <span>{scaleLabels[2]}</span>
+        <span>{scaleLabels[4]}</span>
+      </div>
+      {index > 0 && (
+        <button
+          type="button"
+          onClick={() => setIndex((i) => Math.max(0, i - 1))}
+          className="mt-3 text-[12px] font-semibold text-[var(--color-text-muted)] hover:text-ink"
+        >
+          ← {t("results.ccBack", locale)}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -500,7 +610,7 @@ function SuggestionCard({
   );
 }
 
-type Step = "intro" | "status" | "edu" | "age" | "current" | "interests" | "prefs" | "env" | "lead" | "result";
+type Step = "intro" | "status" | "edu" | "tags" | "age" | "current" | "interests" | "prefs" | "env" | "lead" | "result";
 
 const EMPTY_BACKGROUND: CareerBackground = {
   status: "working",
@@ -557,6 +667,8 @@ export function CareerCompass({
   const [leadChoice, setLeadChoice] = useState<"yes" | "expert" | "unsure" | null>(null);
   // Wizard-zárás ünneplés — csak tényleges kitöltés után, betöltéskor nem
   const [celebrate, setCelebrate] = useState(false);
+  // Mért érdeklődés-kérdőív (Mini-IP) nyitva-e az eredmény-nézetben
+  const [profilerOpen, setProfilerOpen] = useState(false);
   // Kijelölés-visszajelzés: a lépésváltás rövid késleltetéssel jön, hogy a
   // pop-animáció látsszon; a timer guard a dupla-kattintás ellen véd.
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -573,6 +685,7 @@ export function CareerCompass({
   const flow: Step[] = [
     "status",
     "edu",
+    "tags",
     "age",
     ...(background.status === "studying" ? [] : (["current"] as Step[])),
     "interests",
@@ -804,27 +917,95 @@ export function CareerCompass({
               <Chip
                 key={value}
                 active={background.eduLevel === value}
-                onClick={() => patch({ eduLevel: value })}
+                onClick={() =>
+                  patch({
+                    eduLevel: value,
+                    // Alap/érettségi szintnél nincs terület-kérdés
+                    ...(value === "primary" || value === "secondary"
+                      ? { eduField: null, eduFields: [] }
+                      : {}),
+                  })
+                }
               >
                 {t(key, locale)}
               </Chip>
             ))}
           </div>
-          <p className="mt-4 text-[11px] font-medium text-[var(--color-text-muted)]">
-            {t("results.ccFieldLabel", locale)}
-          </p>
-          <div className="mt-1.5 flex flex-wrap gap-1.5">
-            {EDU_FIELDS.map(({ value, key }) => (
-              <Chip
-                key={value}
-                active={background.eduField === value}
-                onClick={() => patch({ eduField: value })}
-              >
-                {FIELD_EMOJI[value] ? `${FIELD_EMOJI[value]} ` : ""}{t(key, locale)}
-              </Chip>
-            ))}
-          </div>
+          {(background.eduLevel === "vocational" || background.eduLevel === "higher") && (
+            <div style={{ animation: "cc-step-in 0.3s ease-out both" }}>
+              <p className="mt-4 text-[11px] font-medium text-[var(--color-text-muted)]">
+                {t("results.ccFieldLabelMulti", locale)}
+              </p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {EDU_FIELDS.map(({ value, key }) => {
+                  const selected = (background.eduFields ?? []).includes(value);
+                  return (
+                    <Chip
+                      key={value}
+                      active={selected}
+                      onClick={() => {
+                        const current = background.eduFields ?? [];
+                        const next = selected
+                          ? current.filter((f) => f !== value)
+                          : current.length >= 3
+                            ? current
+                            : [...current, value];
+                        patch({ eduFields: next, eduField: next[0] ?? null });
+                      }}
+                    >
+                      {FIELD_EMOJI[value] ? `${FIELD_EMOJI[value]} ` : ""}{t(key, locale)}
+                    </Chip>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {stepNav("edu")}
+        </div>
+      )}
+
+      {step === "tags" && (
+        <div key="tags" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
+          {stepHeader("results.ccStepTags", "results.ccWhyTags")}
+          <div className="flex flex-wrap gap-2">
+            {INTEREST_TAGS.map((tag) => {
+              const selected = (background.interestTags ?? []).includes(tag.key);
+              return (
+                <button
+                  key={tag.key}
+                  type="button"
+                  onClick={() => {
+                    const current = background.interestTags ?? [];
+                    const next = selected
+                      ? current.filter((k) => k !== tag.key)
+                      : current.length >= 4
+                        ? current
+                        : [...current, tag.key];
+                    patch({ interestTags: next });
+                  }}
+                  className={`flex min-h-[52px] items-center gap-2 rounded-xl border-2 px-3.5 py-2 text-left transition ${
+                    selected
+                      ? "border-sage bg-sage/10 shadow-sm"
+                      : "border-[var(--color-border-soft)] bg-white hover:border-sage/40 hover:bg-[var(--color-surface-subtle)]"
+                  }`}
+                  style={selected ? { animation: "cc-pop 0.3s ease-out" } : undefined}
+                >
+                  <span className="text-xl" aria-hidden>
+                    {tag.emoji}
+                  </span>
+                  <span className="text-[12px] font-semibold text-[var(--color-text-primary)]">
+                    {isHu ? tag.hu : tag.en}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-micro text-[var(--color-text-muted)]">
+            {tf("results.ccTagsCount", locale, {
+              count: (background.interestTags ?? []).length,
+            })}
+          </p>
+          {stepNav("tags")}
         </div>
       )}
 
@@ -1038,15 +1219,75 @@ export function CareerCompass({
             </button>
           </div>
 
-          {/* Becsült érdeklődés-kód (Holland/RIASEC) — explicit becslés-keret */}
+          {/* Érdeklődés-kód (Holland/RIASEC) — forrás szerint címkézve */}
           {result.userRiasec.length > 0 && (
             <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-micro text-[var(--color-text-muted)]">
-              {t("results.ccRiasecUserLabel", locale)}
-              <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 font-mono font-semibold text-[var(--color-text-secondary)]">
+              {t(
+                result.riasecSource === "measured"
+                  ? "results.ccRiasecUserLabelMeasured"
+                  : result.riasecSource === "tags"
+                    ? "results.ccRiasecUserLabelTags"
+                    : "results.ccRiasecUserLabel",
+                locale,
+              )}
+              <span
+                className={`rounded-full px-2 py-0.5 font-mono font-semibold ${
+                  result.riasecSource === "measured"
+                    ? "bg-sage/15 text-sage-dark"
+                    : "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]"
+                }`}
+              >
                 {result.userRiasec.join("")}
               </span>
-              <span>{t("results.ccRiasecEstimateNote", locale)}</span>
+              <span>
+                {t(
+                  result.riasecSource === "measured"
+                    ? "results.ccRiasecMeasuredNote"
+                    : result.riasecSource === "tags"
+                      ? "results.ccRiasecTagsNote"
+                      : "results.ccRiasecEstimateNote",
+                  locale,
+                )}
+              </span>
             </p>
+          )}
+
+          {/* Mért érdeklődés-kérdőív: CTA vagy futó kitöltés */}
+          {profilerOpen ? (
+            <div className="mt-3">
+              <RiasecProfiler
+                onCancel={() => setProfilerOpen(false)}
+                onComplete={(scores) => {
+                  setProfilerOpen(false);
+                  setCelebrate(true);
+                  const nextBackground = {
+                    ...background,
+                    riasecScores: scores as CareerBackground["riasecScores"],
+                  };
+                  setBackground(nextBackground);
+                  fetch("/api/profile/career-background", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(nextBackground),
+                  }).catch(() => {});
+                }}
+              />
+            </div>
+          ) : (
+            result.riasecSource !== "measured" && (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-dashed border-sage/50 bg-sage/5 px-4 py-3">
+                <p className="max-w-xl text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                  🎯 {t("results.ccRiasecCta", locale)}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setProfilerOpen(true)}
+                  className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-[12px] font-semibold text-white transition hover:bg-sage-dark"
+                >
+                  {t("results.ccRiasecCtaBtn", locale)}
+                </button>
+              </div>
+            )
           )}
 
           {/* Reveal: hero + 2 normál + a többi összecsukva */}

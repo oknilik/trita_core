@@ -488,6 +488,75 @@ function riasecBonus(userLetters: RiasecLetter[], roleCode: string): number {
   return overlap >= 2 ? RIASEC_TIEBREAK : overlap === 1 ? Math.round(RIASEC_TIEBREAK / 2) : -RIASEC_TIEBREAK;
 }
 
+/** A Holland-kód forrása — a UI ennek megfelelő kerettel címkéz. */
+export type RiasecSource = "measured" | "tags" | "estimated";
+
+/**
+ * A user Holland-kódjának feloldása, megbízhatósági lépcsőn:
+ * mért kérdőív (Mini-IP) > választott érdeklődés-címkék > személyiség-becslés.
+ */
+export function resolveUserRiasec(
+  scores: Partial<Record<DimCode, number>>,
+  prefs: UserPrefs,
+  background?: Pick<CareerBackground, "interestTags" | "riasecScores">,
+): { letters: RiasecLetter[]; source: RiasecSource } {
+  const measured = background?.riasecScores;
+  if (measured && Object.keys(measured).length >= 6) {
+    const letters = (Object.entries(measured) as Array<[RiasecLetter, number]>)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([letter]) => letter);
+    return { letters, source: "measured" };
+  }
+  const tags = (background?.interestTags ?? [])
+    .map((key) => INTEREST_TAGS.find((tag) => tag.key === key))
+    .filter((tag): tag is InterestTag => Boolean(tag));
+  if (tags.length > 0) {
+    const counts = new Map<RiasecLetter, number>();
+    for (const tag of tags) {
+      for (const letter of tag.letters) {
+        counts.set(letter, (counts.get(letter) ?? 0) + 1);
+      }
+    }
+    // Személyiség-becslés csak döntetlen-bontóként (0.3 súllyal)
+    const estimated = estimateUserRiasec(scores, prefs);
+    for (const [i, letter] of estimated.entries()) {
+      counts.set(letter, (counts.get(letter) ?? 0) + (i === 0 ? 0.3 : 0.15));
+    }
+    const letters = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([letter]) => letter);
+    return { letters, source: "tags" };
+  }
+  return { letters: estimateUserRiasec(scores, prefs), source: "estimated" };
+}
+
+/** Mért érdeklődés-egyezés 0-100: a szerep betűihez tartozó mért pontszámok átlaga. */
+export function measuredInterestMatch(
+  riasecScores: Partial<Record<RiasecLetter, number>>,
+  roleCode: string,
+): number | null {
+  const values = roleCode
+    .split("")
+    .map((letter) => riasecScores[letter as RiasecLetter])
+    .filter((v): v is number => typeof v === "number");
+  if (values.length === 0) return null;
+  return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+}
+
+const TAG_INDUSTRY_BOOST = 4;
+
+/** A kiválasztott címkékhez affin iparágak halmaza. */
+export function tagAffinityIndustries(interestTags: string[] | undefined): Set<string> {
+  const set = new Set<string>();
+  for (const key of interestTags ?? []) {
+    const tag = INTEREST_TAGS.find((entry) => entry.key === key);
+    for (const industry of tag?.industries ?? []) set.add(industry);
+  }
+  return set;
+}
+
 // ── Tipikus vezetési közeg iparáganként ─────────────────────────────────────
 // Az interakció-szimuláció vezető-kiegészítőihez (LEADER_SUPPLEMENTS) kötve:
 // „ebben a közegben tipikusan ilyen vezetéssel találkozol".
@@ -736,13 +805,53 @@ export type AgeBand = "under20" | "20s" | "30s" | "40s" | "50plus";
 export interface CareerBackground {
   status: CareerStatus;
   eduLevel: EduLevel | null;
+  /** Örökölt egyértékű terület — az olvasók a normalizedEduFields()-et használják */
   eduField: EduField | null;
+  /** Több képzési terület (max 3) — a boost az affinitás-listák uniója */
+  eduFields?: EduField[];
   ageBand: AgeBand | null;
   /** Jelenlegi iparág (ha dolgozik / váltana) — katalógus-kulcs */
   currentIndustry: string | null;
   /** Érdeklődési iparágak (0-3 katalógus-kulcs; üres = nyitott mindenre) */
   interests: string[];
+  /** Érdeklődés-címkék (INTEREST_TAGS kulcsai, max 4) */
+  interestTags?: string[];
+  /** MÉRT érdeklődés-profil (Mini-IP kérdőívből, betűnként 0-100) */
+  riasecScores?: Partial<Record<RiasecLetter, number>>;
 }
+
+/** Terület-normalizálás: az örökölt egyértékű mezőt is tömbként adja vissza. */
+export function normalizedEduFields(background: CareerBackground): EduField[] {
+  if (background.eduFields && background.eduFields.length > 0) return background.eduFields;
+  return background.eduField ? [background.eduField] : [];
+}
+
+// ── Érdeklődés-címkék — gyors, választott érdeklődés-jelzés ────────────────
+// Két hatás: (1) a Holland-kód címke-alapú (megbízhatóbb a személyiség-
+// becslésnél), (2) célzott boost a címkékhez affin iparágak szerepeinek.
+export interface InterestTag {
+  key: string;
+  emoji: string;
+  hu: string;
+  en: string;
+  letters: RiasecLetter[];
+  industries: string[];
+}
+
+export const INTEREST_TAGS: InterestTag[] = [
+  { key: "nature", emoji: "🌿", hu: "Természet / kint lét", en: "Nature / outdoors", letters: ["R", "I"], industries: ["science", "trades"] },
+  { key: "numbers", emoji: "🔢", hu: "Számok / elemzés", en: "Numbers / analysis", letters: ["I", "C"], industries: ["finance", "tech", "science"] },
+  { key: "helping", emoji: "🧑‍🤝‍🧑", hu: "Emberek segítése", en: "Helping people", letters: ["S"], industries: ["health", "education", "people", "public"] },
+  { key: "building", emoji: "🛠️", hu: "Építés / szerelés", en: "Building / fixing", letters: ["R"], industries: ["trades", "engineering", "transport"] },
+  { key: "design", emoji: "🎨", hu: "Alkotás / design", en: "Creating / design", letters: ["A"], industries: ["creative", "media"] },
+  { key: "teaching", emoji: "📚", hu: "Tanítás / tudásátadás", en: "Teaching / sharing knowledge", letters: ["S", "A"], industries: ["education"] },
+  { key: "business", emoji: "💼", hu: "Üzlet / tárgyalás", en: "Business / negotiation", letters: ["E", "C"], industries: ["sales", "finance", "operations"] },
+  { key: "research", emoji: "🧪", hu: "Kutatás / kísérletezés", en: "Research / experimenting", letters: ["I"], industries: ["science", "tech", "health"] },
+  { key: "stage", emoji: "🎭", hu: "Színpad / megjelenés", en: "Stage / performing", letters: ["A", "E"], industries: ["media", "creative", "hospitality"] },
+  { key: "logic", emoji: "🧩", hu: "Logika / problémamegoldás", en: "Logic / problem-solving", letters: ["I", "C"], industries: ["tech", "engineering", "finance"] },
+  { key: "caring", emoji: "❤️", hu: "Gondoskodás / egészség", en: "Caring / health", letters: ["S"], industries: ["health", "services", "public"] },
+  { key: "society", emoji: "🌍", hu: "Társadalmi ügyek", en: "Social causes", letters: ["S", "E"], industries: ["public", "people", "education"] },
+];
 
 /**
  * Végzettség-terület → iparág affinitás. A képzettség kis boost-ot ad a
@@ -770,10 +879,14 @@ export interface CareerSuggestion extends RoleFitResult {
   industryEn: string;
   /** A végzettség-affinitás emelte-e a rangsorban */
   eduBoosted: boolean;
+  /** Az érdeklődés-címkék affinitása emelte-e a rangsorban */
+  tagBoosted: boolean;
   /** A szerep Holland-kódja (2 betű) */
   riasec: string;
-  /** Átfedés a user becsült Holland-kódjával (0-2 betű) */
+  /** Átfedés a user Holland-kódjával (0-2 betű) */
   riasecOverlap: number;
+  /** MÉRT érdeklődés-egyezés 0-100 (csak kitöltött Mini-IP után) */
+  interestMatch: number | null;
 }
 
 export interface CareerSuggestionResult {
@@ -783,8 +896,10 @@ export interface CareerSuggestionResult {
   currentIndustryTop: CareerSuggestion[];
   /** A top javaslatok leggyakoribb figyelendő dimenziói (max 2) */
   developDims: DimCode[];
-  /** A user becsült Holland-kódja (top-2 betű) — „becslés" kerettel mutatandó */
+  /** A user Holland-kódja (top-2 betű) */
   userRiasec: RiasecLetter[];
+  /** A Holland-kód forrása: mért kérdőív / címkék / személyiség-becslés */
+  riasecSource: RiasecSource;
 }
 
 export function rankCareerSuggestions(
@@ -792,26 +907,44 @@ export function rankCareerSuggestions(
   background: CareerBackground,
   options?: RankOptions,
 ): CareerSuggestionResult {
-  const affinity = background.eduField
-    ? new Set(EDU_INDUSTRY_AFFINITY[background.eduField])
-    : new Set<string>();
+  // Végzettség-boost: több terület affinitás-listáinak UNIÓJA
+  const affinity = new Set<string>(
+    normalizedEduFields(background).flatMap((field) => EDU_INDUSTRY_AFFINITY[field]),
+  );
+  const tagIndustries = tagAffinityIndustries(background.interestTags);
 
-  const userRiasec = estimateUserRiasec(scores, options?.prefs ?? {});
+  const { letters: userRiasec, source: riasecSource } = resolveUserRiasec(
+    scores,
+    options?.prefs ?? {},
+    background,
+  );
+  const measured = riasecSource === "measured" ? background.riasecScores : undefined;
 
   const toSuggestion = (industry: Industry) => (result: RoleFitResult): CareerSuggestion => {
     const eduBoosted = affinity.has(industry.key);
+    const tagBoosted = tagIndustries.has(industry.key);
     const riasec = roleRiasec(industry.key, result.role.key);
     const riasecOverlap = userRiasec.filter((letter) => riasec.includes(letter)).length;
+    const interestMatch = measured ? measuredInterestMatch(measured, riasec) : null;
+    // Mért érdeklődésnél az egyezés valódi komponens; e nélkül döntetlen-bontó.
+    const combinedBase =
+      interestMatch !== null
+        ? result.prefMatch !== null
+          ? Math.round(result.score * 0.55 + result.prefMatch * 0.2 + interestMatch * 0.25)
+          : Math.round(result.score * 0.7 + interestMatch * 0.3)
+        : result.combined + riasecBonus(userRiasec, riasec);
     return {
       ...result,
       combined:
-        result.combined + (eduBoosted ? EDU_BOOST : 0) + riasecBonus(userRiasec, riasec),
+        combinedBase + (eduBoosted ? EDU_BOOST : 0) + (tagBoosted ? TAG_INDUSTRY_BOOST : 0),
       industryKey: industry.key,
       industryHu: industry.hu,
       industryEn: industry.en,
       eduBoosted,
+      tagBoosted,
       riasec,
       riasecOverlap,
+      interestMatch,
     };
   };
 
@@ -854,7 +987,7 @@ export function rankCareerSuggestions(
     .slice(0, 2)
     .map(([dim]) => dim);
 
-  return { suggestions, currentIndustryTop, developDims, userRiasec };
+  return { suggestions, currentIndustryTop, developDims, userRiasec, riasecSource };
 }
 
 /** Egy iparág szerepei kombinált pontszám szerint csökkenő sorrendben. */
