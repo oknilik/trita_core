@@ -15,12 +15,15 @@ const patchSchema = z.union([
   // előtt bármi módosítható; aktiválás után a kampány összetétele fix.
   z.object({
     action: z.literal("edit_draft"),
+    // Nincs darab-limit — akár mind a 6 mérés mehet egy körben.
     types: z
       .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
       .min(1)
-      .max(4)
+      .max(6)
       .optional(),
     teamId: z.string().min(1).nullable().optional(),
+    // Több cél-csapat (2026-07-29): üres tömb = célzás törlése.
+    teamIds: z.array(z.string().min(1)).max(50).optional(),
     stepIntervalHours: z.number().int().min(0).max(168).optional(),
     peerFeedbackAnonymous: z.boolean().optional(),
     name: z.string().min(1).max(100).optional(),
@@ -48,7 +51,7 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
-      select: { id: true, orgId: true, status: true, type: true, teamId: true, steps: true, activatedAt: true },
+      select: { id: true, orgId: true, status: true, type: true, teamId: true, teamIds: true, steps: true, activatedAt: true },
     }),
   ]);
 
@@ -155,18 +158,32 @@ export async function PATCH(
       return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
     }
 
-    // teamId: undefined = marad, null = célzás törlése, string = új csapat
-    const nextTeamId =
-      edit.teamId === undefined ? ctx.campaign.teamId : edit.teamId;
-    if (steps.some((st) => TEAM_LOCKED_STEPS.has(st)) && !nextTeamId) {
+    // Cél-csapatok: a teamIds az igazság (undefined = marad); a legacy
+    // teamId paraméter egy-elemű listaként értelmeződik.
+    const currentTeamIds =
+      ctx.campaign.teamIds.length > 0
+        ? ctx.campaign.teamIds
+        : ctx.campaign.teamId
+          ? [ctx.campaign.teamId]
+          : [];
+    const nextTeamIds =
+      edit.teamIds !== undefined
+        ? [...new Set(edit.teamIds)]
+        : edit.teamId !== undefined
+          ? edit.teamId
+            ? [edit.teamId]
+            : []
+          : currentTeamIds;
+    if (steps.some((st) => TEAM_LOCKED_STEPS.has(st)) && nextTeamIds.length === 0) {
       return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });
     }
-    if (nextTeamId && nextTeamId !== ctx.campaign.teamId) {
-      const team = await prisma.team.findUnique({
-        where: { id: nextTeamId },
-        select: { orgId: true },
+    const newIds = nextTeamIds.filter((id) => !currentTeamIds.includes(id));
+    if (newIds.length > 0) {
+      const teams = await prisma.team.findMany({
+        where: { id: { in: newIds } },
+        select: { id: true, orgId: true },
       });
-      if (!team || team.orgId !== orgId) {
+      if (teams.length !== newIds.length || teams.some((team) => team.orgId !== orgId)) {
         return NextResponse.json({ error: "INVALID_TEAM" }, { status: 400 });
       }
     }
@@ -176,7 +193,8 @@ export async function PATCH(
       data: {
         steps,
         type: steps[0],
-        teamId: nextTeamId,
+        teamId: nextTeamIds[0] ?? null,
+        teamIds: nextTeamIds,
         ...(edit.stepIntervalHours !== undefined
           ? { stepIntervalHours: edit.stepIntervalHours }
           : {}),
@@ -193,6 +211,7 @@ export async function PATCH(
         type: true,
         steps: true,
         teamId: true,
+        teamIds: true,
         stepIntervalHours: true,
       },
     });
@@ -218,19 +237,26 @@ export async function PATCH(
     select: { id: true, name: true, status: true, closedAt: true },
   });
 
-  // Szerep-kört tartalmazó kampány: az aktiválás/zárás a csapat kérdőív-körét vezérli.
+  // Szerep-kört tartalmazó kampány: az aktiválás/zárás a csapat(ok)
+  // kérdőív-körét vezérli — több-csapatos kampánynál mindegyiken.
   const campaignSteps =
     ctx.campaign.steps.length > 0 ? ctx.campaign.steps : [ctx.campaign.type];
-  if (campaignSteps.includes("TEAM_ROLE") && ctx.campaign.teamId) {
+  const campaignTeamIds =
+    ctx.campaign.teamIds.length > 0
+      ? ctx.campaign.teamIds
+      : ctx.campaign.teamId
+        ? [ctx.campaign.teamId]
+        : [];
+  if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {
     if (body.data.status === "ACTIVE") {
-      await prisma.team.update({
-        where: { id: ctx.campaign.teamId },
+      await prisma.team.updateMany({
+        where: { id: { in: campaignTeamIds } },
         data: { teamRoleRoundActive: true, teamRoleRoundStartedAt: new Date() },
       });
     }
     if (body.data.status === "CLOSED") {
-      await prisma.team.update({
-        where: { id: ctx.campaign.teamId },
+      await prisma.team.updateMany({
+        where: { id: { in: campaignTeamIds } },
         data: { teamRoleRoundActive: false },
       });
     }

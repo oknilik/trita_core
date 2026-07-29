@@ -28,6 +28,7 @@ import {
 import {
   CAMPAIGN_STEP_LABELS,
   countCampaignStepsDone,
+  getCampaignTeamIds,
   isCampaignStepDone,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
@@ -167,6 +168,7 @@ export default async function CampaignDetailPage({
         type: true,
         steps: true,
         teamId: true,
+        teamIds: true,
         stepIntervalHours: true,
         requireFreshResults: true,
         activatedAt: true,
@@ -315,6 +317,61 @@ export default async function CampaignDetailPage({
   ): boolean => isCampaignStepDone(campaignSteps, idx, p, selfDoneSet.has(p.userId));
   const stepsDoneFor = (p: (typeof campaign.participants)[number]): number =>
     countCampaignStepsDone(campaignSteps, p, selfDoneSet.has(p.userId));
+
+  // Lépésen belüli rész-haladás (értékelős lépések): ki hány csapattársat
+  // értékelt már — a „megkezdte, de nem fejezte be" állapot is látszik.
+  const partialTeamIds = getCampaignTeamIds(campaign);
+  const teamMemberRows =
+    partialTeamIds.length > 0
+      ? await prisma.teamMember.findMany({
+          where: { teamId: { in: partialTeamIds } },
+          select: { teamId: true, userId: true },
+        })
+      : [];
+  const memberTeamMap = new Map<string, string>();
+  const teamSizeMap = new Map<string, number>();
+  for (const row of teamMemberRows) {
+    teamSizeMap.set(row.teamId, (teamSizeMap.get(row.teamId) ?? 0) + 1);
+    // Kampány-csapatsorrend: az első találat nyer.
+    if (!memberTeamMap.has(row.userId)) memberTeamMap.set(row.userId, row.teamId);
+  }
+  const [roleObsCounts, trustObsCounts, pfGivenPairs] = await Promise.all([
+    campaignSteps.includes("TEAM_ROLE_360")
+      ? prisma.teamRoleObservation.groupBy({
+          by: ["raterUserId"],
+          where: { campaignId },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    campaignSteps.includes("TRUST_360")
+      ? prisma.trustObservation.groupBy({
+          by: ["raterUserId"],
+          where: { campaignId },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    campaignSteps.includes("PEER_FEEDBACK")
+      ? prisma.peerFeedbackItem.findMany({
+          where: { campaignId, kind: "feedforward" },
+          select: { fromUserId: true, toUserId: true },
+          distinct: ["fromUserId", "toUserId"],
+        })
+      : Promise.resolve([]),
+  ]);
+  const partialCountFor = (userId: string, stepType: string): number => {
+    if (stepType === "TEAM_ROLE_360")
+      return roleObsCounts.find((r) => r.raterUserId === userId)?._count._all ?? 0;
+    if (stepType === "TRUST_360")
+      return trustObsCounts.find((r) => r.raterUserId === userId)?._count._all ?? 0;
+    if (stepType === "PEER_FEEDBACK")
+      return pfGivenPairs.filter((r) => r.fromUserId === userId).length;
+    return 0;
+  };
+  const peerTotalFor = (userId: string): number => {
+    const teamId = memberTeamMap.get(userId);
+    if (!teamId) return 0;
+    return Math.max((teamSizeMap.get(teamId) ?? 0) - 1, 0);
+  };
 
   // Derived stats
   const selfDoneCount = participantUserIds.filter((id) => selfDoneSet.has(id)).length;
@@ -793,6 +850,11 @@ export default async function CampaignDetailPage({
                         <StatusChip variant="info">
                           {stepsDone}/{campaignSteps.length} {isHu ? "lépés" : "steps"}
                         </StatusChip>
+                      ) : currentType && partialCountFor(p.userId, currentType) > 0 ? (
+                        // Lépésen belüli rész-haladás: elkezdte, még nem zárta le.
+                        <StatusChip variant="info">
+                          {isHu ? "Elkezdte" : "Started"}
+                        </StatusChip>
                       ) : (
                         <StatusChip variant="neutral">
                           {t("org.campaign.participantNotStarted", locale)}
@@ -801,6 +863,16 @@ export default async function CampaignDetailPage({
                       {!isPsychOnly && !isAllDone && currentLabel && (
                         <span className="hidden text-xs text-muted md:inline">
                           {isHu ? "most:" : "now:"} {currentLabel}
+                          {(() => {
+                            // Értékelős lépésen a rész-haladás is látszik (2/5).
+                            const done = currentType ? partialCountFor(p.userId, currentType) : 0;
+                            const total = peerTotalFor(p.userId);
+                            return done > 0 && total > 0 ? (
+                              <span className="ml-1 font-semibold text-bronze">
+                                · {Math.min(done, total)}/{total}
+                              </span>
+                            ) : null;
+                          })()}
                         </span>
                       )}
                       {hasObserverStep && obsCount > 0 && (
@@ -897,9 +969,10 @@ export default async function CampaignDetailPage({
                 | "TEAM_ROLE_360"
                 | "TRUST_360"
                 | "PSYCH_SAFETY"
+                | "PEER_FEEDBACK"
               )[]
             }
-            initialTeamId={campaign.teamId}
+            initialTeamIds={getCampaignTeamIds(campaign)}
             initialIntervalHours={campaign.stepIntervalHours}
             teams={orgTeams.map((team) => ({
               id: team.id,
@@ -940,15 +1013,22 @@ export default async function CampaignDetailPage({
           </section>
         )}
 
-        {/* Lezárt kampány → riport-híd */}
-        {campaign.status === "CLOSED" && campaign.teamId && canManageCampaign ? (
-          <section className="rounded-2xl border border-sage/40 bg-sage/5 p-5">
-            <Link
-              href={`/team/${campaign.teamId}?tab=report`}
-              className="text-sm font-semibold text-sage-dark transition hover:text-ink"
-            >
-              {t("campaignWiz.closedReportCta", locale)}
-            </Link>
+        {/* Lezárt kampány → riport-híd (több-csapatos kampánynál csapatonként) */}
+        {campaign.status === "CLOSED" && canManageCampaign && getCampaignTeamIds(campaign).length > 0 ? (
+          <section className="flex flex-col gap-2 rounded-2xl border border-sage/40 bg-sage/5 p-5">
+            {getCampaignTeamIds(campaign).map((tid) => {
+              const team = orgTeams.find((tm) => tm.id === tid);
+              return (
+                <Link
+                  key={tid}
+                  href={`/team/${tid}?tab=report`}
+                  className="text-sm font-semibold text-sage-dark transition hover:text-ink"
+                >
+                  {t("campaignWiz.closedReportCta", locale)}
+                  {team && getCampaignTeamIds(campaign).length > 1 ? ` — ${team.name}` : ""}
+                </Link>
+              );
+            })}
           </section>
         ) : null}
         {!canManageCampaign && isManagerRole && manageGateCopy ? (

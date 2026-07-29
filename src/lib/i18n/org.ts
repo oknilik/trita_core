@@ -431,7 +431,7 @@ export const orgTranslations = {
         hu: "Amíg a mérés piszkozat, a lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után az összetétel rögzül.",
         en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
       },
-      editTypesLabel: { hu: "Mérések (max 4, sorrendjük kanonikus)", en: "Measurements (max 4, canonical order)" },
+      editTypesLabel: { hu: "Mérések (sorrendjük kanonikus)", en: "Measurements (canonical order)" },
       editTeamLabel: { hu: "Cél-csapat", en: "Target team" },
       editNoTeam: { hu: "Nincs csapat-célzás (egyénileg kiválasztott résztvevők)", en: "No team targeting (individually selected participants)" },
       editTeamNote: {
@@ -1215,10 +1215,10 @@ export const orgTranslations = {
     noTeams: { hu: "Nincs csapat a szervezetben — válassz tagokat egyénileg.", en: "No teams in this organization — pick members individually." },
     individualTitle: { hu: "Egyéni kiválasztás", en: "Individual selection" },
     roleTeamHint: {
-      hu: "A szerep-kör a teljes csapatra indul — válaszd ki, melyik csapatra.",
-      en: "The role round runs for a whole team — choose which team.",
+      hu: "A csapat-kötött mérések teljes csapat(ok)ra indulnak — több csapatot is kiválaszthatsz, mindenki a saját csapatában értékel.",
+      en: "Team-bound measurements run for whole teams — you can pick multiple teams; everyone rates within their own team.",
     },
-    targetTeamLabel: { hu: "// cél-csapat", en: "// target team" },
+    targetTeamLabel: { hu: "// cél-csapat(ok)", en: "// target team(s)" },
     typeSummaryLabel: { hu: "// mérés típusa", en: "// measurement type" },
     autoNameHint: { hu: "A nevet mi javasoltuk — átírhatod.", en: "We suggested the name — feel free to change it." },
 

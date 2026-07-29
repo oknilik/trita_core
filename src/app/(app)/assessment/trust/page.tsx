@@ -6,8 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
+import { getCampaignTeamIds, isStepOpenFor } from "@/lib/campaign-steps-core";
+import { releaseDueCampaignSteps, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
 import { TrustPeersClient } from "./TrustPeersClient";
 
 export const dynamic = "force-dynamic";
@@ -43,15 +43,19 @@ export default async function TrustPeersPage() {
       currentStep: true,
       nextStepOpensAt: true,
       campaign: {
-        select: { id: true, name: true, type: true, steps: true, teamId: true },
+        select: { id: true, name: true, type: true, steps: true, teamId: true, teamIds: true },
       },
     },
   });
   const pending = candidates.find(
-    (p) => p.campaign.teamId && isStepOpenFor(p.campaign, p, "TRUST_360"),
+    (p) => getCampaignTeamIds(p.campaign).length > 0 && isStepOpenFor(p.campaign, p, "TRUST_360"),
   );
 
-  if (!pending || !pending.campaign.teamId) {
+  // Több-csapatos kampányban a tag SAJÁT csapata a cél.
+  const memberTeamId = pending
+    ? await resolveCampaignTeamIdForUser(pending.campaign, profile.id)
+    : null;
+  if (!pending || !memberTeamId) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
         <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
@@ -74,7 +78,7 @@ export default async function TrustPeersPage() {
 
   const [members, rated] = await Promise.all([
     prisma.teamMember.findMany({
-      where: { teamId: pending.campaign.teamId, userId: { not: profile.id } },
+      where: { teamId: memberTeamId, userId: { not: profile.id } },
       select: {
         userId: true,
         user: { select: { id: true, username: true, email: true } },

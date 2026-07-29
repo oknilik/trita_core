@@ -6,9 +6,34 @@
 import { prisma } from "@/lib/prisma";
 import {
   getCampaignSteps,
+  getCampaignTeamIds,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { handleMeasurementStepOpened } from "@/lib/notifications";
+
+/**
+ * Több-csapatos kampányban a tag SAJÁT cél-csapata: az a kampány-csapat,
+ * amelynek a user tagja (több találatnál az első kampány-sorrend szerint).
+ * A csapat-kötött kitöltők (szerep-360, bizalmi kör, elismerés-kör) ezt
+ * használják a "campaign.teamId" közvetlen olvasása helyett.
+ */
+export async function resolveCampaignTeamIdForUser(
+  campaign: { teamId?: string | null; teamIds?: string[] },
+  profileId: string,
+): Promise<string | null> {
+  const teamIds = getCampaignTeamIds(campaign);
+  if (teamIds.length === 0) return null;
+  if (teamIds.length === 1) return teamIds[0];
+  const membership = await prisma.teamMember.findFirst({
+    where: { userId: profileId, teamId: { in: teamIds } },
+    select: { teamId: true },
+  });
+  if (membership) {
+    // A kampány-lista sorrendje a mérvadó, nem a tagság kora.
+    return teamIds.find((id) => id === membership.teamId) ?? membership.teamId;
+  }
+  return null;
+}
 
 type StepCompletions = Record<string, string>;
 

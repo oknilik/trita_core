@@ -60,6 +60,18 @@ export function getCampaignSteps(campaign: { type: string; steps: string[] }): s
   return campaign.steps.length > 0 ? campaign.steps : [campaign.type];
 }
 
+/**
+ * A kampány cél-csapatai — a teamIds lista az igazság, üres listánál a
+ * legacy egy-csapatos teamId (2026-07-29 előtti kampányok).
+ */
+export function getCampaignTeamIds(campaign: {
+  teamId?: string | null;
+  teamIds?: string[];
+}): string[] {
+  if (campaign.teamIds && campaign.teamIds.length > 0) return campaign.teamIds;
+  return campaign.teamId ? [campaign.teamId] : [];
+}
+
 /** A résztvevő aktuális (nyitott) lépésének típusa; null = minden lépés kész. */
 export function getCurrentStepType(
   campaign: { type: string; steps: string[] },

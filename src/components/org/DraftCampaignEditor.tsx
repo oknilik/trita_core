@@ -48,7 +48,7 @@ export function DraftCampaignEditor({
   orgId,
   campaignId,
   initialSteps,
-  initialTeamId,
+  initialTeamIds,
   initialIntervalHours,
   teams,
   locale,
@@ -56,14 +56,15 @@ export function DraftCampaignEditor({
   orgId: string;
   campaignId: string;
   initialSteps: CampaignType[];
-  initialTeamId: string | null;
+  initialTeamIds: string[];
   initialIntervalHours: number;
   teams: Array<{ id: string; name: string; memberCount: number }>;
   locale: Locale;
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<CampaignType>>(new Set(initialSteps));
-  const [teamId, setTeamId] = useState<string | null>(initialTeamId);
+  // Több cél-csapat (2026-07-29): a lista az igazság.
+  const [teamIds, setTeamIds] = useState<Set<string>>(new Set(initialTeamIds));
   const [intervalHours, setIntervalHours] = useState(initialIntervalHours);
   const [saving, setSaving] = useState(false);
   const [discarding, setDiscarding] = useState(false);
@@ -73,15 +74,13 @@ export function DraftCampaignEditor({
 
   const chosenSteps = STEP_ORDER.filter((tp) => selected.has(tp));
   const needsTeam = chosenSteps.some((tp) => TEAM_LOCKED.has(tp));
-  const teamMissing = needsTeam && !teamId;
-  // Max 4 mérés / kampány (a create-séma limitje).
-  const atLimit = chosenSteps.length >= 4;
+  const teamMissing = needsTeam && teamIds.size === 0;
 
   const toggleType = (tp: CampaignType) => {
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(tp)) next.delete(tp);
-      else if (next.size < 4) next.add(tp);
+      else next.add(tp);
       return next;
     });
     setNotice(null);
@@ -97,7 +96,7 @@ export function DraftCampaignEditor({
         body: JSON.stringify({
           action: "edit_draft",
           types: chosenSteps,
-          teamId,
+          teamIds: Array.from(teamIds),
           stepIntervalHours: intervalHours,
         }),
       });
@@ -157,7 +156,7 @@ export function DraftCampaignEditor({
         {STEP_ORDER.map((tp) => {
           const checked = selected.has(tp);
           const orderIndex = chosenSteps.indexOf(tp);
-          const disabled = !checked && atLimit;
+          const disabled = false;
           return (
             <label
               key={tp}
@@ -200,10 +199,9 @@ export function DraftCampaignEditor({
         {!needsTeam && (
           <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-sand bg-white px-3.5 py-2.5 transition hover:bg-cream">
             <input
-              type="radio"
-              name="draftTeam"
-              checked={teamId === null}
-              onChange={() => setTeamId(null)}
+              type="checkbox"
+              checked={teamIds.size === 0}
+              onChange={() => setTeamIds(new Set())}
               className="h-4 w-4 accent-sage"
             />
             <span className="text-sm text-ink-body">{t("org.campaign.editNoTeam", locale)}</span>
@@ -214,15 +212,21 @@ export function DraftCampaignEditor({
             key={team.id}
             className={[
               "flex cursor-pointer items-center justify-between gap-3 rounded-[12px] border px-3.5 py-2.5 transition",
-              teamId === team.id ? "border-sage bg-sage/5" : "border-sand bg-white hover:bg-cream",
+              teamIds.has(team.id) ? "border-sage bg-sage/5" : "border-sand bg-white hover:bg-cream",
             ].join(" ")}
           >
             <span className="flex items-center gap-3">
               <input
-                type="radio"
-                name="draftTeam"
-                checked={teamId === team.id}
-                onChange={() => setTeamId(team.id)}
+                type="checkbox"
+                checked={teamIds.has(team.id)}
+                onChange={() =>
+                  setTeamIds((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(team.id)) next.delete(team.id);
+                    else next.add(team.id);
+                    return next;
+                  })
+                }
                 className="h-4 w-4 accent-sage"
               />
               <span className="text-sm font-medium text-ink">{team.name}</span>

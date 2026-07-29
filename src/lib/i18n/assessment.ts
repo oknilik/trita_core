@@ -279,4 +279,28 @@ export const assessmentTranslations = {
     },
     retry: { hu: "Újra próbálom", en: "Try again" },
   },
+  // ── Tag-oldali mérés-nézet (/assessment/measurements) ──────────────────
+  myTasks: {
+    title: { hu: "Mérési feladataim", en: "My measurement tasks" },
+    eyebrow: { hu: "Aktív mérések", en: "Active measurements" },
+    intro: {
+      hu: "Itt látod, melyik mérésben hol tartasz — a nyitott lépésre bármikor visszatérhetsz, a megkezdett kitöltésed mentve van.",
+      en: "See where you stand in each measurement — you can return to the open step anytime; partial progress is saved.",
+    },
+    noneTitle: { hu: "Nincs aktív mérésed", en: "No active measurements" },
+    noneBody: {
+      hu: "Jelenleg egyik aktív mérési körben sem vársz kitöltésre.",
+      en: "You have no active measurement rounds waiting on you right now.",
+    },
+    stepDone: { hu: "Kész", en: "Done" },
+    stepOpen: { hu: "Kitöltés folytatása", en: "Continue" },
+    stepStart: { hu: "Kitöltés indítása", en: "Start" },
+    stepLocked: { hu: "Később nyílik", en: "Opens later" },
+    stepOpensAt: { hu: "Várható nyitás: {date}", en: "Opens: {date}" },
+    stepUpcoming: { hu: "Hátravan", en: "Upcoming" },
+    partialProgress: { hu: "{done}/{total} értékelés kész", en: "{done}/{total} ratings done" },
+    allDoneBadge: { hu: "Minden lépés kész 🎉", en: "All steps done 🎉" },
+    progressLabel: { hu: "{done}/{total} lépés", en: "{done}/{total} steps" },
+    backToDashboard: { hu: "Vissza az irányítópultra", en: "Back to dashboard" },
+  },
 } as const;

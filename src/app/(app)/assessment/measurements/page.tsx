@@ -1,0 +1,317 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+import { getServerLocale } from "@/lib/i18n-server";
+import { t, tf } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
+import {
+  CAMPAIGN_STEP_LABELS,
+  CAMPAIGN_STEP_LINKS,
+  getCampaignSteps,
+  isCampaignStepDone,
+  isCampaignStepType,
+  isStepGateOpen,
+} from "@/lib/campaign-steps-core";
+import {
+  releaseDueCampaignSteps,
+  resolveCampaignTeamIdForUser,
+} from "@/lib/campaign-steps";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: "Mérési feladataim | trita", robots: { index: false } };
+}
+
+// Tag-oldali kampány-nézet: a saját aktív méréseim, lépésenkénti
+// állapottal (kész / nyitott / ütemezett / hátralévő), rész-haladással
+// (pl. „2/5 értékelés kész") és vissza-linkkel a kitöltő-felületre.
+export default async function MyMeasurementsPage() {
+  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  if (!userId) redirect("/sign-in");
+  const loc = locale as Locale;
+
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  if (!profile) redirect("/sign-in");
+
+  // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
+  await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});
+
+  const participations = await prisma.campaignParticipant.findMany({
+    where: { userId: profile.id, campaign: { status: "ACTIVE" } },
+    orderBy: { campaign: { createdAt: "desc" } },
+    select: {
+      currentStep: true,
+      nextStepOpensAt: true,
+      stepCompletions: true,
+      campaign: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          type: true,
+          steps: true,
+          teamId: true,
+          teamIds: true,
+          requireFreshResults: true,
+          activatedAt: true,
+        },
+      },
+    },
+  });
+
+  // OBSERVER_360 legacy fallback-hoz: van-e (fresh-tudatos) self-eredmény.
+  const latestSelf =
+    participations.length > 0
+      ? await prisma.assessmentResult.findFirst({
+          where: { userProfileId: profile.id, isSelfAssessment: true },
+          orderBy: { createdAt: "desc" },
+          select: { createdAt: true },
+        })
+      : null;
+
+  const dateLocale = loc === "en" ? "en-GB" : "hu-HU";
+
+  const cards = await Promise.all(
+    participations.map(async (p) => {
+      const steps = getCampaignSteps(p.campaign);
+      const freshFrom =
+        p.campaign.requireFreshResults && p.campaign.activatedAt
+          ? p.campaign.activatedAt.getTime()
+          : null;
+      const selfDone = Boolean(
+        latestSelf &&
+          (freshFrom === null || latestSelf.createdAt.getTime() >= freshFrom),
+      );
+      const doneFlags = steps.map((_, idx) =>
+        isCampaignStepDone(steps, idx, p, selfDone),
+      );
+      const doneCount = doneFlags.filter(Boolean).length;
+      const currentIdx = doneFlags.findIndex((f) => !f);
+      const gateOpen = isStepGateOpen(p);
+
+      // Rész-haladás a nyitott lépésen: hány csapattársat értékeltem már.
+      let partial: { done: number; total: number } | null = null;
+      const currentType = currentIdx >= 0 ? steps[currentIdx] : null;
+      if (
+        currentType === "TEAM_ROLE_360" ||
+        currentType === "TRUST_360" ||
+        currentType === "PEER_FEEDBACK"
+      ) {
+        const teamId = await resolveCampaignTeamIdForUser(p.campaign, profile.id);
+        if (teamId) {
+          const [total, ratedCount] = await Promise.all([
+            prisma.teamMember.count({
+              where: { teamId, userId: { not: profile.id } },
+            }),
+            currentType === "TEAM_ROLE_360"
+              ? prisma.teamRoleObservation.count({
+                  where: { campaignId: p.campaign.id, raterUserId: profile.id },
+                })
+              : currentType === "TRUST_360"
+                ? prisma.trustObservation.count({
+                    where: { campaignId: p.campaign.id, raterUserId: profile.id },
+                  })
+                : prisma.peerFeedbackItem
+                    .findMany({
+                      where: {
+                        campaignId: p.campaign.id,
+                        fromUserId: profile.id,
+                        kind: "feedforward",
+                      },
+                      select: { toUserId: true },
+                      distinct: ["toUserId"],
+                    })
+                    .then((rows) => rows.length),
+          ]);
+          if (total > 0) partial = { done: Math.min(ratedCount, total), total };
+        }
+      }
+
+      return {
+        id: p.campaign.id,
+        name: p.campaign.name,
+        description: p.campaign.description,
+        steps,
+        doneFlags,
+        doneCount,
+        currentIdx,
+        gateOpen,
+        nextStepOpensAt: p.nextStepOpensAt,
+        partial,
+      };
+    }),
+  );
+
+  return (
+    <main className="min-h-dvh bg-cream">
+      <div className="mx-auto w-full max-w-3xl px-4 py-10">
+        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+          {t("myTasks.eyebrow", loc)}
+        </p>
+        <h1 className="mt-1 font-fraunces text-3xl text-ink">
+          {t("myTasks.title", loc)}
+        </h1>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-body">
+          {t("myTasks.intro", loc)}
+        </p>
+
+        {cards.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+            <h2 className="font-fraunces text-xl text-ink">
+              {t("myTasks.noneTitle", loc)}
+            </h2>
+            <p className="mt-2 text-sm text-ink-body">
+              {t("myTasks.noneBody", loc)}
+            </p>
+            <Link
+              href="/dashboard"
+              className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+            >
+              {t("myTasks.backToDashboard", loc)}
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-8 flex flex-col gap-5">
+            {cards.map((card) => {
+              const allDone = card.doneCount >= card.steps.length;
+              return (
+                <section
+                  key={card.id}
+                  className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-7"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h2 className="font-fraunces text-xl text-ink">{card.name}</h2>
+                      {card.description && (
+                        <p className="mt-1 text-xs text-ink-body/70">{card.description}</p>
+                      )}
+                    </div>
+                    <span
+                      className={[
+                        "rounded-full px-2.5 py-1 text-xs font-semibold",
+                        allDone
+                          ? "bg-sage/15 text-sage-dark"
+                          : "bg-sand text-ink-body",
+                      ].join(" ")}
+                    >
+                      {allDone
+                        ? t("myTasks.allDoneBadge", loc)
+                        : tf("myTasks.progressLabel", loc, {
+                            done: card.doneCount,
+                            total: card.steps.length,
+                          })}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand">
+                    <div
+                      className="h-full rounded-full bg-sage transition-all duration-500"
+                      style={{
+                        width: `${(card.doneCount / Math.max(card.steps.length, 1)) * 100}%`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="mt-4 flex flex-col gap-2">
+                    {card.steps.map((stepType, idx) => {
+                      const label = isCampaignStepType(stepType)
+                        ? CAMPAIGN_STEP_LABELS[stepType][loc === "en" ? "en" : "hu"]
+                        : stepType;
+                      const isDone = card.doneFlags[idx];
+                      const isCurrent = idx === card.currentIdx;
+                      const link = isCampaignStepType(stepType)
+                        ? CAMPAIGN_STEP_LINKS[stepType]
+                        : "/dashboard";
+                      const started = isCurrent && (card.partial?.done ?? 0) > 0;
+                      return (
+                        <div
+                          key={stepType}
+                          className={[
+                            "flex flex-wrap items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5",
+                            isDone
+                              ? "border-sage/30 bg-sage/5"
+                              : isCurrent
+                                ? "border-bronze/40 bg-cream"
+                                : "border-sand bg-white opacity-80",
+                          ].join(" ")}
+                        >
+                          <span className="flex min-w-0 items-center gap-2.5">
+                            <span
+                              className={[
+                                "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
+                                isDone
+                                  ? "bg-sage text-white"
+                                  : isCurrent
+                                    ? "bg-bronze text-white"
+                                    : "bg-sand text-muted",
+                              ].join(" ")}
+                            >
+                              {isDone ? "✓" : idx + 1}
+                            </span>
+                            <span className="text-caption font-medium text-ink">
+                              {label}
+                            </span>
+                            {isCurrent && card.partial && (
+                              <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-bronze">
+                                {tf("myTasks.partialProgress", loc, {
+                                  done: card.partial.done,
+                                  total: card.partial.total,
+                                })}
+                              </span>
+                            )}
+                          </span>
+                          <span className="shrink-0">
+                            {isDone ? (
+                              <span className="text-xs font-semibold text-sage-dark">
+                                {t("myTasks.stepDone", loc)}
+                              </span>
+                            ) : isCurrent && card.gateOpen ? (
+                              <Link
+                                href={link}
+                                className="inline-flex min-h-[36px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                              >
+                                {started
+                                  ? t("myTasks.stepOpen", loc)
+                                  : t("myTasks.stepStart", loc)}
+                              </Link>
+                            ) : isCurrent && card.nextStepOpensAt ? (
+                              <span className="text-xs text-muted">
+                                {tf("myTasks.stepOpensAt", loc, {
+                                  date: card.nextStepOpensAt.toLocaleString(dateLocale, {
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }),
+                                })}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-muted">
+                                {t(
+                                  isCurrent
+                                    ? "myTasks.stepLocked"
+                                    : "myTasks.stepUpcoming",
+                                  loc,
+                                )}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

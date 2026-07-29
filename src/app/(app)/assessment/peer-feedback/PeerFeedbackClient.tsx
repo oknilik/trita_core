@@ -62,6 +62,9 @@ export function PeerFeedbackClient({
   // Továbblépési kísérlet után jelöljük vizuálisan a hiányzó mezőket.
   const [attempted, setAttempted] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
+  // Szerverre már beküldött címzettek (rész-haladás): a kész kártya a
+  // továbblépéskor azonnal beküldésre kerül, így eszközváltásnál sem vész el.
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cardRef = useRef<HTMLElement | null>(null);
 
@@ -176,6 +179,35 @@ export function PeerFeedbackClient({
     }
   };
 
+  // Egyetlen kész kártya beküldése (rész-mentés) — a szerver lefedettség
+  // alapján lépteti a kampány-lépést, így a részleges beadás biztonságos.
+  const saveEntryToServer = async (targetUserId: string) => {
+    const e = entries[targetUserId];
+    if (!entryComplete(e) || savedIds.has(targetUserId)) return;
+    try {
+      const res = await fetch("/api/peer-feedback/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          campaignId,
+          entries: [
+            {
+              toUserId: targetUserId,
+              ...(e.appreciation.trim().length >= 3
+                ? { appreciation: e.appreciation.trim() }
+                : {}),
+              continueText: e.continueText.trim(),
+              tryText: e.tryText.trim(),
+            },
+          ],
+        }),
+      });
+      if (res.ok) setSavedIds((prev) => new Set(prev).add(targetUserId));
+    } catch {
+      // hálózati hiba — a localStorage-piszkozat őrzi, a záró beadás pótolja
+    }
+  };
+
   const next = () => {
     if (!current) return;
     if (!entryComplete(entries[current.userId])) {
@@ -185,6 +217,8 @@ export function PeerFeedbackClient({
     if (isLast) {
       void submit();
     } else {
+      // Rész-mentés a szerverre (fire-and-forget) + tovább a következőre.
+      void saveEntryToServer(current.userId);
       goTo(currentIdx + 1);
     }
   };

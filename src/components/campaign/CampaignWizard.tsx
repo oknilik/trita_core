@@ -127,7 +127,11 @@ export function CampaignWizard({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     new Set(preselectedTeam ? preselectedTeam.members.map((m) => m.userId) : []),
   );
-  const [targetTeamId, setTargetTeamId] = useState<string | null>(preselectedTeamId);
+  // Több cél-csapat is választható (2026-07-29) — a résztvevő-lista a
+  // kiválasztott csapatok uniója (+ egyéni hozzáadás nem-kötött mérésnél).
+  const [targetTeamIds, setTargetTeamIds] = useState<Set<string>>(
+    new Set(preselectedTeamId ? [preselectedTeamId] : []),
+  );
   // Külső observer-meghívók jóváhagyás nélkül mehetnek-e ebben a kampányban.
   const [allowExternalObservers, setAllowExternalObservers] = useState(false);
   // Peer feedback kör: a feedforward-elemek anonim-aggregált módban menjenek-e.
@@ -150,7 +154,8 @@ export function CampaignWizard({
     4: t("campaignWiz.stepConfirm", locale),
   };
 
-  const targetTeam = teams.find((tm) => tm.id === targetTeamId) ?? null;
+  const targetTeams = teams.filter((tm) => targetTeamIds.has(tm.id));
+  const targetTeam = targetTeams[0] ?? null;
 
   const chosenSteps = STEP_ORDER.filter((tp) => selectedTypes.has(tp));
   const type: CampaignType | null = chosenSteps[0] ?? null;
@@ -206,20 +211,42 @@ export function CampaignWizard({
       }
       return next;
     });
-    setTargetTeamId(fully ? null : team.id);
+    setTargetTeamIds((prev) => {
+      const next = new Set(prev);
+      if (fully) next.delete(team.id);
+      else next.add(team.id);
+      return next;
+    });
   }
 
-  // Csapathoz kötött mérésnél a célzás = egyetlen csapat (radio-jellegű választás).
-  function pickRoleTeam(team: TeamOption) {
-    setTargetTeamId(team.id);
-    setSelectedIds(new Set(team.members.map((m) => m.userId)));
-    if (!nameTouched && chosenSteps.length > 0) setName(buildSuggestedName(chosenSteps, team.name));
+  // Csapathoz kötött mérésnél is TÖBB csapat választható — a résztvevők a
+  // kiválasztott csapatok uniója; kikapcsoláskor a csapat tagjai kikerülnek.
+  function toggleRoleTeam(team: TeamOption) {
+    const isOn = targetTeamIds.has(team.id);
+    setTargetTeamIds((prev) => {
+      const next = new Set(prev);
+      if (isOn) next.delete(team.id);
+      else next.add(team.id);
+      if (!nameTouched && chosenSteps.length > 0) {
+        const firstTeam = teams.find((tm) => next.has(tm.id));
+        setName(buildSuggestedName(chosenSteps, firstTeam?.name));
+      }
+      return next;
+    });
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      for (const m of team.members) {
+        if (isOn) next.delete(m.userId);
+        else next.add(m.userId);
+      }
+      return next;
+    });
   }
 
   function toggleAll() {
     if (selectedIds.size === members.length) {
       setSelectedIds(new Set());
-      setTargetTeamId(null);
+      setTargetTeamIds(new Set());
     } else {
       setSelectedIds(new Set(members.map((m) => m.userId)));
     }
@@ -241,7 +268,7 @@ export function CampaignWizard({
             description: description.trim() || undefined,
             type,
             types: chosenSteps,
-            teamId: targetTeamId ?? undefined,
+            teamIds: targetTeamIds.size > 0 ? Array.from(targetTeamIds) : undefined,
             allowExternalObservers,
             stepIntervalHours,
             requireFreshResults,
@@ -315,7 +342,7 @@ export function CampaignWizard({
       tp === "PSYCH_SAFETY" ||
       tp === "PEER_FEEDBACK",
   );
-  const canProceedTargeting = isTeamLocked ? targetTeamId !== null : true;
+  const canProceedTargeting = isTeamLocked ? targetTeamIds.size > 0 : true;
 
   return (
     <div className="flex flex-col gap-6">
@@ -631,8 +658,9 @@ export function CampaignWizard({
               </p>
               <div className="flex flex-col gap-2">
                 {teams.map((team) => {
-                  const checked =
-                    isTeamLocked ? targetTeamId === team.id : isTeamFullySelected(team);
+                  const checked = isTeamLocked
+                    ? targetTeamIds.has(team.id)
+                    : isTeamFullySelected(team);
                   return (
                     <label
                       key={team.id}
@@ -643,11 +671,10 @@ export function CampaignWizard({
                     >
                       <span className="flex items-center gap-3">
                         <input
-                          type={isTeamLocked ? "radio" : "checkbox"}
-                          name={isTeamLocked ? "roleTeam" : undefined}
+                          type="checkbox"
                           checked={checked}
                           onChange={() =>
-                            isTeamLocked ? pickRoleTeam(team) : toggleTeam(team)
+                            isTeamLocked ? toggleRoleTeam(team) : toggleTeam(team)
                           }
                           className="h-4 w-4 accent-sage"
                         />
@@ -734,11 +761,11 @@ export function CampaignWizard({
               </p>
               <p className="text-body font-semibold text-ink">{name}</p>
               {description && <p className="mt-1 text-sm text-ink-body">{description}</p>}
-              {targetTeam && (
+              {targetTeams.length > 0 && (
                 <p className="mt-2 font-mono text-micro uppercase tracking-widest text-muted">
                   {t("campaignWiz.targetTeamLabel", locale)}{" "}
                   <span className="font-sans text-[12px] normal-case tracking-normal text-ink-body">
-                    {targetTeam.name}
+                    {targetTeams.map((tm) => tm.name).join(" · ")}
                   </span>
                 </p>
               )}

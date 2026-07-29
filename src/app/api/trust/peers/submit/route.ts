@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
+import { advanceCampaignStepForUser, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
 import { hasRaterCoveredTeamTrust } from "@/lib/trust-network.server";
 import { isValidTrustAnswerSet } from "@/lib/trust-network";
 
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     select: {
       currentStep: true,
       nextStepOpensAt: true,
-      campaign: { select: { status: true, type: true, steps: true, teamId: true } },
+      campaign: { select: { status: true, type: true, steps: true, teamId: true, teamIds: true } },
     },
   });
   if (!participant) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
@@ -68,7 +68,8 @@ export async function POST(req: NextRequest) {
   if (!isStepOpenFor(participant.campaign, participant, "TRUST_360")) {
     return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
   }
-  const teamId = participant.campaign.teamId;
+  // Több-csapatos kampányban a tag SAJÁT csapata a cél.
+  const teamId = await resolveCampaignTeamIdForUser(participant.campaign, profile.id);
   if (!teamId) return NextResponse.json({ error: "NO_TARGET_TEAM" }, { status: 409 });
 
   // Minden értékelt legyen a cél-csapat tagja.

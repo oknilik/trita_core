@@ -10,13 +10,16 @@ const createSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   type: z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]).default("OBSERVER_360"),
-  // Több-lépéses kampány: a kiválasztott mérések (kanonikus sorrendbe rendezzük).
+  // Több-lépéses kampány: a kiválasztott mérések (kanonikus sorrendbe
+  // rendezzük). Nincs darab-limit — akár mind a 6 mehet egy körben.
   types: z
     .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
     .min(1)
-    .max(4)
+    .max(6)
     .optional(),
   teamId: z.string().min(1).optional(),
+  // Több cél-csapat (2026-07-29): a teamId legacy — az első csapat.
+  teamIds: z.array(z.string().min(1)).max(50).optional(),
   allowExternalObservers: z.boolean().optional().default(false),
   stepIntervalHours: z.number().int().min(0).max(168).optional().default(24),
   peerFeedbackAnonymous: z.boolean().optional().default(false),
@@ -109,13 +112,19 @@ export async function POST(
   const body = createSchema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  // Csapat-célzásnál a csapatnak ehhez az org-hoz kell tartoznia.
-  if (body.data.teamId) {
-    const team = await prisma.team.findUnique({
-      where: { id: body.data.teamId },
-      select: { orgId: true },
+  // Csapat-célzásnál minden csapatnak ehhez az org-hoz kell tartoznia.
+  const requestedTeamIds = [
+    ...new Set(body.data.teamIds ?? (body.data.teamId ? [body.data.teamId] : [])),
+  ];
+  if (requestedTeamIds.length > 0) {
+    const teams = await prisma.team.findMany({
+      where: { id: { in: requestedTeamIds } },
+      select: { id: true, orgId: true },
     });
-    if (!team || team.orgId !== orgId) {
+    if (
+      teams.length !== requestedTeamIds.length ||
+      teams.some((team) => team.orgId !== orgId)
+    ) {
       return NextResponse.json({ error: "INVALID_TEAM" }, { status: 400 });
     }
   }
@@ -136,7 +145,7 @@ export async function POST(
         st === "PSYCH_SAFETY" ||
         st === "PEER_FEEDBACK",
     ) &&
-    !body.data.teamId
+    requestedTeamIds.length === 0
   ) {
     return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });
   }
@@ -148,7 +157,8 @@ export async function POST(
       description: body.data.description,
       type: steps[0],
       steps,
-      teamId: body.data.teamId,
+      teamId: requestedTeamIds[0] ?? null,
+      teamIds: requestedTeamIds,
       allowExternalObservers: body.data.allowExternalObservers,
       stepIntervalHours: body.data.stepIntervalHours,
       peerFeedbackAnonymous: body.data.peerFeedbackAnonymous,

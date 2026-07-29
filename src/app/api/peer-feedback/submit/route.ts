@@ -4,11 +4,13 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
+import { advanceCampaignStepForUser, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
 
 // Kampány-lépés: kollégai visszajelzés kör (peer feedback F3).
-// Egy beadás fedi az összes csapattársat: tagonként opcionális elismerés +
-// kötelező feedforward-pár. A feedforward láthatóságát a kampány
+// A kliens SZEMÉLYENKÉNT is beküldhet (rész-haladás szerver-oldalon
+// mentve) vagy egyben — a lépés akkor teljesül, amikor a beküldő már a
+// csapat MINDEN tagjának adott feedforwardot (lefedettség-ellenőrzés,
+// a team-role-360 mintája). A feedforward láthatóságát a kampány
 // peerFeedbackAnonymous flagje dönti el; az elismerés MINDIG nevesített.
 // Zárolt/nem aktuális lépésnél 409 (STEP_LOCKED) — a kanonikus kapu-minta.
 
@@ -57,6 +59,7 @@ export async function POST(req: Request) {
           type: true,
           steps: true,
           teamId: true,
+          teamIds: true,
           peerFeedbackAnonymous: true,
         },
       },
@@ -69,7 +72,8 @@ export async function POST(req: Request) {
   if (!isStepOpenFor(participant.campaign, participant, "PEER_FEEDBACK")) {
     return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
   }
-  const teamId = participant.campaign.teamId;
+  // Több-csapatos kampányban a tag SAJÁT csapata a cél.
+  const teamId = await resolveCampaignTeamIdForUser(participant.campaign, profile.id);
   if (!teamId) return NextResponse.json({ error: "INVALID_CAMPAIGN" }, { status: 400 });
   const team = await prisma.team.findUnique({
     where: { id: teamId },
@@ -154,8 +158,25 @@ export async function POST(req: Request) {
     );
   }
 
-  // Lépés-teljesítés lekönyvelése
-  await advanceCampaignStepForUser(profile.id, "PEER_FEEDBACK").catch(() => {});
+  // Lefedettség-ellenőrzés → lépés-teljesítés: csak akkor lép, ha a
+  // beküldő a csapat MINDEN (nem-self) tagjának adott már feedforwardot —
+  // a személyenkénti rész-beadás így mentve marad, de nem zárja a lépést.
+  const [teamMemberCount, coveredTargets] = await Promise.all([
+    prisma.teamMember.count({ where: { teamId, userId: { not: profile.id } } }),
+    prisma.peerFeedbackItem.findMany({
+      where: {
+        campaignId: participant.campaign.id,
+        fromUserId: profile.id,
+        kind: "feedforward",
+      },
+      select: { toUserId: true },
+      distinct: ["toUserId"],
+    }),
+  ]);
+  const covered = teamMemberCount > 0 && coveredTargets.length >= teamMemberCount;
+  if (covered) {
+    await advanceCampaignStepForUser(profile.id, "PEER_FEEDBACK").catch(() => {});
+  }
 
-  return NextResponse.json({ ok: true, created: fresh.length });
+  return NextResponse.json({ ok: true, created: fresh.length, covered });
 }

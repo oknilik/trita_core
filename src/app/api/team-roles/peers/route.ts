@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
+import { resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
 
 /**
  * GET /api/team-roles/peers?campaignId=…
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
       currentStep: true,
       nextStepOpensAt: true,
       campaign: {
-        select: { id: true, status: true, type: true, steps: true, teamId: true },
+        select: { id: true, status: true, type: true, steps: true, teamId: true, teamIds: true },
       },
     },
   });
@@ -40,7 +41,8 @@ export async function GET(req: NextRequest) {
   if (!isStepOpenFor(participant.campaign, participant, "TEAM_ROLE_360")) {
     return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
   }
-  const teamId = participant.campaign.teamId;
+  // Több-csapatos kampányban a tag SAJÁT csapata a cél.
+  const teamId = await resolveCampaignTeamIdForUser(participant.campaign, profile.id);
   if (!teamId) return NextResponse.json({ error: "NO_TARGET_TEAM" }, { status: 409 });
 
   const [members, rated] = await Promise.all([

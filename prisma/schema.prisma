@@ -530,7 +530,10 @@ model Campaign {
   // A lépések felhasználónként, sorban nyílnak meg (CampaignParticipant.currentStep).
   steps       String[]  @default([])
   // Csapat-célzású kampánynál a cél-csapat (riport-híd + idővonal ehhez köt)
+  // 2026-07-29-től több csapat is célozható: teamIds a teljes lista,
+  // a teamId az első csapat (legacy kompatibilitás + riport-híd).
   teamId      String?
+  teamIds     String[]  @default([])
   // Külső (nem szervezeti) observer-meghívók jóváhagyás nélkül mehetnek-e
   // ebben a kampányban. false → a külső meghívó AWAITING_APPROVAL állapotban
   // jön létre, és menedzser/org admin/tanácsadó engedélyezi.
