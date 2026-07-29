@@ -15,8 +15,9 @@ import {
   isStepGateOpen,
 } from "@/lib/campaign-steps-core";
 import {
+  getStepPartialProgress,
+  hasStartedStep,
   releaseDueCampaignSteps,
-  resolveCampaignTeamIdForUser,
 } from "@/lib/campaign-steps";
 
 export const dynamic = "force-dynamic";
@@ -95,43 +96,15 @@ export default async function MyMeasurementsPage() {
       const currentIdx = doneFlags.findIndex((f) => !f);
       const gateOpen = isStepGateOpen(p);
 
-      // Rész-haladás a nyitott lépésen: hány csapattársat értékeltem már.
-      let partial: { done: number; total: number } | null = null;
+      // Rész-haladás a nyitott lépésen (értékelős lépések) + „megkezdte-e"
+      // (OBSERVER_360-nál a szerver-oldali felmérés-piszkozat is számít).
       const currentType = currentIdx >= 0 ? steps[currentIdx] : null;
-      if (
-        currentType === "TEAM_ROLE_360" ||
-        currentType === "TRUST_360" ||
-        currentType === "PEER_FEEDBACK"
-      ) {
-        const teamId = await resolveCampaignTeamIdForUser(p.campaign, profile.id);
-        if (teamId) {
-          const [total, ratedCount] = await Promise.all([
-            prisma.teamMember.count({
-              where: { teamId, userId: { not: profile.id } },
-            }),
-            currentType === "TEAM_ROLE_360"
-              ? prisma.teamRoleObservation.count({
-                  where: { campaignId: p.campaign.id, raterUserId: profile.id },
-                })
-              : currentType === "TRUST_360"
-                ? prisma.trustObservation.count({
-                    where: { campaignId: p.campaign.id, raterUserId: profile.id },
-                  })
-                : prisma.peerFeedbackItem
-                    .findMany({
-                      where: {
-                        campaignId: p.campaign.id,
-                        fromUserId: profile.id,
-                        kind: "feedforward",
-                      },
-                      select: { toUserId: true },
-                      distinct: ["toUserId"],
-                    })
-                    .then((rows) => rows.length),
-          ]);
-          if (total > 0) partial = { done: Math.min(ratedCount, total), total };
-        }
-      }
+      const [partial, started] = currentType
+        ? await Promise.all([
+            getStepPartialProgress(p.campaign, currentType, profile.id),
+            hasStartedStep(p.campaign, currentType, profile.id),
+          ])
+        : [null, false];
 
       return {
         id: p.campaign.id,
@@ -144,6 +117,7 @@ export default async function MyMeasurementsPage() {
         gateOpen,
         nextStepOpensAt: p.nextStepOpensAt,
         partial,
+        started,
       };
     }),
   );
@@ -228,7 +202,7 @@ export default async function MyMeasurementsPage() {
                       const link = isCampaignStepType(stepType)
                         ? CAMPAIGN_STEP_LINKS[stepType]
                         : "/dashboard";
-                      const started = isCurrent && (card.partial?.done ?? 0) > 0;
+                      const started = isCurrent && card.started;
                       return (
                         <div
                           key={stepType}

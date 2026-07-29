@@ -13,7 +13,7 @@ import {
   isStepGateOpen,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
-import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
+import { hasStartedStep, releaseDueCampaignSteps } from "@/lib/campaign-steps";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import {
@@ -124,20 +124,28 @@ export default async function TeamDetailPage({
   const stepCandidates = await prisma.campaignParticipant.findMany({
     where: {
       userId: profile.id,
-      campaign: { teamId, status: "ACTIVE" },
+      // Több-csapatos kampány: a teamIds lista is számít, nem csak a
+      // legacy teamId (az első csapat).
+      campaign: {
+        status: "ACTIVE",
+        OR: [{ teamId }, { teamIds: { has: teamId } }],
+      },
     },
     orderBy: { addedAt: "asc" },
     select: {
       currentStep: true,
       nextStepOpensAt: true,
-      campaign: { select: { name: true, type: true, steps: true } },
+      campaign: {
+        select: { id: true, name: true, type: true, steps: true, teamId: true, teamIds: true },
+      },
     },
   });
-  const pendingMeasurement = stepCandidates
+  const pendingMeasurementBase = stepCandidates
     .map((p) => {
       const stepType = getCurrentStepType(p.campaign, p);
       return stepType && isCampaignStepType(stepType)
         ? {
+            campaign: p.campaign,
             campaignName: p.campaign.name,
             stepType,
             // Ütemezett (még zárt) lépés: időpontot mutatunk CTA helyett.
@@ -146,6 +154,22 @@ export default async function TeamDetailPage({
         : null;
     })
     .find((v): v is NonNullable<typeof v> => v !== null) ?? null;
+  // „Megkezdte" jelzés: rész-beadás vagy observer-piszkozat → a banner
+  // CTA-ja „kezdés" helyett „folytatás"-t mutat.
+  const pendingMeasurement = pendingMeasurementBase
+    ? {
+        campaignName: pendingMeasurementBase.campaignName,
+        stepType: pendingMeasurementBase.stepType,
+        opensAt: pendingMeasurementBase.opensAt,
+        started:
+          !pendingMeasurementBase.opensAt &&
+          (await hasStartedStep(
+            pendingMeasurementBase.campaign,
+            pendingMeasurementBase.stepType,
+            profile.id,
+          )),
+      }
+    : null;
   const orgId = team.orgId;
   if (!orgId) redirect(deepLinkFallback);
 

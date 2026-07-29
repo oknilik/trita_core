@@ -38,5 +38,7 @@ export interface TeamTabContext {
     campaignName: string;
     stepType: CampaignStepType;
     opensAt: Date | null;
+    /** Megkezdte a lépést (rész-beadás vagy observer-piszkozat) — CTA „folytatás". */
+    started: boolean;
   } | null;
 }

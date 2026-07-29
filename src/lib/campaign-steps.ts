@@ -37,6 +37,76 @@ export async function resolveCampaignTeamIdForUser(
 
 type StepCompletions = Record<string, string>;
 
+/**
+ * Lépésen belüli rész-haladás (értékelős lépések): hány csapattársat
+ * értékelt már a user / összesen hányat kell. Nem-értékelős lépésre null.
+ * A tag-nézet és a csapat-oldali banner „folytatás" felirata épül rá.
+ */
+export async function getStepPartialProgress(
+  campaign: { id: string; teamId?: string | null; teamIds?: string[] },
+  stepType: string,
+  profileId: string,
+): Promise<{ done: number; total: number } | null> {
+  if (
+    stepType !== "TEAM_ROLE_360" &&
+    stepType !== "TRUST_360" &&
+    stepType !== "PEER_FEEDBACK"
+  ) {
+    return null;
+  }
+  const teamId = await resolveCampaignTeamIdForUser(campaign, profileId);
+  if (!teamId) return null;
+  const total = await prisma.teamMember.count({
+    where: { teamId, userId: { not: profileId } },
+  });
+  if (total === 0) return null;
+  let done = 0;
+  if (stepType === "TEAM_ROLE_360") {
+    done = await prisma.teamRoleObservation.count({
+      where: { campaignId: campaign.id, raterUserId: profileId },
+    });
+  } else if (stepType === "TRUST_360") {
+    done = await prisma.trustObservation.count({
+      where: { campaignId: campaign.id, raterUserId: profileId },
+    });
+  } else {
+    const rows = await prisma.peerFeedbackItem.findMany({
+      where: { campaignId: campaign.id, fromUserId: profileId, kind: "feedforward" },
+      select: { toUserId: true },
+      distinct: ["toUserId"],
+    });
+    done = rows.length;
+  }
+  return { done: Math.min(done, total), total };
+}
+
+/**
+ * Megkezdett-e a user az adott nyitott lépést? Értékelős lépésnél a
+ * rész-haladásból, OBSERVER_360-nál a szerver-oldali felmérés-piszkozatból
+ * derül ki — a CTA erre vált „kezdés"-ről „folytatás"-ra.
+ */
+export async function hasStartedStep(
+  campaign: { id: string; teamId?: string | null; teamIds?: string[] },
+  stepType: string,
+  profileId: string,
+): Promise<boolean> {
+  if (stepType === "OBSERVER_360") {
+    const draft = await prisma.assessmentDraft.findUnique({
+      where: { userProfileId: profileId },
+      select: { answers: true },
+    });
+    return Boolean(
+      draft &&
+        draft.answers &&
+        typeof draft.answers === "object" &&
+        !Array.isArray(draft.answers) &&
+        Object.keys(draft.answers as Record<string, unknown>).length > 0,
+    );
+  }
+  const partial = await getStepPartialProgress(campaign, stepType, profileId);
+  return (partial?.done ?? 0) > 0;
+}
+
 function withCompletion(
   existing: unknown,
   stepType: string,

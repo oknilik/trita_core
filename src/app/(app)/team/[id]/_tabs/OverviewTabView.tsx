@@ -363,9 +363,11 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
                   className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-white transition hover:brightness-110"
                 >
-                  {pendingMeasurement.stepType === "PEER_FEEDBACK"
-                    ? isHu ? "Visszajelzést adok" : "Give feedback"
-                    : isHu ? "Kitöltöm most" : "Fill it in now"}
+                  {pendingMeasurement.started
+                    ? isHu ? "Folytatom a kitöltést" : "Continue filling in"
+                    : pendingMeasurement.stepType === "PEER_FEEDBACK"
+                      ? isHu ? "Visszajelzést adok" : "Give feedback"
+                      : isHu ? "Kitöltöm most" : "Fill it in now"}
                 </Link>
               )}
             </div>
