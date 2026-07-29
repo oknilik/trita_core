@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import {
@@ -23,6 +23,7 @@ import { TRITAN_FACETS, TRITAN_ALTRUISM } from "@/lib/tritan";
 import { LEADER_SUPPLEMENTS } from "@/lib/interaction-atoms";
 import { DIMENSION_GROWTH_TIPS } from "@/lib/profile-content";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 
 // Karrier-iránytű — rövid kérdéssor (lépés-számlálóval, auto-továbblépéssel),
 // majd reveal-eredmény: hero-kártya a legerősebb iránynak, szint-címkék,
@@ -120,6 +121,62 @@ function fitBarColor(score: number): string {
   return "#F59E0B";
 }
 
+const INDUSTRY_EMOJI: Record<string, string> = {
+  tech: "💻", health: "🩺", education: "📚", finance: "📊", sales: "🤝",
+  creative: "🎨", media: "📣", operations: "🏭", people: "👥", public: "⚖️",
+  engineering: "🏗️", hospitality: "🍽️", science: "🔬", trades: "🔧",
+  transport: "🚚", services: "✂️",
+};
+
+const FIELD_EMOJI: Record<string, string> = {
+  tech_engineering: "🛠️", economics: "📈", health: "🩺", humanities: "📖",
+  natural_science: "🔬", legal: "⚖️", arts: "🎨", pedagogy: "🧒",
+  trade: "🔧", none_other: "✨",
+};
+
+/** Nagy, kattintható opció-kártya (egyválasztós lépésekhez) — emoji +
+ *  címke + alcím, kijelöléskor pop-animáció. */
+function OptionCard({
+  emoji,
+  label,
+  sub,
+  active,
+  onClick,
+}: {
+  emoji: string;
+  label: string;
+  sub?: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex min-h-[64px] min-w-[150px] flex-1 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition sm:min-w-[170px] ${
+        active
+          ? "border-sage bg-sage/10 shadow-sm"
+          : "border-[var(--color-border-soft)] bg-white hover:border-sage/40 hover:bg-[var(--color-surface-subtle)]"
+      }`}
+      style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
+    >
+      <span className="text-2xl" aria-hidden>
+        {emoji}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-sm font-semibold text-[var(--color-text-primary)]">
+          {label}
+        </span>
+        {sub && (
+          <span className="block text-micro leading-snug text-[var(--color-text-muted)]">
+            {sub}
+          </span>
+        )}
+      </span>
+    </button>
+  );
+}
+
 function Chip({
   active,
   onClick,
@@ -138,6 +195,7 @@ function Chip({
           ? "border-sage bg-sage text-white"
           : "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
       }`}
+      style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
     >
       {children}
     </button>
@@ -215,7 +273,7 @@ function SuggestionCard({
           ? "rounded-[16px] border-2 border-sage/50 bg-gradient-to-br from-sage/10 to-white p-5"
           : "rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4"
       }
-      style={{ animation: "fadeIn 0.3s ease-out both", animationDelay: `${delayMs}ms` }}
+      style={{ animation: "cc-step-in 0.35s ease-out both", animationDelay: `${delayMs}ms` }}
     >
       {hero && (
         <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-sage-dark">
@@ -495,6 +553,21 @@ export function CareerCompass({
   // Összevetés: max 2 kiválasztott javaslat kulcsa (industry:role)
   const [compareKeys, setCompareKeys] = useState<string[]>([]);
   const [methodOpen, setMethodOpen] = useState(false);
+  // Vezetői kérdés látható kijelöléshez (a leadFocus boolean ebből származik)
+  const [leadChoice, setLeadChoice] = useState<"yes" | "expert" | "unsure" | null>(null);
+  // Wizard-zárás ünneplés — csak tényleges kitöltés után, betöltéskor nem
+  const [celebrate, setCelebrate] = useState(false);
+  // Kijelölés-visszajelzés: a lépésváltás rövid késleltetéssel jön, hogy a
+  // pop-animáció látsszon; a timer guard a dupla-kattintás ellen véd.
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  function selectAndAdvance(from: Step, apply: () => void) {
+    apply();
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => {
+      advanceTimer.current = null;
+      goNext(from);
+    }, 320);
+  }
 
   // A wizard lépéssorrendje — tanulóknál a „jelenlegi terület" kimarad.
   const flow: Step[] = [
@@ -528,6 +601,7 @@ export function CareerCompass({
   function finish() {
     setStep("result");
     setShowMore(false);
+    setCelebrate(true);
     // Fire-and-forget mentés — visszatéréskor innen folytatja.
     fetch("/api/profile/career-background", {
       method: "POST",
@@ -691,29 +765,31 @@ export function CareerCompass({
       )}
 
       {step === "status" && (
-        <div key="status" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="status" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepStatus", "results.ccWhyStatus")}
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {(
               [
-                ["studying", "results.ccStatusStudying"],
-                ["working", "results.ccStatusWorking"],
-                ["switching", "results.ccStatusSwitching"],
-              ] as Array<[CareerStatus, string]>
-            ).map(([value, key]) => (
-              <Chip
+                ["studying", "🎓", "results.ccStatusStudying", "results.ccStatusStudyingSub"],
+                ["working", "💼", "results.ccStatusWorking", "results.ccStatusWorkingSub"],
+                ["switching", "🔄", "results.ccStatusSwitching", "results.ccStatusSwitchingSub"],
+              ] as Array<[CareerStatus, string, string, string]>
+            ).map(([value, emoji, key, subKey]) => (
+              <OptionCard
                 key={value}
+                emoji={emoji}
+                label={t(key, locale)}
+                sub={t(subKey, locale)}
                 active={background.status === value}
-                onClick={() => {
-                  patch({
-                    status: value,
-                    ...(value === "studying" ? { currentIndustry: null } : {}),
-                  });
-                  goNext("status");
-                }}
-              >
-                {t(key, locale)}
-              </Chip>
+                onClick={() =>
+                  selectAndAdvance("status", () =>
+                    patch({
+                      status: value,
+                      ...(value === "studying" ? { currentIndustry: null } : {}),
+                    }),
+                  )
+                }
+              />
             ))}
           </div>
           {stepNav("status", false, false)}
@@ -721,7 +797,7 @@ export function CareerCompass({
       )}
 
       {step === "edu" && (
-        <div key="edu" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="edu" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepEdu", "results.ccWhyEdu")}
           <div className="flex flex-wrap gap-1.5">
             {EDU_LEVELS.map(({ value, key }) => (
@@ -744,7 +820,7 @@ export function CareerCompass({
                 active={background.eduField === value}
                 onClick={() => patch({ eduField: value })}
               >
-                {t(key, locale)}
+                {FIELD_EMOJI[value] ? `${FIELD_EMOJI[value]} ` : ""}{t(key, locale)}
               </Chip>
             ))}
           </div>
@@ -753,27 +829,25 @@ export function CareerCompass({
       )}
 
       {step === "age" && (
-        <div key="age" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="age" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepAge", "results.ccWhyAge")}
           <div className="flex flex-wrap gap-1.5">
             {AGE_BANDS.map(({ value, label }) => (
               <Chip
                 key={value}
                 active={background.ageBand === value}
-                onClick={() => {
-                  patch({ ageBand: value });
-                  goNext("age");
-                }}
+                onClick={() =>
+                  selectAndAdvance("age", () => patch({ ageBand: value }))
+                }
               >
                 {label}
               </Chip>
             ))}
             <Chip
               active={false}
-              onClick={() => {
-                patch({ ageBand: null });
-                goNext("age");
-              }}
+              onClick={() =>
+                selectAndAdvance("age", () => patch({ ageBand: null }))
+              }
             >
               {t("results.ccAgeSkip", locale)}
             </Chip>
@@ -783,27 +857,27 @@ export function CareerCompass({
       )}
 
       {step === "current" && (
-        <div key="current" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="current" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepCurrent", "results.ccWhyCurrent")}
           <div className="flex flex-wrap gap-1.5">
             {INDUSTRIES.map((industry) => (
               <Chip
                 key={industry.key}
                 active={background.currentIndustry === industry.key}
-                onClick={() => {
-                  patch({ currentIndustry: industry.key });
-                  goNext("current");
-                }}
+                onClick={() =>
+                  selectAndAdvance("current", () =>
+                    patch({ currentIndustry: industry.key }),
+                  )
+                }
               >
-                {isHu ? industry.hu : industry.en}
+                {INDUSTRY_EMOJI[industry.key] ? `${INDUSTRY_EMOJI[industry.key]} ` : ""}{isHu ? industry.hu : industry.en}
               </Chip>
             ))}
             <Chip
               active={false}
-              onClick={() => {
-                patch({ currentIndustry: null });
-                goNext("current");
-              }}
+              onClick={() =>
+                selectAndAdvance("current", () => patch({ currentIndustry: null }))
+              }
             >
               {t("results.ccCurrentNone", locale)}
             </Chip>
@@ -813,7 +887,7 @@ export function CareerCompass({
       )}
 
       {step === "interests" && (
-        <div key="interests" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="interests" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepInterests", "results.ccWhyInterests")}
           <div className="flex flex-wrap gap-1.5">
             {INDUSTRIES.map((industry) => {
@@ -832,7 +906,7 @@ export function CareerCompass({
                     })
                   }
                 >
-                  {isHu ? industry.hu : industry.en}
+                  {INDUSTRY_EMOJI[industry.key] ? `${INDUSTRY_EMOJI[industry.key]} ` : ""}{isHu ? industry.hu : industry.en}
                 </Chip>
               );
             })}
@@ -845,7 +919,7 @@ export function CareerCompass({
       )}
 
       {step === "prefs" && (
-        <div key="prefs" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="prefs" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepPrefs", "results.ccWhyPrefs")}
           <div className="flex flex-col gap-2">
             {PREF_AXES.map(({ axis, lowKey, highKey }) => {
@@ -855,17 +929,21 @@ export function CareerCompass({
                   key={`${axis}-${v}`}
                   type="button"
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
-                  className={`min-h-[32px] rounded-full px-3 py-1 text-[11px] font-medium transition ${
+                  className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
-                      ? "bg-sage text-white"
-                      : "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                      ? "bg-sage text-white shadow-sm"
+                      : "text-[var(--color-text-secondary)] hover:bg-white hover:text-[var(--color-text-primary)]"
                   }`}
+                  style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
                 >
                   {label}
                 </button>
               );
               return (
-                <div key={axis} className="flex flex-wrap items-center gap-1.5">
+                <div
+                  key={axis}
+                  className="flex items-center gap-1 rounded-xl bg-[var(--color-surface-subtle)] p-1"
+                >
                   {seg(-1, t(lowKey, locale))}
                   {seg(0, t("results.industryFitPrefNeutral", locale))}
                   {seg(1, t(highKey, locale))}
@@ -878,7 +956,7 @@ export function CareerCompass({
       )}
 
       {step === "env" && (
-        <div key="env" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="env" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepEnv", "results.ccWhyEnv")}
           <div className="flex flex-col gap-2">
             {ENV_AXES.map(({ axis, lowKey, highKey }) => {
@@ -888,17 +966,21 @@ export function CareerCompass({
                   key={`${axis}-${v}`}
                   type="button"
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
-                  className={`min-h-[32px] rounded-full px-3 py-1 text-[11px] font-medium transition ${
+                  className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
-                      ? "bg-sage text-white"
-                      : "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                      ? "bg-sage text-white shadow-sm"
+                      : "text-[var(--color-text-secondary)] hover:bg-white hover:text-[var(--color-text-primary)]"
                   }`}
+                  style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
                 >
                   {label}
                 </button>
               );
               return (
-                <div key={axis} className="flex flex-wrap items-center gap-1.5">
+                <div
+                  key={axis}
+                  className="flex items-center gap-1 rounded-xl bg-[var(--color-surface-subtle)] p-1"
+                >
                   {seg(-1, t(lowKey, locale))}
                   {seg(0, t("results.industryFitPrefNeutral", locale))}
                   {seg(1, t(highKey, locale))}
@@ -911,26 +993,29 @@ export function CareerCompass({
       )}
 
       {step === "lead" && (
-        <div key="lead" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+        <div key="lead" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
           {stepHeader("results.ccStepLead", "results.ccWhyLead")}
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {(
               [
-                [true, "results.ccLeadYes"],
-                [false, "results.ccLeadExpert"],
-                [false, "results.ccLeadUnsure"],
-              ] as Array<[boolean, string]>
-            ).map(([value, key]) => (
-              <Chip
-                key={key}
-                active={key === "results.ccLeadYes" ? leadFocus : false}
-                onClick={() => {
-                  setLeadFocus(value);
-                  goNext("lead");
-                }}
-              >
-                {t(key, locale)}
-              </Chip>
+                ["yes", true, "🙋", "results.ccLeadYes", "results.ccLeadYesSub"],
+                ["expert", false, "🔬", "results.ccLeadExpert", "results.ccLeadExpertSub"],
+                ["unsure", false, "🤷", "results.ccLeadUnsure", "results.ccLeadUnsureSub"],
+              ] as Array<["yes" | "expert" | "unsure", boolean, string, string, string]>
+            ).map(([choice, value, emoji, key, subKey]) => (
+              <OptionCard
+                key={choice}
+                emoji={emoji}
+                label={t(key, locale)}
+                sub={t(subKey, locale)}
+                active={leadChoice === choice}
+                onClick={() =>
+                  selectAndAdvance("lead", () => {
+                    setLeadChoice(choice);
+                    setLeadFocus(value);
+                  })
+                }
+              />
             ))}
           </div>
           {stepNav("lead", false, false)}
@@ -939,6 +1024,7 @@ export function CareerCompass({
 
       {step === "result" && result && (
         <div>
+          {celebrate && <CelebrationBurst onDone={() => setCelebrate(false)} />}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-semibold text-[var(--color-text-primary)]">
               {t("results.ccResultTitle", locale)}
