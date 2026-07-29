@@ -2,6 +2,7 @@ import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from "./team-pattern";
 import { buildTeamTrustNetwork } from "./trust-network.server";
+import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
 import type { TrustEdgeType } from "./trust-network";
 
 const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
@@ -58,6 +59,12 @@ export interface TeamActiveCampaign {
   teamSelfDoneCount: number;
   teamObserverDoneCount: number;
   daysActive: number;
+  /**
+   * Mérésenkénti haladás a csapat résztvevőire (2026-07-29): a hero
+   * kitöltési aránya CSAK a személyiség-profilt méri — a kör többi
+   * mérésének állását ez a bontás mutatja.
+   */
+  stepProgress: Array<{ type: string; done: number; total: number }>;
 }
 
 export interface TeamDynamicsEdge {
@@ -347,7 +354,13 @@ export async function getTeamPageData(
             name: true,
             orgId: true,
             createdAt: true,
-            participants: { select: { userId: true } },
+            type: true,
+            steps: true,
+            requireFreshResults: true,
+            activatedAt: true,
+            participants: {
+              select: { userId: true, currentStep: true, stepCompletions: true },
+            },
           },
         })
       : Promise.resolve(null),
@@ -400,6 +413,37 @@ export async function getTeamPageData(
       (Date.now() - campaignRaw.createdAt.getTime()) / (1000 * 60 * 60 * 24)
     );
 
+    // Mérésenkénti haladás a csapat résztvevőire — a kampány-részletező
+    // lépés-logikájával azonos (isCampaignStepDone), így a két felület
+    // ugyanazt a számot mutatja. A self-fallback fresh-tudatos.
+    const campaignSteps = getCampaignSteps(campaignRaw);
+    const freshFrom =
+      campaignRaw.requireFreshResults && campaignRaw.activatedAt
+        ? campaignRaw.activatedAt.getTime()
+        : null;
+    const selfDoneAtMap = new Map(
+      members.map((m) => [m.userId, m.scores !== null]),
+    );
+    // Ha a kampányban egyetlen csapattag sem résztvevő, a bontás 0/0 sorokat
+    // adna — ilyenkor üres marad (a felület sem rendereli).
+    const stepProgress =
+      teamParticipantCount > 0
+        ? campaignSteps.map((stepType, idx) => ({
+            type: stepType,
+            done: teamParticipants.filter((p) =>
+              isCampaignStepDone(
+                campaignSteps,
+                idx,
+                p,
+                // freshFrom-nál a self-eredmény dátuma nem elérhető itt olcsón —
+                // a fresh körben ezért a lépés-könyvelés (stepCompletions) dönt.
+                freshFrom === null && (selfDoneAtMap.get(p.userId) ?? false),
+              ),
+            ).length,
+            total: teamParticipantCount,
+          }))
+        : [];
+
     activeCampaign = {
       id: campaignRaw.id,
       name: campaignRaw.name,
@@ -409,6 +453,7 @@ export async function getTeamPageData(
       teamSelfDoneCount,
       teamObserverDoneCount,
       daysActive,
+      stepProgress,
     };
   }
 

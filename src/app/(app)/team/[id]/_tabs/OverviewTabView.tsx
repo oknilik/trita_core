@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { t, tf } from "@/lib/i18n";
-import { CAMPAIGN_STEP_LABELS, CAMPAIGN_STEP_LINKS } from "@/lib/campaign-steps-core";
+import {
+  CAMPAIGN_STEP_LABELS,
+  CAMPAIGN_STEP_LINKS,
+  isCampaignStepType,
+} from "@/lib/campaign-steps-core";
 import {
   DashboardMetricCard,
   DashboardPanel,
@@ -257,6 +261,49 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               </div>
             ) : null}
           </div>
+
+          {/* Mérés-bontás: a kitöltési arány csak a személyiség-profilt méri —
+              futó kampánynál mérésenként is megmutatjuk, hol tart a csapat.
+              A számok a kampány-részletezővel azonos lépés-logikából jönnek. */}
+          {teamData.activeCampaign && teamData.activeCampaign.stepProgress.length > 0 ? (
+            <div className="mt-3 rounded-[24px] border border-sand bg-white p-5">
+              <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
+                {t("teamDetail.measurementBreakdownTitle", locale)}
+              </p>
+              <p className="mt-1 text-[12px] leading-relaxed text-muted">
+                {tf("teamDetail.measurementBreakdownHint", locale, {
+                  name: teamData.activeCampaign.name,
+                })}
+              </p>
+              <div className="mt-4 flex flex-col gap-2.5">
+                {teamData.activeCampaign.stepProgress.map((step) => {
+                  const label = isCampaignStepType(step.type)
+                    ? CAMPAIGN_STEP_LABELS[step.type][isHu ? "hu" : "en"]
+                    : step.type;
+                  const pct = step.total > 0 ? Math.round((step.done / step.total) * 100) : 0;
+                  return (
+                    <div key={step.type} className="flex items-center gap-3">
+                      <span className="w-44 shrink-0 truncate text-[12px] text-ink-body md:w-56">
+                        {label}
+                      </span>
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
+                        <div
+                          className="h-full rounded-full bg-sage transition-all duration-700"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="w-16 shrink-0 text-right text-[11px] tabular-nums text-muted">
+                        {tf("teamDetail.measurementBreakdownDone", locale, {
+                          done: step.done,
+                          total: step.total,
+                        })}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </section>
 
         {/* A korábbi „Csapatintelligencia" CTA-kártya és a nézet-linkkártyák

@@ -1985,9 +1985,11 @@ export const orgTranslations = {
     // Live snapshot aside
     snapshotLabel: { hu: "Élő pillanatkép", en: "Live snapshot" },
     snapshotMembers: { hu: "Tag", en: "Members" },
-    snapshotDone: { hu: "Kész", en: "Done" },
-    snapshotWait: { hu: "Vár", en: "Wait" },
-    snapshotCompletionRate: { hu: "Kitöltési arány", en: "Completion rate" },
+    // A KÉSZ/VÁR és a bal oldali gyűrű a SZEMÉLYISÉG-PROFILRA vonatkozik
+    // (önértékelés) — a többi mérés haladása a lenti mérés-bontásban él.
+    snapshotDone: { hu: "Profil kész", en: "Profile done" },
+    snapshotWait: { hu: "Profil vár", en: "Profile pending" },
+    snapshotCompletionRate: { hu: "Személyiség-profil", en: "Personality profile" },
     snapshotDoneInProgress: { hu: "{done} kész · {inProgress} folyamatban", en: "{done} done · {inProgress} in progress" },
 
     // Secondary progress
@@ -1996,6 +1998,14 @@ export const orgTranslations = {
     secondaryObserverProgress: { hu: "{done} kész · {remaining} hátra", en: "{done} done · {remaining} remaining" },
     secondaryPatternAvailable: { hu: "A csapatkép elérhető", en: "Team pattern is available" },
     secondaryPatternProgress: { hu: "{done}/{target} kész", en: "{done}/{target} done" },
+
+    // Mérés-bontás (aktív kampány lépései a csapat-állapotképben)
+    measurementBreakdownTitle: { hu: "Mérések állása", en: "Measurement progress" },
+    measurementBreakdownHint: {
+      hu: "A(z) „{name}” körben mérésenként — a fenti kitöltési arány csak a személyiség-profilra vonatkozik.",
+      en: "Per measurement in the \"{name}\" round — the completion rate above covers the personality profile only.",
+    },
+    measurementBreakdownDone: { hu: "{done}/{total} kész", en: "{done}/{total} done" },
 
     // Recommended action
     nextStep: { hu: "Következő lépés", en: "Next step" },
@@ -2013,7 +2023,9 @@ export const orgTranslations = {
     // Summary section
     sectionSnapshot: { hu: "Állapotkép", en: "Snapshot" },
     summaryLabel: { hu: "ÖSSZEFOGLALÓ", en: "SUMMARY" },
-    completionRateTitle: { hu: "KITÖLTÉSI ARÁNY", en: "COMPLETION RATE" },
+    // A kártya a SZEMÉLYISÉG-PROFIL (önértékelés) kitöltöttségét mutatja —
+    // a cím ezt kimondja, hogy ne tűnjön a teljes mérés-kör arányának.
+    completionRateTitle: { hu: "SZEMÉLYISÉG-PROFIL KITÖLTÖTTSÉG", en: "PERSONALITY PROFILE COMPLETION" },
     completionRateSub: { hu: "{done} kész · {inProgress} folyamatban · {waiting} várakozik", en: "{done} done · {inProgress} in progress · {waiting} waiting" },
     teamPatternTitle: { hu: "CSAPATMINTÁZAT", en: "TEAM PATTERN" },
     teamPatternAvailable: { hu: "Elérhető", en: "Available" },
