@@ -87,7 +87,7 @@ const DYNAMICS_SEGMENTS = [
     chip: "bg-amber-50 text-amber-700",
     hu: "Súrlódási potenciál",
     en: "Friction potential",
-    explainHu: "nagy munkastílus-különbség (pl. tervezettség, kommunikáció) — tisztázott normák nélkül feszültségforrás lehet. Nem jelent tényleges konfliktust.",
+    explainHu: "nagy munkastílus-különbség (pl. lelkiismeretesség, kommunikáció) — tisztázott normák nélkül feszültségforrás lehet. Nem jelent tényleges konfliktust.",
     explainEn: "big working-style differences (e.g. structure, communication) — a potential source of tension without agreed norms. It does not mean actual conflict.",
   },
 ] as const;

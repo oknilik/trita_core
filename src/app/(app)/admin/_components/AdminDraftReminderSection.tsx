@@ -246,7 +246,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
                       )}
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-ink-body text-xs font-medium">{draft.testType}</td>
+                  <td className="py-3 pr-4 text-ink-body text-xs font-medium">{draft.testType === "TRITAN" ? "HEXACO (TSFI)" : draft.testType}</td>
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
                       <div className="w-16 h-1.5 rounded-full bg-sand/50 overflow-hidden">

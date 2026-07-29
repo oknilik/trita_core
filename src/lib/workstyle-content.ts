@@ -135,7 +135,7 @@ const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOu
     watchOut: "Szélsőséges közegek (extrém nyomás, teljes izoláció vagy folyamatos rivaldafény) kevésbé építenek a kiegyensúlyozottságodra — ezekhez tudatos felkészülés kell.",
   },
   en: {
-    strong: "With a balanced profile you can thrive in many roles: generalist, coordinating, and bridge positions where adaptability and stability are the value.",
+    strong: "With a balanced profile you can thrive in many roles: generalist, coordinating, and bridge positions where flexibility and stability are the value.",
     medium: "Specialized roles built on a single strong trait can also work — there your motivation and experience decide, not your personality profile.",
     watchOut: "Extreme settings (intense pressure, full isolation, or constant spotlight) draw less on your balance — they require deliberate preparation.",
   },

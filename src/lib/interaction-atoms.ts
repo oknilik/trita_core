@@ -58,7 +58,7 @@ export interface RelationAtom {
 // ─────────────────────────────────────────────────────────────────────
 
 export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
-  // ── TEMP — társas energia ──────────────────────────────────────────
+  // ── TEMP — extraverzió (X) ──────────────────────────────────────────
   {
     id: "same-TEMP-high-high",
     kind: "same",
@@ -136,7 +136,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── RESO — rezonancia ──────────────────────────────────────────────
+  // ── RESO — emocionalitás (E) ──────────────────────────────────────────────
   {
     id: "same-RESO-high-high",
     kind: "same",
@@ -214,7 +214,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── INTE — integritás ──────────────────────────────────────────────
+  // ── INTE — becsületesség-alázat (H) ──────────────────────────────────────────────
   {
     id: "same-INTE-high-high",
     kind: "same",
@@ -292,7 +292,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── THOR — tervezettség ────────────────────────────────────────────
+  // ── THOR — lelkiismeretesség (C) ────────────────────────────────────────────
   {
     id: "same-THOR-high-high",
     kind: "same",
@@ -329,7 +329,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "This is one of the strongest predictors of workplace friction: their spontaneity can look like chaos to you, your system like shackles to them.",
       },
       discuss: {
-        hu: "Osszátok fel a terepet: hol kell a te precizitásod (és ott az övé az alkalmazkodás), hol elég az ő tempója — plusz egy közös határidő-protokoll.",
+        hu: "Osszátok fel a terepet: hol kell a te precizitásod (és ott ő igazodik), hol elég az ő tempója — plusz egy közös határidő-protokoll.",
         en: "Divide the terrain: where your precision rules (and they adapt), where their pace is enough — plus a shared deadline protocol.",
       },
     },
@@ -370,7 +370,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── ADAP — alkalmazkodás ───────────────────────────────────────────
+  // ── ADAP — barátságosság (A) ───────────────────────────────────────────
   {
     id: "same-ADAP-high-high",
     kind: "same",

@@ -455,11 +455,11 @@ export async function buildTeamReportAggregates(
 // Csak magyarul generálunk (elsődleges piac); a tanácsadó átírhatja.
 
 const PREFILL_DIM_LABELS: Record<string, string> = {
-  INTE: "integritás",
-  RESO: "rezonancia",
-  TEMP: "társas energia",
-  ADAP: "alkalmazkodás",
-  THOR: "tervezettség",
+  INTE: "becsületesség-alázat",
+  RESO: "emocionalitás",
+  TEMP: "extraverzió",
+  ADAP: "barátságosság",
+  THOR: "lelkiismeretesség",
   OPEN: "nyitottság",
 };
 

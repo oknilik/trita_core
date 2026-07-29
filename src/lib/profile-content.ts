@@ -90,7 +90,7 @@ responsibleInnovator: {
   },
   resilientLeader: {
     hu: "Ritka párosítás: társaságban vagy elemedben, és közben a nyomás sem zökkent ki. Amikor mások elbizonytalanodnak, te tartod az irányt — a stressz nem rontja el a kapcsolataidat, sőt, ilyenkor válsz igazán támasszá.",
-    en: "Your emotional stability combined with social energy is a rare combination: in high-pressure, people-intensive situations, you hold direction when others waver. Stress doesn't damage your relationships — quite the contrary.",
+    en: "Your emotional stability combined with extraversion is a rare combination: in high-pressure, people-intensive situations, you hold direction when others waver. Stress doesn't damage your relationships — quite the contrary.",
   },
   calmExecution: {
     hu: "Megbízhatóan, egyenletesen teljesítesz — a lelkiismeretességed és az érzelmi stabilitásod erősíti egymást. Ahol mások a nyomás alatt hibáznának, te kiszámíthatóan hozod az eredményt.",
@@ -382,12 +382,12 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   resilientLeader: {
     hu: {
       strong: "Emberekkel intenzíven foglalkozó, változékony, magas elvárású szerepek – vezető, értékesítési vezető, kríziskoordinátor, változásmenedzsment.",
-      medium: "Projektvezetés, ügyfélkapcsolati szerepkörök, ahol a társas energia és a stressztűrés egyszerre számít.",
+      medium: "Projektvezetés, ügyfélkapcsolati szerepkörök, ahol az extraverzió és a stressztűrés egyszerre számít.",
       watchOut: "Nehéz lehet, ha a társas aktivitás nem jár valódi mélységgel, vagy ha az érzelmi stabilitásodat mások érzéketlenségként értelmezik. Érdemes tudatosan kommunikálni az empátiát is.",
     },
     en: {
       strong: "Roles with intensive people work in volatile, high-expectation contexts — leadership, sales leadership, crisis coordination, change management.",
-      medium: "Project leadership, client-facing roles where social energy and stress tolerance both matter.",
+      medium: "Project leadership, client-facing roles where extraversion and stress tolerance both matter.",
       watchOut: "It can be difficult if social activity lacks real depth, or if others interpret your emotional stability as insensitivity. Make a conscious effort to also communicate empathy.",
     },
   },
@@ -1054,7 +1054,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
 /** Pszichológiai biztonság + vezetői közeg — puha framinggel („sokat segíthet, ha…"). */
 export const COLLAB_NEEDS: Record<string, LocalizedText> = {
   INTE_high: {
-    hu: "Akkor hozod a legjobb formád, ahol a kimondott értékek és a napi gyakorlat egybeesnek. Sokaknak, akiknél ilyen erős az integritás, az segít, ha a vezetőjük átláthatóan dönt, és a kényes ügyek nem a folyosón dőlnek el.",
+    hu: "Akkor hozod a legjobb formád, ahol a kimondott értékek és a napi gyakorlat egybeesnek. Sokaknak, akiknél ilyen erős a becsületesség-alázat, az segít, ha a vezetőjük átláthatóan dönt, és a kényes ügyek nem a folyosón dőlnek el.",
     en: "You're at your best where stated values and daily practice match. For many with integrity this strong, it helps when their leader decides transparently and sensitive matters aren't settled in the corridor.",
   },
   INTE_low: {
@@ -1205,7 +1205,7 @@ export const DIMENSION_GROWTH_TIPS: Record<string, Record<Locale, GrowthPlan>> =
 
 export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
   INTE_high: {
-    hu: "A magas integritásod emellett azt jelzi: hosszú távon olyan közegben maradsz meg, ahol a kimondott értékek és a napi gyakorlat egybeesnek.",
+    hu: "A magas becsületesség-alázat pontszámod emellett azt jelzi: hosszú távon olyan közegben maradsz meg, ahol a kimondott értékek és a napi gyakorlat egybeesnek.",
     en: "Your high integrity adds a nuance: long term, you stay in settings where stated values and daily practice actually match.",
   },
   INTE_low: {
@@ -1214,7 +1214,7 @@ export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
   },
   RESO_high: {
     hu: "Az erős rezonanciád emberközeli, támogató kultúrát igényel emellé — pusztán tranzakcionális közegben gyorsabban kopsz.",
-    en: "Your strong resonance needs a people-centred, supportive culture alongside this — in purely transactional settings you wear down faster.",
+    en: "Your high emotionality needs a people-centred, supportive culture alongside this — in purely transactional settings you wear down faster.",
   },
   RESO_low: {
     hu: "Az érzelmi stabilitásod miatt a magas téttel, nyomással járó változatok is jól működhetnek nálad.",
@@ -1222,26 +1222,26 @@ export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
   },
   TEMP_high: {
     hu: "A magas társas energiád a látható, emberekkel sűrűn dolgozó változatok felé billent — a hosszú, izolált munka kevésbé táplál.",
-    en: "Your high social energy tilts this toward visible, people-facing variants — long isolated work feeds you less.",
+    en: "Your high extraversion tilts this toward visible, people-facing variants — long isolated work feeds you less.",
   },
   TEMP_low: {
     hu: "Az alacsonyabb társas energiád miatt a mély, önálló fókuszt engedő változatok illenek jobban, mint a folyamatos reprezentáció.",
-    en: "With lower social energy, variants that allow deep, independent focus fit better than constant representation.",
+    en: "With lower extraversion, variants that allow deep, independent focus fit better than constant representation.",
   },
   ADAP_high: {
-    hu: "Az erős alkalmazkodásod az együttműködés-intenzív, sok egyeztetéssel járó változatok felé billent.",
-    en: "Your strong adaptability tilts this toward collaboration-heavy, coordination-rich variants.",
+    hu: "Az erős barátságosság pontszámod az együttműködés-intenzív, sok egyeztetéssel járó változatok felé billent.",
+    en: "Your strong agreeableness tilts this toward collaboration-heavy, coordination-rich variants.",
   },
   ADAP_low: {
     hu: "Az egyenes, konfrontációt vállaló stílusod ott érték, ahol vitatkozni és dönteni kell — harmónia-központú közegben súrlódhat.",
     en: "Your direct, confrontation-ready style is an asset where debate and decisions are the job — it may grate in harmony-centred settings.",
   },
   THOR_high: {
-    hu: "A magas tervezettséged a strukturált, végigvihető folyamatokra épülő változatokban kamatozik leginkább.",
+    hu: "A magas lelkiismeretességed a strukturált, végigvihető folyamatokra épülő változatokban kamatozik leginkább.",
     en: "Your high orderliness pays off most in structured variants built on processes you can see through to the end.",
   },
   THOR_low: {
-    hu: "Az alacsonyabb tervezettséged miatt a rugalmas, improvizációt engedő változatok természetesebbek, mint a szigorú folyamatkövetés.",
+    hu: "Az alacsonyabb lelkiismeretesség pontszámod miatt a rugalmas, improvizációt engedő változatok természetesebbek, mint a szigorú folyamatkövetés.",
     en: "With lower orderliness, flexible variants that allow improvisation feel more natural than strict process-following.",
   },
   OPEN_high: {
@@ -1260,7 +1260,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   INTE_high: {
     hu: {
       strong: "Magas bizalmi elvárású, átláthatóságra épülő területek: megfelelőség (compliance), etikai tanácsadás, szabályozás, közszféra, nonprofit.",
-      medium: "Bármely vezetői vagy szakértői szerep, ahol az átláthatóság és az integritás tényleges elvárás.",
+      medium: "Bármely vezetői vagy szakértői szerep, ahol az átláthatóság és a feddhetetlenség tényleges elvárás.",
       watchOut: "Fárasztó lehet, ha a kimondott értékek és a napi gyakorlat eltér. Már az elején érdemes tisztázni a határokat és alapelveket.",
     },
     en: {

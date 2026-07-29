@@ -36,8 +36,8 @@ export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
     en: "Because inventive, unconventional thinking drives you, and set frames don't hold you.",
   },
   KE: {
-    hu: "Mert a társas energia és a nyitottság nálad természetes kapunyitás mások és új lehetőségek felé.",
-    en: "Because social energy and openness make you a natural door-opener to people and opportunities.",
+    hu: "Mert az extraverzió és a nyitottság nálad természetes kapunyitás mások és új lehetőségek felé.",
+    en: "Because extraversion and openness make you a natural door-opener to people and opportunities.",
   },
   KO: {
     hu: "Mert az emberek és az elvek összehangolása egyszerre fontos számodra.",
@@ -52,8 +52,8 @@ export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
     en: "Because thorough, critical weighing is stronger in you than the need for the spotlight.",
   },
   CS: {
-    hu: "Mert az alkalmazkodás és a másokra hangolódás a profilod erős vonása.",
-    en: "Because adaptability and attunement to others are strong threads in your profile.",
+    hu: "Mert a barátságosság és a másokra hangolódás a profilod erős vonása.",
+    en: "Because agreeableness and attunement to others are strong threads in your profile.",
   },
   MV: {
     hu: "Mert a megbízható, következetes végrehajtás a profilod magja.",

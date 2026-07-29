@@ -34,8 +34,8 @@ export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
 // Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
 const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
   THOR: {
-    hu: "Használd a tervezettségedet: te tudod a csapat ötleteit határidős, lezárt eredménnyé formálni — vállald be tudatosan ezt a szerepet.",
-    en: "Use your thoroughness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
+    hu: "Használd a lelkiismeretességedet: te tudod a csapat ötleteit határidős, lezárt eredménnyé formálni — vállald be tudatosan ezt a szerepet.",
+    en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
   },
   INTE: {
     hu: "Az egyenes, kiszámítható működésed bizalmat épít — támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
@@ -43,7 +43,7 @@ const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
   },
   ADAP: {
     hu: "A rugalmasságod hidat épít az eltérő stílusok között — vállalj közvetítő szerepet, ahol feszül a helyzet.",
-    en: "Your adaptability bridges different styles — take a connecting role where things get tense.",
+    en: "Your agreeableness bridges different styles — take a connecting role where things get tense.",
   },
   RESO: {
     hu: "Ráérzel mások állapotára — gyakran te veszed észre elsőként, ha valaki elakad; ilyenkor szólalj meg.",

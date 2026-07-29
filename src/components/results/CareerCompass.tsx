@@ -24,11 +24,11 @@ import {
 // a top-irányokhoz kötött fejlődési terv és observer-pontosítás CTA.
 
 const DIM_LABELS: Record<DimCode, { hu: string; en: string }> = {
-  INTE: { hu: "integritás", en: "integrity" },
-  RESO: { hu: "rezonancia", en: "resonance" },
-  TEMP: { hu: "társas energia", en: "tempo" },
-  ADAP: { hu: "alkalmazkodás", en: "adaptability" },
-  THOR: { hu: "tervezettség", en: "thoroughness" },
+  INTE: { hu: "becsületesség-alázat", en: "honesty-humility" },
+  RESO: { hu: "emocionalitás", en: "emotionality" },
+  TEMP: { hu: "extraverzió", en: "extraversion" },
+  ADAP: { hu: "barátságosság", en: "agreeableness" },
+  THOR: { hu: "lelkiismeretesség", en: "conscientiousness" },
   OPEN: { hu: "nyitottság", en: "openness" },
 };
 
