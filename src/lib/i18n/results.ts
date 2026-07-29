@@ -675,6 +675,7 @@ export const resultsTranslations = {
     },
     ccRiasecUserLabel: { hu: "Becsült érdeklődés-kódod:", en: "Your estimated interest code:" },
     ccRiasecUserLabelTags: { hu: "Érdeklődés-kódod:", en: "Your interest code:" },
+    ccRiasecWhatIs: { hu: "Mit jelentenek a betűk?", en: "What do the letters mean?" },
     ccRiasecUserLabelMeasured: { hu: "Mért érdeklődés-kódod:", en: "Your measured interest code:" },
     ccRiasecTagsNote: {
       hu: "(Holland/RIASEC — a választott érdeklődés-címkéid alapján)",

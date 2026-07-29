@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
@@ -403,12 +404,14 @@ function SuggestionCard({
               </span>
             )}
             {suggestion.riasec && (
-              <span
-                className="ml-1.5 rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 font-mono text-micro font-semibold text-[var(--color-text-muted)]"
+              <Link
+                href="/holland-kod"
+                target="_blank"
+                className="ml-1.5 rounded-full bg-[var(--color-surface-subtle)] px-1.5 py-0.5 font-mono text-micro font-semibold text-[var(--color-text-muted)] transition hover:bg-sage/15 hover:text-sage-dark"
                 title={t("results.ccRiasecRoleHint", locale)}
               >
                 {suggestion.riasec}
-              </span>
+              </Link>
             )}
           </p>
         </div>
@@ -1249,6 +1252,13 @@ export function CareerCompass({
                   locale,
                 )}
               </span>
+              <Link
+                href="/holland-kod"
+                target="_blank"
+                className="font-semibold text-bronze underline-offset-2 hover:underline"
+              >
+                {t("results.ccRiasecWhatIs", locale)}
+              </Link>
             </p>
           )}
 
