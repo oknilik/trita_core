@@ -49,6 +49,12 @@ function componentLabel(
   return isHu ? DIM_LABELS[entry.dim].hu : DIM_LABELS[entry.dim].en;
 }
 
+const ENV_AXES: Array<{ axis: "pace" | "structure" | "setting"; lowKey: string; highKey: string }> = [
+  { axis: "pace", lowKey: "results.ccEnvPaceLow", highKey: "results.ccEnvPaceHigh" },
+  { axis: "structure", lowKey: "results.ccEnvStructureLow", highKey: "results.ccEnvStructureHigh" },
+  { axis: "setting", lowKey: "results.ccEnvSettingLow", highKey: "results.ccEnvSettingHigh" },
+];
+
 const PREF_AXES: Array<{ axis: PrefAxis; lowKey: string; highKey: string }> = [
   { axis: "people", lowKey: "results.industryFitPrefPeopleLow", highKey: "results.industryFitPrefPeopleHigh" },
   { axis: "variety", lowKey: "results.industryFitPrefVarietyLow", highKey: "results.industryFitPrefVarietyHigh" },
@@ -93,6 +99,14 @@ export interface CompassGrowthItem {
   dimLabel: string;
   dimColor: string;
 }
+
+const EDU_REQ_KEYS: Record<string, string> = {
+  open: "results.ccEduReqOpen",
+  course: "results.ccEduReqCourse",
+  vocational: "results.ccEduReqVocational",
+  higher: "results.ccEduReqHigher",
+  specialized: "results.ccEduReqSpecialized",
+};
 
 function fitTier(score: number): { key: string; tone: string } {
   if (score >= 70) return { key: "results.ccTierStrong", tone: "text-emerald-700" };
@@ -271,6 +285,12 @@ function SuggestionCard({
         )}
       </div>
 
+      {/* Belépési végzettség-igény — megjegyzés a szerep alatt */}
+      <p className="mt-1 text-micro text-[var(--color-text-muted)]">
+        🎓 {t("results.ccEduReqLabel", locale)}:{" "}
+        {t(EDU_REQ_KEYS[suggestion.role.edu] ?? "results.ccEduReqOpen", locale)}
+      </p>
+
       {(suggestion.facetPrecision || observerBacked) && (
         <p className="mt-1.5 flex flex-wrap gap-1.5">
           {suggestion.facetPrecision && (
@@ -422,7 +442,7 @@ function SuggestionCard({
   );
 }
 
-type Step = "intro" | "status" | "edu" | "age" | "current" | "interests" | "prefs" | "result";
+type Step = "intro" | "status" | "edu" | "age" | "current" | "interests" | "prefs" | "env" | "lead" | "result";
 
 const EMPTY_BACKGROUND: CareerBackground = {
   status: "working",
@@ -484,6 +504,8 @@ export function CareerCompass({
     ...(background.status === "studying" ? [] : (["current"] as Step[])),
     "interests",
     "prefs",
+    "env",
+    "lead",
   ];
   const stepIndex = flow.indexOf(step);
 
@@ -601,15 +623,11 @@ export function CareerCompass({
         <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {tf("results.ccStepOf", locale, { current: stepIndex + 1, total: flow.length })}
         </p>
-        <div className="flex items-center gap-1">
-          {flow.map((s, i) => (
-            <span
-              key={s}
-              className={`h-1.5 rounded-full transition-all ${
-                i < stepIndex ? "w-1.5 bg-sage/50" : i === stepIndex ? "w-4 bg-sage" : "w-1.5 bg-[var(--color-border-soft)]"
-              }`}
-            />
-          ))}
+        <div className="h-1.5 w-24 overflow-hidden rounded-full bg-[var(--color-border-soft)] sm:w-36">
+          <div
+            className="h-full rounded-full bg-sage transition-all duration-500"
+            style={{ width: `${Math.round(((stepIndex + 1) / flow.length) * 100)}%` }}
+          />
         </div>
       </div>
       <p className="mt-2 text-sm font-semibold text-[var(--color-text-primary)]">
@@ -673,7 +691,7 @@ export function CareerCompass({
       )}
 
       {step === "status" && (
-        <div>
+        <div key="status" style={{ animation: "fadeIn 0.25s ease-out both" }}>
           {stepHeader("results.ccStepStatus", "results.ccWhyStatus")}
           <div className="flex flex-wrap gap-1.5">
             {(
@@ -703,7 +721,7 @@ export function CareerCompass({
       )}
 
       {step === "edu" && (
-        <div>
+        <div key="edu" style={{ animation: "fadeIn 0.25s ease-out both" }}>
           {stepHeader("results.ccStepEdu", "results.ccWhyEdu")}
           <div className="flex flex-wrap gap-1.5">
             {EDU_LEVELS.map(({ value, key }) => (
@@ -735,7 +753,7 @@ export function CareerCompass({
       )}
 
       {step === "age" && (
-        <div>
+        <div key="age" style={{ animation: "fadeIn 0.25s ease-out both" }}>
           {stepHeader("results.ccStepAge", "results.ccWhyAge")}
           <div className="flex flex-wrap gap-1.5">
             {AGE_BANDS.map(({ value, label }) => (
@@ -765,7 +783,7 @@ export function CareerCompass({
       )}
 
       {step === "current" && (
-        <div>
+        <div key="current" style={{ animation: "fadeIn 0.25s ease-out both" }}>
           {stepHeader("results.ccStepCurrent", "results.ccWhyCurrent")}
           <div className="flex flex-wrap gap-1.5">
             {INDUSTRIES.map((industry) => (
@@ -795,7 +813,7 @@ export function CareerCompass({
       )}
 
       {step === "interests" && (
-        <div>
+        <div key="interests" style={{ animation: "fadeIn 0.25s ease-out both" }}>
           {stepHeader("results.ccStepInterests", "results.ccWhyInterests")}
           <div className="flex flex-wrap gap-1.5">
             {INDUSTRIES.map((industry) => {
@@ -827,7 +845,7 @@ export function CareerCompass({
       )}
 
       {step === "prefs" && (
-        <div>
+        <div key="prefs" style={{ animation: "fadeIn 0.25s ease-out both" }}>
           {stepHeader("results.ccStepPrefs", "results.ccWhyPrefs")}
           <div className="flex flex-col gap-2">
             {PREF_AXES.map(({ axis, lowKey, highKey }) => {
@@ -855,18 +873,67 @@ export function CareerCompass({
               );
             })}
           </div>
-          <label className="mt-3 flex cursor-pointer items-center gap-2">
-            <input
-              type="checkbox"
-              checked={leadFocus}
-              onChange={() => setLeadFocus((v) => !v)}
-              className="h-4 w-4 accent-sage"
-            />
-            <span className="text-[12px] text-[var(--color-text-secondary)]">
-              {t("results.industryFitLeadToggle", locale)}
-            </span>
-          </label>
           {stepNav("prefs")}
+        </div>
+      )}
+
+      {step === "env" && (
+        <div key="env" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+          {stepHeader("results.ccStepEnv", "results.ccWhyEnv")}
+          <div className="flex flex-col gap-2">
+            {ENV_AXES.map(({ axis, lowKey, highKey }) => {
+              const value = prefs[axis] ?? 0;
+              const seg = (v: PrefValue, label: string) => (
+                <button
+                  key={`${axis}-${v}`}
+                  type="button"
+                  onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
+                  className={`min-h-[32px] rounded-full px-3 py-1 text-[11px] font-medium transition ${
+                    value === v
+                      ? "bg-sage text-white"
+                      : "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+              return (
+                <div key={axis} className="flex flex-wrap items-center gap-1.5">
+                  {seg(-1, t(lowKey, locale))}
+                  {seg(0, t("results.industryFitPrefNeutral", locale))}
+                  {seg(1, t(highKey, locale))}
+                </div>
+              );
+            })}
+          </div>
+          {stepNav("env")}
+        </div>
+      )}
+
+      {step === "lead" && (
+        <div key="lead" style={{ animation: "fadeIn 0.25s ease-out both" }}>
+          {stepHeader("results.ccStepLead", "results.ccWhyLead")}
+          <div className="flex flex-wrap gap-1.5">
+            {(
+              [
+                [true, "results.ccLeadYes"],
+                [false, "results.ccLeadExpert"],
+                [false, "results.ccLeadUnsure"],
+              ] as Array<[boolean, string]>
+            ).map(([value, key]) => (
+              <Chip
+                key={key}
+                active={key === "results.ccLeadYes" ? leadFocus : false}
+                onClick={() => {
+                  setLeadFocus(value);
+                  goNext("lead");
+                }}
+              >
+                {t(key, locale)}
+              </Chip>
+            ))}
+          </div>
+          {stepNav("lead", false, false)}
         </div>
       )}
 

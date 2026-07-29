@@ -30,7 +30,24 @@ interface RoleWeight {
  */
 export type PrefAxis = "people" | "variety" | "autonomy" | "creation";
 export type PrefValue = -1 | 0 | 1;
-export type UserPrefs = Partial<Record<PrefAxis, PrefValue>>;
+
+/**
+ * Munkakörnyezet-tengelyek (2. ütem pontosító kérdései): pace (-1 nyugodt
+ * ütem ↔ 1 pörgős/nyomás alatt), structure (-1 laza keretek ↔ 1 szabályozott),
+ * setting (-1 képernyő/iroda ↔ 1 terep/mozgás). A szerep-oldali értékek
+ * iparági defaultból + szerep-felülbírálásból jönnek (roleEnvProfile).
+ */
+export type EnvAxis = "pace" | "structure" | "setting";
+export type UserPrefs = Partial<Record<PrefAxis | EnvAxis, PrefValue>>;
+
+/**
+ * Belépési végzettség-igény — a szerep-kártyán megjegyzésként jelenik meg.
+ * "open" = nem végzettséghez kötött · "course" = tanfolyammal/átképzéssel
+ * elérhető · "vocational" = szakképzettséghez kötött · "higher" = jellemzően
+ * diplomához kötött · "specialized" = szakirányú diploma + szakvizsga/
+ * kamarai tagság (orvos, jogász, pszichológus…).
+ */
+export type EduReq = "open" | "course" | "vocational" | "higher" | "specialized";
 
 export interface IndustryRole {
   key: string;
@@ -39,6 +56,10 @@ export interface IndustryRole {
   weights: RoleWeight[];
   /** A szerep pozíciója a preferencia-tengelyeken (-1..1) */
   prefs: Record<PrefAxis, number>;
+  /** Belépési végzettség-igény (megjegyzés a kártyán) */
+  edu: EduReq;
+  /** Munkakörnyezet-profil (init tölti fel a roleEnvProfile-ból) */
+  env?: Record<EnvAxis, number>;
 }
 
 export interface Industry {
@@ -86,13 +107,16 @@ export const INDUSTRIES: Industry[] = [
     hu: "IT / szoftver",
     en: "IT / software",
     roles: [
-      { key: "dev", hu: "Fejlesztő", en: "Developer", weights: [w("THOR", "high", 0.5), w("OPEN", "high", 0.3), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) },
-      { key: "pm", hu: "Termékmenedzser", en: "Product manager", weights: [w("TEMP", "high", 0.35), w("OPEN", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 1, 0, 1) },
-      { key: "qa", hu: "Tesztelő / QA", en: "QA engineer", weights: [w("THOR", "high", 0.6), w("INTE", "high", 0.2), w("OPEN", "low", 0.2)], prefs: pr(-1, -1, 0, -1) },
-      { key: "ux", hu: "UX designer", en: "UX designer", weights: [w("OPEN", "high", 0.45), w("ADAP", "high", 0.3), w("RESO", "high", 0.25)], prefs: pr(1, 1, 0, 1) },
-      { key: "devops", hu: "Üzemeltetés / DevOps", en: "Ops / DevOps", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.35), w("OPEN", "high", 0.2)], prefs: pr(-1, 0, 1, -1) },
-      { key: "data", hu: "Adatelemző / data scientist", en: "Data analyst / scientist", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) },
-      { key: "itsupport", hu: "IT support / helpdesk", en: "IT support / helpdesk", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, -1, -1, -1) },
+      { key: "dev", hu: "Fejlesztő", en: "Developer", weights: [w("THOR", "high", 0.5), w("OPEN", "high", 0.3), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) , edu: "course" },
+      { key: "pm", hu: "Termékmenedzser", en: "Product manager", weights: [w("TEMP", "high", 0.35), w("OPEN", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 1, 0, 1) , edu: "higher" },
+      { key: "qa", hu: "Tesztelő / QA", en: "QA engineer", weights: [w("THOR", "high", 0.6), w("INTE", "high", 0.2), w("OPEN", "low", 0.2)], prefs: pr(-1, -1, 0, -1) , edu: "course" },
+      { key: "ux", hu: "UX designer", en: "UX designer", weights: [w("OPEN", "high", 0.45), w("ADAP", "high", 0.3), w("RESO", "high", 0.25)], prefs: pr(1, 1, 0, 1) , edu: "course" },
+      { key: "devops", hu: "Üzemeltetés / DevOps", en: "Ops / DevOps", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.35), w("OPEN", "high", 0.2)], prefs: pr(-1, 0, 1, -1) , edu: "course" },
+      { key: "data", hu: "Adatelemző / data scientist", en: "Data analyst / scientist", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) , edu: "higher" },
+      { key: "itsupport", hu: "IT support / helpdesk", en: "IT support / helpdesk", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "course" },
+      { key: "security", hu: "IT-biztonság", en: "IT security", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.3), w("OPEN", "high", 0.3)], prefs: pr(-1, 0, 1, -1) , edu: "course" },
+      { key: "sysadmin", hu: "Rendszergazda / hálózat", en: "Sysadmin / network", weights: [w("THOR", "high", 0.5), w("RESO", "low", 0.25), w("TEMP", "low", 0.25)], prefs: pr(-1, -1, 1, -1) , edu: "course" },
+      { key: "techwriter", hu: "Műszaki író / dokumentáció", en: "Technical writer", weights: [w("THOR", "high", 0.4), w("OPEN", "high", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, -1, 1, 1) , edu: "higher" },
     ],
   },
   {
@@ -100,12 +124,16 @@ export const INDUSTRIES: Industry[] = [
     hu: "Egészségügy / gondoskodás",
     en: "Healthcare / care",
     roles: [
-      { key: "clinical", hu: "Klinikai munka", en: "Clinical work", weights: [w("THOR", "high", 0.35), w("RESO", "low", 0.35), w("ADAP", "high", 0.3)], prefs: pr(1, 0, 0, -1) },
-      { key: "care", hu: "Ápolás / gondozás", en: "Nursing / caregiving", weights: [w("ADAP", "high", 0.4), w("RESO", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, -1, -1, -1) },
-      { key: "therapy", hu: "Terápia / tanácsadás", en: "Therapy / counseling", weights: [w("ADAP", "high", 0.35), w("RESO", "high", 0.35), w("INTE", "high", 0.3)], prefs: pr(1, 0, 1, 0) },
-      { key: "healthadmin", hu: "Egészségügyi szervezés", en: "Health administration", weights: [w("THOR", "high", 0.5), w("INTE", "high", 0.3), w("TEMP", "high", 0.2)], prefs: pr(0, -1, 0, -1) },
-      { key: "emergency", hu: "Sürgősségi / mentés", en: "Emergency / rescue", weights: [w("RESO", "low", 0.45), w("THOR", "high", 0.35), w("TEMP", "high", 0.2)], prefs: pr(1, 1, 0, -1) },
-      { key: "rehab", hu: "Rehabilitáció / gyógytorna", en: "Rehabilitation / physiotherapy", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.35), w("RESO", "high", 0.25)], prefs: pr(1, 0, 1, -1) },
+      { key: "clinical", hu: "Klinikai munka", en: "Clinical work", weights: [w("THOR", "high", 0.35), w("RESO", "low", 0.35), w("ADAP", "high", 0.3)], prefs: pr(1, 0, 0, -1) , edu: "specialized" },
+      { key: "care", hu: "Ápolás / gondozás", en: "Nursing / caregiving", weights: [w("ADAP", "high", 0.4), w("RESO", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "vocational" },
+      { key: "therapy", hu: "Terápia / tanácsadás", en: "Therapy / counseling", weights: [w("ADAP", "high", 0.35), w("RESO", "high", 0.35), w("INTE", "high", 0.3)], prefs: pr(1, 0, 1, 0) , edu: "specialized" },
+      { key: "healthadmin", hu: "Egészségügyi szervezés", en: "Health administration", weights: [w("THOR", "high", 0.5), w("INTE", "high", 0.3), w("TEMP", "high", 0.2)], prefs: pr(0, -1, 0, -1) , edu: "higher" },
+      { key: "emergency", hu: "Sürgősségi / mentés", en: "Emergency / rescue", weights: [w("RESO", "low", 0.45), w("THOR", "high", 0.35), w("TEMP", "high", 0.2)], prefs: pr(1, 1, 0, -1) , edu: "vocational" },
+      { key: "rehab", hu: "Rehabilitáció / gyógytorna", en: "Rehabilitation / physiotherapy", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.35), w("RESO", "high", 0.25)], prefs: pr(1, 0, 1, -1) , edu: "higher" },
+      { key: "psychologist", hu: "Pszichológus", en: "Psychologist", weights: [w("RESO", "high", 0.3), w("INTE", "high", 0.3), w("OPEN", "high", 0.4)], prefs: pr(1, 0, 1, 0) , edu: "specialized" },
+      { key: "physician", hu: "Orvos", en: "Physician", weights: [w("THOR", "high", 0.35), w("RESO", "low", 0.3), w("OPEN", "high", 0.35)], prefs: pr(1, 0, 0, -1) , edu: "specialized" },
+      { key: "pharmacist", hu: "Gyógyszerész", en: "Pharmacist", weights: [w("THOR", "high", 0.55), w("INTE", "high", 0.25), w("TEMP", "low", 0.2)], prefs: pr(0, -1, 0, -1) , edu: "specialized" },
+      { key: "healthvisitor", hu: "Védőnő / közösségi egészségügy", en: "Community health worker", weights: [w("ADAP", "high", 0.4), w("INTE", "high", 0.3), w("RESO", "high", 0.3)], prefs: pr(1, 0, 1, -1) , edu: "higher" },
     ],
   },
   {
@@ -113,12 +141,14 @@ export const INDUSTRIES: Industry[] = [
     hu: "Oktatás / képzés",
     en: "Education / training",
     roles: [
-      { key: "teacher", hu: "Tanár / oktató", en: "Teacher / educator", weights: [w("TEMP", "high", 0.35), w("ADAP", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 0, 0) },
-      { key: "trainer", hu: "Tréner / facilitátor", en: "Trainer / facilitator", weights: [w("TEMP", "high", 0.45), w("OPEN", "high", 0.3), w("ADAP", "high", 0.25)], prefs: pr(1, 1, 0, 1) },
-      { key: "mentor", hu: "Mentor / fejlesztő", en: "Mentor / coach", weights: [w("ADAP", "high", 0.4), w("INTE", "high", 0.3), w("RESO", "high", 0.3)], prefs: pr(1, 0, 1, 0) },
-      { key: "edtech", hu: "Tananyag-fejlesztés", en: "Curriculum design", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) },
-      { key: "earlyyears", hu: "Kisgyermeknevelés", en: "Early childhood education", weights: [w("ADAP", "high", 0.4), w("RESO", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, -1, -1, 0) },
-      { key: "specialed", hu: "Gyógypedagógia / fejlesztés", en: "Special education", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.3), w("INTE", "high", 0.3)], prefs: pr(1, 0, 0, 0) },
+      { key: "teacher", hu: "Tanár / oktató", en: "Teacher / educator", weights: [w("TEMP", "high", 0.35), w("ADAP", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 0, 0) , edu: "higher" },
+      { key: "trainer", hu: "Tréner / facilitátor", en: "Trainer / facilitator", weights: [w("TEMP", "high", 0.45), w("OPEN", "high", 0.3), w("ADAP", "high", 0.25)], prefs: pr(1, 1, 0, 1) , edu: "course" },
+      { key: "mentor", hu: "Mentor / fejlesztő", en: "Mentor / coach", weights: [w("ADAP", "high", 0.4), w("INTE", "high", 0.3), w("RESO", "high", 0.3)], prefs: pr(1, 0, 1, 0) , edu: "course" },
+      { key: "edtech", hu: "Tananyag-fejlesztés", en: "Curriculum design", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) , edu: "higher" },
+      { key: "earlyyears", hu: "Kisgyermeknevelés", en: "Early childhood education", weights: [w("ADAP", "high", 0.4), w("RESO", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, -1, -1, 0) , edu: "higher" },
+      { key: "specialed", hu: "Gyógypedagógia / fejlesztés", en: "Special education", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.3), w("INTE", "high", 0.3)], prefs: pr(1, 0, 0, 0) , edu: "higher" },
+      { key: "languageteacher", hu: "Nyelvtanár / magántanár", en: "Language teacher / tutor", weights: [w("TEMP", "high", 0.35), w("ADAP", "high", 0.35), w("OPEN", "high", 0.3)], prefs: pr(1, 0, 1, 0) , edu: "higher" },
+      { key: "teachassist", hu: "Pedagógiai asszisztens", en: "Teaching assistant", weights: [w("ADAP", "high", 0.45), w("THOR", "high", 0.3), w("RESO", "high", 0.25)], prefs: pr(1, -1, -1, -1) , edu: "vocational" },
     ],
   },
   {
@@ -126,12 +156,14 @@ export const INDUSTRIES: Industry[] = [
     hu: "Pénzügy / számvitel",
     en: "Finance / accounting",
     roles: [
-      { key: "analyst", hu: "Elemző", en: "Analyst", weights: [w("THOR", "high", 0.5), w("OPEN", "high", 0.3), w("RESO", "low", 0.2)], prefs: pr(-1, 0, 1, 0) },
-      { key: "accounting", hu: "Könyvelés / kontrolling", en: "Accounting / controlling", weights: [w("THOR", "high", 0.6), w("INTE", "high", 0.25), w("OPEN", "low", 0.15)], prefs: pr(-1, -1, 0, -1) },
-      { key: "advisor", hu: "Pénzügyi tanácsadó", en: "Financial advisor", weights: [w("TEMP", "high", 0.35), w("INTE", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 0, -1) },
-      { key: "risk", hu: "Kockázatkezelés", en: "Risk management", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.3), w("INTE", "high", 0.3)], prefs: pr(-1, 0, 0, -1) },
-      { key: "audit", hu: "Audit / ellenőrzés", en: "Audit", weights: [w("THOR", "high", 0.45), w("INTE", "high", 0.35), w("ADAP", "low", 0.2)], prefs: pr(-1, 0, 0, -1) },
-      { key: "banking", hu: "Banki ügyfélkezelés", en: "Retail banking", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("INTE", "high", 0.3)], prefs: pr(1, -1, -1, -1) },
+      { key: "analyst", hu: "Elemző", en: "Analyst", weights: [w("THOR", "high", 0.5), w("OPEN", "high", 0.3), w("RESO", "low", 0.2)], prefs: pr(-1, 0, 1, 0) , edu: "higher" },
+      { key: "accounting", hu: "Könyvelés / kontrolling", en: "Accounting / controlling", weights: [w("THOR", "high", 0.6), w("INTE", "high", 0.25), w("OPEN", "low", 0.15)], prefs: pr(-1, -1, 0, -1) , edu: "vocational" },
+      { key: "advisor", hu: "Pénzügyi tanácsadó", en: "Financial advisor", weights: [w("TEMP", "high", 0.35), w("INTE", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 0, -1) , edu: "higher" },
+      { key: "risk", hu: "Kockázatkezelés", en: "Risk management", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.3), w("INTE", "high", 0.3)], prefs: pr(-1, 0, 0, -1) , edu: "higher" },
+      { key: "audit", hu: "Audit / ellenőrzés", en: "Audit", weights: [w("THOR", "high", 0.45), w("INTE", "high", 0.35), w("ADAP", "low", 0.2)], prefs: pr(-1, 0, 0, -1) , edu: "higher" },
+      { key: "banking", hu: "Banki ügyfélkezelés", en: "Retail banking", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("INTE", "high", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "course" },
+      { key: "taxadvisor", hu: "Adótanácsadó", en: "Tax advisor", weights: [w("THOR", "high", 0.5), w("INTE", "high", 0.3), w("OPEN", "low", 0.2)], prefs: pr(0, -1, 1, -1) , edu: "higher" },
+      { key: "insurance", hu: "Biztosítási szakértő", en: "Insurance specialist", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("INTE", "high", 0.3)], prefs: pr(1, 0, 0, -1) , edu: "course" },
     ],
   },
   {
@@ -139,12 +171,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "Értékesítés / ügyfélkapcsolat",
     en: "Sales / client relations",
     roles: [
-      { key: "sales", hu: "Értékesítő", en: "Sales representative", weights: [w("TEMP", "high", 0.5), w("RESO", "low", 0.25), w("ADAP", "low", 0.25)], prefs: pr(1, 1, 1, -1) },
-      { key: "account", hu: "Ügyfélmenedzser", en: "Account manager", weights: [w("TEMP", "high", 0.35), w("ADAP", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 0, -1) },
-      { key: "support", hu: "Ügyfélszolgálat", en: "Customer support", weights: [w("ADAP", "high", 0.4), w("RESO", "low", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, -1, -1, -1) },
-      { key: "bizdev", hu: "Üzletfejlesztés", en: "Business development", weights: [w("TEMP", "high", 0.4), w("OPEN", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 1, 1, 1) },
-      { key: "retail", hu: "Üzletvezetés / retail", en: "Store management / retail", weights: [w("THOR", "high", 0.4), w("TEMP", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 0, 0, -1) },
-      { key: "ecommerce", hu: "E-kereskedelem", en: "E-commerce", weights: [w("THOR", "high", 0.4), w("OPEN", "high", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, 1, 1, 0) },
+      { key: "sales", hu: "Értékesítő", en: "Sales representative", weights: [w("TEMP", "high", 0.5), w("RESO", "low", 0.25), w("ADAP", "low", 0.25)], prefs: pr(1, 1, 1, -1) , edu: "open" },
+      { key: "account", hu: "Ügyfélmenedzser", en: "Account manager", weights: [w("TEMP", "high", 0.35), w("ADAP", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 0, -1) , edu: "course" },
+      { key: "support", hu: "Ügyfélszolgálat", en: "Customer support", weights: [w("ADAP", "high", 0.4), w("RESO", "low", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "open" },
+      { key: "bizdev", hu: "Üzletfejlesztés", en: "Business development", weights: [w("TEMP", "high", 0.4), w("OPEN", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 1, 1, 1) , edu: "course" },
+      { key: "retail", hu: "Üzletvezetés / retail", en: "Store management / retail", weights: [w("THOR", "high", 0.4), w("TEMP", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 0, 0, -1) , edu: "course" },
+      { key: "ecommerce", hu: "E-kereskedelem", en: "E-commerce", weights: [w("THOR", "high", 0.4), w("OPEN", "high", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, 1, 1, 0) , edu: "course" },
     ],
   },
   {
@@ -152,12 +184,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "Marketing / kreatív",
     en: "Marketing / creative",
     roles: [
-      { key: "creative", hu: "Kreatív alkotó", en: "Creative", weights: [w("OPEN", "high", 0.55), w("TEMP", "high", 0.25), w("THOR", "low", 0.2)], prefs: pr(0, 1, 1, 1) },
-      { key: "content", hu: "Tartalomkészítő", en: "Content creator", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.3), w("TEMP", "high", 0.3)], prefs: pr(0, 1, 1, 1) },
-      { key: "brand", hu: "Márka / kampánymenedzser", en: "Brand / campaign manager", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("OPEN", "high", 0.3)], prefs: pr(1, 1, 0, 1) },
-      { key: "research", hu: "Piackutatás", en: "Market research", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 0) },
-      { key: "visual", hu: "Grafika / vizuális design", en: "Graphic / visual design", weights: [w("OPEN", "high", 0.5), w("THOR", "high", 0.3), w("TEMP", "low", 0.2)], prefs: pr(-1, 1, 1, 1) },
-      { key: "socialmedia", hu: "Social media", en: "Social media", weights: [w("TEMP", "high", 0.4), w("OPEN", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 1, 1, 1) },
+      { key: "creative", hu: "Kreatív alkotó", en: "Creative", weights: [w("OPEN", "high", 0.55), w("TEMP", "high", 0.25), w("THOR", "low", 0.2)], prefs: pr(0, 1, 1, 1) , edu: "course" },
+      { key: "content", hu: "Tartalomkészítő", en: "Content creator", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.3), w("TEMP", "high", 0.3)], prefs: pr(0, 1, 1, 1) , edu: "open" },
+      { key: "brand", hu: "Márka / kampánymenedzser", en: "Brand / campaign manager", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("OPEN", "high", 0.3)], prefs: pr(1, 1, 0, 1) , edu: "higher" },
+      { key: "research", hu: "Piackutatás", en: "Market research", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 0) , edu: "higher" },
+      { key: "visual", hu: "Grafika / vizuális design", en: "Graphic / visual design", weights: [w("OPEN", "high", 0.5), w("THOR", "high", 0.3), w("TEMP", "low", 0.2)], prefs: pr(-1, 1, 1, 1) , edu: "course" },
+      { key: "socialmedia", hu: "Social media", en: "Social media", weights: [w("TEMP", "high", 0.4), w("OPEN", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 1, 1, 1) , edu: "open" },
     ],
   },
   {
@@ -165,12 +197,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "Gyártás / logisztika",
     en: "Manufacturing / logistics",
     roles: [
-      { key: "opsmgr", hu: "Folyamat- / üzemvezetés", en: "Operations management", weights: [w("THOR", "high", 0.45), w("TEMP", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(1, 0, 0, -1) },
-      { key: "quality", hu: "Minőségbiztosítás", en: "Quality assurance", weights: [w("THOR", "high", 0.6), w("INTE", "high", 0.25), w("OPEN", "low", 0.15)], prefs: pr(-1, -1, 0, -1) },
-      { key: "logistics", hu: "Logisztikai koordináció", en: "Logistics coordination", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.3), w("ADAP", "high", 0.25)], prefs: pr(0, 0, 0, -1) },
-      { key: "planning", hu: "Tervezés / ütemezés", en: "Planning / scheduling", weights: [w("THOR", "high", 0.5), w("OPEN", "high", 0.3), w("RESO", "low", 0.2)], prefs: pr(-1, 0, 1, 0) },
-      { key: "procurement", hu: "Beszerzés", en: "Procurement", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.3), w("ADAP", "low", 0.3)], prefs: pr(0, 0, 0, -1) },
-      { key: "maintenance", hu: "Karbantartás / műszaki", en: "Maintenance / technical", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.3), w("OPEN", "high", 0.25)], prefs: pr(-1, 0, 1, -1) },
+      { key: "opsmgr", hu: "Folyamat- / üzemvezetés", en: "Operations management", weights: [w("THOR", "high", 0.45), w("TEMP", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(1, 0, 0, -1) , edu: "higher" },
+      { key: "quality", hu: "Minőségbiztosítás", en: "Quality assurance", weights: [w("THOR", "high", 0.6), w("INTE", "high", 0.25), w("OPEN", "low", 0.15)], prefs: pr(-1, -1, 0, -1) , edu: "vocational" },
+      { key: "logistics", hu: "Logisztikai koordináció", en: "Logistics coordination", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.3), w("ADAP", "high", 0.25)], prefs: pr(0, 0, 0, -1) , edu: "course" },
+      { key: "planning", hu: "Tervezés / ütemezés", en: "Planning / scheduling", weights: [w("THOR", "high", 0.5), w("OPEN", "high", 0.3), w("RESO", "low", 0.2)], prefs: pr(-1, 0, 1, 0) , edu: "higher" },
+      { key: "procurement", hu: "Beszerzés", en: "Procurement", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.3), w("ADAP", "low", 0.3)], prefs: pr(0, 0, 0, -1) , edu: "higher" },
+      { key: "maintenance", hu: "Karbantartás / műszaki", en: "Maintenance / technical", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.3), w("OPEN", "high", 0.25)], prefs: pr(-1, 0, 1, -1) , edu: "vocational" },
     ],
   },
   {
@@ -178,12 +210,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "HR / szervezetfejlesztés",
     en: "HR / people",
     roles: [
-      { key: "recruiter", hu: "Toborzás", en: "Recruiting", weights: [w("TEMP", "high", 0.4), w("ADAP", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, 1, 0, -1) },
-      { key: "hrbp", hu: "HR partner", en: "HR business partner", weights: [w("ADAP", "high", 0.35), w("INTE", "high", 0.35), w("TEMP", "high", 0.3)], prefs: pr(1, 0, 0, 0) },
-      { key: "od", hu: "Szervezetfejlesztés", en: "Org development", weights: [w("OPEN", "high", 0.4), w("ADAP", "high", 0.3), w("INTE", "high", 0.3)], prefs: pr(1, 1, 1, 1) },
-      { key: "payroll", hu: "HR adminisztráció", en: "HR administration", weights: [w("THOR", "high", 0.55), w("INTE", "high", 0.25), w("TEMP", "low", 0.2)], prefs: pr(-1, -1, 0, -1) },
-      { key: "lnd", hu: "Képzés-fejlesztés (L&D)", en: "Learning & development", weights: [w("OPEN", "high", 0.35), w("TEMP", "high", 0.35), w("ADAP", "high", 0.3)], prefs: pr(1, 1, 0, 1) },
-      { key: "laborrel", hu: "Munkaügy / munkajog", en: "Labor relations", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(0, -1, 0, -1) },
+      { key: "recruiter", hu: "Toborzás", en: "Recruiting", weights: [w("TEMP", "high", 0.4), w("ADAP", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(1, 1, 0, -1) , edu: "course" },
+      { key: "hrbp", hu: "HR partner", en: "HR business partner", weights: [w("ADAP", "high", 0.35), w("INTE", "high", 0.35), w("TEMP", "high", 0.3)], prefs: pr(1, 0, 0, 0) , edu: "higher" },
+      { key: "od", hu: "Szervezetfejlesztés", en: "Org development", weights: [w("OPEN", "high", 0.4), w("ADAP", "high", 0.3), w("INTE", "high", 0.3)], prefs: pr(1, 1, 1, 1) , edu: "higher" },
+      { key: "payroll", hu: "HR adminisztráció", en: "HR administration", weights: [w("THOR", "high", 0.55), w("INTE", "high", 0.25), w("TEMP", "low", 0.2)], prefs: pr(-1, -1, 0, -1) , edu: "vocational" },
+      { key: "lnd", hu: "Képzés-fejlesztés (L&D)", en: "Learning & development", weights: [w("OPEN", "high", 0.35), w("TEMP", "high", 0.35), w("ADAP", "high", 0.3)], prefs: pr(1, 1, 0, 1) , edu: "higher" },
+      { key: "laborrel", hu: "Munkaügy / munkajog", en: "Labor relations", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(0, -1, 0, -1) , edu: "higher" },
     ],
   },
   {
@@ -191,12 +223,13 @@ export const INDUSTRIES: Industry[] = [
     hu: "Jog / közszféra",
     en: "Legal / public sector",
     roles: [
-      { key: "legal", hu: "Jogi munka", en: "Legal work", weights: [w("THOR", "high", 0.45), w("INTE", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(-1, 0, 1, -1) },
-      { key: "compliance", hu: "Megfelelőség / compliance", en: "Compliance", weights: [w("INTE", "high", 0.4), w("THOR", "high", 0.4), w("ADAP", "low", 0.2)], prefs: pr(-1, -1, 0, -1) },
-      { key: "policy", hu: "Szakpolitika / elemzés", en: "Policy / analysis", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, 0, 1, 1) },
-      { key: "publicservice", hu: "Ügyfélközeli közszolgálat", en: "Public-facing service", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, -1, -1, -1) },
-      { key: "nonprofit", hu: "Nonprofit / közösségi munka", en: "Nonprofit / community work", weights: [w("INTE", "high", 0.35), w("ADAP", "high", 0.35), w("RESO", "high", 0.3)], prefs: pr(1, 1, 0, 1) },
-      { key: "lawenforce", hu: "Rendvédelem / biztonság", en: "Law enforcement / security", weights: [w("RESO", "low", 0.4), w("THOR", "high", 0.35), w("INTE", "high", 0.25)], prefs: pr(1, 0, -1, -1) },
+      { key: "legal", hu: "Jogi munka", en: "Legal work", weights: [w("THOR", "high", 0.45), w("INTE", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(-1, 0, 1, -1) , edu: "specialized" },
+      { key: "compliance", hu: "Megfelelőség / compliance", en: "Compliance", weights: [w("INTE", "high", 0.4), w("THOR", "high", 0.4), w("ADAP", "low", 0.2)], prefs: pr(-1, -1, 0, -1) , edu: "higher" },
+      { key: "policy", hu: "Szakpolitika / elemzés", en: "Policy / analysis", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, 0, 1, 1) , edu: "higher" },
+      { key: "publicservice", hu: "Ügyfélközeli közszolgálat", en: "Public-facing service", weights: [w("ADAP", "high", 0.4), w("THOR", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "course" },
+      { key: "nonprofit", hu: "Nonprofit / közösségi munka", en: "Nonprofit / community work", weights: [w("INTE", "high", 0.35), w("ADAP", "high", 0.35), w("RESO", "high", 0.3)], prefs: pr(1, 1, 0, 1) , edu: "open" },
+      { key: "lawenforce", hu: "Rendvédelem / biztonság", en: "Law enforcement / security", weights: [w("RESO", "low", 0.4), w("THOR", "high", 0.35), w("INTE", "high", 0.25)], prefs: pr(1, 0, -1, -1) , edu: "vocational" },
+      { key: "socialworker", hu: "Szociális munkás", en: "Social worker", weights: [w("ADAP", "high", 0.35), w("INTE", "high", 0.3), w("RESO", "high", 0.35)], prefs: pr(1, 0, 0, -1) , edu: "higher" },
     ],
   },
   {
@@ -204,12 +237,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "Építőipar / mérnöki",
     en: "Construction / engineering",
     roles: [
-      { key: "design", hu: "Tervezőmérnök", en: "Design engineer", weights: [w("THOR", "high", 0.45), w("OPEN", "high", 0.35), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) },
-      { key: "sitemgr", hu: "Kivitelezés-vezetés", en: "Site management", weights: [w("THOR", "high", 0.35), w("TEMP", "high", 0.35), w("RESO", "low", 0.3)], prefs: pr(1, 1, 0, -1) },
-      { key: "inspector", hu: "Műszaki ellenőr", en: "Technical inspector", weights: [w("THOR", "high", 0.5), w("INTE", "high", 0.3), w("ADAP", "low", 0.2)], prefs: pr(-1, 0, 1, -1) },
-      { key: "estimator", hu: "Kalkuláció / költségbecslés", en: "Cost estimation", weights: [w("THOR", "high", 0.55), w("OPEN", "high", 0.25), w("TEMP", "low", 0.2)], prefs: pr(-1, -1, 1, -1) },
-      { key: "safety", hu: "Munkavédelem", en: "Occupational safety", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.35), w("ADAP", "low", 0.25)], prefs: pr(0, 0, 0, -1) },
-      { key: "facility", hu: "Épületüzemeltetés", en: "Facility management", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.3), w("ADAP", "high", 0.25)], prefs: pr(0, -1, 0, -1) },
+      { key: "design", hu: "Tervezőmérnök", en: "Design engineer", weights: [w("THOR", "high", 0.45), w("OPEN", "high", 0.35), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) , edu: "higher" },
+      { key: "sitemgr", hu: "Kivitelezés-vezetés", en: "Site management", weights: [w("THOR", "high", 0.35), w("TEMP", "high", 0.35), w("RESO", "low", 0.3)], prefs: pr(1, 1, 0, -1) , edu: "higher" },
+      { key: "inspector", hu: "Műszaki ellenőr", en: "Technical inspector", weights: [w("THOR", "high", 0.5), w("INTE", "high", 0.3), w("ADAP", "low", 0.2)], prefs: pr(-1, 0, 1, -1) , edu: "higher" },
+      { key: "estimator", hu: "Kalkuláció / költségbecslés", en: "Cost estimation", weights: [w("THOR", "high", 0.55), w("OPEN", "high", 0.25), w("TEMP", "low", 0.2)], prefs: pr(-1, -1, 1, -1) , edu: "vocational" },
+      { key: "safety", hu: "Munkavédelem", en: "Occupational safety", weights: [w("THOR", "high", 0.4), w("INTE", "high", 0.35), w("ADAP", "low", 0.25)], prefs: pr(0, 0, 0, -1) , edu: "vocational" },
+      { key: "facility", hu: "Épületüzemeltetés", en: "Facility management", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.3), w("ADAP", "high", 0.25)], prefs: pr(0, -1, 0, -1) , edu: "course" },
     ],
   },
   {
@@ -217,12 +250,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "Vendéglátás / turizmus",
     en: "Hospitality / tourism",
     roles: [
-      { key: "chef", hu: "Séf / konyhai munka", en: "Chef / kitchen", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.35), w("OPEN", "high", 0.25)], prefs: pr(-1, 0, 0, 1) },
-      { key: "service", hu: "Felszolgálás / vendégkapcsolat", en: "Service / guest relations", weights: [w("TEMP", "high", 0.4), w("ADAP", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 1, -1, -1) },
-      { key: "hotelops", hu: "Szállodai üzemeltetés", en: "Hotel operations", weights: [w("THOR", "high", 0.45), w("TEMP", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(1, 0, 0, -1) },
-      { key: "events", hu: "Rendezvényszervezés", en: "Event management", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("RESO", "low", 0.3)], prefs: pr(1, 1, 0, 1) },
-      { key: "guide", hu: "Idegenvezetés", en: "Tour guiding", weights: [w("TEMP", "high", 0.45), w("OPEN", "high", 0.3), w("ADAP", "high", 0.25)], prefs: pr(1, 1, 1, 0) },
-      { key: "frontdesk", hu: "Recepció / front office", en: "Front desk", weights: [w("ADAP", "high", 0.4), w("TEMP", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, -1, -1, -1) },
+      { key: "chef", hu: "Séf / konyhai munka", en: "Chef / kitchen", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.35), w("OPEN", "high", 0.25)], prefs: pr(-1, 0, 0, 1) , edu: "vocational" },
+      { key: "service", hu: "Felszolgálás / vendégkapcsolat", en: "Service / guest relations", weights: [w("TEMP", "high", 0.4), w("ADAP", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 1, -1, -1) , edu: "open" },
+      { key: "hotelops", hu: "Szállodai üzemeltetés", en: "Hotel operations", weights: [w("THOR", "high", 0.45), w("TEMP", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(1, 0, 0, -1) , edu: "course" },
+      { key: "events", hu: "Rendezvényszervezés", en: "Event management", weights: [w("TEMP", "high", 0.35), w("THOR", "high", 0.35), w("RESO", "low", 0.3)], prefs: pr(1, 1, 0, 1) , edu: "course" },
+      { key: "guide", hu: "Idegenvezetés", en: "Tour guiding", weights: [w("TEMP", "high", 0.45), w("OPEN", "high", 0.3), w("ADAP", "high", 0.25)], prefs: pr(1, 1, 1, 0) , edu: "course" },
+      { key: "frontdesk", hu: "Recepció / front office", en: "Front desk", weights: [w("ADAP", "high", 0.4), w("TEMP", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "open" },
     ],
   },
   {
@@ -230,12 +263,12 @@ export const INDUSTRIES: Industry[] = [
     hu: "Média / kommunikáció",
     en: "Media / communications",
     roles: [
-      { key: "journalist", hu: "Újságírás / szerkesztés", en: "Journalism / editing", weights: [w("OPEN", "high", 0.4), w("INTE", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(0, 1, 1, 1) },
-      { key: "pr", hu: "PR / kommunikáció", en: "PR / communications", weights: [w("TEMP", "high", 0.4), w("OPEN", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, 1, 0, 1) },
-      { key: "production", hu: "Videó / produkció", en: "Video / production", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.35), w("TEMP", "high", 0.25)], prefs: pr(0, 1, 0, 1) },
-      { key: "presenter", hu: "Műsorvezetés / moderálás", en: "Presenting / hosting", weights: [w("TEMP", "high", 0.55), w("RESO", "low", 0.25), w("OPEN", "high", 0.2)], prefs: pr(1, 1, 0, 1) },
-      { key: "photo", hu: "Fotográfia", en: "Photography", weights: [w("OPEN", "high", 0.5), w("THOR", "high", 0.25), w("TEMP", "low", 0.25)], prefs: pr(0, 1, 1, 1) },
-      { key: "copywriter", hu: "Szövegírás", en: "Copywriting", weights: [w("OPEN", "high", 0.45), w("THOR", "high", 0.3), w("TEMP", "low", 0.25)], prefs: pr(-1, 1, 1, 1) },
+      { key: "journalist", hu: "Újságírás / szerkesztés", en: "Journalism / editing", weights: [w("OPEN", "high", 0.4), w("INTE", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(0, 1, 1, 1) , edu: "higher" },
+      { key: "pr", hu: "PR / kommunikáció", en: "PR / communications", weights: [w("TEMP", "high", 0.4), w("OPEN", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(1, 1, 0, 1) , edu: "higher" },
+      { key: "production", hu: "Videó / produkció", en: "Video / production", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.35), w("TEMP", "high", 0.25)], prefs: pr(0, 1, 0, 1) , edu: "course" },
+      { key: "presenter", hu: "Műsorvezetés / moderálás", en: "Presenting / hosting", weights: [w("TEMP", "high", 0.55), w("RESO", "low", 0.25), w("OPEN", "high", 0.2)], prefs: pr(1, 1, 0, 1) , edu: "course" },
+      { key: "photo", hu: "Fotográfia", en: "Photography", weights: [w("OPEN", "high", 0.5), w("THOR", "high", 0.25), w("TEMP", "low", 0.25)], prefs: pr(0, 1, 1, 1) , edu: "course" },
+      { key: "copywriter", hu: "Szövegírás", en: "Copywriting", weights: [w("OPEN", "high", 0.45), w("THOR", "high", 0.3), w("TEMP", "low", 0.25)], prefs: pr(-1, 1, 1, 1) , edu: "course" },
     ],
   },
   {
@@ -243,12 +276,51 @@ export const INDUSTRIES: Industry[] = [
     hu: "Tudomány / kutatás",
     en: "Science / research",
     roles: [
-      { key: "researcher", hu: "Kutató", en: "Researcher", weights: [w("OPEN", "high", 0.45), w("THOR", "high", 0.35), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) },
-      { key: "labtech", hu: "Laboratóriumi munka", en: "Lab work", weights: [w("THOR", "high", 0.55), w("INTE", "high", 0.25), w("OPEN", "low", 0.2)], prefs: pr(-1, -1, 0, -1) },
-      { key: "dataanalyst", hu: "Adatelemzés", en: "Data analysis", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 0) },
-      { key: "scicomm", hu: "Tudományos kommunikáció", en: "Science communication", weights: [w("OPEN", "high", 0.4), w("TEMP", "high", 0.35), w("ADAP", "high", 0.25)], prefs: pr(1, 1, 0, 1) },
-      { key: "academia", hu: "Egyetemi oktatás", en: "Academic teaching", weights: [w("OPEN", "high", 0.35), w("TEMP", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 1, 0) },
-      { key: "regulatory", hu: "Szabályozási ügyek", en: "Regulatory affairs", weights: [w("THOR", "high", 0.45), w("INTE", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(-1, -1, 0, -1) },
+      { key: "researcher", hu: "Kutató", en: "Researcher", weights: [w("OPEN", "high", 0.45), w("THOR", "high", 0.35), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 1) , edu: "specialized" },
+      { key: "labtech", hu: "Laboratóriumi munka", en: "Lab work", weights: [w("THOR", "high", 0.55), w("INTE", "high", 0.25), w("OPEN", "low", 0.2)], prefs: pr(-1, -1, 0, -1) , edu: "vocational" },
+      { key: "dataanalyst", hu: "Adatelemzés", en: "Data analysis", weights: [w("OPEN", "high", 0.4), w("THOR", "high", 0.4), w("TEMP", "low", 0.2)], prefs: pr(-1, 0, 1, 0) , edu: "higher" },
+      { key: "scicomm", hu: "Tudományos kommunikáció", en: "Science communication", weights: [w("OPEN", "high", 0.4), w("TEMP", "high", 0.35), w("ADAP", "high", 0.25)], prefs: pr(1, 1, 0, 1) , edu: "higher" },
+      { key: "academia", hu: "Egyetemi oktatás", en: "Academic teaching", weights: [w("OPEN", "high", 0.35), w("TEMP", "high", 0.35), w("THOR", "high", 0.3)], prefs: pr(1, 0, 1, 0) , edu: "specialized" },
+      { key: "regulatory", hu: "Szabályozási ügyek", en: "Regulatory affairs", weights: [w("THOR", "high", 0.45), w("INTE", "high", 0.3), w("RESO", "low", 0.25)], prefs: pr(-1, -1, 0, -1) , edu: "higher" },
+      { key: "envspecialist", hu: "Környezetvédelmi szakértő", en: "Environmental specialist", weights: [w("OPEN", "high", 0.4), w("INTE", "high", 0.3), w("THOR", "high", 0.3)], prefs: pr(0, 0, 1, 0) , edu: "higher" },
+    ],
+  },
+  {
+    key: "trades",
+    hu: "Szakmák / ipar",
+    en: "Skilled trades",
+    roles: [
+      { key: "electrician", hu: "Villanyszerelő", en: "Electrician", weights: [w("THOR", "high", 0.45), w("OPEN", "high", 0.25), w("RESO", "low", 0.3)], prefs: pr(-1, 0, 1, -1) , edu: "vocational" },
+      { key: "mechanic", hu: "Autószerelő / járműtechnika", en: "Auto mechanic", weights: [w("THOR", "high", 0.45), w("OPEN", "high", 0.3), w("TEMP", "low", 0.25)], prefs: pr(-1, 0, 1, -1) , edu: "vocational" },
+      { key: "carpenter", hu: "Asztalos / bútorkészítő", en: "Carpenter / furniture maker", weights: [w("THOR", "high", 0.4), w("OPEN", "high", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, 0, 1, 1) , edu: "vocational" },
+      { key: "welder", hu: "Hegesztő / fémipari szakmunka", en: "Welder / metalwork", weights: [w("THOR", "high", 0.5), w("RESO", "low", 0.3), w("OPEN", "low", 0.2)], prefs: pr(-1, -1, 1, -1) , edu: "vocational" },
+      { key: "plumber", hu: "Víz-, gáz-, fűtésszerelő", en: "Plumber / HVAC", weights: [w("THOR", "high", 0.4), w("ADAP", "high", 0.3), w("RESO", "low", 0.3)], prefs: pr(0, 0, 1, -1) , edu: "vocational" },
+      { key: "cnc", hu: "CNC-gépkezelő / gépbeállító", en: "CNC operator", weights: [w("THOR", "high", 0.55), w("OPEN", "low", 0.2), w("TEMP", "low", 0.25)], prefs: pr(-1, -1, 0, -1) , edu: "vocational" },
+    ],
+  },
+  {
+    key: "transport",
+    hu: "Közlekedés / szállítmányozás",
+    en: "Transport / logistics",
+    roles: [
+      { key: "courier", hu: "Futár / kiszállítás", en: "Courier / delivery", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.35), w("TEMP", "low", 0.25)], prefs: pr(0, 0, 1, -1) , edu: "open" },
+      { key: "truckdriver", hu: "Kamion- / tehergépkocsi-vezető", en: "Truck driver", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.35), w("TEMP", "low", 0.25)], prefs: pr(-1, -1, 1, -1) , edu: "course" },
+      { key: "dispatcher", hu: "Diszpécser / forgalomirányítás", en: "Dispatcher", weights: [w("THOR", "high", 0.45), w("RESO", "low", 0.35), w("TEMP", "high", 0.2)], prefs: pr(0, -1, -1, -1) , edu: "course" },
+      { key: "warehouse", hu: "Raktárvezetés / készletkezelés", en: "Warehouse / inventory", weights: [w("THOR", "high", 0.5), w("INTE", "high", 0.25), w("RESO", "low", 0.25)], prefs: pr(-1, -1, 0, -1) , edu: "course" },
+      { key: "publictransport", hu: "Járművezető (busz / vasút)", en: "Bus / train driver", weights: [w("THOR", "high", 0.4), w("RESO", "low", 0.4), w("ADAP", "high", 0.2)], prefs: pr(0, -1, 1, -1) , edu: "vocational" },
+    ],
+  },
+  {
+    key: "services",
+    hu: "Személyi szolgáltatás / wellness",
+    en: "Personal services / wellness",
+    roles: [
+      { key: "hairdresser", hu: "Fodrász / borbély", en: "Hairdresser / barber", weights: [w("TEMP", "high", 0.35), w("OPEN", "high", 0.3), w("ADAP", "high", 0.35)], prefs: pr(1, 0, 1, 1) , edu: "vocational" },
+      { key: "beautician", hu: "Kozmetikus", en: "Beautician", weights: [w("ADAP", "high", 0.35), w("THOR", "high", 0.3), w("TEMP", "high", 0.35)], prefs: pr(1, -1, 1, 0) , edu: "vocational" },
+      { key: "masseur", hu: "Masszőr / gyógymasszőr", en: "Massage therapist", weights: [w("ADAP", "high", 0.4), w("RESO", "high", 0.25), w("THOR", "high", 0.35)], prefs: pr(1, -1, 1, -1) , edu: "course" },
+      { key: "personaltrainer", hu: "Személyi edző", en: "Personal trainer", weights: [w("TEMP", "high", 0.4), w("THOR", "high", 0.35), w("RESO", "low", 0.25)], prefs: pr(1, 0, 1, 0) , edu: "course" },
+      { key: "realtor", hu: "Ingatlanközvetítő", en: "Real estate agent", weights: [w("TEMP", "high", 0.45), w("RESO", "low", 0.3), w("INTE", "high", 0.25)], prefs: pr(1, 1, 1, -1) , edu: "course" },
+      { key: "childcare", hu: "Bébiszitter / családi napközi", en: "Childcare provider", weights: [w("ADAP", "high", 0.4), w("RESO", "high", 0.3), w("INTE", "high", 0.3)], prefs: pr(1, -1, -1, -1) , edu: "course" },
     ],
   },
 ];
@@ -362,6 +434,7 @@ const INDUSTRY_RIASEC_DEFAULT: Record<string, string> = {
   tech: "IC", health: "SI", education: "SA", finance: "CE", sales: "EC",
   creative: "AE", media: "AE", operations: "CR", people: "SE", public: "CS",
   engineering: "RI", hospitality: "ES", science: "IR",
+  trades: "RC", transport: "RC", services: "SE",
 };
 
 const ROLE_RIASEC_OVERRIDE: Record<string, string> = {
@@ -374,6 +447,12 @@ const ROLE_RIASEC_OVERRIDE: Record<string, string> = {
   legal: "CI", policy: "IA", nonprofit: "SA", lawenforce: "RC",
   design: "RI", sitemgr: "ER", estimator: "CI",
   chef: "RA", events: "EA", opsmgr: "EC", planning: "CI",
+  security: "IC", sysadmin: "CR", techwriter: "CI",
+  psychologist: "IS", physician: "IS", pharmacist: "CI", healthvisitor: "SC",
+  languageteacher: "SA", teachassist: "SC",
+  taxadvisor: "CI", insurance: "CE", socialworker: "SA", envspecialist: "IR",
+  carpenter: "RA", hairdresser: "AE", beautician: "AS", masseur: "SR",
+  personaltrainer: "SE", realtor: "EC", childcare: "SA",
 };
 
 export function roleRiasec(industryKey: string, roleKey: string): string {
@@ -426,6 +505,9 @@ export const INDUSTRY_LEADER_CONTEXT: Record<string, { dim: DimCode; pole: "high
   engineering: { dim: "THOR", pole: "high" },
   hospitality: { dim: "TEMP", pole: "high" },
   science: { dim: "OPEN", pole: "high" },
+  trades: { dim: "THOR", pole: "high" },
+  transport: { dim: "THOR", pole: "high" },
+  services: { dim: "TEMP", pole: "high" },
 };
 
 /**
@@ -446,17 +528,93 @@ export function applyLeadFocus(weights: RoleWeight[]): RoleWeight[] {
   return list.map((entry) => ({ ...entry, weight: entry.weight / total }));
 }
 
-/** Preferencia-egyezés 0-100: a beállított tengelyeken mért közelség átlaga. */
+// ── Munkakörnyezet-profilok (pace / structure / setting) ────────────────────
+// Iparági default + szerep-felülbírálás; a wizard környezet-kérdéseivel
+// (2. ütem) egyeznek. -1..1 skála, mint a preferencia-tengelyek.
+export type EnvProfile = Record<EnvAxis, number>;
+
+const INDUSTRY_ENV_DEFAULT: Record<string, EnvProfile> = {
+  tech: { pace: 0, structure: 0, setting: -1 },
+  health: { pace: 1, structure: 1, setting: 1 },
+  education: { pace: 0, structure: 1, setting: 1 },
+  finance: { pace: 0, structure: 1, setting: -1 },
+  sales: { pace: 1, structure: -1, setting: 0 },
+  creative: { pace: 0, structure: -1, setting: -1 },
+  media: { pace: 1, structure: -1, setting: 0 },
+  operations: { pace: 1, structure: 1, setting: 0 },
+  people: { pace: 0, structure: 0, setting: -1 },
+  public: { pace: -1, structure: 1, setting: -1 },
+  engineering: { pace: 0, structure: 1, setting: 0 },
+  hospitality: { pace: 1, structure: 0, setting: 1 },
+  science: { pace: -1, structure: 1, setting: -1 },
+  trades: { pace: 0, structure: 1, setting: 1 },
+  transport: { pace: 0, structure: 1, setting: 1 },
+  services: { pace: 0, structure: 0, setting: 1 },
+};
+
+const ROLE_ENV_OVERRIDE: Record<string, Partial<EnvProfile>> = {
+  emergency: { pace: 1 },
+  lawenforce: { setting: 1, pace: 1 },
+  events: { pace: 1, setting: 1 },
+  sitemgr: { setting: 1, pace: 1 },
+  inspector: { setting: 1 },
+  guide: { setting: 1 },
+  photo: { setting: 1 },
+  courier: { pace: 1 },
+  dispatcher: { setting: -1, pace: 1 },
+  warehouse: { setting: 0 },
+  edtech: { setting: -1, pace: -1 },
+  techwriter: { pace: -1 },
+  research: { pace: -1 },
+  policy: { pace: -1 },
+  accounting: { pace: -1 },
+  payroll: { pace: -1 },
+  realtor: { pace: 1, setting: 0 },
+  childcare: { setting: 1 },
+  personaltrainer: { pace: 1 },
+};
+
+export function roleEnvProfile(industryKey: string, roleKey: string): EnvProfile {
+  const base = INDUSTRY_ENV_DEFAULT[industryKey] ?? { pace: 0, structure: 0, setting: 0 };
+  return { ...base, ...ROLE_ENV_OVERRIDE[roleKey] };
+}
+
+// Init: a szerep-objektumokra rárakjuk a környezet-profilt, hogy a
+// pontozásnak ne kelljen iparág-kulcsot cipelnie.
+for (const industry of INDUSTRIES) {
+  for (const role of industry.roles) {
+    role.env = roleEnvProfile(industry.key, role.key);
+  }
+}
+
+const PREF_AXES_ALL: PrefAxis[] = ["people", "variety", "autonomy", "creation"];
+const ENV_AXES_ALL: EnvAxis[] = ["pace", "structure", "setting"];
+
+/** Preferencia-egyezés 0-100: a beállított tengelyeken mért közelség átlaga
+ *  (motivációs + környezet-tengelyek együtt). */
 export function scorePrefMatch(prefs: UserPrefs, role: IndustryRole): number | null {
-  const axes = (Object.keys(prefs) as PrefAxis[]).filter(
-    (axis) => prefs[axis] !== undefined && prefs[axis] !== 0,
+  const env = role.env;
+  const entries: Array<[number, number]> = [];
+  for (const axis of PREF_AXES_ALL) {
+    const userValue = prefs[axis];
+    if (userValue !== undefined && userValue !== 0) {
+      entries.push([userValue, role.prefs[axis]]);
+    }
+  }
+  if (env) {
+    for (const axis of ENV_AXES_ALL) {
+      const userValue = prefs[axis];
+      if (userValue !== undefined && userValue !== 0) {
+        entries.push([userValue, env[axis]]);
+      }
+    }
+  }
+  if (entries.length === 0) return null;
+  const sum = entries.reduce(
+    (acc, [userValue, roleValue]) => acc + (1 - Math.abs(userValue - roleValue) / 2),
+    0,
   );
-  if (axes.length === 0) return null;
-  const sum = axes.reduce((acc, axis) => {
-    const distance = Math.abs((prefs[axis] as number) - role.prefs[axis]);
-    return acc + (1 - distance / 2);
-  }, 0);
-  return Math.round((sum / axes.length) * 100);
+  return Math.round((sum / entries.length) * 100);
 }
 
 export interface RoleFitBreakdownEntry {
@@ -593,13 +751,13 @@ export interface CareerBackground {
 export const EDU_INDUSTRY_AFFINITY: Record<EduField, string[]> = {
   tech_engineering: ["tech", "engineering", "operations", "science"],
   economics: ["finance", "sales", "operations", "people"],
-  health: ["health", "science"],
+  health: ["health", "science", "services"],
   humanities: ["media", "education", "people", "public"],
   natural_science: ["science", "health", "tech"],
   legal: ["public", "finance", "people"],
   arts: ["creative", "media", "hospitality"],
   pedagogy: ["education", "people", "health"],
-  trade: ["engineering", "operations", "hospitality"],
+  trade: ["engineering", "operations", "hospitality", "trades", "transport", "services"],
   none_other: [],
 };
 

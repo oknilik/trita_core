@@ -254,3 +254,42 @@ test("explainRoleFit facet-tudatos: facet-komponens jelölve", () => {
   assert.ok(breakdown.some((e) => e.facet === "perfectionism"));
   assert.ok(breakdown.every((e) => e.facet === null || typeof e.userValue === "number"));
 });
+
+// ── 2. ütem: bővített katalógus + env-tengelyek + edu ────────────────────────
+
+test("bővített katalógus: minden szerepnek van edu + env + riasec + vezető-kontextus", async () => {
+  const { INDUSTRY_LEADER_CONTEXT, roleRiasec } = await import("@/lib/industry-fit");
+  const eduValues = new Set(["open", "course", "vocational", "higher", "specialized"]);
+  let roleCount = 0;
+  for (const industry of INDUSTRIES) {
+    assert.ok(INDUSTRY_LEADER_CONTEXT[industry.key], `vezető-kontextus hiányzik: ${industry.key}`);
+    for (const role of industry.roles) {
+      roleCount++;
+      assert.ok(eduValues.has(role.edu), `${industry.key}/${role.key}: hiányzó/rossz edu`);
+      assert.ok(role.env, `${role.key}: hiányzó env-profil`);
+      for (const axis of ["pace", "structure", "setting"] as const) {
+        const v = role.env![axis];
+        assert.ok(v >= -1 && v <= 1, `${role.key}.${axis}: ${v}`);
+      }
+      assert.ok(roleRiasec(industry.key, role.key).length >= 1, `${role.key}: nincs riasec`);
+      const total = role.weights.reduce((sum, w) => sum + w.weight, 0);
+      assert.ok(Math.abs(total - 1) < 0.001, `${industry.key}/${role.key} súlyösszeg: ${total}`);
+    }
+  }
+  assert.ok(roleCount >= 95, `szerep-szám: ${roleCount}`);
+  assert.ok(INDUSTRIES.some((i) => i.key === "trades"));
+  assert.ok(INDUSTRIES.some((i) => i.key === "transport"));
+  assert.ok(INDUSTRIES.some((i) => i.key === "services"));
+});
+
+test("env-tengelyek beszámítanak a preferencia-egyezésbe", () => {
+  const emergency = INDUSTRIES.find((i) => i.key === "health")!.roles.find((r) => r.key === "emergency")!;
+  const fastLover = scorePrefMatch({ pace: 1 }, emergency);
+  const calmLover = scorePrefMatch({ pace: -1 }, emergency);
+  assert.ok(fastLover !== null && calmLover !== null);
+  assert.ok(fastLover! > calmLover!, `${fastLover} vs ${calmLover}`);
+  // Terep-preferencia: villanyszerelő (setting=1) vs fejlesztő (setting=-1)
+  const electrician = INDUSTRIES.find((i) => i.key === "trades")!.roles.find((r) => r.key === "electrician")!;
+  const dev = INDUSTRIES.find((i) => i.key === "tech")!.roles.find((r) => r.key === "dev")!;
+  assert.ok(scorePrefMatch({ setting: 1 }, electrician)! > scorePrefMatch({ setting: 1 }, dev)!);
+});
