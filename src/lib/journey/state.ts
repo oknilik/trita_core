@@ -53,12 +53,12 @@ function buildActionMap(context: JourneyContextSnapshot): Record<JourneyActionId
     REVIEW_SELF_RESULTS: { id: "REVIEW_SELF_RESULTS", href: "/profile/results", scope: "self" },
     INVITE_OBSERVERS: {
       id: "INVITE_OBSERVERS",
-      href: "/profile/results?tab=invites",
+      href: "/profile/results?tab=comparison#invitations",
       scope: "self",
     },
     MANAGE_OBSERVER_INVITES: {
       id: "MANAGE_OBSERVER_INVITES",
-      href: "/profile/results?tab=invites",
+      href: "/profile/results?tab=comparison#invitations",
       scope: "self",
     },
     CREATE_TEAM: { id: "CREATE_TEAM", href: "/onboarding?intent=team", scope: "team" },

@@ -574,6 +574,31 @@ export function ProfileTabs({
 
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
 
+  // Hash-horgonyok (#observer-flow stb.): az App Router streaming miatt nem
+  // görget hash-re magától, ezért mount után ismételt ráigazítással visszük
+  // a cél-elemhez (a második kör a hydration utáni layout-shiftet követi le).
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    let attempts = 0;
+    let timer: number | undefined;
+    const tryScroll = () => {
+      attempts += 1;
+      const el = document.getElementById(hash);
+      if (el) {
+        const top = el.getBoundingClientRect().top;
+        // Addig igazítunk, amíg a cél ténylegesen a viewport tetejére nem
+        // kerül — a streaming/hydration közbeni layout-shift és a háttér-tab
+        // (0 magasságú layout) esetét is lefedi.
+        if (Math.abs(top - 16) <= 60 && window.innerHeight > 0) return;
+        el.scrollIntoView({ behavior: "auto", block: "start" });
+      }
+      if (attempts < 40) timer = window.setTimeout(tryScroll, 250);
+    };
+    timer = window.setTimeout(tryScroll, 100);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   // Az aktív tab úszik be a látótérbe (mount + tab-váltás).
   useEffect(() => {
     const el = tabScrollRef.current?.querySelector<HTMLButtonElement>(
@@ -931,7 +956,7 @@ export function ProfileTabs({
             activeCampaignName: observerFlow.activeCampaignName,
           }}
           isHu={locale === "hu"}
-          onOpenInvites={() => handleTabChange("invites")}
+          onOpenInvites={() => handleTabChange("comparison")}
           onOpenComparison={() => handleTabChange("comparison")}
         />
       ) : (
@@ -942,7 +967,7 @@ export function ProfileTabs({
           sentCount={sentInvitations.length}
           receivedCount={observerCount}
           onNavigateToComparison={() => handleTabChange("comparison")}
-          onNavigateToInvites={() => handleTabChange("invites")}
+          onNavigateToInvites={() => handleTabChange("comparison")}
         />
       )}
 
@@ -1062,17 +1087,9 @@ export function ProfileTabs({
           // érkezik — futó observer-körnél a meghívó-kezelő ITT jelenik meg,
           // enélkül a tag senkit sem tudna felkérni.
           observerFlow && observerFlow.state === "locked" ? (
-            <ObserverFlowStatusCard
-              flow={{
-                state: observerFlow.state,
-                receivedCount: observerFlow.receivedCount,
-                minForReveal: observerFlow.minForReveal,
-                activeCampaignName: observerFlow.activeCampaignName,
-              }}
-              isHu={locale === "hu"}
-            />
-          ) : observerFlow && observerFlow.state === "in_progress" ? (
-            <>
+            // A #observer-flow horgonyra ugranak a „Meghívók kezelése" CTA-k
+            // (csapat-banner, tag-nézet) — scroll-mt a fejléc alá csúszás ellen.
+            <div id="observer-flow" className="scroll-mt-24">
               <ObserverFlowStatusCard
                 flow={{
                   state: observerFlow.state,
@@ -1082,12 +1099,28 @@ export function ProfileTabs({
                 }}
                 isHu={locale === "hu"}
               />
-              <InvitationsTab
-                sentInvitations={sentInvitations}
-                receivedInvitations={receivedInvitations}
-                isPlus={isPlus}
-                minForReveal={observerFlow.minForReveal}
-              />
+            </div>
+          ) : observerFlow && observerFlow.state === "in_progress" ? (
+            <>
+              <div id="observer-flow" className="scroll-mt-24">
+                <ObserverFlowStatusCard
+                  flow={{
+                    state: observerFlow.state,
+                    receivedCount: observerFlow.receivedCount,
+                    minForReveal: observerFlow.minForReveal,
+                    activeCampaignName: observerFlow.activeCampaignName,
+                  }}
+                  isHu={locale === "hu"}
+                />
+              </div>
+              <div id="invitations" className="scroll-mt-24">
+                <InvitationsTab
+                  sentInvitations={sentInvitations}
+                  receivedInvitations={receivedInvitations}
+                  isPlus={isPlus}
+                  minForReveal={observerFlow.minForReveal}
+                />
+              </div>
             </>
           ) : isPlus ? (
             <>
@@ -1096,11 +1129,13 @@ export function ProfileTabs({
                 hasObserverData={hasObserverData}
                 observerCount={observerCount}
               />
-              <InvitationsTab
-                sentInvitations={sentInvitations}
-                receivedInvitations={receivedInvitations}
-                isPlus={isPlus}
-              />
+              <div id="invitations" className="scroll-mt-24">
+                <InvitationsTab
+                  sentInvitations={sentInvitations}
+                  receivedInvitations={receivedInvitations}
+                  isPlus={isPlus}
+                />
+              </div>
             </>
           ) : (
             <TabPaywall

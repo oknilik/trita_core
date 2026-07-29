@@ -115,7 +115,7 @@ export function ComparisonTab({
         </p>
         <div className="mt-4 flex justify-center">
           <Link
-            href="/profile/results?tab=invites"
+            href="/profile/results?tab=comparison#invitations"
             className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-[12px] font-semibold text-white transition hover:brightness-110"
           >
             {locale === "hu" ? "Observer meghívása" : "Invite observers"}

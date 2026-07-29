@@ -223,7 +223,7 @@ const TOPICS: HelpTopic[] = [
           en: "On the Invites tab of My Results you can create and send invite links. You can have up to 5 active invites at a time, and each link is valid for 30 days. Your peer does not need to register to fill it out.",
         },
         link: {
-          href: "/profile/results?tab=invites",
+          href: "/profile/results?tab=comparison#invitations",
           label: { hu: "Meghívók kezelése", en: "Manage invites" },
         },
         audiences: SIGNED_IN,

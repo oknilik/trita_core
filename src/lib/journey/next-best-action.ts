@@ -61,7 +61,7 @@ function actionHref(state: JourneyState, actionId: JourneyActionId): string {
       return "/profile/results";
     case "INVITE_OBSERVERS":
     case "MANAGE_OBSERVER_INVITES":
-      return "/profile/results?tab=invites";
+      return "/profile/results?tab=comparison#invitations";
     case "CREATE_TEAM":
       return "/onboarding?intent=team";
     case "JOIN_TEAM":

@@ -25,7 +25,7 @@ export async function handleObserverCompleted(params: {
     category: meta.category,
     priority: meta.defaultPriority,
     vars: { name: params.observerName },
-    link: "/profile/results",
+    link: "/profile/results?tab=comparison#observer-flow",
     sourceType: "observer_invitation",
     sourceId: params.invitationId,
     dedupeKey: `OBSERVER_COMPLETED:${params.invitationId}`,
@@ -238,7 +238,7 @@ export async function handleMeasurementStepOpened(params: {
       where: { userProfileId: params.userId, isSelfAssessment: true },
       select: { id: true },
     });
-    if (selfDone) link = "/profile/results?tab=comparison";
+    if (selfDone) link = "/profile/results?tab=comparison#observer-flow";
   }
   await persistNotificationBatch([
     {
@@ -469,7 +469,7 @@ export async function handleObserverInviteDecision(params: {
     category: meta.category,
     priority: meta.defaultPriority,
     vars: { targetLabel: params.targetLabel },
-    link: "/profile/results?tab=invites",
+    link: "/profile/results?tab=comparison#invitations",
     sourceType: "observer_invitation",
     sourceId: params.invitationId,
     dedupeKey: `${type}:${params.invitationId}`,

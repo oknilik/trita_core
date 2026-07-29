@@ -408,7 +408,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 </p>
               </div>
               <Link
-                href="/profile/results?tab=comparison"
+                href="/profile/results?tab=comparison#observer-flow"
                 className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-white transition hover:brightness-110"
               >
                 {observerGathering.sent < observerGathering.min

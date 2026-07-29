@@ -391,7 +391,7 @@ export default async function MyMeasurementsPage() {
                           <span className="shrink-0">
                             {observerGathering ? (
                               <Link
-                                href="/profile/results?tab=comparison"
+                                href="/profile/results?tab=comparison#observer-flow"
                                 className="inline-flex min-h-[36px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
                               >
                                 {observerGathering.sent < observerGathering.min
