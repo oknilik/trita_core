@@ -969,6 +969,7 @@ export const resultsTranslations = {
     statPending: { hu: "függőben", en: "pending" },
     statSent: { hu: "meghívó elküldve", en: "invitations sent" },
     infoNeeded: { hu: "Az összehasonlításhoz legalább 2 visszajelzés kell. A visszajelzések név nélkül jelennek meg — csak összesített átlagokat mutatunk.", en: "You need at least 2 responses for comparison. Feedback is anonymous — we only show aggregated averages." },
+    infoNeededN: { hu: "Az összehasonlításhoz legalább {min} visszajelzés kell. A visszajelzések név nélkül jelennek meg — csak összesített átlagokat mutatunk.", en: "You need at least {min} responses for comparison. Feedback is anonymous — we only show aggregated averages." },
     infoReady: { hu: "visszajelzés beérkezett — az összehasonlítás elérhető az Összehasonlítás tabon.", en: "responses received — comparison available on the Compare tab." },
     formTitle: { hu: "Új meghívó létrehozása", en: "Create new invitation" },
     formPlaceholder: { hu: "Email cím (opcionális)", en: "Email address (optional)" },

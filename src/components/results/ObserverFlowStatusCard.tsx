@@ -70,11 +70,11 @@ export function ObserverFlowStatusCard({
         <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
           {flow.activeCampaignName
             ? isHu
-              ? `A(z) „${flow.activeCampaignName}" kampányban kollégáid most adnak rólad visszajelzést.`
-              : `In the "${flow.activeCampaignName}" campaign your colleagues are giving feedback about you.`
+              ? `A(z) „${flow.activeCampaignName}" mérés keretében kérhetsz külső visszajelzést: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek — ők egy publikus linken, belépés nélkül töltenek ki rólad.`
+              : `As part of the "${flow.activeCampaignName}" measurement you can request outside feedback: use the invite manager below to ask colleagues or external partners — they fill it in about you via a public link, no login needed.`
             : isHu
-              ? "A szervezeted mérésében kollégáid most adnak rólad visszajelzést."
-              : "Your colleagues are giving feedback about you in your organization's campaign."}
+              ? "A szervezeted mérésében te kéred fel az értékelőidet: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek."
+              : "In your organization's measurement you choose your raters: use the invite manager below to ask colleagues or external partners."}
         </p>
         {/* Gyűjtő-narratíva (F3): kis küszöbnél nem absztrakt sáv, hanem
             látható helyek — a hiányzó slot maga a CTA. Nagy küszöbnél

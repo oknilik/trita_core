@@ -1057,11 +1057,11 @@ export function ProfileTabs({
         {activeTab === "comparison" && (
           // „Külső kép" (UX-audit #22): az összevetés ÉS a meghívó-kezelés egy
           // folyamat két fele — egy fülön. Org-tagnál az összevetés a kampány-
-          // küszöbig zárva: állapot-kártya (nem hiány-nyelv); a meghívó-blokk
-          // csak self-serve módban él (org-tagnál a kampány hozza az observert).
-          observerFlow &&
-          observerFlow.state !== "self_serve" &&
-          observerFlow.state !== "available" ? (
+          // küszöbig zárva: állapot-kártya (nem hiány-nyelv). FONTOS
+          // (2026-07-29 fix): a külső adat kampányban IS a user meghívóiból
+          // érkezik — futó observer-körnél a meghívó-kezelő ITT jelenik meg,
+          // enélkül a tag senkit sem tudna felkérni.
+          observerFlow && observerFlow.state === "locked" ? (
             <ObserverFlowStatusCard
               flow={{
                 state: observerFlow.state,
@@ -1071,6 +1071,24 @@ export function ProfileTabs({
               }}
               isHu={locale === "hu"}
             />
+          ) : observerFlow && observerFlow.state === "in_progress" ? (
+            <>
+              <ObserverFlowStatusCard
+                flow={{
+                  state: observerFlow.state,
+                  receivedCount: observerFlow.receivedCount,
+                  minForReveal: observerFlow.minForReveal,
+                  activeCampaignName: observerFlow.activeCampaignName,
+                }}
+                isHu={locale === "hu"}
+              />
+              <InvitationsTab
+                sentInvitations={sentInvitations}
+                receivedInvitations={receivedInvitations}
+                isPlus={isPlus}
+                minForReveal={observerFlow.minForReveal}
+              />
+            </>
           ) : isPlus ? (
             <>
               <ComparisonTabNew
@@ -1078,13 +1096,11 @@ export function ProfileTabs({
                 hasObserverData={hasObserverData}
                 observerCount={observerCount}
               />
-              {(!observerFlow || observerFlow.state === "self_serve") ? (
-                <InvitationsTab
-                  sentInvitations={sentInvitations}
-                  receivedInvitations={receivedInvitations}
-                  isPlus={isPlus}
-                />
-              ) : null}
+              <InvitationsTab
+                sentInvitations={sentInvitations}
+                receivedInvitations={receivedInvitations}
+                isPlus={isPlus}
+              />
             </>
           ) : (
             <TabPaywall

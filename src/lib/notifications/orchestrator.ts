@@ -191,6 +191,19 @@ export async function handleCampaignLaunched(params: {
 }) {
   const meta = NOTIFICATION_TYPE_META.CAMPAIGN_LAUNCHED;
   const recipients = await resolveOrgRecipients(params.orgId, "CAMPAIGN_LAUNCHED");
+  // Szerep-tudatos link (2026-07-29): a kampány-fül tanácsadói felület —
+  // a sima tag onnan redirectet kapna, őt a saját feladat-nézete várja.
+  const memberships = await prisma.organizationMember.findMany({
+    where: { orgId: params.orgId, userId: { in: recipients }, leftAt: null },
+    select: { userId: true, role: true },
+  });
+  const roleMap = new Map(memberships.map((m) => [m.userId, m.role]));
+  const linkFor = (userId: string) => {
+    const role = roleMap.get(userId) ?? "ORG_MEMBER";
+    return role === "ORG_MEMBER"
+      ? "/assessment/measurements"
+      : `/org/${params.orgId}?tab=campaigns`;
+  };
   await persistNotificationBatch(
     recipients.map((userId) => ({
       userId,
@@ -198,7 +211,7 @@ export async function handleCampaignLaunched(params: {
       category: meta.category,
       priority: meta.defaultPriority,
       vars: { campaignName: params.campaignName },
-      link: `/org/${params.orgId}?tab=campaigns`,
+      link: linkFor(userId),
       sourceType: "campaign" as const,
       sourceId: params.campaignId,
       dedupeKey: `CAMPAIGN_LAUNCHED:${params.campaignId}:${userId}`,
@@ -217,6 +230,16 @@ export async function handleMeasurementStepOpened(params: {
   // A kanonikus lépés→link térkép (campaign-steps-core) — így az új
   // lépés-típusok (TEAM_ROLE_360, TRUST_360) linkje sem marad le.
   const STEP_LINKS: Record<string, string> = CAMPAIGN_STEP_LINKS;
+  // OBSERVER_360: ha a self már kész, a teendő a MEGHÍVÓK küldése — a
+  // link ilyenkor a Külső kép fülre visz, nem az (üres) kitöltőre.
+  let link = STEP_LINKS[params.stepType] ?? "/dashboard";
+  if (params.stepType === "OBSERVER_360") {
+    const selfDone = await prisma.assessmentResult.findFirst({
+      where: { userProfileId: params.userId, isSelfAssessment: true },
+      select: { id: true },
+    });
+    if (selfDone) link = "/profile/results?tab=comparison";
+  }
   await persistNotificationBatch([
     {
       userId: params.userId,
@@ -224,7 +247,7 @@ export async function handleMeasurementStepOpened(params: {
       category: meta.category,
       priority: meta.defaultPriority,
       vars: { campaignName: params.campaignName },
-      link: STEP_LINKS[params.stepType] ?? "/dashboard",
+      link,
       sourceType: "campaign" as const,
       sourceId: params.campaignId,
       dedupeKey: `MEASUREMENT_STEP_OPENED:${params.campaignId}:${params.stepType}:${params.userId}`,

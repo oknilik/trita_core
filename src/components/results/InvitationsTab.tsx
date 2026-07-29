@@ -5,13 +5,16 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
 interface InvitationsTabProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   isPlus: boolean;
+  // Az összevetés-küszöb: self-serve 2, kampány-vezérelt (org) 3
+  // (OBSERVER_MIN_FOR_REVEAL) — az info-banner ehhez igazodik.
+  minForReveal?: number;
 }
 
 // ─── Clipboard helper ────────────────────────────────────────────────────────
@@ -68,6 +71,7 @@ export function InvitationsTab({
   sentInvitations,
   receivedInvitations,
   isPlus,
+  minForReveal = 2,
 }: InvitationsTabProps) {
   const { locale } = useLocale();
   const { showToast } = useToast();
@@ -272,12 +276,12 @@ export function InvitationsTab({
       {/* 3. Info banner */}
       <div className="flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/15 bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4">
         <span className="shrink-0 text-sm" style={{ color: "var(--color-action-primary-bg)" }}>
-          {completed.length >= 2 ? "✓" : "ℹ"}
+          {completed.length >= minForReveal ? "✓" : "ℹ"}
         </span>
         <p className="text-xs leading-relaxed" style={{ color: "var(--color-accent-self-deep)" }}>
-          {completed.length >= 2
+          {completed.length >= minForReveal
             ? `${completed.length} ${t("invitations.infoReady", locale)}`
-            : t("invitations.infoNeeded", locale)}
+            : tf("invitations.infoNeededN", locale, { min: minForReveal })}
         </p>
       </div>
 
