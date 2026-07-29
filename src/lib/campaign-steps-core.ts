@@ -83,6 +83,45 @@ export function isStepGateOpen(
 }
 
 /**
+ * Lépés-teljesítés egy résztvevőnél: túlhaladt rajta (currentStep) VAGY
+ * lekönyvelt teljesítés (stepCompletions) VAGY — legacy OBSERVER_360
+ * kampányoknál, ahol a léptetés még nem futott — kész (fresh-tudatosan
+ * szűrt) self-eredmény. A hasFreshSelfResult-ot a hívó számolja:
+ * újrafelvételi körben (requireFreshResults) csak az aktiválás utáni
+ * self-eredményre lehet igaz.
+ */
+export function isCampaignStepDone(
+  steps: string[],
+  idx: number,
+  participant: { currentStep: number; stepCompletions?: unknown },
+  hasFreshSelfResult: boolean,
+): boolean {
+  const stepType = steps[idx];
+  if (!stepType) return false;
+  const sc = participant.stepCompletions;
+  const completions =
+    sc && typeof sc === "object" && !Array.isArray(sc)
+      ? (sc as Record<string, unknown>)
+      : {};
+  return (
+    participant.currentStep > idx ||
+    Boolean(completions[stepType]) ||
+    (stepType === "OBSERVER_360" && hasFreshSelfResult)
+  );
+}
+
+/** Hány lépést teljesített a résztvevő a kampány lépéseiből. */
+export function countCampaignStepsDone(
+  steps: string[],
+  participant: { currentStep: number; stepCompletions?: unknown },
+  hasFreshSelfResult: boolean,
+): number {
+  return steps.filter((_, idx) =>
+    isCampaignStepDone(steps, idx, participant, hasFreshSelfResult),
+  ).length;
+}
+
+/**
  * Igaz, ha a résztvevő aktuális lépése a megadott típus ÉS az ütemezési
  * kapu nyitva van (a hívó felelőssége a nextStepOpensAt select-elése —
  * enélkül a kapu mindig nyitottnak számít).

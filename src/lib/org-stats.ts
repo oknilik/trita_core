@@ -1,11 +1,17 @@
 import { prisma } from "./prisma";
+import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
 
 export interface ParticipantStat {
   userId: string;
   username: string | null;
   email: string | null;
+  // Fresh-tudatos: újrafelvételi körben (requireFreshResults) csak az
+  // aktiválás UTÁNI self-eredmény / observer-kitöltés számít.
   selfDone: boolean;
   observerCount: number;
+  // Kampány-lépés haladás: hány lépést teljesített / mind kész-e.
+  stepsDone: number;
+  doneAll: boolean;
 }
 
 export interface CampaignWithStats {
@@ -21,6 +27,11 @@ export interface CampaignWithStats {
   selfDoneCount: number;
   observerDoneCount: number;
   totalCount: number;
+  // A kampány effektív mérés-lépései + lépésenkénti kész-számok.
+  steps: string[];
+  stepProgress: { type: string; done: number }[];
+  fullyDoneCount: number;
+  hasObserverStep: boolean;
 }
 
 export interface SerializedMember {
@@ -53,6 +64,8 @@ export interface OrgPageData {
   teamCount: number;
   activeCampaignCount: number;
   closedCampaignCount: number;
+  // Aktív kampányok „kész" résztvevői — MINDEN kampány-lépést teljesítők
+  // (2026-07-29 előtt tévesen a self-teszt kitöltöttsége volt).
   activeSelfDone: number;
   activeTotalParticipants: number;
   completedMemberCount: number;
@@ -68,13 +81,18 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       name: true,
       description: true,
       status: true,
+      type: true,
+      steps: true,
       requireFreshResults: true,
+      activatedAt: true,
       createdAt: true,
       closedAt: true,
       creator: { select: { username: true } },
       participants: {
         select: {
           userId: true,
+          currentStep: true,
+          stepCompletions: true,
           user: { select: { username: true, email: true } },
         },
       },
@@ -93,18 +111,22 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     new Set(rawCampaigns.flatMap((c) => c.participants.map((p) => p.userId)))
   );
 
-  // Fetch self-assessment completion for all participant userIds
+  // Fetch self-assessment completion for all participant userIds.
+  // A legutóbbi eredmény dátumát is visszük: újrafelvételi körnél
+  // (requireFreshResults) csak az aktiválás utáni beadás számít késznek.
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: allParticipantUserIds },
       isSelfAssessment: true,
     },
-    select: { userProfileId: true },
+    orderBy: { createdAt: "desc" },
+    select: { userProfileId: true, createdAt: true },
     distinct: ["userProfileId"],
   });
-  const selfDoneSet = new Set(
-    selfDoneResults.map((r) => r.userProfileId).filter(Boolean) as string[]
-  );
+  const selfLatestMap = new Map<string, Date>();
+  for (const r of selfDoneResults) {
+    if (r.userProfileId) selfLatestMap.set(r.userProfileId, r.createdAt);
+  }
 
   // Fetch completed observer invitations for all participant userIds
   const observerResults = await prisma.observerInvitation.findMany({
@@ -112,25 +134,58 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       inviterId: { in: allParticipantUserIds },
       status: "COMPLETED",
     },
-    select: { inviterId: true },
+    select: { inviterId: true, completedAt: true },
   });
-  const observerCountMap = new Map<string, number>();
+  const observerCompletionsMap = new Map<string, Date[]>();
   for (const inv of observerResults) {
-    observerCountMap.set(inv.inviterId, (observerCountMap.get(inv.inviterId) ?? 0) + 1);
+    const list = observerCompletionsMap.get(inv.inviterId) ?? [];
+    list.push(inv.completedAt ?? new Date(0));
+    observerCompletionsMap.set(inv.inviterId, list);
   }
 
   // Build CampaignWithStats
   const campaigns: CampaignWithStats[] = rawCampaigns.map((c) => {
-    const participants: ParticipantStat[] = c.participants.map((p) => ({
-      userId: p.userId,
-      username: p.user.username ?? null,
-      email: p.user.email ?? null,
-      selfDone: selfDoneSet.has(p.userId),
-      observerCount: observerCountMap.get(p.userId) ?? 0,
-    }));
+    const steps = getCampaignSteps(c);
+    const hasObserverStep = steps.includes("OBSERVER_360");
+    // Fresh-kapu: aktiválás előtti eredmény nem számít az újrafelvételi körben.
+    const freshFrom =
+      c.requireFreshResults && c.activatedAt ? c.activatedAt.getTime() : null;
+
+    const stepDoneCounts = steps.map(() => 0);
+    const participants: ParticipantStat[] = c.participants.map((p) => {
+      const latestSelf = selfLatestMap.get(p.userId);
+      const selfDone = Boolean(
+        latestSelf && (freshFrom === null || latestSelf.getTime() >= freshFrom),
+      );
+      const observerCount = (observerCompletionsMap.get(p.userId) ?? []).filter(
+        (d) => freshFrom === null || d.getTime() >= freshFrom,
+      ).length;
+      // Lépés kész: közös helper (campaign-steps-core) — fresh-tudatos
+      // selfDone-nal a legacy OBSERVER_360 fallback is helyes.
+      let stepsDone = 0;
+      steps.forEach((_stepType, idx) => {
+        if (isCampaignStepDone(steps, idx, p, selfDone)) {
+          stepsDone += 1;
+          stepDoneCounts[idx] += 1;
+        }
+      });
+      return {
+        userId: p.userId,
+        username: p.user.username ?? null,
+        email: p.user.email ?? null,
+        selfDone,
+        observerCount,
+        stepsDone,
+        doneAll: stepsDone >= steps.length,
+      };
+    });
 
     const selfDoneCount = participants.filter((p) => p.selfDone).length;
     const observerDoneCount = participants.filter((p) => p.observerCount > 0).length;
+    const stepProgress = steps.map((stepType, idx) => ({
+      type: stepType,
+      done: stepDoneCounts[idx],
+    }));
 
     return {
       id: c.id,
@@ -145,6 +200,10 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       selfDoneCount,
       observerDoneCount,
       totalCount: participants.length,
+      steps,
+      stepProgress,
+      fullyDoneCount: participants.filter((p) => p.doneAll).length,
+      hasObserverStep,
     };
   });
 
@@ -194,7 +253,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   const activeCampaigns = campaigns.filter((c) => c.status === "ACTIVE");
   const closedCampaigns = campaigns.filter((c) => c.status === "CLOSED");
 
-  const activeSelfDone = activeCampaigns.reduce((sum, c) => sum + c.selfDoneCount, 0);
+  const activeSelfDone = activeCampaigns.reduce((sum, c) => sum + c.fullyDoneCount, 0);
   const activeTotalParticipants = activeCampaigns.reduce((sum, c) => sum + c.totalCount, 0);
 
   return {

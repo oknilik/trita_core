@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageMeasurements } from "@/lib/measurement-auth";
+import { countCampaignStepsDone, getCampaignSteps } from "@/lib/campaign-steps-core";
 
 // POST /api/org/[id]/campaigns/[campaignId]/remind
 // Counts participants who have not completed a self-assessment.
@@ -43,7 +44,13 @@ export async function POST(
     select: {
       id: true,
       status: true,
-      participants: { select: { userId: true } },
+      type: true,
+      steps: true,
+      requireFreshResults: true,
+      activatedAt: true,
+      participants: {
+        select: { userId: true, currentStep: true, stepCompletions: true },
+      },
     },
   });
   if (!campaign) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
@@ -57,11 +64,16 @@ export async function POST(
     return NextResponse.json({ ok: true, remindedCount: 0 });
   }
 
-  // Fetch participants who have completed a self-assessment
+  // Lépés-tudatos „nem kezdte" számítás (2026-07-29): a kampány SAJÁT
+  // lépéseiből semmit sem teljesítők — nem a self-teszt kitöltetlensége.
+  // Újrafelvételi körben csak az aktiválás utáni self-eredmény számít.
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
+      ...(campaign.requireFreshResults && campaign.activatedAt
+        ? { createdAt: { gte: campaign.activatedAt } }
+        : {}),
     },
     select: { userProfileId: true },
     distinct: ["userProfileId"],
@@ -71,7 +83,10 @@ export async function POST(
     selfDoneResults.map((r) => r.userProfileId).filter(Boolean) as string[]
   );
 
-  const notStartedCount = participantUserIds.filter((id) => !selfDoneSet.has(id)).length;
+  const steps = getCampaignSteps(campaign);
+  const notStartedCount = campaign.participants.filter(
+    (p) => countCampaignStepsDone(steps, p, selfDoneSet.has(p.userId)) === 0,
+  ).length;
 
   // In a real implementation, you would send reminder emails here.
   // For now we just count and return.

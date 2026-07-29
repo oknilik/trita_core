@@ -566,6 +566,7 @@ export const orgTranslations = {
       activeCampaignSingle: { hu: "Aktív mérés: {name}", en: "Active measurement: {name}" },
       activeCampaignMultiple: { hu: "{count} aktív mérés folyamatban", en: "{count} active measurements in progress" },
       selfAssessmentsDone: { hu: "önértékelés kész", en: "self-assessments done" },
+      participantsAllStepsDone: { hu: "résztvevő végzett minden lépéssel", en: "participants finished all steps" },
       campaignsLink: { hu: "Mérések →", en: "Measurements →" },
       profileEyebrow: { hu: "// szervezeti profil", en: "// org profile" },
       profileTitle: { hu: "Szervezeti személyiség", en: "Org personality" },

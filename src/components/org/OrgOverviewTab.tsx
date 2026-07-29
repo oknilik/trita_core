@@ -108,8 +108,8 @@ export function OrgOverviewTab({
                 </p>
                 {activeCampaigns.length === 1 && (
                   <p className="mt-0.5 text-xs text-emerald-700">
-                    {activeCampaigns[0].selfDoneCount}/{activeCampaigns[0].totalCount}{" "}
-                    {t("org.overview.selfAssessmentsDone", loc)}
+                    {activeCampaigns[0].fullyDoneCount}/{activeCampaigns[0].totalCount}{" "}
+                    {t("org.overview.participantsAllStepsDone", loc)}
                   </p>
                 )}
               </div>

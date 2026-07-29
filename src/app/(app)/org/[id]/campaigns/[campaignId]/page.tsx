@@ -25,7 +25,12 @@ import {
   PSYCH_SAFETY_MIN_RESPONSES,
   aggregatePsychSafety,
 } from "@/lib/psych-safety";
-import { CAMPAIGN_STEP_LABELS, isCampaignStepType } from "@/lib/campaign-steps-core";
+import {
+  CAMPAIGN_STEP_LABELS,
+  countCampaignStepsDone,
+  isCampaignStepDone,
+  isCampaignStepType,
+} from "@/lib/campaign-steps-core";
 
 export const dynamic = "force-dynamic";
 
@@ -163,6 +168,8 @@ export default async function CampaignDetailPage({
         steps: true,
         teamId: true,
         stepIntervalHours: true,
+        requireFreshResults: true,
+        activatedAt: true,
         createdAt: true,
         closedAt: true,
         creator: { select: { username: true } },
@@ -238,7 +245,13 @@ export default async function CampaignDetailPage({
   // Több-lépéses kampány: effektív lépések + pulse-jelenlét.
   const campaignSteps =
     campaign.steps.length > 0 ? campaign.steps : [campaign.type];
-  const isMultiStep = campaignSteps.length > 1;
+  // Lépés-haladás szekció: minden kampánynál, kivéve ahol redundáns lenne
+  // (egy-lépéses observer → summary-kártyák; egy-lépéses pulse → pulse-blokk).
+  const showStepSection =
+    campaignSteps.length > 1 ||
+    (campaignSteps.length === 1 &&
+      campaignSteps[0] !== "OBSERVER_360" &&
+      campaignSteps[0] !== "PSYCH_SAFETY");
   const hasPsychStep = campaignSteps.includes("PSYCH_SAFETY");
   // Csak-pulse kampánynál a self/observer statok nem értelmezettek.
   const isPsychOnly = campaignSteps.length === 1 && campaignSteps[0] === "PSYCH_SAFETY";
@@ -256,11 +269,22 @@ export default async function CampaignDetailPage({
       )
     : null;
 
-  // Self-assessment completion
+  // A self/observer statok csak akkor értelmezettek, ha a kampányban van
+  // OBSERVER_360 lépés — más mérésnél (szerep, bizalom, pulse) a lépés-
+  // haladás a mérvadó, a személyiség-teszt kitöltöttsége nem ide tartozik.
+  const hasObserverStep = campaignSteps.includes("OBSERVER_360");
+  // Újrafelvételi kör: csak az aktiválás UTÁNI kitöltés számít késznek.
+  const freshFrom =
+    campaign.requireFreshResults && campaign.activatedAt
+      ? campaign.activatedAt
+      : null;
+
+  // Self-assessment completion (fresh-tudatos)
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
+      ...(freshFrom ? { createdAt: { gte: freshFrom } } : {}),
     },
     select: { userProfileId: true, scores: true },
     distinct: ["userProfileId"],
@@ -269,11 +293,12 @@ export default async function CampaignDetailPage({
     selfDoneResults.map((r) => r.userProfileId).filter(Boolean) as string[]
   );
 
-  // Observer completion
+  // Observer completion (fresh-tudatos)
   const observerResults = await prisma.observerInvitation.findMany({
     where: {
       inviterId: { in: participantUserIds },
       status: "COMPLETED",
+      ...(freshFrom ? { completedAt: { gte: freshFrom } } : {}),
     },
     select: { inviterId: true },
   });
@@ -282,20 +307,31 @@ export default async function CampaignDetailPage({
     observerCountMap.set(inv.inviterId, (observerCountMap.get(inv.inviterId) ?? 0) + 1);
   }
 
+  // Lépés-teljesítés: közös helper (campaign-steps-core) — a selfDoneSet
+  // már fresh-tudatos, így a legacy OBSERVER_360 fallback is az.
+  const isStepDoneFor = (
+    p: (typeof campaign.participants)[number],
+    idx: number,
+  ): boolean => isCampaignStepDone(campaignSteps, idx, p, selfDoneSet.has(p.userId));
+  const stepsDoneFor = (p: (typeof campaign.participants)[number]): number =>
+    countCampaignStepsDone(campaignSteps, p, selfDoneSet.has(p.userId));
+
   // Derived stats
   const selfDoneCount = participantUserIds.filter((id) => selfDoneSet.has(id)).length;
   const observerDoneCount = participantUserIds.filter(
     (id) => (observerCountMap.get(id) ?? 0) > 0
   ).length;
-  const fullyDoneCount = participantUserIds.filter(
+  const observerFullyDoneCount = participantUserIds.filter(
     (id) => selfDoneSet.has(id) && (observerCountMap.get(id) ?? 0) > 0
   ).length;
   const totalCount = participantUserIds.length;
+  // Kampány-kész: aki a kampány MINDEN lépésével végzett.
+  const fullyDoneCount = campaign.participants.filter(
+    (p) => stepsDoneFor(p) >= campaignSteps.length,
+  ).length;
 
   const completionPct =
-    totalCount > 0
-      ? Math.round(((isPsychOnly ? psCompletedCount : selfDoneCount) / totalCount) * 100)
-      : 0;
+    totalCount > 0 ? Math.round((fullyDoneCount / totalCount) * 100) : 0;
 
   // For CLOSED: compute TRITAN averages + previous campaign comparison
   let currentAvgScores: Record<string, number> | null = null;
@@ -396,6 +432,11 @@ export default async function CampaignDetailPage({
             <StatusChip variant={statusBadgeVariant(campaign.status)}>
               {statusLabel(campaign.status, locale)}
             </StatusChip>
+            {campaign.requireFreshResults && (
+              <StatusChip variant="info">
+                {t("org.card.freshRound", locale)}
+              </StatusChip>
+            )}
             <span className="text-xs text-ink-body/50">
               {t("org.campaign.createdAt", locale)}{" "}
               {campaign.createdAt.toLocaleDateString(dateLocale)}
@@ -420,8 +461,8 @@ export default async function CampaignDetailPage({
           </div>
         </div>
 
-        {/* Több-lépéses kampány: lépésenkénti haladás */}
-        {isMultiStep && totalCount > 0 && (
+        {/* Lépésenkénti haladás — a kampány SAJÁT mérései */}
+        {showStepSection && totalCount > 0 && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "Mérés-lépések" : "Measurement steps"}
@@ -438,15 +479,9 @@ export default async function CampaignDetailPage({
                     ? CAMPAIGN_STEP_LABELS[stepType].hu
                     : CAMPAIGN_STEP_LABELS[stepType].en
                   : stepType;
-                const doneCount = campaign.participants.filter((p) => {
-                  const sc = p.stepCompletions;
-                  return (
-                    sc &&
-                    typeof sc === "object" &&
-                    !Array.isArray(sc) &&
-                    Boolean((sc as Record<string, unknown>)[stepType])
-                  );
-                }).length;
+                const doneCount = campaign.participants.filter((p) =>
+                  isStepDoneFor(p, idx),
+                ).length;
                 const hereCount = campaign.participants.filter(
                   (p) => p.currentStep === idx,
                 ).length;
@@ -478,8 +513,9 @@ export default async function CampaignDetailPage({
           </section>
         )}
 
-        {/* Summary stat cards */}
-        {!isPsychOnly && totalCount > 0 && (
+        {/* Self/observer statok — CSAK observer-lépéses kampánynál (más
+            mérésnél a lépés-haladás a mérvadó, a személyiség-teszt nem). */}
+        {hasObserverStep && totalCount > 0 && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {/* Self-assessment */}
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
@@ -542,13 +578,13 @@ export default async function CampaignDetailPage({
                 {t("org.campaign.fullyComplete", locale)}
               </p>
               <p className="mt-1 font-fraunces text-3xl text-ink">
-                {fullyDoneCount}
+                {observerFullyDoneCount}
                 <span className="ml-1 font-sans text-sm font-normal text-muted">
                   / {totalCount}
                 </span>
               </p>
               <p className="mt-1 text-xs text-ink-body">
-                {Math.round((fullyDoneCount / totalCount) * 100)}%{" "}
+                {Math.round((observerFullyDoneCount / totalCount) * 100)}%{" "}
                 {t("org.campaign.bothDone", locale)}
               </p>
             </div>
@@ -714,9 +750,20 @@ export default async function CampaignDetailPage({
           ) : (
             <div className="flex flex-col divide-y divide-sand">
               {campaign.participants.map((p) => {
-                const isSelfDone = selfDoneSet.has(p.userId);
                 const obsCount = observerCountMap.get(p.userId) ?? 0;
-                const isFullyDone = isSelfDone && obsCount > 0;
+                // Lépés-alapú állapot: hol tart a KAMPÁNY lépéseiben —
+                // nem a személyiség-teszt kitöltöttségében.
+                const stepsDone = stepsDoneFor(p);
+                const isAllDone = stepsDone >= campaignSteps.length;
+                const currentType = campaignSteps.find(
+                  (_, idx) => !isStepDoneFor(p, idx),
+                );
+                const currentLabel =
+                  currentType && isCampaignStepType(currentType)
+                    ? isHu
+                      ? CAMPAIGN_STEP_LABELS[currentType].hu
+                      : CAMPAIGN_STEP_LABELS[currentType].en
+                    : currentType;
 
                 return (
                   <div key={p.id} className="flex items-center justify-between gap-3 py-3">
@@ -729,20 +776,25 @@ export default async function CampaignDetailPage({
                       )}
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      {isPsychOnly ? null : isFullyDone ? (
+                      {isPsychOnly ? null : isAllDone ? (
                         <StatusChip variant="success">
                           {t("org.campaign.participantDone", locale)}
                         </StatusChip>
-                      ) : isSelfDone ? (
+                      ) : stepsDone > 0 ? (
                         <StatusChip variant="info">
-                          {t("org.campaign.participantSelfDone", locale)}
+                          {stepsDone}/{campaignSteps.length} {isHu ? "lépés" : "steps"}
                         </StatusChip>
                       ) : (
                         <StatusChip variant="neutral">
                           {t("org.campaign.participantNotStarted", locale)}
                         </StatusChip>
                       )}
-                      {!isPsychOnly && obsCount > 0 && (
+                      {!isPsychOnly && !isAllDone && currentLabel && (
+                        <span className="hidden text-xs text-muted md:inline">
+                          {isHu ? "most:" : "now:"} {currentLabel}
+                        </span>
+                      )}
+                      {hasObserverStep && obsCount > 0 && (
                         <span className="text-xs text-muted">
                           {obsCount} obs.
                         </span>

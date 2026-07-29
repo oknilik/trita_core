@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
+import { CAMPAIGN_STEP_LABELS, isCampaignStepType } from "@/lib/campaign-steps-core";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 
 interface CampaignCardProps {
@@ -65,11 +66,11 @@ export function CampaignCard({
   const [reminding, setReminding] = useState(false);
   const [remindResult, setRemindResult] = useState<string | null>(null);
 
-  const fullyDoneCount = campaign.participants.filter(
-    (p) => p.selfDone && p.observerCount > 0
-  ).length;
+  // Lépés-alapú haladás (2026-07-29): a kártya a kampány SAJÁT lépéseinek
+  // teljesítését mutatja — nem a személyiség-teszt kitöltöttségét.
+  const fullyDoneCount = campaign.fullyDoneCount;
   const notStartedCount = campaign.participants.filter(
-    (p) => !p.selfDone
+    (p) => p.stepsDone === 0
   ).length;
 
   const dateStr = new Date(campaign.createdAt).toLocaleDateString(
@@ -112,7 +113,7 @@ export function CampaignCard({
   if (variant === "closed") {
     const completionPct =
       campaign.totalCount > 0
-        ? Math.round((campaign.selfDoneCount / campaign.totalCount) * 100)
+        ? Math.round((campaign.fullyDoneCount / campaign.totalCount) * 100)
         : 0;
     return (
       <div className="flex items-center justify-between gap-3 py-3 border-b border-sand last:border-0">
@@ -183,8 +184,16 @@ export function CampaignCard({
   // ACTIVE VARIANT — full card
   // ──────────────────────────────────────────────────────────────────────────
   const inProgressCount = campaign.participants.filter(
-    (p) => p.selfDone && p.observerCount === 0
+    (p) => p.stepsDone > 0 && !p.doneAll
   ).length;
+  const stepColors = [
+    "var(--color-action-primary-bg)",
+    "#059669",
+    "var(--color-visual-gradient-indigo)",
+    "#d8a253",
+    "#06B6D4",
+    "var(--color-visual-gradient-violet)",
+  ];
 
   return (
     <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
@@ -257,24 +266,29 @@ export function CampaignCard({
               {isHu ? "Részletek lépésenként" : "Step-by-step detail"}
             </summary>
             <div className="mt-3 flex flex-col gap-2.5">
-              <ProgressBar
-                label={t("org.card.selfDone", loc)}
-                count={campaign.selfDoneCount}
-                total={campaign.totalCount}
-                fillColor="var(--color-action-primary-bg)"
-              />
-              <ProgressBar
-                label={t("org.card.observerDone", loc)}
-                count={campaign.observerDoneCount}
-                total={campaign.totalCount}
-                fillColor="#059669"
-              />
-              <ProgressBar
-                label={t("org.card.fullyComplete", loc)}
-                count={fullyDoneCount}
-                total={campaign.totalCount}
-                fillColor="var(--color-visual-gradient-indigo)"
-              />
+              {/* A kampány saját lépései — mindegyik a maga kitöltöttségével */}
+              {campaign.stepProgress.map((step, idx) => (
+                <ProgressBar
+                  key={step.type}
+                  label={
+                    isCampaignStepType(step.type)
+                      ? CAMPAIGN_STEP_LABELS[step.type][isHu ? "hu" : "en"]
+                      : step.type
+                  }
+                  count={step.done}
+                  total={campaign.totalCount}
+                  fillColor={stepColors[idx % stepColors.length]}
+                />
+              ))}
+              {/* Külső visszajelzés csak observer-lépéses kampánynál értelmes */}
+              {campaign.hasObserverStep && (
+                <ProgressBar
+                  label={t("org.card.observerDone", loc)}
+                  count={campaign.observerDoneCount}
+                  total={campaign.totalCount}
+                  fillColor="#059669"
+                />
+              )}
               {campaign.participants.length > 0 && (
                 <div className="mt-1 flex -space-x-1.5">
                   {campaign.participants.slice(0, 6).map((p) => (
@@ -283,7 +297,7 @@ export function CampaignCard({
                       title={p.username ?? p.email ?? "?"}
                       className={[
                         "inline-block h-8 w-8 rounded-full border-2 overflow-hidden",
-                        p.selfDone ? "border-emerald-200" : "border-white",
+                        p.doneAll ? "border-emerald-200" : "border-white",
                       ].join(" ")}
                     >
                       <span className="flex h-full w-full items-center justify-center bg-sand text-micro font-bold text-ink-body">
