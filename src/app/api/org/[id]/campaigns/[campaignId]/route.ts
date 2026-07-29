@@ -47,7 +47,7 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
-      select: { id: true, orgId: true, status: true, type: true, teamId: true, steps: true },
+      select: { id: true, orgId: true, status: true, type: true, teamId: true, steps: true, activatedAt: true },
     }),
   ]);
 
@@ -202,6 +202,10 @@ export async function PATCH(
     data: {
       status: body.data.status,
       ...(body.data.status === "CLOSED" ? { closedAt: new Date() } : {}),
+      // A fresh-ellenőrzés referencia-pontja; az első aktiválás számít.
+      ...(body.data.status === "ACTIVE" && !ctx.campaign.activatedAt
+        ? { activatedAt: new Date() }
+        : {}),
     },
     select: { id: true, name: true, status: true, closedAt: true },
   });

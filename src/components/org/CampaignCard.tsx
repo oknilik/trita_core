@@ -151,6 +151,11 @@ export function CampaignCard({
               <StatusChip variant="warning">
                 {t("org.card.draft", loc)}
               </StatusChip>
+              {campaign.requireFreshResults && (
+                <StatusChip variant="info">
+                  {t("org.card.freshRound", loc)}
+                </StatusChip>
+              )}
             </div>
             <p className="font-semibold text-ink text-sm">{campaign.name}</p>
             {campaign.description && (
@@ -191,6 +196,11 @@ export function CampaignCard({
             <StatusChip variant="success">
               {t("org.card.active", loc)}
             </StatusChip>
+            {campaign.requireFreshResults && (
+              <StatusChip variant="info">
+                {t("org.card.freshRound", loc)}
+              </StatusChip>
+            )}
           </div>
           <Link
             href={`/org/${orgId}/campaigns/${campaign.id}`}

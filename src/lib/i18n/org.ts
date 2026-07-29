@@ -628,6 +628,7 @@ export const orgTranslations = {
     // ── Campaign card ────────────────────────────────────────────────────
     card: {
       closed: { hu: "Lezárt", en: "Closed" },
+      freshRound: { hu: "Újrafelvételi kör", en: "Re-measurement round" },
       complete: { hu: "teljes", en: "complete" },
       summaryLink: { hu: "Összesítő →", en: "Summary →" },
       draft: { hu: "Vázlat", en: "Draft" },
@@ -1165,6 +1166,11 @@ export const orgTranslations = {
     typePeerFbOut: {
       hu: "Kimenet: nevesített köszönetek + fejlesztő javaslatok (anonim-aggregált opcióval)",
       en: "Output: named kudos + development suggestions (with anonymous-aggregated option)",
+    },
+    freshLabel: { hu: "Újrafelvételi kör.", en: "Re-measurement round." },
+    freshHint: {
+      hu: "A korábbi eredmények ebben a körben nem számítanak — minden résztvevő újra kitölti a kérdőíveket. A régi eredmények megmaradnak, a kör a későbbi összehasonlítás alapja.",
+      en: "Previous results don't count in this round — every participant fills in the questionnaires again. Old results are kept; the round becomes the basis for later comparison.",
     },
     peerFbAnonLabel: { hu: "Anonim-aggregált javaslatok.", en: "Anonymous, aggregated suggestions." },
     peerFbAnonHint: {

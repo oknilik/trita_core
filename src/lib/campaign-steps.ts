@@ -162,6 +162,11 @@ export async function releaseDueCampaignSteps(options?: {
  * termékben egyszeri) — így nem ragad be az első lépésnél. Minden más
  * lépést a kampány alatt kell teljesíteni.
  *
+ * Újrafelvételi kör (requireFreshResults): a fast-forward CSAK az
+ * aktiválás után beadott self-eredményt fogadja el — mindenki újra kitölt.
+ * (Az advanceCampaignStepForUser-nek nem kell külön ellenőrzés: azt mindig
+ * egy épp most beadott eredmény hívja, ami definíció szerint friss.)
+ *
  * A végén minden érintett résztvevő értesítést kap az aktuálisan
  * megnyílt lépéséről.
  */
@@ -177,6 +182,8 @@ export async function initializeCampaignProgress(
       type: true,
       steps: true,
       status: true,
+      requireFreshResults: true,
+      activatedAt: true,
       participants: {
         where: onlyUserIds ? { userId: { in: onlyUserIds } } : undefined,
         select: { id: true, userId: true, currentStep: true, stepCompletions: true },
@@ -189,9 +196,16 @@ export async function initializeCampaignProgress(
   if (steps.length === 0 || campaign.participants.length === 0) return;
 
   // Kinek van már kész self-eredménye? (OBSERVER_360 fast-forwardhoz)
+  // Újrafelvételi körben csak az aktiválás utáni eredmény számít.
   const userIds = campaign.participants.map((p) => p.userId);
   const selfDone = await prisma.assessmentResult.findMany({
-    where: { userProfileId: { in: userIds }, isSelfAssessment: true },
+    where: {
+      userProfileId: { in: userIds },
+      isSelfAssessment: true,
+      ...(campaign.requireFreshResults && campaign.activatedAt
+        ? { createdAt: { gte: campaign.activatedAt } }
+        : {}),
+    },
     select: { userProfileId: true },
     distinct: ["userProfileId"],
   });

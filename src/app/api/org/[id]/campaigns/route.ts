@@ -20,6 +20,7 @@ const createSchema = z.object({
   allowExternalObservers: z.boolean().optional().default(false),
   stepIntervalHours: z.number().int().min(0).max(168).optional().default(24),
   peerFeedbackAnonymous: z.boolean().optional().default(false),
+  requireFreshResults: z.boolean().optional().default(false),
 });
 
 // GET /api/org/[id]/campaigns — list org campaigns
@@ -151,6 +152,7 @@ export async function POST(
       allowExternalObservers: body.data.allowExternalObservers,
       stepIntervalHours: body.data.stepIntervalHours,
       peerFeedbackAnonymous: body.data.peerFeedbackAnonymous,
+      requireFreshResults: body.data.requireFreshResults,
       createdBy: profile.id,
     },
     select: {

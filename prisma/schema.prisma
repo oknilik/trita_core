@@ -538,6 +538,12 @@ model Campaign {
   // Peer feedback lépés módja: true = a feedforward-elemek anonim-aggregáltan
   // jelennek meg a címzettnél (n>=3 küszöbbel); false = nevesített.
   peerFeedbackAnonymous Boolean @default(false)
+  // Újrafelvételi kör: true → a lépés csak az aktiválás UTÁN beadott
+  // eredménnyel teljesül (nincs fast-forward korábbi eredményből).
+  // Terv: docs/product/ujrafuttatas-korok-terv.md 1.2.
+  requireFreshResults Boolean @default(false)
+  // A DRAFT→ACTIVE váltás időpontja (a fresh-ellenőrzés referencia-pontja).
+  activatedAt DateTime?
   status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
   createdBy   String
   createdAt   DateTime  @default(now())

@@ -132,6 +132,7 @@ export function CampaignWizard({
   const [allowExternalObservers, setAllowExternalObservers] = useState(false);
   // Peer feedback kör: a feedforward-elemek anonim-aggregált módban menjenek-e.
   const [peerFeedbackAnonymous, setPeerFeedbackAnonymous] = useState(false);
+  const [requireFreshResults, setRequireFreshResults] = useState(false);
   // Lépés-ütem: a teljesített kérdőív után hány órával nyílik a következő.
   const [stepIntervalHours, setStepIntervalHours] = useState(24);
   // Azonnali aktiválás a létrehozás után (DRAFT→ACTIVE visszafordíthatatlan!)
@@ -243,6 +244,7 @@ export function CampaignWizard({
             teamId: targetTeamId ?? undefined,
             allowExternalObservers,
             stepIntervalHours,
+            requireFreshResults,
           }),
         });
         if (!createRes.ok) {
@@ -533,6 +535,20 @@ export function CampaignWizard({
                 </div>
               </div>
             ) : null}
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
+              <input
+                type="checkbox"
+                checked={requireFreshResults}
+                onChange={(e) => setRequireFreshResults(e.target.checked)}
+                className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
+              />
+              <span className="text-caption leading-relaxed text-ink-body">
+                <span className="font-semibold text-ink">
+                  {t("campaignWiz.freshLabel", locale)}
+                </span>{" "}
+                {t("campaignWiz.freshHint", locale)}
+              </span>
+            </label>
             {chosenSteps.includes("PEER_FEEDBACK") ? (
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
                 <input

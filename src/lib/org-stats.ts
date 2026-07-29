@@ -13,6 +13,7 @@ export interface CampaignWithStats {
   name: string;
   description: string | null;
   status: string;
+  requireFreshResults: boolean;
   createdAt: string;
   closedAt: string | null;
   creator: { username: string | null };
@@ -67,6 +68,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       name: true,
       description: true,
       status: true,
+      requireFreshResults: true,
       createdAt: true,
       closedAt: true,
       creator: { select: { username: true } },
@@ -135,6 +137,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       name: c.name,
       description: c.description ?? null,
       status: c.status,
+      requireFreshResults: c.requireFreshResults,
       createdAt: c.createdAt.toISOString(),
       closedAt: c.closedAt?.toISOString() ?? null,
       creator: { username: c.creator.username ?? null },
