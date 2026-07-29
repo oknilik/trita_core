@@ -20,6 +20,7 @@ import {
   releaseDueCampaignSteps,
 } from "@/lib/campaign-steps";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
+import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 
@@ -106,6 +107,19 @@ export default async function MyMeasurementsPage() {
     };
   });
 
+  // Saját observer-meghívóim (küldött + beérkezett) — az OBSERVER_360
+  // kampány-kártyán a gyűjtés haladása ebből számolódik (fresh-tudatosan).
+  const myInvitations =
+    participations.length > 0
+      ? await prisma.observerInvitation.findMany({
+          where: {
+            inviterId: profile.id,
+            status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
+          },
+          select: { status: true, createdAt: true, completedAt: true },
+        })
+      : [];
+
   // OBSERVER_360 legacy fallback-hoz: van-e (fresh-tudatos) self-eredmény.
   const latestSelf =
     participations.length > 0
@@ -146,6 +160,25 @@ export default async function MyMeasurementsPage() {
           ])
         : [null, false];
 
+      // Observer-gyűjtés haladása (OBSERVER_360 kampányban): hány meghívót
+      // küldött a tag, és hány visszajelzés érkezett be (küszöb: 3). A lépés
+      // maga a self-kitöltéssel teljesül, de a kör addig „él", amíg a külső
+      // kép össze nem áll — ez a kártyán is látszik.
+      const observer = steps.includes("OBSERVER_360")
+        ? (() => {
+            const relevant = myInvitations.filter(
+              (inv) => freshFrom === null || inv.createdAt.getTime() >= freshFrom,
+            );
+            const received = myInvitations.filter(
+              (inv) =>
+                inv.status === "COMPLETED" &&
+                (freshFrom === null ||
+                  (inv.completedAt && inv.completedAt.getTime() >= freshFrom)),
+            ).length;
+            return { sent: relevant.length, received, min: OBSERVER_MIN_FOR_REVEAL };
+          })()
+        : null;
+
       return {
         id: p.campaign.id,
         name: p.campaign.name,
@@ -158,6 +191,7 @@ export default async function MyMeasurementsPage() {
         nextStepOpensAt: p.nextStepOpensAt,
         partial,
         started,
+        observer,
       };
     }),
   );
@@ -239,6 +273,9 @@ export default async function MyMeasurementsPage() {
           <div className="mt-8 flex flex-col gap-5">
             {cards.map((card) => {
               const allDone = card.doneCount >= card.steps.length;
+              // Observer-gyűjtés még fut → a kártya ne mondja, hogy minden kész.
+              const gathering =
+                card.observer !== null && card.observer.received < card.observer.min;
               return (
                 <section
                   key={card.id}
@@ -254,17 +291,21 @@ export default async function MyMeasurementsPage() {
                     <span
                       className={[
                         "rounded-full px-2.5 py-1 text-xs font-semibold",
-                        allDone
+                        allDone && !gathering
                           ? "bg-sage/15 text-sage-dark"
-                          : "bg-sand text-ink-body",
+                          : allDone
+                            ? "bg-bronze/10 text-bronze"
+                            : "bg-sand text-ink-body",
                       ].join(" ")}
                     >
-                      {allDone
+                      {allDone && !gathering
                         ? t("myTasks.allDoneBadge", loc)
-                        : tf("myTasks.progressLabel", loc, {
-                            done: card.doneCount,
-                            total: card.steps.length,
-                          })}
+                        : allDone
+                          ? t("myTasks.observerGatheringBadge", loc)
+                          : tf("myTasks.progressLabel", loc, {
+                              done: card.doneCount,
+                              total: card.steps.length,
+                            })}
                     </span>
                   </div>
 
@@ -288,6 +329,16 @@ export default async function MyMeasurementsPage() {
                         ? CAMPAIGN_STEP_LINKS[stepType]
                         : "/dashboard";
                       const started = isCurrent && card.started;
+                      // OBSERVER_360: a lépés a self-kitöltéssel teljesül, de a
+                      // külső kép gyűjtése tovább fut — min. 3 beérkezésig a
+                      // sor a meghívó-haladást és a meghívó-CTA-t mutatja.
+                      const observerGathering =
+                        stepType === "OBSERVER_360" &&
+                        isDone &&
+                        card.observer !== null &&
+                        card.observer.received < card.observer.min
+                          ? card.observer
+                          : null;
                       return (
                         <div
                           key={stepType}
@@ -324,9 +375,32 @@ export default async function MyMeasurementsPage() {
                                 })}
                               </span>
                             )}
+                            {observerGathering && (
+                              <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-bronze">
+                                {tf("myTasks.observerProgress", loc, {
+                                  received: observerGathering.received,
+                                  min: observerGathering.min,
+                                })}
+                                {" · "}
+                                {tf("myTasks.observerSent", loc, {
+                                  sent: observerGathering.sent,
+                                })}
+                              </span>
+                            )}
                           </span>
                           <span className="shrink-0">
-                            {isDone ? (
+                            {observerGathering ? (
+                              <Link
+                                href="/profile/results?tab=comparison"
+                                className="inline-flex min-h-[36px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                              >
+                                {observerGathering.sent < observerGathering.min
+                                  ? tf("myTasks.observerAskCta", loc, {
+                                      min: observerGathering.min,
+                                    })
+                                  : t("myTasks.observerManageCta", loc)}
+                              </Link>
+                            ) : isDone ? (
                               <span className="text-xs font-semibold text-sage-dark">
                                 {t("myTasks.stepDone", loc)}
                               </span>
