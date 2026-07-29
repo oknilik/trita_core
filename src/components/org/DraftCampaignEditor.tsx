@@ -66,6 +66,7 @@ export function DraftCampaignEditor({
   const [teamId, setTeamId] = useState<string | null>(initialTeamId);
   const [intervalHours, setIntervalHours] = useState(initialIntervalHours);
   const [saving, setSaving] = useState(false);
+  const [discarding, setDiscarding] = useState(false);
   const [notice, setNotice] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
 
   const chosenSteps = STEP_ORDER.filter((tp) => selected.has(tp));
@@ -113,6 +114,27 @@ export function DraftCampaignEditor({
       router.refresh();
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Vázlat elvetése: csak DRAFT-ban létezik a gomb; a szerver is őrzi
+  // (CAMPAIGN_NOT_DRAFT). Beadott adat vázlatnál nincs, a törlés végleges.
+  const discard = async () => {
+    if (!window.confirm(t("org.campaign.discardConfirm", locale))) return;
+    setDiscarding(true);
+    setNotice(null);
+    try {
+      const res = await fetch(`/api/org/${orgId}/campaigns/${campaignId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        setNotice({ kind: "error", text: t("org.campaign.discardFailed", locale) });
+        return;
+      }
+      router.push(`/org/${orgId}?tab=campaigns`);
+      router.refresh();
+    } finally {
+      setDiscarding(false);
     }
   };
 
@@ -267,6 +289,23 @@ export function DraftCampaignEditor({
           {t("org.campaign.editTeamRequired", locale)}
         </span>
       )}
+
+      {/* Vázlat elvetése — vizuálisan elválasztva a mentéstől */}
+      <div className="mt-5 border-t border-sand pt-4">
+        <button
+          type="button"
+          disabled={discarding}
+          onClick={discard}
+          className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
+        >
+          {discarding
+            ? t("org.campaign.discarding", locale)
+            : t("org.campaign.discardDraft", locale)}
+        </button>
+        <p className="mt-1.5 text-micro text-muted">
+          {t("org.campaign.discardHint", locale)}
+        </p>
+      </div>
     </section>
   );
 }

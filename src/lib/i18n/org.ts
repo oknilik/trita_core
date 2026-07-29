@@ -441,6 +441,17 @@ export const orgTranslations = {
       editSave: { hu: "Módosítások mentése", en: "Save changes" },
       editSaved: { hu: "Elmentve.", en: "Saved." },
       editFailed: { hu: "Mentés sikertelen — próbáld újra.", en: "Save failed — try again." },
+      discardDraft: { hu: "Vázlat elvetése", en: "Discard draft" },
+      discarding: { hu: "Elvetés…", en: "Discarding…" },
+      discardConfirm: {
+        hu: "Biztosan elveted ezt a mérés-vázlatot? A vázlat és a hozzáadott résztvevő-lista véglegesen törlődik.",
+        en: "Discard this measurement draft? The draft and its participant list will be permanently deleted.",
+      },
+      discardFailed: { hu: "Az elvetés nem sikerült — próbáld újra.", en: "Discard failed — try again." },
+      discardHint: {
+        hu: "Csak vázlat vethető el — aktivált mérést lezárni lehet, törölni nem.",
+        en: "Only drafts can be discarded — an activated measurement can be closed, not deleted.",
+      },
       peerFbStatsEyebrow: { hu: "// kollégai visszajelzés kör", en: "// peer feedback round" },
       peerFbStatsTitle: { hu: "Részvétel", en: "Participation" },
       peerFbStatsBody: {

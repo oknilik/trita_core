@@ -261,6 +261,44 @@ export async function PATCH(
   return NextResponse.json({ campaign });
 }
 
+// DELETE /api/org/[id]/campaigns/[campaignId] — vázlat elvetése.
+// CSAK DRAFT státuszban: aktivált kampány már mérési történet, azt lezárni
+// lehet, törölni nem. A résztvevő-rekordok cascade-del mennek, beadott
+// adat vázlatnál nincs.
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string; campaignId: string }> }
+) {
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const { id: orgId, campaignId } = await params;
+
+  const ctx = await resolveContext(orgId, campaignId, userId);
+  if (!ctx) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  // Mérést csak tanácsadó kezel (ORG_CONSULTANT vagy platform-admin).
+  if (!canManageMeasurements(ctx.role, ctx.email, ctx.isConsultant)) {
+    return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
+  }
+  const decision = await resolveManageCapabilityDecision(orgId, ctx.role);
+  if (!decision.allowed) {
+    return NextResponse.json(
+      {
+        error: "CAPABILITY_DENIED",
+        reason: decision.reason,
+        upgradeHint: decision.upgradeHint?.code ?? null,
+      },
+      { status: 403 },
+    );
+  }
+  if (ctx.campaign.status !== "DRAFT") {
+    return NextResponse.json({ error: "CAMPAIGN_NOT_DRAFT" }, { status: 409 });
+  }
+
+  await prisma.campaign.delete({ where: { id: campaignId } });
+  return NextResponse.json({ ok: true });
+}
+
 // POST /api/org/[id]/campaigns/[campaignId] — add participants (ORG_MANAGER+)
 export async function POST(
   req: Request,
