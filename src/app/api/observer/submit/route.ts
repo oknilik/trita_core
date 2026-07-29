@@ -51,6 +51,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: code }, { status: code === "INVALID_TOKEN" ? 404 : 400 });
   }
 
+  // Belsős (név szerinti) meghívó: csak a bejelentkezett címzett adhatja be.
+  // Külsős meghívónál (nincs observerProfileId) nincs ilyen validáció.
+  if (invitation.observerProfileId) {
+    const { auth } = await import("@clerk/nextjs/server");
+    const { userId } = await auth();
+    const viewer = userId
+      ? await prisma.userProfile.findUnique({
+          where: { clerkId: userId },
+          select: { id: true },
+        })
+      : null;
+    if (!viewer || viewer.id !== invitation.observerProfileId) {
+      return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });
+    }
+  }
+
   // Validate all questions answered
   const config = getTestConfig(invitation.testType as TestType);
   const expectedIds = new Set(config.questions.map((q) => q.id));

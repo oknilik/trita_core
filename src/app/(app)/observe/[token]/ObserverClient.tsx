@@ -27,6 +27,9 @@ interface ObserverClientProps {
   testName: string;
   questions: Question[];
   initialDraft?: ObserverDraftData;
+  // Belsős (név szerinti kollégának szóló) meghívónál a kapcsolat rögzített
+  // — előtöltve, a többi opció szürke/nem választható.
+  lockedRelationship?: string | null;
 }
 
 const RELATIONSHIP_OPTIONS = [
@@ -85,6 +88,7 @@ export function ObserverClient({
   testName,
   questions,
   initialDraft,
+  lockedRelationship = null,
 }: ObserverClientProps) {
   const { isSignedIn } = useUser();
   const { locale } = useLocale();
@@ -106,7 +110,9 @@ export function ObserverClient({
   const [phase, setPhase] = useState<
     "intro" | "assessment" | "confidence" | "done" | "inactive"
   >(initialPhase);
-  const [relationshipType, setRelationshipType] = useState(initialDraft?.relationshipType ?? "");
+  const [relationshipType, setRelationshipType] = useState(
+    lockedRelationship ?? initialDraft?.relationshipType ?? "",
+  );
   const [knownDuration, setKnownDuration] = useState(initialDraft?.knownDuration ?? "");
   const [confidence, setConfidence] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -150,7 +156,7 @@ export function ObserverClient({
       const raw = localStorage.getItem(DRAFT_KEY);
       if (!raw) return;
       const data = JSON.parse(raw);
-      if (data.relationshipType) setRelationshipType(data.relationshipType);
+      if (data.relationshipType && !lockedRelationship) setRelationshipType(data.relationshipType);
       if (data.knownDuration) setKnownDuration(data.knownDuration);
       if (data.answers && typeof data.answers === "object") {
         const sanitized = sanitizeAnswersForQuestions(
@@ -539,21 +545,33 @@ export function ObserverClient({
               <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
                 {t("observer.relationshipLabel", locale)}
                 <div className="flex flex-wrap gap-2">
-                  {RELATIONSHIP_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => setRelationshipType(opt.value)}
-                      className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
-                        relationshipType === opt.value
-                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
-                          : "border-sand bg-white text-ink-body hover:border-warm-dark"
-                      }`}
-                    >
-                      {t(opt.labelKey, locale)}
-                    </button>
-                  ))}
+                  {RELATIONSHIP_OPTIONS.map((opt) => {
+                    const lockedOut =
+                      lockedRelationship !== null && opt.value !== lockedRelationship;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        disabled={lockedOut}
+                        onClick={() => !lockedOut && setRelationshipType(opt.value)}
+                        className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
+                          relationshipType === opt.value
+                            ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                            : lockedOut
+                              ? "cursor-not-allowed border-sand bg-cream/50 text-muted opacity-60"
+                              : "border-sand bg-white text-ink-body hover:border-warm-dark"
+                        }`}
+                      >
+                        {t(opt.labelKey, locale)}
+                      </button>
+                    );
+                  })}
                 </div>
+                {lockedRelationship !== null && (
+                  <span className="text-xs font-normal text-muted">
+                    {t("observer.relationLockedNote", locale)}
+                  </span>
+                )}
               </label>
 
               <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">

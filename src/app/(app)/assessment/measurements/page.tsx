@@ -19,6 +19,9 @@ import {
   hasStartedStep,
   releaseDueCampaignSteps,
 } from "@/lib/campaign-steps";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
+import { getTestConfig } from "@/lib/questions";
+import type { TestType } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +67,43 @@ export default async function MyMeasurementsPage() {
         },
       },
     },
+  });
+
+  // Rólam kért visszajelzések MELLETT: amit TŐLEM kértek (belsős observer-
+  // meghívók) — ezek is mérési teendők, rész-haladással (szerver-draft).
+  const feedbackRequests = (
+    await prisma.observerInvitation.findMany({
+      where: {
+        observerProfileId: profile.id,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        token: true,
+        testType: true,
+        expiresAt: true,
+        inviter: { select: { username: true, email: true } },
+        draft: { select: { answers: true } },
+      },
+    })
+  ).map((inv) => {
+    const total = getTestConfig(
+      inv.testType as TestType,
+      locale as Locale,
+      DEFAULT_ASSESSMENT_FORM,
+    ).questions.length;
+    const answered =
+      inv.draft?.answers && typeof inv.draft.answers === "object" && !Array.isArray(inv.draft.answers)
+        ? Object.keys(inv.draft.answers as Record<string, unknown>).length
+        : 0;
+    return {
+      token: inv.token,
+      inviterName: inv.inviter.username ?? inv.inviter.email ?? "—",
+      expiresAt: inv.expiresAt,
+      answered: Math.min(answered, total),
+      total,
+    };
   });
 
   // OBSERVER_360 legacy fallback-hoz: van-e (fresh-tudatos) self-eredmény.
@@ -135,7 +175,52 @@ export default async function MyMeasurementsPage() {
           {t("myTasks.intro", loc)}
         </p>
 
-        {cards.length === 0 ? (
+        {/* Tőlem kért visszajelzések (belsős observer-meghívók) */}
+        {feedbackRequests.length > 0 && (
+          <section className="mt-8 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-7">
+            <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+              {t("myTasks.feedbackRequestsEyebrow", loc)}
+            </p>
+            <h2 className="mt-1 font-fraunces text-xl text-ink">
+              {t("myTasks.feedbackRequestsTitle", loc)}
+            </h2>
+            <div className="mt-4 flex flex-col gap-2">
+              {feedbackRequests.map((req) => (
+                <div
+                  key={req.token}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-bronze/40 bg-cream px-3.5 py-2.5"
+                >
+                  <span className="flex min-w-0 items-center gap-2.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-bronze text-[11px] font-bold text-white">
+                      ★
+                    </span>
+                    <span className="text-caption font-medium text-ink">
+                      {tf("myTasks.feedbackRequestFrom", loc, { name: req.inviterName })}
+                    </span>
+                    {req.answered > 0 && (
+                      <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-bronze">
+                        {tf("myTasks.feedbackRequestProgress", loc, {
+                          done: req.answered,
+                          total: req.total,
+                        })}
+                      </span>
+                    )}
+                  </span>
+                  <Link
+                    href={`/observe/${req.token}`}
+                    className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                  >
+                    {req.answered > 0
+                      ? t("myTasks.stepOpen", loc)
+                      : t("myTasks.stepStart", loc)}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {cards.length === 0 && feedbackRequests.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
             <h2 className="font-fraunces text-xl text-ink">
               {t("myTasks.noneTitle", loc)}

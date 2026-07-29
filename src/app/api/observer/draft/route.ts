@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+
+// Belsős (név szerinti) meghívó: csak a bejelentkezett címzett írhatja.
+// Külsős meghívónál (nincs observerProfileId) nincs ilyen validáció.
+async function isAddresseeMismatch(observerProfileId: string | null): Promise<boolean> {
+  if (!observerProfileId) return false;
+  const { userId } = await auth();
+  if (!userId) return true;
+  const viewer = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  return !viewer || viewer.id !== observerProfileId;
+}
 
 const draftSchema = z.object({
   token: z.string().min(1),
@@ -22,10 +36,13 @@ export async function POST(req: Request) {
 
   const invitation = await prisma.observerInvitation.findUnique({
     where: { token },
-    select: { id: true, status: true },
+    select: { id: true, status: true, observerProfileId: true },
   });
   if (!invitation || invitation.status !== "PENDING") {
     return NextResponse.json({ error: "Invalid token" }, { status: 400 });
+  }
+  if (await isAddresseeMismatch(invitation.observerProfileId)) {
+    return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });
   }
 
   await prisma.observerDraft.upsert({
@@ -59,10 +76,13 @@ export async function DELETE(req: Request) {
 
   const invitation = await prisma.observerInvitation.findUnique({
     where: { token },
-    select: { id: true },
+    select: { id: true, observerProfileId: true },
   });
   if (!invitation) {
     return NextResponse.json({ ok: true });
+  }
+  if (await isAddresseeMismatch(invitation.observerProfileId)) {
+    return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });
   }
 
   await prisma.observerDraft.deleteMany({
