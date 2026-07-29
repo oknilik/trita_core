@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { canManageMeasurements } from "@/lib/measurement-auth";
 import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const patchSchema = z.union([
   z.object({
@@ -111,6 +112,7 @@ export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
+  const log = await getRequestLogger("campaign");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -243,7 +245,7 @@ export async function PATCH(
         orgId,
         campaignId,
         campaignName: campaign.name ?? "",
-      }).catch((err) => console.error("[Notification] Campaign launched error:", err)),
+      }).catch((err) => log.error({ event: "campaign.campaign_launched_error", err: err }, "Campaign launched error")),
     );
   }
   if (body.data.status === "CLOSED") {
@@ -252,7 +254,7 @@ export async function PATCH(
         orgId,
         campaignId,
         campaignName: campaign.name ?? "",
-      }).catch((err) => console.error("[Notification] Campaign closed error:", err)),
+      }).catch((err) => log.error({ event: "campaign.campaign_closed_error", err: err }, "Campaign closed error")),
     );
   }
 

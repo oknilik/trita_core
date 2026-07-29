@@ -2,6 +2,9 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("rate-limit");
 
 let redis: Redis | null = null;
 
@@ -54,7 +57,7 @@ export async function checkRateLimit(
   // Upstash not configured — skip in dev, warn in prod
   if (!limiter) {
     if (process.env.NODE_ENV !== "development") {
-      console.warn(`[RateLimit] UPSTASH_REDIS_REST_URL not configured — skipping ${tier} check`);
+      log.warn({ event: "rate_limit.not_configured", tier }, "UPSTASH_REDIS_REST_URL not configured — check skipped");
     }
     return null;
   }

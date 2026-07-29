@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { submitInquiry } from "@/lib/inquiries";
+import { getRequestLogger } from "@/lib/logger.server";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,7 @@ const contactSchema = z.object({
 }).strict();
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("inquiries");
   const rateLimitResponse = await checkRateLimit("contact");
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -44,7 +46,7 @@ export async function POST(req: Request) {
       source: "contact_form",
     });
   } catch (error) {
-    console.error("[Contact] Failed to submit inquiry:", error);
+    log.error({ event: "inquiries.failed_to_submit_inquiry", err: error }, "Failed to submit inquiry");
     return NextResponse.json({ error: "Send failed" }, { status: 502 });
   }
 

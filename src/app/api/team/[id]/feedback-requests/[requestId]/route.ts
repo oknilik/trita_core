@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 // Válasz egy visszajelzés-kérésre (peer feedback F2) — feedforward-struktúra:
 // „Folytasd, mert…" + „Jövőre próbáld…" (+ szabad megjegyzés CSAK nevesítve).
@@ -18,6 +19,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string; requestId: string }> },
 ) {
+  const log = await getRequestLogger("team");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const { id: teamId, requestId } = await params;
@@ -98,7 +100,7 @@ export async function POST(
       askerId: request.askerId,
       teamId,
       teamName: request.team.name,
-    }).catch((err) => console.error("[Notification] Feedback response error:", err)),
+    }).catch((err) => log.error({ event: "team.feedback_response_error", err: err }, "Feedback response error")),
   );
 
   return NextResponse.json({ ok: true }, { status: 201 });

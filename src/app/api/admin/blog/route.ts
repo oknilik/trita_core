@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import matter from "gray-matter";
 import { requireAdmin } from "@/lib/auth";
+import { getRequestLogger } from "@/lib/logger.server";
 import {
   blogStoreMode,
   githubConfigured,
@@ -43,6 +44,7 @@ function todayIso(): string {
 }
 
 export async function POST(req: NextRequest) {
+  const log = await getRequestLogger("admin-blog");
   try {
     await requireAdmin();
   } catch {
@@ -88,7 +90,7 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
-    console.error("[AdminBlog] Save failed:", error);
+    log.error({ event: "admin-blog.save_failed", err: error }, "Save failed");
     return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
   }
 }
@@ -99,6 +101,7 @@ const patchSchema = z.object({
 });
 
 export async function PATCH(req: NextRequest) {
+  const log = await getRequestLogger("admin-blog");
   try {
     await requireAdmin();
   } catch {
@@ -138,7 +141,7 @@ export async function PATCH(req: NextRequest) {
     });
     return NextResponse.json({ ok: true, status: action === "publish" ? "published" : "draft", ...result });
   } catch (error) {
-    console.error("[AdminBlog] Status change failed:", error);
+    log.error({ event: "admin-blog.status_change_failed", err: error }, "Status change failed");
     return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
   }
 }
@@ -148,6 +151,7 @@ const deleteSchema = z.object({
 });
 
 export async function DELETE(req: NextRequest) {
+  const log = await getRequestLogger("admin-blog");
   try {
     await requireAdmin();
   } catch {
@@ -172,7 +176,7 @@ export async function DELETE(req: NextRequest) {
     if (!result) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
-    console.error("[AdminBlog] Delete failed:", error);
+    log.error({ event: "admin-blog.delete_failed", err: error }, "Delete failed");
     return NextResponse.json({ error: "DELETE_FAILED" }, { status: 500 });
   }
 }

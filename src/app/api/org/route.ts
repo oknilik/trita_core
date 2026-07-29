@@ -9,6 +9,7 @@ import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import { sanitizeOrgBillingProfile } from "@/lib/org-billing";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
@@ -22,6 +23,7 @@ const createSchema = z.object({
 
 // POST /api/org — create a new organization (multi-org membership supported)
 export async function POST(req: Request) {
+  const log = await getRequestLogger("org");
   const rateLimitResponse = await checkRateLimit("api");
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -97,7 +99,7 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log(`[Org] Created org ${newOrg.id} with trialing subscription (ends ${trialEndsAt.toISOString()})`);
+      log.info({ event: "org.created", orgId: newOrg.id, trialEndsAt: trialEndsAt.toISOString() }, "Org created with trialing subscription");
       return newOrg;
     });
     await setActiveOrgContext(profile.id, org.id);

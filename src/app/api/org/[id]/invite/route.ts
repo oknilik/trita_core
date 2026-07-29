@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { sendOrgInviteEmail } from "@/lib/emails";
 import { hasOrgRole } from "@/lib/auth";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -19,6 +20,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const log = await getRequestLogger("org");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -123,7 +125,7 @@ export async function POST(
       userId: targetUser.id,
       orgId,
       orgName: org.name,
-    }).catch((err) => console.error("[Notification] Org invite error:", err)),
+    }).catch((err) => log.error({ event: "org.org_invite_error", err: err }, "Org invite error")),
   );
 
   return NextResponse.json({ member }, { status: 201 });

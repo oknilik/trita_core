@@ -11,6 +11,9 @@ import { useToast } from "@/components/ui/Toast";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("candidate");
 
 const QUESTIONS_PER_PAGE = 10;
 
@@ -310,7 +313,7 @@ export function CandidateClient({
       }
       setPhase("done");
     } catch (err) {
-      console.error(err);
+      log.error({ event: "candidate.submit_failed", err }, "Candidate flow error");
       showToast(t("candidate.submitError", locale), "error");
     } finally {
       setIsSubmitting(false);
@@ -384,7 +387,7 @@ export function CandidateClient({
         }
         setPhase("done");
       } catch (err) {
-        console.error(err);
+        log.error({ event: "candidate.submit_failed", err }, "Candidate flow error");
         showToast(t("candidate.submitError", locale), "error");
       } finally {
         setTeamRoleSubmitting(false);

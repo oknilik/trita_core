@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 // Kollégai köszönet (kudos) — peer feedback F1 (terv:
 // docs/product/peer-feedback-terv.md). Nevesített, csapaton belüli,
@@ -80,6 +81,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const log = await getRequestLogger("team");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const { id: teamId } = await params;
@@ -128,7 +130,7 @@ export async function POST(
       fromName: me.username ?? me.email ?? "—",
       teamId,
       teamName: team.name,
-    }).catch((err) => console.error("[Notification] Peer kudos error:", err)),
+    }).catch((err) => log.error({ event: "team.peer_kudos_error", err: err }, "Peer kudos error")),
   );
 
   return NextResponse.json({ ok: true, id: item.id }, { status: 201 });

@@ -7,6 +7,9 @@ import { AnimatedBar } from "@/components/dashboard/AnimatedBar";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { t, type Locale } from "@/lib/i18n";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("feedback");
 
 type InsightLevels = { low: string; mid: string; high: string };
 
@@ -173,7 +176,7 @@ export const DimensionCard = memo(function DimensionCard({
         setShowFeedback(false);
       }, 700);
     } catch (error) {
-      console.error("Feedback submission failed:", error);
+      log.error({ event: "feedback.submit_failed", err: error }, "Feedback submission failed");
       showToast(t("dashboard.dimension.feedbackError", locale), "error");
     } finally {
       setIsSubmittingFeedback(false);

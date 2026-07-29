@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 import {
   featureInterestPostSchema,
   featureInterestLabel,
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
 
 // LEAD — rate limit auth előtt ("contact" tier: email-küldő végpont).
 async function handleLead(data: Extract<FeatureInterestPostBody, { mode: "lead" }>) {
+  const log = await getRequestLogger("features");
   const rateLimitResponse = await checkRateLimit("contact");
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -121,10 +123,10 @@ async function handleLead(data: Extract<FeatureInterestPostBody, { mode: "lead" 
     });
     if (error) {
       // A lead-rekord megvan — az email-hiba nem veszíti el az érdeklődést.
-      console.error("[FeatureInterest] Resend error:", error);
+      log.error({ event: "features.resend_error", err: error }, "Resend error");
     }
   } catch (error) {
-    console.error("[FeatureInterest] Unexpected send error:", error);
+    log.error({ event: "features.unexpected_send_error", err: error }, "Unexpected send error");
   }
 
   return NextResponse.json({ ok: true });

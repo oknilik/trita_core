@@ -9,6 +9,9 @@ import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("observer");
 
 interface ObserverDraftData {
   phase: "assessment" | "confidence";
@@ -497,7 +500,7 @@ export function ObserverClient({
       }).catch(() => {});
       setPhase("done");
     } catch (error) {
-      console.error(error);
+      log.error({ event: "observer.submit_failed", err: error }, "Observer flow error");
       showToast(
         error instanceof Error ? error.message : t("observer.saveError", locale),
         "error",

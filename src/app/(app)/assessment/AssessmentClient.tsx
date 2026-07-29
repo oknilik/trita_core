@@ -19,6 +19,9 @@ import {
   writeAssessmentDraftToStorage,
 } from '@/lib/assessment-draft'
 import type { TestType } from '@prisma/client'
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("assessment");
 type AssessmentQuestion = { id: number; text: string }
 
 
@@ -371,7 +374,7 @@ export function AssessmentClient({
       })
       if (!response.ok) {
         const errBody = await response.json().catch(() => null)
-        console.error('[submit] API error', response.status, JSON.stringify(errBody))
+        log.error({ event: "assessment.submit_api_error", status: response.status, body: errBody }, "Submit API error")
         throw new Error(t('assessment.saveResultError', locale))
       }
 
@@ -395,7 +398,7 @@ export function AssessmentClient({
       isSubmittingRef.current = false
       setIsSubmitting(false)
       setEvaluationProgress(0)
-      console.error(error)
+      log.error({ event: "assessment.submit_failed", err: error }, "Submit failed")
       showToast(t('assessment.saveError', locale), 'error')
     }
   }, [questions, setQuestionIndexSafe, testType, locale, router, showToast, guestMode])

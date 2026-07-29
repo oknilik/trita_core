@@ -5,6 +5,7 @@ import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
+import { getRequestLogger } from "@/lib/logger.server";
 import {
   resolveObserverTokenLifecycle,
   toObserverTokenErrorCode,
@@ -24,6 +25,7 @@ const submitSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("observer");
   const body = await req.json();
   const parsed = submitSchema.safeParse(body);
   if (!parsed.success) {
@@ -110,7 +112,7 @@ export async function POST(req: Request) {
       inviterId: invitation.inviterId,
       observerName: invitation.observerName ?? "Valaki",
       invitationId: invitation.id,
-    }).catch((err) => console.error("[Notification] Observer completed error:", err)),
+    }).catch((err) => log.error({ event: "observer.observer_completed_error", err: err }, "Observer completed error")),
   );
 
   // In-app notification — notify observer that their submission was received (if registered user)
@@ -141,7 +143,7 @@ export async function POST(req: Request) {
       inviterName: inviter.username ?? inviter.email ?? "—",
       invitationId: invitation.id,
     });
-  })().catch((err) => console.error("[Notification] Observer submitted error:", err));
+  })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));
 
   // Email — only from the 2nd completed observer onward (fire-and-forget)
   prisma.observerAssessment.count({
@@ -162,8 +164,8 @@ export async function POST(req: Request) {
       to: inviter.email,
       inviterName: inviter.username ?? inviter.email,
       locale,
-    }).catch((err) => console.error("[Email] Observer completion send error:", err));
-  }).catch((err) => console.error("[Email] Inviter lookup error:", err));
+    }).catch((err) => log.error({ event: "observer.observer_completion_send_error", err: err }, "Observer completion send error"));
+  }).catch((err) => log.error({ event: "observer.inviter_lookup_error", err: err }, "Inviter lookup error"));
 
   return NextResponse.json({ success: true });
 }

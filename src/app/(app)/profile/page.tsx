@@ -13,6 +13,9 @@ import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("profile");
 
 type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
 type OrgMembershipInfo = {
@@ -223,7 +226,7 @@ export default function ProfilePage() {
       try { for (const key of Object.keys(localStorage)) { if (key.startsWith("trita_")) localStorage.removeItem(key); } } catch {}
       await new Promise((r) => window.setTimeout(r, DELETE_GOODBYE_MS));
       setShowDeleteModal(false); window.location.href = "/";
-    } catch (e) { console.error(e); showToast(t("profile.deleteError", locale), "error"); setShowDeleteModal(false); } finally { if (!deleted) setIsDeleting(false); }
+    } catch (e) { log.error({ event: "profile.delete_failed", err: e }, "Profile delete failed"); showToast(t("profile.deleteError", locale), "error"); setShowDeleteModal(false); } finally { if (!deleted) setIsDeleting(false); }
   };
 
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>

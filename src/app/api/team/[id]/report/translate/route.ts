@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
+import { getRequestLogger } from "@/lib/logger.server";
 import type {
   ReportTranslationEn,
   TranslatedActionItem,
@@ -19,6 +20,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const log = await getRequestLogger("team-report");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const { id: teamId } = await params;
@@ -134,7 +136,7 @@ ${actionsBlock}`;
       }),
     });
     if (!response.ok) {
-      console.error("[translate] Anthropic API error", response.status, await response.text());
+      log.error({ event: "team-report.translate_api_error", status: response.status, detail: await response.text() }, "Anthropic API error");
       return NextResponse.json({ error: "TRANSLATE_FAILED" }, { status: 502 });
     }
     const data = (await response.json()) as {
@@ -179,7 +181,7 @@ ${actionsBlock}`;
 
     return NextResponse.json({ translation });
   } catch (error) {
-    console.error("[translate] failed", error);
+    log.error({ event: "team-report.failed", err: error }, "failed");
     return NextResponse.json({ error: "TRANSLATE_FAILED" }, { status: 502 });
   }
 }

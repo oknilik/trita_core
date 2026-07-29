@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 // Visszajelzés-kérés (peer feedback F2) — a címzett indítja, ő dönt az
 // anonim-opcióról. Terv: docs/product/peer-feedback-terv.md
@@ -189,6 +190,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const log = await getRequestLogger("team");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   const { id: teamId } = await params;
@@ -233,7 +235,7 @@ export async function POST(
       askerName: me.username ?? me.email ?? "—",
       topic: body.data.topic,
       audienceIds,
-    }).catch((err) => console.error("[Notification] Feedback request error:", err)),
+    }).catch((err) => log.error({ event: "team.feedback_request_error", err: err }, "Feedback request error")),
   );
 
   return NextResponse.json({ ok: true, id: request.id }, { status: 201 });

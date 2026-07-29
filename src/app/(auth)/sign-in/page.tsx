@@ -9,6 +9,9 @@ import { t, tf } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import Link from "next/link";
 import AuthLeftPanel from "@/components/auth/AuthLeftPanel";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("auth");
 
 class SignInErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -119,7 +122,7 @@ function SignInContent() {
         setError(t("auth.errorSignInGeneric", locale));
       }
     } catch (err: unknown) {
-      console.error("[SignIn] Error:", err);
+      log.error({ event: "auth.sign_in_failed", err }, "Sign-in error");
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
       const message = clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;
       if (message?.includes("Identifier") || message?.includes("identifier")) {
@@ -160,7 +163,7 @@ function SignInContent() {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
     } catch (err: unknown) {
-      console.error("[SignIn] Verify error:", err);
+      log.error({ event: "auth.sign_in_verify_failed", err }, "Sign-in verify error");
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
       const message = clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;
       setError(message || t("auth.errorVerificationInvalid", locale));

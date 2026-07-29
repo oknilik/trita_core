@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { sendVerificationCodeEmail, sendMagicLinkEmail } from "@/lib/emails";
 import { clerkClient } from "@clerk/nextjs/server";
 import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -48,6 +49,7 @@ const clerkEmailSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("clerk-webhook");
   const secret = process.env.CLERK_WEBHOOK_SECRET;
   if (!secret) {
     return new NextResponse("Missing CLERK_WEBHOOK_SECRET", { status: 500 });
@@ -152,10 +154,10 @@ export async function POST(req: Request) {
   }
 
   if (event.type === "email.created") {
-    console.log("[Webhook] email.created raw payload:", JSON.stringify(event.data, null, 2));
+    log.debug({ event: "clerk.email_created", dataKeys: Object.keys(event.data ?? {}) }, "email.created webhook received");
     const parsed = clerkEmailSchema.safeParse(event);
     if (!parsed.success) {
-      console.warn("[Webhook] email.created schema parse failed:", parsed.error);
+      log.warn({ event: "clerk.email_created_parse_failed", err: parsed.error }, "email.created schema parse failed");
     }
     if (parsed.success) {
       const data = parsed.data.data;
@@ -174,7 +176,7 @@ export async function POST(req: Request) {
         data.data?.magic_link_url ||
         data.data?.url;
 
-      console.log("[Webhook] email.created extracted:", { to, code: code ? "****" : undefined, magicLink: magicLink ? "yes" : undefined });
+      log.info({ event: "clerk.email_created_extracted", to, hasCode: Boolean(code), hasMagicLink: Boolean(magicLink) }, "email.created payload extracted");
 
       if (to && (magicLink || code)) {
         let locale: "hu" | "en" | undefined;
@@ -189,7 +191,7 @@ export async function POST(req: Request) {
             locale = dbLocale;
           }
         } catch (err) {
-          console.warn("[Email] Failed to read DB locale:", err);
+          log.warn({ event: "clerk.locale_db_read_failed", err }, "Failed to read DB locale");
         }
         // For new sign-ups (user not yet in DB): use sign-up metadata
         if (!locale && data.sign_up_id) {
@@ -201,7 +203,7 @@ export async function POST(req: Request) {
               locale = metaLocale;
             }
           } catch (err) {
-            console.warn("[Email] Failed to read Clerk sign-up locale:", err);
+            log.warn({ event: "clerk.locale_signup_read_failed", err }, "Failed to read Clerk sign-up locale");
           }
         }
 

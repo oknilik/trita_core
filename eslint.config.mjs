@@ -26,6 +26,16 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // Logging (2026-07-29): console-hívás tilos az src alatt — szerveren a
+  // @/lib/logger (getRequestLogger), kliensen a @/lib/client-logger a
+  // belépési pont. A két logger-fájl belső console-sink-je eslint-disable
+  // kommenttel jelölt kivétel.
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      "no-console": "error",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

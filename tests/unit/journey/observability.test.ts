@@ -56,14 +56,18 @@ test("isJourneyDebugEnabled respects JOURNEY_DEBUG truthy values", () => {
 
 test("traceJourneyDecision logs required fields in debug mode only", () => {
   const originalDebug = process.env.JOURNEY_DEBUG;
-  const originalInfo = console.info;
+  const originalJson = process.env.LOG_JSON;
+  // A journey-trace az egységes loggerre ír (info szint → console.log sink),
+  // JSON-módban ellenőrizzük a strukturált mezőket.
+  const originalLog = console.log;
   const messages: string[] = [];
 
-  console.info = (message?: unknown) => {
+  console.log = (message?: unknown) => {
     messages.push(String(message));
   };
 
   try {
+    process.env.LOG_JSON = "1";
     process.env.JOURNEY_DEBUG = "0";
     traceJourneyDecision({
       entryPoint: "dashboard_page",
@@ -109,15 +113,19 @@ test("traceJourneyDecision logs required fields in debug mode only", () => {
       },
     });
     assert.equal(messages.length, 1);
-    assert.match(messages[0], /\[JourneyTrace\]/);
-    assert.match(messages[0], /"entryPoint":"dashboard_page"/);
-    assert.match(messages[0], /"resolvedStage":"SELF_NOT_STARTED"/);
-    assert.match(messages[0], /"resolvedSurface":"personal"/);
-    assert.match(messages[0], /"destination":"\/assessment"/);
-    assert.match(messages[0], /"obligationFlags":/);
-    assert.match(messages[0], /"restrictionFlags":/);
+    const record = JSON.parse(messages[0]);
+    assert.equal(record.event, "journey.decision");
+    assert.equal(record.module, "journey");
+    assert.equal(record.entryPoint, "dashboard_page");
+    assert.equal(record.resolvedStage, "SELF_NOT_STARTED");
+    assert.equal(record.resolvedSurface, "personal");
+    assert.equal(record.destination, "/assessment");
+    assert.ok(record.obligationFlags);
+    assert.ok(record.restrictionFlags);
   } finally {
-    console.info = originalInfo;
+    console.log = originalLog;
+    if (typeof originalJson === "undefined") delete process.env.LOG_JSON;
+    else process.env.LOG_JSON = originalJson;
     if (typeof originalDebug === "undefined") {
       delete process.env.JOURNEY_DEBUG;
     } else {

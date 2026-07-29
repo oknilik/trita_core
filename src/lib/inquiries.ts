@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { getAdminEmails } from "@/lib/auth";
 import { handleInquiryReceived } from "@/lib/notifications";
 import { resend, EMAIL_FROM } from "@/lib/resend";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("inquiries");
 
 // Inquiry-pipeline közös belépője: a /contact űrlap és az in-app
 // „Kérdésem van" form ugyanide fut be. Perzisztál, auto-linkel
@@ -115,12 +118,12 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
       text,
     });
     if (error) {
-      console.error("[Inquiry] Resend returned error:", error);
+      log.error({ event: "inquiries.resend_returned_error", err: error }, "Resend returned error");
     } else {
       emailSent = true;
     }
   } catch (error) {
-    console.error("[Inquiry] Unexpected email error:", error);
+    log.error({ event: "inquiries.unexpected_email_error", err: error }, "Unexpected email error");
   }
 
   return { inquiryId: inquiry.id, emailSent };

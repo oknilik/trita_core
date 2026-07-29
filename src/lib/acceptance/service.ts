@@ -9,6 +9,9 @@ import { getTestConfig } from "@/lib/questions";
 import { calculateScores } from "@/lib/scoring";
 import { isSharedAcceptanceServiceEnabled } from "@/lib/rollout-guards.server";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("acceptance");
 
 export type MembershipJoinKind = "team" | "org";
 
@@ -622,7 +625,7 @@ async function runJoinTransaction(
       orgId: invite.orgId,
       memberName: actor.username ?? "—",
       memberUserId: actor.profileId,
-    }).catch((err) => console.error("[Notification] Org invite accepted error:", err)),
+    }).catch((err) => log.error({ event: "acceptance.org_invite_accepted_error", err: err }, "Org invite accepted error")),
   );
 
   return {
@@ -1213,7 +1216,7 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
   // Értesítés a tanácsadóknak + org adminoknak (notif + email) —
   // fire-and-forget, a jelölt válaszát nem blokkolja és nem buktatja.
   void notifyCandidateCompleted(candidateContext.id).catch((err) =>
-    console.error("[Candidate] completion notify error:", err),
+    log.error({ event: "acceptance.completion_notify_error", err: err }, "completion notify error"),
   );
 
   const nextPath = await resolveCandidateNextPath(resolveClerkId(input.authState));

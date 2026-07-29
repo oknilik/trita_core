@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { sendObserverInviteEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 import {
   observerInviteRequiresApproval,
   resolveColleagueObserverType,
@@ -57,6 +58,7 @@ async function resolveInviteCampaignContext(profileId: string, activeOrgId: stri
 }
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("observer");
   const rateLimitResponse = await checkRateLimit("api");
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -220,7 +222,7 @@ export async function POST(req: Request) {
           invitationId: invitation.id,
           inviterName,
           targetLabel: targetName ?? targetEmail ?? "külső értékelő",
-        }).catch((err) => console.error("[Notification] Observer approval request error:", err));
+        }).catch((err) => log.error({ event: "observer.observer_approval_request_error", err: err }, "Observer approval request error"));
       });
     }
   } else if (targetEmail) {
@@ -243,7 +245,7 @@ export async function POST(req: Request) {
           locale: emailLocale,
         });
       } catch (err) {
-        console.error("Failed to send observer invite email:", err);
+        log.error({ event: "observer.failed_to_send_observer_invite_email", err: err }, "Failed to send observer invite email");
       }
       // Belső kolléga: app-értesítés is (notification hub).
       if (colleagueUserId) {
@@ -252,7 +254,7 @@ export async function POST(req: Request) {
           inviterName,
           invitationId: invitation.id,
           token,
-        }).catch((err) => console.error("[Notification] Observer colleague invite error:", err));
+        }).catch((err) => log.error({ event: "observer.observer_colleague_invite_error", err: err }, "Observer colleague invite error"));
       }
     });
   }

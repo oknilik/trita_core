@@ -7,6 +7,7 @@ import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -19,6 +20,7 @@ const submissionSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("assessment");
   const rateLimitResponse = await checkRateLimit("api");
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -30,7 +32,7 @@ export async function POST(req: Request) {
   const body = await req.json();
   const parsed = submissionSchema.safeParse(body);
   if (!parsed.success) {
-    console.error('[submit] Zod validation failed', JSON.stringify(parsed.error.flatten()));
+    log.warn({ event: "assessment.submit_invalid", issues: parsed.error.flatten() }, "Zod validation failed");
     return NextResponse.json(
       { error: "Invalid payload", details: parsed.error.flatten() },
       { status: 400 }
@@ -38,7 +40,7 @@ export async function POST(req: Request) {
   }
 
   const { testType: clientTestType, answers } = parsed.data;
-  console.log('[submit] received', { clientTestType, answerCount: answers.length, userId });
+  log.info({ event: "assessment.submit_received", clientTestType, answerCount: answers.length, clerkId: userId }, "Submission received");
 
   const profile = await prisma.userProfile.upsert({
     where: { clerkId: userId },
@@ -51,10 +53,8 @@ export async function POST(req: Request) {
     testType = await assignTestType(profile.id);
   }
 
-  console.log('[submit] testTypes', { clientTestType, profileTestType: testType });
-
   if (clientTestType !== testType) {
-    console.error('[submit] testType mismatch', { clientTestType, profileTestType: testType });
+    log.warn({ event: "assessment.submit_testtype_mismatch", clientTestType, profileTestType: testType }, "Test type mismatch");
     return NextResponse.json(
       { error: "A teszttípus nem egyezik a hozzárendelt teszttel." },
       { status: 400 }
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
   }
 
   if (!isCompleteFormAnswerSet(testType as TestType, answeredIds)) {
-    console.error('[submit] form mismatch', { answered: answeredIds.size });
+    log.warn({ event: "assessment.submit_form_mismatch", answered: answeredIds.size }, "Answer count does not match form");
     return NextResponse.json(
       { error: "A válaszok száma nem egyezik a kérdőív-forma kérdésszámával." },
       { status: 400 }
@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     handleResultReady({
       userId: profile.id,
       assessmentResultId: result.id,
-    }).catch((err) => console.error("[Notification] Result ready error:", err)),
+    }).catch((err) => log.error({ event: "notification.result_ready_failed", err }, "Result ready notification failed")),
   );
 
   return NextResponse.json({ id: result.id });

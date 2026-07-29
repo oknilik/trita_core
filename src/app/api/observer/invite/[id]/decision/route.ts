@@ -8,6 +8,7 @@ import { normalizeLocale } from "@/lib/i18n";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageMeasurements } from "@/lib/measurement-auth";
 import { handleObserverInviteDecision } from "@/lib/notifications";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const bodySchema = z.object({ action: z.enum(["approve", "decline"]) });
 
@@ -24,6 +25,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const log = await getRequestLogger("observer");
   const { id } = await params;
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
@@ -101,7 +103,7 @@ export async function POST(
           locale: emailLocale,
         });
       } catch (err) {
-        console.error("Failed to send approved observer invite email:", err);
+        log.error({ event: "observer.failed_to_send_approved_observer_invite_email", err: err }, "Failed to send approved observer invite email");
       }
     }
     await handleObserverInviteDecision({
@@ -109,7 +111,7 @@ export async function POST(
       invitationId,
       approved,
       targetLabel,
-    }).catch((err) => console.error("[Notification] Observer decision error:", err));
+    }).catch((err) => log.error({ event: "observer.observer_decision_error", err: err }, "Observer decision error"));
   });
 
   return NextResponse.json({ ok: true, status: approved ? "PENDING" : "CANCELED" });

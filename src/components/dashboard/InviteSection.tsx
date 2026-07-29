@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/Toast";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf, type Locale } from "@/lib/i18n";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("observer");
 
 interface Invitation {
   id: string;
@@ -134,7 +137,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
       }
       setEmail("");
     } catch (error) {
-      console.error("[InviteSection] Unexpected error:", error);
+      log.error({ event: "observer.invite_unexpected_error", err: error }, "Unexpected invite error");
       setCreateError(t("invite.createFailed", locale));
     } finally {
       setIsCreating(false);

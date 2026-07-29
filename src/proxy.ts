@@ -5,7 +5,17 @@ import { normalizeLocale } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 function nextWithPathname(req: NextRequest) {
-  const res = NextResponse.next();
+  // Request-korreláció: minden kérés kap egy x-request-id-t (a bejövőt
+  // tiszteletben tartjuk — pl. retry/proxy láncnál), és a REQUEST
+  // fejlécekre is felkerül, hogy a route handlerek / server componentek
+  // headers()-szel olvashassák (getRequestLogger). A response-fejléc a
+  // kliens-oldali hibabejelentéshez adja vissza ugyanazt az id-t.
+  const requestId = req.headers.get("x-request-id") ?? crypto.randomUUID();
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-request-id", requestId);
+  requestHeaders.set("x-pathname", req.nextUrl.pathname);
+  const res = NextResponse.next({ request: { headers: requestHeaders } });
+  res.headers.set("x-request-id", requestId);
   res.headers.set("x-pathname", req.nextUrl.pathname);
   return res;
 }

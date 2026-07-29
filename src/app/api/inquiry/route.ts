@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { submitInquiry } from "@/lib/inquiries";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 // In-app „Kérdésem van" csatorna (help-widget) — bejelentkezett usernek.
 // A linkelés itt garantált: session-ből jön a profil és az aktív org,
@@ -14,6 +15,7 @@ const inquirySchema = z.object({
 }).strict();
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("inquiries");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -50,7 +52,7 @@ export async function POST(req: Request) {
       organizationId: profile.activeOrgId ?? profile.orgMemberships[0]?.orgId ?? null,
     });
   } catch (error) {
-    console.error("[Inquiry] Failed to submit in-app inquiry:", error);
+    log.error({ event: "inquiries.failed_to_submit_in_app_inquiry", err: error }, "Failed to submit in-app inquiry");
     return NextResponse.json({ error: "SUBMIT_FAILED" }, { status: 502 });
   }
 

@@ -10,6 +10,9 @@ import {
   readAssessmentDraftFromStorage,
   toAssessmentAnswerPayload,
 } from "@/lib/assessment-draft";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("try-claim");
 
 export default function TryClaimPage() {
   const router = useRouter();
@@ -59,7 +62,7 @@ export default function TryClaimPage() {
         router.replace("/onboarding");
       })
       .catch((err) => {
-        console.error("[claim] error:", err);
+        log.error({ event: "try.claim_failed", err }, "Claim failed");
         setError(t("tryClaim.error", locale));
       });
   }, [isLoaded, isSignedIn, router, locale]);

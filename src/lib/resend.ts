@@ -1,4 +1,7 @@
 import { Resend } from "resend";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("resend");
 
 let resendInstance: Resend | null = null;
 
@@ -36,9 +39,8 @@ if (
   process.env.NODE_ENV === "production" &&
   !process.env.RESEND_FROM_EMAIL
 ) {
-  console.warn(
-    "[Resend] RESEND_FROM_EMAIL nincs beállítva — a küldés a(z) " +
-      `${DEFAULT_EMAIL_FROM} defaultra esik. Ha a domain nincs verifikálva ` +
-      "(resend.com/domains), az admin-értesítő emailek némán elhalnak.",
+  log.warn(
+    { event: "resend.from_email_missing", fallback: DEFAULT_EMAIL_FROM },
+    "RESEND_FROM_EMAIL nincs beállítva — a küldés a defaultra esik; nem verifikált domainnél az admin-értesítők némán elhalnak",
   );
 }

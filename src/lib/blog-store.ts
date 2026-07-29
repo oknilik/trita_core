@@ -1,6 +1,9 @@
 import "server-only";
 import fs from "fs";
 import path from "path";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("blog-store");
 
 // Blog-tároló réteg az admin Blog fülhöz (2026-07-24).
 //
@@ -120,7 +123,7 @@ export async function saveBlogSource(params: {
     );
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
-      console.error("[BlogStore] GitHub commit failed:", res.status, detail.slice(0, 500));
+      log.error({ event: "blog_store.github_commit_failed", status: res.status, detail: detail.slice(0, 500) }, "GitHub commit failed");
       throw new Error(`GITHUB_WRITE_FAILED_${res.status}`);
     }
     const json = (await res.json()) as { commit?: { html_url?: string } };
@@ -159,7 +162,7 @@ export async function deleteBlogSource(params: {
     );
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
-      console.error("[BlogStore] GitHub delete failed:", res.status, detail.slice(0, 500));
+      log.error({ event: "blog_store.github_delete_failed", status: res.status, detail: detail.slice(0, 500) }, "GitHub delete failed");
       throw new Error(`GITHUB_DELETE_FAILED_${res.status}`);
     }
     const json = (await res.json()) as { commit?: { html_url?: string } };

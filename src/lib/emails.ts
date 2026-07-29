@@ -1,4 +1,5 @@
 import { resend, EMAIL_FROM } from "./resend";
+import { createLogger } from "@/lib/logger";
 import { withHuArticle } from "@/lib/hu-grammar";
 import {
   buildEmailLayout,
@@ -12,6 +13,8 @@ import {
   EMAIL_UL,
   EMAIL_LI,
 } from "./email-layout";
+
+const log = createLogger("email");
 
 type Locale = "hu" | "en";
 
@@ -320,9 +323,9 @@ export async function sendOrderConfirmationEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send order confirmation:", error);
+    log.error({ event: "email.send_failed", template: "order_confirmation", to: params.to, err: error }, "Failed to send order confirmation");
   } else {
-    console.log("[Email] Order confirmation sent to:", params.to);
+    log.info({ event: "email.sent", template: "order_confirmation", to: params.to }, "Order confirmation sent");
   }
 }
 
@@ -404,9 +407,9 @@ export async function sendObserverInviteEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send observer invite:", error);
+    log.error({ event: "email.send_failed", template: "observer_invite", to: params.to, err: error }, "Failed to send observer invite");
   } else {
-    console.log("[Email] Observer invite sent to:", params.to);
+    log.info({ event: "email.sent", template: "observer_invite", to: params.to }, "Observer invite sent");
   }
 }
 
@@ -456,7 +459,7 @@ export async function sendCandidateCompletedEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send candidate completed:", error);
+    log.error({ event: "email.send_failed", template: "candidate_completed", to: params.to, err: error }, "Failed to send candidate completed");
   }
 }
 
@@ -521,10 +524,10 @@ export async function sendProfileShareEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send profile share:", error);
+    log.error({ event: "email.send_failed", template: "profile_share", to: params.to, err: error }, "Failed to send profile share");
     throw new Error("EMAIL_SEND_FAILED");
   }
-  console.log("[Email] Profile share sent to:", params.to);
+  log.info({ event: "email.sent", template: "profile_share", to: params.to }, "Profile share sent");
 }
 
 function buildObserverCompletionHtml(params: {
@@ -584,9 +587,9 @@ export async function sendObserverCompletionEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Observer completion email failed:", error);
+    log.error({ event: "email.send_failed", template: "observer_completion", to: params.to, err: error }, "Failed to send observer completion");
   } else {
-    console.log("[Email] Observer completion email sent to:", params.to);
+    log.info({ event: "email.sent", template: "observer_completion", to: params.to }, "Observer completion email sent");
   }
 }
 
@@ -659,9 +662,9 @@ export async function sendVerificationCodeEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send verification code:", error);
+    log.error({ event: "email.send_failed", template: "verification_code", to: params.to, err: error }, "Failed to send verification code");
   } else {
-    console.log("[Email] Verification code sent to:", params.to);
+    log.info({ event: "email.sent", template: "verification_code", to: params.to }, "Verification code sent");
   }
 }
 
@@ -737,9 +740,9 @@ export async function sendAssessmentDraftReminderEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send draft reminder:", error);
+    log.error({ event: "email.send_failed", template: "draft_reminder", to: params.to, err: error }, "Failed to send draft reminder");
   } else {
-    console.log("[Email] Draft reminder sent to:", params.to);
+    log.info({ event: "email.sent", template: "draft_reminder", to: params.to }, "Draft reminder sent");
   }
 }
 
@@ -775,7 +778,7 @@ export async function sendCoachApplicationNotification(params: {
 }) {
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail) {
-    console.error("[Email] ADMIN_EMAIL not configured, skipping coach application notification");
+    log.warn({ event: "email.skipped", template: "coach_application", reason: "ADMIN_EMAIL not configured" }, "Coach application notification skipped");
     return;
   }
 
@@ -824,9 +827,9 @@ export async function sendCoachApplicationNotification(params: {
   });
 
   if (error) {
-    console.error("[Email] Coach application notification failed:", error);
+    log.error({ event: "email.send_failed", template: "coach_application", to: adminEmail, err: error }, "Failed to send coach application notification");
   } else {
-    console.log("[Email] Coach application notification sent to:", adminEmail);
+    log.info({ event: "email.sent", template: "coach_application", to: adminEmail }, "Coach application notification sent");
   }
 }
 
@@ -859,9 +862,9 @@ export async function sendMagicLinkEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send magic link:", error);
+    log.error({ event: "email.send_failed", template: "magic_link", to: params.to, err: error }, "Failed to send magic link");
   } else {
-    console.log("[Email] Magic link sent to:", params.to);
+    log.info({ event: "email.sent", template: "magic_link", to: params.to }, "Magic link sent");
   }
 }
 
@@ -969,10 +972,10 @@ export async function sendCandidateInviteEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send candidate invite:", error);
+    log.error({ event: "email.send_failed", template: "candidate_invite", to: params.to, err: error }, "Failed to send candidate invite");
     return false;
   }
-  console.log("[Email] Candidate invite sent to:", params.to);
+  log.info({ event: "email.sent", template: "candidate_invite", to: params.to }, "Candidate invite sent");
   return true;
 }
 
@@ -1008,10 +1011,10 @@ export async function sendTeamInviteEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send team invite:", error);
+    log.error({ event: "email.send_failed", template: "team_invite", to: params.to, err: error }, "Failed to send team invite");
     return false;
   }
-  console.log("[Email] Team invite sent to:", params.to);
+  log.info({ event: "email.sent", template: "team_invite", to: params.to }, "Team invite sent");
   return true;
 }
 
@@ -1069,9 +1072,9 @@ export async function sendOrgInviteEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send org invite:", error);
+    log.error({ event: "email.send_failed", template: "org_invite", to: params.to, err: error }, "Failed to send org invite");
     return false;
   }
-  console.log("[Email] Org invite sent to:", params.to);
+  log.info({ event: "email.sent", template: "org_invite", to: params.to }, "Org invite sent");
   return true;
 }

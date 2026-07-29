@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { Resend } from "resend";
+import { getRequestLogger } from "@/lib/logger.server";
 import {
   buildEmailLayout,
   escapeHtml,
@@ -15,6 +16,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = process.env.RESEND_FROM_EMAIL ?? "hello@trita.io";
 
 export async function POST(req: NextRequest) {
+  const log = await getRequestLogger("advisory");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 401 });
 
@@ -100,7 +102,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Advisory request error:", error);
+    log.error({ event: "advisory.advisory_request_error", err: error }, "Advisory request error");
     return NextResponse.json({ error: "EMAIL_SEND_FAILED" }, { status: 500 });
   }
 }

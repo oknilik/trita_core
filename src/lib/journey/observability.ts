@@ -1,5 +1,7 @@
 import "server-only";
 
+import { createLogger } from "@/lib/logger";
+
 import type {
   ActiveSurface,
   JourneyContextSnapshot,
@@ -66,10 +68,8 @@ export function buildJourneyObligationFlags(
 export function traceJourneyDecision(input: JourneyTraceDecision): void {
   if (!isJourneyDebugEnabled()) return;
 
-  console.info(
-    `[JourneyTrace] ${JSON.stringify({
-      timestamp: new Date().toISOString(),
-      ...input,
-    })}`,
+  createLogger("journey").info(
+    { event: "journey.decision", ...input },
+    "Journey decision",
   );
 }

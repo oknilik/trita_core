@@ -10,6 +10,9 @@ import { t, tf } from "@/lib/i18n";
 import Link from "next/link";
 import IntentSelector, { type AuthIntent } from "@/components/auth/IntentSelector";
 import AuthLeftPanel from "@/components/auth/AuthLeftPanel";
+import { createClientLogger } from "@/lib/client-logger";
+
+const log = createClientLogger("auth");
 
 class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -117,7 +120,7 @@ function SignUpContent() {
       setResendCooldown(30);
       setResendNote(null);
     } catch (err: unknown) {
-      console.error("[SignUp] Error:", err);
+      log.error({ event: "auth.sign_up_failed", err }, "Sign-up error");
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
       const message =
         clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;

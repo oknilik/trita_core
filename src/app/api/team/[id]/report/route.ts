@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
+import { getRequestLogger } from "@/lib/logger.server";
 import {
   buildDraftNarrativePrefill,
   buildTeamReportAggregates,
@@ -198,6 +199,7 @@ export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const log = await getRequestLogger("team-report");
   const { id: teamId } = await params;
   const ctx = await requireConsultant(teamId);
   if ("error" in ctx) {
@@ -291,7 +293,7 @@ export async function PATCH(
         teamName: team?.name ?? "—",
         reportId: report.id,
         orgId: ctx.orgId,
-      }).catch((err: unknown) => console.error("[Notification] Team report published error:", err)),
+      }).catch((err: unknown) => log.error({ event: "team-report.team_report_published_error", err: err }, "Team report published error")),
     );
 
     return NextResponse.json({
