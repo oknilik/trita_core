@@ -11,7 +11,7 @@ export function ProfileTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="profile" />
+      <TeamTabBar ctx={ctx} active="profile" showTeamName />
       <TeamProfileTab
         heatmapRows={teamData.heatmapRows}
         dimConfigs={teamData.dimConfigs}

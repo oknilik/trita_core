@@ -44,7 +44,7 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="teamRole" />
+      <TeamTabBar ctx={ctx} active="teamRole" showTeamName />
       <TeamRoleRoundCard
         teamId={teamId}
         isRoundActive={teamRoleTeam?.teamRoleRoundActive ?? false}

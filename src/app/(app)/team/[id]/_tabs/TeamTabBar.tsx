@@ -13,9 +13,13 @@ import type { TeamTabContext } from "./types";
 export function TeamTabBar({
   ctx,
   active,
+  // Kompakt csapat-fejléc a fül-sor fölött — a nem-overview tabokon, ahol
+  // nincs hero: a csapatnév-kontextus ne vesszen el fülváltáskor.
+  showTeamName = false,
 }: {
   ctx: TeamTabContext;
   active: string;
+  showTeamName?: boolean;
 }) {
   const { teamId, teamData, locale, isHu, canViewRaw, isTeamMemberSelf, hasPublishedReport } = ctx;
 
@@ -46,6 +50,17 @@ export function TeamTabBar({
   ];
 
   return (
+    <div>
+      {showTeamName ? (
+        <div className="mb-3 flex items-baseline gap-2.5">
+          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+            {isHu ? "Csapatnézet" : "Team view"}
+          </p>
+          <h1 className="font-fraunces text-xl leading-tight text-ink">
+            {teamData.teamName}
+          </h1>
+        </div>
+      ) : null}
     <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
         {tabs.map((tab) => {
@@ -54,6 +69,9 @@ export function TeamTabBar({
             <Link
               key={tab.key}
               href={`/team/${teamId}?tab=${tab.key}`}
+              // scroll={false}: fülváltásnál a viewport marad, a tartalom a
+              // fül-sor alatt cserélődik — nem „külön oldal betöltése" érzés.
+              scroll={false}
               aria-current={isActive ? "page" : undefined}
               className={[
                 "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-caption whitespace-nowrap transition-all",
@@ -86,6 +104,7 @@ export function TeamTabBar({
           );
         })}
       </div>
+    </div>
     </div>
   );
 }

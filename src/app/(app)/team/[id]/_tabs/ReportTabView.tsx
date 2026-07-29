@@ -15,7 +15,7 @@ export async function ReportTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="report" />
+      <TeamTabBar ctx={ctx} active="report" showTeamName />
 
       {canViewRaw ? (
         <TeamReportEditor

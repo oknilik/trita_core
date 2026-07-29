@@ -17,7 +17,7 @@ export function FeedbackTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-3xl gap-6 px-4 py-8 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="feedback" />
+      <TeamTabBar ctx={ctx} active="feedback" showTeamName />
       <div>
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
           {isHu ? "// visszajelzés" : "// feedback"}

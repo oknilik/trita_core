@@ -15,49 +15,19 @@ import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/Surfac
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { TeamTabBar } from "./TeamTabBar";
-import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
 
 // ── Overview: hero + állapotkép + szerep-függő szekciók ────────────────────
 export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
   const {
     teamId, teamData, locale, isHu, profile,
-    canViewRaw, isOrgManager, canManageTeamActions, canReachOrgCampaigns,
+    canViewRaw, isOrgManager, canManageTeamActions,
     isRestricted, isNone, manageGateCopy,
-    publishedReport, hasPublishedReport, pendingMeasurement, observerGathering,
+    publishedReport, pendingMeasurement, observerGathering,
     receivedFeedbackRequests,
   } = ctx;
 
   const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
-  const { assessedCount, totalCount, intelligenceQualityLabel } =
-    buildIntelligenceViewData({ teamData, teamId, locale, isHu, canReachOrgCampaigns });
-
-  const supportingViews = [
-    {
-      key: "profile" as const,
-      title: t("teamComp.tabProfile", locale),
-      description: isHu
-        ? "Személyiség-heatmap és csapat-szintű elemzés."
-        : "Personality heatmap and team-level analysis.",
-      badge: teamData.completedCount > 0 ? teamData.completedCount : undefined,
-    },
-    {
-      key: "members" as const,
-      title: t("teamComp.tabMembers", locale),
-      description: isHu
-        ? "Taglista, meghívók és kitöltési állapot."
-        : "Members, invites and completion status.",
-      badge: teamData.memberCount + teamData.pendingInvites.length,
-    },
-    {
-      key: "teamRole" as const,
-      title: isHu ? "Csapatszerepek" : "Team roles",
-      description: isHu
-        ? "Csapatszerepek és csapaton belüli egyensúly."
-        : "Team-role balance and role-distribution details.",
-      badge: undefined as number | undefined,
-    },
-  ];
 
   const completedCount = teamData.completedCount;
   const inProgressCount = teamData.members.filter((m) => m.scores === null && m.joinedAt).length;
@@ -517,127 +487,11 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           </div>
         </section>
 
-        {canViewRaw ? (
-        <section id="team-intelligence">
-          <DashboardSectionHeader
-            label={t("teamComp.tabIntelligence", locale)}
-            className="mb-4"
-          />
-          <Link
-            href={`/team/${teamId}?tab=intelligence`}
-            className="group block rounded-[22px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] transition-all hover:-translate-y-0.5 hover:border-bronze/40 hover:shadow-[0_18px_36px_rgba(26,26,46,0.09)] md:p-6"
-          >
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <div className="max-w-2xl">
-                <p className="font-mono text-micro uppercase tracking-widest text-muted">
-                  {isHu ? "Külön nézet" : "Dedicated view"}
-                </p>
-                <h3 className="mt-1 font-fraunces text-[26px] leading-tight text-ink md:text-[31px]">
-                  {t("teamComp.tabIntelligence", locale)}
-                </h3>
-                <p className="mt-2 text-caption leading-relaxed text-ink-body">
-                  {isHu
-                    ? "Potenciál- és szerepilleszkedési térkép egy oldalon, adatminőség-jelzéssel. A nézetet külön oldalon nyithatod meg, hogy fókuszáltan elemezhető legyen."
-                    : "Potential and role-fit maps in one dedicated view with data-quality markers. Open separately for focused analysis."}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
-                    {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
-                    <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
-                  </span>
-                  <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] font-medium text-ink-body">
-                    {isHu ? "Adatállapot" : "Data status"}:{" "}
-                    <span className="font-semibold text-ink">{intelligenceQualityLabel}</span>
-                  </span>
-                </div>
-              </div>
-              <span className="inline-flex min-h-[44px] items-center justify-center rounded-[12px] bg-action-primary-bg px-5 py-2 text-[12px] font-semibold text-white transition-colors group-hover:bg-action-primary-bg-hover">
-                {isHu ? "Csapatintelligencia megnyitása" : "Open team intelligence"}
-              </span>
-            </div>
-          </Link>
+        {/* A korábbi „Csapatintelligencia" CTA-kártya és a nézet-linkkártyák
+            (profil/tagok/szerepek) kikerültek (2026-07-29): a TeamTabBar a
+            navigáció egyetlen, kanonikus helye — a kártyák ugyanazokat a
+            célokat duplikálták. Az adatminőség-infó az Intelligencia fülön él. */}
 
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {supportingViews.map((card) => (
-              <Link
-                key={card.key}
-                href={`/team/${teamId}?tab=${card.key}`}
-                className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-caption font-semibold text-ink">{card.title}</p>
-                  {card.badge ? (
-                    <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-semibold text-ink">
-                      {card.badge}
-                    </span>
-                  ) : null}
-                </div>
-                <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
-                  {card.description}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-        ) : null}
-
-        {/* Team-manager gyorsműveletek — a menedzser belépői a saját csapatán
-            (két menedzser-szint modell, 2026-07-22). A tanácsadó fent kap
-            saját kártyákat; a sima tag ezt nem látja. */}
-        {!canViewRaw && isOrgManager ? (
-          <section>
-            <DashboardSectionHeader
-              label={isHu ? "Csapat kezelése" : "Manage team"}
-              className="mb-4"
-            />
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Link
-                href={`/team/${teamId}?tab=members`}
-                className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-caption font-semibold text-ink">
-                    {isHu ? "Tagok kezelése" : "Manage members"}
-                  </p>
-                  <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-semibold text-ink">
-                    {teamData.memberCount}
-                  </span>
-                </div>
-                <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
-                  {isHu
-                    ? "Tag hozzáadása a szervezet taglistájából, szerepek állítása, eltávolítás."
-                    : "Add members from the organization's list, set roles, remove."}
-                </p>
-              </Link>
-              {hasPublishedReport ? (
-                <Link
-                  href={`/team/${teamId}?tab=report`}
-                  className="group rounded-[16px] border border-sand bg-white p-4 transition-colors hover:border-bronze/35 hover:bg-cream"
-                >
-                  <p className="text-caption font-semibold text-ink">
-                    {isHu ? "Csapat riport" : "Team report"}
-                  </p>
-                  <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
-                    {isHu
-                      ? "A validált csapatkép vezetői nézete — erősségek, kockázatok, akcióterv."
-                      : "The leadership view of the validated team picture — strengths, risks, action plan."}
-                  </p>
-                </Link>
-              ) : (
-                <div className="rounded-[16px] border border-dashed border-sand bg-cream/40 p-4">
-                  <p className="text-caption font-semibold text-muted">
-                    {isHu ? "Csapat riport" : "Team report"}
-                  </p>
-                  <p className="mt-1.5 text-[12px] leading-relaxed text-muted">
-                    {isHu
-                      ? "Még nincs publikált csapatkép — a tanácsadói validálás után itt nyílik meg."
-                      : "No published team picture yet — it opens here after consultant validation."}
-                  </p>
-                </div>
-              )}
-            </div>
-          </section>
-        ) : null}
 
         {!canViewRaw ? (
         <section>
