@@ -33,6 +33,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Agent-worktree-k (saját .next build-artifactokkal) nem lint-célpontok
+    ".claude/**",
   ]),
 ]);
 
