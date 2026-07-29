@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n";
 import type { BlogPost } from "@/lib/blog";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 
@@ -71,7 +71,17 @@ export function BlogListContent({
   postsByLocale: { hu: PostMeta[]; en: PostMeta[] };
 }) {
   const { locale } = useLocale();
-  const posts = postsByLocale[locale === "en" ? "en" : "hu"];
+  // Hydration-stabil nyelvválasztás: az SSR-HTML mindig a default nyelvvel
+  // készül (statikus oldal), a LocaleProvider viszont már hydration KÖZBEN
+  // átválthat (localStorage-effekt) — ha a lista-részfa később hydrálódik,
+  // a szerver-HTML és a kliens-render széttart (hydration mismatch a
+  // generatív SVG-kben). Ezért az első renderben mindig a defaultot
+  // mutatjuk, és csak mount UTÁN váltunk a tényleges nyelvre.
+  const [displayLocale, setDisplayLocale] = useState<Locale>(DEFAULT_LOCALE);
+  useEffect(() => {
+    setDisplayLocale(locale);
+  }, [locale]);
+  const posts = postsByLocale[displayLocale === "en" ? "en" : "hu"];
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
   // Téma-chipek: a leggyakoribb tagek darabszámmal (max 5)
@@ -128,20 +138,20 @@ export function BlogListContent({
           <h1
             className="mb-4 font-fraunces text-fluid-title font-medium tracking-tight text-ink"
           >
-            {t("blog.heroTitle", locale)}
+            {t("blog.heroTitle", displayLocale)}
             <em className="italic text-[var(--color-accent-primary)]">
-              {t("blog.heroTitleEm", locale)}
+              {t("blog.heroTitleEm", displayLocale)}
             </em>
           </h1>
           <p className="max-w-[560px] text-[16px] font-light leading-relaxed text-ink-body">
-            {t("blog.heroSub", locale)}
+            {t("blog.heroSub", displayLocale)}
           </p>
 
           {/* Téma-szűrő chipek darabszámmal */}
           {tagChips.length > 1 && (
             <div className="mt-6 flex flex-wrap gap-2">
               <button type="button" onClick={() => setActiveTag(null)} className={chipClass(activeTag === null)}>
-                {t("blog.filterAll", locale)}{" "}
+                {t("blog.filterAll", displayLocale)}{" "}
                 <span className={activeTag === null ? "opacity-70" : "text-[var(--color-text-muted)]"}>
                   {posts.length}
                 </span>
@@ -168,7 +178,7 @@ export function BlogListContent({
         <div className="mx-auto max-w-5xl">
           {filtered.length === 0 ? (
             <p className="text-sm text-[var(--color-text-muted)]">
-              {t("blog.empty", locale)}
+              {t("blog.empty", displayLocale)}
             </p>
           ) : (
             <>
@@ -184,7 +194,7 @@ export function BlogListContent({
                       <BlogArtVisual slug={featured.slug} tags={featured.tags} seed={featured.artSeed} motif={featured.artMotif} variant="featured" />
                     </div>
                     <span className="relative mb-3 inline-flex self-start rounded-full bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
-                      {t("blog.featured", locale)}
+                      {t("blog.featured", displayLocale)}
                     </span>
                     <p className="relative font-fraunces text-[21px] font-light italic leading-[1.35] text-white">
                       „{featured.heroQuote ?? featured.description.split(/(?<=[.!?])\s/)[0]}”
@@ -200,8 +210,8 @@ export function BlogListContent({
                       {featured.description}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
-                      {isNew(featured.publishedAt) && <NewBadge locale={locale} />}
-                      <span>{formatDate(featured.publishedAt, locale)}</span>
+                      {isNew(featured.publishedAt) && <NewBadge locale={displayLocale} />}
+                      <span>{formatDate(featured.publishedAt, displayLocale)}</span>
                       <span className="h-[3px] w-[3px] rounded-full bg-[var(--color-border-default)]" />
                       <span>{featured.readingTime}</span>
                     </div>
@@ -215,7 +225,7 @@ export function BlogListContent({
                   <div className="mb-3.5 flex items-center gap-2.5">
                     <span className="h-[1.5px] w-4 bg-[var(--color-action-primary-bg)]" />
                     <span className="text-label uppercase tracking-widest text-[var(--color-accent-self-deep)]">
-                      {t("blog.startHere", locale)}
+                      {t("blog.startHere", displayLocale)}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -263,8 +273,8 @@ export function BlogListContent({
                           {post.description}
                         </p>
                         <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
-                          {isNew(post.publishedAt) && <NewBadge locale={locale} />}
-                          <span>{formatDate(post.publishedAt, locale)}</span>
+                          {isNew(post.publishedAt) && <NewBadge locale={displayLocale} />}
+                          <span>{formatDate(post.publishedAt, displayLocale)}</span>
                           <span className="h-[3px] w-[3px] rounded-full bg-[var(--color-border-default)]" />
                           <span>{post.readingTime}</span>
                         </div>
@@ -294,10 +304,10 @@ export function BlogListContent({
                     </p>
                     <span className="mt-2.5 flex items-center gap-3">
                       <span className="text-xs text-[var(--color-text-muted)]">
-                        {formatDate(post.publishedAt, locale)} · {post.readingTime}
+                        {formatDate(post.publishedAt, displayLocale)} · {post.readingTime}
                       </span>
                       <span className="text-xs font-medium text-[var(--color-action-primary-bg)] opacity-0 transition-opacity group-hover:opacity-100">
-                        {t("blog.readCta", locale)}
+                        {t("blog.readCta", displayLocale)}
                       </span>
                     </span>
                   </span>
