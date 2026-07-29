@@ -199,6 +199,12 @@ export async function PATCH(
     return NextResponse.json({ campaign: updated });
   }
 
+  // Vázlat nem zárható le közvetlenül: az elvetés útja a DELETE — így a
+  // „Lezárt körök" listába csak ténylegesen futott mérés kerülhet.
+  if (body.data.status === "CLOSED" && ctx.campaign.status === "DRAFT") {
+    return NextResponse.json({ error: "DRAFT_CANNOT_CLOSE" }, { status: 409 });
+  }
+
   const campaign = await prisma.campaign.update({
     where: { id: campaignId },
     data: {

@@ -341,8 +341,11 @@ export default async function CampaignDetailPage({
   if (campaign.status === "CLOSED" && selfDoneResults.length > 0) {
     currentAvgScores = computeAvgScores(selfDoneResults);
 
-    // Find the previous CLOSED campaign (before this one)
-    const prevCampaign = await prisma.campaign.findFirst({
+    // Find the previous CLOSED campaign (before this one). Elvetett
+    // (nem aktivált ÉS haladás nélküli) kör nem összehasonlítási alap —
+    // a legacy futott körök activatedAt-ja NULL, őket a résztvevő-haladás
+    // azonosítja (ld. org-stats visibleCampaigns szűrő).
+    const prevCandidates = await prisma.campaign.findMany({
       where: {
         orgId,
         status: "CLOSED",
@@ -350,14 +353,20 @@ export default async function CampaignDetailPage({
         closedAt: { lt: campaign.closedAt ?? new Date() },
       },
       orderBy: { closedAt: "desc" },
+      take: 10,
       select: {
         id: true,
         name: true,
+        activatedAt: true,
         participants: {
-          select: { userId: true },
+          select: { userId: true, currentStep: true },
         },
       },
     });
+    const prevCampaign =
+      prevCandidates.find(
+        (c) => c.activatedAt || c.participants.some((p) => p.currentStep > 0),
+      ) ?? null;
 
     if (prevCampaign) {
       const prevParticipantIds = prevCampaign.participants.map((p) => p.userId);

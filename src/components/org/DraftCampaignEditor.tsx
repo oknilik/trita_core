@@ -67,6 +67,8 @@ export function DraftCampaignEditor({
   const [intervalHours, setIntervalHours] = useState(initialIntervalHours);
   const [saving, setSaving] = useState(false);
   const [discarding, setDiscarding] = useState(false);
+  // Elvetés kétfázisú, inline megerősítéssel — natív confirm() nélkül.
+  const [confirmingDiscard, setConfirmingDiscard] = useState(false);
   const [notice, setNotice] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
 
   const chosenSteps = STEP_ORDER.filter((tp) => selected.has(tp));
@@ -120,7 +122,6 @@ export function DraftCampaignEditor({
   // Vázlat elvetése: csak DRAFT-ban létezik a gomb; a szerver is őrzi
   // (CAMPAIGN_NOT_DRAFT). Beadott adat vázlatnál nincs, a törlés végleges.
   const discard = async () => {
-    if (!window.confirm(t("org.campaign.discardConfirm", locale))) return;
     setDiscarding(true);
     setNotice(null);
     try {
@@ -290,21 +291,49 @@ export function DraftCampaignEditor({
         </span>
       )}
 
-      {/* Vázlat elvetése — vizuálisan elválasztva a mentéstől */}
+      {/* Vázlat elvetése — vizuálisan elválasztva a mentéstől; a
+          megerősítés inline (nincs natív browser-dialog) */}
       <div className="mt-5 border-t border-sand pt-4">
-        <button
-          type="button"
-          disabled={discarding}
-          onClick={discard}
-          className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
-        >
-          {discarding
-            ? t("org.campaign.discarding", locale)
-            : t("org.campaign.discardDraft", locale)}
-        </button>
-        <p className="mt-1.5 text-micro text-muted">
-          {t("org.campaign.discardHint", locale)}
-        </p>
+        {confirmingDiscard ? (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
+            <p className="text-xs font-semibold text-rose-800">
+              {t("org.campaign.discardConfirm", locale)}
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                disabled={discarding}
+                onClick={discard}
+                className="min-h-[36px] rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+              >
+                {discarding
+                  ? t("org.campaign.discarding", locale)
+                  : t("org.campaign.discardConfirmCta", locale)}
+              </button>
+              <button
+                type="button"
+                disabled={discarding}
+                onClick={() => setConfirmingDiscard(false)}
+                className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              >
+                {t("org.campaign.discardCancel", locale)}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => setConfirmingDiscard(true)}
+              className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
+            >
+              {t("org.campaign.discardDraft", locale)}
+            </button>
+            <p className="mt-1.5 text-micro text-muted">
+              {t("org.campaign.discardHint", locale)}
+            </p>
+          </>
+        )}
       </div>
     </section>
   );

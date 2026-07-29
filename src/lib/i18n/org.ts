@@ -448,6 +448,8 @@ export const orgTranslations = {
         en: "Discard this measurement draft? The draft and its participant list will be permanently deleted.",
       },
       discardFailed: { hu: "Az elvetés nem sikerült — próbáld újra.", en: "Discard failed — try again." },
+      discardConfirmCta: { hu: "Végleges elvetés", en: "Discard permanently" },
+      discardCancel: { hu: "Mégse", en: "Cancel" },
       discardHint: {
         hu: "Csak vázlat vethető el — aktivált mérést lezárni lehet, törölni nem.",
         en: "Only drafts can be discarded — an activated measurement can be closed, not deleted.",

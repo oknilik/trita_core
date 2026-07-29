@@ -99,6 +99,23 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     },
   });
 
+  // Elvetett körök kiszűrése a „Lezárt körök" listából: a CLOSED-ba került,
+  // soha nem aktivált ÉS haladás nélküli kampány elvetett vázlat (a régi
+  // elvetés-út a lezárás volt; az új a DELETE, a DRAFT→CLOSED átmenet
+  // tiltva). A legacy, ténylegesen futott körök activatedAt-ja NULL —
+  // őket a résztvevő-haladás (currentStep/stepCompletions) menti meg.
+  const visibleCampaigns = rawCampaigns.filter((c) => {
+    if (c.status !== "CLOSED" || c.activatedAt) return true;
+    return c.participants.some(
+      (p) =>
+        p.currentStep > 0 ||
+        (p.stepCompletions &&
+          typeof p.stepCompletions === "object" &&
+          !Array.isArray(p.stepCompletions) &&
+          Object.keys(p.stepCompletions as Record<string, unknown>).length > 0),
+    );
+  });
+
   // Fetch org member IDs for TRITAN averages
   const [memberRows, pendingRows, teamRows] = await Promise.all([
     prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
@@ -108,7 +125,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
 
   // Collect all participant userIds across all campaigns
   const allParticipantUserIds = Array.from(
-    new Set(rawCampaigns.flatMap((c) => c.participants.map((p) => p.userId)))
+    new Set(visibleCampaigns.flatMap((c) => c.participants.map((p) => p.userId)))
   );
 
   // Fetch self-assessment completion for all participant userIds.
@@ -144,7 +161,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   }
 
   // Build CampaignWithStats
-  const campaigns: CampaignWithStats[] = rawCampaigns.map((c) => {
+  const campaigns: CampaignWithStats[] = visibleCampaigns.map((c) => {
     const steps = getCampaignSteps(c);
     const hasObserverStep = steps.includes("OBSERVER_360");
     // Fresh-kapu: aktiválás előtti eredmény nem számít az újrafelvételi körben.
