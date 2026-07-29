@@ -259,7 +259,7 @@ export function PeerFeedbackClient({
     ].join(" ");
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-10">
+    <div className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
       <p className="font-mono text-xs uppercase tracking-widest text-bronze">
         {campaignName}
       </p>

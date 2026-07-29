@@ -57,11 +57,13 @@ export function Footer() {
     // footer-háttér FÜGGŐLEGES gradiens (to-b): így az SVG tömör ink-kitöltése
     // pixelre egyezik a törzs tetejével.
     <footer className="relative -mt-10 w-full md:-mt-14">
+      {/* pointer-events-none: a hullám a megelőző oldal fölé húzódik (-mt),
+          az átlátszó zónája nem foghatja el az alatta lévő gombok kattintását. */}
       <svg
         viewBox="0 0 1440 56"
         preserveAspectRatio="none"
         aria-hidden="true"
-        className="block h-10 w-full md:h-14"
+        className="pointer-events-none block h-10 w-full md:h-14"
       >
         <path
           d="M0,26 C240,10 480,34 720,22 C960,10 1120,30 1280,18 C1360,12 1410,20 1440,16 L1440,56 L0,56 Z"

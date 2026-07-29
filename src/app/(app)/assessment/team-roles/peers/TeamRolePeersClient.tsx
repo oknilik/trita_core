@@ -172,7 +172,7 @@ export function TeamRolePeersClient({
   if (!current) return null;
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col px-4 py-8">
+    <div className="mx-auto flex w-full max-w-2xl flex-col px-4 pt-8 pb-20">
       <div className="flex items-center justify-between">
         <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
           {t("teamRolePeers.eyebrow", locale)}

@@ -396,7 +396,7 @@ export function CandidateClient({
 
     return (
       <div className="min-h-dvh bg-cream">
-        <div className="mx-auto max-w-3xl px-4 py-10 md:py-14">
+        <div className="mx-auto max-w-3xl px-4 pt-10 pb-20 md:pt-14">
           <div className="mb-5 rounded-xl border border-sage-ring bg-sage-ghost px-4 py-3 text-sm leading-relaxed text-ink-body">
             {locale === "en"
               ? "Thanks — your assessment is in! One optional step remains: a short team-role questionnaire (~3 minutes). You can skip it."
@@ -460,7 +460,7 @@ export function CandidateClient({
 
   return (
     <div className="min-h-dvh bg-cream">
-      <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+      <div className="mx-auto max-w-3xl px-4 pt-8 pb-20 md:pt-12">
 
         {/* Sticky progress bar */}
         <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sand bg-white/90 px-4 py-3 shadow-sm backdrop-blur">

@@ -66,7 +66,7 @@ export default async function NewCampaignPage({
   if (isReadOnly) {
     return (
       <div className="min-h-dvh bg-cream">
-        <main className="mx-auto w-full max-w-2xl px-4 py-10">
+        <main className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
           <OrgSubscriptionBanner
             state={bannerState ?? "restricted"}
             locale={locale}
@@ -137,7 +137,7 @@ export default async function NewCampaignPage({
 
   return (
     <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-2xl px-4 py-10">
+      <main className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
         {/* Back link */}
         <Link
           href={`/org/${orgId}?tab=campaigns`}

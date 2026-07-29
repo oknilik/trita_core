@@ -209,7 +209,7 @@ export default async function CampaignDetailPage({
   if (isFrozen) {
     return (
       <div className="min-h-dvh bg-cream">
-        <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
+        <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-10 pb-20">
           <OrgSubscriptionBanner state="frozen" locale={locale} />
           <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
@@ -457,7 +457,7 @@ export default async function CampaignDetailPage({
 
   return (
     <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:gap-10">
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pt-10 pb-20 md:gap-10">
         {isRestricted || isPastDue || isNone ? (
           <OrgSubscriptionBanner
             state={isNone ? "none" : "restricted"}

@@ -198,7 +198,7 @@ export default async function MyMeasurementsPage() {
 
   return (
     <main className="min-h-dvh bg-cream">
-      <div className="mx-auto w-full max-w-3xl px-4 py-10">
+      <div className="mx-auto w-full max-w-3xl px-4 pt-10 pb-20">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
           {t("myTasks.eyebrow", loc)}
         </p>

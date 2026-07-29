@@ -526,7 +526,7 @@ export function ObserverClient({
     return (
       <div className="relative min-h-dvh bg-cream">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-2xl px-4 py-8 md:py-12">
+        <div className="relative z-10 mx-auto max-w-2xl px-4 pt-8 pb-20 md:pt-12">
           <div className="rounded-2xl border border-sand bg-white p-6 md:p-8">
             <h1 className="text-2xl font-bold text-ink">
               👋 {t("observer.introWelcome", locale)}

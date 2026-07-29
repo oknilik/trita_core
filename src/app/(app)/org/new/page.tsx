@@ -44,7 +44,7 @@ export default async function NewClientOrgPage() {
 
   return (
     <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-xl px-4 py-10">
+      <main className="mx-auto w-full max-w-xl px-4 pt-10 pb-20">
         <Link
           href="/dashboard"
           className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
