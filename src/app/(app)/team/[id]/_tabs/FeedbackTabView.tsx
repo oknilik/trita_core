@@ -1,7 +1,7 @@
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamKudos } from "@/components/team/TeamKudos";
 import { TeamFeedbackRequests } from "@/components/team/TeamFeedbackRequests";
-import { TeamTabBar } from "./TeamTabBar";
+import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
 
 // ── Visszajelzés fül (peer feedback): kitüntetett hely, csak csapattagnak ──
@@ -17,7 +17,7 @@ export function FeedbackTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-3xl gap-6 px-4 py-8 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="feedback" showTeamName />
+      <TeamHeroBlock ctx={ctx} active="feedback" />
       <div>
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">
           {isHu ? "// visszajelzés" : "// feedback"}

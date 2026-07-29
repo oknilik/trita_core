@@ -3,7 +3,7 @@ import { canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { ObserverApprovalCard } from "@/components/team/ObserverApprovalCard";
-import { TeamTabBar } from "./TeamTabBar";
+import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
 
 // ── Members tab: member list + invites + invite form ────────────────────
@@ -85,7 +85,7 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="members" showTeamName />
+      <TeamHeroBlock ctx={ctx} active="members" />
       {pendingApprovals.length > 0 ? (
         <ObserverApprovalCard approvals={pendingApprovals} isHu={isHu} />
       ) : null}

@@ -3,7 +3,7 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamReportEditor } from "@/components/team/TeamReportEditor";
 import { TeamReportView } from "@/components/team/TeamReportView";
 import { TeamReportMemberView } from "@/components/team/TeamReportMemberView";
-import { TeamTabBar } from "./TeamTabBar";
+import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
 
 export async function ReportTabView({ ctx }: { ctx: TeamTabContext }) {
@@ -15,7 +15,7 @@ export async function ReportTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="report" showTeamName />
+      <TeamHeroBlock ctx={ctx} active="report" />
 
       {canViewRaw ? (
         <TeamReportEditor

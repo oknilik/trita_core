@@ -2,7 +2,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
-import { TeamTabBar } from "./TeamTabBar";
+import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
 
@@ -33,7 +33,7 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         surface="team"
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
-        <TeamTabBar ctx={ctx} active="intelligence" showTeamName />
+        <TeamHeroBlock ctx={ctx} active="intelligence" />
 
         <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
           <p className="font-mono text-micro uppercase tracking-widest text-muted">
@@ -113,7 +113,7 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
       surface="team"
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
-      <TeamTabBar ctx={ctx} active="intelligence" showTeamName />
+      <TeamHeroBlock ctx={ctx} active="intelligence" />
       <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
         <p className="font-mono text-micro uppercase tracking-widest text-muted">
           {t("teamComp.tabIntelligence", locale)}
