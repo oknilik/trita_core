@@ -19,9 +19,12 @@ const postSchema = z.object({
     "assign_consultant",
     "remove_consultant",
     "update_billing",
+    "set_career_module",
   ]),
   // Cégadatok (update_billing) — a mezőket a sanitizeOrgBillingProfile szűri.
   billing: z.record(z.string(), z.string()).optional(),
+  // Karrier-modul elrejtése az org tagjainak (set_career_module).
+  hideCareerModule: z.boolean().optional(),
   planType: z.enum(["team", "org", "scale"]).optional(),
   months: z.number().int().min(1).max(36).optional(),
   candidateCredits: z.number().int().min(0).max(1000).optional(),
@@ -43,6 +46,7 @@ export async function GET() {
       name: true,
       status: true,
       billingProfile: true,
+      hideCareerModule: true,
       createdAt: true,
       _count: { select: { members: { where: { role: { not: "ORG_CONSULTANT" } } } } },
       subscription: {
@@ -105,6 +109,7 @@ export async function POST(req: NextRequest) {
   }
   const { orgId, action, planType, months, candidateCredits, consultantEmail, billing } =
     parsed.data;
+  const { hideCareerModule } = parsed.data;
 
   const org = await prisma.organization.findUnique({
     where: { id: orgId },
@@ -124,6 +129,20 @@ export async function POST(req: NextRequest) {
       data: { billingProfile: sanitized as Record<string, string> },
     });
     return NextResponse.json({ ok: true, billingProfile: sanitized });
+  }
+
+  // Karrier-modul kapcsoló: elrejti a Karrier-iránytű fület és a PDF
+  // karrier-blokkját az org tagjainak. Csak a trita admin állíthatja.
+  if (action === "set_career_module") {
+    if (hideCareerModule === undefined) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
+    const updated = await prisma.organization.update({
+      where: { id: orgId },
+      data: { hideCareerModule },
+      select: { hideCareerModule: true },
+    });
+    return NextResponse.json({ ok: true, hideCareerModule: updated.hideCareerModule });
   }
 
   if (action === "activate" || action === "extend") {

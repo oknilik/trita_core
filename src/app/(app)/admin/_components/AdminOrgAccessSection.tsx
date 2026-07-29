@@ -12,6 +12,7 @@ interface OrgRow {
   name: string;
   status: string;
   billingProfile: OrgBillingProfile;
+  hideCareerModule: boolean;
   createdAt: string;
   memberCount: number;
   consultants: Array<{ userId: string; email: string | null; username: string | null }>;
@@ -90,8 +91,15 @@ export function AdminOrgAccessSection({ orgs }: Props) {
 
   async function callAction(
     orgId: string,
-    action: "activate" | "trial" | "extend" | "deactivate" | "assign_consultant" | "remove_consultant",
-    extra?: { consultantEmail?: string },
+    action:
+      | "activate"
+      | "trial"
+      | "extend"
+      | "deactivate"
+      | "assign_consultant"
+      | "remove_consultant"
+      | "set_career_module",
+    extra?: { consultantEmail?: string; hideCareerModule?: boolean },
   ) {
     setRowState((s) => ({ ...s, [orgId]: { loading: true, error: null } }));
     try {
@@ -287,6 +295,34 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                       Hozzárendelés
                     </button>
                   </div>
+                </div>
+                {/* ── Modul-kapcsolók — csak trita admin ── */}
+                <div className="mt-3 border-t border-sand pt-3">
+                  <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-muted">
+                    Modulok
+                  </p>
+                  <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-ink-body">
+                    <input
+                      type="checkbox"
+                      checked={org.hideCareerModule}
+                      disabled={state.loading}
+                      onChange={(e) =>
+                        callAction(org.id, "set_career_module", {
+                          hideCareerModule: e.target.checked,
+                        })
+                      }
+                      className="h-4 w-4 accent-[var(--color-accent-primary)]"
+                    />
+                    <span>
+                      Karrier-iránytű elrejtése a tagoknak
+                      <span className="ml-1 text-muted">(fül + PDF-blokk)</span>
+                    </span>
+                    {org.hideCareerModule && (
+                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold text-amber-700">
+                        rejtve
+                      </span>
+                    )}
+                  </label>
                 </div>
                 {state.error && (
                   <p className="mt-2 text-xs text-rose-600">{state.error}</p>

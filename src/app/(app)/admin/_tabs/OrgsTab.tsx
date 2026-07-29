@@ -11,6 +11,7 @@ export async function OrgsTab() {
       name: true,
       status: true,
       billingProfile: true,
+      hideCareerModule: true,
       createdAt: true,
       _count: { select: { members: { where: { role: { not: "ORG_CONSULTANT" } } } } },
       subscription: {
@@ -39,6 +40,7 @@ export async function OrgsTab() {
         name: org.name,
         status: org.status,
         billingProfile: sanitizeOrgBillingProfile(org.billingProfile),
+        hideCareerModule: org.hideCareerModule,
         createdAt: org.createdAt.toISOString(),
         memberCount: org._count.members,
         consultants: org.members.map((m) => ({

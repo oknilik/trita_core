@@ -81,6 +81,7 @@ export default async function ProfileResultsPage({
     draft,
     satisfactionFeedbackRecord,
     journeySnapshot,
+    careerHiddenMembership,
   ] = await Promise.all([
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
@@ -137,6 +138,13 @@ export default async function ProfileResultsPage({
     getJourneySnapshotForProfileId(profile.id, {
       locale,
       entryPoint: "profile_results_page",
+    }),
+    // Org-szintű karrier-modul kapcsoló (trita admin állítja): ha a user
+    // BÁRMELY aktív szervezeti tagságánál rejtve a modul, a fül és a
+    // PDF-blokk is eltűnik (a szigorúbb szabály nyer).
+    prisma.organizationMember.findFirst({
+      where: { userId: profile.id, leftAt: null, org: { hideCareerModule: true } },
+      select: { id: true },
     }),
   ]);
 
@@ -403,7 +411,7 @@ export default async function ProfileResultsPage({
     tabParam === "comparison" ? "comparison" :
     tabParam === "invites" ? "comparison" :
     tabParam === "workstyle" ? "results" :
-    tabParam === "career" ? "career" :
+    tabParam === "career" && !careerHiddenMembership ? "career" :
     "results";
 
   // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma
@@ -548,6 +556,7 @@ export default async function ProfileResultsPage({
           watchAreas={watchAreas}
           plusContent={plusContent}
           careerBackground={profile.careerBackground as CareerBackground | null}
+          careerModuleHidden={Boolean(careerHiddenMembership)}
           bridgeNextStep={{
             stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
             explanation: selfDashboardVm.recommendedAction.description,

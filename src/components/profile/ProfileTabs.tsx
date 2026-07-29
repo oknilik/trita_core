@@ -168,6 +168,8 @@ export interface ProfileTabsProps {
   };
   bridgeNextStep?: BridgeNextStep;
   hasTeamOrOrgMembership?: boolean;
+  // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
+  careerModuleHidden?: boolean;
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
   careerBackground?: CareerBackground | null;
@@ -538,6 +540,7 @@ export function ProfileTabs({
   plusContent,
   bridgeNextStep,
   hasTeamOrOrgMembership = false,
+  careerModuleHidden = false,
   experienceHints,
   experienceHintDestination,
   careerBackground = null,
@@ -669,7 +672,11 @@ export function ProfileTabs({
   // A Karrier tab MINDENKINEK látszik (2026-07-29): korábban org/team
   // tagoknál rejtve volt, de a kitöltött karrier-adat így elveszett a
   // felületről, miközben a PDF-ben benne maradt — inkonzisztens volt.
-  const TABS = ALL_TABS;
+  // Kivétel: org-szintű kapcsoló (trita admin, Organization.hideCareerModule)
+  // — ilyenkor a fül ÉS a PDF karrier-blokkja is rejtve.
+  const TABS = careerModuleHidden
+    ? ALL_TABS.filter((tab) => tab.id !== "career")
+    : ALL_TABS;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -748,6 +755,7 @@ export function ProfileTabs({
 
             // Karrier-iránytű export — csak kitöltött wizard (van háttér) után
             const career = (() => {
+              if (careerModuleHidden) return undefined;
               if (!careerBackground?.status) return undefined;
               const dimScores = Object.fromEntries(
                 mainDims.map((d) => [d.code, d.score]),

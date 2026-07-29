@@ -421,6 +421,9 @@ model Organization {
   // KIZÁRÓLAG az admin felületen jelenik meg és szerkeszthető.
   // Mezőlista: src/lib/org-billing.ts (OrgBillingProfile).
   billingProfile Json?
+  // Karrier-modul elrejtése az org tagjainak (fül + PDF-blokk) —
+  // KIZÁRÓLAG a trita admin kapcsolhatja (/admin?tab=orgs).
+  hideCareerModule Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
