@@ -12,6 +12,13 @@ interface HeatmapRow {
 }
 
 import { t, tf, type Locale } from "@/lib/i18n";
+import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
+function hexLetter(code: string): string {
+  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+}
+
 
 interface TeamInsightsProps {
   rows: HeatmapRow[];
@@ -211,12 +218,12 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
             const avg = teamAvg[dim.code];
             const stdDev = dimStdDev[dim.code];
             return (
-              <div key={dim.code} className="flex items-center gap-3">
+              <div key={hexLetter(dim.code)} className="flex items-center gap-3">
                 <span
                   className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                   style={{ backgroundColor: dim.color }}
                 >
-                  {dim.code}
+                  {hexLetter(dim.code)}
                 </span>
                 <div className="flex-1">
                   <div className="relative h-7 overflow-hidden rounded-lg bg-sand/50">

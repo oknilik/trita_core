@@ -1,5 +1,12 @@
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
+function hexLetter(code: string): string {
+  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+}
+
 
 interface DimGapEntry {
   code: string;
@@ -70,14 +77,14 @@ export function BlindSpotAnalysis({
           <div className="space-y-3">
             {hiddenOnly.map((dim) => (
               <div
-                key={dim.code}
+                key={hexLetter(dim.code)}
                 className="flex items-start gap-4 rounded-xl border border-sand bg-white p-4"
               >
                 <div
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white mt-0.5"
                   style={{ backgroundColor: dim.color }}
                 >
-                  {dim.code}
+                  {hexLetter(dim.code)}
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">{dim.label}</p>
@@ -109,14 +116,14 @@ export function BlindSpotAnalysis({
           <div className="space-y-3">
             {overOnly.map((dim) => (
               <div
-                key={dim.code}
+                key={hexLetter(dim.code)}
                 className="flex items-start gap-4 rounded-xl border border-sand bg-white p-4"
               >
                 <div
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white mt-0.5"
                   style={{ backgroundColor: dim.color }}
                 >
-                  {dim.code}
+                  {hexLetter(dim.code)}
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">{dim.label}</p>

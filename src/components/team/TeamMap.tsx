@@ -44,7 +44,7 @@ const DIM_NAMES: Record<string, string> = {
   RESO: "Emocionalitás",
   TEMP: "Extraverzió",
   ADAP: "Barátságosság",
-  THOR: "Lelkiism.",
+  THOR: "Lelkiismeretesség",
   OPEN: "Nyitottság",
 };
 

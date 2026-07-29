@@ -1,6 +1,13 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
+function hexLetter(code: string): string {
+  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+}
+
 
 interface DimDetailEntry {
   code: string;
@@ -43,7 +50,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
           const level = scoreLabel(dim.score, locale);
           return (
             <div
-              key={dim.code}
+              key={hexLetter(dim.code)}
               className="rounded-2xl border border-sand bg-white p-5"
             >
               {/* Header row */}
@@ -53,7 +60,7 @@ export function DimensionDetail({ dimensions, locale }: DimensionDetailProps) {
                     className="flex h-8 w-8 items-center justify-center rounded-lg font-mono text-xs font-semibold text-white shrink-0"
                     style={{ backgroundColor: dim.color }}
                   >
-                    {dim.code}
+                    {hexLetter(dim.code)}
                   </div>
                   <span className="font-semibold text-sm text-ink">{dim.label}</span>
                 </div>

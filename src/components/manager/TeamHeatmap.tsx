@@ -30,6 +30,13 @@ function scoreToAlpha(score: number | null): number {
 }
 
 import { t, type Locale } from "@/lib/i18n";
+import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
+function hexLetter(code: string): string {
+  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+}
+
 
 function scoreZone(score: number | null, locale: Locale): { label: string; textClass: string } {
   if (score == null) return { label: "–", textClass: "text-muted" };
@@ -84,13 +91,13 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                 {t("manager.teamHeatmap.member", locale)}
               </th>
               {dims.map((dim) => (
-                <th key={dim.code} className="pb-4 px-2 text-center min-w-[80px]">
+                <th key={hexLetter(dim.code)} className="pb-4 px-2 text-center min-w-[80px]">
                   <div className="flex flex-col items-center gap-1.5">
                     <span
                       className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white shadow-sm"
                       style={{ backgroundColor: dim.color }}
                     >
-                      {dim.code}
+                      {hexLetter(dim.code)}
                     </span>
                     <span className="text-micro font-semibold text-muted max-w-[72px] leading-tight text-center">
                       {dim.label}
@@ -122,7 +129,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                   const { textClass } = scoreZone(score, locale);
 
                   return (
-                    <td key={dim.code} className="px-2 py-2">
+                    <td key={hexLetter(dim.code)} className="px-2 py-2">
                       <div
                         className="relative mx-auto flex h-12 w-[72px] flex-col items-center justify-center rounded-xl border border-transparent transition-all"
                         style={
@@ -188,14 +195,14 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
             const desc = DIM_DESCRIPTIONS[dim.code];
             return (
               <div
-                key={dim.code}
+                key={hexLetter(dim.code)}
                 className="flex items-start gap-3 rounded-xl border border-sand/70 bg-surface-subtle/60 p-3"
               >
                 <span
                   className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                   style={{ backgroundColor: dim.color }}
                 >
-                  {dim.code}
+                  {hexLetter(dim.code)}
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-ink-body">{dim.label}</p>
