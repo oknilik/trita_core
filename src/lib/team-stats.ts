@@ -455,18 +455,29 @@ export async function getTeamPageData(
     createdAt: inv.createdAt.toISOString(),
   }));
 
-  // Compute team pattern (requires at least 3 members with full TRITAN scores)
+  // Compute team pattern (requires at least 3 members with full TRITAN scores).
+  // FONTOS: a member.scores a NYERS score-JSON dimenziói — a BELSŐ kódokkal
+  // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO megjelenítési betűkkel
+  // (H/E/X/A/C/O). A 2026-07-29-es HEXACO-átállás után itt tévesen a
+  // display-betűket kerestük, ezért a mintázat mindig null lett.
   const tritanMembers: Array<{ userId: string; scores: TritanScores }> = [];
   for (const m of members) {
     const s = m.scores;
     if (
       s &&
-      s.H !== undefined && s.E !== undefined && s.X !== undefined &&
-      s.A !== undefined && s.C !== undefined && s.O !== undefined
+      s.INTE !== undefined && s.RESO !== undefined && s.TEMP !== undefined &&
+      s.ADAP !== undefined && s.THOR !== undefined && s.OPEN !== undefined
     ) {
       tritanMembers.push({
         userId: m.userId,
-        scores: { INTE: s.H, RESO: s.E, TEMP: s.X, ADAP: s.A, THOR: s.C, OPEN: s.O },
+        scores: {
+          INTE: s.INTE,
+          RESO: s.RESO,
+          TEMP: s.TEMP,
+          ADAP: s.ADAP,
+          THOR: s.THOR,
+          OPEN: s.OPEN,
+        },
       });
     }
   }
