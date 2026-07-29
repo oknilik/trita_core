@@ -45,8 +45,36 @@ mindig ez az oldal.
 **Módosíthatók az itemek?** Igen — a public domain jogállás miatt az
 itemek szabadon módosíthatók, rövidíthetők, adaptálhatók. Saját
 adaptációink: E/1 alany hozzáadása (az IPIP alany nélküli frázisokat
-használ), 3 itemnél könnyű szövegigazítás (41: „when I need it"
-kiegészítés; 50: „in my room" → általánosítva; 78: mondat egyszerűsítve).
+használ), 5 itemnél könnyű szövegigazítás (12, 36: „would" betoldás az
+E/1 alany mellé; 41: „when I need it" kiegészítés; 50: „in my room" →
+általánosítva; 78: mondat egyszerűsítve).
+
+## Szövegszintű ellenőrzés — B1 nyitott szál LEZÁRVA (2026-07-29)
+
+A B1 ügyvédi csomag nyitott kérdése az EN itemek IPIP-eredetének
+szövegszintű igazolása volt. Elvégzett ellenőrzés: mind a 100 EN item
+gépi összevetése az IPIP hivatalos kulcs-oldalainak szövegével
+(https://ipip.ori.org/newHEXACO_PI_key.htm +
+https://ipip.ori.org/newNEOFacetsKey.htm, letöltve 2026-07-29,
+normalizált szó szerinti egyezés + token-hasonlóság).
+
+Eredmény: **95/100 item szó szerint egyezik** az IPIP-tétellel (egyetlen
+eltérés az E/1 „I" alany hozzáadása — az IPIP alany nélküli frázisokat
+közöl), a maradék 5 a fent dokumentált könnyű adaptáció:
+
+| # | IPIP-eredeti | TSFI EN | Eltérés |
+|---|---|---|---|
+| 12 | Admire a really clever scam. | I would admire a really clever scam. | E/1 + „would" |
+| 36 | Cheat to get ahead. | I would cheat to get ahead. | E/1 + „would" |
+| 41 | Seek support. | I seek support when I need it. | kiegészítés |
+| 50 | Leave a mess in my room. | I leave a mess around me. | általánosítás |
+| 78 | Tell other people what they want to hear so that they will do what I want them to do. | I tell people what they want to hear so that they will do what I want. | egyszerűsítés |
+
+Egyik item sem egyezik a hexaco.org-on közzétett HEXACO-PI-R védett
+tételszövegeivel — a bank kizárólag IPIP public domain szövegekre épül,
+a fenti adaptációk a public domain jogállás alatt szabadok. A korábbi
+(v1) bankra vonatkozó licenc-aggály (tsfi-item-audit-2026-07.md) a v2
+bankra nem áll fenn.
 
 **Fordítható magyarra?** Igen, engedély nélkül. A magyar fordítás saját
 munka (Trita, 2026), a fordításra ugyanaz a szabadság vonatkozik. Az IPIP

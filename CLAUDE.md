@@ -75,9 +75,9 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 - **Licenc rendezve**: a TSFI-itemek az IPIP public domain poolból jönnek
   (92 IPIP–HEXACO + 8 kiegészítő) — kereskedelmi használatra is szabad,
   engedély/díj nélkül. Provenance: `docs/product/tsfi-item-provenance.md`;
-  jogi audit: `tsfi-item-audit-2026-07.md` (EN-itemek IPIP-eredetének
-  tisztázása a B1 ügyvédi csomagban még nyitott szál). A korábbi
-  HEXACO-PI-R bank kivezetve.
+  jogi audit: `tsfi-item-audit-2026-07.md` (az EN-itemek IPIP-eredete
+  2026-07-29-én szövegszintű összevetéssel igazolva — B1 szál lezárva,
+  ld. provenance-doksi). A korábbi HEXACO-PI-R bank kivezetve.
 - User-facing szövegben NE szerepeljen „HEXACO"/„Big Five" — generikus
   megfogalmazást használj („hatfaktoros személyiségmodell", „Trita
   személyiségfelmérés"). Kivétel: külső tesztekre utaló kérdőív-opciók,

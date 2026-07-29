@@ -27,9 +27,13 @@ megváltoztatják az itemet** — pilot ELŐTT még beleférnek (az éles
 pilot-adat lesz az új baseline), utána már nem ajánlott. Minden elfogadott
 javításnál az **observer-változatot** (3. személyű alak) is igazítani kell.
 
-⚠️ Kapcsolódó jogi kérdés (B1 ügyvédi csomagba): az EN itemek szövegszinten
+~~⚠️ Kapcsolódó jogi kérdés (B1 ügyvédi csomagba): az EN itemek szövegszinten
 egyeznek a hivatalos HEXACO-PI-R tételeivel — a kereskedelmi használat
-licenc-státuszát tisztázni kell.
+licenc-státuszát tisztázni kell.~~ **LEZÁRVA (2026-07-29):** a v2 bank EN
+itemei gépi összevetéssel igazoltan az IPIP public domain poolból jönnek
+(95/100 szó szerint, 5 dokumentált könnyű adaptáció) — részletek:
+tsfi-item-provenance.md „Szövegszintű ellenőrzés" szakasz. A fenti aggály
+a kivezetett v1 bankra vonatkozott.
 
 ## 1. Helyesírás / nyelvtan — javasolt: mind javítani (kockázatmentes)
 
