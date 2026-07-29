@@ -133,5 +133,13 @@ export async function POST(
         })]),
   ]);
 
+  // A felvett (meglévő) user értesítése — a másik hozzáadási út
+  // (members route) is ugyanezt küldi.
+  import("@/lib/notifications").then(({ handleTeamMemberAdded }) =>
+    handleTeamMemberAdded({ teamId, teamName: team.name, userId: targetUser.id }).catch(
+      () => {},
+    ),
+  );
+
   return NextResponse.json({ member }, { status: 201 });
 }

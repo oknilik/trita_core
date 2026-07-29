@@ -569,9 +569,7 @@ export function ProfileTabs({
     return () => window.removeEventListener("resize", updateTabFade);
   }, [updateTabFade]);
 
-  const [activeTab, setActiveTab] = useState<TabId>(
-    hasTeamOrOrgMembership && initialTab === "career" ? "results" : initialTab,
-  );
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
 
   // Az aktív tab úszik be a látótérbe (mount + tab-váltás).
   useEffect(() => {
@@ -668,11 +666,10 @@ export function ProfileTabs({
       ),
     },
   ];
-  // Csapat-kontextusban (org/team tag) a Karrier tab nem releváns, sőt
-  // zavaró lehet — a konzultációs folyamat a csapat-működésről szól.
-  const TABS = hasTeamOrOrgMembership
-    ? ALL_TABS.filter((tab) => tab.id !== "career")
-    : ALL_TABS;
+  // A Karrier tab MINDENKINEK látszik (2026-07-29): korábban org/team
+  // tagoknál rejtve volt, de a kitöltött karrier-adat így elveszett a
+  // felületről, miközben a PDF-ben benne maradt — inkonzisztens volt.
+  const TABS = ALL_TABS;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">

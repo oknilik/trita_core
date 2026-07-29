@@ -254,6 +254,31 @@ export async function handleCampaignClosed(params: {
   );
 }
 
+/**
+ * Meglévő user csapatba felvétele — az ÉRINTETT kap értesítést, linkkel a
+ * csapat-oldalra. A szöveg kimondja: a korábbi eredményei megmaradnak.
+ */
+export async function handleTeamMemberAdded(params: {
+  teamId: string;
+  teamName: string;
+  userId: string;
+}) {
+  const meta = NOTIFICATION_TYPE_META.TEAM_MEMBER_ADDED;
+  await persistNotificationBatch([
+    {
+      userId: params.userId,
+      type: "TEAM_MEMBER_ADDED" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { teamName: params.teamName },
+      link: `/team/${params.teamId}`,
+      sourceType: "org_membership" as const,
+      sourceId: params.teamId,
+      dedupeKey: `TEAM_MEMBER_ADDED:${params.teamId}:${params.userId}`,
+    },
+  ]);
+}
+
 export async function handleTeamReportPublished(params: {
   teamId: string;
   teamName: string;

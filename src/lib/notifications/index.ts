@@ -16,6 +16,7 @@ export {
   handleCampaignLaunched,
   handleMeasurementStepOpened,
   handleCampaignClosed,
+  handleTeamMemberAdded,
   handleTeamReportPublished,
   handleObserverColleagueInvited,
   handleObserverApprovalRequested,

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 import { hasOrgRole, isTeamManagerRole } from "@/lib/org-roles";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const schema = z.object({ userId: z.string().min(1) });
 
@@ -21,6 +22,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const log = await getRequestLogger("team");
   const { userId: clerkUserId } = await auth();
   if (!clerkUserId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -34,7 +36,7 @@ export async function POST(
 
   const team = await prisma.team.findUnique({
     where: { id: teamId },
-    select: { orgId: true },
+    select: { orgId: true, name: true },
   });
   if (!team?.orgId) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
@@ -102,6 +104,14 @@ export async function POST(
     data: { teamId, userId: targetUserId, role: "member" },
     select: { id: true, userId: true, role: true, joinedAt: true },
   });
+
+  // A felvett user értesítése (fire-and-forget) — eddig "egyszer csak benne
+  // volt" a csapatban, jelzés nélkül.
+  import("@/lib/notifications").then(({ handleTeamMemberAdded }) =>
+    handleTeamMemberAdded({ teamId, teamName: team.name, userId: targetUserId }).catch(
+      (err: unknown) => log.error({ event: "notification.team_member_added_failed", err }, "Team member added notification failed"),
+    ),
+  );
 
   return NextResponse.json({ member }, { status: 201 });
 }

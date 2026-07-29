@@ -94,8 +94,11 @@ export const notificationTranslations = {
       body: { hu: "A(z) {teamName} csapat validált csapatképe elérhető.", en: "The validated team picture for {teamName} is available." },
     },
     teamMemberAdded: {
-      title: { hu: "Új csapattag", en: "New team member" },
-      body: { hu: "{name} csatlakozott a(z) {teamName} csapathoz.", en: "{name} joined the {teamName} team." },
+      title: { hu: "Csapatba kerültél", en: "You've been added to a team" },
+      body: {
+        hu: "Felvettek a(z) {teamName} csapatba. Az eddigi eredményeid megmaradnak — nem kell újra kitöltened a felmérést.",
+        en: "You've been added to the {teamName} team. Your existing results carry over — no need to retake the assessment.",
+      },
     },
     orgInviteAccepted: {
       title: { hu: "Meghívás elfogadva", en: "Invite accepted" },
