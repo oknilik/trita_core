@@ -1,6 +1,6 @@
 import type { WorkspaceNavRole } from "@/lib/navigation/roles";
 
-export type WorkspaceNavSectionId = "home" | "results" | "teams" | "hiring" | "org" | "analytics";
+export type WorkspaceNavSectionId = "home" | "results" | "tasks" | "teams" | "hiring" | "org" | "analytics";
 export type OrgAdminFeatureId = "settings" | "billing" | "permissions";
 export type AnalyticsFeatureId = "org_overview" | "team_patterns" | "reports" | "deep_analysis";
 export type DashboardBlockId = "onboarding_checklist" | "analytics_teaser";
@@ -17,6 +17,9 @@ const ADMIN_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
     results: false,
+    // Feladataim: a tanácsadó/admin is lehet csapattag — a menü csak akkor
+    // jelenik meg, ha tényleg van rá kontextus (ld. buildTasksNav).
+    tasks: true,
     teams: true,
     hiring: true,
     org: true,
@@ -43,6 +46,7 @@ const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
     results: false,
+    tasks: true,
     teams: true,
     hiring: true,
     org: false,
@@ -68,9 +72,11 @@ const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
 const SELF_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
-    // „Eredményeim" a user-menü kanonikus tétele (UX-audit #6) — a felső
-    // nav-ban duplikálta; tagnál ráadásul a Vezérlő is gyakran ide vezet.
-    results: false,
+    // „Eredményeim" visszakerült a felső navba (2026-07-29): a csapattag
+    // számára ez a leggyakoribb cél, és a user-menüben rejtve nehezen
+    // találta meg. A Vezérlő nem mindig ide vezet (kampány-teendők).
+    results: true,
+    tasks: true,
     teams: true,
     hiring: false,
     org: false,

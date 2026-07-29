@@ -201,7 +201,7 @@ export async function handleCampaignLaunched(params: {
   const linkFor = (userId: string) => {
     const role = roleMap.get(userId) ?? "ORG_MEMBER";
     return role === "ORG_MEMBER"
-      ? "/assessment/measurements"
+      ? "/tasks"
       : `/org/${params.orgId}?tab=campaigns`;
   };
   await persistNotificationBatch(

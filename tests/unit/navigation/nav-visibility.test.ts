@@ -13,6 +13,7 @@ const baseContext: WorkspaceNavContext = {
   org: { id: "org_1", name: "Acme" },
   teams: [{ id: "team_1", name: "Alpha Team" }],
   hasHiringAccess: true,
+  openTaskCount: 0,
   activeCampaignCount: 2,
 };
 
@@ -28,7 +29,9 @@ test("admin topnav is the simplified IA menu (no analytics)", () => {
   const navItems = buildWorkspaceNavigation("org_admin", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "teams", "hiring", "org"]);
+  // A „Feladataim" org-tagságnál mindenkinek megjelenik (2026-07-29):
+  // a tanácsadó/admin is lehet csapattag, neki is lehet kitöltendő köre.
+  assert.deepEqual(ids, ["home", "tasks", "teams", "hiring", "org"]);
 });
 
 test("admin teams and org entries are plain links into the simple org page", () => {
@@ -47,7 +50,7 @@ test("manager topnav omits admin-only organization menu", () => {
   const navItems = buildWorkspaceNavigation("org_manager", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "teams", "hiring"]);
+  assert.deepEqual(ids, ["home", "tasks", "teams", "hiring"]);
   assert.equal(ids.includes("org"), false);
 });
 
@@ -101,11 +104,27 @@ test("dashboard block visibility is role-aware", () => {
   assert.equal(canViewDashboardBlock("org_manager", "analytics_teaser"), true);
 });
 
-test("member topnav shows own teams only — results lives in the user menu (UX audit #6)", () => {
+test("member topnav has results + tasks next to own teams (2026-07-29)", () => {
   const navItems = buildWorkspaceNavigation("self", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "teams"]);
+  assert.deepEqual(ids, ["home", "results", "tasks", "teams"]);
+});
+
+test("tasks badge counts open measurement work; hidden without org and tasks", () => {
+  const withTasks = buildWorkspaceNavigation("self", { ...baseContext, openTaskCount: 3 });
+  const tasksItem = withTasks.find((item) => item.id === "tasks");
+  assert.equal(tasksItem?.primaryHref, "/tasks");
+  assert.equal(tasksItem?.badge, 3);
+
+  // Magányos self-user (nincs org, nincs feladat) → nincs menüpont.
+  const solo = buildWorkspaceNavigation("self", {
+    ...baseContext,
+    org: null,
+    teams: [],
+    openTaskCount: 0,
+  });
+  assert.equal(solo.some((item) => item.id === "tasks"), false);
 });
 
 test("member team dropdown omits manager-only observer rounds entry", () => {
@@ -120,7 +139,7 @@ test("member without teams gets no teams dropdown", () => {
   const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home"]);
+  assert.deepEqual(ids, ["home", "results", "tasks"]);
 });
 
 test("admin org dropdown no longer contains the dead billing entry", () => {

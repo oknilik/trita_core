@@ -35,6 +35,11 @@ export interface WorkspaceNavContext {
   teams: WorkspaceNavTeam[];
   hasHiringAccess: boolean;
   activeCampaignCount: number;
+  /**
+   * Nyitott mérési feladatok száma (nyitott kampány-lépés + rám váró
+   * observer-visszajelzés kérés) — a „Feladataim" menü badge-e.
+   */
+  openTaskCount: number;
 }
 
 export interface WorkspaceNavDestination {
@@ -46,7 +51,7 @@ export interface WorkspaceNavDestination {
 }
 
 export interface WorkspaceNavItem {
-  id: "home" | "results" | "teams" | "hiring" | "org" | "analytics";
+  id: "home" | "results" | "tasks" | "teams" | "hiring" | "org" | "analytics";
   label: string;
   kind: "link" | "dropdown";
   primaryHref: string;
@@ -82,6 +87,22 @@ function buildResultsItem(): WorkspaceNavItem {
     kind: "link",
     primaryHref: "/profile/results",
     matchPrefixes: ["/profile/results"],
+  };
+}
+
+// Feladataim: a mérési teendők egyetlen belépője (kampány-lépések +
+// tőlem kért observer-visszajelzések). Csak akkor jelenik meg, ha van rá
+// kontextus: org-tagság (csapatos működés) VAGY tényleges nyitott feladat —
+// magányos self-usernek felesleges menüpont lenne. Badge: nyitott darabszám.
+function buildTasksNav(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
+  if (!ctx.org && ctx.openTaskCount === 0) return null;
+  return {
+    id: "tasks",
+    label: "Feladataim",
+    kind: "link",
+    primaryHref: "/tasks",
+    matchPrefixes: ["/tasks"],
+    badge: ctx.openTaskCount > 0 ? ctx.openTaskCount : undefined,
   };
 }
 
@@ -175,6 +196,7 @@ export function buildWorkspaceNavigation(
   const items: Array<WorkspaceNavItem | null> = [buildHomeItem(ctx.homeHref)];
 
   if (canViewNavSection(role, "results")) items.push(buildResultsItem());
+  if (canViewNavSection(role, "tasks")) items.push(buildTasksNav(ctx));
   if (canViewNavSection(role, "teams")) items.push(buildTeamsNav(role, ctx));
   if (canViewNavSection(role, "hiring")) items.push(buildHiringNav(ctx, role));
   if (canViewNavSection(role, "org")) items.push(buildOrgNav(ctx));

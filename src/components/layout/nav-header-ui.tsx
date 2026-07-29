@@ -41,6 +41,17 @@ function ResultsIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+function TasksIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2.5 4.5l1.5 1.5 2.5-2.5" />
+      <path d="M2.5 11.5l1.5 1.5 2.5-2.5" />
+      <path d="M9 4.5h4.5" />
+      <path d="M9 11.5h4.5" />
+    </svg>
+  );
+}
+
 function TeamIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -130,6 +141,8 @@ interface NavHeaderUIProps {
   homeHref: string;
   role: string;
   activeCampaignCount: number;
+  /** Nyitott meresi feladatok szama (badge a Feladataim menun). */
+  openTaskCount?: number;
   hasHiringAccess: boolean;
   /** Platform-admin (ADMIN_EMAILS) — az Admin vezérlő menüpont kapuja. */
   isPlatformAdmin?: boolean;
@@ -159,6 +172,7 @@ function NavHeaderContent({
   homeHref,
   role,
   activeCampaignCount,
+  openTaskCount = 0,
   hasHiringAccess,
   isPlatformAdmin = false,
 }: Omit<NavHeaderUIProps, "unreadNotificationCount">) {
@@ -235,6 +249,7 @@ function NavHeaderContent({
     teams,
     hasHiringAccess,
     activeCampaignCount,
+    openTaskCount,
   });
   const homeItem = navItems.find((item) => item.id === "home");
   const homeLabel = homeItem?.label ?? "Vezérlő";
@@ -350,6 +365,8 @@ function NavHeaderContent({
         return <GridIcon className={className} />;
       case "results":
         return <ResultsIcon className={className} />;
+      case "tasks":
+        return <TasksIcon className={className} />;
       case "teams":
         return <TeamIcon className={className} />;
       case "hiring":

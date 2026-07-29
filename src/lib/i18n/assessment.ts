@@ -288,7 +288,7 @@ export const assessmentTranslations = {
     },
     retry: { hu: "Újra próbálom", en: "Try again" },
   },
-  // ── Tag-oldali mérés-nézet (/assessment/measurements) ──────────────────
+  // ── Tag-oldali feladat-nézet (/tasks) ─────────────────────────────────
   myTasks: {
     title: { hu: "Mérési feladataim", en: "My measurement tasks" },
     eyebrow: { hu: "Aktív mérések", en: "Active measurements" },
@@ -296,10 +296,10 @@ export const assessmentTranslations = {
       hu: "Itt látod, melyik mérésben hol tartasz — a nyitott lépésre bármikor visszatérhetsz, a megkezdett kitöltésed mentve van.",
       en: "See where you stand in each measurement — you can return to the open step anytime; partial progress is saved.",
     },
-    noneTitle: { hu: "Nincs aktív mérésed", en: "No active measurements" },
+    noneTitle: { hu: "Most nincs feladatod", en: "Nothing on your plate" },
     noneBody: {
-      hu: "Jelenleg egyik aktív mérési körben sem vársz kitöltésre.",
-      en: "You have no active measurement rounds waiting on you right now.",
+      hu: "Jelenleg nincs kitöltésre váró mérésed, és senki nem kér tőled visszajelzést. Ha indul egy új kör, itt jelenik meg — és értesítést is kapsz róla.",
+      en: "There's no measurement waiting on you, and nobody has asked you for feedback. When a new round starts, it shows up here — and you'll get a notification too.",
     },
     stepDone: { hu: "Kész", en: "Done" },
     stepOpen: { hu: "Kitöltés folytatása", en: "Continue" },

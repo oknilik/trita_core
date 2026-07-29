@@ -121,7 +121,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
             {/* Tag-oldali kampány-nézet: teljes haladás + vissza a feladatokra */}
             <p className="mt-2 text-right">
               <Link
-                href="/assessment/measurements"
+                href="/tasks"
                 className="text-xs font-semibold text-sage-dark transition hover:text-ink"
               >
                 {isHu ? "Összes mérési feladatom" : "All my measurement tasks"}

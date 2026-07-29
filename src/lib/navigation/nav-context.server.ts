@@ -11,6 +11,7 @@ import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { isAdminEmail } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
+import { getCampaignSteps, isStepGateOpen } from "@/lib/campaign-steps-core";
 import type { HelpAudience } from "@/lib/help/topics";
 import type { Locale } from "@/lib/i18n";
 
@@ -63,15 +64,38 @@ export async function resolveWorkspaceNavContext(
       if (profile) {
         // Kezdő értesítés-számláló a fejlécnek — a harang így mountkor nem
         // indít API-hívást (indexelt count: @@index([userId, read])).
-        const [journey, unreadNotificationCount] = await Promise.all([
-          resolveJourney(profile.id, {
-            locale,
-            entryPoint: "root_layout_nav",
-          }),
-          prisma.notification.count({
-            where: { userId: profile.id, read: false, dismissed: false },
-          }),
-        ]);
+        const [journey, unreadNotificationCount, taskParticipations, feedbackRequestCount] =
+          await Promise.all([
+            resolveJourney(profile.id, {
+              locale,
+              entryPoint: "root_layout_nav",
+            }),
+            prisma.notification.count({
+              where: { userId: profile.id, read: false, dismissed: false },
+            }),
+            // „Feladataim" badge: nyitott (nem ütemezett) kampány-lépések…
+            prisma.campaignParticipant.findMany({
+              where: { userId: profile.id, campaign: { status: "ACTIVE" } },
+              select: {
+                currentStep: true,
+                nextStepOpensAt: true,
+                campaign: { select: { type: true, steps: true } },
+              },
+            }),
+            // …plusz a rám váró (belsős/külsős) visszajelzés-kérések.
+            prisma.observerInvitation.count({
+              where: {
+                observerProfileId: profile.id,
+                status: "PENDING",
+                expiresAt: { gt: new Date() },
+              },
+            }),
+          ]);
+        const openStepCount = taskParticipations.filter(
+          (p) =>
+            p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p),
+        ).length;
+        const openTaskCount = openStepCount + feedbackRequestCount;
         signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
         const isPlatformAdmin = isAdminEmail(profile.email);
@@ -87,6 +111,7 @@ export async function resolveWorkspaceNavContext(
           homeHref: signedInHomeHref,
           isPlatformAdmin,
           unreadNotificationCount,
+          openTaskCount,
         };
 
         const membership = await getActiveOrgMembership(profile.id);
@@ -135,6 +160,7 @@ export async function resolveWorkspaceNavContext(
             hasHiringAccess,
             isPlatformAdmin,
             unreadNotificationCount,
+            openTaskCount,
           };
         }
       }
