@@ -68,6 +68,8 @@ model UserProfile {
   email     String?
   username  String?
   activeOrgId String?
+  // Kijelolt (aktiv) csapat — a Vezerlo ide visz, a csapat-valto allitja.
+  activeTeamId String?
   deleted   Boolean  @default(false)
   locale    String?
   createdAt DateTime @default(now())
@@ -112,6 +114,7 @@ model UserProfile {
   ownedOrgs      Organization[]       @relation("OrgOwner")
   orgMemberships OrganizationMember[]
   activeOrg      Organization?        @relation("ActiveOrgContext", fields: [activeOrgId], references: [id], onDelete: SetNull)
+  activeTeam     Team?                @relation("ActiveTeamContext", fields: [activeTeamId], references: [id], onDelete: SetNull)
 
   // Campaign layer (360°)
   createdCampaigns       Campaign[]            @relation("CampaignCreator")
@@ -142,6 +145,7 @@ model UserProfile {
   inquiries Inquiry[]
 
   @@index([activeOrgId])
+  @@index([activeTeamId])
 }
 
 model AssessmentDraft {
@@ -280,6 +284,7 @@ model Team {
   owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
   org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
   members          TeamMember[]
+  activeForUsers   UserProfile[]  @relation("ActiveTeamContext")
   pendingInvites   TeamPendingInvite[]
   reports          TeamReport[]
   candidateInvites CandidateInvite[]

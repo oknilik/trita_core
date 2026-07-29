@@ -240,6 +240,21 @@ function NavHeaderContent({
     }
   }
 
+  // Csapat-váltás a nav-menüből: a kijelölt csapat perzisztens (a Vezérlő
+  // ezután ide visz). A navigáció akkor is megtörténik, ha a mentés elhasal.
+  async function switchTeam(teamId: string) {
+    try {
+      await fetch("/api/team/context", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamId }),
+      });
+    } catch {
+      // a kijelölés ilyenkor marad a régi — a navigáció mehet tovább
+    }
+    router.refresh();
+  }
+
   const homePath = homeHref.split("?")[0] ?? homeHref;
   const activeTab = searchParams.get("tab");
   const navRole = resolveWorkspaceNavRole(role);
@@ -653,7 +668,12 @@ function NavHeaderContent({
                             icon={getItemIcon(item.id)}
                             title={child.label}
                             desc={child.description}
-                            onClick={closeAll}
+                            onClick={() => {
+                              closeAll();
+                              if (item.id === "teams" && child.id.startsWith("team-")) {
+                                void switchTeam(child.id.slice("team-".length));
+                              }
+                            }}
                           />
                         ))}
                       </MegaDropdown>
@@ -813,7 +833,12 @@ function NavHeaderContent({
                               icon={getItemIcon(item.id, "h-4 w-4")}
                               title={child.label}
                               desc={child.description}
-                              onClick={() => setMobileMenu("closed")}
+                              onClick={() => {
+                                setMobileMenu("closed");
+                                if (item.id === "teams" && child.id.startsWith("team-")) {
+                                  void switchTeam(child.id.slice("team-".length));
+                                }
+                              }}
                             />
                           ))}
                         </>

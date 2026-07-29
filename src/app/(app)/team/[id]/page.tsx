@@ -266,6 +266,28 @@ export default async function TeamDetailPage({
     };
   });
 
+  // A néző saját csapatai ebben a szervezetben — a hero csapat-váltójához
+  // (több csapatnál); a Vezérlő a kijelölt csapatra visz.
+  // A megnyitott csapat lesz a kijelölt (aktív) csapat — a Vezérlő ezután
+  // ide visz. Csak tagnál írjuk (tanácsadó/admin nézhet idegen csapatot is).
+  const isTeamMemberForContext = await prisma.teamMember.findUnique({
+    where: { teamId_userId: { teamId, userId: profile.id } },
+    select: { teamId: true },
+  });
+  if (isTeamMemberForContext) {
+    await prisma.userProfile
+      .update({ where: { id: profile.id }, data: { activeTeamId: teamId } })
+      .catch(() => {});
+  }
+
+  const memberTeams = (
+    await prisma.teamMember.findMany({
+      where: { userId: profile.id, team: { orgId: team.orgId } },
+      orderBy: { joinedAt: "asc" },
+      select: { team: { select: { id: true, name: true } } },
+    })
+  ).map((m) => ({ id: m.team.id, name: m.team.name }));
+
   const orgId = team.orgId;
   if (!orgId) redirect(deepLinkFallback);
 
@@ -388,6 +410,7 @@ export default async function TeamDetailPage({
     pendingMeasurement,
     observerGathering,
     receivedFeedbackRequests,
+    memberTeams,
   };
 
   switch (activeTab) {

@@ -3,6 +3,7 @@ import { t, tf } from "@/lib/i18n";
 import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
 import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { TeamSwitcher } from "@/components/team/TeamSwitcher";
 import { TeamTabBar } from "./TeamTabBar";
 import type { TeamTabContext } from "./types";
 
@@ -23,6 +24,7 @@ export function TeamHeroBlock({
   const {
     teamId, teamData, locale, isHu, profile,
     canViewRaw, isOrgManager, canManageTeamActions, manageGateCopy,
+    memberTeams,
   } = ctx;
 
   const completedCount = teamData.completedCount;
@@ -121,9 +123,13 @@ export function TeamHeroBlock({
       <SurfaceHero
         variant="team"
         eyebrow={(
-          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
-            {t("teamDetail.heroEyebrow", locale)}
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-micro uppercase tracking-widest text-white/[0.28]">
+              {t("teamDetail.heroEyebrow", locale)}
+            </p>
+            {/* Csapat-váltó: több csapatnál a kijelölés a Vezérlő célja is */}
+            <TeamSwitcher teams={memberTeams} activeTeamId={teamId} isHu={isHu} />
+          </div>
         )}
         badge={
           hasPattern ? (

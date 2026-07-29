@@ -307,21 +307,36 @@ export async function resolveJourneyContext(
           team: { select: { orgId: true } },
         },
       })
-    : await prisma.teamMember.findFirst({
-        where: orgMembership?.orgId
-          ? {
-              userId: profileId,
-              team: { orgId: orgMembership.orgId },
-            }
-          : { userId: profileId },
-        orderBy: { joinedAt: "asc" },
-        select: {
+    : await (async () => {
+        // Kijelölt (aktív) csapat elsőbbsége — a Vezérlő és a journey a
+        // csapat-váltóban választott csapatra épül; fallback a legrégebbi
+        // tagság (determinisztikus, ha nincs vagy érvénytelen a kijelölés).
+        const scope = orgMembership?.orgId
+          ? { userId: profileId, team: { orgId: orgMembership.orgId } }
+          : { userId: profileId };
+        const select = {
           teamId: true,
           role: true,
           joinedAt: true,
           team: { select: { orgId: true } },
-        },
-      });
+        } as const;
+        const profileRow = await prisma.userProfile.findUnique({
+          where: { id: profileId },
+          select: { activeTeamId: true },
+        });
+        if (profileRow?.activeTeamId) {
+          const active = await prisma.teamMember.findFirst({
+            where: { ...scope, teamId: profileRow.activeTeamId },
+            select,
+          });
+          if (active) return active;
+        }
+        return prisma.teamMember.findFirst({
+          where: scope,
+          orderBy: { joinedAt: "asc" },
+          select,
+        });
+      })();
 
   const normalizedTeamMembership: JourneyTeamMembershipSnapshot | null = teamMembership
     ? {

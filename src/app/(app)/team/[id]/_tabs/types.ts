@@ -48,6 +48,8 @@ export interface TeamTabContext {
     received: number;
     min: number;
   } | null;
+  /** A néző saját csapatai (aktív org) — a hero csapat-váltójához. */
+  memberTeams: Array<{ id: string; name: string }>;
   /** Tőlem kért, függő observer-visszajelzések ebből a csapatból. */
   receivedFeedbackRequests: Array<{
     token: string;

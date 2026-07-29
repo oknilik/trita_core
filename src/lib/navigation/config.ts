@@ -135,20 +135,15 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): Worksp
     };
   }
 
-  const items: WorkspaceNavDestination[] = [
-    {
-      id: "team-overview",
-      label: "Csapataim",
-      description: "Összes csapat és aktuális állapot",
-      href: "/team",
-    },
-    ...ctx.teams.map((team) => ({
-      id: `team-${team.id}`,
-      label: team.name,
-      description: "Csapatoldal és publikált csapatkép",
-      href: `/team/${team.id}?tab=overview`,
-    })),
-  ];
+  // A külön „Csapataim" lista-oldal tétel kivezetve (2026-07-29): a menü
+  // maga A lista — az elemek egyben AKTÍV CSAPATOT is váltanak (a Vezérlő
+  // ezután a kijelölt csapatra visz).
+  const items: WorkspaceNavDestination[] = ctx.teams.map((team) => ({
+    id: `team-${team.id}`,
+    label: team.name,
+    description: "Csapatoldal és publikált csapatkép",
+    href: `/team/${team.id}?tab=overview`,
+  }));
 
   return {
     id: "teams",

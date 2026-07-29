@@ -63,11 +63,10 @@ test("manager teams dropdown lists all accessible teams (member or manager)", ()
   assert.equal(teamsItem.primaryHref, "/team");
 
   const childLabels = teamsItem.items?.map((item) => item.label) ?? [];
-  assert.deepEqual(childLabels, ["Csapataim", "Alpha Team", "Beta Team"]);
+  assert.deepEqual(childLabels, ["Alpha Team", "Beta Team"]);
 
   const childHrefs = teamsItem.items?.map((item) => item.href) ?? [];
   assert.deepEqual(childHrefs, [
-    "/team",
     "/team/team_1?tab=overview",
     "/team/team_2?tab=overview",
   ]);
