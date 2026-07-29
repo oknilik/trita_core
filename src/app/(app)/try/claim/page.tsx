@@ -62,7 +62,7 @@ export default function TryClaimPage() {
         router.replace("/onboarding");
       })
       .catch((err) => {
-        log.error({ event: "try.claim_failed", err }, "Claim failed");
+        log.warn({ event: "try.claim_failed", err }, "Claim failed");
         setError(t("tryClaim.error", locale));
       });
   }, [isLoaded, isSignedIn, router, locale]);

@@ -500,7 +500,7 @@ export function ObserverClient({
       }).catch(() => {});
       setPhase("done");
     } catch (error) {
-      log.error({ event: "observer.submit_failed", err: error }, "Observer flow error");
+      log.warn({ event: "observer.submit_failed", err: error }, "Observer flow error");
       showToast(
         error instanceof Error ? error.message : t("observer.saveError", locale),
         "error",

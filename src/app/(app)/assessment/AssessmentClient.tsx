@@ -374,7 +374,7 @@ export function AssessmentClient({
       })
       if (!response.ok) {
         const errBody = await response.json().catch(() => null)
-        log.error({ event: "assessment.submit_api_error", status: response.status, body: errBody }, "Submit API error")
+        log.warn({ event: "assessment.submit_api_error", status: response.status, body: errBody }, "Submit API error")
         throw new Error(t('assessment.saveResultError', locale))
       }
 
@@ -398,7 +398,7 @@ export function AssessmentClient({
       isSubmittingRef.current = false
       setIsSubmitting(false)
       setEvaluationProgress(0)
-      log.error({ event: "assessment.submit_failed", err: error }, "Submit failed")
+      log.warn({ event: "assessment.submit_failed", err: error }, "Submit failed")
       showToast(t('assessment.saveError', locale), 'error')
     }
   }, [questions, setQuestionIndexSafe, testType, locale, router, showToast, guestMode])

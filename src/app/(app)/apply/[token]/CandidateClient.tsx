@@ -313,7 +313,7 @@ export function CandidateClient({
       }
       setPhase("done");
     } catch (err) {
-      log.error({ event: "candidate.submit_failed", err }, "Candidate flow error");
+      log.warn({ event: "candidate.submit_failed", err }, "Candidate flow error");
       showToast(t("candidate.submitError", locale), "error");
     } finally {
       setIsSubmitting(false);
@@ -387,7 +387,7 @@ export function CandidateClient({
         }
         setPhase("done");
       } catch (err) {
-        log.error({ event: "candidate.submit_failed", err }, "Candidate flow error");
+        log.warn({ event: "candidate.submit_failed", err }, "Candidate flow error");
         showToast(t("candidate.submitError", locale), "error");
       } finally {
         setTeamRoleSubmitting(false);

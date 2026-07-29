@@ -137,7 +137,7 @@ export function InviteSection({ initialInvitations, hasObserverAccess }: InviteS
       }
       setEmail("");
     } catch (error) {
-      log.error({ event: "observer.invite_unexpected_error", err: error }, "Unexpected invite error");
+      log.warn({ event: "observer.invite_unexpected_error", err: error }, "Unexpected invite error");
       setCreateError(t("invite.createFailed", locale));
     } finally {
       setIsCreating(false);

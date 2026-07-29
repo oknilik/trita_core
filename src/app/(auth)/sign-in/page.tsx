@@ -122,7 +122,7 @@ function SignInContent() {
         setError(t("auth.errorSignInGeneric", locale));
       }
     } catch (err: unknown) {
-      log.error({ event: "auth.sign_in_failed", err }, "Sign-in error");
+      log.warn({ event: "auth.sign_in_failed", err }, "Sign-in error");
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
       const message = clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;
       if (message?.includes("Identifier") || message?.includes("identifier")) {
@@ -163,7 +163,7 @@ function SignInContent() {
         setError(t("auth.errorVerificationIncomplete", locale));
       }
     } catch (err: unknown) {
-      log.error({ event: "auth.sign_in_verify_failed", err }, "Sign-in verify error");
+      log.warn({ event: "auth.sign_in_verify_failed", err }, "Sign-in verify error");
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
       const message = clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;
       setError(message || t("auth.errorVerificationInvalid", locale));

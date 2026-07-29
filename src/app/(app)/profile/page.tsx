@@ -226,7 +226,7 @@ export default function ProfilePage() {
       try { for (const key of Object.keys(localStorage)) { if (key.startsWith("trita_")) localStorage.removeItem(key); } } catch {}
       await new Promise((r) => window.setTimeout(r, DELETE_GOODBYE_MS));
       setShowDeleteModal(false); window.location.href = "/";
-    } catch (e) { log.error({ event: "profile.delete_failed", err: e }, "Profile delete failed"); showToast(t("profile.deleteError", locale), "error"); setShowDeleteModal(false); } finally { if (!deleted) setIsDeleting(false); }
+    } catch (e) { log.warn({ event: "profile.delete_failed", err: e }, "Profile delete failed"); showToast(t("profile.deleteError", locale), "error"); setShowDeleteModal(false); } finally { if (!deleted) setIsDeleting(false); }
   };
 
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>

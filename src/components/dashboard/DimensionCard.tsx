@@ -176,7 +176,7 @@ export const DimensionCard = memo(function DimensionCard({
         setShowFeedback(false);
       }, 700);
     } catch (error) {
-      log.error({ event: "feedback.submit_failed", err: error }, "Feedback submission failed");
+      log.warn({ event: "feedback.submit_failed", err: error }, "Feedback submission failed");
       showToast(t("dashboard.dimension.feedbackError", locale), "error");
     } finally {
       setIsSubmittingFeedback(false);

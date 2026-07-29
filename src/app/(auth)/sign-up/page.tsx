@@ -120,7 +120,7 @@ function SignUpContent() {
       setResendCooldown(30);
       setResendNote(null);
     } catch (err: unknown) {
-      log.error({ event: "auth.sign_up_failed", err }, "Sign-up error");
+      log.warn({ event: "auth.sign_up_failed", err }, "Sign-up error");
       const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
       const message =
         clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;

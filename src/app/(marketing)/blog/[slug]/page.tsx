@@ -58,7 +58,7 @@ export async function generateMetadata({
 
 function getTagStyle(tag: string): string {
   const sage = ["bevezetés", "csapatdinamika", "önértékelés", "fluktuáció", "introduction", "team dynamics", "self-assessment", "turnover"];
-  const bronze = ["change management", "tritan", "toborzás", "recruitment", "pszichometria", "psychometrics"];
+  const bronze = ["change management", "hexaco", "toborzás", "recruitment", "pszichometria", "psychometrics"];
   const key = tag.toLowerCase();
   if (sage.includes(key)) return "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]";
   if (bronze.includes(key)) return "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]";
