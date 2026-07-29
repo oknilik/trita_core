@@ -16,6 +16,9 @@ import {
 } from "@/lib/campaign-steps-core";
 import { hasStartedStep, releaseDueCampaignSteps } from "@/lib/campaign-steps";
 import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
+import { getTestConfig } from "@/lib/questions";
+import type { TestType } from "@prisma/client";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getTeamPageData } from "@/lib/team-stats";
 import {
@@ -224,6 +227,45 @@ export default async function TeamDetailPage({
     }
   }
 
+  // Tőlem kért observer-visszajelzések EBBŐL a csapatból: ki kért, hol
+  // tartok a kitöltésben (szerver-draft) — a csapat-nézetről indítható/
+  // folytatható.
+  const receivedFeedbackRequests = (
+    await prisma.observerInvitation.findMany({
+      where: {
+        observerProfileId: profile.id,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+        inviter: { teamMemberships: { some: { teamId } } },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        token: true,
+        testType: true,
+        inviter: { select: { username: true, email: true } },
+        draft: { select: { answers: true } },
+      },
+    })
+  ).map((inv) => {
+    const total = getTestConfig(
+      inv.testType as TestType,
+      locale,
+      DEFAULT_ASSESSMENT_FORM,
+    ).questions.length;
+    const answered =
+      inv.draft?.answers &&
+      typeof inv.draft.answers === "object" &&
+      !Array.isArray(inv.draft.answers)
+        ? Object.keys(inv.draft.answers as Record<string, unknown>).length
+        : 0;
+    return {
+      token: inv.token,
+      inviterName: inv.inviter.username ?? inv.inviter.email ?? "—",
+      answered: Math.min(answered, total),
+      total,
+    };
+  });
+
   const orgId = team.orgId;
   if (!orgId) redirect(deepLinkFallback);
 
@@ -345,6 +387,7 @@ export default async function TeamDetailPage({
     hasPublishedReport,
     pendingMeasurement,
     observerGathering,
+    receivedFeedbackRequests,
   };
 
   switch (activeTab) {

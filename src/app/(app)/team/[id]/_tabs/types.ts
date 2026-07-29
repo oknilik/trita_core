@@ -48,4 +48,11 @@ export interface TeamTabContext {
     received: number;
     min: number;
   } | null;
+  /** Tőlem kért, függő observer-visszajelzések ebből a csapatból. */
+  receivedFeedbackRequests: Array<{
+    token: string;
+    inviterName: string;
+    answered: number;
+    total: number;
+  }>;
 }

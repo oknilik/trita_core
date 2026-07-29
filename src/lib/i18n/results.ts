@@ -989,7 +989,7 @@ export const resultsTranslations = {
     receivedSection: { hu: "Beérkező meghívók", en: "Received invitations" },
     linkInvite: { hu: "Link meghívó", en: "Link invitation" },
     emailInvite: { hu: "Email meghívó", en: "Email invitation" },
-    fillIn: { hu: "Kitöltöm →", en: "Fill in →" },
+    fillIn: { hu: "Kitöltöm", en: "Fill in" },
     limitReached: { hu: "Elérted az 5 meghívó limitet.", en: "You've reached the 5 invitation limit." },
     errorGeneric: { hu: "Hiba történt", en: "An error occurred" },
     copyFailed: { hu: "Másolás sikertelen", en: "Copy failed" },

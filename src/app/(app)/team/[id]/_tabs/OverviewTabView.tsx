@@ -25,6 +25,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     canViewRaw, isOrgManager, canManageTeamActions, canReachOrgCampaigns,
     isRestricted, isNone, manageGateCopy,
     publishedReport, hasPublishedReport, pendingMeasurement, observerGathering,
+    receivedFeedbackRequests,
   } = ctx;
 
   const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
@@ -414,6 +415,51 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   ? isHu ? "Kérek visszajelzést" : "Request feedback"
                   : isHu ? "Meghívók kezelése" : "Manage invites"}
               </Link>
+            </div>
+          </section>
+        ) : null}
+
+        {/* Tőlem kért observer-visszajelzések (csapattársaktól) — innen
+            indítható vagy folytatható a kitöltés. */}
+        {receivedFeedbackRequests.length > 0 ? (
+          <section>
+            <div className="rounded-[18px] border border-sage/35 bg-sage/5 p-5">
+              <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
+                {isHu ? "Tőled kért visszajelzés" : "Feedback requested from you"}
+              </p>
+              <div className="mt-3 flex flex-col gap-2">
+                {receivedFeedbackRequests.map((req) => (
+                  <div
+                    key={req.token}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sand bg-white px-3.5 py-2.5"
+                  >
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
+                        ★
+                      </span>
+                      <span className="text-caption font-medium text-ink">
+                        {isHu
+                          ? `${req.inviterName} visszajelzést kér tőled`
+                          : `${req.inviterName} asked you for feedback`}
+                      </span>
+                      {req.answered > 0 && (
+                        <span className="rounded-full bg-sage/10 px-2 py-0.5 text-micro font-semibold text-sage-dark">
+                          {req.answered}/{req.total}{" "}
+                          {isHu ? "kérdés kész" : "questions done"}
+                        </span>
+                      )}
+                    </span>
+                    <Link
+                      href={`/observe/${req.token}`}
+                      className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                    >
+                      {req.answered > 0
+                        ? isHu ? "Folytatom" : "Continue"
+                        : isHu ? "Kitöltöm" : "Fill in"}
+                    </Link>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         ) : null}
