@@ -25,6 +25,32 @@ function withCompletion(
 }
 
 /**
+ * A user melyik AKTÍV kampányában áll épp a megadott típusú lépésnél?
+ * A beküldő API-k kör-címkézésre használják (pl. TeamRoleAnswer.campaignId):
+ * a beadás ahhoz a kampányhoz kötődik, amelyikben épp ez a lépés nyitott.
+ * Több találatnál a legkorábban létrehozott kampány nyer (determinisztikus).
+ */
+export async function resolveActiveCampaignIdForStep(
+  profileId: string,
+  stepType: CampaignStepType,
+): Promise<string | null> {
+  const participants = await prisma.campaignParticipant.findMany({
+    where: { userId: profileId, campaign: { status: "ACTIVE" } },
+    orderBy: { campaign: { createdAt: "asc" } },
+    select: {
+      currentStep: true,
+      campaign: { select: { id: true, type: true, steps: true } },
+    },
+  });
+  for (const p of participants) {
+    if (getCampaignSteps(p.campaign)[p.currentStep] === stepType) {
+      return p.campaign.id;
+    }
+  }
+  return null;
+}
+
+/**
  * Lépés-teljesítés lekönyvelése: minden AKTÍV kampányban, ahol a user
  * résztvevő és épp a most teljesített típusú lépésnél tart, léptetünk —
  * és ha van következő lépés, értesítjük róla.

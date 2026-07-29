@@ -376,23 +376,21 @@ Banán demó-seed — meglévő org-ba teljes mérés-sorozattal
 
     // ── Csapatszerep self (answer + score, source: questionnaire) ─────────────
     console.log("🎭  Csapatszerep self-eredmények…");
+    // Append-only modell: ha már van kitöltés, nem duplikálunk (idempotens seed)
     for (const userId of memberIds) {
-      const selections = generateTeamRoleSelections();
-      const answer = await prisma.teamRoleAnswer.upsert({
+      const existing = await prisma.teamRoleAnswer.findFirst({
         where: { userProfileId: userId },
-        create: { userProfileId: userId, answers: selections as object },
-        update: { answers: selections as object },
         select: { id: true },
       });
-      await prisma.teamRoleScore.upsert({
-        where: { userProfileId: userId },
-        create: {
+      if (existing) continue;
+      const selections = generateTeamRoleSelections();
+      const answer = await prisma.teamRoleAnswer.create({
+        data: { userProfileId: userId, answers: selections as object },
+        select: { id: true },
+      });
+      await prisma.teamRoleScore.create({
+        data: {
           userProfileId: userId,
-          scores: calculateTeamRoleScores(selections) as object,
-          source: "questionnaire",
-          teamRoleAnswerId: answer.id,
-        },
-        update: {
           scores: calculateTeamRoleScores(selections) as object,
           source: "questionnaire",
           teamRoleAnswerId: answer.id,

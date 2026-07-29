@@ -93,7 +93,11 @@ export async function GET(req: NextRequest) {
           user: {
             select: {
               username: true,
-              teamRoleScore: { select: { source: true, updatedAt: true } },
+              teamRoleScores: {
+                orderBy: { createdAt: "desc" },
+                take: 1,
+                select: { source: true, updatedAt: true },
+              },
             },
           },
         },
@@ -105,9 +109,9 @@ export async function GET(req: NextRequest) {
   const memberStatus = team.members.map((m) => ({
     userId: m.userId,
     name: m.user.username ?? "?",
-    hasQuestionnaire: m.user.teamRoleScore?.source === "questionnaire",
-    hasEstimate: m.user.teamRoleScore?.source === "estimate",
-    completedAt: m.user.teamRoleScore?.updatedAt?.toISOString() ?? null,
+    hasQuestionnaire: m.user.teamRoleScores[0]?.source === "questionnaire",
+    hasEstimate: m.user.teamRoleScores[0]?.source === "estimate",
+    completedAt: m.user.teamRoleScores[0]?.updatedAt?.toISOString() ?? null,
   }));
 
   return NextResponse.json({

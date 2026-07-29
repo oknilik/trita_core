@@ -123,9 +123,9 @@ model UserProfile {
   // Billing: one-time purchases
   purchases Purchase[]
 
-  // Team role layer
-  teamRoleAnswer TeamRoleAnswer?
-  teamRoleScore  TeamRoleScore?
+  // Team role layer — append-only körök, olvasáskor a legfrissebb nyer
+  teamRoleAnswers TeamRoleAnswer[]
+  teamRoleScores  TeamRoleScore[]
   teamRoleObservationsAbout TeamRoleObservation[] @relation("TeamRoleObservationAbout")
   teamRoleObservationsGiven TeamRoleObservation[] @relation("TeamRoleObservationRater")
   peerFeedbackGiven    PeerFeedbackItem[] @relation("PeerFeedbackFrom")
@@ -552,6 +552,8 @@ model Campaign {
   peerFeedbackItems    PeerFeedbackItem[]
   trustObservations    TrustObservation[]
   observerInvitations  ObserverInvitation[]
+  teamRoleAnswers      TeamRoleAnswer[]      @relation("TeamRoleAnswerCampaign")
+  teamRoleScores       TeamRoleScore[]       @relation("TeamRoleScoreCampaign")
 
   @@index([orgId])
   @@index([createdBy])
@@ -666,21 +668,31 @@ model Purchase {
 // TEAM ROLE LAYER
 // ============================================
 
+// Append-only kör-modell (2026-07-29): újrakitöltéskor ÚJ sor születik, a
+// riport/becslő/team-intelligence a legfrissebbet olvassa. A campaignId a
+// kör-címke — melyik kampánykör alatt született a kitöltés (null = kampányon
+// kívüli). Terv: docs/product/ujrafuttatas-korok-terv.md 1.1.
 model TeamRoleAnswer {
   id            String   @id @default(cuid())
-  userProfileId String   @unique
+  userProfileId String
+  campaignId    String?
   // TeamRoleSelections: itemId → 1 (jellemző) | 2 (kiemelt) — ld. team-role-questions.ts
   answers       Json
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   userProfile UserProfile    @relation(fields: [userProfileId], references: [id])
+  campaign    Campaign?      @relation("TeamRoleAnswerCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
   score       TeamRoleScore?
+
+  @@index([userProfileId, createdAt])
+  @@index([campaignId])
 }
 
 model TeamRoleScore {
   id               String   @id @default(cuid())
-  userProfileId    String   @unique
+  userProfileId    String
+  campaignId       String?
   scores           Json     // Record<TeamRoleCode, 0-100>
   source           String   // "questionnaire" | "estimate"
   teamRoleAnswerId String?  @unique
@@ -688,9 +700,11 @@ model TeamRoleScore {
   updatedAt        DateTime @updatedAt
 
   userProfile    UserProfile     @relation(fields: [userProfileId], references: [id])
+  campaign       Campaign?       @relation("TeamRoleScoreCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
   teamRoleAnswer TeamRoleAnswer? @relation(fields: [teamRoleAnswerId], references: [id])
 
-  @@index([userProfileId])
+  @@index([userProfileId, createdAt])
+  @@index([campaignId])
 }
 
 // Csapattársi szerep-visszajelzés (peer-kör) — egy rater egy csapattársról,

@@ -337,8 +337,9 @@ export default async function ProfileResultsPage({
   // ── Serialize invitations ──────────────────────────────────────────────────
   // ── Csapatszerep: mért self-eredmény + kampányból érkező társ-visszajelzés ─
   const [teamRoleScoreRecord, teamRoleObservationsRaw] = await Promise.all([
-    prisma.teamRoleScore.findUnique({
+    prisma.teamRoleScore.findFirst({
       where: { userProfileId: profile.id },
+      orderBy: { createdAt: "desc" },
       select: { scores: true, source: true },
     }),
     prisma.teamRoleObservation.findMany({

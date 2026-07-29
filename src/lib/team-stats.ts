@@ -238,7 +238,9 @@ export async function getTeamPageData(
                 take: 1,
                 select: { testType: true, scores: true },
               },
-              teamRoleScore: {
+              teamRoleScores: {
+                orderBy: { createdAt: "desc" },
+                take: 1,
                 select: { scores: true, source: true },
               },
             },
@@ -280,11 +282,11 @@ export async function getTeamPageData(
       scores: rawDimensions ?? null,
       testType: ar?.testType ?? null,
       top3Dims,
-      teamRoleScores: m.user.teamRoleScore
-        ? (m.user.teamRoleScore.scores as Record<string, number>)
+      teamRoleScores: m.user.teamRoleScores[0]
+        ? (m.user.teamRoleScores[0].scores as Record<string, number>)
         : null,
-      teamRoleSource: m.user.teamRoleScore
-        ? (m.user.teamRoleScore.source as "questionnaire" | "estimate")
+      teamRoleSource: m.user.teamRoleScores[0]
+        ? (m.user.teamRoleScores[0].source as "questionnaire" | "estimate")
         : null,
     };
   });

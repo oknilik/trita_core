@@ -21,7 +21,11 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
       user: {
         select: {
           username: true,
-          teamRoleScore: { select: { source: true, updatedAt: true } },
+          teamRoleScores: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: { source: true, updatedAt: true },
+          },
         },
       },
     },
@@ -29,8 +33,8 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
   const teamRoleMemberStatus = teamRoleMembers.map((m) => ({
     userId: m.userId,
     name: m.user.username ?? "?",
-    hasQuestionnaire: m.user.teamRoleScore?.source === "questionnaire",
-    hasEstimate: m.user.teamRoleScore?.source === "estimate",
+    hasQuestionnaire: m.user.teamRoleScores[0]?.source === "questionnaire",
+    hasEstimate: m.user.teamRoleScores[0]?.source === "estimate",
   }));
   const teamRoleCompletedCount = teamRoleMemberStatus.filter((m) => m.hasQuestionnaire).length;
   const teamRoleEstimateCount = teamRoleMemberStatus.filter((m) => m.hasEstimate).length;
