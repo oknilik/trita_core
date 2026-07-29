@@ -450,6 +450,18 @@ export const orgTranslations = {
       discardFailed: { hu: "Az elvetés nem sikerült — próbáld újra.", en: "Discard failed — try again." },
       discardConfirmCta: { hu: "Végleges elvetés", en: "Discard permanently" },
       discardCancel: { hu: "Mégse", en: "Cancel" },
+      deleteCampaign: { hu: "Mérés törlése", en: "Delete measurement" },
+      deleting: { hu: "Törlés…", en: "Deleting…" },
+      deleteConfirm: {
+        hu: "Biztosan törlöd ezt a mérést? A kör MINDEN beadott értékelése (bizalmi, szerep-visszajelzés, elismerés, pulse) véglegesen törlődik, és a mérés a lezárt körök közt sem jelenik meg többé. A tagok saját eredményei (személyiség-teszt, szerep-kérdőív) megmaradnak.",
+        en: "Delete this measurement? ALL submitted ratings in this round (trust, role feedback, recognition, pulse) are permanently deleted, and the round will no longer appear among closed rounds. Members' own results (personality test, role questionnaire) are kept.",
+      },
+      deleteConfirmCta: { hu: "Végleges törlés", en: "Delete permanently" },
+      deleteFailed: { hu: "A törlés nem sikerült — próbáld újra.", en: "Delete failed — try again." },
+      deleteHint: {
+        hu: "Végleges: a kör beadott értékelései is törlődnek, és a mérés a lezárt listából is eltűnik.",
+        en: "Permanent: the round's submitted ratings are deleted too, and the measurement disappears from the closed list.",
+      },
       discardHint: {
         hu: "Csak vázlat vethető el — aktivált mérést lezárni lehet, törölni nem.",
         en: "Only drafts can be discarded — an activated measurement can be closed, not deleted.",

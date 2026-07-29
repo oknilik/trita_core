@@ -293,10 +293,12 @@ export async function PATCH(
   return NextResponse.json({ campaign });
 }
 
-// DELETE /api/org/[id]/campaigns/[campaignId] — vázlat elvetése.
-// CSAK DRAFT státuszban: aktivált kampány már mérési történet, azt lezárni
-// lehet, törölni nem. A résztvevő-rekordok cascade-del mennek, beadott
-// adat vázlatnál nincs.
+// DELETE /api/org/[id]/campaigns/[campaignId] — mérés törlése (bármely
+// státuszban, tanácsadó/admin döntése). A kör-adatok (résztvevők,
+// trust/szerep-megfigyelések, peer-visszajelzések, pulse-válaszok)
+// cascade-del törlődnek; a userek SAJÁT eredményei (self teszt,
+// szerep-kérdőív) megmaradnak (SetNull). Törölt kampány sehol — a lezárt
+// listában sem — jelenik meg többé.
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
@@ -323,8 +325,25 @@ export async function DELETE(
       { status: 403 },
     );
   }
-  if (ctx.campaign.status !== "DRAFT") {
-    return NextResponse.json({ error: "CAMPAIGN_NOT_DRAFT" }, { status: 409 });
+  // Futó szerep-körös kampány törlésekor a csapat(ok) kör-flagje ne
+  // ragadjon be.
+  const delSteps =
+    ctx.campaign.steps.length > 0 ? ctx.campaign.steps : [ctx.campaign.type];
+  const delTeamIds =
+    ctx.campaign.teamIds.length > 0
+      ? ctx.campaign.teamIds
+      : ctx.campaign.teamId
+        ? [ctx.campaign.teamId]
+        : [];
+  if (
+    ctx.campaign.status === "ACTIVE" &&
+    delSteps.includes("TEAM_ROLE") &&
+    delTeamIds.length > 0
+  ) {
+    await prisma.team.updateMany({
+      where: { id: { in: delTeamIds } },
+      data: { teamRoleRoundActive: false },
+    });
   }
 
   await prisma.campaign.delete({ where: { id: campaignId } });

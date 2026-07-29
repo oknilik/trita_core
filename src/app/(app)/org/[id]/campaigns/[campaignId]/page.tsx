@@ -8,6 +8,7 @@ import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
+import { CampaignDeleteButton } from "@/components/org/CampaignDeleteButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
 import { DraftCampaignEditor } from "@/components/org/DraftCampaignEditor";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -1010,6 +1011,23 @@ export default async function CampaignDetailPage({
                 locale,
               )}
             />
+            {/* Mérés törlése — nem-DRAFT is (a vázlat-elvetés a szerkesztőben él) */}
+            {campaign.status !== "DRAFT" && (
+              <CampaignDeleteButton orgId={orgId} campaignId={campaign.id} locale={locale} />
+            )}
+          </section>
+        )}
+
+        {/* Lezárt mérésnél nincs státusz-átmenet — a törlés külön kártyán */}
+        {canManageCampaign && campaign.status === "CLOSED" && (
+          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              {t("org.campaign.statusEyebrow", locale)}
+            </p>
+            <h2 className="text-sm font-semibold text-ink">
+              {t("org.campaign.managementTitle", locale)}
+            </h2>
+            <CampaignDeleteButton orgId={orgId} campaignId={campaign.id} locale={locale} />
           </section>
         )}
 
