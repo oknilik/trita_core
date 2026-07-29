@@ -78,17 +78,18 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
   jogi audit: `tsfi-item-audit-2026-07.md` (az EN-itemek IPIP-eredete
   2026-07-29-én szövegszintű összevetéssel igazolva — B1 szál lezárva,
   ld. provenance-doksi). A korábbi HEXACO-PI-R bank kivezetve.
-- User-facing szövegben NE szerepeljen „HEXACO"/„Big Five" — generikus
-  megfogalmazást használj („hatfaktoros személyiségmodell", „Trita
-  személyiségfelmérés"). Kivétel: külső tesztekre utaló kérdőív-opciók,
-  edukációs blogcikk.
-- **TRITAN névtér (2026-07-14)**: a dimenziók/facetek megjelenítési nevei a
-  TRITAN-modellt követik (T·R·I·T·A·N = Tempo/Társas energia, Rezonancia,
-  Integritás, Tervezettség/Thoroughness, Alkalmazkodás/Adaptability,
-  Nyitottság). Kanonikus térkép: `src/lib/tritan.ts`; HEXACO-megfeleltetés:
-  `docs/product/tritan-naming.md`. Új felületen NE vezess be saját
-  dimenzió-címkét — a tritan.ts-ből dolgozz.
-- Dimenziókódok: H/E/X/A/C/O (E fordított: magasabb = érzelmesebb).
+- **HEXACO névtér (2026-07-29 — a TRITAN-branding KIVEZETVE)**: a
+  megjelenítés mindenhol a HEXACO-jelöléseket követi (H Becsületesség-Alázat
+  · E Emocionalitás · X Extraverzió · A Barátságosság · C Lelkiismeretesség
+  · O Nyitottság; facetek a HEXACO-PI-R terminológiával). A user-facing
+  szöveg NEVESÍTHETI a HEXACO-t és az IPIP-eredetet — ez a hitelesség
+  forrása. Kanonikus térkép: `src/lib/tritan.ts` (a fájlnév és a TRITAN_*
+  export-azonosítók history-okból maradtak — az ÉRTÉKEK HEXACO-k). Új
+  felületen NE vezess be saját dimenzió-címkét — a tritan.ts-ből dolgozz.
+  A kérdőív-név TSFI maradt.
+- BELSŐ dimenziókódok (DB score-JSON-ok, számítások): TEMP/RESO/INTE/THOR/
+  ADAP/OPEN — NEM változtak (INTE→H, RESO→E, TEMP→X, ADAP→A, THOR→C,
+  OPEN→O). E fordított: magasabb = érzelmesebb.
 - TestType enum a sémában: **TRITAN** (egyedüli érték — a korábbi
   HEXACO/HEXACO_MODIFIED/BIG_FIVE örökség törölve).
 - **Csapatszerep-modell (2026-07-20)**: saját 27 itemes bank

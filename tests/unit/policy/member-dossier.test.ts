@@ -77,13 +77,15 @@ describe("computeObserverAverage — observer-küszöb + átlag", () => {
 });
 
 describe("computeDimComparisons — sorrend, delta, üres self", () => {
-  it("TRITAN-sorrend + delta = observer − self", () => {
+  it("HEXACO-sorrend + delta = observer − self", () => {
     const self: Record<string, number> = { TEMP: 50, RESO: 40, INTE: 30, THOR: 20, ADAP: 60, OPEN: 70 };
     const obs: Record<string, number> = { TEMP: 55, RESO: 30, INTE: 30, THOR: 25, ADAP: 60, OPEN: 90 };
     const cmp = computeDimComparisons(TRITAN_ORDER, self, obs);
     assert.deepEqual(cmp.map((d) => d.code), TRITAN_ORDER);
-    assert.equal(cmp[0].delta, 5); // TEMP 55-50
+    // HEXACO-sorrend: INTE(H), RESO(E), TEMP(X), ADAP(A), THOR(C), OPEN(O)
+    assert.equal(cmp[0].delta, 0); // INTE 30-30
     assert.equal(cmp[1].delta, -10); // RESO 30-40
+    assert.equal(cmp[2].delta, 5); // TEMP 55-50
     assert.equal(cmp[5].delta, 20); // OPEN 90-70
   });
 

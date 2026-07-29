@@ -1,5 +1,13 @@
 # TRITAN — a Trita hatfaktoros modellje (elnevezés és kódrendszer)
 
+> **KIVEZETVE (2026-07-29).** A TRITAN-elnevezés a felületről eltűnt — a
+> megjelenítés visszaállt a HEXACO-jelölésekre (H·E·X·A·C·O, szakirodalmi
+> magyar nevek), mert az itemek IPIP–HEXACO eredete ezt teszi hitelessé.
+> A BELSŐ kódok (TEMP/RESO/INTE/THOR/ADAP/OPEN) és a TRITAN_* azonosítók a
+> kódban megmaradtak (DB-kompatibilitás); a kanonikus megjelenítési térkép
+> továbbra is a `src/lib/tritan.ts`, immár HEXACO-értékekkel. Az alábbi
+> tartalom történeti dokumentum.
+
 > Frissítve: 2026-07-16 · **A TRITAN a Trita kanonikus modellneve** — a kódban,
 > az adatokban és a felületen egyaránt. A korábbi kétrétegű megoldás
 > (mérési réteg régi kódokkal + TRITAN mint megjelenítési névtér) megszűnt:

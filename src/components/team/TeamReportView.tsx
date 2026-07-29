@@ -14,11 +14,11 @@ import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  INTE: { hu: "Integritás", en: "Integrity" },
-  RESO: { hu: "Rezonancia", en: "Resonance" },
-  TEMP: { hu: "Társas energia", en: "Tempo" },
-  ADAP: { hu: "Alkalmazkodás", en: "Adaptability" },
-  THOR: { hu: "Tervezettség", en: "Thoroughness" },
+  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  RESO: { hu: "Emocionalitás", en: "Emotionality" },
+  TEMP: { hu: "Extraverzió", en: "Extraversion" },
+  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
+  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
   OPEN: { hu: "Nyitottság", en: "Openness" },
 };
 

@@ -95,7 +95,7 @@ export function AdminFeedbackSection({
 
         <div className="mt-6">
           <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">
-            Dimenzió-pontosság — TRITAN
+            Dimenzió-pontosság — HEXACO
           </h3>
           <div className="space-y-2">
             {dimensionAverages.length > 0 ? (

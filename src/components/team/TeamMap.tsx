@@ -40,10 +40,10 @@ const DIM_COLORS: Record<string, string> = {
 };
 
 const DIM_NAMES: Record<string, string> = {
-  INTE: "Integritás",
-  RESO: "Rezonancia",
-  TEMP: "Társas energia",
-  ADAP: "Alkalmazkodás",
+  INTE: "Becsületesség-Alázat",
+  RESO: "Emocionalitás",
+  TEMP: "Extraverzió",
+  ADAP: "Barátságosság",
   THOR: "Lelkiism.",
   OPEN: "Nyitottság",
 };

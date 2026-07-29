@@ -245,9 +245,9 @@ function ResultsTab({
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
-  // Akkordeon a radar TRITAN-rendjében (X,E,H,C,A,O) — egyezik az
+  // Akkordeon a radar HEXACO-rendjében (H,E,X,A,C,O) — egyezik az
   // áttekintő listával; az első elem alapból nyitva.
-  const accordionDims = (["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"] as const)
+  const accordionDims = TRITAN_ORDER
     .map((code) => mainDims.find((d) => d.code === code))
     .filter((d): d is (typeof mainDims)[number] => Boolean(d))
     .map((d) => ({
@@ -285,10 +285,10 @@ function ResultsTab({
             {/* Soros lista a radar mellett — a hosszú dimenziónevek nem
                 törnek, a sáv + szint-címke egy pillantásra olvasható. */}
             <div className="flex flex-col gap-2.5 rounded-xl border border-[var(--color-border-soft)] bg-white p-4">
-              {/* Sorrend = a radar TRITAN-rendje (T·R·I·T·A·N), a színek és
+              {/* Sorrend = a radar HEXACO-rendje (H·E·X·A·C·O), a színek és
                   az értékek a dimenzió-színt viselik — alacsony szintnél is
                   jól láthatóan. */}
-              {(["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"] as const)
+              {TRITAN_ORDER
                 .map((code) => mainDims.find((d) => d.code === code))
                 .filter((d): d is (typeof mainDims)[number] => Boolean(d))
                 .map((d) => {
@@ -686,7 +686,7 @@ export function ProfileTabs({
           setPdfLoading(true);
           try {
             const { downloadPdf } = await import("@/components/pdf/TritaPdf");
-            // Kanonikus TRITAN-sorrend (T·R·I·T·A·N) — a PDF radar, sávok és
+            // Kanonikus HEXACO-sorrend (H·E·X·A·C·O) — a PDF radar, sávok és
             // facet-oldalak is ebben a rendben jelennek meg, a felülettel egyezően.
             const tritanIndex = (code: string) => {
               const i = (TRITAN_ORDER as readonly string[]).indexOf(code);

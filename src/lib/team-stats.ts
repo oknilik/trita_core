@@ -17,20 +17,20 @@ const DIM_COLORS: Record<string, string> = {
 };
 
 const DIM_LABELS_HU: Record<string, string> = {
-  INTE: "Integritás",
-  RESO: "Rezonancia",
-  TEMP: "Társas energia",
-  ADAP: "Alkalmazkodás",
-  THOR: "Tervezettség",
+  INTE: "Becsületesség-Alázat",
+  RESO: "Emocionalitás",
+  TEMP: "Extraverzió",
+  ADAP: "Barátságosság",
+  THOR: "Lelkiismeretesség",
   OPEN: "Nyitottság",
 };
 
 const DIM_LABELS_EN: Record<string, string> = {
-  INTE: "Integrity",
-  RESO: "Resonance",
-  TEMP: "Tempo",
-  ADAP: "Adaptability",
-  THOR: "Thoroughness",
+  INTE: "Honesty-Humility",
+  RESO: "Emotionality",
+  TEMP: "Extraversion",
+  ADAP: "Agreeableness",
+  THOR: "Conscientiousness",
   OPEN: "Openness",
 };
 

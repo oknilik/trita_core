@@ -60,11 +60,11 @@ const FRICTION_WEIGHTS: Record<string, number> = {
 };
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Tervezettség", en: "Thoroughness" },
-  ADAP: { hu: "Alkalmazkodás", en: "Adaptability" },
-  INTE: { hu: "Integritás", en: "Integrity" },
-  RESO: { hu: "Rezonancia", en: "Resonance" },
-  TEMP: { hu: "Társas energia", en: "Tempo" },
+  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
+  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  RESO: { hu: "Emocionalitás", en: "Emotionality" },
+  TEMP: { hu: "Extraverzió", en: "Extraversion" },
   OPEN: { hu: "Nyitottság", en: "Openness" },
 };
 

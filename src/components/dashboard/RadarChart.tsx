@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
-import { TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
+import { TRITAN_ORDER, TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 
 const CX = 150;
 const CY = 150;
@@ -66,9 +66,9 @@ export const RadarChart = memo(function RadarChart({
 }: RadarChartProps) {
   const { locale } = useLocale();
 
-  // TRITAN-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
-  // mozaikszót (T·R·I·T·A·N). Nem-standard kódoknál marad az eredeti sorrend.
-  const TRITAN_RADAR_ORDER: readonly string[] = ["TEMP", "RESO", "INTE", "THOR", "ADAP", "OPEN"];
+  // HEXACO-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
+  // mozaikszót (H·E·X·A·C·O). Nem-standard kódoknál marad az eredeti sorrend.
+  const TRITAN_RADAR_ORDER: readonly string[] = TRITAN_ORDER;
   const isTritanSet = dimensions.every((d) => TRITAN_RADAR_ORDER.includes(d.code));
   const orderedDimensions = isTritanSet
     ? [...dimensions].sort(

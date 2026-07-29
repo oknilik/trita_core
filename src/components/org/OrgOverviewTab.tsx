@@ -19,20 +19,20 @@ const TRITAN_COLORS: Record<string, string> = {
 };
 
 const TRITAN_LABELS_HU: Record<string, string> = {
-  INTE: "Integritás",
-  RESO: "Rezonancia",
-  TEMP: "Társas energia",
-  ADAP: "Alkalmazkodás",
-  THOR: "Tervezettség",
+  INTE: "Becsületesség-Alázat",
+  RESO: "Emocionalitás",
+  TEMP: "Extraverzió",
+  ADAP: "Barátságosság",
+  THOR: "Lelkiismeretesség",
   OPEN: "Nyitottság",
 };
 
 const TRITAN_LABELS_EN: Record<string, string> = {
-  INTE: "Integrity",
-  RESO: "Resonance",
+  INTE: "Honesty-Humility",
+  RESO: "Emotionality",
   TEMP: "eXtraversion",
-  ADAP: "Adaptability",
-  THOR: "Thoroughness",
+  ADAP: "Agreeableness",
+  THOR: "Conscientiousness",
   OPEN: "Openness",
 };
 

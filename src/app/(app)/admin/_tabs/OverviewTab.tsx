@@ -369,7 +369,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
         <div className="flex flex-col gap-3 rounded-2xl border border-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-body font-semibold text-ink">
-              A saját TRITAN-profilod még nincs kitöltve
+              A saját HEXACO-profilod még nincs kitöltve
             </p>
             <p className="mt-1 text-xs leading-relaxed text-ink-body">
               Nem kötelező — de ha szeretnéd látni a saját mintázatodat, ~10 perc.

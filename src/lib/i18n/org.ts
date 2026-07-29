@@ -460,11 +460,11 @@ export const orgTranslations = {
       closeCampaign: { hu: "Mérés lezárása", en: "Close measurement" },
 
       // Personality dimension labels (campaign detail)
-      tritanINTE: { hu: "Integritás", en: "Integrity" },
-      tritanRESO: { hu: "Rezonancia", en: "Resonance" },
-      tritanTEMP: { hu: "Társas energia", en: "Tempo" },
-      tritanADAP: { hu: "Alkalmazkodás", en: "Adaptability" },
-      tritanTHOR: { hu: "Tervezettség", en: "Thoroughness" },
+      tritanINTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+      tritanRESO: { hu: "Emocionalitás", en: "Emotionality" },
+      tritanTEMP: { hu: "Extraverzió", en: "Extraversion" },
+      tritanADAP: { hu: "Barátságosság", en: "Agreeableness" },
+      tritanTHOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
       tritanOPEN: { hu: "Nyitottság", en: "Openness" },
     },
 

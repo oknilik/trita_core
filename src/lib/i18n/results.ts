@@ -494,8 +494,8 @@ export const resultsTranslations = {
     sectionRoles: { hu: "Csapatszerep-hajlamok", en: "Team role tendencies" },
     sectionGrowth: { hu: "Fejlődési fókusz", en: "Growth focus" },
     radarNote: {
-      hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben: T – Társas energia · R – Rezonancia · I – Integritás · T – Tervezettség · A – Alkalmazkodás · N – Nyitottság.",
-      en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top: T – Tempo · R – Resonance · I – Integrity · T – Thoroughness · A – Adaptability · N – Openness.",
+      hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a HEXACO-dimenziók: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
+      en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the HEXACO dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
     },
     growthIntro: {
       hu: "Ezeken a területeken adtad magadnak a legalacsonyabb értékeket — nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
