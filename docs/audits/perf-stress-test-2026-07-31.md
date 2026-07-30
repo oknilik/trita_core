@@ -244,3 +244,73 @@ node scripts/measure-page-queries.mjs --port=3210 \
 Ha a dev szerver „90 s alatt nem jött fel" hibával áll meg: a `.next` egy
 korábbi production buildet tartalmaz, ilyenkor előbb egy sima `next dev`
 indítással melegítsd be a cache-t.
+
+---
+
+## 8. UTÓMÉRÉS — R1 végrehajtva, és most már ÉLESBEN mérve
+
+**A régió-kérdés eldőlt.** A Vercel dokumentáció szerint az alapértelmezett
+függvény-régió minden új projektnél `iad1`, és a projektben nem volt
+`regions` beállítás — tehát a 4. fejezet feltevése helyes volt.
+
+Beállítva a `vercel.json`-ban (`"regions": ["fra1"]`, commit `e4f6825`).
+Igazolás a deployment build-listájából:
+
+```
+├── λ index (2.97MB) [fra1]
+├── λ _global-error (2.97MB) [fra1]
+```
+
+A build maga továbbra is `iad1`-ben fut — ez rendben van, a build régiója
+független a futásidejűtől.
+
+### 8.1 Első ÉLES mérés (a deployment-védelem kikapcsolása után)
+
+Budapestről, a preview deploymentre, 8 kérés útvonalanként:
+
+| Mérés | kód | első (hideg) | medián (meleg) | min |
+|---|---:|---:|---:|---:|
+| `/observe/<token>` — **DB-t érint** | 200 | **1713 ms** | **107 ms** | 95 ms |
+| `/observe/<érvénytelen>` — DB-t érint, korán kilép | 200 | 102 ms | 87 ms | 80 ms |
+| `/` (statikus) | 200 | 493 ms | 65 ms | 64 ms |
+| `/pricing` (statikus) | 200 | 302 ms | 78 ms | 62 ms |
+| `/sign-in` (statikus) | 200 | 455 ms | 64 ms | 55 ms |
+
+**Egy DB-t érintő oldal melegen 107 ms**, és a tényleges DB-munka ebből
+mindössze ~20 ms (a valós és az érvénytelen token különbsége). A maradék a
+Budapest→Frankfurt hálózat és a render. A régión belüli körfordulás tehát
+tényleg elhanyagolható lett — a 4. fejezet `fra1`-becslése beigazolódott.
+
+A statikus oldalakon a `x-vercel-id` egyetlen régió-szegmenst tartalmaz,
+tehát ott függvény el sem indult (CDN-ből jönnek) — ezek nem alkalmasak a
+DB-út mérésére.
+
+### 8.2 Amit az utómérés ÚJ tételként hozott
+
+**F9 — Hidegindítás 1713 ms.** Az első kérés a DB-t érintő oldalra
+1,7 másodperc: függvény-hidegindítás + Neon autosuspend ébredés (a 3.
+fejezet szerint önmagában 340 ms). Ritkán látogatott appnál ez minden
+munkamenet elején jelentkezik, és ez most már NAGYOBB tétel, mint az összes
+többi együtt — a meleg 107 ms mellett a hideg 1713 ms tizenhatszoros.
+
+Ez tolja előre az R5-öt (Neon melegen tartása) a listán: korábban 340 ms-os
+tétel volt egy ~800 ms-os oldal mellett, most 1,7 s egy ~110 ms-os oldal
+mellett.
+
+### 8.3 Ami továbbra sem mért
+
+Az authentikált nézetek (`/team/[id]`, `/org/[id]`, `/profile`) éles
+válaszideje. Ezekhez be kellene lépni, amit nem tettem meg. A 2. fejezet
+query-számai és hullámai viszont érvényesek, és a 8.1 alapján a
+körfordulás-szorzó most már ~1–3 ms, nem 26 vagy 90 — tehát a 4. fejezet
+`fra1` oszlopa a reális becslés (`csapat · tagok` ~400 ms).
+
+### 8.4 A javaslatok frissített sorrendje
+
+1. ~~R1 — régió~~ **KÉSZ**
+2. **R5 — Neon hidegindítás** (F9 miatt előrelépett)
+3. R2 — `getTeamPageData` fül-szintű bontása
+4. R3 — `/api/nav/context` memoizáció
+5. R6 — a `--prod` mérőmód javítása
+6. R7 — `pg_stat_statements`
+7. R4 — layout-padló (továbbra sem javasolt hozzányúlni)
