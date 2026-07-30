@@ -31,6 +31,7 @@ import {
   interestCongruence,
   interestDifferentiation,
 } from "./interests";
+import { aggregateFamilyFits } from "./family-fit";
 import {
   bandFor,
   blendedStandardError,
@@ -267,10 +268,16 @@ export interface EngineOptions {
 }
 
 /**
- * Diverzifikálás: egy ISCO-alcsoportból (2 jegy) legfeljebb `perFamily` tétel
- * kerüljön a listába. Nélküle a lista ugyanannak a szakmacsaládnak a
- * variációival telik meg — ami pontszám-szinten igaz, de tanácsként használhatatlan.
+ * Diverzifikálás: egy karrier-családból legfeljebb `perFamily` tétel kerüljön
+ * a listába. Nélküle a lista ugyanannak a családnak a variációival telik meg —
+ * ami pontszám-szinten igaz, de tanácsként használhatatlan.
  * A kimaradók a lista végén, kiegészítésként jönnek vissza.
+ *
+ * 2026-07-31 óta a VALÓDI családra fut (`Occupation.family`); korábban az ISCO
+ * 2-jegyű alcsoport közelítette, ami képzettségi szint szerint vág, nem
+ * munkatartalom szerint — ezért néha ugyanazt a szerep-típust engedte át
+ * többször, máskor viszont fölöslegesen szórta szét. Fallback marad az ISCO,
+ * ha egy tételnek valamiért nincs családja.
  */
 function diversify(
   sorted: OccupationFit[],
@@ -281,7 +288,7 @@ function diversify(
   const picked: OccupationFit[] = [];
   const overflow: OccupationFit[] = [];
   for (const fit of sorted) {
-    const family = (fit.isco ?? "??").slice(0, 2);
+    const family = fit.family ?? (fit.isco ?? "??").slice(0, 2);
     const count = used.get(family) ?? 0;
     if (count < perFamily && picked.length < limit) {
       used.set(family, count + 1);
@@ -518,6 +525,10 @@ export function computeCareerFit(
     observerWeight: Math.round(weight * 100) / 100,
     clusters: clusterByOverlap(ranked),
     ranked,
+    // A családok a TELJES pontozott halmazból számolnak (`sorted`), nem a
+    // megjelenítésre levágott listából — különben a család pontszáma attól
+    // függne, hány tétele fért be a limitbe.
+    families: aggregateFamilyFits(sorted),
     meta: {
       catalogVersion: CATALOG_VERSION,
       occupationCount: catalog.length,
