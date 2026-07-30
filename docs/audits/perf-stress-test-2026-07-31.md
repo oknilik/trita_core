@@ -297,13 +297,46 @@ Ez tolja előre az R5-öt (Neon melegen tartása) a listán: korábban 340 ms-os
 tétel volt egy ~800 ms-os oldal mellett, most 1,7 s egy ~110 ms-os oldal
 mellett.
 
-### 8.3 Ami továbbra sem mért
+### 8.3 Authentikált nézetek — ÉLES MÉRÉS
 
-Az authentikált nézetek (`/team/[id]`, `/org/[id]`, `/profile`) éles
-válaszideje. Ezekhez be kellene lépni, amit nem tettem meg. A 2. fejezet
-query-számai és hullámai viszont érvényesek, és a 8.1 alapján a
-körfordulás-szorzó most már ~1–3 ms, nem 26 vagy 90 — tehát a 4. fejezet
-`fra1` oszlopa a reális becslés (`csapat · tagok` ~400 ms).
+Munkamenet Clerk **sign-in tokennel** (backend API `POST /v1/sign_in_tokens`
++ `signIn.create({ strategy: "ticket" })`), nem kód beírásával — ez a
+dokumentált, reprodukálható E2E-út. Felhasználó: Aurora Kata (ORG_ADMIN).
+Budapestről, 5 kérés nézetenként, teljes szerver-render (HTML), `no-store`:
+
+| Nézet | kód | első | **medián** | min | méret |
+|---|---:|---:|---:|---:|---:|
+| csapat · tagok | 200 | 338 | **180 ms** | 153 | 68 KB |
+| csapat · áttekintés | 200 | 221 | **171 ms** | 150 | 78 KB |
+| vezérlő (dashboard) | 200 | 307 | **171 ms** | 168 | 30 KB |
+| csapat · riport | 200 | 161 | **158 ms** | 145 | 187 KB |
+| saját eredmények | 200 | 254 | **153 ms** | 136 | 132 KB |
+| org · tagok | 200 | 138 | **143 ms** | 127 | 79 KB |
+| profil | 200 | 257 | **142 ms** | 131 | 31 KB |
+| org cockpit | 200 | 149 | **140 ms** | 126 | 64 KB |
+| org · kampányok | 200 | 140 | **140 ms** | 132 | 64 KB |
+| feladataim | 200 | 147 | **132 ms** | 128 | 30 KB |
+| csapat-lista | 200 | 126 | **131 ms** | 116 | 42 KB |
+| csapat · intelligence | 200 | 129 | **128 ms** | 120 | 42 KB |
+
+**A valóság jobb lett, mint a modell.** A legdrágább nézetre a 4. fejezet
+`fra1` becslése ~404 ms volt, a mért érték **180 ms**. Az egész felület
+128–180 ms között van, és ebben benne van a Budapest→Frankfurt hálózat is
+(~25–30 ms), tehát a szerver-oldali munka nagyjából 100–150 ms.
+
+Összevetés a régió-váltás előtti becsléssel (`iad1`, 4. fejezet):
+
+| Nézet | `iad1` becsült | **mért `fra1`** |
+|---|---:|---:|
+| csapat · tagok | ~1990 ms | **180 ms** |
+| csapat · áttekintés | ~1840 ms | **171 ms** |
+| org · tagok | ~1650 ms | **143 ms** |
+| profil | ~780 ms | **142 ms** |
+
+Funkcionális ellenőrzés is megtörtént: a csapat-oldal hibátlanul rendereli a
+seedelt adatot (5/5 kész profil, PUBLISHED riport „Tanácsadó által validálva"
+jelöléssel), a böngésző-konzolon **nulla hiba**. A korábbi P2022-es
+oszlophiányok megszűntek.
 
 ### 8.4 A javaslatok frissített sorrendje
 
