@@ -53,11 +53,24 @@ import {
   type RankStrategy,
 } from "./types";
 
-/** Kompozit rangsor-súlyok. A megvalósíthatóság SZÁNDÉKOSAN nincs benne. */
+/**
+ * Kompozit rangsor-súlyok. A megvalósíthatóság SZÁNDÉKOSAN nincs benne.
+ *
+ * 2026-07-31: a PREFERENCIA lett a legerősebb jel. Indok: ez az egyetlen
+ * komponens, amit a felhasználó KIMONDOTT — a személyiség mért becslés, a
+ * Holland-kód pedig sokszor maga is becsült. Ha valaki azt mondja, hogy nem
+ * akar emberekkel dolgozni, azt nem írhatja felül egy 60 itemes műszerből
+ * származó profil-hasonlóság. Sorrend: kimondott szándék → személyiség →
+ * érdeklődés.
+ *
+ * A súlyok a MEGLÉVŐ komponensekre újranormálódnak: ha a user egyetlen
+ * tengelyt sem állított be, a preferencia kimarad, és a másik kettő viszi a
+ * rangsort — tehát a központba helyezés nem büntet senkit, aki nem válaszolt.
+ */
 export const RANK_WEIGHTS = {
-  demand: 0.55,
-  interest: 0.3,
-  preference: 0.15,
+  preference: 0.45,
+  demand: 0.35,
+  interest: 0.2,
 } as const;
 
 /**
@@ -81,7 +94,7 @@ const INDUSTRY_PICK_BONUS = 5;
  * KÉTLÉPCSŐS (interest-led) rangsorolás — a self-réteg alapértelmezése, ha van
  * MÉRT érdeklődés-kód.
  *
- * 1. lépcső: a jelölt-halmazt az ÉRDEKLŐDÉS és a munkakörnyezeti preferencia
+ * 1. lépcső: a jelölt-halmazt a munkakörnyezeti PREFERENCIA és az érdeklődés
  *    jelöli ki („mi felé húz"). Ezek jósolják a választást, a kitartást és az
  *    elégedettséget, és mindkét oldalon mért adatból jönnek.
  * 2. lépcső: a halmazon BELÜL a személyiség-illeszkedés rendez („ezek közül
@@ -90,8 +103,12 @@ const INDUSTRY_PICK_BONUS = 5;
  *
  * Becsült (személyiség-alapú) érdeklődés-kódnál ez körkörös lenne, ezért ott a
  * kompozit rangsor marad.
+ *
+ * 2026-07-31: a jelölt-halmazon belül is a PREFERENCIA vezet (0,65 vs 0,35).
+ * A kimondott szándék erősebb jel, mint a Holland-kód — különösen, mert a
+ * Holland sokszor maga is becsült.
  */
-const CHOICE_WEIGHTS = { interest: 0.7, preference: 0.3 } as const;
+const CHOICE_WEIGHTS = { preference: 0.65, interest: 0.35 } as const;
 /**
  * A jelölt-halmaz RELATÍV: a legjobb „mi felé húz" pontszámhoz képest ennyi
  * ponttal maradhat el egy tétel. Fix méretű halmaz nem működik — ha túl bő,

@@ -371,7 +371,31 @@ test("kompozit: az érdeklődés és a preferencia módosítja a rangsort, a dem
     "a mért érdeklődés nem hatott a rangsorra",
   );
   assert.equal(withInterest.interestSource, "measured");
-  assert.ok(RANK_WEIGHTS.demand > RANK_WEIGHTS.interest, "a személyiség dominál");
+});
+
+test("a rangsor-súlyok sorrendje: kimondott szándék → személyiség → érdeklődés", () => {
+  // Ez a termék egyik alapdöntése (2026-07-31), nem hangolási részlet: a
+  // preferencia az EGYETLEN komponens, amit a felhasználó kimondott — a
+  // személyiség mért becslés, a Holland-kód sokszor maga is becsült.
+  assert.ok(
+    RANK_WEIGHTS.preference > RANK_WEIGHTS.demand,
+    "a kimondott preferencia nem erősebb a személyiségnél",
+  );
+  assert.ok(
+    RANK_WEIGHTS.demand > RANK_WEIGHTS.interest,
+    "a személyiség nem erősebb az érdeklődésnél",
+  );
+});
+
+test("preferencia nélkül a másik két komponens viszi a rangsort", () => {
+  // A központba helyezés nem büntetheti azt, aki egy tengelyt sem állított be:
+  // a súlyok a MEGLÉVŐ komponensekre normálódnak újra.
+  const withoutPrefs = computeCareerFit({ dims: balanced, form: "short" });
+  assert.ok(withoutPrefs.ranked.length > 0, "üres rangsor preferencia nélkül");
+  for (const fit of withoutPrefs.ranked) {
+    assert.equal(fit.preference, null, `${fit.hu}: preferencia-pontszám beállítás nélkül`);
+    assert.ok(fit.rank > 0, `${fit.hu}: nulla rang preferencia nélkül`);
+  }
 });
 
 test("lapos érdeklődés-profil: gyengébb súllyal számít", () => {

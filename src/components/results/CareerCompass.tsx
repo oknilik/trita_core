@@ -328,13 +328,29 @@ export function CareerCompass({
   const [background, setBackground] = useState<CareerBackground>(
     initialBackground ? { ...EMPTY_BACKGROUND, ...initialBackground } : EMPTY_BACKGROUND,
   );
-  const [prefs, setPrefs] = useState<UserPrefs>({});
-  const [leadIntent, setLeadIntent] = useState<"lead" | "expert" | "unsure">("unsure");
+  // A mentett preferenciákból indulunk, NEM üresről. Enélkül a „válaszok
+  // módosítása" úgy indulna, hogy a beállított tengelyek eltűntek a
+  // felületről — és mivel mentéskor `{ ...background, prefs }` megy ki, az
+  // üres `prefs` felül is írná a szerveren tárolt beállítást. A preferencia
+  // a rangsor legerősebb jele, ezt elveszíteni a legdrágább hiba.
+  // Teljes visszaállításnál (`resetAll`) ürül — ott ez a szándék.
+  const [prefs, setPrefs] = useState<UserPrefs>(initialBackground?.prefs ?? {});
+  const [leadIntent, setLeadIntent] = useState<"lead" | "expert" | "unsure">(
+    initialBackground?.leadIntent ?? "unsure",
+  );
   const [missingText, setMissingText] = useState("");
   const [missingState, setMissingState] = useState<"idle" | "busy" | "sent">("idle");
   const [methodOpen, setMethodOpen] = useState(false);
-  // Vezetői kérdés látható kijelöléshez (a leadFocus boolean ebből származik)
-  const [leadChoice, setLeadChoice] = useState<"yes" | "expert" | "unsure" | null>(null);
+  // Vezetői kérdés látható kijelöléshez (a leadFocus boolean ebből származik).
+  // A mentett szándékból induljon, hogy módosításkor látszódjon a korábbi
+  // válasz — `null` csak akkor, ha a user még sosem válaszolt.
+  const [leadChoice, setLeadChoice] = useState<"yes" | "expert" | "unsure" | null>(
+    initialBackground?.leadIntent
+      ? initialBackground.leadIntent === "lead"
+        ? "yes"
+        : initialBackground.leadIntent
+      : null,
+  );
   // Wizard-zárás ünneplés — csak tényleges kitöltés után, betöltéskor nem
   const [celebrate, setCelebrate] = useState(false);
   // Mért érdeklődés-kérdőív (Mini-IP) nyitva-e az eredmény-nézetben

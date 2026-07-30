@@ -105,7 +105,7 @@ export async function POST(req: Request) {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, careerBackground: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -114,9 +114,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
+  // A MÉRT érdeklődés-kérdőív (Holland) eredménye csak ÚJRAKEZDÉSKOR vész el
+  // (DELETE), módosításkor soha. A mentés teljes cserét ír, ezért ha a
+  // beküldött háttér nem hozza a pontszámokat, a meglévőt megtartjuk — a
+  // kitöltés drága (a leghosszabb lépés), és egy hiányos kliens-payload nem
+  // törölheti el. Kiürítéshez a DELETE való.
+  const previous = (profile.careerBackground ?? null) as {
+    riasecScores?: Record<string, number>;
+  } | null;
+  const next = { ...parsed.data };
+  if (!next.riasecScores && previous?.riasecScores) {
+    next.riasecScores = previous.riasecScores;
+  }
+
   await prisma.userProfile.update({
     where: { id: profile.id },
-    data: { careerBackground: parsed.data },
+    data: { careerBackground: next },
   });
 
   return NextResponse.json({ ok: true });
