@@ -14,9 +14,12 @@ export const dynamic = "force-dynamic";
 
 /**
  * GET /api/cron/release-steps — esedékes ütemezett kampánylépések
- * kinyitása + értesítés. Óránként hívja a Vercel cron (vercel.json);
- * emellett a kitöltő-oldalak betöltése user-szinten is elvégzi, így a
- * cron csak a proaktív értesítés-küldést fedi.
+ * kinyitása + értesítés. Naponta egyszer hívja a Vercel cron (vercel.json,
+ * 05:00 UTC) — a Hobby csomag ennél sűrűbb ütemezést nem fogad el, és a
+ * tényleges indítás órán belül csúszhat. Emellett a kitöltő-oldalak
+ * betöltése user-szinten is elvégzi (`releaseDueCampaignSteps({ userId })`),
+ * így a résztvevő saját lépése azonnal megnyílik; a cron csak a proaktív
+ * értesítés-küldést fedi, ott max. ~24 óra késés lehet.
  *
  * Guard: ha CRON_SECRET be van állítva, Bearer tokenként kötelező
  * (a Vercel cron automatikusan így hívja).
