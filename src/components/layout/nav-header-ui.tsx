@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
-import { useLocale } from "@/components/LocaleProvider";
+import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   buildWorkspaceNavigation,
@@ -199,24 +199,28 @@ function NavHeaderContent({
   const [activeOrgId, setActiveOrgId] = useState<string | null>(org?.id ?? null);
   const [orgSwitchBusy, setOrgSwitchBusy] = useState(false);
 
-  useEffect(() => {
-    if (!org) return;
-    let cancelled = false;
-    (async () => {
+  // Az org-váltó tagság-listája LUSTÁN töltődik: korábban minden oldal-
+  // betöltésnél lement egy /api/org/context hívás, pedig a legtöbb user egy
+  // szervezetben van és sosem nyitja meg a váltót. Most a lenyíló első
+  // megnyitása tölti be (egyszer, majd cache-elve a komponens élettartamára).
+  const orgMembershipsLoading = useRef(false);
+  const ensureOrgMemberships = useCallback(() => {
+    if (!org || orgMemberships !== null || orgMembershipsLoading.current) return;
+    orgMembershipsLoading.current = true;
+    void (async () => {
       try {
         const res = await fetch("/api/org/context");
         if (!res.ok) return;
         const data = await res.json();
-        if (!cancelled) {
-          setOrgMemberships(data.memberships ?? []);
-          setActiveOrgId(data.activeOrgId ?? org.id);
-        }
+        setOrgMemberships(data.memberships ?? []);
+        setActiveOrgId(data.activeOrgId ?? org.id);
       } catch {
         // a váltó ilyenkor egyszerűen nem jelenik meg
+      } finally {
+        orgMembershipsLoading.current = false;
       }
     })();
-    return () => { cancelled = true; };
-  }, [org]);
+  }, [org, orgMemberships]);
 
   async function switchOrg(targetOrgId: string, targetRole: string) {
     if (orgSwitchBusy || targetOrgId === activeOrgId) return;
@@ -309,9 +313,15 @@ function NavHeaderContent({
 
   const closeAll = useCallback(() => setOpenDropdown(null), []);
 
-  const toggle = useCallback((key: DropdownKey) => {
-    setOpenDropdown((prev) => (prev === key ? null : key));
-  }, []);
+  const toggle = useCallback(
+    (key: DropdownKey) => {
+      // A user-menü tartalmazza az org-váltót és a tanácsadói „új ügyfél-org"
+      // linket — a tagság-listát itt töltjük be, nem mountkor.
+      if (key === "user") ensureOrgMemberships();
+      setOpenDropdown((prev) => (prev === key ? null : key));
+    },
+    [ensureOrgMemberships],
+  );
 
   useEffect(() => {
     setMobileMenu("closed");
@@ -581,6 +591,7 @@ function NavHeaderContent({
                 type="button"
                 onClick={() => {
                   closeAll();
+                  clearLocaleSyncFlag();
                   signOut({ redirectUrl: "/" });
                 }}
                 className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-caption font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
@@ -737,7 +748,11 @@ function NavHeaderContent({
             </div>
             <button
               type="button"
-              onClick={() => setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"))}
+              onClick={() => {
+                // A mobil menü is mutatja az org-váltót — lusta betöltés.
+                ensureOrgMemberships();
+                setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"));
+              }}
               className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-primary)]"
             >
               {mobileMenu !== "closed" ? (
@@ -960,6 +975,7 @@ function NavHeaderContent({
                         <button
                           type="button"
                           onClick={() => {
+                            clearLocaleSyncFlag();
                             signOut({ redirectUrl: "/" });
                             setMobileMenu("closed");
                           }}

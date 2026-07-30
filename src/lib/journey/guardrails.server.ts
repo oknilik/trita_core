@@ -1,6 +1,7 @@
 import "server-only";
 
-import { prisma } from "@/lib/prisma";
+import { cache } from "react";
+import { getProfileCoreByClerkId, getProfileCoreById } from "@/lib/profile.server";
 import { resolveJourney, type ResolveJourneyOptions } from "@/lib/journey/engine";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
@@ -10,18 +11,15 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
  * teszt-útvonalra: az admin az /admin vezérlőre, a tanácsadó a szervezetei
  * listájára érkezik. A saját teszt számukra opció, nem kapu.
  */
-export async function resolveStaffDestination(
+export const resolveStaffDestination = cache(async function resolveStaffDestination(
   profileId: string,
 ): Promise<string | null> {
-  const profile = await prisma.userProfile.findUnique({
-    where: { id: profileId },
-    select: { email: true, isConsultant: true },
-  });
+  const profile = await getProfileCoreById(profileId);
   if (!profile) return null;
   if (isPlatformAdminEmail(profile.email)) return "/admin";
   if (profile.isConsultant) return "/org";
   return null;
-}
+});
 
 export async function resolveJourneyFallbackForProfileId(
   profileId: string,
@@ -40,10 +38,7 @@ export async function resolveJourneyFallbackForClerkId(
   clerkId: string,
   options: ResolveJourneyOptions = {},
 ): Promise<string> {
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId },
-    select: { id: true },
-  });
+  const profile = await getProfileCoreByClerkId(clerkId);
   if (!profile) return JOURNEY_HOME_HANDOFF_PATH;
   return resolveJourneyFallbackForProfileId(profile.id, {
     ...options,

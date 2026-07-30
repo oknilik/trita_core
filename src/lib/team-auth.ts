@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "./prisma";
 // A rangsor EGYETLEN forrása az org-roles.ts (függőség-mentes modul, nem
 // húz be redirect-kötött auth-helpereket) — a korábbi lokális duplikátum
@@ -22,19 +23,36 @@ export function canViewRawTeamResults(orgRole: string | null | undefined): boole
   return orgRole === "ORG_CONSULTANT";
 }
 
+/**
+ * A hívó csapat-szerepe egy csapatban (null = nem tag) — KÉRÉS-SZINTEN
+ * memoizálva.
+ *
+ * Miért: a /team/[id] render háromszor kérdezte ugyanezt (canAccessTeam,
+ * canManageTeam, resolveTeamPolicySnapshot). A kulcs (profileId, teamId)
+ * párost tartalmaz, tehát felhasználók és csapatok között nem keveredhet;
+ * a cache hatóköre egy kérés.
+ *
+ * A jogosultság-DÖNTÉS továbbra is minden hívónál külön fut le — itt csak a
+ * nyers adatlekérés memoizálódik, kapu-logika nem kerül megkerülésre.
+ */
+export const getTeamMembershipRole = cache(async function getTeamMembershipRole(
+  profileId: string,
+  teamId: string,
+): Promise<string | null> {
+  const membership = await prisma.teamMember.findUnique({
+    where: { teamId_userId: { teamId, userId: profileId } },
+    select: { role: true },
+  });
+  return membership?.role ?? null;
+});
+
 export async function canAccessTeam(
   profileId: string,
   teamId: string,
   orgRole: string
 ): Promise<boolean> {
   if (hasOrgRole(orgRole, "ORG_ADMIN")) return true;
-
-  const membership = await prisma.teamMember.findUnique({
-    where: { teamId_userId: { teamId, userId: profileId } },
-    select: { role: true },
-  });
-
-  return !!membership;
+  return (await getTeamMembershipRole(profileId, teamId)) !== null;
 }
 
 /**
@@ -53,13 +71,7 @@ export async function canManageTeam(
   orgRole: string
 ): Promise<boolean> {
   if (hasOrgRole(orgRole, "ORG_ADMIN")) return true;
-
-  const membership = await prisma.teamMember.findUnique({
-    where: { teamId_userId: { teamId, userId: profileId } },
-    select: { role: true },
-  });
-
-  return isTeamManagerRole(membership?.role);
+  return isTeamManagerRole(await getTeamMembershipRole(profileId, teamId));
 }
 
 /**
@@ -67,7 +79,7 @@ export async function canManageTeam(
  * ORG_ADMIN: all teams in org.
  * Others: only their team memberships.
  */
-export async function getAccessibleTeamIds(
+export const getAccessibleTeamIds = cache(async function getAccessibleTeamIds(
   profileId: string,
   orgId: string,
   orgRole: string
@@ -85,7 +97,36 @@ export async function getAccessibleTeamIds(
     select: { teamId: true },
   });
   return memberships.map((m) => m.teamId);
-}
+});
+
+/**
+ * Ugyanaz a hozzáférés-szabály, mint a getAccessibleTeamIds-nél, de MINDJÁRT
+ * a csapat nevével — EGY lekérdezésben.
+ *
+ * Miért: a nav-fejléc korábban előbb az id-listát kérte le, majd egy MÁSODIK
+ * körben a neveket (`team.findMany({ id: { in: … } })`). Két egymás utáni
+ * körfordulás egy helyett, minden belépett oldalon.
+ */
+export const getAccessibleTeams = cache(async function getAccessibleTeams(
+  profileId: string,
+  orgId: string,
+  orgRole: string,
+): Promise<Array<{ id: string; name: string }>> {
+  if (hasOrgRole(orgRole, "ORG_ADMIN")) {
+    return prisma.team.findMany({
+      where: { orgId },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    });
+  }
+
+  const memberships = await prisma.teamMember.findMany({
+    where: { userId: profileId, team: { orgId } },
+    select: { team: { select: { id: true, name: true } } },
+    orderBy: { team: { name: "asc" } },
+  });
+  return memberships.map((m) => m.team);
+});
 
 /**
  * Returns the list of team IDs the user can manage (hiring, invites, etc.)
@@ -93,7 +134,7 @@ export async function getAccessibleTeamIds(
  * Egyébként: azok a csapatok, ahol team-manager a csapat-szerepe —
  * org-szereptől függetlenül (két menedzser-szint modell, 2026-07-22).
  */
-export async function getManageableTeamIds(
+export const getManageableTeamIds = cache(async function getManageableTeamIds(
   profileId: string,
   orgId: string,
   orgRole: string
@@ -115,4 +156,4 @@ export async function getManageableTeamIds(
     select: { teamId: true },
   });
   return memberships.map((m) => m.teamId);
-}
+});

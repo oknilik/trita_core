@@ -39,8 +39,30 @@ const postSchema = z.object({
   status: z.enum(["draft", "published"]),
 });
 
+type PostInput = z.infer<typeof postSchema>;
+
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+/** Frontmatter + törzs .mdx-szé — a gray-matter YAML-szerializálójával
+ * (idézőjelezés, ékezetek OK). Minden mentési út ezen megy át. */
+function buildMdx(p: PostInput): string {
+  const data: Record<string, unknown> = {
+    title: p.title,
+    description: p.description,
+    publishedAt: p.publishedAt ?? todayIso(),
+    locale: p.locale,
+    tags: p.tags,
+  };
+  if (p.translationSlug) data.translationSlug = p.translationSlug;
+  if (p.heroQuote) data.heroQuote = p.heroQuote;
+  if (p.startHere) data.startHere = p.startHere;
+  if (p.artSeed) data.artSeed = p.artSeed;
+  if (p.artMotif) data.artMotif = p.artMotif;
+  if (p.status === "draft") data.status = "draft";
+
+  return matter.stringify("\n" + p.body.trim() + "\n", data);
 }
 
 export async function POST(req: NextRequest) {
@@ -65,22 +87,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "GITHUB_NOT_CONFIGURED" }, { status: 501 });
   }
 
-  // Frontmatter a gray-matter YAML-szerializálójával (idézőjelezés, ékezetek OK)
-  const data: Record<string, unknown> = {
-    title: p.title,
-    description: p.description,
-    publishedAt: p.publishedAt ?? todayIso(),
-    locale: p.locale,
-    tags: p.tags,
-  };
-  if (p.translationSlug) data.translationSlug = p.translationSlug;
-  if (p.heroQuote) data.heroQuote = p.heroQuote;
-  if (p.startHere) data.startHere = p.startHere;
-  if (p.artSeed) data.artSeed = p.artSeed;
-  if (p.artMotif) data.artMotif = p.artMotif;
-  if (p.status === "draft") data.status = "draft";
-
-  const mdx = matter.stringify("\n" + p.body.trim() + "\n", data);
+  const mdx = buildMdx(p);
 
   try {
     const result = await saveBlogSource({
@@ -91,6 +98,126 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     log.error({ event: "admin-blog.save_failed", err: error }, "Save failed");
+    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+  }
+}
+
+// ── Közvetlen .mdx feltöltés (PUT) ────────────────────────────────────
+// A kész fájl frontmatterét a szerver olvassa (gray-matter), így a kliens
+// nem YAML-parsolgat. A feltöltött cikk MINDIG piszkozatként landol — a
+// publikálás külön, tudatos lépés a listából.
+const uploadSchema = z.object({
+  filename: z.string().min(1).max(200),
+  raw: z.string().min(20).max(200_000),
+  /** Létező slug felülírása (a git-történelemben megmarad az előző állapot). */
+  overwrite: z.boolean().optional(),
+});
+
+function frontmatterString(value: unknown): string | undefined {
+  if (typeof value === "string") return value.trim() || undefined;
+  if (typeof value === "number") return String(value);
+  return undefined;
+}
+
+export async function PUT(req: NextRequest) {
+  const log = await getRequestLogger("admin-blog");
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  }
+
+  const body = await req.json().catch(() => ({}));
+  const parsed = uploadSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
+  }
+  const { filename, raw, overwrite } = parsed.data;
+
+  if (blogStoreMode() === "github" && !githubConfigured()) {
+    return NextResponse.json({ error: "GITHUB_NOT_CONFIGURED" }, { status: 501 });
+  }
+
+  const slug = filename
+    .replace(/\.(mdx|md)$/i, "")
+    .trim()
+    .toLowerCase();
+  if (!SLUG_RE.test(slug) || slug.length < 3 || slug.length > 120) {
+    return NextResponse.json({ error: "INVALID_SLUG", slug }, { status: 400 });
+  }
+
+  let data: Record<string, unknown>;
+  let content: string;
+  try {
+    const parsedFile = matter(raw);
+    data = parsedFile.data as Record<string, unknown>;
+    content = parsedFile.content;
+  } catch {
+    return NextResponse.json({ error: "FRONTMATTER_PARSE_FAILED" }, { status: 400 });
+  }
+
+  // YAML dátum-objektum vagy string — mindkettőt ISO-napra normalizáljuk
+  const rawDate = data.publishedAt;
+  const publishedAt =
+    rawDate instanceof Date
+      ? rawDate.toISOString().slice(0, 10)
+      : frontmatterString(rawDate);
+
+  const rawTags = data.tags;
+  const tags = Array.isArray(rawTags)
+    ? rawTags.map((tag) => String(tag).trim()).filter(Boolean).slice(0, 6)
+    : typeof rawTags === "string"
+      ? rawTags.split(",").map((tag) => tag.trim()).filter(Boolean).slice(0, 6)
+      : [];
+
+  const candidate = postSchema.safeParse({
+    slug,
+    title: frontmatterString(data.title) ?? "",
+    description: frontmatterString(data.description) ?? "",
+    locale: data.locale === "en" ? "en" : "hu",
+    tags,
+    ...(publishedAt && /^\d{4}-\d{2}-\d{2}$/.test(publishedAt) ? { publishedAt } : {}),
+    ...(frontmatterString(data.translationSlug)
+      ? { translationSlug: frontmatterString(data.translationSlug) }
+      : {}),
+    ...(frontmatterString(data.heroQuote) ? { heroQuote: frontmatterString(data.heroQuote) } : {}),
+    ...(Number.isInteger(Number(data.startHere)) && Number(data.startHere) > 0
+      ? { startHere: Number(data.startHere) }
+      : {}),
+    ...(Number.isInteger(Number(data.artSeed)) && Number(data.artSeed) > 0
+      ? { artSeed: Number(data.artSeed) }
+      : {}),
+    ...(typeof data.artMotif === "string" ? { artMotif: data.artMotif } : {}),
+    body: content,
+    status: "draft" as const,
+  });
+  if (!candidate.success) {
+    return NextResponse.json(
+      {
+        error: "INVALID_FRONTMATTER",
+        detail: candidate.error.issues
+          .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+          .slice(0, 3)
+          .join("; "),
+      },
+      { status: 400 },
+    );
+  }
+
+  try {
+    if (!overwrite && (await readBlogSource(slug))) {
+      return NextResponse.json({ error: "SLUG_EXISTS", slug }, { status: 409 });
+    }
+
+    const result = await saveBlogSource({
+      slug,
+      content: buildMdx(candidate.data),
+      message: `content(blog): ${slug} (mdx-feltöltés, piszkozat)`,
+    });
+    log.info({ event: "admin-blog.uploaded", slug, overwrite: Boolean(overwrite) }, "MDX uploaded");
+    return NextResponse.json({ ok: true, slug, ...result });
+  } catch (error) {
+    log.error({ event: "admin-blog.upload_failed", err: error, slug }, "Upload failed");
     return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
   }
 }

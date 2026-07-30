@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useClerk } from "@clerk/nextjs";
+import { clearLocaleSyncFlag } from "@/components/LocaleProvider";
 
 // Kijelentkezés-route a (auth) zónában (itt van ClerkProvider). A publikus
 // nav (marketing, Clerk-mentes) ide linkel a kijelentkezéshez, ahelyett hogy
@@ -11,6 +12,7 @@ export default function SignOutPage() {
   const { signOut } = useClerk();
 
   useEffect(() => {
+    clearLocaleSyncFlag();
     void signOut({ redirectUrl: "/" });
   }, [signOut]);
 

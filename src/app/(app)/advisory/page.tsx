@@ -95,7 +95,7 @@ export default async function AdvisoryPage() {
 
   return (
     <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
         <AdvisoryPageClient
           userName={displayName}
           orgName={org?.name ?? ""}

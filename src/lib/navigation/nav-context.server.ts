@@ -2,12 +2,13 @@ import "server-only";
 
 import type { NavHeaderUI } from "@/components/layout/nav-header-ui";
 import { prisma } from "@/lib/prisma";
-import { getAccessibleTeamIds } from "@/lib/team-auth";
+import { getOrgActiveCampaignCount } from "@/lib/org-counts.server";
+import { getProfileCoreByClerkId } from "@/lib/profile.server";
+import { getAccessibleTeams } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourney } from "@/lib/journey/engine";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
-import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { isAdminEmail } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveWorkspaceNavRole } from "@/lib/navigation/roles";
@@ -57,15 +58,24 @@ export async function resolveWorkspaceNavContext(
 
   try {
     if (userId) {
-      const profile = await prisma.userProfile.findUnique({
-        where: { clerkId: userId },
-        select: { id: true, username: true, email: true, isConsultant: true },
-      });
+      const profile = await getProfileCoreByClerkId(userId);
       if (profile) {
+        // Az org-tagságot ELŐRE feloldjuk, hogy az org-függő fejléc-adatok a
+        // journey-vel PÁRHUZAMOSAN tölthessenek. Korábban a journey teljes
+        // lefutása UTÁN indultak — két-három felesleges körfordulás-hullám
+        // minden belépett oldalon. A hívás memoizált, és a journey úgyis
+        // ugyanezt kéri, tehát nem jelent plusz lekérdezést.
+        const membership = await getActiveOrgMembership(profile.id);
+
         // Kezdő értesítés-számláló a fejlécnek — a harang így mountkor nem
         // indít API-hívást (indexelt count: @@index([userId, read])).
-        const [journey, unreadNotificationCount, taskParticipations, feedbackRequestCount] =
-          await Promise.all([
+        const [
+          journey,
+          unreadNotificationCount,
+          taskParticipations,
+          feedbackRequestCount,
+          orgBits,
+        ] = await Promise.all([
             resolveJourney(profile.id, {
               locale,
               entryPoint: "root_layout_nav",
@@ -90,6 +100,20 @@ export async function resolveWorkspaceNavContext(
                 expiresAt: { gt: new Date() },
               },
             }),
+            // Org-függő fejléc-adatok — ugyanabban a hullámban.
+            membership
+              ? Promise.all([
+                  prisma.organization.findUnique({
+                    where: { id: membership.orgId },
+                    select: { id: true, name: true },
+                  }),
+                  // Csapatok NÉVVEL, egy körben (ld. getAccessibleTeams).
+                  getAccessibleTeams(profile.id, membership.orgId, membership.role),
+                  // Közös, memoizált számláló — a journey completionSummary
+                  // ugyanezt kéri, így egyszer megy ki.
+                  getOrgActiveCampaignCount(membership.orgId),
+                ])
+              : null,
           ]);
         const openStepCount = taskParticipations.filter(
           (p) =>
@@ -114,31 +138,8 @@ export async function resolveWorkspaceNavContext(
           openTaskCount,
         };
 
-        const membership = await getActiveOrgMembership(profile.id);
-        if (membership) {
-          const [org, accessibleTeamIds, activeCampaignCount, policySnapshot] = await Promise.all([
-            prisma.organization.findUnique({
-              where: { id: membership.orgId },
-              select: { id: true, name: true },
-            }),
-            getAccessibleTeamIds(profile.id, membership.orgId, membership.role),
-            prisma.campaign.count({
-              where: { orgId: membership.orgId, status: "ACTIVE" },
-            }),
-            resolveOrgPolicySnapshot({
-              orgId: membership.orgId,
-              orgRole: membership.role,
-            }),
-          ]);
-          void policySnapshot;
-
-          const teams = accessibleTeamIds.length > 0
-            ? await prisma.team.findMany({
-                where: { id: { in: accessibleTeamIds } },
-                select: { id: true, name: true },
-                orderBy: { name: "asc" },
-              })
-            : [];
+        if (membership && orgBits) {
+          const [org, teams, activeCampaignCount] = orgBits;
 
           // Jelölt-felület (2026-07-23): a tanácsadói kör kapja — nem
           // előfizetés-capability (a gating az operating-mode kapcsolón).

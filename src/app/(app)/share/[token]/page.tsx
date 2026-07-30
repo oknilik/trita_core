@@ -12,6 +12,8 @@ import type { TestType } from "@prisma/client";
 import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
 import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
+import { resolveGlyphPair } from "@/lib/type-glyph";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { buildWorkstyleContent } from "@/lib/workstyle-content";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
@@ -121,6 +123,10 @@ export default async function SharedProfilePage({
       isHu ? "hu" : "en",
     ) ?? "";
 
+  const glyphPair = resolveGlyphPair(
+    dimensions.map((d) => ({ code: d.code, score: d.score })),
+  );
+
   // Munkastílus — ugyanabból a generátorból, mint a saját eredmény-oldal
   // workstyle tabja (lib/workstyle-content.ts), hogy a megosztott nézet
   // tartalma sose csússzon el a belső nézettől.
@@ -145,7 +151,10 @@ export default async function SharedProfilePage({
 
   return (
     <main className="min-h-dvh bg-cream">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-10">
+      {/* pb-20: a hullámos footer -mt-10/14-gyel az oldal aljára húzódik —
+          a lap-vég paddingja ezért ≥56px (md), különben a footer belecsúszik
+          az utolsó blokkba (ld. changelog 2026-07-29, footer-hullám fix). */}
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20 pt-10">
         {/* Header */}
         <div
           className="relative overflow-hidden rounded-2xl"
@@ -156,12 +165,30 @@ export default async function SharedProfilePage({
             <p className="mb-1.5 text-micro uppercase tracking-widest text-white/[0.28]">
               {t("results.sharedProfileLabel", locale)}
             </p>
-            <h1 className="mb-0.5 font-fraunces text-[28px] tracking-tight text-white">
-              {displayName}
-            </h1>
-            <p className="mb-3 text-[11px] text-white/[0.25]">
-              {t("results.heroAssessment", locale)} {formattedDate}
-            </p>
+            {/* Ugyanaz a fejléc-szerkezet, mint a saját eredmény-oldalon:
+                a típus-ábra a NÉV mellett áll, a dátum a névvel egy
+                blokkban, a típusnév a saját sorában. */}
+            <div className="mb-3 flex items-center gap-4">
+              {glyphPair && (
+                <TypeGlyph
+                  primaryCode={glyphPair.primaryCode}
+                  secondaryCode={glyphPair.secondaryCode}
+                  typeLabel={personalityType || displayName}
+                  locale={isHu ? "hu" : "en"}
+                  intensity={glyphPair.intensity}
+                  variant="badge"
+                  className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
+                />
+              )}
+              <div className="min-w-0">
+                <h1 className="font-fraunces text-[28px] tracking-tight text-white">
+                  {displayName}
+                </h1>
+                <p className="mt-1 text-[11px] text-white/[0.25]">
+                  {t("results.heroAssessment", locale)} {formattedDate}
+                </p>
+              </div>
+            </div>
             {personalityType && (
               <p className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)]">
                 {personalityType}

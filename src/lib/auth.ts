@@ -5,6 +5,7 @@ import { getActiveOrgMembership } from "@/lib/org-context";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { getServerAuth } from "@/lib/auth-server";
+import { getProfileCoreByClerkId } from "@/lib/profile.server";
 
 export type { UserRole };
 
@@ -27,10 +28,9 @@ export async function requireAdmin() {
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-    select: { email: true },
-  });
+  // Közös, kérés-szinten memoizált profil-lekérő (ld. profile.server.ts) —
+  // a kapu-logika változatlan, csak a lekérés esik össze a többi hívóéval.
+  const profile = await getProfileCoreByClerkId(userId);
   const userEmail = profile?.email;
   if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
     redirect(JOURNEY_HOME_HANDOFF_PATH);
@@ -44,10 +44,7 @@ export async function requireRole(role: UserRole) {
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-    select: { role: true },
-  });
+  const profile = await getProfileCoreByClerkId(userId);
 
   if (!profile || profile.role !== role) {
     redirect(JOURNEY_HOME_HANDOFF_PATH);
@@ -61,10 +58,7 @@ export async function getUserRole(): Promise<UserRole | null> {
   const { userId } = await getServerAuth();
   if (!userId) return null;
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-    select: { role: true },
-  });
+  const profile = await getProfileCoreByClerkId(userId);
 
   return profile?.role ?? null;
 }
@@ -87,10 +81,7 @@ export async function requireOrgContext(orgId: string): Promise<{
   const { userId } = await getServerAuth();
   if (!userId) redirect("/sign-in");
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-    select: { id: true },
-  });
+  const profile = await getProfileCoreByClerkId(userId);
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
   const membership = await prisma.organizationMember.findUnique({

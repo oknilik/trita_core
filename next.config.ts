@@ -28,6 +28,30 @@ const CSP_REPORT_ONLY = [
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["iridaceous-rickie-overloath.ngrok-free.dev", "192.168.173.183"],
 
+  experimental: {
+    // Kliens-oldali Router Cache élettartam.
+    //
+    // Miért: az (app) layout `force-dynamic`, ezért MINDEN kliens-oldali
+    // navigáció újrarenderelte a teljes nav-kontextust — mérve ugyanannyi
+    // (~30 query), mint egy hidegindítás. A `dynamic` alapértéke 0, tehát a
+    // router semmit nem használt újra. 30 s-mal az oda-vissza navigáció és a
+    // vissza-gomb gyakorlatilag ingyenes lesz, vizuális változás nélkül
+    // (ellentétben a fejléc Suspense-re bontásával, ami minden kattintásnál
+    // csontváz-villanást okozna az állandó kroomon).
+    //
+    // Elavulás-kockázat és mi fedi le: minden mutáció után `router.refresh()`
+    // fut (36 hívóhely, projekt-konvenció), az pedig teljesen érvényteleníti
+    // a Router Cache-t. Marad a „valaki MÁS írt közben" eset — ott legfeljebb
+    // 30 s csúszás, ami ennél a terméknél (napokban érkező observer-beadás,
+    // kampány-lépés) nem jelent gondot; az értesítés-harang külön pollozik.
+    //
+    // Ha valahol mégis zavaró a csúszás: vidd lejjebb (pl. 10), vagy az adott
+    // oldalon hívj `router.refresh()`-t. 0 = a korábbi viselkedés.
+    staleTimes: {
+      dynamic: 30,
+    },
+  },
+
   // Az admin Blog fül és az /api/admin/blog futásidőben olvassa a
   // content/blog .mdx fájlokat — a file-tracing ezekre nem következtet
   // automatikusan, ezért explicit becsomagoljuk őket.

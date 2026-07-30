@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "./prisma";
 
 // Trial length for manually provisioned orgs (consulting mode — no Stripe)
@@ -15,7 +16,13 @@ export type SubscriptionState = "none" | "active" | "restricted" | "frozen";
 
 const RESTRICTED_TO_FROZEN_DAYS = 30;
 
-export async function getOrgSubscription(orgId: string) {
+// Kérés-szintű memoizáció: egy oldal-renderben a policy-snapshot, a journey
+// és az access-réteg is lekérdezi ugyanazt az előfizetést (mérve 4×/render).
+// A React cache() hatóköre EGY kérés — kérések között nem szivárog, és a
+// kulcs maga az orgId, tehát org-ok között sem keveredhet.
+// FONTOS: ha valaha ugyanabban a kérésben ÍRSZ az előfizetésbe és utána
+// olvasnád, a mutáció után ne ezt hívd (ma nincs ilyen hívási minta).
+export const getOrgSubscription = cache(async (orgId: string) => {
   return prisma.subscription.findUnique({
     where: { orgId },
     select: {
@@ -31,7 +38,7 @@ export async function getOrgSubscription(orgId: string) {
       candidateCredits: true,
     },
   });
-}
+});
 
 type SubscriptionRecord = NonNullable<Awaited<ReturnType<typeof getOrgSubscription>>>;
 

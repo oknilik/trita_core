@@ -13,7 +13,7 @@ import {
   type SubscriptionState,
 } from "@/lib/subscription";
 import { isPolicyEngineEnforcementEnabled } from "@/lib/rollout-guards.server";
-import { prisma } from "@/lib/prisma";
+import { getTeamMembershipRole } from "@/lib/team-auth";
 
 export interface OrgPolicySubjectInput {
   orgId: string;
@@ -89,16 +89,15 @@ export async function resolveTeamPolicySnapshot(params: {
   teamId: string;
   profileId: string;
 }): Promise<OrgPolicySnapshot> {
-  const membership = await prisma.teamMember.findUnique({
-    where: { teamId_userId: { teamId: params.teamId, userId: params.profileId } },
-    select: { role: true },
-  });
+  // Ugyanaz a lekérés, mint a canAccessTeam/canManageTeam mögött — a közös,
+  // kérés-szinten memoizált forrásból (mérve: renderenként 3× ment ki).
+  const teamRole = await getTeamMembershipRole(params.profileId, params.teamId);
   return resolveOrgPolicySnapshot({
     orgId: params.orgId,
     orgRole: params.orgRole,
     teamId: params.teamId,
-    hasTeamMembership: Boolean(membership),
-    teamRole: membership?.role ?? null,
+    hasTeamMembership: teamRole !== null,
+    teamRole,
   });
 }
 

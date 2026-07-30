@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { getProfileCoreByClerkId } from "@/lib/profile.server";
 
 /**
  * Védett oldalak kapuja: ha a bejelentkezett usernek még nincs lezárt
@@ -21,12 +21,14 @@ export async function requireOnboarded(profile: {
   if (!orgMembership) redirect("/onboarding");
 }
 
-/** Kényelmi változat clerkId-ból, ha az oldal nem tölti be a profilt. */
+/**
+ * Kényelmi változat clerkId-ból, ha az oldal nem tölti be a profilt.
+ * A közös, kérés-szinten memoizált profil-lekérőt használja — így az oldal
+ * saját profil-lekérése nem indít újabb kört (mérve: renderenként 4–11×
+ * ment ki ugyanez a query).
+ */
 export async function requireOnboardedByClerkId(clerkId: string): Promise<void> {
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId },
-    select: { id: true, onboardedAt: true },
-  });
+  const profile = await getProfileCoreByClerkId(clerkId);
   if (!profile) redirect("/onboarding");
   await requireOnboarded(profile);
 }

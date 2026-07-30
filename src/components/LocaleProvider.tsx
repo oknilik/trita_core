@@ -23,6 +23,24 @@ interface LocaleContextValue {
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
+/** Böngésző-munkamenetenkénti „a DB-nyelvet már lekértük" jelző kulcsa. */
+const LOCALE_SYNC_FLAG = "trita_locale_synced";
+
+/**
+ * Kijelentkezéskor KÖTELEZŐ hívni (a signOut() ELŐTT).
+ *
+ * A nyelv-szinkron munkamenetenként egyszer fut; ha ugyanabban a böngésző-
+ * munkamenetben másik user lép be, e nélkül a ELŐZŐ user nyelvét látná,
+ * amíg új munkamenetet nem nyit.
+ */
+export function clearLocaleSyncFlag(): void {
+  try {
+    window.sessionStorage.removeItem(LOCALE_SYNC_FLAG);
+  } catch {
+    /* sessionStorage letiltva — nincs mit törölni */
+  }
+}
+
 export function LocaleProvider({
   initialLocale,
   children,
@@ -85,12 +103,29 @@ export function LocaleProvider({
     return () => clearTimeout(timer);
   }, [applyLocale, locale, refreshServer]);
 
+  // Szerver-oldali nyelv-szinkron: a DB a mérvadó a belépett usernek, a
+  // getServerLocale() viszont csak a sütit látja — ezért egyszer le kell
+  // kérni. Korábban ez MINDEN teljes oldalbetöltéskor lefutott (kijelentkezve
+  // is), pedig csak akkor számít, ha a süti és a DB eltér: új eszköz, törölt
+  // süti, első belépés. Böngésző-munkamenetenként egyszer futtatjuk.
   useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(LOCALE_SYNC_FLAG)) return;
+    } catch {
+      // sessionStorage letiltva (privát mód, süti-szabály) — ilyenkor a
+      // korábbi viselkedés marad: minden betöltéskor szinkronizálunk.
+    }
+
     const startedAt = Date.now();
     let canceled = false;
     fetch("/api/profile/locale")
       .then((res) => res.json())
       .then((data) => {
+        try {
+          window.sessionStorage.setItem(LOCALE_SYNC_FLAG, "1");
+        } catch {
+          /* ld. fent */
+        }
         if (canceled || !data?.locale) return;
         if (manualUpdateAtRef.current > startedAt) return;
         const next = normalizeLocale(data.locale);

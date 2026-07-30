@@ -270,7 +270,7 @@ export default async function CandidateResultPage({
 
   return (
     <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
         {/* Back */}
         <Link
           href={`/hiring/${orgId}`}

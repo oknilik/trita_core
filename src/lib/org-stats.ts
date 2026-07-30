@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
+import { getOrgPendingInviteCount, getOrgTeamCount } from "./org-counts.server";
 
 export interface ParticipantStat {
   userId: string;
@@ -117,10 +118,13 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   });
 
   // Fetch org member IDs for TRITAN averages
+  // A pending-invite és team darabszámot a journey completionSummary is
+  // kiszámolta ugyanerre az org-ra — közös, kérés-szinten memoizált forrás
+  // (org-counts.server.ts), így renderenként egyszer megy ki.
   const [memberRows, pendingRows, teamRows] = await Promise.all([
     prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
-    prisma.organizationPendingInvite.count({ where: { orgId } }),
-    prisma.team.count({ where: { orgId } }),
+    getOrgPendingInviteCount(orgId),
+    getOrgTeamCount(orgId),
   ]);
 
   // Collect all participant userIds across all campaigns

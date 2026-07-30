@@ -68,7 +68,7 @@ export default async function HiringPage({
     if (!candidateEvaluateDecision.allowed) {
       return (
         <div className="min-h-dvh bg-cream">
-          <main className="mx-auto w-full max-w-5xl px-4 py-10">
+          <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
             {bannerState ? (
               <div className="mb-5">
                 <OrgSubscriptionBanner state={bannerState} locale={locale} />
@@ -92,7 +92,7 @@ export default async function HiringPage({
         if (existingCount === 0) {
           return (
             <div className="min-h-dvh bg-cream">
-              <main className="mx-auto w-full max-w-5xl px-4 py-10">
+              <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
                 <HiringPaywall orgId={orgId} locale={locale} variant="addon" planTier={tier} isAdmin={isConsultantView} />
               </main>
             </div>

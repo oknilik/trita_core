@@ -3,7 +3,7 @@
 // Holland érdeklődés-tipológiája (Holland, 1997); a Trita a kódot a
 // karrier-iránytűben használja (mért kérdőív / címkék / becslés forrással).
 
-import type { RiasecLetter } from "@/lib/industry-fit";
+import type { RiasecLetter } from "@/lib/career/types";
 
 export interface RiasecLetterContent {
   letter: RiasecLetter;

@@ -1,7 +1,7 @@
 export default function ProfileLoading() {
   return (
     <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      <div className="mx-auto max-w-[640px] px-5 py-10">
+      <div className="mx-auto max-w-[640px] px-5 pt-10 pb-20">
         <div className="animate-pulse">
           <div className="flex items-center gap-4 pb-7">
             <div className="h-14 w-14 rounded-full bg-[var(--color-border-default)]" />

@@ -31,8 +31,20 @@ export interface NotificationItem {
   createdAt: string;
 }
 
-/** Háttér-poll periódus. Csak látható fülön jár. */
-const POLL_INTERVAL = 60_000;
+/**
+ * Háttér-poll ütemezés — adaptív backoff.
+ *
+ * Miért nem websocket: az értesítések emberi akciókból születnek (napi
+ * 0–10 / user), a poll egyetlen indexelt count query, és a teljes DB-terhelés
+ * néhány százaléka. A valós költség az oldal-render volt, nem ez.
+ * Részletek: docs/audits/perf-call-chain-audit-2026-07-30.md
+ *
+ * A lépcső akkor lép feljebb, ha a count VÁLTOZATLAN maradt; bármilyen
+ * változás, fül-fókusz vagy saját mutáció visszaállítja az alapra.
+ */
+const POLL_STEPS_MS = [60_000, 120_000, 300_000] as const;
+/** Ennyi változatlan poll után lépünk a következő lépcsőre. */
+const UNCHANGED_POLLS_PER_STEP = 3;
 /** Ennél frissebb listát nem kérünk le újra (ismételt panel-nyitás). */
 const LIST_STALE_MS = 20_000;
 
@@ -72,6 +84,16 @@ export function NotificationsProvider({
   const listFetchedAt = useRef(0);
   const listInFlight = useRef<Promise<void> | null>(null);
   const countInFlight = useRef<Promise<void> | null>(null);
+  /** Backoff-állapot: melyik lépcsőn állunk és hány változatlan poll óta. */
+  const backoffStep = useRef(0);
+  const unchangedPolls = useRef(0);
+  /** A legutóbb LÁTOTT count — a backoff „változott-e" döntéséhez. */
+  const lastSeenCount = useRef(initialCount);
+
+  const resetBackoff = useCallback(() => {
+    backoffStep.current = 0;
+    unchangedPolls.current = 0;
+  }, []);
 
   // ── Számláló-poll (olcsó endpoint) ────────────────────────────────────────
   const refreshCount = useCallback(() => {
@@ -81,7 +103,21 @@ export function NotificationsProvider({
         const res = await fetch("/api/notifications/unread-count");
         if (res.ok) {
           const data = await res.json();
-          setCount(data.count ?? 0);
+          const next = data.count ?? 0;
+          if (next === lastSeenCount.current) {
+            unchangedPolls.current += 1;
+            if (
+              unchangedPolls.current >= UNCHANGED_POLLS_PER_STEP &&
+              backoffStep.current < POLL_STEPS_MS.length - 1
+            ) {
+              backoffStep.current += 1;
+              unchangedPolls.current = 0;
+            }
+          } else {
+            resetBackoff();
+          }
+          lastSeenCount.current = next;
+          setCount(next);
         }
       } catch {
         // silent — a következő poll újrapróbálja
@@ -91,7 +127,7 @@ export function NotificationsProvider({
     })();
     countInFlight.current = p;
     return p;
-  }, []);
+  }, [resetBackoff]);
 
   // ── Lista-lekérés (a count-ot is visszaadja) ──────────────────────────────
   const fetchList = useCallback(() => {
@@ -103,7 +139,10 @@ export function NotificationsProvider({
         if (res.ok) {
           const data = await res.json();
           setItems(data.notifications ?? []);
-          if (typeof data.unreadCount === "number") setCount(data.unreadCount);
+          if (typeof data.unreadCount === "number") {
+            lastSeenCount.current = data.unreadCount;
+            setCount(data.unreadCount);
+          }
           listFetchedAt.current = Date.now();
         }
       } catch {
@@ -122,21 +161,46 @@ export function NotificationsProvider({
     void fetchList();
   }, [items, fetchList]);
 
-  // ── Poll: csak látható fülön, fókuszra azonnali frissítés ─────────────────
+  // ── Navigáció-piggyback ───────────────────────────────────────────────────
+  // A szerver-render friss számlálót ad minden navigációnál. Átvesszük, és a
+  // backoff „változott-e" állapotát is ehhez igazítjuk — így a poll nem
+  // ismétli meg azt, amit az oldal-render már elvégzett.
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval> | null = null;
+    if (initialCount === lastSeenCount.current) return;
+    lastSeenCount.current = initialCount;
+    setCount(initialCount);
+    resetBackoff();
+  }, [initialCount, resetBackoff]);
 
+  // ── Poll: csak látható fülön, fókuszra azonnali frissítés ─────────────────
+  // setInterval helyett önmagát újraütemező setTimeout — így a backoff
+  // lépcsőváltása azonnal érvényre jut, nem csak a következő teljes ciklusban.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let stopped = false;
+
+    function schedule(delayMs: number) {
+      if (stopped || timer) return;
+      timer = setTimeout(async () => {
+        timer = null;
+        if (document.visibilityState !== "visible") return;
+        await refreshCount();
+        schedule(POLL_STEPS_MS[backoffStep.current]);
+      }, delayMs);
+    }
     function start() {
-      if (timer) return;
-      timer = setInterval(() => void refreshCount(), POLL_INTERVAL);
+      schedule(POLL_STEPS_MS[backoffStep.current]);
     }
     function stop() {
-      if (timer) clearInterval(timer);
+      if (timer) clearTimeout(timer);
       timer = null;
     }
     function onVisibility() {
       if (document.visibilityState === "visible") {
+        // Vissza a fülre: azonnali frissítés és tiszta lappal induló ütem.
+        resetBackoff();
         void refreshCount();
+        stop();
         start();
       } else {
         stop();
@@ -147,15 +211,28 @@ export function NotificationsProvider({
     if (document.visibilityState === "visible") start();
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      stopped = true;
       stop();
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [refreshCount]);
+  }, [refreshCount, resetBackoff]);
 
   // ── Mutációk: optimista lokális állapot, nincs utólagos re-fetch ──────────
+  // A saját mutáció aktivitás-jel: a backoff visszaáll az alap ütemre, és a
+  // lastSeenCount-ot is követjük, hogy a következő poll ne lássa hamis
+  // változásnak a saját optimista módosításunkat.
+  const applyLocalCount = useCallback(
+    (next: number) => {
+      lastSeenCount.current = next;
+      setCount(next);
+      resetBackoff();
+    },
+    [resetBackoff],
+  );
+
   const markAllRead = useCallback(async () => {
     setItems((prev) => (prev ? prev.map((n) => ({ ...n, read: true })) : prev));
-    setCount(0);
+    applyLocalCount(0);
     try {
       await fetch("/api/notifications/mark-read", {
         method: "POST",
@@ -165,7 +242,7 @@ export function NotificationsProvider({
     } catch {
       void refreshCount();
     }
-  }, [refreshCount]);
+  }, [applyLocalCount, refreshCount]);
 
   const markRead = useCallback(
     async (id: string) => {
@@ -176,7 +253,7 @@ export function NotificationsProvider({
       setItems((prev) =>
         prev ? prev.map((n) => (n.id === id ? { ...n, read: true } : n)) : prev,
       );
-      if (wasUnread) setCount((c) => Math.max(0, c - 1));
+      if (wasUnread) applyLocalCount(Math.max(0, lastSeenCount.current - 1));
       try {
         await fetch("/api/notifications/mark-read", {
           method: "POST",
@@ -187,7 +264,7 @@ export function NotificationsProvider({
         void refreshCount();
       }
     },
-    [items, refreshCount],
+    [applyLocalCount, items, refreshCount],
   );
 
   const dismiss = useCallback(
@@ -195,14 +272,14 @@ export function NotificationsProvider({
       // Ld. markRead: a wasUnread updater-en kívül számolódik.
       const wasUnread = Boolean(items?.some((n) => n.id === id && !n.read));
       setItems((prev) => (prev ? prev.filter((n) => n.id !== id) : prev));
-      if (wasUnread) setCount((c) => Math.max(0, c - 1));
+      if (wasUnread) applyLocalCount(Math.max(0, lastSeenCount.current - 1));
       try {
         await fetch(`/api/notifications/${id}`, { method: "DELETE" });
       } catch {
         void refreshCount();
       }
     },
-    [items, refreshCount],
+    [applyLocalCount, items, refreshCount],
   );
 
   return (

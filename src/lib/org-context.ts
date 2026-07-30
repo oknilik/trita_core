@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
 export interface ActiveOrgMembership {
@@ -89,31 +90,55 @@ export async function setProfileActiveOrgId(
   }
 }
 
-export async function listActiveOrgMemberships(profileId: string): Promise<ActiveOrgMembership[]> {
+export const listActiveOrgMemberships = cache(async function listActiveOrgMemberships(
+  profileId: string,
+): Promise<ActiveOrgMembership[]> {
   return prisma.organizationMember.findMany({
     where: { userId: profileId, leftAt: null },
     orderBy: { joinedAt: "desc" },
     select: { orgId: true, role: true, joinedAt: true },
   });
-}
+});
 
-export async function getActiveOrgMembership(profileId: string): Promise<ActiveOrgMembership | null> {
-  const { exists, activeOrgId } = await readProfileActiveOrgId(profileId);
+/**
+ * Az aktív org-tagság — KÉRÉS-SZINTEN memoizálva (React cache).
+ *
+ * Miért: egy oldal-render 3–4× hívja (layout nav, journey context, oldal),
+ * és mindannyiszor 2–3 query megy ki. A cache hatóköre EGY kérés, a kulcs a
+ * profileId — kérések és felhasználók között nem szivároghat.
+ *
+ * Mellékhatás-jegyzet: a függvény öngyógyít (elavult activeOrgId-t
+ * normalizál `setProfileActiveOrgId`-dal). A memoizációval ez kérésenként
+ * EGYSZER fut le a korábbi 3–4 helyett — idempotens, tehát nyereség.
+ *
+ * FIGYELEM: ha ugyanabban a kérésben `setActiveOrgContext()`-tel org-ot
+ * VÁLTASZ, utána ez a függvény a váltás ELŐTTI értéket adja vissza.
+ * Ma egyetlen hívó sem olvas váltás után (ellenőrizve: api/org/context POST,
+ * api/org POST, acceptance/service) — ha új ilyen hívó születik, a
+ * setActiveOrgContext visszatérési értékét használd, ne ezt.
+ */
+export const getActiveOrgMembership = cache(async function getActiveOrgMembership(
+  profileId: string,
+): Promise<ActiveOrgMembership | null> {
+  // EGY hullám: a kijelölt org-azonosító és a tagságok EGYSZERRE mennek ki.
+  // Korábban 2–3 EGYMÁS UTÁNI kör volt (activeOrgId → explicit tagság →
+  // fallback tagság), és mivel ez a journey fő Promise.all-jának egyik ága,
+  // a teljes render erre a láncra várt. Egy usernek tipikusan 1–2 aktív
+  // tagsága van, tehát a findMany nem drágább, mint a findFirst volt.
+  const [{ exists, activeOrgId }, memberships] = await Promise.all([
+    readProfileActiveOrgId(profileId),
+    listActiveOrgMemberships(profileId),
+  ]);
   if (!exists) return null;
 
-  if (activeOrgId) {
-    const explicitMembership = await prisma.organizationMember.findFirst({
-      where: { userId: profileId, orgId: activeOrgId, leftAt: null },
-      select: { orgId: true, role: true, joinedAt: true },
-    });
-    if (explicitMembership) return explicitMembership;
-  }
+  // A kijelölt org elsőbbsége; egyébként a legutóbb csatlakozott (a
+  // listActiveOrgMemberships joinedAt szerint csökkenőben ad vissza).
+  const explicitMembership = activeOrgId
+    ? (memberships.find((m) => m.orgId === activeOrgId) ?? null)
+    : null;
+  if (explicitMembership) return explicitMembership;
 
-  const fallbackMembership = await prisma.organizationMember.findFirst({
-    where: { userId: profileId, leftAt: null },
-    orderBy: { joinedAt: "desc" },
-    select: { orgId: true, role: true, joinedAt: true },
-  });
+  const fallbackMembership = memberships[0] ?? null;
 
   if (fallbackMembership && activeOrgId !== fallbackMembership.orgId) {
     await setProfileActiveOrgId(profileId, fallbackMembership.orgId);
@@ -122,8 +147,13 @@ export async function getActiveOrgMembership(profileId: string): Promise<ActiveO
   }
 
   return fallbackMembership;
-}
+});
 
+/**
+ * Aktív org beállítása. A visszatérési érték a MÉRVADÓ friss állapot —
+ * hívás után NE a getActiveOrgMembership()-et olvasd ugyanabban a kérésben
+ * (az memoizált, ld. ott).
+ */
 export async function setActiveOrgContext(
   profileId: string,
   orgId: string,

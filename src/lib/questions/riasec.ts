@@ -8,7 +8,7 @@
 // Hivatkozás: https://www.onetcenter.org/IP.html
 // ─────────────────────────────────────────────────────────────────────
 
-import type { RiasecLetter } from "@/lib/industry-fit";
+import type { RiasecLetter } from "@/lib/career/types";
 
 export interface RiasecItem {
   id: number;

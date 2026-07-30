@@ -3,9 +3,15 @@ import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
+import { getProfileCoreByClerkId } from "@/lib/profile.server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
-import { canAccessTeam, canManageTeam, canViewRawTeamResults } from "@/lib/team-auth";
+import {
+  canAccessTeam,
+  canManageTeam,
+  canViewRawTeamResults,
+  getTeamMembershipRole,
+} from "@/lib/team-auth";
 import { hasOrgRole } from "@/lib/org-roles";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import {
@@ -101,59 +107,96 @@ export default async function TeamDetailPage({
 
   await requireOnboardedByClerkId(userId);
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId }, select: { id: true, email: true, isConsultant: true },
-  });
+  // Közös, kérés-szinten memoizált profil — a requireOnboardedByClerkId
+  // ugyanezt hívta az imént, tehát ez már nem indít új kört.
+  const profile = await getProfileCoreByClerkId(userId);
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
-  const deepLinkFallback = await resolveJourneyFallbackForProfileId(profile.id);
+  // A fallback-cél kiszámítása a TELJES journey-motort futtatja (~25 query),
+  // de csak a redirect-ágakban kell — ezért lusta. Korábban feltétel nélkül
+  // futott le minden csapat-nézetnél.
+  const deepLinkFallback = () => resolveJourneyFallbackForProfileId(profile.id);
 
-  const team = await prisma.team.findUnique({
-    where: { id: teamId }, select: { id: true, name: true, orgId: true },
-  });
-  if (!team) notFound();
-
-  const orgMembership = team.orgId
-    ? await prisma.organizationMember.findUnique({
-        where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-        select: { role: true },
-      })
-    : null;
-  const orgMemberRole = orgMembership?.role ?? null;
-  if (!orgMemberRole) redirect(deepLinkFallback);
-
-  // A néző következő nyitott mérés-lépése a csapat aktív kampányaiban
-  // (több-lépéses kampány: a lépések sorban nyílnak meg).
-  // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
-  await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});
-
-  const stepCandidates = await prisma.campaignParticipant.findMany({
-    where: {
-      userId: profile.id,
-      // Több-csapatos kampány: a teamIds lista is számít, nem csak a
-      // legacy teamId (az első csapat).
-      campaign: {
-        status: "ACTIVE",
-        OR: [{ teamId }, { teamIds: { has: teamId } }],
-      },
-    },
-    orderBy: { addedAt: "asc" },
-    select: {
-      currentStep: true,
-      nextStepOpensAt: true,
-      campaign: {
-        select: {
-          id: true,
-          name: true,
-          type: true,
-          steps: true,
-          teamId: true,
-          teamIds: true,
-          requireFreshResults: true,
-          activatedAt: true,
+  // 1. HULLÁM — a csapat és a NÉZŐ org-szerepe EGY lekérdezésben (beágyazott
+  // select), mellette a saját, esedékes kampány-lépések kinyitása.
+  // A `releaseDueCampaignSteps` kizárólag a HÍVÓ SAJÁT résztvevő-sorait
+  // érinti (userId: profile.id), tehát nem idegen adat — nyugodtan futhat a
+  // csapat-kapu előtt; a látogatás maga a trigger, ez eddig is így volt.
+  const [team] = await Promise.all([
+    prisma.team.findUnique({
+      where: { id: teamId },
+      select: {
+        id: true,
+        name: true,
+        orgId: true,
+        org: {
+          select: {
+            members: {
+              where: { userId: profile.id },
+              select: { role: true },
+              take: 1,
+            },
+          },
         },
       },
-    },
-  });
+    }),
+    releaseDueCampaignSteps({ userId: profile.id }).catch(() => {}),
+  ]);
+  if (!team) notFound();
+
+  const orgMemberRole = team.org?.members[0]?.role ?? null;
+  if (!orgMemberRole) redirect(await deepLinkFallback());
+
+  // 2. HULLÁM — a néző SAJÁT, egymástól független adatai egyszerre.
+  // Mind a hívó saját sora (résztvevői lépések, tagsági szerep, nekem szóló
+  // visszajelzés-kérések), tehát a csapat-kapu előtt is biztonságos; a
+  // CSAPAT adatai (riport, policy, aggregátumok) továbbra is a kapu mögött
+  // maradnak, lentebb.
+  const [stepCandidates, viewerTeamRole, receivedFeedbackRaw] = await Promise.all([
+    prisma.campaignParticipant.findMany({
+      where: {
+        userId: profile.id,
+        // Több-csapatos kampány: a teamIds lista is számít, nem csak a
+        // legacy teamId (az első csapat).
+        campaign: {
+          status: "ACTIVE",
+          OR: [{ teamId }, { teamIds: { has: teamId } }],
+        },
+      },
+      orderBy: { addedAt: "asc" },
+      select: {
+        currentStep: true,
+        nextStepOpensAt: true,
+        campaign: {
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            steps: true,
+            teamId: true,
+            teamIds: true,
+            requireFreshResults: true,
+            activatedAt: true,
+          },
+        },
+      },
+    }),
+    getTeamMembershipRole(profile.id, teamId),
+    prisma.observerInvitation.findMany({
+      where: {
+        observerProfileId: profile.id,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+        inviter: { teamMemberships: { some: { teamId } } },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        token: true,
+        testType: true,
+        inviter: { select: { username: true, email: true } },
+        draft: { select: { answers: true } },
+      },
+    }),
+  ]);
   const pendingMeasurementBase = stepCandidates
     .map((p) => {
       const stepType = getCurrentStepType(p.campaign, p);
@@ -168,6 +211,34 @@ export default async function TeamDetailPage({
         : null;
     })
     .find((v): v is NonNullable<typeof v> => v !== null) ?? null;
+  // Futó observer-kör: a self-kitöltés után a meghívó-gyűjtés még tart —
+  // a csapat-nézeten is kiemeljük (n/3 beérkezett + meghívó-CTA), amíg a
+  // küszöb (OBSERVER_MIN_FOR_REVEAL) nincs meg.
+  const observerCampaign = stepCandidates.find((p) =>
+    getCampaignSteps(p.campaign).includes("OBSERVER_360"),
+  );
+
+  // 3. HULLÁM — mindkettő a stepCandidates-től függ, de EGYMÁSTÓL nem:
+  // a „megkezdte" jelzés és az observer-gyűjtés állása egyszerre indul.
+  const [stepStarted, observerInvitations] = await Promise.all([
+    pendingMeasurementBase && !pendingMeasurementBase.opensAt
+      ? hasStartedStep(
+          pendingMeasurementBase.campaign,
+          pendingMeasurementBase.stepType,
+          profile.id,
+        )
+      : Promise.resolve(false),
+    observerCampaign
+      ? prisma.observerInvitation.findMany({
+          where: {
+            inviterId: profile.id,
+            status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
+          },
+          select: { status: true, createdAt: true, completedAt: true },
+        })
+      : Promise.resolve([]),
+  ]);
+
   // „Megkezdte" jelzés: rész-beadás vagy observer-piszkozat → a banner
   // CTA-ja „kezdés" helyett „folytatás"-t mutat.
   const pendingMeasurement = pendingMeasurementBase
@@ -175,21 +246,10 @@ export default async function TeamDetailPage({
         campaignName: pendingMeasurementBase.campaignName,
         stepType: pendingMeasurementBase.stepType,
         opensAt: pendingMeasurementBase.opensAt,
-        started:
-          !pendingMeasurementBase.opensAt &&
-          (await hasStartedStep(
-            pendingMeasurementBase.campaign,
-            pendingMeasurementBase.stepType,
-            profile.id,
-          )),
+        started: stepStarted,
       }
     : null;
-  // Futó observer-kör: a self-kitöltés után a meghívó-gyűjtés még tart —
-  // a csapat-nézeten is kiemeljük (n/3 beérkezett + meghívó-CTA), amíg a
-  // küszöb (OBSERVER_MIN_FOR_REVEAL) nincs meg.
-  const observerCampaign = stepCandidates.find((p) =>
-    getCampaignSteps(p.campaign).includes("OBSERVER_360"),
-  );
+
   let observerGathering: {
     campaignName: string;
     sent: number;
@@ -201,13 +261,7 @@ export default async function TeamDetailPage({
       observerCampaign.campaign.requireFreshResults && observerCampaign.campaign.activatedAt
         ? observerCampaign.campaign.activatedAt.getTime()
         : null;
-    const invitations = await prisma.observerInvitation.findMany({
-      where: {
-        inviterId: profile.id,
-        status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
-      },
-      select: { status: true, createdAt: true, completedAt: true },
-    });
+    const invitations = observerInvitations;
     const sent = invitations.filter(
       (inv) => freshFrom === null || inv.createdAt.getTime() >= freshFrom,
     ).length;
@@ -229,24 +283,8 @@ export default async function TeamDetailPage({
 
   // Tőlem kért observer-visszajelzések EBBŐL a csapatból: ki kért, hol
   // tartok a kitöltésben (szerver-draft) — a csapat-nézetről indítható/
-  // folytatható.
-  const receivedFeedbackRequests = (
-    await prisma.observerInvitation.findMany({
-      where: {
-        observerProfileId: profile.id,
-        status: "PENDING",
-        expiresAt: { gt: new Date() },
-        inviter: { teamMemberships: { some: { teamId } } },
-      },
-      orderBy: { createdAt: "desc" },
-      select: {
-        token: true,
-        testType: true,
-        inviter: { select: { username: true, email: true } },
-        draft: { select: { answers: true } },
-      },
-    })
-  ).map((inv) => {
+  // folytatható. (A lekérés a 2. hullámban ment ki.)
+  const receivedFeedbackRequests = receivedFeedbackRaw.map((inv) => {
     const total = getTestConfig(
       inv.testType as TestType,
       locale,
@@ -266,33 +304,41 @@ export default async function TeamDetailPage({
     };
   });
 
-  // A néző saját csapatai ebben a szervezetben — a hero csapat-váltójához
-  // (több csapatnál); a Vezérlő a kijelölt csapatra visz.
-  // A megnyitott csapat lesz a kijelölt (aktív) csapat — a Vezérlő ezután
-  // ide visz. Csak tagnál írjuk (tanácsadó/admin nézhet idegen csapatot is).
-  const isTeamMemberForContext = await prisma.teamMember.findUnique({
-    where: { teamId_userId: { teamId, userId: profile.id } },
-    select: { teamId: true },
-  });
-  if (isTeamMemberForContext) {
-    await prisma.userProfile
-      .update({ where: { id: profile.id }, data: { activeTeamId: teamId } })
-      .catch(() => {});
-  }
+  const orgId = team.orgId;
+  if (!orgId) redirect(await deepLinkFallback());
 
-  const memberTeams = (
-    await prisma.teamMember.findMany({
+  // KAPU: az adatbetöltés ELŐTT. A canAccessTeam ugyanazt a memoizált
+  // tagságot olvassa, tehát nem indít új kört.
+  const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
+  if (!hasTeamAccess) redirect(await deepLinkFallback());
+
+  // A kapu után minden független lekérés EGY hullámban (korábban négy,
+  // egymást váró await volt):
+  //  - a megnyitott csapat kijelölése aktívnak (csak tagnál — tanácsadó/
+  //    admin idegen csapatot is nézhet, annak nem írjuk felül a kijelölést),
+  //  - a néző csapatai a hero csapat-váltójához,
+  //  - a publikált (validált) riport,
+  //  - a csapat-hatókörű policy-pillanatkép.
+  const [, memberTeamRows, publishedReport, policySnapshot] = await Promise.all([
+    viewerTeamRole !== null
+      ? prisma.userProfile
+          .update({ where: { id: profile.id }, data: { activeTeamId: teamId } })
+          .catch(() => {})
+      : Promise.resolve(undefined),
+    prisma.teamMember.findMany({
       where: { userId: profile.id, team: { orgId: team.orgId } },
       orderBy: { joinedAt: "asc" },
       select: { team: { select: { id: true, name: true } } },
-    })
-  ).map((m) => ({ id: m.team.id, name: m.team.name }));
-
-  const orgId = team.orgId;
-  if (!orgId) redirect(deepLinkFallback);
-
-  const hasTeamAccess = await canAccessTeam(profile.id, teamId, orgMemberRole);
-  if (!hasTeamAccess) redirect(deepLinkFallback);
+    }),
+    getLatestPublishedReport(teamId),
+    resolveTeamPolicySnapshot({
+      orgId,
+      orgRole: orgMemberRole,
+      teamId,
+      profileId: profile.id,
+    }),
+  ]);
+  const memberTeams = memberTeamRows.map((m) => ({ id: m.team.id, name: m.team.name }));
   // Tanácsadói felület: ORG_CONSULTANT szerep VAGY platform-admin fiók
   // (konzultáció-vezérelt működés — lásd lib/measurement-auth.ts).
   const canViewRaw =
@@ -304,7 +350,6 @@ export default async function TeamDetailPage({
     redirect(`/team/${teamId}?tab=overview`);
   }
 
-  const publishedReport = await getLatestPublishedReport(teamId);
   if (!canViewRaw && activeTab === "report" && !publishedReport) {
     redirect(`/team/${teamId}?tab=overview`);
   }
@@ -312,16 +357,9 @@ export default async function TeamDetailPage({
   // overview ezt mutatja „validálás alatt" helyett. A kaput maga a PUBLIKÁLT
   // riport nyitja (nem a pillanatkép mező).
   const hasPublishedReport = Boolean(publishedReport);
+  // Nem indít lekérdezést: ugyanaz a memoizált tagság, mint fent.
   const isOrgManager = await canManageTeam(profile.id, teamId, orgMemberRole);
   const isHu = locale !== "en";
-  // Csapat-hatókörű pillanatkép: a hívó VALÓS team-tagságával/szerepével —
-  // a teamManage/teamInviteEmail capability így helyesen oldódik fel.
-  const policySnapshot = await resolveTeamPolicySnapshot({
-    orgId,
-    orgRole: orgMemberRole,
-    teamId,
-    profileId: profile.id,
-  });
   const policy = policySnapshot.policy;
   const manageDecision = resolveOrgCapabilityDecision(policySnapshot, "manage");
 

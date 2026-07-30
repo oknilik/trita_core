@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getProfileCoreById } from "@/lib/profile.server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
@@ -54,18 +55,20 @@ export default async function OrgDetailPage({
 
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
-  const viewer = await prisma.userProfile.findUnique({
-    where: { id: profileId },
-    select: { email: true, isConsultant: true },
-  });
+  // Közös, kérés-szinten memoizált profil (a requireOrgContext már betöltötte).
+  const viewer = await getProfileCoreById(profileId);
   // Tanácsadói felület: ORG_CONSULTANT szerep, platform-tanácsadó vagy platform-admin.
   const isConsultantView = isConsultantSurface(
     memberRole,
     viewer?.email,
     viewer?.isConsultant,
   );
-  const deepLinkFallback = await resolveJourneyFallbackForProfileId(profileId);
-  if (!hasOrgRole(memberRole, "ORG_MANAGER")) redirect(deepLinkFallback);
+  // A fallback-cél a teljes journey-motort futtatja (~25 query) — csak a
+  // redirect-ágban kell, ezért CSAK akkor számoljuk ki. A kapu maga
+  // változatlan: ORG_MANAGER alatt továbbra is elirányítunk.
+  if (!hasOrgRole(memberRole, "ORG_MANAGER")) {
+    redirect(await resolveJourneyFallbackForProfileId(profileId));
+  }
 
   const policySnapshot = await resolveOrgPolicySnapshot({
     orgId,

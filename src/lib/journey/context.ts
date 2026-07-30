@@ -1,9 +1,16 @@
 import "server-only";
 
+import { cache } from "react";
 import { InvitationStatus, UserRole } from "@prisma/client";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { prisma } from "@/lib/prisma";
+import {
+  getOrgActiveCampaignCount,
+  getOrgPendingInviteCount,
+  getOrgTeamCount,
+} from "@/lib/org-counts.server";
+import { getProfileCoreById } from "@/lib/profile.server";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { JOURNEY_TEAM_INTENT_FEATURE_KEY } from "@/lib/journey/intent";
 import type {
@@ -102,7 +109,43 @@ function pickPendingJoinInvite(
   return teamInvite.createdAt >= orgInvite.createdAt ? teamInvite : orgInvite;
 }
 
+/**
+ * Kérés-szinten memoizált belépési pont a journey-kontextushoz.
+ *
+ * Miért: egy render 2–3× oldja fel ugyanazt a kontextust (layout nav +
+ * oldal-guard + esetleg fallback), és ez önmagában ~25 query.
+ *
+ * A React cache() OBJEKTUM-argumentumra referencia szerint kulcsol, ezért
+ * itt primitívekre bontunk — így a különböző hívók azonos logikai kérése
+ * ténylegesen összeesik. A profileId a kulcs része, tehát felhasználók
+ * között nem keveredhet; a hatókör egy kérés.
+ *
+ * Az explicit `now`-val hívó (tesztek, determinisztikus futás) NEM cache-el.
+ */
 export async function resolveJourneyContext(
+  profileId: string,
+  options: ResolveJourneyContextOptions = {},
+): Promise<JourneyContextSnapshot> {
+  if (options.now) return resolveJourneyContextUncached(profileId, options);
+  return resolveJourneyContextCached(
+    profileId,
+    options.teamId ?? null,
+    options.orgId ?? null,
+    options.entryIntent ?? null,
+  );
+}
+
+const resolveJourneyContextCached = cache(
+  async (
+    profileId: string,
+    teamId: string | null,
+    orgId: string | null,
+    entryIntent: JourneyEntryIntent | null,
+  ): Promise<JourneyContextSnapshot> =>
+    resolveJourneyContextUncached(profileId, { teamId, orgId, entryIntent }),
+);
+
+async function resolveJourneyContextUncached(
   profileId: string,
   options: ResolveJourneyContextOptions = {},
 ): Promise<JourneyContextSnapshot> {
@@ -110,10 +153,9 @@ export async function resolveJourneyContext(
 
   const [profile, selfResult, draft, sentInvites, pendingInvites, completedObservers, orgMembership, teamIntentFlag, anyOrgMembershipCount] =
     await Promise.all([
-      prisma.userProfile.findUnique({
-        where: { id: profileId },
-        select: { id: true, assessmentSkippedAt: true, email: true, role: true },
-      }),
+      // Közös, kérés-szinten memoizált profil-lekérő — így a nav-context,
+      // az onboarding-guard és az oldal saját lekérése összeesik eggyé.
+      getProfileCoreById(profileId),
       prisma.assessmentResult.findFirst({
         where: { userProfileId: profileId, isSelfAssessment: true },
         select: { id: true },
@@ -320,13 +362,11 @@ export async function resolveJourneyContext(
           joinedAt: true,
           team: { select: { orgId: true } },
         } as const;
-        const profileRow = await prisma.userProfile.findUnique({
-          where: { id: profileId },
-          select: { activeTeamId: true },
-        });
-        if (profileRow?.activeTeamId) {
+        // A kijelölt csapat a már betöltött profil-sorból jön (a
+        // getProfileCoreById tartalmazza az activeTeamId-t) — nincs külön kör.
+        if (profile.activeTeamId) {
           const active = await prisma.teamMember.findFirst({
-            where: { ...scope, teamId: profileRow.activeTeamId },
+            where: { ...scope, teamId: profile.activeTeamId },
             select,
           });
           if (active) return active;
@@ -367,40 +407,6 @@ export async function resolveJourneyContext(
     ready: false,
   };
 
-  if (teamId) {
-    const [teamMemberRows, pendingInviteCount] = await Promise.all([
-      prisma.teamMember.findMany({
-        where: { teamId },
-        select: { userId: true },
-      }),
-      prisma.teamPendingInvite.count({ where: { teamId } }),
-    ]);
-
-    const memberUserIds = teamMemberRows.map((row) => row.userId);
-    const teamCompletedRows =
-      memberUserIds.length > 0
-        ? await prisma.assessmentResult.findMany({
-            where: {
-              userProfileId: { in: memberUserIds },
-              isSelfAssessment: true,
-            },
-            select: { userProfileId: true },
-            distinct: ["userProfileId"],
-          })
-        : [];
-
-    const completedMemberCount = teamCompletedRows.length;
-
-    teamSummary = {
-      joined: true,
-      teamId,
-      memberCount: memberUserIds.length,
-      completedMemberCount,
-      pendingInviteCount,
-      ready: completedMemberCount >= MIN_MEMBERS_FOR_TEAM_INSIGHTS,
-    };
-  }
-
   let orgSummary: JourneyCompletionSummary["org"] = {
     joined: false,
     orgId: null,
@@ -412,37 +418,64 @@ export async function resolveJourneyContext(
     ready: false,
   };
 
-  if (orgId) {
-    const [orgMemberRows, teamCount, pendingInviteCount, activeCampaignCount] = await Promise.all([
-      prisma.organizationMember.findMany({
-        where: { orgId, leftAt: null },
-        select: { userId: true },
-      }),
-      prisma.team.count({ where: { orgId } }),
-      prisma.organizationPendingInvite.count({ where: { orgId } }),
-      prisma.campaign.count({ where: { orgId, status: "ACTIVE" } }),
-    ]);
-
-    const orgMemberUserIds = orgMemberRows.map((row) => row.userId);
-    const orgCompletedRows =
-      orgMemberUserIds.length > 0
-        ? await prisma.assessmentResult.findMany({
+  // A csapat- és az org-összegző FÜGGETLEN egymástól — korábban mégis két
+  // egymás utáni hullámban futott. Most egyetlen hullám: 3 + 5 lekérdezés
+  // egyszerre indul.
+  //
+  // A blokkokon belül: findMany+findMany({distinct}) helyett relation-
+  // filteres count-ok. A „kész" tagok halmaza változatlan (a csapat/org
+  // tagjai, akiknek van self-eredménye), és a `leftAt: null` szűrő az org
+  // MINDKÉT számában benne van, tehát a kész-arány jelentése sem változik.
+  const [teamCounts, orgCounts] = await Promise.all([
+    teamId
+      ? Promise.all([
+          prisma.teamMember.count({ where: { teamId } }),
+          prisma.teamMember.count({
             where: {
-              userProfileId: { in: orgMemberUserIds },
-              isSelfAssessment: true,
+              teamId,
+              user: { is: { assessmentResults: { some: { isSelfAssessment: true } } } },
             },
-            select: { userProfileId: true },
-            distinct: ["userProfileId"],
-          })
-        : [];
+          }),
+          prisma.teamPendingInvite.count({ where: { teamId } }),
+        ])
+      : null,
+    orgId
+      ? Promise.all([
+          prisma.organizationMember.count({ where: { orgId, leftAt: null } }),
+          prisma.organizationMember.count({
+            where: {
+              orgId,
+              leftAt: null,
+              user: { is: { assessmentResults: { some: { isSelfAssessment: true } } } },
+            },
+          }),
+          getOrgTeamCount(orgId),
+          getOrgPendingInviteCount(orgId),
+          getOrgActiveCampaignCount(orgId),
+        ])
+      : null,
+  ]);
 
-    const completedMemberCount = orgCompletedRows.length;
+  if (teamId && teamCounts) {
+    const [memberCount, completedMemberCount, pendingInviteCount] = teamCounts;
+    teamSummary = {
+      joined: true,
+      teamId,
+      memberCount,
+      completedMemberCount,
+      pendingInviteCount,
+      ready: completedMemberCount >= MIN_MEMBERS_FOR_TEAM_INSIGHTS,
+    };
+  }
 
+  if (orgId && orgCounts) {
+    const [memberCount, completedMemberCount, teamCount, pendingInviteCount, activeCampaignCount] =
+      orgCounts;
     orgSummary = {
       joined: true,
       orgId,
       teamCount,
-      memberCount: orgMemberUserIds.length,
+      memberCount,
       completedMemberCount,
       pendingInviteCount,
       activeCampaignCount,

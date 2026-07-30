@@ -46,7 +46,8 @@ export async function GET() {
   const [consultants, invites] = await Promise.all([
     prisma.userProfile.findMany({
       where: { isConsultant: true, deleted: false },
-      orderBy: { createdAt: "asc" },
+      // Legutóbbi elöl — az admin lista alapesetben csak az első 10-et mutatja.
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         email: true,

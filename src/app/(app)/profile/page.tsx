@@ -7,7 +7,7 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import { ConfirmModal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { useLocale } from "@/components/LocaleProvider";
+import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
@@ -142,7 +142,7 @@ export default function ProfilePage() {
   if (!isLoaded || !hasCheckedBypass || (sessionEligible && !hasLoadedDemographics)) {
     return (
       <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
-        <div className="mx-auto max-w-[640px] px-5 py-10">
+        <div className="mx-auto max-w-[640px] px-5 pt-10 pb-20">
           <div className="animate-pulse">
             <div className="flex items-center gap-4">
               <div className="h-14 w-14 rounded-full bg-[var(--color-border-default)]" />
@@ -247,7 +247,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      <div className="mx-auto max-w-[640px] px-5 pb-12 lg:px-0">
+      <div className="mx-auto max-w-[640px] px-5 pb-20 lg:px-0">
 
         {/* ═══ HERO ═══ */}
         <div className="border-b border-[var(--color-border-default)] py-7">
@@ -432,7 +432,7 @@ export default function ProfilePage() {
                 <p className="text-caption text-[var(--color-text-secondary)]">{t("profile.logoutTitle", locale)}</p>
                 <p className="text-micro text-[var(--color-text-muted)]">{t("profile.logoutSub", locale)}</p>
               </div>
-              <button type="button" onClick={() => signOut()} className="shrink-0 rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
+              <button type="button" onClick={() => { clearLocaleSyncFlag(); void signOut(); }} className="shrink-0 rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
                 {t("profile.logoutButton", locale)}
               </button>
             </div>
