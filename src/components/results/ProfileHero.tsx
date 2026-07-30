@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { Button } from "@/components/ui/primitives/Button";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
+import { resolveGlyphPair } from "@/lib/type-glyph";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type AccessLevel = "start" | "plus";
@@ -24,6 +25,8 @@ interface ProfileHeroProps {
   userName: string;
   completedAt: string;
   personalityType: string;
+  /** A típus-ábrához: pontozott dimenziók (TRITAN-kódok). Enélkül nincs ábra. */
+  glyphDimensions?: Array<{ code: string; score: number }>;
   percentile: string;
   insight: string;
   accessLevel?: AccessLevel;
@@ -39,6 +42,7 @@ export function ProfileHero({
   userName,
   completedAt,
   personalityType,
+  glyphDimensions,
   percentile,
   insight,
   accessLevel = "start",
@@ -66,15 +70,16 @@ export function ProfileHero({
     }
   }, [pdfLoading]);
 
+  const glyphPair = glyphDimensions ? resolveGlyphPair(glyphDimensions) : null;
   const level = LEVEL_CONFIG[accessLevel];
-  const initial = getAvatarMonogram(userName, { length: 1 });
-  const [avatarFrom, avatarTo] = getAvatarGradient(userName);
   const selfTheme = SURFACE_HERO_THEME.self;
 
   return (
     <SurfaceHero
       variant="self"
-      contentClassName="mx-auto max-w-4xl px-5 pb-7 pt-8 md:px-9 md:pb-8 md:pt-10"
+      // Az alsó padding nagyobb: a hero aljában sáv kell a karakter-ábra
+      // feliratának (a hozzá tartozó fül a banner alsó széléből lóg ki).
+      contentClassName="mx-auto max-w-4xl px-5 pb-12 pt-8 md:px-9 md:pb-14 md:pt-10"
       eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
@@ -105,26 +110,37 @@ export function ProfileHero({
         )
       }
       title={(
-        <div className="mb-0.5 flex items-center gap-3">
-          <div
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
-            style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-          >
-            {initial}
+        // A monogram-avatár helyén a típus-ábra áll (2026-07-30): a fejlécben
+        // egyetlen kép van, és az a profilról szól, nem a névkezdőbetűről.
+        // A dátum a névvel egy blokkban marad, hogy az ábra a teljes
+        // név-blokk magasságát kiadja (64 px).
+        <div className="mb-0.5 flex items-center gap-4">
+          {glyphPair && (
+            <TypeGlyph
+              primaryCode={glyphPair.primaryCode}
+              secondaryCode={glyphPair.secondaryCode}
+              typeLabel={personalityType}
+              locale={locale === "hu" ? "hu" : "en"}
+              intensity={glyphPair.intensity}
+              variant="badge"
+              className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
+            />
+          )}
+          <div className="min-w-0">
+            <h1 className="break-words font-fraunces text-[26px] tracking-tight text-white md:text-[34px]">
+              {userName}
+            </h1>
+            <p className="mt-1 text-[11px] text-white/[0.65]">
+              {t("results.heroAssessment", locale)} {completedAt}
+            </p>
           </div>
-          <h1 className="break-words font-fraunces text-[26px] tracking-tight text-white md:text-[34px]">
-            {userName}
-          </h1>
         </div>
-      )}
-      meta={(
-        <p className="text-[11px] text-white/[0.65]">
-          {t("results.heroAssessment", locale)} {completedAt}
-        </p>
       )}
       body={(
         <div>
           <div className="flex items-start justify-between gap-3">
+            {/* A típusnév mellől az ábra kikerült — a fejlécben egy ábra van,
+                a név mellett. A jelentését a hero alatti tábla adja. */}
             <span className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)] md:text-[22px]">
               {personalityType}
             </span>

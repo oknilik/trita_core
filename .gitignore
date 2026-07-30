@@ -51,5 +51,8 @@ next-env.d.ts
 # email előnézet-generátor kimenete (scripts/preview-emails.ts)
 .email-previews/
 
+# típus-ábra előnézet-generátor kimenete (scripts/preview-type-glyphs.ts)
+.glyph-previews/
+
 # generált persona-riport PDF (regenerálható: pnpm report:personas)
 docs/testing/persona-riportok*.pdf

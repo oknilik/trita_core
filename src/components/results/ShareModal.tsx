@@ -7,6 +7,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/primitives/Button";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
+import { resolveGlyphPair } from "@/lib/type-glyph";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
@@ -17,6 +19,8 @@ export interface ShareCardPreview {
   userName: string;
   personalityType: string;
   topDims: Array<{ label: string; score: number }>;
+  /** Pontozott dimenziók a típus-ábrához — a megosztott lap fejlécével egyezően. */
+  glyphDimensions?: Array<{ code: string; score: number }>;
 }
 
 export function ShareModal({
@@ -30,6 +34,9 @@ export function ShareModal({
   preview?: ShareCardPreview | null;
 }) {
   const { locale } = useLocale();
+  const previewGlyph = preview?.glyphDimensions
+    ? resolveGlyphPair(preview.glyphDimensions)
+    : null;
 
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -163,12 +170,29 @@ export function ShareModal({
                 <p className="text-micro uppercase tracking-widest text-white/[0.35]">
                   {t("results.sharedProfileLabel", locale)}
                 </p>
-                <p className="mt-0.5 font-fraunces text-[17px] text-white">
-                  {preview.userName}
-                </p>
-                <p className="font-fraunces text-body italic text-[var(--color-accent-primary-soft)]">
-                  {preview.personalityType}
-                </p>
+                {/* A típus-ábra a név mellett — ugyanaz a kép, amit a link
+                    megnyitója is látni fog a megosztott lap fejlécében. */}
+                <div className="mt-1 flex items-center gap-3">
+                  {previewGlyph && (
+                    <TypeGlyph
+                      primaryCode={previewGlyph.primaryCode}
+                      secondaryCode={previewGlyph.secondaryCode}
+                      typeLabel={preview.personalityType}
+                      locale={locale === "hu" ? "hu" : "en"}
+                      intensity={previewGlyph.intensity}
+                      variant="badge"
+                      className="h-11 w-11 shrink-0 rounded-lg border border-white/20"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p className="font-fraunces text-[17px] text-white">
+                      {preview.userName}
+                    </p>
+                    <p className="font-fraunces text-body italic text-[var(--color-accent-primary-soft)]">
+                      {preview.personalityType}
+                    </p>
+                  </div>
+                </div>
                 {preview.topDims.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {preview.topDims.map((d) => (
