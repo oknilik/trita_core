@@ -12,11 +12,13 @@ import {
   AXIS_KEYS,
   DIM_CODES,
   RIASEC_LETTERS,
+  VETO_TAGS,
   type AxisKey,
   type DimCode,
   type EduField,
   type PersonInput,
   type RiasecLetter,
+  type VetoTag,
 } from "./types";
 
 /** A karrier-wizard mentett háttere (UserProfile.careerBackground JSON). */
@@ -34,6 +36,8 @@ export interface StoredCareerBackground {
   eduFields?: string[];
   /** örökölt egyértékű mező */
   eduField?: string | null;
+  /** kizárt munka-tulajdonságok (vétó-chipek) */
+  vetoes?: string[];
 }
 
 function pickDims(scores: unknown): Partial<Record<DimCode, number>> {
@@ -97,6 +101,12 @@ const EDU_FIELDS: EduField[] = [
   "trade",
   "none_other",
 ];
+
+/** Vétó-lista normalizálása: csak érvényes címke marad. */
+function normalizeVetoes(raw: string[] | undefined): VetoTag[] {
+  if (!raw?.length) return [];
+  return raw.filter((tag): tag is VetoTag => VETO_TAGS.includes(tag as VetoTag));
+}
 
 /** A végzettség szakiránya — az örökölt egyértékű mezőt is tömbként adja vissza. */
 function normalizeEduFields(background: StoredCareerBackground | null): EduField[] {
@@ -177,6 +187,7 @@ export async function buildPersonInput(
     eduLevel: background?.eduLevel ?? null,
     eduFields: normalizeEduFields(background),
     leadIntent: background?.leadIntent ?? "unsure",
+    vetoes: normalizeVetoes(background?.vetoes),
     ...overrides,
   };
 

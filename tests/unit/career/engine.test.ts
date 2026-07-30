@@ -285,6 +285,49 @@ test("scope: a bejelölt terület kemény szűrő, univerzális szerepekkel", ()
   assert.ok(scoped.ranked.every((fit) => fit.orderedBy === "interest"));
 });
 
+// ── vétó: kizárt munka-tulajdonság = kemény szűrő ───────────────────────────
+
+test("vétó: a children-vétó mellett SOHA nincs dadus/tanító a listában", () => {
+  const result = computeCareerFit(
+    { dims: balanced, form: "short", vetoes: ["children"] },
+    { limit: 477, diversify: false },
+  );
+  const byId = new Map(getOccupations().map((o) => [o.id, o]));
+  for (const fit of result.ranked) {
+    const attrs = byId.get(fit.id)?.attrs ?? [];
+    assert.ok(!attrs.includes("children"), `${fit.hu}: children-címkés szerep a listában`);
+  }
+  assert.ok((result.meta.vetoExcluded ?? 0) > 0, "a kizárt szám a metában van");
+  const names = new Set(result.ranked.map((fit) => fit.hu));
+  assert.ok(!names.has("Bébiszitter (dadus)"), "a dadus nem jelenhet meg");
+  assert.ok(!names.has("Óvodapedagógus"));
+});
+
+test("vétó: több vétó uniója szűr, és scope mellett is érvényes", () => {
+  const result = computeCareerFit(
+    { dims: balanced, form: "short", vetoes: ["blood", "sales"] },
+    { limit: 477, diversify: false, scope: ["health"], industries: ["health"] },
+  );
+  const byId = new Map(getOccupations().map((o) => [o.id, o]));
+  for (const fit of result.ranked) {
+    const attrs = byId.get(fit.id)?.attrs ?? [];
+    assert.ok(
+      !attrs.includes("blood") && !attrs.includes("sales"),
+      `${fit.hu}: vétózott címkével a listában (${attrs.join(",")})`,
+    );
+  }
+  assert.ok(result.ranked.length > 0, "a vétó nem üríthette ki a health-scope-ot");
+});
+
+test("vétó: `only` szűkítésnél (összevetés) nem lép életbe", () => {
+  const dadus = getOccupations().find((o) => o.hu.startsWith("Bébiszitter"))!;
+  const result = computeCareerFit(
+    { dims: balanced, form: "short", vetoes: ["children"] },
+    { only: [dadus.id] },
+  );
+  assert.equal(result.ranked.length, 1, "a kifejezetten kért összevetést nem vétózzuk el");
+});
+
 test("scope: kevés találatnál nem szűrünk, hanem jelezzük a bővítést", () => {
   const widened = computeCareerFit(
     { dims: balanced, form: "short" },

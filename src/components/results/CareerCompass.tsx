@@ -265,11 +265,33 @@ type Step =
   | "edu"
   | "current"
   | "interests"
+  | "veto"
   | "riasec"
   | "prefs"
   | "env"
   | "lead"
   | "result";
+
+// Vétó-chipek: kizárható munka-tulajdonságok. A bejelölt vétó KEMÉNY szűrő a
+// motorban (a címkézés O*NET-adatból jön, ld. step11_veto_tags.py) — pl. a
+// „gyerekekkel foglalkozás" vétója mellett dadus/tanító sosem jelenik meg.
+const VETO_OPTIONS: Array<{ value: string; key: string; emoji: string }> = [
+  { value: "children", key: "results.ccVetoChildren", emoji: "🧒" },
+  { value: "care", key: "results.ccVetoCare", emoji: "🫂" },
+  { value: "blood", key: "results.ccVetoBlood", emoji: "🩸" },
+  { value: "customers", key: "results.ccVetoCustomers", emoji: "🛎️" },
+  { value: "sales", key: "results.ccVetoSales", emoji: "💰" },
+  { value: "conflict", key: "results.ccVetoConflict", emoji: "⚡" },
+  { value: "shift", key: "results.ccVetoShift", emoji: "🌙" },
+  { value: "physical", key: "results.ccVetoPhysical", emoji: "🏋️" },
+  { value: "outdoor", key: "results.ccVetoOutdoor", emoji: "🌦️" },
+  { value: "screen", key: "results.ccVetoScreen", emoji: "🖥️" },
+  { value: "driving", key: "results.ccVetoDriving", emoji: "🚗" },
+  { value: "heights", key: "results.ccVetoHeights", emoji: "🪜" },
+  { value: "hazard", key: "results.ccVetoHazard", emoji: "☣️" },
+  { value: "monotony", key: "results.ccVetoMonotony", emoji: "🔁" },
+  { value: "animals", key: "results.ccVetoAnimals", emoji: "🐾" },
+];
 
 const EMPTY_BACKGROUND: CareerBackground = {
   status: "working",
@@ -335,6 +357,7 @@ export function CareerCompass({
     "edu",
     ...(background.status === "studying" ? [] : (["current"] as Step[])),
     "interests",
+    "veto",
     "riasec",
     "prefs",
     "env",
@@ -420,6 +443,7 @@ export function CareerCompass({
             currentIndustry: next.currentIndustry,
             status: next.status,
             ignoreScope: skipScope,
+            vetoes: next.vetoes ?? [],
           }),
         });
         if (!res.ok) throw new Error("FIT_FAILED");
@@ -814,6 +838,41 @@ export function CareerCompass({
             </Chip>
           </div>
           {stepNav("interests")}
+        </div>
+      )}
+
+      {step === "veto" && (
+        <div key="veto" style={{ animation: "cc-step-in 0.3s ease-out both" }}>
+          {stepHeader("results.ccStepVeto", "results.ccWhyVeto")}
+          <div className="flex flex-wrap gap-1.5">
+            {VETO_OPTIONS.map(({ value, key, emoji }) => {
+              const active = (background.vetoes ?? []).includes(value);
+              return (
+                <Chip
+                  key={value}
+                  active={active}
+                  onClick={() => {
+                    const current = background.vetoes ?? [];
+                    patch({
+                      vetoes: active
+                        ? current.filter((v) => v !== value)
+                        : current.length >= 5
+                          ? current
+                          : [...current, value],
+                    });
+                  }}
+                >
+                  {emoji} {t(key, locale)}
+                </Chip>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-micro text-[var(--color-text-muted)]">
+            {tf("results.ccVetoCount", locale, {
+              count: (background.vetoes ?? []).length,
+            })}
+          </p>
+          {stepNav("veto")}
         </div>
       )}
 

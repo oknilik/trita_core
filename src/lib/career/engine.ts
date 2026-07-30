@@ -319,6 +319,18 @@ export function computeCareerFit(
     if (scoped.length >= 8) catalog = scoped;
     else scopeWidened = true;
   }
+  // Vétó: a kizárt munka-tulajdonság KEMÉNY szűrő — a kimondott „ezt nem"
+  // szándékot nem bíráljuk felül. A kizártak számát a meta hordozza, a UI
+  // láthatóvá teszi (nincs néma eltüntetés).
+  let vetoExcluded = 0;
+  const vetoes = person.vetoes ?? [];
+  if (vetoes.length > 0 && !options.only) {
+    const kept = catalog.filter(
+      (occupation) => !(occupation.attrs ?? []).some((tag) => vetoes.includes(tag)),
+    );
+    vetoExcluded = catalog.length - kept.length;
+    catalog = kept;
+  }
   const picked = options.industries ?? [];
 
   const fits: OccupationFit[] = [];
@@ -513,6 +525,7 @@ export function computeCareerFit(
       strategy,
       candidatePool,
       ...(scopeWidened ? { scopeWidened: true } : {}),
+      ...(vetoExcluded > 0 ? { vetoExcluded } : {}),
     },
   };
 }

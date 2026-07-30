@@ -49,6 +49,46 @@ export type EduField =
 
 export type AssessmentForm = "short" | "full";
 
+/**
+ * Vétó-címkék: munka-tulajdonságok, amiket a felhasználó KIZÁRHAT a wizardban.
+ * A címkézés forrása O*NET Work Context/Activities küszöbök + ISCO-struktúra
+ * (step11_veto_tags.py); a bejelölt vétó determinisztikus kemény szűrő.
+ */
+export type VetoTag =
+  | "children"
+  | "care"
+  | "blood"
+  | "customers"
+  | "sales"
+  | "conflict"
+  | "shift"
+  | "physical"
+  | "outdoor"
+  | "screen"
+  | "driving"
+  | "heights"
+  | "hazard"
+  | "monotony"
+  | "animals";
+
+export const VETO_TAGS: VetoTag[] = [
+  "children",
+  "care",
+  "blood",
+  "customers",
+  "sales",
+  "conflict",
+  "shift",
+  "physical",
+  "outdoor",
+  "screen",
+  "driving",
+  "heights",
+  "hazard",
+  "monotony",
+  "animals",
+];
+
 /** Egy dimenzió elvárása a szerep oldalán: ideal-point cél + tolerancia + súly. */
 export interface DemandComponent {
   dim: DimCode;
@@ -86,6 +126,8 @@ export interface Occupation {
   eduFields?: EduField[];
   /** iparág-címkék (többes); ÜRES = univerzális szerep, minden scope-ban megjelenik */
   industries?: string[];
+  /** vétó-címkék: milyen kizárható munka-tulajdonságokat hordoz a szerep */
+  attrs?: VetoTag[];
 }
 
 export interface OccupationContent {
@@ -128,6 +170,8 @@ export interface PersonInput {
   eduFields?: EduField[];
   /** vezetői ambíció — a vezetői komponensek súlyát emeli */
   leadIntent?: "lead" | "expert" | "unsure";
+  /** kizárt munka-tulajdonságok — KEMÉNY szűrő, a kimondott szándék szintje */
+  vetoes?: VetoTag[];
 }
 
 export interface FitComponent {
@@ -207,5 +251,7 @@ export interface CareerFitResult {
     candidatePool: number | null;
     /** true, ha a scope túl kevés találatot adott, és kibővítettük */
     scopeWidened?: boolean;
+    /** hány szerepet zárt ki a felhasználó vétója */
+    vetoExcluded?: number;
   };
 }

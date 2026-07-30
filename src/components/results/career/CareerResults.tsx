@@ -37,6 +37,25 @@ const GAP_KEY: Record<string, string> = {
   licence: "results.cfGapLicence",
 };
 
+// Vétó-címkék megjelenítési kulcsai (a wizard chip-jeivel azonosak).
+const VETO_LABEL_KEYS: Record<string, string> = {
+  children: "results.ccVetoChildren",
+  care: "results.ccVetoCare",
+  blood: "results.ccVetoBlood",
+  customers: "results.ccVetoCustomers",
+  sales: "results.ccVetoSales",
+  conflict: "results.ccVetoConflict",
+  shift: "results.ccVetoShift",
+  physical: "results.ccVetoPhysical",
+  outdoor: "results.ccVetoOutdoor",
+  screen: "results.ccVetoScreen",
+  driving: "results.ccVetoDriving",
+  heights: "results.ccVetoHeights",
+  hazard: "results.ccVetoHazard",
+  monotony: "results.ccVetoMonotony",
+  animals: "results.ccVetoAnimals",
+};
+
 function dimLabel(code: string, isHu: boolean): string {
   const dim = TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS];
   if (!dim) return code;
@@ -578,6 +597,21 @@ export function CareerResults({
           </button>
         )}
       </div>
+
+      {/* Vétók — a kizárás LÁTHATÓ: mit zártál ki, és hány szerep esett ki miatta */}
+      {result.veto.keys.length > 0 && (
+        <div className="mt-2 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
+          <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+            🚫{" "}
+            {tf("results.cfVetoActive", locale, {
+              list: result.veto.keys
+                .map((key) => t(VETO_LABEL_KEYS[key] ?? key, locale))
+                .join(" · "),
+              count: result.veto.excluded,
+            })}
+          </p>
+        </div>
+      )}
 
       {result.interestDifferentiation === "low" && (
         <p className="mt-2 rounded-[10px] bg-amber-50/70 p-2.5 text-micro leading-relaxed text-amber-900">

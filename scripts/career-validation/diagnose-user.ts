@@ -52,6 +52,7 @@ async function main() {
   );
   console.log(`  preferenciák: ${JSON.stringify(person.prefs ?? {})}`);
   console.log(`  végzettség:  ${person.eduLevel ?? "—"} · vezetői szándék: ${person.leadIntent}`);
+  console.log(`  vétók:       ${person.vetoes?.length ? person.vetoes.join(", ") : "nincs"}`);
 
   const industries = (background.interests as string[] | undefined) ?? [];
   // A service scope-feloldását tükrözzük: a bejelölt terület kemény szűrő.
@@ -60,7 +61,8 @@ async function main() {
     `  rangsorolás: ${result.meta.strategy}` +
       (result.meta.candidatePool !== null
         ? ` (jelölt-halmaz: ${result.meta.candidatePool} tétel az érdeklődés szerint)`
-        : ""),
+        : "") +
+      (result.meta.vetoExcluded ? ` · vétó kizárt: ${result.meta.vetoExcluded}` : ""),
   );
 
   const edu = EDU_RANK[person.eduLevel ?? ""] ?? null;

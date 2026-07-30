@@ -17,6 +17,7 @@ import {
   type OccupationFit,
   type PersonInput,
   type RiasecLetter,
+  type VetoTag,
 } from "./types";
 
 /** Megjelenítéshez dúsított illeszkedés (leírás, aliasok, hivatalos nevek). */
@@ -58,6 +59,8 @@ export interface CareerResultView extends Omit<CareerFitResult, "clusters" | "ra
   } | null;
   /** true, ha a bejelölt iparágak ellentmondanak a mért érdeklődésnek */
   industryMismatch: boolean;
+  /** a felhasználó vétói és a kizárt szerepek száma — látható szűrés, nem néma */
+  veto: { keys: VetoTag[]; excluded: number };
 }
 
 export interface CareerServiceOptions extends EngineOptions {
@@ -162,6 +165,7 @@ export async function computeCareerForProfile(
       hasSelfResult: false,
       interests: null,
       industryMismatch: false,
+      veto: { keys: [], excluded: 0 },
     };
   }
 
@@ -284,5 +288,9 @@ export async function computeCareerForProfile(
     hasSelfResult: true,
     interests,
     industryMismatch,
+    veto: {
+      keys: person.vetoes ?? [],
+      excluded: result.meta.vetoExcluded ?? 0,
+    },
   };
 }

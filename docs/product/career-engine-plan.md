@@ -608,3 +608,39 @@ Intenzív terápiás szakápoló · Közösségi eü. dolgozó · Eü. intézmé
 TANULÁSSAL = Dietetikus · Eü. szociális munkás · Iskolapszichológus; a Látszerész
 és az Ápolási asszisztens a összecsukott „szint alatti" szakaszban.
 Regressziós tesztek: tech- és health-címke őrzők a `catalog.test.ts`-ben.
+
+## 13. Vétó-rendszer (determinisztikus kizárás) — 2026-07-30
+
+**Probléma.** A lista a beállítások ellenére is adhat kirívóan oda nem illő
+tételt (valós eset: a felhasználó nem szeretne gyerekekkel foglalkozni, mégis
+dadust kapott). LLM helyett determinisztikus megoldás: a kifogások eloszlása
+fejnehéz — egy ~15 elemű zárt szótár lefedi a valós elutasítás-okok tömegét.
+
+**Vétó-címkék** (`occupation.attrs`, `VetoTag` a types.ts-ben): children, care,
+blood, customers, sales, conflict, shift, physical, outdoor, screen, driving,
+heights, hazard, monotony, animals.
+
+**Címkézés** (`step11_veto_tags.py`): O*NET Work Context (CX küszöbök:
+betegség-expozíció, magasság, veszély, kültér, jármű, konfliktus, ügyfél, ülés,
+ismétlődés) + Work Activities (IM: gondozás, értékesítés, fizikai munka,
+járművezetés) + Work Schedules (CTP 2. kategória ≥ 40% = szabálytalan
+munkarend); ahol nincs O*NET-mérés (gyerekek, állatok): ISCO-4 struktúra +
+név-kulcsszó; hiányzó SOC-adatnál ISCO-4 csoportátlag fallback; SOC-szintű kézi
+felülbírálás réteg. Review-Excel: `docs/product/data/veto-tags-review.xlsx`.
+
+**Motor.** `person.vetoes` KEMÉNY szűrő a scope után (kimondott szándék, 1.
+jelszint) — vétózott címkéjű szerep soha nem kerül a listába. `only`-szűkítésnél
+(kifejezetten kért összevetés) nem fut. A kizárt darabszám a
+`meta.vetoExcluded`-ben — a UI kiírja (nincs néma eltüntetés).
+
+**UI.** Wizard-lépés az érdeklődés-területek után: „Mivel NEM szeretnél
+foglalkozni?" — max 5 chip, kihagyható; az eredmény-nézetben banner: mit zártál
+ki + hány szerep esett ki. Mentés a careerBackground.vetoes-ba (zod-enum),
+teljes reset törli.
+
+**Garancia** (LLM-mel szemben): a precizitás a címkézett halmazon 100% —
+unit-teszt mondja ki, hogy children-vétó mellett soha nincs dadus/óvodapedagógus
+a listában (`engine.test.ts`), a kritikus címkék regresszió-őrök
+(`catalog.test.ts`). A lefedettséget (recall) a review-Excel és a későbbi
+„Nem nekem való" visszajelzés-hurok bővíti; szabadszöveg-értelmezés (LLM mint
+fordító ugyanerre a szótárra) opcionális későbbi réteg.

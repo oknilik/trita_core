@@ -6,7 +6,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { computeCareerForProfile } from "@/lib/career/service";
 import { INDUSTRY_ISCO } from "@/lib/career/industries";
-import { AXIS_KEYS } from "@/lib/career/types";
+import { AXIS_KEYS, VETO_TAGS } from "@/lib/career/types";
 
 // Karrier-illeszkedés számítása SZERVER-oldalon: a katalógus (477 foglalkozás)
 // nem kerül a kliens bundle-jébe, és a képernyő, a PDF és a jelölt-réteg
@@ -27,6 +27,7 @@ const schema = z.object({
   currentIndustry: z.enum(industryKeys).nullable().optional(),
   status: z.enum(["studying", "working", "switching"]).nullable().optional(),
   ignoreScope: z.boolean().optional(),
+  vetoes: z.array(z.enum(VETO_TAGS as [string, ...string[]])).max(6).optional(),
   limit: z.number().int().min(1).max(40).optional(),
   readyOnly: z.boolean().optional(),
 });
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { prefs, leadIntent, eduLevel, industries, currentIndustry, status, ignoreScope, limit, readyOnly } =
+  const { prefs, leadIntent, eduLevel, industries, currentIndustry, status, ignoreScope, vetoes, limit, readyOnly } =
     parsed.data;
 
   const result = await computeCareerForProfile(profile.id, {
@@ -63,6 +64,7 @@ export async function POST(req: Request) {
       ...(prefs ? { prefs: prefs as never } : {}),
       ...(leadIntent ? { leadIntent } : {}),
       ...(eduLevel !== undefined ? { eduLevel } : {}),
+      ...(vetoes ? { vetoes: vetoes as never } : {}),
     },
   });
 

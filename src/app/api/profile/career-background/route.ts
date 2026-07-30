@@ -71,6 +71,29 @@ const schema = z.object({
   // validáció adatforrása; a rangsorolásba NEM számít bele.
   currentOccupationId: z.string().max(20).nullable().optional(),
   currentOccupationLabel: z.string().max(120).nullable().optional(),
+  // Vétó-chipek: kizárt munka-tulajdonságok — a motor kemény szűrője.
+  vetoes: z
+    .array(
+      z.enum([
+        "children",
+        "care",
+        "blood",
+        "customers",
+        "sales",
+        "conflict",
+        "shift",
+        "physical",
+        "outdoor",
+        "screen",
+        "driving",
+        "heights",
+        "hazard",
+        "monotony",
+        "animals",
+      ]),
+    )
+    .max(6)
+    .optional(),
 });
 
 export async function POST(req: Request) {

@@ -56,3 +56,6 @@ next-env.d.ts
 
 # generált persona-riport PDF (regenerálható: pnpm report:personas)
 docs/testing/persona-riportok*.pdf
+
+# O*NET nyers adat (97MB, letölthető: scripts/career-catalog/step3_onet.py fejléc)
+scripts/onet/

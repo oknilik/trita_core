@@ -4,7 +4,7 @@ import { INDUSTRIES, INTEREST_TAGS, normalizedEduFields } from "@/lib/industry-f
 import { INDUSTRY_ISCO } from "@/lib/career/industries";
 import { getOccupations, getOccupation } from "@/lib/career/catalog";
 import { interestsFromTags, estimateInterests } from "@/lib/career/interests";
-import { RIASEC_LETTERS } from "@/lib/career/types";
+import { RIASEC_LETTERS, VETO_TAGS } from "@/lib/career/types";
 
 // A wizard adatai és a v2 katalógus közti kapcsolat épsége. (A v1 motor
 // kivezetése után az `industry-fit.ts` már csak adat: iparág-lista + címkék.)
@@ -61,6 +61,51 @@ test("iparág-címkék: csak érvényes kulcsok, és a kínos félrecímkék nem
   );
   assert.ok(!health.has("Pedagógiai asszisztens"), "a pedagógiai asszisztens nem egészségügy");
   assert.ok(health.has("Szakápoló"));
+});
+
+test("vétó-címkék: érvényes kulcsok, és a kritikus szerepek címkézettek", () => {
+  const valid = new Set<string>(VETO_TAGS);
+  const byName = new Map(getOccupations().map((o) => [o.hu, o]));
+  for (const occupation of getOccupations()) {
+    for (const tag of occupation.attrs ?? []) {
+      assert.ok(valid.has(tag), `${occupation.hu}: érvénytelen vétó-címke (${tag})`);
+    }
+  }
+  // A rendszer eredete: „gyerekekkel nem szeretnék foglalkozni" mellett dadus
+  // nem jelenhet meg. Ezek a címkék regresszió-őrök.
+  const mustHave: Array<[string, string]> = [
+    ["Bébiszitter (dadus)", "children"],
+    ["Gyermekgondozó", "children"],
+    ["Óvodapedagógus", "children"],
+    ["Általános iskolai pedagógus", "children"],
+    ["Szakápoló", "care"],
+    ["Szakápoló", "blood"],
+    ["Házi gondozó", "care"],
+    ["Tetőfedő", "heights"],
+    ["Tetőfedő", "outdoor"],
+    ["Állatorvos", "animals"],
+    ["Taxis", "driving"],
+  ];
+  for (const [name, tag] of mustHave) {
+    const occupation = byName.get(name);
+    assert.ok(occupation, `${name}: nincs a katalógusban`);
+    assert.ok(
+      (occupation?.attrs ?? []).includes(tag as (typeof VETO_TAGS)[number]),
+      `${name}: hiányzik a(z) ${tag} vétó-címke`,
+    );
+  }
+  // Fordított őr: irodai szerep nem kaphat gyerek/vér címkét.
+  for (const [name, tag] of [
+    ["Szoftverfejlesztő", "children"],
+    ["Könyvelő", "blood"],
+  ] as Array<[string, string]>) {
+    const occupation = byName.get(name);
+    if (!occupation) continue;
+    assert.ok(
+      !(occupation.attrs ?? []).includes(tag as (typeof VETO_TAGS)[number]),
+      `${name}: téves ${tag} címke`,
+    );
+  }
 });
 
 test("érdeklődés-címkék: mind a hat Holland-betű lefedett, az iparágak léteznek", () => {

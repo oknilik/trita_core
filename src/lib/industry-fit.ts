@@ -79,6 +79,8 @@ export interface CareerBackground {
   /** Jelenlegi foglalkozás a katalógusból (validációhoz, nem rangsorol) */
   currentOccupationId?: string | null;
   currentOccupationLabel?: string | null;
+  /** Kizárt munka-tulajdonságok (vétó-chipek, max 5) — kemény szűrő a motorban */
+  vetoes?: string[];
 }
 
 /** Terület-normalizálás: az örökölt egyértékű mezőt is tömbként adja vissza. */
