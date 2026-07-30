@@ -36,8 +36,8 @@ vándorol. A besorolás ezért **egyszer készül és befagy** a katalógusba.
 
 | kulcs | név | definíció | horgonyok | ISCO-prefix | db | szórás |
 |---|---|---|---|---|---:|---:|
-| `vezetes` | Vezetés és üzletirányítás | Emberekért és eredményért felel: dönt, irányt ad, felelősséget visel. | Ügyvezető · HR vezető · Projektmenedzser | 11,12,13,14 | 36 | 0,87 |
-| `penzugy` | Pénzügy és számvitel | Számokkal és szabályokkal dolgozik, ő a pénzügyi biztonság őre. | Könyvelő · Bérelszámoló · Pénzügyi tanácsadó | 24,33,43 | 55 | 1,05 ⚠ |
+| `vezetes` | Vezetés és üzletirányítás | Emberekért és eredményért felel: dönt, irányt ad, felelősséget visel. | Ügyvezető · HR vezető · Projektmenedzser | 11,12,13,14,**2423,2424** | 42 | 0,91 |
+| `penzugy` | Pénzügy és számvitel | Számokkal és szabályokkal dolgozik, ő a pénzügyi biztonság őre. | Könyvelő · Bérelszámoló · Pénzügyi tanácsadó | 24,33,43 | 49 | 1,04 ⚠ |
 | **`jog`** | **Jog és hatósági munka** | **Szabályt értelmez és érvényesít — az ő döntése másokra nézve kötelező.** | **Ügyvéd · Adóellenőr · Bírósági ügyintéző** | **261,3342,3411,335,3331,1111** + `Adóügyintéző` | **13** | **1,03** |
 | `admin` | Adminisztráció és ügyvitel | Háttérből tartja működésben a folyamatokat, hogy másnak menjen a dolga. | Irodai adminisztrátor · Titkár · Ügyfélkapcsolati munkatárs | 41,42,44,33 | 20 | 0,79 |
 | `it` | Informatika és adat | Rendszereket épít, és adatból választ keres. | Szoftverfejlesztő · Adattudós · Rendszergazda | 25,35 | 23 | 0,86 |
@@ -46,18 +46,19 @@ vándorol. A besorolás ezért **egyszer készül és befagy** a katalógusba.
 | `gyogyitas` | Gyógyítás | Diagnosztizál és dönt egy ember egészségéről, szakmai felelősséggel. | Háziorvos · Belgyógyász · Fogorvos | 22 | 33 | 0,76 |
 | `apolas` | Ápolás és gondozás | Napi jelenléttel kíséri azt, aki nem boldogul egyedül. | Szakápoló · Ápolási asszisztens · Gyermekgondozó | 32,53 | 32 | 1,05 ⚠ |
 | `oktatas` | Oktatás és képzés | Tud valamit, és át tudja adni úgy, hogy a másik is tudja. | Középiskolai tanár · Óvodapedagógus · Középiskolai szakoktató | 23 | 13 | **0,51** |
-| `segito` | Segítő és társadalmi szakmák | Nehéz élethelyzetben lévő emberrel dolgozik, hosszú távon. | Családsegítő szociális munkás · Klinikai szakpszichológus | 26,34 | 17 | 1,06 ⚠ |
+| `segito` | Segítő és társadalmi szakmák | Nehéz élethelyzetben lévő emberrel dolgozik, hosszú távon. | Családsegítő szociális munkás · Klinikai szakpszichológus | 26,34 | 16 | 1,05 ⚠ |
 | `alkotas` | Alkotás, média, kommunikáció | Formát ad gondolatnak, üzenetnek, terméknek. | Grafikus · Újságíró · Divattervező | 21,26,34 | 16 | 0,93 |
 | `ertekesites` | Értékesítés és ügyfélkapcsolat | Emberekkel találkozik, meggyőz, kiszolgál. | Bolti eladó · Ingatlanügynök | 52,42 | 8 | 1,04 |
 | `epites` | Építés és szerelés | Kézzel épít és szerel, a helyszínen, látható eredménnyel. | Kőműves · Ács · Víz- és gázvezeték-szerelő | 71,74,93 | 29 | **0,65** |
 | `gyartas` | Gyártás és karbantartás | Gépet kezel, alkatrészt készít, hibát javít. | Hegesztő · CNC-gépkezelő · Autószerelő | 72,73,81,82 | 55 | **0,65** |
 | `logisztika` | Szállítás és logisztika | Mozgatja az árut és az embereket, időre. | Kamionsofőr · Targoncavezető · Autóbuszvezető | 83,93 | 16 | 0,79 |
-| `vendeglatas` | Vendéglátás és élelmiszer | Ételt készít és vendéget lát el, tempóban. | Szakács · Pék · Felszolgáló | 51,75,94 | 23 | 1,02 |
-| `szemelyes` | Személyes szolgáltatás | Egy emberrel foglalkozik egyszerre, a külsejéért és a jóllétéért. | Fodrász · Kozmetikus · Fitneszedző | 51,91,96 | 13 | 1,09 ⚠ |
+| `vendeglatas` | Vendéglátás és élelmiszer | Ételt készít és vendéget lát el, tempóban. | Szakács · Pék · Felszolgáló | 51,75,94 | 19 | 0,94 |
+| **`szepsegipar`** | **Szépségipar** | **Egy ember külsejével dolgozik, kézzel és ízléssel.** | **Fodrász · Kozmetikus · Manikűrös** | **514** | **4** | **0,60** |
+| `szolgaltatas` | Kiszolgálás és üzemeltetés | Jelen van, hogy másnak gördülékeny legyen a napja. | Háztartási takarító · Idegenvezető · Futár, kézbesítő | 91,96,5111,5113,5151,5164 + `Fitneszedző` | 14 | 1,15 ⚠ |
 | `vedelem` | Védelem és biztonság | Mások testi épségéért felel, kiszámíthatatlan helyzetben is. | Tűzoltó · Rendőr · Biztonsági őr | 54 + `Bűnügyi nyomozó` | 6 | 0,81 |
 | `agrar` | Kertészet és zöldterület | Élő anyaggal dolgozik, a szabadban, évszakok szerint. | Parkgondozó · Kertészeti munkás | 61 | 3 | 0,92 |
 
-**20 család, 477 foglalkozás, 0 besorolatlan.**
+**21 család, 477 foglalkozás, 0 besorolatlan.**
 
 ### A `jog` család bevezetésének mellékhatása
 
@@ -69,7 +70,7 @@ Kiemelésük mindegyiket javította:
 | `penzugy` | 60 tétel · 1,19 | 55 · **1,05** |
 | `apolas` | 1,28 | **1,05** |
 | `segito` | 1,25 | **1,06** |
-| `szemelyes` | 1,37 | **1,09** |
+| `szemelyes` | 1,37 | **1,09** (azóta `szepsegipar` + `szolgaltatas`-ra bontva) |
 
 A `jog` család teljes tartalma (13 tétel): Ügyvéd · Törvényhozó ·
 Adóügyintéző · Regulatory affairs menedzser · Regulatory affairs specialista ·
@@ -92,13 +93,13 @@ szórással állt volna; így a `gyogyitas` 0,82-re szorult.
 őket. Egy kicsi, de igaz család jobb, mint egy hazug besorolás — és mindkettő
 olyan kategória, amit a felhasználó KERES.
 
-**4. 20 család, nem 14.** Eredetileg 12–16-ot javasoltam. A szemantikus
-korlát finomabb bontást kényszerít, és inkább vállalom a 19-et, mint hogy
+**4. 21 család, nem 14.** Eredetileg 12–16-ot javasoltam. A szemantikus
+korlát finomabb bontást kényszerít, és inkább vállalom a 21-et, mint hogy
 hamis összevonásokat írjak. A megjelenítésre ez nincs hatással: a
 felhasználó a top 3–5 családot látja részletesen, a többit összecsukva.
 
-**Ára, amit ki kell mondani:** a 8 tétel alatti családoknál (`vedelem` 5,
-`agrar` 3, `ertekesites` 8) a családszintű átlag maga is zajos — pont az a
+**Ára, amit ki kell mondani:** a 8 tétel alatti családoknál (`vedelem` 6,
+`szepsegipar` 4, `agrar` 3, `ertekesites` 8) a családszintű átlag maga is zajos — pont az a
 statisztikai előny csökken, ami miatt a családosítás indult. Ezeket a
 felületen **„kis család — tájékoztató jellegű"** jelöléssel kell mutatni,
 nem ugyanolyan magabiztossággal, mint a 30–60 főseket.
