@@ -44,6 +44,7 @@ export interface CareerSections {
 
 export interface CareerResultView extends Omit<CareerFitResult, "clusters" | "ranked"> {
   sections: CareerSections;
+  scope: ScopeInfo;
   /** a jelenlegi területen belüli legjobb szerepek (ha a user megadta) */
   currentField: CareerFitView[];
   hasSelfResult: boolean;
@@ -62,8 +63,24 @@ export interface CareerResultView extends Omit<CareerFitResult, "clusters" | "ra
 export interface CareerServiceOptions extends EngineOptions {
   /** a wizard „jelenlegi területed" válasza — külön blokkot kap az eredményben */
   currentIndustry?: string | null;
+  /** a wizard státusz-válasza (dolgozom / váltanék / tanulok) */
+  status?: "studying" | "working" | "switching" | null;
+  /** a szűretlen-nézet kapcsoló: a bejelölt területek NEM szűrnek */
+  ignoreScope?: boolean;
   /** friss, még nem mentett wizard-válaszok */
   overrides?: Partial<PersonInput>;
+}
+
+export interface ScopeInfo {
+  /** open = nincs bejelölés · picked = bejelölt területek · stay = maradna a területén */
+  mode: "open" | "picked" | "stay";
+  keys: string[];
+  /** true, ha a szűrő túl kevés találatot adott, és kibővítettük */
+  widened: boolean;
+  /** ténylegesen szűrt-e a lista */
+  active: boolean;
+  /** a user kérte a szűretlen nézetet */
+  ignored: boolean;
 }
 
 const ENTRY_RANK: Record<EntryLevel, number> = {
@@ -85,15 +102,25 @@ const EDU_RANK: Record<string, number> = {
 type Section = keyof CareerSections;
 
 /**
- * Melyik szakaszba kerül a szerep. A „végzettséged alatti" szerepek nem tűnnek
- * el (sokan váltanak lefelé is), csak nem az első listát foglalják.
+ * Melyik szakaszba kerül a szerep. A „Most elérhető" a SZINTEDNEK megfelelő
+ * belépésű szerepeket jelenti — egy diplomás egészségügyisnek a szakma-szintű
+ * látszerész nem „most elérhető" ajánlat, hanem tudatos lefelé-váltás
+ * (belowLevel, összecsukva). A szint fölött: tanulással.
  */
+const AT_LEVEL: Record<number, number[]> = {
+  0: [0],
+  1: [0, 1],
+  2: [2],
+  3: [3],
+  4: [3, 4],
+};
+
 function sectionFor(fit: OccupationFit, eduLevel: string | null | undefined): Section {
   const entry = ENTRY_RANK[fit.entry];
   if (!eduLevel) return entry <= 1 ? "atLevel" : "afterTraining";
   const edu = EDU_RANK[eduLevel] ?? 0;
   if (entry > edu) return "afterTraining";
-  if (entry >= edu - 1) return "atLevel";
+  if ((AT_LEVEL[edu] ?? [edu]).includes(entry)) return "atLevel";
   return "belowLevel";
 }
 
@@ -101,8 +128,18 @@ export async function computeCareerForProfile(
   userProfileId: string,
   options: CareerServiceOptions = {},
 ): Promise<CareerResultView> {
-  const { currentIndustry, overrides, limit, ...engineOptions } = options;
+  const { currentIndustry, status, ignoreScope, overrides, limit, ...engineOptions } = options;
   const { person, hasSelfResult } = await buildPersonInput(userProfileId, overrides);
+
+  // Scope-feloldás: a kimondott szándék (bejelölt területek) kemény szűrő.
+  const picks = engineOptions.industries ?? [];
+  const scopeKeys = ignoreScope ? [] : picks;
+  const scopeMode: ScopeInfo["mode"] =
+    picks.length === 0
+      ? "open"
+      : status === "working" && picks.length === 1 && picks[0] === currentIndustry
+        ? "stay"
+        : "picked";
 
   const emptySections: CareerSections = { atLevel: [], belowLevel: [], afterTraining: [] };
   if (!hasSelfResult) {
@@ -120,6 +157,7 @@ export async function computeCareerForProfile(
         candidatePool: null,
       },
       sections: emptySections,
+      scope: { mode: "open", keys: [], widened: false, active: false, ignored: false },
       currentField: [],
       hasSelfResult: false,
       interests: null,
@@ -130,15 +168,23 @@ export async function computeCareerForProfile(
   // Bőven szedünk tételt, mert a szakaszokra bontás után mindegyikbe kell jusson.
   const result = computeCareerFit(person, {
     ...engineOptions,
+    scope: scopeKeys,
     limit: (limit ?? 18) * 3,
     perFamily: engineOptions.perFamily ?? 2,
   });
+  const scope: ScopeInfo = {
+    mode: scopeMode,
+    keys: picks,
+    widened: result.meta.scopeWidened ?? false,
+    active: scopeKeys.length > 0 && !(result.meta.scopeWidened ?? false),
+    ignored: Boolean(ignoreScope) && picks.length > 0,
+  };
 
-  const currentFieldResult = currentIndustry
+  const currentFieldResult = currentIndustry && !(scope.active && picks.includes(currentIndustry))
     ? computeCareerFit(person, {
         ...engineOptions,
         industries: [currentIndustry],
-        restrictToIndustries: true,
+        scope: [currentIndustry],
         limit: 3,
         perFamily: 3,
       })
@@ -231,6 +277,7 @@ export async function computeCareerForProfile(
     observerWeight: result.observerWeight,
     meta: result.meta,
     sections,
+    scope,
     currentField: (currentFieldResult?.ranked ?? [])
       .filter((fit) => !shownIds.has(fit.id))
       .map(decorate),

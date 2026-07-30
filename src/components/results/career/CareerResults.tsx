@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { TRITAN_DIMENSIONS } from "@/lib/tritan";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { INDUSTRIES } from "@/lib/industry-fit";
 import type { CareerFitView, CareerResultView } from "@/lib/career/service";
 
 // Klaszteres eredmény-nézet. A legfontosabb elvi különbség a v1-hez képest:
@@ -153,9 +154,24 @@ function OccupationCard({
             )}
           </span>
         )}
-        {fit.flags.includes("industry-pick") && (
+        {fit.flags.includes("industry-intersect") && (
+          <span className="rounded-full bg-sage/15 px-2 py-0.5 text-micro font-semibold text-sage-dark">
+            {t("results.cfIntersectBadge", locale)}
+          </span>
+        )}
+        {fit.flags.includes("industry-pick") && !fit.flags.includes("industry-intersect") && (
           <span className="rounded-full bg-sage/10 px-2 py-0.5 text-micro font-medium text-sage-dark">
             {t("results.cfIndustryPick", locale)}
+          </span>
+        )}
+        {fit.interest !== null && fit.interest < 55 && (
+          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-800">
+            {tf("results.cfInterestDiverges", locale, { value: fit.interest })}
+          </span>
+        )}
+        {fit.demandFit < 55 && (
+          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-800">
+            {t("results.cfPersonalityTension", locale)}
           </span>
         )}
         {fit.preference !== null && (
@@ -375,12 +391,15 @@ export function CareerResults({
   result,
   onEditAnswers,
   onReset,
+  onToggleScope,
   extra,
 }: {
   result: CareerResultView;
   onEditAnswers?: () => void;
   /** Teljes visszaállítás: minden mentett válasz törlése (Holland-teszt is) */
   onReset?: () => Promise<void> | void;
+  /** a bejelölt-terület szűrő ki/bekapcsolása */
+  onToggleScope?: () => void;
   /** a wizard-hoz kötött kiegészítők (érdeklődés-kérdőív CTA, observer CTA) */
   extra?: React.ReactNode;
 }) {
@@ -520,15 +539,45 @@ export function CareerResults({
         </div>
       )}
 
-      {/* Mi rendezi a listát — a kétlépcsős logika kimondva */}
-      <p className="mt-3 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
-        {t(
-          result.meta.strategy === "interest-led"
-            ? "results.cfStrategyInterestLed"
-            : "results.cfStrategyComposite",
-          locale,
+      {/* Mi rendezi a listát — a jelszint-hierarchia kimondva */}
+      <div className="mt-3 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
+        <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+          {result.scope.active
+            ? tf("results.cfStrategyScoped", locale, {
+                areas: result.scope.keys
+                  .map((key) => {
+                    const industry = INDUSTRIES.find((entry) => entry.key === key);
+                    return industry ? (locale === "hu" ? industry.hu : industry.en) : key;
+                  })
+                  .join(" + "),
+              })
+            : t(
+                result.meta.strategy === "interest-led"
+                  ? "results.cfStrategyInterestLed"
+                  : "results.cfStrategyComposite",
+                locale,
+              )}
+        </p>
+        {result.scope.widened && (
+          <p className="mt-1 text-micro leading-relaxed text-amber-800">
+            {t("results.cfScopeWidened", locale)}
+          </p>
         )}
-      </p>
+        {onToggleScope && result.scope.keys.length > 0 && (
+          <button
+            type="button"
+            onClick={onToggleScope}
+            className="mt-1.5 text-[12px] font-semibold text-bronze transition hover:text-ink"
+          >
+            {t(
+              result.scope.ignored
+                ? "results.cfScopeToggleOn"
+                : "results.cfScopeToggleOff",
+              locale,
+            )}
+          </button>
+        )}
+      </div>
 
       {result.interestDifferentiation === "low" && (
         <p className="mt-2 rounded-[10px] bg-amber-50/70 p-2.5 text-micro leading-relaxed text-amber-900">

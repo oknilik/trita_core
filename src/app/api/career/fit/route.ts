@@ -25,6 +25,8 @@ const schema = z.object({
     .optional(),
   industries: z.array(z.enum(industryKeys)).max(3).optional(),
   currentIndustry: z.enum(industryKeys).nullable().optional(),
+  status: z.enum(["studying", "working", "switching"]).nullable().optional(),
+  ignoreScope: z.boolean().optional(),
   limit: z.number().int().min(1).max(40).optional(),
   readyOnly: z.boolean().optional(),
 });
@@ -47,7 +49,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { prefs, leadIntent, eduLevel, industries, currentIndustry, limit, readyOnly } =
+  const { prefs, leadIntent, eduLevel, industries, currentIndustry, status, ignoreScope, limit, readyOnly } =
     parsed.data;
 
   const result = await computeCareerForProfile(profile.id, {
@@ -55,6 +57,8 @@ export async function POST(req: Request) {
     readyOnly,
     industries,
     currentIndustry,
+    status,
+    ignoreScope,
     overrides: {
       ...(prefs ? { prefs: prefs as never } : {}),
       ...(leadIntent ? { leadIntent } : {}),

@@ -616,6 +616,28 @@ export const resultsTranslations = {
       en: "Open to you, but with a lower entry bar than your education — relevant if you're deliberately changing tack.",
     },
     cfSectionShow: { hu: "Megnézem", en: "Show" },
+    cfStrategyScoped: {
+      hu: "A listát a bejelölt területeid szűrik ({areas}). A sorrendet az érdeklődés-kódod és a preferenciáid adják, a csoportokon belül a személyiséged — ha egy tétel eltér valamelyiktől, jelöljük.",
+      en: "Your picked fields filter this list ({areas}). Your interest code and preferences set the order, personality orders within groups — any divergence is flagged per item.",
+    },
+    cfScopeWidened: {
+      hu: "A bejelölt területeken kevés találat volt, ezért a teljes katalógusból mutatunk — a bejelölt területeid kiemelve.",
+      en: "Your picked fields had too few matches, so we show the full catalog with your picks highlighted.",
+    },
+    cfScopeToggleOff: { hu: "Szűrés nélkül is megnézem", en: "Show without the filter" },
+    cfScopeToggleOn: { hu: "Vissza a szűrt listához", en: "Back to the filtered list" },
+    cfIntersectBadge: {
+      hu: "több bejelölt területed metszete",
+      en: "intersection of your picked fields",
+    },
+    cfInterestDiverges: {
+      hu: "az érdeklődés-kódodtól eltér ({value}%)",
+      en: "diverges from your interest code ({value}%)",
+    },
+    cfPersonalityTension: {
+      hu: "a személyiségeddel kevésbé harmonizál",
+      en: "less in harmony with your personality",
+    },
     cfStrategyInterestLed: {
       hu: "A listát az érdeklődésed és a munkakörnyezeti preferenciáid állítják össze — ezek jósolják legjobban, hogy mi mellett maradsz meg szívesen. A sorrendet ezen belül a személyiségprofilod adja: melyikben kell a legkevésbé magad ellen dolgoznod.",
       en: "Your interests and work-setting preferences select the list — they predict best what you'll stay with. Within that, your personality profile sets the order: where you'd have to work against yourself the least.",
@@ -873,8 +895,8 @@ export const resultsTranslations = {
       en: "So we can also show your options within your current field.",
     },
     ccWhyInterests: {
-      hu: "Ha üresen hagyod, minden területről a legjobbakat mutatjuk.",
-      en: "Leave empty and we'll show the best matches from every field.",
+      hu: "Amit bejelölsz, az SZŰRŐ: csak ezekről a területekről mutatunk irányokat (az eredménynél kikapcsolhatod). Üresen hagyva minden területről a legjobbakat hozzuk.",
+      en: "Your picks act as a FILTER: we only show directions from these fields (you can switch it off at the results). Leave empty to see the best from every field.",
     },
     ccWhyPrefs: {
       hu: "A motivációd nem a személyiséged — ezek csak a sorrendet árnyalják.",

@@ -84,6 +84,8 @@ export interface Occupation {
   axesSource?: string;
   /** képzési területek, amikből út vezet ide (O*NET CIP-crosswalk) */
   eduFields?: EduField[];
+  /** iparág-címkék (többes); ÜRES = univerzális szerep, minden scope-ban megjelenik */
+  industries?: string[];
 }
 
 export interface OccupationContent {
@@ -173,15 +175,15 @@ export interface OccupationFit {
   };
   /** rangsor-pontszám (0-100) — a stratégiától függ, mit jelent */
   rank: number;
-  /** mi rendezte: a személyiség-illeszkedés vagy a kompozit pontszám */
-  orderedBy: "demandFit" | "composite";
+  /** mi rendezte a tételt */
+  orderedBy: "demandFit" | "composite" | "interest";
   /** miért került a listára: érdeklődés + preferencia együttese (0-100) */
   choiceScore: number | null;
   flags: string[];
 }
 
-/** Rangsorolási stratégia — ld. `career-engine-plan.md` 11. szakasz. */
-export type RankStrategy = "interest-led" | "composite";
+/** Rangsorolási stratégia — ld. `career-engine-plan.md` 11–12. szakasz. */
+export type RankStrategy = "scoped" | "interest-led" | "composite";
 
 export interface CareerFitResult {
   /** általános munkahelyi alap (C + H), profil-szinten egyszer */
@@ -203,5 +205,7 @@ export interface CareerFitResult {
     strategy: RankStrategy;
     /** hány tétel került a jelölt-halmazba (interest-led esetén) */
     candidatePool: number | null;
+    /** true, ha a scope túl kevés találatot adott, és kibővítettük */
+    scopeWidened?: boolean;
   };
 }

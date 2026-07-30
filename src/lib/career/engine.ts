@@ -16,7 +16,17 @@
 
 import { getOccupations, CATALOG_VERSION } from "./catalog";
 import { feasibilityFor } from "./feasibility";
-import { iscoPrefixesFor, matchesIndustries } from "./industries";
+/** Scope-egyezés az explicit iparág-címkéken. Üres címke-lista = univerzális. */
+function inScope(occupation: Occupation, scope: string[]): boolean {
+  const tags = occupation.industries ?? [];
+  if (tags.length === 0) return true;
+  return tags.some((tag) => scope.includes(tag));
+}
+
+/** Hány bejelölt iparágat fed le a szerep (metszet-kiemeléshez). */
+function pickOverlap(occupation: Occupation, picked: string[]): number {
+  return (occupation.industries ?? []).filter((tag) => picked.includes(tag)).length;
+}
 import {
   interestCongruence,
   interestDifferentiation,
@@ -244,12 +254,12 @@ export interface EngineOptions {
   only?: string[];
   /** a wizardban bejelölt iparágak — KIEMELÉS (bónusz), nem szűrés */
   industries?: string[];
-  /** ha true, az iparág-választás valóban szűkít (pl. „a mostani területeden" blokk) */
-  restrictToIndustries?: boolean;
   /** szakmacsalád-diverzifikálás (alapértelmezés: be) */
   diversify?: boolean;
   /** hány tétel jöhet egy ISCO-alcsoportból (2 jegyű) */
   perFamily?: number;
+  /** KEMÉNY szűrő: csak az e területekre címkézett (vagy univerzális) szerepek */
+  scope?: string[];
   /** rangsorolási stratégia (alapértelmezés: mért érdeklődésnél interest-led) */
   strategy?: RankStrategy;
   /** a jelölt-halmaz mérete interest-led módban */
@@ -299,17 +309,17 @@ export function computeCareerFit(
     differentiation === "low" ? LOW_DIFFERENTIATION_FACTOR : 1;
 
   let catalog = getOccupations();
+  let scopeWidened = false;
   if (options.only) {
     catalog = catalog.filter((occupation) => options.only?.includes(occupation.id));
+  } else if (options.scope?.length) {
+    // A bejelölt terület KEMÉNY szűrő: a kimondott szándékot nem bíráljuk felül.
+    // Padló: túl kevés találatnál nem szűrünk, hanem jelezzük a bővítést.
+    const scoped = catalog.filter((occupation) => inScope(occupation, options.scope ?? []));
+    if (scoped.length >= 8) catalog = scoped;
+    else scopeWidened = true;
   }
-  // A wizardban bejelölt iparágak KIEMELNEK, de nem szűrnek. Egy checkbox nem
-  // írhatja felül a mért érdeklődést: a v1-ben a szűrés miatt olyan lista jött,
-  // ami a kitöltött Holland-kódnak ellentmondott.
-  const pickedPrefixes = iscoPrefixesFor(options.industries);
-  if (options.restrictToIndustries && pickedPrefixes.size > 0) {
-    const scoped = catalog.filter((occupation) => matchesIndustries(occupation, pickedPrefixes));
-    if (scoped.length >= 20) catalog = scoped;
-  }
+  const picked = options.industries ?? [];
 
   const fits: OccupationFit[] = [];
   for (const occupation of catalog) {
@@ -361,8 +371,7 @@ export function computeCareerFit(
     const choiceParts: Array<[number, number]> = [];
     if (interest !== null) choiceParts.push([interest, CHOICE_WEIGHTS.interest]);
     if (preference !== null) choiceParts.push([preference, CHOICE_WEIGHTS.preference]);
-    const industryPick =
-      pickedPrefixes.size > 0 && matchesIndustries(occupation, pickedPrefixes);
+    const industryPick = picked.length > 0 && pickOverlap(occupation, picked) > 0;
 
     // A bejelölt iparág is „mi felé húz" jelzés, ezért a jelölt-halmaz
     // pontszámába számít. (Enélkül interest-led módban nulla hatása lett volna:
@@ -430,16 +439,42 @@ export function computeCareerFit(
 
   // A kétlépcsős rendezés csak MÉRT érdeklődés-kóddal indul el (becsültnél
   // körkörös lenne), és csak akkor, ha a hívó nem kért mást.
+  const scopeActive = Boolean(options.scope?.length) && !scopeWidened;
   const canUseInterestLed =
     person.interests?.source === "measured" &&
     differentiation !== "low" &&
     filtered.some((fit) => fit.choiceScore !== null);
   const strategy: RankStrategy =
-    options.strategy ?? (canUseInterestLed ? "interest-led" : "composite");
+    options.strategy ?? (scopeActive ? "scoped" : canUseInterestLed ? "interest-led" : "composite");
 
   let sorted: OccupationFit[];
   let candidatePool: number | null = null;
-  if (strategy === "interest-led" && canUseInterestLed) {
+  if (strategy === "scoped" && scopeActive) {
+    // Scope-mód: a halmazt a kimondott szándék adta; a sorrendet az érdeklődés
+    // (+ preferenciák) rendezi, metszet-kiemeléssel. A személyiség a klaszteren
+    // belül rendez, és annotál — nem szűr.
+    const interestSe = person.interests?.source === "measured" ? 6 : 12;
+    const scopedRankSe = Math.sqrt((0.7 * interestSe) ** 2 + (0.3 * 5) ** 2);
+    const byId = new Map(getOccupations().map((o) => [o.id, o]));
+    sorted = filtered
+      .map((fit) => {
+        const occupation = byId.get(fit.id);
+        const overlap = occupation ? pickOverlap(occupation, options.scope ?? []) : 0;
+        const intersect = overlap >= 2;
+        // A szakirány is kimondott jel: az eü-diplomás eü-váltónál az egyező
+        // képzettségű szerep előrébb való, mint az azonos érdeklődésű idegen.
+        const fieldBonus = fit.feasibility.state === "field-match" ? 6 : 0;
+        return {
+          ...fit,
+          rank: Math.min(100, (fit.choiceScore ?? fit.demandFit) + (intersect ? 6 : 0) + fieldBonus),
+          rankSe: Math.round(scopedRankSe * 10) / 10,
+          orderedBy: "interest" as const,
+          flags: intersect ? [...fit.flags, "industry-intersect"] : fit.flags,
+        };
+      })
+      .sort((a, b) => b.rank - a.rank || a.hu.localeCompare(b.hu, "hu"));
+    candidatePool = sorted.length;
+  } else if (strategy === "interest-led" && canUseInterestLed) {
     // 1. lépcső: jelölt-halmaz az érdeklődés/preferencia szerint
     const byChoice = [...filtered].sort(
       (a, b) => (b.choiceScore ?? 0) - (a.choiceScore ?? 0),
@@ -477,6 +512,7 @@ export function computeCareerFit(
       dimSe: Math.round(dimSe * 10) / 10,
       strategy,
       candidatePool,
+      ...(scopeWidened ? { scopeWidened: true } : {}),
     },
   };
 }

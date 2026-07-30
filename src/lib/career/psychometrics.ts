@@ -98,17 +98,18 @@ export function clusterByOverlap(
     if (gap <= Math.max(minSeparation, combinedSe)) current.push(fit);
     else clusters.push([fit]);
   }
-  // Klaszteren BELÜL nincs illeszkedés-sorrend (ez a lényeg), ezért a
-  // megjelenítési sorrendet más szempont adja: előbb ami a mai végzettséggel
-  // elérhető, majd a magyar munkaerőpiacon gyakoribb (tier).
+  // Klaszteren BELÜL nincs rangsor-sorrend (ez a lényeg). A megjelenítést más
+  // szempont adja: előbb ami a mai végzettséggel elérhető, azon belül a
+  // SZEMÉLYISÉG-illeszkedés (scope/interest-módban ez a 2. jelszint), végül a
+  // magyar munkaerőpiacon gyakoribb (tier).
   return clusters.map((cluster) =>
     cluster.length === 1
       ? cluster
       : [...cluster].sort(
           (a, b) =>
             Number(b.feasibility.ready) - Number(a.feasibility.ready) ||
-            a.tier - b.tier ||
-            b.rank - a.rank,
+            b.demandFit - a.demandFit ||
+            a.tier - b.tier,
         ),
   );
 }

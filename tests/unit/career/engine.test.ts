@@ -87,6 +87,7 @@ test("klaszterezés: az átfedő pontszámok egy csoportba kerülnek", () => {
       se: rankSe,
       hu: `x${rank}`,
       tier,
+      demandFit: rank,
       feasibility: { gap: ready ? "ready" : "degree", ready },
     }) as unknown as OccupationFit;
   const clusters = clusterByOverlap([make(90, 5), make(88, 5), make(60, 5)]);
@@ -259,6 +260,53 @@ test("becsült érdeklődésnél NEM indul a kétlépcsős rendezés (körkörö
   );
   assert.equal(estimated.meta.strategy, "composite");
   assert.ok(estimated.ranked.every((fit) => fit.orderedBy === "composite"));
+});
+
+test("scope: a bejelölt terület kemény szűrő, univerzális szerepekkel", () => {
+  const interests = {
+    vector: { R: 20, I: 60, A: 40, S: 30, E: 70, C: 45 },
+    source: "measured" as const,
+  };
+  const scoped = computeCareerFit(
+    { dims: balanced, form: "short", interests },
+    { limit: 20, scope: ["tech"], industries: ["tech"] },
+  );
+  assert.equal(scoped.meta.strategy, "scoped");
+  assert.ok(scoped.ranked.length > 0);
+  for (const fit of scoped.ranked) {
+    const occupation = getOccupations().find((o) => o.id === fit.id)!;
+    const tags = occupation.industries ?? [];
+    assert.ok(
+      tags.length === 0 || tags.includes("tech"),
+      `${fit.hu}: nem tech és nem univerzális (${tags.join(",")})`,
+    );
+  }
+  // a sorrendet az érdeklődés adja, a személyiség nem szűr
+  assert.ok(scoped.ranked.every((fit) => fit.orderedBy === "interest"));
+});
+
+test("scope: kevés találatnál nem szűrünk, hanem jelezzük a bővítést", () => {
+  const widened = computeCareerFit(
+    { dims: balanced, form: "short" },
+    { limit: 10, scope: ["nincs-ilyen-iparag"], industries: ["nincs-ilyen-iparag"] },
+  );
+  assert.equal(widened.meta.scopeWidened, true);
+  assert.notEqual(widened.meta.strategy, "scoped");
+  assert.ok(widened.ranked.length > 0, "a padló nem hagyhat üres listát");
+});
+
+test("scope: több bejelölt terület metszete kiemelést kap", () => {
+  const both = computeCareerFit(
+    { dims: balanced, form: "short" },
+    { limit: 40, scope: ["tech", "health"], industries: ["tech", "health"] },
+  );
+  const intersect = both.ranked.filter((fit) => fit.flags.includes("industry-intersect"));
+  assert.ok(intersect.length > 0, "nincs metszet-tétel (pl. eü. informatikus)");
+  for (const fit of intersect) {
+    const occupation = getOccupations().find((o) => o.id === fit.id)!;
+    const tags = occupation.industries ?? [];
+    assert.ok(tags.includes("tech") && tags.includes("health"));
+  }
 });
 
 test("kompozit: az érdeklődés és a preferencia módosítja a rangsort, a demandFit nem változik", () => {

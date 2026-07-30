@@ -550,3 +550,61 @@ bónuszt is.
 **Kártya-szintű indoklás:** „Azért van a listán, mert az érdeklődésed és a
 preferenciáid ide húznak (73%). A sorrendben azért van itt, mert a legerősebb
 komponens a Nyitottság: a szerep tipikus sávja 71 körül van, nálad 79."
+
+---
+
+## 12. Scope-alapú lista (kimondott szándék = kemény szűrő) — 2026-07-30
+
+**Jelszint-hierarchia (user-döntés):** 1) kimondott szándék (bejelölt iparágak,
+státusz, jelenlegi terület) adja a HALMAZT — kemény szűrő; 2) a mért Holland-kód
++ preferenciák adják a SORRENDET; 3) a személyiség a klasztereken belül rendez
+és tételenként annotál — nem szűr. Indok: a kimondott érdeklődés a
+pályaválasztás legerősebb prediktora (Whitney 1969; Slaney), és a rendszer nem
+bírálhatja felül láthatatlanul, amit a felhasználó kimondott.
+
+**Iparág-címkék:** `occupation.industries` (többes) — `step10_industry_tags.py`:
+ISCO-2 inverz térkép + kurált ISCO-4 tábla (vezetői + határterületi csoportok) +
+magyar név-kulcsszavak. 5 univerzális szerep (üres címke = minden scope-ban
+megjelenik, pl. ügyvezető). Ez oldotta meg, hogy az „Informatikai igazgató"
+(ISCO 1330) kiesett a prefix-alapú tech-szűrőből. Review-Excel:
+`docs/product/data/industry-tags-review.xlsx`.
+
+**Motor:** `options.scope` — szűrés a címkéken, 8 tételes padlóval (alatta nem
+szűrünk, `meta.scopeWidened` + felület-jelzés). `strategy: "scoped"`: rang =
+`choiceScore` (0,7 érdeklődés + 0,3 preferencia) + 6 pont metszet-bónusz, ha a
+szerep TÖBB bejelölt területet fed (`industry-intersect` flag); klaszteren belül
+a személyiség (demandFit) rendez. Scope-feloldás a service-ben: bejelölés = scope;
+„dolgozom + csak a saját területem" = stay-mód; üres = a 11. szakasz
+interest-led logikája.
+
+**Felület:** a sáv kimondja a szűrőt és a sorrend-logikát; „Szűrés nélkül is
+megnézem" kapcsoló (vissza is); tétel-szintű jelzők: „több bejelölt területed
+metszete", „az érdeklődés-kódodtól eltér (x%)" (<55), „a személyiségeddel
+kevésbé harmonizál" (demandFit<55). A wizard érdeklődés-lépése kimondja, hogy a
+bejelölés szűrő.
+
+
+### 12.1 Pontosítások a Látszerész-esetből (2026-07-30)
+
+Panasz: eü-diplomás, eü-ben dolgozó, eü-be váltó felhasználó a top-listában
+szakma-szintű Látszerészt kapott. Három ok, három javítás:
+
+1. **Szint-csúszás a szakaszolásban.** A „Most elérhető" egy szintnyi lefelé
+   engedett (entry >= edu−1), így diplomásnál a vocational-belépésű szerepek a
+   fő listába kerültek. Új szabály (`AT_LEVEL`): a fő szakasz PONTOSAN a szint
+   (specializáltnál higher+specialized, érettséginél open+course); minden ez
+   alatti a „Végzettséged alatti" összecsukott szakaszba megy — az lefelé-váltás,
+   nem alap-ajánlat.
+2. **53-as ISCO-csoport szétválasztása.** A prefix-öröklés a pedagógiai
+   asszisztenseket (5312) egészségügynek címkézte; a rekreáció (3423) szintén
+   klinikumnak tűnt. Kurált ISCO-4 sorok: 5311/5312 → oktatás, 5321/5322/5329 →
+   egészségügy, 3423 → szolgáltatás+oktatás.
+3. **A szakirány nem számított a sorrendben.** Scoped módban a `field-match`
+   állapot +6 rang-bónuszt kap — a szakirány kimondott jel (a diploma területe),
+   nem mérés, tehát a jelszint-hierarchia 1. szintjére tartozik.
+
+Ellenőrzés szintetikus eü-personával (S-domináns kód, higher+health): MOST =
+Intenzív terápiás szakápoló · Közösségi eü. dolgozó · Eü. intézményvezető;
+TANULÁSSAL = Dietetikus · Eü. szociális munkás · Iskolapszichológus; a Látszerész
+és az Ápolási asszisztens a összecsukott „szint alatti" szakaszban.
+Regressziós tesztek: tech- és health-címke őrzők a `catalog.test.ts`-ben.

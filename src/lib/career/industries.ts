@@ -1,11 +1,7 @@
-// A wizard érdeklődés-kérdései (iparágak) és a katalógus ISCO-besorolása közti
-// híd. A v1 saját iparág-kulcsokkal dolgozott; a v2 katalógus ISCO-08 alapú,
-// ezért az iparág = ISCO-alcsoportok (2 jegyű) halmaza.
-//
-// A leképezés szándékosan bőkezű: az érdeklődés SZŰKÍT, nem kizár, és a
-// felhasználó bármikor kérheti a teljes listát.
-
-import type { Occupation } from "./types";
+// A wizard-iparágak kulcsai és ISCO-tájolása. A scope-szűrés NEM ezen fut —
+// azt a katalógus tételes `occupation.industries` címkéi adják
+// (scripts/career-catalog/step10_industry_tags.py); ez a térkép a címke-
+// generálás egyik forrása és az API-séma kulcslistája.
 
 export const INDUSTRY_ISCO: Record<string, string[]> = {
   // IT / szoftver
@@ -41,18 +37,3 @@ export const INDUSTRY_ISCO: Record<string, string[]> = {
   // Személyi szolgáltatás / wellness
   services: ["51", "53", "91"],
 };
-
-/** Az érdeklődésként megjelölt iparágakhoz tartozó ISCO-alcsoport-prefixek. */
-export function iscoPrefixesFor(industryKeys: string[] | undefined): Set<string> {
-  const set = new Set<string>();
-  for (const key of industryKeys ?? []) {
-    for (const prefix of INDUSTRY_ISCO[key] ?? []) set.add(prefix);
-  }
-  return set;
-}
-
-export function matchesIndustries(occupation: Occupation, prefixes: Set<string>): boolean {
-  if (prefixes.size === 0) return true;
-  const isco = occupation.isco ?? "";
-  return prefixes.has(isco.slice(0, 2));
-}

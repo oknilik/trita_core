@@ -161,6 +161,7 @@ export default async function ProfileResultsPage({
       : await computeCareerForProfile(profile.id, {
           limit: 18,
           currentIndustry: storedCareerBackground.currentIndustry ?? null,
+          status: storedCareerBackground.status as "studying" | "working" | "switching" | null,
           industries: storedCareerBackground.interests ?? [],
         });
 

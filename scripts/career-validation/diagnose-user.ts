@@ -54,7 +54,8 @@ async function main() {
   console.log(`  végzettség:  ${person.eduLevel ?? "—"} · vezetői szándék: ${person.leadIntent}`);
 
   const industries = (background.interests as string[] | undefined) ?? [];
-  const result = computeCareerFit(person, { limit: 60, industries });
+  // A service scope-feloldását tükrözzük: a bejelölt terület kemény szűrő.
+  const result = computeCareerFit(person, { limit: 60, industries, scope: industries });
   console.log(
     `  rangsorolás: ${result.meta.strategy}` +
       (result.meta.candidatePool !== null

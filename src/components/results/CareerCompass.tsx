@@ -396,9 +396,17 @@ export function CareerCompass({
   // kerül a kliensbe, és a PDF-ág ugyanezt a végpontot használja.
   const [fitResult, setFitResult] = useState<CareerResultView | null>(initialResult);
   const [fitState, setFitState] = useState<"idle" | "loading" | "error">("idle");
+  // Szűretlen-nézet kapcsoló: a bejelölt területek szűrője kikapcsolható,
+  // hogy a mért érdeklődés szerinti teljes kép is látható legyen.
+  const [ignoreScope, setIgnoreScope] = useState(false);
 
   const fetchFit = useCallback(
-    async (next: CareerBackground, nextPrefs: UserPrefs, intent: "lead" | "expert" | "unsure") => {
+    async (
+      next: CareerBackground,
+      nextPrefs: UserPrefs,
+      intent: "lead" | "expert" | "unsure",
+      skipScope = false,
+    ) => {
       setFitState("loading");
       try {
         const res = await fetch("/api/career/fit", {
@@ -410,6 +418,8 @@ export function CareerCompass({
             eduLevel: next.eduLevel,
             industries: next.interests,
             currentIndustry: next.currentIndustry,
+            status: next.status,
+            ignoreScope: skipScope,
           }),
         });
         if (!res.ok) throw new Error("FIT_FAILED");
@@ -973,6 +983,11 @@ export function CareerCompass({
               result={fitResult}
               onEditAnswers={() => setStep("status")}
               onReset={resetAll}
+              onToggleScope={() => {
+                const next = !ignoreScope;
+                setIgnoreScope(next);
+                void fetchFit(background, prefs, leadIntent, next);
+              }}
               extra={
                 <>
                   {/* Mért érdeklődés-kérdőív: CTA vagy futó kitöltés */}

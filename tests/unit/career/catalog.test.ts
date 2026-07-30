@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { INDUSTRIES, INTEREST_TAGS, normalizedEduFields } from "@/lib/industry-fit";
-import { INDUSTRY_ISCO, iscoPrefixesFor, matchesIndustries } from "@/lib/career/industries";
+import { INDUSTRY_ISCO } from "@/lib/career/industries";
 import { getOccupations, getOccupation } from "@/lib/career/catalog";
 import { interestsFromTags, estimateInterests } from "@/lib/career/interests";
 import { RIASEC_LETTERS } from "@/lib/career/types";
@@ -22,13 +22,45 @@ test("minden wizard-iparághoz tartozik ISCO-leképezés, és fordítva", () => 
   }
 });
 
-test("minden iparág elér értelmes számú foglalkozást a katalógusban", () => {
+test("minden iparág elér értelmes számú foglalkozást a címkéken át", () => {
   const catalog = getOccupations();
   for (const industry of INDUSTRIES) {
-    const prefixes = iscoPrefixesFor([industry.key]);
-    const matched = catalog.filter((occupation) => matchesIndustries(occupation, prefixes));
-    assert.ok(matched.length >= 5, `${industry.key}: csak ${matched.length} foglalkozás`);
+    const matched = catalog.filter((occupation) =>
+      (occupation.industries ?? []).includes(industry.key),
+    );
+    assert.ok(matched.length >= 5, `${industry.key}: csak ${matched.length} címkézett foglalkozás`);
   }
+});
+
+test("iparág-címkék: csak érvényes kulcsok, és a kínos félrecímkék nem térnek vissza", () => {
+  const validKeys = new Set(INDUSTRIES.map((industry) => industry.key));
+  for (const occupation of getOccupations()) {
+    for (const tag of occupation.industries ?? []) {
+      assert.ok(validKeys.has(tag), `${occupation.hu}: érvénytelen címke (${tag})`);
+    }
+  }
+  // Regresszió a 2026-07-30-i hibára: a grafikus/művészeti szerepek és a
+  // hálózatSZERELŐK nem tartozhatnak az IT-scope-ba.
+  const tech = new Set(
+    getOccupations()
+      .filter((occupation) => (occupation.industries ?? []).includes("tech"))
+      .map((occupation) => occupation.hu),
+  );
+  for (const wrong of ["Grafikus", "Művészeti vezető", "Hangtechnikus", "Operatőr", "Villamoshálózat-szerelő", "Távközlési hálózatszerelő", "CNC-programozó"]) {
+    assert.ok(!tech.has(wrong), `${wrong} nem lehet tech-címkés`);
+  }
+  assert.ok(tech.has("Informatikai igazgató"), "az IT-vezetőnek tech-ben a helye");
+  assert.ok(tech.has("Felhasználói felület tervező"));
+
+  // Az 53-as ISCO-csoport szétválasztása: a pedagógiai asszisztensek nem
+  // egészségügyi, a gondozók igen.
+  const health = new Set(
+    getOccupations()
+      .filter((occupation) => (occupation.industries ?? []).includes("health"))
+      .map((occupation) => occupation.hu),
+  );
+  assert.ok(!health.has("Pedagógiai asszisztens"), "a pedagógiai asszisztens nem egészségügy");
+  assert.ok(health.has("Szakápoló"));
 });
 
 test("érdeklődés-címkék: mind a hat Holland-betű lefedett, az iparágak léteznek", () => {
