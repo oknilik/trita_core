@@ -37,6 +37,7 @@
     "test:journey:smoke": "NODE_OPTIONS='--conditions=react-server' npx tsx --test tests/unit/journey/journey-contract.smoke.test.ts",
     "test:acceptance": "NODE_OPTIONS='--conditions=react-server' npx tsx --test tests/integration/acceptance/*.test.ts",
     "postinstall": "prisma generate",
+    "db:reset-remote": "npx tsx scripts/reset-remote-db.ts",
     "seed:assessment": "npx tsx scripts/seed-assessment.ts",
     "seed:personas": "npx tsx scripts/seed-personas.ts",
     "report:personas": "npx tsx scripts/generate-persona-reports.tsx",
