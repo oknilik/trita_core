@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { INDUSTRIES, INTEREST_TAGS } from "@/lib/industry-fit";
@@ -12,7 +13,7 @@ const industryKeys = INDUSTRIES.map((industry) => industry.key) as [string, ...s
 
 const schema = z.object({
   status: z.enum(["studying", "working", "switching"]),
-  eduLevel: z.enum(["primary", "secondary", "vocational", "higher"]).nullable(),
+  eduLevel: z.enum(["primary", "secondary", "vocational", "higher", "specialized"]).nullable(),
   eduField: z
     .enum([
       "tech_engineering",
@@ -55,6 +56,21 @@ const schema = z.object({
   riasecScores: z
     .record(z.enum(["R", "I", "A", "S", "E", "C"]), z.number().min(0).max(100))
     .optional(),
+  // Preferencia- és környezet-tengelyek: a wizard 2 lépésének válaszai. Eddig
+  // csak kliens-state volt, ezért újratöltés után MÁS rangsor jött, mint amit a
+  // user a wizard végén látott (és a PDF-ág is kihagyta).
+  prefs: z
+    .record(
+      z.enum(["people", "variety", "autonomy", "creation", "pace", "structure", "setting"]),
+      z.union([z.literal(-1), z.literal(0), z.literal(1)]),
+    )
+    .optional(),
+  // Vezetői ambíció — a vezetői komponensek súlyát emeli a motorban.
+  leadIntent: z.enum(["lead", "expert", "unsure"]).optional(),
+  // Jelenlegi foglalkozás a katalógusból (O*NET-SOC) — a known-groups
+  // validáció adatforrása; a rangsorolásba NEM számít bele.
+  currentOccupationId: z.string().max(20).nullable().optional(),
+  currentOccupationLabel: z.string().max(120).nullable().optional(),
 });
 
 export async function POST(req: Request) {
@@ -78,6 +94,33 @@ export async function POST(req: Request) {
   await prisma.userProfile.update({
     where: { id: profile.id },
     data: { careerBackground: parsed.data },
+  });
+
+  return NextResponse.json({ ok: true });
+}
+
+/**
+ * Teljes visszaállítás: a wizard MINDEN mentett válasza törlődik — háttér,
+ * preferenciák, vezetői szándék és a kitöltött érdeklődés-kérdőív (Holland)
+ * eredménye is. A személyiség-eredmény nem érintett: a user tiszta lappal, csak
+ * a profiljával kezd újra.
+ */
+export async function DELETE() {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true },
+  });
+  if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  await prisma.userProfile.update({
+    where: { id: profile.id },
+    data: { careerBackground: Prisma.DbNull },
   });
 
   return NextResponse.json({ ok: true });

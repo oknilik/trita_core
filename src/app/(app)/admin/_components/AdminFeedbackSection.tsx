@@ -1,15 +1,20 @@
-import { INDUSTRIES } from "@/lib/industry-fit";
 import { featureInterestLabel } from "@/lib/feature-interest";
 
 // Visszajelzések admin-nézet: szerep-kalibráció (RoleFitFeedback aggregát)
 // + érdeklődés-jelzések (FeatureInterest). Szerver-komponens, csak megjelenít.
 
 export interface RoleFitAggregate {
-  industryKey: string;
-  roleKey: string;
+  /** O*NET-SOC kód (v2), vagy a régi „iparág:szerep" kulcs */
+  occupationId: string;
+  /** megjelenítendő név — a szerver oldja fel a katalógusból */
+  label: string;
   accurate: number;
   inaccurate: number;
   avgFitScore: number;
+  /** Wilson-féle 95%-os alsó korlát a találati arányra, százalékban */
+  wilsonLow: number | null;
+  /** elég mintán a véletlen alatt teljesít → a cél-profil felülvizsgálandó */
+  belowChance: boolean;
 }
 
 export interface InterestRow {
@@ -18,13 +23,6 @@ export interface InterestRow {
   createdAt: string;
   email: string | null;
   username: string | null;
-}
-
-function roleLabel(industryKey: string, roleKey: string): string {
-  const industry = INDUSTRIES.find((i) => i.key === industryKey);
-  const role = industry?.roles.find((r) => r.key === roleKey);
-  if (!industry || !role) return `${industryKey}/${roleKey}`;
-  return `${role.hu} · ${industry.hu}`;
 }
 
 export interface SatisfactionSummary {
@@ -126,9 +124,10 @@ export function AdminFeedbackSection({
           Karrier-iránytű visszajelzések ({totalVotes} szavazat)
         </h2>
         <p className="mt-1 text-xs text-ink-body">
-          „Dolgoztál hasonló szerepben — találó?” válaszok szerepenként. Ahol a
-          nem-találó arány magas, ott a súlyokat érdemes felülvizsgálni
-          (src/lib/industry-fit.ts).
+          „Dolgoztál hasonló szerepben — találó?” válaszok foglalkozásonként. Ahol a
+          nem-találó arány magas, ott a katalógus cél-profilját érdemes
+          felülvizsgálni (src/lib/career/catalog/). A „régi katalógus” jelölésű
+          sorok a v1 motor idejéből valók, más azonosító-térrel.
         </p>
 
         {roleFitAggregates.length === 0 ? (
@@ -142,6 +141,7 @@ export function AdminFeedbackSection({
                   <th className="py-2 pr-4">Találó</th>
                   <th className="py-2 pr-4">Nem találó</th>
                   <th className="py-2 pr-4">Pontosság</th>
+                  <th className="py-2 pr-4">Wilson-alsó</th>
                   <th className="py-2">Átl. illeszkedés</th>
                 </tr>
               </thead>
@@ -150,13 +150,19 @@ export function AdminFeedbackSection({
                   const total = row.accurate + row.inaccurate;
                   const accuracy = total > 0 ? Math.round((row.accurate / total) * 100) : 0;
                   return (
-                    <tr key={`${row.industryKey}-${row.roleKey}`} className="border-b border-sand/60">
-                      <td className="py-2 pr-4 text-ink">{roleLabel(row.industryKey, row.roleKey)}</td>
+                    <tr key={row.occupationId} className="border-b border-sand/60">
+                      <td className="py-2 pr-4 text-ink">{row.label}</td>
                       <td className="py-2 pr-4 text-emerald-700">{row.accurate}</td>
                       <td className="py-2 pr-4 text-rose-600">{row.inaccurate}</td>
-                      <td className={`py-2 pr-4 font-mono ${accuracy < 60 && total >= 3 ? "font-semibold text-amber-700" : "text-ink"}`}>
+                      <td className={`py-2 pr-4 font-mono ${row.belowChance ? "font-semibold text-amber-700" : "text-ink"}`}>
                         {accuracy}%
-                        {accuracy < 60 && total >= 3 && " ⚠"}
+                        {row.belowChance && " ⚠"}
+                      </td>
+                      <td
+                        className="py-2 pr-4 font-mono text-ink-body"
+                        title="A találati arány 95%-os alsó korlátja — kis mintánál ez a becsületes szám."
+                      >
+                        {row.wilsonLow === null ? "—" : `${row.wilsonLow}%`}
                       </td>
                       <td className="py-2 font-mono text-ink-body">{row.avgFitScore}%</td>
                     </tr>

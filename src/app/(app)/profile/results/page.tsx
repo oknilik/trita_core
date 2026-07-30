@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { TeamInterestBanner } from "@/components/results/TeamInterestBanner";
 import type { CareerBackground } from "@/lib/industry-fit";
+import { computeCareerForProfile } from "@/lib/career/service";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getSelfAccessLevel } from "@/lib/access";
@@ -147,6 +148,21 @@ export default async function ProfileResultsPage({
       select: { id: true },
     }),
   ]);
+
+  // Karrier-illeszkedés: a szerveren, EGY forrásból — a fül kezdeti nézete és
+  // a PDF-export ugyanezt az eredményt kapja. A wizard-változásokat a kliens a
+  // /api/career/fit végponton számoltatja újra.
+  const storedCareerBackground = profile.careerBackground as
+    | (CareerBackground & { status?: string })
+    | null;
+  const careerResult =
+    careerHiddenMembership || !storedCareerBackground?.status
+      ? null
+      : await computeCareerForProfile(profile.id, {
+          limit: 18,
+          currentIndustry: storedCareerBackground.currentIndustry ?? null,
+          industries: storedCareerBackground.interests ?? [],
+        });
 
   if (!latestResult) {
     // If there's a draft in progress, show a "continue" page instead of redirecting
@@ -556,6 +572,7 @@ export default async function ProfileResultsPage({
           watchAreas={watchAreas}
           plusContent={plusContent}
           careerBackground={profile.careerBackground as CareerBackground | null}
+          careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}
           bridgeNextStep={{
             stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,

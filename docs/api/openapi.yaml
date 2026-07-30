@@ -487,13 +487,37 @@ paths:
           application/json:
             schema:
               type: object
-              required: [industryKey, roleKey, fitScore, verdict]
+              required: [occupationId, fitScore, verdict]
               properties:
-                industryKey: { type: string, maxLength: 40 }
-                roleKey: { type: string, maxLength: 40 }
+                occupationId:
+                  type: string
+                  maxLength: 20
+                  description: O*NET-SOC kód a v2 katalógusból (pl. 15-1252.00)
                 fitScore: { type: integer, minimum: 0, maximum: 100 }
                 verdict: { type: string, enum: [accurate, inaccurate] }
       responses: { "200": { description: OK } }
+  /api/career/fit:
+    post:
+      tags: [Career]
+      summary: Karrier-illeszkedés számítása (motor v2, klaszterezett eredmény)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prefs:
+                  type: object
+                  description: "tengelyenként -1 | 0 | 1 (people, variety, autonomy, creation, pace, structure, setting)"
+                leadIntent: { type: string, enum: [lead, expert, unsure] }
+                eduLevel: { type: string, enum: [primary, secondary, vocational, higher], nullable: true }
+                industries: { type: array, maxItems: 3, items: { type: string } }
+                currentIndustry: { type: string, nullable: true }
+                limit: { type: integer, minimum: 1, maximum: 40 }
+                readyOnly: { type: boolean }
+      responses:
+        "200": { description: OK }
+        "409": { description: NO_ASSESSMENT — nincs kitöltött önértékelés }
   /api/feature-interest:
     post:
       tags: [Feedback]

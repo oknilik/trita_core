@@ -2,16 +2,20 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { INDUSTRIES } from "@/lib/industry-fit";
+import { getOccupation } from "@/lib/career/catalog";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 // Kalibrációs visszajelzés: „dolgoztál hasonló szerepben — találó volt?"
-// A súlyok hosszú távú validálásának adatforrása. Upsert: az utolsó
-// válasz számít, szerepenként egy.
+// A súlyok hosszú távú validálásának adatforrása (F3: known-groups + kalibráció).
+// Upsert: az utolsó válasz számít, foglalkozásonként egy.
+//
+// A v2 óta a katalógus-tétel azonosítója az O*NET-SOC kód, és a `targetKey` maga
+// a SOC. A régi sorok „iparág:szerep" alakú kulcsot tartalmaznak — az admin-nézet
+// mindkét formátumot felismeri.
 
 const schema = z.object({
-  industryKey: z.string().min(1).max(40),
-  roleKey: z.string().min(1).max(40),
+  /** O*NET-SOC kód a v2 katalógusból */
+  occupationId: z.string().min(3).max(20),
   fitScore: z.number().int().min(0).max(100),
   verdict: z.enum(["accurate", "inaccurate"]),
 });
@@ -33,11 +37,10 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { industryKey, roleKey, fitScore, verdict } = parsed.data;
+  const { occupationId, fitScore, verdict } = parsed.data;
 
-  // Csak létező katalógus-elemre fogadunk visszajelzést.
-  const industry = INDUSTRIES.find((i) => i.key === industryKey);
-  if (!industry || !industry.roles.some((r) => r.key === roleKey)) {
+  // Csak létező katalógus-tételre fogadunk visszajelzést.
+  if (!getOccupation(occupationId)) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
@@ -46,13 +49,13 @@ export async function POST(req: Request) {
       userProfileId_kind_targetKey: {
         userProfileId: profile.id,
         kind: "role_fit",
-        targetKey: `${industryKey}:${roleKey}`,
+        targetKey: occupationId,
       },
     },
     create: {
       userProfileId: profile.id,
       kind: "role_fit",
-      targetKey: `${industryKey}:${roleKey}`,
+      targetKey: occupationId,
       rating: fitScore,
       payload: { verdict },
     },

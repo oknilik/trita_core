@@ -490,6 +490,20 @@ export const resultsTranslations = {
     tabComparison: { hu: "Összehasonlítás", en: "Compare" },
     tabInvites: { hu: "Meghívók", en: "Invitations" },
     sectionOverview: { hu: "Profilod egy képben", en: "Your profile at a glance" },
+    // Típus-ábra (type-glyph.ts nyelvtan) — zárható tábla az eredmények élén
+    glyphEyebrow: { hu: "A te ábrád", en: "Your glyph" },
+    glyphTabLabel: {
+      hu: "Mit jelent a karakter-ábrám?",
+      en: "What does my character glyph mean?",
+    },
+    glyphOpen: { hu: "Megnyitás", en: "Open" },
+    glyphClose: { hu: "Bezárás", en: "Close" },
+    // A név-behelyettesítések már névelővel jönnek (hu-grammar.ts) — a
+    // sablonban ezért NINCS „a(z)”; ld. riport-javítási terv P1.2.
+    glyphGrammar: {
+      hu: "A nagy forma a legerősebb dimenziód — {primary}: {form}. A benne futó vékony vonal a második legerősebb — {secondary}: {motif}. A forma kitöltése a pontszám erősségét követi.",
+      en: "The large shape is your strongest dimension — {primary}: the {form}. The thin line inside it is your second strongest — {secondary}: the {motif}. The fill weight follows the score.",
+    },
     sectionDimensions: { hu: "Dimenziók részletesen", en: "Dimensions in detail" },
     sectionRoles: { hu: "Csapatszerep-hajlamok", en: "Team role tendencies" },
     sectionGrowth: { hu: "Fejlődési fókusz", en: "Growth focus" },
@@ -555,13 +569,236 @@ export const resultsTranslations = {
     industryFitMissingPlaceholder: { hu: "pl. állatorvos, pilóta, séf…", en: "e.g. veterinarian, pilot, chef…" },
     industryFitMissingSend: { hu: "Beküldöm", en: "Send" },
     industryFitMissingThanks: { hu: "Köszönjük — ezzel bővítjük a katalógust.", en: "Thanks — we'll use it to grow the catalog." },
+    // Karrier-motor v2 — klaszteres eredmény-nézet
+    cfTitle: { hu: "Ezek az irányok illenek hozzád", en: "These directions fit you" },
+    cfEmpty: {
+      hu: "Nincs elég adat az illeszkedés kiszámításához — töltsd ki a kérdőívet, és térj vissza ide.",
+      en: "Not enough data to compute fit — complete the questionnaire and come back.",
+    },
+    cfDemandLabel: { hu: "profil-illeszkedés", en: "profile fit" },
+    cfGeneral: {
+      hu: "Általános munkahelyi alap: {value}/100",
+      en: "General workplace base: {value}/100",
+    },
+    cfInterestMeasured: {
+      hu: "Érdeklődés: mért kérdőívből",
+      en: "Interests: from the completed inventory",
+    },
+    cfInterestTags: {
+      hu: "Érdeklődés: a választott címkékből",
+      en: "Interests: from your chosen tags",
+    },
+    cfInterestEstimated: {
+      hu: "Érdeklődés: személyiség-alapú becslés",
+      en: "Interests: estimated from personality",
+    },
+    cfObserverWeight: {
+      hu: "Külső visszajelzés súlya: {value}%",
+      en: "Outside feedback weight: {value}%",
+    },
+    cfLowDifferentiation: {
+      hu: "Az érdeklődés-profilod kiegyenlített: minden terület nagyjából egyformán vonz. Ilyenkor az érdeklődés gyengébb rendezőelv, ezért kisebb súllyal számít.",
+      en: "Your interest profile is flat: everything appeals about equally. Interests are then a weaker signal, so they count less here.",
+    },
+    cfSectionAtLevel: { hu: "Most elérhető — a végzettségi szintednek megfelelő", en: "Available now — matching your education level" },
+    cfSectionAtLevelHint: {
+      hu: "Ezekhez a végzettségi SZINTED megvan. Ahol a szakirányod is illik, azt külön jelöljük — a szint önmagában nem képesít minden munkára.",
+      en: "Your education LEVEL covers these. Where your field of study also fits, we mark it — level alone doesn't qualify you for everything.",
+    },
+    cfSectionTraining: { hu: "Tanulással, átképzéssel elérhető", en: "Reachable with study or retraining" },
+    cfSectionTrainingHint: {
+      hu: "Ezekhez a személyiségprofilod illik, de a belépéshez még képzés vagy diploma kell.",
+      en: "Your profile fits these, but entry still needs training or a degree.",
+    },
+    cfSectionBelow: { hu: "A végzettséged alatti belépési szint", en: "Below your education level" },
+    cfSectionBelowHint: {
+      hu: "Elérhető, de a mostani végzettségednél alacsonyabb belépési küszöbű — akkor releváns, ha tudatosan váltanál.",
+      en: "Open to you, but with a lower entry bar than your education — relevant if you're deliberately changing tack.",
+    },
+    cfSectionShow: { hu: "Megnézem", en: "Show" },
+    cfStrategyInterestLed: {
+      hu: "A listát az érdeklődésed és a munkakörnyezeti preferenciáid állítják össze — ezek jósolják legjobban, hogy mi mellett maradsz meg szívesen. A sorrendet ezen belül a személyiségprofilod adja: melyikben kell a legkevésbé magad ellen dolgoznod.",
+      en: "Your interests and work-setting preferences select the list — they predict best what you'll stay with. Within that, your personality profile sets the order: where you'd have to work against yourself the least.",
+    },
+    cfStrategyComposite: {
+      hu: "A sorrendet a személyiségprofilod, az érdeklődésed és a preferenciáid együtt adják. Ha kitöltöd az érdeklődés-kérdőívet, az érdeklődésed veszi át a lista összeállítását — a személyiség pedig a sorrendet.",
+      en: "Personality, interests and preferences jointly set the order here. Complete the interest inventory and your interests will select the list, with personality setting the order within it.",
+    },
+    cfWhyInList: {
+      hu: "Azért van a listán, mert az érdeklődésed és a preferenciáid ide húznak ({value}%).",
+      en: "It's on the list because your interests and preferences point here ({value}%).",
+    },
+    cfWhyThisOrder: {
+      hu: "A sorrendben azért van itt, mert a legerősebb komponens a(z) {dim}: a szerep tipikus sávja {target} körül van, nálad {user}.",
+      en: "It sits here in the order because the strongest component is {dim}: the role's typical range is around {target}, yours is {user}.",
+    },
+    cfYourHolland: { hu: "Az érdeklődés-kódod:", en: "Your interest code:" },
+    cfHollandWeight: {
+      hu: "ekkora súllyal számít a rangsorban: {value}%",
+      en: "weight in the ranking: {value}%",
+    },
+    cfHollandR: { hu: "R — gyakorlati, tárgyakkal, géppel", en: "R — practical, hands-on" },
+    cfHollandI: { hu: "I — kutató, elemző", en: "I — investigative, analytical" },
+    cfHollandA: { hu: "A — alkotó, kifejező", en: "A — artistic, expressive" },
+    cfHollandS: { hu: "S — segítő, emberekkel", en: "S — social, helping" },
+    cfHollandE: { hu: "E — vállalkozó, meggyőző", en: "E — enterprising, persuasive" },
+    cfHollandC: { hu: "C — rendszerező, szabálykövető", en: "C — conventional, organising" },
+    cfIndustryPick: { hu: "a bejelölt területed", en: "your picked field" },
+    cfIndustryMismatch: {
+      hu: "A bejelölt területeid nem szerepelnek a legjobb találatok között: a KITÖLTÖTT érdeklődés-kérdőíved máshova mutat. A bejelölés kiemel, de nem írja felül a mért eredményt.",
+      en: "Your picked fields aren't among the top matches: your COMPLETED interest inventory points elsewhere. A pick highlights, it doesn't override the measurement.",
+    },
+    cfClusterFirst: { hu: "A legerősebb csoportod", en: "Your strongest group" },
+    cfClusterNth: { hu: "{n}. csoport", en: "Group {n}" },
+    cfClusterTie: {
+      hu: "{count} irány — a különbség a mérési hibán belül, tehát nincs sorrend",
+      en: "{count} directions — the difference is within measurement error, so there is no ranking",
+    },
+    cfClusterMore: {
+      hu: "További {count} ugyanilyen erős irány",
+      en: "{count} more equally strong directions",
+    },
+    cfClusterOrder: {
+      hu: "A csoporton belül nincs sorrend — előbb azok jönnek, amikhez a végzettséged már elég.",
+      en: "There is no ranking inside a group — the ones your education already covers come first.",
+    },
+    cfWhy: { hu: "Miért ennyi?", en: "Why this score?" },
+    cfTargetHint: { hu: "cél {target} · te {user}", en: "target {target} · you {user}" },
+    cfPositionIn: { hu: "sávon belül", en: "in range" },
+    cfPositionOver: { hu: "cél fölött", en: "above target" },
+    cfPositionUnder: { hu: "cél alatt", en: "below target" },
+    cfHFloorNote: {
+      hu: "Ebben a szerepben a határozott önérdek-képviselet tipikus. A magas becsületesség-alázatot itt SOHA nem számítjuk hátránynak — hosszabb távon bizalmi előny, még ha az indulás lassabb is.",
+      en: "Assertive self-promotion is typical in this role. High honesty-humility is NEVER counted against you here — it is a long-term trust advantage, even if the start is slower.",
+    },
+    cfAboveTargetNote: {
+      hu: "Egy vagy több vonásod a szerep tipikus sávja FÖLÖTT van. Ez nem hiba: általában azt jelenti, hogy a szerep egy részét kihasználatlanul hagyja.",
+      en: "One or more traits sit ABOVE the role's typical range. That isn't a flaw: it usually means part of your strength stays unused.",
+    },
+    cfInterestMatch: { hu: "érdeklődés {value}%", en: "interests {value}%" },
+    cfPreferenceMatch: { hu: "munkakörnyezet {value}%", en: "work setting {value}%" },
+    cfEntryOpen: { hu: "nincs formális követelmény", en: "no formal requirement" },
+    cfEntryCourse: { hu: "tanfolyam / rövid képzés", en: "course / short training" },
+    cfEntryVocational: { hu: "szakma / technikus", en: "vocational / technician" },
+    cfEntryHigher: { hu: "felsőfokú diploma", en: "higher education degree" },
+    cfEntrySpecialized: { hu: "szakirányú diploma + szakvizsga", en: "specialised degree + licence" },
+    cfAccessFieldMatch: {
+      hu: "a szakirányod illik hozzá",
+      en: "your field of study fits",
+    },
+    cfAccessLevelOnly: {
+      hu: "a szinted megvan, de más szakirány",
+      en: "your level is enough, but a different field",
+    },
+    cfAccessLicence: {
+      hu: "szabályozott szakma — szakvizsga / kamarai tagság kell",
+      en: "regulated profession — licence or chamber membership required",
+    },
+    cfAccessTraining: {
+      hu: "képzés kell hozzá",
+      en: "needs training",
+    },
+    cfGapReady: { hu: "a szinted megvan", en: "your level is enough" },
+    cfGapCourse: { hu: "tanfolyam kell hozzá", en: "needs a course" },
+    cfGapVocational: { hu: "szakképzés kell hozzá", en: "needs vocational training" },
+    cfGapDegree: { hu: "diploma kell hozzá", en: "needs a degree" },
+    cfGapLicence: { hu: "diploma + szakvizsga kell hozzá", en: "needs a degree + licence" },
+    cfCatalogNote: {
+      hu: "{count} foglalkozásra számoltuk (katalógus-verzió: {version}). Forrás: O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0) adataiból származtatva, magyar megnevezések és leírások: ESCO (Európai Bizottság), FEOR-08 besorolás: KSH.",
+      en: "Computed across {count} occupations (catalog version {version}). Derived from the O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0); Hungarian labels and descriptions from ESCO (European Commission); FEOR-08 codes from KSH.",
+    },
+    cfCurrentRoleTitle: { hu: "Mi a mostani munkád?", en: "What do you do now?" },
+    cfCurrentRoleBody: {
+      hu: "Opcionális, és a rangsorodat NEM befolyásolja. Azért kérdezzük, hogy ellenőrizni tudjuk a modellt: ha jól mér, a betöltött szerepednek szisztematikusan előrébb kell kerülnie a saját listádban.",
+      en: "Optional, and it does NOT affect your ranking. We ask so we can check the model: if it measures anything real, your current role should sit systematically higher in your own list.",
+    },
+    cfCurrentRolePlaceholder: { hu: "Kezdj el gépelni — pl. ápoló, fejlesztő…", en: "Start typing — e.g. nurse, developer…" },
+    cfCurrentRoleSearching: { hu: "Keresés…", en: "Searching…" },
+    cfCurrentRoleClear: { hu: "Törlés", en: "Clear" },
+    cfReset: { hu: "Kezdés elölről", en: "Start over" },
+    cfResetConfirm: {
+      hu: "Biztosan törlöd az összes eddigi válaszodat? A háttér-kérdések, a munkakörnyezeti preferenciák és a kitöltött érdeklődés-kérdőív (Holland-kód) eredménye is törlődik. A személyiség-eredményed megmarad — azzal kezdesz tiszta lappal.",
+      en: "Delete all your answers so far? Background questions, work-setting preferences and your completed interest inventory (Holland code) are all removed. Your personality result stays — you start fresh with that.",
+    },
+    cfResetYes: { hu: "Igen, törlöm", en: "Yes, delete" },
+    cfResetBusy: { hu: "Törlés…", en: "Deleting…" },
+    cfResetCancel: { hu: "Mégsem", en: "Cancel" },
+    cfLoading: { hu: "Számoljuk az illeszkedést…", en: "Computing your fit…" },
+    cfError: {
+      hu: "Nem sikerült kiszámolni az illeszkedést. Próbáld újra egy pillanat múlva.",
+      en: "We couldn't compute the fit. Try again in a moment.",
+    },
+    cfRetry: { hu: "Újrapróbálom", en: "Try again" },
+    cfGrowthTitle: { hu: "Mit érdemes fejleszteni ezekhez az irányokhoz", en: "What to develop for these directions" },
+    cfGrowthIntro: {
+      hu: "A felső csoportok szerepeinél ezek az eltérések a leggyakoribbak — az irányukkal együtt, mert nem mindegy, hogy alatta vagy fölötte vagy a tipikus sávnak.",
+      en: "These gaps come up most often in your top groups — with their direction, because being below or above the typical range calls for different things.",
+    },
+    cfGrowthNoneTitle: {
+      hu: "Nincs jelentős eltérés a top irányaidnál",
+      en: "No significant gaps in your top directions",
+    },
+    cfGrowthNoneBody: {
+      hu: "A legerősebb csoportod szerepeinél minden mért vonásod a tipikus sávon belül van. Ilyenkor nem a fejlesztés a következő lépés, hanem a kép pontosítása: külső visszajelzés vagy a mért érdeklődés-kérdőív szűkíti a bizonytalanságot.",
+      en: "In your strongest group, every measured trait falls inside the typical range. The next step isn't development but sharpening the picture: outside feedback or the measured interest inventory narrows the uncertainty.",
+    },
+    cfGapUnder: { hu: "a tipikus sáv alatt", en: "below the typical range" },
+    cfGapOver: { hu: "a tipikus sáv fölött", en: "above the typical range" },
+    cfGapRoles: { hu: "{count} szerepnél", en: "in {count} roles" },
     // Karrier-iránytű wizard
     ccTitle: { hu: "Karrier-iránytű", en: "Career compass" },
-    ccIntro: {
-      hu: "Pár rövid kérdés a hátteredről — a válaszaid és a profilod alapján személyre szabott irányokat mutatunk.",
-      en: "A few short questions about your background — we'll show tailored directions based on your answers and profile.",
-    },
     ccStart: { hu: "Kezdjük →", en: "Let's start →" },
+    // Indító (kitöltés előtti) nézet
+    ccIntroTitle: { hu: "Merre tovább? Nézzük meg együtt.", en: "Where next? Let's look at it together." },
+    ccIntroLead: {
+      hu: "A személyiségprofilod és pár rövid kérdés alapján a rendszer megkísérli összerendelni, mely szakmai irányok illeszkednek a természetes működésedhez. Nem jóslat és nem minősítés — kiindulópont a gondolkodáshoz.",
+      en: "Using your personality profile and a few short questions, the system attempts to map which career directions align with how you naturally operate. Not a prediction and not a verdict — a starting point for thinking.",
+    },
+    ccIntroHowLabel: { hu: "Hogyan áll össze", en: "How it comes together" },
+    ccIntroStep1Title: { hu: "A profilod", en: "Your profile" },
+    ccIntroStep1Body: {
+      hu: "A kitöltött kérdőívből származó HEXACO-dimenziók és facetek — ez az alap.",
+      en: "The HEXACO dimensions and facets from the questionnaire you completed — that's the base.",
+    },
+    ccIntroStep2Title: { hu: "A válaszaid", en: "Your answers" },
+    ccIntroStep2Body: {
+      hu: "Végzettség, érdeklődés, munkakörnyezet, vezetői ambíció — néhány kattintás.",
+      en: "Education, interests, work environment, leadership ambition — a few clicks.",
+    },
+    ccIntroStep3Title: { hu: "Az irányok", en: "The directions" },
+    ccIntroStep3Body: {
+      hu: "Szerep-szintű illeszkedés konfidencia-sávval, indoklással és fejlődési tervvel.",
+      en: "Role-level fit with a confidence band, reasoning and a development plan.",
+    },
+    ccIntroCaveatTitle: { hu: "Ez nem kőbe vésett", en: "This isn't set in stone" },
+    ccIntroCaveat1: {
+      hu: "Becslés, nem ítélet — az illeszkedés irányt mutat, nem alkalmasságot vagy tehetség-plafont.",
+      en: "An estimate, not a verdict — fit points in a direction; it doesn't measure suitability or a talent ceiling.",
+    },
+    ccIntroCaveat2: {
+      hu: "Az alacsony illeszkedés nem tilalom: azt jelzi, hol kell majd több tudatos energia.",
+      en: "A low fit isn't a ban: it flags where you'll need more deliberate energy.",
+    },
+    ccIntroCaveat3: {
+      hu: "A személyiség csak egy tényező — a tapasztalat, a készségek, a körülmények és a motiváció legalább annyit számítanak, ezeket a rendszer nem látja.",
+      en: "Personality is only one factor — experience, skills, circumstances and motivation matter at least as much, and the system can't see those.",
+    },
+    ccIntroCaveat4: {
+      hu: "A válaszaidat bármikor módosíthatod, a képet külső visszajelzéssel pontosíthatod.",
+      en: "You can change your answers at any time and sharpen the picture with outside feedback.",
+    },
+    ccIntroRiasec: {
+      hu: "Utána opcionálisan kitölthetsz egy {count} kérdéses érdeklődés-tesztet (Holland-kód): így a becslés helyett mért érdeklődés rangsorol — pontosabb sorrend, ugyanaz a profil.",
+      en: "Afterwards you can optionally take a {count}-question interest inventory (Holland code): a measured interest then drives the ranking instead of an estimate — sharper ordering, same profile.",
+    },
+    ccIntroRiasecDone: {
+      hu: "Az érdeklődés-tesztet (Holland-kód) már kitöltötted — a mért kódod rangsorolja az irányokat.",
+      en: "You've already taken the interest inventory (Holland code) — your measured code drives the ranking.",
+    },
+    ccIntroMetaQuestions: { hu: "{count} rövid kérdés", en: "{count} short questions" },
+    ccIntroMetaTime: { hu: "kb. 2 perc", en: "about 2 minutes" },
+    ccIntroMetaSaved: { hu: "a válaszaid mentődnek", en: "your answers are saved" },
+    ccIntroMetaNoWrong: { hu: "nincs jó vagy rossz válasz", en: "no right or wrong answers" },
     ccStepStatus: { hu: "Mi jellemez most leginkább?", en: "What describes you best right now?" },
     ccStatusStudying: { hu: "Tanulok", en: "I'm studying" },
     ccStatusWorking: { hu: "Dolgozom", en: "I'm working" },
@@ -571,6 +808,10 @@ export const resultsTranslations = {
     ccEduSecondary: { hu: "Érettségi", en: "Secondary" },
     ccEduVocational: { hu: "Szakma / technikus", en: "Vocational" },
     ccEduHigher: { hu: "Felsőfokú", en: "Higher education" },
+    ccEduSpecialized: {
+      hu: "Szakvizsga / kamarai tagság",
+      en: "Licence / chamber membership",
+    },
     ccFieldLabel: { hu: "Terület", en: "Field" },
     ccFieldTech: { hu: "Műszaki / IT", en: "Tech / IT" },
     ccFieldEconomics: { hu: "Gazdasági", en: "Economics / business" },
@@ -588,6 +829,18 @@ export const resultsTranslations = {
     ccCurrentNone: { hu: "Egyik sem / egyéb", en: "None of these / other" },
     ccStepInterests: { hu: "Mi érdekel? Válassz legfeljebb hármat.", en: "What interests you? Pick up to three." },
     ccInterestsOpen: { hu: "Nyitott vagyok bármire", en: "I'm open to anything" },
+    ccStepRiasec: {
+      hu: "Kitöltöd az érdeklődés-kérdőívet?",
+      en: "Want to take the interest inventory?",
+    },
+    ccWhyRiasec: {
+      hu: "Ez rendezi át a listát: kitöltve az ÉRDEKLŐDÉSED válogatja a szakmákat, és a személyiséged csak a sorrendet adja. Kihagyva a személyiségedből becsüljük az érdeklődést — az gyengébb jel.",
+      en: "This reshapes the list: once completed, your INTERESTS select the occupations and personality only sets the order. If you skip it, we estimate interests from personality — a weaker signal.",
+    },
+    ccRiasecStart: { hu: "Kitöltöm most", en: "Take it now" },
+    ccRiasecStartSub: { hu: "{count} gyors kérdés, kb. 3 perc", en: "{count} quick items, about 3 minutes" },
+    ccRiasecSkip: { hu: "Most kihagyom", en: "Skip for now" },
+    ccRiasecSkipSub: { hu: "Az eredménynél bármikor pótolhatod", en: "You can add it later from the results" },
     ccStepPrefs: { hu: "Mi fontos neked a munkában?", en: "What matters to you at work?" },
     ccBack: { hu: "← Vissza", en: "← Back" },
     ccNext: { hu: "Tovább →", en: "Next →" },
@@ -606,6 +859,10 @@ export const resultsTranslations = {
     ccWhyEdu: {
       hu: "A végzettséged nem szűkít semmit — csak jelezzük, hol alacsonyabb a belépési küszöb.",
       en: "Your education doesn't limit anything — we only flag where the entry barrier is lower.",
+    },
+    ccWhyEduField: {
+      hu: "Ezzel tudjuk megmondani, hol illik a SZAKIRÁNYOD is — nem csak a szinted. Diploma önmagában nem képesít másik szakma gyakorlására.",
+      en: "This lets us say where your FIELD fits too — not just your level. A degree alone doesn't qualify you for another profession.",
     },
     ccWhyAge: {
       hu: "Csak a javaslatok hangolásához használjuk, a pontszámokat nem befolyásolja.",

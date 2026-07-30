@@ -56,9 +56,11 @@ export function CareerPage({ data, pageNum, totalPages, locale }: Props) {
                     <Text style={{ fontFamily: "Fraunces", fontSize: 10.5, color: colors.ink }}>
                       {i + 1}. {role.name}
                     </Text>
-                    <Text style={{ fontSize: 7.5, color: colors.ink500, marginTop: 1 }}>
-                      {role.industry}
-                    </Text>
+                    {role.industry ? (
+                      <Text style={{ fontSize: 7.5, color: colors.ink500, marginTop: 1 }}>
+                        {role.industry}
+                      </Text>
+                    ) : null}
                   </View>
                   <View style={{ alignItems: "flex-end" }}>
                     <Text style={{ fontSize: 8, fontWeight: 600, color: tier.color }}>

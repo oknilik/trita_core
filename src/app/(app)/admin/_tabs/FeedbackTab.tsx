@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { getOccupation } from "@/lib/career/catalog";
+import { calibrateFeedback, type FeedbackRow } from "@/lib/career/calibration";
 import { AdminFeedbackSection } from "@/app/(app)/admin/_components/AdminFeedbackSection";
 
 // Visszajelzések fül — szerep-kalibráció + érdeklődés-jelzések + elégedettség
@@ -72,18 +74,19 @@ export async function FeedbackTab() {
     }))
     .sort((a, b) => b.avgRating - a.avgRating);
 
-  // soronkénti feldolgozás → szerepenkénti aggregát
-  // (targetKey: "<industryKey>:<roleKey>", payload.verdict, rating = fitScore)
+  // soronkénti feldolgozás → foglalkozásonkénti aggregát.
+  // targetKey a v2 óta az O*NET-SOC kód; a régi sorok „<iparág>:<szerep>"
+  // alakúak — azokat legacy-ként jelöljük, hogy a kalibrációnál elváljanak.
   const aggregateMap = new Map<
     string,
-    { industryKey: string; roleKey: string; accurate: number; inaccurate: number; scoreSum: number; total: number }
+    { occupationId: string; legacy: boolean; accurate: number; inaccurate: number; scoreSum: number; total: number }
   >();
   for (const row of roleFitRows) {
-    const [industryKey = "?", roleKey = "?"] = (row.targetKey ?? "").split(":");
-    const key = `${industryKey}:${roleKey}`;
+    const key = row.targetKey ?? "?";
+    const legacy = key.includes(":");
     const entry =
       aggregateMap.get(key) ??
-      { industryKey, roleKey, accurate: 0, inaccurate: 0, scoreSum: 0, total: 0 };
+      { occupationId: key, legacy, accurate: 0, inaccurate: 0, scoreSum: 0, total: 0 };
     const verdict = (row.payload as { verdict?: string } | null)?.verdict;
     if (verdict === "accurate") entry.accurate += 1;
     else entry.inaccurate += 1;
@@ -91,14 +94,38 @@ export async function FeedbackTab() {
     entry.total += 1;
     aggregateMap.set(key, entry);
   }
+  // F3-kalibráció: Wilson-féle alsó korlát, hogy a kis mintás „100% találó"
+  // ne tűnjön bizonyítéknak, és csak elég adatnál jelezzünk felülvizsgálandót.
+  const calibrationRows: FeedbackRow[] = [];
+  for (const row of roleFitRows) {
+    const key = row.targetKey ?? "";
+    if (!key || key.includes(":")) continue;
+    const verdict = (row.payload as { verdict?: string } | null)?.verdict;
+    calibrationRows.push({
+      occupationId: key,
+      verdict: verdict === "accurate" ? "accurate" : "inaccurate",
+      fitScore: row.rating ?? 0,
+    });
+  }
+  const calibrationByOccupation = new Map(
+    calibrateFeedback(calibrationRows).map((entry) => [entry.occupationId, entry]),
+  );
+
   const roleFitAggregates = [...aggregateMap.values()]
-    .map((entry) => ({
-      industryKey: entry.industryKey,
-      roleKey: entry.roleKey,
-      accurate: entry.accurate,
-      inaccurate: entry.inaccurate,
-      avgFitScore: entry.total > 0 ? Math.round(entry.scoreSum / entry.total) : 0,
-    }))
+    .map((entry) => {
+      const calibration = calibrationByOccupation.get(entry.occupationId);
+      return {
+        occupationId: entry.occupationId,
+        label: entry.legacy
+          ? `${entry.occupationId} (régi katalógus)`
+          : (getOccupation(entry.occupationId)?.hu ?? entry.occupationId),
+        accurate: entry.accurate,
+        inaccurate: entry.inaccurate,
+        avgFitScore: entry.total > 0 ? Math.round(entry.scoreSum / entry.total) : 0,
+        wilsonLow: calibration ? Math.round(calibration.wilsonLow * 100) : null,
+        belowChance: calibration?.belowChance ?? false,
+      };
+    })
     .sort((a, b) => b.accurate + b.inaccurate - (a.accurate + a.inaccurate));
 
   return (

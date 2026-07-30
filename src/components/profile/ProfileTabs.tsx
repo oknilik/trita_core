@@ -27,7 +27,8 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { CareerCompass } from "@/components/results/CareerCompass";
-import { rankCareerSuggestions, type CareerBackground, type DimCode } from "@/lib/industry-fit";
+import type { CareerResultView } from "@/lib/career/service";
+import { type CareerBackground } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
 import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
@@ -37,6 +38,7 @@ import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
+import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { Card } from "@/components/ui/primitives/Card";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
@@ -173,6 +175,8 @@ export interface ProfileTabsProps {
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
   careerBackground?: CareerBackground | null;
+  /** Szerver-oldalon számolt karrier-illeszkedés (motor v2) */
+  careerResult?: CareerResultView | null;
   /** Kérdőív-forma a karrier-modul konfidencia-sávjához. */
   assessmentForm?: "short" | "full";
   /** Kitöltött csapatszerep-kérdőív eredménye (mért) — ha van. */
@@ -460,26 +464,22 @@ function WorkStyleTab({
   );
 }
 
-// „Merre tovább?" — Karrier-iránytű, a fejlődési terv az eredménybe integrálva.
+// „Merre tovább?" — Karrier-iránytű. Az illeszkedést a SZERVER számolja
+// (motor v2), a kezdeti eredmény propból jön, a wizard-változásokat a
+// /api/career/fit végpont számolja újra.
 function CareerTab({
-  dimensions,
   growthFocusItems,
-  hasObserverData,
   careerBackground,
-  assessmentForm,
+  careerResult,
   locale,
   onOpenInvites,
 }: {
-  dimensions: SerializedDimension[];
   growthFocusItems: SerializedGrowthItem[];
-  hasObserverData: boolean;
   careerBackground: CareerBackground | null;
-  assessmentForm: "short" | "full";
+  careerResult: CareerResultView | null;
   locale: Locale;
   onOpenInvites: () => void;
 }) {
-  const mainDims = dimensions.filter((d) => d.code !== "I");
-
   return (
     <div className="flex flex-col gap-10 md:gap-14">
       <section>
@@ -488,21 +488,8 @@ function CareerTab({
           className="mb-4"
         />
         <CareerCompass
-          scores={Object.fromEntries(mainDims.map((d) => [d.code, d.score]))}
-          facetScores={Object.fromEntries(
-            dimensions.flatMap((d) => d.facets.map((f) => [f.code, f.score])),
-          )}
-          assessmentForm={assessmentForm}
-          observerScores={
-            hasObserverData
-              ? Object.fromEntries(
-                  mainDims
-                    .filter((d) => typeof d.observerScore === "number")
-                    .map((d) => [d.code, d.observerScore as number]),
-                )
-              : null
-          }
           initialBackground={careerBackground}
+          initialResult={careerResult}
           growthFocusItems={growthFocusItems}
           onRequestObserver={onOpenInvites}
         />
@@ -544,6 +531,7 @@ export function ProfileTabs({
   experienceHints,
   experienceHintDestination,
   careerBackground = null,
+  careerResult = null,
   assessmentForm = "short",
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
@@ -599,12 +587,21 @@ export function ProfileTabs({
     return () => window.clearTimeout(timer);
   }, []);
 
-  // Az aktív tab úszik be a látótérbe (mount + tab-váltás).
+  // Az aktív tab a fül-sávon BELÜL középre kerül — csak vízszintesen.
+  // Korábban scrollIntoView volt: az a LAPOT is görgette, hogy a fül-sáv
+  // látszódjon, ezért mobilon minden betöltés/frissítés után az oldal
+  // magától lecsúszott a fül-sáv fölötti blokkra. A scrollLeft-állítás
+  // csak a vízszintes konténert mozgatja, a lap-görgetést nem érinti.
   useEffect(() => {
-    const el = tabScrollRef.current?.querySelector<HTMLButtonElement>(
+    const container = tabScrollRef.current;
+    const el = container?.querySelector<HTMLButtonElement>(
       `button[data-tab-id="${activeTab}"]`,
     );
-    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!container || !el) return;
+    const target = el.offsetLeft - (container.clientWidth - el.offsetWidth) / 2;
+    const left = Math.max(0, Math.min(target, container.scrollWidth - container.clientWidth));
+    if (Math.abs(container.scrollLeft - left) < 2) return;
+    container.scrollTo({ left, behavior: "smooth" });
   }, [activeTab]);
 
   const isHu = locale === "hu";
@@ -706,7 +703,17 @@ export function ProfileTabs({
   return (
     <div className="flex flex-col gap-8 md:gap-12">
 
-      {/* Dark sage hero */}
+      {/* Dark sage hero + a hozzá tapadó karakter-ábra fül — egy blokk,
+          hogy a fül a banner alsó szélére üljön (a külső gap ne tolja el).
+          A negatív alsó margó a fül alatti térközt szedi vissza: a fül a
+          bannerhez tartozik, nem önálló szekció. */}
+      {/* -mb-3: a jelzés ~11 px-t lóg a banner alá, ezt vesszük vissza, hogy
+          a hero ALSÓ SZÉLÉTŐL mért térköz ugyanannyi legyen, mint az oldal
+          többi blokkja között (gap-8 / md:gap-12). */}
+      <div className="-mb-3 flex flex-col">
+      {/* A hero a fül és a panel FELETT van (z-20), így a fül teteje alá
+          csúszik, a panel pedig alóla gördül ki. */}
+      <div className="relative z-20">
       <ProfileHero
         userName={name}
         completedAt={new Date(assessmentDate).toLocaleDateString(
@@ -714,6 +721,9 @@ export function ProfileTabs({
           { year: "numeric", month: "long", day: "numeric" },
         )}
         personalityType={personalityType ?? t("content.personalityProfileFallback", locale)}
+        glyphDimensions={dimensions
+          .filter((d) => d.code !== "I")
+          .map((d) => ({ code: d.code, score: d.score }))}
         percentile={percentile ?? ""}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
@@ -778,37 +788,38 @@ export function ProfileTabs({
             const workplaceInsight = plusContent?.howYouWork[0] ?? "";
             const riskInsight = plusContent?.howYouWork[1] ?? "";
 
-            // Karrier-iránytű export — csak kitöltött wizard (van háttér) után
+            // Karrier-export: UGYANAZ a szerver-oldali eredmény, amit a
+            // képernyő mutat (a v1-ben a PDF külön, observer és preferenciák
+            // nélkül számolt, ezért más sorrendet adott).
             const career = (() => {
-              if (careerModuleHidden) return undefined;
-              if (!careerBackground?.status) return undefined;
-              const dimScores = Object.fromEntries(
-                mainDims.map((d) => [d.code, d.score]),
-              ) as Partial<Record<DimCode, number>>;
-              const facetScores = Object.fromEntries(
-                dimensions.flatMap((d) => d.facets.map((f) => [f.code, f.score])),
-              );
-              const ranked = rankCareerSuggestions(dimScores, careerBackground, {
-                facetScores,
-                form: assessmentForm,
-              });
-              if (ranked.suggestions.length === 0) return undefined;
+              if (careerModuleHidden || !careerResult) return undefined;
+              const top = [
+                ...careerResult.sections.atLevel.flat(),
+                ...careerResult.sections.afterTraining.flat(),
+              ].slice(0, 3);
+              if (top.length === 0) return undefined;
+              const gaps = careerResult.sections.atLevel
+                .slice(0, 2)
+                .flat()
+                .flatMap((fit) => fit.components)
+                .filter((c) => c.position !== "in" && c.weight >= 0.15);
+              const firstGap = gaps[0];
               const dimLabel = (code: string) =>
                 mainDims.find((d) => d.code === code)?.label ?? code;
               return {
-                roles: ranked.suggestions.slice(0, 3).map((sug) => ({
-                  name: isHu ? sug.role.hu : sug.role.en,
-                  industry: isHu ? sug.industryHu : sug.industryEn,
-                  score: sug.score,
-                  bandLow: sug.band.low,
-                  bandHigh: sug.band.high,
+                roles: top.map((fit) => ({
+                  name: fit.hu,
+                  // FEOR-megnevezés egyelőre nem jelenik meg (user-döntés)
+                  industry: "",
+                  score: fit.demandFit,
+                  bandLow: fit.band.low,
+                  bandHigh: fit.band.high,
                 })),
-                developNote:
-                  ranked.developDims.length > 0
-                    ? (isHu
-                        ? `A top irányaidnál a leggyakoribb fejlesztendő terület: ${ranked.developDims.map(dimLabel).join(", ")}.`
-                        : `Across your top directions, the most common area to develop: ${ranked.developDims.map(dimLabel).join(", ")}.`)
-                    : undefined,
+                developNote: firstGap
+                  ? isHu
+                    ? `A top irányaidnál a leggyakoribb eltérés: ${dimLabel(firstGap.dim)} — a tipikus sáv ${firstGap.position === "under" ? "alatt" : "fölött"}.`
+                    : `The most common gap across your top directions: ${dimLabel(firstGap.dim)} — ${firstGap.position === "under" ? "below" : "above"} the typical range.`
+                  : undefined,
               };
             })();
 
@@ -930,6 +941,18 @@ export function ProfileTabs({
         }}
         pdfLoading={pdfLoading}
       />
+      </div>
+
+      {/* Karakter-ábra magyarázat — a banner alsó szélére ülő kis fül;
+          nyitva a teljes kompozíció + a nyelvtan a hero alatt jelenik meg. */}
+      <TypeGlyphPlate
+        mode="heroTab"
+        dimensions={dimensions
+          .filter((d) => d.code !== "I")
+          .map((d) => ({ code: d.code, score: d.score }))}
+        locale={locale}
+      />
+      </div>
 
       <ShareModal
         isOpen={shareOpen}
@@ -942,6 +965,9 @@ export function ProfileTabs({
             .sort((a, b) => b.score - a.score)
             .slice(0, 2)
             .map((d) => ({ label: d.label, score: d.score })),
+          glyphDimensions: dimensions
+            .filter((d) => d.code !== "I")
+            .map((d) => ({ code: d.code, score: d.score })),
         }}
       />
 
@@ -1070,11 +1096,9 @@ export function ProfileTabs({
         )}
         {activeTab === "career" && (
           <CareerTab
-            dimensions={dimensions}
             growthFocusItems={growthFocusItems}
-            hasObserverData={hasObserverData}
             careerBackground={careerBackground}
-            assessmentForm={assessmentForm}
+            careerResult={careerResult}
             locale={locale}
             onOpenInvites={() => handleTabChange("comparison")}
           />
