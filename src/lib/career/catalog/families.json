@@ -1,0 +1,389 @@
+{
+  "meta": {
+    "version": "2026-07-31",
+    "note": "Karrier-családok. A hozzárendelés hibrid: az iscoPrefix a szemantikus korlát (leghosszabb illeszkedő prefix nyer), a horgonyok viselkedés-centroidja dönt a megengedett családok között, a pinned nevek mindent felülírnak. Levezetés és mérések: docs/product/career-families.md",
+    "assignedBy": "scripts/career-catalog/step12_families.mjs"
+  },
+  "families": [
+    {
+      "key": "vezetes",
+      "hu": "Vezetés és üzletirányítás",
+      "en": "Leadership and business management",
+      "defHu": "Emberekért és eredményért felel: dönt, irányt ad, felelősséget visel.",
+      "defEn": "Accountable for people and results: decides, sets direction, carries responsibility.",
+      "anchors": [
+        "Ügyvezető",
+        "HR vezető",
+        "Projektmenedzser"
+      ],
+      "iscoPrefix": [
+        "11",
+        "12",
+        "13",
+        "14",
+        "2423",
+        "2424"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "penzugy",
+      "hu": "Pénzügy és számvitel",
+      "en": "Finance and accounting",
+      "defHu": "Számokkal és szabályokkal dolgozik, ő a pénzügyi biztonság őre.",
+      "defEn": "Works with numbers and rules; the guardian of financial safety.",
+      "anchors": [
+        "Könyvelő",
+        "Bérelszámoló",
+        "Pénzügyi tanácsadó"
+      ],
+      "iscoPrefix": [
+        "24",
+        "33",
+        "43",
+        "332"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "jog",
+      "hu": "Jog és hatósági munka",
+      "en": "Law and regulatory work",
+      "defHu": "Szabályt értelmez és érvényesít — az ő döntése másokra nézve kötelező.",
+      "defEn": "Interprets and enforces rules; their decision binds others.",
+      "anchors": [
+        "Ügyvéd",
+        "Adóellenőr",
+        "Bírósági ügyintéző"
+      ],
+      "iscoPrefix": [
+        "261",
+        "3342",
+        "3411",
+        "335",
+        "3331",
+        "1111"
+      ],
+      "pinned": [
+        "Adóügyintéző"
+      ]
+    },
+    {
+      "key": "admin",
+      "hu": "Adminisztráció és ügyvitel",
+      "en": "Administration and office support",
+      "defHu": "Háttérből tartja működésben a folyamatokat, hogy másnak menjen a dolga.",
+      "defEn": "Keeps processes running from the background so others can work.",
+      "anchors": [
+        "Irodai adminisztrátor",
+        "Titkár",
+        "Ügyfélkapcsolati munkatárs"
+      ],
+      "iscoPrefix": [
+        "41",
+        "42",
+        "44",
+        "33"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "it",
+      "hu": "Informatika és adat",
+      "en": "IT and data",
+      "defHu": "Rendszereket épít, és adatból választ keres.",
+      "defEn": "Builds systems and finds answers in data.",
+      "anchors": [
+        "Szoftverfejlesztő",
+        "Adattudós",
+        "Rendszergazda"
+      ],
+      "iscoPrefix": [
+        "25",
+        "35"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "muszaki",
+      "hu": "Mérnöki és műszaki fejlesztés",
+      "en": "Engineering and technical development",
+      "defHu": "Fizikai rendszereket tervez, mér és működésben tart.",
+      "defEn": "Designs, measures and maintains physical systems.",
+      "anchors": [
+        "Gépészmérnök",
+        "Földmérő",
+        "Villamosipari műszaki rajzoló"
+      ],
+      "iscoPrefix": [
+        "21",
+        "31"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "tudomany",
+      "hu": "Tudomány és labor",
+      "en": "Science and laboratory",
+      "defHu": "Kísérletez, mér, bizonyít — a válasz nála az adatból jön.",
+      "defEn": "Experiments, measures, proves; answers come from evidence.",
+      "anchors": [
+        "Vegyész",
+        "Biológus",
+        "Mikrobiológus"
+      ],
+      "iscoPrefix": [
+        "21",
+        "31"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "gyogyitas",
+      "hu": "Gyógyítás",
+      "en": "Medicine",
+      "defHu": "Diagnosztizál és dönt egy ember egészségéről, szakmai felelősséggel.",
+      "defEn": "Diagnoses and decides on a person's health, with professional responsibility.",
+      "anchors": [
+        "Háziorvos",
+        "Belgyógyász",
+        "Fogorvos"
+      ],
+      "iscoPrefix": [
+        "22"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "apolas",
+      "hu": "Ápolás és gondozás",
+      "en": "Nursing and care",
+      "defHu": "Napi jelenléttel kíséri azt, aki nem boldogul egyedül.",
+      "defEn": "Accompanies, day by day, those who cannot manage alone.",
+      "anchors": [
+        "Szakápoló",
+        "Ápolási asszisztens",
+        "Gyermekgondozó"
+      ],
+      "iscoPrefix": [
+        "222",
+        "32",
+        "53"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "oktatas",
+      "hu": "Oktatás és képzés",
+      "en": "Education and training",
+      "defHu": "Tud valamit, és át tudja adni úgy, hogy a másik is tudja.",
+      "defEn": "Knows something and can pass it on so others know it too.",
+      "anchors": [
+        "Középiskolai tanár",
+        "Óvodapedagógus",
+        "Középiskolai szakoktató"
+      ],
+      "iscoPrefix": [
+        "23"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "segito",
+      "hu": "Segítő és társadalmi szakmák",
+      "en": "Social and helping professions",
+      "defHu": "Nehéz élethelyzetben lévő emberrel dolgozik, hosszú távon.",
+      "defEn": "Works with people in hard situations, over the long run.",
+      "anchors": [
+        "Családsegítő szociális munkás",
+        "Klinikai szakpszichológus"
+      ],
+      "iscoPrefix": [
+        "26",
+        "34"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "alkotas",
+      "hu": "Alkotás, média, kommunikáció",
+      "en": "Creative, media and communication",
+      "defHu": "Formát ad gondolatnak, üzenetnek, terméknek.",
+      "defEn": "Gives form to ideas, messages and products.",
+      "anchors": [
+        "Grafikus",
+        "Újságíró",
+        "Divattervező"
+      ],
+      "iscoPrefix": [
+        "21",
+        "26",
+        "34"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "ertekesites",
+      "hu": "Értékesítés és ügyfélkapcsolat",
+      "en": "Sales and client relations",
+      "defHu": "Emberekkel találkozik, meggyőz, kiszolgál.",
+      "defEn": "Meets people, persuades, serves.",
+      "anchors": [
+        "Bolti eladó",
+        "Ingatlanügynök"
+      ],
+      "iscoPrefix": [
+        "52",
+        "42",
+        "332",
+        "3334",
+        "3339"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "epites",
+      "hu": "Építés és szerelés",
+      "en": "Construction and installation",
+      "defHu": "Kézzel épít és szerel, a helyszínen, látható eredménnyel.",
+      "defEn": "Builds and installs by hand, on site, with visible results.",
+      "anchors": [
+        "Kőműves",
+        "Ács",
+        "Víz- és gázvezeték-szerelő"
+      ],
+      "iscoPrefix": [
+        "71",
+        "74",
+        "93"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "gyartas",
+      "hu": "Gyártás és karbantartás",
+      "en": "Manufacturing and maintenance",
+      "defHu": "Gépet kezel, alkatrészt készít, hibát javít.",
+      "defEn": "Operates machines, makes parts, fixes faults.",
+      "anchors": [
+        "Hegesztő",
+        "CNC-gépkezelő",
+        "Autószerelő"
+      ],
+      "iscoPrefix": [
+        "72",
+        "73",
+        "81",
+        "82"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "logisztika",
+      "hu": "Szállítás és logisztika",
+      "en": "Transport and logistics",
+      "defHu": "Mozgatja az árut és az embereket, időre.",
+      "defEn": "Moves goods and people, on time.",
+      "anchors": [
+        "Kamionsofőr",
+        "Targoncavezető",
+        "Autóbuszvezető"
+      ],
+      "iscoPrefix": [
+        "83",
+        "93"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "vendeglatas",
+      "hu": "Vendéglátás és élelmiszer",
+      "en": "Hospitality and food",
+      "defHu": "Ételt készít és vendéget lát el, tempóban.",
+      "defEn": "Prepares food and serves guests, at pace.",
+      "anchors": [
+        "Szakács",
+        "Pék",
+        "Felszolgáló"
+      ],
+      "iscoPrefix": [
+        "51",
+        "75",
+        "94"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "szepsegipar",
+      "hu": "Szépségipar",
+      "en": "Beauty services",
+      "defHu": "Egy ember külsejével dolgozik, kézzel és ízléssel.",
+      "defEn": "Works on a person's appearance, by hand and with taste.",
+      "anchors": [
+        "Fodrász",
+        "Kozmetikus",
+        "Manikűrös"
+      ],
+      "iscoPrefix": [
+        "514"
+      ],
+      "pinned": []
+    },
+    {
+      "key": "szolgaltatas",
+      "hu": "Kiszolgálás és üzemeltetés",
+      "en": "Service and facilities",
+      "defHu": "Jelen van, hogy másnak gördülékeny legyen a napja.",
+      "defEn": "Is there so someone else's day runs smoothly.",
+      "anchors": [
+        "Háztartási takarító",
+        "Idegenvezető",
+        "Futár, kézbesítő"
+      ],
+      "iscoPrefix": [
+        "91",
+        "96",
+        "5111",
+        "5113",
+        "5151",
+        "5164"
+      ],
+      "pinned": [
+        "Fitneszedző"
+      ]
+    },
+    {
+      "key": "vedelem",
+      "hu": "Védelem és biztonság",
+      "en": "Protection and safety",
+      "defHu": "Mások testi épségéért felel, kiszámíthatatlan helyzetben is.",
+      "defEn": "Responsible for others' safety, even when things are unpredictable.",
+      "anchors": [
+        "Tűzoltó",
+        "Rendőr",
+        "Biztonsági őr"
+      ],
+      "iscoPrefix": [
+        "54"
+      ],
+      "pinned": [
+        "Bűnügyi nyomozó"
+      ]
+    },
+    {
+      "key": "agrar",
+      "hu": "Kertészet és zöldterület",
+      "en": "Horticulture and green spaces",
+      "defHu": "Élő anyaggal dolgozik, a szabadban, évszakok szerint.",
+      "defEn": "Works with living material, outdoors, by the seasons.",
+      "anchors": [
+        "Parkgondozó",
+        "Kertészeti munkás"
+      ],
+      "iscoPrefix": [
+        "61"
+      ],
+      "pinned": []
+    }
+  ]
+}

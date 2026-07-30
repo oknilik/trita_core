@@ -431,6 +431,7 @@ export function computeCareerFit(
       isco: occupation.isco,
       tier: occupation.tier,
       entry: occupation.entry,
+      family: occupation.family ?? null,
       demandFit,
       se: Math.round(se * 10) / 10,
       band: bandFor(demandFit, se),

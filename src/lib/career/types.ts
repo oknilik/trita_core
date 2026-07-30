@@ -126,6 +126,13 @@ export interface Occupation {
   eduFields?: EduField[];
   /** iparág-címkék (többes); ÜRES = univerzális szerep, minden scope-ban megjelenik */
   industries?: string[];
+  /**
+   * Karrier-család kulcsa (`families.json`). A hozzárendelés OFFLINE készül
+   * (`step12_families.mjs`) és befagyva él a katalógusban — futásidőben
+   * SOHA nem számoljuk újra, mert a klaszterezés nem stabil (mérés:
+   * docs/product/career-families.md).
+   */
+  family?: string;
   /** vétó-címkék: milyen kizárható munka-tulajdonságokat hordoz a szerep */
   attrs?: VetoTag[];
 }
@@ -197,6 +204,8 @@ export interface OccupationFit {
   isco: string | null;
   tier: number;
   entry: EntryLevel;
+  /** karrier-család kulcsa (`families.json`) — a családszintű csoportosításhoz */
+  family: string | null;
   /** differenciál illeszkedés: a profil ALAKJA (ez rangsorol) */
   demandFit: number;
   /** a differenciál illeszkedés mérési hibája (SE) */

@@ -37,18 +37,18 @@ vándorol. A besorolás ezért **egyszer készül és befagy** a katalógusba.
 | kulcs | név | definíció | horgonyok | ISCO-prefix | db | szórás |
 |---|---|---|---|---|---:|---:|
 | `vezetes` | Vezetés és üzletirányítás | Emberekért és eredményért felel: dönt, irányt ad, felelősséget visel. | Ügyvezető · HR vezető · Projektmenedzser | 11,12,13,14,**2423,2424** | 42 | 0,91 |
-| `penzugy` | Pénzügy és számvitel | Számokkal és szabályokkal dolgozik, ő a pénzügyi biztonság őre. | Könyvelő · Bérelszámoló · Pénzügyi tanácsadó | 24,33,43 | 49 | 1,04 ⚠ |
+| `penzugy` | Pénzügy és számvitel | Számokkal és szabályokkal dolgozik, ő a pénzügyi biztonság őre. | Könyvelő · Bérelszámoló · Pénzügyi tanácsadó | 24,33,43,332 | 43 | 1,03 ⚠ |
 | **`jog`** | **Jog és hatósági munka** | **Szabályt értelmez és érvényesít — az ő döntése másokra nézve kötelező.** | **Ügyvéd · Adóellenőr · Bírósági ügyintéző** | **261,3342,3411,335,3331,1111** + `Adóügyintéző` | **13** | **1,03** |
-| `admin` | Adminisztráció és ügyvitel | Háttérből tartja működésben a folyamatokat, hogy másnak menjen a dolga. | Irodai adminisztrátor · Titkár · Ügyfélkapcsolati munkatárs | 41,42,44,33 | 20 | 0,79 |
+| `admin` | Adminisztráció és ügyvitel | Háttérből tartja működésben a folyamatokat, hogy másnak menjen a dolga. | Irodai adminisztrátor · Titkár · Ügyfélkapcsolati munkatárs | 41,42,44,33 | 19 | 0,78 |
 | `it` | Informatika és adat | Rendszereket épít, és adatból választ keres. | Szoftverfejlesztő · Adattudós · Rendszergazda | 25,35 | 23 | 0,86 |
 | `muszaki` | Mérnöki és műszaki fejlesztés | Fizikai rendszereket tervez, mér és működésben tart. | Gépészmérnök · Földmérő · Villamosipari műszaki rajzoló | 21,31 | 47 | 0,97 |
 | `tudomany` | Tudomány és labor | Kísérletez, mér, bizonyít — a válasz nála az adatból jön. | Vegyész · Biológus · Mikrobiológus | 21,31 | 19 | 0,75 |
-| `gyogyitas` | Gyógyítás | Diagnosztizál és dönt egy ember egészségéről, szakmai felelősséggel. | Háziorvos · Belgyógyász · Fogorvos | 22 | 33 | 0,76 |
-| `apolas` | Ápolás és gondozás | Napi jelenléttel kíséri azt, aki nem boldogul egyedül. | Szakápoló · Ápolási asszisztens · Gyermekgondozó | 32,53 | 32 | 1,05 ⚠ |
+| `gyogyitas` | Gyógyítás | Diagnosztizál és dönt egy ember egészségéről, szakmai felelősséggel. | Háziorvos · Belgyógyász · Fogorvos | 22 | 25 | 0,75 |
+| `apolas` | Ápolás és gondozás | Napi jelenléttel kíséri azt, aki nem boldogul egyedül. | Szakápoló · Ápolási asszisztens · Gyermekgondozó | **222**,32,53 | 40 | 1,06 ⚠ |
 | `oktatas` | Oktatás és képzés | Tud valamit, és át tudja adni úgy, hogy a másik is tudja. | Középiskolai tanár · Óvodapedagógus · Középiskolai szakoktató | 23 | 13 | **0,51** |
 | `segito` | Segítő és társadalmi szakmák | Nehéz élethelyzetben lévő emberrel dolgozik, hosszú távon. | Családsegítő szociális munkás · Klinikai szakpszichológus | 26,34 | 16 | 1,05 ⚠ |
 | `alkotas` | Alkotás, média, kommunikáció | Formát ad gondolatnak, üzenetnek, terméknek. | Grafikus · Újságíró · Divattervező | 21,26,34 | 16 | 0,93 |
-| `ertekesites` | Értékesítés és ügyfélkapcsolat | Emberekkel találkozik, meggyőz, kiszolgál. | Bolti eladó · Ingatlanügynök | 52,42 | 8 | 1,04 |
+| `ertekesites` | Értékesítés és ügyfélkapcsolat | Emberekkel találkozik, meggyőz, kiszolgál. | Bolti eladó · Ingatlanügynök | 52,42,**332,3334,3339** | 15 | 0,96 |
 | `epites` | Építés és szerelés | Kézzel épít és szerel, a helyszínen, látható eredménnyel. | Kőműves · Ács · Víz- és gázvezeték-szerelő | 71,74,93 | 29 | **0,65** |
 | `gyartas` | Gyártás és karbantartás | Gépet kezel, alkatrészt készít, hibát javít. | Hegesztő · CNC-gépkezelő · Autószerelő | 72,73,81,82 | 55 | **0,65** |
 | `logisztika` | Szállítás és logisztika | Mozgatja az árut és az embereket, időre. | Kamionsofőr · Targoncavezető · Autóbuszvezető | 83,93 | 16 | 0,79 |
@@ -157,3 +157,47 @@ olvassa, elvégzi a hozzárendelést, kiírja a `family` mezőt a katalógusba, 
 generál egy **review-listát** Excelbe (a 85. percentilis fölötti távolságúak,
 nagyságrendileg 60–70 tétel) — ugyanaz a munkafolyamat,
 mint a katalógus-validálásnál (`step7_apply_review.py`).
+
+---
+
+## Megvalósítva (2026-07-31)
+
+A család-réteg BENNE VAN a kódban:
+
+- `src/lib/career/catalog/families.json` — a 21 család konfigurációja
+  (nevek, definíciók, horgonyok, ISCO-prefixek, tételes besorolások). Ezt
+  olvassa a hozzárendelő script ÉS a TS-oldal is — egy igazságforrás.
+- `scripts/career-catalog/step12_families.mjs` — a hozzárendelés. Node, nem
+  Python, mert nem külső forrást dolgoz fel, hanem a repó saját katalógusán
+  számol, és ugyanazt a konfigurációt olvassa, mint a TS.
+- `Occupation.family` — a befagyasztott besorolás a katalógusban.
+- `OccupationFit.family` — a motor kimenetén is átmegy, hogy az UI tudjon rá
+  csoportosítani.
+- `src/lib/career/families.ts` — család-metaadat, kétnyelvű címke és
+  definíció, `SMALL_FAMILY_THRESHOLD`.
+- `tests/unit/career/families.test.ts` — 7 teszt őrzi az épséget.
+
+### Amit a tesztek azonnal elkaptak
+
+Két horgony a saját családján kívülre került, mert az ISCO-korlát máshova
+küldte. Mindkettő valódi hiba volt, nem teszt-hiba:
+
+1. **`Szakápoló` a `gyogyitas`-ba esett** — vele együtt 8 diplomás ápoló és
+   szülésznő (ISCO 222x), miközben az `Ápoló` (3221) az `apolas`-ban volt.
+   Javítás: `222` az `apolas` prefixei közé. Az ápolás ápolás, nem orvoslás.
+2. **`Ingatlanügynök` a `penzugy`-ba esett** — vele együtt 10 értékesítő
+   szerep (`332`, `3334`, `3339`), miközben az `ertekesites` mindössze 8
+   tételes volt. Javítás: a `332` MINDKÉT családhoz felvéve (ott a viselkedés
+   dönt), a `3334`/`3339` az `ertekesites`-hez.
+
+Hatás: `ertekesites` 8 → **15** (1,04 → 0,96), `gyogyitas` 33 → **25**
+(0,76 → 0,75), `apolas` 32 → 40.
+
+### Végleges eloszlás
+
+21 család · 477 foglalkozás · 71 tétel kézi review-ra
+(`docs/product/data/career-families-review.csv`).
+
+A legszorosabb családok: `oktatas` 0,51 · `szepsegipar` 0,60 · `epites` 0,65
+· `gyartas` 0,65. A leglazább: `szolgaltatas` 1,15 (gyűjtőkosár), `apolas`
+1,06, `segito` 1,05.
