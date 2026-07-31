@@ -92,25 +92,12 @@ export function CareerFakeDoor({
     }).catch(() => {});
   }, [sessionId, source]);
 
-  // A SAJÁT karakter-ábrája, TELJES erővel, világos lapon — ugyanúgy, ahogy a
-  // riport-heróban. Sötét alapon nem kell tompítani: a kontraszt az alapból
-  // jön, nem az átlátszóságból. Ez az egyetlen elem az oldalon, ami tényleg
-  // a felhasználóé — kifakítva pont a lényegét veszítené el.
-  const glyphPlate = glyph ? (
-    <TypeGlyph
-      primaryCode={glyph.primaryCode}
-      secondaryCode={glyph.secondaryCode}
-      typeLabel={glyph.label}
-      locale={locale}
-      intensity={glyph.intensity}
-      variant="badge"
-      className="h-16 w-16 shrink-0 rounded-xl border border-white/20 md:h-[104px] md:w-[104px]"
-    />
-  ) : null;
-
-  // Ugyanaz az ábra MÁSODIK szerepben: nagy, levágott vízjel az agyag
-  // alapon. Nem a lemez halványabb mása — az a horgony marad teljes
-  // erőben; ez mélységet ad a felületnek, hogy a hero ne sík doboz legyen.
+  // A SAJÁT karakter-ábrája — HÁTTÉRKÉNT, nem a cím előtt.
+  //
+  // Volt egy lemez-változat is a cím mellett, de két helyen ugyanaz az ábra
+  // zsúfolt lett, és elvette a helyet a mondattól. Vízjelként megmarad a
+  // személyesség, a szöveg viszont szabadon fut. Mobilon is látszik, csak
+  // kisebben — ott ez az egyetlen előfordulása.
   const glyphWatermark = glyph ? (
     <TypeGlyph
       primaryCode={glyph.primaryCode}
@@ -120,7 +107,7 @@ export function CareerFakeDoor({
       intensity={glyph.intensity}
       variant="badge"
       canvas={false}
-      className="pointer-events-none absolute -bottom-16 -right-10 hidden h-[420px] w-[420px] opacity-[0.09] md:block"
+      className="pointer-events-none absolute -bottom-12 -right-10 h-[280px] w-[280px] opacity-[0.10] md:-bottom-16 md:h-[420px] md:w-[420px] md:opacity-[0.09]"
     />
   ) : null;
 
@@ -136,22 +123,37 @@ export function CareerFakeDoor({
           </span>
         }
         badge={
-          // A készülő-funkció jelzés bronzban: ez az oldal egyetlen hangos
-          // vizuális állítása, és az őszinteségi keret hordozója.
+          // TÖMÖR, nem áttetsző: az áttetsző pasztilla beleolvadt az agyag
+          // alapba, és pont az veszett el belőle, ami a legfontosabb — hogy
+          // ez a funkció még nem létezik. Ez az oldal egyetlen hangos
+          // vizuális állítása.
           <span
-            className="rounded-full px-3 py-1 text-micro font-semibold uppercase tracking-widest"
-            style={{ background: CAREER_THEME.badgeBg, color: CAREER_THEME.badgeText }}
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-micro font-bold uppercase tracking-widest"
+            style={{ background: CAREER_THEME.badgeText, color: "#3c2119" }}
           >
+            <span
+              aria-hidden
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: "#3c2119" }}
+            />
             {t("fakeDoor.badge", locale)}
           </span>
         }
         title={
-          <div className="flex items-start gap-4">
-            {glyphPlate}
-            <h1 className="min-w-0 font-fraunces text-fluid-title tracking-tight text-white">
-              {t("fakeDoor.heroTitle", locale)}
-            </h1>
-          </div>
+          <h1 className="max-w-[17ch] font-fraunces text-fluid-title tracking-tight text-white">
+            {t("fakeDoor.heroTitle", locale)}
+          </h1>
+        }
+        meta={
+          // Kimondva, nem csak jelzésként: a badge-et át lehet siklani, ezt a
+          // mondatot nem. A mérés csak akkor tisztességes, ha a válaszadó
+          // tudja, hogy nem létező funkcióról nyilatkozik.
+          <p
+            className="mt-1 text-caption font-semibold"
+            style={{ color: CAREER_THEME.badgeText }}
+          >
+            {t("fakeDoor.badgeNote", locale)}
+          </p>
         }
         body={
           <p className="max-w-[620px] text-[17px] leading-relaxed text-white/[0.72] md:text-[19px]">
@@ -188,14 +190,15 @@ export function CareerFakeDoor({
         <SectionEyebrow variant="clean" className="mb-3">
           {t("fakeDoor.whatTitle", locale)}
         </SectionEyebrow>
-        {/* Az első kártya szélesebb: egy négy egyforma dobozból álló rács
-            mindig laposan olvasódik, akármilyen szép a tartalma. */}
+        {/* Az első és az utolsó kártya két hasábot fog át, a két középső
+            osztozik: egy négy egyforma dobozból álló rács akkor is laposan
+            olvasódik, ha a tartalma jó. */}
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {CARDS.map((card, index) => (
             <div
               key={card.lead}
               className={`relative overflow-hidden rounded-2xl border border-sand bg-white p-5 md:p-6 ${
-                index === 0 ? "md:col-span-2" : ""
+                index === 0 || index === CARDS.length - 1 ? "md:col-span-2" : ""
               }`}
             >
               {/* Nagy motívum-vízjel: a típus-ábra nyelvtanából, nem ikon-készletből. */}

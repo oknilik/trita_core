@@ -11,6 +11,10 @@ export const fakeDoorTranslations = {
   fakeDoor: {
     // ── Hero (T6) ─────────────────────────────────────────────────────
     badge: { hu: "Készülő funkció", en: "In development" },
+    badgeNote: {
+      hu: "Ez a funkció még nem létezik — azt mérjük, érdemes-e megépíteni.",
+      en: "This feature doesn't exist yet — we're measuring whether it's worth building.",
+    },
     eyebrow: { hu: "Karrier-iránytű", en: "Career compass" },
     heroTitle: {
       hu: "Lehet, hogy nem veled van a baj. Csak rossz szerepben vagy.",
