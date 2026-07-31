@@ -104,7 +104,23 @@ export function CareerFakeDoor({
       locale={locale}
       intensity={glyph.intensity}
       variant="badge"
-      className="h-16 w-16 shrink-0 rounded-xl border border-white/20 md:h-[84px] md:w-[84px]"
+      className="h-16 w-16 shrink-0 rounded-xl border border-white/20 md:h-[104px] md:w-[104px]"
+    />
+  ) : null;
+
+  // Ugyanaz az ábra MÁSODIK szerepben: nagy, levágott vízjel az agyag
+  // alapon. Nem a lemez halványabb mása — az a horgony marad teljes
+  // erőben; ez mélységet ad a felületnek, hogy a hero ne sík doboz legyen.
+  const glyphWatermark = glyph ? (
+    <TypeGlyph
+      primaryCode={glyph.primaryCode}
+      secondaryCode={glyph.secondaryCode}
+      typeLabel={glyph.label}
+      locale={locale}
+      intensity={glyph.intensity}
+      variant="badge"
+      canvas={false}
+      className="pointer-events-none absolute -bottom-16 -right-10 hidden h-[420px] w-[420px] opacity-[0.09] md:block"
     />
   ) : null;
 
@@ -113,6 +129,7 @@ export function CareerFakeDoor({
       <SurfaceHero
         className="fd-rise"
         variant="career"
+        contentClassName="relative"
         eyebrow={
           <span className="rounded-full bg-white/[0.12] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
             {t("fakeDoor.eyebrow", locale)}
@@ -131,13 +148,13 @@ export function CareerFakeDoor({
         title={
           <div className="flex items-start gap-4">
             {glyphPlate}
-            <h1 className="min-w-0 font-fraunces text-[26px] leading-[1.14] tracking-tight text-white md:text-[36px]">
+            <h1 className="min-w-0 font-fraunces text-fluid-title tracking-tight text-white">
               {t("fakeDoor.heroTitle", locale)}
             </h1>
           </div>
         }
         body={
-          <p className="max-w-[620px] text-body leading-relaxed text-white/[0.72]">
+          <p className="max-w-[620px] text-[17px] leading-relaxed text-white/[0.72] md:text-[19px]">
             {t("fakeDoor.heroLead", locale)}
           </p>
         }
@@ -156,11 +173,12 @@ export function CareerFakeDoor({
             {t("fakeDoor.heroPositioning", locale)}
           </span>
         }
+        footer={glyphWatermark}
       />
 
       {/* ── „Wow" ────────────────────────────────────────────────── */}
       <section className="fd-rise fd-delay-1">
-        <p className="border-l-[3px] border-bronze pl-5 font-fraunces text-[21px] leading-relaxed text-ink md:text-[25px]">
+        <p className="max-w-[46rem] border-l-[3px] border-bronze pl-5 font-fraunces text-[23px] leading-[1.35] text-ink md:pl-7 md:text-[30px]">
           {t("fakeDoor.wow", locale)}
         </p>
       </section>
@@ -170,20 +188,30 @@ export function CareerFakeDoor({
         <SectionEyebrow variant="clean" className="mb-3">
           {t("fakeDoor.whatTitle", locale)}
         </SectionEyebrow>
-        <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2">
-          {CARDS.map((card) => (
+        {/* Az első kártya szélesebb: egy négy egyforma dobozból álló rács
+            mindig laposan olvasódik, akármilyen szép a tartalma. */}
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {CARDS.map((card, index) => (
             <div
               key={card.lead}
-              className="flex gap-3 rounded-2xl border border-sand bg-white p-4"
+              className={`relative overflow-hidden rounded-2xl border border-sand bg-white p-5 md:p-6 ${
+                index === 0 ? "md:col-span-2" : ""
+              }`}
             >
+              {/* Nagy motívum-vízjel: a típus-ábra nyelvtanából, nem ikon-készletből. */}
               <TypeMotifMark
                 code={card.motif}
-                strokeWidth={7}
-                className="mt-0.5 h-7 w-7 shrink-0 stroke-bronze [&>g]:stroke-bronze"
+                strokeWidth={6}
+                className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 stroke-bronze opacity-[0.09] [&>g]:stroke-bronze"
               />
-              <div>
-                <p className="text-body font-bold text-ink">{t(card.lead, locale)}</p>
-                <p className="mt-1 max-w-prose text-caption leading-relaxed text-ink-body">
+              <div className="relative">
+                <span className="font-fraunces text-[15px] text-bronze">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p className="mt-1 font-fraunces text-[19px] leading-snug text-ink md:text-[22px]">
+                  {t(card.lead, locale)}
+                </p>
+                <p className="mt-1.5 max-w-prose text-caption leading-relaxed text-ink-body">
                   {t(card.body, locale)}
                 </p>
               </div>
@@ -206,29 +234,48 @@ export function CareerFakeDoor({
         </ul>
       </section>
 
-      {/* ── Ár ───────────────────────────────────────────────────── */}
-      <section className="fd-rise fd-delay-4 rounded-2xl border border-bronze-edge bg-bronze-soft/40 p-6 md:p-7">
-        <SectionEyebrow>{t("fakeDoor.priceLabel", locale)}</SectionEyebrow>
-        {/* Nincs count-up: egy nem létező termék oldalán a numerikus
-            teátralitás pont a hitelességet vinné el. */}
-        <p className="mt-1.5 font-fraunces text-[34px] leading-none text-ink md:text-[44px]">
-          {price}
-        </p>
-        <p className="mt-2.5 max-w-prose text-caption leading-relaxed text-ink-body">
-          {t("fakeDoor.priceFraming", locale)}{" "}
-          <span className="text-muted">{t("fakeDoor.priceNoCard", locale)}</span>
-        </p>
-      </section>
+      {/* ── Záró horgony: ár + döntés EGY kompozícióban ──────────
+          Ez az oldal csúcspontja, ezért ez a második sötét tömeg a hero
+          után. Külön halvány dobozokban a legfontosabb pillanat volt a
+          leggyengébb. A forma-vezérlők a VILÁGOS testben maradnak: sötét
+          alapon a csúszka és a rádiógombok olvashatósága romlana. */}
+      <section className="fd-rise fd-delay-4 overflow-hidden rounded-2xl border border-sand">
+        <div
+          className="relative overflow-hidden px-6 py-7 md:px-8 md:py-8"
+          style={{ background: CAREER_THEME.background }}
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-16 -top-16 h-[220px] w-[220px] rounded-full bg-white/[0.03]"
+          />
+          <div className="relative">
+            <p
+              className="font-mono text-micro uppercase tracking-widest"
+              style={{ color: CAREER_THEME.badgeText }}
+            >
+              {t("fakeDoor.priceLabel", locale)}
+            </p>
+            {/* Nincs count-up: egy nem létező termék oldalán a numerikus
+                teátralitás pont a hitelességet vinné el. */}
+            <p className="mt-2 font-fraunces text-[40px] leading-none text-white md:text-[52px]">
+              {price}
+            </p>
+            <p className="mt-3 max-w-prose text-caption leading-relaxed text-white/[0.72]">
+              {t("fakeDoor.priceFraming", locale)}{" "}
+              <span className="text-white/[0.5]">{t("fakeDoor.priceNoCard", locale)}</span>
+            </p>
+          </div>
+        </div>
 
-      {/* ── Döntés ───────────────────────────────────────────────── */}
-      <section className="fd-rise fd-delay-5 rounded-2xl border border-sand bg-white p-6 md:p-7">
-        <DecisionPanel
-          sessionId={sessionId}
-          source={source}
-          priceVariant={priceVariant}
-          defaultEmail={defaultEmail}
-          initial={initial}
-        />
+        <div className="bg-white p-6 md:p-8">
+          <DecisionPanel
+            sessionId={sessionId}
+            source={source}
+            priceVariant={priceVariant}
+            defaultEmail={defaultEmail}
+            initial={initial}
+          />
+        </div>
       </section>
 
       <p className="text-caption text-muted">
