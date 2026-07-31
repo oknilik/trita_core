@@ -1,6 +1,6 @@
 import { resolveWorkspaceNavRole, type WorkspaceNavRole } from "@/lib/navigation/roles";
 import { canViewNavSection } from "@/lib/navigation/visibility";
-import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 
 export { resolveWorkspaceNavRole };
 export type { WorkspaceNavRole };

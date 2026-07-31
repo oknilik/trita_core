@@ -471,3 +471,38 @@ input[type="range"].pattern-range::-moz-range-track {
   font-size: clamp(2.75rem, 8vw, 3.75rem);
   line-height: 1.06;
 }
+
+/* ─── Fake door — belépő animáció (T16) ────────────────────────────────
+   Halk stagger: a blokkok sorban úsznak fel. Nincs szám-animáció (count-up)
+   sehol — egy meg nem épült termék oldalán a numerikus teátralitás pont a
+   hitelességet vinné el.
+
+   A `prefers-reduced-motion` NEM csak lassít: teljesen kikapcsol, és a
+   végállapotot azonnal kirakja. */
+@keyframes fd-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fd-rise {
+  animation: fd-rise 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.fd-delay-1 { animation-delay: 60ms; }
+.fd-delay-2 { animation-delay: 120ms; }
+.fd-delay-3 { animation-delay: 180ms; }
+.fd-delay-4 { animation-delay: 240ms; }
+.fd-delay-5 { animation-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-rise {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

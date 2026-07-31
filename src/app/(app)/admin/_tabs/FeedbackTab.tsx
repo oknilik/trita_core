@@ -2,12 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { getOccupation } from "@/lib/career/catalog";
 import { calibrateFeedback, type FeedbackRow } from "@/lib/career/calibration";
 import { AdminFeedbackSection } from "@/app/(app)/admin/_components/AdminFeedbackSection";
-import { CAREER_PROBE_KIND, CAREER_PROBE_PRICE_HUF } from "@/lib/career/deep-probe";
 
 // Visszajelzések fül — szerep-kalibráció + érdeklődés-jelzések + elégedettség
 // (utóbbi a megszűnt Kutatás fülről költözött ide)
 export async function FeedbackTab() {
-  const [roleFitRows, interestRows, satisfactionRows, dimensionRows, probeRows] = await Promise.all([
+  const [roleFitRows, interestRows, satisfactionRows, dimensionRows] = await Promise.all([
     prisma.feedback.findMany({
       where: { kind: "role_fit" },
       select: { targetKey: true, rating: true, payload: true },
@@ -31,37 +30,7 @@ export async function FeedbackTab() {
       where: { kind: "dimension" },
       select: { targetKey: true, rating: true },
     }),
-    // Karrier-plusz kereslet-mérés: a tölcsér három foka egy lekérdezésből.
-    prisma.feedback.findMany({
-      where: { kind: CAREER_PROBE_KIND },
-      select: { targetKey: true, rating: true },
-    }),
   ]);
-
-  // Lemorzsolódás: megjelenés → oldal-megnyitás → nyilatkozat. A `choice`
-  // rating bontja igenre/nemre. A százalékok mindig az ELŐZŐ fokhoz mérnek,
-  // különben nem lemorzsolódást mutatnának, hanem véletlen arányokat.
-  const probeSeen = probeRows.filter((row) => row.targetKey === "cta_view").length;
-  const probeOpened = probeRows.filter((row) => row.targetKey === "page_view").length;
-  const probeChoices = probeRows.filter((row) => row.targetKey === "choice");
-  const probeYes = probeChoices.filter((row) => row.rating === 1).length;
-  const probeNo = probeChoices.filter((row) => row.rating === 0).length;
-  const pct = (value: number, base: number) =>
-    base > 0 ? Math.round((value / base) * 100) : null;
-  const careerProbe = {
-    seen: probeSeen,
-    opened: probeOpened,
-    yes: probeYes,
-    no: probeNo,
-    openRate: pct(probeOpened, probeSeen),
-    answerRate: pct(probeChoices.length, probeOpened),
-    yesRate: pct(probeYes, probeChoices.length),
-    priceLabel: new Intl.NumberFormat("hu-HU", {
-      style: "currency",
-      currency: "HUF",
-      maximumFractionDigits: 0,
-    }).format(CAREER_PROBE_PRICE_HUF),
-  };
 
   const avg = (nums: number[]) =>
     nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
@@ -171,7 +140,6 @@ export async function FeedbackTab() {
       }))}
       satisfactionSummary={satisfactionSummary}
       dimensionAverages={dimensionAverages}
-      careerProbe={careerProbe}
     />
   );
 }

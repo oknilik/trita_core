@@ -63,17 +63,17 @@ enum ObserverType {
 // ============================================
 
 model UserProfile {
-  id        String   @id @default(cuid())
-  clerkId   String?  @unique
-  email     String?
-  username  String?
-  activeOrgId String?
+  id           String   @id @default(cuid())
+  clerkId      String?  @unique
+  email        String?
+  username     String?
+  activeOrgId  String?
   // Kijelolt (aktiv) csapat — a Vezerlo ide visz, a csapat-valto allitja.
   activeTeamId String?
-  deleted   Boolean  @default(false)
-  locale    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  deleted      Boolean  @default(false)
+  locale       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Demographic data (onboarding)
   birthYear   Int?
@@ -86,29 +86,29 @@ model UserProfile {
   careerBackground Json?
 
   // Research study fields
-  testType           TestType?
-  testTypeAssignedAt DateTime?
-  consentedAt           DateTime?
-  assessmentSkippedAt   DateTime?
+  testType            TestType?
+  testTypeAssignedAt  DateTime?
+  consentedAt         DateTime?
+  assessmentSkippedAt DateTime?
 
   // Role (default: INDIVIDUAL)
-  role      UserRole @default(INDIVIDUAL)
+  role UserRole @default(INDIVIDUAL)
 
   // Platform-szintű tanácsadó: az admin onboardolja a tritára (ConsultantInvite).
   // Nem kényszerül tesztre; org-okhoz ORG_CONSULTANT tagsággal rendelhető.
   isConsultant Boolean @default(false)
 
-  assessmentResults    AssessmentResult[]
-  assessmentDraft      AssessmentDraft?
-  consultantInvitesSent ConsultantInvite[] @relation("ConsultantInviter")
-  sentInvitations      ObserverInvitation[] @relation("InviterInvitations")
-  receivedInvitations  ObserverInvitation[] @relation("ObserverInvitations")
+  assessmentResults       AssessmentResult[]
+  assessmentDraft         AssessmentDraft?
+  consultantInvitesSent   ConsultantInvite[]   @relation("ConsultantInviter")
+  sentInvitations         ObserverInvitation[] @relation("InviterInvitations")
+  receivedInvitations     ObserverInvitation[] @relation("ObserverInvitations")
   approvedObserverInvites ObserverInvitation[] @relation("ObserverInviteApprover")
-  feedbacks            Feedback[]
+  feedbacks               Feedback[]
 
   // Team layer (KKV)
-  ownedTeams       Team[]       @relation("TeamOwner")
-  teamMemberships  TeamMember[]
+  ownedTeams      Team[]       @relation("TeamOwner")
+  teamMemberships TeamMember[]
 
   // Organization layer (KKV)
   ownedOrgs      Organization[]       @relation("OrgOwner")
@@ -127,13 +127,13 @@ model UserProfile {
   purchases Purchase[]
 
   // Team role layer — append-only körök, olvasáskor a legfrissebb nyer
-  teamRoleAnswers TeamRoleAnswer[]
-  teamRoleScores  TeamRoleScore[]
+  teamRoleAnswers           TeamRoleAnswer[]
+  teamRoleScores            TeamRoleScore[]
   teamRoleObservationsAbout TeamRoleObservation[] @relation("TeamRoleObservationAbout")
   teamRoleObservationsGiven TeamRoleObservation[] @relation("TeamRoleObservationRater")
-  peerFeedbackGiven    PeerFeedbackItem[] @relation("PeerFeedbackFrom")
-  peerFeedbackReceived PeerFeedbackItem[] @relation("PeerFeedbackTo")
-  feedbackRequests     FeedbackRequest[]  @relation("FeedbackRequestAsker")
+  peerFeedbackGiven         PeerFeedbackItem[]    @relation("PeerFeedbackFrom")
+  peerFeedbackReceived      PeerFeedbackItem[]    @relation("PeerFeedbackTo")
+  feedbackRequests          FeedbackRequest[]     @relation("FeedbackRequestAsker")
 
   trustObservationsAbout TrustObservation[] @relation("TrustObservationAbout")
   trustObservationsGiven TrustObservation[] @relation("TrustObservationRater")
@@ -152,12 +152,12 @@ model AssessmentDraft {
   id            String   @id @default(cuid())
   userProfileId String   @unique
   testType      TestType
-  answers       Json     // Record<number, number> — questionId → value
+  answers       Json // Record<number, number> — questionId → value
   currentPage   Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  draftReminderCount     Int       @default(0)
+  draftReminderCount      Int       @default(0)
   lastDraftReminderSentAt DateTime?
 
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
@@ -174,23 +174,23 @@ model AssessmentResult {
   isSelfAssessment Boolean   @default(true)
 
   // Public share
-  shareToken       String?   @unique
+  shareToken String? @unique
 
-  userProfile       UserProfile?        @relation(fields: [userProfileId], references: [id])
+  userProfile UserProfile? @relation(fields: [userProfileId], references: [id])
 
   @@index([userProfileId])
 }
 
 // Observer invitation for peer assessment
 model ObserverInvitation {
-  id            String           @id @default(cuid())
-  token         String           @unique @default(cuid())
-  inviterId     String
-  observerProfileId String?
-  observerEmail String?
-  observerName  String?
-  testType      TestType
-  status        InvitationStatus @default(PENDING)
+  id                 String           @id @default(cuid())
+  token              String           @unique @default(cuid())
+  inviterId          String
+  observerProfileId  String?
+  observerEmail      String?
+  observerName       String?
+  testType           TestType
+  status             InvitationStatus @default(PENDING)
   expiresAt          DateTime
   createdAt          DateTime         @default(now())
   completedAt        DateTime?
@@ -200,9 +200,9 @@ model ObserverInvitation {
   externalContext    String?
   // Kampány-kontextus: melyik mérés-kör alatt jött létre (jóváhagyási
   // szabály + csapat-szintű jóváhagyó felület ehhez köt).
-  campaignId   String?
-  approvedById String?
-  approvedAt   DateTime?
+  campaignId         String?
+  approvedById       String?
+  approvedAt         DateTime?
 
   inviter    UserProfile         @relation("InviterInvitations", fields: [inviterId], references: [id])
   observer   UserProfile?        @relation("ObserverInvitations", fields: [observerProfileId], references: [id])
@@ -273,21 +273,21 @@ model Feedback {
 // ============================================
 
 model Team {
-  id                   String    @id @default(cuid())
-  name                 String
-  ownerId              String
-  orgId                String?
-  createdAt            DateTime  @default(now())
+  id                     String    @id @default(cuid())
+  name                   String
+  ownerId                String
+  orgId                  String?
+  createdAt              DateTime  @default(now())
   teamRoleRoundActive    Boolean   @default(false)
   teamRoleRoundStartedAt DateTime?
 
-  owner            UserProfile        @relation("TeamOwner", fields: [ownerId], references: [id])
-  org              Organization?      @relation(fields: [orgId], references: [id], onDelete: SetNull)
-  members          TeamMember[]
-  activeForUsers   UserProfile[]  @relation("ActiveTeamContext")
-  pendingInvites   TeamPendingInvite[]
-  reports          TeamReport[]
-  candidateInvites CandidateInvite[]
+  owner                UserProfile           @relation("TeamOwner", fields: [ownerId], references: [id])
+  org                  Organization?         @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  members              TeamMember[]
+  activeForUsers       UserProfile[]         @relation("ActiveTeamContext")
+  pendingInvites       TeamPendingInvite[]
+  reports              TeamReport[]
+  candidateInvites     CandidateInvite[]
   teamRoleObservations TeamRoleObservation[]
   peerFeedbackItems    PeerFeedbackItem[]
   feedbackRequests     FeedbackRequest[]
@@ -369,23 +369,23 @@ model TeamPendingInvite {
 // ============================================
 
 model CandidateInvite {
-  id          String    @id @default(cuid())
-  token       String    @unique @default(cuid())
-  managerId   String
+  id                 String    @id @default(cuid())
+  token              String    @unique @default(cuid())
+  managerId          String
   // Szervezet-hatókör (2026-07-23, jelölt-flow újraélesztés): a team
   // opcionális, de az org-kötés fix — e nélkül a team-nélküli meghívott
   // nem volt listázható/megnyitható.
-  orgId       String?
-  teamId      String?
-  email       String?
-  name        String?
-  position    String?
-  status      String    @default("PENDING")   // PENDING | COMPLETED | EXPIRED
-  testType    String    @default("TRITAN")
+  orgId              String?
+  teamId             String?
+  email              String?
+  name               String?
+  position           String?
+  status             String    @default("PENDING") // PENDING | COMPLETED | EXPIRED
+  testType           String    @default("TRITAN")
   // Opcionális 2. lépés a kitöltésben: csapatszerep-kérdőív (átugorható)
-  includeTeamRole Boolean @default(false)
-  expiresAt   DateTime
-  createdAt   DateTime  @default(now())
+  includeTeamRole    Boolean   @default(false)
+  expiresAt          DateTime
+  createdAt          DateTime  @default(now())
   completedAt        DateTime?
   draftStartedAt     DateTime?
   draftAnsweredCount Int       @default(0)
@@ -401,14 +401,14 @@ model CandidateInvite {
 }
 
 model CandidateResult {
-  id        String   @id @default(cuid())
-  inviteId  String   @unique
-  testType  String
-  scores    Json
+  id                 String   @id @default(cuid())
+  inviteId           String   @unique
+  testType           String
+  scores             Json
   // Csapatszerep-kérdőív válaszok (TeamRoleSelections) — ha a jelölt
   // kitöltötte az opcionális 2. lépést
   teamRoleSelections Json?
-  createdAt DateTime @default(now())
+  createdAt          DateTime @default(now())
 
   invite CandidateInvite @relation(fields: [inviteId], references: [id])
 }
@@ -418,22 +418,22 @@ model CandidateResult {
 // ============================================
 
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  ownerId   String
-  status    String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"
+  id               String   @id @default(cuid())
+  name             String
+  ownerId          String
+  status           String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"
   // Cég-/számlázási adatok (adószám, cím, kapcsolattartó, iparág stb.) —
   // KIZÁRÓLAG az admin felületen jelenik meg és szerkeszthető.
   // Mezőlista: src/lib/org-billing.ts (OrgBillingProfile).
-  billingProfile Json?
+  billingProfile   Json?
   // Karrier-modul elrejtése az org tagjainak (fül + PDF-blokk) —
   // KIZÁRÓLAG a trita admin kapcsolhatja (/admin?tab=orgs).
-  hideCareerModule Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  hideCareerModule Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  owner            UserProfile                @relation("OrgOwner", fields: [ownerId], references: [id])
-  activeUsers      UserProfile[]              @relation("ActiveOrgContext")
+  owner            UserProfile                 @relation("OrgOwner", fields: [ownerId], references: [id])
+  activeUsers      UserProfile[]               @relation("ActiveOrgContext")
   members          OrganizationMember[]
   pendingInvites   OrganizationPendingInvite[]
   teams            Team[]
@@ -448,9 +448,9 @@ model Organization {
 model CandidateCredit {
   id        String   @id @default(cuid())
   orgId     String
-  type      String   // "purchase" | "usage" | "refund"
-  amount    Int      // positive: top-up, negative: usage
-  balance   Int      // running balance AFTER this transaction
+  type      String // "purchase" | "usage" | "refund"
+  amount    Int // positive: top-up, negative: usage
+  balance   Int // running balance AFTER this transaction
   note      String?
   actorId   String?
   createdAt DateTime @default(now())
@@ -468,8 +468,8 @@ model Subscription {
   stripeSubscriptionId   String?   @unique
   stripePriceId          String?
   stripeLatestInvoiceId  String?
-  planType               String?   // "team" | "org" | "scale"
-  billingInterval        String?   // "monthly" | "annual"
+  planType               String? // "team" | "org" | "scale"
+  billingInterval        String? // "monthly" | "annual"
   status                 String    @default("trialing")
   trialEndsAt            DateTime?
   currentPeriodStart     DateTime?
@@ -488,7 +488,7 @@ model Subscription {
 }
 
 model OrganizationMember {
-  id       String   @id @default(cuid())
+  id       String    @id @default(cuid())
   orgId    String
   userId   String
   role     String    @default("ORG_MEMBER") // "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER"
@@ -524,42 +524,42 @@ model OrganizationPendingInvite {
 // ── 360° Campaign layer ────────────────────────────────────────────────────
 
 model Campaign {
-  id          String    @id @default(cuid())
-  orgId       String
-  name        String
-  description String?
+  id                     String    @id @default(cuid())
+  orgId                  String
+  name                   String
+  description            String?
   // Mérés-típus: "OBSERVER_360" | "TEAM_ROLE" | "PSYCH_SAFETY"
   // Több-lépéses kampánynál az első lépés típusa (kompatibilitás).
-  type        String    @default("OBSERVER_360")
+  type                   String    @default("OBSERVER_360")
   // Rendezett mérés-lépések. Üres tömbnél a `type` az egyetlen lépés.
   // A lépések felhasználónként, sorban nyílnak meg (CampaignParticipant.currentStep).
-  steps       String[]  @default([])
+  steps                  String[]  @default([])
   // Csapat-célzású kampánynál a cél-csapat (riport-híd + idővonal ehhez köt)
   // 2026-07-29-től több csapat is célozható: teamIds a teljes lista,
   // a teamId az első csapat (legacy kompatibilitás + riport-híd).
-  teamId      String?
-  teamIds     String[]  @default([])
+  teamId                 String?
+  teamIds                String[]  @default([])
   // Külső (nem szervezeti) observer-meghívók jóváhagyás nélkül mehetnek-e
   // ebben a kampányban. false → a külső meghívó AWAITING_APPROVAL állapotban
   // jön létre, és menedzser/org admin/tanácsadó engedélyezi.
-  allowExternalObservers Boolean @default(false)
+  allowExternalObservers Boolean   @default(false)
   // Lépés-ütemezés: a teljesített lépés után ennyi órával nyílik a
   // következő kérdőív (0 = azonnal, egymás után). Default: napi egy.
-  stepIntervalHours Int @default(24)
+  stepIntervalHours      Int       @default(24)
   // Peer feedback lépés módja: true = a feedforward-elemek anonim-aggregáltan
   // jelennek meg a címzettnél (n>=3 küszöbbel); false = nevesített.
-  peerFeedbackAnonymous Boolean @default(false)
+  peerFeedbackAnonymous  Boolean   @default(false)
   // Újrafelvételi kör: true → a lépés csak az aktiválás UTÁN beadott
   // eredménnyel teljesül (nincs fast-forward korábbi eredményből).
   // Terv: docs/product/ujrafuttatas-korok-terv.md 1.2.
-  requireFreshResults Boolean @default(false)
+  requireFreshResults    Boolean   @default(false)
   // A DRAFT→ACTIVE váltás időpontja (a fresh-ellenőrzés referencia-pontja).
-  activatedAt DateTime?
-  status      String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
-  createdBy   String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  closedAt    DateTime?
+  activatedAt            DateTime?
+  status                 String    @default("DRAFT") // "DRAFT" | "ACTIVE" | "CLOSED"
+  createdBy              String
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  closedAt               DateTime?
 
   org                  Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
   creator              UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
@@ -578,14 +578,14 @@ model Campaign {
 }
 
 model CampaignParticipant {
-  id         String   @id @default(cuid())
-  campaignId String
-  userId     String
-  addedAt    DateTime @default(now())
+  id              String    @id @default(cuid())
+  campaignId      String
+  userId          String
+  addedAt         DateTime  @default(now())
   // Kitöltöttség ténye (pl. pszich. biztonság pulse) — értékek NÉLKÜL.
-  completedAt DateTime?
+  completedAt     DateTime?
   // Több-lépéses kampány: a résztvevő aktuális lépés-indexe a Campaign.steps-ben.
-  currentStep Int @default(0)
+  currentStep     Int       @default(0)
   // lépés-típus → ISO teljesítési idő (pl. { "TEAM_ROLE": "2026-07-20T..." })
   stepCompletions Json?
   // Ütemezett lépés-nyitás: amíg a jövőben van, az aktuális lépés zárva
@@ -637,42 +637,42 @@ model PsychSafetyResponse {
 // ============================================
 
 model Purchase {
-  id                      String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userProfileId           String
-  userProfile             UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+  userProfileId String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
 
-  orgId                   String?
-  teamId                  String?
+  orgId  String?
+  teamId String?
 
   // "self_plus" | "team_snapshot" | "team_deep_dive"
-  tier                    String
+  tier String
 
   stripePaymentIntentId   String?
   stripeCheckoutSessionId String?
-  amount                  Int      // cent-ben (€49 = 4900)
-  currency                String   @default("eur")
-  status                  String   @default("completed")
+  amount                  Int // cent-ben (€49 = 4900)
+  currency                String  @default("eur")
+  status                  String  @default("completed")
   // "pending" | "completed" | "refunded"
 
   // Advisory tracking (Team Deep Dive tartalmaz 1 session-t)
-  includesAdvisory        Boolean  @default(false)
-  advisoryUsed            Boolean  @default(false)
+  includesAdvisory Boolean @default(false)
+  advisoryUsed     Boolean @default(false)
 
   // Candidate credit (későbbi csomagokhoz)
-  includedCredits         Int      @default(0)
+  includedCredits Int @default(0)
 
-  metadata                Json?
+  metadata Json?
 
   // Billingo invoice tracking
-  productType             String?  // "self_plus" | "team_snapshot" | "candidate_pack"
-  grossAmount             Int?     // bruttó összeg centben (ÁFA-val)
-  billingoDocumentId      String?
-  billingoDocumentNumber  String?
-  invoiceStatus           String   @default("not_applicable") // "pending" | "issued" | "failed" | "not_applicable"
+  productType            String? // "self_plus" | "team_snapshot" | "candidate_pack"
+  grossAmount            Int? // bruttó összeg centben (ÁFA-val)
+  billingoDocumentId     String?
+  billingoDocumentNumber String?
+  invoiceStatus          String  @default("not_applicable") // "pending" | "issued" | "failed" | "not_applicable"
 
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userProfileId])
   @@index([orgId])
@@ -710,8 +710,8 @@ model TeamRoleScore {
   id               String   @id @default(cuid())
   userProfileId    String
   campaignId       String?
-  scores           Json     // Record<TeamRoleCode, 0-100>
-  source           String   // "questionnaire" | "estimate"
+  scores           Json // Record<TeamRoleCode, 0-100>
+  source           String // "questionnaire" | "estimate"
   teamRoleAnswerId String?  @unique
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -769,10 +769,10 @@ model PeerFeedbackItem {
   createdAt  DateTime @default(now())
 
   request  FeedbackRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
-  team     Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  campaign Campaign?   @relation(fields: [campaignId], references: [id], onDelete: SetNull)
-  from     UserProfile @relation("PeerFeedbackFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
-  to       UserProfile @relation("PeerFeedbackTo", fields: [toUserId], references: [id], onDelete: Cascade)
+  team     Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campaign Campaign?        @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  from     UserProfile      @relation("PeerFeedbackFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  to       UserProfile      @relation("PeerFeedbackTo", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@index([teamId, toUserId, createdAt])
   @@index([fromUserId, createdAt])
@@ -790,11 +790,11 @@ model FeedbackRequest {
   topic          String
   allowAnonymous Boolean  @default(false)
   status         String   @default("open") // "open" | "closed"
-  audienceIds    Json     // string[] — a felkért csapattagok userProfile id-i
+  audienceIds    Json // string[] — a felkért csapattagok userProfile id-i
   createdAt      DateTime @default(now())
 
-  team  Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  asker UserProfile @relation("FeedbackRequestAsker", fields: [askerId], references: [id], onDelete: Cascade)
+  team  Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  asker UserProfile        @relation("FeedbackRequestAsker", fields: [askerId], references: [id], onDelete: Cascade)
   items PeerFeedbackItem[]
 
   @@index([teamId, status])
@@ -830,7 +830,7 @@ model TrustObservation {
 }
 
 model AdvisorySession {
-  id             String    @id @default(cuid())
+  id String @id @default(cuid())
 
   orgId          String?
   teamId         String?
@@ -838,16 +838,16 @@ model AdvisorySession {
   subscriptionId String?
   requestedById  String
 
-  type           String    // "guided" | "facilitation" | "workshop"
-  status         String    @default("requested")
+  type   String // "guided" | "facilitation" | "workshop"
+  status String @default("requested")
   // "requested" | "scheduled" | "completed" | "canceled"
 
-  scheduledAt    DateTime?
-  completedAt    DateTime?
-  notes          String?
+  scheduledAt DateTime?
+  completedAt DateTime?
+  notes       String?
 
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([orgId])
   @@index([teamId])
@@ -857,9 +857,6 @@ model AdvisorySession {
 // ============================================
 // BILLING EVENT TRACKING
 // ============================================
-
-
-
 
 // ── Notification Hub ────────────────────────────────────────────────────────
 
@@ -921,28 +918,85 @@ model Inquiry {
 }
 
 model Notification {
-  id            String           @id @default(cuid())
-  userId        String
-  type          NotificationType
-  category      String           @default("system")   // assessment | observer | org | campaign | billing | system
-  priority      String           @default("normal")   // low | normal | high
-  titleKey      String
-  bodyKey       String
-  vars          Json?
-  link          String?
-  sourceType    String?          // e.g. "observer_invitation", "campaign", "stripe_invoice"
-  sourceId      String?          // e.g. invitationId, campaignId, stripeInvoiceId
-  actorUserId   String?          // who triggered this (e.g. observer, inviter)
-  dedupeKey     String?          // for dedup: e.g. "PAYMENT_FAILED:orgId:invoiceId"
-  read          Boolean          @default(false)
-  readAt        DateTime?
-  dismissed     Boolean          @default(false)
-  dismissedAt   DateTime?
-  createdAt     DateTime         @default(now())
+  id          String           @id @default(cuid())
+  userId      String
+  type        NotificationType
+  category    String           @default("system") // assessment | observer | org | campaign | billing | system
+  priority    String           @default("normal") // low | normal | high
+  titleKey    String
+  bodyKey     String
+  vars        Json?
+  link        String?
+  sourceType  String? // e.g. "observer_invitation", "campaign", "stripe_invoice"
+  sourceId    String? // e.g. invitationId, campaignId, stripeInvoiceId
+  actorUserId String? // who triggered this (e.g. observer, inviter)
+  dedupeKey   String? // for dedup: e.g. "PAYMENT_FAILED:orgId:invoiceId"
+  read        Boolean          @default(false)
+  readAt      DateTime?
+  dismissed   Boolean          @default(false)
+  dismissedAt DateTime?
+  createdAt   DateTime         @default(now())
 
   user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([dedupeKey, userId])
   @@index([userId, dismissed, createdAt])
   @@index([userId, read])
+}
+
+// ============================================
+// FAKE DOOR — kereslet-mérés meg nem épült modulokra
+// ============================================
+//
+// Két tábla, mert egy szám önmagában semmit nem mond: a válaszok mellé kell a
+// NEVEZŐ is (hányan látták egyáltalán). A `sessionId` köti össze a kettőt, és
+// ez hordozza az ársáv-sorsolást is — így ugyanaz a látogató visszatérve nem
+// lát másik árat (az árváltás máskülönben másik kérdéssé tenné a mérést).
+//
+// Szándékosan NINCS idegen kulcs a UserProfile felé: a mérés kijelentkezve is
+// mehet, és a válasz akkor is megőrzendő, ha a fiók később törlődik (a
+// `userId`/`profileId` ilyenkor egy már nem létező azonosítót jelöl — ez a
+// mérés szempontjából elfogadható, a személyes adat viszont az e-mail, ami
+// külön opt-inhez kötött).
+
+model FakeDoorView {
+  id           String   @id @default(cuid())
+  module       String // "career_compass"
+  sessionId    String
+  userId       String? // Clerk user id, ha bejelentkezett
+  profileId    String? // UserProfile id, ha van fiók
+  audience     String // "individual" | "candidate" | "consultant" | "anon"
+  priceVariant Int // 4900 | 9900 | 14900
+  source       String? // "results" | "dashboard" | "direct" | utm-forrás
+  createdAt    DateTime @default(now())
+
+  // Munkamenetenként EGY megtekintés: az újratöltés nem hígítja a nevezőt.
+  @@unique([module, sessionId])
+  @@index([module, createdAt])
+}
+
+model FakeDoorResponse {
+  id           String   @id @default(cuid())
+  module       String
+  sessionId    String
+  userId       String?
+  profileId    String?
+  audience     String
+  priceVariant Int
+  interest     String // "yes" | "no"
+  reasonNo     String? // csak "no" ágon
+  valueGoal    String? // csak "yes" ágon; "skipped", ha átugorta
+  otherText    String? // az „egyéb" szabad szöveg (max 200 karakter)
+  emailOptIn   Boolean  @default(false)
+  email        String?
+  source       String?
+  viewedAt     DateTime // a megtekintés ideje — a döntési idő ebből számolható
+  respondedAt  DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Munkamenetenként EGY válasz, felülírható: aki meggondolja magát, annak az
+  // utolsó válasza számít (a köztes állapotot nem mérjük).
+  @@unique([module, sessionId])
+  @@index([module, interest])
+  @@index([module, priceVariant])
 }

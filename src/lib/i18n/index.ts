@@ -14,6 +14,7 @@ import { resultsTranslations } from "./results";
 import { profileTranslations } from "./profile";
 import { orgTranslations } from "./org";
 import { notificationTranslations } from "./notifications";
+import { fakeDoorTranslations } from "./fakedoor";
 
 // ── Merged dictionary ───────────────────────────────────────────────────────
 // MÉLY összefésülés — a korábbi sekély spread a top-level névtér-ütközésnél
@@ -59,6 +60,7 @@ const translations = [
   profileTranslations,
   orgTranslations,
   notificationTranslations,
+  fakeDoorTranslations,
 ].reduce<TranslationNode>(
   (merged, domain) => deepMergeTranslations(merged, domain as TranslationNode),
   {},

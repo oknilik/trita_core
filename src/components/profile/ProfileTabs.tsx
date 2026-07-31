@@ -40,8 +40,7 @@ import { ComparisonTab as ComparisonTabNew } from "@/components/results/Comparis
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
-import { CareerPlusCta } from "@/components/results/career/CareerPlusCta";
-import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { Card } from "@/components/ui/primitives/Card";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
@@ -1059,7 +1058,9 @@ export function ProfileTabs({
               />
               {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
                   működő iránytűre visz, amíg nincs kész, a kereslet-mérő
-                  ajánlóra — az utóbbi a megjelenést is rögzíti. */}
+                  oldalra. A `from=results` a mérésben a belépési pontot
+                  jelöli — a riportból érkező szándéka mást ér, mint a
+                  közvetlen látogatóé. */}
               {!careerModuleHidden &&
                 (CAREER_MODULE_READY ? (
                   <SectionCta
@@ -1071,7 +1072,14 @@ export function ProfileTabs({
                     motif="compass"
                   />
                 ) : (
-                  <CareerPlusCta />
+                  <SectionCta
+                    eyebrow={t("fakeDoor.badge", locale)}
+                    title={t("fakeDoor.ctaTitle", locale)}
+                    body={t("fakeDoor.ctaBody", locale)}
+                    cta={t("fakeDoor.ctaButton", locale)}
+                    href="/career?from=results"
+                    motif="compass"
+                  />
                 ))}
             </div>
           </>

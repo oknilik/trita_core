@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { buildWorkspaceNavigation, type WorkspaceNavContext } from "@/lib/navigation/config";
-import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import {
   canViewAnalyticsFeature,
   canViewDashboardBlock,
