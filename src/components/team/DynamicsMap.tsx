@@ -4,6 +4,7 @@ import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { FRICTION_WEIGHTS } from "@/lib/friction-model";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
@@ -54,10 +55,6 @@ function getHubIds(edges: DynamicsEdge[]): string[] {
 }
 
 // ── Dimension breakdown helpers ──────────────────────────────────────────────
-
-const FRICTION_WEIGHTS: Record<string, number> = {
-  THOR: 0.30, ADAP: 0.25, INTE: 0.20, RESO: 0.15, TEMP: 0.05, OPEN: 0.05,
-};
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },

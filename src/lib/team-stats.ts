@@ -4,9 +4,15 @@ import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from 
 import { buildTeamTrustNetwork } from "./trust-network.server";
 import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
 import type { TrustEdgeType } from "./trust-network";
+import {
+  FRICTION_WEIGHTS,
+  calculatePairFriction,
+  frictionToEdgeType,
+  type DynamicsEdgeType,
+} from "./friction-model";
 
 const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
-export type DynamicsEdgeType = "aligned" | "complementary" | "friction";
+export type { DynamicsEdgeType };
 
 const DIM_COLORS: Record<string, string> = {
   INTE: "#6366F1",
@@ -104,39 +110,10 @@ export interface TeamPageData {
 }
 
 // ── Profile-based friction estimate ─────────────────────────────────────────
-// Weighted TRITAN dimension gaps predict interpersonal friction potential.
-// Weights based on established personality psychology research:
-//   C (conscientiousness) and A (agreeableness) gaps are the strongest work
-//   friction predictors; H (honesty-humility) follows; E, X, O are weaker.
-
-export const FRICTION_WEIGHTS: Record<string, number> = {
-  THOR: 0.30,  // deadline/quality/follow-through tension
-  ADAP: 0.25,  // communication style conflicts
-  INTE: 0.20,  // trust and motive attribution
-  RESO: 0.15,  // emotional thermostat mismatch
-  TEMP: 0.05,  // communication frequency mismatch
-  OPEN: 0.05,  // innovation vs pragmatism
-};
-
-export function calculatePairFriction(
-  scoresA: Record<string, number>,
-  scoresB: Record<string, number>,
-): number {
-  let weightedSum = 0;
-  for (const dim of DIM_ORDER) {
-    const a = scoresA[dim];
-    const b = scoresB[dim];
-    if (typeof a !== "number" || typeof b !== "number") continue;
-    weightedSum += (FRICTION_WEIGHTS[dim] ?? 0) * Math.abs(a - b);
-  }
-  return Math.round(weightedSum);
-}
-
-export function frictionToEdgeType(frictionScore: number): DynamicsEdgeType {
-  if (frictionScore < 12) return "aligned";
-  if (frictionScore < 22) return "complementary";
-  return "friction";
-}
+// A modell a `friction-model.ts`-ben él (tiszta, Prisma-mentes modul, hogy a
+// kliens és az interakció-motor is importálhassa). Itt csak re-export, hogy a
+// meglévő `@/lib/team-stats` importok változatlanul működjenek.
+export { FRICTION_WEIGHTS, calculatePairFriction, frictionToEdgeType };
 
 function buildProfileBasedEdges(
   members: SerializedTeamMember[],
