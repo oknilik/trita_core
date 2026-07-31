@@ -71,6 +71,39 @@ export function resolvePersonalityTypeLabel(
 }
 
 /**
+ * Megjelenítésre kész FŐNÉVI archetípus („Újító", "Innovator") — ez a
+ * címke akkor jár egy dimenziónak, ha az a DOMINÁNS.
+ *
+ * Azért exportált, hogy a típust VÁLASZTÓ felületek (pl. az interakció-
+ * szimuláció archetípus-választója) ugyanazt a szókincset kínálják, amit a
+ * profil megjelenít — különben a felhasználónak fejben kellene leképeznie a
+ * dimenzió-nevet az archetípus-névre.
+ */
+export function personalityNoun(
+  code: string,
+  locale: PersonalityLocale,
+): string | null {
+  const parts = PERSONALITY_TYPE_PARTS[code];
+  if (!parts) return null;
+  return capitalizeFirst(locale === "hu" ? parts.noun.hu : parts.noun.en);
+}
+
+/**
+ * Megjelenítésre kész MELLÉKNÉVI színezet („Energikus", "Energetic") — ez a
+ * címke akkor jár egy dimenziónak, ha az a MÁSODIK legerősebb.
+ */
+export function personalityAdjective(
+  code: string,
+  locale: PersonalityLocale,
+): string | null {
+  const parts = PERSONALITY_TYPE_PARTS[code];
+  if (!parts) return null;
+  return capitalizeFirst(
+    locale === "hu" ? parts.adjective.hu : parts.adjective.en,
+  );
+}
+
+/**
  * Kényelmi wrapper: pontozott dimenzió-listából (score szerint rendezve
  * választja ki a top kettőt). Kevesebb mint két dimenziónál null.
  */

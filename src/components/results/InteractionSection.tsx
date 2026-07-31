@@ -7,6 +7,10 @@ import { SelectField } from "@/components/ui/primitives/SelectField";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { TRITAN_DIMENSIONS, TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
 import {
+  personalityAdjective,
+  personalityNoun,
+} from "@/lib/personality-type";
+import {
   archetypeKey,
   type ArchetypeSimulationView,
   type InteractionTextLine,
@@ -106,8 +110,17 @@ export function InteractionSection({ simulations }: InteractionSectionProps) {
   };
 
   const current = byKey.get(archetypeKey(dominant, secondary));
+
+  // A választó ugyanazt a szókincset kínálja, amit a profil megjelenít
+  // („Újító" / „Energikus"), nem a nyers dimenzió-nevet — különben a
+  // felhasználónak fejben kellene leképeznie a Nyitottság → újító párt.
+  // A HEXACO-dimenzió az opció mögött marad, mert az a hitelesség forrása.
   const dimName = (dim: TritanDimCode) =>
     locale === "hu" ? TRITAN_DIMENSIONS[dim].hu : TRITAN_DIMENSIONS[dim].en;
+  const nounOption = (dim: TritanDimCode) =>
+    `${personalityNoun(dim, locale) ?? dimName(dim)} · ${dimName(dim)}`;
+  const adjectiveOption = (dim: TritanDimCode) =>
+    `${personalityAdjective(dim, locale) ?? dimName(dim)} · ${dimName(dim)}`;
 
   return (
     <section>
@@ -129,7 +142,7 @@ export function InteractionSection({ simulations }: InteractionSectionProps) {
         >
           {TRITAN_ORDER.map((dim) => (
             <option key={dim} value={dim}>
-              {dimName(dim)}
+              {nounOption(dim)}
             </option>
           ))}
         </SelectField>
@@ -142,7 +155,7 @@ export function InteractionSection({ simulations }: InteractionSectionProps) {
         >
           {secondaryOptions.map((dim) => (
             <option key={dim} value={dim}>
-              {dimName(dim)}
+              {adjectiveOption(dim)}
             </option>
           ))}
         </SelectField>

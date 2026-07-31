@@ -11,6 +11,11 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { InteractionSection } from "@/components/results/InteractionSection";
 import { buildArchetypeSimulations } from "@/lib/interaction-view";
+import {
+  personalityAdjective,
+  personalityNoun,
+  resolvePersonalityTypeLabel,
+} from "@/lib/personality-type";
 import { t } from "@/lib/i18n";
 
 vi.mock("@/components/LocaleProvider", () => ({
@@ -148,6 +153,38 @@ describe("InteractionSection", () => {
     expect(
       screen.queryByText(hu("results.interactionLeaderTitle")),
     ).not.toBeInTheDocument();
+  });
+
+  // Szinkron-őr: a választó szókincse ugyanaz, mint amit a profil megjelenít.
+  // Enélkül a felhasználónak fejben kellene leképeznie a „Nyitottság → újító"
+  // párt, mert a picker dimenziót kérdez, az eredmény meg archetípust mond.
+  it("a választó a PROFIL szókincsét kínálja, nem nyers dimenzió-nevet", async () => {
+    const user = userEvent.setup();
+    render(<InteractionSection simulations={marked()} />);
+
+    const dominantSelect = screen.getByLabelText(
+      hu("results.interactionPickDominant"),
+    ) as HTMLSelectElement;
+    const secondarySelect = screen.getByLabelText(
+      hu("results.interactionPickSecondary"),
+    ) as HTMLSelectElement;
+
+    // A domináns listája FŐNEVEKET kínál, a második MELLÉKNEVEKET.
+    for (const option of dominantSelect.options) {
+      const noun = personalityNoun(option.value, "hu")!;
+      expect(option.text.startsWith(noun)).toBe(true);
+    }
+    for (const option of secondarySelect.options) {
+      const adjective = personalityAdjective(option.value, "hu")!;
+      expect(option.text.startsWith(adjective)).toBe(true);
+    }
+
+    // És a kettő tényleg összeáll a profilnál használt címkére.
+    await user.selectOptions(dominantSelect, "OPEN");
+    await user.selectOptions(secondarySelect, "TEMP");
+    const expected = resolvePersonalityTypeLabel("OPEN", "TEMP", "hu")!;
+    expect(expected).toBe("Energikus újító");
+    expect(screen.getByText(expected)).toBeInTheDocument();
   });
 
   it("lapos profilnál a sparse üzenet jön, nem üres blokkok", () => {
