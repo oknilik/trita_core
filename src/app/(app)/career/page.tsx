@@ -7,13 +7,17 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { computeCareerForProfile } from "@/lib/career/service";
 import { isCareerModuleHidden } from "@/lib/career/module-visibility";
-import { CAREER_PROBE_ENABLED } from "@/lib/career/deep-probe";
+import {
+  CAREER_MODULE_READY,
+  CAREER_PROBE_KIND,
+  CAREER_PROBE_PRICE_HUF,
+} from "@/lib/career/deep-probe";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { getTestConfig } from "@/lib/questions";
 import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { CareerCompass } from "@/components/results/CareerCompass";
-import { CareerPlusCta } from "@/components/results/career/CareerPlusCta";
+import { CareerPlusPitch } from "@/components/results/career/CareerPlusPitch";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 
@@ -60,6 +64,42 @@ export default async function CareerPage() {
 
   if (await isCareerModuleHidden(profile.id)) notFound();
 
+  // A modul még nem kész: az oldal az AJÁNLÓT mutatja, és azt mérjük, van-e
+  // rá igény. Az iránytű kódja érintetlen — a `CAREER_MODULE_READY`
+  // átbillentésével azonnal visszakapcsol.
+  if (!CAREER_MODULE_READY) {
+    const previousChoice = await prisma.feedback.findUnique({
+      where: {
+        userProfileId_kind_targetKey: {
+          userProfileId: profile.id,
+          kind: CAREER_PROBE_KIND,
+          targetKey: "choice",
+        },
+      },
+      select: { rating: true },
+    });
+
+    const price = new Intl.NumberFormat(locale === "hu" ? "hu-HU" : "en-GB", {
+      style: "currency",
+      currency: "HUF",
+      maximumFractionDigits: 0,
+    }).format(CAREER_PROBE_PRICE_HUF);
+
+    return (
+      <PlatformPageShell
+        surface="self"
+        contentClassName="max-w-3xl gap-8 px-4 py-10 md:gap-10"
+      >
+        <CareerPlusPitch
+          price={price}
+          initialChoice={
+            previousChoice?.rating == null ? null : previousChoice.rating === 1
+          }
+        />
+      </PlatformPageShell>
+    );
+  }
+
   const latestResult = await prisma.assessmentResult.findFirst({
     where: { userProfileId: profile.id, isSelfAssessment: true },
     orderBy: { createdAt: "desc" },
@@ -101,10 +141,6 @@ export default async function CareerPage() {
         />
       </section>
 
-      {/* Kereslet-mérés a mély rétegre. Csak kitöltött profillal mutatjuk:
-          profil nélkül a felhasználó még az alap-iránytűt sem látta, egy
-          készülő bővítményről kérdezni értelmetlen lenne. */}
-      {CAREER_PROBE_ENABLED && hasSelfResult && <CareerPlusCta />}
     </PlatformPageShell>
   );
 }

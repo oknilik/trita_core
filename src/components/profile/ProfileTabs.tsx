@@ -40,6 +40,8 @@ import { ComparisonTab as ComparisonTabNew } from "@/components/results/Comparis
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
+import { CareerPlusCta } from "@/components/results/career/CareerPlusCta";
+import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
 import { Card } from "@/components/ui/primitives/Card";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
@@ -1055,16 +1057,22 @@ export function ProfileTabs({
                 href="/interaction"
                 motif="pair"
               />
-              {!careerModuleHidden && (
-                <SectionCta
-                  eyebrow={t("results.ctaCareerEyebrow", locale)}
-                  title={t("results.ctaCareerTitle", locale)}
-                  body={t("results.ctaCareerBody", locale)}
-                  cta={t("results.ctaCareerButton", locale)}
-                  href="/career"
-                  motif="compass"
-                />
-              )}
+              {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
+                  működő iránytűre visz, amíg nincs kész, a kereslet-mérő
+                  ajánlóra — az utóbbi a megjelenést is rögzíti. */}
+              {!careerModuleHidden &&
+                (CAREER_MODULE_READY ? (
+                  <SectionCta
+                    eyebrow={t("results.ctaCareerEyebrow", locale)}
+                    title={t("results.ctaCareerTitle", locale)}
+                    body={t("results.ctaCareerBody", locale)}
+                    cta={t("results.ctaCareerButton", locale)}
+                    href="/career"
+                    motif="compass"
+                  />
+                ) : (
+                  <CareerPlusCta />
+                ))}
             </div>
           </>
         )}

@@ -1,5 +1,6 @@
 import { resolveWorkspaceNavRole, type WorkspaceNavRole } from "@/lib/navigation/roles";
 import { canViewNavSection } from "@/lib/navigation/visibility";
+import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
 
 export { resolveWorkspaceNavRole };
 export type { WorkspaceNavRole };
@@ -100,6 +101,11 @@ function buildResultsItem(): WorkspaceNavItem {
 // füle). Az Eredményeim mellett van a helye, mert ugyanabból a profilból dolgozik.
 function buildCareerItem(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
   if (ctx.careerModuleHidden) return null;
+  // Amíg a modul nem kész, a `/career` a kereslet-mérő ajánlót mutatja. Azt
+  // egyetlen úton engedjük elérni (riport-oldali CTA), különben a tölcsér
+  // első foka mellett becsorognának a menüből jövők, és a lemorzsolódási
+  // arány értelmezhetetlen lenne.
+  if (!CAREER_MODULE_READY) return null;
   return {
     id: "career",
     label: "Karrier",

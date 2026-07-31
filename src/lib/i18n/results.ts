@@ -1092,21 +1092,21 @@ export const resultsTranslations = {
     // a funkció még nincs kész — enélkül a mérés megtévesztés lenne.
     careerPlusBadge: { hu: "Készülő funkció", en: "In development" },
     careerPlusTitle: {
-      hu: "Karrier-mélyítés: konkrét szerepek, konkrét lépések",
-      en: "Career deep-dive: concrete roles, concrete steps",
+      hu: "Karrier-iránytű: milyen munkában lennél a helyeden?",
+      en: "Career compass: what work would suit you?",
     },
     careerPlusLead: {
-      hu: "Az iránytű megmutatja, milyen JELLEGŰ munka illik hozzád. Ez a réteg onnan folytatná: nevesített szerepek a végzettségedhez mérve, és egy terv, amit hétfőn el lehet kezdeni. Még nem létezik — azt mérjük, érdemes-e megépíteni.",
-      en: "The compass shows what KIND of work fits you. This layer would continue from there: named roles measured against your qualifications, and a plan you can start on Monday. It doesn't exist yet — we're measuring whether it's worth building.",
+      hu: "A személyiségprofilod már megvan. Ez a modul onnan indulna: megmutatná, milyen JELLEGŰ munka illik hozzád, milyen konkrét szerepek jönnek ebből szóba, és mit érdemes kipróbálnod. Még nem létezik — most azt mérjük, érdemes-e megépíteni.",
+      en: "You already have your personality profile. This module would start from there: what KIND of work fits you, which concrete roles follow from it, and what's worth trying next. It doesn't exist yet — we're measuring whether it's worth building.",
     },
     careerPlusWhatTitle: { hu: "Mit tudna", en: "What it would do" },
     careerPlusFeature1: {
-      hu: "Nevesített szerepek a katalógusból, a végzettségi szintedhez és szakirányodhoz mérve — külön jelölve, ami már most elérhető, és ami képzéssel.",
-      en: "Named roles from the catalogue, measured against your qualification level and field — marked separately for what's reachable now and what needs training.",
+      hu: "Munka-területek, amikben a profilod alapján jól érezhetnéd magad — mindegyikhez néhány példa-szerep, és külön jelölve, ami már most elérhető, és ami képzéssel.",
+      en: "Areas of work where your profile suggests you could thrive — each with a few example roles, marked separately for what's reachable now and what needs training.",
     },
     careerPlusFeature2: {
-      hu: "Indoklás szerepenként: melyik dimenziód húzza, hol feszülhet, és mekkora a becslés bizonytalansága.",
-      en: "A rationale per role: which of your dimensions pulls, where it may strain, and how uncertain the estimate is.",
+      hu: "Indoklás területenként: melyik dimenziód húzza arra, hol feszülhet, és mekkora a becslés bizonytalansága — nem jóslat, hanem kiindulópont.",
+      en: "A rationale per area: which of your dimensions pulls that way, where it may strain, and how uncertain the estimate is — a starting point, not a prediction.",
     },
     careerPlusFeature3: {
       hu: "Kísérlet-terv: 3-5 kipróbálható lépés, plusz álláshirdetés-kulcsszavak — mit keress és mi legyen gyanús.",
@@ -1142,14 +1142,15 @@ export const resultsTranslations = {
     },
     careerPlusChangeAnswer: { hu: "Meggondoltam magam", en: "I changed my mind" },
     careerPlusError: { hu: "Nem sikerült elmenteni, próbáld újra.", en: "Couldn't save, please try again." },
-    careerPlusBack: { hu: "Vissza az iránytűhöz", en: "Back to the compass" },
+    careerPlusBack: { hu: "Vissza az eredményeidhez", en: "Back to your results" },
+    careerPlusCtaEyebrow: { hu: "Készülő modul", en: "Module in development" },
     careerPlusCtaTitle: {
-      hu: "Konkrét szerepekre és lépésekre is kíváncsi vagy?",
-      en: "Want concrete roles and steps too?",
+      hu: "Milyen munkában lennél a helyeden?",
+      en: "What work would suit you?",
     },
     careerPlusCtaBody: {
-      hu: "Készülő réteg: nevesített szerepek a végzettségedhez mérve, indoklással és kísérlet-tervvel. Nézd meg, mit tudna — és mondd meg, érdekel-e.",
-      en: "A layer in development: named roles measured against your qualifications, with rationale and an experiment plan. See what it would do — and tell us if it interests you.",
+      hu: "Karrier-iránytű készül a profilodra: illeszkedő területek, konkrét szerepek és kipróbálható lépések. Nézd meg, mit tudna — és mondd meg, érdekel-e.",
+      en: "A career compass is in the works for your profile: fitting areas, concrete roles and steps you can try. See what it would do — and tell us if it interests you.",
     },
     careerPlusCtaButton: { hu: "Megnézem, mit tudna", en: "See what it would do" },
     // Magyarázó-link a Holland-kód értelmező oldalra (ExplainerLink).

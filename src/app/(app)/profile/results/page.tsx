@@ -9,6 +9,7 @@ import { TeamInterestBanner } from "@/components/results/TeamInterestBanner";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { computeCareerForProfile } from "@/lib/career/service";
 import { isCareerModuleHidden } from "@/lib/career/module-visibility";
+import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getSelfAccessLevel } from "@/lib/access";
@@ -154,7 +155,7 @@ export default async function ProfileResultsPage({
     | (CareerBackground & { status?: string })
     | null;
   const careerResult =
-    careerHiddenMembership || !storedCareerBackground?.status
+    !CAREER_MODULE_READY || careerHiddenMembership || !storedCareerBackground?.status
       ? null
       : await computeCareerForProfile(profile.id, {
           limit: 18,

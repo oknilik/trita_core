@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, tf } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 
-// Karrier-plusz pitch — kereslet-mérés, nem értékesítés.
+// Karrier-ajánló — kereslet-mérés, nem értékesítés.
+//
+// Ez a `/career` oldal TARTALMA, amíg a modul nincs kész: a működő iránytű
+// helyén áll, nem mellette. (Kapcsoló: `CAREER_MODULE_READY`.)
 //
 // Szigorú szabályok, mert a termék hitelességből él:
 //  · az oldal KIMONDJA, hogy a funkció még nincs kész;
@@ -28,7 +31,7 @@ export function CareerPlusPitch({ price, initialChoice }: CareerPlusPitchProps) 
   const [failed, setFailed] = useState(false);
   const viewLogged = useRef(false);
 
-  // Oldal-megtekintés: ez a tölcsér második foka. Egyszer fut le böngésző-
+  // Oldal-megtekintés: ez a tölcsér második foka (a riport-oldali CTA után). Egyszer fut le böngésző-
   // munkamenetenként; a szerver amúgy is idempotens.
   useEffect(() => {
     if (viewLogged.current) return;
@@ -195,7 +198,7 @@ export function CareerPlusPitch({ price, initialChoice }: CareerPlusPitchProps) 
       </section>
 
       <p className="text-caption text-[var(--color-text-muted)]">
-        <Link href="/career" className="underline underline-offset-2 hover:text-[var(--color-text-secondary)]">
+        <Link href="/profile/results" className="underline underline-offset-2 hover:text-[var(--color-text-secondary)]">
           {t("results.careerPlusBack", locale)}
         </Link>
       </p>

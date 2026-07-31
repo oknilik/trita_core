@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { buildWorkspaceNavigation, type WorkspaceNavContext } from "@/lib/navigation/config";
+import { CAREER_MODULE_READY } from "@/lib/career/deep-probe";
 import {
   canViewAnalyticsFeature,
   canViewDashboardBlock,
@@ -107,7 +108,7 @@ test("member topnav has results + tasks next to own teams (2026-07-29)", () => {
   const navItems = buildWorkspaceNavigation("self", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "career", "tasks", "teams"]);
+  assert.deepEqual(ids, ["home", "results", "tasks", "teams"]);
 });
 
 test("tasks badge counts open measurement work; hidden without org and tasks", () => {
@@ -138,7 +139,7 @@ test("member without teams gets no teams dropdown", () => {
   const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "career", "tasks"]);
+  assert.deepEqual(ids, ["home", "results", "tasks"]);
 });
 
 test("admin org dropdown no longer contains the dead billing entry", () => {
@@ -149,10 +150,14 @@ test("admin org dropdown no longer contains the dead billing entry", () => {
   assert.equal(childIds.includes("org-billing"), false);
 });
 
-// A karrier-iránytű 2026-07-31 óta önálló oldal (`/career`), és a menüből
-// érhető el. Az org-szintű kapcsoló ugyanúgy elrejti, mint magát az oldalt —
-// ha ez elcsúszik, a menü egy 404-re mutató linket kínál.
-test("karrier menüpont: alapból látszik, org-kapcsolóval eltűnik", () => {
+// A karrier-iránytű önálló oldal (`/career`), de a modul MÉG NEM KÉSZ: addig
+// az oldalon a kereslet-mérő ajánló áll, és a menüpont nem jelenik meg — az
+// ajánlóhoz egyetlen út vezet (riport-oldali CTA), különben a mérés tölcsére
+// olvashatatlan lenne. Ha a `CAREER_MODULE_READY` true-ra vált, ez a teszt
+// bukik: akkor az alábbi állítást kell megfordítani, nem a kapcsolót.
+test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
+  assert.equal(CAREER_MODULE_READY, false, "a modul kész lett — ld. a teszt kommentjét");
+
   const visible = buildWorkspaceNavigation("self", {
     homeHref: "/dashboard",
     org: null,
@@ -161,10 +166,14 @@ test("karrier menüpont: alapból látszik, org-kapcsolóval eltűnik", () => {
     activeCampaignCount: 0,
     openTaskCount: 0,
   });
-  const career = visible.find((item) => item.id === "career");
-  assert.ok(career, "nincs karrier menüpont");
-  assert.equal(career.primaryHref, "/career");
+  assert.equal(
+    visible.find((item) => item.id === "career"),
+    undefined,
+    "a készületlen modul menüpontja megjelent",
+  );
 
+  // Az org-szintű kapcsoló önmagában is elrejti — ez a szabály a modul
+  // élesítése után is érvényben marad.
   const hidden = buildWorkspaceNavigation("self", {
     homeHref: "/dashboard",
     org: null,
@@ -177,6 +186,6 @@ test("karrier menüpont: alapból látszik, org-kapcsolóval eltűnik", () => {
   assert.equal(
     hidden.find((item) => item.id === "career"),
     undefined,
-    "az org-kapcsoló nem rejtette el a menüpontot",
+    "a menüpont megjelent",
   );
 });
