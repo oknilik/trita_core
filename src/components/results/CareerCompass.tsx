@@ -374,6 +374,17 @@ export function CareerCompass({
     }, 320);
   }
 
+  // A kérdőív a leghosszabb lépés, és az eredménye a DB-ben marad — ha egyszer
+  // kitöltötte, a wizard újrafuttatásakor NE kérdezzük meg újra. Csak a teljes
+  // újrakezdés (DELETE) törli, ott a lépés visszajön.
+  //
+  // MOUNTKOR dől el, nem reaktívan: ha a `flow` menet közben rövidülne (mert a
+  // user épp most töltötte ki a kérdőívet), a `goNext("riasec")` egy már nem
+  // létező lépésből számolna következőt, és a wizard az elejére ugrana vissza.
+  const [riasecPrefilled, setRiasecPrefilled] = useState(
+    () => Object.keys(initialBackground?.riasecScores ?? {}).length > 0,
+  );
+
   // A wizard lépéssorrendje — tanulóknál a „jelenlegi terület" kimarad.
   const flow: Step[] = [
     "status",
@@ -381,7 +392,7 @@ export function CareerCompass({
     ...(background.status === "studying" ? [] : (["current"] as Step[])),
     "interests",
     "veto",
-    "riasec",
+    ...(riasecPrefilled ? [] : (["riasec"] as Step[])),
     "prefs",
     "env",
     "lead",
@@ -437,6 +448,7 @@ export function CareerCompass({
 
   // Mért Holland-kód: a mentett háttérben már van érdeklődés-teszt eredmény
   const hasMeasuredRiasec = Object.keys(background.riasecScores ?? {}).length > 0;
+
 
   // Az eredményt a SZERVER számolja (motor v2): a 477 tételes katalógus nem
   // kerül a kliensbe, és a PDF-ág ugyanezt a végpontot használja.
@@ -516,6 +528,7 @@ export function CareerCompass({
     setFitState("idle");
     setProfilerOpen(false);
     setCelebrate(false);
+    setRiasecPrefilled(false);
     setStep("intro");
   }, []);
 
