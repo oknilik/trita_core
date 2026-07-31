@@ -156,6 +156,21 @@ interface NavHeaderUIProps {
  * A harang és a panel két helyen renderelődik (desktop + mobil ág), ezért a
  * notification-állapot egy providerben él — egy poll, egy lista-lekérés.
  */
+// Modul-szinten deklarálva: a szülő testében minden render új komponens-
+// típust adott, ami a nyitott lenyílót le- és újraszerelte (animáció-újrafutás).
+function MegaDropdown({ children, isOpen }: { children: React.ReactNode; isOpen: boolean }) {
+  if (!isOpen) return null;
+  return (
+    <div
+    className="absolute left-0 top-[calc(100%+4px)] z-50 w-[380px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
+    style={{ animation: "fade-in 150ms ease-out" }}
+    >
+    {children}
+    </div>
+  );
+}
+
+
 export function NavHeaderUI({
   unreadNotificationCount = 0,
   ...props
@@ -437,21 +452,16 @@ function NavHeaderContent({
     }
   }
 
-  function MegaDropdown({ children, isOpen }: { children: React.ReactNode; isOpen: boolean }) {
-    if (!isOpen) return null;
-    return (
-      <div
-        className="absolute left-0 top-[calc(100%+4px)] z-50 w-[380px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
-        style={{ animation: "fade-in 150ms ease-out" }}
-      >
-        {children}
-      </div>
-    );
-  }
 
-  function UserDropdown({ isOpen }: { isOpen: boolean }) {
-    if (!isOpen) return null;
-    return (
+  // FONTOS: ez NEM komponens, hanem JSX-változó.
+  //
+  // Komponensként (a szülő testében deklarálva) minden szülő-render új
+  // függvény-identitást adott neki, ezért React más TÍPUSKÉNT látta: a nyitott
+  // menüt leszerelte és újra felépítette, a `fade-in` animáció pedig újra
+  // lefutott — ez volt a kattintás utáni „ugrás". Változóként a nyitott menü
+  // ugyanaz a DOM-részfa marad.
+  const userDropdown =
+    openDropdown !== "user" ? null : (
       <div
         className="absolute right-0 top-[calc(100%+6px)] z-50 w-[280px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
         style={{ animation: "fade-in 150ms ease-out" }}
@@ -612,7 +622,6 @@ function NavHeaderContent({
         </div>
       </div>
     );
-  }
 
   return (
     <>
@@ -712,6 +721,13 @@ function NavHeaderContent({
             </div>
             <div className="relative">
               <button
+                // A tagság-listát már a gomb fölé éréskor / fókuszkor
+                // betöltjük: kattintáskor indítva a válasz a MEGNYITOTT menübe
+                // érkezett, és az org-váltó blokk utólag nőtt bele — ez volt a
+                // másik oka a „megugrik" érzésnek. A hívás továbbra is
+                // egyszer fut le (ensureOrgMemberships őrzi).
+                onPointerEnter={ensureOrgMemberships}
+                onFocus={ensureOrgMemberships}
                 type="button"
                 onClick={() => toggle("user")}
                 data-testid="nav-user-menu-trigger"
@@ -736,7 +752,7 @@ function NavHeaderContent({
                 )}
                 <ChevronDown />
               </button>
-              <UserDropdown isOpen={openDropdown === "user"} />
+              {userDropdown}
             </div>
           </div>
 
