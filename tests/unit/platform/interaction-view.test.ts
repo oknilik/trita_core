@@ -98,6 +98,14 @@ test("lapos profilnál mind a 30 sparse — a felület külön üzenetet ad", ()
   }
 });
 
+// A nézet-modell szerver-komponensből megy át kliens-komponensbe (RSC-határ),
+// ezért sima JSON-nak kell lennie: se Date, se Map, se függvény, se undefined.
+// Dinamikus route-nál ezt a build NEM fogja meg — csak a futásidő.
+test("a nézet-modell átmegy az RSC-határon: veszteségmentesen szerializálható", () => {
+  const sims = buildArchetypeSimulations(PROFILE, "hu");
+  assert.deepEqual(JSON.parse(JSON.stringify(sims)), sims);
+});
+
 test("markáns profilnál van nem-sparse archetípus, discusszal", () => {
   const sims = buildArchetypeSimulations(PROFILE, "hu");
   const usable = sims.filter((sim) => !sim.sparse);
