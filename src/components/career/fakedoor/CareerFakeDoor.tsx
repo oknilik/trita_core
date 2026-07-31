@@ -261,8 +261,28 @@ export function CareerFakeDoor({
               {price}
             </p>
             <p className="mt-3 max-w-prose text-caption leading-relaxed text-white/[0.72]">
-              {t("fakeDoor.priceFraming", locale)}{" "}
-              <span className="text-white/[0.5]">{t("fakeDoor.priceNoCard", locale)}</span>
+              {t("fakeDoor.priceFraming", locale)}
+            </p>
+            {/* A „most nem fizetsz" nem lábjegyzet: ez az oldal legfontosabb
+                ígérete, és ez tartja a mérést tisztességesnek. Pipa + saját
+                sáv, hogy elolvasás nélkül is látszódjon. */}
+            <p
+              className="mt-3 inline-flex items-start gap-2 rounded-xl bg-white/[0.08] px-3.5 py-2.5 text-caption leading-relaxed text-white/[0.86]"
+              style={{ color: CAREER_THEME.badgeText }}
+            >
+              <svg
+                viewBox="0 0 20 20"
+                aria-hidden
+                className="mt-0.5 h-4 w-4 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 10.5 8 14.5 16 6" />
+              </svg>
+              <span>{t("fakeDoor.priceNoCard", locale)}</span>
             </p>
           </div>
         </div>
