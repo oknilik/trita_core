@@ -130,9 +130,6 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
     data: {
       orgId,
       status: "active",
-      stripeCustomerId: `cus_${orgId}`,
-      stripeSubscriptionId: `sub_${orgId}`,
-      stripePriceId: "price_org_monthly_e2e_smoke",
       currentPeriodEnd: new Date("2026-06-30T00:00:00.000Z"),
       trialEndsAt: null,
       cancelAtPeriodEnd: false,

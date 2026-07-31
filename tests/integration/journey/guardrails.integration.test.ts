@@ -196,14 +196,12 @@ test("E2 guardrail integration: restricted subscription blocks create/manage act
     create: {
       orgId: org.id,
       status: "past_due",
-      stripePriceId: "scale_test_price",
       currentPeriodEnd: new Date("2026-06-01T00:00:00.000Z"),
       cancelAtPeriodEnd: false,
       candidateCredits: 10,
     },
     update: {
       status: "past_due",
-      stripePriceId: "scale_test_price",
       currentPeriodEnd: new Date("2026-06-01T00:00:00.000Z"),
       cancelAtPeriodEnd: false,
       candidateCredits: 10,
@@ -245,14 +243,12 @@ test("E2 guardrail integration: frozen subscription keeps minimal read-only org 
     create: {
       orgId: org.id,
       status: "canceled",
-      stripePriceId: "scale_test_price",
       currentPeriodEnd: new Date("2026-01-01T00:00:00.000Z"),
       cancelAtPeriodEnd: true,
       candidateCredits: 10,
     },
     update: {
       status: "canceled",
-      stripePriceId: "scale_test_price",
       currentPeriodEnd: new Date("2026-01-01T00:00:00.000Z"),
       cancelAtPeriodEnd: true,
       candidateCredits: 10,

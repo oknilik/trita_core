@@ -37,19 +37,12 @@ export interface AccessPolicyMembership {
   hasTeamMembership?: boolean;
 }
 
-export interface AccessPolicyPurchaseState {
-  tiers?: readonly string[];
-  hasObserverAccess?: boolean;
-  canExportPersonal?: boolean;
-}
-
 export interface AccessPolicyUser {
   isAuthenticated?: boolean;
   role?: string | null;
   orgRole?: string | null;
   teamRole?: string | null;
   membership?: AccessPolicyMembership;
-  purchaseState?: AccessPolicyPurchaseState;
 }
 
 export interface AccessPolicyContext {
@@ -105,23 +98,12 @@ const ADMIN_ONLY_CAPABILITIES = new Set<Capability>([
   "teamInviteEmail",
 ]);
 
-const SELF_PLUS_EQUIVALENT_TIERS = new Set([
-  "self_plus",
-  "team_snapshot",
-  "team_deep_dive",
-  "team_pulse",
-  "org_insight",
-  "org_growth",
-  "org_partner",
-]);
-
 interface DerivedContext {
   isAuthenticated: boolean;
   hasOrgMembership: boolean;
   hasTeamMembership: boolean;
   orgRole: string | null;
   policyState: SubscriptionCapabilityPolicyState;
-  hasObserverPurchaseAccess: boolean;
 }
 
 function deriveContext(user: AccessPolicyUser, context: AccessPolicyContext): DerivedContext {
@@ -137,12 +119,6 @@ function deriveContext(user: AccessPolicyUser, context: AccessPolicyContext): De
       Boolean(context.activeTeamId) ||
       Boolean(user.teamRole));
 
-  const hasObserverPurchaseAccess =
-    Boolean(user.purchaseState?.hasObserverAccess) ||
-    Boolean(
-      user.purchaseState?.tiers?.some((tier) => SELF_PLUS_EQUIVALENT_TIERS.has(tier)),
-    );
-
   return {
     isAuthenticated: user.isAuthenticated !== false,
     hasOrgMembership,
@@ -153,7 +129,6 @@ function deriveContext(user: AccessPolicyUser, context: AccessPolicyContext): De
       subscriptionState: context.subscriptionState,
       subscriptionStatus: context.subscriptionStatus,
     }),
-    hasObserverPurchaseAccess,
   };
 }
 
@@ -219,13 +194,9 @@ function resolveDeniedCapability(
   if (
     capability === "observerInvite" &&
     !derived.hasOrgMembership &&
-    !derived.hasTeamMembership &&
-    !derived.hasObserverPurchaseAccess
+    !derived.hasTeamMembership
   ) {
-    return {
-      reason: "PURCHASE_REQUIRED",
-      upgradeHint: { code: "upgrade_to_self_plus" },
-    };
+    return { reason: "CAPABILITY_NOT_GRANTED" };
   }
 
   return { reason: "CAPABILITY_NOT_GRANTED" };
@@ -255,16 +226,8 @@ export function resolveCapabilities(
     }
   }
 
-  if (
-    derived.hasOrgMembership ||
-    derived.hasTeamMembership ||
-    derived.hasObserverPurchaseAccess
-  ) {
+  if (derived.hasOrgMembership || derived.hasTeamMembership) {
     granted.add("observerInvite");
-  }
-
-  if (user.purchaseState?.canExportPersonal) {
-    granted.add("export");
   }
 
   return granted;

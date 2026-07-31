@@ -112,30 +112,10 @@ test("policy regression matrix scenarios remain stable", () => {
       },
     },
     {
-      name: "self-only + plus",
+      name: "self-only (nincs org/csapat tagság)",
       user: {
         isAuthenticated: true,
         membership: { hasOrgMembership: false, hasTeamMembership: false },
-        purchaseState: { tiers: ["self_plus"], hasObserverAccess: true, canExportPersonal: true },
-      },
-      context: { subscriptionState: "none" },
-      expected: {
-        read: true,
-        list: true,
-        create: false,
-        manage: false,
-        export: true,
-        billingManage: false,
-        candidateEvaluate: false,
-        invite: false,
-      },
-    },
-    {
-      name: "self-only + no plus",
-      user: {
-        isAuthenticated: true,
-        membership: { hasOrgMembership: false, hasTeamMembership: false },
-        purchaseState: { tiers: [], hasObserverAccess: false, canExportPersonal: false },
       },
       context: { subscriptionState: "none" },
       expected: {
@@ -165,13 +145,9 @@ function teamSubscription(overrides: {
   return {
     status: overrides.status,
     planType: "team",
-    billingInterval: null,
     trialEndsAt: null,
     currentPeriodEnd: null,
     cancelAtPeriodEnd: false,
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
-    stripePriceId: null,
     candidateCredits: overrides.candidateCredits,
   };
 }

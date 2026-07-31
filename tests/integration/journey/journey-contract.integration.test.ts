@@ -263,14 +263,12 @@ test("journey integration: subscription restriction precedence matrix is enforce
       create: {
         orgId: org.id,
         status: scenario.status,
-        stripePriceId: "scale_test_price",
         currentPeriodEnd: scenario.currentPeriodEnd,
         cancelAtPeriodEnd: scenario.status === "canceled",
         candidateCredits: 10,
       },
       update: {
         status: scenario.status,
-        stripePriceId: "scale_test_price",
         currentPeriodEnd: scenario.currentPeriodEnd,
         cancelAtPeriodEnd: scenario.status === "canceled",
         candidateCredits: 10,

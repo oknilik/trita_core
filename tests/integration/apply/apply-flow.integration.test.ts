@@ -87,14 +87,12 @@ async function ensureActiveOrgSubscription(orgId: string) {
     create: {
       orgId,
       status: "active",
-      stripePriceId: "scale_test_price",
       currentPeriodEnd: FUTURE,
       cancelAtPeriodEnd: false,
       candidateCredits: 100,
     },
     update: {
       status: "active",
-      stripePriceId: "scale_test_price",
       currentPeriodEnd: FUTURE,
       cancelAtPeriodEnd: false,
       candidateCredits: 100,

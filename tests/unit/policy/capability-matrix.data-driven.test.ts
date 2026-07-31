@@ -15,7 +15,7 @@ const CAPABILITY_COLUMNS = [
 
 type CapabilityColumn = (typeof CAPABILITY_COLUMNS)[number];
 type RoleAxis = "self-only" | "org member" | "org manager" | "org admin";
-type SubscriptionAxis = "none" | "plus" | "active" | "restricted" | "frozen";
+type SubscriptionAxis = "none" | "active" | "restricted" | "frozen";
 
 interface MatrixRow {
   role: RoleAxis;
@@ -26,19 +26,16 @@ interface MatrixRow {
 
 const MATRIX_ROWS: readonly MatrixRow[] = [
   { role: "self-only", subscription: "none", expectedPolicyState: "none", allowed: ["read", "list"] },
-  { role: "self-only", subscription: "plus", expectedPolicyState: "none", allowed: ["read", "list", "export"] },
   { role: "self-only", subscription: "active", expectedPolicyState: "active", allowed: ["read", "list"] },
   { role: "self-only", subscription: "restricted", expectedPolicyState: "restricted", allowed: ["read", "list"] },
   { role: "self-only", subscription: "frozen", expectedPolicyState: "frozen", allowed: ["read", "list"] },
 
   { role: "org member", subscription: "none", expectedPolicyState: "none", allowed: ["read", "list"] },
-  { role: "org member", subscription: "plus", expectedPolicyState: "none", allowed: ["read", "list", "export"] },
   { role: "org member", subscription: "active", expectedPolicyState: "active", allowed: ["read", "list", "export"] },
   { role: "org member", subscription: "restricted", expectedPolicyState: "restricted", allowed: ["read", "list"] },
   { role: "org member", subscription: "frozen", expectedPolicyState: "frozen", allowed: ["read", "list"] },
 
   { role: "org manager", subscription: "none", expectedPolicyState: "none", allowed: ["read", "list"] },
-  { role: "org manager", subscription: "plus", expectedPolicyState: "none", allowed: ["read", "list", "export"] },
   {
     role: "org manager",
     subscription: "active",
@@ -49,12 +46,6 @@ const MATRIX_ROWS: readonly MatrixRow[] = [
   { role: "org manager", subscription: "frozen", expectedPolicyState: "frozen", allowed: ["read", "list"] },
 
   { role: "org admin", subscription: "none", expectedPolicyState: "none", allowed: ["read", "list", "billingManage"] },
-  {
-    role: "org admin",
-    subscription: "plus",
-    expectedPolicyState: "none",
-    allowed: ["read", "list", "export", "billingManage"],
-  },
   {
     role: "org admin",
     subscription: "active",
@@ -102,15 +93,6 @@ function buildScenarioAxes(
           : "ORG_ADMIN";
   }
 
-  if (subscription === "plus") {
-    context.subscriptionState = "none";
-    user.purchaseState = {
-      tiers: ["self_plus"],
-      hasObserverAccess: true,
-      canExportPersonal: true,
-    };
-    return { user, context };
-  }
 
   context.subscriptionState = subscription;
   return { user, context };

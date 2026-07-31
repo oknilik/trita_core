@@ -5,11 +5,8 @@ import { PATTERN_NAMES } from "@/lib/team-pattern";
 import { t, tf, type Locale } from "@/lib/i18n";
 
 // Tier mapping from getPlanTier() in src/lib/subscription.ts:
-//   none / trialing  → "trial"      (no or trial subscription)
-//   "team"           → "essentials" (platform access, no consultation)
-//   "org"            → "advisory"   (platform + quarterly consultation)
-//   "scale"          → "custom"     (bespoke programme)
-export type AdvisoryTier = "trial" | "essentials" | "advisory" | "custom" | "none";
+//   nincs / lejárt → "none" · próbaidő → "trial" · aktív → "advisory"
+export type AdvisoryTier = "trial" | "advisory" | "none";
 
 interface TeamInfo {
   id: string;
@@ -41,8 +38,8 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
   const locale: Locale = isHu ? "hu" : "en";
   const firstName = userName.split(/[\s@]/)[0] ?? userName;
 
-  const isAdvisory = tier === "advisory" || tier === "custom";
-  const isUpgrade = tier === "trial" || tier === "essentials" || tier === "none";
+  const isAdvisory = tier === "advisory";
+  const isUpgrade = tier === "trial" || tier === "none";
 
   useEffect(() => {
     if (teams.length === 0) {
@@ -262,23 +259,17 @@ export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Pro
         </div>
       </div>
 
-      {/* ── CTA — advisory / custom ──────────────────────── */}
+      {/* ── CTA — tanácsadói konzultáció ──────────────────── */}
       {isAdvisory && !requestSent && (
         <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
           <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
-            {"// "}{tier === "custom"
-              ? t("advisory.ctaCustomEyebrow", locale)
-              : t("advisory.ctaAdvisoryEyebrow", locale)}
+            {"// "}{t("advisory.ctaAdvisoryEyebrow", locale)}
           </p>
           <h2 className="mb-3 font-fraunces text-2xl text-ink">
-            {tier === "custom"
-              ? t("advisory.ctaCustomHeading", locale)
-              : t("advisory.ctaAdvisoryHeading", locale)}
+            {t("advisory.ctaAdvisoryHeading", locale)}
           </h2>
           <p className="mx-auto mb-6 max-w-lg text-sm text-ink-body">
-            {tier === "custom"
-              ? t("advisory.ctaCustomBody", locale)
-              : t("advisory.ctaAdvisoryBody", locale)}
+            {t("advisory.ctaAdvisoryBody", locale)}
           </p>
           <button
             onClick={handleRequestConsultation}

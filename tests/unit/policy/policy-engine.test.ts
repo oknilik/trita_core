@@ -109,13 +109,14 @@ test("no org membership denies org-scoped capabilities with join hint", () => {
   assert.equal(decision.upgradeHint?.code, "join_org_or_team");
 });
 
-test("observer invite needs org/team context or self-plus purchase", () => {
+test("observer invite needs org/team context", () => {
+  // 2026-07-31: a vásárlás-alapú ág megszűnt a csomagokkal együtt — az
+  // observer-meghívó jogosultságát ma kizárólag a szervezeti/csapat-tagság adja.
   const denied = can(
     {
       isAuthenticated: true,
       role: "INDIVIDUAL",
       membership: { hasOrgMembership: false, hasTeamMembership: false },
-      purchaseState: { tiers: [] },
     },
     "observerInvite",
     { subscriptionState: "none" },
@@ -124,17 +125,14 @@ test("observer invite needs org/team context or self-plus purchase", () => {
     {
       isAuthenticated: true,
       role: "INDIVIDUAL",
-      membership: { hasOrgMembership: false, hasTeamMembership: false },
-      purchaseState: { tiers: ["self_plus"] },
+      membership: { hasOrgMembership: true, hasTeamMembership: false },
     },
     "observerInvite",
     { subscriptionState: "none" },
   );
 
   assert.equal(denied.allowed, false);
-  assert.equal(denied.reason, "PURCHASE_REQUIRED");
-  assert.equal(denied.upgradeHint?.code, "upgrade_to_self_plus");
-
+  assert.equal(denied.reason, "CAPABILITY_NOT_GRANTED");
   assert.equal(allowed.allowed, true);
 });
 

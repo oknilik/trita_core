@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { getPlanTier } from "@/lib/subscription";
+import { hasAccess } from "@/lib/subscription";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
@@ -42,13 +42,16 @@ export default async function AdvisoryPage() {
               name: true,
               subscription: {
                 select: {
+                  id: true,
+                  orgId: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  planType: true,
+                  currentPeriodStart: true,
                   status: true,
                   trialEndsAt: true,
                   currentPeriodEnd: true,
                   cancelAtPeriodEnd: true,
-                  stripeCustomerId: true,
-                  stripeSubscriptionId: true,
-                  stripePriceId: true,
                   candidateCredits: true,
                 },
               },
@@ -68,25 +71,16 @@ export default async function AdvisoryPage() {
       })
     : null;
 
-  // Determine tier — maps getPlanTier() to advisory page tiers:
-  //   none/trialing → "trial"  (trial CTA + founding offer)
-  //   team          → "essentials" (upgrade to advisory CTA)
-  //   org           → "advisory"  (1-click consultation request)
-  //   scale         → "custom"    (bespoke CTA)
+  // 2026-07-31: a csomagok (Essentials / Advisory / Scale) megszűntek, ezért
+  // nincs mit leképezni. A tanácsadói konzultáció a PROGRAM része: aktív
+  // előfizetésnél elérhető, próbaidőben még nem, előfizetés nélkül nem.
   let tier: AdvisoryTier = "none";
   if (membership) {
     const sub = membership.org.subscription;
-    if (!sub) {
-      tier = "none";
-    } else if (sub.status === "trialing") {
-      tier = "trial";
-    } else {
-      const planTier = getPlanTier(sub);
-      if (planTier === "team") tier = "essentials";
-      else if (planTier === "org") tier = "advisory";
-      else if (planTier === "scale") tier = "custom";
-      else tier = "none";
-    }
+    if (!sub) tier = "none";
+    else if (sub.status === "trialing") tier = "trial";
+    else if (hasAccess(sub)) tier = "advisory";
+    else tier = "none";
   }
 
   const isHu = locale !== "en";

@@ -463,27 +463,19 @@ model CandidateCredit {
 model Subscription {
   id                     String    @id @default(cuid())
   orgId                  String    @unique
-  stripeCustomerId       String?   @unique
-  stripeSubscriptionId   String?   @unique
-  stripePriceId          String?
-  stripeLatestInvoiceId  String?
   planType               String? // "team" | "org" | "scale"
-  billingInterval        String? // "monthly" | "annual"
   status                 String    @default("trialing")
   trialEndsAt            DateTime?
   currentPeriodStart     DateTime?
   currentPeriodEnd       DateTime?
   cancelAtPeriodEnd      Boolean   @default(false)
   candidateCredits       Int       @default(0)
-  billingoLastDocumentId String?
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
   org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@index([orgId])
-  @@index([stripeCustomerId])
-  @@index([stripeSubscriptionId])
 }
 
 model OrganizationMember {

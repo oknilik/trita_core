@@ -12,10 +12,9 @@ import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
-import { getSelfAccessLevel } from "@/lib/access";
+import { getSelfAccessLevel, type SelfAccess } from "@/lib/access";
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
-import type { AccessLevel } from "@/lib/access";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveObserverFlowStatus } from "@/lib/observer-flow";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
@@ -44,9 +43,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 type ProfileLevel = "start" | "plus";
 
-function toProfileLevel(level: AccessLevel): ProfileLevel {
-  if (level === "self_plus") return "plus";
-  return "start";
+function toProfileLevel(level: SelfAccess): ProfileLevel {
+  return level === "full" ? "plus" : "start";
 }
 
 function getInsight(

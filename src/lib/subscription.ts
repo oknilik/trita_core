@@ -28,13 +28,9 @@ export const getOrgSubscription = cache(async (orgId: string) => {
     select: {
       status: true,
       planType: true,
-      billingInterval: true,
       trialEndsAt: true,
       currentPeriodEnd: true,
       cancelAtPeriodEnd: true,
-      stripeCustomerId: true,
-      stripeSubscriptionId: true,
-      stripePriceId: true,
       candidateCredits: true,
     },
   });

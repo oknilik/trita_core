@@ -6,9 +6,6 @@ export interface TestSubscriptionRecord {
   trialEndsAt: Date | null;
   currentPeriodEnd: Date | null;
   cancelAtPeriodEnd: boolean;
-  stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
-  stripePriceId: string | null;
   candidateCredits: number;
 }
 
@@ -20,9 +17,6 @@ export function createSubscriptionRecord(
     trialEndsAt: null,
     currentPeriodEnd: null,
     cancelAtPeriodEnd: false,
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
-    stripePriceId: null,
     candidateCredits: 0,
     ...overrides,
   };
