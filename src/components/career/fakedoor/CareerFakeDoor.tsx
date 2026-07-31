@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
-import { TypeGlyph, TypeMotifMark } from "@/components/type/TypeGlyph";
-import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { TypeMotifMark } from "@/components/type/TypeGlyph";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   DecisionPanel,
@@ -40,24 +39,30 @@ interface CareerFakeDoorProps {
   priceVariant: number;
   /** Kész személyiségprofil típusneve — csak a riportból érkezőnél mutatjuk. */
   patternLabel: string | null;
-  /**
-   * A felhasználó SAJÁT karakter-ábrája (típus-ábra nyelvtan: domináns
-   * dimenzió = alapforma, második = motívum). Profil nélkül null — kitalált
-   * ábrát mutatni pont az ellenkezőjét üzenné annak, amit az oldal ígér.
-   */
-  glyph: {
-    primaryCode: string;
-    secondaryCode: string;
-    intensity: number;
-    /** A típusnév — az ábra alt-szövege ebből épül. */
-    label: string;
-  } | null;
   defaultEmail: string | null;
   initial: DecisionInitialState | null;
 }
 
-/** A karrier-felület hero-témája — a badge-ek innen veszik a színt. */
-const CAREER_THEME = SURFACE_HERO_THEME.career;
+/**
+ * A hero tervlapja. Zsálya tinta világos papíron — a rács és a keret
+ * ugyanabból a színből, különböző erősséggel, hogy milliméterpapír-hatást
+ * adjon a lap.
+ */
+const SHEET = {
+  ink: "#2d5a4e",
+  /**
+   * A bélyegző SZÁNDÉKOSAN nem a lap tintája: zsálya alapon a zsálya
+   * bélyegző beleolvad, pedig ez az oldal legfontosabb állítása. Meleg
+   * bronz a hideg papíron — kiugrik, és a palettában marad.
+   *
+   * Miért nem a sima bronz (#c17f4a): ezen a papíron csak 2,7:1-et ad. A
+   * mélyebb árnyalat 5,0:1 — ez már olvasható.
+   */
+  stamp: "#8a5730",
+  paper: "#dfeee8",
+  line: "rgba(45,90,78,0.18)",
+  strong: "rgba(45,90,78,0.34)",
+} as const;
 
 /** A négy kártya a tengelymotívumokat kapja ikonként — nincs emoji. */
 const CARDS = [
@@ -73,7 +78,6 @@ export function CareerFakeDoor({
   price,
   priceVariant,
   patternLabel,
-  glyph,
   defaultEmail,
   initial,
 }: CareerFakeDoorProps) {
@@ -92,91 +96,104 @@ export function CareerFakeDoor({
     }).catch(() => {});
   }, [sessionId, source]);
 
-  // A SAJÁT karakter-ábrája — HÁTTÉRKÉNT, nem a cím előtt.
-  //
-  // Volt egy lemez-változat is a cím mellett, de két helyen ugyanaz az ábra
-  // zsúfolt lett, és elvette a helyet a mondattól. Vízjelként megmarad a
-  // személyesség, a szöveg viszont szabadon fut. Mobilon is látszik, csak
-  // kisebben — ott ez az egyetlen előfordulása.
-  const glyphWatermark = glyph ? (
-    <TypeGlyph
-      primaryCode={glyph.primaryCode}
-      secondaryCode={glyph.secondaryCode}
-      typeLabel={glyph.label}
-      locale={locale}
-      intensity={glyph.intensity}
-      variant="badge"
-      canvas={false}
-      className="pointer-events-none absolute -bottom-12 -right-10 h-[280px] w-[280px] opacity-[0.10] md:-bottom-16 md:h-[420px] md:w-[420px] md:opacity-[0.09]"
-    />
-  ) : null;
-
   return (
     <div className="flex flex-col gap-8 md:gap-10">
-      <SurfaceHero
-        className="fd-rise"
-        variant="career"
-        contentClassName="relative"
-        eyebrow={
-          <span className="rounded-full bg-white/[0.12] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
+      {/* ── Hero: TERVLAP ────────────────────────────────────────────
+          Milliméterpapír, sarok-illesztőjelek, elforgatott bélyegző és
+          rajzszám-blokk. A „még nem kész" állapotot nem egy apró címke
+          mondja ki, hanem maga a forma — aki ránéz, nem hiszi késznek.
+          Mérőoldalon ez a legőszintébb felület, és a mért szándék
+          minőségét is védi.
+
+          Zsálya tintával: a self-felület zöldje. A karakter-ábra
+          SZÁNDÉKOSAN nincs a lapon — a rács, a bélyegző és a
+          rajzszám-blokk együtt már elég erős motívum, az ábra csak zajt
+          vitt bele. */}
+      <section
+        className="fd-rise relative overflow-hidden rounded-[20px] border px-6 py-8 md:px-10 md:py-11"
+        style={
+          {
+            background: SHEET.paper,
+            borderColor: SHEET.ink,
+          } as React.CSSProperties
+        }
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: [
+              `repeating-linear-gradient(0deg, ${SHEET.line} 0 1px, transparent 1px 16px)`,
+              `repeating-linear-gradient(90deg, ${SHEET.line} 0 1px, transparent 1px 16px)`,
+              `repeating-linear-gradient(0deg, ${SHEET.strong} 0 1px, transparent 1px 80px)`,
+              `repeating-linear-gradient(90deg, ${SHEET.strong} 0 1px, transparent 1px 80px)`,
+            ].join(","),
+          }}
+        />
+
+        {/* Sarok-illesztőjelek — műszaki rajz nyelvtana. */}
+        {["left-3 top-3", "right-3 top-3", "left-3 bottom-3", "right-3 bottom-3"].map(
+          (position) => (
+            <span
+              key={position}
+              aria-hidden
+              className={`absolute h-3 w-3 opacity-60 ${position}`}
+            >
+              <svg viewBox="0 0 12 12" fill="none" stroke={SHEET.ink} strokeWidth="1">
+                <path d="M6 0v12M0 6h12" />
+              </svg>
+            </span>
+          ),
+        )}
+
+        {/* Bélyegző: ez az első, amit a szem elkap. */}
+        <span
+          className="absolute right-5 top-6 rotate-[-7deg] rounded-md border-2 bg-white/40 px-3 py-1.5 text-micro font-bold uppercase tracking-widest md:right-10"
+          style={{ borderColor: SHEET.stamp, color: SHEET.stamp }}
+        >
+          {t("fakeDoor.badge", locale)}
+        </span>
+
+        <div className="relative max-w-[38rem]">
+          <span
+            className="font-mono text-micro uppercase tracking-widest"
+            style={{ color: SHEET.ink }}
+          >
             {t("fakeDoor.eyebrow", locale)}
           </span>
-        }
-        badge={
-          // TÖMÖR, nem áttetsző: az áttetsző pasztilla beleolvadt az agyag
-          // alapba, és pont az veszett el belőle, ami a legfontosabb — hogy
-          // ez a funkció még nem létezik. Ez az oldal egyetlen hangos
-          // vizuális állítása.
-          <span
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-micro font-bold uppercase tracking-widest"
-            style={{ background: CAREER_THEME.badgeText, color: "#3c2119" }}
-          >
-            <span
-              aria-hidden
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ background: "#3c2119" }}
-            />
-            {t("fakeDoor.badge", locale)}
-          </span>
-        }
-        title={
-          <h1 className="max-w-[17ch] font-fraunces text-fluid-title tracking-tight text-white">
+          <h1 className="mt-3 max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
             {t("fakeDoor.heroTitle", locale)}
           </h1>
-        }
-        meta={
-          // Kimondva, nem csak jelzésként: a badge-et át lehet siklani, ezt a
-          // mondatot nem. A mérés csak akkor tisztességes, ha a válaszadó
-          // tudja, hogy nem létező funkcióról nyilatkozik.
+          <p className="mt-4 max-w-[34rem] text-[17px] leading-relaxed text-ink-body md:text-[19px]">
+            {t("fakeDoor.heroLead", locale)}
+          </p>
+          {/* Kimondva, nem csak jelzésként: a bélyegzőt át lehet siklani, ezt
+              a mondatot nem. A mérés csak akkor tisztességes, ha a válaszadó
+              tudja, hogy nem létező funkcióról nyilatkozik. */}
           <p
-            className="mt-1 text-caption font-semibold"
-            style={{ color: CAREER_THEME.badgeText }}
+            className="mt-5 inline-block border-t border-dashed pt-3 text-caption font-semibold"
+            style={{ borderColor: SHEET.ink, color: SHEET.ink }}
           >
             {t("fakeDoor.badgeNote", locale)}
           </p>
-        }
-        body={
-          <p className="max-w-[620px] text-[17px] leading-relaxed text-white/[0.72] md:text-[19px]">
-            {t("fakeDoor.heroLead", locale)}
-          </p>
-        }
-        summary={
-          // T12: a riportból érkezőt a SAJÁT mintázata fogadja. A releváns
-          // ajánlatra adott igen többet ér mért szándékként.
-          patternLabel
-            ? tf("fakeDoor.heroPersonal", locale, { pattern: patternLabel })
-            : undefined
-        }
-        chips={
-          <span
-            className="rounded-full px-3 py-1.5 text-caption font-semibold"
-            style={{ background: CAREER_THEME.badgeBg, color: CAREER_THEME.badgeText }}
-          >
-            {t("fakeDoor.heroPositioning", locale)}
-          </span>
-        }
-        footer={glyphWatermark}
-      />
+          {/* T12: a riportból érkezőt a SAJÁT mintázata fogadja. */}
+          {patternLabel && (
+            <p className="mt-2 text-caption text-muted">
+              {tf("fakeDoor.heroPersonal", locale, { pattern: patternLabel })}
+            </p>
+          )}
+        </div>
+
+        {/* Rajzszám-blokk: műszaki rajzok sarok-táblája. Csak IGAZ adat. */}
+        <div
+          className="relative mt-7 flex flex-wrap gap-x-6 gap-y-1 border-t pt-3 font-mono text-micro uppercase tracking-widest"
+          style={{ borderColor: SHEET.ink, color: SHEET.ink }}
+        >
+          <span>Modul: {t("fakeDoor.eyebrow", locale)}</span>
+          <span>Állapot: terv</span>
+          <span>Döntés: mérés alatt</span>
+        </div>
+      </section>
 
       {/* ── „Wow" ────────────────────────────────────────────────── */}
       <section className="fd-rise fd-delay-1">
@@ -243,19 +260,17 @@ export function CareerFakeDoor({
           leggyengébb. A forma-vezérlők a VILÁGOS testben maradnak: sötét
           alapon a csúszka és a rádiógombok olvashatósága romlana. */}
       <section className="fd-rise fd-delay-4 overflow-hidden rounded-2xl border border-sand">
-        <div
-          className="relative overflow-hidden px-6 py-7 md:px-8 md:py-8"
-          style={{ background: CAREER_THEME.background }}
-        >
+        {/* Semleges ink alap (ugyanaz a sötét, mint a láblécé), NEM agyag: a
+            hero mostantól zsálya tervlap, mellette az agyag két külön
+            akcentus-családot vitt volna egy oldalra. Az ink egyikkel sem
+            versenyez. */}
+        <div className="relative overflow-hidden bg-gradient-to-b from-ink to-ink-body px-6 py-7 md:px-8 md:py-8">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-16 -top-16 h-[220px] w-[220px] rounded-full bg-white/[0.03]"
           />
           <div className="relative">
-            <p
-              className="font-mono text-micro uppercase tracking-widest"
-              style={{ color: CAREER_THEME.badgeText }}
-            >
+            <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
               {t("fakeDoor.priceLabel", locale)}
             </p>
             {/* Nincs count-up: egy nem létező termék oldalán a numerikus
@@ -269,10 +284,7 @@ export function CareerFakeDoor({
             {/* A „most nem fizetsz" nem lábjegyzet: ez az oldal legfontosabb
                 ígérete, és ez tartja a mérést tisztességesnek. Pipa + saját
                 sáv, hogy elolvasás nélkül is látszódjon. */}
-            <p
-              className="mt-3 inline-flex items-start gap-2 rounded-xl bg-white/[0.08] px-3.5 py-2.5 text-caption leading-relaxed text-white/[0.86]"
-              style={{ color: CAREER_THEME.badgeText }}
-            >
+            <p className="mt-3 inline-flex items-start gap-2 rounded-xl bg-white/[0.08] px-3.5 py-2.5 text-caption leading-relaxed text-[var(--color-accent-primary-soft)]">
               <svg
                 viewBox="0 0 20 20"
                 aria-hidden

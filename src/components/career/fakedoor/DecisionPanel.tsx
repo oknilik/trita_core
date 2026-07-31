@@ -122,7 +122,10 @@ export function DecisionPanel({
     // különben egy meg sem mozgatott csúszka alapértéke keveredne az adatba.
     const priceAnswer = interest === "no" && selected === "price" ? maxPrice : null;
 
-    const optIn = interest === "yes" && wantsEmail && email.trim().length > 0;
+    const wouldPaySomething =
+      interest === "no" && selected === "price" && maxPrice > 0;
+    const optIn =
+      (interest === "yes" || wouldPaySomething) && wantsEmail && email.trim().length > 0;
     if (optIn && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setEmailInvalid(true);
       return;
@@ -202,6 +205,7 @@ export function DecisionPanel({
   if (stage === "followup" && interest) {
     const isYes = interest === "yes";
     const options = isYes ? GOAL_OPTIONS : REASON_OPTIONS;
+    const wantsPriceAlert = !isYes && choice === "price" && maxPrice > 0;
     return (
       <div>
         <p className="font-fraunces text-[21px] leading-snug text-ink md:text-[25px]">
@@ -254,7 +258,11 @@ export function DecisionPanel({
           />
         )}
 
-        {isYes && (
+        {/* Feliratkozás: az „igen" ágon mindig, a „nem" ágon akkor, ha az ár
+            a visszatartó ok ÉS állított be valamekkora összeget. Aki fizetne
+            érte valamennyit, az érdeklődő — csak drágállja. Aki nullára
+            húzta, annak ez a kérdés tolakodó lenne. */}
+        {(isYes || wantsPriceAlert) && (
           <div className="mt-5 rounded-xl border border-bronze-edge bg-bronze-soft/40 p-4">
             <label className="flex min-h-[44px] cursor-pointer items-center gap-3">
               <input

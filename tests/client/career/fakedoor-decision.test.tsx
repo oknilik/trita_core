@@ -10,7 +10,7 @@
  *    torzulna, és a mérés önbecsapás lenne.
  */
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DecisionPanel } from "@/components/career/fakedoor/DecisionPanel";
@@ -145,6 +145,23 @@ describe("fake door döntési panel", () => {
     await user.click(screen.getByRole("button", { name: t("fakeDoor.submit", "hu") }));
     await waitFor(() => expect(bodies()).toHaveLength(2));
     expect(bodies()[1]).toMatchObject({ reasonNo: "price", maxPriceHuf: 9900 });
+  });
+
+  it("feliratkozás akkor is jár, ha az ár-elutasító adna érte valamennyit", async () => {
+    const user = userEvent.setup();
+    const { container } = renderPanel();
+
+    await user.click(screen.getByRole("button", { name: t("fakeDoor.no", "hu") }));
+    await screen.findByText(t("fakeDoor.reasonTitle", "hu"));
+    await user.click(container.querySelector<HTMLInputElement>('input[value="price"]') as HTMLInputElement);
+
+    // Alapból a látott ár van beállítva, tehát fizetne érte → jár a kérdés.
+    expect(screen.getByText(t("fakeDoor.notifyTitle", "hu"))).toBeTruthy();
+
+    // Nullára húzva viszont nem: aki semennyit nem adna, annak tolakodó lenne.
+    const slider = container.querySelector<HTMLInputElement>('input[type="range"]') as HTMLInputElement;
+    fireEvent.change(slider, { target: { value: "0" } });
+    expect(screen.queryByText(t("fakeDoor.notifyTitle", "hu"))).toBeNull();
   });
 
   it("korábbi válasszal nem kérdez újra", () => {

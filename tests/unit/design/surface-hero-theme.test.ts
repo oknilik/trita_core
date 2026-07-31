@@ -3,13 +3,16 @@ import assert from "node:assert/strict";
 import { SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 
 // A hero-szín a FELÜLET azonosítója: self = zsálya, team = szilva,
-// org = pala, career = agyag. Két dolgot véd ez a fájl:
+// org = pala. Két dolgot véd ez a fájl:
 //
-//  1. A négy alap tényleg különbözik. Ha kettő egymásra csúszna, a
+//  1. Az alapok tényleg különböznek. Ha kettő egymásra csúszna, a
 //     felhasználó nem tudná ránézésre, melyik felületen jár.
-//  2. A világos akcentus olvasható marad a saját alapján. Ez nem elméleti:
-//     az agyag heróhoz kézenfekvő lett volna a sima bronz (#c17f4a), az
-//     viszont ~2,5:1-et ad — olvashatatlan. Ezért világos borostyán.
+//  2. A világos akcentus olvasható marad a saját alapján.
+//
+// A karrier-felület NEM ebből a készletből dolgozik: a mérőoldal hero-ja
+// tervlap (világos zsálya papír, sötét zsálya tinta), a záró blokkja pedig
+// semleges ink. Volt egy agyag `career` variáns is — a tervlap-döntés után
+// használat nélkül maradt, ezért kivezettük.
 
 /** Egyetlen sRGB csatorna lineáris értéke (WCAG). */
 function channel(value: number): number {
@@ -39,12 +42,11 @@ function firstStop(background: string): string | null {
   return /#[0-9a-f]{6}/i.exec(background)?.[0] ?? null;
 }
 
-test("mind a négy felület saját alapszínt kap", () => {
+test("minden felület saját alapszínt kap", () => {
   const backgrounds = Object.values(SURFACE_HERO_THEME).map(
     (theme) => firstStop(theme.background) ?? theme.background,
   );
   assert.equal(new Set(backgrounds).size, backgrounds.length);
-  assert.ok(SURFACE_HERO_THEME.career, "a karrier-felületnek nincs hero-témája");
 });
 
 test("a hex akcentus olvasható a saját alapján (WCAG AA)", () => {
@@ -59,11 +61,4 @@ test("a hex akcentus olvasható a saját alapján (WCAG AA)", () => {
       `${variant}: a badge-szöveg kontrasztja csak ${ratio.toFixed(2)}:1`,
     );
   }
-});
-
-test("az agyag hero nem a sima bronzt használja akcentusnak", () => {
-  // Regresszió-védelem: a bronz (#c17f4a) itt kézenfekvő, de bukik.
-  const clay = firstStop(SURFACE_HERO_THEME.career.background) as string;
-  assert.ok(contrast("#c17f4a", clay) < 4.5, "a bronz mégis megfelelne?");
-  assert.ok(contrast(SURFACE_HERO_THEME.career.badgeText, clay) >= 4.5);
 });

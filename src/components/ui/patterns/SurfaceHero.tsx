@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
 
-export type SurfaceHeroVariant = "self" | "team" | "org" | "career";
+export type SurfaceHeroVariant = "self" | "team" | "org";
 
 interface SurfaceHeroTheme {
   background: string;
@@ -29,19 +29,6 @@ export const SURFACE_HERO_THEME: Record<SurfaceHeroVariant, SurfaceHeroTheme> = 
     primary: "#d2a36a",
     badgeBg: "rgba(210,163,106,0.22)",
     badgeText: "#f4c792",
-  },
-  // Karrier — agyag/rozsda. A hero-szín a FELÜLET azonosítója: a self
-  // zsálya (~160°), a team szilva (~310°), az org pala (~210°). A meleg
-  // vörös-narancs (~15°) az egyetlen szabad régió, tehát ez van a
-  // legtávolabb mindháromtól — félhomályban sem téveszthető össze.
-  //
-  // Az akcentus szándékosan VILÁGOS borostyán, nem a sima bronz: bronz
-  // agyagon ~2,5:1 kontrasztot adna (olvashatatlan), így ~5,7:1.
-  career: {
-    background: "linear-gradient(135deg, #6b4034 0%, #4e2e25 60%, #331e18 100%)",
-    primary: "#e0a678",
-    badgeBg: "rgba(224,166,120,0.22)",
-    badgeText: "#f6d3b1",
   },
 };
 

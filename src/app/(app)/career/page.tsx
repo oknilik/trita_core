@@ -18,7 +18,6 @@ import { readFakeDoorSession } from "@/lib/fakedoor/session";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { getTestConfig } from "@/lib/questions";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
-import { resolveGlyphPair } from "@/lib/type-glyph";
 import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { CareerCompass } from "@/components/results/CareerCompass";
@@ -159,18 +158,15 @@ async function renderFakeDoor({
     select: { interest: true, valueGoal: true, reasonNo: true, emailOptIn: true },
   });
 
-  // A kitöltött profilból két dolog jön: a mintázat NEVE (csak a riportból
-  // érkezőnél szólítjuk meg vele — T12) és a SAJÁT karakter-ábrája, amit a
-  // hero mutat. Profil nélkül mindkettő null: kitalált ábrát vagy nevet
-  // mutatni pont az ellenkezőjét üzenné annak, amit az oldal ígér.
+  // A kitöltött profilból a mintázat NEVE kell: ezzel szólítjuk meg a
+  // riportból érkezőt (T12). Profil nélkül null — kitalált nevet mutatni
+  // pont az ellenkezőjét üzenné annak, amit az oldal ígér.
   const ranked = scores?.dimensions
     ? Object.entries(scores.dimensions)
         .filter(([code]) => code !== "I")
         .map(([code, score]) => ({ code, score: score as number }))
     : [];
   const typeLabel = ranked.length ? resolvePersonalityTypeFromScores(ranked, locale) : null;
-  const glyphPair = ranked.length ? resolveGlyphPair(ranked) : null;
-  const glyph = glyphPair ? { ...glyphPair, label: typeLabel ?? "" } : null;
   const patternLabel = resolvedSource === "results" ? typeLabel : null;
 
   return (
@@ -184,7 +180,6 @@ async function renderFakeDoor({
         price={formatPrice(priceVariant, locale)}
         priceVariant={priceVariant}
         patternLabel={patternLabel}
-        glyph={glyph}
         defaultEmail={email}
         initial={
           existing

@@ -64,7 +64,12 @@ export async function POST(req: Request) {
       ? Math.min(parsed.data.maxPriceHuf, context.priceVariant)
       : null;
 
-  const emailOptIn = interest === "yes" && parsed.data.emailOptIn === true;
+  // Feliratkozás az „igen" ágon, ÉS az ár-elutasítók közül azoknál, akik
+  // adnának érte valamennyit: ők érdeklődők, csak drágállják. Aki nullát
+  // állított be, arról nem tárolunk e-mailt.
+  const wouldPaySomething = interest === "no" && (maxPriceHuf ?? 0) > 0;
+  const emailOptIn =
+    (interest === "yes" || wouldPaySomething) && parsed.data.emailOptIn === true;
   const email = emailOptIn ? (parsed.data.email ?? null) : null;
   const source =
     parsed.data.source && isFakeDoorSource(parsed.data.source)
