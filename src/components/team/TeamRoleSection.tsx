@@ -88,7 +88,7 @@ function TeamRoleCompletionStatus({
           <p className="mt-1 text-xs text-muted">
             {isHu
               ? `${questionnaireCount} valódi kitöltés · ${estimateCount} profil-alapú becslés`
-              : `${questionnaireCount} real fill-out · ${estimateCount} TRITAN estimate`}
+              : `${questionnaireCount} real fill-out · ${estimateCount} profile-based estimate`}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">

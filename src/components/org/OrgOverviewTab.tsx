@@ -30,7 +30,7 @@ const TRITAN_LABELS_HU: Record<string, string> = {
 const TRITAN_LABELS_EN: Record<string, string> = {
   INTE: "Honesty-Humility",
   RESO: "Emotionality",
-  TEMP: "eXtraversion",
+  TEMP: "Extraversion",
   ADAP: "Agreeableness",
   THOR: "Conscientiousness",
   OPEN: "Openness",
