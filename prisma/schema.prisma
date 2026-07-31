@@ -985,6 +985,9 @@ model FakeDoorResponse {
   priceVariant Int
   interest     String // "yes" | "no"
   reasonNo     String? // csak "no" ágon
+  // Ha az elutasítás oka az ár: mennyit adna érte (Ft, 0 = semennyit). A
+  // csúszka a LÁTOTT árról indul, tehát az érték ahhoz mérve olvasandó.
+  maxPriceHuf  Int?
   valueGoal    String? // csak "yes" ágon; "skipped", ha átugorta
   otherText    String? // az „egyéb" szabad szöveg (max 200 karakter)
   emailOptIn   Boolean  @default(false)

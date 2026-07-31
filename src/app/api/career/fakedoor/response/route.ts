@@ -27,6 +27,7 @@ const schema = z.object({
   valueGoal: z.enum(CAREER_VALUE_GOALS).optional(),
   reasonNo: z.enum(CAREER_NO_REASONS).optional(),
   otherText: z.string().max(FAKE_DOOR_OTHER_MAX).optional(),
+  maxPriceHuf: z.number().int().min(0).optional(),
   emailOptIn: z.boolean().optional(),
   email: z.string().email().max(254).optional(),
   source: z.string().max(64).optional(),
@@ -53,14 +54,22 @@ export async function POST(req: Request) {
   // megoszlást.
   const valueGoal = interest === "yes" ? (parsed.data.valueGoal ?? null) : null;
   const reasonNo = interest === "no" ? (parsed.data.reasonNo ?? null) : null;
+  const context = await resolveFakeDoorContext(sessionId);
+
+  // A fizetési hajlandóság csak az ár-ághoz tartozik, és sosem lehet több a
+  // LÁTOTT árnál — az érték csak ahhoz mérve értelmezhető. A felső határt a
+  // szerver vágja, mert a kliens küldeménye nem bizonyíték.
+  const maxPriceHuf =
+    reasonNo === "price" && typeof parsed.data.maxPriceHuf === "number"
+      ? Math.min(parsed.data.maxPriceHuf, context.priceVariant)
+      : null;
+
   const emailOptIn = interest === "yes" && parsed.data.emailOptIn === true;
   const email = emailOptIn ? (parsed.data.email ?? null) : null;
   const source =
     parsed.data.source && isFakeDoorSource(parsed.data.source)
       ? parsed.data.source
       : "direct";
-
-  const context = await resolveFakeDoorContext(sessionId);
 
   try {
     // A megtekintés ideje a nevező-sorból jön: ebből számolható, mennyi időt
@@ -84,6 +93,7 @@ export async function POST(req: Request) {
         interest,
         valueGoal,
         reasonNo,
+        maxPriceHuf,
         otherText: otherText?.trim() || null,
         emailOptIn,
         email,
@@ -94,6 +104,7 @@ export async function POST(req: Request) {
         interest,
         valueGoal,
         reasonNo,
+        maxPriceHuf,
         otherText: otherText?.trim() || null,
         emailOptIn,
         email,

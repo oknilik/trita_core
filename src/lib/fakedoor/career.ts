@@ -72,12 +72,15 @@ export type CareerValueGoal = (typeof CAREER_VALUE_GOALS)[number];
  * „Nem" ág: miért nem. Termékdöntés szempontjából gyakran ez az értékesebb —
  * a „drága" ár-probléma, a „nem hinném, hogy pontos" bizonyíték-probléma, és
  * a kettő teljesen más fejlesztést indokol.
+ *
+ * A korábbi „ingyen kipróbálnám, fizetve nem" opció KIKERÜLT: az ár-csúszka
+ * ugyanazt méri, csak pontosabban — aki semennyit nem adna, az nullára húzza,
+ * és így nem bináris válasz lesz belőle, hanem egy összeg.
  */
 export const CAREER_NO_REASONS = [
-  "price",      // drágának tartom
+  "price",      // drágának tartom → utána csúszkán megadja, mennyit adna
   "accuracy",   // nem hiszem, hogy elég pontos lenne
   "no_need",    // most nincs karrierkérdésem
-  "free_only",  // ingyen kipróbálnám, fizetve nem
   "other",
   // Az átugrás itt is teljes értékű válasz: enélkül a `null` nem
   // megkülönböztethető attól, aki még nem jutott el a kérdésig — a „nem"
@@ -85,6 +88,16 @@ export const CAREER_NO_REASONS = [
   "skipped",
 ] as const;
 export type CareerNoReason = (typeof CAREER_NO_REASONS)[number];
+
+/**
+ * Az ár-csúszka lépésköze (Ft).
+ *
+ * 100, nem 500: a HTML range a `min`-től rácsozza a lépéseket, és mindhárom
+ * ársáv (4900 / 9900 / 14900) csak százasokra esik. 500-zal a csúszka a
+ * MEGNYITÁSKOR lecsúszott volna a látott ár alá (14 900 → 14 500), és a
+ * kiindulópont már eleve egy le nem adott engedmény lett volna.
+ */
+export const CAREER_PRICE_STEP = 100;
 
 /** Az „egyéb" szabad szöveg felső határa — a UI és a szerver ugyanezt méri. */
 export const FAKE_DOOR_OTHER_MAX = 200;

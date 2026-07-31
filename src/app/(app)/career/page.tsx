@@ -182,6 +182,7 @@ async function renderFakeDoor({
         sessionId={sessionId}
         source={resolvedSource}
         price={formatPrice(priceVariant, locale)}
+        priceVariant={priceVariant}
         patternLabel={patternLabel}
         glyph={glyph}
         defaultEmail={email}

@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import {
+  CAREER_PRICE_STEP,
   FAKE_DOOR_OTHER_MAX,
+  formatPrice,
   type CareerNoReason,
   type CareerValueGoal,
 } from "@/lib/fakedoor/career";
@@ -31,6 +33,12 @@ export interface DecisionInitialState {
 interface DecisionPanelProps {
   sessionId: string;
   source: string;
+  /**
+   * A látogatónak MUTATOTT ár (Ft). Az ár-csúszka innen indul és nulláig
+   * megy: a fizetési hajlandóság ehhez az árhoz mérve olvasandó, ezért a
+   * csúszka sosem mehet a látott ár fölé.
+   */
+  priceVariant: number;
   defaultEmail: string | null;
   initial: DecisionInitialState | null;
 }
@@ -47,13 +55,13 @@ const REASON_OPTIONS: { value: CareerNoReason; key: string }[] = [
   { value: "price", key: "fakeDoor.reasonPrice" },
   { value: "accuracy", key: "fakeDoor.reasonAccuracy" },
   { value: "no_need", key: "fakeDoor.reasonNoNeed" },
-  { value: "free_only", key: "fakeDoor.reasonFreeOnly" },
   { value: "other", key: "fakeDoor.reasonOther" },
 ];
 
 export function DecisionPanel({
   sessionId,
   source,
+  priceVariant,
   defaultEmail,
   initial,
 }: DecisionPanelProps) {
@@ -70,6 +78,9 @@ export function DecisionPanel({
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);
+  // Az „drágának tartom" ág csúszkája. A látott árról indul: onnan húzza le
+  // a válaszadó oda, ahol már megérné neki.
+  const [maxPrice, setMaxPrice] = useState(priceVariant);
 
   async function send(body: Record<string, unknown>): Promise<boolean> {
     setFailed(false);
@@ -107,6 +118,10 @@ export function DecisionPanel({
     // különben egy ottfelejtett szöveg más opcióhoz ragadna hozzá.
     const freeText = selected === "other" ? otherText.trim().slice(0, FAKE_DOOR_OTHER_MAX) : "";
 
+    // Az összeg csak akkor megy el, ha tényleg az ár a visszatartó ok —
+    // különben egy meg sem mozgatott csúszka alapértéke keveredne az adatba.
+    const priceAnswer = interest === "no" && selected === "price" ? maxPrice : null;
+
     const optIn = interest === "yes" && wantsEmail && email.trim().length > 0;
     if (optIn && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setEmailInvalid(true);
@@ -121,6 +136,7 @@ export function DecisionPanel({
       ...(interest === "yes"
         ? { valueGoal: (selected ?? "skipped") as CareerValueGoal }
         : { reasonNo: (selected ?? "skipped") as CareerNoReason }),
+      ...(priceAnswer != null ? { maxPriceHuf: priceAnswer } : {}),
       ...(freeText ? { otherText: freeText } : {}),
       ...(optIn ? { emailOptIn: true, email: email.trim() } : {}),
     });
@@ -197,6 +213,35 @@ export function DecisionPanel({
             optionRow(option.value, t(option.key, locale), isYes ? "fd-goal" : "fd-reason"),
           )}
         </div>
+
+        {/* Ár-csúszka: a „drága" önmagában nem termékdöntés. Az összeg az. */}
+        {!isYes && choice === "price" && (
+          <div className="mt-3 rounded-xl border-[1.5px] border-[var(--fd-mustard)]/50 bg-[var(--fd-cream)] p-4">
+            <p className="text-body font-semibold text-[var(--fd-deep)]">
+              {t("fakeDoor.priceAskTitle", locale)}
+            </p>
+            <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-secondary)]">
+              {t("fakeDoor.priceAskNote", locale)}
+            </p>
+            <p className="mt-3 font-fraunces text-[26px] leading-none text-[var(--fd-terracotta)] md:text-[32px]">
+              {maxPrice === 0 ? t("fakeDoor.priceZero", locale) : formatPrice(maxPrice, locale)}
+            </p>
+            <input
+              type="range"
+              min={0}
+              max={priceVariant}
+              step={CAREER_PRICE_STEP}
+              value={maxPrice}
+              onChange={(event) => setMaxPrice(Number(event.target.value))}
+              aria-label={t("fakeDoor.priceAskTitle", locale)}
+              className="mt-3 h-11 w-full accent-[var(--fd-terracotta)]"
+            />
+            <div className="flex justify-between text-micro font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+              <span>0 Ft</span>
+              <span>{formatPrice(priceVariant, locale)}</span>
+            </div>
+          </div>
+        )}
 
         {choice === "other" && (
           <input

@@ -107,8 +107,14 @@ export const fakeDoorTranslations = {
     reasonPrice: { hu: "Drágának tartom", en: "Too expensive" },
     reasonAccuracy: { hu: "Nem hiszem, hogy elég pontos lenne", en: "I doubt it would be accurate enough" },
     reasonNoNeed: { hu: "Most nincs karrierkérdésem", en: "I have no career question right now" },
-    reasonFreeOnly: { hu: "Ingyen kipróbálnám, fizetve nem", en: "I'd try it free, but not paid" },
     reasonOther: { hu: "Egyéb", en: "Something else" },
+    // Ár-csúszka: a „drága" önmagában nem mond semmit arról, MENNYI lenne jó.
+    priceAskTitle: { hu: "Mennyit adnál érte?", en: "What would you pay for it?" },
+    priceAskNote: {
+      hu: "Húzd oda, ahol már megérné neked. A nulla is válasz: azt jelenti, ezért a funkcióért nem fizetnél.",
+      en: "Drag it to where it would be worth it to you. Zero is an answer too: it means you wouldn't pay for this feature.",
+    },
+    priceZero: { hu: "Ezért nem fizetnék", en: "I wouldn't pay for this" },
 
     // ── Közös ────────────────────────────────────────────────────────
     submit: { hu: "Küldés", en: "Send" },

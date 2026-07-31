@@ -38,6 +38,30 @@ export interface FakeDoorReport {
   valueGoals: { key: CareerValueGoal; count: number }[];
   noReasons: { key: CareerNoReason; count: number }[];
   otherTexts: { interest: string; text: string; audience: string }[];
+  /** „Drágának tartom" ág: mennyit adnának érte. */
+  willingness: WillingnessSummary;
+}
+
+/**
+ * Fizetési hajlandóság az ár-elutasítók között.
+ *
+ * Medián és nem átlag a fő szám: néhány nullás válasz az átlagot lerántja,
+ * a mediánt nem — a döntéshez azt kell tudni, hol van a középső ember.
+ * A nullák külön is szerepelnek: ők nem alacsonyabb árat kérnek, hanem
+ * egyáltalán nem fizetnének ezért a funkcióért.
+ */
+export interface WillingnessSummary {
+  /** Hányan jelölték az árat visszatartó okként. */
+  count: number;
+  /** Közülük hányan adtak meg összeget. */
+  answered: number;
+  zero: number;
+  median: number | null;
+  average: number | null;
+  /** A látott árhoz mért arány mediánja (%) — ársávok között összemérhető. */
+  medianShareOfShownPrice: number | null;
+  /** Egyedi értékek gyakorisággal, növekvő sorrendben. */
+  values: { amount: number; count: number }[];
 }
 
 interface ViewRow {
@@ -51,7 +75,48 @@ interface ResponseRow {
   emailOptIn: boolean;
   valueGoal: string | null;
   reasonNo: string | null;
+  maxPriceHuf: number | null;
   otherText: string | null;
+}
+
+function median(sorted: number[]): number | null {
+  if (sorted.length === 0) return null;
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 1
+    ? sorted[middle]
+    : Math.round((sorted[middle - 1] + sorted[middle]) / 2);
+}
+
+function summariseWillingness(responses: ResponseRow[]): WillingnessSummary {
+  const priceRows = responses.filter((row) => row.reasonNo === "price");
+  const answered = priceRows.filter((row) => row.maxPriceHuf != null);
+  const amounts = answered.map((row) => row.maxPriceHuf as number).sort((a, b) => a - b);
+  // A látott árhoz mért arány teszi összemérhetővé a három ársávot: 4 900-ból
+  // a 2 450 ugyanaz a gesztus, mint 14 900-ból a 7 450.
+  const shares = answered
+    .map((row) =>
+      row.priceVariant > 0
+        ? Math.round(((row.maxPriceHuf as number) / row.priceVariant) * 100)
+        : 0,
+    )
+    .sort((a, b) => a - b);
+
+  const values = new Map<number, number>();
+  for (const amount of amounts) values.set(amount, (values.get(amount) ?? 0) + 1);
+
+  return {
+    count: priceRows.length,
+    answered: answered.length,
+    zero: amounts.filter((amount) => amount === 0).length,
+    median: median(amounts),
+    average: amounts.length
+      ? Math.round(amounts.reduce((sum, value) => sum + value, 0) / amounts.length)
+      : null,
+    medianShareOfShownPrice: median(shares),
+    values: [...values.entries()]
+      .map(([amount, count]) => ({ amount, count }))
+      .sort((a, b) => a.amount - b.amount),
+  };
 }
 
 const rate = (value: number, base: number) =>
@@ -88,6 +153,7 @@ export async function buildFakeDoorReport(module: string): Promise<FakeDoorRepor
         emailOptIn: true,
         valueGoal: true,
         reasonNo: true,
+        maxPriceHuf: true,
         otherText: true,
       },
     }),
@@ -129,6 +195,7 @@ export async function buildFakeDoorReport(module: string): Promise<FakeDoorRepor
     })),
     valueGoals: countBy(CAREER_VALUE_GOALS, (row) => row.valueGoal),
     noReasons: countBy(CAREER_NO_REASONS, (row) => row.reasonNo),
+    willingness: summariseWillingness(responses),
     otherTexts: responses
       .filter((row) => row.otherText)
       .map((row) => ({

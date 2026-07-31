@@ -39,7 +39,13 @@ describe("fake door döntési panel", () => {
 
   function renderPanel() {
     return render(
-      <DecisionPanel sessionId={SESSION} source="results" defaultEmail={null} initial={null} />,
+      <DecisionPanel
+        sessionId={SESSION}
+        source="results"
+        priceVariant={9900}
+        defaultEmail={null}
+        initial={null}
+      />,
     );
   }
 
@@ -96,6 +102,7 @@ describe("fake door döntési panel", () => {
       <DecisionPanel
         sessionId={SESSION}
         source="direct"
+        priceVariant={9900}
         defaultEmail="valaki@pelda.hu"
         initial={null}
       />,
@@ -112,11 +119,40 @@ describe("fake door döntési panel", () => {
     expect(bodies()[1].emailOptIn).toBeUndefined();
   });
 
+  it("az ár-ok mellé az összeg is elmegy, más okhoz viszont nem", async () => {
+    const user = userEvent.setup();
+    const { container } = renderPanel();
+
+    await user.click(screen.getByRole("button", { name: t("fakeDoor.no", "hu") }));
+    await screen.findByText(t("fakeDoor.reasonTitle", "hu"));
+
+    // Más ok: csúszka sincs, összeg sem megy el.
+    await user.click(container.querySelector<HTMLInputElement>('input[value="no_need"]') as HTMLInputElement);
+    expect(container.querySelector('input[type="range"]')).toBeNull();
+
+    await user.click(container.querySelector<HTMLInputElement>('input[value="price"]') as HTMLInputElement);
+    const slider = container.querySelector<HTMLInputElement>('input[type="range"]');
+    expect(slider).not.toBeNull();
+    // A csúszka a LÁTOTT árról indul, és nem mehet fölé.
+    expect(slider?.value).toBe("9900");
+    expect(slider?.max).toBe("9900");
+    expect(slider?.min).toBe("0");
+    // A lépésköznek osztania kell a látott árat, különben a böngésző a
+    // megnyitáskor lecsúsztatja a csúszkát a rács legközelebbi pontjára —
+    // vagyis a kiindulópont már egy le nem adott engedmény lenne.
+    expect(Number(slider?.max) % Number(slider?.step)).toBe(0);
+
+    await user.click(screen.getByRole("button", { name: t("fakeDoor.submit", "hu") }));
+    await waitFor(() => expect(bodies()).toHaveLength(2));
+    expect(bodies()[1]).toMatchObject({ reasonNo: "price", maxPriceHuf: 9900 });
+  });
+
   it("korábbi válasszal nem kérdez újra", () => {
     render(
       <DecisionPanel
         sessionId={SESSION}
         source="direct"
+        priceVariant={9900}
         defaultEmail={null}
         initial={{ interest: "yes", valueGoal: "fit", reasonNo: null, emailOptIn: false }}
       />,

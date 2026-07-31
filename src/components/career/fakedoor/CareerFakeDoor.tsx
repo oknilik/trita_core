@@ -30,6 +30,8 @@ interface CareerFakeDoorProps {
   sessionId: string;
   source: string;
   price: string;
+  /** A mutatott ár számként — az ár-csúszka felső határa. */
+  priceVariant: number;
   /** Kész személyiségprofil típusneve — csak a riportból érkezőnél mutatjuk. */
   patternLabel: string | null;
   /**
@@ -68,6 +70,7 @@ export function CareerFakeDoor({
   sessionId,
   source,
   price,
+  priceVariant,
   patternLabel,
   glyph,
   defaultEmail,
@@ -91,11 +94,8 @@ export function CareerFakeDoor({
   return (
     <div style={PALETTE} className="flex flex-col gap-10">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      {/* A hero SORBA rendez, nem réteget húz: az ábra teljes egészében
-          látszik (a korábbi abszolút pozíció a képszélen levágta), és a
-          szöveg sem fut alá. */}
-      <section className="fd-rise flex flex-col gap-7 rounded-2xl border-[1.5px] border-[var(--fd-mustard)]/45 bg-[var(--fd-cream)] p-7 md:flex-row md:items-center md:gap-9 md:p-10">
-        <div className="min-w-0 flex-1">
+      <section className="fd-rise relative overflow-hidden rounded-2xl border-[1.5px] border-[var(--fd-mustard)]/45 bg-[var(--fd-cream)] p-7 md:p-10">
+        <div className="relative z-10 max-w-[32rem]">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center rounded-full bg-[var(--fd-terracotta)] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white">
               {t("fakeDoor.badge", locale)}
@@ -127,26 +127,21 @@ export function CareerFakeDoor({
         {/* A SAJÁT karakter-ábrája — ugyanaz a típus-ábra, amit a riportban
             lát, ugyanabból az SVG-nyelvtanból. Nem díszítés: azt mondja ki,
             hogy a modul EBBŐL indulna. */}
+        {/* A SAJÁT karakter-ábrája, keret és alaplap nélkül: a forma a hero
+            hátterébe olvad. Halványítva és nagyban, a szöveg alá futva —
+            hangulat, nem illusztráció. Mobilon a szöveg ALATT áll, mert
+            oldalt nem férne el olvashatóan. */}
         {glyph && (
-          <figure className="mx-auto shrink-0 md:mx-0">
-            <TypeGlyph
-              primaryCode={glyph.primaryCode}
-              secondaryCode={glyph.secondaryCode}
-              typeLabel={glyph.label}
-              locale={locale}
-              intensity={glyph.intensity}
-              variant="badge"
-              className="h-[132px] w-[132px] rounded-2xl border border-[var(--fd-mustard)]/45 md:h-[190px] md:w-[190px]"
-            />
-            {/* A típusnév EGYSZER szerepeljen: ha a megszólító sor már
-                kimondja (riportból érkező), az ábra alatti felirat
-                ismétlés lenne. */}
-            {!patternLabel && glyph.label && (
-              <figcaption className="mt-2 text-center text-micro font-semibold uppercase tracking-widest text-[var(--fd-deep)]/60">
-                {glyph.label}
-              </figcaption>
-            )}
-          </figure>
+          <TypeGlyph
+            primaryCode={glyph.primaryCode}
+            secondaryCode={glyph.secondaryCode}
+            typeLabel={glyph.label}
+            locale={locale}
+            intensity={glyph.intensity}
+            variant="badge"
+            canvas={false}
+            className="pointer-events-none mx-auto mt-4 block h-[220px] w-[220px] opacity-45 md:absolute md:-right-4 md:top-1/2 md:z-0 md:mt-0 md:h-[380px] md:w-[380px] md:-translate-y-1/2 md:opacity-40"
+          />
         )}
       </section>
 
@@ -226,6 +221,7 @@ export function CareerFakeDoor({
         <DecisionPanel
           sessionId={sessionId}
           source={source}
+          priceVariant={priceVariant}
           defaultEmail={defaultEmail}
           initial={initial}
         />

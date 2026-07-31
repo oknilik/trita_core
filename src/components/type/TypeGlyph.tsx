@@ -46,6 +46,12 @@ interface TypeGlyphProps {
   /** 1–5; a domináns dimenzió erőssége (intensityFromScore()). */
   intensity?: number;
   variant?: GlyphVariant;
+  /**
+   * Kitöltött krém alaplap. Alapból igen (kártya-szerű ábra); ha a
+   * befoglaló felületnek saját háttere van, false-szal a forma beleolvad
+   * — így nem lesz „doboz a dobozban" hatás.
+   */
+  canvas?: boolean;
   className?: string;
 }
 
@@ -182,6 +188,7 @@ export function TypeGlyph({
   locale = "hu",
   intensity = 3,
   variant = "card",
+  canvas = true,
   className,
 }: TypeGlyphProps) {
   const primary = DIMENSION_GLYPHS[primaryCode];
@@ -204,13 +211,15 @@ export function TypeGlyph({
       role="img"
       aria-label={glyphDescription(primaryCode, secondaryCode, typeLabel, locale)}
     >
-      <rect
-        x="0"
-        y="0"
-        width={GLYPH_CANVAS.width}
-        height={GLYPH_CANVAS.height}
-        fill={GLYPH_COLORS.canvas}
-      />
+      {canvas && (
+        <rect
+          x="0"
+          y="0"
+          width={GLYPH_CANVAS.width}
+          height={GLYPH_CANVAS.height}
+          fill={GLYPH_COLORS.canvas}
+        />
+      )}
 
       {showAccompaniment && (
         <>
