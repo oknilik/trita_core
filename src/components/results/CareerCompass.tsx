@@ -17,6 +17,7 @@ import {
 import { RIASEC_ITEMS, scoreRiasec } from "@/lib/questions/riasec";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 import { CareerResults } from "@/components/results/career/CareerResults";
+import { ExplainerLink } from "@/components/results/ExplainerLink";
 import { CareerGrowthPlan } from "@/components/results/career/CareerGrowthPlan";
 import { CurrentRolePicker } from "@/components/results/career/CurrentRolePicker";
 import type { CareerResultView } from "@/lib/career/service";
@@ -633,23 +634,23 @@ export function CareerCompass({
                 </span>
               ))}
             </div>
-            {/* Opcionális érdeklődés-teszt (Holland-kód) — a pontosítás útja */}
+            {/* Opcionális érdeklődés-teszt (Holland-kód) — a pontosítás útja.
+                A magyarázó-link külön sávot kap: korábban egy aláhúzott szó
+                volt a bekezdés végén, és észrevétlen maradt. */}
             <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-white/70 px-4 py-3">
               <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
-                🎯{" "}
                 {hasMeasuredRiasec
                   ? t("results.ccIntroRiasecDone", locale)
                   : tf("results.ccIntroRiasec", locale, {
                       count: RIASEC_ITEMS.length,
-                    })}{" "}
-                <Link
-                  href="/holland-kod"
-                  target="_blank"
-                  className="font-semibold text-bronze underline-offset-2 hover:underline"
-                >
-                  {t("results.ccRiasecWhatIs", locale)}
-                </Link>
+                    })}
               </p>
+              <ExplainerLink
+                className="mt-2.5"
+                label={t("results.hollandExplainerLabel", locale)}
+                hint={t("results.hollandExplainerHint", locale)}
+                href="/holland-kod"
+              />
             </div>
             {/* Profil nélkül a modul nem tud illeszkedést számolni, ezért a
                 belépő gomb a kitöltésre visz — nem külön üzenőképernyő, csak

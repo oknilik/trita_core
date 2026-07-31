@@ -1088,6 +1088,15 @@ export const resultsTranslations = {
     },
     ccRiasecUserLabel: { hu: "Becsült érdeklődés-kódod:", en: "Your estimated interest code:" },
     ccRiasecUserLabelTags: { hu: "Érdeklődés-kódod:", en: "Your interest code:" },
+    // Magyarázó-link a Holland-kód értelmező oldalra (ExplainerLink).
+    hollandExplainerLabel: {
+      hu: "Mi az a Holland-kód?",
+      en: "What is the Holland code?",
+    },
+    hollandExplainerHint: {
+      hu: "A hat érdeklődés-típus érthetően, példa-szerepekkel — új lapon nyílik.",
+      en: "The six interest types explained, with example roles — opens in a new tab.",
+    },
     ccRiasecWhatIs: { hu: "Mit jelentenek a betűk?", en: "What do the letters mean?" },
     ccRiasecUserLabelMeasured: { hu: "Mért érdeklődés-kódod:", en: "Your measured interest code:" },
     ccRiasecTagsNote: {
