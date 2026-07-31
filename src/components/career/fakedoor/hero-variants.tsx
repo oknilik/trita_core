@@ -344,15 +344,9 @@ function BlueprintHero({
         </span>
       ))}
 
-      {/* A típus-ábra a lapra rajzolt tárgy: nagyon halkan, hogy a rács és a
-          szöveg maradjon az első réteg. (Vonalas motívum-változatot is
-          próbáltunk fölé — az a méretben hosszú vonalakká esett szét, és
-          idegen vonalzó-nyomoknak látszott.) */}
-      <Glyph
-        {...props}
-        canvas={false}
-        className="pointer-events-none absolute -bottom-10 -right-8 h-[300px] w-[300px] opacity-[0.09] md:h-[380px] md:w-[380px]"
-      />
+      {/* SZÁNDÉKOSAN nincs karakter-ábra a lapon: a rács, a bélyegző és a
+          rajzszám-blokk együtt már elég erős motívum, az ábra csak zajt vitt
+          bele. (Halvány kitöltésként és vonalas motívumként is próbáltuk.) */}
 
       {/* Bélyegző: elforgatva, kettős kerettel — ez az első, amit a szem elkap. */}
       <span
@@ -400,10 +394,10 @@ export function HeroF(props: HeroVariantProps) {
   return (
     <BlueprintHero
       props={props}
-      ink="#3d6b5e"
-      paper="#f2f7f5"
-      line="rgba(61,107,94,0.10)"
-      strong="rgba(61,107,94,0.20)"
+      ink="#2d5a4e"
+      paper="#dfeee8"
+      line="rgba(45,90,78,0.18)"
+      strong="rgba(45,90,78,0.34)"
     />
   );
 }
@@ -413,10 +407,10 @@ export function HeroG(props: HeroVariantProps) {
   return (
     <BlueprintHero
       props={props}
-      ink="#2f4863"
-      paper="#f1f4f8"
-      line="rgba(47,72,99,0.10)"
-      strong="rgba(47,72,99,0.20)"
+      ink="#22374d"
+      paper="#dde6f0"
+      line="rgba(34,55,77,0.18)"
+      strong="rgba(34,55,77,0.34)"
     />
   );
 }
