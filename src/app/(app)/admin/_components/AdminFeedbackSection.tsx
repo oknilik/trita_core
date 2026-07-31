@@ -38,24 +38,106 @@ export interface DimensionAverage {
   count: number;
 }
 
+/** Karrier-plusz kereslet-mérés (painted door) tölcsére. */
+export interface CareerProbeFunnel {
+  seen: number;
+  opened: number;
+  yes: number;
+  no: number;
+  /** Százalékok az ELŐZŐ fokhoz mérve; null, ha nincs mihez. */
+  openRate: number | null;
+  answerRate: number | null;
+  yesRate: number | null;
+  priceLabel: string;
+}
+
 export function AdminFeedbackSection({
   roleFitAggregates,
   interests,
   satisfactionSummary,
   dimensionAverages,
+  careerProbe,
 }: {
   roleFitAggregates: RoleFitAggregate[];
   interests: InterestRow[];
   satisfactionSummary: SatisfactionSummary;
   dimensionAverages: DimensionAverage[];
+  careerProbe: CareerProbeFunnel;
 }) {
   const totalVotes = roleFitAggregates.reduce(
     (sum, r) => sum + r.accurate + r.inaccurate,
     0,
   );
 
+  const funnelSteps = [
+    { label: "Látta az ajánlót", value: careerProbe.seen, rate: null as number | null },
+    { label: "Megnyitotta az oldalt", value: careerProbe.opened, rate: careerProbe.openRate },
+    {
+      label: "Nyilatkozott",
+      value: careerProbe.yes + careerProbe.no,
+      rate: careerProbe.answerRate,
+    },
+  ];
+
   return (
     <div className="mt-8 flex flex-col gap-8">
+      {/* Karrier-plusz kereslet-mérés. A funkció NEM létezik — ez a szám azt
+          méri, érdemes-e megépíteni. Fontos korlát: a kimondott érdeklődés
+          nem fizetés; a tölcsér arányai irányt mutatnak, nem bevételt. */}
+      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+          {"// kereslet-mérés"}
+        </p>
+        <h2 className="mt-1 font-fraunces text-xl text-ink">
+          Karrier-mélyítés — érdeklődés {careerProbe.priceLabel} áron
+        </h2>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {funnelSteps.map((step) => (
+            <div key={step.label} className="rounded-lg border border-sand bg-cream p-4">
+              <p className="font-mono text-xs uppercase tracking-widest text-muted">
+                {step.label}
+              </p>
+              <p className="mt-2 text-2xl font-bold text-ink">
+                {step.value}
+                {step.rate != null && (
+                  <span className="ml-2 text-base font-medium text-muted">
+                    {step.rate}%
+                  </span>
+                )}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-sand bg-cream p-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              Érdekelné ennyiért
+            </p>
+            <p className="mt-2 text-2xl font-bold text-ink">
+              {careerProbe.yes}
+              {careerProbe.yesRate != null && (
+                <span className="ml-2 text-base font-medium text-muted">
+                  {careerProbe.yesRate}%
+                </span>
+              )}
+            </p>
+          </div>
+          <div className="rounded-lg border border-sand bg-cream p-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              Nem érdekli
+            </p>
+            <p className="mt-2 text-2xl font-bold text-ink">{careerProbe.no}</p>
+          </div>
+        </div>
+
+        <p className="mt-3 max-w-prose text-xs leading-relaxed text-muted">
+          A százalékok mindig az előző fokhoz mérnek. A kimondott érdeklődés nem
+          fizetési szándék: a tényleges vásárlási arány ennél jellemzően jóval
+          alacsonyabb, ezért ez a szám irányt mutat, nem bevételt.
+        </p>
+      </section>
       {/* Elégedettség + dimenzió-pontosság (a megszűnt Kutatás fülről) */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
         <p className="font-mono text-xs uppercase tracking-widest text-bronze">

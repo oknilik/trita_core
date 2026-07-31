@@ -7,11 +7,13 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { computeCareerForProfile } from "@/lib/career/service";
 import { isCareerModuleHidden } from "@/lib/career/module-visibility";
+import { CAREER_PROBE_ENABLED } from "@/lib/career/deep-probe";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { getTestConfig } from "@/lib/questions";
 import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { CareerCompass } from "@/components/results/CareerCompass";
+import { CareerPlusCta } from "@/components/results/career/CareerPlusCta";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 
@@ -98,6 +100,11 @@ export default async function CareerPage() {
           hasSelfResult={hasSelfResult}
         />
       </section>
+
+      {/* Kereslet-mérés a mély rétegre. Csak kitöltött profillal mutatjuk:
+          profil nélkül a felhasználó még az alap-iránytűt sem látta, egy
+          készülő bővítményről kérdezni értelmetlen lenne. */}
+      {CAREER_PROBE_ENABLED && hasSelfResult && <CareerPlusCta />}
     </PlatformPageShell>
   );
 }

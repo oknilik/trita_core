@@ -1088,6 +1088,70 @@ export const resultsTranslations = {
     },
     ccRiasecUserLabel: { hu: "Becsült érdeklődés-kódod:", en: "Your estimated interest code:" },
     ccRiasecUserLabelTags: { hu: "Érdeklődés-kódod:", en: "Your interest code:" },
+    // Karrier-plusz kereslet-mérés (painted door). A szövegek KIMONDJÁK, hogy
+    // a funkció még nincs kész — enélkül a mérés megtévesztés lenne.
+    careerPlusBadge: { hu: "Készülő funkció", en: "In development" },
+    careerPlusTitle: {
+      hu: "Karrier-mélyítés: konkrét szerepek, konkrét lépések",
+      en: "Career deep-dive: concrete roles, concrete steps",
+    },
+    careerPlusLead: {
+      hu: "Az iránytű megmutatja, milyen JELLEGŰ munka illik hozzád. Ez a réteg onnan folytatná: nevesített szerepek a végzettségedhez mérve, és egy terv, amit hétfőn el lehet kezdeni. Még nem létezik — azt mérjük, érdemes-e megépíteni.",
+      en: "The compass shows what KIND of work fits you. This layer would continue from there: named roles measured against your qualifications, and a plan you can start on Monday. It doesn't exist yet — we're measuring whether it's worth building.",
+    },
+    careerPlusWhatTitle: { hu: "Mit tudna", en: "What it would do" },
+    careerPlusFeature1: {
+      hu: "Nevesített szerepek a katalógusból, a végzettségi szintedhez és szakirányodhoz mérve — külön jelölve, ami már most elérhető, és ami képzéssel.",
+      en: "Named roles from the catalogue, measured against your qualification level and field — marked separately for what's reachable now and what needs training.",
+    },
+    careerPlusFeature2: {
+      hu: "Indoklás szerepenként: melyik dimenziód húzza, hol feszülhet, és mekkora a becslés bizonytalansága.",
+      en: "A rationale per role: which of your dimensions pulls, where it may strain, and how uncertain the estimate is.",
+    },
+    careerPlusFeature3: {
+      hu: "Kísérlet-terv: 3-5 kipróbálható lépés, plusz álláshirdetés-kulcsszavak — mit keress és mi legyen gyanús.",
+      en: "An experiment plan: 3-5 things to try, plus job-ad keywords — what to look for and what should raise a flag.",
+    },
+    careerPlusFeature4: {
+      hu: "Letölthető PDF, amit el tudsz vinni egy beszélgetésre — vezetőhöz, mentorhoz vagy tanácsadóhoz.",
+      en: "A downloadable PDF you can take into a conversation — with a manager, mentor or advisor.",
+    },
+    careerPlusPriceLabel: { hu: "Tervezett ár", en: "Planned price" },
+    careerPlusPriceNote: {
+      hu: "Egyszeri díj, nem előfizetés. Most nem kérünk fizetést és bankkártya-adatot — csak azt szeretnénk tudni, megérné-e neked ennyiért.",
+      en: "A one-off fee, not a subscription. We're not taking payment or card details now — we just want to know whether it would be worth that to you.",
+    },
+    careerPlusAskTitle: { hu: "Érdekelne ez téged?", en: "Would this interest you?" },
+    careerPlusAskNote: {
+      hu: "Egy kattintás, és tovább is léphetsz. A válaszok döntik el, megépül-e — a „nem” ugyanolyan hasznos válasz, mint az „igen”.",
+      en: "One click and you can move on. The answers decide whether it gets built — a “no” is just as useful as a “yes”.",
+    },
+    careerPlusYes: { hu: "Érdekelne ennyiért", en: "I'd be interested at that price" },
+    careerPlusNo: { hu: "Engem nem érdekel", en: "Not for me" },
+    careerPlusThanksYes: {
+      hu: "Köszönjük — feljegyeztük.",
+      en: "Thanks — noted.",
+    },
+    careerPlusThanksNo: {
+      hu: "Köszönjük — ez is fontos válasz.",
+      en: "Thanks — that's an important answer too.",
+    },
+    careerPlusThanksNote: {
+      hu: "Nem ígérünk határidőt: ha nem lesz elég érdeklődés, ez a réteg nem épül meg.",
+      en: "We're not promising a date: if there isn't enough interest, this layer won't be built.",
+    },
+    careerPlusChangeAnswer: { hu: "Meggondoltam magam", en: "I changed my mind" },
+    careerPlusError: { hu: "Nem sikerült elmenteni, próbáld újra.", en: "Couldn't save, please try again." },
+    careerPlusBack: { hu: "Vissza az iránytűhöz", en: "Back to the compass" },
+    careerPlusCtaTitle: {
+      hu: "Konkrét szerepekre és lépésekre is kíváncsi vagy?",
+      en: "Want concrete roles and steps too?",
+    },
+    careerPlusCtaBody: {
+      hu: "Készülő réteg: nevesített szerepek a végzettségedhez mérve, indoklással és kísérlet-tervvel. Nézd meg, mit tudna — és mondd meg, érdekel-e.",
+      en: "A layer in development: named roles measured against your qualifications, with rationale and an experiment plan. See what it would do — and tell us if it interests you.",
+    },
+    careerPlusCtaButton: { hu: "Megnézem, mit tudna", en: "See what it would do" },
     // Magyarázó-link a Holland-kód értelmező oldalra (ExplainerLink).
     hollandExplainerLabel: {
       hu: "Mi az a Holland-kód?",
