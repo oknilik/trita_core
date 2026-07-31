@@ -2,6 +2,7 @@ import "server-only";
 
 import type { NavHeaderUI } from "@/components/layout/nav-header-ui";
 import { prisma } from "@/lib/prisma";
+import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 import { getOrgActiveCampaignCount } from "@/lib/org-counts.server";
 import { getProfileCoreByClerkId } from "@/lib/profile.server";
 import { getAccessibleTeams } from "@/lib/team-auth";
@@ -123,6 +124,9 @@ export async function resolveWorkspaceNavContext(
         signedInHomeHref = journey.destination;
         signedInExperienceHints = journey.experienceHints;
         const isPlatformAdmin = isAdminEmail(profile.email);
+        // Karrier-menüpont: ugyanaz a szabály, mint a `/career` oldalé —
+        // különben a menü egy 404-re mutatna.
+        const careerModuleHidden = await isCareerModuleHidden(profile.id);
         navData = {
           ...(navData ?? {
             user: { username: null, email: null },
@@ -136,6 +140,7 @@ export async function resolveWorkspaceNavContext(
           isPlatformAdmin,
           unreadNotificationCount,
           openTaskCount,
+          careerModuleHidden,
         };
 
         if (membership && orgBits) {
@@ -162,6 +167,7 @@ export async function resolveWorkspaceNavContext(
             isPlatformAdmin,
             unreadNotificationCount,
             openTaskCount,
+            careerModuleHidden,
           };
         }
       }

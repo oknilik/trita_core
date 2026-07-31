@@ -8,6 +8,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import { TeamInterestBanner } from "@/components/results/TeamInterestBanner";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { computeCareerForProfile } from "@/lib/career/service";
+import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 import { buildArchetypeSimulations } from "@/lib/interaction-view";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -56,7 +57,7 @@ function getInsight(
   return insights[range];
 }
 
-type TabId = "results" | "workstyle" | "career" | "comparison" | "invites";
+type TabId = "results" | "workstyle" | "comparison" | "invites";
 
 export default async function ProfileResultsPage({
   searchParams,
@@ -141,13 +142,10 @@ export default async function ProfileResultsPage({
       locale,
       entryPoint: "profile_results_page",
     }),
-    // Org-szintű karrier-modul kapcsoló (trita admin állítja): ha a user
-    // BÁRMELY aktív szervezeti tagságánál rejtve a modul, a fül és a
-    // PDF-blokk is eltűnik (a szigorúbb szabály nyer).
-    prisma.organizationMember.findFirst({
-      where: { userId: profile.id, leftAt: null, org: { hideCareerModule: true } },
-      select: { id: true },
-    }),
+    // Org-szintű karrier-modul kapcsoló — közös szabály a /career oldallal
+    // és a navigációval (module-visibility.ts). Itt már csak a PDF
+    // karrier-blokkjára hat, a fül 2026-07-31 óta külön oldal.
+    isCareerModuleHidden(profile.id),
   ]);
 
   // Karrier-illeszkedés: a szerveren, EGY forrásból — a fül kezdeti nézete és
@@ -433,11 +431,14 @@ export default async function ProfileResultsPage({
   // Fül-dieta (UX-audit #22): 5 fül → 3. A régi linkek nem törnek:
   // workstyle → results (szekcióként ott él), invites → comparison
   // (a meghívó-kezelés a Külső kép fül része).
+  // A karrier külön oldal lett — a régi `?tab=career` linkek (könyvjelző,
+  // korábbi e-mail) ne fussanak zsákutcába.
+  if (tabParam === "career") redirect("/career");
+
   const initialTab: TabId =
     tabParam === "comparison" ? "comparison" :
     tabParam === "invites" ? "comparison" :
     tabParam === "workstyle" ? "results" :
-    tabParam === "career" && !careerHiddenMembership ? "career" :
     "results";
 
   // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma

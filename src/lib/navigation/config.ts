@@ -31,6 +31,12 @@ export interface WorkspaceNavOrg {
 
 export interface WorkspaceNavContext {
   homeHref: string;
+  /**
+   * Karrier-iránytű (`/career`) elérhető-e. Org-szintű kapcsoló rejtheti
+   * (Organization.hideCareerModule) — a menü és az oldal UGYANAZT a szabályt
+   * használja (`lib/career/module-visibility.ts`), különben a link 404-re vinne.
+   */
+  careerModuleHidden?: boolean;
   org: WorkspaceNavOrg | null;
   teams: WorkspaceNavTeam[];
   hasHiringAccess: boolean;
@@ -51,7 +57,7 @@ export interface WorkspaceNavDestination {
 }
 
 export interface WorkspaceNavItem {
-  id: "home" | "results" | "tasks" | "teams" | "hiring" | "org" | "analytics";
+  id: "home" | "results" | "career" | "tasks" | "teams" | "hiring" | "org" | "analytics";
   label: string;
   kind: "link" | "dropdown";
   primaryHref: string;
@@ -87,6 +93,19 @@ function buildResultsItem(): WorkspaceNavItem {
     kind: "link",
     primaryHref: "/profile/results",
     matchPrefixes: ["/profile/results"],
+  };
+}
+
+// Karrier-iránytű: 2026-07-31 óta önálló oldal (korábban az Eredményeim egyik
+// füle). Az Eredményeim mellett van a helye, mert ugyanabból a profilból dolgozik.
+function buildCareerItem(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
+  if (ctx.careerModuleHidden) return null;
+  return {
+    id: "career",
+    label: "Karrier",
+    kind: "link",
+    primaryHref: "/career",
+    matchPrefixes: ["/career"],
   };
 }
 
@@ -191,6 +210,9 @@ export function buildWorkspaceNavigation(
   const items: Array<WorkspaceNavItem | null> = [buildHomeItem(ctx.homeHref)];
 
   if (canViewNavSection(role, "results")) items.push(buildResultsItem());
+  // A karrier a személyes réteg része — ugyanaz a jogosultsági kapu, mint az
+  // Eredményeim, plusz az org-szintű kikapcsolhatóság.
+  if (canViewNavSection(role, "results")) items.push(buildCareerItem(ctx));
   if (canViewNavSection(role, "tasks")) items.push(buildTasksNav(ctx));
   if (canViewNavSection(role, "teams")) items.push(buildTeamsNav(role, ctx));
   if (canViewNavSection(role, "hiring")) items.push(buildHiringNav(ctx, role));

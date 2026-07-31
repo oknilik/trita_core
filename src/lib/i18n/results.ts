@@ -818,6 +818,15 @@ export const resultsTranslations = {
     ccTitle: { hu: "Karrier-iránytű", en: "Career compass" },
     ccStart: { hu: "Kezdjük →", en: "Let's start →" },
     // Indító (kitöltés előtti) nézet
+    // Profil nélküli belépő (a karrier külön oldalán): a gomb a kitöltésre visz.
+    ccNeedsProfileCta: {
+      hu: "Fejezd be a személyiségprofilod",
+      en: "Finish your personality profile",
+    },
+    ccNeedsProfileNote: {
+      hu: "Az iránytű a személyiségprofilodból dolgozik — ha ez megvan, itt folytathatod. A kitöltés kb. 9 perc.",
+      en: "The compass works from your personality profile — once it's done, you can continue here. It takes about 9 minutes.",
+    },
     ccIntroTitle: { hu: "Merre tovább? Nézzük meg együtt.", en: "Where next? Let's look at it together." },
     ccIntroLead: {
       hu: "A személyiségprofilod és pár rövid kérdés alapján a rendszer megkísérli összerendelni, mely szakmai irányok illeszkednek a természetes működésedhez. Nem jóslat és nem minősítés — kiindulópont a gondolkodáshoz.",

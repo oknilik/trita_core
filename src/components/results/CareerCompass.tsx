@@ -307,6 +307,7 @@ export function CareerCompass({
   initialResult = null,
   growthFocusItems = [],
   onRequestObserver,
+  hasSelfResult = true,
 }: {
   /** A szerveren előre kiszámolt eredmény (első render, a PDF-fel azonos forrás) */
   initialResult?: CareerResultView | null;
@@ -315,6 +316,12 @@ export function CareerCompass({
   growthFocusItems?: CompassGrowthItem[];
   /** Observer-pontosítás CTA — átvált a meghívások tabra */
   onRequestObserver?: () => void;
+  /**
+   * Van-e kitöltött személyiségprofil. A modul BEMENETE a profil: enélkül a
+   * wizard elindítható lenne, de a végén nem tudnánk illeszkedést számolni —
+   * ezért a belépő gomb a kitöltésre visz, nem az első kérdésre.
+   */
+  hasSelfResult?: boolean;
 }) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
@@ -322,7 +329,7 @@ export function CareerCompass({
   // az eredmény jön; az onboardingból származó RÉSZLEGES háttér (edu/iparág,
   // status nélkül) a wizardot előtöltve indítja.
   const hasCompleteBackground = Boolean(
-    initialBackground && (initialBackground as { status?: string }).status,
+    hasSelfResult && initialBackground && (initialBackground as { status?: string }).status,
   );
   const [step, setStep] = useState<Step>(hasCompleteBackground ? "result" : "intro");
   const [background, setBackground] = useState<CareerBackground>(
@@ -631,13 +638,30 @@ export function CareerCompass({
                 </Link>
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setStep("status")}
-              className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
-            >
-              {t("results.ccStart", locale)}
-            </button>
+            {/* Profil nélkül a modul nem tud illeszkedést számolni, ezért a
+                belépő gomb a kitöltésre visz — nem külön üzenőképernyő, csak
+                más cél és felirat. */}
+            {hasSelfResult ? (
+              <button
+                type="button"
+                onClick={() => setStep("status")}
+                className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+              >
+                {t("results.ccStart", locale)}
+              </button>
+            ) : (
+              <div className="mt-5">
+                <Link
+                  href="/assessment"
+                  className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                >
+                  {t("results.ccNeedsProfileCta", locale)}
+                </Link>
+                <p className="mt-2 max-w-xl text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                  {t("results.ccNeedsProfileNote", locale)}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Három összetevő: profil + válaszok = irányok */}

@@ -107,7 +107,7 @@ test("member topnav has results + tasks next to own teams (2026-07-29)", () => {
   const navItems = buildWorkspaceNavigation("self", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "tasks", "teams"]);
+  assert.deepEqual(ids, ["home", "results", "career", "tasks", "teams"]);
 });
 
 test("tasks badge counts open measurement work; hidden without org and tasks", () => {
@@ -138,7 +138,7 @@ test("member without teams gets no teams dropdown", () => {
   const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "tasks"]);
+  assert.deepEqual(ids, ["home", "results", "career", "tasks"]);
 });
 
 test("admin org dropdown no longer contains the dead billing entry", () => {
@@ -147,4 +147,36 @@ test("admin org dropdown no longer contains the dead billing entry", () => {
   const childIds = (orgItem?.items ?? []).map((item) => item.id);
 
   assert.equal(childIds.includes("org-billing"), false);
+});
+
+// A karrier-iránytű 2026-07-31 óta önálló oldal (`/career`), és a menüből
+// érhető el. Az org-szintű kapcsoló ugyanúgy elrejti, mint magát az oldalt —
+// ha ez elcsúszik, a menü egy 404-re mutató linket kínál.
+test("karrier menüpont: alapból látszik, org-kapcsolóval eltűnik", () => {
+  const visible = buildWorkspaceNavigation("self", {
+    homeHref: "/dashboard",
+    org: null,
+    teams: [],
+    hasHiringAccess: false,
+    activeCampaignCount: 0,
+    openTaskCount: 0,
+  });
+  const career = visible.find((item) => item.id === "career");
+  assert.ok(career, "nincs karrier menüpont");
+  assert.equal(career.primaryHref, "/career");
+
+  const hidden = buildWorkspaceNavigation("self", {
+    homeHref: "/dashboard",
+    org: null,
+    teams: [],
+    hasHiringAccess: false,
+    activeCampaignCount: 0,
+    openTaskCount: 0,
+    careerModuleHidden: true,
+  });
+  assert.equal(
+    hidden.find((item) => item.id === "career"),
+    undefined,
+    "az org-kapcsoló nem rejtette el a menüpontot",
+  );
 });

@@ -144,6 +144,8 @@ interface NavHeaderUIProps {
   /** Nyitott meresi feladatok szama (badge a Feladataim menun). */
   openTaskCount?: number;
   hasHiringAccess: boolean;
+  /** Org-szintű kapcsoló: rejtve van-e a karrier-iránytű. */
+  careerModuleHidden?: boolean;
   /** Platform-admin (ADMIN_EMAILS) — az Admin vezérlő menüpont kapuja. */
   isPlatformAdmin?: boolean;
   /** Szerverről jövő kezdőérték — így a harang mountkor nem hív API-t. */
@@ -174,6 +176,7 @@ function NavHeaderContent({
   activeCampaignCount,
   openTaskCount = 0,
   hasHiringAccess,
+  careerModuleHidden,
   isPlatformAdmin = false,
 }: Omit<NavHeaderUIProps, "unreadNotificationCount">) {
   const pathname = usePathname();
@@ -267,6 +270,7 @@ function NavHeaderContent({
     org,
     teams,
     hasHiringAccess,
+    careerModuleHidden,
     activeCampaignCount,
     openTaskCount,
   });

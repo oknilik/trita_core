@@ -47,7 +47,7 @@ import { buildArchetypeStory } from "@/lib/profile-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 
 type ProfileLevel = "start" | "plus";
-type TabId = "results" | "workstyle" | "career" | "comparison" | "invites";
+type TabId = "results" | "workstyle" | "comparison" | "invites";
 
 // ─── Serialized prop types ──────────────────────────────────────────────────
 
@@ -468,41 +468,6 @@ function WorkStyleTab({
   );
 }
 
-// „Merre tovább?" — Karrier-iránytű. Az illeszkedést a SZERVER számolja
-// (motor v2), a kezdeti eredmény propból jön, a wizard-változásokat a
-// /api/career/fit végpont számolja újra.
-function CareerTab({
-  growthFocusItems,
-  careerBackground,
-  careerResult,
-  locale,
-  onOpenInvites,
-}: {
-  growthFocusItems: SerializedGrowthItem[];
-  careerBackground: CareerBackground | null;
-  careerResult: CareerResultView | null;
-  locale: Locale;
-  onOpenInvites: () => void;
-}) {
-  return (
-    <div className="flex flex-col gap-10 md:gap-14">
-      <section>
-        <DashboardSectionHeader
-          label={t("results.ccTitle", locale)}
-          className="mb-4"
-        />
-        <CareerCompass
-          initialBackground={careerBackground}
-          initialResult={careerResult}
-          growthFocusItems={growthFocusItems}
-          onRequestObserver={onOpenInvites}
-        />
-      </section>
-    </div>
-  );
-}
-
-
 // ─── Main component ─────────────────────────────────────────────────────────
 
 export function ProfileTabs({
@@ -675,17 +640,6 @@ export function ProfileTabs({
       ),
     },
     {
-      id: "career",
-      label: t("results.tabCareer", locale),
-      locked: false,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="10" cy="10" r="8" />
-          <path d="M13 7l-2 5-4 1 2-5 4-1z" />
-        </svg>
-      ),
-    },
-    {
       id: "comparison",
       label: t("results.tabComparison", locale),
       locked: !isPlus,
@@ -696,14 +650,10 @@ export function ProfileTabs({
       ),
     },
   ];
-  // A Karrier tab MINDENKINEK látszik (2026-07-29): korábban org/team
-  // tagoknál rejtve volt, de a kitöltött karrier-adat így elveszett a
-  // felületről, miközben a PDF-ben benne maradt — inkonzisztens volt.
-  // Kivétel: org-szintű kapcsoló (trita admin, Organization.hideCareerModule)
-  // — ilyenkor a fül ÉS a PDF karrier-blokkja is rejtve.
-  const TABS = careerModuleHidden
-    ? ALL_TABS.filter((tab) => tab.id !== "career")
-    : ALL_TABS;
+  // A karrier-iránytű 2026-07-31 óta ÖNÁLLÓ oldal (`/career`) — a fülek közül
+  // kikerült. A `careerModuleHidden` itt már csak a PDF karrier-blokkjára
+  // vonatkozik (az oldal maga 404-et ad, ha az org kikapcsolta).
+  const TABS = ALL_TABS;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -1104,15 +1054,6 @@ export function ProfileTabs({
               selfLabel={personalityType}
             />
           </>
-        )}
-        {activeTab === "career" && (
-          <CareerTab
-            growthFocusItems={growthFocusItems}
-            careerBackground={careerBackground}
-            careerResult={careerResult}
-            locale={locale}
-            onOpenInvites={() => handleTabChange("comparison")}
-          />
         )}
         {activeTab === "comparison" && (
           // „Külső kép" (UX-audit #22): az összevetés ÉS a meghívó-kezelés egy
