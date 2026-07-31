@@ -827,6 +827,28 @@ export const resultsTranslations = {
       hu: "Az iránytű a személyiségprofilodból dolgozik — ha ez megvan, itt folytathatod. A kitöltés kb. 9 perc.",
       en: "The compass works from your personality profile — once it's done, you can continue here. It takes about 9 minutes.",
     },
+    // Szekció-átvezető CTA-k az eredmény-oldal alján (2026-07-31): a karrier
+    // és a munkastílus önálló oldal lett, innen vezetünk át rájuk.
+    ctaCareerEyebrow: { hu: "Karrier-iránytű", en: "Career compass" },
+    ctaCareerTitle: {
+      hu: "Milyen munka illik a profilodhoz?",
+      en: "What kind of work fits your profile?",
+    },
+    ctaCareerBody: {
+      hu: "Néhány kérdés, és megnézzük, milyen irányok illeszkednek a személyiségprofilodhoz — szereptípusok és környezetek, nem kész válaszok.",
+      en: "A few questions and we look at which directions fit your personality profile — role types and settings, not ready-made answers.",
+    },
+    ctaCareerButton: { hu: "Irány az iránytű", en: "Open the compass" },
+    ctaWorkstyleEyebrow: { hu: "Munkastílus", en: "Work style" },
+    ctaWorkstyleTitle: {
+      hu: "Hogyan működsz munka közben?",
+      en: "How do you operate at work?",
+    },
+    ctaWorkstyleBody: {
+      hu: "A dimenzióid együttállásaiból: mi visz előre, milyen közeg támogat, és mely szerepekben van a legkevesebb súrlódás.",
+      en: "From how your dimensions combine: what moves you forward, which setting supports you, and where friction is lowest.",
+    },
+    ctaWorkstyleButton: { hu: "Munkastílusom megnyitása", en: "Open my work style" },
     ccIntroTitle: { hu: "Merre tovább? Nézzük meg együtt.", en: "Where next? Let's look at it together." },
     ccIntroLead: {
       hu: "A személyiségprofilod és pár rövid kérdés alapján a rendszer megkísérli összerendelni, mely szakmai irányok illeszkednek a természetes működésedhez. Nem jóslat és nem minősítés — kiindulópont a gondolkodáshoz.",

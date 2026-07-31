@@ -30,15 +30,13 @@ import { CareerCompass } from "@/components/results/CareerCompass";
 import type { CareerResultView } from "@/lib/career/service";
 import { type CareerBackground } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
-import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
-import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
-import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
+import { SectionCta } from "@/components/results/SectionCta";
 import { InteractionSection } from "@/components/results/InteractionSection";
 import type { ArchetypeSimulationView } from "@/lib/interaction-view";
 import { Card } from "@/components/ui/primitives/Card";
@@ -428,30 +426,11 @@ function WorkStyleTab({
 }) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
+  // A tension-pár alapú munkastílus (ahogy működsz / környezet / szerep-
+  // illeszkedés) 2026-07-31 óta ÖNÁLLÓ oldal (`/workstyle`) — az oldal aljáról
+  // CTA vezet rá. Itt a csapatszerep-blokk maradt, az más modellből jön.
   return (
     <div className="flex flex-col gap-10 md:gap-14">
-      {isPlus && plusContent && (
-        <>
-          <HowYouWorkSection
-            paragraphs={plusContent.howYouWork}
-            isUnlocked={true}
-          />
-          <IdealEnvironmentSection
-            items={plusContent.envItems}
-            isUnlocked={true}
-          />
-          <RoleFitSection
-            strongFit={plusContent.roleFit.strong}
-            mightWork={plusContent.roleFit.might}
-            needsPrep={plusContent.roleFit.prep}
-            strongRoles={plusContent.roleFit.strongRoles}
-            mightRoles={plusContent.roleFit.mightRoles}
-            prepRoles={plusContent.roleFit.prepRoles}
-            isUnlocked={true}
-          />
-        </>
-      )}
-
       <section>
         <DashboardSectionHeader
           label={t("results.sectionRoles", locale)}
@@ -1053,6 +1032,29 @@ export function ProfileTabs({
               simulations={interactionSimulations}
               selfLabel={personalityType}
             />
+
+            {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
+                idáig eljutott, annak ez a következő logikus lépés. */}
+            <div className="flex flex-col gap-3">
+              <SectionCta
+                eyebrow={t("results.ctaWorkstyleEyebrow", locale)}
+                title={t("results.ctaWorkstyleTitle", locale)}
+                body={t("results.ctaWorkstyleBody", locale)}
+                cta={t("results.ctaWorkstyleButton", locale)}
+                href="/workstyle"
+                glyph="↗"
+              />
+              {!careerModuleHidden && (
+                <SectionCta
+                  eyebrow={t("results.ctaCareerEyebrow", locale)}
+                  title={t("results.ctaCareerTitle", locale)}
+                  body={t("results.ctaCareerBody", locale)}
+                  cta={t("results.ctaCareerButton", locale)}
+                  href="/career"
+                  glyph="↗"
+                />
+              )}
+            </div>
           </>
         )}
         {activeTab === "comparison" && (
