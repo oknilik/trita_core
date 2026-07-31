@@ -30,6 +30,9 @@ import { CareerCompass } from "@/components/results/CareerCompass";
 import type { CareerResultView } from "@/lib/career/service";
 import { type CareerBackground } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
+import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
+import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
+import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
@@ -37,8 +40,6 @@ import { ComparisonTab as ComparisonTabNew } from "@/components/results/Comparis
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
-import { InteractionSection } from "@/components/results/InteractionSection";
-import type { ArchetypeSimulationView } from "@/lib/interaction-view";
 import { Card } from "@/components/ui/primitives/Card";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
@@ -173,7 +174,6 @@ export interface ProfileTabsProps {
   // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
   careerModuleHidden?: boolean;
   /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
-  interactionSimulations?: ArchetypeSimulationView[];
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
   careerBackground?: CareerBackground | null;
@@ -426,11 +426,30 @@ function WorkStyleTab({
 }) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
-  // A tension-pár alapú munkastílus (ahogy működsz / környezet / szerep-
-  // illeszkedés) 2026-07-31 óta ÖNÁLLÓ oldal (`/workstyle`) — az oldal aljáról
-  // CTA vezet rá. Itt a csapatszerep-blokk maradt, az más modellből jön.
   return (
     <div className="flex flex-col gap-10 md:gap-14">
+      {isPlus && plusContent && (
+        <>
+          <HowYouWorkSection
+            paragraphs={plusContent.howYouWork}
+            isUnlocked={true}
+          />
+          <IdealEnvironmentSection
+            items={plusContent.envItems}
+            isUnlocked={true}
+          />
+          <RoleFitSection
+            strongFit={plusContent.roleFit.strong}
+            mightWork={plusContent.roleFit.might}
+            needsPrep={plusContent.roleFit.prep}
+            strongRoles={plusContent.roleFit.strongRoles}
+            mightRoles={plusContent.roleFit.mightRoles}
+            prepRoles={plusContent.roleFit.prepRoles}
+            isUnlocked={true}
+          />
+        </>
+      )}
+
       <section>
         <DashboardSectionHeader
           label={t("results.sectionRoles", locale)}
@@ -476,7 +495,6 @@ export function ProfileTabs({
   bridgeNextStep,
   hasTeamOrOrgMembership = false,
   careerModuleHidden = false,
-  interactionSimulations = [],
   experienceHints,
   experienceHintDestination,
   careerBackground = null,
@@ -1026,23 +1044,16 @@ export function ProfileTabs({
               teamRoleMeasuredScores={teamRoleMeasuredScores}
               teamRolePeer={teamRolePeer}
             />
-            {/* „Hogyan működnétek együtt?" — a csapatszerepek UTÁN, mert az
-                egyéni működésmódról a kétszemélyes dinamikára lép tovább. */}
-            <InteractionSection
-              simulations={interactionSimulations}
-              selfLabel={personalityType}
-            />
-
             {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
                 idáig eljutott, annak ez a következő logikus lépés. */}
             <div className="flex flex-col gap-3">
               <SectionCta
-                eyebrow={t("results.ctaWorkstyleEyebrow", locale)}
-                title={t("results.ctaWorkstyleTitle", locale)}
-                body={t("results.ctaWorkstyleBody", locale)}
-                cta={t("results.ctaWorkstyleButton", locale)}
-                href="/workstyle"
-                glyph="↗"
+                eyebrow={t("results.ctaInteractionEyebrow", locale)}
+                title={t("results.ctaInteractionTitle", locale)}
+                body={t("results.ctaInteractionBody", locale)}
+                cta={t("results.ctaInteractionButton", locale)}
+                href="/interaction"
+                motif="pair"
               />
               {!careerModuleHidden && (
                 <SectionCta
@@ -1051,7 +1062,7 @@ export function ProfileTabs({
                   body={t("results.ctaCareerBody", locale)}
                   cta={t("results.ctaCareerButton", locale)}
                   href="/career"
-                  glyph="↗"
+                  motif="compass"
                 />
               )}
             </div>

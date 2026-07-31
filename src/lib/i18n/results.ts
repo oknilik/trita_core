@@ -839,16 +839,16 @@ export const resultsTranslations = {
       en: "A few questions and we look at which directions fit your personality profile — role types and settings, not ready-made answers.",
     },
     ctaCareerButton: { hu: "Irány az iránytű", en: "Open the compass" },
-    ctaWorkstyleEyebrow: { hu: "Munkastílus", en: "Work style" },
-    ctaWorkstyleTitle: {
-      hu: "Hogyan működsz munka közben?",
-      en: "How do you operate at work?",
+    ctaInteractionEyebrow: { hu: "Kétszemélyes dinamika", en: "One-on-one dynamics" },
+    ctaInteractionTitle: {
+      hu: "Hogyan működnétek együtt?",
+      en: "How would you work together?",
     },
-    ctaWorkstyleBody: {
-      hu: "A dimenzióid együttállásaiból: mi visz előre, milyen közeg támogat, és mely szerepekben van a legkevesebb súrlódás.",
-      en: "From how your dimensions combine: what moves you forward, which setting supports you, and where friction is lowest.",
+    ctaInteractionBody: {
+      hu: "Válassz egy másik profilt, és megnézzük, hol kattannátok össze, hol súrlódnátok — és mi segít a leggyorsabban.",
+      en: "Pick another profile and we'll look at where you'd click, where you'd grate — and what helps fastest.",
     },
-    ctaWorkstyleButton: { hu: "Munkastílusom megnyitása", en: "Open my work style" },
+    ctaInteractionButton: { hu: "Dinamika megnézése", en: "See the dynamics" },
     ccIntroTitle: { hu: "Merre tovább? Nézzük meg együtt.", en: "Where next? Let's look at it together." },
     ccIntroLead: {
       hu: "A személyiségprofilod és pár rövid kérdés alapján a rendszer megkísérli összerendelni, mely szakmai irányok illeszkednek a természetes működésedhez. Nem jóslat és nem minősítés — kiindulópont a gondolkodáshoz.",

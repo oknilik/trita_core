@@ -9,7 +9,6 @@ import { TeamInterestBanner } from "@/components/results/TeamInterestBanner";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { computeCareerForProfile } from "@/lib/career/service";
 import { isCareerModuleHidden } from "@/lib/career/module-visibility";
-import { buildArchetypeSimulations } from "@/lib/interaction-view";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getSelfAccessLevel } from "@/lib/access";
@@ -284,14 +283,6 @@ export default async function ProfileResultsPage({
       observerAvg[code] = count > 0 ? Math.round(sum / count) : 0;
     }
   }
-
-  // Interakció-szimuláció (P5.7 / F3): mind a 30 archetípus a SZERVEREN,
-  // egy nyelven — így az archetípus-váltás a felületen hálózat nélkül megy,
-  // és az ~1000 soros atom-tartalom nem kerül a kliens bundle-be.
-  const interactionSimulations = buildArchetypeSimulations(
-    scores.dimensions,
-    locale,
-  );
 
   const dimensions = config.dimensions.map((dim) => {
     const score = scores.dimensions[dim.code] ?? 0;
@@ -585,7 +576,6 @@ export default async function ProfileResultsPage({
           careerBackground={profile.careerBackground as CareerBackground | null}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}
-          interactionSimulations={interactionSimulations}
           bridgeNextStep={{
             stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
             explanation: selfDashboardVm.recommendedAction.description,
