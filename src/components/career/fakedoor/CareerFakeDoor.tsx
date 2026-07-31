@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { TypeGlyph, TypeMotifMark } from "@/components/type/TypeGlyph";
-import { SurfaceHero } from "@/components/ui/patterns/SurfaceHero";
+import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   DecisionPanel,
@@ -55,6 +55,9 @@ interface CareerFakeDoorProps {
   defaultEmail: string | null;
   initial: DecisionInitialState | null;
 }
+
+/** A karrier-felület hero-témája — a badge-ek innen veszik a színt. */
+const CAREER_THEME = SURFACE_HERO_THEME.career;
 
 /** A négy kártya a tengelymotívumokat kapja ikonként — nincs emoji. */
 const CARDS = [
@@ -109,7 +112,7 @@ export function CareerFakeDoor({
     <div className="flex flex-col gap-8 md:gap-10">
       <SurfaceHero
         className="fd-rise"
-        variant="self"
+        variant="career"
         eyebrow={
           <span className="rounded-full bg-white/[0.12] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
             {t("fakeDoor.eyebrow", locale)}
@@ -118,7 +121,10 @@ export function CareerFakeDoor({
         badge={
           // A készülő-funkció jelzés bronzban: ez az oldal egyetlen hangos
           // vizuális állítása, és az őszinteségi keret hordozója.
-          <span className="rounded-full bg-[rgba(193,127,74,0.22)] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+          <span
+            className="rounded-full px-3 py-1 text-micro font-semibold uppercase tracking-widest"
+            style={{ background: CAREER_THEME.badgeBg, color: CAREER_THEME.badgeText }}
+          >
             {t("fakeDoor.badge", locale)}
           </span>
         }
@@ -143,7 +149,10 @@ export function CareerFakeDoor({
             : undefined
         }
         chips={
-          <span className="rounded-full bg-[rgba(193,127,74,0.16)] px-3 py-1.5 text-caption font-semibold text-[var(--color-accent-primary-soft)]">
+          <span
+            className="rounded-full px-3 py-1.5 text-caption font-semibold"
+            style={{ background: CAREER_THEME.badgeBg, color: CAREER_THEME.badgeText }}
+          >
             {t("fakeDoor.heroPositioning", locale)}
           </span>
         }
