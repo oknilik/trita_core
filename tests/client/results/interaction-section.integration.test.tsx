@@ -130,7 +130,7 @@ describe("InteractionSection", () => {
     ).toBe(true);
   });
 
-  it("a vezető-mód kapcsoló mutatja és elrejti a vezetői blokkot", async () => {
+  it("a viszony-kapcsoló mutatja és elrejti a vezetői blokkot", async () => {
     const user = userEvent.setup();
     const sims = marked();
     render(<InteractionSection simulations={sims} />);
@@ -138,27 +138,55 @@ describe("InteractionSection", () => {
     const initial = sims.find((sim) => !sim.sparse)!;
     expect(initial.leaderNotes.length).toBeGreaterThan(0);
 
-    // Alapból rejtve.
+    const peer = screen.getByRole("button", {
+      name: hu("results.interactionRelationPeer"),
+    });
+    const leader = screen.getByRole("button", {
+      name: hu("results.interactionRelationLeader"),
+    });
+
+    // Alapból egyenrangú viszony — a vezetői blokk rejtve.
+    expect(peer).toHaveAttribute("aria-pressed", "true");
+    expect(leader).toHaveAttribute("aria-pressed", "false");
     expect(
       screen.queryByText(hu("results.interactionLeaderTitle")),
     ).not.toBeInTheDocument();
 
-    const toggle = screen.getByRole("button", {
-      name: hu("results.interactionLeaderToggle"),
-    });
-    expect(toggle).toHaveAttribute("aria-pressed", "false");
-
-    await user.click(toggle);
-    expect(toggle).toHaveAttribute("aria-pressed", "true");
+    await user.click(leader);
+    expect(leader).toHaveAttribute("aria-pressed", "true");
+    expect(peer).toHaveAttribute("aria-pressed", "false");
     expect(
       screen.getByText(hu("results.interactionLeaderTitle")),
     ).toBeInTheDocument();
     expect(screen.getByText(initial.leaderNotes[0].text)).toBeInTheDocument();
 
-    await user.click(toggle);
+    await user.click(peer);
     expect(
       screen.queryByText(hu("results.interactionLeaderTitle")),
     ).not.toBeInTheDocument();
+  });
+
+  it("azonos archetípusnál külön figyelmeztetés jön a közös vakfoltokról", async () => {
+    const user = userEvent.setup();
+    render(
+      <InteractionSection
+        simulations={marked()}
+        selfLabel={resolvePersonalityTypeLabel("OPEN", "TEMP", "hu")!}
+        selfGlyph={{ primaryCode: "OPEN", secondaryCode: "TEMP", intensity: 4 }}
+      />,
+    );
+
+    // Más archetípusnál nincs jelzés…
+    expect(
+      screen.queryByText(hu("results.interactionSameTitle")),
+    ).not.toBeInTheDocument();
+
+    // …a sajátunkra állítva viszont igen.
+    await user.click(dominantTile("OPEN"));
+    await user.click(secondaryTile("TEMP"));
+    expect(
+      screen.getByText(hu("results.interactionSameTitle")),
+    ).toBeInTheDocument();
   });
 
   // Szinkron-őr: a választó szókincse ugyanaz, mint amit a profil megjelenít.

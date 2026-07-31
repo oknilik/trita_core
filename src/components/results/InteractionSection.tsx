@@ -195,6 +195,15 @@ export function InteractionSection({
 
   const current = byKey.get(archetypeKey(dominant, secondary));
 
+  // Ugyanaz az archetípus, mint a sajátod. Ez a leggyakoribb választás (a
+  // felhasználó először magát nézi meg), és a legfélrevezethetőbb: a
+  // hasonlóság gyors megértést ad, de a vakfoltok is közösek — erre külön
+  // ki kell térni, mert az atomok maguktól csak az egyezést dicsérnék.
+  const isSameArchetype =
+    Boolean(selfGlyph) &&
+    selfGlyph?.primaryCode === dominant &&
+    selfGlyph?.secondaryCode === secondary;
+
   return (
     <section>
       {!hideHeader && (
@@ -263,19 +272,60 @@ export function InteractionSection({
             />
           </div>
 
-          <div className="mb-5 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setLeaderMode((value) => !value)}
-              aria-pressed={leaderMode}
-              className={`min-h-[44px] rounded-full border px-4 text-sm transition ${
-                leaderMode
-                  ? "border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]"
-                  : "border-[var(--color-border-soft)] text-[var(--color-text-secondary)]"
-              }`}
-            >
-              {t("results.interactionLeaderToggle", locale)}
-            </button>
+          {isSameArchetype && (
+            <div className="mb-4 rounded-xl border-[1.5px] border-[var(--color-accent-primary)]/25 bg-[var(--color-surface-highlight-warm)] p-[18px]">
+              <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
+                {t("results.interactionSameTitle", locale)}
+              </p>
+              <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
+                {t("results.interactionSameBody", locale)}
+              </p>
+            </div>
+          )}
+
+          {/* Nézőpont-kapcsoló. Korábban egy magányos pill volt a blokkok
+              fölött, és elveszett a nézetben — most saját sávot kap, kimondott
+              kérdéssel és két egyenrangú állapottal, hogy látszódjon: ez egy
+              VÁLASZTÁS, ami átírja az alatta lévő tartalmat. */}
+          <div className="mb-5 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-caption font-semibold text-[var(--color-text-primary)]">
+                  {t("results.interactionRelationQuestion", locale)}
+                </p>
+                <p className="mt-0.5 text-micro text-[var(--color-text-muted)]">
+                  {leaderMode
+                    ? t("results.interactionRelationLeaderHint", locale)
+                    : t("results.interactionRelationPeerHint", locale)}
+                </p>
+              </div>
+              <div
+                role="group"
+                aria-label={t("results.interactionRelationQuestion", locale)}
+                className="flex shrink-0 rounded-full border border-[var(--color-border-soft)] bg-white p-0.5"
+              >
+                {[false, true].map((mode) => (
+                  <button
+                    key={String(mode)}
+                    type="button"
+                    onClick={() => setLeaderMode(mode)}
+                    aria-pressed={leaderMode === mode}
+                    className={`min-h-[40px] rounded-full px-4 text-caption font-medium transition ${
+                      leaderMode === mode
+                        ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
+                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                    }`}
+                  >
+                    {t(
+                      mode
+                        ? "results.interactionRelationLeader"
+                        : "results.interactionRelationPeer",
+                      locale,
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {current.sparse ? (

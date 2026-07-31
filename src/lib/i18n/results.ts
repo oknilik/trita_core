@@ -526,6 +526,28 @@ export const resultsTranslations = {
       hu: "Ez a formán belül futó motívum — és a típusnév jelzője.",
       en: "This is the motif running inside the shape — and the adjective in the name.",
     },
+    interactionSameTitle: {
+      hu: "Ugyanaz a mintázat",
+      en: "The same pattern",
+    },
+    interactionSameBody: {
+      hu: "A hasonlóság gyors megértést adhat: kevés magyarázat kell, és hasonlóan olvassátok a helyzeteket. Ugyanakkor a vakfoltok is közösek lehetnek — amit te nem veszel észre, azt jó eséllyel ő sem. Ilyen párosnál érdemes tudatosan behívni egy harmadik, más működésű nézőpontot a fontos döntésekhez.",
+      en: "Similarity can bring quick understanding: little explaining is needed and you may read situations alike. The blind spots can also be shared, though — what you miss, they may miss too. With a pairing like this it's worth deliberately inviting a third, differently wired perspective into important decisions.",
+    },
+    interactionRelationQuestion: {
+      hu: "Milyen viszonyban vagytok?",
+      en: "What's your relationship?",
+    },
+    interactionRelationPeer: { hu: "Egyenrangúak", en: "Peers" },
+    interactionRelationLeader: { hu: "Ő a vezetőd", en: "They lead you" },
+    interactionRelationPeerHint: {
+      hu: "A dinamika két egyenrangú fél között — nincs döntési fölény egyik oldalon sem.",
+      en: "The dynamic between two peers — neither side holds decision power over the other.",
+    },
+    interactionRelationLeaderHint: {
+      hu: "Ilyenkor egy külön blokk is megjelenik arról, milyen ilyen vezető mellett dolgozni.",
+      en: "This also adds a block on what it's like to work under a manager like this.",
+    },
     interactionLeaderToggle: {
       hu: "Ő a vezetőd",
       en: "They're your manager",
