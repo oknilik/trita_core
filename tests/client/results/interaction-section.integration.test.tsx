@@ -6,7 +6,7 @@
  * hajtja (motor → nézet-modell → felület), nem kézzel gyártott fixture-t.
  */
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { InteractionSection } from "@/components/results/InteractionSection";
@@ -44,6 +44,24 @@ const flat = () => buildArchetypeSimulations(FLAT_PROFILE, "hu");
 
 const hu = (key: string) => t(key, "hu");
 
+// A választó ábra-csempékből áll: natív rádiógombok, `fieldset`+`legend`
+// köré szervezve. A csempe elérhető neve a címke szövege (archetípus-név +
+// dimenzió), ezért a nevek elején horgonyozunk.
+const dominantGroup = () =>
+  screen.getByRole("group", { name: hu("results.interactionPickDominant") });
+const secondaryGroup = () =>
+  screen.getByRole("group", { name: hu("results.interactionPickSecondary") });
+
+// Érték szerint keresünk, nem elérhető név szerint: az ábra aria-label-je is
+// a névbe folyik, és annak a szövege a glyph-nyelvtan változásával mozoghat.
+const tileByValue = (group: HTMLElement, dim: string) =>
+  within(group)
+    .getAllByRole("radio")
+    .find((radio) => (radio as HTMLInputElement).value === dim) as HTMLInputElement;
+
+const dominantTile = (dim: string) => tileByValue(dominantGroup(), dim);
+const secondaryTile = (dim: string) => tileByValue(secondaryGroup(), dim);
+
 describe("InteractionSection", () => {
   it("nem renderel semmit szimulációk nélkül", () => {
     const { container } = render(<InteractionSection simulations={[]} />);
@@ -79,15 +97,8 @@ describe("InteractionSection", () => {
     const sims = marked();
     render(<InteractionSection simulations={sims} />);
 
-    const dominantSelect = screen.getByLabelText(
-      hu("results.interactionPickDominant"),
-    );
-    await user.selectOptions(dominantSelect, "THOR");
-
-    const secondarySelect = screen.getByLabelText(
-      hu("results.interactionPickSecondary"),
-    );
-    await user.selectOptions(secondarySelect, "INTE");
+    await user.click(dominantTile("THOR"));
+    await user.click(secondaryTile("INTE"));
 
     const expected = sims.find((sim) => sim.key === "THOR-INTE")!;
     expect(screen.getByText(expected.label)).toBeInTheDocument();
@@ -97,29 +108,24 @@ describe("InteractionSection", () => {
     const user = userEvent.setup();
     render(<InteractionSection simulations={marked()} />);
 
-    const dominantSelect = screen.getByLabelText(
-      hu("results.interactionPickDominant"),
-    ) as HTMLSelectElement;
-    const secondarySelect = screen.getByLabelText(
-      hu("results.interactionPickSecondary"),
-    ) as HTMLSelectElement;
+    await user.click(secondaryTile("ADAP"));
+    expect(secondaryTile("ADAP").checked).toBe(true);
 
-    await user.selectOptions(secondarySelect, "ADAP");
-    expect(secondarySelect.value).toBe("ADAP");
+    // A domináns ráállítása ugyanarra a dimenzióra: a második csempe eltűnik
+    // a listából, és a kiválasztás átlép egy másikra.
+    await user.click(dominantTile("ADAP"));
+    expect(dominantTile("ADAP").checked).toBe(true);
 
-    // A domináns ráállítása ugyanarra a dimenzióra: a másodiknak el kell lépnie.
-    await user.selectOptions(dominantSelect, "ADAP");
-    expect(dominantSelect.value).toBe("ADAP");
-    expect(secondarySelect.value).not.toBe("ADAP");
+    const secondaryRadios = within(secondaryGroup()).getAllByRole("radio");
+    expect(secondaryRadios).toHaveLength(5);
+    expect(secondaryRadios.map((radio) => (radio as HTMLInputElement).value)).not.toContain(
+      "ADAP",
+    );
 
-    // És a második listájából egészen el is tűnik a domináns dimenzió.
-    const secondaryValues = [...secondarySelect.options].map((o) => o.value);
-    expect(secondaryValues).not.toContain("ADAP");
-    expect(secondaryValues).toHaveLength(5);
-    // A kiválasztott pár mindig feloldható egy létező archetípusra.
+    const checked = secondaryRadios.find((radio) => (radio as HTMLInputElement).checked)!;
     expect(
       marked().some(
-        (sim) => sim.key === `${dominantSelect.value}-${secondarySelect.value}`,
+        (sim) => sim.key === `ADAP-${(checked as HTMLInputElement).value}`,
       ),
     ).toBe(true);
   });
@@ -158,30 +164,32 @@ describe("InteractionSection", () => {
   // Szinkron-őr: a választó szókincse ugyanaz, mint amit a profil megjelenít.
   // Enélkül a felhasználónak fejben kellene leképeznie a „Nyitottság → újító"
   // párt, mert a picker dimenziót kérdez, az eredmény meg archetípust mond.
-  it("a választó a PROFIL szókincsét kínálja, nem nyers dimenzió-nevet", async () => {
+  it("a választó a PROFIL szókincsét kínálja, ábrával együtt", async () => {
     const user = userEvent.setup();
     render(<InteractionSection simulations={marked()} />);
 
-    const dominantSelect = screen.getByLabelText(
-      hu("results.interactionPickDominant"),
-    ) as HTMLSelectElement;
-    const secondarySelect = screen.getByLabelText(
-      hu("results.interactionPickSecondary"),
-    ) as HTMLSelectElement;
-
-    // A domináns listája FŐNEVEKET kínál, a második MELLÉKNEVEKET.
-    for (const option of dominantSelect.options) {
-      const noun = personalityNoun(option.value, "hu")!;
-      expect(option.text.startsWith(noun)).toBe(true);
-    }
-    for (const option of secondarySelect.options) {
-      const adjective = personalityAdjective(option.value, "hu")!;
-      expect(option.text.startsWith(adjective)).toBe(true);
+    // Az elsődleges csoport mind a hat dimenziót kínálja, FŐNÉVVEL.
+    const dominantRadios = within(dominantGroup()).getAllByRole("radio");
+    expect(dominantRadios).toHaveLength(6);
+    for (const radio of dominantRadios) {
+      const dim = (radio as HTMLInputElement).value;
+      const noun = personalityNoun(dim, "hu")!;
+      expect(radio.closest("label")?.textContent).toContain(noun);
     }
 
-    // És a kettő tényleg összeáll a profilnál használt címkére.
-    await user.selectOptions(dominantSelect, "OPEN");
-    await user.selectOptions(secondarySelect, "TEMP");
+    // A domináns kiválasztása után a második csoport a maradék ötöt kínálja,
+    // MELLÉKNÉVVEL — ugyanazzal a szókinccsel, amiből a profil neve épül.
+    await user.click(dominantTile("OPEN"));
+    const secondaryRadios = within(secondaryGroup()).getAllByRole("radio");
+    expect(secondaryRadios).toHaveLength(5);
+    for (const radio of secondaryRadios) {
+      const dim = (radio as HTMLInputElement).value;
+      expect(dim).not.toBe("OPEN");
+      const adjective = personalityAdjective(dim, "hu")!;
+      expect(radio.closest("label")?.textContent).toContain(adjective);
+    }
+
+    await user.click(secondaryTile("TEMP"));
     const expected = resolvePersonalityTypeLabel("OPEN", "TEMP", "hu")!;
     expect(expected).toBe("Energikus újító");
     expect(screen.getByText(expected)).toBeInTheDocument();
@@ -202,14 +210,8 @@ describe("InteractionSection", () => {
       />,
     );
 
-    await user.selectOptions(
-      screen.getByLabelText(hu("results.interactionPickDominant")),
-      "OPEN",
-    );
-    await user.selectOptions(
-      screen.getByLabelText(hu("results.interactionPickSecondary")),
-      "TEMP",
-    );
+    await user.click(dominantTile("OPEN"));
+    await user.click(secondaryTile("TEMP"));
 
     // Két oldal, mindkettő a saját címkéjével és eyebrow-jával.
     expect(screen.getByText(self)).toBeInTheDocument();
@@ -225,14 +227,8 @@ describe("InteractionSection", () => {
     const user = userEvent.setup();
     render(<InteractionSection simulations={marked()} />);
 
-    await user.selectOptions(
-      screen.getByLabelText(hu("results.interactionPickDominant")),
-      "OPEN",
-    );
-    await user.selectOptions(
-      screen.getByLabelText(hu("results.interactionPickSecondary")),
-      "TEMP",
-    );
+    await user.click(dominantTile("OPEN"));
+    await user.click(secondaryTile("TEMP"));
 
     const adjective = personalityAdjective("TEMP", "hu")!;
     const noun = personalityNoun("OPEN", "hu")!;

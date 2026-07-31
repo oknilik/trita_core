@@ -3,14 +3,14 @@
 import { useMemo, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { SelectField } from "@/components/ui/primitives/SelectField";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
-import { TRITAN_DIMENSIONS, TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
 import {
   personalityAdjective,
   personalityNoun,
 } from "@/lib/personality-type";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
+import { ArchetypePicker } from "@/components/results/ArchetypePicker";
 import {
   archetypeKey,
   type ArchetypeSimulationView,
@@ -185,8 +185,6 @@ export function InteractionSection({
 
   if (simulations.length === 0) return null;
 
-  const secondaryOptions = TRITAN_ORDER.filter((dim) => dim !== dominant);
-
   const handleDominantChange = (next: TritanDimCode) => {
     setDominant(next);
     // A két dimenzió nem eshet egybe — ilyenkor a másodikat léptetjük.
@@ -196,17 +194,6 @@ export function InteractionSection({
   };
 
   const current = byKey.get(archetypeKey(dominant, secondary));
-
-  // A választó ugyanazt a szókincset kínálja, amit a profil megjelenít
-  // („Újító" / „Energikus"), nem a nyers dimenzió-nevet — különben a
-  // felhasználónak fejben kellene leképeznie a Nyitottság → újító párt.
-  // A HEXACO-dimenzió az opció mögött marad, mert az a hitelesség forrása.
-  const dimName = (dim: TritanDimCode) =>
-    locale === "hu" ? TRITAN_DIMENSIONS[dim].hu : TRITAN_DIMENSIONS[dim].en;
-  const nounOption = (dim: TritanDimCode) =>
-    `${personalityNoun(dim, locale) ?? dimName(dim)} · ${dimName(dim)}`;
-  const adjectiveOption = (dim: TritanDimCode) =>
-    `${personalityAdjective(dim, locale) ?? dimName(dim)} · ${dimName(dim)}`;
 
   return (
     <section>
@@ -222,34 +209,12 @@ export function InteractionSection({
         </>
       )}
 
-      <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
-        <SelectField
-          label={t("results.interactionPickDominant", locale)}
-          value={dominant}
-          onChange={(event) =>
-            handleDominantChange(event.target.value as TritanDimCode)
-          }
-        >
-          {TRITAN_ORDER.map((dim) => (
-            <option key={dim} value={dim}>
-              {nounOption(dim)}
-            </option>
-          ))}
-        </SelectField>
-        <SelectField
-          label={t("results.interactionPickSecondary", locale)}
-          value={secondary}
-          onChange={(event) =>
-            setSecondary(event.target.value as TritanDimCode)
-          }
-        >
-          {secondaryOptions.map((dim) => (
-            <option key={dim} value={dim}>
-              {adjectiveOption(dim)}
-            </option>
-          ))}
-        </SelectField>
-      </div>
+      <ArchetypePicker
+        dominant={dominant}
+        secondary={secondary}
+        onDominantChange={handleDominantChange}
+        onSecondaryChange={setSecondary}
+      />
 
       {current && (
         <>

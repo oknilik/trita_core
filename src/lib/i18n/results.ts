@@ -516,13 +516,15 @@ export const resultsTranslations = {
       hu: "Válaszd ki, milyen működésmódú emberrel dolgoznál — és megnézzük, mi menne magától köztetek, hol lenne súrlódás, és mit érdemes előre megbeszélni.",
       en: "Pick the way of working you'd be paired with — and we'll show what would come easily between you, where friction is likely, and what's worth agreeing on up front.",
     },
-    interactionPickDominant: {
-      hu: "Mi a legerősebb vonása? (ez adja a nevet)",
-      en: "Their strongest trait? (this gives the noun)",
+    interactionPickDominant: { hu: "A legerősebb vonása", en: "Their strongest trait" },
+    interactionPickDominantHint: {
+      hu: "Ez adja a nagy formát az ábrán — és a típusnév főnevét.",
+      en: "This gives the large shape in the figure — and the noun in the type name.",
     },
-    interactionPickSecondary: {
-      hu: "És a második? (ez adja a jelzőt)",
-      en: "And the second? (this gives the adjective)",
+    interactionPickSecondary: { hu: "A második vonása", en: "Their second trait" },
+    interactionPickSecondaryHint: {
+      hu: "Ez a formán belül futó motívum — és a típusnév jelzője.",
+      en: "This is the motif running inside the shape — and the adjective in the name.",
     },
     interactionLeaderToggle: {
       hu: "Ő a vezetőd",
