@@ -124,7 +124,6 @@ model UserProfile {
   managedCandidates CandidateInvite[] @relation("ManagedCandidates")
 
   // Billing: one-time purchases
-  purchases Purchase[]
 
   // Team role layer — append-only körök, olvasáskor a legfrissebb nyer
   teamRoleAnswers           TeamRoleAnswer[]
@@ -633,55 +632,6 @@ model PsychSafetyResponse {
 }
 
 // ============================================
-// PURCHASE LAYER (one-time payments)
-// ============================================
-
-model Purchase {
-  id String @id @default(cuid())
-
-  userProfileId String
-  userProfile   UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
-
-  orgId  String?
-  teamId String?
-
-  // "self_plus" | "team_snapshot" | "team_deep_dive"
-  tier String
-
-  stripePaymentIntentId   String?
-  stripeCheckoutSessionId String?
-  amount                  Int // cent-ben (€49 = 4900)
-  currency                String  @default("eur")
-  status                  String  @default("completed")
-  // "pending" | "completed" | "refunded"
-
-  // Advisory tracking (Team Deep Dive tartalmaz 1 session-t)
-  includesAdvisory Boolean @default(false)
-  advisoryUsed     Boolean @default(false)
-
-  // Candidate credit (későbbi csomagokhoz)
-  includedCredits Int @default(0)
-
-  metadata Json?
-
-  // Billingo invoice tracking
-  productType            String? // "self_plus" | "team_snapshot" | "candidate_pack"
-  grossAmount            Int? // bruttó összeg centben (ÁFA-val)
-  billingoDocumentId     String?
-  billingoDocumentNumber String?
-  invoiceStatus          String  @default("not_applicable") // "pending" | "issued" | "failed" | "not_applicable"
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userProfileId])
-  @@index([orgId])
-  @@index([teamId])
-  @@index([tier])
-  @@index([stripeCheckoutSessionId])
-}
-
-// ============================================
 // TEAM ROLE LAYER
 // ============================================
 
@@ -827,31 +777,6 @@ model TrustObservation {
   @@unique([campaignId, aboutUserId, raterUserId])
   @@index([teamId, aboutUserId])
   @@index([campaignId, raterUserId])
-}
-
-model AdvisorySession {
-  id String @id @default(cuid())
-
-  orgId          String?
-  teamId         String?
-  purchaseId     String?
-  subscriptionId String?
-  requestedById  String
-
-  type   String // "guided" | "facilitation" | "workshop"
-  status String @default("requested")
-  // "requested" | "scheduled" | "completed" | "canceled"
-
-  scheduledAt DateTime?
-  completedAt DateTime?
-  notes       String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([orgId])
-  @@index([teamId])
-  @@index([purchaseId])
 }
 
 // ============================================
@@ -1002,4 +927,22 @@ model FakeDoorResponse {
   @@unique([module, sessionId])
   @@index([module, interest])
   @@index([module, priceVariant])
+}
+
+// ============================================
+// AJÁNLAT-KALKULÁTOR (belső)
+// ============================================
+//
+// Egyetlen sor tartja a díjtételeket (kulcs: "default"). JSON, mert a
+// díjszerkezet még mozog — új sáv vagy új mérés-lépés ne igényeljen
+// migrációt. A séma-ellenőrzést a `rateCardSchema` (zod) végzi íráskor.
+//
+// SOHA nem kerül felhasználói felületre: a platform nem publikál listaárat.
+
+model QuoteRateCard {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  data        Json
+  updatedAt   DateTime @updatedAt
+  updatedById String?
 }
