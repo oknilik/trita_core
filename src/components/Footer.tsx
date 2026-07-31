@@ -14,27 +14,6 @@ export function Footer() {
   // Hide footer on assessment/try pages
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
-  // Mérőoldalon (fake door) minimál lábléc: a hét linkes teljes footer hét
-  // kiszökési út — a mérés alatt ez rontja a válaszadási arányt, tehát az
-  // adatot rontja. Jogi linkek + copyright marad.
-  if (currentPath.startsWith("/career")) {
-    return (
-      <footer className="border-t border-sand bg-cream px-4 py-6">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 text-caption text-ink-warm md:flex-row md:justify-between">
-          <span>© {new Date().getFullYear()} trita</span>
-          <span className="flex gap-4">
-            <Link href="/privacy" className="hover:text-ink">
-              {t("footer.privacy", locale)}
-            </Link>
-            <Link href="/contact" className="hover:text-ink">
-              {t("footer.contact", locale)}
-            </Link>
-          </span>
-        </div>
-      </footer>
-    );
-  }
-
   const accountLinks = isSignedIn
     ? [
         { label: t("nav.profile", locale), href: "/profile/results" },

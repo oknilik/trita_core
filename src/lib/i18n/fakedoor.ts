@@ -59,37 +59,6 @@ export const fakeDoorTranslations = {
       en: "A page you can take into a conversation — with a manager, mentor or advisor.",
     },
 
-    // ── Előnézet (T7) ─────────────────────────────────────────────────
-    // KVALITATÍV jelzések, nem százalék: a módszertan küszöbalapú, tehát egy
-    // numerikus előnézet olyan terméket ígérne, amit nem szállítunk.
-    previewTitle: { hu: "Így nézne ki", en: "What it would look like" },
-    previewDisclaimer: {
-      hu: "Illusztráció — nem a te adatod. Egy kitalált mintázatra mutatjuk, milyen formában érkezne a válasz.",
-      en: "An illustration — not your data. It shows, on a made-up pattern, the form the answer would take.",
-    },
-    previewPattern: {
-      hu: "Kitalált mintázat: erős kezdeményezés, közepes szabálykövetés, magas nyitottság.",
-      en: "Made-up pattern: strong initiative, moderate rule-following, high openness.",
-    },
-    previewRow1Area: { hu: "Termék- és növekedési szerepek", en: "Product & growth roles" },
-    previewRow1Signal: { hu: "Erős illeszkedés", en: "Strong fit" },
-    previewRow1Note: {
-      hu: "stabil becslés · a gyors visszacsatolás és a saját döntési tér ehhez a mintázathoz illik",
-      en: "stable estimate · fast feedback and room to decide suit this pattern",
-    },
-    previewRow2Area: { hu: "Elemző, kutatói szerepek", en: "Analytical, research roles" },
-    previewRow2Signal: { hu: "Vegyes", en: "Mixed" },
-    previewRow2Note: {
-      hu: "határeset — közeli alternatíva: minőségbiztosítás",
-      en: "borderline — close alternative: quality assurance",
-    },
-    previewRow3Area: { hu: "Szigorúan szabályozott, jóváhagyás-vezérelt munka", en: "Tightly regulated, approval-driven work" },
-    previewRow3Signal: { hu: "Feszülhet", en: "May strain" },
-    previewRow3Note: {
-      hu: "a lassú jóváhagyási körök ennél a mintázatnál jellemzően energiát visznek",
-      en: "slow approval loops typically drain this pattern",
-    },
-
     // ── Bizalom (T8) ──────────────────────────────────────────────────
     trustTitle: { hu: "Mire épül", en: "What it's built on" },
     trustItem1: { hu: "HEXACO személyiségmodell", en: "The HEXACO personality model" },

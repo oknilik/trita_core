@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
-import { TypeMotifMark } from "@/components/type/TypeGlyph";
-import { FakeDoorArt } from "@/components/career/fakedoor/FakeDoorArt";
+import { TypeGlyph, TypeMotifMark } from "@/components/type/TypeGlyph";
 import {
   DecisionPanel,
   type DecisionInitialState,
@@ -33,6 +32,19 @@ interface CareerFakeDoorProps {
   price: string;
   /** Kész személyiségprofil típusneve — csak a riportból érkezőnél mutatjuk. */
   patternLabel: string | null;
+  /**
+   * A felhasználó SAJÁT karakter-ábrája (típus-ábra nyelvtan: domináns
+   * dimenzió = alapforma, második = motívum). Profil nélkül null — kitalált
+   * ábrát mutatni pont az ellenkezőjét üzenné annak, amit az oldal ígér.
+   */
+  glyph: {
+    primaryCode: string;
+    secondaryCode: string;
+    intensity: number;
+    /** A típusnév — az ábra alt-szövege ebből épül, tehát akkor is kell,
+     *  ha a hero nem szólítja meg vele a látogatót. */
+    label: string;
+  } | null;
   defaultEmail: string | null;
   initial: DecisionInitialState | null;
 }
@@ -52,38 +64,12 @@ const CARDS = [
   { lead: "fakeDoor.card4Lead", body: "fakeDoor.card4Body", motif: "OPEN" },
 ];
 
-const PREVIEW_ROWS = [
-  {
-    area: "fakeDoor.previewRow1Area",
-    signal: "fakeDoor.previewRow1Signal",
-    note: "fakeDoor.previewRow1Note",
-    tone: "strong",
-  },
-  {
-    area: "fakeDoor.previewRow2Area",
-    signal: "fakeDoor.previewRow2Signal",
-    note: "fakeDoor.previewRow2Note",
-    tone: "mixed",
-  },
-  {
-    area: "fakeDoor.previewRow3Area",
-    signal: "fakeDoor.previewRow3Signal",
-    note: "fakeDoor.previewRow3Note",
-    tone: "strain",
-  },
-] as const;
-
-const SIGNAL_STYLE: Record<string, string> = {
-  strong: "border-[var(--fd-terracotta)] text-[var(--fd-terracotta)]",
-  mixed: "border-[var(--fd-mustard)] text-[#9a6a12]",
-  strain: "border-[var(--fd-deep)]/40 text-[var(--fd-deep)]",
-};
-
 export function CareerFakeDoor({
   sessionId,
   source,
   price,
   patternLabel,
+  glyph,
   defaultEmail,
   initial,
 }: CareerFakeDoorProps) {
@@ -105,8 +91,11 @@ export function CareerFakeDoor({
   return (
     <div style={PALETTE} className="flex flex-col gap-10">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="fd-rise relative overflow-hidden rounded-2xl border-[1.5px] border-[var(--fd-mustard)]/45 bg-[var(--fd-cream)] p-7 md:p-10">
-        <div className="relative z-10 max-w-[34rem]">
+      {/* A hero SORBA rendez, nem réteget húz: az ábra teljes egészében
+          látszik (a korábbi abszolút pozíció a képszélen levágta), és a
+          szöveg sem fut alá. */}
+      <section className="fd-rise flex flex-col gap-7 rounded-2xl border-[1.5px] border-[var(--fd-mustard)]/45 bg-[var(--fd-cream)] p-7 md:flex-row md:items-center md:gap-9 md:p-10">
+        <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center rounded-full bg-[var(--fd-terracotta)] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white">
               {t("fakeDoor.badge", locale)}
@@ -135,8 +124,30 @@ export function CareerFakeDoor({
           )}
         </div>
 
-        <FakeDoorArt className="pointer-events-none absolute -right-8 top-1/2 hidden h-[300px] w-[300px] -translate-y-1/2 md:block" />
-        <FakeDoorArt className="mt-6 h-[150px] w-full md:hidden" />
+        {/* A SAJÁT karakter-ábrája — ugyanaz a típus-ábra, amit a riportban
+            lát, ugyanabból az SVG-nyelvtanból. Nem díszítés: azt mondja ki,
+            hogy a modul EBBŐL indulna. */}
+        {glyph && (
+          <figure className="mx-auto shrink-0 md:mx-0">
+            <TypeGlyph
+              primaryCode={glyph.primaryCode}
+              secondaryCode={glyph.secondaryCode}
+              typeLabel={glyph.label}
+              locale={locale}
+              intensity={glyph.intensity}
+              variant="badge"
+              className="h-[132px] w-[132px] rounded-2xl border border-[var(--fd-mustard)]/45 md:h-[190px] md:w-[190px]"
+            />
+            {/* A típusnév EGYSZER szerepeljen: ha a megszólító sor már
+                kimondja (riportból érkező), az ábra alatti felirat
+                ismétlés lenne. */}
+            {!patternLabel && glyph.label && (
+              <figcaption className="mt-2 text-center text-micro font-semibold uppercase tracking-widest text-[var(--fd-deep)]/60">
+                {glyph.label}
+              </figcaption>
+            )}
+          </figure>
+        )}
       </section>
 
       {/* ── „Wow" ────────────────────────────────────────────────── */}
@@ -175,46 +186,8 @@ export function CareerFakeDoor({
         </div>
       </section>
 
-      {/* ── Előnézet ─────────────────────────────────────────────── */}
-      {/* Kvalitatív jelzések, NEM százalék és NEM sávdiagram. A bizonyosság
-          viszont legitim: a módszertanban tényleg van stabilitás-jelzés. */}
-      <section className="fd-rise fd-delay-3 rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-6 md:p-7">
-        <p className="text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
-          {t("fakeDoor.previewTitle", locale)}
-        </p>
-        <p className="mt-2 max-w-prose text-caption leading-relaxed text-[var(--color-text-secondary)]">
-          {t("fakeDoor.previewDisclaimer", locale)}
-        </p>
-
-        <div className="mt-4 rounded-xl bg-[var(--fd-cream)] p-4 md:p-5">
-          <p className="text-caption font-semibold text-[var(--fd-deep)]">
-            {t("fakeDoor.previewPattern", locale)}
-          </p>
-          <ul className="mt-3 flex flex-col gap-2.5">
-            {PREVIEW_ROWS.map((row) => (
-              <li
-                key={row.area}
-                className="flex flex-col gap-1 border-t border-[var(--fd-mustard)]/35 pt-2.5 first:border-t-0 first:pt-0 md:flex-row md:items-baseline md:gap-3"
-              >
-                <span
-                  className={`inline-flex w-fit shrink-0 items-center rounded-full border px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide ${SIGNAL_STYLE[row.tone]}`}
-                >
-                  {t(row.signal, locale)}
-                </span>
-                <span className="text-body font-semibold text-[var(--color-text-primary)]">
-                  {t(row.area, locale)}
-                </span>
-                <span className="text-caption text-[var(--color-text-secondary)] md:ml-auto md:text-right">
-                  {t(row.note, locale)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* ── Mire épül ────────────────────────────────────────────── */}
-      <section className="fd-rise fd-delay-4">
+      <section className="fd-rise fd-delay-3">
         <p className="mb-2.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
           {t("fakeDoor.trustTitle", locale)}
         </p>
@@ -231,7 +204,7 @@ export function CareerFakeDoor({
       </section>
 
       {/* ── Ár ───────────────────────────────────────────────────── */}
-      <section className="fd-rise fd-delay-5 rounded-2xl border-[1.5px] border-[var(--fd-mustard)] bg-[var(--fd-cream)] p-6 md:p-7">
+      <section className="fd-rise fd-delay-4 rounded-2xl border-[1.5px] border-[var(--fd-mustard)] bg-[var(--fd-cream)] p-6 md:p-7">
         <p className="text-micro font-bold uppercase tracking-wide text-[#9a6a12]">
           {t("fakeDoor.priceLabel", locale)}
         </p>
