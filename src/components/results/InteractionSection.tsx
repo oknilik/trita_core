@@ -10,6 +10,7 @@ import {
   personalityAdjective,
   personalityNoun,
 } from "@/lib/personality-type";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
 import {
   archetypeKey,
   type ArchetypeSimulationView,
@@ -26,6 +27,79 @@ interface InteractionSectionProps {
    * választott típust mutatja.
    */
   selfLabel?: string;
+  /**
+   * A felhasználó SAJÁT ábra-párja (legerősebb + második dimenzió) és
+   * intenzitása. Enélkül a bal oldali kártya ábra nélkül marad — a
+   * névösszeállítás akkor is látszik.
+   */
+  selfGlyph?: { primaryCode: string; secondaryCode: string; intensity: number };
+  /**
+   * Önálló oldalon (`/interaction`) a lap saját címe és bevezetője áll a
+   * szekció felett — ilyenkor a belső fejléc duplikáció lenne.
+   */
+  hideHeader?: boolean;
+}
+
+/**
+ * Egy fél az összehasonlításban: ábra + típusnév + a névösszeállítás
+ * kimondva („Energikus” + „újító”).
+ *
+ * Miért kell kimondani: a felhasználó a saját profilján egy KÉSZ nevet lát
+ * („Módszeres újító”), itt viszont két dimenziót választ. Ha nem mutatjuk meg,
+ * melyik választás melyik szótagot adja, úgy tűnik, mintha más nevezéktan
+ * lenne a két felületen.
+ */
+function ComparisonSide({
+  eyebrow,
+  label,
+  glyph,
+  nounPart,
+  adjectivePart,
+  locale,
+  highlight,
+}: {
+  eyebrow: string;
+  label: string;
+  glyph?: { primaryCode: string; secondaryCode: string; intensity: number };
+  nounPart?: string | null;
+  adjectivePart?: string | null;
+  locale: "hu" | "en";
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`flex flex-1 items-center gap-3.5 rounded-xl border-[1.5px] p-4 ${
+        highlight
+          ? "border-[var(--color-action-primary-bg)]/25 bg-[var(--color-surface-self-accent-soft)]"
+          : "border-[var(--color-border-soft)] bg-white"
+      }`}
+    >
+      {glyph && (
+        <TypeGlyph
+          primaryCode={glyph.primaryCode}
+          secondaryCode={glyph.secondaryCode}
+          typeLabel={label}
+          locale={locale}
+          intensity={glyph.intensity}
+          variant="badge"
+          className="h-14 w-14 shrink-0 rounded-xl border border-[var(--color-border-soft)] bg-white md:h-16 md:w-16"
+        />
+      )}
+      <div className="min-w-0">
+        <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
+          {eyebrow}
+        </p>
+        <p className="mt-0.5 break-words font-fraunces text-[17px] leading-snug text-[var(--color-text-primary)] md:text-[19px]">
+          {label}
+        </p>
+        {(adjectivePart || nounPart) && (
+          <p className="mt-1 text-micro text-[var(--color-text-muted)]">
+            {[adjectivePart, nounPart].filter(Boolean).join(" + ")}
+          </p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 /** Blokk-kártya — a HowYouWorkSection kártya-nyelvét követi. */
@@ -84,6 +158,8 @@ function Block({
 export function InteractionSection({
   simulations,
   selfLabel,
+  selfGlyph,
+  hideHeader = false,
 }: InteractionSectionProps) {
   const { locale } = useLocale();
 
@@ -134,13 +210,17 @@ export function InteractionSection({
 
   return (
     <section>
-      <DashboardSectionHeader
-        label={t("results.sectionInteraction", locale)}
-        className="mb-4"
-      />
-      <p className="mb-5 max-w-prose text-body text-[var(--color-text-secondary)]">
-        {t("results.interactionIntro", locale)}
-      </p>
+      {!hideHeader && (
+        <>
+          <DashboardSectionHeader
+            label={t("results.sectionInteraction", locale)}
+            className="mb-4"
+          />
+          <p className="mb-5 max-w-prose text-body text-[var(--color-text-secondary)]">
+            {t("results.interactionIntro", locale)}
+          </p>
+        </>
+      )}
 
       <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
         <SelectField
@@ -173,23 +253,52 @@ export function InteractionSection({
 
       {current && (
         <>
+          {/* Páros-fejléc: két ábra egymás mellett. Az összehasonlítást a KÉP
+              viszi, a név alatt pedig ott a összeállítás — így látszik, hogy a
+              két oldal ugyanabból a szókincsből épül. */}
+          <div className="mb-4 flex flex-col items-stretch gap-2 md:flex-row md:items-center md:gap-3">
+            {selfLabel && (
+              <>
+                <ComparisonSide
+                  eyebrow={t("results.interactionPairYou", locale)}
+                  label={selfLabel}
+                  glyph={selfGlyph}
+                  nounPart={
+                    selfGlyph ? personalityNoun(selfGlyph.primaryCode, locale) : null
+                  }
+                  adjectivePart={
+                    selfGlyph
+                      ? personalityAdjective(selfGlyph.secondaryCode, locale)
+                      : null
+                  }
+                  locale={locale === "hu" ? "hu" : "en"}
+                  highlight
+                />
+                <span
+                  aria-hidden="true"
+                  className="self-center font-fraunces text-lg text-[var(--color-text-muted)]"
+                >
+                  ×
+                </span>
+              </>
+            )}
+            <ComparisonSide
+              eyebrow={t("results.interactionPairOther", locale)}
+              label={current.label}
+              glyph={{
+                primaryCode: dominant,
+                secondaryCode: secondary,
+                // A választott típusnak nincs pontszáma — közepes intenzitás,
+                // hogy az ábra ne sugalljon mért erősséget.
+                intensity: 3,
+              }}
+              nounPart={personalityNoun(dominant, locale)}
+              adjectivePart={personalityAdjective(secondary, locale)}
+              locale={locale === "hu" ? "hu" : "en"}
+            />
+          </div>
+
           <div className="mb-5 flex flex-wrap items-center gap-3">
-            <p className="font-fraunces text-lg text-[var(--color-text-primary)]">
-              {selfLabel && (
-                <>
-                  <span className="text-[var(--color-text-muted)]">
-                    {t("results.interactionPairYou", locale)} ({selfLabel})
-                  </span>
-                  <span
-                    className="mx-2 text-[var(--color-text-muted)]"
-                    aria-hidden="true"
-                  >
-                    ×
-                  </span>
-                </>
-              )}
-              {current.label}
-            </p>
             <button
               type="button"
               onClick={() => setLeaderMode((value) => !value)}

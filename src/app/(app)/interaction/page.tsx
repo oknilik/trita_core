@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, type Locale } from "@/lib/i18n";
 import { buildArchetypeSimulations } from "@/lib/interaction-view";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
+import { resolveGlyphPair } from "@/lib/type-glyph";
 import type { ScoreResult } from "@/lib/scoring";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { InteractionSection } from "@/components/results/InteractionSection";
@@ -60,10 +61,14 @@ export default async function InteractionPage() {
 
   const lang = (locale === "en" ? "en" : "hu") as Locale;
   const simulations = buildArchetypeSimulations(scores.dimensions, lang);
-  const personalityType = resolvePersonalityTypeFromScores(
-    Object.entries(scores.dimensions).map(([code, score]) => ({ code, score })),
-    lang,
-  );
+  // A típusnév és az ábra UGYANABBÓL a sorrendből épül (legerősebb → forma,
+  // második → motívum), így az összehasonlítás két oldala azonos logikájú.
+  const scoredDims = Object.entries(scores.dimensions).map(([code, score]) => ({
+    code,
+    score,
+  }));
+  const personalityType = resolvePersonalityTypeFromScores(scoredDims, lang);
+  const selfGlyph = resolveGlyphPair(scoredDims);
 
   return (
     <PlatformPageShell
@@ -79,7 +84,12 @@ export default async function InteractionPage() {
         </p>
       </header>
 
-      <InteractionSection simulations={simulations} selfLabel={personalityType ?? undefined} />
+      <InteractionSection
+        simulations={simulations}
+        selfLabel={personalityType ?? undefined}
+        selfGlyph={selfGlyph ?? undefined}
+        hideHeader
+      />
     </PlatformPageShell>
   );
 }

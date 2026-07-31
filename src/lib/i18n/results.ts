@@ -517,12 +517,12 @@ export const resultsTranslations = {
       en: "Pick the way of working you'd be paired with — and we'll show what would come easily between you, where friction is likely, and what's worth agreeing on up front.",
     },
     interactionPickDominant: {
-      hu: "Mi a legerősebb oldala?",
-      en: "Their strongest side",
+      hu: "Mi a legerősebb vonása? (ez adja a nevet)",
+      en: "Their strongest trait? (this gives the noun)",
     },
     interactionPickSecondary: {
-      hu: "És a második?",
-      en: "And their second",
+      hu: "És a második? (ez adja a jelzőt)",
+      en: "And the second? (this gives the adjective)",
     },
     interactionLeaderToggle: {
       hu: "Ő a vezetőd",
@@ -531,6 +531,7 @@ export const resultsTranslations = {
     // A páros-fejléc: „Te (Módszeres hídépítő) × Energikus újító" — láthatóvá
     // teszi, hogy KETTŐTÖK dinamikájáról van szó, és hogy a két oldal ugyanazt
     // a szókincset használja.
+    interactionPairOther: { hu: "A másik profil", en: "The other profile" },
     interactionPairYou: { hu: "Te", en: "You" },
     interactionEasy: { hu: "Ami magától megy", en: "What comes easily" },
     interactionFriction: {

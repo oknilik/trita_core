@@ -194,7 +194,13 @@ describe("InteractionSection", () => {
     const self = resolvePersonalityTypeLabel("THOR", "ADAP", "hu")!;
     expect(self).toBe("Együttműködő rendszerépítő");
 
-    render(<InteractionSection simulations={sims} selfLabel={self} />);
+    render(
+      <InteractionSection
+        simulations={sims}
+        selfLabel={self}
+        selfGlyph={{ primaryCode: "THOR", secondaryCode: "ADAP", intensity: 3 }}
+      />,
+    );
 
     await user.selectOptions(
       screen.getByLabelText(hu("results.interactionPickDominant")),
@@ -205,26 +211,43 @@ describe("InteractionSection", () => {
       "TEMP",
     );
 
-    const header = screen.getByText(
-      (_, node) =>
-        node?.tagName === "P" &&
-        (node.textContent ?? "").includes(self) &&
-        (node.textContent ?? "").includes("Energikus újító"),
-    );
-    expect(header).toBeInTheDocument();
-    expect(header.textContent).toContain(hu("results.interactionPairYou"));
+    // Két oldal, mindkettő a saját címkéjével és eyebrow-jával.
+    expect(screen.getByText(self)).toBeInTheDocument();
+    expect(screen.getByText("Energikus újító")).toBeInTheDocument();
+    expect(screen.getByText(hu("results.interactionPairYou"))).toBeInTheDocument();
+    expect(screen.getByText(hu("results.interactionPairOther"))).toBeInTheDocument();
   });
 
-  it("saját címke nélkül a fejléc csak a választott típust mutatja", () => {
+  it("a másik oldal kiírja, melyik választás melyik szótagot adja", async () => {
+    // Ez a szekció lényege: a felhasználó a profilján KÉSZ nevet lát, itt
+    // viszont két dimenziót választ. A névösszeállítás kiírása nélkül úgy
+    // tűnik, mintha más nevezéktan lenne a két felületen.
+    const user = userEvent.setup();
+    render(<InteractionSection simulations={marked()} />);
+
+    await user.selectOptions(
+      screen.getByLabelText(hu("results.interactionPickDominant")),
+      "OPEN",
+    );
+    await user.selectOptions(
+      screen.getByLabelText(hu("results.interactionPickSecondary")),
+      "TEMP",
+    );
+
+    const adjective = personalityAdjective("TEMP", "hu")!;
+    const noun = personalityNoun("OPEN", "hu")!;
+    expect(screen.getByText(`${adjective} + ${noun}`)).toBeInTheDocument();
+    // …és a kettőből összeálló név is ott van.
+    expect(screen.getByText("Energikus újító")).toBeInTheDocument();
+  });
+
+  it("saját címke nélkül csak a választott típus oldala jelenik meg", () => {
     const sims = marked();
     render(<InteractionSection simulations={sims} />);
     const initial = sims.find((sim) => !sim.sparse)!;
 
-    // A fejléc-bekezdés tartalma PONTOSAN a választott címke — se „Te (…)",
-    // se „×" nem kerül bele, ha nincs saját címke.
-    const header = screen.getByText(initial.label);
-    expect(header.tagName).toBe("P");
-    expect(header.textContent).toBe(initial.label);
+    expect(screen.getByText(initial.label)).toBeInTheDocument();
+    expect(screen.queryByText(hu("results.interactionPairYou"))).toBeNull();
   });
 
   it("lapos profilnál a sparse üzenet jön, nem üres blokkok", () => {
