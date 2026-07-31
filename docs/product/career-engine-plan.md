@@ -433,6 +433,15 @@ kalibráció n = 1. A számok akkor válnak értelmezhetővé, ha a pilot-körbe
 összegyűlik pár tucat adatpont — a t-próba és a Cohen d n < 30 alatt jelzésként
 van kiírva, nem következtetésként.
 
+**Hogyan gyűlik össze (2026-07-31):** magától nem gyűlt, mert a
+`CurrentRolePicker` az eredmény-oldal karrier-blokkjának alján, passzívan ül —
+nincs mögötte kampány-lépés, értesítés vagy emlékeztető. A pilot-forgatókönyv
+ezért **explicit tanácsadói lépésként** kéri a jelenlegi munka megadását, saját
+sikerkritériummal: **S9 ≥ 60%** a kitöltőkből (`pilot-playbook.md` 2. és 3.
+szakasz, `kampany-utemterv.md` 1. lépés). Ha a pilot alatt sem gyűlik elég, a
+következő lépés a mező saját kampány-lépéssé emelése — addig a kézi kérés
+pótolja.
+
 ---
 
 ## 9. Finomítások (2026-07-30, valós felhasználói visszajelzés alapján)

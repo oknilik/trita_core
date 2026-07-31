@@ -34,9 +34,18 @@ A pilot akkor sikeres, ha november végén ezekre igen a válasz:
 | S6 | Vezetői debrief megtartva | csapatonként 1 alkalom + 30 napos akciólista | jegyzőkönyv |
 | S7 | Fizetési hajlandóság | legalább 1 org kimondott ársávval menne tovább | záró interjú |
 | S8 | Ajánlás | testimonial vagy referencia-hozzájárulás | záró interjú |
+| S9 | Karrier-háttér megadva | ≥ 60% a kitöltőkből megadta a jelenlegi munkáját | `careerBackground.currentOccupationId` |
 
 S7–S8 az üzleti cél: a pilot elsődleges outputja a **validált ár és a
 referencia**, nem a feature-lista.
+
+S9 a **kutatási** cél: a karrier-motor known-groups validációja (F3) jelenleg
+n=0-n áll, mert a „jelenlegi munkád" mező az eredmény-oldal alján, passzívan
+ül — aki megnézi az eredményét, jellemzően nem görget odáig. Ez az egyetlen
+adatforrás, amiből kijön, hogy a motor mér-e valamit; ha a pilot alatt sem
+gyűlik, a validációs fejezet a pilot UTÁN is üres marad. Ezért lett explicit
+lépés, nem remény. (Csak a bekapcsolt karrier-modulú szervezeteknél
+értelmezett.)
 
 ## 3. Idővonal — szereposztással
 
@@ -75,6 +84,13 @@ Forgatókönyv:
 - Cél: S1 (85%) a 2. hét végére. Emlékeztető-politika az ütemtervben.
 - Observer-meghívók bátorítása: tagonként max 5 aktív meghívó, a link 30
   napig él, a kitöltéshez nem kell regisztráció.
+- **Karrier-háttér (S9)** — ahol a karrier-modul be van kapcsolva: az
+  eredmény-visszajelzésnél a tanácsadó kérje meg a tagokat, hogy az
+  eredmény-oldal karrier-blokkjában adják meg a **jelenlegi munkájukat**
+  (kereső mező, egy kattintás). Mondható indoklás: „ettől tudjuk megmondani,
+  hogy a javaslat mennyire találó — és a te listád is pontosabb lesz." Az
+  adat kutatási célra a known-groups elemzésbe megy, a tag felé nem jelenik
+  meg értékelésként.
 - Tanácsadói teendő: heti kitöltöttség-riport a kapcsolattartónak (2 mondat).
 
 ### 4–5. hét — csapatszerep-kör

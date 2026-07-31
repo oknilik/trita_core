@@ -55,8 +55,17 @@ Sorrendben, a saját (admin/tanácsadói) fiókból:
 | Kitöltő | `/assessment` — TSFI-S rövid forma, 60 item, ~10 perc |
 | Observer | tagonként max 5 aktív meghívó, token-link, 30 nap érvényes, regisztráció nélkül kitölthető, confidence-értékeléssel |
 | Automatikus | observer-meghívó email + emlékeztető-változat; „Megérkezett egy visszajelzés" értesítés; félbehagyott tesztre draft-emlékeztető |
-| Tanácsadó | kitöltöttség-figyelés a kampány-oldalon; remind gomb a lemaradóknak; observer-kör bátorítása a vezetőn keresztül |
+| Tanácsadó | kitöltöttség-figyelés a kampány-oldalon; remind gomb a lemaradóknak; observer-kör bátorítása a vezetőn keresztül; **karrier-modulos orgnál**: a „jelenlegi munkád" megadásának kérése az eredmény-visszajelzésnél (S9) |
 | Kilépési cél | ≥85% self-kitöltés a 2. hét végére; utána tovább lehet engedni a kört akkor is, ha 1-2 fő lemaradt (ők a saját ütemükben haladnak) |
+
+> **Karrier-háttér (S9) — miért kézi kérés.** A jelenlegi foglalkozás mezője
+> (`CurrentRolePicker`) az eredmény-oldal karrier-blokkjának alján, passzívan
+> ül: nincs mögötte értesítés, emlékeztető vagy kampány-lépés, ezért magától
+> nem gyűlik (a mai állás: n=0). Ez a known-groups validáció EGYETLEN
+> adatforrása. Amíg nincs saját kampány-lépése, a tanácsadói kérés pótolja.
+> Haladás-ellenőrzés (admin felületen NINCS rá nézet):
+> `npx tsx scripts/career-validation/report.ts` → „megadott jelenlegi
+> foglalkozás: N fő".
 
 ### 2. lépés: Csapatszerep-kérdőív (TEAM_ROLE)
 
