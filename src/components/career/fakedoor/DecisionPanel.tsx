@@ -154,8 +154,8 @@ export function DecisionPanel({
       key={value}
       className={`flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl border-[1.5px] px-4 py-2.5 transition ${
         choice === value
-          ? "border-[var(--fd-terracotta)] bg-[var(--fd-terracotta)]/[0.06]"
-          : "border-[var(--color-border-soft)] bg-white hover:border-[var(--fd-mustard)]"
+          ? "border-sage bg-sage-soft/50"
+          : "border-sand bg-white hover:border-bronze-edge"
       }`}
     >
       <input
@@ -164,23 +164,23 @@ export function DecisionPanel({
         value={value}
         checked={choice === value}
         onChange={() => setChoice(value)}
-        className="h-4 w-4 accent-[var(--fd-terracotta)]"
+        className="h-4 w-4 accent-sage"
       />
-      <span className="text-body text-[var(--color-text-primary)]">{label}</span>
+      <span className="text-body text-ink">{label}</span>
     </label>
   );
 
   if (stage === "done") {
     return (
       <div>
-        <p className="font-fraunces text-[21px] leading-snug text-[var(--fd-deep)] md:text-[25px]">
+        <p className="font-fraunces text-[21px] leading-snug text-ink md:text-[25px]">
           {t("fakeDoor.thanksTitle", locale)}
         </p>
-        <p className="mt-2 max-w-prose text-caption leading-relaxed text-[var(--color-text-secondary)]">
+        <p className="mt-2 max-w-prose text-caption leading-relaxed text-ink-body">
           {t("fakeDoor.thanksNote", locale)}
         </p>
         {emailSaved && (
-          <p className="mt-1.5 max-w-prose text-caption leading-relaxed text-[var(--color-text-secondary)]">
+          <p className="mt-1.5 max-w-prose text-caption leading-relaxed text-ink-body">
             {t("fakeDoor.thanksEmail", locale)}
           </p>
         )}
@@ -191,7 +191,7 @@ export function DecisionPanel({
             setInterest(null);
             setChoice(null);
           }}
-          className="mt-3 min-h-[44px] text-caption font-medium text-[var(--color-text-muted)] underline underline-offset-2 hover:text-[var(--fd-terracotta)]"
+          className="mt-3 min-h-[44px] text-caption font-medium text-muted underline underline-offset-2 hover:text-ink-body"
         >
           {t("fakeDoor.changeAnswer", locale)}
         </button>
@@ -204,7 +204,7 @@ export function DecisionPanel({
     const options = isYes ? GOAL_OPTIONS : REASON_OPTIONS;
     return (
       <div>
-        <p className="font-fraunces text-[21px] leading-snug text-[var(--fd-deep)] md:text-[25px]">
+        <p className="font-fraunces text-[21px] leading-snug text-ink md:text-[25px]">
           {t(isYes ? "fakeDoor.goalTitle" : "fakeDoor.reasonTitle", locale)}
         </p>
 
@@ -216,14 +216,14 @@ export function DecisionPanel({
 
         {/* Ár-csúszka: a „drága" önmagában nem termékdöntés. Az összeg az. */}
         {!isYes && choice === "price" && (
-          <div className="mt-3 rounded-xl border-[1.5px] border-[var(--fd-mustard)]/50 bg-[var(--fd-cream)] p-4">
-            <p className="text-body font-semibold text-[var(--fd-deep)]">
+          <div className="mt-3 rounded-xl border border-bronze-edge bg-bronze-soft/40 p-4">
+            <p className="text-body font-semibold text-ink">
               {t("fakeDoor.priceAskTitle", locale)}
             </p>
-            <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-secondary)]">
+            <p className="mt-1 text-caption leading-relaxed text-ink-body">
               {t("fakeDoor.priceAskNote", locale)}
             </p>
-            <p className="mt-3 font-fraunces text-[26px] leading-none text-[var(--fd-terracotta)] md:text-[32px]">
+            <p className="mt-3 font-fraunces text-[26px] leading-none text-bronze-dark md:text-[32px]">
               {maxPrice === 0 ? t("fakeDoor.priceZero", locale) : formatPrice(maxPrice, locale)}
             </p>
             <input
@@ -234,9 +234,9 @@ export function DecisionPanel({
               value={maxPrice}
               onChange={(event) => setMaxPrice(Number(event.target.value))}
               aria-label={t("fakeDoor.priceAskTitle", locale)}
-              className="mt-3 h-11 w-full accent-[var(--fd-terracotta)]"
+              className="mt-3 h-11 w-full accent-sage"
             />
-            <div className="flex justify-between text-micro font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+            <div className="flex justify-between text-micro font-semibold uppercase tracking-wide text-muted">
               <span>0 Ft</span>
               <span>{formatPrice(priceVariant, locale)}</span>
             </div>
@@ -250,20 +250,20 @@ export function DecisionPanel({
             maxLength={FAKE_DOOR_OTHER_MAX}
             onChange={(event) => setOtherText(event.target.value)}
             placeholder={t("fakeDoor.otherPlaceholder", locale)}
-            className="mt-2 min-h-[44px] w-full rounded-xl border-[1.5px] border-[var(--color-border-soft)] px-4 text-body text-[var(--color-text-primary)] outline-none focus:border-[var(--fd-terracotta)]"
+            className="mt-2 min-h-[44px] w-full rounded-xl border border-sand px-4 text-body text-ink outline-none focus:border-sage"
           />
         )}
 
         {isYes && (
-          <div className="mt-5 rounded-xl border-[1.5px] border-[var(--fd-mustard)]/50 bg-[var(--fd-cream)] p-4">
+          <div className="mt-5 rounded-xl border border-bronze-edge bg-bronze-soft/40 p-4">
             <label className="flex min-h-[44px] cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
                 checked={wantsEmail}
                 onChange={(event) => setWantsEmail(event.target.checked)}
-                className="h-4 w-4 accent-[var(--fd-terracotta)]"
+                className="h-4 w-4 accent-sage"
               />
-              <span className="text-body font-semibold text-[var(--fd-deep)]">
+              <span className="text-body font-semibold text-ink">
                 {t("fakeDoor.notifyTitle", locale)}
               </span>
             </label>
@@ -274,13 +274,13 @@ export function DecisionPanel({
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder={t("fakeDoor.emailPlaceholder", locale)}
-                  className="mt-2 min-h-[44px] w-full rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 text-body text-[var(--color-text-primary)] outline-none focus:border-[var(--fd-terracotta)]"
+                  className="mt-2 min-h-[44px] w-full rounded-xl border border-sand bg-white px-4 text-body text-ink outline-none focus:border-sage"
                 />
-                <p className="mt-1.5 text-caption text-[var(--color-text-secondary)]">
+                <p className="mt-1.5 text-caption text-ink-body">
                   {t("fakeDoor.notifyNote", locale)}
                 </p>
                 {emailInvalid && (
-                  <p className="mt-1 text-caption text-[var(--fd-terracotta)]">
+                  <p className="mt-1 text-caption text-bronze-dark">
                     {t("fakeDoor.emailInvalid", locale)}
                   </p>
                 )}
@@ -294,7 +294,7 @@ export function DecisionPanel({
             type="button"
             onClick={() => void submitFollowUp(false)}
             disabled={pending}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--fd-terracotta)] px-7 text-sm font-semibold text-white transition hover:brightness-95 disabled:opacity-60 sm:flex-1"
+            className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-action-primary-bg px-7 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover disabled:opacity-60 sm:flex-1"
           >
             {t("fakeDoor.submit", locale)}
           </button>
@@ -304,14 +304,14 @@ export function DecisionPanel({
             type="button"
             onClick={() => void submitFollowUp(true)}
             disabled={pending}
-            className="min-h-[44px] text-caption font-medium text-[var(--color-text-muted)] underline underline-offset-2 hover:text-[var(--fd-terracotta)] disabled:opacity-60"
+            className="min-h-[44px] text-caption font-medium text-muted underline underline-offset-2 hover:text-ink-body disabled:opacity-60"
           >
             {t("fakeDoor.skip", locale)}
           </button>
         </div>
 
         {failed && (
-          <p className="mt-3 text-caption text-[var(--fd-terracotta)]">
+          <p className="mt-3 text-caption text-bronze-dark">
             {t("fakeDoor.error", locale)}
           </p>
         )}
@@ -321,10 +321,10 @@ export function DecisionPanel({
 
   return (
     <div>
-      <p className="font-fraunces text-[22px] leading-snug text-[var(--fd-deep)] md:text-[26px]">
+      <p className="font-fraunces text-[22px] leading-snug text-ink md:text-[26px]">
         {t("fakeDoor.askTitle", locale)}
       </p>
-      <p className="mt-2 max-w-prose text-caption leading-relaxed text-[var(--color-text-secondary)]">
+      <p className="mt-2 max-w-prose text-caption leading-relaxed text-ink-body">
         {t("fakeDoor.askNote", locale)}
       </p>
       <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
@@ -332,7 +332,7 @@ export function DecisionPanel({
           type="button"
           onClick={() => void decide("yes")}
           disabled={pending}
-          className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-[var(--fd-terracotta)] px-6 text-sm font-semibold text-white transition hover:brightness-95 disabled:opacity-60"
+          className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover disabled:opacity-60"
         >
           {t("fakeDoor.yes", locale)}
         </button>
@@ -342,13 +342,13 @@ export function DecisionPanel({
           type="button"
           onClick={() => void decide("no")}
           disabled={pending}
-          className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl border-[1.5px] border-[var(--fd-deep)] bg-transparent px-6 text-sm font-semibold text-[var(--fd-deep)] transition hover:bg-[var(--fd-deep)]/[0.06] disabled:opacity-60"
+          className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl border border-ink bg-transparent px-6 text-sm font-semibold text-ink transition hover:bg-ink/[0.06] disabled:opacity-60"
         >
           {t("fakeDoor.no", locale)}
         </button>
       </div>
       {failed && (
-        <p className="mt-3 text-caption text-[var(--fd-terracotta)]">
+        <p className="mt-3 text-caption text-bronze-dark">
           {t("fakeDoor.error", locale)}
         </p>
       )}

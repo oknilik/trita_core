@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { TypeGlyph, TypeMotifMark } from "@/components/type/TypeGlyph";
+import { SurfaceHero } from "@/components/ui/patterns/SurfaceHero";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   DecisionPanel,
   type DecisionInitialState,
@@ -22,9 +24,13 @@ import {
 //    amit nem szállítunk, és pont a módszertani pozíciót rombolná.
 //  · Nincs túlállított kutatási háttér. n=189 önmagában elég erős.
 //
-// A paletta (Warm Editorial) SZÁNDÉKOSAN oldal-lokális `--fd-*` változó:
-// a platform token-rendszere sage/bronz alapú, ezt a mérőoldalt viszont
-// külön arculat viszi. Így a design-token szinkron-teszt sem sérül.
+// VIZUÁLIS NYELV (2026-07-31): a platform saját tokenjei, semmi külön
+// paletta. A korábbi „Warm Editorial" (terrakotta + mélykék + saját krém)
+// három ponton súrolta a márkát: a kék sehol nem szerepel a self-felületen,
+// a terrakotta olyan közel volt a bronzhoz, hogy elrontott bronznak
+// olvasódott, a saját krém pedig két árnyalattal mellément. A hero ugyanaz
+// a SurfaceHero, mint a riporton — így a mérés a termék folytatásának
+// látszik, nem ráragasztott landingnek.
 
 interface CareerFakeDoorProps {
   sessionId: string;
@@ -43,20 +49,12 @@ interface CareerFakeDoorProps {
     primaryCode: string;
     secondaryCode: string;
     intensity: number;
-    /** A típusnév — az ábra alt-szövege ebből épül, tehát akkor is kell,
-     *  ha a hero nem szólítja meg vele a látogatót. */
+    /** A típusnév — az ábra alt-szövege ebből épül. */
     label: string;
   } | null;
   defaultEmail: string | null;
   initial: DecisionInitialState | null;
 }
-
-const PALETTE = {
-  "--fd-terracotta": "#c8410a",
-  "--fd-cream": "#f5f0e8",
-  "--fd-mustard": "#d9a441",
-  "--fd-deep": "#1f3a5f",
-} as React.CSSProperties;
 
 /** A négy kártya a tengelymotívumokat kapja ikonként — nincs emoji. */
 const CARDS = [
@@ -91,88 +89,92 @@ export function CareerFakeDoor({
     }).catch(() => {});
   }, [sessionId, source]);
 
-  return (
-    <div style={PALETTE} className="flex flex-col gap-10">
-      {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="fd-rise relative overflow-hidden rounded-2xl border-[1.5px] border-[var(--fd-mustard)]/45 bg-[var(--fd-cream)] p-7 md:p-10">
-        <div className="relative z-10 max-w-[32rem]">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center rounded-full bg-[var(--fd-terracotta)] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white">
-              {t("fakeDoor.badge", locale)}
-            </span>
-            <span className="text-micro font-semibold uppercase tracking-widest text-[var(--fd-deep)]/70">
-              {t("fakeDoor.eyebrow", locale)}
-            </span>
-          </div>
+  // A SAJÁT karakter-ábrája, TELJES erővel, világos lapon — ugyanúgy, ahogy a
+  // riport-heróban. Sötét alapon nem kell tompítani: a kontraszt az alapból
+  // jön, nem az átlátszóságból. Ez az egyetlen elem az oldalon, ami tényleg
+  // a felhasználóé — kifakítva pont a lényegét veszítené el.
+  const glyphPlate = glyph ? (
+    <TypeGlyph
+      primaryCode={glyph.primaryCode}
+      secondaryCode={glyph.secondaryCode}
+      typeLabel={glyph.label}
+      locale={locale}
+      intensity={glyph.intensity}
+      variant="badge"
+      className="h-16 w-16 shrink-0 rounded-xl border border-white/20 md:h-[84px] md:w-[84px]"
+    />
+  ) : null;
 
-          <h1 className="mt-4 font-fraunces text-[30px] leading-[1.12] text-[var(--fd-deep)] md:text-[42px]">
-            {t("fakeDoor.heroTitle", locale)}
-          </h1>
-          <p className="mt-4 max-w-prose text-body leading-relaxed text-[var(--fd-deep)]/80">
+  return (
+    <div className="flex flex-col gap-8 md:gap-10">
+      <SurfaceHero
+        className="fd-rise"
+        variant="self"
+        eyebrow={
+          <span className="rounded-full bg-white/[0.12] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
+            {t("fakeDoor.eyebrow", locale)}
+          </span>
+        }
+        badge={
+          // A készülő-funkció jelzés bronzban: ez az oldal egyetlen hangos
+          // vizuális állítása, és az őszinteségi keret hordozója.
+          <span className="rounded-full bg-[rgba(193,127,74,0.22)] px-3 py-1 text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+            {t("fakeDoor.badge", locale)}
+          </span>
+        }
+        title={
+          <div className="flex items-start gap-4">
+            {glyphPlate}
+            <h1 className="min-w-0 font-fraunces text-[26px] leading-[1.14] tracking-tight text-white md:text-[36px]">
+              {t("fakeDoor.heroTitle", locale)}
+            </h1>
+          </div>
+        }
+        body={
+          <p className="max-w-[620px] text-body leading-relaxed text-white/[0.72]">
             {t("fakeDoor.heroLead", locale)}
           </p>
-          <p className="mt-3 inline-block border-l-[3px] border-[var(--fd-terracotta)] pl-3 text-caption font-semibold text-[var(--fd-terracotta)]">
+        }
+        summary={
+          // T12: a riportból érkezőt a SAJÁT mintázata fogadja. A releváns
+          // ajánlatra adott igen többet ér mért szándékként.
+          patternLabel
+            ? tf("fakeDoor.heroPersonal", locale, { pattern: patternLabel })
+            : undefined
+        }
+        chips={
+          <span className="rounded-full bg-[rgba(193,127,74,0.16)] px-3 py-1.5 text-caption font-semibold text-[var(--color-accent-primary-soft)]">
             {t("fakeDoor.heroPositioning", locale)}
-          </p>
-
-          {/* T12: a riportból érkezőt a SAJÁT mintázata fogadja. A releváns
-              ajánlatra adott igen többet ér mért szándékként. */}
-          {patternLabel && (
-            <p className="mt-4 text-caption text-[var(--fd-deep)]/70">
-              {tf("fakeDoor.heroPersonal", locale, { pattern: patternLabel })}
-            </p>
-          )}
-        </div>
-
-        {/* A SAJÁT karakter-ábrája — ugyanaz a típus-ábra, amit a riportban
-            lát, ugyanabból az SVG-nyelvtanból. Nem díszítés: azt mondja ki,
-            hogy a modul EBBŐL indulna. */}
-        {/* A SAJÁT karakter-ábrája, keret és alaplap nélkül: a forma a hero
-            hátterébe olvad. Halványítva és nagyban, a szöveg alá futva —
-            hangulat, nem illusztráció. Mobilon a szöveg ALATT áll, mert
-            oldalt nem férne el olvashatóan. */}
-        {glyph && (
-          <TypeGlyph
-            primaryCode={glyph.primaryCode}
-            secondaryCode={glyph.secondaryCode}
-            typeLabel={glyph.label}
-            locale={locale}
-            intensity={glyph.intensity}
-            variant="badge"
-            canvas={false}
-            className="pointer-events-none mx-auto mt-4 block h-[220px] w-[220px] opacity-45 md:absolute md:-right-4 md:top-1/2 md:z-0 md:mt-0 md:h-[380px] md:w-[380px] md:-translate-y-1/2 md:opacity-40"
-          />
-        )}
-      </section>
+          </span>
+        }
+      />
 
       {/* ── „Wow" ────────────────────────────────────────────────── */}
       <section className="fd-rise fd-delay-1">
-        <p className="border-l-[3px] border-[var(--fd-mustard)] pl-5 font-fraunces text-[21px] leading-relaxed text-[var(--color-text-primary)] md:text-[25px]">
+        <p className="border-l-[3px] border-bronze pl-5 font-fraunces text-[21px] leading-relaxed text-ink md:text-[25px]">
           {t("fakeDoor.wow", locale)}
         </p>
       </section>
 
       {/* ── Mit kapnál ───────────────────────────────────────────── */}
       <section className="fd-rise fd-delay-2">
-        <p className="mb-3 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+        <SectionEyebrow variant="clean" className="mb-3">
           {t("fakeDoor.whatTitle", locale)}
-        </p>
+        </SectionEyebrow>
         <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2">
           {CARDS.map((card) => (
             <div
               key={card.lead}
-              className="flex gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-4"
+              className="flex gap-3 rounded-2xl border border-sand bg-white p-4"
             >
               <TypeMotifMark
                 code={card.motif}
                 strokeWidth={7}
-                className="mt-0.5 h-7 w-7 shrink-0 stroke-[var(--fd-terracotta)] [&>g]:stroke-[var(--fd-terracotta)]"
+                className="mt-0.5 h-7 w-7 shrink-0 stroke-bronze [&>g]:stroke-bronze"
               />
               <div>
-                <p className="text-body font-bold text-[var(--fd-deep)]">
-                  {t(card.lead, locale)}
-                </p>
-                <p className="mt-1 max-w-prose text-caption leading-relaxed text-[var(--color-text-secondary)]">
+                <p className="text-body font-bold text-ink">{t(card.lead, locale)}</p>
+                <p className="mt-1 max-w-prose text-caption leading-relaxed text-ink-body">
                   {t(card.body, locale)}
                 </p>
               </div>
@@ -183,15 +185,12 @@ export function CareerFakeDoor({
 
       {/* ── Mire épül ────────────────────────────────────────────── */}
       <section className="fd-rise fd-delay-3">
-        <p className="mb-2.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+        <SectionEyebrow variant="clean" className="mb-2.5">
           {t("fakeDoor.trustTitle", locale)}
-        </p>
-        <ul className="flex flex-wrap gap-x-2.5 gap-y-2 text-caption text-[var(--color-text-secondary)]">
+        </SectionEyebrow>
+        <ul className="flex flex-wrap gap-x-2.5 gap-y-2 text-caption text-ink-body">
           {["trustItem1", "trustItem2", "trustItem3", "trustItem4"].map((key) => (
-            <li
-              key={key}
-              className="rounded-full border border-[var(--color-border-soft)] px-3 py-1"
-            >
+            <li key={key} className="rounded-full border border-sand px-3 py-1">
               {t(`fakeDoor.${key}`, locale)}
             </li>
           ))}
@@ -199,25 +198,21 @@ export function CareerFakeDoor({
       </section>
 
       {/* ── Ár ───────────────────────────────────────────────────── */}
-      <section className="fd-rise fd-delay-4 rounded-2xl border-[1.5px] border-[var(--fd-mustard)] bg-[var(--fd-cream)] p-6 md:p-7">
-        <p className="text-micro font-bold uppercase tracking-wide text-[#9a6a12]">
-          {t("fakeDoor.priceLabel", locale)}
-        </p>
+      <section className="fd-rise fd-delay-4 rounded-2xl border border-bronze-edge bg-bronze-soft/40 p-6 md:p-7">
+        <SectionEyebrow>{t("fakeDoor.priceLabel", locale)}</SectionEyebrow>
         {/* Nincs count-up: egy nem létező termék oldalán a numerikus
             teátralitás pont a hitelességet vinné el. */}
-        <p className="mt-1.5 font-fraunces text-[34px] leading-none text-[var(--fd-deep)] md:text-[44px]">
+        <p className="mt-1.5 font-fraunces text-[34px] leading-none text-ink md:text-[44px]">
           {price}
         </p>
-        <p className="mt-2.5 max-w-prose text-caption leading-relaxed text-[var(--color-text-secondary)]">
+        <p className="mt-2.5 max-w-prose text-caption leading-relaxed text-ink-body">
           {t("fakeDoor.priceFraming", locale)}{" "}
-          <span className="text-[var(--color-text-muted)]">
-            {t("fakeDoor.priceNoCard", locale)}
-          </span>
+          <span className="text-muted">{t("fakeDoor.priceNoCard", locale)}</span>
         </p>
       </section>
 
       {/* ── Döntés ───────────────────────────────────────────────── */}
-      <section className="fd-rise fd-delay-5 rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-6 md:p-7">
+      <section className="fd-rise fd-delay-5 rounded-2xl border border-sand bg-white p-6 md:p-7">
         <DecisionPanel
           sessionId={sessionId}
           source={source}
@@ -227,10 +222,10 @@ export function CareerFakeDoor({
         />
       </section>
 
-      <p className="text-caption text-[var(--color-text-muted)]">
+      <p className="text-caption text-muted">
         <Link
           href="/profile/results"
-          className="underline underline-offset-2 hover:text-[var(--fd-terracotta)]"
+          className="underline underline-offset-2 hover:text-ink-body"
         >
           {t("fakeDoor.back", locale)}
         </Link>
