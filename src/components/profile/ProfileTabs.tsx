@@ -39,6 +39,8 @@ import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
+import { InteractionSection } from "@/components/results/InteractionSection";
+import type { ArchetypeSimulationView } from "@/lib/interaction-view";
 import { Card } from "@/components/ui/primitives/Card";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
@@ -172,6 +174,8 @@ export interface ProfileTabsProps {
   hasTeamOrOrgMembership?: boolean;
   // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
   careerModuleHidden?: boolean;
+  /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
+  interactionSimulations?: ArchetypeSimulationView[];
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
   careerBackground?: CareerBackground | null;
@@ -528,6 +532,7 @@ export function ProfileTabs({
   bridgeNextStep,
   hasTeamOrOrgMembership = false,
   careerModuleHidden = false,
+  interactionSimulations = [],
   experienceHints,
   experienceHintDestination,
   careerBackground = null,
@@ -1092,6 +1097,9 @@ export function ProfileTabs({
               teamRoleMeasuredScores={teamRoleMeasuredScores}
               teamRolePeer={teamRolePeer}
             />
+            {/* „Hogyan működnétek együtt?" — a csapatszerepek UTÁN, mert az
+                egyéni működésmódról a kétszemélyes dinamikára lép tovább. */}
+            <InteractionSection simulations={interactionSimulations} />
           </>
         )}
         {activeTab === "career" && (

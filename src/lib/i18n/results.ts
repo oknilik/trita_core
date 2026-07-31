@@ -507,6 +507,49 @@ export const resultsTranslations = {
     sectionDimensions: { hu: "Dimenziók részletesen", en: "Dimensions in detail" },
     sectionRoles: { hu: "Csapatszerep-hajlamok", en: "Team role tendencies" },
     sectionGrowth: { hu: "Fejlődési fókusz", en: "Growth focus" },
+    // ── Interakció-szimuláció (P5.7 / F3) ────────────────────────────
+    sectionInteraction: {
+      hu: "Hogyan működnétek együtt?",
+      en: "How would you work together?",
+    },
+    interactionIntro: {
+      hu: "Válaszd ki, milyen működésmódú emberrel dolgoznál — és megnézzük, mi menne magától köztetek, hol lenne súrlódás, és mit érdemes előre megbeszélni.",
+      en: "Pick the way of working you'd be paired with — and we'll show what would come easily between you, where friction is likely, and what's worth agreeing on up front.",
+    },
+    interactionPickDominant: {
+      hu: "Mi a legerősebb oldala?",
+      en: "Their strongest side",
+    },
+    interactionPickSecondary: {
+      hu: "És a második?",
+      en: "And their second",
+    },
+    interactionLeaderToggle: {
+      hu: "Ő a vezetőd",
+      en: "They're your manager",
+    },
+    interactionEasy: { hu: "Ami magától megy", en: "What comes easily" },
+    interactionFriction: {
+      hu: "Ahol súrlódás várható",
+      en: "Where friction is likely",
+    },
+    interactionDiscuss: {
+      hu: "Mit beszéljetek meg előre",
+      en: "What to agree on up front",
+    },
+    interactionLeaderTitle: {
+      hu: "Milyen ilyen vezető mellett dolgozni",
+      en: "What it's like to work under this manager",
+    },
+    interactionSparse: {
+      hu: "Kettőtök között nincs elég markáns eltérés ahhoz, hogy megalapozott dinamikát mondjunk — ez önmagában jó hír: a legtöbb helyzetben hasonlóan működnétek.",
+      en: "There isn't enough of a contrast between you two to state a grounded dynamic — which is good news in itself: in most situations you'd operate similarly.",
+    },
+    // Hitelességi jegyzet: enélkül a „típus-szintű becslés" üres udvariasság.
+    interactionSourceNote: {
+      hu: "Típus-szintű becslés: a te valós pontszámaidat egy típus-prototípussal vetjük össze, amiről csak a két legerősebb dimenzió ismert — a másik négyről nem állítunk semmit. Hipotézis, nem jóslat; a valós méréshez a csapat-nézet kell.",
+      en: "Type-level estimate: your real scores are compared against a type prototype for which only the two strongest dimensions are known — we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
+    },
     radarNote: {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a HEXACO-dimenziók: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
       en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the HEXACO dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
