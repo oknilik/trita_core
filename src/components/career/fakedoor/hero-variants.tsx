@@ -280,6 +280,147 @@ export function HeroE(props: HeroVariantProps) {
   );
 }
 
+
+/**
+ * F/G — TERVLAP. Világos, papír-szerű felület: milliméterpapír-rács, sarok-
+ * illesztőjelek, alul rajzszám-blokk, sarokban bélyegző.
+ *
+ * Miért működik ez a mérőoldalon: a „még nem kész" állapotot nem egy apró
+ * címke mondja ki, hanem MAGA A FORMA. Aki ránéz, nem hiszi késznek — ez a
+ * mérés tisztességének a vizuális megfelelője.
+ *
+ * Két színben, mindkettő a meglévő palettából: zsálya (a self-felület
+ * színe) és pala kék (az org-felületé).
+ */
+function BlueprintHero({
+  props,
+  ink,
+  paper,
+  line,
+  strong,
+}: {
+  props: HeroVariantProps;
+  /** Akcentus: keret, bélyegző, rajzszám-blokk. */
+  ink: string;
+  /** Papír alapszín. */
+  paper: string;
+  /** Finom rácsvonal. */
+  line: string;
+  /** Erős (10-es) rácsvonal. */
+  strong: string;
+}) {
+  const { locale, glyph, patternLabel } = props;
+  const corner = "absolute h-3 w-3 opacity-60";
+  return (
+    <section
+      className="relative overflow-hidden rounded-[20px] border px-6 py-8 md:px-10 md:py-11"
+      style={{ background: paper, borderColor: ink, "--sheet-ink": ink } as React.CSSProperties}
+    >
+      {/* Milliméterpapír: finom rács + minden ötödik vonal erősebb. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: [
+            `repeating-linear-gradient(0deg, ${line} 0 1px, transparent 1px 16px)`,
+            `repeating-linear-gradient(90deg, ${line} 0 1px, transparent 1px 16px)`,
+            `repeating-linear-gradient(0deg, ${strong} 0 1px, transparent 1px 80px)`,
+            `repeating-linear-gradient(90deg, ${strong} 0 1px, transparent 1px 80px)`,
+          ].join(","),
+        }}
+      />
+
+      {/* Sarok-illesztőjelek — technikai rajz nyelvtan. */}
+      {[
+        "left-3 top-3",
+        "right-3 top-3",
+        "left-3 bottom-3",
+        "right-3 bottom-3",
+      ].map((position) => (
+        <span key={position} aria-hidden className={`${corner} ${position}`}>
+          <svg viewBox="0 0 12 12" fill="none" stroke={ink} strokeWidth="1">
+            <path d="M6 0v12M0 6h12" />
+          </svg>
+        </span>
+      ))}
+
+      {/* A típus-ábra a lapra rajzolt tárgy: nagyon halkan, hogy a rács és a
+          szöveg maradjon az első réteg. (Vonalas motívum-változatot is
+          próbáltunk fölé — az a méretben hosszú vonalakká esett szét, és
+          idegen vonalzó-nyomoknak látszott.) */}
+      <Glyph
+        {...props}
+        canvas={false}
+        className="pointer-events-none absolute -bottom-10 -right-8 h-[300px] w-[300px] opacity-[0.09] md:h-[380px] md:w-[380px]"
+      />
+
+      {/* Bélyegző: elforgatva, kettős kerettel — ez az első, amit a szem elkap. */}
+      <span
+        className="absolute right-5 top-6 rotate-[-7deg] rounded-md border-2 px-3 py-1.5 text-micro font-bold uppercase tracking-widest md:right-10"
+        style={{ borderColor: ink, color: ink }}
+      >
+        {t("fakeDoor.badge", locale)}
+      </span>
+
+      <div className="relative max-w-[38rem]">
+        <span className="font-mono text-micro uppercase tracking-widest" style={{ color: ink }}>
+          {t("fakeDoor.eyebrow", locale)}
+        </span>
+        <h1 className="mt-3 max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
+          {t("fakeDoor.heroTitle", locale)}
+        </h1>
+        <p className="mt-4 max-w-[34rem] text-[17px] leading-relaxed text-ink-body md:text-[19px]">
+          {t("fakeDoor.heroLead", locale)}
+        </p>
+        <p
+          className="mt-5 inline-block border-t border-dashed pt-3 text-caption font-semibold"
+          style={{ borderColor: ink, color: ink }}
+        >
+          {t("fakeDoor.badgeNote", locale)}
+        </p>
+        {patternLabel && <p className="mt-2 text-caption text-muted">{patternLabel}</p>}
+      </div>
+
+      {/* Rajzszám-blokk: műszaki rajzok sarok-táblája. Csak IGAZ adatot ír ki. */}
+      <div
+        className="relative mt-7 flex flex-wrap gap-x-6 gap-y-1 border-t pt-3 font-mono text-micro uppercase tracking-widest"
+        style={{ borderColor: ink, color: ink }}
+      >
+        <span>Modul: {t("fakeDoor.eyebrow", locale)}</span>
+        <span>Állapot: terv</span>
+        <span>Döntés: mérés alatt</span>
+      </div>
+      <span className="sr-only">{glyph.label}</span>
+    </section>
+  );
+}
+
+/** F — tervlap zsályában (a self-felület színe). */
+export function HeroF(props: HeroVariantProps) {
+  return (
+    <BlueprintHero
+      props={props}
+      ink="#3d6b5e"
+      paper="#f2f7f5"
+      line="rgba(61,107,94,0.10)"
+      strong="rgba(61,107,94,0.20)"
+    />
+  );
+}
+
+/** G — tervlap pala kékben (az org-felület színe). */
+export function HeroG(props: HeroVariantProps) {
+  return (
+    <BlueprintHero
+      props={props}
+      ink="#2f4863"
+      paper="#f1f4f8"
+      line="rgba(47,72,99,0.10)"
+      strong="rgba(47,72,99,0.20)"
+    />
+  );
+}
+
 export const HERO_VARIANTS = [
   {
     id: "A",
@@ -307,8 +448,20 @@ export const HERO_VARIANTS = [
   },
   {
     id: "E",
-    name: "Építkezés — tervrajz + bélyegző",
+    name: "Építkezés — sötét tervrajz + bélyegző",
     note: "A készülő állapot a főmotívum: rács, szaggatott keret, elforgatott bélyegző.",
     Component: HeroE,
+  },
+  {
+    id: "F",
+    name: "Tervlap — zsálya",
+    note: "Világos milliméterpapír a self-felület zöldjében: illesztőjelek, bélyegző, rajzszám-blokk.",
+    Component: HeroF,
+  },
+  {
+    id: "G",
+    name: "Tervlap — pala kék",
+    note: "Ugyanaz az org-felület kékjében. Hűvösebb, technikaibb.",
+    Component: HeroG,
   },
 ] as const;
