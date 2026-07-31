@@ -187,6 +187,46 @@ describe("InteractionSection", () => {
     expect(screen.getByText(expected)).toBeInTheDocument();
   });
 
+  it("a páros-fejléc mindkét oldalt mutatja, azonos szókinccsel", async () => {
+    const user = userEvent.setup();
+    const sims = marked();
+    // A saját címke ugyanabból a forrásból jön, mint a profil fejléce.
+    const self = resolvePersonalityTypeLabel("THOR", "ADAP", "hu")!;
+    expect(self).toBe("Együttműködő rendszerépítő");
+
+    render(<InteractionSection simulations={sims} selfLabel={self} />);
+
+    await user.selectOptions(
+      screen.getByLabelText(hu("results.interactionPickDominant")),
+      "OPEN",
+    );
+    await user.selectOptions(
+      screen.getByLabelText(hu("results.interactionPickSecondary")),
+      "TEMP",
+    );
+
+    const header = screen.getByText(
+      (_, node) =>
+        node?.tagName === "P" &&
+        (node.textContent ?? "").includes(self) &&
+        (node.textContent ?? "").includes("Energikus újító"),
+    );
+    expect(header).toBeInTheDocument();
+    expect(header.textContent).toContain(hu("results.interactionPairYou"));
+  });
+
+  it("saját címke nélkül a fejléc csak a választott típust mutatja", () => {
+    const sims = marked();
+    render(<InteractionSection simulations={sims} />);
+    const initial = sims.find((sim) => !sim.sparse)!;
+
+    // A fejléc-bekezdés tartalma PONTOSAN a választott címke — se „Te (…)",
+    // se „×" nem kerül bele, ha nincs saját címke.
+    const header = screen.getByText(initial.label);
+    expect(header.tagName).toBe("P");
+    expect(header.textContent).toBe(initial.label);
+  });
+
   it("lapos profilnál a sparse üzenet jön, nem üres blokkok", () => {
     render(<InteractionSection simulations={flat()} />);
 

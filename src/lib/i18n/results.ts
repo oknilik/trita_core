@@ -528,6 +528,10 @@ export const resultsTranslations = {
       hu: "Ő a vezetőd",
       en: "They're your manager",
     },
+    // A páros-fejléc: „Te (Módszeres hídépítő) × Energikus újító" — láthatóvá
+    // teszi, hogy KETTŐTÖK dinamikájáról van szó, és hogy a két oldal ugyanazt
+    // a szókincset használja.
+    interactionPairYou: { hu: "Te", en: "You" },
     interactionEasy: { hu: "Ami magától megy", en: "What comes easily" },
     interactionFriction: {
       hu: "Ahol súrlódás várható",

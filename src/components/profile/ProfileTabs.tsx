@@ -1099,7 +1099,10 @@ export function ProfileTabs({
             />
             {/* „Hogyan működnétek együtt?" — a csapatszerepek UTÁN, mert az
                 egyéni működésmódról a kétszemélyes dinamikára lép tovább. */}
-            <InteractionSection simulations={interactionSimulations} />
+            <InteractionSection
+              simulations={interactionSimulations}
+              selfLabel={personalityType}
+            />
           </>
         )}
         {activeTab === "career" && (

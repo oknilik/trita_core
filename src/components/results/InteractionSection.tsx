@@ -19,6 +19,13 @@ import {
 interface InteractionSectionProps {
   /** Mind a 30 archetípus, a SZERVEREN kiszámolva, a kért nyelven. */
   simulations: ArchetypeSimulationView[];
+  /**
+   * A felhasználó SAJÁT típuscímkéje („Módszeres hídépítő") — a páros-fejléchez.
+   * Ugyanabból a forrásból jön, mint a profil fejléce (`personality-type.ts`),
+   * így a két oldal garantáltan azonos szókincsű. Hiányában a fejléc csak a
+   * választott típust mutatja.
+   */
+  selfLabel?: string;
 }
 
 /** Blokk-kártya — a HowYouWorkSection kártya-nyelvét követi. */
@@ -74,7 +81,10 @@ function Block({
   );
 }
 
-export function InteractionSection({ simulations }: InteractionSectionProps) {
+export function InteractionSection({
+  simulations,
+  selfLabel,
+}: InteractionSectionProps) {
   const { locale } = useLocale();
 
   const byKey = useMemo(
@@ -165,6 +175,19 @@ export function InteractionSection({ simulations }: InteractionSectionProps) {
         <>
           <div className="mb-5 flex flex-wrap items-center gap-3">
             <p className="font-fraunces text-lg text-[var(--color-text-primary)]">
+              {selfLabel && (
+                <>
+                  <span className="text-[var(--color-text-muted)]">
+                    {t("results.interactionPairYou", locale)} ({selfLabel})
+                  </span>
+                  <span
+                    className="mx-2 text-[var(--color-text-muted)]"
+                    aria-hidden="true"
+                  >
+                    ×
+                  </span>
+                </>
+              )}
               {current.label}
             </p>
             <button
