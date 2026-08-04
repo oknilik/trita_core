@@ -137,6 +137,10 @@ model UserProfile {
   trustObservationsAbout TrustObservation[] @relation("TrustObservationAbout")
   trustObservationsGiven TrustObservation[] @relation("TrustObservationRater")
 
+  // Interakció-összehasonlítás (valódi páros mód) — meghívó mindkét irányból
+  compareInvitesSent     CompareInvite[] @relation("CompareInviter")
+  compareInvitesAccepted CompareInvite[] @relation("ComparePartner")
+
   // Notifications
   notifications Notification[]
 
@@ -664,6 +668,29 @@ model TeamRoleScore {
 
   @@index([userProfileId, createdAt])
   @@index([campaignId])
+}
+
+// Valódi páros interakció-összehasonlítás meghívó (Lumina Share & Compare
+// analóg). Kölcsönös beleegyezés: a partner accept-je köti össze a párt;
+// bármelyik fél visszavonhatja (REVOKED). Pontszám NEM másolódik a modellbe —
+// mindig élőben, dimenzió-szinten olvasódik; a partner számszerű pontszámai a
+// másik félnek sosem jelennek meg, csak a szimuláció szövege és a glyph.
+// Terv: docs/product/tritanium.md (B1).
+model CompareInvite {
+  id         String    @id @default(cuid())
+  token      String    @unique @default(cuid())
+  inviterId  String
+  partnerId  String?
+  status     String    @default("PENDING") // PENDING | ACCEPTED | REVOKED | EXPIRED
+  createdAt  DateTime  @default(now())
+  acceptedAt DateTime?
+  expiresAt  DateTime
+
+  inviter UserProfile  @relation("CompareInviter", fields: [inviterId], references: [id])
+  partner UserProfile? @relation("ComparePartner", fields: [partnerId], references: [id])
+
+  @@index([inviterId])
+  @@index([partnerId])
 }
 
 // Csapattársi szerep-visszajelzés (peer-kör) — egy rater egy csapattársról,

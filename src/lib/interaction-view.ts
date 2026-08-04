@@ -65,6 +65,75 @@ function dimLabel(dim: TritanDimCode, locale: Locale): string {
   return locale === "hu" ? dimension.hu : dimension.en;
 }
 
+type EngineLines = ReturnType<typeof simulateInteraction>["easy"];
+type EngineLeaderNotes = ReturnType<typeof simulateInteraction>["leaderNotes"];
+
+function serializeLines(lines: EngineLines, locale: Locale): InteractionTextLine[] {
+  return lines.map((line) => ({
+    atomId: line.atomId,
+    dimLabels: line.dims.map((dim) => dimLabel(dim, locale)),
+    text: line.text[locale],
+  }));
+}
+
+function serializeLeaderNotes(
+  notes: EngineLeaderNotes,
+  locale: Locale,
+): InteractionLeaderNote[] {
+  return notes.map((note) => ({
+    dim: note.dim,
+    dimLabel: dimLabel(note.dim, locale),
+    text: note.text[locale],
+  }));
+}
+
+// ── Valódi páros mód (B1) ────────────────────────────────────────────
+
+export interface PairSimulationView {
+  easy: InteractionTextLine[];
+  friction: InteractionTextLine[];
+  discuss: InteractionTextLine[];
+  /** Vezetői kiegészítők, ha ÉN vezetek (a nézőpont-tulajdonos). */
+  leaderNotesSelf: InteractionLeaderNote[];
+  /** Vezetői kiegészítők, ha a MÁSIK fél vezet. */
+  leaderNotesOther: InteractionLeaderNote[];
+  sparse: boolean;
+}
+
+/**
+ * Két VALÓDI, megosztott profil szimulációja (`level: "profile-profile"`).
+ * Az atom-válogatást a mode nem érinti (csak a vezetői kiegészítőket),
+ * ezért a blokkok az első futásból jönnek, és mindkét vezető-irány
+ * kiegészítőit kiszámoljuk — a felület kapcsolója így hálózat nélkül vált.
+ */
+export function buildPairSimulation(
+  selfScores: DimScores,
+  otherScores: DimScores,
+  locale: Locale,
+): PairSimulationView {
+  const otherLeads = simulateInteraction({
+    self: selfScores,
+    other: otherScores,
+    mode: "other-leads",
+    level: "profile-profile",
+  });
+  const selfLeads = simulateInteraction({
+    self: selfScores,
+    other: otherScores,
+    mode: "self-leads",
+    level: "profile-profile",
+  });
+
+  return {
+    easy: serializeLines(otherLeads.easy, locale),
+    friction: serializeLines(otherLeads.friction, locale),
+    discuss: serializeLines(otherLeads.discuss, locale),
+    leaderNotesSelf: serializeLeaderNotes(selfLeads.leaderNotes, locale),
+    leaderNotesOther: serializeLeaderNotes(otherLeads.leaderNotes, locale),
+    sparse: otherLeads.meta.sparse,
+  };
+}
+
 /**
  * Mind a 30 archetípus szimulációja a megadott profilhoz, egy nyelven.
  *
@@ -84,15 +153,6 @@ export function buildArchetypeSimulations(
       level: "profile-archetype",
     });
 
-    const toLines = (
-      lines: typeof result.easy,
-    ): InteractionTextLine[] =>
-      lines.map((line) => ({
-        atomId: line.atomId,
-        dimLabels: line.dims.map((dim) => dimLabel(dim, locale)),
-        text: line.text[locale],
-      }));
-
     return {
       key: archetypeKey(pair.dominant, pair.secondary),
       dominant: pair.dominant,
@@ -100,14 +160,10 @@ export function buildArchetypeSimulations(
       label:
         resolvePersonalityTypeLabel(pair.dominant, pair.secondary, locale) ??
         dimLabel(pair.dominant, locale),
-      easy: toLines(result.easy),
-      friction: toLines(result.friction),
-      discuss: toLines(result.discuss),
-      leaderNotes: result.leaderNotes.map((note) => ({
-        dim: note.dim,
-        dimLabel: dimLabel(note.dim, locale),
-        text: note.text[locale],
-      })),
+      easy: serializeLines(result.easy, locale),
+      friction: serializeLines(result.friction, locale),
+      discuss: serializeLines(result.discuss, locale),
+      leaderNotes: serializeLeaderNotes(result.leaderNotes, locale),
       sparse: result.meta.sparse,
     };
   });

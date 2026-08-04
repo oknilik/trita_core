@@ -579,6 +579,80 @@ export const resultsTranslations = {
       hu: "Típus-szintű becslés: a te valós pontszámaidat egy típus-prototípussal vetjük össze, amiről csak a két legerősebb dimenzió ismert — a másik négyről nem állítunk semmit. Hipotézis, nem jóslat; a valós méréshez a csapat-nézet kell.",
       en: "Type-level estimate: your real scores are compared against a type prototype for which only the two strongest dimensions are known — we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
     },
+    // ── Valódi páros összehasonlítás (B1) ────────────────────────────
+    compareCardTitle: {
+      hu: "Összehasonlítás valódi kollégával",
+      en: "Compare with a real colleague",
+    },
+    compareCardBody: {
+      hu: "Küldj egy linket valakinek, akivel együtt dolgozol. Ha ő is kitölti a saját tesztjét és elfogadja, mindketten a VALÓDI profiljaitok dinamikáját látjátok — nem típus-becslést.",
+      en: "Send a link to someone you work with. If they complete their own assessment and accept, you both see the dynamic of your REAL profiles — not a type estimate.",
+    },
+    compareCreateCta: { hu: "Összehasonlító link készítése", en: "Create compare link" },
+    compareLimitNote: {
+      hu: "Egyszerre legfeljebb 3 aktív link lehet; a link 30 napig él.",
+      en: "Up to 3 active links at a time; a link lives for 30 days.",
+    },
+    compareCopy: { hu: "Link másolása", en: "Copy link" },
+    compareCopied: { hu: "Másolva!", en: "Copied!" },
+    compareRevoke: { hu: "Visszavonás", en: "Revoke" },
+    compareStatePending: { hu: "függőben", en: "pending" },
+    compareStateAccepted: { hu: "elfogadva", en: "accepted" },
+    compareStateExpired: { hu: "lejárt", en: "expired" },
+    compareStateRevoked: { hu: "visszavonva", en: "revoked" },
+    compareOpenPair: { hu: "Megnyitás", en: "Open" },
+    comparePartnerFallback: { hu: "partner", en: "partner" },
+    compareListEmpty: {
+      hu: "Még nincs aktív linked vagy elfogadott párod.",
+      en: "No active links or accepted pairs yet.",
+    },
+    compareError: {
+      hu: "Nem sikerült — próbáld újra.",
+      en: "Something went wrong — try again.",
+    },
+    compareLimitError: {
+      hu: "Elérted a 3 aktív link határát — vonj vissza egyet előbb.",
+      en: "You've reached the 3 active-link limit — revoke one first.",
+    },
+    compareConsentTitle: {
+      hu: "Páros összehasonlítás",
+      en: "Pair comparison",
+    },
+    compareConsentBody: {
+      hu: "{name} meghívott, hogy nézzétek meg együtt: hogyan működnétek párban. Elfogadás után MINDKETTEN látjátok a közös dinamikát (ami magától megy · hol várható súrlódás · mit érdemes előre megbeszélni).",
+      en: "{name} invited you to see how the two of you would work together. After accepting, BOTH of you see the shared dynamic (what comes easily · where friction is likely · what to agree on up front).",
+    },
+    compareConsentWhat: {
+      hu: "Amit a másik fél lát: a típus-ábrád, az archetípus-neved és a közös dinamika szövege. A számszerű pontszámaid NEM jelennek meg neki. Bármikor visszavonhatod.",
+      en: "What the other side sees: your type figure, your archetype name and the shared dynamic text. Your numeric scores are NOT shown to them. You can revoke at any time.",
+    },
+    compareConsentAccept: { hu: "Elfogadom — mutassátok", en: "Accept — show us" },
+    compareConsentDecline: { hu: "Most nem", en: "Not now" },
+    compareNeedResultTitle: {
+      hu: "Előbb a saját tesztedet töltsd ki",
+      en: "Complete your own assessment first",
+    },
+    compareNeedResultBody: {
+      hu: "Az összehasonlítás két valódi profilból épül — a tiéd még hiányzik. A kitöltés után gyere vissza ugyanezzel a linkkel, és elfogadhatod a meghívást.",
+      en: "The comparison is built from two real profiles — yours is still missing. After completing it, return with this same link to accept the invite.",
+    },
+    compareNeedResultCta: { hu: "Kitöltöm a tesztet", en: "Take the assessment" },
+    compareInvalidTitle: { hu: "Ez a link nem él", en: "This link is not active" },
+    compareInvalidBody: {
+      hu: "A meghívó lejárt, visszavonták, vagy már valaki más elfogadta. Kérj új linket a meghívódtól.",
+      en: "The invite has expired, was revoked, or was already accepted by someone else. Ask your inviter for a fresh link.",
+    },
+    comparePairTitle: { hu: "Ti ketten", en: "The two of you" },
+    comparePairWith: { hu: "Összehasonlítás vele: {name}", en: "Comparing with: {name}" },
+    compareRelationSelfLeads: { hu: "Én vezetem őt", en: "I lead them" },
+    comparePairSourceNote: {
+      hu: "Két valódi, megosztott önértékelés összevetése — pontosabb, mint a típus-becslés, de továbbra is önbeszámolón alapul. Hipotézis, nem ítélet: beszélgetés-indítónak készült.",
+      en: "A comparison of two real, shared self-assessments — more precise than a type estimate, yet still based on self-report. A hypothesis, not a verdict: built to start a conversation.",
+    },
+    comparePairBack: {
+      hu: "Vissza a típus-választóhoz",
+      en: "Back to the type picker",
+    },
     radarNote: {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a HEXACO-dimenziók: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
       en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the HEXACO dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",

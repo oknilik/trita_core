@@ -33,6 +33,15 @@ export async function POST(req: Request) {
       prisma.assessmentDraft.deleteMany({
         where: { userProfileId: profile.id },
       }),
+      // Páros összehasonlítás: a törölt fél minden meghívója/párja azonnal
+      // visszavonódik — a másik fél sem érheti el többé a szimulációt.
+      prisma.compareInvite.updateMany({
+        where: {
+          OR: [{ inviterId: profile.id }, { partnerId: profile.id }],
+          status: { in: ["PENDING", "ACCEPTED"] },
+        },
+        data: { status: "REVOKED" },
+      }),
       prisma.userProfile.update({
         where: { id: profile.id },
         data: { clerkId: null, email: null, deleted: true },
