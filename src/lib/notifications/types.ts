@@ -84,4 +84,5 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   PEER_FEEDBACK_REQUESTED:     { titleKey: "notifications.peerFeedbackRequested.title",       bodyKey: "notifications.peerFeedbackRequested.body",      category: "org",         defaultPriority: "normal" },
   PEER_FEEDBACK_RESPONSE:      { titleKey: "notifications.peerFeedbackResponse.title",        bodyKey: "notifications.peerFeedbackResponse.body",       category: "org",         defaultPriority: "normal" },
   CANDIDATE_COMPLETED:         { titleKey: "notifications.candidateCompleted.title",         bodyKey: "notifications.candidateCompleted.body",         category: "org",         defaultPriority: "normal" },
+  REFLECTION_PROMPT:           { titleKey: "notifications.reflectionPrompt.title",           bodyKey: "notifications.reflectionPrompt.body",           category: "assessment",  defaultPriority: "low"    },
 };

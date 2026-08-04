@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
+import { runNotificationSweep } from "@/lib/notifications/sweep";
 
 // Konstans-idejű string-összevetés (timing-oldalcsatorna ellen).
 function safeEqual(a: string, b: string): boolean {
@@ -38,5 +39,9 @@ export async function GET(req: NextRequest) {
     }
   }
   const released = await releaseDueCampaignSteps();
-  return NextResponse.json({ ok: true, released });
+  // Napi notification-sweep ugyanebből a cronból (Hobby csomag: 1 cron) —
+  // trial-ellenőrzések + reflexiós utókövetés (D1). A sweep hibái a
+  // válaszban jelennek meg, a lépés-nyitást nem borítják.
+  const sweep = await runNotificationSweep();
+  return NextResponse.json({ ok: true, released, sweep });
 }

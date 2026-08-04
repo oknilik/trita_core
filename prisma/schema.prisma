@@ -832,6 +832,7 @@ enum NotificationType {
   PEER_KUDOS_RECEIVED
   PEER_FEEDBACK_REQUESTED
   PEER_FEEDBACK_RESPONSE
+  REFLECTION_PROMPT
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).
