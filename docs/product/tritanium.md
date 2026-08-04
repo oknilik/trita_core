@@ -1,6 +1,14 @@
 # Tritanium — Lumina × Trita elemzés és terv (v3, a valós kódbázison)
 
-> **Státusz:** terv — jóváhagyásra vár. Kód nem készült.
+> **Státusz (2026-08-04): VÉGREHAJTVA a `tritanium` branchen.** A 0–4. kör
+> mindegyike implementálva (P0.1–P0.5 javítások, A1 vendég-teaser, A2 OG-kép,
+> C1+C2 riport-stabilitás + „Csapat nyomás alatt", B1 valódi páros
+> összehasonlítás, D1 reflexiós utókövetés). P0.6-ról a vizsgálat kiderítette,
+> hogy korábban már lezárták (append-only séma él). A3 (kártya-letöltés)
+> tudatosan kihagyva — opcionális volt. Részletek és follow-upok:
+> `docs/development/changelog/2026-08-04.md`. Verifikáció: `pnpm check` 0 hiba,
+> unit 456 zöld, client 92 zöld, production build zöld (env-hiányos konténerben
+> dummy RESEND/Clerk kulcsokkal); integration/e2e test-DB híján nem futott.
 > **Előzmény:** a v1–v2 elemzés az elavult `main`-en (kutatási MVP) készült és
 > semmissé lett téve. Ez a v3 a `consulting_cleanup` → `main` merge (PR #10) utáni
 > **valós** kódbázis teljes átvilágítására épül (3 párhuzamos kód-audit:
@@ -519,3 +527,4 @@ működik; pnpm check + test:unit zöld.
 | Dátum | Esemény |
 |---|---|
 | 2026-08-04 | v3: teljes újravizsgálat a consulting_cleanup → main merge után; v1–v2 semmissé téve |
+| 2026-08-04 | Végrehajtás a `tritanium` branchen: P0.1–P0.5 + A1 + A2 + C1+C2 + B1 + D1 (ld. changelog/2026-08-04.md); P0.6 már korábban lezárva; A3 kihagyva (opcionális) |
