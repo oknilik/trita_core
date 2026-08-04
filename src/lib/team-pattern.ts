@@ -206,11 +206,14 @@ export function calculateTeamPattern(
   }
 
   // ── 3. Mintakód (domináns 4 betű) ──────────────────────
+  // A pólus-betűk a PATTERN_NAMES kulcs-ábécéje (E/R, C/V, S/F, X/P) —
+  // NEM a belső dimenziókódok. (A 2026-07-i TRITAN→HEXACO átnevezés itt
+  // tévedésből a betű-literálokat is átírta; a kulcsok 4 betűsek maradtak.)
   const patternCode = [
-    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "RESO", "R"),
-    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "THOR", "V"),
+    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "E", "R"),
+    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "C", "V"),
     poleLetter(rawAxes.discipline, THRESHOLDS.discipline, "S", "F"),
-    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "TEMP", "P"),
+    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "X", "P"),
   ].join("");
 
   // ── 4. Globális diverzitás suffix ──────────────────────
@@ -232,7 +235,7 @@ export function calculateTeamPattern(
     const axisIndex = ["drive", "cohesion", "discipline", "openness"].indexOf(mostUnstable);
     const currentLetter = altLetters[axisIndex];
     const flipMap: Record<string, string> = {
-      RESO: "R", R: "RESO", THOR: "V", V: "THOR", S: "F", F: "S", TEMP: "P", P: "TEMP",
+      E: "R", R: "E", C: "V", V: "C", S: "F", F: "S", X: "P", P: "X",
     };
     altLetters[axisIndex] = flipMap[currentLetter];
     alternativeCode = altLetters.join("");

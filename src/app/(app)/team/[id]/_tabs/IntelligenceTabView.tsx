@@ -2,6 +2,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
+import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
@@ -192,6 +193,15 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           </div>
         </div>
       </section>
+
+      {/* A számított 16-os csapatminta teljes nézete: tengelysávok, stabilitás-
+          jegyzet, confidence-badge. A fenti státusz-csempe csak a címkét adja —
+          a részletes kártya eddig árva komponens volt (nem volt importálója). */}
+      <TeamPatternCard
+        patternResult={teamData.patternResult}
+        totalMembers={totalCount}
+        isHu={isHu}
+      />
 
       <TeamIntelligence
         members={intelligenceMembers}
