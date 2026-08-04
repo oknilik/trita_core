@@ -13,6 +13,7 @@ import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
 import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
+import { loadShareOgModel } from "@/lib/share-og";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { buildWorkstyleContent } from "@/lib/workstyle-content";
@@ -23,10 +24,28 @@ import { t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Megosztott profil | trita",
-  robots: { index: false },
-};
+// A cím és leírás a megosztott profilhoz igazodik (og:title a
+// link-előnézetben), a noindex marad — a kép az opengraph-image route-ból jön.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}): Promise<Metadata> {
+  const { token } = await params;
+  const model = await loadShareOgModel(token, "hu");
+  const title =
+    model.displayName && model.typeLabel
+      ? `${model.displayName} — ${model.typeLabel} | trita`
+      : model.typeLabel
+        ? `${model.typeLabel} | trita`
+        : "Megosztott profil | trita";
+  return {
+    title,
+    description:
+      "Személyiségprofil a trita platformról — önértékelés és külső visszajelzés, tudományos alapon.",
+    robots: { index: false },
+  };
+}
 
 function getInsight(
   score: number,
