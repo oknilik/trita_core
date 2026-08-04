@@ -33,8 +33,8 @@ export const commonTranslations = {
       en: "Personal details | Trita",
     },
     adminTitle: {
-      hu: "Admin | trita",
-      en: "Admin | trita",
+      hu: "Admin | Trita",
+      en: "Admin | Trita",
     },
   },
   nav: {
@@ -68,7 +68,7 @@ export const commonTranslations = {
     signUp: { hu: "Regisztráció", en: "Sign up" },
     privacy: { hu: "Adatvédelem", en: "Privacy" },
     contact: { hu: "Kapcsolat", en: "Contact" },
-    copyright: { hu: "© 2026 trita. Minden jog fenntartva.", en: "© 2026 trita. All rights reserved." },
+    copyright: { hu: "© 2026 Trita. Minden jog fenntartva.", en: "© 2026 Trita. All rights reserved." },
   },
   common: {
     or: { hu: "vagy", en: "or" },
@@ -94,8 +94,8 @@ export const commonTranslations = {
   },
   actions: {
     startTest: { hu: "Teszt kitöltése", en: "Start test" },
-    next: { hu: "Következő →", en: "Next ->" },
-    prev: { hu: "← Előző", en: "<- Previous" },
+    next: { hu: "Következő →", en: "Next →" },
+    prev: { hu: "← Előző", en: "← Previous" },
     save: { hu: "Mentés...", en: "Saving..." },
     viewResults: { hu: "Eredmények megtekintése", en: "View results" },
     submit: { hu: "Küldés", en: "Submit" },
@@ -209,15 +209,15 @@ export const commonTranslations = {
       hu: "Áttekintheted ügyfeleid személyiségprofilját, önértékeléseit és a mások visszajelzéseivel való összevetést egyetlen felületen.",
       en: "View your clients' personality profiles, self-assessments, and observer comparisons in one place.",
     },
-    feature2Title: { hu: "AI-generált debrief", en: "AI-generated debrief" },
+    feature2Title: { hu: "AI-generált kiértékelés", en: "AI-generated debrief" },
     feature2Body: {
       hu: "Minden ügyfélhez egy személyre szabott coaching összefoglaló készül, amely az erősségeket, fejlesztési területeket és konkrét kérdéseket tartalmaz.",
       en: "A personalized coaching debrief is generated for each client, covering strengths, development areas, and targeted coaching questions.",
     },
     feature3Title: { hu: "Önismeret vs. mások képe", en: "Self-image vs. how others see them" },
     feature3Body: {
-      hu: "A platformon belüli observer mechanizmus segítségével ügyfeleid visszajelzést kérhetnek ismerőseiktől, amit te is láthatsz.",
-      en: "Through the built-in observer mechanism, your clients can collect peer feedback that you can also review.",
+      hu: "Az ügyfeleid a platformon keresztül kérhetnek visszajelzést az ismerőseiktől — az eredményt te is látod.",
+      en: "Your clients can request feedback from people they know through the platform — and you see the results too.",
     },
     forTitle: { hu: "Kinek szól?", en: "Who is it for?" },
     forItems: {
@@ -262,10 +262,10 @@ export const commonTranslations = {
   },
   contact: {
     // Page
-    metaTitle: { hu: "Kapcsolat | trita", en: "Contact | trita" },
-    metaDescription: { hu: "Kapcsolatfelvétel a trita csapatával.", en: "Get in touch with the trita team." },
+    metaTitle: { hu: "Kapcsolat | Trita", en: "Contact | Trita" },
+    metaDescription: { hu: "Kapcsolatfelvétel a Trita csapatával.", en: "Get in touch with the Trita team." },
     eyebrow: { hu: "Kapcsolat", en: "Contact" },
-    title: { hu: "Beszéljünk arról, miben tud segíteni a trita.", en: "Let's talk about how trita can help." },
+    title: { hu: "Beszéljünk arról, miben tud segíteni a Trita.", en: "Let's talk about how Trita can help." },
     subtitle: {
       hu: "Demó, árazás, partneri együttműködés vagy támogatás — írj nekünk itt, és egy munkanapon belül válaszolunk.",
       en: "Demo, pricing, partnerships, or support — send us a note and we'll reply within one business day.",

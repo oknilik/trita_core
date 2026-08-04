@@ -1,8 +1,8 @@
 export const landingTranslations = {
   landing: {
     heroTitle: {
-      hu: "trita — személyiség- és csapatintelligencia platform",
-      en: "trita — personality and team intelligence platform",
+      hu: "Trita — személyiség- és csapatintelligencia platform",
+      en: "Trita — personality and team intelligence platform",
     },
 
     // ─── New landing page (self/team) ────────────────────────────────
@@ -45,7 +45,7 @@ export const landingTranslations = {
     teamEyebrow: { hu: "CSAPATINTELLIGENCIA PLATFORM", en: "TEAM INTELLIGENCE PLATFORM" },
     teamHeadlineBefore: { hu: "Értsd meg jobban a ", en: "Better understand your " },
     teamHeadlineEm: { hu: "csapatod működését.", en: "team's dynamics." },
-    teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt — a csapatod valódi dinamikáját. Még mielőtt a feszültségből konfliktus lenne.", en: "trita reveals what was previously invisible — your team's true dynamics. Before tension turns into conflict." },
+    teamSub: { hu: "A Trita megmutatja, ami eddig láthatatlan volt — a csapatod valódi dinamikáját. Még mielőtt a feszültségből konfliktus lenne.", en: "Trita reveals what was previously invisible — your team's true dynamics. Before tension turns into conflict." },
     teamCta: { hu: "Mesélj a csapatodról — mi meséljük a többit →", en: "Tell us about your team — we'll take it from there →" },
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
     // Team hero panel — a valódi publikált riport (TeamReportView) kicsinyített mása
@@ -101,9 +101,9 @@ export const landingTranslations = {
     teamFeat1Desc: { hu: "Ki kivel dolgozik jól, hol vannak ütközések — és ki milyen szerepet visz a csapatban.", en: "Who works well with whom, where friction points are — and who plays which role in the team." },
     teamFeat2Badge: { hu: "Biztonság", en: "Safety" },
     teamFeat2Title: { hu: "Pszichológiai biztonság", en: "Psychological Safety" },
-    teamFeat2Desc: { hu: "Névtelen pulse-mérés arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
-    teamFeat3Badge: { hu: "Jelentés", en: "Report" },
-    teamFeat3Title: { hu: "Csapatjelentés", en: "Team Report" },
+    teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
+    teamFeat3Badge: { hu: "Csapatkép", en: "Team picture" },
+    teamFeat3Title: { hu: "Validált csapatkép", en: "Validated team picture" },
     teamFeat3Desc: { hu: "Vezetői összefoglaló: erősségek, kockázatok, javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
     // ProofSection
     proofTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
@@ -115,7 +115,7 @@ export const landingTranslations = {
     proof3Title: { hu: "Gyakorlati nyelven", en: "Practical language" },
     proof3Desc: { hu: "Nem pszichológiai zsargonban beszél, hanem úgy, ahogy te gondolkodsz a munkádról.", en: "Speaks how you think about work, not psychological jargon." },
     proofTestimonial: { hu: "Most értettem meg először, miért nem illenek hozzám bizonyos szerepek.", en: "For the first time, I understood why certain roles don't suit me." },
-    proofTestimonialAuthor: { hu: "— Korai felhasználó, 31 éves Product Manager", en: "— Early user, 31-year-old Product Manager" },
+    proofTestimonialAuthor: { hu: "— Korai felhasználó, 31 éves termékmenedzser", en: "— Early user, 31-year-old Product Manager" },
     // ProofSection — team mód ("Miért más?" megkülönböztető történet)
     proofTeamTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
     proofTeamTitleEm: { hu: "átlagos csapatfelmérés?", en: "average team survey?" },
@@ -163,7 +163,7 @@ export const landingTranslations = {
     ctaTeamMicrocopy: { hu: "Egyedi ajánlat · személyes onboarding", en: "Custom offer · personal onboarding" },
   },
   pricing: {
-    metaTitle: { hu: "Együttműködés | trita", en: "How we work | trita" },
+    metaTitle: { hu: "Együttműködés | Trita", en: "How we work | Trita" },
     metaDescription: {
       hu: "Ingyenes egyéni felmérés, tanácsadó-vezérelt csapatprogramok — egyedi ajánlattal.",
       en: "Free individual assessment, consultant-led team programs — with individual quotes.",
@@ -185,10 +185,10 @@ export const landingTranslations = {
     teamEyebrow: { hu: "csapat és szervezet · program", en: "team & organization · program" },
     teamTitle: { hu: "Csapatprogram tanácsadói kísérettel", en: "Team program with consultant guidance" },
     teamBody: {
-      hu: "A program három rétegben méri a csapatot: személyiség-alapú csapatkép, mért csapatszerep-térkép és névtelen pszichológiai biztonság pulse. Az eredményekből tanácsadó által validált összkép készül, amit közös workshopon értelmezünk. Több csapatnál szervezeti szintű összehasonlítás is része a programnak.",
+      hu: "A program három rétegben méri a csapatot: személyiség-alapú csapatkép, mért csapatszerep-térkép és a pszichológiai biztonság névtelen pulzusmérése. Az eredményekből tanácsadó által validált összkép készül, amit közös workshopon értelmezünk. Több csapatnál szervezeti szintű összehasonlítás is része a programnak.",
       en: "The program measures your team on three layers: a personality-based team picture, a measured team role map, and an anonymous psychological safety pulse. A consultant validates the aggregated picture, and we interpret it together in a workshop. With multiple teams, an org-level comparison is part of the program.",
     },
-    teamHow1: { hu: "Mérések — személyiség (~10 perc), csapatszerepek, biztonság-pulse", en: "Measurements — personality (~10 min), team roles, safety pulse" },
+    teamHow1: { hu: "Mérések — személyiség (~10 perc), csapatszerepek, pszichológiai biztonság pulzusmérése", en: "Measurements — personality (~10 min), team roles, safety pulse" },
     teamHow2: { hu: "Validált csapatkép — néhány napon belül", en: "Validated team picture — within days" },
     teamHow3: { hu: "Közös értelmező workshop", en: "Joint interpretation workshop" },
     teamPriceNote: {
@@ -252,7 +252,7 @@ export const landingTranslations = {
       en: "You'll get a personal reply within one business day. Meanwhile, feel free to try the individual assessment for free.",
     },
     quickAskError: {
-      hu: "Nem sikerült elküldeni — próbáld újra, vagy írj a info@trita.io címre.",
+      hu: "Nem sikerült elküldeni — próbáld újra, vagy írj az info@trita.io címre.",
       en: "Couldn't send — try again, or email info@trita.io.",
     },
   },
@@ -288,7 +288,7 @@ export const landingTranslations = {
     startHere: { hu: "Új itt? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
     inThisArticle: { hu: "Ebben a cikkben", en: "In this article" },
     minutesLeft: { hu: "még ~{m} perc olvasás", en: "~{m} min left" },
-    authorTeam: { hu: "a trita módszertani csapata", en: "the trita methodology team" },
+    authorTeam: { hu: "a Trita módszertani csapata", en: "the Trita methodology team" },
     share: { hu: "Megosztás", en: "Share" },
     copyLink: { hu: "Link másolása", en: "Copy link" },
     linkCopied: { hu: "Másolva", en: "Copied" },
@@ -302,8 +302,8 @@ export const landingTranslations = {
     heroTitle: { hu: "Tedd láthatóvá, hogyan ", en: "Make visible how your " },
     heroTitleEm: { hu: "működik a csapatod.", en: "team really works." },
     heroBody: {
-      hu: "A trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban — személyiség, csapatszerepek és pszichológiai biztonság mérésével. Az első partnercsapatokkal személyesen dolgozom együtt, csapatra szabott feltételekkel.",
-      en: "The trita team diagnostics platform helps you uncover hidden patterns, tensions, and potential within your team — by measuring personality, team roles, and psychological safety. I work personally with our first partner teams, on terms tailored to your team.",
+      hu: "A Trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban — személyiség, csapatszerepek és pszichológiai biztonság mérésével. Az első partnercsapatokkal személyesen dolgozom együtt, csapatra szabott feltételekkel.",
+      en: "The Trita team diagnostics platform helps you uncover hidden patterns, tensions, and potential within your team — by measuring personality, team roles, and psychological safety. I work personally with our first partner teams, on terms tailored to your team.",
     },
     heroCta: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
     heroCtaSecondary: { hu: "Mit kapsz pontosan?", en: "What do you get exactly?" },
@@ -362,7 +362,7 @@ export const landingTranslations = {
     },
     benefit5Title: { hu: "Korai hozzáférés az új mérésekhez", en: "Early access to new measurements" },
     benefit5Desc: {
-      hu: "Az új mérések — például a névtelen pszichológiai biztonság pulse és a mért csapatszerep-kör — nálatok debütálnak: ti próbáljátok őket elsőként, és a ti visszajelzésetek csiszolja véglegesre.",
+      hu: "Az új mérések — például a pszichológiai biztonság névtelen pulzusmérése és a mért csapatszerep-kör — nálatok debütálnak: ti próbáljátok őket elsőként, és a ti visszajelzésetek csiszolja véglegesre.",
       en: "New measurements — like the anonymous psychological safety pulse and the measured team role round — debut with you: you try them first, and your feedback shapes their final form.",
     },
     benefit6Title: { hu: "Korai partner státusz", en: "Early partner status" },
@@ -376,7 +376,7 @@ export const landingTranslations = {
     stepsTitle: { hu: "Három lépés a jobb csapatdöntésekig.", en: "Three steps to better team decisions." },
     step1Title: { hu: "Felmérés", en: "Assessment" },
     step1Desc: {
-      hu: "A csapattagok online kitöltik a tudományosan validált személyiségtesztet, nagyjából 10 perc alatt. Ezt egészíti ki a csapatszerep-kör és a névtelen pszichológiai biztonság pulse — opcionálisan observer-visszajelzés is kérhető.",
+      hu: "A csapattagok online kitöltik a tudományosan validált személyiségtesztet, nagyjából 10 perc alatt. Ezt egészíti ki a csapatszerep-kör és a pszichológiai biztonság névtelen pulzusmérése — opcionálisan observer-visszajelzés is kérhető.",
       en: "Team members complete the scientifically validated personality assessment online in about 10 minutes. This is complemented by the team role round and the anonymous psychological safety pulse — observer feedback is optionally available.",
     },
     step2Title: { hu: "Mintázat", en: "Pattern" },
@@ -455,7 +455,7 @@ export const landingTranslations = {
     submitDefault: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
-      hu: "Hiba történt. Kérlek próbáld újra, vagy írj közvetlenül a info@trita.io címre.",
+      hu: "Hiba történt. Kérlek próbáld újra, vagy írj közvetlenül az info@trita.io címre.",
       en: "Something went wrong. Please try again, or email us directly at info@trita.io.",
     },
 

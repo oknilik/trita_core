@@ -6,11 +6,11 @@ export const notificationTranslations = {
     },
     peerFeedbackResponse: {
       title: { hu: "Válasz érkezett a kérésedre", en: "A response to your request arrived" },
-      body: { hu: "Új válasz érkezett a visszajelzés-kérésedre a(z) {team} csapatban.", en: "A new response arrived to your feedback request in the {team} team." },
+      body: { hu: "Új válasz érkezett a visszajelzés-kérésedre a csapatban: „{team}”.", en: "A new response arrived to your feedback request in the {team} team." },
     },
     peerKudosReceived: {
       title: { hu: "Köszönetet kaptál", en: "You received kudos" },
-      body: { hu: "{name} köszönetet küldött neked a(z) {team} csapatban.", en: "{name} sent you kudos in the {team} team." },
+      body: { hu: "{name} köszönetet küldött neked a csapatban: „{team}”.", en: "{name} sent you kudos in the {team} team." },
     },
     observerCompleted: {
       title: { hu: "Megfigyelői visszajelzés érkezett", en: "Observer feedback received" },
@@ -47,16 +47,16 @@ export const notificationTranslations = {
     },
     orgInviteReceived: {
       title: { hu: "Szervezeti meghívás", en: "Organization invite" },
-      body: { hu: "Meghívást kaptál a(z) {orgName} szervezetbe.", en: "You've been invited to join {orgName}." },
+      body: { hu: "Meghívást kaptál a szervezetbe: „{orgName}”.", en: "You've been invited to join {orgName}." },
     },
     campaignLaunched: {
       title: { hu: "Mérés elindítva", en: "Measurement launched" },
-      body: { hu: "A(z) \"{campaignName}\" kampány aktív.", en: "The \"{campaignName}\" campaign is now active." },
+      body: { hu: "Elindult a kampány: „{campaignName}”.", en: "The \"{campaignName}\" campaign is now active." },
     },
     stepOpened: {
       title: { hu: "Új mérés vár rád", en: "A new measurement is ready for you" },
       body: {
-        hu: "A(z) \"{campaignName}\" kampányban megnyílt a következő méréslépésed — pár perc az egész, kattints és töltsd ki.",
+        hu: "Megnyílt a következő méréslépésed a kampányban: „{campaignName}”. Pár perc az egész — kattints és töltsd ki.",
         en: "Your next measurement step in \"{campaignName}\" is now open — it only takes a few minutes.",
       },
     },
@@ -77,14 +77,14 @@ export const notificationTranslations = {
     observerInviteApproved: {
       title: { hu: "Külső meghívód jóváhagyva", en: "Your external invite was approved" },
       body: {
-        hu: "A(z) {targetLabel} címre szóló értékelő-meghívódat jóváhagyták — a meghívó e-mail kiment.",
+        hu: "Jóváhagyták az értékelő-meghívódat — a meghívó e-mail kiment erre a címre: {targetLabel}.",
         en: "Your observer invite to {targetLabel} was approved — the invitation email has been sent.",
       },
     },
     observerInviteDeclined: {
       title: { hu: "Külső meghívód elutasítva", en: "Your external invite was declined" },
       body: {
-        hu: "A(z) {targetLabel} címre szóló értékelő-meghívódat a vezetőd nem hagyta jóvá. Kérdés esetén egyeztess vele.",
+        hu: "A vezetőd nem hagyta jóvá az értékelő-meghívódat erre a címre: {targetLabel}. Kérdés esetén egyeztess vele.",
         en: "Your observer invite to {targetLabel} was not approved by your manager. Please check with them if needed.",
       },
     },
@@ -104,16 +104,16 @@ export const notificationTranslations = {
     },
     campaignClosed: {
       title: { hu: "Mérés lezárva", en: "Measurement closed" },
-      body: { hu: "A(z) \"{campaignName}\" kampány lezárult.", en: "The \"{campaignName}\" campaign has closed." },
+      body: { hu: "Lezárult a kampány: „{campaignName}”.", en: "The \"{campaignName}\" campaign has closed." },
     },
     teamReportPublished: {
       title: { hu: "A csapatkép elkészült", en: "Team picture ready" },
-      body: { hu: "A(z) {teamName} csapat validált csapatképe elérhető.", en: "The validated team picture for {teamName} is available." },
+      body: { hu: "Elérhető a validált csapatkép a csapathoz: „{teamName}”.", en: "The validated team picture for {teamName} is available." },
     },
     teamMemberAdded: {
       title: { hu: "Csapatba kerültél", en: "You've been added to a team" },
       body: {
-        hu: "Felvettek a(z) {teamName} csapatba. Az eddigi eredményeid megmaradnak — nem kell újra kitöltened a felmérést.",
+        hu: "Felvettek a csapatba: „{teamName}”. Az eddigi eredményeid megmaradnak — nem kell újra kitöltened a felmérést.",
         en: "You've been added to the {teamName} team. Your existing results carry over — no need to retake the assessment.",
       },
     },
@@ -147,7 +147,7 @@ export const notificationTranslations = {
     },
     campaignMilestone: {
       title: { hu: "Mérés mérföldkő", en: "Measurement milestone" },
-      body: { hu: "A(z) \"{campaignName}\" kampány {percent}%-os kitöltöttséget ért el.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
+      body: { hu: "Elérte a {percent}%-os kitöltöttséget a kampány: „{campaignName}”.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
     },
 
     // UI labels
