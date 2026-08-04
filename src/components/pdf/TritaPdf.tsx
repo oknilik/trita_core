@@ -15,7 +15,6 @@ export interface PdfData {
   userName: string;
   completedAt: string;
   personalityType: string;
-  percentile: string;
   heroInsight: string;
   /** Archetípus-történet felütés a summary-oldalra (P5.6). */
   archetypeStory?: string;

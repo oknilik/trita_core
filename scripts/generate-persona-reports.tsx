@@ -138,10 +138,6 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     resolvePersonalityTypeFromScores(mainDims.map((d) => ({ code: d.code, score: d.score })), locale) ??
     t("results.uniqueProfile", locale);
 
-  // Percentilis-badge kivezetve (P1.1): a korábbi „Top 10%/25%" ál-percentilis
-  // volt (saját átlagból, normacsoport nélkül) — results/page.tsx-szel szinkronban.
-  const percentile = "";
-
   const heroInsight = (() => {
     const strongest = sortedDims[0];
     const weakest = sortedDims[sortedDims.length - 1];
@@ -212,7 +208,6 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       year: "numeric", month: "long", day: "numeric",
     }),
     personalityType,
-    percentile,
     heroInsight,
     archetypeStory:
       sortedDims[0] && sortedDims[1]

@@ -114,6 +114,9 @@ export function ObserverClient({
     lockedRelationship ?? initialDraft?.relationshipType ?? "",
   );
   const [knownDuration, setKnownDuration] = useState(initialDraft?.knownDuration ?? "");
+  // UX-B20: a "válaszd ki mindkettőt" jelzés csak blokkolt indítási
+  // KÍSÉRLET után jelenik meg — nem előre szidjuk a kitöltőt.
+  const [startAttempted, setStartAttempted] = useState(false);
   const [confidence, setConfidence] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [answers, setAnswers] = useState<Record<number, number>>(sanitizedInitialAnswers);
@@ -595,16 +598,21 @@ export function ObserverClient({
               </label>
             </div>
 
-            {!canStart && (
+            {startAttempted && !canStart && (
               <p className="mt-4 text-center text-xs text-amber-600">
                 {t("observer.selectBothFields", locale)}
               </p>
             )}
             <button
               type="button"
-              onClick={() => setPhase("assessment")}
-              disabled={!canStart}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:shadow-none"
+              onClick={() => {
+                if (!canStart) {
+                  setStartAttempted(true);
+                  return;
+                }
+                setPhase("assessment");
+              }}
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
             >
               {t("observer.start", locale)}
             </button>

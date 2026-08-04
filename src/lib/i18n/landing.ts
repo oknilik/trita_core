@@ -22,6 +22,10 @@ export const landingTranslations = {
     sampleBadge: { hu: "minta", en: "sample" },
     selfPanelName: { hu: "Péter", en: "Peter" },
     selfPanelType: { hu: "Stratégiai Innovátor", en: "Strategic Innovator" },
+    // Elsődleges csapatszerep-hajlam — valós riport-kimenet (a korábbi
+    // „Top 25%" ál-percentilis badge helyett, B17); a minta magas
+    // Nyitottság+Extraverzió profiljához illő szerep.
+    selfPanelRole: { hu: "Ötletgazda", en: "Idea Generator" },
     selfPanelInsight: { hu: "Az összkép átlátása és mások inspirálása az erősséged — az aprólékos végrehajtás kevésbé a te tereped.", en: "Seeing the big picture and inspiring others are your strengths — meticulous execution is less your territory." },
     // Dimenzió-sáv a valódi eredménynézet (DimensionStrip) mintájára — H E X A C O sorrend
     selfDim1: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },

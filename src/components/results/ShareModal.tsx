@@ -53,35 +53,40 @@ export function ShareModal({
     if (copyTimer.current) clearTimeout(copyTimer.current);
   }, []);
 
-  const createLink = useCallback(async () => {
+  const createLink = useCallback(async (): Promise<string | null> => {
     setBusy(true);
     setLoadError(false);
     try {
       const res = await fetch("/api/profile/share", { method: "POST" });
       const data = await res.json();
       if (!data.token) throw new Error("NO_TOKEN");
-      setShareUrl(`${window.location.origin}/share/${data.token}`);
+      const url = `${window.location.origin}/share/${data.token}`;
+      setShareUrl(url);
       setRevoked(false);
+      return url;
     } catch {
       setLoadError(true);
+      return null;
     } finally {
       setBusy(false);
     }
   }, []);
 
-  // Megnyitáskor létrehozzuk (vagy visszakapjuk a meglévő) linket.
+  // UX-B6: publikus linket csak az ELSŐ tényleges megosztási szándéknál
+  // gyártunk (másolás/küldés) — a modal megnyitása önmagában ne írjon
+  // shareTokent az adatbázisba.
   useEffect(() => {
-    if (isOpen && !shareUrl && !revoked) void createLink();
     if (isOpen) {
       setCopied(false);
       setEmailState("idle");
     }
-  }, [isOpen, shareUrl, revoked, createLink]);
+  }, [isOpen]);
 
   const handleCopy = async () => {
-    if (!shareUrl) return;
+    const url = shareUrl ?? (await createLink());
+    if (!url) return;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopied(false), 2400);
@@ -209,6 +214,14 @@ export function ShareModal({
               </div>
             )}
 
+            {/* UX-B6b: őszinte lista arról, mi kerül ténylegesen a megosztott
+                lapra — a kis preview-kártya ennél többet takar. */}
+            {preview && (
+              <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
+                {t("results.shareVisibleSummary", locale)}
+              </p>
+            )}
+
             {/* A3: a kártya képként — letöltés / mobilon natív megosztás.
                 Kliens-oldali render, szerverre semmi nem megy; pontszám
                 nem kerül a képre. */}
@@ -234,11 +247,13 @@ export function ShareModal({
                   onFocus={(e) => e.currentTarget.select()}
                   className="min-h-[44px] w-full flex-1 truncate rounded-[10px] border border-sand bg-cream px-3 text-caption text-ink-body outline-none"
                 />
+                {/* Link nélkül is kattintható: az első másolás hozza létre
+                    (vagy kéri vissza) a linket — a POST idempotens. */}
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={() => void handleCopy()}
-                  disabled={!shareUrl || busy}
+                  disabled={busy}
                   className="shrink-0"
                 >
                   {copied ? (
@@ -301,10 +316,13 @@ export function ShareModal({
 
             {/* Visszavonás */}
             <div className="border-t border-sand pt-4 text-center">
+              {/* A DELETE szerver-oldalon minden élő tokent visszavon, így
+                  korábbi munkamenetben létrehozott link is visszavonható
+                  anélkül, hogy előbb meg kellene jeleníteni. */}
               <button
                 type="button"
                 onClick={() => void handleRevoke()}
-                disabled={!shareUrl || busy}
+                disabled={busy}
                 className="min-h-[44px] rounded-[10px] px-4 text-sm font-semibold text-[#8c4a31] transition hover:bg-[#fcf5ef] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t("content.shareRevoke", locale)}

@@ -145,9 +145,14 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--color-border-default)] border-t-[var(--color-accent-primary)]" />
           </div>
         ) : items.length === 0 ? (
-          <div className="py-10 text-center">
+          <div className="px-6 py-10 text-center">
             <p className="text-[12px] text-[var(--color-text-muted)]">
               {t("notifications.noNotifications", loc)}
+            </p>
+            {/* UX-B16: az üres állapot ne zsákutca legyen — mutassuk a
+                következő értelmes lépést. */}
+            <p className="mx-auto mt-1.5 max-w-[260px] text-[11px] leading-relaxed text-[var(--color-text-muted)] opacity-80">
+              {t("notifications.emptyHint", loc)}
             </p>
           </div>
         ) : (

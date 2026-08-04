@@ -457,12 +457,6 @@ export default async function ProfileResultsPage({
   // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
   const observerFlow = await resolveObserverFlowStatus(profile.id);
 
-  // Percentilis-badge KIVEZETVE (javítási terv 2026-07, P1.1): a korábbi
-  // „Top 10%/25%" a saját dimenzió-átlagból számolt ál-percentilis volt,
-  // valós normacsoport nélkül — ez sérti a „becsült vs mért adat mindig
-  // jelölve" alapelvet. Valós normaadattal térhet vissza (terv P4.3).
-  const percentile = "";
-
   // Hero insight — behavior-based sentence (not dimension names)
   const heroInsight = (() => {
     const sorted = [...mainDimensions].sort((a, b) => b.score - a.score);
@@ -477,7 +471,7 @@ export default async function ProfileResultsPage({
       : `${s} — ${w}.`;
   })();
 
-  // InsightPair
+  // PDF-riport összefoglaló sorai (a képernyőn az accordion a próza gazdája)
   const strengths = highDims.length > 0
     ? highDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.strengthsSuffix", locale)
     : t("results.balancedProfile", locale);
@@ -567,7 +561,6 @@ export default async function ProfileResultsPage({
           draftTotalQuestions={draftTotalQuestions}
           pendingInvitesCount={pendingInvitesCount}
           personalityType={personalityType}
-          percentile={percentile}
           heroInsight={heroInsight}
           strengths={strengths}
           watchAreas={watchAreas}
@@ -589,10 +582,6 @@ export default async function ProfileResultsPage({
                 }
               : null,
           }}
-          hasTeamOrOrgMembership={
-            journeySnapshot.state.completionSummary.team.joined ||
-            journeySnapshot.state.completionSummary.org.joined
-          }
           teamRoleMeasuredScores={teamRoleMeasuredScores}
           teamRolePeer={teamRolePeer}
           experienceHints={journeySnapshot.resolution.experienceHints}

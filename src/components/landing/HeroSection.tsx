@@ -59,8 +59,10 @@ function SelfPanel() {
           <p className="font-fraunces text-[22px] font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
+          {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip —
+              az ál-percentilis („Top 25%") badge kivezetve (B17). */}
           <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
-            Top 25%
+            {t("landing.selfPanelRole", locale)}
           </span>
         </div>
         <p className="mt-2 max-w-[360px] text-[11px] leading-[1.55] text-white/75">

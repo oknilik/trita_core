@@ -10,7 +10,6 @@ interface PdfHeaderProps {
   name: string;
   date: string;
   type: string;
-  percentile: string;
   insight: string;
   plan: "start" | "plus";
   locale?: "hu" | "en";
@@ -41,7 +40,6 @@ export function PdfHeader({
   name,
   date,
   type,
-  percentile,
   insight,
   locale = "hu",
   topDimensions = [],
@@ -70,24 +68,11 @@ export function PdfHeader({
               {t("pdf.headerAssessment", locale)} {date}
             </Text>
 
+            {/* Ál-percentilis badge kivezetve (B17) — a típusnév önmagában áll. */}
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 3 }}>
               <Text style={{ fontFamily: "Fraunces", fontSize: 13, fontStyle: "italic", color: colors.sageDark }}>
                 {type}
               </Text>
-              {percentile ? (
-                <Text
-                  style={{
-                    fontSize: 6.5,
-                    backgroundColor: colors.sage100,
-                    color: colors.sageDark,
-                    padding: "1.5 6",
-                    borderRadius: 6,
-                    fontWeight: 600,
-                  }}
-                >
-                  {percentile}
-                </Text>
-              ) : null}
             </View>
 
             {insight ? (

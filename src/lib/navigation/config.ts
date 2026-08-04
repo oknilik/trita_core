@@ -58,7 +58,7 @@ export interface WorkspaceNavDestination {
 }
 
 export interface WorkspaceNavItem {
-  id: "home" | "results" | "career" | "tasks" | "teams" | "hiring" | "org" | "analytics";
+  id: "home" | "results" | "interaction" | "career" | "tasks" | "teams" | "hiring" | "org" | "analytics";
   label: string;
   kind: "link" | "dropdown";
   primaryHref: string;
@@ -94,6 +94,19 @@ function buildResultsItem(): WorkspaceNavItem {
     kind: "link",
     primaryHref: "/profile/results",
     matchPrefixes: ["/profile/results"],
+  };
+}
+
+// UX-B7: „Hogyan működnétek együtt?" — eddig az egyetlen belépő a riport
+// legalján ült; a páros-összehasonlító meghívó-hurokkal együtt nav-szintű
+// felület lett. Az Eredményeim mellett a helye (ugyanabból a profilból dolgozik).
+function buildInteractionItem(): WorkspaceNavItem {
+  return {
+    id: "interaction",
+    label: "Összehasonlítás",
+    kind: "link",
+    primaryHref: "/interaction",
+    matchPrefixes: ["/interaction"],
   };
 }
 
@@ -216,6 +229,9 @@ export function buildWorkspaceNavigation(
   const items: Array<WorkspaceNavItem | null> = [buildHomeItem(ctx.homeHref)];
 
   if (canViewNavSection(role, "results")) items.push(buildResultsItem());
+  // Az összehasonlítás a személyes réteg része — ugyanaz a kapu, mint az
+  // Eredményeim.
+  if (canViewNavSection(role, "results")) items.push(buildInteractionItem());
   // A karrier a személyes réteg része — ugyanaz a jogosultsági kapu, mint az
   // Eredményeim, plusz az org-szintű kikapcsolhatóság.
   if (canViewNavSection(role, "results")) items.push(buildCareerItem(ctx));

@@ -702,6 +702,10 @@ export const resultsTranslations = {
       en: "When off, you only receive operational emails.",
     },
     emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
+    shareVisibleSummary: {
+      hu: "A link megnyitója ezt látja: mind a hat dimenziód pontszámmal és értelmezéssel, a munkastílus-leírásod, az ideális környezeted és szerep-illeszkedésed, valamint a csapatszerep-hajlamaid.",
+      en: "Whoever opens the link sees: all six of your dimensions with scores and interpretation, your work-style narrative, your ideal environment and role fit, and your team-role tendencies.",
+    },
     radarNote: {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a HEXACO-dimenziók: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
       en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the HEXACO dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
@@ -710,6 +714,10 @@ export const resultsTranslations = {
       hu: "Ezeken a területeken adtad magadnak a legalacsonyabb értékeket — nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
       en: "These are the areas where you scored yourself lowest — not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
     },
+    // Háromlépcsős fejlődési ív címkéi — a PDF-fel (pdf.growth*) egyező szövegek.
+    growthPlanBehavior: { hu: "Próbáld ki", en: "Try this" },
+    growthPlanReflection: { hu: "Kérdezd meg magadtól", en: "Ask yourself" },
+    growthPlanChallenge: { hu: "Mérd le", en: "Measure it" },
     observerCtaTitle: {
       hu: "Kíváncsi vagy, mások hogyan látnak?",
       en: "Curious how others see you?",
@@ -1387,10 +1395,6 @@ export const resultsTranslations = {
     industryFitNote: {
       hu: "Indikatív jelzés az önértékelésed alapján — nem pályaválasztási tanácsadás. Az illeszkedés a szerep tipikus munkastílus-igényeit veti össze a profiloddal; a tapasztalat, tudás és motiváció legalább ilyen fontos.",
       en: "An indicative signal based on your self-assessment — not career advice. Fit compares a role's typical working-style demands with your profile; experience, skills and motivation matter at least as much.",
-    },
-    percentileNote: {
-      hu: "Az összehasonlítás a kitöltők mintájához képest értendő, önértékelés alapján.",
-      en: "Comparison is relative to the sample of respondents, based on self-assessment.",
     },
   },
   progress: {

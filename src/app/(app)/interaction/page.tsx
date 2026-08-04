@@ -69,10 +69,27 @@ export default async function InteractionPage({
   });
 
   const scores = latestResult?.scores as ScoreResult | undefined;
-  // Saját profil nélkül nincs mit összevetni — a riport-oldal a belépő,
-  // ott már ott van a kitöltés hívása.
+  // UX-B10: saját eredmény nélkül nem néma redirect (az emailből érkező
+  // magyarázat nélkül pattant vissza) — címzett állapot-oldal CTA-val.
   if (!scores || scores.type !== "likert" || !latestResult?.testType) {
-    redirect("/profile/results");
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+          <h1 className="font-fraunces text-[26px] leading-tight tracking-tight text-ink">
+            {t("results.compareNeedResultTitle", locale)}
+          </h1>
+          <p className="mt-3 text-caption leading-relaxed text-ink-body">
+            {t("results.compareNeedResultBody", locale)}
+          </p>
+          <a
+            href="/assessment"
+            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+          >
+            {t("results.compareNeedResultCta", locale)}
+          </a>
+        </div>
+      </main>
+    );
   }
 
   const lang = (locale === "en" ? "en" : "hu") as Locale;
@@ -181,8 +198,10 @@ export default async function InteractionPage({
         <h1 className="font-fraunces text-title text-[var(--color-text-primary)]">
           {t("results.sectionInteraction", lang)}
         </h1>
+        {/* UX-B13: a saját, erre az oldalra írt intro — nem a CTA-kártya
+            szövegének ismétlése. */}
         <p className="mt-2 max-w-prose text-body leading-relaxed text-[var(--color-text-secondary)]">
-          {t("results.ctaInteractionBody", lang)}
+          {t("results.interactionIntro", lang)}
         </p>
       </header>
 

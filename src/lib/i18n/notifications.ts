@@ -153,6 +153,10 @@ export const notificationTranslations = {
     // UI labels
     markAllRead: { hu: "Összes olvasottnak jelölése", en: "Mark all as read" },
     noNotifications: { hu: "Nincs új értesítés", en: "No new notifications" },
+    emptyHint: {
+      hu: "Új visszajelzésért hívj meg egy ismerőst observernek, vagy indíts páros összehasonlítást.",
+      en: "For fresh feedback, invite someone as an observer or start a pair comparison.",
+    },
     bellLabel: { hu: "Értesítések", en: "Notifications" },
   },
 };

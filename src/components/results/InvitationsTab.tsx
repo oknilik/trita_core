@@ -55,12 +55,14 @@ function LockedInvitations() {
       <p className="mx-auto mb-4 max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
         {t("invitations.lockedSub", locale)}
       </p>
-      <button
-        type="button"
-        className="min-h-[44px] rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-white transition hover:brightness-110"
+      {/* UX-B8: eddig onClick nélküli halott gomb volt — consulting-led
+          konvenció szerint a /contact-ra visz. */}
+      <a
+        href="/contact"
+        className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-white transition hover:brightness-110"
       >
         {t("invitations.lockedCta", locale)}
-      </button>
+      </a>
     </div>
   );
 }

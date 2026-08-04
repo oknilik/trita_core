@@ -217,7 +217,7 @@ export const assessmentTranslations = {
     doneSignedOutHint: { hu: "Szeretnéd te is kitölteni a tesztet? Regisztrálj, vagy jelentkezz be, ha már van fiókod.", en: "Want to take the test yourself? Sign up, or sign in if you already have an account." },
     signInCta: { hu: "Bejelentkezés", en: "Sign in" },
     signUpCta: { hu: "Regisztráció", en: "Sign up" },
-    goDashboard: { hu: "Ugrás a profilomhoz", en: "Go to my profile" },
+    goDashboard: { hu: "Ugrás az eredményeimhez", en: "Go to my results" },
     selectBothFields: { hu: "Kérjük, válassz kapcsolatot és időtartamot a folytatáshoz.", en: "Please select a relationship and duration to continue." },
   },
   tryClaim: {
