@@ -7,7 +7,7 @@
 > hogy korábban már lezárták (append-only séma él). A3 (kártya-letöltés)
 > tudatosan kihagyva — opcionális volt. Részletek és follow-upok:
 > `docs/development/changelog/2026-08-04.md`. Verifikáció: `pnpm check` 0 hiba,
-> unit 456 zöld, client 92 zöld, production build zöld (env-hiányos konténerben
+> unit 448 zöld, client 92 zöld, production build zöld (env-hiányos konténerben
 > dummy RESEND/Clerk kulcsokkal); integration/e2e test-DB híján nem futott.
 > **Előzmény:** a v1–v2 elemzés az elavult `main`-en (kutatási MVP) készült és
 > semmissé lett téve. Ez a v3 a `consulting_cleanup` → `main` merge (PR #10) utáni
