@@ -1,0 +1,519 @@
+[
+ {
+  "gaps": [
+   {
+    "id": "A3",
+    "title": "Claim-út újrarendezése: eredmény előre, onboarding utána",
+    "status": "missing",
+    "evidence": "src/app/(app)/try/claim/page.tsx:65 (claim után fixen /onboarding-ra megy); onboarding-guard.ts:15-22 (results-oldal is requireOnboarded mögött, profile/results/page.tsx:68); a fal: TryCompleteClient.tsx:166 → sign-up → claim-spinner → OnboardingClient 2 lépés → dashboard-dispatcher",
+    "effort": "M",
+    "risk": "A központi onboarding-guard lazítását igényli (eredmény consentedAt nélkül jelenne meg — jogi/consent-sorrend kérdés is), és a journey-engine minden SELF_* állapotát érinti; regresszió a teljes belépett felületre kihathat.",
+    "prePilotRecommend": false,
+    "implementationHint": "Ha mégis: claim/page.tsx redirect célja + onboarding-guard kivétel (van-result-de-nincs-onboardedAt állapot) + „fejezd be a beállítást\" sáv a results-on + journey-contract integration tesztek bővítése. A pilot org-meghívós belépést használ (ott a guard-kivétel már él), a /try tölcsér nem pilot-kritikus — a doc „pilot után\" ítélete helytálló. Az A11 összevonás önmagában egy képernyővel rövidíti a falat."
+   },
+   {
+    "id": "A8",
+    "title": "3 kényszer-interstitial → 1 milestone saját Folytatom gombbal",
+    "status": "missing",
+    "evidence": "src/app/(app)/assessment/AssessmentClient.tsx:105-111, 209, 244-247, 320-329, 425-429 (a [25,50,75] lista 5 helyen), 713-772 (milestone-render, saját gomb nélkül — csak a footer Tovább / Enter lép tovább)",
+    "effort": "S",
+    "risk": "Egyetlen fájl, önmagában záruló logika; a client-integration teszt (tests/client/assessment, TOTAL_QUESTIONS=10) checkpoint-átlépésre számíthat, 1-2 tesztet igazítani kell — kitöltés-megszakadást nem tud okozni, mert a draft-mentés független.",
+    "prePilotRecommend": true,
+    "implementationHint": "CHECKPOINT_MARKS konstansba kiemelni és [50]-re szűkíteni (mind az 5 előfordulás), a checkpoint-blokkba saját gomb ami handleNextStep-et hív; a journeyMilestone25/75* i18n kulcsok kivezethetők. ~2-3 óra a tesztigazítással."
+   },
+   {
+    "id": "A10",
+    "title": "Self-serve user ne pattanjon át a team-roles oldalon",
+    "status": "missing",
+    "evidence": "src/app/(app)/assessment/AssessmentClient.tsx:405 (submit után mindenkinek router.push('/assessment/team-roles')); team-roles/page.tsx:25-32 (nem-team user: resolveJourneyFallback + redirect — ez a fölös ugrás)",
+    "effort": "S",
+    "risk": "A doc „journey-mellékhatás\" aggálya kicsi: a /dashboard dispatcher (dashboard/page.tsx:32-51) a staff- és minden journey-esetet lefed, a team-roles oldal szerver-redirectje pedig safety-netként megmarad; egyetlen valós él a kitöltés KÖZBEN org-taggá váló user (kihagyja a lépést, de a kampány-lépés úgyis /assessment/team-roles-ra visz — campaign-steps-core.ts:38).",
+    "prePilotRecommend": true,
+    "implementationHint": "assessment/page.tsx-ben isTeamUser (orgMemberships/teamMemberships take:1, ugyanaz a lekérdezés mint team-roles/page.tsx:15-26) → prop az AssessmentClientnek → :405-ben feltételes cél: team-user '/assessment/team-roles', más JOURNEY_HOME_HANDOFF_PATH. ~1-2 óra."
+   },
+   {
+    "id": "A11",
+    "title": "Onboarding 2 lépés → 1 képernyő (consent a submit felett)",
+    "status": "missing",
+    "evidence": "src/app/(app)/onboarding/OnboardingClient.tsx:29 (step state), 156-164 (handleStep1Next), 423-489 (a teljes 2. lépés = egy checkbox + 2 gomb), 202-207 (step-indikátor)",
+    "effort": "S",
+    "risk": "A korábbi „auth-flow teszt kell / M\" ítélet FELÜLVIZSGÁLVA — túlzó volt: az OnboardingClient a Clerk-auth UTÁN álló sima kliens-form, az API egyetlen POST-tal a teljes payloadot fogadja (api/profile/onboarding/route.ts:12-28, változatlan kontraktus), auth-kódhoz nem nyúl; az egyetlen onboardingot érintő e2e csak redirect-smoke (journey-entrypoints-smoke.test.ts:70), tehát a valós kockázat egy 15 perces kézi kattintás a sign-up→claim→onboarding úton.",
+    "prePilotRecommend": true,
+    "implementationHint": "OnboardingClient.tsx-ben a step-gépezet (state, indikátor, handleStep1Next, Vissza-gomb) törlése; a consent-blokk a Karrier-háttér szekció alá, a submit a canStep1 && consent-re validál (focusFirstInvalid marad); onboarding.step1Label/step2Label/step2Title kulcsok kivezetése. ~3-4 óra + kézi végigkattintás mindkét nyelven."
+   },
+   {
+    "id": "B1",
+    "title": "Riport-térkép: szekció-ugró sáv + WorkStyle expander",
+    "status": "missing",
+    "evidence": "src/components/profile/ProfileTabs.tsx:1036-1093 (results-fül = ResultsTab + WorkStyleTab + 2 SectionCta egyben, egy scroll), 273-410 és 434-512 (a ~12-15 blokk); a hash-görgető mechanika már létezik újrahasznosításra (:579-599, #observer-flow mintára)",
+    "effort": "M",
+    "risk": "A riport IA-ja a pilot tanácsadói walkthrough-jának gerince — 5 héttel előtte átrendezni azt kockáztatja, hogy a struktúra a valós pilot-riportok tanulságai ELŐTT betonozódik be (a doc „pilot-riportokkal együtt\" indoka érdemi, nem óvatoskodás).",
+    "prePilotRecommend": false,
+    "implementationHint": "Ha kapacitás marad, a tétel S-szelete önmagában is értékes és veszélytelen: id-k a meglévő szekciókra + egy sima (nem sticky-spy) ugrósáv a hero alá — az expander és az IA-átrendezés maradjon pilot utánra. Fájl: ProfileTabs.tsx + a szekció-komponensek id-propja."
+   },
+   {
+    "id": "B11",
+    "title": "Archetípus-választó rétegzett feltárása",
+    "status": "missing",
+    "evidence": "src/components/results/ArchetypePicker.tsx:50-91 + 94-134 (mindkét fieldset egyszerre renderel, 6+5 csempe); InteractionSection.tsx:171-183 (előre kitöltött 'initial' — az első nem-sparse idegen elemzés azonnal megjelenik)",
+    "effort": "M",
+    "risk": "Zárt kliens-komponens (csak az /interaction oldal használja), adat- és journey-függés nélkül — a kockázat kizárólag dramaturgiai: az üres kezdőállapot copy-ja rossz megfogalmazásban „nem működik\" érzetet kelthet (pont ez ellen szólt a mostani pre-fill, ld. a :171-175 kommentet).",
+    "prePilotRecommend": false,
+    "implementationHint": "dominant/secondary → nullable state az InteractionSection-ben, az ArchetypePicker második fieldset-je és az elemzés csak választás után renderel, meghívó-jellegű üres állapot copy-val (HU+EN). Technikailag S, a copy+dramaturgia miatt M; nem pilot-kritikus felület, de ha marad idő, biztonságosan behúzható."
+   },
+   {
+    "id": "B14",
+    "title": "Invite-form stabil címe + kolléga-picker skeleton",
+    "status": "missing",
+    "evidence": "src/components/results/InvitationsTab.tsx:96-107 (mount utáni colleagues-fetch), 353-362 (a form címe colleagues.length alapján vált menet közben: formTitle → externalSectionTitle), 291 (a picker-blokk utólag ugrik be); 72-77 (nincs szerver-oldali org-tag prop)",
+    "effort": "S",
+    "risk": "Tisztán prezentációs változás, de pilot-kritikus felületen (az observer-kampány meghívó-kezelője pont a pilot-resztvevők fő munkafelülete) — a javítás elmaradása látható „ugráló UI\" a pilot alatt, a javítás maga gyakorlatilag kockázatmentes.",
+    "prePilotRecommend": true,
+    "implementationHint": "ProfileTabs-ból új prop (pl. hasColleagueDirectory = observerFlow?.state !== 'self_serve' — szerver-oldalon már ismert), a cím ettől függjön a fetch eredménye helyett; colleaguesLoading state + skeleton-sor a picker helyén amíg a fetch fut. ~2 óra."
+   },
+   {
+    "id": "B16u",
+    "title": "Notification-dismiss undo (a B16 hátralévő fele)",
+    "status": "missing",
+    "evidence": "src/components/layout/NotificationsProvider.tsx:270-283 (dismiss: optimista törlés + azonnali DELETE, visszaút nélkül); NotificationPanel.tsx:200-213 (X gomb); az üres-állapot fele KÉSZ (NotificationPanel.tsx:152-156); a szerver-oldal soft-dismiss, tehát visszavonható (api/notifications/[id]/route.ts: dismissed=true)",
+    "effort": "S",
+    "risk": "A Toast-rendszer nem támogat akciógombot (Toast.tsx:41-47 — message+type only), így vagy a Toast API-t kell óvatosan bővíteni (több hívóhelyet érintő közös komponens), vagy panel-beli inline undo-sort építeni; félrecsúszva a badge-számláló optimista logikája (applyLocalCount) kerülhet inkonzisztenciába.",
+    "prePilotRecommend": true,
+    "implementationHint": "Legkisebb kockázat: a DELETE hívást 5 mp-re elhalasztani a providerben (pendingDismiss map + timer), a panelben a törölt elem helyén inline „Elrejtve — Visszavonás\" sor; undo = timer törlés + elem visszarakás, a count-korrekció a meglévő applyLocalCount-tal. Nem kell se Toast-bővítés, se új API. ~3 óra."
+   },
+   {
+    "id": "B19",
+    "title": "Tab-gépezet egyszerűsítése (2 tabhoz szegmens-gombok)",
+    "status": "missing",
+    "evidence": "src/components/profile/ProfileTabs.tsx:554-572 (tabFade + resize-listener), 606-616 (auto-center effect), 643-654 (handleTabChange: router.push + scrollIntoView-ugrás), 980-1026 (snap-x scroll-konténer + él-fade-ek) — miközben a TABS pontosan 2 elem (:656-679)",
+    "effort": "S",
+    "risk": "A korábbi „vizuális regresszió-teszt nélkül kockázatos\" ítélet FELÜLVIZSGÁLVA — túlzó: 2 tabnál a fade/auto-center/snap gépezet gyakorlatilag inert (sosem aktiválódik), az eltávolítása holt viselkedés törlése; az EGYETLEN valódi kockázat a ?tab=comparison#observer-flow mélylinkek (notifications/orchestrator.ts:28,241,472 — pilot-kritikus observer-út), de azokat az initialTab + a hash-effect (:579-599) szolgálja ki, amihez a szegmens-gombosítás nem nyúl; ProfileTabs-ra amúgy sincs semmilyen automata teszt, tehát a „teszt nélkül\" érv minden itteni változásra ugyanúgy állna.",
+    "prePilotRecommend": false,
+    "implementationHint": "Scope-fencelve veszélytelen: csak a konténert cserélni (2 gombos szegmens-sor, md:flex-1 marad), a tabFade/auto-center/snap törlése; a handleTabChange router.push-URL-szinkronját és a hash-effectet NEM bántani, a scrollIntoView-t csak a mély CTA-hívásoknál (onOpenInvites, :965/:975/:1040) megtartani. Nem ajánlom pilot előttre nem a kockázat, hanem az alacsony hozam miatt — ha a B1 ugrósáv-szelet készül, ugyanabban a fájlban érdemes együtt vinni egy kézi QA-körrel (mobil+desktop, HU+EN, observer-mélylink)."
+   },
+   {
+    "id": "B12",
+    "title": "RoleFit vs Csapatszerep címek megkülönböztetése — ELLENŐRIZVE: KÉSZ",
+    "status": "done",
+    "evidence": "src/lib/i18n/results.ts:484 (roleFitEyebrow: „Munkakör-illeszkedés\") vs :510 (sectionRoles: „Csapatszerep-hajlamok\"); renderelve RoleFitSection.tsx:68 és ProfileTabs.tsx:458-462 — a két szomszédos szekció címe már megkülönböztetett (commit 73a7106 státusz-átvezetés helytálló)",
+    "effort": "S",
+    "risk": "Apró maradvány-inkonzisztencia: a PDF-ben ugyanez a blokk „Szerepkör-illeszkedés\" (results.ts:1655, pdf.roleFit) — nem a B12 lelet hatóköre (ott nincs szomszédos csapatszerep-szekció), de a képernyő-PDF szóhasználat eltér.",
+    "prePilotRecommend": false,
+    "implementationHint": "Nincs teendő; opcionális 1 soros igazítás: results.ts:1655 pdf.roleFit hu-értékét „Munkakör-illeszkedés\"-re hozni."
+   },
+   {
+    "id": "B18",
+    "title": "Nav-címkék i18n-esítése — ELLENŐRIZVE: KÉSZ",
+    "status": "done",
+    "evidence": "src/lib/i18n/navigation.ts:5-23 (nav.* szótár HU+EN), regisztrálva i18n/index.ts:18,65; navigation/config.ts minden fix menüpontja t('nav.*', locale)-lel épül (:84,:94,:107,:125,:140,:155,:170,:183,:189,:205,:218), a locale végig van fűzve (nav-header-ui.tsx:284-292); hardcode magyar címke a layout/navigation rétegben grep-pel nem található (commit 5328b0d)",
+    "effort": "S",
+    "risk": "Nincs — a dinamikus címkék (csapatnevek) szándékosan nyersen mennek át, ez dokumentált döntés a szótár fejlécében.",
+    "prePilotRecommend": false,
+    "implementationHint": "Nincs teendő."
+   }
+  ]
+ },
+ {
+  "gaps": [
+   {
+    "id": "P0.1-3",
+    "title": "Mintázat-lánc helyreállítása (pólus-betűk + pattern API + TeamPatternCard bekötés)",
+    "status": "done",
+    "evidence": "src/lib/team-pattern.ts:212-217 (E/R,C/V,S/F,X/P) és :237-239 (flipMap); src/app/api/team/[id]/pattern/route.ts:70-89 (belső INTE/RESO/TEMP/ADAP/THOR/OPEN kódokat olvas); src/app/(app)/team/[id]/_tabs/IntelligenceTabView.tsx:5,200-204 (TeamPatternCard bekötve, <3 kitöltő guard :187-191); tests/unit/team/team-pattern.test.ts létezik, unit zöld (457 pass)",
+    "effort": "S",
+    "risk": "A pattern API-ra a 6.1 prompt által előírt integration teszt nem készült el — regressziót csak a unit réteg fog.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "P0.4-5",
+    "title": "Csapatszerep kitöltés>becslés precedencia + valós forrás-számláló",
+    "status": "done",
+    "evidence": "src/components/team/TeamIntelligence.tsx:7,181-185 (resolveDisplayRoleScores, source==='questionnaire' badge-ág); src/app/(app)/team/[id]/_tabs/TeamRoleTabView.tsx:17-31 (számláló a megjelenítési szabályból, nincs DB-be írt becslés); tests/unit/team/team-role-precedence.test.ts",
+    "effort": "S",
+    "risk": "Nincs ismert kockázat — a precedencia-szabály most egységes a 4 korábbi hellyel.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "P0.6",
+    "title": "Append-only szerepválaszok (újrakitöltési adatvesztés)",
+    "status": "done",
+    "evidence": "prisma/schema.prisma:643-676 — TeamRoleAnswer/TeamRoleScore-on NINCS @unique(userProfileId), helyette @@index([userProfileId, createdAt]) + campaignId?; a changelog szerint korábban lezárt, a séma igazolja",
+    "effort": "S",
+    "risk": "Nincs — a séma append-only, az olvasók legfrissebbet vesznek.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "A1",
+    "title": "Vendég-teaser a /try végén (kliens-oldali eredmény-ízelítő)",
+    "status": "done",
+    "evidence": "src/app/(app)/try/complete/TryCompleteClient.tsx:38-94,117-193 (localStorage-draft → computeGuestTeaserScores, glyph+archetípus+2 chip, claim-CTA-k, böngésző-jegyzet, üres/részleges draft ágak); src/lib/guest-teaser.ts (a kérdésbank nem megy a bundle-be, csak scoring-meta); tests/unit/assessment/guest-teaser.test.ts + tests/client/assessment/try-teaser-card.test.tsx",
+    "effort": "M",
+    "risk": "A client teszt csak a TryTeaserCard renderét fedi — a TryCompleteClient három draft-állapotának (van/nincs/hiányos) állapotgépét nem; kézi füst-teszt ajánlott a pilot-funnelen.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "A2",
+    "title": "OG-kép a /share/[token]-hez",
+    "status": "done",
+    "evidence": "src/app/(app)/share/[token]/opengraph-image.tsx (glyph-sziluett + archetípus, Fraunces/DMSans assets/og-ból, érvénytelen token → generikus brand-kép); page.tsx:29-35 dinamikus generateMetadata; src/lib/share-og.ts + tests/unit/results/share-og.test.ts",
+    "effort": "M",
+    "risk": "Az OG-kép fix HU szövegű (a crawlernek nincs nyelvi kontextusa) — EN megosztásnál magyar kártya jelenik meg; tudatos döntés, de pilotban EN org-nál feltűnhet.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "A3",
+    "title": "Kártya-kép letöltés / Web Share a ShareModalból",
+    "status": "done",
+    "evidence": "src/components/results/ShareCardDownload.tsx (kliens-oldali SVG→canvas PNG, webfont-előtöltés, pontszám nélkül); bekötve: src/components/results/ShareModal.tsx:12,229",
+    "effort": "S",
+    "risk": "Canvas/webfont viselkedés böngészőnként tér el — Safari/iOS kézi ellenőrzés ajánlott a pilot előtt.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "B1",
+    "title": "Valódi párösszehasonlítás (CompareInvite + consent + páros nézet)",
+    "status": "done",
+    "evidence": "prisma/schema.prisma:684-699 + migrations/20260804120000_add_compare_invite (1141 B, nem üres); API: api/interaction/invite/route.ts POST:43/GET:113/DELETE:164 (max 3 aktív, 30 nap TTL, NO_RESULT/COMPARE_LIMIT_REACHED hibakódok), [token]/route.ts GET, accept/route.ts POST (idempotens, SELF_COMPARE/ALREADY_ACCEPTED); consent állapot-gép: interaction/compare/[token]/page.tsx:61-148 (sign-in redirect_url-lel, saját link→kezelő, NO_RESULT→/assessment CTA); páros nézet: interaction/page.tsx:140-227 — buildPairSimulation SZERVER-oldalon, a kliens csak PairGlyphInfo-t (kód+intenzitás+címke) és szimuláció-szöveget kap, számszerű partner-pontszám nem megy át; profil-törlés revoke: api/profile/delete/route.ts:38; tesztek: tests/unit/results/compare-invite.test.ts + pair-simulation.test.ts, pair-nézet client fedés az interaction-section.integration.test.tsx-ben; a hedge-guardrail (interaction-language.test.ts) az atomkészletet fedi, amiből a profile-profile is dolgozik",
+    "effort": "L",
+    "risk": "Az accept-flow-ra a 6.5 prompt által kért integration teszt és a consent-oldal client tesztje hiányzik — a legkritikusabb új több-lépéses flow csak unit-szinten fedett.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "B1-FU",
+    "title": "B1 follow-upok: QR a linkhez + COMPARE_ACCEPTED értesítés + email-meghívó",
+    "status": "done",
+    "evidence": "QR: src/components/results/CompareInviteCard.tsx:7,44-63,236-243,259-275 (qrcode csomag, PENDING linkekhez); értesítés: src/lib/notifications/types.ts:89 + accept/route.ts:79-98 (best-effort, dedupe COMPARE_ACCEPTED:{id}, link a páros nézetre) + migrations/20260804130000; email: invite/route.ts:54-57,90-101 (rate-limit 'contact' bucket, best-effort) + sendCompareInviteEmail az emails.ts-ben",
+    "effort": "M",
+    "risk": "A QR-szín literál hexákkal megy (#1a1a2e/#f7f4ef) a design-tokens.ts helyett — kis inkonzisztencia, közös komponensbe emeléskor rendezhető.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "C1",
+    "title": "Stabilitás-jelzés a csapatriportban",
+    "status": "done",
+    "evidence": "src/lib/team-report.ts:53-56 (stability/stabilityNote/unstableAxes additív, guardolt mező) + :479-483 (tensionAxes-ből tag-darabszám); render: src/components/team/TeamReportView.tsx:406-453 (konfidencia-chip :417-422, amber jegyzet + tengelyek :427-445, egyéni eltérés-darabszám név nélkül :446-453)",
+    "effort": "M",
+    "risk": "Régi riport-pillanatképeken a mező hiányzik (guardolt, nem tör) — a stabilitás-jegyzet csak új publikálásnál jelenik meg, a pilot-riportokat újra kell publikálni hozzá.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "C2",
+    "title": "„Csapat nyomás alatt” fejezet",
+    "status": "done",
+    "evidence": "src/lib/team-pressure.ts (12 tétel HU+EN, PRESSURE_SHARE_THRESHOLD 0.5 + MIN_COUNT 2, max 3 állítás, akció-mondatok); aggregátum: team-report.ts:423-428,493; render: TeamReportView.tsx:917-935 (forrás-jegyzettel); narratíva-prefill risks: team-report.ts:594-595; tests/unit/team/team-pressure.test.ts; a hedge-guardrail a tartalmat is fogta a changelog szerint és a unit zöld",
+    "effort": "M",
+    "risk": "Tartalmi (hangnem) jóváhagyás a 7. szakasz nyitott döntése volt — a szöveg élesben megy ki, tanácsadói átolvasás nélkül reputációs kockázat.",
+    "prePilotRecommend": true
+   },
+   {
+    "id": "D1",
+    "title": "Reflexiós utókövetés (in-app + email-láb opt-outtal)",
+    "status": "done",
+    "evidence": "src/lib/notifications/types.ts:88 (REFLECTION_PROMPT) + migrations/20260804121000; sweep: src/lib/notifications/sweep.ts:37-201 (7-10 napos ablak, user-szintű dedupe, per-locale dimLabelHu/En vars, best-effort email csak lifecycleEmailsOptOut=false mellett); cron: api/cron/release-steps/route.ts:4,45 + vercel.json (napi 5:00); email: emails.ts:615-624 (sendReflectionPromptEmail, opt-out link /email-preferences-re); schema.prisma:104 + migrations/20260804131000; /email-preferences oldal + api/profile/email-preferences (Zod, auth); tests/unit/platform/reflection-sweep.test.ts (6 eset)",
+    "effort": "M",
+    "risk": "A leiratkozó-link belépést igényel (nincs tokenes one-click unsubscribe) — emailből érkezőnek plusz súrlódás, és kényes lehet elvárás-oldalról (CAN-SPAM/GDPR-jó gyakorlat).",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "FU-HOLLAND",
+    "title": "/holland-kod zsákutca feloldása",
+    "status": "done",
+    "evidence": "src/app/(marketing)/holland-kod/HollandContent.tsx:148 — elsődleges CTA href=\"/try\"; a fake door érdeklődés-mérés másodlagos linkként maradt (:132 környéke dokumentálja)",
+    "effort": "S",
+    "risk": "Nincs — az indexelt SEO-oldal most élő értékre visz.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "BL-NAMES",
+    "title": "16-mintázat névkészlet-egységesítés",
+    "status": "partial",
+    "evidence": "src/app/(marketing)/patterns/PatternExplorer.tsx:141,259,347 a pattern.alias-t (riport-névcsalád, pl. „Innovátor Gépezet”) mutatja elsődlegesként — a felületek nyelve összekötött; de a két készlet (pattern-data.ts:70/84+ vs team-pattern.ts:344 PATTERN_NAMES) továbbra is párhuzamosan él",
+    "effort": "M",
+    "risk": "Marketing- és riport-szöveg eltérhet egy-egy mintánál; tudatos backlog-döntés (brand-kérdés), pilot alatt a tanácsadó áthidalja.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "BL-CONF",
+    "title": "Confidence-jelölés egységesítése (öt párhuzamos rendszer)",
+    "status": "missing",
+    "evidence": "Nincs közös badge-komponens a kódban; a changelog (2026-08-04:181-183) explicit, indokolt halasztás pilot utánra",
+    "effort": "L",
+    "risk": "Vizuális inkonzisztencia a felületek közt marad — de a refaktor öt rendszert érintene vizuális QA nélkül, öt héttel a pilot előtt nagyobb kockázat, mint a haszon; a halasztás helyes.",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "BL-2027",
+    "title": "Backlog-tételek: E1 interjúkérdés, vezető×csapat riport, partner-lépcső, mintázat-glyph",
+    "status": "missing",
+    "evidence": "Nincs kód-nyomuk (grep: nincs interjúkérdés-generátor, nincs leader_team_mismatch-kiterjesztés, nincs mintázat-glyph a type-glyph.ts-ben) — a terv szerint pilot utánra/2027-re ütemezettek",
+    "effort": "L",
+    "risk": "Terv szerinti hiány; az E1 előrehozása a career fake door kereslet-adatán múlik (7. szakasz nyitott döntése).",
+    "prePilotRecommend": false
+   },
+   {
+    "id": "TEST-GAP",
+    "title": "Prompt-elfogadási teszt-rés: integration + e2e az új flow-kra",
+    "status": "partial",
+    "evidence": "tests/integration/ csak apply/journey/observer/acceptance/join könyvtárakat tartalmaz — a 6.1 által kért pattern-API integration és a 6.5 által kért compare accept-flow integration teszt hiányzik; tests/e2e/ (assessment/journey/navigation/observer/team) nem fedi a compare kört; a TryCompleteClient 3 draft-állapotára sincs client teszt; unit/client rétegek viszont zöldek (457+92) és az új logika unit-fedett",
+    "effort": "M",
+    "implementationHint": "tests/integration/interaction/compare-accept.integration.test.ts: invite create→validate→accept→revoke lánc két test-userrel, NO_RESULT és SELF_COMPARE ágakkal (observer-link-service.integration.test.ts mintájára); tests/integration/team/pattern-api.integration.test.ts: belső kódos score-seeddel a route 200/insufficientData ágai; tests/client/assessment/try-complete-states.test.tsx: van/nincs/hiányos draft. Test-DB-s környezetben futtatandó (test:integration:bootstrap).",
+    "risk": "A pilot két legfontosabb új flow-ja (páros kör, mintázat-API) csak unit-szinten védett — egy route-szintű regresszió (auth, Prisma-select) észrevétlen maradhat.",
+    "prePilotRecommend": true
+   },
+   {
+    "id": "OPS-P3009",
+    "title": "Vercel deploy-blokk feloldása (P3009 beragadt migráció a Neonon)",
+    "status": "partial",
+    "evidence": "Runbook kész: docs/development/changelog/2026-08-04.md:110-147 (kézi SQL a 20260203202304_init failed sor törlésére + 3 forgatókönyv); a két új 20260804-es migráció a repóban van, de a cél-DB állapota a repóból nem verifikálható — amíg a sor él, MINDEN deploy elhasal",
+    "effort": "S",
+    "implementationHint": "Neon console-ban a changelog 2 SQL-je (SELECT-tel ellenőrzés, majd DELETE a failed init-sorra), utána redeploy; ha a 0716-0731 migrációk nincsenek a _prisma_migrations-ben, a baseline-forgatókönyv (prisma migrate resolve --applied soronként, a két 20260804-es kihagyásával). 15 perc, de e nélkül a pilot-környezet nem frissíthető.",
+    "risk": "Ha szeptember 8-ig nem történik meg, a CompareInvite tábla és az összes 08-04-es réteg nem kerül ki élesbe (runtime P2021 az új API-kon).",
+    "prePilotRecommend": true
+   },
+   {
+    "id": "DOC-DECISIONS",
+    "title": "7. szakasz nyitott döntéseinek formális lezárása",
+    "status": "partial",
+    "evidence": "docs/product/tritanium.md:508-523 — mind a 7 checkbox nyitva, miközben a kód a javasolt válaszokat implementálta (0.+1. kör kész, A1 szűk hatókör, B1 pilot alatt, D1 email-lábbal együtt); a C2-tartalom hangnem-jóváhagyása és az E1-előrehozás ténylegesen nyitott",
+    "effort": "S",
+    "implementationHint": "tritanium.md 7. szakasz checkboxainak átvezetése a tényleges állapotra + a 8. változásnapló-sor a végrehajtásról; a C2 pressure-szövegek (src/lib/team-pressure.ts TEAM_PRESSURE_CONTENT) tanácsadói átolvasása a pilot-riportok előtt.",
+    "risk": "A terv-doksi és a kód szétcsúszása megtévesztheti a következő kör tervezését; a C2-tartalom jóváhagyás nélkül megy ügyfél elé.",
+    "prePilotRecommend": true
+   },
+   {
+    "id": "QR-OBSERVER",
+    "title": "QR az observer-meghívókhoz (InvitationsTab)",
+    "status": "missing",
+    "evidence": "A qrcode csomagot egyedül src/components/results/CompareInviteCard.tsx:7 importálja (repo-szintű grep); src/components/results/InvitationsTab.tsx:190-192,489 csak link-másolást ad a /observe/[token]-hez, QR nincs",
+    "effort": "S",
+    "implementationHint": "1) Közös komponens kiemelése: a CompareInviteCard QR-blokkja (state+effect :37-63, panel-JSX :259-275) → src/components/ui/QrLinkPanel.tsx client-komponens ({url, alt, hint} propokkal, színek a design-tokens.ts COLORS-ból a literál hexák helyett), a CompareInviteCard erre áll át. 2) InvitationsTab: az aktív meghívó-sor „Másolás” gombja (:489) mellé „QR” toggle, url = `${origin}/observe/${inv.token}`; i18n: invitations.qrShow/qrAlt/qrHint HU+EN; min-h-[44px]. Az observer-flow amúgy is publikus+tokenes, auth-hatás nincs.",
+    "risk": "Nélküle a pilot-workshopok observer-köre link-küldözgetésen fut telefonok közt — a QR pont a tanácsadós, egy-térben-ülünk helyzet fő súrlódását veszi ki, ez a legerősebb pilot-illeszkedésű QR-hely.",
+    "prePilotRecommend": true
+   },
+   {
+    "id": "QR-JOIN",
+    "title": "QR a csapat-join linkhez (OrgOnboardingWizard, opcionálisan TeamMembersTab)",
+    "status": "missing",
+    "evidence": "A többször használható nyílt join-link létezik (api/team/invite/route.ts:83 → /join/[token], OPEN_INVITE_SENTINEL :13), de az egyetlen UI-felülete az OrgOnboardingWizard.tsx:264-270,673-686 másolás-gombja; QR sehol, és a TeamMembersTab/OrgMembersTab-on link-felület sincs (csak email-alapú resend/cancel)",
+    "effort": "S",
+    "implementationHint": "a) OrgOnboardingWizard: a kimásolható inviteUrl sora alá QrLinkPanel (a QR-OBSERVER-ben kiemelt közös komponenssel) — a kickoff-workshopon a tanácsadó kivetíti, a csapat beolvassa, mindenki egy lépésben org-tag és indíthatja a felmérést; ez a szept. 8-i indulás legerősebb dramaturgiai QR-je. b) (opcionális, M) „Meghívó link + QR” kártya a TeamMembersTab-ra manager/admin szerepnek, ugyanazzal a POST /api/team/invite hívással + capability-ellenőrzéssel — így a link a wizard után is elérhető; e nélkül a link a wizard bezárásával elvész a UI-ból.",
+    "risk": "A nyílt link org-tagságot keletkeztet — kivetített QR-nél a terem bárkije beléphet, ezért a QR-hint szövegben jelezni kell, és hosszabb távon lejárat/visszavonás kell a nyílt linkre (ma nincs rajta).",
+    "prePilotRecommend": true
+   },
+   {
+    "id": "QR-SHARE",
+    "title": "QR a ShareModalba (profil-megosztás)",
+    "status": "missing",
+    "evidence": "src/components/results/ShareModal.tsx: másolás (:86 createLink-en át, B6 szándék-materializálás), email-küldés és ShareCardDownload van, QR nincs",
+    "effort": "S",
+    "implementationHint": "„QR” akció a másolás/email mellé: először ugyanazt a createLink()-et hívja (a B6-elv — a token csak szándékra materializálódik — a QR-megjelenítésre is áll), majd QrLinkPanel a shareUrl-lel. Csak a közös komponens megléte után éri meg; önálló értéke kisebb.",
+    "risk": "Alacsony tét: a személyes „olvasd be a profilom” helyzetet az OG-kép + kártya-letöltés nagyrészt fedi — pilot előtt nem éri meg a felület-zsúfolást, pilot utáni kis kör.",
+    "prePilotRecommend": false
+   }
+  ]
+ },
+ {
+  "gaps": [
+   {
+    "id": "INT-PDF",
+    "title": "Interakció PDF-ízelítő (3 leggyakoribb partner-típus)",
+    "status": "missing",
+    "evidence": "src/components/pdf/TritaPdf.tsx:3-9,105-112 — nincs interakció/partner-oldal a PDF-ben; pdf-komponensekben a „partner\" csak a CollabPage.tsx:50-ben (az a P4.2-fejezet). Terv: riport-interakcio-szimulacio-terv.md §5/4, aug 10-re ütemezve.",
+    "effort": "S",
+    "risk": "A react-pdf tördelés csúszhat — a terv pont ezért ütemezte a webes v1 QA-ja utánra; oldalszám-képlet (TritaPdf.tsx:98) is frissítendő.",
+    "prePilotRecommend": true,
+    "implementationHint": "Rövid statikus blokk/oldal a CollabPage mellé az interaction-atoms.ts atomjaiból derivált 3 partner-típussal; TritaPdf.tsx oldalsorrend + totalPages frissítés."
+   },
+   {
+    "id": "INT-F4",
+    "title": "Interakció F4: team view páros mód (valós pontszámokból)",
+    "status": "missing",
+    "evidence": "buildPairSimulation egyetlen hívója src/app/(app)/interaction/page.tsx:181; src/components/team/ alatt nulla interakció-integráció. Terv: aug 11-13, kifejezetten „a pilot debriefeken már használható\" céllal.",
+    "effort": "M",
+    "risk": "Adatvédelmi kapu: csak közös csapat-tagok párosíthatók, és a másik fél nyers pontszámai nem kerülhetnek a kliensre — a /interaction szerver-oldali mintáját kell követni.",
+    "prePilotRecommend": true,
+    "implementationHint": "Team oldalról (intelligence/members tab) két tag kiválasztása → szerver-oldali buildPairSimulation (src/lib/interaction-view.ts) a tagok valós score-jaiból; a PairInteractionView.tsx újrahasznosítható."
+   },
+   {
+    "id": "TR360-LEGAL",
+    "title": "Peer/trust/pulse adatkezelés a privacy-oldalon",
+    "status": "partial",
+    "evidence": "Kitöltői anonimitás-szöveg él (src/lib/i18n/assessment.ts:117 anonBody, :289), de a privacy adatkör-lista (src/lib/i18n/auth.ts:393-396 dataAssessment) csak „ismerősi értékelések\"-et említ — csapaton belüli szerep-/bizalmi-/pulse-visszajelzésről egy szó sincs (PrivacyContent.tsx:6-49). team-role-360-plan.md §8 jogi tétel.",
+    "effort": "S",
+    "risk": "Pilot-ügyfélnél GDPR/bizalmi kockázat: a rendszer tárol raterUserId-hoz kötött peer-observationt, amit a publikus adatkezelési tájékoztató nem ír le.",
+    "prePilotRecommend": true,
+    "implementationHint": "auth.ts privacy-kulcsok bővítése (új dataTeamFeedback tétel: csapatszerep-peer, bizalmi kör, pulse — ki látja, n≥3 aggregátum, tárolás) + PrivacyContent szekció-lista; HU+EN."
+   },
+   {
+    "id": "CJ-CREDITS",
+    "title": "Kredit-blokk az org settings-ben — halott admin-link",
+    "status": "missing",
+    "evidence": "HiringDashboard.tsx:349-354 „Kreditek kezelése →\" a /org/[orgId]/settings-re mutat, de a settings-oldalon (src/app/(app)/org/[id]/settings/page.tsx, 172 sor: org-név + szerepek + danger zone) nulla kredit-tartalom (credit/kredit grep: 0 találat). candidate-journey-plan.md 2. pont maradéka; a vásárlás-UI rész billing-parkolt, kihagyva.",
+    "effort": "S",
+    "risk": "A tanácsadói körnek újra aktív hiring-felületen az admin halott linkre fut — a konzisztens megoldásnak read-only org-state-tel is működnie kell.",
+    "prePilotRecommend": true,
+    "implementationHint": "Vagy read-only kredit-blokk a settings-be (getCreditBalance + „a kereteket a Trita tanácsadód állítja be, kérés: /contact\" jegyzet), vagy a HiringDashboard:350 link cseréje erre a magyarázatra."
+   },
+   {
+    "id": "LR-FACET",
+    "title": "„Szorongás\" facet nem-klinikai glosszája",
+    "status": "missing",
+    "evidence": "src/lib/tritan.ts:63-94 TRITAN_FACETS-nek nincs leíró mezője; glossza-szöveg a src-ben sehol (grep: 0). language-review-2026-08.md „Nyitott maradványok\" 1. tétel.",
+    "effort": "S",
+    "risk": "A „Szorongás · Dependencia\" facet-sor glossza nélkül tünetlistának hat a riportban — pont a nyelvi kör által javított klinikai olvasatot hagyja nyitva a leglátványosabb helyen.",
+    "prePilotRecommend": true,
+    "implementationHint": "i18n-kulcsos rövid magyarázat a facet-megjelenítési pontokon (PlusFacetsPage.tsx, results facet-lista), vagy opcionális description mező a TRITAN_FACETS-ben — a facet-NEVEK a HEXACO-PI-R kánon szerint maradnak."
+   },
+   {
+    "id": "NH-F4PLUS",
+    "title": "Notification panel fókusz-csapda + billentyű-navigáció (F4+)",
+    "status": "missing",
+    "evidence": "src/components/layout/NotificationPanel.tsx:108-114 — csak Escape-zárás van; focus trap és item-szintű nyíl-navigáció nincs. notification-hub-tasks.md F4+ az egyetlen nyitott UI-tétel.",
+    "effort": "S",
+    "risk": "Rosszul implementált focus trap billentyűzet-csapdát okozhat — testing-library-s ellenőrzéssel érdemes fedni (ami a H4-tételt is részben törleszti).",
+    "prePilotRecommend": true,
+    "implementationHint": "NotificationPanel.tsx: fókusz beléptetés nyitáskor, Tab-ciklus az első/utolsó fókuszálható elem között, ArrowUp/Down az itemeken."
+   },
+   {
+    "id": "LR-RVFP",
+    "title": "„Zsoldosok\" (RVFP) minta-név csere — 16-os névkészlet",
+    "status": "missing",
+    "evidence": "src/lib/team-pattern.ts:805 name: \"Zsoldosok\", src/lib/pattern-data.ts:249 alias: \"Zsoldosok\". language-review-2026-08.md: a szöveg-tartalom enyhült, a név-csere brand-döntésként backlogon.",
+    "effort": "S",
+    "risk": "Pilot-csapat a debriefen megkaphatja a „Zsoldosok\" címkét — a kód-csere triviális, a szűk keresztmetszet csak a név-döntés (a doksi tudatosan backlogolta, ezért döntés-függő ajánlás).",
+    "prePilotRecommend": true,
+    "implementationHint": "Név-döntés után team-pattern.ts:805 + pattern-data.ts:249 (+EN pár) átírása; érdemes a 16-os készletet egyben átnézni, ne csak az RVFP-t."
+   },
+   {
+    "id": "RPT-P42W",
+    "title": "Együttműködés-fejezet webes megjelenítés + valós pár-adat",
+    "status": "missing",
+    "evidence": "A collaboration-tartalom csak a PDF-be jut (ProfileTabs.tsx:889 kizárólag PDF-payload; CollabPage.tsx) — webes szekció nincs; a kiválasztás tisztán profil-alapú (workstyle-content.ts:213-243, COLLAB_* készletek), team-stats él-adat nincs bekötve. riport-egyuttmukodes-fejezet-terv.md §5 „későbbi fázisok\".",
+    "effort": "M",
+    "risk": "Ha a webes render és a PDF tartalma külön készletből épülne, a két felület ellentmondhat egymásnak — közös forrásból (plusContent.collaboration) kell renderelni.",
+    "prePilotRecommend": false,
+    "implementationHint": "ProfileTabs új „Csapatban működve\" web-szekció a meglévő plusContent.collaboration-ből; a valós pár-adatos személyre szabás (team-stats élek) külön kör. A /interaction oldal az interaktív igényt már részben fedi."
+   },
+   {
+    "id": "RPT-P34",
+    "title": "Riport P3.4+P2.5: középsávos szöveg-variánsok, Segítőkészség-gazdagítás",
+    "status": "partial",
+    "evidence": "src/lib/questions/tritan.ts:62-76 — sávonként (low/mid/high) egyetlen insight-szöveg, variáns-mechanizmus nincs. riport-javitasi-terv-2026-07.md: P3.4 „elhalasztva… copy-deck után érdemes\", P2.5 [~] részben okafogyott.",
+    "effort": "M",
+    "risk": "Copy-deck döntés nélkül a variánsok hangütése szétszórna — a nemrég lezárt nyelvi kör egységesítését kockáztatná; a riportok közti ismétlődés viszont marad addig.",
+    "prePilotRecommend": false,
+    "implementationHint": "questions-config insight-struktúra bővítése sávonkénti több változattal + determinisztikus választó (pl. userId-seed); a nyelvi kör terminológia-döntéseit követő copy-deck után."
+   },
+   {
+    "id": "RPT-P41",
+    "title": "Riport P4.1: motiváció/demotiváció, kommunikációs stílus, döntéshozatal modulok",
+    "status": "partial",
+    "evidence": "A 4 tervezett modulból csak az ideális környezet él (IdealEnvironmentSection.tsx, PdfEnvironment.tsx); MOTIVATION/COMMUNICATION/DECISION content-készlet a src/lib-ben nincs (grep: 0 találat).",
+    "effort": "L",
+    "risk": "A verdikt „túl sok kategorikus állítás\" problémája duplázódhat, ha a modulok nem a P1-es valószínűségi keretben készülnek — a terv ezért mondta ki a fokozatosságot.",
+    "prePilotRecommend": false,
+    "implementationHint": "profile-content.ts-ben modulonként 12 kulcsos (6 dim × pólus) HU+EN készlet + PDF/web blokk, egyszerre csak egy modult bevezetve — pilot utánra."
+   },
+   {
+    "id": "RPT-P43",
+    "title": "Riport P4.3: valós normacsoport + definiált percentilis",
+    "status": "missing",
+    "evidence": "Az ál-percentilis eltávolítva (src/lib/i18n/landing.ts:26 komment utal a B17-cserére; results/PDF-ben nincs percentilis-badge); norma-tábla/referenciacsoport-infrastruktúra nem létezik a kódbázisban.",
+    "effort": "L",
+    "risk": "Norma-adat nélkül visszahozni pont a riport-terv által azonosított leggyengébb hitelességi pontot állítaná vissza — előfeltétele az éles kitöltés-állomány, amit épp a pilot termel.",
+    "prePilotRecommend": false,
+    "implementationHint": "Pilot + éles adatból norma-tábla és definiált referenciacsoport, utána scoring-oldali percentilis-számítás forrás-jelöléssel."
+   },
+   {
+    "id": "RPT-P23",
+    "title": "Csapatszerep-becslő spread felülvizsgálat (Koordinátor/Megvalósító-húzás)",
+    "status": "missing",
+    "evidence": "src/lib/team-role-estimate.ts:29 estimateTeamRolesFromTritan súlyozása változatlan; riport-javitasi-terv-2026-07.md záró jegyzet: „algoritmus-módosítást validációs adat nélkül nem tettünk… újranézendő valós kérdőíves adatok birtokában\" — a sáv-megjelenítés (P2.3) kommunikációs szinten kezeli.",
+    "effort": "M",
+    "risk": "Validációs adat nélküli hangolás ronthat is — a pilot valódi kérdőíves kitöltései (TeamRoleScore source=questionnaire) adják majd az összevetési alapot.",
+    "prePilotRecommend": false,
+    "implementationHint": "Pilot után: mért kérdőíves top-3-ak vs. becsült top-3-ak összevetése, a súly-mátrix kalibrálása a szisztematikus Koordinátor/Megvalósító-húzás ellen."
+   },
+   {
+    "id": "INT-F5",
+    "title": "Interakció F5: guest/marketing változat a /patterns oldalon",
+    "status": "missing",
+    "evidence": "src/app/(marketing)/patterns/ (PatternExplorer.tsx + page.tsx) — interakció/szimuláció-integráció nincs (grep: 0). Terv szerint tudatosan pilot utánra (szeptember vége) ütemezve, a pilot copy-tanulságaival.",
+    "effort": "M",
+    "risk": "Publikus felületen valós pontszám nélküli archetípus-szimuláció túlígérhet — a terv ezért várja meg a pilot-tapasztalatot.",
+    "prePilotRecommend": false,
+    "implementationHint": "PatternExplorer bővítése két archetípus összeeresztésével (buildArchetypeSimulations prototípus-pontszámokból, „típus-szintű becslés\" jelöléssel) — lead-magnet, szeptember végére."
+   },
+   {
+    "id": "FI1-VIZ",
+    "title": "Dedikált trust-háló vizualizáció",
+    "status": "missing",
+    "evidence": "Nincs háló-gráf komponens a src/components-ben; a hub/izolált-detektálás a lib-ben él (src/lib/trust-network.ts computeTrustNetwork) + TeamReportView „Kapcsolati háló — kiemelések\" blokk. Maga a feature-ideas.md #1 rögzíti: „dedikált háló-vizualizáció még nincs\".",
+    "effort": "M",
+    "risk": "Kis csapatnál (kevés mért él) a gráf többet sugallhat az adatnál; a debrief-igényt a riport-kiemelés (hub + beágyazatlan tag, forrás-badge) már fedi.",
+    "prePilotRecommend": false,
+    "implementationHint": "Csak ha a pilot-debriefeken kevésnek bizonyul a kiemelés-blokk: külön TrustNetworkGraph a computeTrustNetwork éleiből, a DynamicsMap vizuális nyelvén, a visualization-policy guardrailekkel."
+   },
+   {
+    "id": "NH-H3",
+    "title": "Notification route integrációs tesztek (H3)",
+    "status": "missing",
+    "evidence": "tests/integration/ tartalma: acceptance/apply/join/journey/observer — notifications könyvtár nincs. notification-hub-tasks.md H3 nyitott.",
+    "effort": "M",
+    "risk": "Az orchestrator→repository út regressziói (dedupe-kulcs, role-aware fan-out) csak kézi QA-n buknának ki; a magot ugyanakkor 3 unit-tesztfájl már fedi (tests/unit/notifications/).",
+    "prePilotRecommend": false,
+    "implementationHint": "tests/integration/notifications/: observer-completed és campaign-launched út valós test-DB-vel, a meglévő integration-bootstrap infrán."
+   },
+   {
+    "id": "NH-H4",
+    "title": "Notification panel client tesztek (H4)",
+    "status": "missing",
+    "evidence": "tests/client/ tartalma: assessment/career/observer/policy/results — NotificationPanel-teszt nincs. notification-hub-tasks.md H4 nyitott.",
+    "effort": "S",
+    "risk": "Read/dismiss és targetUrl-navigáció regressziói észrevétlenek maradhatnak; olcsó tétel, de nem user-facing — ha az F4+ fókusz-csapda készül, érdemes vele együtt letudni.",
+    "prePilotRecommend": false,
+    "implementationHint": "tests/client/notifications/: panel render, read vs dismiss, link-kattintás, Escape + (F4+ után) fókusz-viselkedés testing-library-vel."
+   },
+   {
+    "id": "TR360-CORE",
+    "title": "Csapatszerep-peer kör magja — a terv KÉSZ (ellenőrizve)",
+    "status": "done",
+    "evidence": "prisma/schema.prisma:706 TeamRoleObservation; api/team-roles/peers + peers/submit route-ok léteznek; campaign-steps-core.ts:11-43 TEAM_ROLE_360 lépés+label+link; results-oldali önkép-vs-csapatkép blokk (TeamRoles.tsx:193+, n≥3 küszöbbel); team-report.ts:152 peerRoles aggregátum; debrief-sablon peer-szekcióval: docs/pilot/riport-ertelmezesi-sablonok.md:64 (4/b).",
+    "effort": "S",
+    "risk": "Kód-oldali teendő nincs; a terv §8-ból egyedül a jogi/consent-átvezetés maradt nyitva (külön tétel: TR360-LEGAL); a nagy-csapatos rater-részminta tudatosan pilot utáni.",
+    "prePilotRecommend": false,
+    "implementationHint": "Nincs teendő — a team-role-360-plan.md „JÓVÁHAGYOTT terv\" státusz-sora frissíthető MEGVALÓSULT-ra."
+   },
+   {
+    "id": "INT-F123",
+    "title": "Interakció F1-F3 + vezető-mód + valós páros mód — KÉSZ (ellenőrizve)",
+    "status": "done",
+    "evidence": "src/lib/interaction-atoms.ts / interaction-engine.ts / interaction-view.ts léteznek; önálló /interaction oldal (page.tsx:96 archetípus-szimuláció, :181 buildPairSimulation valós párra CompareInvite-tal); vezető-mód kapcsoló él (InteractionSection.tsx:184 leaderMode). Changelog 07-29/07-31/08-04: az ütemtervnél előrébb, a profil×profil szint is bekötve.",
+    "effort": "S",
+    "risk": "Nincs teendő ezen a szinten — a maradék a PDF-ízelítő (INT-PDF) és a team view mód (INT-F4).",
+    "prePilotRecommend": false,
+    "implementationHint": "Nincs teendő."
+   },
+   {
+    "id": "NH-G2",
+    "title": "Notification sweep — a „placeholder\" státusz túlhaladott (ellenőrizve)",
+    "status": "done",
+    "evidence": "src/lib/notifications/sweep.ts:172 runNotificationSweep-et a src/app/api/cron/release-steps/route.ts:45 élesben hívja — a notification-hub-tasks.md G2 „interface/placeholder\" leírása elavult.",
+    "effort": "S",
+    "risk": "Nincs teendő; a taskdoc frissítése megelőzi, hogy valaki újra megírja.",
+    "prePilotRecommend": false,
+    "implementationHint": "Doksi-frissítés a notification-hub-tasks.md G2 soránál."
+   },
+   {
+    "id": "CJ-REST",
+    "title": "Candidate journey 1/3/4 (credit-UI karcsúsítás, nav, shell) — KÉSZ (ellenőrizve)",
+    "status": "done",
+    "evidence": "src/app/(app)/hiring/[orgId]/page.tsx:153-155 PlatformPageShell surface=\"team\"; HiringDashboard.tsx:334-360 kompakt kredit-sáv + RequestCreditsButton (api/hiring/request-credits/route.ts:57-63 e-mail az ORG_ADMIN-oknak); navigation/config.ts:197-210 „Jelöltek\" a tervezett dropdown helyett tudatosan sima link (UX-audit #25).",
+    "effort": "S",
+    "risk": "A tervből egyedül a 2. pont (kredit a settings-ben) hiányzik — az a CJ-CREDITS tétel; a vásárlás-UI a billing-parkolással okafogyott.",
+    "prePilotRecommend": false,
+    "implementationHint": "Nincs teendő — a candidate-journey-plan.md „implementáció alatt\" státusza lezárható a CJ-CREDITS döntésével együtt."
+   }
+  ]
+ }
+]

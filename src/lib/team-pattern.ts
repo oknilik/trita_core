@@ -802,10 +802,10 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
   },
 
   RVFP: {
-    name: "Zsoldosok",
+    name: "Szabadúszók",
     subtitle: "Visszafogott · Versengő · Rugalmas · Pragmatikus",
     description:
-      "Független, gyakorlatias egyéniségek, csapatként alig léteznek. A tranzakciós logika dominál.",
+      "Független, gyakorlatias egyéniségek; az elköteleződés inkább a feladathoz, mint a csapathoz kötődik. A tranzakciós logika dominál.",
     strengths: [
       "Erős egyéni teljesítmény és önállóság",
       "Pragmatikus, gyors egyéni döntéshozatal",
