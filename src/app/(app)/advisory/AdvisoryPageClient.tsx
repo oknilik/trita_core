@@ -23,13 +23,12 @@ interface TeamPatternSummary {
 
 interface Props {
   userName: string;
-  orgName: string;
   tier: AdvisoryTier;
   isHu: boolean;
   teams: TeamInfo[];
 }
 
-export function AdvisoryPageClient({ userName, orgName, tier, isHu, teams }: Props) {
+export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
   const [patterns, setPatterns] = useState<TeamPatternSummary[]>([]);
   const [loadingPatterns, setLoadingPatterns] = useState(teams.length > 0);
   const [requestSent, setRequestSent] = useState(false);

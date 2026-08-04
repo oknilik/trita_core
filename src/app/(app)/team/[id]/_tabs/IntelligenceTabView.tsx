@@ -18,7 +18,6 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
     assessedCount,
     totalCount,
     teamDynamicsEdges,
-    hasDynamicsData,
     intelligenceEvidenceBySub,
     intelligencePriorities,
     missingForStableIntelligence,
@@ -209,15 +208,6 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         evidenceBySub={intelligenceEvidenceBySub}
         presentation="blocks"
         isHu={isHu}
-        hasDynamicsData={hasDynamicsData}
-        dynamicsSummary={
-          teamData.activeCampaign
-            ? {
-                participantCount: teamData.activeCampaign.teamParticipantCount,
-                observerDoneCount: teamData.activeCampaign.teamObserverDoneCount,
-              }
-            : undefined
-        }
         noDataCtaHref={`/team/${teamId}?tab=members`}
         noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
         deepDiveHref={`/team/${teamId}?tab=teamRole`}

@@ -5,7 +5,7 @@ import type { TeamTabContext } from "./types";
 
 // ── Profile tab: heatmap + insights ──────────────────────────────────────
 export function ProfileTabView({ ctx }: { ctx: TeamTabContext }) {
-  const { teamId, teamData, locale, isHu } = ctx;
+  const { teamData, isHu } = ctx;
   return (
     <PlatformPageShell
       surface="team"
@@ -15,7 +15,6 @@ export function ProfileTabView({ ctx }: { ctx: TeamTabContext }) {
       <TeamProfileTab
         heatmapRows={teamData.heatmapRows}
         dimConfigs={teamData.dimConfigs}
-        locale={locale}
         isHu={isHu}
       />
     </PlatformPageShell>

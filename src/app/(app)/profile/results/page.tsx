@@ -234,18 +234,10 @@ export default async function ProfileResultsPage({
   if (scores.type !== "likert") redirect(journeySnapshot.resolution.destination);
 
   const testType = latestResult.testType as TestType;
-  // Kérdőív-forma a karrier-modul konfidencia-sávjához: a beadott válaszok
-  // száma dönt (TSFI-S = 60 item; e fölött teljes forma).
-  const assessmentForm: "short" | "full" =
-    ((scores as { questionCount?: number }).questionCount ?? 60) > 80 ? "full" : "short";
   const config = getTestConfig(testType, locale);
   const accessLevel = toProfileLevel(accessLevelRaw);
 
   // ── Draft info ─────────────────────────────────────────────────────────────
-  const draftAnsweredCount = draft
-    ? Object.keys(draft.answers as Record<string, number>).length
-    : 0;
-  const draftTotalQuestions = config.questions.length;
   const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
   const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
   const selfDashboardVm = createSelfDashboardIA({
@@ -546,26 +538,19 @@ export default async function ProfileResultsPage({
           assessmentDate={latestResult.createdAt.toISOString()}
           accessLevel={accessLevel}
           initialTab={initialTab}
-          assessmentResultId={latestResult.id}
           dimensions={dimensions}
           growthFocusItems={growthFocusItems}
-          assessmentForm={assessmentForm}
           hasObserverData={hasObserverData}
           observerCount={completedObservers.length}
           observerFlow={observerFlow}
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
           feedbackSubmitted={feedbackSubmitted}
-          hasDraft={Boolean(draft)}
-          draftAnsweredCount={draftAnsweredCount}
-          draftTotalQuestions={draftTotalQuestions}
-          pendingInvitesCount={pendingInvitesCount}
           personalityType={personalityType}
           heroInsight={heroInsight}
           strengths={strengths}
           watchAreas={watchAreas}
           plusContent={plusContent}
-          careerBackground={profile.careerBackground as CareerBackground | null}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}
           bridgeNextStep={{

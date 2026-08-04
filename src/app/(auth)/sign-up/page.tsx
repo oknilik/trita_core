@@ -2,7 +2,7 @@
 
 import { isConsultingLed } from "@/lib/operating-mode";
 import { Component, Suspense, useEffect, useState } from "react";
-import type { ErrorInfo, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -22,7 +22,7 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-  componentDidCatch(_error: Error, _info: ErrorInfo) {
+  componentDidCatch() {
     try { window.sessionStorage.clear(); } catch { /* ignore */ }
   }
   render() {

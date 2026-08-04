@@ -92,7 +92,6 @@ export default async function AdvisoryPage() {
       <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
         <AdvisoryPageClient
           userName={displayName}
-          orgName={org?.name ?? ""}
           tier={tier}
           isHu={isHu}
           teams={(org?.teams ?? []).map((t) => ({

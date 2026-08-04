@@ -22,10 +22,12 @@ function run(command, args, env) {
 }
 
 async function main() {
-  const integrationEnv = {
-    ...process.env,
-    ...resolveIntegrationTestDbEnv(),
-  };
+  // Ld. test-integration-bootstrap.mjs: a szülő által előkészített env-et
+  // nem oldjuk fel újra.
+  const integrationEnv =
+    process.env.TRITA_INTEGRATION_TEST_DB === "1"
+      ? { ...process.env }
+      : { ...process.env, ...resolveIntegrationTestDbEnv() };
 
   await run("npx", ["tsx", "scripts/reset-test-db.ts"], integrationEnv);
 }

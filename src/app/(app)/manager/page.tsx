@@ -1,7 +1,7 @@
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { auth } from "@clerk/nextjs/server";
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";

@@ -101,7 +101,7 @@ export function AssessmentClient({
       return
     }
     setShowIntro(true)
-  }, [showIntro, testType])
+  }, [showIntro, testType, draftScope])
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
       ? ([25, 50, 75] as const).filter(
@@ -211,6 +211,7 @@ export function AssessmentClient({
     }
   }, [
     clearDraft,
+    draftScope,
     initialDraft?.answers,
     orderedQuestionIds,
     questionIdSet,
@@ -249,7 +250,7 @@ export function AssessmentClient({
 
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
-  }, [draftStorageKey, orderedQuestionIds, questionIdSet, setQuestionIndexSafe, testType, totalQuestions])
+  }, [draftStorageKey, orderedQuestionIds, questionIdSet, setQuestionIndexSafe, testType, totalQuestions, draftScope])
 
   // Save draft to localStorage on every meaningful change.
   useEffect(() => {
@@ -267,7 +268,7 @@ export function AssessmentClient({
       totalQuestions,
       revision: localDraftRevisionRef.current,
     })
-  }, [answers, answeredCount, questionIdSet, questionIndex, testType, totalQuestions])
+  }, [answers, answeredCount, questionIdSet, questionIndex, testType, totalQuestions, draftScope])
 
   // Debounced server save (2 s) — skip for guest users.
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -411,7 +412,7 @@ export function AssessmentClient({
       log.warn({ event: "assessment.submit_failed", err: error }, "Submit failed")
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode])
+  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode, draftScope])
 
   const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
     if (autoAdvanceTimerRef.current) {

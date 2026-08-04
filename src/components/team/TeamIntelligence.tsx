@@ -46,11 +46,6 @@ interface TeamIntelligenceProps {
   evidenceBySub?: Partial<Record<SubTab, TeamIntelligenceEvidence>>;
   presentation?: "tabs" | "blocks";
   isHu?: boolean;
-  hasDynamicsData?: boolean;
-  dynamicsSummary?: {
-    participantCount: number;
-    observerDoneCount: number;
-  };
   noDataCtaHref?: string;
   noDataCtaLabel?: string;
   deepDiveHref?: string;
@@ -140,8 +135,6 @@ export function TeamIntelligence({
   edges,
   evidenceBySub,
   isHu = true,
-  hasDynamicsData = false,
-  dynamicsSummary,
   noDataCtaHref,
   noDataCtaLabel,
   deepDiveHref,

@@ -69,8 +69,7 @@ export const TENSION_PAIRS: TensionPairDef[] = [
  * - H is not available in Big Five (will be undefined → H-pairs are skipped)
  */
 function normalizeToCodes(
-  dimensions: Record<string, number>,
-  testType: string
+  dimensions: Record<string, number>
 ): Record<string, number> {
   return dimensions;
 }
@@ -94,9 +93,9 @@ function getTopSoloDims(
 
 export function runProfileEngine(
   dimensions: Record<string, number>,
-  testType: string
+  _testType: string
 ): ProfileEngineOutput {
-  const normalized = normalizeToCodes(dimensions, testType);
+  const normalized = normalizeToCodes(dimensions);
 
   const categories: Record<string, ProfileCategory> = {};
   for (const [code, score] of Object.entries(normalized)) {

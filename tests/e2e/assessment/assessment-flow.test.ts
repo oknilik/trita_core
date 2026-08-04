@@ -1,7 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const DRAFT_KEY = "trita_draft_TRITAN";
-const TOTAL_QUESTIONS = 100;
 const NEXT_BUTTON_LABEL = /^(next|tovább)\s*→$/i;
 
 function buildAnswers(answeredUntil: number): Record<number, number> {

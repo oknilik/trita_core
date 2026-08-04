@@ -36,6 +36,22 @@ const eslintConfig = defineConfig([
       "no-console": "error",
     },
   },
+  // Aláhúzás-konvenció (2026-08-04, lint-nullázás): a `_`-prefixű paraméter
+  // szándékosan nem használt (interfész-konform szignatúra, pl. a
+  // template-objektumok greeting(_name) tagjai). Csak paraméterekre és
+  // catch-változókra vonatkozik — a sima lokálisokra nem.
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          args: "after-used",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

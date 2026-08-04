@@ -56,10 +56,6 @@ function getPosition(value: string): number {
   return 50;
 }
 
-function getMarkerColor(pos: number): string {
-  return pos >= 65 ? "bg-[var(--color-action-primary-bg)]" : pos <= 35 ? "bg-[var(--color-text-muted)]" : "bg-[var(--color-accent-primary)]";
-}
-
 function getDescription(value: string): string {
   const dashIdx = value.indexOf(" – ");
   const dashIdx2 = value.indexOf(" — ");
@@ -85,7 +81,6 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
         {items.map((item) => {
           const poles = POLES[item.label] ?? { low: "", high: "" };
           const pos = getPosition(item.value);
-          const markerColor = getMarkerColor(pos);
           const desc = getDescription(item.value);
 
           return (

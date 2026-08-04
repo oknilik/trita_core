@@ -11,14 +11,12 @@ import type { TeamPageData } from "@/lib/team-stats";
 interface TeamProfileTabProps {
   heatmapRows: TeamPageData["heatmapRows"];
   dimConfigs: TeamPageData["dimConfigs"];
-  locale: string;
   isHu: boolean;
 }
 
 export function TeamProfileTab({
   heatmapRows,
   dimConfigs,
-  locale,
   isHu,
 }: TeamProfileTabProps) {
   const loc: Locale = isHu ? "hu" : "en";

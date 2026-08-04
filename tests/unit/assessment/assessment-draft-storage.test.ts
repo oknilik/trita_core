@@ -85,7 +85,7 @@ test("overwrite works for same or newer revision", () => {
 });
 
 test("version mismatch fallback keeps recoverable payload", () => {
-  const { localStorage, restore } = installBrowserLocalStorageMock({
+  const { restore } = installBrowserLocalStorageMock({
     [DRAFT_KEY]: JSON.stringify({
       version: 999,
       answers: { 1: 3, 2: 5 },

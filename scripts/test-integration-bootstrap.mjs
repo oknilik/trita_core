@@ -22,10 +22,13 @@ function run(command, args, env) {
 }
 
 async function main() {
-  const integrationEnv = {
-    ...process.env,
-    ...resolveIntegrationTestDbEnv(),
-  };
+  // Ha a szülő (run-tests.mjs) már feloldotta a teszt-DB env-et, ne oldjuk
+  // fel újra: a szülő DATABASE_URL-t is a teszt-DB-re állítja, így az
+  // ismételt feloldás a saját „TEST ≠ DEV DB" őrfeltételén bukna el.
+  const integrationEnv =
+    process.env.TRITA_INTEGRATION_TEST_DB === "1"
+      ? { ...process.env }
+      : { ...process.env, ...resolveIntegrationTestDbEnv() };
 
   await run("npx", ["prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"], integrationEnv);
   await run("npx", ["tsx", "scripts/reset-test-db.ts"], integrationEnv);

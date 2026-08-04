@@ -1,7 +1,7 @@
 "use client";
 
 import { Component, Suspense, useEffect, useState } from "react";
-import type { ErrorInfo, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -21,7 +21,7 @@ class SignInErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-  componentDidCatch(_error: Error, _info: ErrorInfo) {
+  componentDidCatch() {
     try { window.sessionStorage.clear(); } catch { /* ignore */ }
   }
   render() {

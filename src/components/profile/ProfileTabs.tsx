@@ -24,9 +24,7 @@ import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
-import { CareerCompass } from "@/components/results/CareerCompass";
 import type { CareerResultView } from "@/lib/career/service";
-import { type CareerBackground } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
 import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
@@ -115,7 +113,6 @@ export interface ProfileTabsProps {
   assessmentDate: string;
   accessLevel: ProfileLevel;
   initialTab: TabId;
-  assessmentResultId: string;
   dimensions: SerializedDimension[];
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
@@ -135,10 +132,6 @@ export interface ProfileTabsProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   feedbackSubmitted: boolean;
-  hasDraft: boolean;
-  draftAnsweredCount: number;
-  draftTotalQuestions: number;
-  pendingInvitesCount: number;
   /** Hero-specific props (optional — defaults provided) */
   personalityType?: string;
   heroInsight?: string;
@@ -174,11 +167,9 @@ export interface ProfileTabsProps {
   /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
-  careerBackground?: CareerBackground | null;
   /** Szerver-oldalon számolt karrier-illeszkedés (motor v2) */
   careerResult?: CareerResultView | null;
   /** Kérdőív-forma a karrier-modul konfidencia-sávjához. */
-  assessmentForm?: "short" | "full";
   /** Kitöltött csapatszerep-kérdőív eredménye (mért) — ha van. */
   teamRoleMeasuredScores?: Record<string, number> | null;
   /** Csapattársi szerep-visszajelzés aggregátuma (kampányból). */
@@ -519,7 +510,6 @@ export function ProfileTabs({
   assessmentDate,
   accessLevel,
   initialTab,
-  assessmentResultId,
   dimensions,
   growthFocusItems,
   hasObserverData,
@@ -528,10 +518,6 @@ export function ProfileTabs({
   sentInvitations,
   receivedInvitations,
   feedbackSubmitted,
-  hasDraft,
-  draftAnsweredCount,
-  draftTotalQuestions,
-  pendingInvitesCount,
   personalityType,
   heroInsight,
   strengths,
@@ -541,9 +527,7 @@ export function ProfileTabs({
   careerModuleHidden = false,
   experienceHints,
   experienceHintDestination,
-  careerBackground = null,
   careerResult = null,
-  assessmentForm = "short",
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
 }: ProfileTabsProps) {
