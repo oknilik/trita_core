@@ -17,7 +17,8 @@ function ModeSwitcherInner() {
   const switchTo = (m: SiteMode) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("mode", m);
-    router.push(`${pathname}?${params.toString()}`, { scroll: true });
+    // UX-A15: replace, ne push — 5 váltás után ne kelljen 5× vissza-gombozni.
+    router.replace(`${pathname}?${params.toString()}`, { scroll: true });
   };
 
   return (

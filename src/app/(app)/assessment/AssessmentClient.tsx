@@ -112,8 +112,29 @@ export function AssessmentClient({
 
   const answeredCount = Object.keys(answers).length
   const isFullyCompleted = answeredCount >= totalQuestions
+
+  // UX-A13: kész-de-nem-regisztrált vendég a "Folytasd" CTA-ról ne a 60.
+  // kérdésre essen vissza, hanem az eredmény-ízelítőjére. Csak a BETÖLTÉSKOR
+  // már teljes draftra fut — élő kitöltés közben (amikor az utolsó válasz
+  // most érkezik) a normál "Kiértékelés" út marad.
+  const wasCompleteAtMount = useRef(
+    guestMode &&
+      !!initialDraft?.answers &&
+      Object.keys(initialDraft.answers).length >= totalQuestions,
+  )
+  useEffect(() => {
+    // ?review=1: a záróoldal "Válaszok átnézése" linkje — ilyenkor maradunk.
+    const reviewing = window.location.search.includes('review=1')
+    if (wasCompleteAtMount.current && !reviewing) {
+      router.replace('/try/complete')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const remainingQuestions = Math.max(totalQuestions - answeredCount, 0)
-  const etaMinutes = Math.max(1, Math.ceil((remainingQuestions * 15) / 60))
+  // UX-A4: a landing és a teszt UGYANABBÓL a konstansból becsül (9 mp/item) —
+  // a korábbi 15 mp/item itt „~15 perc"-et mutatott az 1. kérdésnél a ~10 perces
+  // ígéret után.
+  const etaMinutes = estimateAssessmentMinutes(remainingQuestions)
   const activeQuestion = questions[questionIndex] ?? null
   const canGoPrev = questionIndex > 0
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined
@@ -330,7 +351,10 @@ export function AssessmentClient({
     const currentAnswers = latestAnswersRef.current
     const firstUnanswered = questions.findIndex((q) => currentAnswers[q.id] === undefined)
     if (firstUnanswered !== -1) {
+      // UX-A9: ne néma teleport legyen — jelezzük, MIÉRT ugrottunk ide.
       setQuestionIndexSafe(firstUnanswered)
+      highlightMissing(questions[firstUnanswered].id)
+      showToast(t('assessment.missingAnswerToast', locale), 'error')
       return
     }
     if (isSubmittingRef.current) return
@@ -347,18 +371,11 @@ export function AssessmentClient({
 
     try {
       if (guestMode) {
-        // Guest mode: skip API submit, keep localStorage draft, redirect to registration gate
+        // Guest mode: skip API submit, keep localStorage draft, redirect to registration gate.
+        // UX-A6: nincs kamu várakozás — egy rövid (~700 ms) ramp, aztán irány az eredmény.
         clearInterval(progressInterval)
-        const rampInterval = setInterval(() => {
-          setEvaluationProgress((prev) => {
-            if (prev >= 100) { clearInterval(rampInterval); return 100 }
-            return Math.min(prev + Math.random() * 4 + 2, 100)
-          })
-        }, 200)
-        await new Promise((resolve) => setTimeout(resolve, 2500))
-        clearInterval(rampInterval)
         setEvaluationProgress(100)
-        await new Promise((resolve) => setTimeout(resolve, 400))
+        await new Promise((resolve) => setTimeout(resolve, 700))
         router.push('/try/complete')
         return
       }
@@ -381,17 +398,10 @@ export function AssessmentClient({
       clearInterval(progressInterval)
       clearAssessmentDraftFromStorage(testType, draftScope)
 
-      const rampInterval = setInterval(() => {
-        setEvaluationProgress((prev) => {
-          if (prev >= 100) { clearInterval(rampInterval); return 100 }
-          return Math.min(prev + Math.random() * 3 + 1, 100)
-        })
-      }, 200)
-
-      await new Promise((resolve) => setTimeout(resolve, 4000))
-      clearInterval(rampInterval)
+      // UX-A6: az API már válaszolt — a korábbi 4,6 mp kamu „kiértékelés"
+      // helyett rövid lezáró ramp, és megyünk tovább.
       setEvaluationProgress(100)
-      await new Promise((resolve) => setTimeout(resolve, 600))
+      await new Promise((resolve) => setTimeout(resolve, 700))
       router.push('/assessment/team-roles')
     } catch (error) {
       clearInterval(progressInterval)
@@ -401,7 +411,7 @@ export function AssessmentClient({
       log.warn({ event: "assessment.submit_failed", err: error }, "Submit failed")
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [questions, setQuestionIndexSafe, testType, locale, router, showToast, guestMode])
+  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode])
 
   const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
     if (autoAdvanceTimerRef.current) {
@@ -517,9 +527,14 @@ export function AssessmentClient({
     return <EvaluatingScreen progress={evaluationProgress} />
   }
 
-  // Still resolving localStorage — show blank screen to avoid intro flash
+  // Still resolving localStorage — UX-A17: brand-spinner az üres képernyő
+  // helyett (lassú eszközön / tiltott storage-nál törött oldalnak tűnt).
   if (showIntro === null) {
-    return <div className="min-h-dvh bg-[var(--color-surface-canvas)]" />;
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--color-surface-canvas)]">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent-primary)] border-t-transparent" />
+      </div>
+    );
   }
 
   if (showIntro) {
@@ -632,8 +647,11 @@ export function AssessmentClient({
           <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
         <div className="flex items-center gap-3">
+          {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
           <span className="text-micro text-[var(--color-action-primary-bg)]">
-            ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
+            ✓ {guestMode
+              ? t('assessment.savedStateGuest', locale)
+              : isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
           </span>
           <a
             href={guestMode ? "/" : "/profile/results"}
@@ -770,6 +788,11 @@ export function AssessmentClient({
         <p className="mt-6 text-xs italic text-[var(--color-text-muted)]">
           {t('assessment.helpLikert', locale)}
         </p>
+        {/* UX-A12: a billentyű-gyorsítók léteztek, de sehol nem voltak
+            elmagyarázva — asztali nézetben megmutatjuk. */}
+        <p className="mt-1 hidden text-xs text-[var(--color-text-muted)] md:block">
+          {t('assessment.keyboardHint', locale)}
+        </p>
       </div>
 
       {/* ═══ FOOTER BAR ═══ */}
@@ -804,13 +827,15 @@ export function AssessmentClient({
           <span className="text-[11px] text-[var(--color-text-muted)]">{t('assessment.autoAdvance', locale)}</span>
         </label>
 
+        {/* UX-A7: az autosave fire-and-forget — a fő gombot nem tiltjuk le
+            miatta (lassú neten random kiszürkült magyarázat nélkül). */}
         {!showEvaluateButton ? (
           <button
             type="button"
             onClick={() => void handleNextStep()}
-            disabled={!canProceed || isSavingDraft}
+            disabled={!canProceed}
             className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
-              canProceed && !isSavingDraft
+              canProceed
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}

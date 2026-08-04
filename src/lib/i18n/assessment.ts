@@ -74,6 +74,11 @@ export const assessmentTranslations = {
     etaRemaining: { hu: "~{minutes} perc van hátra", en: "~{minutes} min left" },
     questionProgress: { hu: "Kérdés {current} / {total}", en: "Question {current} / {total}" },
     savedState: { hu: "Mentve", en: "Saved" },
+    savedStateGuest: { hu: "Mentve ebben a böngészőben", en: "Saved in this browser" },
+    missingAnswerToast: {
+      hu: "Egy kérdés még hiányzik — idehoztunk.",
+      en: "One question is still missing — we brought you here.",
+    },
     checkpointReached: { hu: "{percent}% kész — szuper tempó!", en: "{percent}% done - great pace!" },
     journeyMilestone: { hu: "Mérföldkő", en: "Milestone" },
     journeyMilestone25: { hu: "Jó kezdés — már negyedénél tartasz!", en: "Good start — you're a quarter through!" },
@@ -246,6 +251,14 @@ export const assessmentTranslations = {
       en: "Your result is saved in this browser — after sign-up it moves to your account automatically.",
     },
     teaserTopDims: { hu: "Legerősebb dimenzióid", en: "Your strongest dimensions" },
+    // UX-A14: félkész draftnál nem ünneplünk — folytatásra hívunk.
+    partialTitle: { hu: "Majdnem kész!", en: "Almost there!" },
+    partialBody: {
+      hu: "Néhány kérdés még hátravan — folytasd ott, ahol abbahagytad, és utána azonnal megkapod az eredmény-ízelítőt.",
+      en: "A few questions remain — pick up where you left off, and you'll get your result preview right after.",
+    },
+    partialCta: { hu: "Folytatom a tesztet", en: "Continue the test" },
+    reviewAnswers: { hu: "Válaszok átnézése", en: "Review my answers" },
   },
 
   // ── Assessment layers (/assessment-layers) ────────────────────────────

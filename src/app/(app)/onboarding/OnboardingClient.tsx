@@ -203,7 +203,8 @@ export function OnboardingClient() {
     t("onboarding.step1Label", locale),
     t("onboarding.step2Label", locale),
   ];
-  const progress = ((step - 1) / 1) * 100;
+  // UX-A16: a folyamatjelző ne mutasson 100%-ot a befejezetlen utolsó lépésen.
+  const progress = (step / 2) * 100;
 
   // ── Render ───────────────────────────────────────────────────────────────
 
@@ -463,9 +464,12 @@ export function OnboardingClient() {
               </label>
 
               <div className="flex gap-3">
+                {/* UX-A1: a "Vissza" tényleg az 1. lépésre vigyen (setStep(2)
+                    a 2. lépésen holt gomb volt — elütést csak újratöltéssel
+                    lehetett javítani). */}
                 <button
                   type="button"
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(1)}
                   className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
                   ← {t("actions.back", locale)}

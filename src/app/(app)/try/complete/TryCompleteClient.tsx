@@ -112,16 +112,34 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
           <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
 
-        {/* Celebration */}
-        <div className="mb-6">
-          <p className="mb-1 text-3xl">🎉</p>
-          <h1 className="font-fraunces text-2xl text-ink">
-            {t("tryComplete.doneTitle", locale)}
-          </h1>
-          <p className="mt-2 text-body leading-relaxed text-ink-body">
-            {t("tryComplete.doneBody", locale)}
-          </p>
-        </div>
+        {/* UX-A14: ünneplés csak TELJES kitöltésnél — félkész draftnál
+            folytatásra hívunk, nem regisztrációra "semmiért". */}
+        {teaser ? (
+          <div className="mb-6">
+            <p className="mb-1 text-3xl">🎉</p>
+            <h1 className="font-fraunces text-2xl text-ink">
+              {t("tryComplete.doneTitle", locale)}
+            </h1>
+            <p className="mt-2 text-body leading-relaxed text-ink-body">
+              {t("tryComplete.doneBody", locale)}
+            </p>
+          </div>
+        ) : (
+          <div className="mb-6">
+            <h1 className="font-fraunces text-2xl text-ink">
+              {t("tryComplete.partialTitle", locale)}
+            </h1>
+            <p className="mt-2 text-body leading-relaxed text-ink-body">
+              {t("tryComplete.partialBody", locale)}
+            </p>
+            <Link
+              href="/try"
+              className="mt-4 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-white shadow-md transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            >
+              {t("tryComplete.partialCta", locale)}
+            </Link>
+          </div>
+        )}
 
         {/* Azonnali eredmény-ízelítő — az érték egy szelete a regisztrációs
             fal ELŐTT; a teljes riport a claim után nyílik meg. */}
@@ -139,27 +157,39 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
           </div>
         ) : null}
 
-        {/* CTA buttons */}
-        <div className="flex flex-col gap-3">
-          <Link
-            href="/sign-up?redirect_url=/try/claim"
-            className="flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-white shadow-md shadow-[var(--color-accent-primary)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
-          >
-            {t("tryComplete.registerCta", locale)}
-          </Link>
-
-          <Link
-            href="/sign-in?redirect_url=/try/claim"
-            className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
-          >
-            {t("tryComplete.loginCta", locale)}
-          </Link>
-        </div>
-
+        {/* CTA buttons — csak teljes kitöltésnél: félkész drafttal a claim
+            úgyis elutasítaná a hiányos válaszkészletet. */}
         {teaser ? (
-          <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
-            {t("tryComplete.teaserBrowserNote", locale)}
-          </p>
+          <>
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/sign-up?redirect_url=/try/claim"
+                className="flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-white shadow-md shadow-[var(--color-accent-primary)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
+              >
+                {t("tryComplete.registerCta", locale)}
+              </Link>
+
+              <Link
+                href="/sign-in?redirect_url=/try/claim"
+                className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
+              >
+                {t("tryComplete.loginCta", locale)}
+              </Link>
+            </div>
+
+            <p className="mt-3 text-center">
+              <Link
+                href="/try?review=1"
+                className="text-xs text-[var(--color-text-muted)] underline underline-offset-2 hover:text-[var(--color-text-secondary)]"
+              >
+                {t("tryComplete.reviewAnswers", locale)}
+              </Link>
+            </p>
+
+            <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
+              {t("tryComplete.teaserBrowserNote", locale)}
+            </p>
+          </>
         ) : null}
 
         {/* Privacy note */}
