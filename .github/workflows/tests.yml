@@ -1,0 +1,319 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ui-audit:
+    name: UI Audit Guardrail
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      UI_AUDIT_ENFORCEMENT: ${{ vars.UI_AUDIT_ENFORCEMENT || 'warn' }}
+      UI_DUPLICATE_RECIPE_THRESHOLD: ${{ vars.UI_DUPLICATE_RECIPE_THRESHOLD }}
+      UI_PANEL_RECIPE_THRESHOLD: ${{ vars.UI_PANEL_RECIPE_THRESHOLD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run UI audit guardrail
+        run: >
+          node scripts/ui-audit-guardrail.mjs
+          --mode "${{ env.UI_AUDIT_ENFORCEMENT }}"
+          --base "${{ github.event.pull_request.base.sha }}"
+          --head "${{ github.event.pull_request.head.sha }}"
+          --artifacts-dir "artifacts/ui-audit"
+          --duplicate-threshold "${{ env.UI_DUPLICATE_RECIPE_THRESHOLD }}"
+          --panel-threshold "${{ env.UI_PANEL_RECIPE_THRESHOLD }}"
+
+      - name: Upload UI audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-audit
+          path: artifacts/ui-audit/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+  quality-gate:
+    name: Quality Gate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enforce no-test-no-merge gate
+        run: >
+          node scripts/quality-gate-check.mjs
+          --base "${{ github.event.pull_request.base.sha }}"
+          --head "${{ github.event.pull_request.head.sha }}"
+
+  unit:
+    name: Unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          pnpm -s test:unit 2>&1 | tee artifacts/unit.log
+
+      - name: Upload unit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-logs
+          path: artifacts/unit.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload coverage report (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-coverage
+          path: coverage/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+  integration:
+    name: Integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: trita_integration_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d trita_integration_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/trita_integration_test
+      TEST_DIRECT_URL: postgresql://postgres:postgres@127.0.0.1:5432/trita_integration_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run integration tests
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          pnpm -s test:integration 2>&1 | tee artifacts/integration.log
+
+      - name: Upload integration logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-logs
+          path: artifacts/integration.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload coverage report (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-coverage
+          path: coverage/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+  client:
+    name: Client
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run client tests
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          pnpm -s test:client 2>&1 | tee artifacts/client.log
+
+      - name: Upload client logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-logs
+          path: artifacts/client.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload coverage report (if present)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: coverage/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: trita_integration_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d trita_integration_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/trita_integration_test
+      TEST_DIRECT_URL: postgresql://postgres:postgres@127.0.0.1:5432/trita_integration_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run e2e tests
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          pnpm -s test:e2e 2>&1 | tee artifacts/e2e.log
+
+      - name: Upload e2e logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs
+          path: artifacts/e2e.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload e2e screenshots/videos/traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: |
+            test-results/**
+            screenshots/**
+            videos/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-playwright-report
+          path: playwright-report/**
+          if-no-files-found: ignore
+          retention-days: 14

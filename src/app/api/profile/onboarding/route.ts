@@ -1,69 +1,34 @@
-import { auth } from "@clerk/nextjs/server";
+import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import {
-  COMPANY_SIZE_VALUES,
-  OCCUPATION_STATUS_VALUES,
-  STUDY_LEVEL_VALUES,
-  UNEMPLOYMENT_DURATION_VALUES,
-  WORK_SCHEDULE_VALUES,
-  requiresStudyLevel,
-  requiresWorkFields,
-} from "@/lib/onboarding-options";
+import { getSelfAccessLevel } from "@/lib/access";
+import { getActiveOrgMembership } from "@/lib/org-context";
+import { getServerAuth } from "@/lib/auth-server";
+import { INDUSTRIES } from "@/lib/industry-fit";
 
-// Dynamic validation based on current year
 const currentYear = new Date().getFullYear();
 
 const onboardingSchema = z.object({
-  username: z.string().min(2).max(12),
+  username: z.string().min(2).max(20),
   birthYear: z.number().int().min(currentYear - 100).max(currentYear - 16),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
-  education: z.enum([
-    "primary",
-    "secondary",
-    "bachelor",
-    "master",
-    "doctorate",
-    "other",
-  ]),
-  occupationStatus: z.enum(OCCUPATION_STATUS_VALUES),
-  workSchedule: z.enum(WORK_SCHEDULE_VALUES).optional(),
-  companySize: z.enum(COMPANY_SIZE_VALUES).optional(),
-  studyLevel: z.enum(STUDY_LEVEL_VALUES).optional(),
-  unemploymentDuration: z.enum(UNEMPLOYMENT_DURATION_VALUES).optional(),
-  country: z.string().min(1).max(100),
+  country: z.string().min(1).max(100).optional(),
   consentedAt: z.string().datetime().optional(),
-}).superRefine((data, ctx) => {
-  if (requiresWorkFields(data.occupationStatus)) {
-    if (!data.workSchedule) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["workSchedule"],
-        message: "Required when user is working",
-      });
-    }
-    if (!data.companySize) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["companySize"],
-        message: "Required when user is working",
-      });
-    }
-  }
-
-  if (requiresStudyLevel(data.occupationStatus) && !data.studyLevel) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["studyLevel"],
-      message: "Required when user is studying",
-    });
-  }
-
+  // Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez, a
+  // careerBackground JSON-ba merge-ölve (kulcsok = career-background route)
+  eduLevel: z.enum(["primary", "secondary", "vocational", "higher"]).optional(),
+  eduField: z
+    .enum([
+      "tech_engineering", "economics", "health", "humanities",
+      "natural_science", "legal", "arts", "pedagogy", "trade", "none",
+    ])
+    .optional(),
+  currentIndustry: z.string().max(50).optional(),
 });
 
 export async function GET() {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -71,24 +36,45 @@ export async function GET() {
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: {
+      id: true,
+      email: true,
       username: true,
       birthYear: true,
       gender: true,
-      education: true,
-      occupationStatus: true,
-      workSchedule: true,
-      companySize: true,
-      studyLevel: true,
-      unemploymentDuration: true,
       country: true,
+      role: true,
+      orgMemberships: {
+        where: { leftAt: null },
+        orderBy: { joinedAt: "desc" },
+        select: {
+          role: true,
+          org: { select: { id: true, name: true } },
+        },
+      },
+      teamMemberships: {
+        select: {
+          team: { select: { id: true, name: true } },
+        },
+      },
     },
   });
 
-  return NextResponse.json(profile ?? {});
+  if (!profile) return NextResponse.json({});
+
+  const accessLevel = await getSelfAccessLevel(profile.id);
+  const activeMembership = await getActiveOrgMembership(profile.id);
+  const activeOrgMembership =
+    profile.orgMemberships.find((m) => m.org.id === activeMembership?.orgId) ??
+    profile.orgMemberships[0] ??
+    null;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _id, ...rest } = profile;
+
+  return NextResponse.json({ ...rest, activeOrgMembership, accessLevel });
 }
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -102,31 +88,38 @@ export async function POST(req: Request) {
     );
   }
 
+  // Karrier-háttér merge (opcionális mezők) — a meglévő careerBackground
+  // JSON kulcsait megőrizzük, csak a most kapottakat írjuk felül.
+  const { eduLevel, eduField, currentIndustry } = parsed.data;
+  let careerBackgroundUpdate: Record<string, unknown> | undefined;
+  if (eduLevel || eduField || currentIndustry) {
+    if (currentIndustry && !INDUSTRIES.some((i) => i.key === currentIndustry)) {
+      return NextResponse.json({ error: "INVALID_INDUSTRY" }, { status: 400 });
+    }
+    const existing = await prisma.userProfile.findFirst({
+      where: { clerkId: userId },
+      select: { careerBackground: true },
+    });
+    careerBackgroundUpdate = {
+      ...((existing?.careerBackground as Record<string, unknown> | null) ?? {}),
+      ...(eduLevel && { eduLevel }),
+      ...(eduField && { eduField }),
+      ...(currentIndustry && { currentIndustry }),
+    };
+  }
+
   await prisma.userProfile.updateMany({
     where: { clerkId: userId },
     data: {
       username: parsed.data.username,
       birthYear: parsed.data.birthYear,
       gender: parsed.data.gender,
-      education: parsed.data.education,
-      occupationStatus: parsed.data.occupationStatus,
-      workSchedule: requiresWorkFields(parsed.data.occupationStatus)
-        ? parsed.data.workSchedule
-        : null,
-      companySize: requiresWorkFields(parsed.data.occupationStatus)
-        ? parsed.data.companySize
-        : null,
-      studyLevel: requiresStudyLevel(parsed.data.occupationStatus)
-        ? parsed.data.studyLevel
-        : null,
-      unemploymentDuration: parsed.data.occupationStatus === "unemployed"
-        ? parsed.data.unemploymentDuration
-        : null,
-      country: parsed.data.country,
+      ...(parsed.data.country && { country: parsed.data.country }),
       ...(parsed.data.consentedAt && {
         consentedAt: new Date(parsed.data.consentedAt),
         onboardedAt: new Date(),
       }),
+      ...(careerBackgroundUpdate && { careerBackground: careerBackgroundUpdate as Prisma.InputJsonValue }),
     },
   });
 

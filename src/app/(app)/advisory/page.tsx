@@ -1,0 +1,107 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+import { hasAccess } from "@/lib/subscription";
+import { getServerLocale } from "@/lib/i18n-server";
+import { getActiveOrgMembership } from "@/lib/org-context";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { AdvisoryPageClient, type AdvisoryTier } from "./AdvisoryPageClient";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: "Advisory | trita", robots: { index: false } };
+}
+
+export default async function AdvisoryPage() {
+  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+
+  if (!userId) redirect("/sign-in");
+
+  const profile = await prisma.userProfile.findUnique({
+    where: { clerkId: userId },
+    select: { id: true, username: true, email: true },
+  });
+  if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
+
+  const activeMembership = await getActiveOrgMembership(profile.id);
+  const membership = activeMembership
+    ? await prisma.organizationMember.findUnique({
+        where: {
+          orgId_userId: {
+            orgId: activeMembership.orgId,
+            userId: profile.id,
+          },
+        },
+        select: {
+          role: true,
+          org: {
+            select: {
+              id: true,
+              name: true,
+              subscription: {
+                select: {
+                  id: true,
+                  orgId: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  planType: true,
+                  currentPeriodStart: true,
+                  status: true,
+                  trialEndsAt: true,
+                  currentPeriodEnd: true,
+                  cancelAtPeriodEnd: true,
+                  candidateCredits: true,
+                },
+              },
+              teams: {
+                where: {
+                  members: { some: { userId: profile.id } },
+                },
+                select: {
+                  id: true,
+                  name: true,
+                  _count: { select: { members: true } },
+                },
+              },
+            },
+          },
+        },
+      })
+    : null;
+
+  // 2026-07-31: a csomagok (Essentials / Advisory / Scale) megszűntek, ezért
+  // nincs mit leképezni. A tanácsadói konzultáció a PROGRAM része: aktív
+  // előfizetésnél elérhető, próbaidőben még nem, előfizetés nélkül nem.
+  let tier: AdvisoryTier = "none";
+  if (membership) {
+    const sub = membership.org.subscription;
+    if (!sub) tier = "none";
+    else if (sub.status === "trialing") tier = "trial";
+    else if (hasAccess(sub)) tier = "advisory";
+    else tier = "none";
+  }
+
+  const isHu = locale !== "en";
+  const displayName = profile.username ?? profile.email ?? "";
+  const org = membership?.org;
+
+  return (
+    <div className="min-h-dvh bg-cream">
+      <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
+        <AdvisoryPageClient
+          userName={displayName}
+          orgName={org?.name ?? ""}
+          tier={tier}
+          isHu={isHu}
+          teams={(org?.teams ?? []).map((t) => ({
+            id: t.id,
+            name: t.name,
+            memberCount: t._count.members,
+          }))}
+        />
+      </main>
+    </div>
+  );
+}

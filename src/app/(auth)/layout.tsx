@@ -1,4 +1,6 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 export const metadata: Metadata = {
   robots: {
@@ -18,5 +20,15 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  // Clerk itt (nem a root layoutban) — a sign-in/up/sso + a /sign-out route
+  // ezt a providert kapja; a marketing-fa így Clerk-mentes marad.
+  return (
+    <ClerkProvider
+      signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
+      signUpFallbackRedirectUrl="/onboarding"
+    >
+      {children}
+    </ClerkProvider>
+  );
 }
+

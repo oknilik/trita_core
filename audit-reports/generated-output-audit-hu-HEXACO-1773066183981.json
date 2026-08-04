@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-03-09T14:23:03.980Z",
+  "filters": {
+    "locale": "hu",
+    "testType": "HEXACO",
+    "limit": 5,
+    "minScore": 78,
+    "prefix": "hu:HEXACO:"
+  },
+  "summary": {
+    "scanned": 5,
+    "failed": 0,
+    "pass": 5,
+    "passRatePct": 100,
+    "averageScore": 78,
+    "averageBreakdown": {
+      "structure": 22,
+      "specificity": 15,
+      "action": 11,
+      "naturalness": 30
+    }
+  },
+  "topFailures": [],
+  "allFailures": []
+}

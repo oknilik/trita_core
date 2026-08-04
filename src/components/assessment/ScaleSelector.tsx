@@ -32,8 +32,8 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
               font-semibold transition-all
               ${
                 value === scale
-                  ? 'border-indigo-600 bg-indigo-600 text-white shadow-lg'
-                  : 'border-gray-100 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50'
+                  ? 'border-sage bg-sage text-white shadow-lg'
+                  : 'border-sand bg-white text-ink-body hover:border-sage-ring hover:bg-sage-soft'
               }
             `}
             whileHover={{ scale: 1.02 }}
@@ -51,7 +51,7 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
             {value === scale && (
               <motion.div
                 layoutId="selected"
-                className="absolute inset-0 rounded-lg border-2 border-indigo-600"
+                className="absolute inset-0 rounded-lg border-2 border-sage"
                 initial={false}
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
@@ -65,14 +65,14 @@ export function ScaleSelector({ value, onChange }: ScaleSelectorProps) {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center text-sm text-gray-600 md:hidden"
+          className="text-center text-sm text-ink-body md:hidden"
         >
           {labels[value - 1]}
         </motion.div>
       )}
 
       {/* Scale labels (desktop) */}
-      <div className="hidden items-center justify-between text-xs text-gray-500 md:flex">
+      <div className="hidden items-center justify-between text-xs text-muted md:flex">
         <span>{t("assessment.scale1", locale)}</span>
         <span>{t("assessment.scale5", locale)}</span>
       </div>

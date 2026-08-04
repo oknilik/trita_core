@@ -15,6 +15,8 @@ export interface LikertQuestion {
   textObserver?: string;
   textObserverByLocale?: Partial<Record<Locale, string>>;
   reversed?: boolean;
+  /** A TSFI-S rövid forma (60 item) része — ld. questions/index.ts AssessmentForm. */
+  short?: boolean;
 }
 
 export type Question = LikertQuestion;
@@ -69,4 +71,20 @@ export interface TestConfig {
   format: "likert";
   dimensions: DimensionConfig[];
   questions: Question[];
+}
+
+/**
+ * Kérdőív-forma: "short" = TSFI-S rövid forma (60 item), "full" = teljes
+ * 100 itemes bank. Bank-mentes modul — kliens-oldalról is importálható
+ * anélkül, hogy a kérdésbankot a bundle-be húzná.
+ */
+export type AssessmentForm = "short" | "full";
+
+/**
+ * Kitöltési idő becslése a KISZOLGÁLT kérdésszámból (~9 mp/item,
+ * 5 percre kerekítve): 60 item → ~10 perc, 100 item → ~15 perc.
+ * Bank-mentes modul — kliens komponensből is importálható.
+ */
+export function estimateAssessmentMinutes(questionCount: number): number {
+  return Math.max(5, Math.round((questionCount * 9) / 60 / 5) * 5);
 }

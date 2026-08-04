@@ -18,8 +18,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'A'
-              ? 'border-indigo-500 bg-indigo-50 text-gray-900 shadow-md'
-              : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              ? 'border-sage bg-sage-soft text-ink shadow-md'
+              : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -29,8 +29,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           <div
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'A'
-                ? 'border-indigo-500 bg-indigo-500'
-                : 'border-gray-300 bg-white'
+                ? 'border-sage bg-sage'
+                : 'border-sand bg-white'
             }`}
           >
             {value === 'A' && (
@@ -41,7 +41,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
               />
             )}
           </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
             A
           </span>
         </div>
@@ -54,8 +54,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'B'
-              ? 'border-purple-500 bg-purple-50 text-gray-900 shadow-md'
-              : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              ? 'border-sage bg-[#edf4ef] text-ink shadow-md'
+              : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -65,8 +65,8 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           <div
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'B'
-                ? 'border-purple-500 bg-purple-500'
-                : 'border-gray-300 bg-white'
+                ? 'border-sage bg-sage'
+                : 'border-sand bg-white'
             }`}
           >
             {value === 'B' && (
@@ -77,7 +77,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
               />
             )}
           </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted">
             B
           </span>
         </div>

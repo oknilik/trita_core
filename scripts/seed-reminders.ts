@@ -52,29 +52,29 @@ function makeAnswers(count: number): object {
 // Seed definitions — 12 incomplete draft users + 3 "completed meanwhile"
 const DRAFT_SEEDS = [
   // Active (no reminder sent)
-  { n: "01", testType: "HEXACO",          answers: 5,  updatedDaysAgo: 5,  lastReminder: null,           reminderCount: 0 },
-  { n: "02", testType: "HEXACO",          answers: 15, updatedDaysAgo: 7,  lastReminder: null,           reminderCount: 0 },
-  { n: "03", testType: "HEXACO",          answers: 25, updatedDaysAgo: 3,  lastReminder: null,           reminderCount: 0 },
-  { n: "04", testType: "HEXACO_MODIFIED", answers: 35, updatedDaysAgo: 10, lastReminder: null,           reminderCount: 0 },
-  { n: "05", testType: "HEXACO_MODIFIED", answers: 45, updatedDaysAgo: 4,  lastReminder: null,           reminderCount: 0 },
+  { n: "01", testType: "TRITAN",          answers: 5,  updatedDaysAgo: 5,  lastReminder: null,           reminderCount: 0 },
+  { n: "02", testType: "TRITAN",          answers: 15, updatedDaysAgo: 7,  lastReminder: null,           reminderCount: 0 },
+  { n: "03", testType: "TRITAN",          answers: 25, updatedDaysAgo: 3,  lastReminder: null,           reminderCount: 0 },
+  { n: "04", testType: "TRITAN"        , answers: 35, updatedDaysAgo: 10, lastReminder: null,           reminderCount: 0 },
+  { n: "05", testType: "TRITAN"        , answers: 45, updatedDaysAgo: 4,  lastReminder: null,           reminderCount: 0 },
   // Recently reminded ("Friss" badge, dimmed)
-  { n: "06", testType: "HEXACO",          answers: 8,  updatedDaysAgo: 6,  lastReminder: daysAgo(1),     reminderCount: 1 },
-  { n: "07", testType: "HEXACO",          answers: 20, updatedDaysAgo: 8,  lastReminder: daysAgo(2),     reminderCount: 1 },
-  { n: "08", testType: "BIG_FIVE",        answers: 30, updatedDaysAgo: 5,  lastReminder: hoursAgo(10),   reminderCount: 1 },
+  { n: "06", testType: "TRITAN",          answers: 8,  updatedDaysAgo: 6,  lastReminder: daysAgo(1),     reminderCount: 1 },
+  { n: "07", testType: "TRITAN",          answers: 20, updatedDaysAgo: 8,  lastReminder: daysAgo(2),     reminderCount: 1 },
+  { n: "08", testType: "TRITAN"  ,        answers: 30, updatedDaysAgo: 5,  lastReminder: hoursAgo(10),   reminderCount: 1 },
   // Reminder sent > 3 days ago (active again)
-  { n: "09", testType: "HEXACO",          answers: 12, updatedDaysAgo: 9,  lastReminder: daysAgo(5),     reminderCount: 1 },
-  { n: "10", testType: "HEXACO_MODIFIED", answers: 22, updatedDaysAgo: 12, lastReminder: daysAgo(4),     reminderCount: 1 },
-  { n: "11", testType: "HEXACO",          answers: 38, updatedDaysAgo: 7,  lastReminder: daysAgo(8),     reminderCount: 2 },
+  { n: "09", testType: "TRITAN",          answers: 12, updatedDaysAgo: 9,  lastReminder: daysAgo(5),     reminderCount: 1 },
+  { n: "10", testType: "TRITAN"        , answers: 22, updatedDaysAgo: 12, lastReminder: daysAgo(4),     reminderCount: 1 },
+  { n: "11", testType: "TRITAN",          answers: 38, updatedDaysAgo: 7,  lastReminder: daysAgo(8),     reminderCount: 2 },
   // Active, BIG_FIVE, almost done
-  { n: "12", testType: "BIG_FIVE",        answers: 48, updatedDaysAgo: 3,  lastReminder: null,           reminderCount: 0 },
+  { n: "12", testType: "TRITAN"  ,        answers: 48, updatedDaysAgo: 3,  lastReminder: null,           reminderCount: 0 },
 ] as const;
 
 // "Completed meanwhile" draft users — have a draft + an AssessmentResult
 // These appear pre-rendered as gray "Már kész" rows
 const COMPLETED_DRAFT_SEEDS = [
-  { n: "c1", testType: "HEXACO",          answers: 55, updatedDaysAgo: 8,  lastReminder: daysAgo(5), reminderCount: 1 },
-  { n: "c2", testType: "HEXACO_MODIFIED", answers: 40, updatedDaysAgo: 6,  lastReminder: null,        reminderCount: 0 },
-  { n: "c3", testType: "BIG_FIVE",        answers: 44, updatedDaysAgo: 4,  lastReminder: daysAgo(3),  reminderCount: 1 },
+  { n: "c1", testType: "TRITAN",          answers: 55, updatedDaysAgo: 8,  lastReminder: daysAgo(5), reminderCount: 1 },
+  { n: "c2", testType: "TRITAN"        , answers: 40, updatedDaysAgo: 6,  lastReminder: null,        reminderCount: 0 },
+  { n: "c3", testType: "TRITAN"  ,        answers: 44, updatedDaysAgo: 4,  lastReminder: daysAgo(3),  reminderCount: 1 },
 ] as const;
 
 // Observer invitation seed definitions — 12 items
@@ -167,7 +167,7 @@ async function seed() {
   console.log(`      - 5 active (no reminder sent)`);
   console.log(`      - 3 recently reminded (< 3 days → "Friss")`);
   console.log(`      - 3 re-activated (reminder > 3 days ago)`);
-  console.log(`      - 1 BIG_FIVE, almost done`);
+  console.log(`      - 1 almost done`);
 
   // ── "Completed meanwhile" drafts ─────────────────────────────────────
   let completedDraftCreated = 0;
@@ -197,13 +197,12 @@ async function seed() {
     });
 
     // Create a completed AssessmentResult so this draft appears as "Már kész"
-    const hexacoScores = { H: 65, E: 72, X: 58, A: 80, C: 68, O: 75 };
-    const bfasScores = { O: 70, C: 65, E: 60, A: 78, N: 45 };
+    const tritanScores = { INTE: 65, RESO: 72, TEMP: 58, ADAP: 80, THOR: 68, OPEN: 75 };
     await prisma.assessmentResult.create({
       data: {
         userProfileId: user.id,
         testType: s.testType,
-        scores: s.testType === "BIG_FIVE" ? bfasScores : hexacoScores,
+        scores: tritanScores,
         isSelfAssessment: true,
         createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // completed 12 hours ago
       },
@@ -234,7 +233,7 @@ async function seed() {
           inviterId: realInviter.id,
           observerEmail,
           observerName: s.observerName,
-          testType: realInviter.testType ?? "HEXACO",
+          testType: realInviter.testType ?? "TRITAN",
           status: "PENDING",
           expiresAt: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
           createdAt,
@@ -261,7 +260,7 @@ async function seed() {
           inviterId: realInviter.id,
           observerEmail,
           observerName: s.observerName,
-          testType: realInviter.testType ?? "HEXACO",
+          testType: realInviter.testType ?? "TRITAN",
           status: "COMPLETED",
           completedAt: daysAgo(s.completedDaysAgo),
           expiresAt: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),

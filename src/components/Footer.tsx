@@ -1,62 +1,122 @@
 "use client";
 
 import Link from "next/link";
-import { SignedOut } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
-import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { t } from "@/lib/i18n";
 
 export function Footer() {
   const { locale } = useLocale();
-  const contactSubject = encodeURIComponent(t("landing.contactSubject", locale));
+  const currentPath = usePathname();
+  const { isSignedIn } = useAuthState();
+
+  // Hide footer on assessment/try pages
+  if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
+
+  const accountLinks = isSignedIn
+    ? [
+        { label: t("nav.profile", locale), href: "/profile/results" },
+        { label: t("profile.sectionAbout", locale), href: "/profile" },
+      ]
+    : [
+        { label: t("footer.signIn", locale), href: "/sign-in" },
+        { label: t("footer.signUp", locale), href: "/sign-up" },
+      ];
+
+  const columns = [
+    {
+      heading: t("footer.colProduct", locale),
+      links: [
+        { label: t("footer.blog", locale), href: "/blog" },
+        { label: t("footer.pricing", locale), href: "/pricing" },
+        { label: t("footer.pilot", locale), href: "/pilot" },
+      ],
+    },
+    {
+      heading: t("footer.colAccount", locale),
+      links: accountLinks,
+    },
+    {
+      heading: t("footer.colLegal", locale),
+      links: [
+        { label: t("footer.privacy", locale), href: "/privacy" },
+        { label: t("footer.contact", locale), href: "/contact" },
+      ],
+    },
+  ];
 
   return (
-    <footer
-      className="relative -mt-16 w-full bg-gradient-to-br from-slate-800 to-indigo-900 pt-20 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
-      style={{ clipPath: "url(#footer-wave)" }}
-    >
-      {/* Clip-path definition — objectBoundingBox so the wave adapts to any footer height */}
-      <svg width="0" height="0" className="absolute" aria-hidden="true">
-        <defs>
-          <clipPath id="footer-wave" clipPathUnits="objectBoundingBox">
-            <path d="M0,0.22 C0.18,0.06 0.36,0.3 0.62,0.15 C0.82,0.04 0.95,0.26 1,0.18 L1,1 L0,1 Z" />
-          </clipPath>
-        </defs>
+    // ── Hullám-él: FIX magasságú SVG (nem arányos clip-path!) ────────────
+    // A korábbi objectBoundingBox-os kivágás a footer MAGASSÁGÁVAL skálázott:
+    // mobilon (magas footer) a hullám-zóna nagyobb lett, mint az átfedés, és
+    // a különbözet body-krém sávként látszott az oldal háttere és a hullám
+    // között. Most a hullám fix px-magasságú SVG, a footer pontosan ennyivel
+    // (-mt) húzódik az oldal saját háttere fölé — a hullám fölött MINDIG az
+    // oldal valódi háttere van, minden viewporton. A varrat-mentességhez a
+    // footer-háttér FÜGGŐLEGES gradiens (to-b): így az SVG tömör ink-kitöltése
+    // pixelre egyezik a törzs tetejével.
+    <footer className="relative -mt-10 w-full md:-mt-14">
+      {/* pointer-events-none: a hullám a megelőző oldal fölé húzódik (-mt),
+          az átlátszó zónája nem foghatja el az alatta lévő gombok kattintását. */}
+      <svg
+        viewBox="0 0 1440 56"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        className="pointer-events-none block h-10 w-full md:h-14"
+      >
+        <path
+          d="M0,26 C240,10 480,34 720,22 C960,10 1120,30 1280,18 C1360,12 1410,20 1440,16 L1440,56 L0,56 Z"
+          fill="#1a1a2e"
+        />
       </svg>
 
-      <div className="mx-auto w-full max-w-5xl px-4">
-        <div className="flex flex-col items-center gap-6 pt-4 md:flex-row md:items-start md:justify-between md:pt-8">
-          <div className="text-center md:text-left">
-            <p className="text-sm text-indigo-200/90">
-              © 2026{" "}
-              <span className="bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text font-bold text-transparent">
-                trita
-              </span>{" "}
-              {t("landing.footer", locale)}
+      <div className="w-full bg-gradient-to-b from-ink to-ink-body pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
+      <div className="mx-auto w-full max-w-[1120px] px-7">
+        <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
+
+          {/* Logo + tagline */}
+          <div className="col-span-2 sm:col-span-1">
+            <Link
+              href="/"
+              aria-label="trita"
+              className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-cream"
+            >
+              <span style={{ color: "var(--color-accent-self)" }}>t</span>{"rit"}
+              <span style={{ color: "var(--color-accent-primary)" }}>a</span>
+            </Link>
+            <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-cream/70">
+              {t("footer.tagline", locale)}
             </p>
           </div>
 
-          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm md:justify-end">
-            <Link href="/privacy" className="text-indigo-200 underline-offset-4 transition-colors hover:text-white hover:underline">
-              {t("landing.privacyLink", locale)}
-            </Link>
-            <Link href="/research" className="text-indigo-200 underline-offset-4 transition-colors hover:text-white hover:underline">
-              {t("landing.researchLink", locale)}
-            </Link>
-            <a
-              href={`mailto:info@trita.io?subject=${contactSubject}`}
-              className="text-indigo-200 underline-offset-4 transition-colors hover:text-white hover:underline"
-            >
-              {t("landing.contactLink", locale)}
-            </a>
-          </nav>
+          {/* Link columns */}
+          {columns.map((col) => (
+            <div key={col.heading}>
+              <p className="mb-3 font-dm-sans text-micro font-semibold uppercase tracking-widest text-cream/55">
+                {col.heading}
+              </p>
+              <ul className="flex flex-col gap-2">
+                {col.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-caption text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
         </div>
 
-        <SignedOut>
-          <div className="mt-6 flex justify-center border-t border-white/10 pt-4 md:hidden">
-            <LocaleSwitcher />
-          </div>
-        </SignedOut>
+        <div className="mt-10 border-t border-cream/10 pt-5">
+          <p className="text-[12px] text-cream/70">{t("footer.copyright", locale)}</p>
+        </div>
+      </div>
       </div>
     </footer>
   );

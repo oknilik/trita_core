@@ -1,6 +1,22 @@
 import { resend, EMAIL_FROM } from "./resend";
+import { createLogger } from "@/lib/logger";
+import { withHuArticle } from "@/lib/hu-grammar";
+import {
+  buildEmailLayout,
+  escapeHtml,
+  renderCtaButton,
+  renderCodeBox,
+  renderInfoTable,
+  EMAIL_P,
+  EMAIL_P_MUTED,
+  EMAIL_EYEBROW,
+  EMAIL_UL,
+  EMAIL_LI,
+} from "./email-layout";
 
-type Locale = "hu" | "en" | "de";
+const log = createLogger("email");
+
+type Locale = "hu" | "en";
 
 // Single module-level constant — avoids the Turbopack inlining bug where
 // local `const appUrl` declarations inside functions are dropped.
@@ -22,7 +38,7 @@ const translations = {
       heading: "Köszönjük a vásárlást!",
       greeting: (name: string) =>
         `Kedves ${name},`,
-      body: "A fizetésed sikeresen feldolgozásra került. A Pro funkcióid azonnal elérhetők.",
+      body: "A fizetésedet feldolgoztuk. A Pro funkcióid azonnal elérhetők.",
       features: "Amit most elérsz:",
       featureList: [
         "Részletes, személyre szabott kiértékelés",
@@ -30,11 +46,11 @@ const translations = {
         "Fejlődés követés",
         "PDF export",
       ],
-      cta: "Ugrás a Dashboardra",
+      cta: "Ugrás a vezérlőre",
       footer:
         "Ha kérdésed van, válaszolj erre az emailre. Szívesen segítünk!",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Thank you for your purchase! – Trita",
@@ -55,25 +71,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Danke für deinen Kauf! – trita",
-      heading: "Danke für deinen Kauf!",
-      greeting: (name: string) =>
-        `Hallo ${name},`,
-      body: "Deine Zahlung wurde erfolgreich verarbeitet. Deine Pro-Funktionen sind ab sofort verfügbar.",
-      features: "Das kannst du jetzt nutzen:",
-      featureList: [
-        "Detaillierte, personalisierte Auswertung",
-        "Bestimmung des Persönlichkeitstyps",
-        "Fortschrittsverfolgung",
-        "PDF-Export",
-      ],
-      cta: "Zum Dashboard",
-      footer:
-        "Bei Fragen antworte einfach auf diese E-Mail. Wir helfen dir gern!",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   observerInvite: {
     hu: {
@@ -85,7 +82,7 @@ const translations = {
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Invitation to a personality assessment – Trita",
@@ -98,17 +95,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Einladung zum Persönlichkeitstest – Trita",
-      greeting: (_name: string) => "Hallo,",
-      body: (inviter: string) =>
-        `${inviter} bittet dich, einen kurzen Fragebogen über ${inviter} auszufüllen, um ein Bild davon zu bekommen, wie ${inviter} von anderen wahrgenommen wird.\n\nDeine Perspektive ist wichtig. Deine Antworten bleiben anonym und fließen nur aggregiert (als Durchschnitt mehrerer Rückmeldungen) in die Ergebnisse ein.`,
-      cta: "Fremdeinschätzung öffnen",
-      footer:
-        "Wenn du diese Einladung nicht kennst, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   observerCompletion: {
     hu: {
@@ -116,8 +102,8 @@ const translations = {
       greeting: (name: string) => `Szia, ${name}!`,
       body: "Jó hír: az egyik meghívottad kitöltötte a kérdőívet. Nézd meg, hogyan látnak téged mások!",
       cta: "Megnézem az eredményeket",
-      thanks: "Köszönjük, hogy részt veszel a kutatásban!",
-      team: "a trita csapat",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
     },
     en: {
       subject: "New feedback received – trita",
@@ -127,13 +113,49 @@ const translations = {
       thanks: "Thank you for participating in the research!",
       team: "the trita team",
     },
-    de: {
-      subject: "Eine Rückmeldung ist eingegangen – trita",
-      greeting: (name: string) => `Hallo, ${name}!`,
-      body: "Gute Neuigkeiten: Eine der von dir eingeladenen Personen hat den Fragebogen ausgefüllt. Schau, wie andere dich wahrnehmen!",
-      cta: "Ergebnisse ansehen",
-      thanks: "Danke, dass du an der Forschung teilnimmst!",
-      team: "das trita-Team",
+  },
+  candidateCompleted: {
+    hu: {
+      subject: "Jelölt-felmérés elkészült – trita",
+      greeting: "Szia,",
+      body: (name: string, position: string | null) =>
+        `${name}${position ? ` (${position})` : ""} kitöltötte a jelölt-felmérést. Az eredmény és a csapat-illesztés megnyitható a jelölt-részletezőn.`,
+      cta: "Eredmény megnyitása",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
+    },
+    en: {
+      subject: "Candidate assessment completed – trita",
+      greeting: "Hi,",
+      body: (name: string, position: string | null) =>
+        `${name}${position ? ` (${position})` : ""} completed the candidate assessment. The result and team fit are ready to review.`,
+      cta: "Open the result",
+      thanks: "Best regards,",
+      team: "the trita team",
+    },
+  },
+  profileShare: {
+    hu: {
+      subject: "Megosztott személyiségprofil – trita",
+      greeting: "Szia,",
+      body: (sender: string) =>
+        `${sender} megosztotta veled a személyiségprofilját a tritán. A profil bemutatja a fő dimenzióit, a munkastílusát és a valószínű csapatszerepeit.`,
+      cta: "Profil megnyitása",
+      footer:
+        "A linket a küldő bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
+    },
+    en: {
+      subject: "A personality profile was shared with you – trita",
+      greeting: "Hi,",
+      body: (sender: string) =>
+        `${sender} shared their personality profile with you on trita. The profile shows their main dimensions, work style, and likely team roles.`,
+      cta: "Open the profile",
+      footer:
+        "The sender can revoke this link at any time. If you don't recognize the sender, you can ignore this email.",
+      thanks: "Best regards,",
+      team: "the trita team",
     },
   },
   verificationCode: {
@@ -145,7 +167,7 @@ const translations = {
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Your verification code – trita",
@@ -157,16 +179,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Dein Bestätigungscode – trita",
-      codeLabel: "Dein Code:",
-      ttl: (minutes?: number) =>
-        minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
-      footer:
-        "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   signInCode: {
     hu: {
@@ -177,7 +189,7 @@ const translations = {
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Your sign-in code – trita",
@@ -189,16 +201,6 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Dein Anmeldecode – trita",
-      codeLabel: "Dein Code:",
-      ttl: (minutes?: number) =>
-        minutes ? `Der Code ist ${minutes} Minuten gültig.` : "Der Code ist nur kurze Zeit gültig.",
-      footer:
-        "Wenn du diesen Code nicht angefordert hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   magicLink: {
     hu: {
@@ -209,7 +211,7 @@ const translations = {
       footer:
         "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
-      team: "a trita csapat",
+      team: "a trita csapata",
     },
     en: {
       subject: "Your sign-in link – Trita",
@@ -221,27 +223,17 @@ const translations = {
       thanks: "Best regards,",
       team: "the trita team",
     },
-    de: {
-      subject: "Dein Anmelde-Link – Trita",
-      heading: "Bei Trita anmelden",
-      body: "Klicke auf den Button unten, um dich bei deinem Konto anzumelden. Dieser Link läuft in 10 Minuten ab.",
-      cta: "Anmelden",
-      footer:
-        "Wenn du diesen Link nicht angefordert hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Viele Grüße,",
-      team: "das trita-Team",
-    },
   },
   assessmentDraftReminder: {
     hu: {
       subject: "Már majdnem kész vagy a teszttel – folytasd itt",
       greeting: (name: string) => `Szia, ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a ${testName} személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
+        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
       cta: "Folytatom a tesztet",
       footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
-      thanks: "Köszönjük, hogy segíted a kutatásunkat!",
-      team: "A Trita csapata",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
     },
     en: {
       subject: "Continue your assessment – you're almost there! – trita",
@@ -253,189 +245,36 @@ const translations = {
       thanks: "Thank you for participating in the research!",
       team: "the trita team",
     },
-    de: {
-      subject: "Setz deinen Test fort – du bist fast am Ziel! – trita",
-      greeting: (name: string) => `Hallo, ${name}!`,
-      body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Wir haben gesehen, dass du mit dem ${testName}-Persönlichkeitstest begonnen, ihn aber noch nicht abgeschlossen hast. Du hast bereits ${answeredCount} von ${totalCount} Fragen beantwortet – du bist fast fertig!\n\nDeine Ergebnisse zeigen dir, wie du dich selbst entlang der ${testName}-Dimensionen siehst, und du kannst anschließend Beobachter einladen, um deren Sicht mit deiner zu vergleichen. Klicke unten, um weiterzumachen.`,
-      cta: "Test fortsetzen",
-      footer: "Falls du den Test bereits abgeschlossen hast, kannst du diese E-Mail ignorieren.",
-      thanks: "Danke, dass du an der Forschung teilnimmst!",
-      team: "das trita-Team",
-    },
   },
 } as const;
 
 function getLocale(email: string): Locale {
   const lower = email.toLowerCase();
   if (lower.endsWith(".hu")) return "hu";
-  if (lower.endsWith(".de") || lower.endsWith(".at") || lower.endsWith(".ch"))
-    return "de";
   return "en";
 }
 
-const HEADER_GRADIENT = "linear-gradient(135deg,#c7d2fe 0%,#ddd6fe 50%,#fbcfe8 100%)";
-const FOOTER_GRADIENT = "linear-gradient(135deg,#eef2ff 0%,#f5f3ff 60%,#fdf4ff 100%)";
-const CTA_GRADIENT = "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)";
-// Outlook (Word rendering engine) doesn't support CSS gradients reliably.
-// Provide solid color fallbacks via background-color.
-const HEADER_BG = "#eef2ff";
-const FOOTER_BG = "#f5f3ff";
-const CTA_BG = "#4f46e5";
-
-// Default logo size matches the sign-in code email (140px).
-const DEFAULT_LOGO_SIZE = 140;
-const LOGO_ASPECT_RATIO = 1536 / 1024;
-
-function escapeHtml(input: string): string {
-  return input
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function renderCtaButton(params: { href: string; label: string }): string {
-  // Bulletproof button: table + td bgcolor works in Outlook.
-  // Other clients can still get the gradient via background-image.
-  return `
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0 auto">
-      <tr>
-        <td bgcolor="${CTA_BG}"
-            style="background-color:${CTA_BG};background-image:${CTA_GRADIENT};border-radius:10px;text-align:center">
-          <a href="${params.href}" class="em-cta"
-             style="display:inline-block;color:#ffffff;font-size:14px;font-weight:600;padding:13px 32px;text-decoration:none;border-radius:10px;line-height:1.2">
-            ${params.label}
-          </a>
-        </td>
-      </tr>
-    </table>`.trim();
-}
-
-function buildEmailLayout(params: {
-  locale: Locale;
-  heading?: string;
-  logoSize?: number;
-  bodyContent: string;
-  footerDisclaimer?: string;
-  thanks: string;
-  team: string;
-}): string {
-  const logoSize = params.logoSize ?? DEFAULT_LOGO_SIZE;
-  const logoWidth = Math.round(logoSize * LOGO_ASPECT_RATIO);
-  return `<!DOCTYPE html>
-<html lang="${params.locale}" style="color-scheme:light only">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light only">
-  <meta name="supported-color-schemes" content="light">
-  <style>
-    /* Basic email resets (Outlook-friendly). */
-    table { border-collapse: collapse; }
-    img { border: 0; outline: none; text-decoration: none; }
-    .ExternalClass { width: 100%; }
-    .ExternalClass * { line-height: 100%; }
-    a { text-decoration: none; }
-    :root { color-scheme: light only; }
-    html, body { color-scheme: light only !important; }
-    @media (prefers-color-scheme: dark) {
-      html, body    { background-color: #f3f4f6 !important; }
-      .em-wrap      { background-color: #f3f4f6 !important; }
-      .em-head      { background-color: ${HEADER_BG} !important; background-image: ${HEADER_GRADIENT} !important; }
-      .em-wave-top  { fill: #ffffff !important; }
-      .em-wave-bot  { fill: #ffffff !important; }
-      .em-body      { background-color: #ffffff !important; }
-      .em-body p,
-      .em-body li   { color: #374151 !important; }
-      .em-body h1,
-      .em-heading   { color: #1e1b4b !important; }
-      .em-muted     { color: #6b7280 !important; }
-      .em-foot      { background-color: ${FOOTER_BG} !important; background-image: ${FOOTER_GRADIENT} !important; }
-      .em-code-box  { background-color: #f3f4f6 !important; }
-      .em-code-lbl  { color: #6b7280 !important; }
-      .em-code-val  { color: #1e1b4b !important; }
-      .em-cta       { background-color: ${CTA_BG} !important; background-image: ${CTA_GRADIENT} !important; color: #ffffff !important; }
-    }
-  </style>
-</head>
-<body bgcolor="#f3f4f6" style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#f3f4f6;color-scheme:light only">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f3f4f6" style="background-color:#f3f4f6">
-    <tr>
-      <td align="center" style="padding:32px 16px 24px">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
-               class="em-wrap" style="width:600px;max-width:600px">
-          <tr>
-            <td class="em-head" bgcolor="${HEADER_BG}"
-                style="background-color:${HEADER_BG};background-image:${HEADER_GRADIENT};border-radius:16px 16px 0 0;overflow:hidden">
-              <div style="padding:24px 32px 10px;text-align:center">
-                <img src="${APP_URL}/trita-logo.svg" alt="trita" width="${logoWidth}" height="${logoSize}"
-                     style="display:inline-block;margin-bottom:10px;max-width:100%;height:auto">
-                ${params.heading ? `<h1 class="em-heading" style="font-size:20px;font-weight:700;color:#1e1b4b;margin:0;line-height:1.3">${params.heading}</h1>` : ""}
-              </div>
-              <!--[if !mso]><!-->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
-                   style="display:block;width:100%;height:28px">
-                <path class="em-wave-top" d="M0,28 L0,18 C100,5 200,24 300,14 C400,4 500,22 600,12 L600,28 Z" fill="#ffffff"/>
-              </svg>
-              <!--<![endif]-->
-            </td>
-          </tr>
-
-          <tr>
-            <td class="em-body" bgcolor="#ffffff" style="background-color:#ffffff;padding:16px 32px 32px">
-              ${params.bodyContent}
-            </td>
-          </tr>
-
-          <tr>
-            <td class="em-foot" bgcolor="${FOOTER_BG}"
-                style="background-color:${FOOTER_BG};background-image:${FOOTER_GRADIENT};border-radius:0 0 16px 16px;overflow:hidden">
-              <!--[if !mso]><!-->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 28" width="100%" preserveAspectRatio="none"
-                   style="display:block;width:100%;height:28px">
-                <path class="em-wave-bot" d="M0,0 L0,14 C100,24 200,6 300,18 C400,28 500,10 600,20 L600,0 Z" fill="#ffffff"/>
-              </svg>
-              <!--<![endif]-->
-              <div style="padding:4px 32px 24px;text-align:center">
-                ${params.footerDisclaimer ? `<p class="em-muted" style="font-size:11px;color:#6b7280;line-height:1.6;margin:0 0 10px">${params.footerDisclaimer}</p>` : ""}
-                <p class="em-muted" style="font-size:12px;color:#6b7280;line-height:1.5;margin:0">
-                  ${params.thanks}<br>${params.team}
-                </p>
-              </div>
-            </td>
-          </tr>
-        </table>
-
-        <p class="em-muted" style="text-align:center;font-size:11px;color:#9ca3af;margin:16px 0 0">
-          &copy; trita 2026
-        </p>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`.trim();
-}
+// A vizuális keret és a bekezdés-stílusok a közös email-layout modulból
+// jönnek (2026-07-23 egységesítés) — palettacsere a design-tokens.ts-ben.
 
 function buildOrderConfirmationHtml(locale: Locale, name: string): string {
   const t = translations.orderConfirmation[locale];
   const features = t.featureList
-    .map((f) => `<li style="padding:4px 0;color:#374151">${f}</li>`)
+    .map((f) => `<li style="${EMAIL_LI}">${f}</li>`)
     .join("");
   const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
+    <p style="${EMAIL_P}">
       ${t.greeting(name)}
     </p>
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P}">
       ${t.body}
     </p>
-    <p style="font-size:13px;font-weight:600;color:#111827;margin:0 0 8px">
+    <p style="${EMAIL_EYEBROW}">
       ${t.features}
     </p>
-    <ul style="font-size:13px;line-height:1.7;margin:0 0 28px;padding-left:20px">
+    <ul style="${EMAIL_UL};margin-bottom:24px">
       ${features}
     </ul>
     ${cta}`;
@@ -484,9 +323,9 @@ export async function sendOrderConfirmationEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send order confirmation:", error);
+    log.error({ event: "email.send_failed", template: "order_confirmation", to: params.to, err: error }, "Failed to send order confirmation");
   } else {
-    console.log("[Email] Order confirmation sent to:", params.to);
+    log.info({ event: "email.sent", template: "order_confirmation", to: params.to }, "Order confirmation sent");
   }
 }
 
@@ -507,11 +346,10 @@ function buildObserverInviteHtml(params: {
     .replaceAll("\n", "<br>");
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 4px">
+    <p style="${EMAIL_P}">
       ${t.greeting(escapeHtml(params.recipientName))}
     </p>
-    <div style="height:12px;line-height:12px;font-size:12px">&nbsp;</div>
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${bodyHtml}
     </p>
     ${cta}`;
@@ -534,7 +372,7 @@ export async function sendObserverInviteEmail(params: {
   isReminder?: boolean;
 }) {
   const locale = params.locale ?? getLocale(params.to);
-  const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend", de: "Freund/in" };
+  const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend" };
   const recipientName = params.recipientName ?? fallbackNames[locale];
 
   const html = buildObserverInviteHtml({
@@ -545,7 +383,7 @@ export async function sendObserverInviteEmail(params: {
   });
   const link = `${APP_URL}/observe/${params.token}`;
   const t = translations.observerInvite[locale];
-  const reminderPrefix: Record<Locale, string> = { hu: "Emlékeztető: ", en: "Reminder: ", de: "Erinnerung: " };
+  const reminderPrefix: Record<Locale, string> = { hu: "Emlékeztető: ", en: "Reminder: " };
   const subject = params.isReminder ? `${reminderPrefix[locale]}${t.subject}` : t.subject;
   const text = [
     t.greeting(recipientName),
@@ -569,10 +407,127 @@ export async function sendObserverInviteEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send observer invite:", error);
+    log.error({ event: "email.send_failed", template: "observer_invite", to: params.to, err: error }, "Failed to send observer invite");
   } else {
-    console.log("[Email] Observer invite sent to:", params.to);
+    log.info({ event: "email.sent", template: "observer_invite", to: params.to }, "Observer invite sent");
   }
+}
+
+export async function sendCandidateCompletedEmail(params: {
+  to: string;
+  candidateName: string;
+  position?: string | null;
+  resultUrl: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.candidateCompleted[locale];
+
+  const cta = renderCtaButton({ href: params.resultUrl, label: t.cta });
+  const bodyContent = `
+    <p style="${EMAIL_P}">
+      ${t.greeting}
+    </p>
+    <p style="${EMAIL_P};margin-bottom:24px">
+      ${escapeHtml(t.body(params.candidateName, params.position ?? null))}
+    </p>
+    ${cta}`;
+
+  const html = buildEmailLayout({
+    locale,
+    bodyContent,
+    thanks: t.thanks,
+    team: t.team,
+  });
+  const text = [
+    t.greeting,
+    "",
+    t.body(params.candidateName, params.position ?? null),
+    "",
+    `${t.cta}: ${params.resultUrl}`,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+    text,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "candidate_completed", to: params.to, err: error }, "Failed to send candidate completed");
+  }
+}
+
+function buildProfileShareHtml(params: {
+  locale: Locale;
+  senderName: string;
+  token: string;
+}): string {
+  const t = translations.profileShare[params.locale];
+  const cta = renderCtaButton({
+    href: `${APP_URL}/share/${params.token}`,
+    label: t.cta,
+  });
+
+  const bodyContent = `
+    <p style="${EMAIL_P}">
+      ${t.greeting}
+    </p>
+    <p style="${EMAIL_P};margin-bottom:24px">
+      ${t.body(params.senderName)}
+    </p>
+    ${cta}`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    bodyContent,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
+}
+
+export async function sendProfileShareEmail(params: {
+  to: string;
+  senderName: string;
+  token: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.profileShare[locale];
+  const link = `${APP_URL}/share/${params.token}`;
+
+  const text = [
+    t.greeting,
+    "",
+    t.body(params.senderName),
+    "",
+    `${t.cta}: ${link}`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html: buildProfileShareHtml({ locale, senderName: params.senderName, token: params.token }),
+    text,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "profile_share", to: params.to, err: error }, "Failed to send profile share");
+    throw new Error("EMAIL_SEND_FAILED");
+  }
+  log.info({ event: "email.sent", template: "profile_share", to: params.to }, "Profile share sent");
 }
 
 function buildObserverCompletionHtml(params: {
@@ -583,10 +538,10 @@ function buildObserverCompletionHtml(params: {
   const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 20px">
+    <p style="${EMAIL_P}">
       ${t.greeting(params.inviterName)}
     </p>
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${t.body}
     </p>
     ${cta}`;
@@ -632,9 +587,9 @@ export async function sendObserverCompletionEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Observer completion email failed:", error);
+    log.error({ event: "email.send_failed", template: "observer_completion", to: params.to, err: error }, "Failed to send observer completion");
   } else {
-    console.log("[Email] Observer completion email sent to:", params.to);
+    log.info({ event: "email.sent", template: "observer_completion", to: params.to }, "Observer completion email sent");
   }
 }
 
@@ -649,18 +604,11 @@ function buildVerificationCodeHtml(params: {
     : translations.verificationCode[params.locale];
 
   const bodyContent = `
-    <div class="em-code-box" style="background:#f3f4f6;border-radius:12px;padding:20px;text-align:center;margin:0 0 16px">
-      <p class="em-code-lbl" style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:#6b7280;margin:0 0 8px">
-        ${t.codeLabel}
-      </p>
-      <div class="em-code-val" style="font-size:32px;font-weight:700;letter-spacing:.25em;color:#1e1b4b">
-        ${params.code}
-      </div>
-    </div>
-    <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:0 0 16px">
+    ${renderCodeBox({ label: t.codeLabel, code: params.code })}
+    <p style="${EMAIL_P_MUTED}">
       ${t.ttl(params.ttlMinutes)}
     </p>
-    <p style="font-size:12px;color:#6b7280;line-height:1.6;margin:0">
+    <p style="${EMAIL_P_MUTED};margin-bottom:0">
       ${t.footer}
     </p>`;
 
@@ -714,9 +662,9 @@ export async function sendVerificationCodeEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send verification code:", error);
+    log.error({ event: "email.send_failed", template: "verification_code", to: params.to, err: error }, "Failed to send verification code");
   } else {
-    console.log("[Email] Verification code sent to:", params.to);
+    log.info({ event: "email.sent", template: "verification_code", to: params.to }, "Verification code sent");
   }
 }
 
@@ -735,10 +683,10 @@ function buildAssessmentDraftReminderHtml(params: {
     .replaceAll("\n", "<br>");
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 16px">
+    <p style="${EMAIL_P}">
       ${t.greeting(escapeHtml(params.name))}
     </p>
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 24px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${bodyHtml}
     </p>
     ${cta}`;
@@ -792,9 +740,9 @@ export async function sendAssessmentDraftReminderEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send draft reminder:", error);
+    log.error({ event: "email.send_failed", template: "draft_reminder", to: params.to, err: error }, "Failed to send draft reminder");
   } else {
-    console.log("[Email] Draft reminder sent to:", params.to);
+    log.info({ event: "email.sent", template: "draft_reminder", to: params.to }, "Draft reminder sent");
   }
 }
 
@@ -806,7 +754,7 @@ function buildMagicLinkHtml(params: {
   const cta = renderCtaButton({ href: params.magicLinkUrl, label: t.cta });
 
   const bodyContent = `
-    <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 28px">
+    <p style="${EMAIL_P};margin-bottom:24px">
       ${t.body}
     </p>
     ${cta}`;
@@ -819,6 +767,70 @@ function buildMagicLinkHtml(params: {
     thanks: t.thanks,
     team: t.team,
   });
+}
+
+export async function sendCoachApplicationNotification(params: {
+  applicantName: string;
+  applicantEmail: string;
+  background: string;
+  motivation: string;
+  specializations?: string | null;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    log.warn({ event: "email.skipped", template: "coach_application", reason: "ADMIN_EMAIL not configured" }, "Coach application notification skipped");
+    return;
+  }
+
+  const bodyContent = `
+    ${renderInfoTable([
+      ["Név", escapeHtml(params.applicantName)],
+      ["Email", escapeHtml(params.applicantEmail)],
+      ["Szakterületek", escapeHtml(params.specializations ?? "–")],
+    ])}
+    <p style="${EMAIL_EYEBROW}">Szakmai háttér</p>
+    <p style="${EMAIL_P};white-space:pre-line">${escapeHtml(params.background)}</p>
+    <p style="${EMAIL_EYEBROW}">Motiváció</p>
+    <p style="${EMAIL_P};margin-bottom:24px;white-space:pre-line">${escapeHtml(params.motivation)}</p>
+    ${renderCtaButton({ href: `${APP_URL}/admin`, label: "Admin felület megnyitása" })}`;
+
+  const html = buildEmailLayout({
+    locale: "hu",
+    heading: "Új coach jelentkezés érkezett",
+    bodyContent,
+    thanks: "Üdvözlettel,",
+    team: "a trita rendszer",
+  });
+
+  const text = [
+    "Új coach jelentkezés érkezett",
+    "",
+    `Név: ${params.applicantName}`,
+    `Email: ${params.applicantEmail}`,
+    `Szakterületek: ${params.specializations ?? "–"}`,
+    "",
+    "Szakmai háttér:",
+    params.background,
+    "",
+    "Motiváció:",
+    params.motivation,
+    "",
+    `Admin: ${APP_URL}/admin`,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: adminEmail,
+    subject: `Új coach jelentkezés – ${params.applicantName}`,
+    html,
+    text,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "coach_application", to: adminEmail, err: error }, "Failed to send coach application notification");
+  } else {
+    log.info({ event: "email.sent", template: "coach_application", to: adminEmail }, "Coach application notification sent");
+  }
 }
 
 export async function sendMagicLinkEmail(params: {
@@ -850,8 +862,219 @@ export async function sendMagicLinkEmail(params: {
   });
 
   if (error) {
-    console.error("[Email] Failed to send magic link:", error);
+    log.error({ event: "email.send_failed", template: "magic_link", to: params.to, err: error }, "Failed to send magic link");
   } else {
-    console.log("[Email] Magic link sent to:", params.to);
+    log.info({ event: "email.sent", template: "magic_link", to: params.to }, "Magic link sent");
   }
+}
+
+// ─── Team invite email (for users without an account) ────────────────────────
+
+const teamInviteTranslations = {
+  hu: {
+    subject: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba – Trita`,
+    heading: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba`,
+    body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadunk!",
+    cta: "Regisztráció és csatlakozás",
+    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: (teamName: string) => `You've been invited to join ${teamName} – Trita`,
+    heading: (teamName: string) => `You've been invited to join ${teamName}`,
+    body: "Share your personality profile with your team by joining Trita. Register and you'll be added automatically!",
+    cta: "Register and join",
+    footer: "If you don't want to join, simply ignore this email.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+};
+
+// ─── Candidate invite email (for job applicants, no account needed) ──────────
+
+const candidateInviteTranslations = {
+  hu: {
+    subject: (position?: string) =>
+      position
+        ? `Meghívó személyiségfelmérésre – ${position} pozíció`
+        : "Meghívó személyiségfelmérésre",
+    heading: (position?: string) =>
+      position ? `Személyiségfelmérés – ${position}` : "Személyiségfelmérés",
+    body: (managerName: string) =>
+      `${managerName} meghívott, hogy töltsd ki az alábbi személyiségfelmérést. A teszt körülbelül 10–15 percet vesz igénybe, és regisztráció nélkül elvégezhető.`,
+    cta: "Felmérés megkezdése",
+    footer:
+      "Ha nem számítottál erre az emailre, egyszerűen hagyd figyelmen kívül.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: (position?: string) =>
+      position
+        ? `Invitation to personality assessment – ${position}`
+        : "Invitation to complete a personality assessment",
+    heading: (position?: string) =>
+      position ? `Personality Assessment – ${position}` : "Personality Assessment",
+    body: (managerName: string) =>
+      `${managerName} has invited you to complete a personality assessment. The questionnaire takes about 10–15 minutes and requires no registration.`,
+    cta: "Start assessment",
+    footer:
+      "If you did not expect this email, you can safely ignore it.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+};
+
+export async function sendCandidateInviteEmail(params: {
+  to: string;
+  managerName: string;
+  token: string;
+  position?: string;
+  applyUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? getLocale(params.to);
+  const tr = candidateInviteTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    heading: tr.heading(params.position),
+    bodyContent: `
+    <p style="${EMAIL_P};margin-bottom:24px">
+      ${escapeHtml(tr.body(params.managerName))}
+    </p>
+    ${renderCtaButton({ href: params.applyUrl, label: tr.cta })}`,
+    footerDisclaimer: tr.footer,
+    thanks: tr.thanks,
+    team: tr.team,
+  });
+
+  const text = [
+    tr.heading(params.position),
+    "",
+    tr.body(params.managerName),
+    "",
+    `${tr.cta}: ${params.applyUrl}`,
+    "",
+    tr.footer,
+    "",
+    tr.thanks,
+    tr.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: tr.subject(params.position),
+    html,
+    text,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "candidate_invite", to: params.to, err: error }, "Failed to send candidate invite");
+    return false;
+  }
+  log.info({ event: "email.sent", template: "candidate_invite", to: params.to }, "Candidate invite sent");
+  return true;
+}
+
+// ─── Team invite email (for users without an account) ────────────────────────
+
+export async function sendTeamInviteEmail(params: {
+  to: string;
+  teamName: string;
+  signUpUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? "en";
+  const t = teamInviteTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    heading: t.heading(escapeHtml(params.teamName)),
+    preheader: t.body,
+    bodyContent: `
+    <p style="${EMAIL_P};margin-bottom:24px">${t.body}</p>
+    ${renderCtaButton({ href: params.signUpUrl, label: t.cta })}`,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject(params.teamName),
+    html,
+    text: `${t.heading(params.teamName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "team_invite", to: params.to, err: error }, "Failed to send team invite");
+    return false;
+  }
+  log.info({ event: "email.sent", template: "team_invite", to: params.to }, "Team invite sent");
+  return true;
+}
+
+// ─── Org invite email ─────────────────────────────────────────────────────────
+
+const orgInviteTranslations = {
+  hu: {
+    subject: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe – Trita`,
+    heading: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe`,
+    body: "Regisztrálj a Tritára, és automatikusan csatlakozol a szervezethez. Kitöltheted a személyiségtesztet, és láthatod, hogyan illesz a csapatba.",
+    cta: "Regisztráció és csatlakozás",
+    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: (orgName: string) => `You've been invited to join ${orgName} – Trita`,
+    heading: (orgName: string) => `You've been invited to join ${orgName}`,
+    body: "Register on Trita and you'll automatically join the organization. Complete the personality assessment to see how you fit with your team.",
+    cta: "Register and join",
+    footer: "If you don't want to join, simply ignore this email.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+};
+
+export async function sendOrgInviteEmail(params: {
+  to: string;
+  orgName: string;
+  role: string;
+  signUpUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? "en";
+  const t = orgInviteTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    heading: t.heading(escapeHtml(params.orgName)),
+    preheader: t.body,
+    bodyContent: `
+    <p style="${EMAIL_P};margin-bottom:24px">${t.body}</p>
+    ${renderCtaButton({ href: params.signUpUrl, label: t.cta })}`,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject(params.orgName),
+    html,
+    text: `${t.heading(params.orgName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "org_invite", to: params.to, err: error }, "Failed to send org invite");
+    return false;
+  }
+  log.info({ event: "email.sent", template: "org_invite", to: params.to }, "Org invite sent");
+  return true;
 }

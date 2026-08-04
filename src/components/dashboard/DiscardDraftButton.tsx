@@ -29,7 +29,7 @@ export function DiscardDraftButton() {
         type="button"
         disabled={isDiscarding}
         onClick={() => setShowModal(true)}
-        className="text-sm text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+        className="text-sm text-muted hover:text-ink-body transition-colors disabled:opacity-50"
       >
         {t("dashboard.discardDraft", locale)}
       </button>

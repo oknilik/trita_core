@@ -3,15 +3,14 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { TRITAN_ORDER, TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 
 const CX = 150;
 const CY = 150;
 const MAX_R = 100;
 const LABEL_R = 114;
 const RINGS = [0.25, 0.5, 0.75, 1.0];
-const SELF_POINT_COLOR = "#8B5CF6";
-const OBSERVER_POINT_COLOR = "#10B981";
+const OBSERVER_POINT_COLOR = "var(--color-state-success-strong)";
 
 interface RadarDimension {
   code: string;
@@ -20,11 +19,11 @@ interface RadarDimension {
   observerScore?: number;
 }
 
+// Szín-magyarázat: nincs SVG-belső legend — összehasonlító nézetben a
+// hívó tegye a RadarLegendNote-ot az ábra alá (HTML, nem csúszik el).
 interface RadarChartProps {
   dimensions: RadarDimension[];
   showObserver?: boolean;
-  selfLabel?: string;
-  observerLabel?: string;
   uid?: string;
 }
 
@@ -63,14 +62,28 @@ function getLabelOffset(index: number, total: number): { dx: number; dy: number 
 export const RadarChart = memo(function RadarChart({
   dimensions,
   showObserver = false,
-  selfLabel,
-  observerLabel,
   uid = "rc",
 }: RadarChartProps) {
   const { locale } = useLocale();
-  const resolvedSelfLabel = selfLabel ?? t("comparison.self", locale);
-  const resolvedObserverLabel = observerLabel ?? t("comparison.others", locale);
-  const n = dimensions.length;
+
+  // HEXACO-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
+  // mozaikszót (H·E·X·A·C·O). Nem-standard kódoknál marad az eredeti sorrend.
+  const TRITAN_RADAR_ORDER: readonly string[] = TRITAN_ORDER;
+  const isTritanSet = dimensions.every((d) => TRITAN_RADAR_ORDER.includes(d.code));
+  const orderedDimensions = isTritanSet
+    ? [...dimensions].sort(
+        (a, b) => TRITAN_RADAR_ORDER.indexOf(a.code) - TRITAN_RADAR_ORDER.indexOf(b.code),
+      )
+    : dimensions;
+  // Tengelycímke: mindig a 3 betűs, EGYEDI rövidítés (TÁR/TER stb.) —
+  // az egybetűs változatban két „T" is volt, ami önmagában nem
+  // azonosította a dimenziót (design-akciólista #9).
+  const axisLabel = (code: string): string =>
+    TRITAN_DIM_ABBR[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
+  const axisTitle = (code: string): string =>
+    TRITAN_DIMENSIONS[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
+
+  const n = orderedDimensions.length;
   const radarFillId = `radar-fill-${uid}`;
   const radarStrokeId = `radar-stroke-${uid}`;
   const radarGlowFillId = `radar-glow-fill-${uid}`;
@@ -85,7 +98,7 @@ export const RadarChart = memo(function RadarChart({
   const shadowId = `shadow-${uid}`;
   const labelShadowId = `label-shadow-${uid}`;
 
-  const dataPoints = dimensions.map((dim, i) => ({
+  const dataPoints = orderedDimensions.map((dim, i) => ({
     ...getPoint(i, n, MAX_R * (Math.max(dim.score, 2) / 100)),
     ...dim,
   }));
@@ -96,7 +109,7 @@ export const RadarChart = memo(function RadarChart({
 
   // Observer average polygon
   const observerPoints = showObserver
-    ? dimensions.map((dim, i) => ({
+    ? orderedDimensions.map((dim, i) => ({
         ...getPoint(i, n, MAX_R * (Math.max(dim.observerScore ?? 0, 2) / 100)),
         ...dim,
       }))
@@ -118,11 +131,11 @@ export const RadarChart = memo(function RadarChart({
         <radialGradient id={auraId} cx="50%" cy="50%">
           <stop offset="0%" stopColor="#EEF2FF" stopOpacity="0.95" />
           <stop offset="75%" stopColor="#EDE9FE" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+          <stop offset="100%" stopColor="var(--color-neutral-white)" stopOpacity="0" />
         </radialGradient>
 
         <radialGradient id={surfaceId} cx="50%" cy="45%">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.92" />
+          <stop offset="0%" stopColor="var(--color-neutral-white)" stopOpacity="0.92" />
           <stop offset="100%" stopColor="#EEF2FF" stopOpacity="0.5" />
         </radialGradient>
 
@@ -136,26 +149,26 @@ export const RadarChart = memo(function RadarChart({
         </linearGradient>
 
         <linearGradient id={radarGlowFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" stopOpacity="0.25" />
           <stop offset="100%" stopColor="#D946EF" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id={radarFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.32" />
-          <stop offset="55%" stopColor="#8B5CF6" stopOpacity="0.24" />
+          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" stopOpacity="0.32" />
+          <stop offset="55%" stopColor="var(--color-visual-gradient-violet)" stopOpacity="0.24" />
           <stop offset="100%" stopColor="#D946EF" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id={radarStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6366F1" />
-          <stop offset="50%" stopColor="#8B5CF6" />
+          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" />
+          <stop offset="50%" stopColor="var(--color-visual-gradient-violet)" />
           <stop offset="100%" stopColor="#D946EF" />
         </linearGradient>
 
         <linearGradient id={observerFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#10B981" stopOpacity="0.24" />
+          <stop offset="0%" stopColor="var(--color-state-success-strong)" stopOpacity="0.24" />
           <stop offset="100%" stopColor="#14B8A6" stopOpacity="0.14" />
         </linearGradient>
         <linearGradient id={observerStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#10B981" />
+          <stop offset="0%" stopColor="var(--color-state-success-strong)" />
           <stop offset="100%" stopColor="#14B8A6" />
         </linearGradient>
 
@@ -177,7 +190,7 @@ export const RadarChart = memo(function RadarChart({
           <feDropShadow dx="0" dy="3" stdDeviation="5" floodOpacity="0.25"/>
         </filter>
         <filter id={labelShadowId}>
-          <feDropShadow dx="0" dy="1" stdDeviation="1.15" floodColor="#FFFFFF" floodOpacity="0.9" />
+          <feDropShadow dx="0" dy="1" stdDeviation="1.15" floodColor="var(--color-neutral-white)" floodOpacity="0.9" />
         </filter>
       </defs>
 
@@ -207,7 +220,7 @@ export const RadarChart = memo(function RadarChart({
       ))}
 
       {/* Axis lines */}
-      {dimensions.map((dim, i) => {
+      {orderedDimensions.map((dim, i) => {
         const p = getPoint(i, n, MAX_R);
         return (
           <g key={i}>
@@ -311,7 +324,7 @@ export const RadarChart = memo(function RadarChart({
             cx={p.x}
             cy={p.y}
             r="2.1"
-            fill="#FFFFFF"
+            fill="var(--color-neutral-white)"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.68 + i * 0.06, duration: 0.3, ease: "easeOut" }}
@@ -338,7 +351,7 @@ export const RadarChart = memo(function RadarChart({
       ))}
 
       {/* Dimension labels */}
-      {dimensions.map((dim, i) => {
+      {orderedDimensions.map((dim, i) => {
         const p = getPoint(i, n, LABEL_R);
         const offset = getLabelOffset(i, n);
         return (
@@ -349,7 +362,7 @@ export const RadarChart = memo(function RadarChart({
               textAnchor={getTextAnchor(i, n)}
               dominantBaseline="middle"
               fill={dim.color}
-              fontSize="13"
+              fontSize="10.5"
               fontWeight="700"
               stroke="rgba(255, 255, 255, 0.95)"
               strokeWidth="2.25"
@@ -360,7 +373,8 @@ export const RadarChart = memo(function RadarChart({
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 + i * 0.05, duration: 0.4 }}
             >
-              {dim.code}
+              <title>{axisTitle(dim.code)}</title>
+              {axisLabel(dim.code)}
             </motion.text>
           </g>
         );
@@ -391,37 +405,6 @@ export const RadarChart = memo(function RadarChart({
         </g>
       ))}
 
-      {/* Legend */}
-      {showObserver && (
-        <motion.g
-          transform={`translate(${CX}, ${CY + MAX_R + 44})`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          {/* Legend background */}
-          <rect
-            x="-92"
-            y="-13"
-            width="204"
-            height="26"
-            rx="13"
-            fill="#FFFFFF"
-            opacity="0.88"
-            stroke="#E0E7FF"
-            strokeWidth="1"
-            filter={`url(#${shadowId})`}
-          />
-
-          {/* Self indicator */}
-          <circle cx="-49" cy="0" r="5" fill={SELF_POINT_COLOR} filter={`url(#${pointGlowId})`} />
-          <text x="-40" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{resolvedSelfLabel}</text>
-
-          {/* Observer indicator */}
-          <circle cx="28" cy="0" r="5" fill={OBSERVER_POINT_COLOR} filter={`url(#${pointGlowId})`} />
-          <text x="37" y="0" fill="#475569" fontSize="11" fontWeight="600" dominantBaseline="middle">{resolvedObserverLabel}</text>
-        </motion.g>
-      )}
     </svg>
   );
 });

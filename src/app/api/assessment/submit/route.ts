@@ -3,9 +3,11 @@ import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { assignTestType } from "@/lib/assignTestType";
-import { getTestConfig } from "@/lib/questions";
+import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -13,11 +15,15 @@ const answerSchema = z.object({
 });
 
 const submissionSchema = z.object({
-  testType: z.enum(["HEXACO", "HEXACO_MODIFIED", "BIG_FIVE"]),
+  testType: z.enum(["TRITAN"]),
   answers: z.array(answerSchema),
 });
 
 export async function POST(req: Request) {
+  const log = await getRequestLogger("assessment");
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -26,7 +32,7 @@ export async function POST(req: Request) {
   const body = await req.json();
   const parsed = submissionSchema.safeParse(body);
   if (!parsed.success) {
-    console.error('[submit] Zod validation failed', JSON.stringify(parsed.error.flatten()));
+    log.warn({ event: "assessment.submit_invalid", issues: parsed.error.flatten() }, "Zod validation failed");
     return NextResponse.json(
       { error: "Invalid payload", details: parsed.error.flatten() },
       { status: 400 }
@@ -34,7 +40,7 @@ export async function POST(req: Request) {
   }
 
   const { testType: clientTestType, answers } = parsed.data;
-  console.log('[submit] received', { clientTestType, answerCount: answers.length, userId });
+  log.info({ event: "assessment.submit_received", clientTestType, answerCount: answers.length, clerkId: userId }, "Submission received");
 
   const profile = await prisma.userProfile.upsert({
     where: { clerkId: userId },
@@ -47,32 +53,21 @@ export async function POST(req: Request) {
     testType = await assignTestType(profile.id);
   }
 
-  console.log('[submit] testTypes', { clientTestType, profileTestType: testType });
-
   if (clientTestType !== testType) {
-    console.error('[submit] testType mismatch', { clientTestType, profileTestType: testType });
+    log.warn({ event: "assessment.submit_testtype_mismatch", clientTestType, profileTestType: testType }, "Test type mismatch");
     return NextResponse.json(
       { error: "A teszttípus nem egyezik a hozzárendelt teszttel." },
       { status: 400 }
     );
   }
 
-  // Validate that all questions are answered and unique
+  // Validate answers — a rövid (TSFI-S) és a teljes forma hiánytalan
+  // kitöltése egyaránt érvényes.
   const config = getTestConfig(testType as TestType);
   const expectedIds = new Set(config.questions.map((q) => q.id));
 
   // Filter to only the expected question IDs (drops stale answers from old test versions)
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
-
-  console.log('[submit] counts', { relevantAnswers: relevantAnswers.length, expectedIds: expectedIds.size });
-
-  if (relevantAnswers.length !== expectedIds.size) {
-    console.error('[submit] count mismatch', { relevantAnswers: relevantAnswers.length, expectedIds: expectedIds.size });
-    return NextResponse.json(
-      { error: "A válaszok száma nem egyezik a kérdések számával." },
-      { status: 400 }
-    );
-  }
 
   const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));
   if (answeredIds.size !== relevantAnswers.length) {
@@ -81,13 +76,13 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-  for (const id of expectedIds) {
-    if (!answeredIds.has(id)) {
-      return NextResponse.json(
-        { error: `Missing answer for question ${id}` },
-        { status: 400 }
-      );
-    }
+
+  if (!isCompleteFormAnswerSet(testType as TestType, answeredIds)) {
+    log.warn({ event: "assessment.submit_form_mismatch", answered: answeredIds.size }, "Answer count does not match form");
+    return NextResponse.json(
+      { error: "A válaszok száma nem egyezik a kérdőív-forma kérdésszámával." },
+      { status: 400 }
+    );
   }
 
   for (const answer of relevantAnswers) {
@@ -122,6 +117,19 @@ export async function POST(req: Request) {
       where: { userProfileId: profile.id },
     }),
   ]);
+
+  // Több-lépéses kampány: a self teljesítése lépteti az OBSERVER_360 lépést
+  import("@/lib/campaign-steps").then(({ advanceCampaignStepForUser }) =>
+    advanceCampaignStepForUser(profile.id, "OBSERVER_360").catch(() => {}),
+  );
+
+  // In-app notification via orchestrator (fire-and-forget)
+  import("@/lib/notifications").then(({ handleResultReady }) =>
+    handleResultReady({
+      userId: profile.id,
+      assessmentResultId: result.id,
+    }).catch((err) => log.error({ event: "notification.result_ready_failed", err }, "Result ready notification failed")),
+  );
 
   return NextResponse.json({ id: result.id });
 }

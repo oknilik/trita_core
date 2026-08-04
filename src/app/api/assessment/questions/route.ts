@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -27,7 +28,7 @@ export async function GET(req: Request) {
     : 5;
 
   const locale = await getServerLocale();
-  const config = getTestConfig(profile.testType, locale);
+  const config = getTestConfig(profile.testType, locale, DEFAULT_ASSESSMENT_FORM);
 
   const start = page * perPage;
   const end = start + perPage;

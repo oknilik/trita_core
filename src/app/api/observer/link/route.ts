@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { linkObserverTokenToProfile } from "@/lib/observer/link-service";
 
 const linkSchema = z.object({
   token: z.string().min(1),
@@ -30,23 +31,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Profil nem található." }, { status: 404 });
   }
 
-  const invitation = await prisma.observerInvitation.findUnique({
-    where: { token: parsed.data.token },
+  const linkResult = await linkObserverTokenToProfile({
+    token: parsed.data.token,
+    profileId: profile.id,
   });
-  if (!invitation) {
-    return NextResponse.json({ error: "Meghívó nem található." }, { status: 404 });
-  }
-  if (invitation.status === "CANCELED") {
+  if (!linkResult.ok) {
+    if (linkResult.code === "INVALID_TOKEN") {
+      return NextResponse.json({ error: "Meghívó nem található." }, { status: 404 });
+    }
+    if (linkResult.code === "OBSERVER_MISMATCH") {
+      return NextResponse.json(
+        { error: "Ez a meghívó másik felhasználóhoz tartozik." },
+        { status: 409 },
+      );
+    }
+    if (linkResult.code === "ALREADY_USED") {
+      return NextResponse.json(
+        { error: "A meghívó már fel lett használva." },
+        { status: 400 },
+      );
+    }
+    if (linkResult.code === "INVITE_EXPIRED") {
+      return NextResponse.json({ error: "A meghívó lejárt." }, { status: 400 });
+    }
     return NextResponse.json(
       { error: "A meghívó már nem aktív." },
-      { status: 400 }
+      { status: 400 },
     );
   }
-
-  await prisma.observerInvitation.update({
-    where: { id: invitation.id },
-    data: { observerProfileId: profile.id },
-  });
 
   return NextResponse.json({ ok: true });
 }

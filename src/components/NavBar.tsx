@@ -1,106 +1,332 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
-import { MobileDrawer } from "@/components/MobileDrawer";
-import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+import type { JourneyExperienceHints } from "@/lib/journey/types";
+import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 
-export function NavBar() {
+// ─── Active link helper ───────────────────────────────────────────────────────
+
+function isLinkActive(pathname: string, href: string): boolean {
+  const normalizedHref = href.split("?")[0] ?? href;
+  if (href === "/") return pathname === "/";
+  return pathname.startsWith(normalizedHref);
+}
+
+// ─── Link-ikonok (menü-konvergencia: az app-nav ikonos nyelvét követik) ──────
+
+function HomeIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2.5 7L8 2l5.5 5" />
+      <path d="M4 6.5V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.5" />
+    </svg>
+  );
+}
+
+function BlogIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" />
+      <path d="M5 5.5h6M5 8h6M5 10.5h3.5" />
+    </svg>
+  );
+}
+
+function CollabIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="5" r="2.5" />
+      <path d="M1.5 14a4.5 4.5 0 0 1 9 0" />
+      <circle cx="11.5" cy="6" r="2" />
+      <path d="M11.5 10.5a3.5 3.5 0 0 1 3 3.5" />
+    </svg>
+  );
+}
+
+function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3">
+      <rect x="1" y="1" width="6" height="6" rx="1.5" />
+      <rect x="9" y="1" width="6" height="6" rx="1.5" />
+      <rect x="1" y="9" width="6" height="6" rx="1.5" />
+      <rect x="9" y="9" width="6" height="6" rx="1.5" />
+    </svg>
+  );
+}
+
+const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
+  home: HomeIcon,
+  dashboard: GridIcon,
+  blog: BlogIcon,
+  pricing: CollabIcon,
+};
+
+// ─── Nav link — az app-nav (NavHeaderUI) aktív/inaktív stílusával ────────────
+
+function NavLink({
+  href,
+  label,
+  icon,
+  active,
+}: {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={[
+        "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-caption transition-all",
+        active
+          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-accent-primary)]"
+          : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]",
+      ].join(" ")}
+    >
+      {icon}
+      {label}
+    </Link>
+  );
+}
+
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
+
+interface NavBarProps {
+  signedInHomeHref?: string;
+  signedInExperienceHints?: JourneyExperienceHints | null;
+}
+
+export function NavBar({
+  signedInHomeHref = "/profile/results",
+  signedInExperienceHints = null,
+}: NavBarProps) {
   const { locale } = useLocale();
-  const pathname = usePathname();
-  const { isSignedIn } = useAuth();
+  // Az auth-állapot a nav-context-ből jön (Clerk kliens-hook nélkül): a
+  // marketing zónában egy könnyű lekérés, az app zónában a szerver-érték
+  // adja — így a marketing-fa nem szállít clerk-js bundle-t.
+  const { isSignedIn } = useAuthState();
+  const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("TRITAN"));
 
-  useEffect(() => {
-    if (!isSignedIn) setDrawerOpen(false);
-  }, [isSignedIn]);
+  // Hide on assessment/try pages (they have their own minimal nav)
+  if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
-  const linkClass = (href: string) =>
-    `min-h-[44px] flex items-center hover:text-indigo-600 ${
-      pathname === href ? "text-indigo-600" : ""
-    }`;
+  const publicLinks = [
+    { id: "home", href: "/", label: t("nav.home", locale) },
+    { id: "blog", href: "/blog", label: t("nav.blog", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
+  ];
+
+  const authLinks = [
+    // Bejelentkezve a link az appba (journey handoff) visz — a címke is
+    // ezt mondja, ne 'Főoldal'-t (design-akciólista #18).
+    { id: "dashboard", href: signedInHomeHref, label: t("nav.dashboard", locale) },
+    { id: "blog", href: "/blog", label: t("nav.blog", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
+  ];
+
+  const links = isSignedIn ? authLinks : publicLinks;
+  const shouldShowSignedInHint = Boolean(
+    isSignedIn &&
+      signedInExperienceHints &&
+      (signedInExperienceHints.showOrgExpansionPrompt ||
+        (signedInExperienceHints.showTeamCreationBanner && !isConsultingLed()) ||
+        signedInExperienceHints.showAssessmentContinuation),
+  );
+
+  const signedInHint = !signedInExperienceHints
+    ? null
+    : signedInExperienceHints.showOrgExpansionPrompt
+      ? {
+          body: locale === "hu"
+            ? "Új szervezeti meghívásod érkezett. Csatlakozz, ha szeretnéd kiterjeszteni a saját insightodat csapat- és org-szintre."
+            : "You have a new organization invite. Join to extend your self insights to team and org levels.",
+          ctaLabel: locale === "hu" ? "Meghívás megnyitása" : "Open invite",
+          ctaHref: signedInHomeHref,
+        }
+      : signedInExperienceHints.showTeamCreationBanner && !isConsultingLed()
+        ? {
+            body: locale === "hu"
+              ? "Team fókuszt választottál. Hozd létre az első csapatodat, és építs közös képet a self eredményekből."
+              : "You selected a team-focused path. Create your first team to build shared insights from self results.",
+            ctaLabel: locale === "hu" ? "Csapat létrehozása" : "Create a team",
+            ctaHref: "/onboarding?intent=team",
+          }
+        : signedInExperienceHints.showAssessmentContinuation
+          ? {
+              body: locale === "hu"
+                ? "Félbehagytad a self assessmentet. Folytasd onnan, ahol abbahagytad."
+                : "Your self assessment is in progress. Continue where you left off.",
+              ctaLabel: locale === "hu" ? "Assessment folytatása" : "Continue assessment",
+              ctaHref: "/assessment",
+            }
+          : null;
 
   return (
-    <header className="relative z-40 w-full bg-white pb-2">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/trita-logo.svg" alt="trita" className="h-[90px] w-auto" />
-        </Link>
-        {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-4 text-sm font-semibold text-gray-600">
-          <SignedOut>
-            <LocaleSwitcher />
-            <Link href="/sign-in" className={linkClass("/sign-in")}>
-              {t("actions.signInCta", locale)}
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
-            >
-              {t("actions.signUpCta", locale)}
-            </Link>
-          </SignedOut>
-          <SignedIn>
-            <UserMenu />
-          </SignedIn>
-        </nav>
+    <>
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
 
-        {/* Mobile: signed out → auth buttons only (no hamburger, no locale switcher) */}
-        <SignedOut>
-          <div className="flex items-center gap-3 lg:hidden">
-            <LocaleSwitcher variant="icon" />
-            <Link
-              href="/sign-in"
-              className="min-h-[44px] flex items-center text-sm font-semibold text-gray-600 hover:text-indigo-600"
-            >
-              {t("actions.signInCta", locale)}
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
-            >
-              {t("actions.signUpCta", locale)}
-            </Link>
-          </div>
-        </SignedOut>
+          {/* ═══ LOGO ═══ */}
+          <Link
+            href={isSignedIn ? signedInHomeHref : "/"}
+            aria-label="trita"
+            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+          >
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          </Link>
 
-        {/* Mobile: signed in → hamburger menu */}
-        <SignedIn>
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* ═══ CENTER LINKS — desktop only ═══ */}
+          <nav className="hidden items-center gap-1 lg:flex">
+            {links.map((link) => {
+              const Icon = LINK_ICONS[link.id] ?? HomeIcon;
+              return (
+                <NavLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  icon={<Icon className="h-3.5 w-3.5" />}
+                  active={isLinkActive(currentPath, link.href)}
+                />
+              );
+            })}
+          </nav>
+
+          {/* ═══ RIGHT SIDE ═══ */}
+          <div className="flex items-center gap-2">
+            {!isSignedIn && (
+              <>
+                {/* Sign in — desktop only */}
+                <Link
+                  href="/sign-in"
+                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
+                >
+                  {t("nav.signIn", locale)}
+                </Link>
+                {/* CTA — always visible */}
+                <Link
+                  href="/try"
+                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
+                >
+                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+                </Link>
+              </>
+            )}
+
+            {isSignedIn && <UserMenu />}
+
+            {/* Separator + Language — always visible */}
+            <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
+            <LanguageSwitcher />
+
+            {/* Hamburger — mobile */}
             <button
               type="button"
-              onClick={() => setDrawerOpen(true)}
+              onClick={() => {
+                setDrawerOpen((v) => !v);
+              }}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-muted)] lg:hidden"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                className="h-6 w-6"
-              >
-                <path d="M3 5 C6 3.8, 10 6.2, 13 5 C15 4.2, 16.5 4.8, 17 5" />
-                <path d="M3 10 C6 11.2, 10 8.8, 13 10 C15 10.8, 16.5 9.5, 17 10" />
-                <path d="M3 15 C6 13.8, 10 16.2, 13 15 C15 14.2, 16.5 14.8, 17 15" />
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
+                {drawerOpen ? (
+                  <><path d="M4 4l12 12" /><path d="M16 4L4 16" /></>
+                ) : (
+                  <><path d="M3 5h14" /><path d="M3 10h14" /><path d="M3 15h14" /></>
+                )}
               </svg>
             </button>
           </div>
-        </SignedIn>
+        </div>
+      </header>
 
-        <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-      </div>
-      <svg className="absolute inset-x-0 -bottom-5 h-7 w-full text-white" viewBox="0 0 1200 50" preserveAspectRatio="none" fill="currentColor">
-        <path d="M0,0 L0,10 C150,42 350,0 600,22 C850,44 1050,0 1200,10 L1200,0 Z" />
-      </svg>
-    </header>
+      {shouldShowSignedInHint && signedInHint ? (
+        <div className="border-b border-[var(--color-border-default)] bg-[var(--color-surface-canvas)]">
+          <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-5 py-2.5 lg:px-8">
+            <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
+            <Link
+              href={signedInHint.ctaHref}
+              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-white px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+            >
+              {signedInHint.ctaLabel}
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ═══ MOBIL MENÜ — közös kártya-panel (menü-konvergencia): ugyanaz a
+          váz, mint a belépett NavHeaderUI menüje. ═══ */}
+      <MobileMenuShell open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <div className="p-3">
+          <div className="flex flex-col gap-0.5">
+            {links.map((link) => {
+              const Icon = LINK_ICONS[link.id] ?? HomeIcon;
+              return (
+                <MobileMenuRow
+                  key={link.href}
+                  href={link.href}
+                  icon={<Icon className="h-4 w-4" />}
+                  title={link.label}
+                  onClick={() => setDrawerOpen(false)}
+                />
+              );
+            })}
+          </div>
+
+          {isSignedIn ? (
+            <div className="mt-3 border-t border-[var(--color-border-soft)] pt-3">
+              {/* Kijelentkezés — a „Belépés" gombbal azonos stílusban és
+                  pozícióban. A /sign-out route-on fut (ott van ClerkProvider). */}
+              <Link
+                href="/sign-out"
+                onClick={() => setDrawerOpen(false)}
+                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              >
+                {t("nav.signOut", locale)}
+              </Link>
+            </div>
+          ) : null}
+
+          {!isSignedIn ? (
+            <div className="mt-3 flex gap-2 border-t border-[var(--color-border-soft)] pt-3">
+              <Link
+                href="/sign-in"
+                onClick={() => setDrawerOpen(false)}
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              >
+                {t("nav.signIn", locale)}
+              </Link>
+              <Link
+                href="/try"
+                onClick={() => setDrawerOpen(false)}
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-accent-primary)] text-[14px] font-semibold text-white transition-all hover:brightness-[1.06]"
+              >
+                {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+              </Link>
+            </div>
+          ) : null}
+
+          <MobileMenuSectionLabel>
+            {locale === "hu" ? "Nyelv" : "Language"}
+          </MobileMenuSectionLabel>
+          <div className="px-3 pb-1">
+            <LanguageSwitcher variant="pills" />
+          </div>
+
+        </div>
+      </MobileMenuShell>
+
+    </>
   );
 }

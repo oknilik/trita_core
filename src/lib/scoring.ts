@@ -4,9 +4,10 @@ import {
   isLikertQuestion,
   type LikertQuestion,
 } from "./questions";
+import { TRITAN_ORDER } from "./tritan";
 
 // ============================================
-// Likert scoring (HEXACO, HEXACO_MODIFIED, BIG_FIVE)
+// Likert scoring (TRITAN)
 // ============================================
 
 interface LikertAnswer {
@@ -110,4 +111,24 @@ export function calculateScores(
 ): ScoreResult {
   const { dimensions, facets, aspects } = scoreLikert(testType, answers);
   return { type: "likert", dimensions, facets, aspects };
+}
+
+/**
+ * Extracts dimension scores from a stored scores JSON, handling:
+ * - Nested ScoreResult: { type: "likert", dimensions: { TEMP: 62, ... } }
+ * - Flat format: { TEMP: 62, RESO: 45, ... }
+ */
+export function extractDimensionScores(
+  scores: unknown
+): Record<string, number> | null {
+  if (!scores || typeof scores !== "object") return null;
+  const obj = scores as Record<string, unknown>;
+  if ("dimensions" in obj && obj.dimensions && typeof obj.dimensions === "object") {
+    return obj.dimensions as Record<string, number>;
+  }
+  const hasDimKey = TRITAN_ORDER.some((code) => typeof obj[code] === "number");
+  if (hasDimKey) {
+    return obj as Record<string, number>;
+  }
+  return null;
 }

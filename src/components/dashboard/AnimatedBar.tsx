@@ -16,7 +16,7 @@ export function AnimatedBar({
   delay = 0,
 }: AnimatedBarProps) {
   return (
-    <div className={`${height} w-full overflow-hidden rounded-full bg-gray-100`}>
+    <div className={`${height} w-full overflow-hidden rounded-full bg-sand/50`}>
       <motion.div
         className="h-full rounded-full"
         initial={{ width: 0 }}

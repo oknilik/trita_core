@@ -1,67 +1,75 @@
 "use client";
-
-import { FadeIn } from "@/components/landing/FadeIn";
-import { t } from "@/lib/i18n";
+import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
+import type { SiteMode } from "@/components/landing/ModeSwitcher";
 
-const STEP_DOODLES = [
-  "/doodles/sleek.svg",
-  "/doodles/sitting-reading.svg",
-  "/doodles/unboxing.svg",
-];
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
+};
 
-export function HowItWorks() {
+export function HowItWorks({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
-  const steps = [
-    { title: t("landing.step1Title", locale), body: t("landing.step1Body", locale) },
-    { title: t("landing.step2Title", locale), body: t("landing.step2Body", locale) },
-    { title: t("landing.step3Title", locale), body: t("landing.step3Body", locale) },
-  ];
+  const strokeColor = mode === "self" ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
+
+  const steps = mode === "self"
+    ? [
+        { num: "01", title: t("landing.howSelf1Title", locale), desc: t("landing.howSelf1Desc", locale) },
+        { num: "02", title: t("landing.howSelf2Title", locale), desc: t("landing.howSelf2Desc", locale) },
+        { num: "03", title: t("landing.howSelf3Title", locale), desc: t("landing.howSelf3Desc", locale) },
+      ]
+    : [
+        { num: "01", title: t("landing.howTeam1Title", locale), desc: t("landing.howTeam1Desc", locale) },
+        { num: "02", title: t("landing.howTeam2Title", locale), desc: t("landing.howTeam2Desc", locale) },
+        { num: "03", title: t("landing.howTeam3Title", locale), desc: t("landing.howTeam3Desc", locale) },
+      ];
 
   return (
-    <section className="bg-white">
-      <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
-        <FadeIn>
-          <div className="mb-10 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
-              {t("landing.howTag", locale)}
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold text-gray-900 md:text-3xl">
-              {t("landing.howTitle", locale)}
-            </h2>
-          </div>
-        </FadeIn>
+    <section className="px-7 py-12 md:py-20">
+      <div className="mx-auto max-w-[1120px]">
+        <div className="mb-8 text-center md:mb-16">
+          <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
+            {mode === "self" ? (
+              <>{t("landing.howSelfTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howSelfTitleEm", locale)}</em></>
+            ) : (
+              <>{t("landing.howTeamTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howTeamTitleEm", locale)}</em></>
+            )}
+          </h2>
+        </div>
 
-        <div className="relative">
-          {/* Connecting line (desktop only) */}
-          <div className="absolute left-[16.67%] right-[16.67%] top-6 hidden h-0.5 bg-indigo-100 md:block" />
-
-          <div className="grid gap-10 md:grid-cols-3 md:gap-8">
-            {steps.map((step, i) => (
-              <FadeIn key={i} delay={i * 0.15}>
-                <div className="flex h-full flex-col items-center rounded-xl border border-gray-100 bg-white p-6 text-center shadow-lg md:border-indigo-100 md:bg-gradient-to-br md:from-indigo-50/80 md:via-white md:to-white md:p-8 md:shadow-lg">
-                  <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-base font-bold text-white shadow-lg shadow-indigo-200 md:h-12 md:w-12 md:text-lg">
-                    {i + 1}
-                  </div>
-
-                  <div className="mt-4 h-36 w-full overflow-hidden rounded-xl bg-indigo-50/50 py-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={STEP_DOODLES[i]}
-                      alt=""
-                      className="h-full w-full object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-
-                  <h3 className="mt-4 text-base font-semibold text-gray-900 md:text-lg">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-gray-600">{step.body}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          {steps.map((step, i) => (
+            <motion.div
+              key={step.num}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeUp}
+              transition={{ delay: i * 0.1 } as Parameters<typeof motion.div>[0]["transition"]}
+              className="flex flex-col"
+            >
+              <div className="relative mb-4 -mx-2 self-start px-2 py-1">
+                <svg
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full"
+                >
+                  <path
+                    d="M4 12 C8 4, 50 2, 92 6 C97 7, 99 12, 98 30 C97 55, 99 75, 96 90 C94 97, 60 99, 30 97 C12 96, 3 95, 2 85 C0 65, 2 38, 4 18 Z"
+                    fill={strokeColor}
+                    opacity="0.15"
+                  />
+                </svg>
+                <span className="relative font-fraunces text-5xl font-light leading-none text-ink/30">
+                  {step.num}
+                </span>
+              </div>
+              <h3 className="font-dm-sans mb-2 text-base font-semibold text-ink">{step.title}</h3>
+              <p className="max-w-[280px] text-sm leading-relaxed text-ink-body">{step.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

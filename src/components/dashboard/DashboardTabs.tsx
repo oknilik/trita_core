@@ -13,10 +13,7 @@ import { DimensionHighlights } from "@/components/dashboard/DimensionHighlights"
 import { ObserverComparison } from "@/components/dashboard/ObserverComparison";
 import { InviteSection } from "@/components/dashboard/InviteSection";
 import { RetakeButton } from "@/components/dashboard/RetakeButton";
-import { JourneyProgress } from "@/components/dashboard/JourneyProgress";
 import { ProfileInsights } from "@/components/dashboard/ProfileInsights";
-import { ResearchSurvey } from "@/components/dashboard/ResearchSurvey";
-import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 
 type TabId = "results" | "comparison" | "invites";
 
@@ -118,17 +115,15 @@ export interface DashboardTabsProps {
   receivedInvitations: SerializedReceivedInvitation[];
   hasInvites: boolean;
   pendingInvitesCount: number;
-  surveySubmitted: boolean;
-  feedbackSubmitted: boolean;
-  occupationStatus: string | null;
+
+  // Paywall
+  hasObserverAccess: boolean;
 }
 
 export function DashboardTabs(props: DashboardTabsProps) {
   const { locale } = useLocale();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>(props.activeTab);
-  const [surveyModalOpen, setSurveyModalOpen] = useState(false);
-  const [surveySubmitted, setSurveySubmitted] = useState(props.surveySubmitted);
   const tabBarRef = useRef<HTMLDivElement>(null);
 
   const handleTabChange = useCallback(
@@ -169,23 +164,6 @@ export function DashboardTabs(props: DashboardTabsProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Allow nested components to open the research survey modal.
-  useEffect(() => {
-    const onOpenSurvey = () => setSurveyModalOpen(true);
-    window.addEventListener("dashboard:open-survey", onOpenSurvey);
-    return () => window.removeEventListener("dashboard:open-survey", onOpenSurvey);
-  }, []);
-
-  // Hide survey CTAs immediately after submission without requiring a page refresh.
-  useEffect(() => {
-    const onSurveySubmitted = () => {
-      setSurveySubmitted(true);
-      setSurveyModalOpen(false);
-    };
-    window.addEventListener("dashboard:survey-submitted", onSurveySubmitted);
-    return () => window.removeEventListener("dashboard:survey-submitted", onSurveySubmitted);
-  }, []);
-
   const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
     {
       id: "results",
@@ -222,51 +200,8 @@ export function DashboardTabs(props: DashboardTabsProps) {
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
-      {/* Journey progress — visible on all tabs */}
-      <FadeIn>
-        <section className="relative overflow-hidden rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-100/80 via-purple-50/60 to-pink-50/40 glass-effect p-8 shadow-md shadow-indigo-200/40 md:p-12">
-          {/* Background glow */}
-          <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-500/25 via-purple-500/15 to-pink-500/15 blur-3xl" aria-hidden="true" />
-          <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-gradient-to-tr from-purple-500/20 via-indigo-500/10 to-pink-500/10 blur-3xl" aria-hidden="true" />
-
-          <div className="relative z-10">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
-                {t("dashboard.guidedTag", locale)}
-              </p>
-              <div className="mt-3 flex items-center gap-3">
-                <div className="h-1 w-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                  {t("dashboard.nextStepTitle", locale)}
-                </h2>
-              </div>
-              <p className="mt-3 text-sm text-gray-700">
-                {t("dashboard.guidedPraise", locale)}
-              </p>
-            </div>
-            <JourneyProgress
-              locale={locale}
-              initialHasInvites={props.hasInvites}
-              initialPendingInvites={props.pendingInvitesCount}
-              hasObserverFeedback={props.hasObserverFeedback}
-              completedObserversCount={props.completedObserversCount}
-              onTabChange={handleTabChange}
-              surveySubmitted={surveySubmitted}
-              onOpenSurvey={() => setSurveyModalOpen(true)}
-            />
-            <ResearchSurvey
-              locale={locale}
-              hasObserverFeedback={props.hasObserverFeedback}
-              occupationStatus={props.occupationStatus}
-              isOpen={surveyModalOpen}
-              onClose={() => setSurveyModalOpen(false)}
-            />
-          </div>
-        </section>
-      </FadeIn>
-
       {/* Tab bar */}
-      <div ref={tabBarRef} className="scroll-mt-24 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
+      <div ref={tabBarRef} className="scroll-mt-24 rounded-2xl border border-sand/70 bg-white p-2 shadow-sm">
         <div
           className="grid grid-cols-3 gap-1.5"
           role="tablist"
@@ -278,10 +213,10 @@ export function DashboardTabs(props: DashboardTabsProps) {
               role="tab"
               aria-selected={activeTab === tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-3 py-3 text-xs font-semibold transition-all duration-200 md:flex-row md:gap-2 md:text-sm ${
+                className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-3 py-3 text-xs font-semibold transition-all duration-200 md:flex-row md:gap-2 md:text-sm ${
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-200"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  ? "bg-gradient-to-r from-sage to-sage-deep text-white shadow-md shadow-sage/25"
+                  : "text-muted hover:bg-surface-subtle hover:text-ink-body"
               }`}
             >
               {tab.icon}
@@ -310,8 +245,6 @@ export function DashboardTabs(props: DashboardTabsProps) {
             hasDraft={props.hasDraft}
             rawDimensions={props.rawDimensions}
             testType={props.testType}
-            feedbackSubmitted={props.feedbackSubmitted}
-            hasObserverFeedback={props.hasObserverFeedback}
             locale={locale}
           />
           </div>
@@ -324,7 +257,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             completedObserversCount={props.completedObserversCount}
             avgConfidence={props.avgConfidence}
             hasObserverFeedback={props.hasObserverFeedback}
-            surveySubmitted={surveySubmitted}
+            hasObserverAccess={props.hasObserverAccess}
             onTabChange={handleTabChange}
             locale={locale}
           />
@@ -335,6 +268,7 @@ export function DashboardTabs(props: DashboardTabsProps) {
             <InvitesTabPanel
             sentInvitations={props.sentInvitations}
             receivedInvitations={props.receivedInvitations}
+            hasObserverAccess={props.hasObserverAccess}
             locale={locale}
           />
           </div>
@@ -357,8 +291,6 @@ interface ResultsTabPanelProps {
   hasDraft: boolean;
   rawDimensions: Record<string, number>;
   testType: string;
-  feedbackSubmitted: boolean;
-  hasObserverFeedback: boolean;
   locale: Locale;
 }
 
@@ -373,8 +305,6 @@ function ResultsTabPanel({
   hasDraft,
   rawDimensions,
   testType,
-  feedbackSubmitted,
-  hasObserverFeedback,
   locale,
 }: ResultsTabPanelProps) {
   // Highlights are "spectrum high/low" (raw trait intensity), not "best/worst".
@@ -387,14 +317,14 @@ function ResultsTabPanel({
     <>
       {/* Chart overview + highlights */}
       <FadeIn delay={0.05}>
-        <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+        <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg">
           <div className="flex items-center gap-3 mb-6">
-            <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+            <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
             <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
               {tf("dashboard.profileOverview", locale, { testName: profileOverviewTestName })}
             </h2>
           </div>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-ink-body">
             {tf("dashboard.overviewLikert", locale, {
               count: mainScores?.length ?? 0,
             })}
@@ -403,7 +333,7 @@ function ResultsTabPanel({
           {mainScores && (
             <div className="mt-6 grid items-start gap-6 md:grid-cols-[1fr_13rem]">
               <div className="flex items-center justify-center">
-                <div className="h-[21rem] w-[21rem] md:h-[24rem] md:w-[24rem]">
+                <div className="aspect-square w-full max-w-[21rem] md:max-w-[24rem]">
                   <RadarChart
                     dimensions={mainScores.map((d) => ({
                       code: d.code,
@@ -436,14 +366,14 @@ function ResultsTabPanel({
       {/* Detailed dimension cards */}
       {isLikert && mainScores && (
         <FadeIn delay={0.1}>
-          <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg">
+          <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-1 w-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+              <div className="h-1 w-12 bg-gradient-to-r from-sage to-sage-deep rounded-full" />
               <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 {t("dashboard.detailedTitle", locale)}
               </h2>
             </div>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-ink-body">
               {t("dashboard.detailedBody", locale)}
             </p>
 
@@ -477,7 +407,7 @@ function ResultsTabPanel({
             {altruismScore && (() => {
               const dimConfig = dimConfigs["I"];
               return (
-                <div className="mt-8 border-t border-gray-100 pt-8">
+                <div className="mt-8 border-t border-sand/70 pt-8">
                   <div className="mb-4 flex items-start gap-3 rounded-lg border border-emerald-100 bg-emerald-50/50 px-4 py-3">
                     <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500">
                       <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clipRule="evenodd" />
@@ -519,19 +449,14 @@ function ResultsTabPanel({
         </FadeIn>
       )}
 
-      {/* Satisfaction feedback */}
-      <FadeIn delay={0.14}>
-        <FeedbackForm initialSubmitted={feedbackSubmitted} hasObserverFeedback={hasObserverFeedback} />
-      </FadeIn>
-
       {/* Retake CTA */}
       <FadeIn delay={0.15}>
-        <section className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
+        <section className="relative overflow-hidden rounded-2xl border border-sand/70 bg-white p-6 md:p-8">
           <div className="flex flex-col items-center gap-2 text-center">
             {hasDraft ? (
               <Link
                 href="/assessment"
-                className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+                className="inline-flex min-h-[44px] items-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
               >
                 {t("actions.continueDraft", locale)}
               </Link>
@@ -553,7 +478,7 @@ interface ComparisonTabPanelProps {
   completedObserversCount: number;
   avgConfidence: number | null;
   hasObserverFeedback: boolean;
-  surveySubmitted: boolean;
+  hasObserverAccess: boolean;
   onTabChange: (tab: TabId) => void;
   locale: Locale;
 }
@@ -564,7 +489,7 @@ function ComparisonTabPanel({
   completedObserversCount,
   avgConfidence,
   hasObserverFeedback,
-  surveySubmitted,
+  hasObserverAccess,
   onTabChange,
   locale,
 }: ComparisonTabPanelProps) {
@@ -572,28 +497,28 @@ function ComparisonTabPanel({
   if (completedObserversCount < 2) {
     return (
       <FadeIn>
-        <section className="rounded-2xl border border-gray-100/50 bg-white p-8 md:p-12 shadow-lg text-center">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50">
-            <svg className="h-7 w-7 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+        <section className="rounded-2xl border border-sand/50 bg-white p-8 md:p-12 shadow-lg text-center">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-sage-soft">
+            <svg className="h-7 w-7 text-bronze" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
           </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-500">
+          <p className="text-xs font-semibold uppercase tracking-widest text-bronze">
             {t("comparison.title", locale)}
           </p>
-          <h2 className="mt-3 text-2xl font-semibold text-gray-900">
+          <h2 className="mt-3 text-2xl font-semibold text-ink">
             {t("comparison.anonGateTitle", locale)}
           </h2>
-          <p className="mt-3 text-sm text-gray-600 max-w-sm mx-auto">
+          <p className="mt-3 text-sm text-ink-body max-w-sm mx-auto">
             {t("comparison.anonGateBody", locale)}
           </p>
-          <p className="mt-3 text-sm font-semibold text-indigo-600">
+          <p className="mt-3 text-sm font-semibold text-bronze">
             {tf("comparison.anonGateProgress", locale, { count: completedObserversCount })}
           </p>
           <button
             type="button"
             onClick={() => onTabChange("invites")}
-            className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+            className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-sage to-sage-deep px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
           >
             {t("comparison.anonGateCta", locale)}
           </button>
@@ -607,12 +532,26 @@ function ComparisonTabPanel({
   return (
     <>
       <FadeIn delay={0.05}>
-        <ObserverComparison
-          observerCount={observerComparison.count}
-          avgConfidence={avgConfidence}
-          facetDivergences={facetDivergences}
-          surveySubmitted={surveySubmitted}
-        />
+        <div className={!hasObserverAccess ? "relative" : undefined}>
+          <ObserverComparison
+            observerCount={observerComparison.count}
+            avgConfidence={avgConfidence}
+            facetDivergences={facetDivergences}
+          />
+          {!hasObserverAccess && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-white/80 backdrop-blur-sm">
+              <p className="mb-4 text-center text-sm font-semibold text-ink">
+                Az összehasonlítás a teljes csomag része.
+              </p>
+              <a
+                href="/contact"
+                className="inline-flex min-h-[44px] items-center justify-center rounded bg-sage px-6 text-sm font-semibold text-white transition-colors hover:bg-sage-dark"
+              >
+                Kapcsolatfelvétel →
+              </a>
+            </div>
+          )}
+        </div>
       </FadeIn>
 
     </>
@@ -624,12 +563,14 @@ function ComparisonTabPanel({
 interface InvitesTabPanelProps {
   sentInvitations: SerializedInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
+  hasObserverAccess: boolean;
   locale: Locale;
 }
 
 function InvitesTabPanel({
   sentInvitations,
   receivedInvitations,
+  hasObserverAccess,
   locale,
 }: InvitesTabPanelProps) {
   return (
@@ -637,18 +578,18 @@ function InvitesTabPanel({
       {/* Invite section */}
       <FadeIn delay={0.1}>
         <div className="relative overflow-hidden rounded-2xl scroll-mt-24">
-          <InviteSection initialInvitations={sentInvitations} />
+          <InviteSection initialInvitations={sentInvitations} hasObserverAccess={hasObserverAccess} />
         </div>
       </FadeIn>
 
       {/* Received invitations */}
       {receivedInvitations.length > 0 && (
         <FadeIn delay={0.15}>
-          <section className="rounded-2xl border border-gray-100 bg-white p-6 md:p-8">
-            <h2 className="text-2xl font-semibold text-gray-900">
+          <section className="rounded-2xl border border-sand/70 bg-white p-6 md:p-8">
+            <h2 className="text-2xl font-semibold text-ink">
               {t("dashboard.invitesReceivedTitle", locale)}
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-ink-body">
               {t("dashboard.invitesReceivedBody", locale)}
             </p>
             <div className="mt-6 flex flex-col gap-2">
@@ -659,7 +600,7 @@ function InvitesTabPanel({
                 return (
                   <div
                     key={inv.id}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-gray-100 px-4 py-3"
+                    className="flex items-center justify-between gap-3 rounded-lg border border-sand/70 px-4 py-3"
                   >
                     <div className="flex items-center gap-3">
                       <span
@@ -667,13 +608,13 @@ function InvitesTabPanel({
                           inv.status === "COMPLETED"
                             ? "bg-emerald-500"
                             : inv.status === "CANCELED" || isExpired
-                              ? "bg-gray-300"
+                              ? "bg-sand"
                               : "bg-amber-400"
                         }`}
                       />
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{inviterName}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-semibold text-ink">{inviterName}</p>
+                        <p className="text-xs text-muted">
                           {inv.status === "COMPLETED"
                             ? t("common.statusCompleted", locale)
                             : inv.status === "CANCELED"
@@ -687,7 +628,7 @@ function InvitesTabPanel({
                     {isPending && !isExpired && (
                       <Link
                         href={`/observe/${inv.token}`}
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                        className="text-sm font-medium text-bronze hover:text-bronze-dark"
                       >
                         {t("actions.openFill", locale)}
                       </Link>

@@ -1,98 +1,86 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
-import { getServerLocale } from "@/lib/i18n-server";
-import { NavBar } from "@/components/NavBar";
-import { Footer } from "@/components/Footer";
 import { getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  display: "swap", // Show fallback font immediately
-  preload: true,
+  display: "swap",
+  axes: ["opsz"],
+  weight: "variable",
+  style: ["normal", "italic"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
-  display: "swap", // Show fallback font immediately
-  preload: true,
+  display: "swap",
+  axes: ["opsz"],
+  weight: "variable",
+  style: ["normal", "italic"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
-  const title = "trita";
-  const description = t("meta.description", locale);
-  const ogTitle = t("landing.heroTitle", locale);
-  return {
-    metadataBase: getMetadataBase(),
-    title: {
-      default: title,
-      template: "%s",
-    },
-    description,
-    alternates: {
-      canonical: "/",
-    },
-    openGraph: {
-      type: "website",
-      siteName: "trita",
-      title: ogTitle,
-      description,
-      url: "/",
-      locale: "hu_HU",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: ogTitle,
-      description,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-    icons: {
-      icon: [
-        { url: "/icon", type: "image/png" },
-        { url: "/favicon.svg", type: "image/svg+xml" },
-      ],
-      shortcut: ["/favicon.svg"],
-      apple: [
-        { url: "/apple-icon" },
-      ],
-    },
-  };
-}
+// Valódi mono a „// szekció" dev-esztétikához — a --font-mono eddig a
+// DM Sans-ra volt aliasolva, így a font-mono osztály nem monóval
+// renderelt (tipográfiai audit #1).
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500"],
+});
 
-export default async function RootLayout({
+// Statikus metadata a DEFAULT_LOCALE-lal — a root layout nem olvashat
+// cookie-t/headert, különben az egész app dinamikusra kényszerül. A
+// lokalizált metadata oldal-szinten felülírható.
+export const metadata: Metadata = {
+  metadataBase: getMetadataBase(),
+  title: { default: "trita", template: "%s" },
+  description: t("meta.description", DEFAULT_LOCALE),
+  // Canonical NINCS itt: a root layoutból minden aloldal örökölné a "/"-t,
+  // amitől a kereső duplikátumnak látná őket — oldal-szinten kell megadni.
+  openGraph: {
+    type: "website",
+    siteName: "trita",
+    title: t("landing.heroTitle", DEFAULT_LOCALE),
+    description: t("meta.description", DEFAULT_LOCALE),
+    url: "/",
+    locale: "hu_HU",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: t("landing.heroTitle", DEFAULT_LOCALE),
+    description: t("meta.description", DEFAULT_LOCALE),
+  },
+  robots: { index: true, follow: true },
+  icons: {
+    icon: [
+      { url: "/icon", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: ["/favicon.svg"],
+    apple: [{ url: "/apple-icon" }],
+  },
+};
+
+export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang={DEFAULT_LOCALE}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ClerkProvider
-          signInFallbackRedirectUrl="/dashboard"
-          signUpFallbackRedirectUrl="/onboarding"
-        >
-          <LocaleProvider>
-            <ToastProvider>
-              <NavBar />
-              <div className="pb-20">{children}</div>
-              <Footer />
-            </ToastProvider>
-          </LocaleProvider>
-        </ClerkProvider>
+      <body className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}>
+        {/* ClerkProvider NEM itt van: a marketing-fa (landing/blog/…) így nem
+            szállít clerk-js bundle-t. A Clerk a (app) és (auth) zóna
+            layoutjában él; a publikus nav auth-állapotát a nav-context adja. */}
+        <LocaleProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

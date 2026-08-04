@@ -57,22 +57,27 @@ export async function POST(req: Request) {
       ? payload.freeformFeedback.trim()
       : "";
 
-  await prisma.satisfactionFeedback.upsert({
-    where: { userProfileId: profile.id },
-    update: {
-      agreementScore,
-      observerFeedbackUsefulness,
-      siteUsefulness,
-      freeformFeedback: freeform.length > 0 ? freeform : null,
-      interestedInUpdates: Boolean(payload.interestedInUpdates),
+  const feedbackPayload = {
+    observerFeedbackUsefulness,
+    siteUsefulness,
+    freeformFeedback: freeform.length > 0 ? freeform : null,
+    interestedInUpdates: Boolean(payload.interestedInUpdates),
+  };
+  await prisma.feedback.upsert({
+    where: {
+      userProfileId_kind_targetKey: {
+        userProfileId: profile.id,
+        kind: "satisfaction",
+        targetKey: "self",
+      },
     },
+    update: { rating: agreementScore, payload: feedbackPayload },
     create: {
       userProfileId: profile.id,
-      agreementScore,
-      observerFeedbackUsefulness,
-      siteUsefulness,
-      freeformFeedback: freeform.length > 0 ? freeform : null,
-      interestedInUpdates: Boolean(payload.interestedInUpdates),
+      kind: "satisfaction",
+      targetKey: "self",
+      rating: agreementScore,
+      payload: feedbackPayload,
     },
   });
 

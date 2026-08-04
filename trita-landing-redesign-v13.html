@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>trita – Team Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf9f6;
+    --bg2: #f0ede6;
+    --ink: #1a1814;
+    --ink2: #5a5650;
+    --accent: #c8410a;
+    --accent-light: #fef3ec;
+    --border: #e0ddd6;
+    --green: #1a5c3a;
+    --green-light: #edf7f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 64px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(250,249,246,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+
+  .logo em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  nav ul {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    align-items: center;
+  }
+
+  nav ul a {
+    color: var(--ink2);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--ink); }
+
+  .nav-cta {
+    background: var(--accent) !important;
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-weight: 500 !important;
+    transition: opacity 0.2s !important;
+  }
+
+  .nav-cta:hover { opacity: 0.88 !important; }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 85vh;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-left {
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .eyebrow-line {
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .eyebrow-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 5vw, 72px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 28px;
+    color: var(--ink);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--ink2);
+    line-height: 1.75;
+    max-width: 440px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-primary:hover {
+    background: #a33408;
+    transform: translateY(-1px);
+  }
+
+  .trial-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink2);
+    letter-spacing: 0.5px;
+  }
+
+  .hero-right {
+    background: var(--bg2);
+    padding: 60px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-right::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 32px;
+    font-family: 'Playfair Display', serif;
+    font-size: 200px;
+    color: var(--border);
+    line-height: 1;
+    font-weight: 900;
+  }
+
+  .quote-block {
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .quote-source {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .hero-metrics {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .metric {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 4px;
+  }
+
+  .metric-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: var(--ink2);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* EDITORIAL SECTION */
+  .editorial {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .editorial-sidebar {
+    padding: 60px 40px;
+    border-right: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .section-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .editorial-content {
+    padding: 60px 64px;
+  }
+
+  .pain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pain-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    transition: background 0.15s;
+  }
+
+  .pain-item:last-child { border-bottom: none; }
+
+  .pain-item:hover {
+    background: var(--accent-light);
+    margin: 0 -64px;
+    padding: 28px 64px;
+  }
+
+  .pain-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .pain-desc {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  .pain-tag {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 80px 64px;
+    border-bottom: 1px solid var(--border);
+    background: var(--ink);
+    color: white;
+  }
+
+  .how-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .how-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .how-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 32px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .how-card:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .how-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.07);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .how-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: white;
+  }
+
+  .how-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+  }
+
+  .how-time {
+    margin-top: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* SCIENCE SECTION */
+  .science-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .science-left {
+    padding: 80px 64px;
+    border-right: 1px solid var(--border);
+  }
+
+  .science-right {
+    padding: 80px 64px;
+    background: var(--green-light);
+  }
+
+  .science-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green-light);
+    border: 1px solid rgba(26,92,58,0.2);
+    padding: 6px 14px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    margin-bottom: 32px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .science-points {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .science-point {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .science-point:last-child { border-bottom: none; }
+
+  .science-point-icon {
+    color: var(--green);
+    font-size: 18px;
+    min-width: 24px;
+  }
+
+  .science-point-text {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.7;
+  }
+
+  .science-point-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* HEXACO DIMS */
+  .dim-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .dim-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid rgba(26,92,58,0.1);
+  }
+
+  .dim-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .dim-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dim-bar {
+    width: 80px;
+    height: 4px;
+    background: rgba(26,92,58,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .dim-bar-inner {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+  }
+
+  .dim-score {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    width: 28px;
+    text-align: right;
+  }
+
+  /* PRICING */
+  .pricing-section {
+    padding: 80px 64px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pricing-inner {
+    max-width: 800px;
+  }
+
+  .pricing-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+
+  .pricing-header {
+    background: var(--ink);
+    color: white;
+    padding: 32px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pricing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .pricing-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -2px;
+  }
+
+  .pricing-price sub {
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0;
+    color: rgba(255,255,255,0.5);
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+
+  .pricing-body {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: white;
+  }
+
+  .pricing-feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pricing-feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink2);
+  }
+
+  .pricing-feature-list li::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .pricing-action {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .pricing-extras-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pricing-extras-list li {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink2);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 64px;
+    background: var(--accent);
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: white;
+  }
+
+  .btn-white {
+    background: white;
+    color: var(--accent);
+    padding: 18px 36px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .btn-white:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    padding: 32px 64px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    align-items: center;
+    padding: 0 64px;
+    border-bottom: 1px solid var(--border);
+    background: var(--ink);
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 28px 0;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.5px;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  /* USE CASE SECTION */
+  .usecase-section {
+    padding: 80px 64px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .usecase-header {
+    margin-bottom: 48px;
+  }
+
+  .usecase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .usecase-card {
+    background: var(--bg);
+    padding: 36px 32px;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .usecase-card:hover { background: white; }
+
+  .usecase-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .usecase-card:hover::before { opacity: 1; }
+
+  .usecase-icon {
+    margin-bottom: 20px;
+  }
+
+  .usecase-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .usecase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .usecase-desc {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .usecase-outcome {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink2);
+    letter-spacing: 0.5px;
+  }
+
+  /* =====================
+     MOBILE RESPONSIVE
+  ===================== */
+  @media (max-width: 768px) {
+
+    /* NAV */
+    nav {
+      padding: 16px 24px;
+    }
+
+    nav ul {
+      gap: 0;
+    }
+
+    nav ul li:not(:last-child) {
+      display: none;
+    }
+
+    /* HERO */
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .hero-left {
+      padding: 48px 24px 40px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: clamp(40px, 10vw, 56px);
+      letter-spacing: -1.5px;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 24px;
+    }
+
+    .hero-right {
+      padding: 32px 24px;
+    }
+
+    .hero-right::before {
+      display: none;
+    }
+
+    /* Hide radar on mobile, show only insights + quote + founding */
+    .hero-right > div:first-child {
+      display: none;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      flex-wrap: wrap;
+      padding: 0 24px;
+    }
+
+    .stat-item {
+      flex: 1 1 45%;
+      padding: 20px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-num {
+      font-size: 28px;
+    }
+
+    .stat-divider {
+      display: none;
+    }
+
+    /* EDITORIAL */
+    .editorial {
+      grid-template-columns: 1fr;
+    }
+
+    .editorial-sidebar {
+      padding: 24px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .section-number {
+      font-size: 48px;
+      margin-bottom: 0;
+    }
+
+    .editorial-content {
+      padding: 24px;
+    }
+
+    .pain-item {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .pain-item:hover {
+      margin: 0;
+      padding: 28px 0;
+    }
+
+    .pain-tag {
+      align-self: flex-start;
+    }
+
+    /* HOW SECTION */
+    .how-section {
+      padding: 48px 24px;
+    }
+
+    .how-grid {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+
+    /* USE CASE */
+    .usecase-section {
+      padding: 48px 24px;
+    }
+
+    .usecase-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* SCIENCE */
+    .science-section {
+      grid-template-columns: 1fr;
+    }
+
+    .science-left {
+      padding: 48px 24px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .science-right {
+      padding: 48px 24px;
+    }
+
+    /* PRICING */
+    .pricing-section {
+      padding: 48px 24px;
+    }
+
+    .pricing-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 24px;
+    }
+
+    .pricing-price {
+      font-size: 40px;
+    }
+
+    .pricing-body {
+      grid-template-columns: 1fr;
+      padding: 24px;
+      gap: 28px;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 64px 24px;
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 32px;
+    }
+
+    .btn-white {
+      display: block;
+      text-align: center;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 24px;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+
+    /* h2 global */
+    h2 {
+      font-size: clamp(28px, 7vw, 40px);
+      letter-spacing: -1px;
+    }
+  }
+
+  /* TABLET */
+  @media (min-width: 769px) and (max-width: 1024px) {
+
+    nav { padding: 20px 32px; }
+
+    .hero-left { padding: 60px 40px; }
+    .hero-right { padding: 40px 32px; }
+
+    .editorial { grid-template-columns: 180px 1fr; }
+    .editorial-content { padding: 40px; }
+
+    .how-section { padding: 60px 40px; }
+    .how-grid { grid-template-columns: 1fr; gap: 2px; }
+
+    .usecase-section { padding: 60px 40px; }
+    .usecase-grid { grid-template-columns: 1fr; }
+
+    .science-section { grid-template-columns: 1fr; }
+    .science-left {
+      padding: 60px 40px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .science-right { padding: 60px 40px; }
+
+    .pricing-section { padding: 60px 40px; }
+    .pricing-body { grid-template-columns: 1fr; gap: 24px; }
+
+    .cta-section {
+      padding: 80px 40px;
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 32px;
+    }
+
+    .stats-bar { padding: 0 32px; }
+    .stat-num { font-size: 28px; }
+
+    footer { padding: 24px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">trit<em>a</em></div>
+  <ul>
+    <li><a href="#">Hogyan működik</a></li>
+    <li><a href="#">Tudomány</a></li>
+    <li><a href="#">Árazás</a></li>
+    <li><a href="#" class="nav-cta">Kipróbálom →</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">Csapatintelligencia platform</div>
+    </div>
+    <h1>Végre látod,<br>hogyan működik<br>a csapatod.</h1>
+    <p class="hero-sub">A trita megmutatja, ami eddig láthatatlan volt – a csapatod valódi dinamikáját. Mielőtt a feszültség konfliktussá, a konfliktus pedig költséggé válik.</p>
+    <div class="hero-cta-group">
+      <a href="#" class="btn-primary">Megnézem a csapatomat →</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+
+    <!-- Mini Dashboard Preview -->
+    <div style="background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 4px 24px rgba(26,24,20,0.07)">
+      <div style="background:var(--bg2);padding:10px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2);letter-spacing:1px">CSAPAT PROFIL — Sales (6 fő)</div>
+        <div style="display:flex;gap:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#e0ddd6"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#e0ddd6"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0.5"></div>
+        </div>
+      </div>
+      <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center">
+        <!-- Radar -->
+        <div style="display:flex;justify-content:center">
+          <svg width="160" height="160" viewBox="-88 -88 176 176" overflow="visible">
+            <defs>
+              <radialGradient id="heroRg" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#c8410a" stop-opacity="0.12"/>
+                <stop offset="100%" stop-color="#c8410a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <!-- Grid rings -->
+            <polygon points="0,-70 61,-35 61,35 0,70 -61,35 -61,-35" fill="none" stroke="#e0ddd6" stroke-width="1"/>
+            <polygon points="0,-52 45,-26 45,26 0,52 -45,26 -45,-26" fill="none" stroke="#e0ddd6" stroke-width="1"/>
+            <polygon points="0,-35 30,-17 30,17 0,35 -30,17 -30,-17" fill="none" stroke="#e0ddd6" stroke-width="1"/>
+            <!-- Axis lines -->
+            <line x1="0" y1="0" x2="0" y2="-70" stroke="#e0ddd6" stroke-width="1"/>
+            <line x1="0" y1="0" x2="61" y2="-35" stroke="#e0ddd6" stroke-width="1"/>
+            <line x1="0" y1="0" x2="61" y2="35" stroke="#e0ddd6" stroke-width="1"/>
+            <line x1="0" y1="0" x2="0" y2="70" stroke="#e0ddd6" stroke-width="1"/>
+            <line x1="0" y1="0" x2="-61" y2="35" stroke="#e0ddd6" stroke-width="1"/>
+            <line x1="0" y1="0" x2="-61" y2="-35" stroke="#e0ddd6" stroke-width="1"/>
+            <!-- Self data -->
+            <polygon points="0,-62 52,-24 54,32 0,58 -56,28 -44,-40" fill="url(#heroRg)" stroke="#c8410a" stroke-width="2"/>
+            <!-- Observer data -->
+            <polygon points="0,-50 42,-30 44,26 0,48 -50,24 -38,-42" fill="none" stroke="#1a5c3a" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7"/>
+            <!-- Labels -->
+            <text x="0" y="-78" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#5a5650">Nyitottság</text>
+            <text x="70" y="-38" text-anchor="start" font-family="IBM Plex Mono" font-size="8" fill="#5a5650">Lelkiis.</text>
+            <text x="70" y="42" text-anchor="start" font-family="IBM Plex Mono" font-size="8" fill="#5a5650">Extrav.</text>
+            <text x="0" y="84" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#5a5650">Egym.</text>
+            <text x="-70" y="42" text-anchor="end" font-family="IBM Plex Mono" font-size="8" fill="#5a5650">Becsül.</text>
+            <text x="-70" y="-38" text-anchor="end" font-family="IBM Plex Mono" font-size="8" fill="#5a5650">Érz. st.</text>
+          </svg>
+        </div>
+        <!-- Insight cards -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="padding:10px 12px;background:var(--bg);border-radius:4px;border-left:2px solid var(--accent)">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:3px">⚠ FESZÜLTSÉG</div>
+            <div style="font-size:11px;color:var(--ink2);line-height:1.5">Döntéshozatalnál konfliktus valószínű – 3 fő eltérő stílus</div>
+          </div>
+          <div style="padding:10px 12px;background:var(--bg);border-radius:4px;border-left:2px solid var(--green)">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);margin-bottom:3px">✓ ERŐSSÉG</div>
+            <div style="font-size:11px;color:var(--ink2);line-height:1.5">Magas megbízhatóság, határidők tartása erős</div>
+          </div>
+          <div style="padding:10px 12px;background:var(--bg);border-radius:4px;border-left:2px solid #9333ea">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#9333ea;margin-bottom:3px">◎ SELF VS OBSERVER</div>
+            <div style="font-size:11px;color:var(--ink2);line-height:1.5">2 tag önképe jelentősen eltér mások visszajelzésétől</div>
+          </div>
+        </div>
+      </div>
+      <!-- Legend -->
+      <div style="padding:10px 20px;border-top:1px solid var(--border);display:flex;gap:20px;background:var(--bg2)">
+        <div style="display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2)">
+          <svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#c8410a" stroke-width="2"/></svg>önkép
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2)">
+          <svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#1a5c3a" stroke-width="1.5" stroke-dasharray="4,2"/></svg>observer
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <div style="margin-top:20px;padding:16px 20px;background:var(--bg2);border-radius:4px;border-left:3px solid var(--border)">
+      <p style="font-family:'Playfair Display',serif;font-size:14px;font-style:italic;color:var(--ink);line-height:1.6;margin-bottom:8px">"48 óra alatt többet tudtam meg a csapatomról, mint az előző két évben."</p>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2);letter-spacing:1px">— Pilot tesztelő, 12 fős tech csapat</div>
+    </div>
+
+    <!-- Founding customer program -->
+    <div style="margin-top:16px;background:white;border:1px solid var(--border);border-radius:4px;padding:16px 20px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#e8a87c)"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">◆ Founding Customer Program</div>
+          <div style="font-size:13px;font-weight:600;color:var(--ink)">Csatlakozz az első 10 cég közé</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:3px">Személyes onboarding + founding ár az első évre</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;margin-left:16px">
+          <div style="width:10px;height:10px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite"></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2);white-space:nowrap">3 hely maradt</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">18</div>
+    <div class="stat-label">csapat elemezve</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-num">126</div>
+    <div class="stat-label">kitöltött felmérés</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-num">48h</div>
+    <div class="stat-label">átlagos idő az első csapatképig</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-num">3–6×</div>
+    <div class="stat-label">havi bér veszteség egy rossz hire-nál</div>
+  </div>
+</div>
+
+<div class="editorial">
+  <div class="editorial-sidebar">
+    <div class="section-number">01</div>
+    <div class="section-title">A valódi probléma</div>
+  </div>
+  <div class="editorial-content">
+    <div class="pain-list">
+      <div class="pain-item">
+        <div>
+          <div class="pain-name">Rossz felvétel</div>
+          <div class="pain-desc">Egy elhibázott felvétel nem csak pénzbe kerül. Szétrombolhatja azt a csapatdinamikát, amit hónapok alatt építettek fel.</div>
+        </div>
+        <div class="pain-tag">3–6 havi bér</div>
+      </div>
+      <div class="pain-item">
+        <div>
+          <div class="pain-name">Rejtett csapatkonfiktus</div>
+          <div class="pain-desc">Két kollégád nem tud együtt dolgozni. Mindenki látja, de senki nem érti a forrását. A projekt csúszik, a megbeszélések feszültek. A dinamika láthatatlan, de mérhető.</div>
+        </div>
+        <div class="pain-tag">-30% produktivitás</div>
+      </div>
+      <div class="pain-item">
+        <div>
+          <div class="pain-name">Váratlan lemorzsolódás</div>
+          <div class="pain-desc">A legjobb emberek sem maradnak rossz szerepben. Ha valaki elmegy, az ritkán szól a pénzről – sokszor inkább arról, hogy soha nem voltak a helyükön.</div>
+        </div>
+        <div class="pain-tag">50–200% éves bér</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="usecase-section">
+  <div class="usecase-header">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Mire használják a csapatok</div>
+    <h2>Három helyzet,<br>ahol a trita számít.</h2>
+  </div>
+  <div class="usecase-grid">
+    <div class="usecase-card">
+      <div class="usecase-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="10" r="5" stroke="#c8410a" stroke-width="1.5"/>
+          <path d="M6 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#c8410a" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M22 8l2 2 4-4" stroke="#1a5c3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="usecase-label">01 — Felvétel</div>
+      <div class="usecase-title">Új kolléga felvétele</div>
+      <div class="usecase-desc">Látod, hogyan illeszkedik a jelölt személyisége és munkastílusa a meglévő csapat dinamikájába – mielőtt aláírjátok a szerződést. Nem csak megérzésből, adatokból.</div>
+      <div class="usecase-outcome">
+        <span>→</span> Csökkenti a rossz felvétel kockázatát
+      </div>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="10" cy="16" r="5" stroke="#c8410a" stroke-width="1.5"/>
+          <circle cx="22" cy="16" r="5" stroke="#c8410a" stroke-width="1.5"/>
+          <path d="M15 16h2" stroke="#c8410a" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M10 8V6M22 8V6" stroke="#1a5c3a" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="usecase-label">02 — Konfliktus</div>
+      <div class="usecase-title">Csapatfeszültség feltárása</div>
+      <div class="usecase-desc">Nem kell pszichológusnak lenni ahhoz, hogy megértsd, miért nem működik két ember együtt. A trita lefordítja, amit eddig csak éreztél, és segít a megoldásban.</div>
+      <div class="usecase-outcome">
+        <span>→</span> Láthatóvá teszi a rejtett mintákat
+      </div>
+    </div>
+    <div class="usecase-card">
+      <div class="usecase-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="6" y="6" width="8" height="8" rx="1" stroke="#c8410a" stroke-width="1.5"/>
+          <rect x="18" y="6" width="8" height="8" rx="1" stroke="#c8410a" stroke-width="1.5"/>
+          <rect x="6" y="18" width="8" height="8" rx="1" stroke="#c8410a" stroke-width="1.5"/>
+          <rect x="18" y="18" width="8" height="8" rx="1" stroke="#1a5c3a" stroke-width="1.5"/>
+          <path d="M10 14v4M22 14v4M14 10h4M14 22h4" stroke="#c8410a" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="usecase-label">03 — Fejlesztés</div>
+      <div class="usecase-title">Csapatszerepek tisztázása</div>
+      <div class="usecase-desc">Ki dolgozik jól stressz alatt? Ki van rossz szerepben? Az observer visszajelzés és az önkép különbsége megmutatja, hol lehet érdemes változtatni.</div>
+      <div class="usecase-outcome">
+        <span>→</span> Jobb szerepkiosztás, kevesebb lemorzsolódás
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-section">
+  <div class="how-eyebrow">Hogyan működik</div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">01</div>
+      <div class="how-title">Meghívod a csapatodat</div>
+      <div class="how-desc">Egy linket küldesz. Nem kell IT, nem kell telepítés, nem kell egyenként regisztrálni mindenkit. A csapat kap egy emailt és elkezdi.</div>
+      <div class="how-time">→ 2 perc setup</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">02</div>
+      <div class="how-title">Mindenki kitölti a felmérést</div>
+      <div class="how-desc">10–15 perces, tudományosan validált kérdőív. Opcionálisan: egymást is értékelitek – az observer visszajelzés hozhatja a legtöbb meglepetést és megmutatja a fejlesztés irányait.</div>
+      <div class="how-time">→ 10–15 perc / fő</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">03</div>
+      <div class="how-title">Látod a teljes csapatképet</div>
+      <div class="how-desc">Csapat RadarChart, egyéni profilok, önkép vs. mások képe összehasonlítás. Automatikusan értelmezve – nem kell pszichológiai háttér az olvasásához.</div>
+      <div class="how-time">→ azonnal elérhető</div>
+    </div>
+  </div>
+</section>
+
+<section class="science-section">
+  <div class="science-left">
+    <div class="science-badge">✓ Tudományos alap</div>
+    <h2>Nem quiz.<br>Pszichometria.</h2>
+    <p style="color:var(--ink2);font-size:15px;line-height:1.7;margin-bottom:24px">A trita egy validált, többdimenziós személyiségmodellre épül – nem önismereti kvíz, hanem döntéstámogató eszköz, amelyet szervezetpszichológiai kutatás alapoz meg.</p>
+    <div class="science-points">
+      <div class="science-point">
+        <div class="science-point-icon">○</div>
+        <div class="science-point-text"><strong>Kutatás alapú modell</strong> — nem marketing, hanem pszichológiai irodalomra épített, peer-reviewed alapokon nyugvó mérőeszköz.</div>
+      </div>
+      <div class="science-point">
+        <div class="science-point-icon">○</div>
+        <div class="science-point-text"><strong>Observer feedback</strong> — az önkép és a mások által látott kép különbsége a legértékesebb adat. Ez az, amit más HR toolok nem mérnek.</div>
+      </div>
+      <div class="science-point">
+        <div class="science-point-icon">○</div>
+        <div class="science-point-text"><strong>Több dimenzió egyszerre</strong> — nem egyetlen skála, hanem egymással összefüggő jellemzők kombinációja adja a valódi csapatképet.</div>
+      </div>
+    </div>
+    <a href="#" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;font-size:13px;color:var(--accent);text-decoration:none;font-weight:500">A módszertanról bővebben →</a>
+  </div>
+
+  <div class="science-right">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px">Példa csapatprofil – Marketing osztály</div>
+    <div class="dim-list">
+      <div class="dim-item">
+        <div class="dim-name">Nyitottság</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar"><div class="dim-bar-inner" style="width:82%"></div></div>
+          <div class="dim-score">82</div>
+        </div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-name">Érzelmi stabilitás</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar"><div class="dim-bar-inner" style="width:65%"></div></div>
+          <div class="dim-score">65</div>
+        </div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-name">Extravertáltság</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar"><div class="dim-bar-inner" style="width:71%"></div></div>
+          <div class="dim-score">71</div>
+        </div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-name">Együttműködés</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar"><div class="dim-bar-inner" style="width:44%"></div></div>
+          <div class="dim-score">44</div>
+        </div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-name">Lelkiismeretesség</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar"><div class="dim-bar-inner" style="width:88%"></div></div>
+          <div class="dim-score">88</div>
+        </div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-name">Becsületesség</div>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar"><div class="dim-bar-inner" style="width:76%"></div></div>
+          <div class="dim-score">76</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px;padding:16px;background:white;border-radius:4px;border-left:3px solid var(--green)">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--green);margin-bottom:6px">CSAPAT INSIGHT</div>
+      <div style="font-size:13px;color:var(--ink2);line-height:1.6">Magas Lelkiismeretesség + alacsony Együttműködés: erős executer profil, de döntési feszültség valószínű a csapatnál.</div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section">
+  <div class="pricing-inner">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">04 — Árazás</div>
+    <h2>Egyszerű árazás.<br>Nincs meglepetés.</h2>
+
+    <div class="pricing-card">
+      <div class="pricing-header">
+        <div>
+          <div class="pricing-title">Alap csomag</div>
+          <div style="font-size:14px;opacity:0.5;margin-top:4px">10 seat · éves előfizetés</div>
+        </div>
+        <div class="pricing-price">€49<sub>/hó</sub></div>
+      </div>
+      <div class="pricing-body">
+        <ul class="pricing-feature-list">
+          <li>10 csapattag (seat)</li>
+          <li>Személyiség self-assessment</li>
+          <li>Observer visszajelzés</li>
+          <li>Csapat RadarChart dashboard</li>
+          <li>Egyéni profilok</li>
+          <li>1 candidate assessment/év</li>
+          <li>Manager nézet</li>
+          <li>Email support</li>
+        </ul>
+        <div class="pricing-action">
+          <a href="#" class="btn-primary">Megnézem a csapatomat – 14 nap ingyen →</a>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2)">Kártyaadat nem kell a trialhoz</div>
+          <ul class="pricing-extras-list" style="margin-top:16px">
+            <li>+ €19 / extra seat / hó</li>
+            <li>+ €39 / candidate assessment</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Látni akarod,<br>mi történik a csapatodban?</h2>
+  <a href="#" class="btn-white">Megnézem a csapatomat →</a>
+</section>
+
+<footer>
+  <div class="logo" style="font-size:18px">trit<em style="font-style:normal;color:var(--accent)">a</em></div>
+  <div class="footer-note">Tudományosan validált · Kutatás alapú módszertan · © 2026 trita</div>
+  <div class="footer-note">© 2026 trita</div>
+</footer>
+
+</body>
+</html>
