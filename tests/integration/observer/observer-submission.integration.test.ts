@@ -17,7 +17,9 @@ import { POST as observerSubmitPOST } from "@/app/api/observer/submit/route";
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
-const FUTURE = new Date("2026-04-15T10:00:00.000Z");
+// Lejárathoz a VALÓS órához képesti jövő kell: a submit API a szerver-oldali
+// Date.now()-val ellenőriz, fix dátum idővel a múltba csúszna (teszt-rothadás).
+const FUTURE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
 function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 10)}`;

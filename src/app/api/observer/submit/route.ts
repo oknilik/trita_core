@@ -10,6 +10,7 @@ import {
   resolveObserverTokenLifecycle,
   toObserverTokenErrorCode,
 } from "@/lib/observer/token-validation";
+import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -54,8 +55,7 @@ export async function POST(req: Request) {
   // Belsős (név szerinti) meghívó: csak a bejelentkezett címzett adhatja be.
   // Külsős meghívónál (nincs observerProfileId) nincs ilyen validáció.
   if (invitation.observerProfileId) {
-    const { auth } = await import("@clerk/nextjs/server");
-    const { userId } = await auth();
+    const userId = await resolveObserverSubmitViewerClerkId();
     const viewer = userId
       ? await prisma.userProfile.findUnique({
           where: { clerkId: userId },
@@ -119,6 +119,11 @@ export async function POST(req: Request) {
         status: "COMPLETED",
         completedAt: new Date(),
       },
+    }),
+    // A szerver-oldali draft a beadással okafogyottá válik — bent hagyva
+    // örökre árválkodna (a COMPLETED meghívóhoz draft többé nem olvasható).
+    prisma.observerDraft.deleteMany({
+      where: { invitationId: invitation.id },
     }),
   ]);
 

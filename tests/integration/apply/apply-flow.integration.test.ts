@@ -15,7 +15,10 @@ import { getTestConfig } from "@/lib/questions";
 import { buildJourneyResolution } from "../../factories/journey-fixture-builder";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
-const FUTURE = new Date("2026-05-01T10:00:00.000Z");
+// Lejárat-jellegű mezőkhöz (invite.expiresAt, subscription.currentPeriodEnd)
+// a VALÓS órához képesti jövő kell: a lejárat-ellenőrzés a szerver-oldali
+// Date.now()-val fut, egy fix dátum idővel a múltba csúszna (teszt-rothadás).
+const FUTURE = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
 const restorers: Array<() => void> = [];
 
@@ -130,31 +133,26 @@ function buildCompleteAnswers(testType: TestType = "TRITAN") {
   }));
 }
 
-test("new apply is created for authorized manager in valid org/team context", async () => {
+// 2026-07-23 óta a jelölt-meghívó a tanácsadói kör jogosultsága
+// (isConsultantSurface): ORG_CONSULTANT szerep / platform-tanácsadó /
+// trita-admin. A korábbi „authorized manager" persona ide már nem elég.
+test("new apply is created for authorized consultant in valid org/team context", async () => {
   const owner = await createProfile({ username: "Owner" });
-  const manager = await createProfile({ username: "Manager" });
+  const consultant = await createProfile({ username: "Consultant" });
   const { org, team } = await createOrgAndTeam(owner.id);
   await ensureActiveOrgSubscription(org.id);
 
   await prisma.organizationMember.create({
     data: {
       orgId: org.id,
-      userId: manager.id,
-      role: "ORG_MANAGER",
-      joinedAt: NOW,
-    },
-  });
-  await prisma.teamMember.create({
-    data: {
-      teamId: team.id,
-      userId: manager.id,
-      role: "manager",
+      userId: consultant.id,
+      role: "ORG_CONSULTANT",
       joinedAt: NOW,
     },
   });
 
   const result = await createCandidateApplyInvite({
-    clerkId: manager.clerkId!,
+    clerkId: consultant.clerkId!,
     teamId: team.id,
     email: "candidate.new@integration.trita.app",
     name: "New Candidate",
@@ -169,7 +167,7 @@ test("new apply is created for authorized manager in valid org/team context", as
     where: { id: result.invite.id },
     select: { managerId: true, teamId: true, status: true },
   });
-  assert.equal(persisted?.managerId, manager.id);
+  assert.equal(persisted?.managerId, consultant.id);
   assert.equal(persisted?.teamId, team.id);
   assert.equal(persisted?.status, "PENDING");
 });
@@ -248,6 +246,41 @@ test("auth/role gate blocks unauthorized and insufficient-role manager-side appl
         clerkId: member.clerkId!,
         teamId: team.id,
         name: "Blocked Candidate",
+      }),
+    (error: unknown) => {
+      assert.ok(error instanceof CandidateApplyServiceError);
+      assert.equal(error.code, "FORBIDDEN");
+      assert.equal(error.status, 403);
+      return true;
+    },
+  );
+
+  // A sima ORG_MANAGER sem elég 2026-07-23 óta: a jelölt-flow a tanácsadói
+  // kör (isConsultantSurface) felülete, a manager-szerep önmagában FORBIDDEN.
+  const manager = await createProfile({ username: "PlainManager" });
+  await prisma.organizationMember.create({
+    data: {
+      orgId: org.id,
+      userId: manager.id,
+      role: "ORG_MANAGER",
+      joinedAt: NOW,
+    },
+  });
+  await prisma.teamMember.create({
+    data: {
+      teamId: team.id,
+      userId: manager.id,
+      role: "manager",
+      joinedAt: NOW,
+    },
+  });
+
+  await assert.rejects(
+    () =>
+      createCandidateApplyInvite({
+        clerkId: manager.clerkId!,
+        teamId: team.id,
+        name: "Manager Blocked Candidate",
       }),
     (error: unknown) => {
       assert.ok(error instanceof CandidateApplyServiceError);
