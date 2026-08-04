@@ -24,13 +24,21 @@ export const notificationTranslations = {
       title: { hu: "Az eredményed elkészült", en: "Your results are ready" },
       body: { hu: "A személyiségteszted kiértékelése megtekinthető.", en: "Your personality assessment results are now available." },
     },
+    // Páros összehasonlítás: a meghívó értesül, amikor a partner elfogadta.
+    compareAccepted: {
+      title: { hu: "Elfogadták az összehasonlítást", en: "Your comparison was accepted" },
+      body: {
+        hu: "{name} elfogadta a páros összehasonlítást — nézzétek meg, hogyan működnétek együtt.",
+        en: "{name} accepted the pair comparison — see how the two of you would work together.",
+      },
+    },
     // Reflexiós utókövetés (D1): egyetlen, jól célzott érintés a kitöltés
     // után ~1 héttel — a "mi történik két hét múlva" rés első lépése.
     reflectionPrompt: {
       title: { hu: "Egy hét telt el — mit láttál magadból?", en: "A week has passed — what did you notice?" },
       body: {
-        hu: "A legerősebb dimenziód: {dimLabel}. Figyeld meg tudatosan egy helyzetben ezen a héten — és ha kíváncsi vagy, hogyan működnétek együtt egy kollégáddal, nézd meg a páros összehasonlítást.",
-        en: "Your strongest dimension: {dimLabel}. Observe it deliberately in one situation this week — and if you're curious how you'd work with a colleague, try the pair comparison.",
+        hu: "A legerősebb dimenziód: {dimLabelHu}. Figyeld meg tudatosan egy helyzetben ezen a héten — és ha kíváncsi vagy, hogyan működnétek együtt egy kollégáddal, nézd meg a páros összehasonlítást.",
+        en: "Your strongest dimension: {dimLabelEn}. Observe it deliberately in one situation this week — and if you're curious how you'd work with a colleague, try the pair comparison.",
       },
     },
     purchaseConfirmed: {

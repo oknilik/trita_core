@@ -98,6 +98,11 @@ model UserProfile {
   // Nem kényszerül tesztre; org-okhoz ORG_CONSULTANT tagsággal rendelhető.
   isConsultant Boolean @default(false)
 
+  // Életciklus-emailek (reflexiós utókövetés és hasonló, nem-tranzakcionális
+  // érintések) leiratkozás — a tranzakcionális emaileket (meghívók,
+  // eredmény-értesítők) nem érinti. Kapcsoló: /email-preferences.
+  lifecycleEmailsOptOut Boolean @default(false)
+
   assessmentResults       AssessmentResult[]
   assessmentDraft         AssessmentDraft?
   consultantInvitesSent   ConsultantInvite[]   @relation("ConsultantInviter")
@@ -833,6 +838,7 @@ enum NotificationType {
   PEER_FEEDBACK_REQUESTED
   PEER_FEEDBACK_RESPONSE
   REFLECTION_PROMPT
+  COMPARE_ACCEPTED
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).

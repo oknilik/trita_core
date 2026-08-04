@@ -9,6 +9,7 @@ import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
+import { ShareCardDownload } from "@/components/results/ShareCardDownload";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
@@ -206,6 +207,18 @@ export function ShareModal({
                   </div>
                 )}
               </div>
+            )}
+
+            {/* A3: a kártya képként — letöltés / mobilon natív megosztás.
+                Kliens-oldali render, szerverre semmi nem megy; pontszám
+                nem kerül a képre. */}
+            {preview && previewGlyph && (
+              <ShareCardDownload
+                userName={preview.userName}
+                personalityType={preview.personalityType}
+                topDims={preview.topDims.map((d) => ({ label: d.label, score: d.score }))}
+                glyph={previewGlyph}
+              />
             )}
 
             {/* Link + másolás */}

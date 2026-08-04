@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import QRCode from "qrcode";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 
@@ -32,6 +34,33 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  // QR-nézet (workshop-dramaturgia): melyik PENDING linkhez mutatunk kódot.
+  const [qrForId, setQrForId] = useState<string | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  // Opcionális email-küldés link-készítéskor.
+  const [email, setEmail] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!qrForId) {
+      setQrDataUrl(null);
+      return;
+    }
+    const invite = invites.find((inv) => inv.id === qrForId);
+    if (!invite?.token) return;
+    const url = `${window.location.origin}/interaction/compare/${invite.token}`;
+    let cancelled = false;
+    QRCode.toDataURL(url, { width: 240, margin: 1, color: { dark: "#1a1a2e", light: "#f7f4ef" } })
+      .then((dataUrl) => {
+        if (!cancelled) setQrDataUrl(dataUrl);
+      })
+      .catch(() => {
+        if (!cancelled) setError(t("results.compareError", locale));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [qrForId, invites, locale]);
 
   const visibleInvites = invites.filter(
     (inv) => inv.state === "PENDING" || inv.state === "ACCEPTED",
@@ -40,16 +69,30 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
   const handleCreate = async () => {
     setBusy(true);
     setError(null);
+    setNotice(null);
     try {
-      const res = await fetch("/api/interaction/invite", { method: "POST" });
+      const trimmedEmail = email.trim();
+      const res = await fetch("/api/interaction/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(trimmedEmail ? { email: trimmedEmail } : {}),
+      });
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
-        const data = await res.json().catch(() => null);
         setError(
           data?.error === "COMPARE_LIMIT_REACHED"
             ? t("results.compareLimitError", locale)
             : t("results.compareError", locale),
         );
         return;
+      }
+      if (trimmedEmail) {
+        setNotice(
+          data?.emailSent
+            ? t("results.compareEmailSent", locale)
+            : t("results.compareEmailFailed", locale),
+        );
+        if (data?.emailSent) setEmail("");
       }
       router.refresh();
     } catch {
@@ -111,7 +154,14 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
         {t("results.compareCardBody", locale)}
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("results.compareEmailPlaceholder", locale)}
+          className="min-h-[44px] w-full flex-1 rounded-[10px] border border-sand bg-cream px-3 text-caption text-ink-body outline-none focus:border-[var(--color-accent-primary)]/50"
+        />
         <button
           type="button"
           onClick={handleCreate}
@@ -120,11 +170,17 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
         >
           {t("results.compareCreateCta", locale)}
         </button>
-        <span className="text-micro text-muted">
-          {t("results.compareLimitNote", locale)}
-        </span>
       </div>
+      <p className="mt-2 text-micro text-muted">
+        {t("results.compareLimitNote", locale)}{" "}
+        {t("results.compareEmailOptionalNote", locale)}
+      </p>
 
+      {notice ? (
+        <p className="mt-3 rounded-lg border border-sand bg-cream/60 px-3 py-2 text-xs text-ink-body">
+          {notice}
+        </p>
+      ) : null}
       {error ? (
         <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
           {error}
@@ -167,15 +223,25 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 </Link>
               ) : null}
               {inv.state === "PENDING" && inv.token ? (
-                <button
-                  type="button"
-                  onClick={() => handleCopy(inv)}
-                  className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
-                >
-                  {copiedId === inv.id
-                    ? t("results.compareCopied", locale)
-                    : t("results.compareCopy", locale)}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(inv)}
+                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                  >
+                    {copiedId === inv.id
+                      ? t("results.compareCopied", locale)
+                      : t("results.compareCopy", locale)}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQrForId(qrForId === inv.id ? null : inv.id)}
+                    aria-expanded={qrForId === inv.id}
+                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                  >
+                    QR
+                  </button>
+                </>
               ) : null}
               <button
                 type="button"
@@ -189,6 +255,24 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           ))
         )}
       </div>
+
+      {/* QR — személyes/workshop helyzetre: a másik fél a telefonjával
+          olvassa be, és egyből a consent-oldalra jut. */}
+      {qrForId && qrDataUrl ? (
+        <div className="mt-4 flex flex-col items-center gap-2 rounded-xl border border-sand bg-cream/45 p-4">
+          <Image
+            src={qrDataUrl}
+            alt={t("results.compareQrAlt", locale)}
+            width={240}
+            height={240}
+            unoptimized
+            className="h-[200px] w-[200px] rounded-lg border border-sand bg-white p-2"
+          />
+          <p className="max-w-sm text-center text-micro text-muted">
+            {t("results.compareQrHint", locale)}
+          </p>
+        </div>
+      ) : null}
     </section>
   );
 }

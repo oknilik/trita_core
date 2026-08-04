@@ -126,25 +126,37 @@ export function HollandContent() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA — őszinte út: az ELSŐDLEGES cél a ma is élő érték (/try vendég-
+          teszt azonnali eredmény-ízelítővel); a Karrier-iránytű érdeklődés-
+          mérése másodlagos link marad, hogy a kereslet-adat tovább gyűljön.
+          A korábbi egyetlen CTA a fake door-ba futott ("a funkció még nem
+          létezik") — indexelt SEO-oldalról ez zsákutca volt. */}
       <section className="px-7 pb-16">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 rounded-2xl bg-[var(--color-sage-deep,#2f4f44)] p-6 md:p-8">
           <div>
             <p className="font-fraunces text-lg text-white">
-              {isHu ? "Kíváncsi vagy a saját kódodra?" : "Curious about your own code?"}
+              {isHu ? "Kíváncsi vagy, hogyan működsz?" : "Curious how you operate?"}
             </p>
             <p className="mt-1 text-[13px] text-white/80">
               {isHu
-                ? "A Karrier-iránytűben 30 gyors kérdéssel mérheted is — nem csak becsüljük."
-                : "In the Career Compass you can measure it with 30 quick questions — not just an estimate."}
+                ? "A személyiségprofilod ingyen, ~9 perc alatt elkészül — azonnali eredménnyel. A Karrier-iránytű (benne a Holland-kód méréssel) fejlesztés alatt áll: az érdeklődésed jelzésével a sorrendjét is alakítod."
+                : "Your personality profile is free and takes ~9 minutes — with an instant result. The Career Compass (including Holland-code measurement) is in development: signalling interest shapes its priority."}
             </p>
           </div>
-          <Link
-            href="/profile/results?tab=career"
-            className="inline-flex min-h-[44px] items-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-sm font-semibold text-white transition hover:brightness-110"
-          >
-            {isHu ? "Irány a Karrier-iránytű →" : "Go to Career Compass →"}
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/try"
+              className="inline-flex min-h-[44px] items-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-sm font-semibold text-white transition hover:brightness-110"
+            >
+              {isHu ? "Ingyenes teszt indítása →" : "Start the free test →"}
+            </Link>
+            <Link
+              href="/career"
+              className="inline-flex min-h-[44px] items-center rounded-xl border border-white/30 px-5 text-sm font-medium text-white/90 transition hover:bg-white/10"
+            >
+              {isHu ? "Karrier-iránytű: érdekel" : "Career Compass: I'm interested"}
+            </Link>
+          </div>
         </div>
       </section>
     </main>

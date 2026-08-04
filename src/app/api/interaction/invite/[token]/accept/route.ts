@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
+import { persistNotification } from "@/lib/notifications/repository";
 
 // Kölcsönös consent: a partner elfogadja az összehasonlítást. Feltételek:
 // belépett user, SAJÁT kitöltött eredmény (a jutalom kitöltéshez kötött),
@@ -72,6 +73,29 @@ export async function POST(
       acceptedAt: new Date(),
     },
   });
+
+  // A meghívó értesül az elfogadásról — a link egyből a páros nézetre visz.
+  // Az értesítés-hiba nem boríthatja az acceptet (best-effort).
+  try {
+    const partnerName = await prisma.userProfile.findUnique({
+      where: { id: profile.id },
+      select: { username: true },
+    });
+    await persistNotification({
+      userId: invite.inviterId,
+      type: "COMPARE_ACCEPTED",
+      category: "assessment",
+      priority: "normal",
+      vars: { name: partnerName?.username ?? "—" },
+      link: `/interaction?pair=${invite.id}`,
+      sourceType: "compare_invite",
+      sourceId: invite.id,
+      actorUserId: profile.id,
+      dedupeKey: `COMPARE_ACCEPTED:${invite.id}`,
+    });
+  } catch {
+    // szándékosan elnyelve — az accept sikeres, az értesítés best-effort
+  }
 
   return NextResponse.json({ id: invite.id, ok: true });
 }

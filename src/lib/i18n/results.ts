@@ -653,6 +653,55 @@ export const resultsTranslations = {
       hu: "Vissza a típus-választóhoz",
       en: "Back to the type picker",
     },
+    // A3 — archetípus-kártya képként
+    shareCardDownload: {
+      hu: "Kártya letöltése képként",
+      en: "Download card as image",
+    },
+    shareCardWorking: { hu: "Kép készítése…", en: "Preparing image…" },
+    compareQrAlt: {
+      hu: "QR-kód az összehasonlító linkhez",
+      en: "QR code for the compare link",
+    },
+    compareQrHint: {
+      hu: "Mutasd meg a kollégádnak — a telefonjával beolvasva egyből az elfogadó oldalra jut.",
+      en: "Show it to your colleague — scanning it takes them straight to the consent page.",
+    },
+    compareEmailPlaceholder: {
+      hu: "kollega@ceg.hu (nem kötelező)",
+      en: "colleague@company.com (optional)",
+    },
+    compareEmailOptionalNote: {
+      hu: "Ha megadsz egy címet, a linket emailben is kiküldjük.",
+      en: "If you add an address, we'll also send the link by email.",
+    },
+    compareEmailSent: {
+      hu: "A meghívót emailben elküldtük.",
+      en: "The invite was sent by email.",
+    },
+    compareEmailFailed: {
+      hu: "A link elkészült, de az email küldése nem sikerült — másold ki és küldd el kézzel.",
+      en: "The link was created, but the email failed to send — copy it and share it manually.",
+    },
+    // Életciklus-email beállítások (/email-preferences)
+    emailPrefsEyebrow: { hu: "email-beállítások", en: "email preferences" },
+    emailPrefsTitle: {
+      hu: "Milyen emaileket kérsz tőlünk?",
+      en: "What emails would you like from us?",
+    },
+    emailPrefsBody: {
+      hu: "Ez a kapcsoló a nem-tranzakcionális, életciklus-jellegű emaileket szabályozza (pl. a kitöltés utáni reflexiós érintés). A működéshez kötődő emaileket — meghívók, eredmény-értesítők — nem érinti.",
+      en: "This switch controls non-transactional, lifecycle emails (e.g. the post-assessment reflection touch). Operational emails — invites, result notifications — are unaffected.",
+    },
+    emailPrefsToggleLabel: {
+      hu: "Életciklus-emailek engedélyezése",
+      en: "Allow lifecycle emails",
+    },
+    emailPrefsToggleHint: {
+      hu: "Kikapcsolva csak a működéshez szükséges emaileket kapod.",
+      en: "When off, you only receive operational emails.",
+    },
+    emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
     radarNote: {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a HEXACO-dimenziók: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
       en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the HEXACO dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",

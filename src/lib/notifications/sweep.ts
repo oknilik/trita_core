@@ -16,12 +16,14 @@
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { sendReflectionPromptEmail } from "@/lib/emails";
 import { checkTrialNotifications } from "./orchestrator";
 import { persistNotification } from "./repository";
 
 export interface SweepResult {
   orgsChecked: number;
   notificationsCreated: number;
+  emailsSent: number;
   errors: string[];
 }
 
@@ -96,14 +98,21 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
 
   // Csak az újakat számoljuk: a már-értesítettek kiszűrése előre (a
   // persistNotification dedupe-ja verseny ellen továbbra is véd).
-  const existing = await prisma.notification.findMany({
-    where: {
-      type: "REFLECTION_PROMPT",
-      userId: { in: candidates.map((c) => c.userId) },
-    },
-    select: { userId: true },
-  });
+  const [existing, profiles] = await Promise.all([
+    prisma.notification.findMany({
+      where: {
+        type: "REFLECTION_PROMPT",
+        userId: { in: candidates.map((c) => c.userId) },
+      },
+      select: { userId: true },
+    }),
+    prisma.userProfile.findMany({
+      where: { id: { in: candidates.map((c) => c.userId) } },
+      select: { id: true, email: true, locale: true, lifecycleEmailsOptOut: true },
+    }),
+  ]);
   const alreadyNotified = new Set(existing.map((e) => e.userId));
+  const profileById = new Map(profiles.map((p) => [p.id, p]));
 
   for (const candidate of candidates) {
     if (alreadyNotified.has(candidate.userId)) continue;
@@ -114,10 +123,12 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
         category: "assessment",
         priority: "low",
         vars: {
-          // A megjelenítési réteg i18n-je a bodyKey-t oldja fel; a dimenzió
-          // címkéje magyarul megy vars-ként (HU-first termék — a kulcsalapú
-          // per-locale feloldáshoz a notification-render bővítése kellene).
-          dimLabel: TRITAN_DIMENSIONS[candidate.topDim].hu,
+          // Per-locale feloldás renderer-módosítás nélkül: mindkét nyelvű
+          // címke vars-ként megy, és a HU body a {dimLabelHu}-t, az EN body
+          // a {dimLabelEn}-t hivatkozza — a tf() a néző nyelvén a megfelelőt
+          // interpolálja.
+          dimLabelHu: TRITAN_DIMENSIONS[candidate.topDim].hu,
+          dimLabelEn: TRITAN_DIMENSIONS[candidate.topDim].en,
         },
         link: "/interaction",
         dedupeKey: `REFLECTION_PROMPT:${candidate.userId}`,
@@ -127,6 +138,27 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
       result.errors.push(
         `reflection ${candidate.userId}: ${err instanceof Error ? err.message : String(err)}`,
       );
+      continue;
+    }
+
+    // Email-láb (életciklus): csak opt-out nélkül, best-effort — az email-hiba
+    // nem érinti az in-app értesítést, és nem ismétlődik (a dedupe az in-app
+    // rekordon ül, ami ekkor már létrejött).
+    const profile = profileById.get(candidate.userId);
+    if (profile?.email && !profile.lifecycleEmailsOptOut) {
+      try {
+        const emailLocale = profile.locale === "en" ? "en" : "hu";
+        await sendReflectionPromptEmail({
+          to: profile.email,
+          dimLabel: TRITAN_DIMENSIONS[candidate.topDim][emailLocale],
+          locale: emailLocale,
+        });
+        result.emailsSent++;
+      } catch (err) {
+        result.errors.push(
+          `reflection email ${candidate.userId}: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
     }
   }
 }
@@ -138,7 +170,7 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
  * Currently only handles trial checks.
  */
 export async function runNotificationSweep(): Promise<SweepResult> {
-  const result: SweepResult = { orgsChecked: 0, notificationsCreated: 0, errors: [] };
+  const result: SweepResult = { orgsChecked: 0, notificationsCreated: 0, emailsSent: 0, errors: [] };
 
   // Find all orgs with active trials
   const orgsWithTrials = await prisma.subscription.findMany({
