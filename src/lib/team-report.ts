@@ -10,7 +10,7 @@ import {
 import {
   generateTeamSummary,
   getStrengthInsight,
-  getWeaknessInsight,
+  getWatchAreaInsight,
   getDiversityInsight,
 } from "@/lib/team-insights";
 import {
@@ -563,7 +563,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   // Összefoglaló: profil-mondat + dinamika-számok.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
-    summary += ` A ${dynamicsTotal} tagpárból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő és ${agg.dynamics.frictionCount} mutat súrlódási potenciált.`;
+    summary += ` A ${dynamicsTotal} tagpárból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő, ${agg.dynamics.frictionCount} pedig súrlódási potenciált mutat.`;
   }
 
   const strengths = bullets([
@@ -574,7 +574,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   ]);
 
   const risks = bullets([
-    getWeaknessInsight(bottomDim),
+    getWatchAreaInsight(bottomDim),
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     frictionShare >= 0.4
       ? `A tagpárok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
@@ -597,7 +597,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
             (c) =>
               `${PREFILL_DIM_LABELS[c.dim] ?? c.dim} (${c.pole === "high" ? "magas" : "alacsony"} pólus, ${c.count}/${c.assessedCount} tag)`,
           )
-          .join(", ")} — az egyéni túlpörgések terhelés alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
+          .join(", ")} — az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
       : "",
   ]);
 
@@ -626,9 +626,9 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   ]);
 
   const leadershipGuide = bullets([
-    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál a csapat magától teljesít.`,
+    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál jellemzően kevesebb vezetői ráhatás is elég.`,
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
-    getWeaknessInsight(bottomDim),
+    getWatchAreaInsight(bottomDim),
     // Vezetői csapda-kártyák: a gyenge pulse-területek mögött tipikus
     // vezetői mintázat + ellenszer (keret: HBR 2026/07, saját adaptáció).
     ...(ps

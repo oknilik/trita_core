@@ -24,7 +24,7 @@ const POLES: Record<string, { low: string; high: string }> = {
   "Change frequency": { low: "stable", high: "dynamic" },
   "Döntési sebesség": { low: "lassú", high: "gyors" },
   "Decision pace": { low: "slow", high: "fast" },
-  Stressztűrés: { low: "alacsony", high: "magas" },
+  "Terhelés-kezelés": { low: "alacsony", high: "magas" },
   "Stress tolerance": { low: "low", high: "high" },
   Projektciklus: { low: "rövid", high: "hosszú" },
   "Project cycle": { low: "short", high: "long" },

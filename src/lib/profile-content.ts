@@ -45,76 +45,76 @@ export const CATEGORY_LABELS: Record<ProfileCategory, LocalizedText> = {
 
 export const RESOLUTION_NARRATIVES: Record<string, LocalizedText> = {
   ethicalLeader: {
-    hu: "Ritka párosítás van benned: fontosak az elveid, és az is, hogy ez látsszon. Nem a rivaldafény vonz, hanem az, hogy hitelesnek lássanak — olyan szerepekben teljesítesz igazán, ahol a hitelesség maga a tőke.",
-    en: "Your ethical integrity combined with a need for visibility is a rare but powerful combination. You are not drawn to the spotlight for its own sake, but to being seen as authentic. You thrive in roles where credibility is the currency.",
+    hu: "Válaszaid alapján ritkább mintázat rajzolódik ki: jellemzően fontosak az elveid, és az is, hogy ez látsszon. Úgy tűnik, nem a rivaldafény vonz, hanem az, hogy hitelesnek lássanak — olyan szerepekben teljesíthetsz igazán, ahol a hitelesség maga a tőke.",
+    en: "Your responses suggest a rarer pattern: your principles matter to you, and so does being seen living them. It's not the spotlight that seems to draw you, but being seen as authentic — you're likely to thrive in roles where credibility is the currency.",
   },
   principledConfronter: {
-    hu: "Elvhű vagy és konfrontatív – nem hazudsz, de nem is kerülöd a nehéz beszélgetéseket. Etikai vizsgálatokban, szabályozói munkában vagy elemedben — mindenhol, ahol a kellemetlen igazságot is ki kell mondani.",
-    en: "You are principled and confrontational — you don't lie, and you don't avoid difficult conversations. This profile finds its natural home in ethical investigations, regulatory work, or anywhere the uncomfortable truth needs to be voiced.",
+    hu: "Jellemzően elvhű és konfrontációt vállaló mintázat — a nehéz beszélgetéseket ritkán kerülöd el. Etikai vizsgálatokban, szabályozói munkában lehetsz elemedben — mindenhol, ahol a kellemetlen igazságot is ki kell mondani.",
+    en: "Your pattern leans principled and willing to confront — you rarely avoid difficult conversations. Ethical investigations, regulatory work, or anywhere the uncomfortable truth needs voicing are likely natural ground for you.",
   },
 responsibleInnovator: {
-  hu: "Nyitott vagy az új megközelítésekre, ugyanakkor döntéseidet egy erős belső értékrend vezérli. Számodra az innováció nem öncélú, hanem átgondolt és felelősségteljesen megvalósított.",
-  en: "You are open to new approaches, yet guided by a strong inner value system. For you, innovation is not self-serving but intentional and carried out with a sense of responsibility.",
+  hu: "Válaszaid szerint nyitott vagy az új megközelítésekre, ugyanakkor a döntéseidet jellemzően egy erős belső értékrend vezérli. Az innováció nálad ritkán öncélú — inkább átgondolt és felelősen megvalósított.",
+  en: "Your responses suggest you are open to new approaches, while your decisions are typically guided by a strong inner value system. For you, innovation is rarely an end in itself — more often deliberate and responsibly executed.",
 },
   supportedVisibility: {
-    hu: "A társas közeg feltölt, a stressz viszont hamar megterhel. Olyan szerepek a legjobbak, ahol van visszajelzés, biztonság és megbecsülés – nem pusztán elvárás és nyomás.",
-    en: "Social presence energizes you, but stress quickly takes its toll. Roles with feedback, psychological safety, and recognition work best — not just expectations and pressure.",
+    hu: "A válaszaid alapján a társas közeg jellemzően feltölt, a tartós nyomás viszont hamar megterhelhet. Olyan szerepek illenek hozzád leginkább, ahol van visszajelzés, biztonság és megbecsülés – nem pusztán elvárás és nyomás.",
+    en: "Your responses suggest social settings typically energize you, while sustained pressure can wear on you quickly. Roles with feedback, psychological safety, and recognition are likely to fit you best — not just expectations and pressure.",
   },
   structuredStability: {
-    hu: "Sokat vársz el magadtól, és közben érzékenyen reagálsz a stresszre — ez a kettő együtt tudatos energiabeosztást kíván. Kiszámítható, strukturált, támogató környezetben hozod ki a legjobbat magadból.",
-    en: "The combination of high self-expectations and stress sensitivity requires careful energy management. You bring out the best in yourself in predictable, structured, supportive environments.",
+    hu: "Válaszaid szerint sokat vársz el magadtól, és közben érzékenyebben reagálsz a terhelésre — ez a kettő együtt tudatos energiabeosztást kíván. Kiszámítható, strukturált, támogató környezetben hozhatod ki magadból a legjobbat.",
+    en: "Your responses suggest you expect a lot of yourself while responding more sensitively to load — together these call for deliberate energy management. A predictable, structured, supportive environment is where you're likely to bring out your best.",
   },
   safeExperimentation: {
-    hu: "Az ismeretlen vonz, de szorongást is okozhat. A legjobban olyan innovációs környezetben működsz, ahol van biztonsági háló: nem kell mindent egyszerre kockáztatni.",
-    en: "The unknown draws you in, but can also cause anxiety. You function best in innovation environments with a safety net — where not everything needs to be risked at once.",
+    hu: "Az ismeretlen vonz, de feszültséget is kelthet benned. Jellemzően olyan innovációs környezetben működsz a legjobban, ahol van biztonsági háló: nem kell mindent egyszerre kockáztatni.",
+    en: "The unknown draws you in, but can also create tension. You typically function best in innovation environments with a safety net — where not everything needs to be risked at once.",
   },
   deepCollaboration: {
-    hu: "Nem a társaságot kerülöd, hanem a felszínes csevegést. Kis létszámú, hosszú távú, bizalmi együttműködésben teljesítesz — ahol nem kell mindenkivel jóban lenni, elég azokkal, akikkel ténylegesen együtt dolgozol.",
-    en: "It's not crowds themselves you avoid — it's superficial interaction. You perform best in small-group, long-term, trust-based collaboration, where you don't need to befriend everyone, only your close collaborators.",
+    hu: "Válaszaid arra utalnak, hogy nem a társaságot kerülöd, hanem a felszínes csevegést. Jellemzően kis létszámú, hosszú távú, bizalmi együttműködésben teljesítesz — ahol nem kell mindenkivel jóban lenni, elég azokkal, akikkel ténylegesen együtt dolgozol.",
+    en: "Your responses suggest it's not company you avoid — it's superficial interaction. You tend to perform best in small-group, long-term, trust-based collaboration, where you don't need to befriend everyone, only your close collaborators.",
   },
   solitaryInnovator: {
-    hu: "Nem a közös ötletelésben dolgozod ki az ötleteidet, hanem egyedül. A belső világ gazdagsága és az újdonságkeresés különleges profilt ad: szoliter kutató, stratégiai elemző, rendszertervező típusú szerepek.",
-    en: "You don't develop your ideas in brainstorms — you do it alone. The richness of your inner world combined with a drive for novelty creates a distinctive profile: solitary researcher, strategic analyst, architect-type roles.",
+    hu: "Az ötleteidet jellemzően nem közös ötletelésben, hanem egyedül dolgozod ki. A belső világ gazdagsága és az újdonságkeresés ritkább profilt ad: szoliter kutató, stratégiai elemző, rendszertervező típusú szerepek állhatnak hozzád közel.",
+    en: "You tend to develop your ideas alone rather than in brainstorms. The richness of your inner world combined with a drive for novelty makes a rarer profile: solitary researcher, strategic analyst, architect-type roles are likely close to you.",
   },
   facilitatedInnovation: {
-    hu: "Újító vagy, de nem egyedül viszed végig: bevonod a többieket, és közösen formáljátok az ötleteket. Design thinking, részvételi tervezés, workshopvezetés — olyan közegben vagy elemedben, ahol az innováció csapatmunka.",
-    en: "You innovate, but through consensus. You don't push your ideas on others; you involve them. Design thinking, participatory design, workshop facilitation — where innovation is a shared endeavor.",
+    hu: "Válaszaid újító mintázatra utalnak, amelyet jellemzően nem egyedül viszel végig: bevonod a többieket, és közösen formáljátok az ötleteket. Design thinking, részvételi tervezés, workshopvezetés — olyan közegben lehetsz elemedben, ahol az innováció csapatmunka.",
+    en: "Your responses point to an innovating pattern you typically don't carry alone: you involve others and shape ideas together. Design thinking, participatory design, workshop facilitation — you're likely in your element where innovation is teamwork.",
   },
   structuredCompetitor: {
-    hu: "Ambiciózus vagy és fegyelmezett — strukturált közegben a versenyszellemed a legnagyobb erősséged. Nem politizálással nyersz, hanem teljesítménnyel.",
-    en: "Ambitious and disciplined — competition is your strongest asset in a structured environment. You win not through politics, but through performance.",
+    hu: "Válaszaid ambiciózus és fegyelmezett mintázatot mutatnak — strukturált közegben a versenyszellemed lehet a legnagyobb erősséged. Jellemzően nem politizálással nyersz, hanem teljesítménnyel.",
+    en: "Your responses show an ambitious, disciplined pattern — in a structured environment your competitive drive can be your greatest asset. You tend to win through performance, not politics.",
   },
   structuredInnovator: {
-    hu: "Vonzódsz az újszerű problémákhoz, de a legjobb munkádat strukturált keretek között végzed. Ez nem ellentmondás – hanem a keretezett innováció természetes profilja.",
-    en: "You are drawn to novel problems, but you do your best work within structured frameworks. This is not a contradiction — it is the natural profile of structured innovation.",
+    hu: "Vonzódsz az újszerű problémákhoz, de a legjobb munkádat jellemzően strukturált keretek között végzed. Ez nem ellentmondás – hanem a keretezett innováció természetes profilja.",
+    en: "You are drawn to novel problems, but you typically do your best work within structured frameworks. This is not a contradiction — it is the natural profile of structured innovation.",
   },
   resilientLeader: {
-    hu: "Ritka párosítás: társaságban vagy elemedben, és közben a nyomás sem zökkent ki. Amikor mások elbizonytalanodnak, te tartod az irányt — a stressz nem rontja el a kapcsolataidat, sőt, ilyenkor válsz igazán támasszá.",
-    en: "Your emotional stability combined with extraversion is a rare combination: in high-pressure, people-intensive situations, you hold direction when others waver. Stress doesn't damage your relationships — quite the contrary.",
+    hu: "Ritkább párosításra utalnak a válaszaid: társaságban vagy elemedben, és közben a nyomás sem nagyon zökkent ki. Amikor mások elbizonytalanodnak, te jellemzően tartod az irányt — a stressz ritkán rontja el a kapcsolataidat, sőt, ilyenkor válhatsz igazán támasszá.",
+    en: "Your responses point to a rarer pairing: you're in your element among people, and pressure rarely throws you off. When others waver, you tend to hold direction — stress rarely damages your relationships; if anything, that's when you can become a real support.",
   },
   calmExecution: {
-    hu: "Megbízhatóan, egyenletesen teljesítesz — a lelkiismeretességed és az érzelmi stabilitásod erősíti egymást. Ahol mások a nyomás alatt hibáznának, te kiszámíthatóan hozod az eredményt.",
-    en: "You deliver reliably and consistently — your conscientiousness and emotional stability reinforce each other. Where others might derail under stress, you produce results predictably.",
+    hu: "Válaszaid szerint megbízhatóan, egyenletesen teljesítesz — a lelkiismeretességed és az érzelmi stabilitásod erősíti egymást. Ahol mások nyomás alatt hibáznának, te jellemzően kiszámíthatóan hozod az eredményt.",
+    en: "Your responses suggest you deliver reliably and consistently — your conscientiousness and emotional stability reinforce each other. Where others might derail under pressure, you tend to produce results predictably.",
   },
   exploratoryAnalyst: {
-    hu: "Kíváncsi vagy az ismeretlenre, és a bizonytalanság sem rendít meg — ez a kettő ritkán jár együtt. Nyugodtan, alaposan jársz körül új területeket; a kutatásban, az elemzésben és a felfedezésben érzed magad igazán otthon.",
-    en: "Your openness and emotional stability form a distinctive combination: you explore unknown territory deeply while uncertainty doesn't unsettle you. Research, analysis, and discovery are your natural domains.",
+    hu: "Válaszaid alapján kíváncsi vagy az ismeretlenre, és a bizonytalanság sem nagyon rendít meg — ez a kettő ritkán jár együtt. Jellemzően nyugodtan, alaposan jársz körül új területeket; a kutatásban, az elemzésben és a felfedezésben érezheted magad igazán otthon.",
+    en: "Your responses suggest curiosity about the unknown, with uncertainty rarely unsettling you — a combination that doesn't often go together. You tend to explore new territory calmly and thoroughly; research, analysis, and discovery are likely where you feel most at home.",
   },
   organizedLeader: {
-    hu: "Jól bánsz az emberekkel, és közben a feladatokban is rendet tartasz: szervezel, kommunikálsz, és le is szállítod, amit vállaltál. Egyszerre tudod mozgósítani a csapatot és végigvinni a terveket.",
-    en: "Your social activity and conscientiousness reinforce each other: you organize, communicate, and execute effectively. You can both mobilize people and follow through on plans simultaneously.",
+    hu: "Válaszaid szerint jól bánsz az emberekkel, és közben a feladatokban is rendet tartasz: szervezel, kommunikálsz, és jellemzően le is szállítod, amit vállaltál. Egyszerre tudod mozgósítani a csapatot és végigvinni a terveket.",
+    en: "Your responses suggest you're good with people while keeping tasks in order: you organize, communicate, and typically deliver what you commit to. You can mobilize the team and follow plans through at the same time.",
   },
   harmoniousConnector: {
-    hu: "Ritka, hogy valakiben együtt van a lendület és a befogadó figyelem — benned igen. Energiát hozol a csapatba, közben mindenkire odafigyelsz, ezért gyakran te vagy az, aki összetartja a többieket.",
-    en: "Your extraversion and high agreeableness create exceptional team dynamics. It's rare for someone to be both energizing and receptive — for you this is natural, and it makes you the glue that holds teams together.",
+    hu: "A profilodban a lendület és a befogadó figyelem együtt jelenik meg — ez ritkább kombináció. Energiát hozol a csapatba, közben a többiekre is odafigyelsz, ezért gyakran te lehetsz az, aki összetartja a többieket.",
+    en: "Momentum and receptive attention appear together in your profile — a rarer combination. You bring energy to the team while staying attentive to others, which is why you're often the one holding the team together.",
   },
   performanceDriver: {
-    hu: "Ambiciózus és szervezett – kemény munkával, következetes végrehajtással érsz el célokat. A versenyszellem és a precizitás nálad nem zárja ki egymást — együtt adják az eredményességedet.",
-    en: "Ambitious and organized — you achieve goals through hard work and consistent execution. Competitive drive and precision don't exclude each other in your profile; they combine into a results-focused profile.",
+    hu: "Válaszaid ambiciózus és szervezett mintázatot mutatnak – jellemzően kemény munkával, következetes végrehajtással érsz el célokat. A versenyszellem és a precizitás nálad nem zárja ki egymást — együtt adhatják az eredményességedet.",
+    en: "Your responses show an ambitious, organized pattern — you tend to reach goals through hard work and consistent execution. Competitive drive and precision don't cancel each other out in your profile; together they can power your results.",
   },
   disruptiveInnovator: {
-    hu: "Önálló, megkérdőjelező gondolkodó vagy: nem kötsz kompromisszumot pusztán a béke kedvéért, és közben nyitott vagy az új gondolatokra. Megfelelő közegben ez a kettő együtt komoly innovatív erő.",
-    en: "Your combination of low agreeableness and high openness creates a challenging, independent thinker. You don't compromise for the sake of peace alone — and in the right environment, this becomes a force for innovation.",
+    hu: "Válaszaid önálló, megkérdőjelező gondolkodásra utalnak: ritkán kötsz kompromisszumot pusztán a béke kedvéért, és közben nyitott vagy az új gondolatokra. Megfelelő közegben ez a kettő együtt komoly innovatív erő lehet.",
+    en: "Your responses point to independent, questioning thinking: you rarely compromise just for the sake of peace, while staying open to new ideas. In the right environment, the two together can be a serious innovative force.",
   },
 };
 
@@ -122,20 +122,20 @@ responsibleInnovator: {
 
 export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
   ethicalLeader: {
-    hu: "A hitelesség és a látható felelősségvállalás egyszerre fontos neked. Olyan helyzetekben vagy erős, ahol értékek mentén kell irányt mutatni.",
-    en: "Authenticity and visible responsibility both matter to you. You are strongest in situations where direction must be set on clear values.",
+    hu: "A hitelesség és a látható felelősségvállalás egyszerre fontos neked. Jellemzően olyan helyzetekben vagy erős, ahol értékek mentén kell irányt mutatni.",
+    en: "Authenticity and visible responsibility both matter to you. You tend to be strongest in situations where direction must be set on clear values.",
   },
   principledConfronter: {
-    hu: "Az egyenesség és a konfliktustűrés együtt jelenik meg nálad. Akkor működsz jól, ha tiszta határokat és kimondható feszültségeket kell kezelni.",
-    en: "Directness and conflict tolerance show up together in your profile. You work well where clear boundaries and explicit tensions must be handled.",
+    hu: "Az egyenesség és a konfliktustűrés együtt jelenik meg a válaszaidban. Jellemzően akkor működsz jól, ha tiszta határokat és kimondható feszültségeket kell kezelni.",
+    en: "Directness and conflict tolerance show up together in your responses. You tend to work well where clear boundaries and explicit tensions must be handled.",
   },
   responsibleInnovator: {
-    hu: "Nyitott vagy az újra, de belső etikai iránytű mentén döntesz. Nálad az innováció és a felelősség nem ellentét, hanem közös működési elv.",
-    en: "You are open to novelty, but you decide through an internal ethical compass. For you, innovation and responsibility are not opposites, but one operating principle.",
+    hu: "Nyitott vagy az újra, de jellemzően belső etikai iránytű mentén döntesz. Nálad az innováció és a felelősség nem ellentét, hanem közös működési elv.",
+    en: "You are open to novelty, but you typically decide through an internal ethical compass. For you, innovation and responsibility are not opposites, but one operating principle.",
   },
   supportedVisibility: {
-    hu: "A társas jelenlét motivál, ha van biztonságos keret körülötte. A látható szerepekben akkor teljesítesz jól, ha kapsz stabil visszajelzést.",
-    en: "Social visibility motivates you when it is supported by safety. You perform well in visible roles when feedback remains stable and constructive.",
+    hu: "A társas jelenlét jellemzően motivál, ha van biztonságos keret körülötte. A látható szerepekben akkor teljesítesz jól, ha kapsz stabil visszajelzést.",
+    en: "Social visibility typically motivates you when it is supported by safety. You perform well in visible roles when feedback remains stable and constructive.",
   },
   structuredStability: {
     hu: "A magas belső mérce és az érzelmi érzékenység együtt tudatos kereteket igényel. Strukturált közegben kiegyensúlyozottan tudsz magas színvonalat tartani.",
@@ -146,52 +146,52 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     en: "Novelty attracts you, but you also need stable reference points. You work best when experimentation has a clear rhythm and boundaries.",
   },
   deepCollaboration: {
-    hu: "A mély, bizalmi együttműködés többet ad neked, mint a széles láthatóság. Kisebb, stabil kapcsolati hálóban bontakozik ki legjobban a teljesítményed.",
-    en: "Deep, trust-based collaboration gives you more than broad visibility. Your performance unfolds best in smaller, stable relationship networks.",
+    hu: "A mély, bizalmi együttműködés többet ad neked, mint a széles láthatóság. A teljesítményed jellemzően kisebb, stabil kapcsolati hálóban bontakozik ki a legjobban.",
+    en: "Deep, trust-based collaboration gives you more than broad visibility. Your performance typically unfolds best in smaller, stable relationship networks.",
   },
   solitaryInnovator: {
     hu: "Az ötleteidet elsősorban elmélyült, önálló munkában érleled. Erősséged a mély gondolkodás és az új perspektívák csendes felépítése.",
     en: "You mainly develop ideas through deep, independent work. Your strength is sustained thinking and building new perspectives quietly.",
   },
   facilitatedInnovation: {
-    hu: "Úgy viszel be újat a rendszerbe, hogy közben bevonod az embereket. Az együttműködő változásépítés a természetes működési módod.",
-    en: "You bring novelty into systems while bringing people with you. Collaborative change-building is your natural operating mode.",
+    hu: "Úgy viszel be újat a rendszerbe, hogy közben bevonod az embereket. A válaszaid alapján az együttműködő változásépítés a természetes működési módod.",
+    en: "You bring novelty into systems while bringing people with you. Based on your responses, collaborative change-building is your natural operating mode.",
   },
   structuredCompetitor: {
-    hu: "A versenyt célfegyelemmel és következetes kivitelezéssel kezeled. Olyan környezetben vagy erős, ahol teljesítmény és mérhetőség tisztán jelen van.",
-    en: "You approach competition with discipline and consistent execution. You are strong in environments where performance and measurability are explicit.",
+    hu: "A versenyt jellemzően célfegyelemmel és következetes kivitelezéssel kezeled. Olyan környezetben lehetsz erős, ahol a teljesítmény és a mérhetőség tisztán jelen van.",
+    en: "You typically approach competition with discipline and consistent execution. You're likely strongest in environments where performance and measurability are explicit.",
   },
   structuredInnovator: {
-    hu: "Az új megoldásokat rendszerben gondolod végig, nem ad hoc módon. Akkor tudsz nagyot alkotni, ha a kreativitás és a struktúra egyszerre van jelen.",
-    en: "You think through new solutions in systems, not ad hoc. You do your best work when creativity and structure are both present.",
+    hu: "Az új megoldásokat jellemzően rendszerben gondolod végig, nem ad hoc módon. Akkor tudsz nagyot alkotni, ha a kreativitás és a struktúra egyszerre van jelen.",
+    en: "You typically think through new solutions in systems, not ad hoc. You do your best work when creativity and structure are both present.",
   },
   resilientLeader: {
-    hu: "Stressz alatt is kiegyensúlyozott maradsz, és az energiádat a kapcsolataidból merítve tartod fenn. Olyan helyzetekben vagy erős, ahol egyszerre kell emberi jelenlét és stabilitás.",
-    en: "You stay balanced even under stress, drawing energy from relationships to sustain it. You are strongest in situations that call for both human presence and stability.",
+    hu: "Stressz alatt is jellemzően kiegyensúlyozott maradsz, és az energiádat a kapcsolataidból merítve tartod fenn. Olyan helyzetekben lehetsz erős, ahol egyszerre kell emberi jelenlét és stabilitás.",
+    en: "You typically stay balanced even under stress, drawing energy from relationships to sustain it. You're likely strongest in situations that call for both human presence and stability.",
   },
   calmExecution: {
-    hu: "Megbízhatóan és nyugodtan végzed el, amit vállalsz. Nem rendít meg a nyomás, és a feladatot következetesen zárod le.",
-    en: "You complete what you take on reliably and calmly. Pressure doesn't unsettle you, and you close tasks consistently.",
+    hu: "Jellemzően megbízhatóan és nyugodtan végzed el, amit vállalsz. A nyomás ritkán rendít meg, és a feladatot következetesen zárod le.",
+    en: "You typically complete what you take on reliably and calmly. Pressure rarely unsettles you, and you close tasks consistently.",
   },
   exploratoryAnalyst: {
-    hu: "Az ismeretlent kíváncsian és nyugodtan közelíted meg. Mások szoronganának az újdonságtól – te energiát nyersz belőle, miközben megőrzöd az elemzői fókuszt.",
-    en: "You approach the unknown with curiosity and calm. Others might feel anxious about novelty — you draw energy from it while maintaining analytical focus.",
+    hu: "Az ismeretlent kíváncsian és nyugodtan közelíted meg. Sokakat feszélyez az újdonság — téged jellemzően energizál, miközben megőrzöd az elemzői fókuszt.",
+    en: "You approach the unknown with curiosity and calm. Novelty unsettles many — you typically find it energizing while maintaining analytical focus.",
   },
   organizedLeader: {
-    hu: "Szeretsz emberekkel dolgozni, és végigvinni minden feladatot. A csapatot mozgásban tartod, de mindig van kéznél terv és határidő.",
-    en: "You work with people and you close things out. You keep the team moving while always having a plan and a deadline at hand.",
+    hu: "Szeretsz emberekkel dolgozni, és végigvinni a feladatokat. A csapatot mozgásban tartod, és jellemzően van kéznél terv és határidő.",
+    en: "You work with people and you close things out. You keep the team moving while typically having a plan and a deadline at hand.",
   },
   harmoniousConnector: {
-    hu: "Kapcsolatokat építesz, összetartod a csapatot, és az együttműködés természetes közeged. A harmóniát szinte erőfeszítés nélkül tartod fenn.",
-    en: "You build relationships, hold the team together, and collaboration is your natural medium. Maintaining harmony comes naturally, without requiring active effort.",
+    hu: "Kapcsolatokat építesz, összetartod a csapatot, és az együttműködés természetes közeged. A harmóniát jellemzően kevés látható erőfeszítéssel tartod fenn.",
+    en: "You build relationships, hold the team together, and collaboration is your natural medium. You typically maintain harmony with little visible effort.",
   },
   performanceDriver: {
-    hu: "Ambiciózus és szervezett – kemény munkával, következetes végrehajtással érsz el célokat. A versenyszellem és a precizitás egyszerre jellemez.",
-    en: "Ambitious and organized — you achieve goals through hard work and consistent execution. Competitive drive and precision characterize you simultaneously.",
+    hu: "Ambiciózus és szervezett mintázat – jellemzően kemény munkával, következetes végrehajtással érsz el célokat. A versenyszellem és a precizitás egyszerre jellemez.",
+    en: "An ambitious, organized pattern — you tend to reach goals through hard work and consistent execution. Competitive drive and precision characterize you together.",
   },
   disruptiveInnovator: {
-    hu: "Nem félsz kikezdeni a status quót, és új irányokat keresel. A konfrontáció eszköz, nem akadály – az újdonság és az egyenességed egyszerre jelenik meg.",
-    en: "You are not afraid to challenge the status quo and seek new directions. Confrontation is a tool, not an obstacle — novelty and directness show up together in your profile.",
+    hu: "Válaszaid szerint ritkán riadsz vissza a status quo megkérdőjelezésétől, és új irányokat keresel. A konfrontáció nálad inkább eszköz, mint akadály – az újdonság és az egyenesség együtt jelenik meg a profilodban.",
+    en: "Your responses suggest you rarely shy away from challenging the status quo, and you look for new directions. Confrontation is more tool than obstacle for you — novelty and directness appear together in your profile.",
   },
 };
 
@@ -226,9 +226,11 @@ export const RISK_TEXTS: Record<string, LocalizedText> = {
 
 // ─── Block 5 – Szerepkör-família ajánlások ────────────────────────────────────
 
+// UX-B12: a „Csapatszerep-hajlamok" szekcióval ütközött a „szerep" —
+// itt munkakör-típusok illeszkedéséről van szó (web + PDF közös címe).
 export const BLOCK5_TITLE: LocalizedText = {
-  hu: "Szerepkör-illeszkedés",
-  en: "Role fit",
+  hu: "Munkakör-illeszkedés",
+  en: "Work-role fit",
 };
 
 export const BLOCK5_STRONG: LocalizedText = {
@@ -484,17 +486,17 @@ export function getEnvRows(
   if (categories.THOR === "high") {
     rows.push({
       label: { hu: "Struktúra", en: "Structure" },
-      value: { hu: "Magas – egyértelmű keretek, folyamatok, szabályok", en: "High – clear structure, processes, rules" },
+      value: { hu: "Magas – jobban működsz egyértelmű keretek és folyamatok között", en: "High – you work best within clear frameworks and processes" },
     });
   } else if (categories.THOR === "low") {
     rows.push({
       label: { hu: "Struktúra", en: "Structure" },
-      value: { hu: "Alacsony – rugalmas, önirányított", en: "Low – flexible, self-directed" },
+      value: { hu: "Alacsony – rugalmasan, önirányítva dolgozol a legjobban", en: "Low – you work best flexibly and self-directed" },
     });
   } else {
     rows.push({
       label: { hu: "Struktúra", en: "Structure" },
-      value: { hu: "Közepes – keretezett, de nem bürokratikus", en: "Medium – structured, but not bureaucratic" },
+      value: { hu: "Közepes – keretek között, de nem bürokratikusan dolgozol jól", en: "Medium – you do well with structure, but not bureaucracy" },
     });
   }
 
@@ -502,17 +504,17 @@ export function getEnvRows(
   if (categories.TEMP === "high") {
     rows.push({
       label: { hu: "Társas intenzitás", en: "Social intensity" },
-      value: { hu: "Magas – csapatmunka, sok interakció", en: "High – teamwork, frequent interaction" },
+      value: { hu: "Magas – csapatmunkában, sok interakcióval virulsz", en: "High – you thrive on teamwork and frequent interaction" },
     });
   } else if (categories.TEMP === "low") {
     rows.push({
       label: { hu: "Társas intenzitás", en: "Social intensity" },
-      value: { hu: "Alacsony – önálló munka, kiscsapat", en: "Low – independent work, small team" },
+      value: { hu: "Alacsony – önálló munkában vagy kis csapatban dolgozol a legjobban", en: "Low – you work best independently or in a small team" },
     });
   } else {
     rows.push({
       label: { hu: "Társas intenzitás", en: "Social intensity" },
-      value: { hu: "Alacsony-közepes – önálló + kiscsapat", en: "Low to medium – mostly independent, small-team collaboration" },
+      value: { hu: "Alacsony-közepes – az önálló munka és a kiscsapat váltakozása fekszik neked", en: "Low to medium – a mix of independent and small-team work suits you" },
     });
   }
 
@@ -520,17 +522,17 @@ export function getEnvRows(
   if (categories.OPEN === "high" && categories.THOR === "high") {
     rows.push({
       label: { hu: "Változásgyakoriság", en: "Change frequency" },
-      value: { hu: "Közepes – evolúció strukturált keretek közt", en: "Medium – gradual change within clear boundaries" },
+      value: { hu: "Közepes – a fokozatos, keretezett változás fekszik neked", en: "Medium – gradual change within clear boundaries suits you" },
     });
   } else if (categories.OPEN === "high") {
     rows.push({
       label: { hu: "Változásgyakoriság", en: "Change frequency" },
-      value: { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – comfortable with shifting, novel environments" },
+      value: { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – you enjoy working in shifting, novel environments" },
     });
   } else {
     rows.push({
       label: { hu: "Változásgyakoriság", en: "Change frequency" },
-      value: { hu: "Alacsony-közepes – stabilitás, kiszámítható folyamatok", en: "Low to medium – stability, predictable processes" },
+      value: { hu: "Alacsony-közepes – stabil, kiszámítható folyamatok között működsz jól", en: "Low to medium – you work well with stable, predictable processes" },
     });
   }
 
@@ -538,17 +540,17 @@ export function getEnvRows(
   if (categories.THOR === "high" && categories.OPEN === "low") {
     rows.push({
       label: { hu: "Döntési sebesség", en: "Decision pace" },
-      value: { hu: "Közepes – átgondolt, szabályalapú döntések", en: "Medium – deliberate, rule-based decisions" },
+      value: { hu: "Közepes – átgondoltan, szabályok mentén döntesz szívesen", en: "Medium – you prefer deliberate, rule-based decisions" },
     });
   } else if (categories.THOR === "low" && categories.OPEN === "high") {
     rows.push({
       label: { hu: "Döntési sebesség", en: "Decision pace" },
-      value: { hu: "Gyors – intuitív, rugalmas döntéshozatal", en: "Fast – intuitive, flexible decision-making" },
+      value: { hu: "Gyors – intuitívan, rugalmasan döntesz", en: "Fast – you decide intuitively and flexibly" },
     });
   } else {
     rows.push({
       label: { hu: "Döntési sebesség", en: "Decision pace" },
-      value: { hu: "Közepes – átgondolt, de nem bürokratikus", en: "Medium – deliberate but not bureaucratic" },
+      value: { hu: "Közepes – átgondoltan döntesz, de nem húzod az időt", en: "Medium – you decide deliberately, without dragging it out" },
     });
   }
 
@@ -556,12 +558,12 @@ export function getEnvRows(
   if (categories.INTE === "high") {
     rows.push({
       label: { hu: "Kultúra", en: "Culture" },
-      value: { hu: "Értékvezérelt, etikailag következetes", en: "Values-driven, ethically consistent" },
+      value: { hu: "Értékvezérelt, etikailag következetes közegben vagy otthon", en: "Values-driven, ethically consistent culture is where you're at home" },
     });
   } else if (categories.INTE === "low") {
     rows.push({
       label: { hu: "Kultúra", en: "Culture" },
-      value: { hu: "Teljesítményalapú, versengős kultúra tolerálható", en: "Performance-based, competitive culture acceptable" },
+      value: { hu: "Teljesítményalapú, versengő kultúrában is jól elvagy", en: "Performance-based, competitive culture also works fine for you" },
     });
   }
 
@@ -569,30 +571,30 @@ export function getEnvRows(
   if (categories.THOR === "high") {
     rows.push({
       label: { hu: "Projektciklus", en: "Project cycle" },
-      value: { hu: "Hosszú, mélyülő – alapos kivitelezés", en: "Long, deepening – thorough execution" },
+      value: { hu: "Hosszú, mélyülő – alaposan viszed végig a munkát", en: "Long, deepening – you carry work through thoroughly" },
     });
   } else if (categories.OPEN === "high") {
     rows.push({
       label: { hu: "Projektciklus", en: "Project cycle" },
-      value: { hu: "Rövid-közepes – felfedező, nehezebben zár le", en: "Short to medium – enjoys exploring, struggles to close" },
+      value: { hu: "Rövid-közepes – szívesen fedezel fel újat, a lezárás több tudatosságot kíván", en: "Short to medium – you love exploring; closing takes more deliberate effort" },
     });
   } else {
     rows.push({
       label: { hu: "Projektciklus", en: "Project cycle" },
-      value: { hu: "Közepes – elmélyülő, de határidőtudatos", en: "Medium – thorough but deadline-aware" },
+      value: { hu: "Közepes – elmélyülsz, de tartod a határidőket", en: "Medium – you go deep while keeping deadlines" },
     });
   }
 
-  // Stressz-tolerancia (RESO alapján)
+  // Terhelés-kezelés (RESO alapján) — erőforrás-nyelv, nem deficit-keret
   if (categories.RESO === "high") {
     rows.push({
-      label: { hu: "Stressztűrés", en: "Stress tolerance" },
-      value: { hu: "Alacsony-közepes – kiszámítható, alacsony nyomású közeg szükséges", en: "Low to medium – predictable, low-pressure environment needed" },
+      label: { hu: "Terhelés-kezelés", en: "Load management" },
+      value: { hu: "Kiszámítható ritmus és rendszeres visszajelzés mellett hozod a legjobb formád", en: "You're at your best with a predictable rhythm and regular feedback" },
     });
   } else if (categories.RESO === "low") {
     rows.push({
-      label: { hu: "Stressztűrés", en: "Stress tolerance" },
-      value: { hu: "Magas – jól tűri a nyomást és a bizonytalanságot", en: "High – handles pressure and uncertainty well" },
+      label: { hu: "Terhelés-kezelés", en: "Load management" },
+      value: { hu: "Magas – jól viseled a nyomást és a bizonytalanságot", en: "High – you handle pressure and uncertainty well" },
     });
   }
 
@@ -629,48 +631,48 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
     en: "Based on your responses, open, game-free operation is one of your most dominant preferences: you choose direct communication even when manoeuvring would pay better — a strong, trust-building foundation in your working relationships.",
   },
   INTE_low: {
-    hu: "Ambiciózus és stratégiai gondolkodású vagy: nem riadsz vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő számodra – a versengés és az önérvényesítés természetes közeged.",
-    en: "Ambitious and strategic, you don't shy away from challenges or competition. Achieving goals is what drives you — competition and self-assertion are your natural environment.",
+    hu: "A válaszaid ambiciózus, stratégiai gondolkodásra utalnak: ritkán riadsz vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő számodra – a versengés és az önérvényesítés a természetes közeged lehet.",
+    en: "Your responses point to ambitious, strategic thinking: you rarely shy away from challenges or competition. Achieving goals drives you — competition and self-assertion may well be your natural environment.",
   },
   RESO_high: {
-    hu: "Az érzelmi érzékenység az egyik meghatározó jellemződ. Empatikus vagy, és könnyen reagálsz a körülötted zajló eseményekre – ez értéket ad kapcsolataidnak, de igényli a megfelelő, támogató keretet.",
-    en: "Emotional sensitivity is one of your defining traits. You are empathetic and respond readily to events around you — this adds value to your relationships but calls for a supportive, well-structured environment.",
+    hu: "A válaszaid alapján az érzelmi érzékenység az egyik meghatározó jellemződ: empatikusan és könnyen reagálsz a körülötted zajló eseményekre – ez értéket ad a kapcsolataidnak, de igényli a megfelelő, támogató keretet.",
+    en: "Your responses suggest emotional sensitivity is one of your defining traits: you respond with empathy and readily to events around you — this adds value to your relationships but calls for a supportive, well-structured environment.",
   },
   RESO_low: {
-    hu: "Válaszaid kiemelkedő érzelmi stabilitást jeleznek. Nyomás és bizonytalanság alatt is jellemzően megőrzöd az egyensúlyodat – ez ritka és értékes képesség változékony közegekben.",
-    en: "Your responses point to outstanding emotional stability. You typically maintain your balance even under pressure and uncertainty — a rare and highly valuable ability in volatile environments.",
+    hu: "Válaszaid kiemelkedő érzelmi stabilitást jeleznek. Nyomás és bizonytalanság alatt is jellemzően megőrzöd az egyensúlyodat – ez változékony közegben erőforrás lehet.",
+    en: "Your responses point to outstanding emotional stability. You typically maintain your balance even under pressure and uncertainty — in volatile environments this can be a real asset.",
   },
   TEMP_high: {
-    hu: "Erősen extravertált mintázat jellemez – a kapcsolatokból és interakciókból nyersz energiát. A társas tér a természetes közeged, és aktívan alakítod a közeg dinamikáját.",
-    en: "Your pattern is strongly extraverted — you draw energy from relationships and interactions. Social space is your natural element, and you actively shape the dynamics around you.",
+    hu: "A válaszaid erősen extravertált mintázatot mutatnak – a kapcsolatokból és interakciókból nyersz energiát. A társas tér a természetes közeged lehet, ahol aktívan alakítod a dinamikát.",
+    en: "Your responses show a strongly extraverted pattern — you draw energy from relationships and interactions. Social space is likely your natural element, where you actively shape the dynamics.",
   },
   TEMP_low: {
-    hu: "Introvertált beállítottság jellemez – önálló vagy kiscsoportos munkában töltöd fel az energiáidat. A mély fókusz és az autonómia az erősséged tere.",
-    en: "You have an introverted disposition — you recharge through independent or small-group work. Deep focus and autonomy are where your strengths unfold.",
+    hu: "A válaszaid introvertált beállítottságra utalnak – jellemzően önálló vagy kiscsoportos munkában töltődsz fel. A mély fókusz és az autonómia az erősséged tere.",
+    en: "Your responses suggest an introverted disposition — you typically recharge through independent or small-group work. Deep focus and autonomy are where your strengths unfold.",
   },
   ADAP_high: {
-    hu: "Együttműködő, alkalmazkodó és kapcsolatorientált. A csapatkohézió és a harmónia természetes értéked – aktívan dolgozol a jó kapcsolatok fenntartásán.",
-    en: "Cooperative, adaptable, and relationship-oriented. Team cohesion and harmony are values that come naturally to you — you actively work at maintaining good relationships.",
+    hu: "A válaszaid együttműködő, alkalmazkodó, kapcsolatorientált működésre utalnak. A csapatkohézió és a harmónia jellemzően fontos értéked – aktívan dolgozol a jó kapcsolatok fenntartásán.",
+    en: "Your responses point to a cooperative, adaptable, relationship-oriented way of working. Team cohesion and harmony tend to be important values for you — you actively work at maintaining good relationships.",
   },
   ADAP_low: {
-    hu: "Egyenes, elvhű és önálló. A döntéseket nem a béke, hanem az igazság alapján hozod – ez erős véleményvezér és tárgyalópartner-profilt ad.",
-    en: "Direct, principled, and independent. You make decisions based on truth, not comfort — this creates a strong opinion-leader and negotiating-partner profile.",
+    hu: "A válaszaid egyenes, elvhű, önálló működésre utalnak. A döntéseidet jellemzően nem a béke, hanem az igazság alapján hozod – ez erős véleményvezér- és tárgyalópartner-profilt adhat.",
+    en: "Your responses point to a direct, principled, independent way of working. You tend to base decisions on truth rather than comfort — which can make for a strong opinion-leader and negotiating-partner profile.",
   },
   THOR_high: {
-    hu: "Szervezett, megbízható és következetes – a lelkiismeretesség erős bázist ad a teljesítményhez. A vállalt feladatokat gondosan kivitelezed, és értékeled a tiszta struktúrát.",
-    en: "Organized, reliable, and consistent — conscientiousness provides a strong foundation for performance. You execute your commitments carefully and value clear structure.",
+    hu: "A válaszaid szervezett, megbízható, következetes működésre utalnak – a lelkiismeretesség erős bázist ad a teljesítményedhez. A vállalt feladatokat jellemzően gondosan kivitelezed, és értékeled a tiszta struktúrát.",
+    en: "Your responses point to an organized, reliable, consistent way of working — conscientiousness gives your performance a strong base. You typically execute your commitments carefully and value clear structure.",
   },
   THOR_low: {
-    hu: "Rugalmas és adaptív, inkább intuitív irányítású. A spontán megközelítés és az improvizáció az erősségeid – a folyamatos struktúra kevésbé motivál.",
-    en: "Flexible and adaptive, you tend to operate more intuitively. Spontaneous approaches and improvisation are your strengths — rigid ongoing structure motivates you less.",
+    hu: "A válaszaid rugalmas, adaptív, inkább intuitív működésre utalnak. A spontán megközelítés és az improvizáció az erősséged lehet – a merev struktúra jellemzően kevésbé motivál.",
+    en: "Your responses point to a flexible, adaptive, more intuitive way of working. Spontaneity and improvisation may be your strengths — rigid structure typically motivates you less.",
   },
   OPEN_high: {
-    hu: "Az újdonságra és a komplex gondolkodásra nyitott, kíváncsi személyiség. Az ismeretlen nem riaszt, hanem vonz – az innováció, a kreativitás és a feltárás természetes közeged.",
-    en: "Curious and open to novelty and complex thinking. The unknown doesn't discourage you — it draws you in. Innovation, creativity, and discovery are your natural domains.",
+    hu: "A válaszaid az újdonságra és a komplex gondolkodásra nyitott, kíváncsi működésre utalnak. Az ismeretlen jellemzően nem riaszt, hanem vonz – az innováció, a kreativitás és a feltárás a természetes közeged lehet.",
+    en: "Your responses point to a curious way of working, open to novelty and complex thinking. The unknown typically draws you in rather than putting you off — innovation, creativity, and discovery may well be your natural domains.",
   },
   OPEN_low: {
-    hu: "Kiszámítható, konkrét és pragmatikus beállítottságú. A bevált megoldásokat részesíted előnyben – a stabilitás, a megbízhatóság és az ismert módszerek az erősséged.",
-    en: "Predictable, concrete, and pragmatic. You prefer proven solutions — stability, reliability, and familiar methods are your strengths.",
+    hu: "A válaszaid kiszámítható, konkrét, pragmatikus működésre utalnak. Jellemzően a bevált megoldásokat részesíted előnyben – a stabilitás, a megbízhatóság és az ismert módszerek az erősségeid lehetnek.",
+    en: "Your responses point to a predictable, concrete, pragmatic way of working. You tend to prefer proven solutions — stability, reliability, and familiar methods can be your strengths.",
   },
 };
 
@@ -903,28 +905,28 @@ export const ARCHETYPE_STORY_NOUN: Record<string, LocalizedText> = {
 
 export const ARCHETYPE_STORY_ADJ: Record<string, LocalizedText> = {
   INTE: {
-    hu: "Nálad ezt erős belső iránytű egészíti ki: a hogyan legalább annyira számít, mint a mennyi.",
-    en: "In you this is paired with a strong inner compass: the how matters as much as the how much.",
+    hu: "Ezt nálad jellemzően erős belső iránytű egészíti ki: a hogyan legalább annyira számít, mint a mennyi.",
+    en: "In you this is typically paired with a strong inner compass: the how matters as much as the how much.",
   },
   RESO: {
-    hu: "Nálad ezt erős érzelmi ráhangolódás színezi: nemcsak látod a helyzeteket, érzed is, mi történik a másikkal.",
-    en: "In you this is coloured by strong emotional attunement: you don't just see situations, you feel what's happening in the other person.",
+    hu: "Ezt nálad jellemzően erős érzelmi ráhangolódás színezi: nemcsak látod a helyzeteket, érzed is, mi történik a másikkal.",
+    en: "In you this is typically coloured by strong emotional attunement: you don't just see situations, you feel what's happening in the other person.",
   },
   TEMP: {
-    hu: "Nálad ehhez lendület társul: nemcsak képviseled, amit fontosnak tartasz — energiát is adsz köré.",
-    en: "In you this comes with momentum: you don't just stand for what matters — you energise it.",
+    hu: "Ehhez nálad jellemzően lendület társul: nemcsak képviseled, amit fontosnak tartasz — energiát is adsz köré.",
+    en: "In you this typically comes with momentum: you don't just stand for what matters — you energise it.",
   },
   ADAP: {
-    hu: "Nálad ezt türelmes, együttműködő stílus egészíti ki: a közös nevező megtalálása nem engedmény, hanem módszer.",
-    en: "In you this is paired with a patient, collaborative style: finding common ground isn't a concession, it's a method.",
+    hu: "Ezt nálad jellemzően türelmes, együttműködő stílus egészíti ki: a közös nevező megtalálása nem engedmény, hanem módszer.",
+    en: "In you this is typically paired with a patient, collaborative style: finding common ground isn't a concession, it's a method.",
   },
   THOR: {
-    hu: "Nálad ehhez módszeresség társul: amit elkezdesz, annak szerkezete és vége is van.",
-    en: "In you this comes with method: what you start has structure — and an ending.",
+    hu: "Ehhez nálad jellemzően módszeresség társul: amit elkezdesz, annak szerkezete és vége is van.",
+    en: "In you this typically comes with method: what you start has structure — and an ending.",
   },
   OPEN: {
-    hu: "Nálad ezt kísérletező szemlélet színezi: a bevált mellé mindig odateszed a „mi lenne, ha” kérdést.",
-    en: "In you this is coloured by an experimental streak: next to the proven, you always place the 'what if'.",
+    hu: "Ezt nálad jellemzően kísérletező szemlélet színezi: a bevált mellé rendre odateszed a „mi lenne, ha” kérdést.",
+    en: "In you this is typically coloured by an experimental streak: next to the proven, you keep placing the 'what if'.",
   },
 };
 
@@ -1105,8 +1107,8 @@ export const COLLAB_NEEDS: Record<string, LocalizedText> = {
 
 /** Kiegyensúlyozott profil — nincs pólusos dimenzió. */
 export const COLLAB_BALANCED_CLICK: LocalizedText = {
-  hu: "Kiegyensúlyozott profillal sokféle működésmód mellett megtalálod a ritmust — az illeszkedésed kevésbé személyiség-, inkább szerep- és célfüggő.",
-  en: "With a balanced profile you find rhythm next to many working styles — your fit depends less on personality and more on role and goals.",
+  hu: "Kiegyensúlyozott profillal jellemzően többféle működésmód mellett megtalálod a ritmust — az illeszkedésed kevésbé személyiség-, inkább szerep- és célfüggő.",
+  en: "With a balanced profile you typically find rhythm next to many working styles — your fit depends less on personality and more on role and goals.",
 };
 
 export const COLLAB_BALANCED_FRICTION: LocalizedText = {

@@ -19,44 +19,44 @@ import type {
 
 const STAGE_LABELS: Record<JourneyStage, JourneyProgressLabel> = {
   SELF_NOT_STARTED: {
-    hu: "Self journey még nem indult",
-    en: "Self journey not started",
+    hu: "Az önértékelés még nem indult",
+    en: "Self-assessment not started",
   },
   SELF_IN_PROGRESS: {
-    hu: "Self journey folyamatban",
-    en: "Self journey in progress",
+    hu: "Önértékelés folyamatban",
+    en: "Self-assessment in progress",
   },
   SELF_COMPLETED: {
-    hu: "Self journey kész",
-    en: "Self journey completed",
+    hu: "Az önértékelés kész",
+    en: "Self-assessment completed",
   },
   OBSERVER_PENDING: {
-    hu: "Observer kör folyamatban",
-    en: "Observer cycle in progress",
+    hu: "Visszajelzési kör folyamatban",
+    en: "Feedback round in progress",
   },
   TEAM_NOT_JOINED: {
-    hu: "Csapat kontextus még nincs lezárva",
-    en: "Team context not joined yet",
+    hu: "Csapathoz még nem csatlakoztál",
+    en: "Not part of a team yet",
   },
   TEAM_PENDING_MEMBERS: {
-    hu: "Csapat tagok aktiválása folyamatban",
+    hu: "Csapattagok aktiválása folyamatban",
     en: "Team member activation in progress",
   },
   TEAM_PARTIAL: {
-    hu: "Csapat insight részben kész",
-    en: "Team insight partially ready",
+    hu: "A csapat eredménye részben kész",
+    en: "Team results partially ready",
   },
   TEAM_READY: {
-    hu: "Csapat insight kész",
-    en: "Team insight ready",
+    hu: "A csapat eredménye kész",
+    en: "Team results ready",
   },
   ORG_PARTIAL: {
-    hu: "Szervezeti insight részben kész",
-    en: "Organization insight partially ready",
+    hu: "A szervezeti eredmény részben kész",
+    en: "Organization results partially ready",
   },
   ORG_READY: {
-    hu: "Szervezeti insight kész",
-    en: "Organization insight ready",
+    hu: "A szervezeti eredmény kész",
+    en: "Organization results ready",
   },
 };
 

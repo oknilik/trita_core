@@ -64,7 +64,7 @@ export const TRITAN_FACETS: Record<string, { hu: string; en: string }> = {
   // INTE — Becsületesség-Alázat (H)
   sincerity: { hu: "Őszinteség", en: "Sincerity" },
   fairness: { hu: "Méltányosság", en: "Fairness" },
-  greed_avoidance: { hu: "Mohóságkerülés", en: "Greed Avoidance" },
+  greed_avoidance: { hu: "Kapzsiságkerülés", en: "Greed Avoidance" },
   modesty: { hu: "Szerénység", en: "Modesty" },
   // RESO — Emocionalitás (E)
   fearfulness: { hu: "Félelem", en: "Fearfulness" },

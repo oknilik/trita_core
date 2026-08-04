@@ -110,7 +110,7 @@ const translations = {
       greeting: (name: string) => `Hi ${name}!`,
       body: "Great news: one of the people you invited completed the questionnaire. See how others perceive you!",
       cta: "View my results",
-      thanks: "Thank you for participating in the research!",
+      thanks: "Best regards,",
       team: "the trita team",
     },
   },
@@ -163,7 +163,7 @@ const translations = {
       subject: "Egy hét telt el — mit láttál magadból?",
       greeting: "Szia,",
       body: (dimLabel: string) =>
-        `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód a(z) ${dimLabel} volt — figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
+        `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt — figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
       body2:
         "Ha kíváncsi vagy, hogyan működnétek együtt egy kollégáddal, a páros összehasonlítással meg is nézhetitek.",
       cta: "Páros összehasonlítás megnyitása",
@@ -279,7 +279,7 @@ const translations = {
       subject: "Már majdnem kész vagy a teszttel – folytasd itt",
       greeting: (name: string) => `Szia, ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
+        `Láttuk, hogy elkezdted ${withHuArticle(testName)} kitöltését a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
       cta: "Folytatom a tesztet",
       footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
       thanks: "Üdvözlettel,",
@@ -292,7 +292,7 @@ const translations = {
         `We noticed you started the ${testName} personality assessment but haven't finished yet. You're already ${answeredCount} questions in out of ${totalCount} — you're almost there!\n\nYour results will show how you see yourself across the ${testName} dimensions, and you'll also get the chance to invite observers to compare their view with yours. Click below to pick up where you left off.`,
       cta: "Continue my assessment",
       footer: "If you've already completed the test, feel free to ignore this email.",
-      thanks: "Thank you for participating in the research!",
+      thanks: "Best regards,",
       team: "the trita team",
     },
   },

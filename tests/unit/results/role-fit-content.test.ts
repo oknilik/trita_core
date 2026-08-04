@@ -100,9 +100,9 @@ test("env-sorok TRITAN kategóriákból dolgoznak (extrém profil extra sorokat 
   const extremeRows = getEnvRows(
     runProfileEngine(scores({ INTE: 90, RESO: 10, THOR: 90, TEMP: 90, OPEN: 90 }), "TRITAN").categories,
   );
-  // Kultúra (INTE) és Stressztűrés (RESO) csak high/low esetén jelenik meg.
+  // Kultúra (INTE) és Terhelés-kezelés (RESO) csak high/low esetén jelenik meg.
   assert.ok(extremeRows.length > mediumRows.length);
   const labels = extremeRows.map((r) => r.label.hu);
   assert.ok(labels.includes("Kultúra"));
-  assert.ok(labels.includes("Stressztűrés"));
+  assert.ok(labels.includes("Terhelés-kezelés"));
 });

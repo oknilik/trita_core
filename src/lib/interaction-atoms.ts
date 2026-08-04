@@ -947,6 +947,11 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
 // Vezető-kiegészítők — mit jelent, ha a POLARIZÁLT dimenzió a vezetőnél
 // van. Az olvasó a beosztott; a szöveg a vezető-mód kapcsolóval jelenik
 // meg az atomok mellett.
+//
+// A vezetőt NEM mértük — ezért minden blokk hipotézis-keretben szól
+// („Ha a vezetőd erősen…, jellemzően…"), viselkedéses, nem-ítélkező
+// címkékkel. Guardrail: interaction-language.test.ts (hedge kötelező,
+// abszolutizálás tilos) ezt a mapet is fedi.
 // ─────────────────────────────────────────────────────────────────────
 
 export const LEADER_SUPPLEMENTS: Record<
@@ -955,62 +960,62 @@ export const LEADER_SUPPLEMENTS: Record<
 > = {
   TEMP: {
     high: {
-      hu: "Energikus, gyors döntésű vezető: a meetingjei pörögnek, és aki hangosabb, könnyebben kap teret. Kérj strukturált szót — napirendi pontot, írásos felvezetést —, mert a csend nála könnyen egyetértésnek látszik.",
-      en: "An energetic, fast-deciding leader: their meetings move quickly, and louder voices get the floor more easily. Ask for structured airtime — an agenda item, a written brief — because to them silence easily looks like agreement.",
+      hu: "Ha a vezetőd erősen extravertált, a meetingjei jellemzően pörögnek, és aki hangosabb, könnyebben kap teret. Kérj strukturált szót — napirendi pontot, írásos felvezetést —, mert a csend nála könnyen egyetértésnek látszhat.",
+      en: "If your leader is strongly extraverted, their meetings typically move fast, and louder voices get the floor more easily. Ask for structured airtime — an agenda item, a written brief — because silence can easily look like agreement to them.",
     },
     low: {
-      hu: "Csendes, visszafogott vezető: kevés spontán visszajelzést ad, és nem tölti ki a teret — ez nem távolságtartás. Kérdezz rá aktívan az értékelésére: nála a csend nem elégedetlenség, de a dicséret sem hangos.",
-      en: "A quiet, reserved leader: little spontaneous feedback, and they don't fill the room — that's not distance. Ask actively for their read: with them silence isn't displeasure, but praise isn't loud either.",
+      hu: "Ha a vezetőd inkább introvertált, jellemzően kevés spontán visszajelzést ad, és nem tölti ki a teret — ez ritkán távolságtartás. Kérdezz rá aktívan az értékelésére: nála a csend általában nem elégedetlenség, de a dicséret sem hangos.",
+      en: "If your leader leans introverted, they typically give little spontaneous feedback and don't fill the room — that's rarely distance. Ask actively for their read: with them, silence usually isn't displeasure, but praise isn't loud either.",
     },
   },
   RESO: {
     high: {
-      hu: "Érzelmileg jelenlévő vezető: a hangulata érződik a csapaton, és a terheket komolyan veszi — a tiédet is. Az őszinte jelzést értékeli, de időzítsd: feszült pillanatban a rossz hír nála felerősödik.",
-      en: "An emotionally present leader: their mood carries through the team, and they take burdens seriously — including yours. They value honest signals, but time them: in a tense moment bad news amplifies with them.",
+      hu: "Ha a vezetőd érzelmileg erősen ráhangolódó, a hangulata jellemzően érződik a csapaton, és a terheket komolyan veszi — a tiédet is. Az őszinte jelzést általában értékeli, de időzítsd: feszült pillanatban a rossz hír nála felerősödhet.",
+      en: "If your leader is highly emotionally attuned, their mood typically carries through the team, and they take burdens seriously — including yours. They usually value honest signals, but time them: in a tense moment, bad news can amplify with them.",
     },
     low: {
-      hu: "Hűvös, tárgyilagos vezető: kevés érzelmi visszaigazolást ad, és a „nincs hír” nála általában jó hír. Ha megerősítésre van szükséged, kérd explicit módon — magától nem jut eszébe, de szívesen megadja.",
-      en: "A cool, matter-of-fact leader: little emotional affirmation, and with them no news is usually good news. If you need reassurance, ask for it explicitly — it won't occur to them, but they'll gladly give it.",
+      hu: "Ha a vezetőd érzelmileg visszafogottabb, jellemzően kevés érzelmi visszaigazolást ad, és a „nincs hír” nála általában jó hír. Ha megerősítésre van szükséged, kérd explicit módon — magától ritkán jut eszébe, de jellemzően szívesen megadja.",
+      en: "If your leader is more emotionally reserved, they typically give little emotional affirmation, and with them no news is usually good news. If you need reassurance, ask for it explicitly — it rarely occurs to them on their own, but they'll usually give it gladly.",
     },
   },
   INTE: {
     high: {
-      hu: "Elvhű vezető: kiszámítható, fair, és a szava kötelez — cserébe ugyanezt várja. A taktikázást és a szépített beszámolót bünteti, az őszinte hibabevallást díjazza: nála a rossz hír korai kimondása bizalomépítés.",
-      en: "A principled leader: predictable, fair, and bound by their word — expecting the same in return. They punish manoeuvring and polished reports, and reward honest admission of error: with them, naming bad news early builds trust.",
+      hu: "Ha a vezetőd erősen elvhű, jellemzően kiszámítható és fair, a szava kötelez — cserébe általában ugyanezt várja. A taktikázás és a szépített beszámoló nála sokat kockáztat, az őszinte hibabevallás viszont pontot ér: a rossz hír korai kimondása bizalmat építhet.",
+      en: "If your leader is strongly principled, they tend to be predictable and fair, bound by their word — usually expecting the same in return. Manoeuvring and polished reports risk a lot with them, while honest admission of error earns points: naming bad news early can build trust.",
     },
     low: {
-      hu: "Érdekvezérelt, alkuképes vezető: gyors, rugalmas, és a prioritásai a helyzettel együtt mozognak. Figyeld a kimondatlan szempontjait, és a megállapodásaitokat rögzítsd írásban — nem rosszindulatból felejt, hanem mert továbblépett.",
-      en: "An interest-driven, deal-making leader: fast, flexible, with priorities that move with the situation. Track their unstated considerations and put your agreements in writing — they forget not out of malice but because they've moved on.",
+      hu: "Ha a vezetőd rugalmas prioritású, alkuképes típus, jellemzően gyorsan és pragmatikusan dönt, a hangsúlyai pedig a helyzettel együtt mozognak. A megállapodásaitokat érdemes írásban rögzíteni, mert a fókusza gyorsan mozdulhat tovább — és figyeld a kimondatlan szempontjait is.",
+      en: "If your leader has flexible priorities and a deal-making style, they tend to decide fast and pragmatically, with emphases that move with the situation. It's worth putting your agreements in writing, because their focus can move on quickly — and watch for their unstated considerations too.",
     },
   },
   THOR: {
     high: {
-      hu: "Rendszerépítő vezető: a minőség és a határidő nála nem stílus, hanem szerződés. Meglepetés helyett korai jelzést vár — a csúszás önmagában megbocsátható, az eltitkolt csúszás nem.",
-      en: "A system-building leader: quality and deadlines aren't style for them, they're contract. They expect early warning, not surprises — a slip is forgivable in itself; a hidden slip is not.",
+      hu: "Ha a vezetőd erősen strukturált, a minőség és a határidő nála jellemzően nem stílus, hanem megállapodás kérdése. Meglepetés helyett korai jelzést vár — a csúszás önmagában általában megbocsátható, az eltitkolt csúszás sokkal kevésbé.",
+      en: "If your leader is highly structured, quality and deadlines typically aren't a matter of style for them but of agreement. They expect early warning rather than surprises — a slip in itself is usually forgivable; a hidden slip far less so.",
     },
     low: {
-      hu: "Spontán, nagyvonalú vezető: kevés keretet ad, és a részletek nála elsikkadnak — a szabadság valódi, a struktúráról viszont magadnak kell gondoskodnod. Kérdezd meg konkrétan: mit, mikorra, milyen mélységben.",
-      en: "A spontaneous, big-picture leader: few frames, and details slip past them — the freedom is real, but you'll have to supply the structure yourself. Ask concretely: what, by when, at what depth.",
+      hu: "Ha a vezetőd kevésbé strukturált, jellemzően kevés keretet ad, és a részletek elsikkadhatnak nála — a szabadság valódi, a struktúráról viszont jó eséllyel magadnak kell gondoskodnod. Kérdezd meg konkrétan: mit, mikorra, milyen mélységben.",
+      en: "If your leader is less structured, they typically set few frames, and details can slip past them — the freedom is real, but you'll likely have to supply the structure yourself. Ask concretely: what, by when, at what depth.",
     },
   },
   ADAP: {
     high: {
-      hu: "Harmóniakereső vezető: türelmes, konfliktuskerülő, és a kritikát ritkán mondja ki élesen — figyeld a finom jelzéseket, mert nála a „talán érdemes lenne” gyakran erős kérés. Kérj konkrét visszajelzést, különben csak a jót hallod.",
-      en: "A harmony-seeking leader: patient, conflict-averse, rarely sharp in criticism — watch for subtle signals, because their 'perhaps it might be worth' is often a firm request. Ask for concrete feedback or you'll only ever hear the good part.",
+      hu: "Ha a vezetőd erősen harmóniakereső, jellemzően türelmes, és a kritikát ritkán mondja ki élesen — figyeld a finom jelzéseket, mert nála a „talán érdemes lenne” gyakran erős kérés. Kérj konkrét visszajelzést, különben könnyen csak a jót hallod.",
+      en: "If your leader leans strongly toward harmony, they tend to be patient and rarely sharp in criticism — watch for subtle signals, because their 'perhaps it might be worth' is often a firm request. Ask for concrete feedback, or you may only ever hear the good part.",
     },
     low: {
-      hu: "Kritikus, direkt vezető: az éle nem személyes, hanem üzemmód — a vitát jól bírja, sőt tiszteli, aki érvekkel visszaszól. Amit nehezen kezel: a megsértődés és a néma visszahúzódás; nála a nyílt ellentmondás a biztonságosabb út.",
-      en: "A critical, direct leader: the edge is a mode, not personal — they handle debate well and respect those who push back with arguments. What they struggle with is sulking and silent withdrawal; open disagreement is the safer route with them.",
+      hu: "Ha a vezetőd nagyon direkt stílusú, az éle jellemzően nem személyes, hanem üzemmód — a vitát általában jól bírja, és sokra tartja, aki érvekkel szól vissza. Amit nehezebben kezel: a ki nem mondott sérelem és a néma visszahúzódás; nála a nyílt ellentmondás lehet a biztonságosabb út.",
+      en: "If your leader has a very direct style, the edge is typically a mode, not personal — they usually handle debate well and respect those who push back with arguments. What they handle less well is unspoken hurt and silent withdrawal; open disagreement may be the safer route with them.",
     },
   },
   OPEN: {
     high: {
-      hu: "Újító vezető: az irányok nála gyakran váltanak, és a legutóbbi ötlet hangosabb, mint a tavalyi stratégia. Kérdezd meg rendszeresen, mi fix és mi kísérlet — enélkül minden felvetését elköteleződésnek hiheted.",
-      en: "An innovating leader: directions change often, and the latest idea speaks louder than last year's strategy. Regularly ask what's fixed and what's an experiment — otherwise you'll mistake every musing for a commitment.",
+      hu: "Ha a vezetőd erősen újító, az irányok nála gyakran váltanak, és a legutóbbi ötlet hangosabb lehet, mint a tavalyi stratégia. Kérdezd meg rendszeresen, mi fix és mi kísérlet — enélkül könnyen elköteleződésnek hallod a hangos gondolkodást is.",
+      en: "If your leader is a strong innovator, directions tend to change often, and the latest idea can speak louder than last year's strategy. Regularly ask what's fixed and what's an experiment — otherwise you may hear every musing as a commitment.",
     },
     low: {
-      hu: "Pragmatikus vezető: a bevált módszert tiszteli, az újítást bizonyíték győzi meg, nem lelkesedés. Vidd az ötleteidet számokkal és kis téttel — a „próbáljuk ki kicsiben” nála kaput nyit, a „forradalmasítsuk” bezárja.",
-      en: "A pragmatic leader: they respect what's proven, and evidence persuades them where enthusiasm won't. Bring your ideas with numbers and low stakes — 'let's pilot it small' opens their door, 'let's revolutionise' closes it.",
+      hu: "Ha a vezetőd inkább a bevált utakat követi, az újításról jellemzően bizonyíték győzi meg, nem lelkesedés. Vidd az ötleteidet számokkal és kis téttel — a „próbáljuk ki kicsiben” nála jellemzően kaput nyit, a „forradalmasítsuk” inkább bezárja.",
+      en: "If your leader prefers proven paths, evidence typically persuades them where enthusiasm won't. Bring your ideas with numbers and low stakes — 'let's pilot it small' tends to open their door, while 'let's revolutionise' tends to close it.",
     },
   },
 };

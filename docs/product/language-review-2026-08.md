@@ -1,6 +1,6 @@
 # Nyelvi és pszichológiai szöveg-lektorálás — 2026-08
 
-> Állapot: KÉSZÜL — a leltár feltöltése és a javítások folyamatban.
+> Állapot: VÉGREHAJTVA (2026-08-04) — a nyitott maradványok a napló végén.
 > Kapcsolódik: `docs/product/ux-simplification-2026-08.md` (a „→ NYELVI KÖR"
 > jelű tételek ide kerültek át), `docs/product/riport-javitasi-terv` 1.2/1.4.
 
@@ -198,4 +198,43 @@ változó): `results.ts` `cfWhyThisOrder`/`ccPlan30Title` ({dim}),
 
 ## Végrehajtási napló
 
-_(a javítások batch-enként ide kerülnek, verifikációval)_
+1. **batch (`5328b0d`)** — B18 nav-i18n (`nav.*` szótár + builder-locale +
+   nav-header fogyasztó), komponens-oldali „a(z)"-feloldások
+   (manager-vezérlő ×3, kampánynév-kártya idézőjeles esete),
+   TeamIntelligence-zsargon, magázó hibaüzenet-hardcode-ok (sign-in/up
+   boundary, error.tsx, pilot-apply).
+2. **batch (`d7ab500`)** — a teljes szótár-oldali kör: 125+ kulcs 7 i18n
+   fájlban (P1/P2/P3 + terminológia-családok + 11 notification-body
+   névelő-mentes átfogalmazása); cfWhyThisOrder hívó-oldali
+   `withHuArticle`; a két hívó nélküli career-sablon névelő-mentesre;
+   B12 cím-átnevezés az i18n oldalon; deepDive-időtartam kivéve.
+3. **batch (ez a commit)** — tartalom-libek: team-insights szemantikai
+   inverzió + sablon-újraírás; team-intelligence kód-szivárgás és
+   „szignifikánsan" javítása becslés-jelöléssel; 12 LEADER_SUPPLEMENTS
+   blokk hipotézis-keretben + guardrail-teszt kiterjesztés; team-pattern
+   P1-ek + 24 blindSpot valószínűségi formára; profile-content 48+17+6
+   bejegyzés átírva ([]„a válaszaid …-ra utalnak" keret, klinikai szavak
+   ki, Terhelés-kezelés átkeretezés); journey-zsargon (A20) mind a
+   CTA-kban, magyarázatokban és a 10 STAGE_LABELS-ben; emails
+   thanks-slot + testName + withHuArticle; tritan „Kapzsiságkerülés";
+   B12 átvezetés a PDF/web közös BLOCK5_TITLE-ben; IdealEnvironmentSection
+   POLES-kulcs a új címkére.
+
+Verifikáció (záró állapot): `pnpm check` 0 hiba / 44 warning (örökölt
+baseline) · unit 455/455 · client 92/92 · production build zöld
+(dummy env-ekkel).
+
+## Nyitott maradványok (tudatosan)
+
+- **„Szorongás" facet nem-klinikai glosszája**: a `TRITAN_FACETS`-nek
+  nincs leíró mezője — a glossza a facet-megjelenítési pontokon
+  (komponens/i18n) helyezhető el egy következő körben.
+- **`src/lib/questions/tritan.ts`** 57/60/82: a régi „Mohóságkerülés"
+  alak és H-leírás — validált instrumentum-fájl, mérési okból nem nyúlunk
+  hozzá; a megjelenítési réteg már az új nevet mutatja.
+- **EN journey-terminusok** (observer/insights): angolul természetesek,
+  csak a HU volt zsargonos.
+- **„Zsoldosok" (RVFP) minta-név + a 16-os névkészlet**: brand-döntés,
+  backlogon.
+- **org.ts heatmapDesc kulcs-név** és társai: kulcsNEVEK nem változtak
+  (hívás-kompatibilitás), csak értékek.
