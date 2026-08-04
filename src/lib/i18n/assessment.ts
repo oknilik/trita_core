@@ -236,6 +236,16 @@ export const assessmentTranslations = {
       en: "By registering you accept our privacy policy.",
     },
     privacyLink: { hu: "Részletek", en: "Details" },
+    teaserEyebrow: { hu: "Ízelítő az eredményedből", en: "A taste of your result" },
+    teaserHint: {
+      hu: "A teljes riport — facettek, munkastílus, összehasonlítás, megosztás — a fiókodban vár.",
+      en: "The full report — facets, work style, comparison, sharing — is waiting in your account.",
+    },
+    teaserBrowserNote: {
+      hu: "Az eredményed ebben a böngészőben van elmentve — regisztráció után automatikusan a fiókodba kerül.",
+      en: "Your result is saved in this browser — after sign-up it moves to your account automatically.",
+    },
+    teaserTopDims: { hu: "Legerősebb dimenzióid", en: "Your strongest dimensions" },
   },
 
   // ── Assessment layers (/assessment-layers) ────────────────────────────
