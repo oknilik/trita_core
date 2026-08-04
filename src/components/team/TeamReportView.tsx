@@ -12,6 +12,9 @@ import {
 } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
+import { AXIS_LABELS } from "@/lib/team-pattern";
+import { TEAM_PRESSURE_CONTENT } from "@/lib/team-pressure";
+import type { TritanDimCode } from "@/lib/tritan";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
@@ -402,12 +405,52 @@ export function TeamReportView({
           <DashboardPanel className="p-6">
             {agg.pattern && (
               <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
-                <p className="font-mono text-micro uppercase tracking-widest text-muted">
-                  {isHu ? "Csapatmintázat" : "Team pattern"}
-                </p>
-                <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
-                  {agg.pattern.label}
-                </p>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div>
+                    <p className="font-mono text-micro uppercase tracking-widest text-muted">
+                      {isHu ? "Csapatmintázat" : "Team pattern"}
+                    </p>
+                    <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
+                      {agg.pattern.label}
+                    </p>
+                  </div>
+                  {agg.pattern.confidence ? (
+                    <span className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-micro font-semibold text-ink-body">
+                      {agg.pattern.confidence}{" "}
+                      {isHu ? "konfidencia" : "confidence"}
+                    </span>
+                  ) : null}
+                </div>
+                {/* Stabilitás-jelzés a mintázat-motorból: küszöb-közeli tengelynél
+                    a mintázat kontextusfüggő — a tanácsadói debrifen ezt ki kell
+                    mondani, ezért a riportban is látszania kell. */}
+                {agg.pattern.stability && agg.pattern.stability !== "stabil" && agg.pattern.stabilityNote ? (
+                  <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    {agg.pattern.stabilityNote}
+                    {agg.pattern.unstableAxes && agg.pattern.unstableAxes.length > 0 ? (
+                      <span>
+                        {" "}
+                        {isHu ? "Érintett tengely: " : "Axes involved: "}
+                        {agg.pattern.unstableAxes
+                          .map((axis) =>
+                            isHu
+                              ? AXIS_LABELS[axis as keyof typeof AXIS_LABELS]?.name ?? axis
+                              : axis,
+                          )
+                          .join(", ")}
+                        .
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
+                {typeof agg.pattern.tensionMemberCount === "number" &&
+                agg.pattern.tensionMemberCount > 0 ? (
+                  <p className="mt-2 text-micro text-muted">
+                    {isHu
+                      ? `${agg.pattern.tensionMemberCount} tagnál 20+ pontos egyéni eltérés van a csapatmintától — a minta rájuk kevésbé illik (név nélkül, az egyéni riport tárgya).`
+                      : `${agg.pattern.tensionMemberCount} member(s) deviate 20+ points from the team pattern — the label fits them less (no names; that belongs to individual reports).`}
+                  </p>
+                ) : null}
               </div>
             )}
 
@@ -870,6 +913,66 @@ export function TeamReportView({
             </DashboardPanel>
           </section>
         )}
+
+      {/* Csapat nyomás alatt — kollektív pressure-minták. Az egyéni
+          túlpörgés-tartalmak (SOLO_DIM_PRESSURE) csapat-párja: ha egy
+          dimenzió-pólus koncentrálódik, nyomás alatt kollektív mintává
+          adódhat össze. Hipotézis-nyelv + akció-mondat, max 3 állítás. */}
+      {agg?.pressure && agg.pressure.concentrations.length > 0 && (
+        <section>
+          <SectionHead
+            no={secNo()}
+            label={isHu ? "Csapat nyomás alatt" : "Team under pressure"}
+            subtitle={isHu
+              ? "Békeidőben erősség — terhelés alatt összeadódó kollektív minta lehet."
+              : "A strength in calm times — under load it can compound into a collective pattern."}
+          />
+          <DashboardPanel className="p-6">
+            <div className="flex flex-col gap-4">
+              {agg.pressure.concentrations.map((c) => {
+                const content =
+                  TEAM_PRESSURE_CONTENT[c.dim as TritanDimCode]?.[c.pole];
+                if (!content) return null;
+                const dimLabel = DIM_LABELS[c.dim]
+                  ? isHu
+                    ? DIM_LABELS[c.dim].hu
+                    : DIM_LABELS[c.dim].en
+                  : c.dim;
+                return (
+                  <div
+                    key={`${c.dim}-${c.pole}`}
+                    className="rounded-[14px] border border-amber-200 bg-amber-50 p-4"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: DIM_COLORS[c.dim] ?? "var(--color-sage)" }}
+                      />
+                      <p className="text-sm font-semibold text-ink">
+                        {dimLabel} —{" "}
+                        {c.pole === "high"
+                          ? isHu ? "magas pólus" : "high pole"
+                          : isHu ? "alacsony pólus" : "low pole"}
+                      </p>
+                      <span className="ml-auto rounded-full border border-amber-200 bg-white px-2 py-0.5 text-micro font-medium text-amber-800">
+                        {c.count}/{c.assessedCount} {isHu ? "tag" : "members"}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-ink-body">
+                      {isHu ? content.hu : content.en}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-4 text-micro text-muted">
+              {isHu
+                ? "Önértékelésekből becsült kollektív minta — hipotézis, nem diagnózis. Kérdezd meg a vezetőt: ráismer-e; ha nem, az is adat. Egyéni értékek nem jelennek meg."
+                : "A collective pattern estimated from self-assessments — a hypothesis, not a diagnosis. Ask the leader whether they recognize it; if not, that is data too. Individual values are not shown."}
+            </p>
+          </DashboardPanel>
+        </section>
+      )}
 
       {/* Pszichológiai biztonság — anonim pulse-aggregátum */}
       {agg?.psychSafety && (
