@@ -30,7 +30,7 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
       return (
         <div className="flex min-h-dvh items-center justify-center bg-cream px-4">
           <div className="w-full max-w-md rounded border border-sand bg-white p-8 text-center">
-            <p className="text-sm text-ink-body">Valami hiba történt. Kérjük, frissítsd az oldalt.</p>
+            <p className="text-sm text-ink-body">Hiba történt. Frissítsd az oldalt.</p>
             <button
               type="button"
               onClick={() => window.location.reload()}

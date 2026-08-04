@@ -249,7 +249,7 @@ export function TeamIntelligence({
           {membersWithData.length === 0 ? (
             <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-[12px] text-ink-body">
               {isHu
-                ? "Még nincs kitöltött assessment adat az erőforrás-térképhez."
+                ? "Még nincs elég kitöltött felmérés az erőforrás-térképhez."
                 : "No completed assessment data yet for the resource map."}
             </div>
           ) : null}
@@ -343,8 +343,8 @@ export function TeamIntelligence({
         </div>
         <p className="text-[12px] leading-relaxed text-ink-body">
           {isHu
-            ? "Az intelligence nézet summary jellegű. A részletes chartok és szerep-eloszlás a Csapatszerepek deep-dive felületen érhető el."
-            : "The intelligence view stays summary-first. Detailed charts and role distribution are owned by the Team roles deep-dive surface."}
+            ? "Ez az áttekintő nézet. A részletes ábrák és a szerep-eloszlás a Csapatszerepek felületen érhető el."
+            : "This is the overview. Detailed charts and the role distribution live on the Team roles surface."}
         </p>
         {deepDiveHref ? (
           <div className="mt-3">
