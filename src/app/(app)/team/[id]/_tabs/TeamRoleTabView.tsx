@@ -14,28 +14,19 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
     where: { id: teamId },
     select: { teamRoleRoundActive: true, teamRoleRoundStartedAt: true },
   });
-  const teamRoleMembers = await prisma.teamMember.findMany({
-    where: { teamId },
-    select: {
-      userId: true,
-      user: {
-        select: {
-          username: true,
-          teamRoleScores: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-            select: { source: true, updatedAt: true },
-          },
-        },
-      },
-    },
+  // A becslés SOSEM perzisztálódik (számított fallback), ezért a korábbi
+  // source === "estimate" DB-szűrés mindig 0-t adott. A valós állapot a
+  // megjelenítési szabályból jön: kitöltött kérdőív > TRITAN-becslés >
+  // nincs adat — a teamData.members már hordozza mindkét forrást.
+  const teamRoleMemberStatus = teamData.members.map((m) => {
+    const hasQuestionnaire = m.teamRoleSource === "questionnaire";
+    return {
+      userId: m.userId,
+      name: m.displayName,
+      hasQuestionnaire,
+      hasEstimate: !hasQuestionnaire && !!m.scores,
+    };
   });
-  const teamRoleMemberStatus = teamRoleMembers.map((m) => ({
-    userId: m.userId,
-    name: m.user.username ?? "?",
-    hasQuestionnaire: m.user.teamRoleScores[0]?.source === "questionnaire",
-    hasEstimate: m.user.teamRoleScores[0]?.source === "estimate",
-  }));
   const teamRoleCompletedCount = teamRoleMemberStatus.filter((m) => m.hasQuestionnaire).length;
   const teamRoleEstimateCount = teamRoleMemberStatus.filter((m) => m.hasEstimate).length;
 
@@ -48,7 +39,7 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
       <TeamRoleRoundCard
         teamId={teamId}
         isRoundActive={teamRoleTeam?.teamRoleRoundActive ?? false}
-        totalMembers={teamRoleMembers.length}
+        totalMembers={teamData.members.length}
         completedCount={teamRoleCompletedCount}
         estimateCount={teamRoleEstimateCount}
         members={teamRoleMemberStatus}

@@ -43,3 +43,22 @@ export function estimateTeamRolesFromTritan(
 
   return raw;
 }
+
+// A megjelenítési precedencia-szabály egyetlen helyen: kitöltött kérdőív >
+// TRITAN-becslés. A perzisztált pontszámok kulcsai közül csak az ismert
+// szerep-kódokat tartjuk meg (legacy kulcsú régi sorokra becslés-fallback),
+// hogy a TEAM_ROLES-feloldás sose fusson undefined-ra.
+export function resolveDisplayRoleScores(
+  measured: Record<string, number> | null | undefined,
+  tritan: Record<TritanDimCode, number>,
+): { scores: TeamRoleScores; source: "questionnaire" | "estimate" } {
+  if (measured) {
+    const filtered = Object.fromEntries(
+      Object.entries(measured).filter(([code]) => code in TEAM_ROLES),
+    );
+    if (Object.keys(filtered).length > 0) {
+      return { scores: filtered as TeamRoleScores, source: "questionnaire" };
+    }
+  }
+  return { scores: estimateTeamRolesFromTritan(tritan), source: "estimate" };
+}
