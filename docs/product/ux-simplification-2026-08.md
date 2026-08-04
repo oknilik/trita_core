@@ -40,7 +40,7 @@ ennek a láthatatlan súlynak a nagyját eltávolítja vagy megmutatja.
 | A17 | Üres krém-képernyő amíg a localStorage feloldódik (`:521-523`) | brand-spinner | ✅ KÉSZ |
 | A18 | NavBar CTA-címke render-időben olvas localStorage-t → hydration mismatch | useEffect-minta (mint a landingen) | ✅ KÉSZ |
 | A19 | `hasAssessmentDraftInStorage` némán elnyeli a `scope` argumentumot | scope továbbadása | ✅ KÉSZ |
-| A20 | Journey-szövegek belső zsargonban és i18n-en kívül („observer", „insight", „journey") | i18n + köznyelvi magyar | → NYELVI KÖR (2. feladat) |
+| A20 | Journey-szövegek belső zsargonban és i18n-en kívül („observer", „insight", „journey") | i18n + köznyelvi magyar | ✅ KÉSZ (nyelvi kör: journey-szövegek köznyelvire) (2. feladat) |
 
 ## B) Belépett élmény + társas hurkok
 
@@ -57,13 +57,13 @@ ennek a láthatatlan súlynak a nagyját eltávolítja vagy megmutatja.
 | B9 | A két legnehezebb dynamic oldalnak (results, interaction) nincs loading boundary-je | skeleton loading.tsx mindkettőre | ✅ KÉSZ |
 | B10 | /interaction néma redirect eredmény nélkül (email-ből érkezőnek magyarázat nélkül) | StatePage a redirect helyett | ✅ KÉSZ |
 | B11 | Archetípus-választó: 30 kombináció egyszerre, előre kitöltött idegen elemzéssel | rétegzett feltárás (második mező választás után) | ⏳ BACKLOG (M) |
-| B12 | Két szomszédos szekció neve „szerep" (RoleFit vs Csapatszerep) | címek megkülönböztetése | → NYELVI KÖR |
+| B12 | Két szomszédos szekció neve „szerep" (RoleFit vs Csapatszerep) | címek megkülönböztetése | ✅ KÉSZ (nyelvi kör: „Munkakör-illeszkedés") |
 | B13 | Az interakció-oldal a CTA-kártya szövegét ismétli intro-ként; a megírt intro halott kód | interactionIntro használata | ✅ KÉSZ |
 | B14 | Invite-form menet közben átcímkézi magát (colleagues fetch után) | stabil cím + skeleton | ⏳ BACKLOG (S) |
 | B15 | Comparison üres-állapot CTA teljes router-navigáció ugyanarra az oldalra | scroll-to-anchor | ✅ KÉSZ |
 | B16 | Notification-panel: dismiss undo nélkül; üres állapot akció nélkül | üres állapotba next-step sor (undo backlog) | ✅ RÉSZBEN |
 | B17 | Ál-percentilis: logika kivezetve, de a render-lánc + PDF + i18n kulcs + landing „Top 25%" badge még él | teljes kivezetés; landing-badge valós állításra cserélve | ✅ KÉSZ |
-| B18 | Nav-címkék hardcode magyarok bilingvális felület körül | i18n-esítés | → NYELVI KÖR |
+| B18 | Nav-címkék hardcode magyarok bilingvális felület körül | i18n-esítés | ✅ KÉSZ (nyelvi kör: nav.* szótár) |
 | B19 | 2 tabhoz túlméretezett tab-gépezet (scroll-fade, auto-center, router.push ugrás) | egyszerű szegmens-gombok | ⏳ BACKLOG (S — vizuális regresszió-teszt nélkül kockázatos) |
 | B20 | Observer-kitöltés: idő előtti figyelmeztetés + a záró CTA címkéje nem oda visz, ahova mutat | figyelmeztetés csak blokkolt indításnál; CTA-címke javítva | ✅ KÉSZ |
 
