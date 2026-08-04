@@ -11,6 +11,8 @@
     "check": "pnpm type-check && pnpm lint",
     "test": "pnpm test:unit",
     "test:unit": "node scripts/run-tests.mjs unit",
+
+    "manual-tests": "node scripts/generate-manual-tests.mjs",
     "test:integration": "node scripts/run-tests.mjs integration",
     "test:integration:bootstrap": "node scripts/test-integration-bootstrap.mjs",
     "test:integration:cleanup": "node scripts/test-integration-cleanup.mjs",
@@ -89,6 +91,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "exceljs": "^4.4.0",
     "jsdom": "^29.0.1",
     "msw": "^2.12.14",
     "prisma": "6.6.0",
