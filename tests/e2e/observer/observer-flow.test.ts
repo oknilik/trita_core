@@ -146,26 +146,21 @@ async function completeObserverViaUi(
   await expect(page.getByRole("button", { name: /^4 - / }).first()).toBeVisible();
   await page.getByRole("button", { name: /^4 - / }).first().click();
 
-  await expect
-    .poll(async () => {
-      const confidenceLabelVisible = await page
-        .getByText(/How confident are you|Mennyire vagy biztos/i)
-        .first()
-        .isVisible()
-        .catch(() => false);
-      if (confidenceLabelVisible) return "confidence";
-      const nextVisible = await page
-        .getByRole("button", { name: NEXT_BUTTON_LABEL })
-        .isVisible()
-        .catch(() => false);
-      return nextVisible ? "needs_next" : "pending";
-    })
-    .toMatch(/confidence|needs_next/);
-
-  const nextButton = page.getByRole("button", { name: NEXT_BUTTON_LABEL });
-  if (await nextButton.isVisible().catch(() => false)) {
-    await nextButton.click();
+  // Az utolsó válasz után az auto-advance (~130 ms) magától a confidence-
+  // lépésre visz; ha mégsem, a Tovább gomb visz át. A korábbi poll az
+  // auto-advance időzítése ELŐTT is elfogadta a Tovább-ágat, így a kattintás
+  // a fázisváltással (framer-motion átmenettel) versenyzett.
+  const confidenceLabel = page
+    .getByText(/How confident are you|Mennyire vagy biztos/i)
+    .first();
+  const reachedConfidence = await confidenceLabel
+    .waitFor({ state: "visible", timeout: 3_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!reachedConfidence) {
+    await page.getByRole("button", { name: NEXT_BUTTON_LABEL }).click();
   }
+  await expect(confidenceLabel).toBeVisible();
 
   await expect(page.getByRole("button", { name: /^4 - / }).first()).toBeVisible();
   await page.getByRole("button", { name: /^4 - / }).first().click();

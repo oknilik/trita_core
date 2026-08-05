@@ -56,9 +56,13 @@ export function Footer() {
     // oldal valódi háttere van, minden viewporton. A varrat-mentességhez a
     // footer-háttér FÜGGŐLEGES gradiens (to-b): így az SVG tömör ink-kitöltése
     // pixelre egyezik a törzs tetejével.
-    <footer className="relative -mt-10 w-full md:-mt-14">
-      {/* pointer-events-none: a hullám a megelőző oldal fölé húzódik (-mt),
-          az átlátszó zónája nem foghatja el az alatta lévő gombok kattintását. */}
+    // pointer-events-none a KONTÉNEREN is, nem csak az SVG-n: a hullám a
+    // megelőző oldal fölé húzódik (-mt), és az elem-szintű hit-test a
+    // pointer-events-none SVG alatt magát a <footer>-t találta el — az
+    // átfedett sávban az oldal gombjai (pl. az observer-kitöltő „Tovább"
+    // gombja) nem kaptak kattintást. A tényleges footer-tartalom a lenti
+    // dividen pointer-events-auto-val újra kattintható.
+    <footer className="pointer-events-none relative -mt-10 w-full md:-mt-14">
       <svg
         viewBox="0 0 1440 56"
         preserveAspectRatio="none"
@@ -71,7 +75,7 @@ export function Footer() {
         />
       </svg>
 
-      <div className="w-full bg-gradient-to-b from-ink to-ink-body pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
+      <div className="pointer-events-auto w-full bg-gradient-to-b from-ink to-ink-body pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
       <div className="mx-auto w-full max-w-[1120px] px-7">
         <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
 
