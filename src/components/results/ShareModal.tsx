@@ -10,13 +10,14 @@ import { TextField } from "@/components/ui/primitives/TextField";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { ShareCardDownload } from "@/components/results/ShareCardDownload";
-import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
 // Megosztás-kezelő modal: link létrehozás + vágólap-másolás inline
 // visszajelzéssel (nincs böngésző-alert), opcionális email-küldés és
 // visszavonás — mind egy helyen, a flow megszakítása nélkül.
+// QR a modalban nincs: az email-küldés csatolja (szerver-oldali PNG) — a
+// felület így két tiszta akcióra egyszerűsödik (másolás / küldés).
 export interface ShareCardPreview {
   userName: string;
   personalityType: string;
@@ -45,7 +46,6 @@ export function ShareModal({
   const [copied, setCopied] = useState(false);
   const [revoked, setRevoked] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [qrVisible, setQrVisible] = useState(false);
 
   const [email, setEmail] = useState("");
   const [emailState, setEmailState] = useState<EmailState>("idle");
@@ -81,7 +81,6 @@ export function ShareModal({
     if (isOpen) {
       setCopied(false);
       setEmailState("idle");
-      setQrVisible(false);
     }
   }, [isOpen]);
 
@@ -96,19 +95,6 @@ export function ShareModal({
     } catch {
       setLoadError(true);
     }
-  };
-
-  // UX-B6: a QR megjelenítése is megosztási szándék — az első felfedés
-  // hozza létre (vagy kéri vissza) a linket ugyanazzal a createLink-kel,
-  // mint a másolás; link nélkül QR-t nem rajzolunk.
-  const handleToggleQr = async () => {
-    if (qrVisible) {
-      setQrVisible(false);
-      return;
-    }
-    const url = shareUrl ?? (await createLink());
-    if (!url) return;
-    setQrVisible(true);
   };
 
   const handleSend = async () => {
@@ -141,7 +127,6 @@ export function ShareModal({
       setRevoked(true);
       setCopied(false);
       setEmailState("idle");
-      setQrVisible(false);
     } catch {
       setLoadError(true);
     } finally {
@@ -239,19 +224,7 @@ export function ShareModal({
               </p>
             )}
 
-            {/* A3: a kártya képként — letöltés / mobilon natív megosztás.
-                Kliens-oldali render, szerverre semmi nem megy; pontszám
-                nem kerül a képre. */}
-            {preview && previewGlyph && (
-              <ShareCardDownload
-                userName={preview.userName}
-                personalityType={preview.personalityType}
-                topDims={preview.topDims.map((d) => ({ label: d.label, score: d.score }))}
-                glyph={previewGlyph}
-              />
-            )}
-
-            {/* Link + másolás */}
+            {/* Link + másolás — a modal elsődleges akciója */}
             <div>
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
                 {t("content.shareLinkLabel", locale)}
@@ -268,13 +241,13 @@ export function ShareModal({
                     (vagy kéri vissza) a linket — a POST idempotens. */}
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="primary"
                   onClick={() => void handleCopy()}
                   disabled={busy}
                   className="shrink-0"
                 >
                   {copied ? (
-                    <span className="inline-flex items-center gap-1.5 text-sage-dark">
+                    <span className="inline-flex items-center gap-1.5">
                       <SuccessCheck />
                       {t("content.shareCopied", locale)}
                     </span>
@@ -282,31 +255,7 @@ export function ShareModal({
                     t("content.shareCopyLink", locale)
                   )}
                 </Button>
-                {/* QR — workshop-helyzet: a kolléga a teremben, telefonnal
-                    olvassa be. A B6-elv itt is áll: a link az első
-                    felfedéskor jön létre. */}
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => void handleToggleQr()}
-                  disabled={busy}
-                  aria-expanded={qrVisible}
-                  className="shrink-0"
-                >
-                  {qrVisible
-                    ? t("content.shareHideQr", locale)
-                    : t("content.shareShowQr", locale)}
-                </Button>
               </div>
-              {qrVisible && shareUrl ? (
-                <QrCodeBadge
-                  value={shareUrl}
-                  alt={t("content.shareQrAlt", locale)}
-                  hint={t("content.shareQrHint", locale)}
-                  onError={() => setLoadError(true)}
-                  className="mt-3"
-                />
-              ) : null}
             </div>
 
             {/* Email küldés */}
@@ -337,7 +286,7 @@ export function ShareModal({
                 />
                 <Button
                   type="button"
-                  variant="primary"
+                  variant="secondary"
                   onClick={() => void handleSend()}
                   disabled={emailState === "sending" || !email.trim()}
                   className="shrink-0 self-start"
@@ -353,7 +302,23 @@ export function ShareModal({
                   {t("content.shareEmailSent", locale)}
                 </p>
               )}
+              {/* A QR a levélben utazik (szerver-oldali PNG-csatolmány) —
+                  a modalból a látható QR-blokk ezért került ki. */}
+              <p className="mt-1.5 text-micro text-muted">
+                {t("content.shareEmailQrHint", locale)}
+              </p>
             </div>
+
+            {/* A3 lefokozva: a kártya-kép letöltése halk, másodlagos sor —
+                kliens-oldali render, szerverre semmi nem megy. */}
+            {preview && previewGlyph && (
+              <ShareCardDownload
+                userName={preview.userName}
+                personalityType={preview.personalityType}
+                topDims={preview.topDims.map((d) => ({ label: d.label, score: d.score }))}
+                glyph={previewGlyph}
+              />
+            )}
 
             {/* Visszavonás */}
             <div className="border-t border-sand pt-4 text-center">

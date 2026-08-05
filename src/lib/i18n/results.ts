@@ -1516,14 +1516,11 @@ export const resultsTranslations = {
     shareLinkLabel: { hu: "Megosztható link", en: "Shareable link" },
     shareCopyLink: { hu: "Link másolása", en: "Copy link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
-    shareShowQr: { hu: "QR-kód mutatása", en: "Show QR code" },
-    shareHideQr: { hu: "QR-kód elrejtése", en: "Hide QR code" },
-    shareQrAlt: { hu: "QR-kód a megosztható linkhez", en: "QR code for the share link" },
-    shareQrHint: {
-      hu: "Beolvasva ugyanarra a megosztott profil-nézetre visz, mint a link — a kollégád egyből a telefonján nézheti.",
-      en: "Scanning it opens the same shared profile view as the link — your colleague can view it right on their phone.",
-    },
     shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
+    shareEmailQrHint: {
+      hu: "Az email QR-kódot is tartalmaz — telefonnal beolvasva azonnal nyílik a profil.",
+      en: "The email also includes a QR code — scan it with a phone and the profile opens instantly.",
+    },
     shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
     shareEmailSend: { hu: "Küldés", en: "Send" },
     shareEmailSending: { hu: "Küldés…", en: "Sending…" },

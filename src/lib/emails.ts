@@ -1,6 +1,7 @@
 import { resend, EMAIL_FROM } from "./resend";
 import { createLogger } from "@/lib/logger";
 import { withHuArticle } from "@/lib/hu-grammar";
+import { EMAIL_COLORS } from "./design-tokens";
 import {
   buildEmailLayout,
   escapeHtml,
@@ -141,6 +142,12 @@ const translations = {
       body: (sender: string) =>
         `${sender} megosztotta veled a személyiségprofilját a tritán. A profil bemutatja a fő dimenzióit, a munkastílusát és a valószínű csapatszerepeit.`,
       cta: "Profil megnyitása",
+      qrAlt: "QR-kód a megosztott profilhoz",
+      qrHint:
+        "A QR-kódot telefonnal beolvasva a profil azonnal megnyílik.",
+      qrAttachmentNote:
+        "A csatolt QR-kódot (qr-kod.png) telefonnal beolvasva a profil azonnal megnyílik.",
+      qrFilename: "qr-kod.png",
       footer:
         "A linket a küldő bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
       thanks: "Üdvözlettel,",
@@ -152,6 +159,12 @@ const translations = {
       body: (sender: string) =>
         `${sender} shared their personality profile with you on trita. The profile shows their main dimensions, work style, and likely team roles.`,
       cta: "Open the profile",
+      qrAlt: "QR code for the shared profile",
+      qrHint:
+        "Scan the QR code with your phone and the profile opens instantly.",
+      qrAttachmentNote:
+        "Scan the attached QR code (qr-code.png) with your phone and the profile opens instantly.",
+      qrFilename: "qr-code.png",
       footer:
         "The sender can revoke this link at any time. If you don't recognize the sender, you can ignore this email.",
       thanks: "Best regards,",
@@ -513,16 +526,48 @@ export async function sendCandidateCompletedEmail(params: {
   }
 }
 
-function buildProfileShareHtml(params: {
+/** A megosztott profil publikus URL-je — a levél CTA-ja és a QR ugyanezt kódolja. */
+export function profileShareUrl(token: string): string {
+  return `${APP_URL}/share/${token}`;
+}
+
+/** A csatolt QR inline content-id-je — a HTML `cid:` hivatkozása erre mutat. */
+const PROFILE_SHARE_QR_CID = "share-qr";
+
+/**
+ * Exportált a unit-tesztnek (QR-ág): a küldés maga Resend-et igényel, a
+ * sablon-tartalom (cid-kép + magyarázat) így hívás nélkül ellenőrizhető.
+ */
+export function buildProfileShareHtml(params: {
   locale: Locale;
   senderName: string;
   token: string;
+  /** Inline QR content-id — csak akkor kerül QR-blokk a levélbe, ha van. */
+  qrCid?: string;
 }): string {
   const t = translations.profileShare[params.locale];
   const cta = renderCtaButton({
-    href: `${APP_URL}/share/${params.token}`,
+    href: profileShareUrl(params.token),
     label: t.cta,
   });
+
+  // QR-blokk a CTA alatt: fehér dobozban, hogy sötét módú kliensben is
+  // biztosan beolvasható maradjon; alatta a rövid használati magyarázat.
+  const qrBlock = params.qrCid
+    ? `
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:24px auto 0">
+      <tr>
+        <td align="center" bgcolor="#ffffff" style="background-color:#ffffff;border:1px solid ${EMAIL_COLORS.border};border-radius:12px;padding:12px">
+          <img src="cid:${params.qrCid}" width="160" height="160" alt="${escapeHtml(t.qrAlt)}" style="display:block;width:160px;height:160px">
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding-top:10px">
+          <p class="em-muted" style="${EMAIL_P_MUTED};margin:0;text-align:center">${t.qrHint}</p>
+        </td>
+      </tr>
+    </table>`
+    : "";
 
   const bodyContent = `
     <p style="${EMAIL_P}">
@@ -531,7 +576,7 @@ function buildProfileShareHtml(params: {
     <p style="${EMAIL_P};margin-bottom:24px">
       ${t.body(params.senderName)}
     </p>
-    ${cta}`;
+    ${cta}${qrBlock}`;
 
   return buildEmailLayout({
     locale: params.locale,
@@ -547,10 +592,12 @@ export async function sendProfileShareEmail(params: {
   senderName: string;
   token: string;
   locale?: Locale;
+  /** Szerver-oldalon generált QR PNG (best-effort) — null/undefined: QR nélkül. */
+  qrPng?: Buffer | null;
 }): Promise<void> {
   const locale = params.locale ?? getLocale(params.to);
   const t = translations.profileShare[locale];
-  const link = `${APP_URL}/share/${params.token}`;
+  const link = profileShareUrl(params.token);
 
   const text = [
     t.greeting,
@@ -558,6 +605,7 @@ export async function sendProfileShareEmail(params: {
     t.body(params.senderName),
     "",
     `${t.cta}: ${link}`,
+    ...(params.qrPng ? ["", t.qrAttachmentNote] : []),
     "",
     t.footer,
     "",
@@ -569,15 +617,34 @@ export async function sendProfileShareEmail(params: {
     from: EMAIL_FROM,
     to: params.to,
     subject: t.subject,
-    html: buildProfileShareHtml({ locale, senderName: params.senderName, token: params.token }),
+    html: buildProfileShareHtml({
+      locale,
+      senderName: params.senderName,
+      token: params.token,
+      qrCid: params.qrPng ? PROFILE_SHARE_QR_CID : undefined,
+    }),
     text,
+    // Resend 6.x: content base64 stringként, contentId-vel inline (cid:) kép —
+    // a kliens csatolmányként is eléri (qrFilename), ha a cid-et nem rendereli.
+    ...(params.qrPng
+      ? {
+          attachments: [
+            {
+              filename: t.qrFilename,
+              content: params.qrPng.toString("base64"),
+              contentType: "image/png",
+              contentId: PROFILE_SHARE_QR_CID,
+            },
+          ],
+        }
+      : {}),
   });
 
   if (error) {
     log.error({ event: "email.send_failed", template: "profile_share", to: params.to, err: error }, "Failed to send profile share");
     throw new Error("EMAIL_SEND_FAILED");
   }
-  log.info({ event: "email.sent", template: "profile_share", to: params.to }, "Profile share sent");
+  log.info({ event: "email.sent", template: "profile_share", to: params.to, qrAttached: Boolean(params.qrPng) }, "Profile share sent");
 }
 
 function buildCompareInviteHtml(params: {

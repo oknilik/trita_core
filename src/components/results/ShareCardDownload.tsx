@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
-import { Button } from "@/components/ui/primitives/Button";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { COLORS } from "@/lib/design-tokens";
 
@@ -166,18 +165,20 @@ export function ShareCardDownload({
         />
       </div>
 
-      <Button
-        variant="secondary"
+      {/* Halk, másodlagos szöveg-link (nem kártya-blokk): a modal fő akciói
+          a link-másolás és az email-küldés — a kép-letöltés kiegészítő út. */}
+      <button
+        type="button"
         onClick={() => void handleClick()}
         disabled={busy}
-        className="w-full"
+        className="inline-flex min-h-[44px] items-center gap-1.5 text-caption font-medium text-muted underline decoration-sand underline-offset-4 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
       >
         {busy
           ? t("results.shareCardWorking", locale)
           : t("results.shareCardDownload", locale)}
-      </Button>
+      </button>
       {error ? (
-        <p className="mt-2 text-xs text-rose-700">
+        <p className="mt-1 text-xs text-rose-700">
           {t("results.compareError", locale)}
         </p>
       ) : null}
