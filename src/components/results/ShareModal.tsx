@@ -10,6 +10,7 @@ import { TextField } from "@/components/ui/primitives/TextField";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { ShareCardDownload } from "@/components/results/ShareCardDownload";
+import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
@@ -44,6 +45,7 @@ export function ShareModal({
   const [copied, setCopied] = useState(false);
   const [revoked, setRevoked] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [qrVisible, setQrVisible] = useState(false);
 
   const [email, setEmail] = useState("");
   const [emailState, setEmailState] = useState<EmailState>("idle");
@@ -79,6 +81,7 @@ export function ShareModal({
     if (isOpen) {
       setCopied(false);
       setEmailState("idle");
+      setQrVisible(false);
     }
   }, [isOpen]);
 
@@ -93,6 +96,19 @@ export function ShareModal({
     } catch {
       setLoadError(true);
     }
+  };
+
+  // UX-B6: a QR megjelenítése is megosztási szándék — az első felfedés
+  // hozza létre (vagy kéri vissza) a linket ugyanazzal a createLink-kel,
+  // mint a másolás; link nélkül QR-t nem rajzolunk.
+  const handleToggleQr = async () => {
+    if (qrVisible) {
+      setQrVisible(false);
+      return;
+    }
+    const url = shareUrl ?? (await createLink());
+    if (!url) return;
+    setQrVisible(true);
   };
 
   const handleSend = async () => {
@@ -125,6 +141,7 @@ export function ShareModal({
       setRevoked(true);
       setCopied(false);
       setEmailState("idle");
+      setQrVisible(false);
     } catch {
       setLoadError(true);
     } finally {
@@ -265,7 +282,31 @@ export function ShareModal({
                     t("content.shareCopyLink", locale)
                   )}
                 </Button>
+                {/* QR — workshop-helyzet: a kolléga a teremben, telefonnal
+                    olvassa be. A B6-elv itt is áll: a link az első
+                    felfedéskor jön létre. */}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => void handleToggleQr()}
+                  disabled={busy}
+                  aria-expanded={qrVisible}
+                  className="shrink-0"
+                >
+                  {qrVisible
+                    ? t("content.shareHideQr", locale)
+                    : t("content.shareShowQr", locale)}
+                </Button>
               </div>
+              {qrVisible && shareUrl ? (
+                <QrCodeBadge
+                  value={shareUrl}
+                  alt={t("content.shareQrAlt", locale)}
+                  hint={t("content.shareQrHint", locale)}
+                  onError={() => setLoadError(true)}
+                  className="mt-3"
+                />
+              ) : null}
             </div>
 
             {/* Email küldés */}

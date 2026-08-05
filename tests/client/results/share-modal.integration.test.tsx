@@ -2,9 +2,10 @@
  * ShareModal client integration tests (Vitest + RTL)
  *
  * Covers: deferred link creation (UX-B6 — opening the modal must not write
- * a share token; the first copy materializes it), clipboard copy with inline
- * feedback (no browser alert), optional email sending with validation states
- * (token is created server-side), and share revocation + new link creation.
+ * a share token; the first copy OR the first QR reveal materializes it),
+ * clipboard copy with inline feedback (no browser alert), optional email
+ * sending with validation states (token is created server-side), and share
+ * revocation + new link creation.
  */
 
 import { render, screen, waitFor } from "@testing-library/react";
@@ -19,6 +20,15 @@ vi.mock("@/components/LocaleProvider", () => ({
     setLocale: vi.fn(),
     isChanging: false,
   }),
+}));
+
+// A QR-generátor determinisztikus stubja: a jsdom-ban nincs canvas, és a
+// tesztnek nem a PNG-kimenet a tárgya, hanem hogy MIKOR készül link/QR.
+// (Sima függvény, nem vi.fn — a restoreMocks nem nyúl hozzá.)
+vi.mock("qrcode", () => ({
+  default: {
+    toDataURL: () => Promise.resolve("data:image/png;base64,QQ=="),
+  },
 }));
 
 // framer-motion AnimatePresence a jsdom alatt is renderel, de a portál +
@@ -79,6 +89,47 @@ describe("ShareModal", () => {
       ).toBeEnabled();
     });
     expect(fetchMock).not.toHaveBeenCalled();
+    // …és QR sem jelenhet meg magától: az is linket igényelne.
+    expect(
+      screen.getByRole("button", { name: t("content.shareShowQr", "en") }),
+    ).toBeEnabled();
+    expect(
+      screen.queryByRole("img", { name: t("content.shareQrAlt", "en") }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("creates the link on first QR reveal — showing the QR is share intent (UX-B6)", async () => {
+    const user = userEvent.setup();
+    mockShareCreate();
+    render(<ShareModal isOpen onClose={vi.fn()} />);
+
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareShowQr", "en") }),
+    );
+
+    // A QR-mutatás ugyanazzal a createLink-kel hozza létre a linket…
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "POST" });
+    expect(
+      await screen.findByRole("img", { name: t("content.shareQrAlt", "en") }),
+    ).toBeInTheDocument();
+    // …és a link mező is feltöltődik: a QR és a link ugyanoda mutat.
+    expect(screen.getByDisplayValue(/\/share\/tok123$/)).toBeInTheDocument();
+
+    // Elrejtés + újra-mutatás nem gyárt új linket (a POST nem fut újra).
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareHideQr", "en") }),
+    );
+    expect(
+      screen.queryByRole("img", { name: t("content.shareQrAlt", "en") }),
+    ).not.toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareShowQr", "en") }),
+    );
+    expect(
+      await screen.findByRole("img", { name: t("content.shareQrAlt", "en") }),
+    ).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("creates the link on first copy and copies it with inline feedback, no alert", async () => {

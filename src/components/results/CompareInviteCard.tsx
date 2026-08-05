@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import QRCode from "qrcode";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 
 export interface SerializedCompareInvite {
   id: string;
@@ -36,31 +35,13 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   // QR-nézet (workshop-dramaturgia): melyik PENDING linkhez mutatunk kódot.
   const [qrForId, setQrForId] = useState<string | null>(null);
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   // Opcionális email-küldés link-készítéskor.
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!qrForId) {
-      setQrDataUrl(null);
-      return;
-    }
-    const invite = invites.find((inv) => inv.id === qrForId);
-    if (!invite?.token) return;
-    const url = `${window.location.origin}/interaction/compare/${invite.token}`;
-    let cancelled = false;
-    QRCode.toDataURL(url, { width: 240, margin: 1, color: { dark: "#1a1a2e", light: "#f7f4ef" } })
-      .then((dataUrl) => {
-        if (!cancelled) setQrDataUrl(dataUrl);
-      })
-      .catch(() => {
-        if (!cancelled) setError(t("results.compareError", locale));
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [qrForId, invites, locale]);
+  const qrInvite = qrForId
+    ? (invites.find((inv) => inv.id === qrForId && inv.token) ?? null)
+    : null;
 
   const visibleInvites = invites.filter(
     (inv) => inv.state === "PENDING" || inv.state === "ACCEPTED",
@@ -258,20 +239,14 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
 
       {/* QR — személyes/workshop helyzetre: a másik fél a telefonjával
           olvassa be, és egyből a consent-oldalra jut. */}
-      {qrForId && qrDataUrl ? (
-        <div className="mt-4 flex flex-col items-center gap-2 rounded-xl border border-sand bg-cream/45 p-4">
-          <Image
-            src={qrDataUrl}
-            alt={t("results.compareQrAlt", locale)}
-            width={240}
-            height={240}
-            unoptimized
-            className="h-[200px] w-[200px] rounded-lg border border-sand bg-white p-2"
-          />
-          <p className="max-w-sm text-center text-micro text-muted">
-            {t("results.compareQrHint", locale)}
-          </p>
-        </div>
+      {qrInvite?.token ? (
+        <QrCodeBadge
+          value={`/interaction/compare/${qrInvite.token}`}
+          alt={t("results.compareQrAlt", locale)}
+          hint={t("results.compareQrHint", locale)}
+          onError={() => setError(t("results.compareError", locale))}
+          className="mt-4"
+        />
       ) : null}
     </section>
   );

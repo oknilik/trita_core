@@ -5,7 +5,12 @@
 > A „KÉSZ (ellenőrizve)" tételeket az audit kóddal igazolta — itt csak a
 > teendők szerepelnek.
 
-## 1. Most megvalósítandó (pilot előtt, S/M méret)
+## 1. Most megvalósítandó (pilot előtt, S/M méret) — ✅ MIND KÉSZ (2026-08-05)
+
+Mind a 14 tétel megvalósult és a tritanium branchen van; a TEST-GAP 34 új
+integration-tesztet hozott (87→121), a QR-mechanika közös
+QrCodeBadge-komponensre épül, a B14 a szerver-oldalról ismert
+`hasColleagueDirectory` propból dolgozik.
 
 | # | Tétel | Méret | Megjegyzés |
 |---|---|---|---|

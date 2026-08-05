@@ -1111,11 +1111,14 @@ export function ProfileTabs({
                 />
               </div>
               <div id="invitations" className="scroll-mt-24">
+                {/* B14: ebben az ágban state === "in_progress" → org-kontextus,
+                    a meghívó-form címe a „külső meghívó" változatot kapja. */}
                 <InvitationsTab
                   sentInvitations={sentInvitations}
                   receivedInvitations={receivedInvitations}
                   isPlus={isPlus}
                   minForReveal={observerFlow.minForReveal}
+                  hasColleagueDirectory
                 />
               </div>
             </>
@@ -1131,6 +1134,9 @@ export function ProfileTabs({
                   sentInvitations={sentInvitations}
                   receivedInvitations={receivedInvitations}
                   isPlus={isPlus}
+                  hasColleagueDirectory={Boolean(
+                    observerFlow && observerFlow.state !== "self_serve",
+                  )}
                 />
               </div>
             </>

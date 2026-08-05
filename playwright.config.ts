@@ -28,7 +28,12 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // A célpont mindig a helyi dev-szerver — host-oldali proxy env
+        // (pl. vállalati/CI HTTP_PROXY) ne térítse el a localhost-forgalmat.
+        launchOptions: { args: ["--no-proxy-server"] },
+      },
     },
   ],
 });

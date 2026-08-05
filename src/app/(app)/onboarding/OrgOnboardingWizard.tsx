@@ -8,6 +8,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
+import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { toggleBtn } from "@/lib/onboarding-styles";
 import { getCountryOptions } from "@/lib/countries";
 import { evaluateProductLayersForScope } from "@/lib/domain/layers-4plus2";
@@ -71,6 +72,8 @@ export function OrgOnboardingWizard() {
   const [teamId, setTeamId] = useState<string | null>(null);
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  // QR-nézet a meghívó linkhez — workshop/megbeszélés-helyzetre.
+  const [inviteQrOpen, setInviteQrOpen] = useState(false);
   const [errors, setErrors] = useState<FieldError>({});
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
 
@@ -668,8 +671,8 @@ export function OrgOnboardingWizard() {
                     <p className="mb-2 font-mono text-xs uppercase tracking-wider text-muted">
                       {t("orgOnboarding.inviteLinkLabel", locale)}
                     </p>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 truncate rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <code className="min-w-0 flex-1 truncate rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink">
                         {inviteUrl}
                       </code>
                       <button
@@ -685,7 +688,25 @@ export function OrgOnboardingWizard() {
                           ? t("orgOnboarding.copiedBtn", locale)
                           : t("orgOnboarding.copyBtn", locale)}
                       </button>
+                      {/* QR — ha a csapat egy teremben ül: a tagok a
+                          telefonjukkal olvassák be a csatlakozó linket. */}
+                      <button
+                        type="button"
+                        onClick={() => setInviteQrOpen((v) => !v)}
+                        aria-expanded={inviteQrOpen}
+                        className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-sm font-semibold text-ink transition-colors hover:bg-cream"
+                      >
+                        QR
+                      </button>
                     </div>
+                    {inviteQrOpen && inviteUrl ? (
+                      <QrCodeBadge
+                        value={inviteUrl}
+                        alt={t("orgOnboarding.inviteQrAlt", locale)}
+                        hint={t("orgOnboarding.inviteQrHint", locale)}
+                        className="mt-3"
+                      />
+                    ) : null}
                   </div>
 
                   <p className="text-sm text-ink-body/70">
