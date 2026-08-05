@@ -1,28 +1,13 @@
+import { AVATAR_COLORS, AVATAR_GRADIENT_PAIRS } from "@/lib/color-system";
+
 export type AvatarGradient = readonly [string, string];
 
-const AVATAR_GRADIENTS: readonly AvatarGradient[] = [
-  ["var(--color-accent-self-strong)", "var(--color-accent-self-deep)"],
-  ["var(--color-accent-primary-strong)", "var(--color-accent-earth-strong)"],
-  ["var(--color-text-secondary)", "var(--color-text-strong-alt)"],
-  [
-    "var(--color-visual-gradient-indigo)",
-    "var(--color-visual-gradient-indigo-deep)",
-  ],
-  ["var(--color-visual-cyan)", "var(--color-visual-cyan-deep)"],
-  [
-    "var(--color-visual-gradient-purple)",
-    "var(--color-visual-gradient-purple-deep)",
-  ],
-];
+// Determinisztikus, nyugodt, státusz-mentes identitás-paletta: a hat
+// HEXACO-dimenzió base/strong párjai (color-system). A korábbi success/
+// warning státusz-színek identitás-szerepe kivezetve (2026-08 rendszer).
+const AVATAR_GRADIENTS: readonly AvatarGradient[] = AVATAR_GRADIENT_PAIRS;
 
-const AVATAR_SOLID_COLORS: readonly string[] = [
-  "var(--color-visual-gradient-indigo)",
-  "var(--color-visual-gradient-violet)",
-  "var(--color-state-success-strong)",
-  "var(--color-state-warning-strong)",
-  "var(--color-action-primary-bg)",
-  "var(--color-accent-primary)",
-];
+const AVATAR_SOLID_COLORS: readonly string[] = AVATAR_COLORS;
 
 function normalizeSeed(seed?: string | null): string {
   const trimmed = seed?.trim();

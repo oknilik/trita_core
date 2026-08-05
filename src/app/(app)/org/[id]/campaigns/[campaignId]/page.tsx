@@ -34,6 +34,7 @@ import {
   isCampaignStepDone,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
+import { DIMENSION_BASE } from "@/lib/color-system";
 
 export const dynamic = "force-dynamic";
 
@@ -49,14 +50,9 @@ const STATUS_TRANSITIONS: Record<string, string | null> = {
 
 const TRITAN_DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
-const TRITAN_COLORS: Record<string, string> = {
-  INTE: "var(--color-visual-gradient-indigo)",
-  RESO: "var(--color-visual-gradient-violet)",
-  TEMP: "#06B6D4",
-  ADAP: "var(--color-state-success-strong)",
-  THOR: "var(--color-state-warning-strong)",
-  OPEN: "#EF4444",
-};
+// Kanonikus HEXACO-paletta (color-system.ts) — a korábbi kevert (státusz-
+// színeket kölcsönző, O=hiba-piros) helyi térkép kivezetve.
+const TRITAN_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const TRITAN_LABEL_KEYS: Record<string, string> = {
   INTE: "org.campaign.tritanINTE",
@@ -613,7 +609,7 @@ export default async function CampaignDetailPage({
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "#059669" }}
+                style={{ backgroundColor: "var(--color-state-success-solid)" }}
               />
               <p
                 className="font-mono text-micro uppercase tracking-widest"
@@ -637,7 +633,7 @@ export default async function CampaignDetailPage({
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "var(--color-visual-gradient-indigo)" }}
+                style={{ backgroundColor: "var(--color-layer-org-bright)" }}
               />
               <p
                 className="font-mono text-micro uppercase tracking-widest"
@@ -778,12 +774,15 @@ export default async function CampaignDetailPage({
                           }}
                         />
                       </div>
+                      {/* Irány-jelzés moralizáló zöld/piros nélkül (a
+                          személyiség-pontszám változása nem jó/rossz) —
+                          zsálya/bronz + előjel hordozza az irányt. */}
                       <span
                         className={`w-14 text-right text-xs tabular-nums font-semibold ${
                           delta > 0
-                            ? "text-emerald-600"
+                            ? "text-sage-dark"
                             : delta < 0
-                              ? "text-rose-600"
+                              ? "text-bronze-700"
                               : "text-muted"
                         }`}
                       >

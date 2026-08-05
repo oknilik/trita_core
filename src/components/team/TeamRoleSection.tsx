@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { TEAM_ROLE_FAMILIES, teamRoleColors } from "@/lib/color-system";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
 import type { SerializedTeamMember } from "@/lib/team-stats";
@@ -21,17 +22,16 @@ interface MemberWithTeamRole {
   source: "questionnaire" | "estimate" | null;
 }
 
-const ROLE_COLORS: Record<TeamRoleCode, string> = {
-  OG: "var(--color-visual-gradient-indigo)",
-  KE: "#0ea5e9",
-  KO: "var(--color-state-success-strong)",
-  HA: "var(--color-state-warning-strong)",
-  ER: "var(--color-visual-gradient-violet)",
-  CS: "#ec4899",
-  MV: "#14b8a6",
-  MI: "#f97316",
-  SZ: "#84cc16",
-};
+// Szerep-színek — 3 család × árnyalat (color-system TEAM_ROLE_FAMILIES):
+// gondolkodó=indigó · cselekvő=okker · emberközpontú=moha. A 9 önálló hue
+// (és a kölcsönzött státusz-színek) kivezetve; a chip mindig feliratos,
+// a szín csak a családot kódolja.
+const ROLE_COLORS: Record<TeamRoleCode, string> = Object.fromEntries(
+  (Object.keys(TEAM_ROLES) as TeamRoleCode[]).map((code) => [
+    code,
+    teamRoleColors(code).mark,
+  ]),
+) as Record<TeamRoleCode, string>;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -44,7 +44,7 @@ function RoleChip({
   isHu: boolean;
   size?: "sm" | "xs";
 }) {
-  const color = ROLE_COLORS[role];
+  const c = teamRoleColors(role);
   const label = isHu ? TEAM_ROLES[role].hu : TEAM_ROLES[role].en;
   return (
     <span
@@ -53,7 +53,7 @@ function RoleChip({
           ? "px-2 py-0.5 text-micro"
           : "px-2.5 py-1 text-xs"
       }`}
-      style={{ backgroundColor: `${color}18`, color }}
+      style={{ backgroundColor: c.chipBg, color: c.chipText }}
     >
       {label}
     </span>
@@ -193,11 +193,11 @@ function RoleAlerts({
 
   if (missing.length === 0 && overrepresented.length === 0) {
     return (
-      <div className="flex items-start gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
-        <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <div className="flex items-start gap-2.5 rounded-lg border border-[var(--color-state-success-border)] bg-[var(--color-state-success-bg)] px-4 py-3">
+        <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-state-success-fg)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 10l5 5 9-9" />
         </svg>
-        <p className="text-sm text-emerald-700">
+        <p className="text-sm text-[var(--color-state-success-fg)]">
           {t("teamComp.wellDiversified", isHu ? "hu" : "en")}
         </p>
       </div>
@@ -207,8 +207,8 @@ function RoleAlerts({
   return (
     <div className="space-y-2">
       {missing.length > 0 && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-amber-700">
+        <div className="rounded-lg border border-[var(--color-state-warning-border)] bg-[var(--color-state-warning-bg)] px-4 py-3">
+          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-state-warning-fg)]">
             {t("teamComp.missingRoles", isHu ? "hu" : "en")}
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -219,8 +219,8 @@ function RoleAlerts({
         </div>
       )}
       {overrepresented.length > 0 && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
-          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-blue-700">
+        <div className="rounded-lg border border-[var(--color-state-info-border)] bg-[var(--color-state-info-bg)] px-4 py-3">
+          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-state-info-fg)]">
             {t("teamComp.overrepresentedRoles", isHu ? "hu" : "en")}
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -270,11 +270,11 @@ function IndividualTeamRoleTable({
                   {m.displayName}
                 </span>
                 {m.source === "questionnaire" ? (
-                  <span className="ml-2 inline-block rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-medium text-emerald-700">
+                  <span className="ml-2 inline-block rounded-full bg-sand/60 px-2 py-0.5 text-micro font-medium text-ink-body">
                     {isHu ? "kitöltött" : "completed"}
                   </span>
                 ) : m.source === "estimate" ? (
-                  <span className="ml-2 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-700">
+                  <span className="ml-2 inline-block rounded-full border border-sand bg-cream px-2 py-0.5 text-micro font-medium text-muted">
                     {isHu ? "becslés" : "estimate"}
                   </span>
                 ) : null}
@@ -342,19 +342,19 @@ function CrossAnalysis({
       key: "action" as const,
       labelKey: "teamComp.actionOriented",
       roles: ["HA", "MV", "MI"] as TeamRoleCode[],
-      color: "var(--color-state-warning-strong)",
+      color: TEAM_ROLE_FAMILIES.action.accent,
     },
     {
       key: "people" as const,
       labelKey: "teamComp.peopleOriented",
       roles: ["KO", "CS", "KE"] as TeamRoleCode[],
-      color: "var(--color-state-success-strong)",
+      color: TEAM_ROLE_FAMILIES.people.accent,
     },
     {
       key: "thought" as const,
       labelKey: "teamComp.thoughtOriented",
       roles: ["OG", "ER", "SZ"] as TeamRoleCode[],
-      color: "var(--color-visual-gradient-indigo)",
+      color: TEAM_ROLE_FAMILIES.thinking.accent,
     },
   ];
 

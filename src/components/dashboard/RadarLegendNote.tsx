@@ -8,8 +8,8 @@ import { t } from "@/lib/i18n";
 // feliratnál (pl. jelölt-név, csapatnév) elcsúszott — ez a komponens
 // természetesen tördel. A pont-színek a RadarChart polygon-színeivel
 // vannak szinkronban.
-const SELF_DOT = "var(--color-visual-gradient-violet)";
-const OBSERVER_DOT = "var(--color-state-success-strong)";
+const SELF_DOT = "var(--color-dim-h-base)";
+const OBSERVER_DOT = "var(--color-bronze)";
 
 export function RadarLegendNote({
   selfLabel,

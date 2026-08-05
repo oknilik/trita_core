@@ -476,7 +476,7 @@ export default async function OrgDetailPage({
                 látványa húz a 100% felé. */}
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <CompletionIndicator percent={orgCompletionPct} size={76} color="#8ad0b4" />
+                <CompletionIndicator percent={orgCompletionPct} size={76} color="var(--color-sage-300)" />
                 <p className="text-micro leading-tight text-white/[0.52]">
                   {t("orgHero.orgCompletion", locale)}
                 </p>

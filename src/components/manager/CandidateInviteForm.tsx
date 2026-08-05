@@ -231,7 +231,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
       </form>
 
       {createdInvite && (
-        <div className="rounded-2xl border border-sage/20 bg-[#eef6f2] p-4 sm:p-5">
+        <div className="rounded-2xl border border-sage/20 bg-[var(--color-sage-ghost)] p-4 sm:p-5">
           <p className="mb-1 text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
             {isHu ? "Sikeres meghívó" : "Invite created"}
           </p>

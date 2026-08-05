@@ -75,21 +75,27 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onClose }: ToastItemProps) {
+  // Státusz-egykapu (2026-08): a state-* tokenek beszélnek — a korábbi
+  // green/rose/indigo Tailwind-készlet (harmadik zöld-család, token-idegen
+  // info-indigó) kivezetve.
   const styles = {
     success: {
-      container: "border-green-200 bg-green-50",
-      icon: "text-green-600",
-      text: "text-green-800",
+      container:
+        "border-[var(--color-state-success-border)] bg-[var(--color-state-success-bg)]",
+      icon: "text-[var(--color-state-success-fg)]",
+      text: "text-[var(--color-state-success-fg)]",
     },
     error: {
-      container: "border-rose-200 bg-rose-50",
-      icon: "text-rose-600",
-      text: "text-rose-800",
+      container:
+        "border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)]",
+      icon: "text-[var(--color-state-error-fg)]",
+      text: "text-[var(--color-state-error-fg)]",
     },
     info: {
-      container: "border-indigo-200 bg-indigo-50",
-      icon: "text-indigo-600",
-      text: "text-indigo-800",
+      container:
+        "border-[var(--color-state-info-border)] bg-[var(--color-state-info-bg)]",
+      icon: "text-[var(--color-state-info-fg)]",
+      text: "text-[var(--color-state-info-fg)]",
     },
   };
 

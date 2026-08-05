@@ -64,10 +64,12 @@ function dimLabel(code: string, isHu: boolean): string {
   return `${dim.letter} ${isHu ? dim.hu : dim.en}`;
 }
 
+// Illeszkedés-szín az értékelő rampról (zsálya→bronz→neutrális) — a korábbi
+// emerald/amber (státusz-hue-k + AA-bukó amber) kivezetve.
 function fitColor(score: number): string {
-  if (score >= 70) return "#10B981";
-  if (score >= 55) return "var(--color-sage, #3d6b5e)";
-  return "#F59E0B";
+  if (score >= 70) return "var(--color-eval-high-accent)";
+  if (score >= 55) return "var(--color-eval-mid-accent)";
+  return "var(--color-eval-low-accent)";
 }
 
 function OccupationCard({

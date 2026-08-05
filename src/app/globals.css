@@ -61,12 +61,16 @@
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
   --color-surface-self-border:      var(--color-sage-ring);
-  --color-surface-team-accent:      #d48e62;
-  --color-surface-team-accent-soft: #f6e8dc;
+  /* Alias-átmenet (2026-08 szín-rendszer): a surface-*-accent tokenek a
+     layer-* readba mutatnak. Team: a korábbi #d48e62 barack glow világos
+     felületen AA-bukó volt szövegként (2.68:1) — világos felületi team-szín
+     a szilva. Org: a #3f6d9a a `bright` változat lett (kettősség feloldva). */
+  --color-surface-team-accent:      var(--color-layer-team-accent);
+  --color-surface-team-accent-soft: var(--color-layer-team-soft);
   --color-surface-team-border:      var(--color-bronze-edge);
-  --color-surface-org-accent:       #3f6d9a;
-  --color-surface-org-accent-soft:  #e8eff7;
-  --color-surface-org-border:       #bfd0e2;
+  --color-surface-org-accent:       var(--color-layer-org-bright);
+  --color-surface-org-accent-soft:  var(--color-layer-org-soft);
+  --color-surface-org-border:       var(--color-layer-org-border);
   /* Jelölt-felület (2026-08-05): terrakotta akcent — a SurfaceHero
      "candidate" variánsával (#8a4a32 → #47251a, primary #e0a878)
      összehangolt világos-felületi készlet. */
@@ -81,6 +85,9 @@
   --color-text-primary:   var(--color-ink);
   --color-text-secondary: var(--color-ink-body);
   --color-text-muted:     var(--color-muted);
+  /* Leghalkabb metaadat (NotificationPanel használta definíció nélkül —
+     2026-08 audit pótolta). */
+  --color-text-faint:     var(--color-muted-warm);
   --color-text-inverse:   #ffffff;
 
   /* Border roles */
@@ -137,15 +144,6 @@
   --color-surface-soft-warm: #f8f1e8;
   --color-surface-warm-tint: #fff1e7;
   --color-surface-highlight-warm: var(--color-bronze-100);
-  --color-state-success-strong: #10b981;
-  --color-state-warning-strong: #f59e0b;
-  --color-visual-gradient-indigo: #6366f1;
-  --color-visual-gradient-indigo-deep: #4f46e5;
-  --color-visual-gradient-violet: #8b5cf6;
-  --color-visual-gradient-purple: #9333ea;
-  --color-visual-gradient-purple-deep: #7c22cb;
-  --color-visual-cyan: #0e7490;
-  --color-visual-cyan-deep: #0c5e75;
   --color-text-strong-alt: #33334a;
   --color-text-strong-deep: #2a2740;
   --color-text-success-soft: #c8e8de;
@@ -158,6 +156,105 @@
   --color-surface-chip-warm-soft: #f6ead6;
   --color-surface-chip-neutral: #f5f3ef;
   --color-state-error-soft: #fef2f2;
+
+  /* ─── Szín-rendszer 2026-08 (tükör: src/lib/color-system.ts) ────────── */
+  /* Terv: docs/development/color-system-2026-08.md. Négy jelentés-osztály:
+     neutrális alap · réteg-akcent · adat-identitás · státusz/értékelés.
+     A TS-oldali forrás a color-system.ts — a szinkront a
+     design-tokens-sync teszt őrzi. */
+
+  /* Dimenzió-hármasok (HEXACO): base=mark, strong=szöveg/fehér betűs badge,
+     soft=tint. E=viola, O=mályva (E/O hue-csere, doksi 5. fejezet). */
+  --color-dim-h-base:   #4f5aa8;
+  --color-dim-h-strong: #3e4785;
+  --color-dim-h-soft:   #eef0f8;
+  --color-dim-e-base:   #7b5fae;
+  --color-dim-e-strong: #5f4693;
+  --color-dim-e-soft:   #f1ecf9;
+  --color-dim-x-base:   #c08d2e;
+  --color-dim-x-strong: #8a6215;
+  --color-dim-x-soft:   #f8efdc;
+  --color-dim-a-base:   #78924f;
+  --color-dim-a-strong: #556b35;
+  --color-dim-a-soft:   #eff3e4;
+  --color-dim-c-base:   #3d7f95;
+  --color-dim-c-strong: #2c5f72;
+  --color-dim-c-soft:   #e6f1f5;
+  --color-dim-o-base:   #b4688a;
+  --color-dim-o-strong: #8e4263;
+  --color-dim-o-soft:   #f9eef3;
+
+  /* Csapatszerep-családok (gondolkodó=indigó · cselekvő=okker ·
+     emberközpontú=moha) — chip: fg szöveg bg-n, mindig felirattal. */
+  --color-role-thinking-fg: var(--color-dim-h-strong);
+  --color-role-thinking-bg: var(--color-dim-h-soft);
+  --color-role-action-fg:   var(--color-dim-x-strong);
+  --color-role-action-bg:   var(--color-dim-x-soft);
+  --color-role-people-fg:   var(--color-dim-a-strong);
+  --color-role-people-bg:   var(--color-dim-a-soft);
+
+  /* Réteg-akcentek — hero-gradiens + világos felületi akcent rétegenként.
+     A glow-színek CSAK sötét herón (fehéren AA-bukók szövegként). */
+  --color-layer-self-accent:    var(--color-sage);
+  --color-layer-self-hero-from: var(--color-accent-self-strong);
+  --color-layer-self-hero-mid:  var(--color-sage-deep);
+  --color-layer-self-hero-to:   var(--color-accent-self-deeper);
+  --color-layer-self-glow:      var(--color-bronze);
+  --color-layer-self-soft:      var(--color-sage-soft);
+  --color-layer-team-accent:    #66455d;
+  --color-layer-team-bright:    #a66a8c;
+  --color-layer-team-hero-from: #66455d;
+  --color-layer-team-hero-mid:  #4a314a;
+  --color-layer-team-hero-to:   #2f2035;
+  --color-layer-team-glow:      #d48e62;
+  --color-layer-team-badge:     #f3c39d;
+  --color-layer-team-soft:      #f6e8dc;
+  --color-layer-org-accent:     #2f4863;
+  --color-layer-org-bright:     #3f6d9a;
+  --color-layer-org-hero-from:  #2f4863;
+  --color-layer-org-hero-mid:   #22374d;
+  --color-layer-org-hero-to:    #172737;
+  --color-layer-org-glow:       #d2a36a;
+  --color-layer-org-badge:      #f4c792;
+  --color-layer-org-soft:       #e8eff7;
+  --color-layer-org-border:     #bfd0e2;
+  --color-layer-candidate-accent:    var(--color-accent-candidate);
+  --color-layer-candidate-hero-from: var(--color-accent-candidate);
+  --color-layer-candidate-hero-mid:  var(--color-accent-candidate-strong);
+  --color-layer-candidate-hero-to:   #47251a;
+  --color-layer-candidate-glow:      var(--color-accent-candidate-primary);
+  --color-layer-candidate-badge:     #f6cfa8;
+  --color-layer-candidate-soft:      var(--color-accent-candidate-soft);
+
+  /* Értékelő ramp (tier/fit/verdict/confidence): zsálya→bronz→neutrális —
+     „hangosabb→halkabb", sosem „jó→rossz-piros". Piros ezen a skálán TILOS. */
+  --color-eval-high-fg:     #1e3d34;
+  --color-eval-high-accent: var(--color-sage);
+  --color-eval-high-bg:     var(--color-sage-soft);
+  --color-eval-mid-fg:      var(--color-bronze-700);
+  --color-eval-mid-accent:  var(--color-bronze);
+  --color-eval-mid-bg:      var(--color-bronze-100);
+  --color-eval-low-fg:      var(--color-muted);
+  --color-eval-low-accent:  var(--color-ink-300);
+  --color-eval-low-bg:      var(--color-cream-300);
+
+  /* Státusz-solid (grafikai, ≥3:1) — a korábbi state-success-strong
+     (#10b981) és state-warning-strong (#f59e0b) kivezetve. */
+  --color-state-success-solid: #059669;
+  --color-state-warning-solid: #d97706;
+  --color-state-error-solid:   #e11d48;
+  --color-state-info-solid:    #3b82f6;
+
+  /* Sage-300 — progress/vastag grafikai elem, csak felirattal (1.79:1). */
+  --color-sage-300: #8ad0b4;
+
+  /* Paper marketing-téma (founding / patterns / career fakedoor közös) */
+  --color-paper-bg:      #FAF7F2;
+  --color-paper-card:    #F3EDE4;
+  --color-paper-text:    #2C2420;
+  --color-paper-muted:   #5C4F45;
+  --color-paper-heading: #1a1410;
+  --color-paper-border:  #E8E0D4;
 
   /* ─── Typography scale (2026-07-22 UI-egységesítés, F1) ────────────── */
   /*
@@ -233,29 +330,31 @@
   --ui-space-stack-gap: var(--ui-space-4);
 
   /* ─── Numbered aliases (design system) ────────────────────────────── */
-  --color-sage-700:    #3d6b5e;
-  --color-sage-900:    #1e3d34;
+  /* Dedup (2026-08): a nevesített token az igazság — az azonos értékű
+     számozott aliasok referenciák, nem másod-definíciók. */
+  --color-sage-700:    var(--color-sage);
+  --color-sage-900:    var(--color-sage-deep);
   --color-sage-500:    #5a8f7f;
-  --color-sage-100:    #e8f2f0;
-  --color-bronze-500:  #c17f4a;
+  --color-sage-100:    var(--color-sage-soft);
+  --color-bronze-500:  var(--color-bronze);
   --color-bronze-300:  #e8a96a;
   --color-bronze-100:  #fdf5ee;
   --color-bronze-700:  #8a5530;
-  --color-ink-800:     #1a1a2e;
-  --color-ink-500:     #4a4a5e;
+  --color-ink-800:     var(--color-ink);
+  --color-ink-500:     var(--color-ink-body);
   --color-ink-300:     #8a8a9a;
-  --color-cream-100:   #f7f4ef;
-  --color-cream-500:   #e8e0d3;
+  --color-cream-100:   var(--color-cream);
+  --color-cream-500:   var(--color-sand);
   --color-cream-300:   #f2ede6;
   --color-cream-warm:  #ede8e1;
 
-  /* ─── Founding page (saját paletta) ────────────────────────────────── */
-  --color-founding-bg:           #FAF7F2;
-  --color-founding-text:         #2C2420;
-  --color-founding-muted:        #5C4F45;
-  --color-founding-heading:      #1a1410;
-  --color-founding-card:         #F3EDE4;
-  --color-founding-accent:       #c17f4a;
+  /* ─── Founding page — a közös paper-témára mutat (2026-08 rendezés) ─── */
+  --color-founding-bg:           var(--color-paper-bg);
+  --color-founding-text:         var(--color-paper-text);
+  --color-founding-muted:        var(--color-paper-muted);
+  --color-founding-heading:      var(--color-paper-heading);
+  --color-founding-card:         var(--color-paper-card);
+  --color-founding-accent:       var(--color-bronze);
   --color-founding-accent-hover: #a8693c;
 }
 
@@ -405,7 +504,9 @@ body {
   inset: -2px;
   border-radius: inherit;
   padding: 2px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
+  /* 2026-08 szín-rendszer: a „kozmikus" indigó–fuchsia gradient a brand
+     meleg bronz–zsálya duójára szelídítve (nyugalom-elv). */
+  background: linear-gradient(135deg, var(--color-sage), var(--color-bronze));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;

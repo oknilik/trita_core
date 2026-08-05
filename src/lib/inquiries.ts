@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getAdminEmails } from "@/lib/auth";
+import { attachInquiryToOpenDeal } from "@/lib/crm/auto-attach";
 import { handleInquiryReceived } from "@/lib/notifications";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import { createLogger } from "@/lib/logger";
@@ -73,6 +74,19 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
     },
     select: { id: true },
   });
+
+  // CRM auto-attach: ha a beküldő emailjéhez tartozik nyitott deal, az
+  // inquiry rálinkelődik (SYSTEM-activityvel). Best effort — a hibája nem
+  // törheti a contact-flow-t. Auto-deal-létrehozás szándékosan NINCS: a
+  // pipeline-ba kerülés kvalifikációs döntés az admin Beérkező nézetében.
+  try {
+    await attachInquiryToOpenDeal(inquiry.id, senderEmail);
+  } catch (error) {
+    log.error(
+      { event: "inquiries.crm_auto_attach_failed", err: error },
+      "CRM auto-attach failed",
+    );
+  }
 
   // In-app notif: adminok + (org-link esetén) tanácsadók
   const adminEmails = getAdminEmails();

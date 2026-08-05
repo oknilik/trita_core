@@ -1,7 +1,15 @@
 import type { ElementType, ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
 
-type SectionEyebrowTone = "bronze" | "muted" | "self" | "team" | "org" | "candidate" | "onDark";
+type SectionEyebrowTone =
+  | "bronze"
+  | "muted"
+  | "self"
+  | "team"
+  | "org"
+  | "candidate"
+  | "candidateOnDark"
+  | "onDark";
 
 // 2026-08-05 (eyebrow-modernizálás): a korábbi „// szekció" mono
 // dev-esztétika kivezetve — az egységes eyebrow egy tónus-színű pötty +
@@ -17,7 +25,8 @@ const TONE_TEXT: Record<SectionEyebrowTone, string> = {
   self: "text-surface-self-accent",
   team: "text-surface-team-accent",
   org: "text-surface-org-accent",
-  candidate: "text-[#e0a878]",
+  candidate: "text-accent-candidate",
+  candidateOnDark: "text-accent-candidate-primary",
   onDark: "text-white/[0.45]",
 };
 
@@ -27,7 +36,8 @@ const TONE_DOT: Record<SectionEyebrowTone, string> = {
   self: "bg-surface-self-accent",
   team: "bg-surface-team-accent",
   org: "bg-surface-org-accent",
-  candidate: "bg-[#e0a878]",
+  candidate: "bg-accent-candidate",
+  candidateOnDark: "bg-accent-candidate-primary",
   onDark: "bg-white/[0.45]",
 };
 

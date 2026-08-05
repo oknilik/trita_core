@@ -271,7 +271,7 @@ export function HiringDashboard({
       <SurfaceHero
         variant="candidate"
         eyebrow={(
-          <SectionEyebrow tone="candidate">
+          <SectionEyebrow tone="candidateOnDark">
             {`${t("hiring.eyebrow", locale)} · ${orgName}`}
           </SectionEyebrow>
         )}
@@ -312,7 +312,7 @@ export function HiringDashboard({
                   "rounded-[10px] px-5 text-[12px] font-semibold",
                   showForm
                     ? "bg-white text-ink hover:bg-white/90 hover:text-ink"
-                    : "bg-[var(--color-accent-candidate-primary)] text-[#47251a] hover:bg-[var(--color-accent-candidate-primary)] hover:text-[#47251a] hover:brightness-110",
+                    : "bg-[var(--color-accent-candidate-primary)] text-[var(--color-layer-candidate-hero-to)] hover:bg-[var(--color-accent-candidate-primary)] hover:text-[var(--color-layer-candidate-hero-to)] hover:brightness-110",
                 ].join(" ")}
               >
                 {showForm
@@ -454,7 +454,7 @@ export function HiringDashboard({
           sub={isHu ? "Aktív meghívók" : "Active invites"}
         />
         <DashboardMetricCard
-          accent="var(--color-state-success-strong)"
+          accent="var(--color-state-success-solid)"
           title={t("hiring.statCompleted", locale)}
           value={String(completed.length)}
           sub={isHu ? "Elkészült kitöltések" : "Completed assessments"}

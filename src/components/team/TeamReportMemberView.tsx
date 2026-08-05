@@ -19,23 +19,24 @@ import {
 // Terv: docs/product/feature-ideas.md #4. A menedzser/admin a teljes
 // TeamReportView-t látja; a szerep-elágazás a team oldalon (report tab) dől el.
 
-// Dimenzió-színek — a team oldal / TeamReportView palettájával azonos
-// (CVD-validálva, dataviz validator PASS — ld. TeamReportView kommentje).
-const DIM_COLORS: Record<string, string> = {
-  INTE: "#6366F1",
-  RESO: "#EC4899",
-  TEMP: "#F59E0B",
-  ADAP: "#10B981",
-  THOR: "#8B5CF6",
-  OPEN: "#06B6D4",
-};
+// Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts), a team
+// oldal / TeamReportView palettájával azonos forrásból (mark = base).
+import { DIMENSION_BASE } from "@/lib/color-system";
 
-// A tipp-sorszámok akcentus-színei — sorban, nem ciklizálva.
-const TIP_ACCENTS = ["bg-sage", "bg-sky-500", "bg-amber-500"] as const;
+const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
+
+// A tipp-sorszámok akcentus-színei — sorban, nem ciklizálva. Brand-akcentek
+// (zsálya/bronz/szilva): a sky/amber adat- és státusz-hue-k itt dekoratívan
+// éltek — kivezetve (2026-08 szín-rendszer).
+const TIP_ACCENTS = [
+  "bg-sage",
+  "bg-bronze",
+  "bg-[var(--color-layer-team-accent)]",
+] as const;
 const TIP_BORDERS = [
   "border-l-sage/60",
-  "border-l-sky-400/60",
-  "border-l-amber-400/60",
+  "border-l-bronze/60",
+  "border-l-[var(--color-layer-team-bright)]/60",
 ] as const;
 
 function initialsOf(name: string): string {

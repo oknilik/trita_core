@@ -26,15 +26,11 @@ const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   OPEN: { hu: "Nyitottság", en: "Openness" },
 };
 
-// Dimenzió-színek — a team oldal dimConfigs palettájával azonos.
-const DIM_COLORS: Record<string, string> = {
-  INTE: "#6366F1",
-  RESO: "#EC4899",
-  TEMP: "#F59E0B",
-  ADAP: "#10B981",
-  THOR: "#8B5CF6",
-  OPEN: "#06B6D4",
-};
+// Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts); mark-
+// (base) forma, a team oldal dimConfigs palettájával azonos forrásból.
+import { DIMENSION_BASE, DYNAMICS_COLORS } from "@/lib/color-system";
+
+const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
@@ -64,13 +60,14 @@ const QUALITY_LABELS: Record<string, { hu: string; en: string }> = {
   sufficient: { hu: "Megbízható adatalap", en: "Reliable data basis" },
 };
 
-// Dinamika-kategóriák — státusz-jellegű színek, mindig felirattal (sosem
-// csak színnel) jelölve. Paletta CVD-validálva (dataviz validator, PASS).
+// Dinamika-kategóriák — dokumentált KIVÉTEL: státusz-jellegű színkódolás
+// adat-kontextusban (color-system DYNAMICS_COLORS), mindig felirattal
+// (sosem csak színnel) jelölve. Paletta CVD-validálva (dataviz validator).
 const DYNAMICS_SEGMENTS = [
   {
     key: "alignedCount",
-    color: "#10B981",
-    chip: "bg-emerald-50 text-emerald-700",
+    color: DYNAMICS_COLORS.aligned,
+    chip: "bg-[var(--color-state-success-bg)] text-[var(--color-state-success-fg)]",
     hu: "Összehangolt",
     en: "Aligned",
     explainHu: "hasonló munkastílusú páros — kevés egyeztetéssel is gördülékenyen dolgoznak együtt.",
@@ -78,8 +75,8 @@ const DYNAMICS_SEGMENTS = [
   },
   {
     key: "complementaryCount",
-    color: "#0EA5E9",
-    chip: "bg-sky-50 text-sky-700",
+    color: DYNAMICS_COLORS.complementary,
+    chip: "bg-[var(--color-state-info-bg)] text-[var(--color-state-info-fg)]",
     hu: "Kiegészítő",
     en: "Complementary",
     explainHu: "eltérő, de összeférő stílusok — más-más helyzetben erősek, jó munkamegosztás-alap.",
@@ -87,8 +84,8 @@ const DYNAMICS_SEGMENTS = [
   },
   {
     key: "frictionCount",
-    color: "#F59E0B",
-    chip: "bg-amber-50 text-amber-700",
+    color: DYNAMICS_COLORS.friction,
+    chip: "bg-[var(--color-state-warning-bg)] text-[var(--color-state-warning-fg)]",
     hu: "Súrlódási potenciál",
     en: "Friction potential",
     explainHu: "nagy munkastílus-különbség (pl. lelkiismeretesség, kommunikáció) — tisztázott normák nélkül feszültségforrás lehet. Nem jelent tényleges konfliktust.",

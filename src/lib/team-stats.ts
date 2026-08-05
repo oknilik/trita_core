@@ -14,14 +14,11 @@ import {
 const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 export type { DynamicsEdgeType };
 
-const DIM_COLORS: Record<string, string> = {
-  INTE: "#6366F1",
-  RESO: "#EC4899",
-  TEMP: "#F59E0B",
-  ADAP: "#10B981",
-  THOR: "#8B5CF6",
-  OPEN: "#06B6D4",
-};
+// Kanonikus HEXACO-paletta (color-system.ts) — base a markokra (sáv, cella,
+// radar), strong a fehér betűs kitöltött badge-ekre (AA).
+import { DIMENSION_BASE, DIMENSION_STRONG } from "./color-system";
+
+const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const DIM_LABELS_HU: Record<string, string> = {
   INTE: "Becsületesség-Alázat",
@@ -250,7 +247,8 @@ export async function getTeamPageData(
     if (rawDimensions) {
       const ordered = (DIM_ORDER as readonly string[])
         .filter((code) => rawDimensions[code] !== undefined)
-        .map((code) => ({ code, value: rawDimensions[code], color: DIM_COLORS[code] ?? "#888" }))
+        // Fehér betűs mini-badge-ként renderel (manager) → strong kitöltés (AA)
+        .map((code) => ({ code, value: rawDimensions[code], color: DIMENSION_STRONG[code as keyof typeof DIMENSION_STRONG] ?? DIM_COLORS[code] }))
         .sort((a, b) => b.value - a.value)
         .slice(0, 3);
       top3Dims.push(...ordered);
@@ -454,7 +452,7 @@ export async function getTeamPageData(
   const dimConfigs = dimsToShow.map((code) => ({
     code,
     label: dimLabels[code] ?? code,
-    color: DIM_COLORS[code] ?? "#888",
+    color: DIM_COLORS[code] ?? "#8a8a9a",
   }));
 
   // Build heatmap rows

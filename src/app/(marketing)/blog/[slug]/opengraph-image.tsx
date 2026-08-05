@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getPostBySlug } from "@/lib/blog";
+import { COLORS } from "@/lib/design-tokens";
 
 export const alt = "trita blog";
 export const size = { width: 1200, height: 630 };
@@ -36,7 +37,7 @@ export default async function BlogOpengraphImage({
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#f7f4ef",
+          backgroundColor: COLORS.cream,
           padding: "72px 80px",
         }}
       >
@@ -46,7 +47,7 @@ export default async function BlogOpengraphImage({
               width: 14,
               height: 14,
               borderRadius: 9999,
-              backgroundColor: "#c17f4a",
+              backgroundColor: COLORS.bronze,
             }}
           />
           <div
@@ -55,7 +56,7 @@ export default async function BlogOpengraphImage({
               fontSize: 26,
               letterSpacing: 4,
               textTransform: "uppercase",
-              color: "#3d6b5e",
+              color: COLORS.sage,
             }}
           >
             trita blog
@@ -68,8 +69,8 @@ export default async function BlogOpengraphImage({
                 fontSize: 22,
                 textTransform: "uppercase",
                 letterSpacing: 2,
-                color: "#c17f4a",
-                border: "2px solid #e8c7b8",
+                color: COLORS.bronze,
+                border: `2px solid ${COLORS.bronzeEdge}`,
                 borderRadius: 9999,
                 padding: "6px 18px",
               }}
@@ -83,7 +84,7 @@ export default async function BlogOpengraphImage({
             fontFamily: "Fraunces",
             fontSize,
             lineHeight: 1.18,
-            color: "#1a1a2e",
+            color: COLORS.ink,
             maxWidth: 1000,
           }}
         >
@@ -96,7 +97,7 @@ export default async function BlogOpengraphImage({
             alignItems: "center",
           }}
         >
-          <div style={{ fontFamily: "DM Sans", fontSize: 26, color: "#5a5a6e" }}>
+          <div style={{ fontFamily: "DM Sans", fontSize: 26, color: COLORS.inkBody }}>
             {isHu
               ? "Csapatdinamika, személyiség, tudatos HR"
               : "Team dynamics, personality, intentional HR"}
@@ -106,7 +107,7 @@ export default async function BlogOpengraphImage({
               width: 120,
               height: 6,
               borderRadius: 9999,
-              backgroundColor: "#c17f4a",
+              backgroundColor: COLORS.bronze,
             }}
           />
         </div>

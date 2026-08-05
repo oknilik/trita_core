@@ -17,12 +17,15 @@ function DeltaIndicator({ selfValue, observerValue }: { selfValue: number; obser
   const direction = selfHigher ? "↓" : "↑";
 
   const level = gap >= 20 ? "large" : gap >= 12 ? "medium" : "small";
+  // Bronz-magnitúdó-rámpa (sageLight → bronze → bronze700): a nagy önkép-
+  // külsőkép eltérés „figyelemre érdemes vakfolt", nem hiba — a korábbi
+  // tégla-piros szégyen-jelzés kivezetve (color-system EVAL-elv).
   const badgeColors = {
-    large: { bg: "rgba(192,57,43,0.08)", color: "#c0392b" },
+    large: { bg: colors.bronze100, color: colors.bronze700 },
     medium: { bg: colors.bronze100, color: colors.bronzeDark },
     small: { bg: colors.sage100, color: colors.sageDark },
   };
-  const barColors = { large: "#c0392b", medium: colors.bronze, small: colors.sageLight };
+  const barColors = { large: colors.bronze700, medium: colors.bronze, small: colors.sageLight };
   const barWidth = { large: "70%", medium: "40%", small: "15%" };
 
   return (

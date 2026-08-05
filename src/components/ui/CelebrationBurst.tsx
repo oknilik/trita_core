@@ -7,7 +7,14 @@ import { createPortal } from "react-dom";
 // sage–bronz „szirom-hullás". Nem konfetti-zaj: kevés elem, 2,4 mp, aztán
 // nyomtalanul eltűnik. Reduced-motion esetén nem renderel semmit.
 
-const PETAL_COLORS = ["#3d6b5e", "#5a8f7f", "#c17f4a", "#e8a96a", "#b8d0cb"];
+// Brand-szirmok tokenből (sage · sage-500 · bronz · bronze-300 · sage-ring)
+const PETAL_COLORS = [
+  "var(--color-sage)",
+  "var(--color-sage-500)",
+  "var(--color-bronze)",
+  "var(--color-bronze-300)",
+  "var(--color-sage-ring)",
+];
 const PETAL_COUNT = 18;
 const DURATION_MS = 2400;
 

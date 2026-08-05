@@ -227,7 +227,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
             >
               <div className="flex gap-1.5">
                 {completedCount > 0 && <div className="h-1.5 rounded-full bg-sage" style={{ flex: completedCount }} />}
-                {inProgressCount > 0 && <div className="h-1.5 rounded-full bg-[#d8a253]" style={{ flex: inProgressCount }} />}
+                {inProgressCount > 0 && <div className="h-1.5 rounded-full bg-[var(--color-layer-org-glow)]" style={{ flex: inProgressCount }} />}
                 {waitingCount > 0 && <div className="h-1.5 rounded-full bg-bronze/65" style={{ flex: waitingCount }} />}
               </div>
             </DashboardMetricCard>

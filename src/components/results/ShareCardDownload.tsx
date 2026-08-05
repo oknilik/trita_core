@@ -87,7 +87,7 @@ export function ShareCardDownload({
       ctx.fillText(personalityType, CARD_SIZE / 2, 874, CARD_SIZE - 120);
 
       if (topDims.length > 0) {
-        ctx.fillStyle = "#5a5a6e";
+        ctx.fillStyle = COLORS.inkBody;
         ctx.font = '400 28px "DM Sans", sans-serif';
         ctx.fillText(
           topDims.map((d) => d.label).join("  ·  "),
@@ -101,7 +101,7 @@ export function ShareCardDownload({
       ctx.fillStyle = COLORS.ink;
       ctx.font = '700 34px "Fraunces", serif';
       ctx.fillText("trita", CARD_SIZE / 2, 1006);
-      ctx.fillStyle = "#8a8a98";
+      ctx.fillStyle = COLORS.ink300;
       ctx.font = '400 22px "DM Sans", sans-serif';
       ctx.fillText(window.location.origin.replace(/^https?:\/\//, ""), CARD_SIZE / 2, 1040);
 

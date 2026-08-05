@@ -6,7 +6,7 @@ import { useMemo, useRef, useState } from "react";
 // Admin idősor-chart (Vezérlő) — könnyű, könyvtár-mentes SVG.
 // Dataviz-szabályok szerint: 2px vonal, halvány terület-kitöltés, recesszív
 // rács, legenda + vonalvégi direkt címke (identitás nem csak szín), hover
-// crosshair + tooltip, tabular-nums. Paletta validálva (#217a55 · #c17f4a).
+// crosshair + tooltip, tabular-nums. Paletta: sage · bronz (token-értékek).
 // ─────────────────────────────────────────────────────────────────────
 
 export interface TrendSeries {
@@ -86,7 +86,7 @@ export function AdminTrendChart({
               x2={W - PAD.right}
               y1={y(v)}
               y2={y(v)}
-              stroke="#e8e0d3"
+              stroke="var(--color-sand)"
               strokeWidth={v === 0 ? 1.2 : 0.7}
             />
             <text
@@ -94,7 +94,7 @@ export function AdminTrendChart({
               y={y(v) + 3}
               textAnchor="end"
               fontSize={10}
-              fill="#6e6e80"
+              fill="var(--color-muted)"
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
               {v}
@@ -111,7 +111,7 @@ export function AdminTrendChart({
               y={H - 8}
               textAnchor="middle"
               fontSize={10}
-              fill="#6e6e80"
+              fill="var(--color-muted)"
             >
               {label}
             </text>
@@ -141,7 +141,7 @@ export function AdminTrendChart({
                 y={y(lastV) + 3.5}
                 fontSize={10.5}
                 fontWeight={600}
-                fill="#4a4a5e"
+                fill="var(--color-ink-body)"
               >
                 {s.name}
               </text>
@@ -157,7 +157,7 @@ export function AdminTrendChart({
               x2={x(hover)}
               y1={PAD.top}
               y2={H - PAD.bottom}
-              stroke="#7a756e"
+              stroke="var(--color-ink-warm)"
               strokeWidth={0.8}
               strokeDasharray="3 3"
             />

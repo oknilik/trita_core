@@ -318,8 +318,8 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
         <AdminTrendChart
           labels={labels}
           series={[
-            { name: "Regisztráció", color: "#217a55", values: regSeries },
-            { name: "Kitöltés", color: "#c17f4a", values: resultSeries },
+            { name: "Regisztráció", color: "var(--color-sage)", values: regSeries },
+            { name: "Kitöltés", color: "var(--color-bronze)", values: resultSeries },
           ]}
         />
       </div>

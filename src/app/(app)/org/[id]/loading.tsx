@@ -6,7 +6,7 @@ export default function OrgLoading() {
       surface="org"
       contentClassName="max-w-5xl gap-10 px-4 py-10 md:gap-14"
     >
-        <section className="relative overflow-hidden rounded-2xl bg-[#22374d] animate-pulse">
+        <section className="relative overflow-hidden rounded-2xl bg-[var(--color-layer-org-hero-mid)] animate-pulse">
           <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-white/[0.05]" />
           <div className="px-7 py-7 md:px-9 md:py-8">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
@@ -21,7 +21,7 @@ export default function OrgLoading() {
                   <div className="h-7 w-32 rounded-full bg-white/15" />
                 </div>
                 <div className="mt-6 flex flex-wrap gap-2">
-                  <div className="h-11 w-40 rounded-[9px] bg-[#d2a36a]/80" />
+                  <div className="h-11 w-40 rounded-[9px] bg-[var(--color-layer-org-glow)]/80" />
                   <div className="h-11 w-36 rounded-[9px] bg-white/15" />
                   <div className="h-11 w-32 rounded-[9px] bg-white/15" />
                 </div>

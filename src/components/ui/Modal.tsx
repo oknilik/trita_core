@@ -93,7 +93,7 @@ export function Modal({
                 ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
                 : "max-w-md rounded-2xl bg-white shadow-2xl",
               variant === "danger"
-                ? (isBrand ? "border-[#eadccf]" : "border-rose-200/70")
+                ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-rose-200/70")
                 : (isBrand ? "border-sand" : "border-sand/70"),
             ].join(" ")}
           >
@@ -102,7 +102,7 @@ export function Modal({
                 "h-1 w-full",
                 variant === "danger"
                   ? (isBrand
-                    ? "bg-[var(--color-accent-primary)]"
+                    ? "bg-[var(--color-action-destructive-bg)]"
                     : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
                   : (isBrand
                     ? "bg-sage"
@@ -150,7 +150,7 @@ export function Modal({
                       "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                       !isBrand ? "mt-0.5" : "",
                       variant === "danger"
-                        ? (isBrand ? "bg-[#f8eee8] text-[#8c4a31]" : "bg-rose-100 text-rose-700")
+                        ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-rose-700")
                         : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
                     ].join(" ")}
                   >
@@ -183,7 +183,7 @@ export function Modal({
                     </h2>
                     {description && (
                       isBrand && variant === "danger" ? (
-                        <div className="mt-3 rounded-xl border border-[#eadccf] bg-[#fcf5ef] px-3 py-2.5">
+                        <div className="mt-3 rounded-xl border border-sand bg-cream px-3 py-2.5">
                           <p className="text-sm leading-relaxed text-ink-body">{description}</p>
                         </div>
                       ) : (
@@ -294,7 +294,7 @@ export function ConfirmModal({
           disabled={isLoading}
           className={`min-h-[44px] rounded-[10px] px-5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 ${
             variant === "danger"
-              ? "bg-[#8c4a31] hover:bg-[#7a3f2a]"
+              ? "bg-[var(--color-action-destructive-bg)] hover:bg-[var(--color-action-destructive-bg-hover)]"
               : "bg-sage hover:bg-sage-dark"
           }`}
         >

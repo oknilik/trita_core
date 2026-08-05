@@ -54,7 +54,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
           ${
             value === 'B'
-              ? 'border-sage bg-[#edf4ef] text-ink shadow-md'
+              ? 'border-sage bg-[var(--color-sage-ghost)] text-ink shadow-md'
               : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}

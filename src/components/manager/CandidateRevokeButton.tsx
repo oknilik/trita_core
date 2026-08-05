@@ -32,7 +32,7 @@ export function CandidateRevokeButton({ inviteId, isHu }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-[11px] font-semibold text-ink-body transition hover:border-accent-candidate-border hover:text-accent-candidate"
+        className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-[11px] font-semibold text-ink-body transition hover:border-[var(--color-state-error-border)] hover:text-[var(--color-state-error-fg)]"
       >
         {t("manager.candidateRevoke.revoke", locale)}
       </button>
@@ -59,7 +59,7 @@ export function CandidateRevokeButton({ inviteId, isHu }: Props) {
             type="button"
             onClick={handleConfirm}
             disabled={loading}
-            className="min-h-[44px] rounded-[10px] bg-accent-candidate px-5 text-sm font-semibold text-white transition hover:bg-accent-candidate-strong disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-[44px] rounded-[10px] bg-[var(--color-action-destructive-bg)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--color-action-destructive-bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading
               ? t("manager.candidateRevoke.revoking", locale)

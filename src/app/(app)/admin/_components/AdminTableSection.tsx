@@ -59,7 +59,7 @@ export function AdminTableSection({
               <div className="mt-2">
                 <AnimatedBar
                   value={percentage}
-                  color={row.color ?? "var(--color-visual-gradient-indigo)"}
+                  color={row.color ?? "var(--color-sage)"}
                   height="h-1.5"
                   delay={idx * 0.1}
                 />

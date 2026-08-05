@@ -666,7 +666,7 @@ function buildCompareInviteHtml(params: {
       ${t.body(params.senderName)}
     </p>
     ${cta}
-    <p style="${EMAIL_P};margin-top:24px;font-size:13px;color:#8a8a98">
+    <p style="${EMAIL_P};margin-top:24px;font-size:13px;color:${EMAIL_COLORS.faint}">
       ${t.footer}
     </p>`;
 
@@ -711,8 +711,8 @@ export async function sendReflectionPromptEmail(params: {
     <p style="${EMAIL_P}">${t.body(params.dimLabel)}</p>
     <p style="${EMAIL_P};margin-bottom:24px">${t.body2}</p>
     ${cta}
-    <p style="${EMAIL_P};margin-top:28px;font-size:12px;color:#8a8a98">
-      ${t.optOut} <a href="${optOutLink}" style="color:#8a8a98">${optOutLink}</a>
+    <p style="${EMAIL_P};margin-top:28px;font-size:12px;color:${EMAIL_COLORS.faint}">
+      ${t.optOut} <a href="${optOutLink}" style="color:${EMAIL_COLORS.faint}">${optOutLink}</a>
     </p>`;
 
   const { error } = await resend.emails.send({

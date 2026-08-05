@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
+import { LAYER_THEMES, layerHeroGradient, type LayerKey } from "@/lib/color-system";
 
-export type SurfaceHeroVariant = "self" | "team" | "org" | "candidate";
+export type SurfaceHeroVariant = LayerKey;
 
 interface SurfaceHeroTheme {
   background: string;
@@ -10,34 +11,34 @@ interface SurfaceHeroTheme {
   badgeText: string;
 }
 
+// A réteg-témák egykapuja a color-system LAYER_THEMES — a hero, a loading-
+// skeletonök és az eyebrow-k ugyanabból a térképből dolgoznak (2026-08).
+// Jelölt-variáns: terrakotta/agyag — meleg, a bronz primary-val rokon, de
+// jól elkülönül a self (zsálya) / team (szilva) / org (éjkék) hármastól.
 export const SURFACE_HERO_THEME: Record<SurfaceHeroVariant, SurfaceHeroTheme> = {
   self: {
-    background:
-      "linear-gradient(135deg, var(--color-accent-self-strong) 0%, var(--color-accent-self-deep) 60%, var(--color-accent-self-deeper) 100%)",
-    primary: "var(--color-accent-primary)",
-    badgeBg: "rgba(193,127,74,0.2)",
-    badgeText: "var(--color-accent-primary-soft)",
+    background: layerHeroGradient("self"),
+    primary: LAYER_THEMES.self.glow,
+    badgeBg: LAYER_THEMES.self.badgeBg,
+    badgeText: LAYER_THEMES.self.badgeText,
   },
   team: {
-    background: "linear-gradient(135deg, #66455d 0%, #4a314a 60%, #2f2035 100%)",
-    primary: "#d48e62",
-    badgeBg: "rgba(212,142,98,0.22)",
-    badgeText: "#f3c39d",
+    background: layerHeroGradient("team"),
+    primary: LAYER_THEMES.team.glow,
+    badgeBg: LAYER_THEMES.team.badgeBg,
+    badgeText: LAYER_THEMES.team.badgeText,
   },
   org: {
-    background: "linear-gradient(135deg, #2f4863 0%, #22374d 60%, #172737 100%)",
-    primary: "#d2a36a",
-    badgeBg: "rgba(210,163,106,0.22)",
-    badgeText: "#f4c792",
+    background: layerHeroGradient("org"),
+    primary: LAYER_THEMES.org.glow,
+    badgeBg: LAYER_THEMES.org.badgeBg,
+    badgeText: LAYER_THEMES.org.badgeText,
   },
-  // Jelölt-felület (2026-08-05): terrakotta/agyag akcent — meleg, a bronz
-  // primary-val rokon, de jól elkülönül a self (zsálya) / team (szilva) /
-  // org (éjkék) hármastól.
   candidate: {
-    background: "linear-gradient(135deg, #8a4a32 0%, #6d3826 60%, #47251a 100%)",
-    primary: "#e0a878",
-    badgeBg: "rgba(224,168,120,0.22)",
-    badgeText: "#f6cfa8",
+    background: layerHeroGradient("candidate"),
+    primary: LAYER_THEMES.candidate.glow,
+    badgeBg: LAYER_THEMES.candidate.badgeBg,
+    badgeText: LAYER_THEMES.candidate.badgeText,
   },
 };
 
@@ -90,7 +91,7 @@ export function SurfaceHero({
         )}
       />
       {variant === "team" ? (
-        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[#d48e62]/12" />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[var(--color-layer-team-glow)]/12" />
       ) : null}
 
       {/* Mobil-karcsúsítás (UX-audit #9): kisebb padding és térközök < md —

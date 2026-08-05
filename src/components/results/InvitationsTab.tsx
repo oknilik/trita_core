@@ -440,7 +440,7 @@ export function InvitationsTab({
           <p className="text-xs text-[var(--color-text-muted)]">
             {t("invitations.emptySub", locale)}
           </p>
-          <p className="mx-auto mt-2 max-w-[420px] text-[11px] leading-relaxed text-[#7a6f63]">
+          <p className="mx-auto mt-2 max-w-[420px] text-[11px] leading-relaxed text-[var(--color-ink-warm)]">
             {locale === "hu"
               ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
               : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
@@ -448,7 +448,7 @@ export function InvitationsTab({
           <div className="mt-3">
             <Link
               href={isConsultingLed() ? "/contact" : "/onboarding?intent=team"}
-              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[#dcccb5] bg-white px-4 text-[11px] font-semibold text-[#7d5a40] transition hover:bg-[#fff7ec]"
+              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[var(--color-warm-dark)] bg-white px-4 text-[11px] font-semibold text-[var(--color-bronze-700)] transition hover:bg-[var(--color-bronze-100)]"
             >
               {isConsultingLed()
                 ? (locale === "hu" ? "Beszéljünk a csapatodról" : "Talk to us about your team")

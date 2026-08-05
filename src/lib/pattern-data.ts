@@ -1,3 +1,4 @@
+import { EVAL_RAMP } from "@/lib/color-system";
 // src/lib/pattern-data.ts
 // Single source of truth for the 16 team operating patterns.
 // Used by: PatternExplorer (public /patterns page) + team-pattern engine.
@@ -176,7 +177,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Lassú döntéshozatal", "Kifelé láthatatlan", "Konfrontáció-kerülés", "Passzivitás látszata"],
     people: "Introvertált, kíváncsi, alapos, együttműködő kutatói típusok.",
     contexts: "R&D, akadémia, adatelemzés, minőségbiztosítás, farmakológia",
-    color: "#2e6b50",
+    color: "#3d6b5e", // sage — a korábbi közeli-de-más zöld a brand-zsályába olvadt
   },
   "0110": {
     name: "Stabil Magcsapat",
@@ -309,11 +310,13 @@ export function getMatchLabel(distance: number): {
   color: string;
   bg: string;
 } {
+  // Verdict-trió az értékelő rampon (color-system EVAL_RAMP): a sage-közeli
+  // sage-közeli zöld a zsálya-családba olvadt, a neutrális fok a meleg muted.
   if (distance < 0.25)
-    return { label: "Jól kirajzolódó minta", color: "#2e6b50", bg: "rgba(46,107,80,0.08)" };
+    return { label: "Jól kirajzolódó minta", color: EVAL_RAMP.high.fg, bg: "rgba(61,107,94,0.08)" };
   if (distance < 0.45)
-    return { label: "Vegyes mintázat", color: "#b5651d", bg: "rgba(181,101,29,0.08)" };
-  return { label: "Átmeneti működés", color: "#6b6b6b", bg: "rgba(107,107,107,0.08)" };
+    return { label: "Vegyes mintázat", color: EVAL_RAMP.mid.fg, bg: "rgba(193,127,74,0.08)" };
+  return { label: "Átmeneti működés", color: EVAL_RAMP.low.fg, bg: "rgba(110,110,128,0.08)" };
 }
 
 /** A value (0–1) is "balanced" when it falls in the 35–65% zone. */

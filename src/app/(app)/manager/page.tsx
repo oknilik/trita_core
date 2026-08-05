@@ -233,7 +233,7 @@ export default async function ManagerCockpitPage() {
               <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
                 <div
                   className="h-full rounded-full"
-                  style={{ width: `${totalCompletionPct}%`, backgroundColor: "#8ad0b4" }}
+                  style={{ width: `${totalCompletionPct}%`, backgroundColor: "var(--color-sage-300)" }}
                 />
               </div>
             </div>
@@ -329,19 +329,19 @@ export default async function ManagerCockpitPage() {
           <DashboardSectionHeader label={isHu ? "Csapatdinamika" : "Team dynamics"} className="mb-4" />
           <div className="grid gap-3 sm:grid-cols-3">
             <DashboardMetricCard
-              accent="var(--color-state-success-strong)"
+              accent="var(--color-state-success-solid)"
               title={isHu ? "Hasonló profil" : "Aligned"}
               value={String(data.teams[0]?.alignedCount ?? 0)}
               sub={isHu ? "Hasonló személyiségprofilú párok" : "Pairs with similar personality profiles"}
             />
             <DashboardMetricCard
-              accent="#d3cfc6"
+              accent="var(--color-state-info-solid)"
               title={isHu ? "Kiegészítő" : "Complementary"}
               value={String(data.teams[0]?.complementaryCount ?? 0)}
               sub={isHu ? "Eltérő de kezelhető profilok" : "Different but manageable profiles"}
             />
             <DashboardMetricCard
-              accent="#f59e0b"
+              accent="var(--color-state-warning-solid)"
               title={isHu ? "Potenciális súrlódás" : "Potential friction"}
               value={String(data.teams[0]?.frictionCount ?? 0)}
               sub={isHu ? "Tudatos kommunikáció szükséges" : "Conscious communication needed"}

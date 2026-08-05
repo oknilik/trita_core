@@ -5,12 +5,16 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { FRICTION_WEIGHTS } from "@/lib/friction-model";
+import { DYNAMICS_COLORS } from "@/lib/color-system";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
+// Dinamika-trió — dokumentált státusz-kivétel (color-system DYNAMICS_COLORS),
+// mindig felirattal. A korábbi bézs „complementary" megszűnt: egy fogalom,
+// egy szín (a TeamReportView-val azonos hármas).
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
-  aligned: "var(--color-state-success-strong)",
-  complementary: "#d3cfc6",
-  friction: "#f59e0b",
+  aligned: DYNAMICS_COLORS.aligned,
+  complementary: DYNAMICS_COLORS.complementary,
+  friction: DYNAMICS_COLORS.friction,
 };
 
 const EDGE_WIDTHS: Record<DynamicsEdge["type"], number> = {
@@ -217,7 +221,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                                   className="h-full rounded-full"
                                   style={{
                                     width: `${Math.min(g.gap, 100)}%`,
-                                    backgroundColor: g.gap < 15 ? "var(--color-state-success-strong)" : g.gap < 30 ? "#d3cfc6" : "#f59e0b",
+                                    backgroundColor: g.gap < 15 ? DYNAMICS_COLORS.aligned : g.gap < 30 ? DYNAMICS_COLORS.complementary : DYNAMICS_COLORS.friction,
                                   }}
                                 />
                               </div>
@@ -256,7 +260,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
   if (edges.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sand bg-[#f8f7f4] py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sand bg-[var(--color-surface-chip-neutral)] py-16 text-center">
         <p className="text-[14px] font-semibold text-ink">
           {t("teamComp.noDynamicsTitle", loc)}
         </p>
@@ -368,7 +372,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             );
           })}
           <div className="ml-auto flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-[#fce7d6] ring-1 ring-sage" />
+            <div className="h-3 w-3 rounded-full bg-[var(--color-surface-warm-tint)] ring-1 ring-sage" />
             <span className="text-[11px] text-ink-body">{t("teamComp.hubPerson", loc)}</span>
           </div>
         </div>

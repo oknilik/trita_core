@@ -1,5 +1,6 @@
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { dimColors } from "@/lib/color-system";
 
 interface FacetEntry {
   code: string;
@@ -77,7 +78,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
             {/* Number badge */}
             <div
               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-fraunces text-lg font-semibold text-white"
-              style={{ backgroundColor: item.dimColor }}
+              style={{ backgroundColor: dimColors(item.dimCode).strong }}
             >
               {idx + 1}
             </div>
@@ -86,10 +87,11 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-ink">{item.label}</span>
                 <span
-                  className="rounded-full px-2 py-0.5 font-mono text-micro uppercase tracking-widest"
+                  className="rounded-full border px-2 py-0.5 font-mono text-micro uppercase tracking-widest"
                   style={{
-                    backgroundColor: `${item.dimColor}18`,
-                    color: item.dimColor,
+                    backgroundColor: dimColors(item.dimCode).soft,
+                    color: dimColors(item.dimCode).strong,
+                    borderColor: dimColors(item.dimCode).base,
                   }}
                 >
                   {item.dimLabel}
@@ -107,7 +109,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
                 <div className="flex-1 h-1.5 rounded-full bg-sand">
                   <div
                     className="h-full rounded-full"
-                    style={{ width: `${item.score}%`, backgroundColor: item.dimColor }}
+                    style={{ width: `${item.score}%`, backgroundColor: dimColors(item.dimCode).base }}
                   />
                 </div>
                 <span className="shrink-0 font-mono text-xs text-ink-body">

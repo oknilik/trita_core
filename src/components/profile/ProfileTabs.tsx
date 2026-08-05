@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
+import { dimColors } from "@/lib/color-system";
 import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
@@ -313,7 +314,7 @@ function ResultsTab({
                         </span>
                         <span
                           className="w-8 shrink-0 text-right font-fraunces text-sm"
-                          style={{ color: d.color }}
+                          style={{ color: dimColors(d.code).strong }}
                         >
                           {d.score}
                         </span>
@@ -818,6 +819,7 @@ export function ProfileTabs({
               riskInsight,
               career,
               dimensions: mainDims.map((d) => ({
+                code: d.code,
                 name: d.label,
                 shortName:
                   TRITAN_DIM_ABBR[d.code as TritanDimCode]?.[isHu ? "hu" : "en"] ??

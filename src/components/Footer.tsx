@@ -71,7 +71,7 @@ export function Footer() {
       >
         <path
           d="M0,26 C240,10 480,34 720,22 C960,10 1120,30 1280,18 C1360,12 1410,20 1440,16 L1440,56 L0,56 Z"
-          fill="#1a1a2e"
+          fill="var(--color-ink)"
         />
       </svg>
 

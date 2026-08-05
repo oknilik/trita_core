@@ -1,6 +1,6 @@
 # Trita szín-rendszer — teljes audit és egységesítési terv (2026-08)
 
-> Állapot: **javaslat, végrehajtásra előkészítve** · Készült: 2026-08-05, a
+> Állapot: **VÉGREHAJTVA (2026-08-05, ld. 6. fejezet)** · Készült: 2026-08-05, a
 > `tritanium-polish` branchen · Előzmények: `ui-token-map.md` (2026-04 token-audit),
 > `ui-hex-replacement-policy.md` (top-30 hex→token csere), `design-tokens-sync.test.ts`
 > (CSS↔TS szinkron-őr). Ez a doksi a **jelentés-alapú** egységesítést tervezi meg —
@@ -509,3 +509,53 @@ cserével együtt mozognak (a 2.2 tábla e szerint értelmezendő).
 
 A migráció a 3. fejezet fázisai szerint indul, MIUTÁN a párhuzamos
 komponens-ágak (share ✓ / candidate / eyebrow) e branchen landoltak.
+
+---
+
+## 6. Végrehajtva — 2026-08-05
+
+A migráció a `tritanium-polish` branchen, a 3. fejezet fázisai szerint
+(ésszerű összevonásokkal), az 5. fejezeti döntésekkel és az **E/O
+hue-cserével** (E=viola `#7b5fae`, O=mályva `#b4688a`) együtt.
+
+| Fázis | Megvalósult | Fájlok |
+|---|---|---|
+| **1. Source-of-truth** | Új `src/lib/color-system.ts` (DIMENSION_COLORS base/strong/soft × 6, TEAM_ROLE_FAMILIES 3 család + szerep-hozzárendelés, LAYER_THEMES a meglévő candidate-tokenekkel összehangolva, EVAL_RAMP, STATE_SOLID, DYNAMICS_COLORS, AVATAR_COLORS). `globals.css`: `--color-dim/role/layer/eval-*` + `state-*-solid` + `sage-300` + `paper-*` tokenek additívan; `--color-visual-*` és `state-success/warning-strong` törölve; `surface-team/org-accent*` alias-átmenetben a layer-tokenekre; founding→paper; numbered-alias dedup; `text-faint` pótolva. `design-tokens.ts`: `COLORS.ink300`, `PDF_COLORS.bronze700`. | globals.css · design-tokens.ts · +1 új lib |
+| **2. Dimenzió-egykapu** | Mind a 4 párhuzamos paletta + legend a color-systemre: `questions/tritan.ts` (config.color=base; altruizmus=moha strong), `team-stats.ts` (dimConfigs=base, top3Dims=strong a fehér betűs pill-ekhez), `TeamReportView`, `TeamReportMemberView`, kampány-riport, jelölt-riport (O-piros megszűnt; fehér betűs badge-ek strong-on), blog-badge (strong-on-soft, N=neutrális), `TeamHeatmap` (fejléc/leírás-badge strong, cella-rámpa base, legend a valódi rámpából, no-data warm), GrowthFocus/CareerGrowthPlan/ProfileTabs chip-minta strong-on-soft + AA-szövegek. | 12 fájl |
+| **3. Státusz-egykapu** | Toast (state-tokenek), Modal brand-danger (`#8c4a31`→action-destructive/state-error — a candidate-ütközés feloldva), profil törlés-zóna (ötödik piros-család→state-error), DashboardStatusChip `rose`, CandidateRevokeButton, ShareModal-revoke, dinamika-trió egykapu (TeamReportView+DynamicsMap+manager — bézs-complementary megszűnt, state-*-solid), TeamRoleSection bannerek + forrás-badge neutrális, CampaignCard státusz-jelzők. | ~11 fájl |
+| **4. Réteg-akcentek** | SurfaceHero → LAYER_THEMES (a surface-hero-theme teszt mostantól hexben is méri: self badge 4.32→4.87 AA-ra igazítva `#eeb681`), team/org loading-skeletonök, SectionEyebrow candidate-szabály (+ `candidateOnDark` tónus a sötét herókra), team MetricTile-ok, org-akcent kettősség feloldva (`#2f4863` kanonikus / `#3f6d9a`=bright), OrgOnboardingWizard + CampaignCard + OverviewTabView aranyai → org-glow. D-döntés ellenőrizve: a hiring-konzol már candidate-hero ✓. | ~10 fájl |
+| **5. Vizualizációk + eval** | RadarChart: self-polygon H→E→O base-gradiens (fuchsia ki), observer→bronz, rács/aura meleg (slate/indigó ködök ki), dim-címkék strong; RadarLegendNote; avatar.ts→AVATAR_COLORS; `tierColors`→eval-tokenek (AA-fg-k); CareerResults fitColor→EVAL_RAMP; hiring-fit címke+gap→eval/bronz-magnitúdó; pattern-verdict→EVAL_RAMP (+`#2e6b50`→sage az atlaszban); PatternExplorer paper-téma + accentHover-bug (sage-dark); AdminTrendChart/OverviewTab→sage/bronz tokenek; EvaluatingScreen→bronze-700; CelebrationBurst tokenre. | ~14 fájl |
+| **6. PDF + email + OG** | PdfComparison gap: piros→bronz-magnitúdó (sageLight→bronze→bronze700); PdfDimensionChart sávok dim-strong (kód-alapú lookup, ProfileTabs kódot ad át; tier-jelölés változatlan); CoverPage→LAYER self hero-stopok; emails.ts szórvány-szürkéi→EMAIL_COLORS.faint (két-szürkés készlet); 3 OG-kép + ShareCardDownload→`design-tokens.ts` import (edge-kompatibilis). | ~9 fájl |
+| **7. Takarítás + őrzés** | `scripts/check-colors.mjs` (`pnpm check:colors`, a `pnpm check` része): kivezetett hexek tiltólistája (hard fail) + nyers-hex keret a UI-scope-ban (23, fájllistával); `design-tokens-sync.test.ts` var()-lánc-feloldással az összes új token-párra + kivezetett-token őr + E/O-döntés őr; 1.8-as apróságok (ink-szürkék: `#5a5a6e`→ink-body, `#8a8a98`→ink300/faint, `#6b6b6b`→muted; zöldek: `#217a55`/`#2e6b50`→sage, `#8ad0b4`→sage-300 token, `#1a2e22`→sage-deep, `#edf4ef`/`#eef6f2`→sage-ghost; InvitationsTab/ComparisonTab→bronz/homok; TeamRoles near-dupe→bronze-100/edge); ambient-glow fuchsia→sage–bronz duó; `ui-hex-replacement-policy.md` + `ui-token-map.md` erre a doksira mutat. | script + teszt + sok apró |
+
+**Kontraszt-bukók sorsa (1.9):** a fehér betűs dim-badge-ek strong-ra álltak
+(≥5.4:1); a bronz/ink300 kis szövegek eval-fg fokozatokra (`#8a5530` /
+`#6e6e80`); a SZ-chip 1.85:1 mintája megszűnt (családi strong-on-soft);
+a team-akcent (`#d48e62`) és a candidate-glow (`#e0a878`) on-dark-only —
+világos felületen szilva ill. terrakotta accent; a CareerResults low-fit
+amber ki; a self hero-badge 4.87:1-re igazítva.
+
+**Tudatosan későbbre hagyva / nem változott:**
+
+- **RIASEC-paletta** (C-döntés): parkolva a karrier-réteg élesítéséig —
+  a guardrail kivétel-listáján dokumentálva.
+- **Favicon/app-ikon** (E-döntés): marad, brand-döntésig.
+- **Google-logó**: harmadik fél brand-színei, kivétel.
+- **„figyelendő" felirat** (F-döntés): UX-writing backlog.
+- Maradék 23 nyers hex a UI-scope-ban (keretben rögzítve): PDF-fehérek
+  (CoverPage), kurátori minta-atlasz akcentek (`#8b3a2a`, `#3d4f6b`…),
+  neutrális hover-tintek (`#dbeee8`, `#f7ede1`, `#dfeae5`, `#faf5ef`),
+  admin-értesítő email-hexek (API route-ok), observe-oldali `#cfe2d6`
+  keret — mind jelentés-semleges; cél a keret fokozatos csökkentése.
+- A Tailwind default-utility állomány jelentés-semleges része (dekoratív
+  szürkék/neutrálisok, státusz-szerepben álló státusz-osztályok pl.
+  TeamReportView psych-safety) nem lett erőből átírva — a doksi migrációs
+  elve szerint csak a jelentés-osztályt sértők mozogtak.
+- Nincs screenshot-regressziós infra: a 2/4/5. fázis érintett útvonalainak
+  kézi vizuális átnézése a következő élő smoke-kör feladata; a dim-hue-váltás
+  a visszatérő felhasználóknak észrevehető → egy mondat a tanácsadói
+  release-jegyzetbe („a skálaszínek egységesek lettek minden nézetben").
+
+**Verifikáció (2026-08-05):** `pnpm check` (type-check + lint + check:colors)
+0 hiba · `test:unit` 469/469 · `test:client` 92/92 · `test:integration`
+121/121 (helyi Postgres 5433) · dummy-env `pnpm build` zöld.

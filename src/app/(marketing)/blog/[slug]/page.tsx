@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts, extractHeadings, slugifyHeading } from "@/lib/blog";
+import { DIMENSION_COLORS } from "@/lib/color-system";
 import { t } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/seo";
 import { TranslationRedirect } from "../TranslationRedirect";
@@ -89,15 +90,14 @@ function StatRow({ children }: { children: React.ReactNode }) {
   return <div className="my-7 grid grid-cols-1 gap-2 sm:grid-cols-3">{children}</div>;
 }
 
-const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  INTE: { bg: "var(--color-surface-self-accent-soft)", text: "var(--color-accent-self-deep)", border: "var(--color-action-primary-bg)" },
-  RESO: { bg: "#f5f3ff", text: "#5b21b6", border: "#ddd6fe" },
-  TEMP: { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
-  ADAP: { bg: "#f0fdf4", text: "#166534", border: "#bbf7d0" },
-  THOR: { bg: "var(--color-surface-highlight-warm)", text: "var(--color-accent-primary-strong)", border: "var(--color-accent-primary)" },
-  OPEN: { bg: "#fdf2f8", text: "#86198f", border: "#f5d0fe" },
-  N: { bg: "#fff1f2", text: "#9f1239", border: "#fecdd3" },
-};
+// Kanonikus HEXACO-paletta (color-system.ts): chip = strong szöveg soft
+// háttéren, base border. A korábbi negyedik (kevert) helyi paletta és a
+// hiba-piros N-badge kivezetve — az N (örökség-kód) neutrális.
+const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> =
+  Object.fromEntries(
+    (Object.entries(DIMENSION_COLORS) as [string, { base: string; strong: string; soft: string }][])
+      .map(([code, c]) => [code, { bg: c.soft, text: c.strong, border: c.base }]),
+  );
 
 function DimBadge({ code, label }: { code: string; label: string }) {
   const colors = DIM_COLORS[code] ?? { bg: "var(--color-surface-subtle)", text: "var(--color-text-secondary)", border: "var(--color-border-default)" };

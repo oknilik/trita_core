@@ -49,17 +49,17 @@ interface CareerFakeDoorProps {
  * adjon a lap.
  */
 const SHEET = {
-  ink: "#2d5a4e",
+  ink: "var(--color-sage-dark)",
   /**
    * A bélyegző SZÁNDÉKOSAN nem a lap tintája: zsálya alapon a zsálya
    * bélyegző beleolvad, pedig ez az oldal legfontosabb állítása. Meleg
    * bronz a hideg papíron — kiugrik, és a palettában marad.
    *
    * Miért nem a sima bronz (#c17f4a): ezen a papíron csak 2,7:1-et ad. A
-   * mélyebb árnyalat 5,0:1 — ez már olvasható.
+   * mélyebb árnyalat (bronze-700) 5,0:1 — ez már olvasható.
    */
-  stamp: "#8a5730",
-  paper: "#dfeee8",
+  stamp: "var(--color-bronze-700)",
+  paper: "var(--color-sage-soft)",
   line: "rgba(45,90,78,0.18)",
   strong: "rgba(45,90,78,0.34)",
 } as const;

@@ -329,7 +329,7 @@ export function ShareModal({
                 type="button"
                 onClick={() => void handleRevoke()}
                 disabled={busy}
-                className="min-h-[44px] rounded-[10px] px-4 text-sm font-semibold text-[#8c4a31] transition hover:bg-[#fcf5ef] disabled:cursor-not-allowed disabled:opacity-50"
+                className="min-h-[44px] rounded-[10px] px-4 text-sm font-semibold text-[var(--color-state-error-fg)] transition hover:bg-[var(--color-state-error-bg)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t("content.shareRevoke", locale)}
               </button>

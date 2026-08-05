@@ -422,10 +422,10 @@ export default function ProfilePage() {
         </div>
 
         {/* ═══ DANGER BOX ═══ */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
-          <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
-            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-micro text-[#c0392b]">!</div>
-            <span className="text-xs font-semibold text-[#a93226]">{t("profile.sectionAccount", locale)}</span>
+        <div className="mt-6 overflow-hidden rounded-xl border border-[var(--color-state-error-border)]">
+          <div className="flex items-center gap-1.5 border-b border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)] px-[18px] py-3">
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-state-error-border)] text-micro text-[var(--color-state-error-fg)]">!</div>
+            <span className="text-xs font-semibold text-[var(--color-state-error-fg)]">{t("profile.sectionAccount", locale)}</span>
           </div>
           <div className="bg-white p-[18px]">
             {/* Sign out */}
@@ -438,15 +438,15 @@ export default function ProfilePage() {
                 {t("profile.logoutButton", locale)}
               </button>
             </div>
-            <div className="my-2.5 h-px bg-[#f0e0e0]" />
+            <div className="my-2.5 h-px bg-[var(--color-state-error-bg)]" />
             {/* Delete */}
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-caption text-[#a93226]">{t("profile.deleteTitle", locale)}</p>
+                <p className="text-caption text-[var(--color-state-error-fg)]">{t("profile.deleteTitle", locale)}</p>
                 <p className="text-micro text-[var(--color-text-muted)]">{t("profile.deleteBody", locale)}</p>
               </div>
               <button type="button" onClick={() => setShowDeleteModal(true)} disabled={isDeleting}
-                className="shrink-0 rounded-lg border border-[#e8b4b4] bg-[#fdf0f0] px-[18px] py-[7px] text-xs text-[#c0392b] transition-all hover:border-[#d4a0a0] hover:bg-[#f5dede] disabled:opacity-50"
+                className="shrink-0 rounded-lg border border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)] px-[18px] py-[7px] text-xs text-[var(--color-state-error-fg)] transition-all hover:border-[var(--color-state-error-fg)]/40 hover:bg-[var(--color-state-error-border)]/60 disabled:opacity-50"
               >
                 {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
               </button>

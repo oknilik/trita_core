@@ -38,7 +38,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
 
   return (
     <div className="flex flex-col items-center justify-center py-14 text-center">
-      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8a4a32] to-[#47251a] text-2xl shadow-[0_14px_30px_rgba(109,56,38,0.25)]">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--color-accent-candidate)] to-[var(--color-layer-candidate-hero-to)] text-2xl shadow-[0_14px_30px_rgba(109,56,38,0.25)]">
         <span aria-hidden>{isAddon ? "🚀" : "🔒"}</span>
       </div>
 

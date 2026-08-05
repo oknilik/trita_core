@@ -12,16 +12,18 @@ import {
   isBalanced,
 } from "@/lib/pattern-data";
 
-// ── Design tokens (pilot page palette) ──────────────────
+// ── Design tokens — a közös paper-téma (globals.css --color-paper-*) ────
+// A hover-bug javítva: az égetett narancs hover nem az alapszín
+// családja volt — az akcent zsálya, a hover sage-dark.
 const T = {
-  bg: "#FAF7F2",
-  card: "#F3EDE4",
-  text: "#2C2420",
-  muted: "#5C4F45",
-  heading: "#1a1410",
-  border: "#E8E0D4",
+  bg: "var(--color-paper-bg)",
+  card: "var(--color-paper-card)",
+  text: "var(--color-paper-text)",
+  muted: "var(--color-paper-muted)",
+  heading: "var(--color-paper-heading)",
+  border: "var(--color-paper-border)",
   accent: "var(--color-action-primary-bg)",
-  accentHover: "#a83508",
+  accentHover: "var(--color-sage-dark)",
 };
 
 // ── Axis Slider ─────────────────────────────────────────────
@@ -156,14 +158,14 @@ function PatternCard({
           >
             <p
               className="mb-2 text-label uppercase"
-              style={{ color: "#2e6b50" }}
+              style={{ color: "var(--color-sage)" }}
             >
               erősségek
             </p>
             <ul className="space-y-1">
               {pattern.strengths.map((s) => (
                 <li key={s} className="flex items-start gap-1.5 text-xs" style={{ color: T.text }}>
-                  <span className="mt-0.5 shrink-0" style={{ color: "#2e6b50" }}>✓</span>
+                  <span className="mt-0.5 shrink-0" style={{ color: "var(--color-sage)" }}>✓</span>
                   {s}
                 </li>
               ))}
@@ -175,14 +177,14 @@ function PatternCard({
           >
             <p
               className="mb-2 text-label uppercase"
-              style={{ color: "#b5651d" }}
+              style={{ color: "var(--color-eval-mid-fg)" }}
             >
               vakfoltok
             </p>
             <ul className="space-y-1">
               {pattern.risks.map((r) => (
                 <li key={r} className="flex items-start gap-1.5 text-xs" style={{ color: T.text }}>
-                  <span className="mt-0.5 shrink-0" style={{ color: "#b5651d" }}>△</span>
+                  <span className="mt-0.5 shrink-0" style={{ color: "var(--color-eval-mid-fg)" }}>△</span>
                   {r}
                 </li>
               ))}
@@ -230,7 +232,7 @@ function HybridCard({
       <div className="p-6">
         <span
           className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-micro uppercase tracking-wider"
-          style={{ backgroundColor: "rgba(107,107,107,0.08)", color: "#6b6b6b" }}
+          style={{ backgroundColor: "rgba(110,110,128,0.08)", color: "var(--color-muted)" }}
         >
           Kontextusfüggő működés
         </span>
@@ -293,7 +295,7 @@ const QUADRANTS = [
     label: "Visszafogott + Összetartó",
     desc: "Csendes energia, erős csapatkötés",
     codes: ["0111", "0110", "0101", "0100"],
-    accent: "#2e6b50",
+    accent: "var(--color-sage)",
   },
   {
     label: "Visszafogott + Versengő",

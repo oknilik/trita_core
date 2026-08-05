@@ -20,6 +20,7 @@ import { calculateTeamRoleScores, getTopRoles, TEAM_ROLES } from "@/lib/team-rol
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { DIMENSION_STRONG, EVAL_RAMP, dimColors } from "@/lib/color-system";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 
@@ -29,14 +30,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: "Jelölt eredménye | trita", robots: { index: false } };
 }
 
-const DIM_COLORS: Record<string, string> = {
-  INTE: "var(--color-visual-gradient-indigo)",
-  RESO: "var(--color-visual-gradient-violet)",
-  TEMP: "#06B6D4",
-  ADAP: "var(--color-state-success-strong)",
-  THOR: "var(--color-state-warning-strong)",
-  OPEN: "#EF4444",
-};
+// Kanonikus HEXACO-paletta (color-system.ts). A korábbi helyi térkép a
+// státusz-színeket keverte az adat-térbe (O = hiba-piros!) — kivezetve.
+// A fehér betűs kitöltött badge-ek STRONG-on ülnek (AA), a sáv/radar BASE-en.
+const DIM_COLORS: Record<string, string> = DIMENSION_STRONG;
 
 function getDimensionInsight(
   dim: string,
@@ -292,7 +289,7 @@ export default async function CandidateResultPage({
       <SurfaceHero
         variant="candidate"
         eyebrow={(
-          <SectionEyebrow tone="candidate">
+          <SectionEyebrow tone="candidateOnDark">
             {t("hiring.candidateResultEyebrow", locale)}
           </SectionEyebrow>
         )}
@@ -428,8 +425,8 @@ export default async function CandidateResultPage({
             </div>
 
             {/* Team Fit */}
-            <div className="rounded-xl bg-[rgba(99,102,241,0.06)] p-4">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-visual-gradient-indigo)]">
+            <div className="rounded-xl bg-accent-candidate-soft/45 p-4">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-accent-candidate">
                 {t("hiring.teamFitEyebrow", locale)}
               </p>
               {gapAnalysis ? (() => {
@@ -438,10 +435,11 @@ export default async function CandidateResultPage({
                 );
                 const fitLevel =
                   avgAbsGap < 10 ? "excellent" : avgAbsGap < 20 ? "good" : "divergent";
+                // Értékelő ramp (color-system EVAL_RAMP): zsálya→bronz→neutrális
                 const fitLabels = {
-                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: "var(--color-sage)" },
-                  good: { hu: "Jó illeszkedés", en: "Good fit", color: "#92400e" },
-                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: "var(--color-bronze)" },
+                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: EVAL_RAMP.high.accent },
+                  good: { hu: "Jó illeszkedés", en: "Good fit", color: EVAL_RAMP.mid.fg },
+                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: EVAL_RAMP.low.fg },
                 };
                 const fit = fitLabels[fitLevel];
                 const topGap = gapAnalysis[0];
@@ -520,7 +518,7 @@ export default async function CandidateResultPage({
                   <div className="relative mb-2 h-3 overflow-hidden rounded-full bg-warm-mid">
                     <div
                       className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${score}%`, background: color, opacity: 0.85 }}
+                      style={{ width: `${score}%`, background: dimColors(d).base, opacity: 0.85 }}
                     />
                     {teamVal !== null && (
                       <div
@@ -559,7 +557,7 @@ export default async function CandidateResultPage({
                     uid="candidate-vs-team"
                     dimensions={dims.map((d) => ({
                       code: d,
-                      color: DIM_COLORS[d],
+                      color: dimColors(d).base,
                       score: candidateScores[d] ?? 0,
                       observerScore: teamAvg![d],
                     }))}
@@ -604,14 +602,16 @@ export default async function CandidateResultPage({
                         </div>
                       </div>
 
+                      {/* Bronz-magnitúdó (eval-ramp): nagyobb eltérés = mélyebb
+                          bronz; kis szöveghez AA-biztos árnyalatok. */}
                       <span
                         className={[
                           "w-12 text-right font-mono text-xs font-semibold",
                           Math.abs(g.gap) > 20
-                            ? "text-bronze"
+                            ? "text-bronze-700"
                             : Math.abs(g.gap) > 10
-                              ? "text-[#92400e]"
-                              : "text-sage",
+                              ? "text-bronze-dark"
+                              : "text-sage-dark",
                         ].join(" ")}
                       >
                         {g.gap > 0 ? "+" : ""}{g.gap}

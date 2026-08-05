@@ -10,7 +10,7 @@ export default function TeamLoading() {
           <div className="h-3 w-44 rounded bg-sand/70" />
         </div>
 
-        <section className="relative overflow-hidden rounded-[28px] bg-[#4a314a] animate-pulse">
+        <section className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-mid)] animate-pulse">
           <div className="pointer-events-none absolute -right-16 -top-16 h-[240px] w-[240px] rounded-full bg-white/[0.05]" />
           <div className="px-6 pb-7 pt-7 md:px-8 md:pb-8 md:pt-9">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
@@ -25,7 +25,7 @@ export default function TeamLoading() {
                   <div className="h-7 w-36 rounded-full bg-white/15" />
                 </div>
                 <div className="mt-6 flex flex-wrap gap-2">
-                  <div className="h-11 w-44 rounded-[10px] bg-[#d48e62]/80" />
+                  <div className="h-11 w-44 rounded-[10px] bg-[var(--color-layer-team-glow)]/80" />
                   <div className="h-11 w-40 rounded-[10px] bg-white/15" />
                 </div>
               </div>

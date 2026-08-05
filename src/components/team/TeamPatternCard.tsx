@@ -181,27 +181,27 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {/* Strengths + Blind spots */}
         {content && (
           <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
-            <div className="rounded-xl bg-[#f0fdf4] border border-[#a0d8c4] p-4">
-              <p className="mb-2 text-label uppercase text-[#059669]">
+            <div className="rounded-xl bg-[var(--color-eval-high-bg)] border border-[var(--color-sage-ring)] p-4">
+              <p className="mb-2 text-label uppercase text-[var(--color-eval-high-fg)]">
                 {t("teamComp.strengthsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
                 {content.strengths.map((s, i) => (
                   <li key={i} className="flex items-start gap-1.5 text-xs text-ink-body">
-                    <span className="mt-0.5 shrink-0 text-[#059669]">✓</span>
+                    <span className="mt-0.5 shrink-0 text-[var(--color-eval-high-accent)]">✓</span>
                     {s}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-xl bg-[#fff8ee] border border-[#f5d99a] p-4">
-              <p className="mb-2 text-label uppercase text-[#b45309]">
+            <div className="rounded-xl bg-[var(--color-eval-mid-bg)] border border-[var(--color-bronze-edge)] p-4">
+              <p className="mb-2 text-label uppercase text-[var(--color-eval-mid-fg)]">
                 {t("teamComp.blindSpotsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
                 {content.blindSpots.map((s, i) => (
                   <li key={i} className="flex items-start gap-1.5 text-xs text-ink-body">
-                    <span className="mt-0.5 shrink-0 text-[#b45309]">△</span>
+                    <span className="mt-0.5 shrink-0 text-[var(--color-eval-mid-fg)]">△</span>
                     {s}
                   </li>
                 ))}
@@ -219,8 +219,8 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {[
                 { timing: t("teamComp.thisWeek", loc),  action: content.leaderActions[0], accent: "var(--color-action-primary-bg)" },
-                { timing: t("teamComp.thisMonth", loc), action: content.leaderActions[1], accent: "var(--color-visual-gradient-violet)" },
-                { timing: t("teamComp.ongoing", loc),   action: content.leaderActions[2], accent: "var(--color-state-success-strong)" },
+                { timing: t("teamComp.thisMonth", loc), action: content.leaderActions[1], accent: "var(--color-bronze)" },
+                { timing: t("teamComp.ongoing", loc),   action: content.leaderActions[2], accent: "var(--color-layer-team-accent)" },
               ].map(({ timing, action, accent }) => (
                 <div
                   key={timing}

@@ -373,7 +373,7 @@ export function OrgOnboardingWizard() {
                 : layer.status === "IN_PROGRESS"
                   ? "bg-bronze/20 text-bronze-dark"
                   : layer.status === "AVAILABLE"
-                    ? "bg-[#d4a15a]/20 text-[#8f602f]"
+                    ? "bg-[var(--color-layer-org-glow)]/20 text-[var(--color-bronze-700)]"
                     : "bg-sand text-muted";
 
               return (
