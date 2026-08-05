@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
 
-export type SurfaceHeroVariant = "self" | "team" | "org";
+export type SurfaceHeroVariant = "self" | "team" | "org" | "candidate";
 
 interface SurfaceHeroTheme {
   background: string;
@@ -29,6 +29,15 @@ export const SURFACE_HERO_THEME: Record<SurfaceHeroVariant, SurfaceHeroTheme> = 
     primary: "#d2a36a",
     badgeBg: "rgba(210,163,106,0.22)",
     badgeText: "#f4c792",
+  },
+  // Jelölt-felület (2026-08-05): terrakotta/agyag akcent — meleg, a bronz
+  // primary-val rokon, de jól elkülönül a self (zsálya) / team (szilva) /
+  // org (éjkék) hármastól.
+  candidate: {
+    background: "linear-gradient(135deg, #8a4a32 0%, #6d3826 60%, #47251a 100%)",
+    primary: "#e0a878",
+    badgeBg: "rgba(224,168,120,0.22)",
+    badgeText: "#f6cfa8",
   },
 };
 
