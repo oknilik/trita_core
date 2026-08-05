@@ -139,7 +139,9 @@ export default function ProfilePage() {
     setSavedLocale((prev) => { setSelectedLocale((cur) => (cur === prev ? locale : cur)); return locale; });
   }, [locale]);
 
-  if (!isLoaded || !hasCheckedBypass || (sessionEligible && !hasLoadedDemographics)) {
+  // Bypass-munkamenetben (e2e) a clerk-js sosem tölt be — az isLoaded-ra
+  // várakozás ott örök skeletont jelentene; éles úton a feltétel azonos.
+  if (!hasCheckedBypass || (!isLoaded && !e2eBypassSession) || (sessionEligible && !hasLoadedDemographics)) {
     return (
       <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
         <div className="mx-auto max-w-[640px] px-5 pt-10 pb-20">
